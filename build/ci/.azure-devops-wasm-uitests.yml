@@ -16,6 +16,9 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/gitversion.yml
+  - template: templates/dotnet-sdks.yml
+
   - task: CacheBeta@0
     condition: eq(variables['enable_package_cache'], 'true')
     inputs:
@@ -70,6 +73,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/dotnet-sdks.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -132,6 +137,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/dotnet-sdks.yml
 
   - template: templates/optimize-roslyn-mono.yml
 

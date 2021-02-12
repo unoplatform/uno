@@ -1,6 +1,10 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: Mainline
-next-version: 3.0
+
+# Don't use next-version with Mainline (changed since 5.3), otherwise the stable
+# branch will not count on commits, only on tags.
+# See https://github.com/GitTools/GitVersion/issues/2461#issuecomment-733658087
+# next-version: 3.0
 
 branches:
   master:
@@ -25,7 +29,6 @@ branches:
     source-branches: ['master']
 
   stable:
-    mode: ContinuousDelivery
     regex: ^release/stable/.*
     tag: ''
     increment: Patch
@@ -36,7 +39,7 @@ branches:
     mode: ContinuousDeployment
     regex: ^dev/.*?/(.*?)
     tag: dev.{BranchName}
-    source-branches: ['master', 'release', 'projects', 'feature']
+    source-branches: ['master', 'stable', 'projects', 'feature']
     increment: none
 
   projects:
@@ -50,6 +53,10 @@ branches:
     regex: ^feature/(.*?)
     source-branches: ['master']
     increment: none
+
+  release:
+    # disable default release branch
+    regex: ignore
 
 ignore:
   sha: []
