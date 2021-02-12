@@ -2,6 +2,7 @@
 using Uno.UI.DataBinding;
 using Uno.Extensions;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -68,19 +69,9 @@ namespace Uno.UI.DataBinding
 		/// <param name="allowPrivateMembers">Allows for the binding engine to include private properties in the lookup</param>
 		internal BindingPath(string path, object fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 		{
-			_path = (path ?? "").Trim();
+			_path = path ?? "";
 
-			BindingItem bindingItem = null;
-			foreach (var item in SplitPath(_path).Reverse())
-			{
-				bindingItem = new BindingItem(bindingItem, item, fallbackValue, precedence, allowPrivateMembers);
-				_chain = bindingItem;
-
-				if (_value == null)
-				{
-					_value = bindingItem;
-				}
-			}
+			Parse(_path, fallbackValue, precedence, allowPrivateMembers, ref _chain, ref _value);
 
 			if (_value != null)
 			{
@@ -283,61 +274,98 @@ namespace Uno.UI.DataBinding
 
 		#region Miscs helpers
 		/// <summary>
-		/// Splits the given string path in parts usable by BindingItem
+		/// Parse the given string path in parts and create the linked list of binding items in head and tail
 		/// </summary>
-		private static IEnumerable<string> SplitPath(string path)
+		private static void Parse(
+			string path,
+			object fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers,
+			ref BindingItem head, ref BindingItem tail)
 		{
-			var property = new StringBuilder(path.Length);
+			var propertyLength = 0;
 			bool isInAttachedProperty = false, isInItemIndex = false;
-			for (var i = 0; i < path.Length; i++)
+			for (var i = path.Length - 1; i >= 0; i--)
 			{
 				var c = path[i];
 				switch (c)
 				{
-					case '(':
+					case ')':
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
 						isInAttachedProperty = true;
+						propertyLength = 0;
 						break;
 
-					case ')' when isInAttachedProperty:
+					case '(' when isInAttachedProperty:
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
 						isInAttachedProperty = false;
-						yield return property.ToString();
-						property.Clear();
+						propertyLength = 0;
 						break;
 
-					case '[':
-						property.Append('[');
+					case ']':
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
 						isInItemIndex = true;
+						propertyLength = 1; // We include the brackets for itemIndex properties
 						break;
 
-					case ']' when isInItemIndex:
-						property.Append(']');
+					case '[' when isInItemIndex:
+						// Note: We use 'start = i' here for 'TryPrependItem' as we include the brackets for itemIndex properties
+						TryPrependItem(path, i, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
 						isInItemIndex = false;
-						yield return property.ToString();
-						property.Clear();
+						propertyLength = 0;
 						break;
 
 					case '.' when !isInAttachedProperty:
-						if (property.Length > 0)
-						{
-							yield return property.ToString();
-							property.Clear();
-						}
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						propertyLength = 0;
 						break;
 
 					default:
-						property.Append(c);
+						if (propertyLength > 0 || !char.IsWhiteSpace(c)) // i.e. TrimEnd
+						{
+							propertyLength++;
+						}
 						break;
 				}
 			}
 
-			if (property.Length > 0)
-			{
-				yield return property.ToString();
-			}
+			TryPrependItem(path, 0, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
 		}
 
 		/// <summary>
-		/// Subscibes for updates to the INotifyPropertyChanged interface.
+		/// Prepends an item in the binding linked list if the string defined between by start and length is valid.
+		/// </summary>
+		private static void TryPrependItem(
+			string path, int start, int length,
+			object fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers,
+			ref BindingItem head, ref BindingItem tail)
+		{
+			if (length <= 0)
+			{
+				return;
+			}
+
+			// Trim start (trim end is achieved in the main Parse loop)
+			var c = path[start];
+			while (char.IsWhiteSpace(c) && length > 0)
+			{
+				start++;
+				length--;
+				c = path[start];
+			}
+
+			if (length <= 0)
+			{
+				return;
+			}
+
+			var itemPath = path.Substring(start, length);
+			var item = new BindingItem(head, itemPath, fallbackValue, precedence, allowPrivateMembers);
+
+			head = item;
+			tail ??= item;
+		}
+
+		/// <summary>
+		/// Subscribes for updates to the INotifyPropertyChanged interface.
 		/// </summary>
 		private static IDisposable SubscribeToNotifyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
 		{
