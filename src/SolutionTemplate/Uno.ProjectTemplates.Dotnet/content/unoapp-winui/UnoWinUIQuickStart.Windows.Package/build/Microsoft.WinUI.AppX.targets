@@ -207,20 +207,23 @@
   </Target>
 
   <!--
-    Add a dependency for the app against VCLibs since it doesn't come with .NET only apps. C++ apps
-    will already have this dependency, but duplicate referenes are a no-op so there's no need to
-    condition the dependency.
-   -->
-  <ItemGroup Condition="'$(OutputType)' == 'AppContainerExe'">
-    <SDKReference Include="Microsoft.VCLibs, Version=14.0" />
-  </ItemGroup>
-
-  <!-- Packaged desktop apps need these framework package references -->
-  <ItemGroup Condition="'$(MSBuildProjectExtension)'=='.wapproj'">
+    Add a dependency for the app against VCLibs.Desktop, which contains the CRT DLLs that WinUI 3 is linked against. -->
+  <ItemGroup Condition="'$(OutputType)' == 'Exe' or '$(OutputType)' == 'AppContainerExe' or '$(MSBuildProjectExtension)'=='.wapproj'">
     <SDKReference Include="Microsoft.VCLibs.Desktop, Version=14.0" />
     <!-- Needed for ucrtbased.dll when running a debug build. -->
-    <SDKReference Include="Microsoft.VCLibs, Version=14.0" Condition="'$(Configuration)' == 'Debug'" />
+    <SDKReference Include="Microsoft.UniversalCRT.Debug, Version=$(TargetPlatformVersion)" Condition="'$(Configuration)' == 'Debug'" />
+    <!-- Needed until Microsoft.ApplicationModel.Resources.dll and Microsoft.Web.WebView2.Core.dll
+         no longer depend on the _app version of CRT DLLs. -->
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0" />
   </ItemGroup>
+  
+  <!-- In order to have the Microsoft.UniversalCRT.Debug SDK reference included in the AppX, we need to
+       set IncludeSDKRedistOutputGroup to true. -->
+  <Target Name="IncludeSDKRedistOutputGroup" BeforeTargets="GetPackagingOutputs" Condition="('$(OutputType)' == 'AppContainerExe' or '$(MSBuildProjectExtension)'=='.wapproj') and '$(Configuration)' == 'Debug'">
+    <PropertyGroup>
+      <IncludeSDKRedistOutputGroup>true</IncludeSDKRedistOutputGroup>
+    </PropertyGroup>
+  </Target>
 
   <!--
     WindowsAppContainer is the property that you can set in your .NET Desktop project to turn it into a UWP.
@@ -234,4 +237,16 @@
       </ProjectReferenceWithExtraMetadata>
     </ItemGroup>
   </Target>
+  
+  <!-- NuGet restore is now supported for wapproj files, so we need to supply an AssetTargetFallback value
+       in order for that not to raise an error. -->
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.wapproj'">
+    <AssetTargetFallback>net5.0-windows$(TargetPlatformVersion)</AssetTargetFallback>
+  </PropertyGroup>
+
+  <!-- See https://github.com/microsoft/CsWinRT/issues/373 -->
+  <Target Name="ValidateNoPublishTrimmed" BeforeTargets="PrepareForBuild" Condition="'$(PublishTrimmed)'=='true'">
+    <Error Text="Publishing with IL trimming is not yet supported."/>
+  </Target>
+
 </Project>
