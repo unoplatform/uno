@@ -40,6 +40,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		private string _errorMessage = string.Empty;
 		private string _statusMessage = string.Empty;
 		private string _suggestedFileName = string.Empty;
+		private string _fileChoiceExtension = string.Empty;
 
 		private StorageFile _suggestedSaveFile = null;
 		private StorageFile _pickedFile = null;
@@ -124,12 +125,32 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			}
 		}
 
+		public string FileChoiceExtension
+		{
+			get => _fileChoiceExtension;
+			set
+			{
+				_fileChoiceExtension = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public void AddFileTypeChoice()
 		{
 			if (!string.IsNullOrEmpty(NewFileTypeChoice.Name) && NewFileTypeChoice.Extensions.Count > 0)
 			{
 				FileTypeChoices.Add(NewFileTypeChoice);
 				NewFileTypeChoice = new FileTypeChoiceViewModel();
+			}
+		}
+
+		public void AddFileChoiceExtension()
+		{
+			if (!string.IsNullOrEmpty(FileChoiceExtension))
+			{
+				NewFileTypeChoice.Extensions.Add(FileChoiceExtension);
+				NewFileTypeChoice.RaiseDescriptionChanged();
+				FileChoiceExtension = string.Empty;
 			}
 		}
 
@@ -210,8 +231,10 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		}
 	}
 
-	public class FileTypeChoiceViewModel
+	public class FileTypeChoiceViewModel : ViewModelBase
 	{
+		private string _name = string.Empty;
+
 		public FileTypeChoiceViewModel()
 		{
 		}
@@ -219,10 +242,24 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		public FileTypeChoiceViewModel(string name, string[] extensions) =>
 			(Name, Extensions) = (name, new ObservableCollection<string>(extensions));
 
-		public string Name { get; set; }
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				_name = value;
+				RaisePropertyChanged();
+				RaiseDescriptionChanged();
+			}
+		}
 
 		public ObservableCollection<string> Extensions { get; } = new ObservableCollection<string>();
 
-		public override string ToString() => $"{Name} ({string.Join(",", Extensions)})";
+		public string Description => $"{Name} ({string.Join(",", Extensions)})";
+
+		public void RaiseDescriptionChanged()
+		{
+			RaisePropertyChanged(nameof(Description));
+		}
 	}
 }

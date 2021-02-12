@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pickers="using:UITests.Shared.Windows_Storage.Pickers"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
@@ -29,22 +30,48 @@
                 <TextBlock Text="{x:Bind ViewModel.SuggestedSaveFile.Path, Mode=OneWay}" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <TextBox
-                    Width="88"
-                    Header="File type"
-                    Text="{x:Bind ViewModel.NewFileTypeChoice.Name, Mode=TwoWay}" />
-                <Button Click="{x:Bind ViewModel.ResetNewFileTypeChoice}" Content="Reset" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <TextBlock Text="New file type choice preview:" />
-                <ContentControl Content="{x:Bind ViewModel.NewFileTypeChoice, Mode=OneWay}" />
+            <StackPanel
+                Padding="8"
+                BorderBrush="Black"
+                BorderThickness="1"
+                CornerRadius="4">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBox
+                        Width="140"
+                        Header="File choice name"
+                        Text="{x:Bind ViewModel.NewFileTypeChoice.Name, Mode=TwoWay}" />
+                    <TextBox
+                        Width="140"
+                        Header="File choice extension"
+                        Text="{x:Bind ViewModel.FileChoiceExtension, Mode=TwoWay}" />
+                    <Button
+                        VerticalAlignment="Bottom"
+                        Click="{x:Bind ViewModel.AddFileChoiceExtension}"
+                        Content="Add extension" />
+                    <Button
+                        VerticalAlignment="Bottom"
+                        Click="{x:Bind ViewModel.ResetNewFileTypeChoice}"
+                        Content="Reset" />
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="New file type choice preview:" />
+                    <ContentControl Content="{x:Bind ViewModel.NewFileTypeChoice.Description, Mode=OneWay}" />
+                </StackPanel>
+                <Button Click="{x:Bind ViewModel.AddFileTypeChoice}" Content="Add file type choice" />
             </StackPanel>
 
             <ListView
                 Height="100"
                 Header="File type choices"
-                ItemsSource="{x:Bind ViewModel.FileTypeChoices}" />
+                ItemsSource="{x:Bind ViewModel.FileTypeChoices}"
+                SelectedItem="{x:Bind ViewModel.SelectedFileTypeChoice, Mode=TwoWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="pickers:FileTypeChoiceViewModel">
+                        <TextBlock Text="{x:Bind Description}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             <Button Click="{x:Bind ViewModel.RemoveSelectedFileTypeChoice}" Content="Remove selected file type choice" />
 
             <Button
