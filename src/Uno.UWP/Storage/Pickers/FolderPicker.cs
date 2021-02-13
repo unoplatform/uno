@@ -6,18 +6,23 @@ using System.Collections.Generic;
 namespace Windows.Storage.Pickers
 {
 	/// <summary>
-	/// Represents a file picker that lets the user choose the file name, extension, and storage location for a file.
+	/// Represents a UI element that lets the user choose folders.
 	/// </summary>
-	public partial class FileSavePicker
-	{
+	public partial class FolderPicker
+    {
 		private string _suggestedFileName = string.Empty;
 		private string _settingsIdentifier = string.Empty;
 		private string _commitButtonText = string.Empty;
 
 		/// <summary>
-		/// Gets the collection of valid file types that the user can choose to assign to a file.
+		/// Gets the collection of file types that the folder picker displays.
 		/// </summary>
-		public IDictionary<string, IList<string>> FileTypeChoices { get; } = new FilePickerFileTypesOrderedMap();
+		public IList<string> FileTypeFilter => new FileExtensionVector();
+
+		/// <summary>
+		/// Gets or sets the view mode that the folder picker uses to display items.
+		/// </summary>
+		public PickerViewMode ViewMode { get; set; } = PickerViewMode.List;
 
 		/// <summary>
 		/// Gets or sets the location that the file save picker suggests to the user as the location to save a file.
@@ -41,11 +46,6 @@ namespace Windows.Storage.Pickers
 			get => _settingsIdentifier;
 			set => _settingsIdentifier = value ?? throw new ArgumentNullException(nameof(value));
 		}
-
-		/// <summary>
-		/// Gets or sets the storageFile that the file picker suggests to the user for saving a file.
-		/// </summary>
-		public StorageFile? SuggestedSaveFile { get; set; }
 
 		/// <summary>
 		/// Gets or sets the label text of the commit button in the file picker UI.

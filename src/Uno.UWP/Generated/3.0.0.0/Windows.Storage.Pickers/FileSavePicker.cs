@@ -7,7 +7,7 @@ namespace Windows.Storage.Pickers
 #endif
 	public partial class FileSavePicker
 	{
-#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Pickers.PickerLocationId SuggestedStartLocation
 		{

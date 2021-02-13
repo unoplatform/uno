@@ -15,14 +15,10 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
 	{
-		public PickerLocationId SuggestedStartLocation { get; set; }
-
 		public IAsyncOperation<StorageFile> PickSaveFileAsync() => PickFilesTask().AsAsyncOperation();
 
 		public FileSavePicker()
 		{
-			SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-			FileTypeChoices = new Dictionary<string, IList<string>>();
 		}
 
 		private async Task<StorageFile> PickFilesTask()

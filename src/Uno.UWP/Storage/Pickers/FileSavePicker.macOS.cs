@@ -9,7 +9,6 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
 	{
-		public PickerLocationId SuggestedStartLocation { get; set; }
 		public IAsyncOperation<StorageFile> PickSaveFileAsync() => PickFileTaskAsync().AsAsyncOperation();
 
 
