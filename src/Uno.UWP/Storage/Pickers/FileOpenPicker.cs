@@ -17,7 +17,7 @@ namespace Windows.Storage.Pickers
 		/// <summary>
 		/// Gets the collection of file types that the folder picker displays.
 		/// </summary>
-		public IList<string> FileTypeFilter => new FileExtensionVector();
+		public IList<string> FileTypeFilter { get; } = new FileExtensionVector();
 
 		/// <summary>
 		/// Gets or sets the view mode that the folder picker uses to display items.
@@ -55,19 +55,36 @@ namespace Windows.Storage.Pickers
 
 		partial void InitializePlatform();
 
+		/// <summary>
+		/// Shows the file picker so that the user can pick one file.
+		/// </summary>
+		/// <param name="pickerOperationId">This argument is ignored and has no effect.</param>
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/> 
+		/// object that represents the file that the user picked.</returns>
 		public IAsyncOperation<StorageFile?> PickSingleFileAsync(string pickerOperationId) => PickSingleFileAsync();
 
+		/// <summary>
+		/// Shows the file picker so that the user can pick one file.
+		/// </summary>
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/> 
+		/// object that represents the file that the user picked.</returns>
 		public IAsyncOperation<StorageFile?> PickSingleFileAsync()
 		{
 			ValidateConfiguration();
 
-			return AsyncOperation.FromTask<StorageFile?>(cancellationToken => PickSingleFileTaskAsync(cancellationToken));
+			return AsyncOperation.FromTask(cancellationToken => PickSingleFileTaskAsync(cancellationToken));
 		}
+
+		/// <summary>
+		/// Shows the file picker so that the user can pick multiple files.
+		/// </summary>
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="FilePickerSelectedFilesArray"/> object that contains
+		/// all the files that were picked by the user. Picked files in this array are represented by <see cref="StorageFile"/> objects.</returns>
 		public IAsyncOperation<IReadOnlyList<StorageFile>> PickMultipleFilesAsync()
 		{
 			ValidateConfiguration();
 
-			return AsyncOperation.FromTask<IReadOnlyList<StorageFile>>(cancellationToken => PickMultipleFilesTaskAsync(cancellationToken));
+			return AsyncOperation.FromTask(cancellationToken => PickMultipleFilesTaskAsync(cancellationToken));
 		}
 #endif
 

@@ -17,7 +17,7 @@ namespace Windows.Storage.Pickers
 		/// <summary>
 		/// Gets the collection of file types that the folder picker displays.
 		/// </summary>
-		public IList<string> FileTypeFilter => new FileExtensionVector();
+		public IList<string> FileTypeFilter { get; } = new FileExtensionVector();
 
 		/// <summary>
 		/// Gets or sets the view mode that the folder picker uses to display items.
