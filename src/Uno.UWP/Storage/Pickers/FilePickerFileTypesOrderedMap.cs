@@ -21,7 +21,12 @@ namespace Windows.Storage.Pickers
 
 		public uint Size => (uint)_items.Count;
 
-		public void Add(string key, IList<string> value) => _items.Add(key, value);
+		public void Add(string key, IList<string> value)
+		{
+			ValidateFileType(key, value);
+
+			_items.Add(key, value);
+		}
 
 		public bool ContainsKey(string key) => _items.ContainsKey(key);
 
@@ -32,7 +37,12 @@ namespace Windows.Storage.Pickers
 		public IList<string> this[string key]
 		{
 			get => _items[key];
-			set => _items[key] = value;
+			set
+			{
+				ValidateFileType(key, value);
+
+				_items[key] = value;
+			}
 		}
 
 		public ICollection<string> Keys
@@ -46,11 +56,17 @@ namespace Windows.Storage.Pickers
 			set => throw new InvalidOperationException();
 		}
 
-		public void Add(KeyValuePair<string, IList<string>> item) => _items.Add(item.Key, item.Value);
+		public void Add(KeyValuePair<string, IList<string>> item)
+		{
+			ValidateFileType(item.Key, item.Value);
+
+			_items.Add(item.Key, item.Value);
+		}
 
 		public void Clear() => _items.Clear();
 
-		public bool Contains(KeyValuePair<string, IList<string>> item) => _items.TryGetValue(item.Key, out var value) && value == item.Value;
+		public bool Contains(KeyValuePair<string, IList<string>> item) =>
+			_items.TryGetValue(item.Key, out var value) && value == item.Value;
 
 		public void CopyTo(KeyValuePair<string, IList<string>>[] array, int arrayIndex)
 		{
@@ -77,6 +93,37 @@ namespace Windows.Storage.Pickers
 
 		public IEnumerator<KeyValuePair<string, IList<string>>> GetEnumerator() => _items.GetEnumerator();
 
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();		
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		private void ValidateFileType(string name, IList<string> extensions)
+		{
+			if (string.IsNullOrEmpty(name))
+			{
+				throw new ArgumentNullException(nameof(name), "File type description must not be null nor empty.");
+			}
+
+			if (extensions == null)
+			{
+				throw new ArgumentNullException(nameof(extensions), "Estension list must not be null.");
+			}
+
+			if (extensions.Count == 0)
+			{
+				throw new ArgumentException("At least one extension must be provided.", nameof(extensions));
+			}
+
+			foreach (var extension in extensions)
+			{
+				if (string.IsNullOrEmpty(extension))
+				{
+					throw new ArgumentException("Extensions must not be null nor empty.", nameof(extensions));
+				}
+
+				if (!extension.StartsWith(".", StringComparison.InvariantCulture))
+				{
+					throw new ArgumentException($"All extensions must start with a dot ({extension}).");
+				}
+			}
+		}
 	}
 }
