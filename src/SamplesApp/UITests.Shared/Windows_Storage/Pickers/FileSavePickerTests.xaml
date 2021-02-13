@@ -75,14 +75,14 @@
                 Padding="12"
                 HorizontalAlignment="Stretch"
                 Click="{x:Bind ViewModel.PickSaveFile}"
-                Content="Pick file" />
+                Content="Pick save file" />
 
             <TextBlock>
-                <Run Text="Folder name: " />
+                <Run Text="File name: " />
                 <Run Text="{x:Bind ViewModel.PickedFile.DisplayName, Mode=OneWay}" />
             </TextBlock>
             <TextBlock>
-                <Run Text="Folder path: " />
+                <Run Text="File path: " />
                 <Run Text="{x:Bind ViewModel.PickedFile.Path, Mode=OneWay}" />
             </TextBlock>
 

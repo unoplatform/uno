@@ -55,11 +55,11 @@
                     <DataTemplate x:DataType="storage:StorageFile">
                         <StackPanel Orientation="Vertical">
                             <TextBlock>
-                                <Run Text="Folder name: " />
+                                <Run Text="File name: " />
                                 <Run Text="{x:Bind DisplayName, Mode=OneWay}" />
                             </TextBlock>
                             <TextBlock>
-                                <Run Text="Folder path: " />
+                                <Run Text="File path: " />
                                 <Run Text="{x:Bind Path, Mode=OneWay}" />
                             </TextBlock>
                         </StackPanel>

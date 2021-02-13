@@ -224,8 +224,16 @@ namespace UITests.Shared.Windows_Storage.Pickers
 					fileSavePicker.FileTypeChoices.Add(fileTypeChoice.Name, fileTypeChoice.Extensions);
 				}
 				var pickedFile = await fileSavePicker.PickSaveFileAsync();
-				StatusMessage = "Folder picked successfully.";
-				PickedFile = pickedFile;
+				if (pickedFile != null)
+				{
+					StatusMessage = "File picked successfully.";
+					PickedFile = pickedFile;
+				}
+				else
+				{
+					StatusMessage = "No file picked";
+					PickedFile = null;
+				}
 			}
 			catch (Exception ex)
 			{
