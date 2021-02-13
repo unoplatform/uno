@@ -27,7 +27,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			this.DataContextChanged += FolderPickerTests_DataContextChanged;
 		}
 
-		private void FolderPickerTests_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void FolderPickerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as FileSavePickerTestsViewModel;
 		}
