@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Windows.Foundation;
 
 namespace Windows.Storage.Pickers
 {
@@ -55,5 +56,22 @@ namespace Windows.Storage.Pickers
 			get => _commitButtonText;
 			set => _commitButtonText = value ?? throw new ArgumentNullException(nameof(value));
 		}
+
+#if __SKIA__ || __MACOS__ || __WASM__
+		public FolderPicker()
+		{
+			InitializePlatform();
+		}
+
+		partial void InitializePlatform();
+
+		/// <summary>
+		/// Shows the folderPicker object so that the user can pick a folder.
+		/// </summary>
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFolder"/>
+		/// object that represents the folder that the user picked.</returns>
+		public IAsyncOperation<StorageFolder?> PickSingleFolderAsync() =>
+			AsyncOperation.FromTask(cancellationToken => PickSingleFolderTaskAsync(cancellationToken));
+#endif
 	}
 }

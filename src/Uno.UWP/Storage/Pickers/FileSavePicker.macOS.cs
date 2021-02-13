@@ -1,5 +1,8 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AppKit;
 using Foundation;
@@ -9,10 +12,7 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
 	{
-		public IAsyncOperation<StorageFile> PickSaveFileAsync() => PickFileTaskAsync().AsAsyncOperation();
-
-
-		private async Task<StorageFile> PickFileTaskAsync()
+		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
 			var savePicker = new NSSavePanel();
 			savePicker.DirectoryUrl = new NSUrl(GetStartPath(), true);

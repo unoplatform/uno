@@ -8,6 +8,6 @@ namespace Uno.Extensions.Storage.Pickers
 {
 	internal interface IFolderPickerExtension
 	{
-		Task<StorageFolder?> PickFolderAsync(CancellationToken token);
+		Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token);
 	}
 }

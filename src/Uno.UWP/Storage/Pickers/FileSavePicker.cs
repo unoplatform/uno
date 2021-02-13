@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Windows.Foundation;
 
 namespace Windows.Storage.Pickers
 {
@@ -55,5 +56,25 @@ namespace Windows.Storage.Pickers
 			get => _commitButtonText;
 			set => _commitButtonText = value ?? throw new ArgumentNullException(nameof(value));
 		}
+
+#if __SKIA__ || __MACOS__ || __WASM__
+		public FileSavePicker()
+		{
+			InitializePlatform();
+		}
+
+		partial void InitializePlatform();
+
+		/// <summary>
+		/// Shows the file picker so that the user can save a file and set the file name, extension, and location of the file to be saved.
+		/// </summary>
+		/// <returns>
+		/// When the call to this method completes successfully, it returns a <see cref="StorageFile"/> object that was created to represent the saved file.
+		/// The file name, extension, and location of this <see cref="StorageFile"/> match those specified by the user, but the file has no content.
+		/// To save the content of the file, your app must write the content to this <see cref="StorageFile"/>.
+		/// </returns>
+		public IAsyncOperation<StorageFile?> PickSaveFileAsync() =>
+			AsyncOperation.FromTask(cancellationToken => PickSaveFileTaskAsync(cancellationToken));
+#endif
 	}
 }

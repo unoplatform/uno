@@ -1,5 +1,7 @@
-﻿#if __MACOS__
+﻿#nullable enable
+
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AppKit;
 using Windows.Foundation;
@@ -8,14 +10,7 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FolderPicker
 	{
-		public FolderPicker()
-		{	
-		}
-
-		public IAsyncOperation<StorageFolder> PickSingleFolderAsync() =>
-			PickSingleFolderImplAsync().AsAsyncOperation();
-
-		private async Task<StorageFolder> PickSingleFolderImplAsync()
+		private async Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
 		{
 			var openPanel = new NSOpenPanel();
 			openPanel.AllowedFileTypes = new[] { "none" };
@@ -35,4 +30,3 @@ namespace Windows.Storage.Pickers
 		}
 	}
 }
-#endif
