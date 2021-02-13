@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
@@ -29,6 +30,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
+			ApiExtensibility.Register(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 		}
 
 		[ThreadStatic] private static WpfHost _current;
