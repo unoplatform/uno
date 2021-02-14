@@ -941,6 +941,16 @@ declare namespace Windows.Storage.Pickers {
     }
 }
 declare namespace Windows.Storage.Pickers {
+    class FileOpenPicker {
+        static pickFilesAsync(multiple: boolean): Promise<string>;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FileSavePicker {
+        static SaveAs(fileName: string, dataPtr: any, size: number): void;
+    }
+}
+declare namespace Windows.Storage.Pickers {
     class FolderPicker {
         static pickSingleFolderAsync(): Promise<string>;
     }
