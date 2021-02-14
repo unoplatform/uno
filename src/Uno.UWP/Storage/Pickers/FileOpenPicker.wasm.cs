@@ -12,6 +12,7 @@ namespace Windows.Storage.Pickers
 	public partial class FileOpenPicker
     {
 		private const string JsType = "Windows.Storage.Pickers.FileOpenPicker";
+		private const char SelectedFileGuidSeparator = ';';
 
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
@@ -26,8 +27,11 @@ namespace Windows.Storage.Pickers
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
-			var returnValue = await WebAssemblyRuntime.InvokeAsync(FormattableString.Invariant($"{JsType}.pickFilesAsync({multiple})"));
-			return new FilePickerSelectedFilesArray(Array.Empty<StorageFile>());
+			var showAllEntry = FileTypeFilter.Contains("*") ? "true" : "false";
+			var multipleParameter = multiple ? "true" : "false";
+			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickFilesAsync({multipleParameter},{showAllEntry})");
+			var guids = returnValue.Split(SelectedFileGuidSeparator);
+			return new FilePickerSelectedFilesArray(guids.Select(guid => StorageFile.GetFileFromNativePathAsync("", Guid.Parse(guid))).ToArray());
 			//if (returnValue is null)
 			//{
 				

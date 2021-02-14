@@ -3815,20 +3815,22 @@ var Windows;
         var Pickers;
         (function (Pickers) {
             class FileOpenPicker {
-                static pickFilesAsync(multiple) {
+                static pickFilesAsync(multiple, showAllEntry) {
                     return __awaiter(this, void 0, void 0, function* () {
                         if (!showOpenFilePicker) {
                             return null;
                         }
                         const selectedFiles = yield showOpenFilePicker({
                             multiple: multiple,
-                            excludeAcceptAllOption: false
+                            excludeAcceptAllOption: !showAllEntry
                         });
-                        const guid = Uno.Utils.Guid.NewGuid();
+                        var results = "";
                         for (var i = 0; i < selectedFiles.length; i++) {
+                            const guid = Uno.Utils.Guid.NewGuid();
                             Storage.StorageFileNative.AddHandle(guid, selectedFiles[i]);
+                            results = results + guid + ";";
                         }
-                        return guid;
+                        return results;
                     });
                 }
             }
