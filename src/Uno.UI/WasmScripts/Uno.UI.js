@@ -3721,7 +3721,7 @@ var Windows;
         var Pickers;
         (function (Pickers) {
             class FolderPicker {
-                static ShowFolderPicker() {
+                static pickSingleFolderAsync() {
                     return __awaiter(this, void 0, void 0, function* () {
                         const selectedFolder = yield showDirectoryPicker();
                         const guid = Uno.Utils.Guid.NewGuid();

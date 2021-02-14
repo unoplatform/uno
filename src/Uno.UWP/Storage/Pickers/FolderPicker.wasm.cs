@@ -20,14 +20,17 @@ namespace Windows.Storage.Pickers
 
 		private async Task<StorageFolder> PickSingleFolderImplAsync()
 		{
-			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.ShowFolderPicker()");
+			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickSingleFolderAsync()");
 
 			if (returnValue is null)
 			{
 				return null;
 			}
 
-			var guid = new Guid(returnValue);
+			if (!Guid.TryParse(returnValue, out var guid))
+			{
+				throw new InvalidOperationException("GUID could not be parsed");
+			}
 
 			return StorageFolder.GetFolderFromNativePathAsync("", guid);
 		}

@@ -1125,7 +1125,7 @@ declare namespace Windows.Networking.Connectivity {
 }
 declare namespace Windows.Storage.Pickers {
     class FolderPicker {
-        static ShowFolderPicker(): Promise<string>;
+        static pickSingleFolderAsync(): Promise<string>;
     }
 }
 interface Navigator {
