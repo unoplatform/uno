@@ -39,6 +39,7 @@ declare namespace Windows.UI.Core {
 }
 declare namespace Uno.Utils {
     class Guid {
+        private static newGuidMethod;
         static NewGuid(): string;
     }
 }
@@ -985,7 +986,7 @@ declare namespace Windows.Storage {
          * Gets a folder in the given parent folder by name.
          * @param parentGuid The GUID of the parent folder to get.
          * @param folderName The name of the folder to look for.
-         * @returns A GUID of the folder if found, other "notfound" literal.
+         * @returns A GUID of the folder if found, otherwise "notfound" literal.
          */
         static GetFolderAsync(parentGuid: string, folderName: string): Promise<string>;
     }
