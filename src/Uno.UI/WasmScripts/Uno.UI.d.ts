@@ -966,9 +966,12 @@ declare namespace Windows.Storage {
         static DownloadAsset(path: string): Promise<string>;
     }
 }
-declare namespace Windows.Storage.Pickers {
-    class FileSavePicker {
-        static SaveAs(fileName: string, dataPtr: any, size: number): void;
+declare namespace Windows.Storage {
+    class StorageFileNative {
+        private static _fileMap;
+        static AddHandle(guid: string, handle: FileSystemFileHandle): void;
+        static RemoveHandle(guid: string): void;
+        static GetHandle(guid: string): FileSystemFileHandle;
     }
 }
 declare namespace Windows.Storage {
@@ -1158,6 +1161,16 @@ declare namespace Windows.Networking.Connectivity {
         static startStatusChanged(): void;
         static stopStatusChanged(): void;
         static networkStatusChanged(): void;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FileOpenPicker {
+        static pickFilesAsync(multiple: boolean): Promise<string>;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FileSavePicker {
+        static SaveAs(fileName: string, dataPtr: any, size: number): void;
     }
 }
 declare namespace Windows.Storage.Pickers {
