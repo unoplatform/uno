@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Foundation;
+﻿#nullable enable
+
+using System;
 using System.Threading.Tasks;
 using Uno.Foundation;
+using System.Threading;
 
 namespace Windows.Storage.Pickers
 {
@@ -11,14 +11,7 @@ namespace Windows.Storage.Pickers
 	{
 		private const string JsType = "Windows.Storage.Pickers.FolderPicker";
 
-		public FolderPicker()
-		{
-		}
-
-		public IAsyncOperation<StorageFolder> PickSingleFolderAsync() =>
-			PickSingleFolderImplAsync().AsAsyncOperation();
-
-		private async Task<StorageFolder> PickSingleFolderImplAsync()
+		private async Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
 		{
 			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickSingleFolderAsync()");
 
