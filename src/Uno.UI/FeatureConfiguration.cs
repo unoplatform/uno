@@ -461,5 +461,19 @@ namespace Uno.UI
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
 		}
+
+		public static class DatePicker
+		{
+#if __IOS__
+			public static bool UseLegacyStyle { get; set; } = false;
+#endif
+		}
+
+		public static class TimePicker
+		{
+#if __IOS__
+			public static bool UseLegacyStyle { get; set; } = false;
+#endif
+		}
 	}
 }
