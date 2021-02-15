@@ -3410,7 +3410,19 @@
 				reason="Constructor not public in UWP" />																		
 		 </Methods>
 	</IgnoreSet>
-
+	<IgnoreSet baseVersion="3.4.0">
+		<Methods>
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FileExtensionVector..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FilePickerFileTypesOrderedMap..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FilePickerSelectedFilesArray..ctor()"
+				reason="Constructor not public in UWP" />
+		</Methods>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>
