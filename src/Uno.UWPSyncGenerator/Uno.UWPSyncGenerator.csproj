@@ -54,7 +54,7 @@
 		<PackageReference Include="Microsoft.Tpl.Dataflow">
 			<Version>4.5.24</Version>
 		</PackageReference>
-		<PackageReference Include="Uno.Core" Version="2.0.0" />
+		<PackageReference Include="Uno.Core" Version="2.2.0" />
 	</ItemGroup>
 	
 	<ItemGroup>
