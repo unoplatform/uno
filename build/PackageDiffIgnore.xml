@@ -3410,7 +3410,7 @@
 				reason="Constructor not public in UWP" />																		
 		 </Methods>
 	</IgnoreSet>
-	<IgnoreSet baseVersion="3.4.0">
+	<IgnoreSet baseVersion="3.5.1">
 		<Methods>
 			<Member
 				fullName="System.Void Windows.Storage.Pickers.FileExtensionVector..ctor()"
