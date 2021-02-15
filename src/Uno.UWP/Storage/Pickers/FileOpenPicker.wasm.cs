@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno;
 using Uno.Foundation;
+using Uno.Storage.Pickers;
 
 namespace Windows.Storage.Pickers
 {
@@ -32,7 +33,7 @@ namespace Windows.Storage.Pickers
 		{
 			var showAllEntryParameter = FileTypeFilter.Contains("*") ? "true" : "false";
 			var multipleParameter = multiple ? "true" : "false";
-			var fileTypeMapParameter = $"\"{BuildFileTypesMap()}\"";
+			var fileTypeMapParameter = BuildFileTypesMap();
 
 			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickFilesAsync({multipleParameter},{showAllEntryParameter},{fileTypeMapParameter})");
 			var guids = returnValue.Split(SelectedFileGuidSeparator);
@@ -56,10 +57,7 @@ namespace Windows.Storage.Pickers
 					continue;
 				}
 
-				if (!WinRTFeatureConfiguration.FileTypes.FileTypeToMimeMapping.TryGetValue(fileType, out var mimeType))
-				{
-					mimeType = "unknown/unknown";
-				}
+				var mimeType = MimeTypeMapping.GetMimeType(fileType) ?? "unknown/unknown";
 
 				if (!mimeTypeMap.TryGetValue(mimeType, out var extensionList))
 				{
@@ -67,6 +65,11 @@ namespace Windows.Storage.Pickers
 					mimeTypeMap[mimeType] = extensionList;
 				}
 				extensionList.Add(fileType);
+			}
+
+			if (mimeTypeMap.Count== 0)
+			{
+				return "{}";
 			}
 
 			// Build JSON object with the extensions/MIME types

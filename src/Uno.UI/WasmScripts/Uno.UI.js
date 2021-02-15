@@ -2977,10 +2977,23 @@ var Windows;
                     if (!showOpenFilePicker) {
                         return "";
                     }
-                    const selectedFiles = await showOpenFilePicker({
+                    var options = {
                         multiple: multiple,
-                        excludeAcceptAllOption: !showAllEntry
-                    });
+                        excludeAcceptAllOption: !showAllEntry,
+                        types: []
+                    };
+                    for (var property in fileTypes) {
+                        var mimeType = property;
+                        var extensions = fileTypes[property];
+                        var acceptType = {
+                            description: "",
+                            accept: {
+                                [mimeType]: extensions
+                            }
+                        };
+                        options.types.push(acceptType);
+                    }
+                    const selectedFiles = await showOpenFilePicker(options);
                     var results = "";
                     for (var i = 0; i < selectedFiles.length; i++) {
                         const guid = Uno.Utils.Guid.NewGuid();

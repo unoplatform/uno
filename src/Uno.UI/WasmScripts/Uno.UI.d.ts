@@ -926,7 +926,7 @@ declare namespace Windows.Storage {
 }
 declare namespace Windows.Storage.Pickers {
     class FileOpenPicker {
-        static pickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypes: string): Promise<string>;
+        static pickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypes: any): Promise<string>;
     }
 }
 declare namespace Windows.Storage.Pickers {
