@@ -18,7 +18,7 @@ namespace Windows.Storage.Pickers
 		{
 			if (_folderPickerExtension == null)
 			{
-				throw new NotSupportedException("FileOpenPicker is not supported on this target.");
+				throw new NotSupportedException("FolderPicker is not supported on this target.");
 			}
 
 			return await _folderPickerExtension.PickSingleFolderAsync(token);

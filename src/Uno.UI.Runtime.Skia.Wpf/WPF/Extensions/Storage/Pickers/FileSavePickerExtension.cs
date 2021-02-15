@@ -29,9 +29,7 @@ namespace Uno.Extensions.Storage.Pickers
 			var saveFileDialog = new SaveFileDialog
 			{
 				CheckPathExists = true,
-				CreatePrompt = true,
 				OverwritePrompt = true,
-
 			};
 
 			var filterBuilder = new StringBuilder();
@@ -49,6 +47,7 @@ namespace Uno.Extensions.Storage.Pickers
 
 			saveFileDialog.Filter = filterBuilder.ToString();
 
+			saveFileDialog.FileName = _picker.SuggestedFileName;
 			saveFileDialog.InitialDirectory = PickerHelpers.GetInitialDirectory(_picker.SuggestedStartLocation);
 
 			if (saveFileDialog.ShowDialog() == true)
