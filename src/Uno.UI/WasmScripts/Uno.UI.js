@@ -2630,6 +2630,19 @@ var Windows;
                     static vibrate(duration) {
                         return window.navigator.vibrate(duration);
                     }
+                    SpeechRecognizer.dispatchError(this.managedId, event.error);
+                };
+                this.managedId = managedId;
+                if (window.SpeechRecognition) {
+                    this.recognition = new window.SpeechRecognition(culture);
+                }
+                else if (window.webkitSpeechRecognition) {
+                    this.recognition = new window.webkitSpeechRecognition(culture);
+                }
+                if (this.recognition) {
+                    this.recognition.addEventListener("result", this.onResult);
+                    this.recognition.addEventListener("speechstart", this.onSpeechStart);
+                    this.recognition.addEventListener("error", this.onError);
                 }
                 Notification.VibrationDevice = VibrationDevice;
             })(Notification = Devices.Notification || (Devices.Notification = {}));
@@ -2774,6 +2787,7 @@ var Windows;
                         }
                         localityIndex++;
                     }
+                    NetworkInformation.dispatchStatusChanged();
                 }
                 ret.Value = returnKey;
                 ret.marshal(pReturn);
@@ -2810,17 +2824,23 @@ var Windows;
 (function (Windows) {
     var Storage;
     (function (Storage) {
+        class StorageFileNative {
         class NativeStorageFile {
             static AddHandle(guid, handle) {
+                StorageFileNative._fileMap.set(guid, handle);
                 NativeStorageFile._fileMap.set(guid, handle);
             }
             static RemoveHandle(guid) {
+                StorageFileNative._fileMap.delete(guid);
                 NativeStorageFile._fileMap.delete(guid);
             }
             static GetHandle(guid) {
+                return StorageFileNative._fileMap.get(guid);
                 return NativeStorageFile._fileMap.get(guid);
             }
         }
+        StorageFileNative._fileMap = new Map();
+        Storage.StorageFileNative = StorageFileNative;
         NativeStorageFile._fileMap = new Map();
         Storage.NativeStorageFile = NativeStorageFile;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
@@ -2829,14 +2849,18 @@ var Windows;
 (function (Windows) {
     var Storage;
     (function (Storage) {
+        class StorageFolderNative {
         class NativeStorageFolder {
             static AddHandle(guid, handle) {
+                StorageFolderNative._folderMap.set(guid, handle);
                 NativeStorageFolder._folderMap.set(guid, handle);
             }
             static RemoveHandle(guid) {
+                StorageFolderNative._folderMap.delete(guid);
                 NativeStorageFolder._folderMap.delete(guid);
             }
             static GetHandle(guid) {
+                return StorageFolderNative._folderMap.get(guid);
                 return NativeStorageFolder._folderMap.get(guid);
             }
             /**
@@ -2845,11 +2869,13 @@ var Windows;
              * @param folderName The name of the new folder.
              */
             static async CreateFolderAsync(parentGuid, folderName) {
+                const parentHandle = StorageFolderNative.GetHandle(parentGuid);
                 const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
                 const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
                     create: true,
                 });
                 var guid = Uno.Utils.Guid.NewGuid();
+                StorageFolderNative.AddHandle(guid, newDirectoryHandle);
                 NativeStorageFolder.AddHandle(guid, newDirectoryHandle);
                 return guid;
             }
@@ -2860,6 +2886,7 @@ var Windows;
              * @returns A GUID of the folder if found, otherwise "notfound" literal.
              */
             static async GetFolderAsync(parentGuid, folderName) {
+                const parentHandle = StorageFolderNative.GetHandle(parentGuid);
                 const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
                 let nestedDirectoryHandle = undefined;
                 let returnedGuid = Uno.Utils.Guid.NewGuid();
@@ -2872,10 +2899,13 @@ var Windows;
                     }
                 }
                 if (nestedDirectoryHandle)
+                    StorageFolderNative.AddHandle(returnedGuid, nestedDirectoryHandle);
                     NativeStorageFolder.AddHandle(returnedGuid, nestedDirectoryHandle);
                 return returnedGuid;
             }
         }
+        StorageFolderNative._folderMap = new Map();
+        Storage.StorageFolderNative = StorageFolderNative;
         NativeStorageFolder._folderMap = new Map();
         Storage.NativeStorageFolder = NativeStorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
@@ -2992,8 +3022,16 @@ var Windows;
                     if (!showOpenFilePicker) {
                         return "";
                     }
+                    const selectedFiles = await showOpenFilePicker({
                     const options = {
                         multiple: multiple,
+                        excludeAcceptAllOption: !showAllEntry
+                    });
+                    var results = "";
+                    for (var i = 0; i < selectedFiles.length; i++) {
+                        const guid = Uno.Utils.Guid.NewGuid();
+                        Storage.StorageFileNative.AddHandle(guid, selectedFiles[i]);
+                        results = results + guid + ";";
                         excludeAcceptAllOption: !showAllEntry,
                         types: [],
                     };
@@ -3016,6 +3054,12 @@ var Windows;
                             description: "All"
                         });
                     }
+                    return results;
+                }
+            }
+            Pickers.FileOpenPicker = FileOpenPicker;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
                     try {
                         const selectedFiles = await showOpenFilePicker(options);
                         var results = "";
@@ -3035,6 +3079,24 @@ var Windows;
                         return "";
                     }
                 }
+                for (const item in itemsToRemove) {
+                    localStorage.removeItem(itemsToRemove[item]);
+                }
+                return true;
+            }
+            /**
+             * Removes an item contained in localStorage
+             * */
+            static remove(pParams, pReturn) {
+                const params = ApplicationDataContainer_RemoveParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_RemoveReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                ret.Removed = localStorage.hasOwnProperty(storageKey);
+                if (ret.Removed) {
+                    localStorage.removeItem(storageKey);
+                }
+                ret.marshal(pReturn);
+                return true;
             }
             Pickers.FileOpenPicker = FileOpenPicker;
         })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
@@ -3119,6 +3181,9 @@ var Windows;
                         DisplayRequest.activeScreenLockPromise = null;
                     }
                 }
+                if (nestedDirectoryHandle)
+                    StorageFolderNative.AddHandle(returnedGuid, nestedDirectoryHandle);
+                return returnedGuid;
             }
             Display.DisplayRequest = DisplayRequest;
         })(Display = System.Display || (System.Display = {}));
@@ -3199,6 +3264,7 @@ var Windows;
                         return "Unknown";
                     }
                 }
+                StorageFolder.dispatchStorageInitialized();
             }
             Profile.AnalyticsInfo = AnalyticsInfo;
         })(Profile = System.Profile || (System.Profile = {}));
@@ -3236,6 +3302,7 @@ var Windows;
                     if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
                         return "Chrome";
                     }
+                    return results;
                 }
             }
             Profile.AnalyticsVersionInfo = AnalyticsVersionInfo;
@@ -3514,38 +3581,38 @@ class ApplicationDataContainer_ClearParams {
                 ret.Locality = null;
             }
         }
-        Storage.AssetManager = AssetManager;
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        class StorageFileNative {
-            static AddHandle(guid, handle) {
-                StorageFileNative._fileMap.set(guid, handle);
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_ContainsKeyParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_ContainsKeyParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
             }
-            static RemoveHandle(guid) {
-                StorageFileNative._fileMap.delete(guid);
-            }
-            static GetHandle(guid) {
-                return StorageFileNative._fileMap.get(guid);
+            else {
+                ret.Key = null;
             }
         }
-        StorageFileNative._fileMap = new Map();
-        Storage.StorageFileNative = StorageFileNative;
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        class StorageFolderNative {
-            static AddHandle(guid, handle) {
-                StorageFolderNative._folderMap.set(guid, handle);
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Value = String(Module.UTF8ToString(ptr));
             }
-            static RemoveHandle(guid) {
-                StorageFolderNative._folderMap.delete(guid);
+            else {
+                ret.Value = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 8, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
             }
             else {
                 ret.Key = null;
@@ -3581,6 +3648,7 @@ class ApplicationDataContainer_ContainsKeyReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class ApplicationDataContainer_GetCountParams {
     static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_ContainsKeyParams();
         const ret = new ApplicationDataContainer_GetCountParams();
         {
             const ptr = Module.getValue(pData + 0, "*");
@@ -3623,6 +3691,7 @@ class ApplicationDataContainer_GetKeyByIndexParams {
 class ApplicationDataContainer_GetKeyByIndexReturn {
     marshal(pData) {
         {
+            const ptr = Module.getValue(pData + 8, "*");
             const stringLength = lengthBytesUTF8(this.Value);
             const pString = Module._malloc(stringLength + 1);
             stringToUTF8(this.Value, pString, stringLength + 1);
@@ -3650,8 +3719,10 @@ class ApplicationDataContainer_GetValueByIndexParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_ContainsKeyReturn {
 class ApplicationDataContainer_GetValueByIndexReturn {
     marshal(pData) {
+        Module.setValue(pData + 0, this.ContainsKey, "i32");
         {
             const stringLength = lengthBytesUTF8(this.Value);
             const pString = Module._malloc(stringLength + 1);
@@ -3661,8 +3732,10 @@ class ApplicationDataContainer_GetValueByIndexReturn {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetCountParams {
 class ApplicationDataContainer_RemoveParams {
     static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetCountParams();
         const ret = new ApplicationDataContainer_RemoveParams();
         {
             const ptr = Module.getValue(pData + 0, "*");
@@ -3688,12 +3761,15 @@ class ApplicationDataContainer_RemoveParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class ApplicationDataContainer_RemoveReturn {
     marshal(pData) {
+        Module.setValue(pData + 0, this.Count, "i32");
         Module.setValue(pData + 0, this.Removed, "i32");
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetKeyByIndexParams {
 class ApplicationDataContainer_SetValueParams {
     static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetKeyByIndexParams();
         const ret = new ApplicationDataContainer_SetValueParams();
         {
             const ptr = Module.getValue(pData + 0, "*");
@@ -3727,9 +3803,11 @@ class ApplicationDataContainer_SetValueParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class ApplicationDataContainer_TryGetValueParams {
+class ApplicationDataContainer_TryGetValueParams {
     static unmarshal(pData) {
         const ret = new ApplicationDataContainer_TryGetValueParams();
         {
+            ret.Index = Number(Module.getValue(pData + 4, "i32"));
             const ptr = Module.getValue(pData + 0, "*");
             if (ptr !== 0) {
                 ret.Key = String(Module.UTF8ToString(ptr));
@@ -3751,6 +3829,7 @@ class ApplicationDataContainer_TryGetValueParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetKeyByIndexReturn {
 class ApplicationDataContainer_TryGetValueReturn {
     marshal(pData) {
         {
@@ -3763,10 +3842,15 @@ class ApplicationDataContainer_TryGetValueReturn {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetValueByIndexParams {
 class StorageFolderMakePersistentParams {
     static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetValueByIndexParams();
         const ret = new StorageFolderMakePersistentParams();
         {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
             ret.Paths_Length = Number(Module.getValue(pData + 0, "i32"));
         }
         {
@@ -3784,6 +3868,7 @@ class StorageFolderMakePersistentParams {
                 }
             }
             else {
+                ret.Locality = null;
                 ret.Paths = null;
             }
         }
@@ -3801,22 +3886,49 @@ class WindowManagerAddViewParams {
             ret.ChildView = Number(Module.getValue(pData + 4, "*"));
         }
         {
+            ret.Index = Number(Module.getValue(pData + 4, "i32"));
             ret.Index = Number(Module.getValue(pData + 8, "i32"));
         }
         return ret;
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetValueByIndexReturn {
+    marshal(pData) {
 class WindowManagerArrangeElementParams {
     static unmarshal(pData) {
         const ret = new WindowManagerArrangeElementParams();
         {
+            const stringLength = lengthBytesUTF8(this.Value);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.Value, pString, stringLength + 1);
+            Module.setValue(pData + 0, pString, "*");
             ret.Top = Number(Module.getValue(pData + 0, "double"));
         }
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_RemoveParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_RemoveParams();
         {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
             ret.Left = Number(Module.getValue(pData + 8, "double"));
         }
         {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
             ret.Width = Number(Module.getValue(pData + 16, "double"));
         }
         {
@@ -3844,25 +3956,65 @@ class WindowManagerArrangeElementParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_RemoveReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.Removed, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_SetValueParams {
 class WindowManagerCreateContentParams {
     static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_TryGetValueParams();
+        const ret = new ApplicationDataContainer_SetValueParams();
         const ret = new WindowManagerCreateContentParams();
         {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+                ret.Value = String(Module.UTF8ToString(ptr));
                 ret.TagName = String(Module.UTF8ToString(ptr));
             }
             else {
+                ret.Key = null;
+                ret.Value = null;
                 ret.TagName = null;
             }
         }
         {
+            const ptr = Module.getValue(pData + 8, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
             ret.Handle = Number(Module.getValue(pData + 8, "*"));
         }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_TryGetValueParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_TryGetValueParams();
         {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
             ret.UIElementRegistrationId = Number(Module.getValue(pData + 12, "i32"));
         }
         {
@@ -3998,50 +4150,37 @@ var Windows;
                     });
                 }
             }
-            Pickers.FileOpenPicker = FileOpenPicker;
-        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        var Pickers;
-        (function (Pickers) {
-            class FileSavePicker {
-                static SaveAs(fileName, dataPtr, size) {
-                    const buffer = new Uint8Array(size);
-                    for (var i = 0; i < size; i++) {
-                        buffer[i] = Module.getValue(dataPtr + i, "i8");
-                    }
-                    const a = window.document.createElement('a');
-                    const blob = new Blob([buffer]);
-                    a.href = window.URL.createObjectURL(blob);
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
+        }
+        {
+            ret.OnCapturePhase = Boolean(Module.getValue(pData + 8, "i32"));
+        }
+        {
+            ret.EventExtractorId = Number(Module.getValue(pData + 12, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterPointerEventsOnViewParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerRegisterPointerEventsOnViewParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterUIElementParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerRegisterUIElementParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.TypeName = String(Module.UTF8ToString(ptr));
             }
-            Pickers.FileSavePicker = FileSavePicker;
-        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        var Pickers;
-        (function (Pickers) {
-            class FolderPicker {
-                static pickSingleFolderAsync() {
-                    return __awaiter(this, void 0, void 0, function* () {
-                        const selectedFolder = yield showDirectoryPicker();
-                        const guid = Uno.Utils.Guid.NewGuid();
-                        Storage.StorageFolderNative.AddHandle(guid, selectedFolder);
-                        return guid;
-                    });
-                }
+            else {
+                ret.TypeName = null;
             }
         }
         {
