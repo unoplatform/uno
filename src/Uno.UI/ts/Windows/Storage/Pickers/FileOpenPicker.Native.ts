@@ -1,15 +1,15 @@
 ﻿namespace Windows.Storage.Pickers {
 
 	export class FileOpenPicker {
-		public static async pickFilesAsync(multiple: boolean, showAllEntry: boolean): Promise<string> {
+		public static async pickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypes: string): Promise<string> {
 
 			if (!showOpenFilePicker) {
-				return null;
+				return "";
 			}
 
 			const selectedFiles = await showOpenFilePicker({
 				multiple: multiple,
-				excludeAcceptAllOption: !showAllEntry
+				excludeAcceptAllOption: !showAllEntry				
 			});
 
 			var results = "";

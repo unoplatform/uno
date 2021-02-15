@@ -3815,10 +3815,10 @@ var Windows;
         var Pickers;
         (function (Pickers) {
             class FileOpenPicker {
-                static pickFilesAsync(multiple, showAllEntry) {
+                static pickFilesAsync(multiple, showAllEntry, fileTypes) {
                     return __awaiter(this, void 0, void 0, function* () {
                         if (!showOpenFilePicker) {
-                            return null;
+                            return "";
                         }
                         const selectedFiles = yield showOpenFilePicker({
                             multiple: multiple,

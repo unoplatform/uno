@@ -3,16 +3,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno;
 using Uno.Foundation;
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
-    {
+	{
 		private const string JsType = "Windows.Storage.Pickers.FileOpenPicker";
 		private const char SelectedFileGuidSeparator = ';';
+		private const char FileTypeSeparator = '/';
 
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
@@ -27,15 +30,13 @@ namespace Windows.Storage.Pickers
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
-			var showAllEntry = FileTypeFilter.Contains("*") ? "true" : "false";
+			var showAllEntryParameter = FileTypeFilter.Contains("*") ? "true" : "false";
 			var multipleParameter = multiple ? "true" : "false";
-			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickFilesAsync({multipleParameter},{showAllEntry})");
+			var fileTypeMapParameter = $"\"{BuildFileTypesMap()}\"";
+
+			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickFilesAsync({multipleParameter},{showAllEntryParameter},{fileTypeMapParameter})");
 			var guids = returnValue.Split(SelectedFileGuidSeparator);
 			return new FilePickerSelectedFilesArray(guids.Select(guid => StorageFile.GetFileFromNativePathAsync("", Guid.Parse(guid))).ToArray());
-			//if (returnValue is null)
-			//{
-				
-			//}
 
 			//if (!Guid.TryParse(returnValue, out var guid))
 			//{
@@ -43,6 +44,51 @@ namespace Windows.Storage.Pickers
 			//}
 
 			//return StorageFolder.GetFolderFromNativePathAsync("", guid);
+		}
+
+		private string BuildFileTypesMap()
+		{
+			var mimeTypeMap = new Dictionary<string, List<string>>();
+			foreach (var fileType in FileTypeFilter)
+			{
+				if (fileType == "*")
+				{
+					continue;
+				}
+
+				if (!WinRTFeatureConfiguration.FileTypes.FileTypeToMimeMapping.TryGetValue(fileType, out var mimeType))
+				{
+					mimeType = "unknown/unknown";
+				}
+
+				if (!mimeTypeMap.TryGetValue(mimeType, out var extensionList))
+				{
+					extensionList = new List<string>();
+					mimeTypeMap[mimeType] = extensionList;
+				}
+				extensionList.Add(fileType);
+			}
+
+			// Build JSON object with the extensions/MIME types
+			var builder = new StringBuilder();
+			builder.Append("{");
+			bool firstItem = true;
+			foreach (var mimeType in mimeTypeMap)
+			{
+				if (!firstItem)
+				{
+					builder.Append(",");
+				}
+				firstItem = false;
+
+				builder.Append("'");
+				builder.Append(mimeType.Key.Replace("'", "\'"));
+				builder.Append("':[");
+				builder.Append(string.Join(",", mimeType.Value.Select(extension => "'" + extension.Replace("'", "\'") + "'")));
+				builder.Append("]");
+			}
+			builder.Append("}");
+			return builder.ToString();
 		}
 	}
 }
