@@ -169,15 +169,11 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 14))
 			{
 				_picker.PreferredDatePickerStyle = FeatureConfiguration.DatePicker.UseLegacyStyle
 																			? UIDatePickerStyle.Wheels
 																			: UIDatePickerStyle.Inline;
-			}
-			else
-			{
-				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
 			}
 		}
 	}
