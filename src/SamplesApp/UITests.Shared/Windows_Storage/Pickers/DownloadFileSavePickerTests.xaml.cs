@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -6,26 +6,24 @@ using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
 
-namespace UITests.Shared.Windows_Storage.FilePickers
+namespace UITests.Windows_Storage.Pickers
 {
-	[SampleControlInfo("FilePickers", "FileSavePicker")]
-	public sealed partial class FileSavePickerTest : Page
-	{
+	[Sample("Windows.Storage")]
+    public sealed partial class DownloadFileSavePickerTests : Page
+    {
+        public DownloadFileSavePickerTests()
+        {
+            this.InitializeComponent();
+        }
+
 		private enum FileType
 		{
 			Txt,
 			Pdf,
 			Img
-		}
-
-		public FileSavePickerTest()
-		{
-			InitializeComponent();
 		}
 
 		private async void SavePdfButton_Click(object sender, RoutedEventArgs e) => await SaveFile(FileType.Pdf);
