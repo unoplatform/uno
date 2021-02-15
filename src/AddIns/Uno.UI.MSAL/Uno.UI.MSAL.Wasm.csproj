@@ -39,6 +39,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="tsconfig.json" />
+	  <Content Include="tsconfig.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
 	</ItemGroup>
 
