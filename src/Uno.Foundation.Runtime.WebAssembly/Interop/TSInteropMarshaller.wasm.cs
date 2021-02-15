@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿#nullable enable
+// #define TRACE_MEMORY_LAYOUT
+
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,93 +12,94 @@ using Uno.Foundation;
 
 namespace Uno.Foundation.Interop
 {
-	public static class TSInteropMarshaller 
+	internal static class TSInteropMarshaller
 	{
 		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(TSInteropMarshaller).Log());
 
 		public const UnmanagedType LPUTF8Str = (UnmanagedType)48;
 
-		public static void InvokeJS<TParam>(
+		public static void InvokeJS(
 			string methodName,
-			TParam paramStruct,
-			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
+			object paramStruct,
+			[System.Runtime.CompilerServices.CallerMemberName] string? memberName = null
 		)
 		{
-			var paramSize = MarshalSizeOf<TParam>.Size;
+			var paramStructType = paramStruct.GetType();
+			var paramSize = Marshal.SizeOf(paramStruct);
 
 			if (_logger.Value.IsEnabled(LogLevel.Trace))
 			{
-				_logger.Value.LogTrace($"InvokeJS for {memberName}/{typeof(TParam)} (Alloc: {paramSize})");
+				_logger.Value.LogTrace($"InvokeJS for {memberName}/{paramStructType} (Alloc: {paramSize})");
 			}
 
 			var pParms = Marshal.AllocHGlobal(paramSize);
 
-			DumpStructureLayout<TParam>();
+			DumpStructureLayout(paramStructType);
 
 			Marshal.StructureToPtr(paramStruct, pParms, false);
 
 			WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, out var exception);
 
-			Marshal.DestroyStructure(pParms, typeof(TParam));
+			Marshal.DestroyStructure(pParms, paramStructType);
 			Marshal.FreeHGlobal(pParms);
 
 			if (exception != null)
 			{
 				if (_logger.Value.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {exception}");
+					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{paramStructType}: {exception}");
 				}
 
 				throw exception;
 			}
 		}
 
-		public static TRet InvokeJS<TParam, TRet>(
+		public static object InvokeJS(
 			string methodName,
-			TParam paramStruct,
-			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
+			object paramStruct,
+			Type retStructType,
+			[System.Runtime.CompilerServices.CallerMemberName] string? memberName = null
 		)
 		{
-			var returnSize = MarshalSizeOf<TRet>.Size;
-			var paramSize = MarshalSizeOf<TParam>.Size;
+			var paramStructType = paramStruct.GetType();
+
+			var returnSize = Marshal.SizeOf(retStructType);
+			var paramSize = Marshal.SizeOf(paramStructType);
 
 			if (_logger.Value.IsEnabled(LogLevel.Trace))
 			{
-				_logger.Value.LogTrace($"InvokeJS for {memberName}/{typeof(TParam)}/{typeof(TRet)} (paramSize: {paramSize}, returnSize: {returnSize}");
+				_logger.Value.LogTrace($"InvokeJS for {memberName}/{paramStructType}/{retStructType} (paramSize: {paramSize}, returnSize: {returnSize}");
 			}
 
-			DumpStructureLayout<TParam>();
-			DumpStructureLayout<TRet>();
+			DumpStructureLayout(paramStructType);
+			DumpStructureLayout(retStructType);
 
 			var pParms = Marshal.AllocHGlobal(paramSize);
 			var pReturnValue = Marshal.AllocHGlobal(returnSize);
 
-			TRet returnValue = default;
-
 			try
 			{
 				Marshal.StructureToPtr(paramStruct, pParms, false);
-				Marshal.StructureToPtr(returnValue, pReturnValue, false);
 
 				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, pReturnValue);
 
-				returnValue = (TRet)Marshal.PtrToStructure(pReturnValue, typeof(TRet));
+				var returnValue = Marshal.PtrToStructure(pReturnValue, retStructType);
 				return returnValue;
 			}
 			catch (Exception e)
 			{
 				if (_logger.Value.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogDebug($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {e}");
+					_logger.Value.LogDebug($"Failed InvokeJS for {memberName}/{paramStructType}: {e}");
 				}
 				throw;
 			}
 			finally
 			{
-				Marshal.DestroyStructure(pParms, typeof(TParam));
+				Marshal.DestroyStructure(pParms, paramStructType);
 				Marshal.FreeHGlobal(pParms);
 
-				Marshal.DestroyStructure(pReturnValue, typeof(TRet));
+				Marshal.DestroyStructure(pReturnValue, retStructType);
 				Marshal.FreeHGlobal(pReturnValue);
 			}
 		}
@@ -105,32 +109,27 @@ namespace Uno.Foundation.Interop
 #endif
 
 		[Conditional("DEBUG")]
-		private static void DumpStructureLayout<T>()
+		private static void DumpStructureLayout(Type structType)
 		{
 #if TRACE_MEMORY_LAYOUT
-			if (typeof(T) == typeof(bool))
+			if (structType == typeof(bool))
 			{
 				return;
 			}
 
-			if (!_structureDump.Contains(typeof(T)))
+			if (!_structureDump.Contains(structType))
 			{
-				_structureDump.Add(typeof(T));
+				_structureDump.Add(structType);
 
-				Console.WriteLine($"Dumping offsets for {typeof(T)} (Size: {MarshalSizeOf<T>.Size})");
+				Console.WriteLine($"Dumping offsets for {structType} (Size: {Marshal.SizeOf(structType)})");
 
-				foreach (var field in typeof(T).GetFields())
+				foreach (var field in structType.GetFields())
 				{
-					var offset = Marshal.OffsetOf<T>(field.Name);
+					var offset = Marshal.OffsetOf(structType, field.Name);
 					Console.WriteLine($"  - {field.Name}: {offset}");
 				}
 			}
 #endif
-		}
-
-		private class MarshalSizeOf<T>
-		{
-			internal static readonly int Size = Marshal.SizeOf(typeof(T));
 		}
 	}
 }
