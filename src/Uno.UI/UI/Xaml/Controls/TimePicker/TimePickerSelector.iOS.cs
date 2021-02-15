@@ -1,6 +1,4 @@
-﻿#if XAMARIN_IOS
-
-using Foundation;
+﻿using Foundation;
 using System;
 using System.Linq;
 using UIKit;
@@ -175,4 +173,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif
