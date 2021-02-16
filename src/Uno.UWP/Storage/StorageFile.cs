@@ -61,98 +61,98 @@ namespace Windows.Storage
 
 		#region internal API (Task)
 		internal Task<StorageFolder> GetParent(CancellationToken ct)
-			=> _impl.GetParent(ct);
+			=> _impl.GetParentAsync(ct);
 
 		internal Task<BasicProperties> GetBasicProperties(CancellationToken ct)
-			=> _impl.GetBasicProperties(ct);
+			=> _impl.GetBasicPropertiesAsync(ct);
 
 		internal Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-			=> _impl.Open(ct, accessMode, options);
+			=> _impl.OpenAsync(ct, accessMode, options);
 
 		internal Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-			=> _impl.OpenStream(ct, accessMode, options);
+			=> _impl.OpenStreamAsync(ct, accessMode, options);
 
 		internal Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option)
-			=> _impl.OpenTransactedWrite(ct, option);
+			=> _impl.OpenTransactedWriteAsync(ct, option);
 
 		internal Task Delete(CancellationToken ct, StorageDeleteOption options)
-			=> _impl.Delete(ct, options);
+			=> _impl.DeleteAsync(ct, options);
 
 		internal Task Rename(CancellationToken ct, string desiredName, NameCollisionOption option)
-			=> _impl.Rename(ct, desiredName, option);
+			=> _impl.RenameAsync(ct, desiredName, option);
 
 		internal Task<StorageFile> Copy(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> _impl.Copy(ct, destinationFolder, desiredNewName, option);
+			=> _impl.CopyAsync(ct, destinationFolder, desiredNewName, option);
 
 		internal Task CopyAndReplace(CancellationToken ct, IStorageFile target)
-			=> _impl.CopyAndReplace(ct, target);
+			=> _impl.CopyAndReplaceAsync(ct, target);
 
 		internal Task Move(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> _impl.Move(ct, destinationFolder, desiredNewName, option);
+			=> _impl.MoveAsync(ct, destinationFolder, desiredNewName, option);
 
 		internal Task MoveAndReplace(CancellationToken ct, IStorageFile target)
-			=> _impl.MoveAndReplace(ct, target);
+			=> _impl.MoveAndReplaceAsync(ct, target);
 		#endregion
 
 		#region public API (IAsync<Action|Operation>)
 		public IAsyncOperation<StorageFolder> GetParentAsync()
-			=> AsyncOperation.FromTask(_impl.GetParent);
+			=> AsyncOperation.FromTask(_impl.GetParentAsync);
 
 		public IAsyncOperation<BasicProperties> GetBasicPropertiesAsync()
-			=> AsyncOperation.FromTask(_impl.GetBasicProperties);
+			=> AsyncOperation.FromTask(_impl.GetBasicPropertiesAsync);
 
 		public IAsyncOperation<IRandomAccessStreamWithContentType> OpenReadAsync()
-			=> AsyncOperation<IRandomAccessStreamWithContentType>.FromTask((ct, _) => _impl.Open(ct, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation<IRandomAccessStreamWithContentType>.FromTask((ct, _) => _impl.OpenAsync(ct, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters));
 
 		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode)
-			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.Open(ct, accessMode, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.OpenAsync(ct, accessMode, StorageOpenOptions.AllowReadersAndWriters));
 
 		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode, StorageOpenOptions options)
-			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.Open(ct, accessMode, options));
+			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.OpenAsync(ct, accessMode, options));
 
 		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync()
-			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWrite(ct, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWriteAsync(ct, StorageOpenOptions.AllowReadersAndWriters));
 
 		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
 		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync(StorageOpenOptions options)
-			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWrite(ct, options));
+			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWriteAsync(ct, options));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.Copy(ct, destinationFolder, global::System.IO.Path.GetFileName(Path), NameCollisionOption.FailIfExists));
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.CopyAsync(ct, destinationFolder, global::System.IO.Path.GetFileName(Path), NameCollisionOption.FailIfExists));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder, string desiredNewName)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.Copy(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.CopyAsync(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.Copy(ct, destinationFolder, desiredNewName, option));
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.CopyAsync(ct, destinationFolder, desiredNewName, option));
 
 		public IAsyncAction CopyAndReplaceAsync(IStorageFile fileToReplace)
-			=> AsyncAction.FromTask(ct => _impl.CopyAndReplace(ct, fileToReplace));
+			=> AsyncAction.FromTask(ct => _impl.CopyAndReplaceAsync(ct, fileToReplace));
 
 		public IAsyncAction RenameAsync(string desiredName)
-			=> AsyncAction.FromTask(ct => _impl.Rename(ct, desiredName, NameCollisionOption.FailIfExists));
+			=> AsyncAction.FromTask(ct => _impl.RenameAsync(ct, desiredName, NameCollisionOption.FailIfExists));
 
 		public IAsyncAction RenameAsync(string desiredName, NameCollisionOption option)
-			=> AsyncAction.FromTask(ct => _impl.Rename(ct, desiredName, option));
+			=> AsyncAction.FromTask(ct => _impl.RenameAsync(ct, desiredName, option));
 
 		public IAsyncAction MoveAsync(IStorageFolder destinationFolder)
-			=> AsyncAction.FromTask(ct => _impl.Move(ct, destinationFolder, Name, NameCollisionOption.FailIfExists));
+			=> AsyncAction.FromTask(ct => _impl.MoveAsync(ct, destinationFolder, Name, NameCollisionOption.FailIfExists));
 
 		public IAsyncAction MoveAsync(IStorageFolder destinationFolder, string desiredNewName)
-			=> AsyncAction.FromTask(ct => _impl.Move(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
+			=> AsyncAction.FromTask(ct => _impl.MoveAsync(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
 
 		public IAsyncAction MoveAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> AsyncAction.FromTask(ct => _impl.Move(ct, destinationFolder, desiredNewName, option));
+			=> AsyncAction.FromTask(ct => _impl.MoveAsync(ct, destinationFolder, desiredNewName, option));
 
 		public IAsyncAction MoveAndReplaceAsync(IStorageFile fileToReplace)
-			=> AsyncAction.FromTask(ct => _impl.MoveAndReplace(ct, fileToReplace));
+			=> AsyncAction.FromTask(ct => _impl.MoveAndReplaceAsync(ct, fileToReplace));
 
 		public IAsyncAction DeleteAsync()
-			=> AsyncAction.FromTask(ct => _impl.Delete(ct, StorageDeleteOption.Default));
+			=> AsyncAction.FromTask(ct => _impl.DeleteAsync(ct, StorageDeleteOption.Default));
 
 		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
 		public IAsyncAction DeleteAsync(StorageDeleteOption option)
-			=> AsyncAction.FromTask(ct => _impl.Delete(ct, option));
+			=> AsyncAction.FromTask(ct => _impl.DeleteAsync(ct, option));
 		#endregion
 
 #if false

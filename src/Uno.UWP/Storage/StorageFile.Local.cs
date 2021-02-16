@@ -22,25 +22,25 @@ namespace Windows.Storage
 			protected override bool IsEqual(ImplementationBase impl)
 				=> impl is Local other && Path.Equals(other.Path);
 
-			public override async Task<StorageFolder> GetParent(CancellationToken ct)
+			public override async Task<StorageFolder> GetParentAsync(CancellationToken ct)
 				=> new StorageFolder(global::System.IO.Path.GetDirectoryName(Path));
 
-			public override async Task<BasicProperties> GetBasicProperties(CancellationToken ct)
+			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 				=> new BasicProperties(Owner);
 
-			public override async Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 				=> new RandomAccessStreamWithContentType(new FileRandomAccessStream(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
 
-			public override async Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 				=> File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));
 
-			public override async Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option)
+			public override async Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option)
 				=> new StorageStreamTransaction(Owner, ToFileShare(option));
 
-			public override async Task Delete(CancellationToken ct, StorageDeleteOption options)
+			public override async Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
 				=> File.Delete(Path);
 
-			public override async Task CopyAndReplace(CancellationToken ct, IStorageFile target)
+			public override async Task CopyAndReplaceAsync(CancellationToken ct, IStorageFile target)
 			{
 				switch (target)
 				{
@@ -49,12 +49,12 @@ namespace Windows.Storage
 						break;
 
 					default:
-						await base.CopyAndReplace(ct, target);
+						await base.CopyAndReplaceAsync(ct, target);
 						break;
 				}
 			}
 
-			public override async Task MoveAndReplace(CancellationToken ct, IStorageFile target)
+			public override async Task MoveAndReplaceAsync(CancellationToken ct, IStorageFile target)
 			{
 				switch (target)
 				{
@@ -65,7 +65,7 @@ namespace Windows.Storage
 						break;
 
 					default:
-						await base.MoveAndReplace(ct, target);
+						await base.MoveAndReplaceAsync(ct, target);
 						break;
 				}
 			}

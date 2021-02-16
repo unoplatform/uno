@@ -38,21 +38,21 @@ namespace Windows.Storage
 
 			public override string ContentType => _contentType;
 
-			public override DateTimeOffset DateCreated => throw new NotSupportedException("IsEqual is currently not supported on WASM native file system.");
+			public override DateTimeOffset DateCreated => throw NotImplemented();
 
-			protected override bool IsEqual(ImplementationBase impl) => throw new NotSupportedException("IsEqual is currently not supported on WASM native file system.");
+			protected override bool IsEqual(ImplementationBase impl) => throw NotImplemented();
 
-			public override Task<StorageFolder> GetParent(CancellationToken ct) => throw new NotImplementedException();
+			public override Task<StorageFolder> GetParentAsync(CancellationToken ct) => throw NotImplemented();
 
-			public override Task<BasicProperties> GetBasicProperties(CancellationToken ct) => throw new NotImplementedException();
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) => throw NotImplemented();
 
-			public override Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => base.OpenStream(ct, accessMode, options);
+			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => base.OpenStreamAsync(ct, accessMode, options);
 
-			public override Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw new NotImplementedException();
+			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw NotImplemented();
 
-			public override Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
+			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw NotImplemented();
 
-			public override Task Delete(CancellationToken ct, StorageDeleteOption options) => throw new NotImplementedException();
+			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options) => throw NotImplemented();
 		}
 	}
 }
