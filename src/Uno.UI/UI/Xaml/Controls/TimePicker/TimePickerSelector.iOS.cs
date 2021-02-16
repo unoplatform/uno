@@ -1,5 +1,3 @@
-#if XAMARIN_IOS
-
 using Foundation;
 using System;
 using System.Linq;
@@ -162,17 +160,12 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 14))
 			{
 				_picker.PreferredDatePickerStyle = FeatureConfiguration.TimePicker.UseLegacyStyle
 																			? UIDatePickerStyle.Wheels
 																			: UIDatePickerStyle.Inline;
 			}
-			else
-			{
-				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
-			}
 		}
 	}
 }
-#endif
