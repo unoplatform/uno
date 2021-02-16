@@ -1,11 +1,14 @@
 ﻿// MUX reference NavigationViewItem.cpp, commit 4fe1fd5
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using Windows.Devices.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -444,11 +447,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (isSelected)
 					{
-						if (m_isPressed)
+						if (m_isPressed && !_uno_isDefferingPressedState)
 						{
 							return c_pressedSelected;
 						}
-						else if (m_isPointerOver)
+						else if (m_isPointerOver && !_uno_isDefferingOverState)
 						{
 							return c_pointerOverSelected;
 						}
@@ -457,9 +460,9 @@ namespace Microsoft.UI.Xaml.Controls
 							return c_selected;
 						}
 					}
-					else if (m_isPointerOver)
+					else if (m_isPointerOver && !_uno_isDefferingOverState)
 					{
-						if (m_isPressed)
+						if (m_isPressed && !_uno_isDefferingPressedState)
 						{
 							return c_pressed;
 						}
@@ -468,7 +471,7 @@ namespace Microsoft.UI.Xaml.Controls
 							return c_pointerOver;
 						}
 					}
-					else if (m_isPressed)
+					else if (m_isPressed && !_uno_isDefferingPressedState)
 					{
 						return c_pressed;
 					}
@@ -825,6 +828,9 @@ namespace Microsoft.UI.Xaml.Controls
 				m_capturedPointer = pointer;
 			}
 
+			_uno_isDefferingPressedState = true;
+			DeferUpdateVisualStateForPointer();
+
 			UpdateVisualState(true);
 		}
 
@@ -854,6 +860,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnPresenterPointerEntered(object sender, PointerRoutedEventArgs args)
 		{
+			_uno_isDefferingOverState = args.Pointer.PointerDeviceType != PointerDeviceType.Mouse;
+			DeferUpdateVisualStateForPointer();
+
 			ProcessPointerOver(args);
 		}
 
@@ -926,6 +935,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+
+			_uno_isDefferingPressedState = false;
+			_uno_isDefferingOverState = false;
+			_uno_pointerDeferring?.Stop();
 
 			m_isPressed = false;
 			m_isPointerOver = false;
