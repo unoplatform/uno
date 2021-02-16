@@ -17,7 +17,7 @@
 				var mimeType = property;
 				var extensions = fileTypes[property];
 				var acceptType: FilePickerAcceptType = {
-					description: "",
+					description: extensions.length > 1 ? "" : extensions[0],
 					accept: {
 						[mimeType]: extensions
 					}
@@ -29,9 +29,12 @@
 
 			var results = "";
 			for (var i = 0; i < selectedFiles.length; i++) {
-				const guid = Uno.Utils.Guid.NewGuid();
+				const guid = Uno.Storage.NativeStorageItem.generateGuid();
 				StorageFileNative.AddHandle(guid, selectedFiles[i]);
-				results = results + guid + ";";
+				const fileInfo = await selectedFiles[i].getFile();
+				const name = fileInfo.name;
+				const contentType = fileInfo.type;
+				results += guid + "\\" + name + "\\" + contentType + "\\\\";
 			}
 
 			return results;

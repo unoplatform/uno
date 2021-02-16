@@ -2806,6 +2806,21 @@ var Windows;
         Storage.AssetManager = AssetManager;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+var Uno;
+(function (Uno) {
+    var Storage;
+    (function (Storage) {
+        class NativeStorageItem {
+            static generateGuid() {
+                if (!NativeStorageItem.generateGuidBinding) {
+                    NativeStorageItem.generateGuidBinding = Module.mono_bind_static_method("[Uno] Uno.Storage.NativeStorageItem:GenerateGuid");
+                }
+                return NativeStorageItem.generateGuidBinding();
+            }
+        }
+        Storage.NativeStorageItem = NativeStorageItem;
+    })(Storage = Uno.Storage || (Uno.Storage = {}));
+})(Uno || (Uno = {}));
 var Windows;
 (function (Windows) {
     var Storage;
@@ -2986,7 +3001,7 @@ var Windows;
                         var mimeType = property;
                         var extensions = fileTypes[property];
                         var acceptType = {
-                            description: "",
+                            description: extensions.length > 1 ? "" : extensions[0],
                             accept: {
                                 [mimeType]: extensions
                             }
@@ -2996,9 +3011,12 @@ var Windows;
                     const selectedFiles = await showOpenFilePicker(options);
                     var results = "";
                     for (var i = 0; i < selectedFiles.length; i++) {
-                        const guid = Uno.Utils.Guid.NewGuid();
+                        const guid = Uno.Storage.NativeStorageItem.generateGuid();
                         Storage.StorageFileNative.AddHandle(guid, selectedFiles[i]);
-                        results = results + guid + ";";
+                        const fileInfo = await selectedFiles[i].getFile();
+                        const name = fileInfo.name;
+                        const contentType = fileInfo.type;
+                        results += guid + "\\" + name + "\\" + contentType + "\\\\";
                     }
                     return results;
                 }

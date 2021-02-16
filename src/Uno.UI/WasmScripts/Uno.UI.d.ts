@@ -872,6 +872,12 @@ declare namespace Windows.Storage {
         static DownloadAsset(path: string): Promise<string>;
     }
 }
+declare namespace Uno.Storage {
+    class NativeStorageItem {
+        private static generateGuidBinding;
+        static generateGuid(): string;
+    }
+}
 declare namespace Windows.Storage {
     class StorageFileNative {
         private static _fileMap;

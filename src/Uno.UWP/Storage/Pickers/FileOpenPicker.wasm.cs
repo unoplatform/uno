@@ -6,17 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno;
 using Uno.Foundation;
-using Uno.Storage.Pickers;
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
 		private const string JsType = "Windows.Storage.Pickers.FileOpenPicker";
-		private const char SelectedFileGuidSeparator = ';';
-		private const char FileTypeSeparator = '/';
+		private const string FileSeparator = "\\\\";
+		private const char FileInfoSeparator = '\\';
 
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
@@ -36,15 +34,18 @@ namespace Windows.Storage.Pickers
 			var fileTypeMapParameter = BuildFileTypesMap();
 
 			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickFilesAsync({multipleParameter},{showAllEntryParameter},{fileTypeMapParameter})");
-			var guids = returnValue.Split(SelectedFileGuidSeparator);
-			return new FilePickerSelectedFilesArray(guids.Select(guid => StorageFile.GetFileFromNativePathAsync("", Guid.Parse(guid))).ToArray());
-
-			//if (!Guid.TryParse(returnValue, out var guid))
-			//{
-			//	throw new InvalidOperationException("GUID could not be parsed");
-			//}
-
-			//return StorageFolder.GetFolderFromNativePathAsync("", guid);
+			var files = returnValue.Split(new string[] { FileSeparator }, StringSplitOptions.RemoveEmptyEntries);
+			var results = new List<StorageFile>();
+			foreach (var file in files)
+			{
+				var fileInfoParts = file.Split(FileInfoSeparator);
+				Guid.TryParse(fileInfoParts[0], out var guid);
+				var name = fileInfoParts[1];
+				var contentType = fileInfoParts[2];
+				var storageFile = StorageFile.GetFileFromNativePathAsync(guid, name, contentType);
+				results.Add(storageFile);
+			}
+			return new FilePickerSelectedFilesArray(results.ToArray());
 		}
 
 		private string BuildFileTypesMap()
@@ -57,7 +58,7 @@ namespace Windows.Storage.Pickers
 					continue;
 				}
 
-				var mimeType = MimeTypeMapping.GetMimeType(fileType) ?? "unknown/unknown";
+				var mimeType = MimeTypeService.GetFromExtension(fileType);
 
 				if (!mimeTypeMap.TryGetValue(mimeType, out var extensionList))
 				{
@@ -67,7 +68,7 @@ namespace Windows.Storage.Pickers
 				extensionList.Add(fileType);
 			}
 
-			if (mimeTypeMap.Count== 0)
+			if (mimeTypeMap.Count == 0)
 			{
 				return "{}";
 			}

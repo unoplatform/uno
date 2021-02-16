@@ -53,10 +53,22 @@
             <ListView Height="120" ItemsSource="{x:Bind ViewModel.PickedFiles, Mode=OneWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="storage:StorageFile">
-                        <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Vertical" BorderThickness="0,0,0,1" BorderBrush="#333" Padding="4">
                             <TextBlock>
-                                <Run Text="File name: " />
+                                <Run Text="Display name: " />
                                 <Run Text="{x:Bind DisplayName, Mode=OneWay}" />
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="Name: " />
+                                <Run Text="{x:Bind Name, Mode=OneWay}" />
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="File type: " />
+                                <Run Text="{x:Bind FileType, Mode=OneWay}" />
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="Content type: " />
+                                <Run Text="{x:Bind ContentType, Mode=OneWay}" />
                             </TextBlock>
                             <TextBlock>
                                 <Run Text="File path: " />
