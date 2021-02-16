@@ -41,7 +41,7 @@ namespace Windows.Storage
 				Paths_Length = folders.Length
 			};
 
-			TSInteropMarshaller.InvokeJS<StorageFolderMakePersistentParams>("UnoStatic_Windows_Storage_StorageFolder:makePersistent", parms);
+			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_StorageFolder:makePersistent", parms);
 		}
 
 		[TSInteropMessage]

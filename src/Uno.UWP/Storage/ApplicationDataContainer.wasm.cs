@@ -217,7 +217,7 @@ namespace Windows.Storage
 				Locality = locality.ToStringInvariant()
 			};
 
-			var ret = TSInteropMarshaller.InvokeJS<ApplicationDataContainer_TryGetValueParams, ApplicationDataContainer_TryGetValueReturn>("UnoStatic_Windows_Storage_ApplicationDataContainer:tryGetValue", parms);
+			var ret = (ApplicationDataContainer_TryGetValueReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:tryGetValue", parms, typeof(ApplicationDataContainer_TryGetValueReturn));
 
 			value = ret.Value;
 
@@ -251,7 +251,7 @@ namespace Windows.Storage
 				Locality = locality.ToStringInvariant()
 			};
 
-			TSInteropMarshaller.InvokeJS<ApplicationDataContainer_SetValueParams>("UnoStatic_Windows_Storage_ApplicationDataContainer:setValue", parms);
+			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:setValue", parms);
 		}
 
 		[TSInteropMessage]
@@ -274,7 +274,7 @@ namespace Windows.Storage
 				Locality = locality.ToStringInvariant()
 			};
 
-			var ret = TSInteropMarshaller.InvokeJS<ApplicationDataContainer_ContainsKeyParams, ApplicationDataContainer_ContainsKeyReturn>("UnoStatic_Windows_Storage_ApplicationDataContainer:containsKey", parms);
+			var ret = (ApplicationDataContainer_ContainsKeyReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:containsKey", parms, typeof(ApplicationDataContainer_ContainsKeyReturn));
 			return ret.ContainsKey;
 		}
 
@@ -304,7 +304,7 @@ namespace Windows.Storage
 				Index = index
 			};
 
-			var ret = TSInteropMarshaller.InvokeJS<ApplicationDataContainer_GetKeyByIndexParams, ApplicationDataContainer_GetKeyByIndexReturn>("UnoStatic_Windows_Storage_ApplicationDataContainer:getKeyByIndex", parms);
+			var ret = (ApplicationDataContainer_GetKeyByIndexReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getKeyByIndex", parms, typeof(ApplicationDataContainer_GetKeyByIndexReturn));
 			return ret.Value;
 		}
 
@@ -333,7 +333,7 @@ namespace Windows.Storage
 				Locality = locality.ToStringInvariant()
 			};
 
-			var ret = TSInteropMarshaller.InvokeJS<ApplicationDataContainer_GetCountParams, ApplicationDataContainer_GetCountReturn>("UnoStatic_Windows_Storage_ApplicationDataContainer:getCount", parms);
+			var ret = (ApplicationDataContainer_GetCountReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getCount", parms, typeof(ApplicationDataContainer_GetCountReturn));
 			return ret.Count;
 		}
 
@@ -383,7 +383,7 @@ namespace Windows.Storage
 				Key = key
 			};
 
-			var ret = TSInteropMarshaller.InvokeJS<ApplicationDataContainer_RemoveParams, ApplicationDataContainer_RemoveReturn>("UnoStatic_Windows_Storage_ApplicationDataContainer:remove", parms);
+			var ret = (ApplicationDataContainer_RemoveReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:remove", parms, typeof(ApplicationDataContainer_RemoveReturn));
 			return ret.Removed;
 		}
 
@@ -414,7 +414,7 @@ namespace Windows.Storage
 				Index = index
 			};
 
-			var ret = TSInteropMarshaller.InvokeJS<ApplicationDataContainer_GetValueByIndexParams, ApplicationDataContainer_GetValueByIndexReturn>("UnoStatic_Windows_Storage_ApplicationDataContainer:getValueByIndex", parms);
+			var ret = (ApplicationDataContainer_GetValueByIndexReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getValueByIndex", parms, typeof(ApplicationDataContainer_GetValueByIndexReturn));
 			return ret.Value;
 		}
 
