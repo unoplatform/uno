@@ -7,18 +7,23 @@ using Windows.Foundation;
 namespace Windows.Storage.Pickers
 {
 	/// <summary>
-	/// Represents a file picker that lets the user choose the file name, extension, and storage location for a file.
+	/// Represents a UI element that lets the user choose folders.
 	/// </summary>
-	public partial class FileSavePicker
-	{
+	public partial class FolderPicker
+    {
 		private string _suggestedFileName = string.Empty;
 		private string _settingsIdentifier = string.Empty;
 		private string _commitButtonText = string.Empty;
 
 		/// <summary>
-		/// Gets the collection of valid file types that the user can choose to assign to a file.
+		/// Gets the collection of file types that the folder picker displays.
 		/// </summary>
-		public IDictionary<string, IList<string>> FileTypeChoices { get; } = new FilePickerFileTypesOrderedMap();
+		public IList<string> FileTypeFilter { get; } = new FileExtensionVector();
+
+		/// <summary>
+		/// Gets or sets the view mode that the folder picker uses to display items.
+		/// </summary>
+		public PickerViewMode ViewMode { get; set; } = PickerViewMode.List;
 
 		/// <summary>
 		/// Gets or sets the location that the file save picker suggests to the user as the location to save a file.
@@ -44,11 +49,6 @@ namespace Windows.Storage.Pickers
 		}
 
 		/// <summary>
-		/// Gets or sets the storageFile that the file picker suggests to the user for saving a file.
-		/// </summary>
-		public StorageFile? SuggestedSaveFile { get; set; }
-
-		/// <summary>
 		/// Gets or sets the label text of the commit button in the file picker UI.
 		/// </summary>
 		public string CommitButtonText
@@ -58,7 +58,7 @@ namespace Windows.Storage.Pickers
 		}
 
 #if __SKIA__ || __MACOS__ || __WASM__
-		public FileSavePicker()
+		public FolderPicker()
 		{
 			InitializePlatform();
 		}
@@ -66,15 +66,12 @@ namespace Windows.Storage.Pickers
 		partial void InitializePlatform();
 
 		/// <summary>
-		/// Shows the file picker so that the user can save a file and set the file name, extension, and location of the file to be saved.
+		/// Shows the folderPicker object so that the user can pick a folder.
 		/// </summary>
-		/// <returns>
-		/// When the call to this method completes successfully, it returns a <see cref="StorageFile"/> object that was created to represent the saved file.
-		/// The file name, extension, and location of this <see cref="StorageFile"/> match those specified by the user, but the file has no content.
-		/// To save the content of the file, your app must write the content to this <see cref="StorageFile"/>.
-		/// </returns>
-		public IAsyncOperation<StorageFile?> PickSaveFileAsync() =>
-			AsyncOperation.FromTask(cancellationToken => PickSaveFileTaskAsync(cancellationToken));
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFolder"/>
+		/// object that represents the folder that the user picked.</returns>
+		public IAsyncOperation<StorageFolder?> PickSingleFolderAsync() =>
+			AsyncOperation.FromTask(cancellationToken => PickSingleFolderTaskAsync(cancellationToken));
 #endif
 	}
 }
