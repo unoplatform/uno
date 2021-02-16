@@ -307,8 +307,8 @@ namespace Uno.UI.DataBinding
 						break;
 
 					case '[' when isInItemIndex:
-						// Note: We use 'start = i' here for 'TryPrependItem' as we include the brackets for itemIndex properties
-						TryPrependItem(path, i, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						// Note: We use 'start = i' and '++propertyLength' here for 'TryPrependItem' as we include the brackets for itemIndex properties
+						TryPrependItem(path, i, ++propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
 						isInItemIndex = false;
 						propertyLength = 0;
 						break;
