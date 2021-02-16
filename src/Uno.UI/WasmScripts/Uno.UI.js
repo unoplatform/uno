@@ -3054,7 +3054,6 @@ var Windows;
                             description: "All"
                         });
                     }
-                    return results;
                 }
             }
             Pickers.FileOpenPicker = FileOpenPicker;
