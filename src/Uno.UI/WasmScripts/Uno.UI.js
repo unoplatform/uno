@@ -2838,6 +2838,15 @@ var Windows;
                 return StorageFileNative._fileMap.get(guid);
                 return NativeStorageFile._fileMap.get(guid);
             }
+            static async getBasicPropertiesAsync(guid) {
+                const handle = StorageFileNative._fileMap.get(guid);
+                var file = await handle.getFile();
+                var propertyString = "";
+                propertyString += file.size;
+                propertyString += "|";
+                propertyString += file.lastModified;
+                return propertyString;
+            }
         }
         StorageFileNative._fileMap = new Map();
         Storage.StorageFileNative = StorageFileNative;

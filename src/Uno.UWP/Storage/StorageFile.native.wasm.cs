@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Foundation;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using SystemPath = global::System.IO.Path;
@@ -44,7 +45,21 @@ namespace Windows.Storage
 
 			public override Task<StorageFolder> GetParentAsync(CancellationToken ct) => throw NotImplemented();
 
-			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) => throw NotImplemented();
+			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
+			{
+				var basicPropertiesString = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getBasicPropertiesAsync(\"{_id}\")");
+				var parts = basicPropertiesString.Split('|');
+
+				ulong.TryParse(parts[0], out ulong size);
+
+				var dateTimeModified = DateTimeOffset.UtcNow;
+				if (long.TryParse(parts[0], out var dateModifiedUnixMilliseconds))
+				{
+					dateTimeModified = DateTimeOffset.FromUnixTimeMilliseconds(dateModifiedUnixMilliseconds);
+				}
+
+				return new BasicProperties(size, dateTimeModified);
+			}
 
 			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => base.OpenStreamAsync(ct, accessMode, options);
 

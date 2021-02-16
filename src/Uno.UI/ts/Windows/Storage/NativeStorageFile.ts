@@ -15,5 +15,15 @@ namespace Windows.Storage {
 		public static GetHandle(guid: string): FileSystemFileHandle {
 			return NativeStorageFile._fileMap.get(guid);
 		}
+
+		public static async getBasicPropertiesAsync(guid: string) : Promise<string> {
+			const handle = StorageFileNative._fileMap.get(guid);
+			var file = await handle.getFile();
+			var propertyString = "";
+			propertyString += file.size;
+			propertyString += "|";
+			propertyString += file.lastModified;
+			return propertyString;
+		}
 	}
 }

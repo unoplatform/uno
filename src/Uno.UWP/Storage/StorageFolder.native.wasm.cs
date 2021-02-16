@@ -29,7 +29,7 @@ namespace Windows.Storage
 						throw new FileNotFoundException("The filename, directory name, or volume label syntax is incorrect.", folderName);
 					}
 
-					var folderHandleGuidString = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.CreateFolderAsync(\"{_id}\", \"{folderName}\")");
+					var folderHandleGuidString = await WebAssemblyRuntime.InvokeAsync($"{JsType}.CreateFolderAsync(\"{_id}\", \"{folderName}\")");
 
 					var guid = new Guid(folderHandleGuidString);
 
@@ -49,7 +49,7 @@ namespace Windows.Storage
 						throw new ArgumentException("The path cannot be in Uri format (for example, /Assets). Check the value of name.", nameof(name));
 					}
 
-					var folderHandleGuidString = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.GetFolderAsync(\"{_id}\", \"{name}\")");
+					var folderHandleGuidString = await WebAssemblyRuntime.InvokeAsync($"{JsType}.GetFolderAsync(\"{_id}\", \"{name}\")");
 
 					if(folderHandleGuidString == "notfound")
 					{

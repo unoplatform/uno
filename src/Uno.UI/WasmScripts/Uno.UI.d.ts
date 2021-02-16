@@ -878,6 +878,7 @@ declare namespace Windows.Storage {
         static AddHandle(guid: string, handle: FileSystemFileHandle): void;
         static RemoveHandle(guid: string): void;
         static GetHandle(guid: string): FileSystemFileHandle;
+        static getBasicPropertiesAsync(guid: string): Promise<string>;
     }
 }
 declare namespace Windows.Storage {
