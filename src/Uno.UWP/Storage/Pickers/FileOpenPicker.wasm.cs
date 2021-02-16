@@ -39,10 +39,13 @@ namespace Windows.Storage.Pickers
 			foreach (var file in files)
 			{
 				var fileInfoParts = file.Split(FileInfoSeparator);
-				Guid.TryParse(fileInfoParts[0], out var guid);
+				if (!Guid.TryParse(fileInfoParts[0], out var guid))
+				{
+					throw new InvalidOperationException("Selected file ID is not valid.");
+				}
 				var name = fileInfoParts[1];
 				var contentType = fileInfoParts[2];
-				var storageFile = StorageFile.GetFileFromNativePathAsync(guid, name, contentType);
+				var storageFile = StorageFile.GetFileFromNativePath(guid, name, contentType);
 				results.Add(storageFile);
 			}
 			return new FilePickerSelectedFilesArray(results.ToArray());

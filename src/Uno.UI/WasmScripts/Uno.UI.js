@@ -2806,6 +2806,80 @@ var Windows;
         Storage.AssetManager = AssetManager;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class NativeStorageFile {
+            static AddHandle(guid, handle) {
+                NativeStorageFile._fileMap.set(guid, handle);
+            }
+            static RemoveHandle(guid) {
+                NativeStorageFile._fileMap.delete(guid);
+            }
+            static GetHandle(guid) {
+                return NativeStorageFile._fileMap.get(guid);
+            }
+        }
+        NativeStorageFile._fileMap = new Map();
+        Storage.NativeStorageFile = NativeStorageFile;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class NativeStorageFolder {
+            static AddHandle(guid, handle) {
+                NativeStorageFolder._folderMap.set(guid, handle);
+            }
+            static RemoveHandle(guid) {
+                NativeStorageFolder._folderMap.delete(guid);
+            }
+            static GetHandle(guid) {
+                return NativeStorageFolder._folderMap.get(guid);
+            }
+            /**
+             * Creates a new folder inside another folder.
+             * @param parentGuid The GUID of the folder to create in.
+             * @param folderName The name of the new folder.
+             */
+            static async CreateFolderAsync(parentGuid, folderName) {
+                const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
+                const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
+                    create: true,
+                });
+                var guid = Uno.Utils.Guid.NewGuid();
+                NativeStorageFolder.AddHandle(guid, newDirectoryHandle);
+                return guid;
+            }
+            /**
+             * Gets a folder in the given parent folder by name.
+             * @param parentGuid The GUID of the parent folder to get.
+             * @param folderName The name of the folder to look for.
+             * @returns A GUID of the folder if found, otherwise "notfound" literal.
+             */
+            static async GetFolderAsync(parentGuid, folderName) {
+                const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
+                let nestedDirectoryHandle = undefined;
+                let returnedGuid = Uno.Utils.Guid.NewGuid();
+                try {
+                    nestedDirectoryHandle = await parentHandle.getDirectoryHandle(folderName);
+                }
+                catch (ex) {
+                    if (ex instanceof DOMException && ex.message.includes("could not be found")) {
+                        returnedGuid = "notfound";
+                    }
+                }
+                if (nestedDirectoryHandle)
+                    NativeStorageFolder.AddHandle(returnedGuid, nestedDirectoryHandle);
+                return returnedGuid;
+            }
+        }
+        NativeStorageFolder._folderMap = new Map();
+        Storage.NativeStorageFolder = NativeStorageFolder;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
 var Uno;
 (function (Uno) {
     var Storage;
@@ -2821,80 +2895,6 @@ var Uno;
         Storage.NativeStorageItem = NativeStorageItem;
     })(Storage = Uno.Storage || (Uno.Storage = {}));
 })(Uno || (Uno = {}));
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        class StorageFileNative {
-            static AddHandle(guid, handle) {
-                StorageFileNative._fileMap.set(guid, handle);
-            }
-            static RemoveHandle(guid) {
-                StorageFileNative._fileMap.delete(guid);
-            }
-            static GetHandle(guid) {
-                return StorageFileNative._fileMap.get(guid);
-            }
-        }
-        StorageFileNative._fileMap = new Map();
-        Storage.StorageFileNative = StorageFileNative;
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        class StorageFolderNative {
-            static AddHandle(guid, handle) {
-                StorageFolderNative._folderMap.set(guid, handle);
-            }
-            static RemoveHandle(guid) {
-                StorageFolderNative._folderMap.delete(guid);
-            }
-            static GetHandle(guid) {
-                return StorageFolderNative._folderMap.get(guid);
-            }
-            /**
-             * Creates a new folder inside another folder.
-             * @param parentGuid The GUID of the folder to create in.
-             * @param folderName The name of the new folder.
-             */
-            static async CreateFolderAsync(parentGuid, folderName) {
-                const parentHandle = StorageFolderNative.GetHandle(parentGuid);
-                const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
-                    create: true,
-                });
-                var guid = Uno.Utils.Guid.NewGuid();
-                StorageFolderNative.AddHandle(guid, newDirectoryHandle);
-                return guid;
-            }
-            /**
-             * Gets a folder in the given parent folder by name.
-             * @param parentGuid The GUID of the parent folder to get.
-             * @param folderName The name of the folder to look for.
-             * @returns A GUID of the folder if found, otherwise "notfound" literal.
-             */
-            static async GetFolderAsync(parentGuid, folderName) {
-                const parentHandle = StorageFolderNative.GetHandle(parentGuid);
-                let nestedDirectoryHandle = undefined;
-                let returnedGuid = Uno.Utils.Guid.NewGuid();
-                try {
-                    nestedDirectoryHandle = await parentHandle.getDirectoryHandle(folderName);
-                }
-                catch (ex) {
-                    if (ex instanceof DOMException && ex.message.includes("could not be found")) {
-                        returnedGuid = "notfound";
-                    }
-                }
-                if (nestedDirectoryHandle)
-                    StorageFolderNative.AddHandle(returnedGuid, nestedDirectoryHandle);
-                return returnedGuid;
-            }
-        }
-        StorageFolderNative._folderMap = new Map();
-        Storage.StorageFolderNative = StorageFolderNative;
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Windows;
 (function (Windows) {
@@ -2992,33 +2992,48 @@ var Windows;
                     if (!showOpenFilePicker) {
                         return "";
                     }
-                    var options = {
+                    const options = {
                         multiple: multiple,
                         excludeAcceptAllOption: !showAllEntry,
-                        types: []
+                        types: [],
                     };
+                    var fullAccept = {};
                     for (var property in fileTypes) {
-                        var mimeType = property;
-                        var extensions = fileTypes[property];
-                        var acceptType = {
-                            description: extensions.length > 1 ? "" : extensions[0],
+                        const mimeType = property;
+                        const extensions = fileTypes[property];
+                        const acceptType = {
                             accept: {
                                 [mimeType]: extensions
-                            }
+                            },
+                            description: extensions.length > 1 ? "" : extensions[0],
                         };
+                        fullAccept[mimeType] = extensions;
                         options.types.push(acceptType);
                     }
-                    const selectedFiles = await showOpenFilePicker(options);
-                    var results = "";
-                    for (var i = 0; i < selectedFiles.length; i++) {
-                        const guid = Uno.Storage.NativeStorageItem.generateGuid();
-                        Storage.StorageFileNative.AddHandle(guid, selectedFiles[i]);
-                        const fileInfo = await selectedFiles[i].getFile();
-                        const name = fileInfo.name;
-                        const contentType = fileInfo.type;
-                        results += guid + "\\" + name + "\\" + contentType + "\\\\";
+                    if (fileTypes.length > 1) {
+                        options.types.unshift({
+                            accept: fullAccept,
+                            description: "All"
+                        });
                     }
-                    return results;
+                    try {
+                        const selectedFiles = await showOpenFilePicker(options);
+                        var results = "";
+                        for (const selectedFile of selectedFiles) {
+                            const guid = Uno.Storage.NativeStorageItem.generateGuid();
+                            Storage.NativeStorageFile.AddHandle(guid, selectedFile);
+                            const fileInfo = await selectedFile.getFile();
+                            const name = fileInfo.name;
+                            const contentType = fileInfo.type;
+                            results += guid + "\\" + name + "\\" + contentType + "\\\\";
+                        }
+                        return results;
+                    }
+                    catch (e) {
+                        console.log("User did not make a selection or it file selected was" +
+                            "deemed too sensitive or dangerous to be exposed to the website - " + e);
+                        return "";
+                    }
                 }
             }
             Pickers.FileOpenPicker = FileOpenPicker;
@@ -3058,10 +3073,17 @@ var Windows;
         (function (Pickers) {
             class FolderPicker {
                 static async pickSingleFolderAsync() {
-                    const selectedFolder = await showDirectoryPicker();
-                    const guid = Uno.Utils.Guid.NewGuid();
-                    Storage.StorageFolderNative.AddHandle(guid, selectedFolder);
-                    return guid;
+                    try {
+                        const selectedFolder = await showDirectoryPicker();
+                        const guid = Uno.Utils.Guid.NewGuid();
+                        Storage.NativeStorageFolder.AddHandle(guid, selectedFolder);
+                        return guid;
+                    }
+                    catch (e) {
+                        console.log("The user dismissed the prompt without making a selection, " +
+                            "or the user agent deems the selected content to be too sensitive or dangerous - " + e);
+                        return null;
+                    }
                 }
             }
             Pickers.FolderPicker = FolderPicker;

@@ -1,19 +1,19 @@
 ﻿
 namespace Windows.Storage {
 
-	export class StorageFolderNative {
+	export class NativeStorageFolder {
 		private static _folderMap: Map<string, FileSystemDirectoryHandle> = new Map<string, FileSystemDirectoryHandle>();
 
 		public static AddHandle(guid: string, handle: FileSystemDirectoryHandle) {
-			StorageFolderNative._folderMap.set(guid, handle);
+			NativeStorageFolder._folderMap.set(guid, handle);
 		}
 
 		public static RemoveHandle(guid: string) {
-			StorageFolderNative._folderMap.delete(guid);
+			NativeStorageFolder._folderMap.delete(guid);
 		}
 
 		public static GetHandle(guid: string): FileSystemDirectoryHandle {
-			return StorageFolderNative._folderMap.get(guid);
+			return NativeStorageFolder._folderMap.get(guid);
 		}
 
 		/**
@@ -22,7 +22,7 @@ namespace Windows.Storage {
 		 * @param folderName The name of the new folder.
 		 */
 		public static async CreateFolderAsync(parentGuid: string, folderName: string): Promise<string> {
-			const parentHandle = StorageFolderNative.GetHandle(parentGuid);
+			const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
 
 			const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
 				create: true,
@@ -30,7 +30,7 @@ namespace Windows.Storage {
 
 			var guid = Uno.Utils.Guid.NewGuid();
 
-			StorageFolderNative.AddHandle(guid, newDirectoryHandle);
+			NativeStorageFolder.AddHandle(guid, newDirectoryHandle);
 
 			return guid;
 		}
@@ -42,7 +42,7 @@ namespace Windows.Storage {
 		 * @returns A GUID of the folder if found, otherwise "notfound" literal.
 		 */
 		public static async GetFolderAsync(parentGuid: string, folderName: string): Promise<string> {
-			const parentHandle = StorageFolderNative.GetHandle(parentGuid);
+			const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
 
 			let nestedDirectoryHandle: FileSystemDirectoryHandle = undefined;
 			let returnedGuid = Uno.Utils.Guid.NewGuid();
@@ -56,7 +56,7 @@ namespace Windows.Storage {
 			}
 
 			if (nestedDirectoryHandle)
-				StorageFolderNative.AddHandle(returnedGuid, nestedDirectoryHandle);
+				NativeStorageFolder.AddHandle(returnedGuid, nestedDirectoryHandle);
 
 			return returnedGuid;
 		}

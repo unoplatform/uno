@@ -7,15 +7,15 @@ namespace Windows.Storage
 {
 	public partial class StorageFolder
 	{
-		internal static StorageFolder GetFolderFromNativePathAsync(string path, Guid guid) => new StorageFolder(new NativeFileSystem(path, guid));
+		internal static StorageFolder GetFolderFromNativePathAsync(string path, Guid guid) => new StorageFolder(new NativeStorageFolder(path, guid));
 
-		private sealed class NativeFileSystem : ImplementationBase
+		private sealed class NativeStorageFolder : ImplementationBase
 		{
 			// Used to keep track of the Folder handle on the Typescript side.
 			private Guid _id;
-			private const string _jsType = "Windows.Storage.StorageFolderNative";
+			private const string _jsType = "Windows.Storage.NativeStorageFolder";
 
-			public NativeFileSystem(string path, Guid id)
+			public NativeStorageFolder(string path, Guid id)
 				: base(path)
 			{
 				_id = id;

@@ -872,14 +872,8 @@ declare namespace Windows.Storage {
         static DownloadAsset(path: string): Promise<string>;
     }
 }
-declare namespace Uno.Storage {
-    class NativeStorageItem {
-        private static generateGuidBinding;
-        static generateGuid(): string;
-    }
-}
 declare namespace Windows.Storage {
-    class StorageFileNative {
+    class NativeStorageFile {
         private static _fileMap;
         static AddHandle(guid: string, handle: FileSystemFileHandle): void;
         static RemoveHandle(guid: string): void;
@@ -887,7 +881,7 @@ declare namespace Windows.Storage {
     }
 }
 declare namespace Windows.Storage {
-    class StorageFolderNative {
+    class NativeStorageFolder {
         private static _folderMap;
         static AddHandle(guid: string, handle: FileSystemDirectoryHandle): void;
         static RemoveHandle(guid: string): void;
@@ -905,6 +899,12 @@ declare namespace Windows.Storage {
          * @returns A GUID of the folder if found, otherwise "notfound" literal.
          */
         static GetFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+    }
+}
+declare namespace Uno.Storage {
+    class NativeStorageItem {
+        private static generateGuidBinding;
+        static generateGuid(): string;
     }
 }
 declare namespace Windows.Storage {

@@ -17,6 +17,7 @@ namespace Windows.Storage.Pickers
 
 			if (returnValue is null)
 			{
+				// User did not select any folder.
 				return null;
 			}
 

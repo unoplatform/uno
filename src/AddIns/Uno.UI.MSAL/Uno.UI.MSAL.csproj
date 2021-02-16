@@ -35,12 +35,6 @@
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<EmbeddedResource Include="WasmScripts\**\*.js" />
-		<UpToDateCheckInput Remove="WasmScripts\*.js" />
-		<UpToDateCheckInput Include="ts\**\*" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<Content Include="buildTransitive/*">
 			<Pack>true</Pack>

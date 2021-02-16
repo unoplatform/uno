@@ -10,18 +10,19 @@ namespace Windows.Storage
 {
 	public partial class StorageFile
 	{
-		internal static StorageFile GetFileFromNativePathAsync(Guid guid, string name, string contentType) => new StorageFile(new NativeFileSystem(guid, name, contentType));
+		internal static StorageFile GetFileFromNativePath(Guid guid, string name, string contentType) =>
+			new StorageFile(new NativeStorageFile(guid, name, contentType));
 
-		private sealed class NativeFileSystem : ImplementationBase
+		private sealed class NativeStorageFile : ImplementationBase
 		{
-			private const string JsType = "Windows.Storage.StorageFileNative";
+			private const string JsType = "Windows.Storage.NativeStorageFile";
 
 			// Used to keep track of the File handle on the Typescript side.
-			private Guid _id;
-			private string _fileName;
-			private string _contentType;
+			private readonly Guid _id;
+			private readonly string _fileName;
+			private readonly string _contentType;
 
-			public NativeFileSystem(Guid id, string fileName, string contentType)
+			public NativeStorageFile(Guid id, string fileName, string contentType)
 				: base(string.Empty)
 			{
 				_id = id;

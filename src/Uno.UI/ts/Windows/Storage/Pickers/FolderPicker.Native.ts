@@ -2,13 +2,20 @@
 
 	export class FolderPicker {
 		public static async pickSingleFolderAsync(): Promise<string> {
-			const selectedFolder = await showDirectoryPicker();
+			try {
+				const selectedFolder = await showDirectoryPicker();
 
-			const guid = Uno.Utils.Guid.NewGuid();
+				const guid = Uno.Utils.Guid.NewGuid();
 
-			StorageFolderNative.AddHandle(guid, selectedFolder);
+				NativeStorageFolder.AddHandle(guid, selectedFolder);
 
-			return guid;
+				return guid;
+			}
+			catch (e) {
+				console.log("The user dismissed the prompt without making a selection, " +
+					"or the user agent deems the selected content to be too sensitive or dangerous - " + e);
+				return null;
+			}
 		}
 	}
 }
