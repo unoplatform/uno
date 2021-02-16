@@ -345,10 +345,31 @@ namespace Microsoft.UI.Xaml.Controls
 				averageElementSize = Math.Round(stackLayoutState.TotalElementSize / stackLayoutState.TotalElementsMeasured);
 			}
 
-			return averageElementSize;
+			return _uno_lastKnownAverageElementSize = averageElementSize;
 		}
+
+
 
 		#endregion
 
+		#region Uno workaround
+		private double _uno_lastKnownAverageElementSize;
+
+		/// <inheritdoc />
+		protected internal override bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
+		{
+			var elementSize = _uno_lastKnownAverageElementSize;
+			if (elementSize <= 0)
+			{
+				return base.IsSignificantViewportChange(oldViewport, newViewport);
+			}
+
+			var size = Math.Max(MajorSize(oldViewport), MajorSize(newViewport));
+			var minDelta = Math.Min(elementSize * 5, size);
+			
+			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > minDelta
+				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > minDelta;
+		}
+		#endregion
 	}
 }
