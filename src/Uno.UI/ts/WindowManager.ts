@@ -1902,6 +1902,31 @@ namespace Uno.UI {
 			}
 			return "ok";
 		}
+
+		public getNaturalImageSize(imageUrl: string): Promise<string> {
+			return new Promise<string>((resolve, reject) => {
+				const img = new Image();
+
+				let loadingDone = () => {
+					this.containerElement.removeChild(img);
+					resolve(`${img.width};${img.height}`);
+				};
+				let loadingError = (e: Event) => {
+					this.containerElement.removeChild(img);
+					reject(e);
+				}
+
+				img.style.pointerEvents = "none";
+				img.style.opacity = "0";
+				img.onload = loadingDone;
+				img.onerror = loadingError;
+				img.src = imageUrl;
+
+				this.containerElement.appendChild(img);
+
+			});
+		}
+
 	}
 
 	if (typeof define === "function") {
