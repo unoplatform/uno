@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CoreGraphics;
 using Uno.Extensions;
@@ -23,7 +24,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_mainWindow == null)
 				{
-					_mainWindow = UIApplication.SharedApplication.KeyWindow ?? UIApplication.SharedApplication.Windows[0];
+					_mainWindow = UIApplication.SharedApplication.KeyWindow
+							   ?? UIApplication.SharedApplication.Windows.FirstOrDefault()
+							   ?? throw new InvalidOperationException("Do not create popup until any app Window is created");
 				}
 
 				return _mainWindow;
