@@ -26,10 +26,10 @@ namespace Windows.Storage
 				=> new StorageFolder(global::System.IO.Path.GetDirectoryName(Path));
 
 			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
-				=> new BasicProperties(Owner);
+				=> BasicProperties.FromPath(Owner.Path);
 
 			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> new RandomAccessStreamWithContentType(new FileRandomAccessStream(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
+				=> new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateLocal(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
 
 			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 				=> File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));

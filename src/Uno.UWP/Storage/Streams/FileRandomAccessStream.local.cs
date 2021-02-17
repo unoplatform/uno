@@ -8,6 +8,12 @@ namespace Windows.Storage.Streams
 {
 	public sealed partial class FileRandomAccessStream
 	{
+		internal static FileRandomAccessStream CreateLocal(string path, FileAccess access, FileShare share)
+		{
+			var localImplementation = new Local(path, access, share);
+			return new FileRandomAccessStream(localImplementation);
+		}
+
 		private class Local : ImplementationBase
 		{
 			private readonly string _path;
@@ -31,21 +37,21 @@ namespace Windows.Storage.Streams
 				_source = File.Open(_path, FileMode.OpenOrCreate, access, share);
 			}
 
-			Stream IStreamWrapper.FindStream() => _source;
+			Stream FindStream() => _source;
 
-			public ulong Size
+			public override ulong Size
 			{
 				get => (ulong)_source.Length;
 				set => _source.SetLength((long)value);
 			}
 
-			public bool CanRead => _source.CanRead;
+			public override bool CanRead => _source.CanRead;
 
-			public bool CanWrite => _source.CanWrite;
+			public override bool CanWrite => _source.CanWrite;
 
-			public ulong Position => (ulong)_source.Position;
+			public override ulong Position => (ulong)_source.Position;
 
-			public IInputStream GetInputStreamAt(ulong position)
+			public override IInputStream GetInputStreamAt(ulong position)
 			{
 				if (!CanRead)
 				{
@@ -55,7 +61,7 @@ namespace Windows.Storage.Streams
 				return new FileInputStream(_path, _share, position);
 			}
 
-			public IOutputStream GetOutputStreamAt(ulong position)
+			public override IOutputStream GetOutputStreamAt(ulong position)
 			{
 				if (!CanWrite)
 				{
@@ -65,22 +71,22 @@ namespace Windows.Storage.Streams
 				return new FileOutputStream(_path, _share, position);
 			}
 
-			public void Seek(ulong position)
+			public override void Seek(ulong position)
 				=> _source.Seek((long)position, SeekOrigin.Begin);
 
-			public IRandomAccessStream CloneStream()
-				=> new FileRandomAccessStream(_path, _access, _share);
+			public override IRandomAccessStream CloneStream()
+				=> FileRandomAccessStream.CreateLocal(_path, _access, _share);
 
-			public void Dispose()
+			public override void Dispose()
 				=> _source.Dispose();
 
-			public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)
+			public override IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)
 				=> _source.ReadAsyncOperation(buffer, count, options);
 
-			public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer)
+			public override IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer)
 				=> _source.WriteAsyncOperation(buffer);
 
-			public IAsyncOperation<bool> FlushAsync()
+			public override IAsyncOperation<bool> FlushAsync()
 				=> _source.FlushAsyncOperation();
 		}
 	}

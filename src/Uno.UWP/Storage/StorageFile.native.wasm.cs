@@ -53,7 +53,7 @@ namespace Windows.Storage
 				ulong.TryParse(parts[0], out ulong size);
 
 				var dateTimeModified = DateTimeOffset.UtcNow;
-				if (long.TryParse(parts[0], out var dateModifiedUnixMilliseconds))
+				if (long.TryParse(parts[1], out var dateModifiedUnixMilliseconds))
 				{
 					dateTimeModified = DateTimeOffset.FromUnixTimeMilliseconds(dateModifiedUnixMilliseconds);
 				}
