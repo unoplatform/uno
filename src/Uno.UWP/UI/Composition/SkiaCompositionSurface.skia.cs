@@ -62,7 +62,7 @@ namespace Windows.UI.Composition
 
 		internal unsafe void SetPixels(int pixelWidth, int pixelHeight, byte[] data)
 		{
-			var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+			var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 
 			fixed (byte* pData = data)
 			{
