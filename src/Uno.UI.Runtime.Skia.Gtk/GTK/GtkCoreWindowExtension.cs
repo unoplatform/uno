@@ -35,11 +35,11 @@ namespace Uno.UI.Runtime.Skia
 
 		/// <inheritdoc />
 		public void ReleasePointerCapture()
-			=> this.Log().Error("Pointer capture release is not supported on GTK");
+			=> this.Log().Warn("Pointer capture release is not supported on GTK");
 
 		/// <inheritdoc />
 		public void SetPointerCapture()
-			=> this.Log().Error("Pointer capture is not supported on GTK");
+			=> this.Log().Warn("Pointer capture is not supported on GTK");
 
 		public GtkCoreWindowExtension(object owner)
 		{

@@ -63,11 +63,11 @@ namespace Uno.UI.Runtime.Skia
 
 		/// <inheritdoc />
 		public void ReleasePointerCapture()
-			=> this.Log().Error("Pointer capture release is not supported on Tizen");
+			=> this.Log().Warn("Pointer capture release is not supported on Tizen");
 
 		/// <inheritdoc />
 		public void SetPointerCapture()
-			=> this.Log().Error("Pointer capture is not supported on Tizen");
+			=> this.Log().Warn("Pointer capture is not supported on Tizen");
 
 
 		private void SetupTapGesture()
