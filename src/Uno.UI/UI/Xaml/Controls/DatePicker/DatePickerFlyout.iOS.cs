@@ -1,4 +1,3 @@
-#if XAMARIN_IOS
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,7 +26,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public event TypedEventHandler<DatePickerFlyout, DatePickedEventArgs> DatePicked;
 
-		private readonly SerialDisposable _presenterCommandsDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
@@ -135,18 +133,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPresenterLoaded(object sender, RoutedEventArgs e)
 		{
-			var disposables = new CompositeDisposable();
-			_presenterCommandsDisposable.Disposable = disposables;
-
-			AttachFlyoutCommand(AcceptButtonPartName, x => x.Accept()).DisposeWith(disposables);
-			AttachFlyoutCommand(DismissButtonPartName, x => x.Dismiss()).DisposeWith(disposables);
+			AttachFlyoutCommand(AcceptButtonPartName, x => x.Accept());
+			AttachFlyoutCommand(DismissButtonPartName, x => x.Dismiss());
 
 			_presenterLoadedDisposable.Disposable = null;
 		}
 
 		private void OnPresenterUnloaded(object sender, RoutedEventArgs e)
 		{
-			_presenterCommandsDisposable.Disposable = null;
 			_presenterLoadedDisposable.Disposable = null;
 			_presenterUnloadedDisposable.Disposable = null;
 		}
@@ -227,5 +221,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-
-#endif

@@ -1,11 +1,10 @@
-#if XAMARIN_IOS
-
-using Foundation;
+﻿using Foundation;
 using System;
 using System.Linq;
 using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
 
@@ -37,6 +36,8 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 			_picker.Mode = UIDatePickerMode.Time;
 
+			UpdatePickerStyle();
+
 			_picker.ValueChanged += OnValueChanged;
 			_picker.EditingDidBegin += OnEditingDidBegin;
 
@@ -63,6 +64,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Initialize()
 		{
+			UpdatePickerStyle();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
@@ -150,6 +152,26 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnUnloaded();
 		}
+
+		private void UpdatePickerStyle()
+		{
+			if (_picker == null)
+			{
+				return;
+			}
+
+#if false // disabled because of CI running iOS 13
+			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+			{
+				_picker.PreferredDatePickerStyle = FeatureConfiguration.TimePicker.UseLegacyStyle
+																			? UIDatePickerStyle.Wheels
+																			: UIDatePickerStyle.Inline;
+			}
+#endif
+			else
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+			}
+		}
 	}
 }
-#endif

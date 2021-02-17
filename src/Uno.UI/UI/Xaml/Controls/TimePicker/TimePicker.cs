@@ -56,11 +56,7 @@ namespace Windows.UI.Xaml.Controls
 					defaultValue: DateTime.Now.TimeOfDay,
 					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnTimeChangedPartial((TimeSpan)e.OldValue, (TimeSpan)e.NewValue),
-					coerceValueCallback: (s, e) =>
-					{
-						var ts = (TimeSpan)e;
-						return new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0);
-					})
+					coerceValueCallback: (s, e) => e is TimeSpan ts ? new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0) : TimeSpan.Zero)
 				);
 
 		#endregion
