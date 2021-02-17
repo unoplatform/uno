@@ -169,6 +169,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+#if false // disabled because CI is running iOS 13
 			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
 			{
 				_picker.PreferredDatePickerStyle = FeatureConfiguration.DatePicker.UseLegacyStyle
@@ -176,6 +177,7 @@ namespace Windows.UI.Xaml.Controls
 																			: UIDatePickerStyle.Inline;
 			}
 			else
+#endif
 			{
 				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
 			}
