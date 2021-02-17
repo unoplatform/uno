@@ -332,6 +332,12 @@ namespace Windows.UI.Xaml.Shapes
 					// surfaceBrush.Offset = new Vector2((float)imageFrame.Left, (float)imageFrame.Top);
 					var matrix = Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceImageSize.Width), (float)(backgroundArea.Height / sourceImageSize.Height));
 					matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+
+					if (imgBackground.Transform != null)
+					{
+						matrix *= imgBackground.Transform.ToMatrix(new Point());
+					}
+
 					surfaceBrush.TransformMatrix = matrix;
 
 					backgroundShape.FillBrush = surfaceBrush;
