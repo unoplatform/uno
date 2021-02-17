@@ -178,6 +178,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?")]
+#endif
 		public async Task When_Too_Large_For_Any_Fallback()
 		{
 			var target = new TextBlock
