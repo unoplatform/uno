@@ -57,6 +57,13 @@ namespace Windows.UI.Xaml.Controls
 			_isTemplateApplied = true;
 
 			UpdateProperties();
+
+#if __WASM__ || __SKIA__
+			//TODO: Workaround for https://github.com/unoplatform/uno/issues/5144
+			//OnApplyTemplate() is comming too late when using bindings
+			SetNeedsUpdateItems();
+#endif
+
 			SynchronizeItems();
 		}
 
