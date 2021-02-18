@@ -10,7 +10,7 @@ using System;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	partial class LoopingSelectorPanel : Canvas
+	partial class LoopingSelectorPanel : Canvas, IScrollSnapPointsInfo
 	{
 
 	// public

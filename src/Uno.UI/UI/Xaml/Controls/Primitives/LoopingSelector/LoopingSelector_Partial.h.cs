@@ -1,6 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using Windows.UI.Xaml.Automation.Peers;
+
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 
@@ -8,8 +12,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 
 	// public
-		public partial void OnPropertyChanged(
-			 xaml.IDependencyPropertyChangedEventArgs pArgs);
+		//public partial void OnPropertyChanged(
+		//	 xaml.IDependencyPropertyChangedEventArgs pArgs);
 
 		// UIA functions
 		//public partial void AutomationGetIsScrollable(out bool pIsScrollable);
@@ -35,16 +39,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	// protected
 
 		// FrameworkElementOverrides
-		protected partial void MeasureOverrideImpl(wf.Size availableSize, out wf.Size returnValue);
-		protected partial void ArrangeOverrideImpl(wf.Size finalSize, _Out_opt_ wf.Size returnValue);
-		protected partial void OnApplyTemplateImpl();
+		//protected partial void MeasureOverrideImpl(wf.Size availableSize, out wf.Size returnValue);
+		//protected partial void ArrangeOverrideImpl(wf.Size finalSize, _Out_opt_ wf.Size returnValue);
+		//protected partial void OnApplyTemplateImpl();
 
 		// UIElementOverrides
-		protected partial void OnCreateAutomationPeerImpl(
-			out  xaml.Automation.Peers.IAutomationPeer returnValue);
+		//protected partial void OnCreateAutomationPeerImpl(
+		//	out  xaml.Automation.Peers.IAutomationPeer returnValue);
 
 		// IControlOverrides
-		protected partial void OnKeyDownImpl( xaml_input.IKeyRoutedEventArgs pEventArgs);
+		//protected partial void OnKeyDownImpl( xaml_input.IKeyRoutedEventArgs pEventArgs);
 
 	// private
 		private enum ListEnd
@@ -80,13 +84,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private LoopingSelectorPanel _tpPanel;
 		private ScrollViewer _tpScrollViewer;
-		private ScrollViewerPrivate _tpScrollViewerPrivate;
+		//private ScrollViewerPrivate _tpScrollViewerPrivate;
+		private ScrollViewer _tpScrollViewerPrivate;
 		private ButtonBase _tpUpButton;
 		private ButtonBase _tpDownButton;
 
 		// We keep a weak to the AP when it is created in order to be able
 		// to update the map of items to data automation peers it maintains.
-		private wrl.WeakRef _wrAP;
+		private WeakReference<LoopingSelectorAutomationPeer> _wrAP;
 
 		// We subscribe to the routed Got/LostFocus events. Focus moving between
 		// subelements generates both a Lost and Got event. This boolean
@@ -189,7 +194,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private bool _disablePropertyChange;
 
 		// Used to detect orientation changes.
-		private FLOAT _lastArrangeSizeHeight;
+		private double _lastArrangeSizeHeight;
 
 		// When moving from a small viewport to a large viewport during an orientation change,
 		// the viewport vertical offset might get coerced and change. If that's the case,
@@ -198,17 +203,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		// Track LSIs. All LSIs are in the Canvas's children, but recycled
 		// LSIs are kept far offscreen.
-		private std.vector<xaml_primitives.ILoopingSelectorItem> _recycledItems;
-		private std.vector<xaml_primitives.ILoopingSelectorItem> _realizedItems;
+		private readonly Stack<LoopingSelectorItem> _recycledItems = new Stack<LoopingSelectorItem>();
+		private readonly LinkedList<LoopingSelectorItem> _realizedItems = new LinkedList<LoopingSelectorItem>();
 
 		// LoopingSelectorAutomationPeer asks for items to be realized, but they're not brought into the canvas.
 		// This map, indexed with the modded visual index, keeps track of those
-		private std.map<int, wrl.ComPtr<ILoopingSelectorItem>> _realizedItemsForAP;
+		private readonly IDictionary<int, LoopingSelectorItem> _realizedItemsForAP = new Dictionary<int, LoopingSelectorItem>();
 
 		// Automation cached values for property changed events.
-		private Private.DependencyObject _tpPreviousScrollPosition;
+		private double _tpPreviousScrollPosition;
 
-		private wrl.EventSource<xaml_controls.ISelectionChangedEventHandler> _selectionChangedEventSource;
+		//private EventSource<SelectionChangedEventHandler> _selectionChangedEventSource;
 
 		// Cached instance of the ICanvasStatics interface for performance
 		// sensative operations.
@@ -287,9 +292,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return (uint)((x % n + n) % n);
 		}
 
-		private partial void RequestInteractionSound(xaml.ElementSoundKind soundKind);
+		//private partial void RequestInteractionSound(xaml.ElementSoundKind soundKind);
 	};
 
-	ActivatableClassWithFactory(LoopingSelector, LoopingSelectorFactory);
+	//ActivatableClassWithFactory(LoopingSelector, LoopingSelectorFactory);
 
 }

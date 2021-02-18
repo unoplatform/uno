@@ -1,59 +1,59 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#pragma once
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
-    class LoopingSelectorItemAutomationPeer :
-        public LoopingSelectorItemAutomationPeerGenerated
-    {
+	public partial class LoopingSelectorItemAutomationPeer : FrameworkElementAutomationPeer
+	{
+		// public
 
-    // public
+		//void UpdateEventSource();
+		//void SetEventSource(xaml_automation_peers.ILoopingSelectorItemDataAutomationPeer pLSIDAP);
+		//void UpdateItemIndex(int itemIndex);
 
-         void UpdateEventSource();
-         void SetEventSource( xaml_automation_peers.ILoopingSelectorItemDataAutomationPeer pLSIDAP);
-         void UpdateItemIndex( int itemIndex);
+		// IAutomationPeerOverrides
+		//void GetPatternCoreImpl(
+		//	xaml.Automation.Peers.PatternInterface patternInterface,
+		//	out DependencyObject returnValue);
 
-        // IAutomationPeerOverrides
-         void GetPatternCoreImpl(
-             xaml.Automation.Peers.PatternInterface patternInterface,
-            out  DependencyObject returnValue) override;
-         void GetAutomationControlTypeCoreImpl(
-            out xaml.Automation.Peers.AutomationControlType returnValue) override;
-         void GetClassNameCoreImpl(
-            out string returnValue) override;
+		//void GetAutomationControlTypeCoreImpl(
+		//	out xaml.Automation.Peers.AutomationControlType returnValue);
 
-         void IsKeyboardFocusableCoreImpl(out bool returnValue) override;
-         void HasKeyboardFocusCoreImpl(out bool returnValue) override;
+		//void GetClassNameCoreImpl(
+		//	out string returnValue);
 
-    // private
+		//void IsKeyboardFocusableCoreImpl(out bool returnValue);
+		//void HasKeyboardFocusCoreImpl(out bool returnValue);
 
-        ~LoopingSelectorItemAutomationPeer() {}
+		// private
 
-         void InitializeImpl(
-             xaml_primitives.ILoopingSelectorItem pOwner) override;
+		~LoopingSelectorItemAutomationPeer() { }
 
-         void GetOwnerAsInternalPtrNoRef(out  xaml_primitives.LoopingSelectorItem ppOwnerNoRef);
-         void GetDataAutomationPeer(out  xaml_automation_peers.ILoopingSelectorItemDataAutomationPeer ppLSIDAP);
+		//void InitializeImpl(
+		//	LoopingSelectorItem pOwner);
 
-    // public
-         // IScrollItemProvider Impl
-         void ScrollIntoViewImpl();
+		//void GetOwnerAsInternalPtrNoRef(out LoopingSelectorItem ppOwnerNoRef);
+		//void GetDataAutomationPeer(out LoopingSelectorItemDataAutomationPeer ppLSIDAP);
 
-        // ISelectionItemProvider Impl
-         void get_IsSelectedImpl(out bool value) override;
+		//// public
+		//// IScrollItemProvider Impl
+		//void ScrollIntoViewImpl();
 
-         void get_SelectionContainerImpl(
-            out  xaml_automation.Provider.IIRawElementProviderSimple value) override;
+		//// ISelectionItemProvider Impl
+		//void get_IsSelectedImpl(out bool value);
 
-         void AddToSelectionImpl();
-         void RemoveFromSelectionImpl();
-         void SelectImpl();
+		//void get_SelectionContainerImpl(
+		//	out IRawElementProviderSimple value);
 
-    // private
-         void GetParentAutomationPeer(out  xaml_automation_peers.IAutomationPeer parentAutomationPeer);
-    };
+		//void AddToSelectionImpl();
+		//void RemoveFromSelectionImpl();
+		//void SelectImpl();
 
-} } } } } XAML_ABI_NAMESPACE_END
+		//// private
+		//void GetParentAutomationPeer(out AutomationPeer parentAutomationPeer);
+	}
+}
 

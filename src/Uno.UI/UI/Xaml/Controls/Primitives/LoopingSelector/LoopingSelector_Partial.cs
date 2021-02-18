@@ -1,22 +1,20 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
-using Uno.UI;
-using Windows.UI.nput;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public partial class LoopingSelector
+	partial class LoopingSelector
 	{
 		private const string c_scrollViewerTemplatePart = "ScrollViewer";
 		private const string c_upButtonTemplatePart = "UpButton";
@@ -26,6 +24,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public LoopingSelector()
 		{
+			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged(e));
+
 			_hasFocus = false;
 			_isSized = false;
 			_isSetupPending = true;
@@ -63,12 +63,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//_downButtonClickedToken = 0;
 			//_pointerEnteredToken = 0;
 			//_pointerExitedToken = 0;
+
+			InitializeImpl();
 		}
 
 
 		void InitializeImpl()
 		{
-
 			//IControlFactory spInnerFactory;
 			//IControl spInnerInstance;
 			DependencyObject spInnerInspectable;
@@ -91,6 +92,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//(Private.SetDefaultStyleKey(
 			//        spInnerInspectable,
 			//        "Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector"));
+			DefaultStyleKey = typeof(LoopingSelector);
 
 			//QueryInterface(__uuidof(UIElement), &spUIElement);
 			// These events are automatically removed when the
@@ -133,7 +135,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//    wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Controls_Canvas),
 			//    &_spCanvasStatics));
 
-			//// Cleanup
+			//
 			//    if (/FAILED/(hr) && spUIElement)
 			//    {
 			//        if (_pressedToken.value != 0)
@@ -167,20 +169,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DependencyObject pOldItem,
 			DependencyObject pNewItem)
 		{
-
 			//SelectionChangedEventArgsFactory spSelectionChangedEventArgsFactory;
 			SelectionChangedEventArgs spSelectionChangedEventArgs;
-			IList<DependencyObject> spRemovedItems;
-			IList<DependencyObject> spAddedItems;
+			IList<object> spRemovedItems;
+			IList<object> spAddedItems;
 			DependencyObject spInner;
 			DependencyObject spThisAsInspectable;
 
 			//wfci_.Vector<DependencyObject.Make(spRemovedItems);
-			spRemovedItems = new List<DependencyObject>(1);
+			spRemovedItems = new List<object>(1);
 			//wfci_.Vector<DependencyObject.Make(spAddedItems);
-			spAddedItems = new List<DependencyObject>(1);
-			spAddedItems.Append(pNewItem);
-			spRemovedItems.Append(pOldItem);
+			spAddedItems = new List<object>(1);
+			spAddedItems.Add(pNewItem);
+			spRemovedItems.Add(pOldItem);
 			// Raise the SelectionChanged event
 			//(wf.GetActivationFactory(
 			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Controls_SelectionChangedEventArgs),
@@ -203,6 +204,1100 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			SelectionChanged?.Invoke(this, spSelectionChangedEventArgs);
 		}
+
+		#region UIElementOverrides
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			var spThis = this;
+			LoopingSelector spThisAsILoopingSelector;
+			LoopingSelectorAutomationPeer spLoopingSelectorAutomationPeer;
+
+			//spThis.As(spThisAsILoopingSelector);
+			spThisAsILoopingSelector = spThis;
+			//(wrl.MakeAndInitialize<xaml_automation_peers.LoopingSelectorAutomationPeer>
+			//	(spLoopingSelectorAutomationPeer, spThisAsILoopingSelector));
+			spLoopingSelectorAutomationPeer = new LoopingSelectorAutomationPeer(spThisAsILoopingSelector);
+
+			//spLoopingSelectorAutomationPeer.CopyTo(returnValue);
+			var returnValue = spLoopingSelectorAutomationPeer;
+			//spLoopingSelectorAutomationPeer.AsWeak(_wrAP);
+			_wrAP = new WeakReference<LoopingSelectorAutomationPeer>(spLoopingSelectorAutomationPeer);
+			return returnValue;
+		}
+
+		#endregion
+
+		void OnUpButtonClicked(
+			object pSender,
+			RoutedEventArgs pEventArgs)
+		{
+			//UNREFERENCED_PARAMETER(pSender);
+			//UNREFERENCED_PARAMETER(pEventArgs);
+
+			SelectPreviousItem();
+		}
+
+		void OnDownButtonClicked(
+			object pSender,
+			RoutedEventArgs pEventArgs)
+		{
+			//UNREFERENCED_PARAMETER(pSender);
+			//UNREFERENCED_PARAMETER(pEventArgs);
+
+			SelectNextItem();
+		}
+
+
+		//void OnKeyDownImpl(
+		//	KeyRoutedEventArgs pEventArgs)
+		protected override void OnKeyDown(KeyRoutedEventArgs pEventArgs)
+		{
+			var bHandled = false;
+			var key = VirtualKey.None;
+			VirtualKeyModifiers nModifierKeys;
+
+			if (pEventArgs == null)
+			{
+				throw new ArgumentNullException();
+			}
+
+			bHandled = pEventArgs.Handled;
+			if (bHandled)
+			{
+				//goto Cleanup;
+				return;
+			}
+
+			key = pEventArgs.Key;
+			nModifierKeys = PlatformHelpers.GetKeyboardModifiers();
+			if ((nModifierKeys & VirtualKeyModifiers.Menu) == 0)
+			{
+				bHandled = true;
+
+				switch (key)
+				{
+					case VirtualKey.Up:
+						SelectPreviousItem();
+						break;
+					case VirtualKey.Down:
+						SelectNextItem();
+						break;
+					case VirtualKey.GamepadLeftTrigger:
+					case VirtualKey.PageUp:
+						HandlePageUpKeyPress();
+						break;
+					case VirtualKey.GamepadRightTrigger:
+					case VirtualKey.PageDown:
+						HandlePageDownKeyPress();
+						break;
+					case VirtualKey.Home:
+						HandleHomeKeyPress();
+						break;
+					case VirtualKey.End:
+						HandleEndKeyPress();
+						break;
+					default:
+						bHandled = false;
+						break;
+				}
+
+				pEventArgs.Handled = bHandled;
+			}
+		}
+
+		void SelectNextItem()
+		{
+			int index;
+			var shouldLoop = false;
+
+			shouldLoop = ShouldLoop;
+			index = SelectedIndex;
+
+			//Don't scroll past the end of the list if we are not looping:
+			if (index < (int)_itemCount - 1 || shouldLoop)
+			{
+				var pixelsToMove = _scaledItemHeight;
+				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
+				RequestInteractionSound(ElementSoundKind.Focus);
+			}
+		}
+
+		void SelectPreviousItem()
+		{
+			int index;
+			var shouldLoop = false;
+
+			shouldLoop = ShouldLoop;
+			index = SelectedIndex;
+
+			//Don't scroll past the start of the list if we are not looping
+			if (index > 0 || shouldLoop)
+			{
+				var pixelsToMove = -1 * _scaledItemHeight;
+				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
+				RequestInteractionSound(ElementSoundKind.Focus);
+			}
+		}
+
+		void HandlePageDownKeyPress()
+		{
+			var viewportHeight = _unpaddedExtentBottom - _unpaddedExtentTop;
+			var pixelsToMove = viewportHeight / 2;
+			SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
+			RequestInteractionSound(ElementSoundKind.Focus);
+		}
+
+		void HandlePageUpKeyPress()
+		{
+			var viewportHeight = _unpaddedExtentBottom - _unpaddedExtentTop;
+			var pixelsToMove = -1 * viewportHeight / 2;
+			SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
+			RequestInteractionSound(ElementSoundKind.Focus);
+		}
+
+		void HandleHomeKeyPress()
+		{
+			var pixelsToMove = -1 * _realizedMidpointIdx * _scaledItemHeight;
+			SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */);
+			Balance(true /* isOnSnapPoint */);
+			RequestInteractionSound(ElementSoundKind.Focus);
+		}
+
+		void HandleEndKeyPress()
+		{
+			var idxMovement = (int)_itemCount - 1 - _realizedMidpointIdx;
+			var pixelsToMove = idxMovement * _scaledItemHeight;
+			SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */);
+			Balance(true /* isOnSnapPoint */);
+			RequestInteractionSound(ElementSoundKind.Focus);
+		}
+
+		void OnViewChanged(
+			object pSender,
+			ScrollViewerViewChangedEventArgs pEventArgs)
+		{
+			//UNREFERENCED_PARAMETER(pSender);
+
+			// In the new ScrollViwer2 interface OnViewChanged will actually
+			// fire for all the intermediate ViewChanging events as well.
+			// We only capture the final view.
+			var isIntermediate = false;
+			isIntermediate = pEventArgs.IsIntermediate;
+			if (!isIntermediate)
+			{
+				//LSTRACE("[%d] OnViewChanged called.", (((int)this) >> 8) & 0xFF);
+
+				if (!_isWithinScrollChange && !_isWithinArrangeOverride)
+				{
+					Balance(true /* isOnSnapPoint */);
+					if (_itemState == ItemState.ManipulationInProgress)
+					{
+						TransitionItemsState(ItemState.Expanded);
+						_itemState = ItemState.Expanded;
+					}
+					else if (_itemState == ItemState.LostFocus)
+					{
+						ExpandIfNecessary();
+					}
+
+					_skipSelectionChangeUntilFinalViewChanged = false;
+				}
+			}
+		}
+
+		void OnViewChanging(
+			object pSender,
+			ScrollViewerViewChangingEventArgs pEventArgs)
+		{
+			//UNREFERENCED_PARAMETER(pSender);
+			//UNREFERENCED_PARAMETER(pEventArgs);
+
+
+			////LSTRACE("[%d] OnViewChanging called.", (((int)this) >> 8) & 0xFF);
+
+			if (!_isWithinScrollChange && !_isWithinArrangeOverride)
+			{
+				Balance(false /* isOnSnapPoint */);
+				// The Focus transition doesn't occur sometimes when flicking
+				// on one ScrollViewer, than another before the first flick completes.
+				// This is a possible ScrollViewer bug. Any time a manipulation
+				// occurs we force focus.
+				if (_itemState != ItemState.LostFocus && !_hasFocus)
+				{
+					Control spThisAsControl;
+					//UIElement spThisAsElement;
+					var didSucceed = false;
+					var focusState = FocusState.Unfocused;
+					//QueryInterface(__uuidof(Control), &spThisAsControl);
+					spThisAsControl = this;
+					//QueryInterface(__uuidof(UIElement), &spThisAsElement);
+					//spThisAsElement = this;
+					//focusState = spThisAsElement.FocusState;
+					focusState = FocusState;
+					if (focusState == FocusState.Unfocused)
+					{
+						didSucceed = spThisAsControl.Focus(FocusState.Programmatic);
+					}
+				}
+
+				// During a manipulation no item should be highlighted.
+				if (_itemState == ItemState.Expanded)
+				{
+					TransitionItemsState(ItemState.ManipulationInProgress);
+					_itemState = ItemState.ManipulationInProgress;
+					AutomationRaiseExpandCollapse();
+				}
+			}
+		}
+
+		void OnPointerEntered(
+			object pSender,
+			PointerRoutedEventArgs pEventArgs)
+		{
+			//UNREFERENCED_PARAMETER(pSender);
+			//UNREFERENCED_PARAMETER(pEventArgs);
+			var nPointerDeviceType = PointerDeviceType.Touch;
+			PointerPoint spPointerPoint;
+			PointerDevice spPointerDevice;
+
+			spPointerPoint = pEventArgs.GetCurrentPoint(null);
+			if (spPointerPoint == null)
+			{
+				throw new ArgumentNullException();
+			}
+
+			spPointerDevice = spPointerPoint.PointerDevice;
+			if (spPointerDevice == null)
+			{
+				throw new ArgumentNullException();
+			}
+
+			nPointerDeviceType = spPointerDevice.PointerDeviceType;
+			if (nPointerDeviceType != PointerDeviceType.Touch)
+			{
+				GoToState("PointerOver", false);
+			}
+		}
+
+		void OnPointerExited(
+			object pSender,
+			PointerRoutedEventArgs pEventArgs)
+		{
+			//UNREFERENCED_PARAMETER(pSender);
+			//UNREFERENCED_PARAMETER(pEventArgs);
+
+			GoToState("Normal", false);
+			TransitionItemsState(_itemState);
+		}
+
+		void GoToState(string strState, bool useTransitions)
+		{
+			//VisualStateManagerStatics spVSMStatics;
+			//Control spThisAsControl;
+
+			//(wf.GetActivationFactory(
+			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_VisualStateManager),
+			//	&spVSMStatics));
+
+			//QueryInterface(__uuidof(Control), &spThisAsControl);
+
+			//bool returnValue = false;
+			//spVSMStatics.GoToState(spThisAsControl, strState, useTransitions, &returnValue);
+			VisualStateManager.GoToState(this, strState, useTransitions);
+		}
+
+		void OnPressed(
+			object pSender,
+			PointerRoutedEventArgs pEventArgs)
+		{
+			//UNREFERENCED_PARAMETER(pSender);
+			//UNREFERENCED_PARAMETER(pEventArgs);
+
+			////LSTRACE("[%d] OnPressed called.", (((int)this) >> 8) & 0xFF);
+
+			if (_itemState == ItemState.LostFocus)
+			{
+				// LostFocus is only entered during a manipulation. Tapping
+				// the control after LostFocus will reactivate it.
+				_itemState = ItemState.ManipulationInProgress;
+			}
+
+			pEventArgs.Handled = true;
+		}
+
+		void OnLostFocus(
+			object pSender,
+			RoutedEventArgs pEventArgs)
+		{
+			//UNREFERENCED_PARAMETER(pSender);
+			//UNREFERENCED_PARAMETER(pEventArgs);
+
+			var hasFocus = false;
+			HasFocus(out hasFocus);
+			// We check to ensure that we previously did have focus
+			// (stored in _hasFocus) but now don't (the result of hasFocus)
+			// to ensure this is actually a focus transition.
+			if (!hasFocus && _hasFocus)
+			{
+				_hasFocus = false;
+				if (_itemState == ItemState.ManipulationInProgress)
+				{
+					// If we're in the middle of a manipulation we
+					// set itemState to LostFocus so completion of the
+					// manipulation will collapse.
+					_itemState = ItemState.LostFocus;
+				}
+				else
+				{
+					ExpandIfNecessary();
+				}
+			}
+		}
+
+		void OnGotFocus(
+			object pSender,
+			RoutedEventArgs pEventArgs)
+		{
+			var hasFocus = false;
+			HasFocus(out hasFocus);
+
+			if (hasFocus)
+			{
+				_hasFocus = true;
+			}
+		}
+
+		void OnItemTapped(
+			object pSender,
+			TappedRoutedEventArgs pArgs)
+		{
+			if (_itemState == ItemState.Expanded)
+			{
+				LoopingSelectorItem spLsiInterface;
+				//pSender.QueryInterface<LoopingSelectorItem>(spLsiInterface);
+				spLsiInterface = pSender as LoopingSelectorItem;
+
+				var lsiPtr = spLsiInterface;
+
+				var itemVisualIndex = 0;
+				uint itemIndex = 0;
+				lsiPtr.GetVisualIndex(out itemVisualIndex);
+				VisualIndexToItemIndex((uint)itemVisualIndex, out itemIndex);
+
+				// We need to make sure that we check against the selected index,
+				// not the midpoint index.  Normally, the item in the center of the view
+				// is also the selected item, but in the case of UI automation, it
+				// is not always guaranteed to be.
+				var selectedIndex = 0;
+				selectedIndex = SelectedIndex;
+
+				if (itemIndex == (uint)selectedIndex)
+				{
+					ExpandIfNecessary();
+				}
+				else
+				{
+					// Tapping any other time scrolls to that item.
+					var pixelsToMove = (itemVisualIndex - _realizedMidpointIdx) * _scaledItemHeight;
+					SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
+				}
+			}
+		}
+
+		void OnPropertyChanged(DependencyPropertyChangedEventArgs pArgs)
+		{
+			DependencyProperty spPropertyInfo;
+
+			spPropertyInfo = pArgs.Property;
+			if (spPropertyInfo == ItemsProperty)
+			{
+				////LSTRACE("[%d] Items property refreshed.", (((int)this) >> 8) & 0xFF);
+
+				// Optimization: When items change the size of the scrollviewer does not.
+				// We clear all items and allow for the balancing function to realize
+				// and replace the items as instead of refreshing the entire thing.
+				ClearAllItems();
+				Balance(false /* isOnSnapPoint */);
+				AutomationClearPeerMap();
+				AutomationRaiseSelectionChanged();
+			}
+			else if (spPropertyInfo == ShouldLoopProperty)
+			{
+				////LSTRACE("[%d] ShouldLoop property refreshed.", (((int)this) >> 8) & 0xFF);
+
+				// ShouldLoop will require resizing the bounds of the scrollviewer, as a result
+				// we start from scratch and resetup everything.
+				ClearAllItems();
+				_isSized = false;
+				_isSetupPending = true;
+				Balance(false /* isOnSnapPoint */);
+			}
+			else if (spPropertyInfo == SelectedIndexProperty && !_disablePropertyChange)
+			{
+				////LSTRACE("[%d] Selected Index property refreshed.", (((int)this) >> 8) & 0xFF);
+				int spValue;
+				int spReferenceInt;
+				var newIdx = 0;
+				var oldIdx = 0;
+
+				spValue = (int)pArgs.NewValue;
+				//spValue.As(spReferenceInt);
+				spReferenceInt = spValue;
+				newIdx = spReferenceInt; //.Value;
+				spValue = (int)pArgs.OldValue;
+				//spValue.As(spReferenceInt);
+				spReferenceInt = spValue;
+				oldIdx = spReferenceInt; //.Value;
+				// NOTE: This call only will be applied when the
+				// scrollviewer is not being manipulated. Once a
+				// manipulation has begun the user's eventual
+				// selection takes dominance.
+				SetSelectedIndex(oldIdx, newIdx);
+				Balance(false /* isOnSnapPoint */);
+			}
+		}
+
+		void IsTemplateAndItemsAttached(out bool result)
+		{
+			IList<object> spItems;
+
+			result = false;
+
+			if (_tpScrollViewer is { } &&
+			    _tpPanel is { })
+			{
+				spItems = Items;
+				if (spItems is { })
+				{
+					uint itemCount = 0;
+					itemCount = (uint)spItems.Count;
+					_itemCount = itemCount;
+					if (itemCount > 0)
+					{
+						result = true;
+					}
+				}
+			}
+		}
+
+		void IsSetupForAutomation(out bool isSetup)
+		{
+			var isTemplateAndItemsAttached = false;
+			IsTemplateAndItemsAttached(out isTemplateAndItemsAttached);
+			isSetup = isTemplateAndItemsAttached && _isSized && !_isSetupPending;
+		}
+
+		void Balance(bool isOnSnapPoint)
+		{
+			var isTemplateAndItemsAttached = false;
+			var abortBalance = false;
+
+			IsTemplateAndItemsAttached(out isTemplateAndItemsAttached);
+			abortBalance = !isTemplateAndItemsAttached;
+
+			// Normalize will call SetScrollPosition, which
+			// triggers another ViewChanged event to occur.
+			// We skip the balance called from ViewChanged.
+			if (!abortBalance && _skipNextBalance)
+			{
+				_skipNextBalance = false;
+				////LSTRACE("[%d] Skipping balance.", (((int)this) >> 8) & 0xFF);
+				abortBalance = true;
+			}
+
+			if (!abortBalance)
+			{
+				MeasureExtent(out _unpaddedExtentTop, out _unpaddedExtentBottom);
+
+				// 100000 is a arbitrary number that is larger than any possible screen size.
+				// If the visible area of the scrollviewer is larger than this value then
+				// it's likely the control is placed in a ScrollViewer or other layout element
+				// that feeds infinite size to its children. In these situations we avoid
+				// balancing.
+				if (_unpaddedExtentBottom - _unpaddedExtentTop > 100000)
+				{
+					_skipNextArrange = false;
+					////LSTRACE("[%d] Skipping balance. Extents too large, LoopingSelector is not designed to operate with infinite or very large extents.", (((int)this) >> 8) & 0xFF);
+					abortBalance = true;
+				}
+			}
+
+			if (!abortBalance)
+			{
+				EnsureSetup();
+				abortBalance = !_isSized || _isSetupPending;
+			}
+
+			if (!abortBalance)
+			{
+				uint headAdd = 0;
+				uint headTrim = 0;
+				uint tailAdd = 0;
+				uint tailTrim = 0;
+
+				var maxTopIdx = 0;
+				var maxBottomIdx = 0;
+				var paddedExtentTop = 0.0;
+				var paddedExtentBottom = 0.0;
+				var viewportHeight = 0.0;
+
+				GetMaximumAddIndexPosition(out maxTopIdx, out maxBottomIdx);
+				// We only normalize on snap points because otherwise a manipulation
+				// is in progress and SetScrollPosition will
+				// coherce the scroll offsetonto a snappoint, even if we're currently
+				// between two.
+				if (isOnSnapPoint)
+				{
+					Normalize();
+				}
+
+				viewportHeight = _unpaddedExtentBottom - _unpaddedExtentTop;
+				// Virtualization buffer is a half viewport in either direction.
+				paddedExtentTop = _unpaddedExtentTop - viewportHeight / 2;
+				paddedExtentBottom = _unpaddedExtentBottom + viewportHeight / 2;
+
+				// By adding a pixel we assure we never trim and re-add an element.
+				while (_realizedTop < paddedExtentTop + 1.0 - _scaledItemHeight && _realizedItems.Count > 0)
+				{
+					Trim(ListEnd.Head);
+					headTrim++;
+				}
+
+				while (_realizedBottom > paddedExtentBottom - 1.0 + _scaledItemHeight && _realizedItems.Count > 0)
+				{
+					Trim(ListEnd.Tail);
+					tailTrim++;
+				}
+
+				while (_realizedTop > paddedExtentTop && _realizedTopIdx > maxTopIdx)
+				{
+					Add(ListEnd.Head);
+					headAdd++;
+				}
+
+				while (_realizedBottom < paddedExtentBottom && _realizedBottomIdx < maxBottomIdx)
+				{
+					Add(ListEnd.Tail);
+					tailAdd++;
+				}
+
+				if (headAdd > 0 || tailAdd > 0 || tailTrim > 0 || tailAdd > 0)
+				{
+					AutomationRaiseStructureChanged();
+				}
+
+				////LSTRACE("[%d] HeadAdd: %d HeadTrim: %d TailAdd: %d TailTrim: %d Realized: %d Recycled: %d", (((int)this) >> 8) & 0xFF, headAdd, headTrim, tailAdd, tailTrim, _realizedItems.size(), _recycledItems.size());
+
+				// During manipulation we don't update the selected index. Only when
+				// we reach a final value.
+				if (isOnSnapPoint || _itemState == ItemState.Expanded)
+				{
+					UpdateSelectedItem();
+				}
+			}
+		}
+
+		void Normalize()
+		{
+			var shouldLoop = false;
+
+			shouldLoop = ShouldLoop;
+			// Only normalize if strayed 50px+ from center and if
+			// in looping mode. Nonlooping selectors don't normalize.
+			if (shouldLoop && Math.Abs(_unpaddedExtentTop - _panelMidpointScrollPosition) > 50.0)
+			{
+				var delta = _panelMidpointScrollPosition - _unpaddedExtentTop;
+
+				// WORKAROUND: It's likely there's a bug in dmanip that causes it to
+				// end a manipulation not on a snap point when two fingers are on the
+				// scrollviewer. We explicitly make sure we are on a snappoint here.
+				// Delaying bug filing until our input system is more final.
+				// DManip work tracked by WPBLUE: 11547.
+				var isActuallyOnSnapPoint =
+					Math.Abs(delta / _scaledItemHeight - Math.Floor(delta / _scaledItemHeight)) < 0.001;
+
+				if (isActuallyOnSnapPoint)
+				{
+					_realizedTop += delta;
+					_realizedBottom += delta;
+
+					// These are adjusted for the duration of the balance. ScrollViewer
+					// requires an invalidate pass which occurs before the next ViewChanged
+					// event for its extents to become correct , we manually account
+					// for the offset here since the next Balance happens before that.
+					_unpaddedExtentTop += delta;
+					_unpaddedExtentBottom += delta;
+
+					ShiftChildren(delta);
+					////LSTRACE("[%d] Shifted %f (%f items) %d", (((int)this) >> 8) & 0xFF, delta, delta / _scaledItemHeight, isActuallyOnSnapPoint);
+
+					SetScrollPosition(_panelMidpointScrollPosition, false);
+					// Skip the balance occuring after ViewChanged.
+					_skipNextBalance = true;
+				}
+			}
+		}
+
+		void EnsureSetup()
+		{
+			var selectedIdx = 0;
+
+			selectedIdx = SelectedIndex;
+			if (!_isSized)
+			{
+				//LSTRACE("[%d] Sizing panel.", (((int)this) >> 8) & 0xFF);
+				var itemDimAsInt = 0;
+				// Optimization: caching itemHeight and itemWidth.
+				itemDimAsInt = ItemHeight;
+				_itemHeight = itemDimAsInt;
+				_scaledItemHeight = itemDimAsInt;
+
+				itemDimAsInt = ItemWidth;
+				if (itemDimAsInt == 0)
+				{
+					// If we don't have an explictly set ItemWidth, we fallback to this value which is computed during Arrange.
+					_itemWidth = _itemWidthFallback;
+				}
+				else
+				{
+					_itemWidth = itemDimAsInt;
+				}
+
+				ClearAllItems();
+				SizePanel();
+				_isSized = true;
+			}
+
+			// ScrollViewer isn't fully initialized until the
+			// first Arrange pass and will return invalid extents
+			// and ignore SetScrollPosition requests.
+			if (_isScrollViewerInitialized && _isSetupPending)
+			{
+				//LSTRACE("[%d] Setting up bounds and scroll viewer.", (((int)this) >> 8) & 0xFF);
+				var viewportHeight = 0.0;
+				var verticalOffset = 0.0;
+				var newScrollPosition = 0.0;
+				var startPoint = 0.0;
+				var shouldLoop = false;
+
+				shouldLoop = ShouldLoop;
+				viewportHeight = _tpScrollViewer.ViewportHeight;
+				verticalOffset = _tpScrollViewer.VerticalOffset;
+				SetupSnapPoints(0.0, _scaledItemHeight);
+				// If in looping mode the selector is setup
+				// in the middle of the scrollable area, if in nonlooping
+				// mode it is setup to be at the currently selected item's offset.
+				// (Nonlooping mode sizes the scrollable area to be percisely large
+				//  enough for the item count)
+				if (shouldLoop)
+				{
+					startPoint = _panelSize / 2;
+					_panelMidpointScrollPosition = startPoint - viewportHeight / 2 + _scaledItemHeight / 2;
+
+					_realizedTop = startPoint;
+					_realizedBottom = startPoint;
+					newScrollPosition = _panelMidpointScrollPosition;
+				}
+				else
+				{
+					startPoint = (_panelSize - _itemCount * _scaledItemHeight) / 2;
+					_panelMidpointScrollPosition = startPoint - viewportHeight / 2 + _scaledItemHeight / 2;
+					_realizedTop = startPoint + selectedIdx * _scaledItemHeight;
+					_realizedBottom = startPoint + selectedIdx * _scaledItemHeight;
+					newScrollPosition = _panelMidpointScrollPosition + selectedIdx * _scaledItemHeight;
+				}
+
+				_realizedTopIdx = selectedIdx;
+				_realizedBottomIdx = selectedIdx - 1;
+
+				// Optimization: skip scrolling if scrollviewer is
+				// in correct position (often true after normalization)
+				if (Math.Abs(verticalOffset - newScrollPosition) > 1.0)
+				{
+					SetScrollPosition(newScrollPosition, false);
+					_unpaddedExtentTop += newScrollPosition - verticalOffset;
+					_unpaddedExtentBottom += newScrollPosition - verticalOffset;
+
+					// Skip the balance caused by the ViewChange event fired
+					// from SetScrollPosition.
+					_skipNextBalance = true;
+				}
+
+				_isSetupPending = false;
+			}
+		}
+
+		void SetSelectedIndex(int oldIdx, int newIdx)
+		{
+			var pixelsToMove = 0.0;
+			var isTemplateAndItemsAttached = false;
+
+			IsTemplateAndItemsAttached(out isTemplateAndItemsAttached);
+			// Only set the new index position if we're in the idle position
+			// and the control is properly initialized and the oldIndex is meanful.
+			if (oldIdx != -1 && isTemplateAndItemsAttached && _itemState == ItemState.Expanded)
+			{
+				//LSTRACE("[%d] SetSelectedIndex From %d To %d called.", (((int)this) >> 8) & 0xFF, oldIdx, newIdx);
+				pixelsToMove = (newIdx - oldIdx) * _scaledItemHeight;
+				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false);
+			}
+		}
+
+		void Trim(ListEnd end)
+		{
+			LoopingSelectorItem spChildAsLSI;
+
+			if (_realizedItems.Count == 0)
+			{
+				//LSTRACE("[%d] Trim called with empty list.", (((int)this) >> 8) & 0xFF);
+				//goto Cleanup;
+				return;
+			}
+
+			if (end == ListEnd.Head)
+			{
+#if !DEBUG
+#error  TODO - Check if this operation is inverted here
+#endif
+				//COMPtr assignment causes AddRef.
+				spChildAsLSI = _realizedItems.Last.Value;
+				//_realizedItems.pop_back();
+				_realizedItems.RemoveLast();
+			}
+			else
+			{
+				//spChildAsLSI = _realizedItems.Peek();
+				//_realizedItems.erase(_realizedItems.begin());
+				spChildAsLSI = _realizedItems.First.Value;
+				_realizedItems.RemoveFirst();
+			}
+
+			if (end == ListEnd.Head)
+			{
+				_realizedTop += _scaledItemHeight;
+				_realizedTopIdx++;
+			}
+			else
+			{
+				_realizedBottom -= _scaledItemHeight;
+				_realizedBottomIdx--;
+			}
+
+			RecycleItem(spChildAsLSI);
+		}
+
+		void Add(ListEnd end)
+		{
+			LoopingSelectorItem spChild;
+			UIElement spChildAsUI;
+
+			if (end == ListEnd.Head)
+			{
+				RealizeItem((uint)(_realizedTopIdx - 1), out spChild);
+				// Panel's Children keeps the reference to this item.
+				_realizedItems.AddLast(spChild);
+				spChildAsUI = spChild;
+				SetPosition(spChildAsUI, _realizedTop - _scaledItemHeight);
+				_realizedTop -= _scaledItemHeight;
+				_realizedTopIdx--;
+			}
+			else
+			{
+				RealizeItem((uint)(_realizedBottomIdx + 1), out spChild);
+				// Panel's Children keeps the reference to this item.
+				_realizedItems.AddFirst(spChild);
+				spChildAsUI = spChild;
+				SetPosition(spChildAsUI, _realizedBottom);
+				_realizedBottom += _scaledItemHeight;
+				_realizedBottomIdx++;
+			}
+		}
+
+		void GetMaximumAddIndexPosition(out int headIdx, out int tailIdx)
+		{
+			bool shouldLoop;
+			shouldLoop = ShouldLoop;
+			if (shouldLoop)
+			{
+				headIdx = int.MinValue;
+				tailIdx = int.MaxValue;
+			}
+			else
+			{
+				headIdx = 0;
+				tailIdx = (int)(_itemCount - 1);
+			}
+		}
+
+		// In cases where we're directly setting the selected item (e.g., via UIA),
+		// we don't care whether we're in the middle of scrolling.
+		// We'll use ignoreScrollingState to flag such scenarios.
+		void UpdateSelectedItem(bool ignoreScrollingState = false)
+		{
+			IList<object> spItemsCollection;
+			DependencyObject spSelectedItem;
+			DependencyObject spPreviouslySelectedItem;
+
+			uint itemCount = 0;
+			var midpoint = 0.0;
+			uint newIdx = 0;
+			var oldIdx = 0;
+
+			// This will be in the middle of the currently selected item.
+			midpoint = (_unpaddedExtentTop + _unpaddedExtentBottom) / 2 - _realizedTop;
+			newIdx = (uint)_realizedTopIdx +
+			         (uint)midpoint / (uint)_scaledItemHeight;
+
+			spItemsCollection = Items;
+			itemCount = (uint)spItemsCollection.Count;
+			// Normally, when an item is scrolled into the center of our view,
+			// we want to automatically select that item.  However, in the case of
+			// UI automation (e.g., Narrator), users will be iterating through the
+			// looping selector items one at a time to hear them read out,
+			// in order to find the one that they want to select.  In this case,
+			// we don't want to automatically select the item that is scrolled into view,
+			// so in that circumstance we skip selecting the new item.
+			// However, we do still want to put the item in the visual state
+			// of being selected, since it will be appearing in the middle,
+			// meaning that we want the font color of the item in that position
+			// to properly match the background.
+			UpdateVisualSelectedItem((uint)_realizedMidpointIdx, newIdx);
+			_realizedMidpointIdx = (int)newIdx;
+
+			if (ignoreScrollingState || !_skipSelectionChangeUntilFinalViewChanged)
+			{
+				newIdx = PositiveMod((int)newIdx, (int)itemCount);
+
+				spSelectedItem = spItemsCollection[(int)newIdx] as DependencyObject;
+				_disablePropertyChange = true;
+				oldIdx = SelectedIndex;
+				SelectedIndex = (int)newIdx;
+				spPreviouslySelectedItem = SelectedItem as DependencyObject;
+				SelectedItem = spSelectedItem;
+				if ((uint)oldIdx != newIdx)
+				{
+					RaiseOnSelectionChanged(spPreviouslySelectedItem, spSelectedItem);
+					AutomationRaiseSelectionChanged();
+				}
+
+				_disablePropertyChange = false;
+			}
+		}
+
+
+		// NOTE: Only called when the ScrollViewer is done Running (e.g. no scrolling is happening).
+		void UpdateVisualSelectedItem(uint oldIdx, uint newIdx)
+		{
+			LoopingSelectorItem spEltAsLSI;
+			LoopingSelectorItem lsi = null;
+
+			var realizedItemsCount = _realizedItems.Count;
+			if (realizedItemsCount > 0)
+			{
+				if (realizedItemsCount > oldIdx - _realizedTopIdx)
+				{
+					spEltAsLSI = _realizedItems.ElementAt(realizedItemsCount - ((int)oldIdx - _realizedTopIdx) - 1);
+					lsi = spEltAsLSI;
+					if (_itemState == ItemState.Expanded)
+					{
+						lsi.SetState(LoopingSelectorItem.State.Expanded, true);
+					}
+					else
+					{
+						lsi.SetState(LoopingSelectorItem.State.Normal, true);
+					}
+				}
+
+				if (realizedItemsCount > newIdx - _realizedTopIdx)
+				{
+					spEltAsLSI = _realizedItems.ElementAt(realizedItemsCount - ((int)newIdx - _realizedTopIdx) - 1);
+					lsi = spEltAsLSI;
+					lsi.SetState(LoopingSelectorItem.State.Selected, true);
+				}
+			}
+		}
+
+		internal void VisualIndexToItemIndex(uint visualIndex, out uint itemIndex)
+		{
+			//if (itemIndex == null) { return; }
+
+			IList<object> itemsCollection;
+			itemsCollection = Items;
+
+			var itemCount = 0;
+			itemCount = itemsCollection.Count;
+
+			itemIndex = PositiveMod((int)visualIndex, itemCount);
+		}
+
+		void RealizeItem(uint itemIdxToRealize, out LoopingSelectorItem ppItem)
+		{
+			LoopingSelectorItem spLoopingSelectorItem;
+			ContentControl spLoopingSelectorItemAsCC;
+			DependencyObject spLoopingSelectorItemAsDO;
+			LoopingSelectorItem lsi = null;
+
+			//if (ppItem == null) { return; }
+
+			uint moddedItemIdx = 0;
+			VisualIndexToItemIndex(itemIdxToRealize, out moddedItemIdx);
+
+			var wasItemRecycled = false;
+
+			RetreiveItemFromAPRealizedItems(moddedItemIdx, out spLoopingSelectorItem);
+			if (!(spLoopingSelectorItem is { }) && _recycledItems.Count != 0)
+			{
+				spLoopingSelectorItem = _recycledItems.Pop();
+				wasItemRecycled = true;
+			}
+
+			if (!(spLoopingSelectorItem is { }))
+			{
+				UIElement spLSIAsUIElt;
+				FrameworkElement spLSIAsFE;
+				IList<UIElement> spPanelChildren;
+				DataTemplate spDataTemplate;
+				Control spLSIAsControl;
+				Control spThisAsControl;
+				//EventRegistrationToken tappedToken = default;
+				var visualTreeRebuilt = false;
+
+				//QueryInterface(__uuidof(Control), &spThisAsControl);
+				spThisAsControl = this;
+
+				uint childCount;
+				GetPanelChildren(out spPanelChildren, out childCount);
+
+				//wrl.MakeAndInitialize<LoopingSelectorItem>(spLoopingSelectorItem);
+				spLoopingSelectorItem = new LoopingSelectorItem();
+				//spLoopingSelectorItem.As(spLSIAsUIElt);
+				spLSIAsUIElt = spLoopingSelectorItem;
+				//spLoopingSelectorItem.As(spLSIAsControl);
+				spLSIAsControl = spLoopingSelectorItem;
+				//spLoopingSelectorItem.As(spLoopingSelectorItemAsCC);
+				spLoopingSelectorItemAsCC = spLoopingSelectorItem;
+				//spLoopingSelectorItem.As(spLoopingSelectorItemAsDO);
+				spLoopingSelectorItemAsDO = spLoopingSelectorItem;
+				//spLoopingSelectorItem.As(spLSIAsFE);
+				spLSIAsFE = spLoopingSelectorItem;
+				lsi = spLoopingSelectorItem;
+
+				lsi.SetParent(this);
+				spDataTemplate = ItemTemplate;
+				spLoopingSelectorItemAsCC.ContentTemplate = spDataTemplate;
+				spLSIAsFE.Width = _itemWidth;
+				spLSIAsFE.Height = _itemHeight;
+				spPanelChildren.Add(spLSIAsUIElt);
+
+				HorizontalAlignment horizontalAlignment;
+				Thickness padding;
+
+				horizontalAlignment = spThisAsControl.HorizontalContentAlignment;
+				spLSIAsControl.HorizontalContentAlignment = horizontalAlignment;
+
+				padding = spThisAsControl.Padding;
+				spLSIAsControl.Padding = padding;
+
+				// The event will be disconnected when the item is destroyed. No
+				// need to keep track of the token.
+				//(spLSIAsUIElt.add_Tapped(wrl.Callback<nput.ITappedEventHandler>
+				//		(this, &LoopingSelector.OnItemTapped),
+				//	&tappedToken));
+				spLSIAsUIElt.Tapped += OnItemTapped;
+
+				//spLSIAsControl.ApplyTemplate(visualTreeRebuilt);
+				spLSIAsControl.ApplyTemplate();
+			}
+			else
+			{
+				FrameworkElement spLSIAsFE;
+
+				lsi = spLoopingSelectorItem;
+
+				//if (wasItemRecycled)
+				//{
+				//	_recycledItems.pop_back();
+				//}
+
+				//spLoopingSelectorItem.As(spLoopingSelectorItemAsCC);
+				spLoopingSelectorItemAsCC = spLoopingSelectorItem;
+				//spLoopingSelectorItem.As(spLoopingSelectorItemAsDO);
+				spLoopingSelectorItemAsDO = spLoopingSelectorItem;
+				//spLoopingSelectorItem.As(spLSIAsFE);
+				spLSIAsFE = spLoopingSelectorItem;
+				spLSIAsFE.Width = _itemWidth;
+			}
+
+			// Retrieve the data item and set it as content.
+			IList<object> spItemsCollection;
+			spItemsCollection = Items;
+			DependencyObject spItem;
+			//spItemsCollection.GetAt(moddedItemIdx, &spItem);
+			spItem = spItemsCollection[(int)moddedItemIdx] as DependencyObject;
+			spLoopingSelectorItemAsCC.Content = spItem;
+
+			//xaml_automation.IAutomationPropertiesStatics> spAutomationPropertiesStatics;
+			//(wf.GetActivationFactory(
+			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_AutomationProperties),
+			//	&spAutomationPropertiesStatics));
+
+			// To get the position in set, we add 1 to the item index - this is so Narrator announces
+			// (e.g.) "1 of 30" for the item at index 0, since "0 of 30" through "29 of 30" would be
+			// very unexpected to users.
+			var itemCount = 0;
+			itemCount = spItemsCollection.Count;
+			//spAutomationPropertiesStatics.SetPositionInSet(spLoopingSelectorItemAsDO, moddedItemIdx + 1);
+			AutomationProperties.SetPositionInSet(spLoopingSelectorItemAsDO, (int)moddedItemIdx + 1);
+			//spAutomationPropertiesStatics.SetSizeOfSet(spLoopingSelectorItemAsDO, itemCount);
+			AutomationProperties.SetSizeOfSet(spLoopingSelectorItemAsDO, itemCount);
+
+			lsi.SetVisualIndex((int)itemIdxToRealize);
+
+			if (_itemState == ItemState.Expanded || _itemState == ItemState.ManipulationInProgress ||
+			    _itemState == ItemState.LostFocus)
+			{
+				lsi.SetState(LoopingSelectorItem.State.Expanded, false);
+			}
+			else
+			{
+				lsi.SetState(LoopingSelectorItem.State.Normal, false);
+			}
+
+			lsi.AutomationUpdatePeerIfExists((int)moddedItemIdx);
+			//spLoopingSelectorItem.CopyTo(ppItem);
+			ppItem = spLoopingSelectorItem;
+		}
+
+		void RecycleItem(LoopingSelectorItem pItem)
+		{
+			LoopingSelectorItem spItemAsLSI;
+			UIElement spItemAsUI;
+
+			spItemAsLSI = pItem;
+			//spItemAsLSI.As(spItemAsUI);
+			spItemAsUI = spItemAsLSI;
+
+			_recycledItems.Push(pItem);
+
+			// Removing from the visual tree is expensive. Place offscreen instead.
+			//NT_global.System.Diagnostics.Debug.Assert(_spCanvasStatics);
+			//_spCanvasStatics.SetLeft(spItemAsUI, -10000);
+			Canvas.SetLeft(spItemAsUI, -10000);
+		}
+
+		#region Sound Helpers
+
+		void RequestInteractionSound(ElementSoundKind soundKind)
+		{
+			DependencyObject thisAsDO;
+
+			//QueryInterface(__uuidof(DependencyObject), &thisAsDO);
+			thisAsDO = this;
+			PlatformHelpers.RequestInteractionSoundForElement(soundKind, thisAsDO);
+		}
+
+		#endregion Sound Helpers
 
 		#region FrameworkElementOverrides
 
@@ -232,12 +1327,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
-
 		{
-			int itemWidth = 0;
-			double verticalOffsetBeforeArrangeImpl = 0.0;
-			bool expectedOffsetChange = false;
-			double widthToReturn = 0.0;
+			var itemWidth = 0;
+			var verticalOffsetBeforeArrangeImpl = 0.0;
+			var expectedOffsetChange = false;
+			var widthToReturn = 0.0;
 
 			////LSTRACE("[%d] Arrange called.", (((int)this) >> 8) & 0xFF);
 
@@ -256,7 +1350,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// Override the width with that of the first item's
 				// width. A Canvas doesn't wrap
 				// content so we do this so the control sizes correctly.
-				widthToReturn = (float)(itemWidth);
+				widthToReturn = itemWidth;
 			}
 			else
 			{
@@ -264,7 +1358,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				widthToReturn = finalSize.Width;
 
 				// We compute a new value for _itemWidthFallback
-				double newItemWidthFallback = finalSize.Width;
+				var newItemWidthFallback = finalSize.Width;
 				if (_itemWidthFallback != newItemWidthFallback)
 				{
 					_itemWidthFallback = newItemWidthFallback;
@@ -291,21 +1385,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				verticalOffsetBeforeArrangeImpl = _tpScrollViewer.VerticalOffset;
 			}
 
-			Size returnValue = LoopingSelectorGenerated.ArrangeOverrideImpl(finalSize);
+			//Size returnValue = LoopingSelectorGenerated.ArrangeOverrideImpl(finalSize);
+			Size returnValue = base.ArrangeOverride(finalSize);
 
 			if (finalSize.Height != _lastArrangeSizeHeight && _isScrollViewerInitialized && !_isSetupPending)
 			{
 				// Orientation must have changed or we got resized, what used to be the middle point has changed.
 				// So we need to shift the items to restore the old middle point item.
 
-				double oldPanelSize = _panelSize;
-				double verticalOffsetAfterArrangeImpl = 0.0;
+				var oldPanelSize = _panelSize;
+				var verticalOffsetAfterArrangeImpl = 0.0;
 
 				verticalOffsetAfterArrangeImpl = _tpScrollViewer.VerticalOffset;
 
 				SizePanel();
 
-				double delta = (_panelSize - oldPanelSize) / 2;
+				var delta = (_panelSize - oldPanelSize) / 2;
 				_realizedTop += delta;
 				_realizedBottom += delta;
 
@@ -351,17 +1446,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		protected override void OnApplyTemplate()
-
 		{
-
-
 			//ControlProtected> spControlProtected;
-			ContentControl spScrollViewerAsCC;
+			ContentControl spScrollViewerAsCC = default;
 			DependencyObject spScrollViewerAsDO;
 			DependencyObject spUpButtonAsDO;
-			ButtonBase spUpButtonAsButtonBase;
+			//ButtonBase spUpButtonAsButtonBase;
 			DependencyObject spDownButtonAsDO;
-			ButtonBase spDownButtonAsButtonBase;
+			//ButtonBase spDownButtonAsButtonBase;
 
 			////LSTRACE("[%d] OnApplyTemplate called.", (((int)this) >> 8) & 0xFF);
 
@@ -375,1209 +1467,132 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (_tpUpButton is { })
 			{
-				(_tpUpButton.remove_Click(_upButtonClickedToken));
+				//(_tpUpButton.remove_Click(_upButtonClickedToken));
+				_tpUpButton.Click -= OnUpButtonClicked;
 			}
 
-			if (_tpDownButton)
+			if (_tpDownButton is { })
 			{
-				(_tpDownButton.remove_Click(_downButtonClickedToken));
+				//(_tpDownButton.remove_Click(_downButtonClickedToken));
+				_tpDownButton.Click -= OnDownButtonClicked;
 			}
 
-			if (_tpScrollViewerPrivate)
+			if (_tpScrollViewerPrivate is { })
 			{
 				_tpScrollViewerPrivate.EnableOverpan();
 			}
 
-			_tpScrollViewer.Clear();
-			_tpScrollViewerPrivate.Clear();
-			_tpPanel.Clear();
-			_tpUpButton.Clear();
-			_tpDownButton.Clear();
+			_tpScrollViewer = null;
+			_tpScrollViewerPrivate = null;
+			_tpPanel = null;
+			_tpUpButton = null;
+			_tpDownButton = null;
 
-			LoopingSelectorGenerated.OnApplyTemplateImpl();
-			QueryInterface(__uuidof(ControlProtected), &spControlProtected);
-			(spControlProtected.GetTemplateChild(
-				wrl_wrappers.Hstring(c_upButtonTemplatePart),
-				&spUpButtonAsDO));
+			//LoopingSelectorGenerated.OnApplyTemplateImpl();
 
-			if (spUpButtonAsDO)
+			//QueryInterface(__uuidof(ControlProtected), &spControlProtected);
+			//(spControlProtected.GetTemplateChild(
+			//	wrl_wrappers.Hstring(c_upButtonTemplatePart),
+			//	&spUpButtonAsDO));
+			spUpButtonAsDO = GetTemplateChild(c_upButtonTemplatePart);
+
+			if (spUpButtonAsDO is ButtonBase spUpButtonAsButtonBase)
 			{
-				IGNOREHR(spUpButtonAsDO.As(spUpButtonAsButtonBase));
+				//IGNOREHR(spUpButtonAsDO.As(spUpButtonAsButtonBase));
 				_tpUpButton = spUpButtonAsButtonBase;
 			}
 
-			(spControlProtected.GetTemplateChild(
-				wrl_wrappers.Hstring(c_downButtonTemplatePart),
-				&spDownButtonAsDO));
+			//(spControlProtected.GetTemplateChild(
+			//	wrl_wrappers.Hstring(c_downButtonTemplatePart),
+			//	&spDownButtonAsDO));
+			spDownButtonAsDO = GetTemplateChild(c_downButtonTemplatePart);
 
-			if (spDownButtonAsDO)
+			if (spDownButtonAsDO is ButtonBase spDownButtonAsButtonBase)
 			{
-				IGNOREHR(spDownButtonAsDO.As(spDownButtonAsButtonBase));
+				//IGNOREHR(spDownButtonAsDO.As(spDownButtonAsButtonBase));
 				_tpDownButton = spDownButtonAsButtonBase;
 			}
 
-			(spControlProtected.GetTemplateChild(
-				wrl_wrappers.Hstring(c_scrollViewerTemplatePart),
-				&spScrollViewerAsDO));
+			//(spControlProtected.GetTemplateChild(
+			//	wrl_wrappers.Hstring(c_scrollViewerTemplatePart),
+			//	&spScrollViewerAsDO));
+			spScrollViewerAsDO = GetTemplateChild(c_scrollViewerTemplatePart);
 
-			if (spScrollViewerAsDO)
+			if (spScrollViewerAsDO is { })
 			{
-				ScrollViewer> spScrollViewer;
-				ScrollViewerPrivate> spScrollViewerPrivate;
+				ScrollViewer spScrollViewer;
+				//ScrollViewerPrivate spScrollViewerPrivate;
 
 				// Try to cast to IScrollViewer. If failed
 				// just allow to remain null.
-				IGNOREHR(spScrollViewerAsDO.As(spScrollViewer));
-				IGNOREHR(spScrollViewerAsDO.As(spScrollViewerPrivate));
-				IGNOREHR(spScrollViewerAsDO.As(spScrollViewerAsCC));
+				//IGNOREHR(spScrollViewerAsDO.As(spScrollViewer));
+				spScrollViewer = spScrollViewerAsDO as ScrollViewer;
+				//IGNOREHR(spScrollViewerAsDO.As(spScrollViewerPrivate));
+				//IGNOREHR(spScrollViewerAsDO.As(spScrollViewerAsCC));
+				spScrollViewerAsCC = spScrollViewerAsDO as ContentControl;
 
 				_tpScrollViewer = spScrollViewer;
-				_tpScrollViewerPrivate = spScrollViewerPrivate;
+				//_tpScrollViewerPrivate = spScrollViewerPrivate;
 			}
 
-			if (spScrollViewerAsCC)
+			if (spScrollViewerAsCC is { })
 			{
-				xaml_primitives.ILoopingSelectorPanel> spPanel;
+				LoopingSelectorPanel spPanel;
 				DependencyObject spLoopingSelectorPanelAsInspectable;
-				wrl.MakeAndInitialize<LoopingSelectorPanel>(spPanel);
-				spPanel.As(spLoopingSelectorPanelAsInspectable);
+				//wrl.MakeAndInitialize<LoopingSelectorPanel>(spPanel);
+				spPanel = new LoopingSelectorPanel();
+				//spPanel.As(spLoopingSelectorPanelAsInspectable);
+				spLoopingSelectorPanelAsInspectable = spPanel;
 				spScrollViewerAsCC.Content = spLoopingSelectorPanelAsInspectable;
 				_tpPanel = spPanel;
 			}
 
-			if (_tpPanel)
+			if (_tpPanel is { })
 			{
-				xaml.FrameworkElement> spPanelAsFE;
-				_tpPanel.As(spPanelAsFE);
+				FrameworkElement spPanelAsFE;
+				//_tpPanel.As(spPanelAsFE);
+				spPanelAsFE = _tpPanel;
 				spPanelAsFE.Height = 1000000;
 			}
 
-			if (_tpUpButton)
+			if (_tpUpButton is { })
 			{
-				(_tpUpButton.add_Click(
-					wrl.Callback<RoutedEventHandler>(this, &LoopingSelector.OnUpButtonClicked),
-					&_upButtonClickedToken));
+				//(_tpUpButton.add_Click(
+				//	wrl.Callback<RoutedEventHandler>(this, &LoopingSelector.OnUpButtonClicked),
+				//	&_upButtonClickedToken));
+				_tpUpButton.Click += OnUpButtonClicked;
 			}
 
-			if (_tpDownButton)
+			if (_tpDownButton is { })
 			{
-				(_tpDownButton.add_Click(
-					wrl.Callback<RoutedEventHandler>(this, &LoopingSelector.OnDownButtonClicked),
-					&_downButtonClickedToken));
+				//(_tpDownButton.add_Click(
+				//	wrl.Callback<RoutedEventHandler>(this, &LoopingSelector.OnDownButtonClicked),
+				//	&_downButtonClickedToken));
+				_tpDownButton.Click += OnDownButtonClicked;
 			}
 
-			if (_tpScrollViewer)
+			if (_tpScrollViewer is { })
 			{
-				(_tpScrollViewer.add_ViewChanged(
-					wrl.Callback<wf.IEventHandler<xaml_controls.ScrollViewerViewChangedEventArgs>>
-						(this, &LoopingSelector.OnViewChanged),
-					&_viewChangedToken));
+				//(_tpScrollViewer.add_ViewChanged(
+				//	wrl.Callback<wf.IEventHandler<xaml_controls.ScrollViewerViewChangedEventArgs>>
+				//		(this, &LoopingSelector.OnViewChanged),
+				//	&_viewChangedToken));
+				_tpScrollViewer.ViewChanged += OnViewChanged;
 
-				(_tpScrollViewer.add_ViewChanging(
-					wrl.Callback<wf.IEventHandler<xaml_controls.ScrollViewerViewChangingEventArgs>>
-						(this, &LoopingSelector.OnViewChanging),
-					&_viewChangingToken));
+				//(_tpScrollViewer.add_ViewChanging(
+				//	wrl.Callback<wf.IEventHandler<xaml_controls.ScrollViewerViewChangingEventArgs>>
+				//		(this, &LoopingSelector.OnViewChanging),
+				//	&_viewChangingToken));
+				_tpScrollViewer.ViewChanging += OnViewChanging;
 			}
 
-			if (_tpScrollViewerPrivate)
+			if (_tpScrollViewerPrivate is { })
 			{
 				_tpScrollViewerPrivate.DisableOverpan();
 			}
 		}
 
 		#endregion
-
-		#region UIElementOverrides
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-
-			LoopingSelector> spThis(this);
-			ILoopingSelector> spThisAsILoopingSelector;
-			xaml_automation_peers.LoopingSelectorAutomationPeer> spLoopingSelectorAutomationPeer;
-
-			spThis.As(spThisAsILoopingSelector);
-			(wrl.MakeAndInitialize<xaml_automation_peers.LoopingSelectorAutomationPeer>
-				(spLoopingSelectorAutomationPeer, spThisAsILoopingSelector));
-
-			spLoopingSelectorAutomationPeer.CopyTo(returnValue);
-			spLoopingSelectorAutomationPeer.AsWeak(_wrAP);
-			return returnValue;
-		}
-
-		#endregion
-
-		void OnUpButtonClicked(
-			DependencyObject pSender,
-			RoutedEventArgs pEventArgs)
-		{
-			UNREFERENCED_PARAMETER(pSender);
-			UNREFERENCED_PARAMETER(pEventArgs);
-
-			SelectPreviousItem();
-		}
-
-		void OnDownButtonClicked(
-			 DependencyObject pSender,
-			 RoutedEventArgs pEventArgs)
-		{
-			UNREFERENCED_PARAMETER(pSender);
-			UNREFERENCED_PARAMETER(pEventArgs);
-
-			SelectNextItem();
-		}
-
-		void OnKeyDownImpl(
-			KeyRoutedEventArgs pEventArgs)
-		{
-
-			bool bHandled = false;
-			wsy.VirtualKey key = wsy.VirtualKey_None;
-			wsy.VirtualKeyModifiers nModifierKeys;
-
-			if (pEventArgs == null) throw new ArgumentNullException();
-
-			bHandled = pEventArgs.Handled;
-			if (bHandled)
-			{
-				goto Cleanup;
-			}
-
-			key = pEventArgs.Key;
-			PlatformHelpers.GetKeyboardModifiers(nModifierKeys);
-			if (!(nModifierKeys & wsy.VirtualKeyModifiers_Menu))
-			{
-				bHandled = true;
-
-				switch (key)
-				{
-					case wsy.VirtualKey_Up:
-						SelectPreviousItem();
-						break;
-					case wsy.VirtualKey_Down:
-						SelectNextItem();
-						break;
-					case wsy.VirtualKey_GamepadLeftTrigger:
-					case wsy.VirtualKey_PageUp:
-						HandlePageUpKeyPress();
-						break;
-					case wsy.VirtualKey_GamepadRightTrigger:
-					case wsy.VirtualKey_PageDown:
-						HandlePageDownKeyPress();
-						break;
-					case wsy.VirtualKey_Home:
-						HandleHomeKeyPress();
-						break;
-					case wsy.VirtualKey_End:
-						HandleEndKeyPress();
-						break;
-					default:
-						bHandled = false;
-				}
-
-				pEventArgs.Handled = bHandled;
-			}
-		}
-
-		void SelectNextItem()
-		{
-			int index;
-			bool shouldLoop = false;
-
-			shouldLoop = ShouldLoop;
-			index = SelectedIndex;
-
-			//Don't scroll past the end of the list if we are not looping:
-			if (index < (int)_itemCount - 1 || shouldLoop)
-			{
-				double pixelsToMove = _scaledItemHeight;
-				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
-				RequestInteractionSound(xaml.ElementSoundKind_Focus);
-			}
-
-			return;
-		}
-
-		void SelectPreviousItem()
-		{
-			int index;
-			bool shouldLoop = false;
-
-			shouldLoop = ShouldLoop;
-			index = SelectedIndex;
-
-			//Don't scroll past the start of the list if we are not looping
-			if (index > 0 || shouldLoop)
-			{
-				double pixelsToMove = -1 * _scaledItemHeight;
-				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
-				RequestInteractionSound(xaml.ElementSoundKind_Focus);
-			}
-
-			return;
-		}
-
-		void HandlePageDownKeyPress()
-		{
-			double viewportHeight = _unpaddedExtentBottom - _unpaddedExtentTop;
-			double pixelsToMove = viewportHeight / 2;
-			SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
-			RequestInteractionSound(xaml.ElementSoundKind_Focus);
-
-			return;
-		}
-
-		void HandlePageUpKeyPress()
-		{
-			double viewportHeight = _unpaddedExtentBottom - _unpaddedExtentTop;
-			double pixelsToMove = -1 * viewportHeight / 2;
-			SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
-			RequestInteractionSound(xaml.ElementSoundKind_Focus);
-
-			return;
-		}
-
-		void HandleHomeKeyPress()
-		{
-			double pixelsToMove = -1 * _realizedMidpointIdx * _scaledItemHeight;
-			SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */);
-			Balance(true /* isOnSnapPoint */);
-			RequestInteractionSound(xaml.ElementSoundKind_Focus);
-
-			return;
-		}
-
-		void HandleEndKeyPress()
-		{
-			int idxMovement = (_itemCount - 1) - _realizedMidpointIdx;
-			double pixelsToMove = idxMovement * _scaledItemHeight;
-			SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */);
-			Balance(true /* isOnSnapPoint */);
-			RequestInteractionSound(xaml.ElementSoundKind_Focus);
-
-			return;
-		}
-
-		void OnViewChanged(
-			object pSender,
-			ScrollViewerViewChangedEventArgs pEventArgs)
-		{
-			UNREFERENCED_PARAMETER(pSender);
-
-
-			// In the new ScrollViwer2 interface OnViewChanged will actually
-			// fire for all the intermediate ViewChanging events as well.
-			// We only capture the final view.
-			bool isIntermediate = false;
-			isIntermediate = pEventArgs.IsIntermediate;
-			if (!isIntermediate)
-			{
-				//LSTRACE("[%d] OnViewChanged called.", (((int)this) >> 8) & 0xFF);
-
-				if (!_isWithinScrollChange && !_isWithinArrangeOverride)
-				{
-					Balance(true /* isOnSnapPoint */ );
-					if (_itemState == ItemState.ManipulationInProgress)
-					{
-						TransitionItemsState(ItemState.Expanded);
-						_itemState = ItemState.Expanded;
-					}
-					else if (_itemState == ItemState.LostFocus)
-					{
-						ExpandIfNecessary();
-					}
-
-					_skipSelectionChangeUntilFinalViewChanged = false;
-				}
-			}
-			else
-			{
-				////LSTRACE("[%d] Skipping ViewChanged event, within scroll", (((int)this) >> 8) & 0xFF);
-			}
-
-			// Cleanup
-			// return hr;
-		}
-
-		void OnViewChanging(
-			object pSender,
-			ScrollViewerViewChangingEventArgs pEventArgs)
-		{
-			UNREFERENCED_PARAMETER(pSender);
-			UNREFERENCED_PARAMETER(pEventArgs);
-
-
-			////LSTRACE("[%d] OnViewChanging called.", (((int)this) >> 8) & 0xFF);
-
-			if (!_isWithinScrollChange && !_isWithinArrangeOverride)
-			{
-				Balance(false /* isOnSnapPoint */ );
-				// The Focus transition doesn't occur sometimes when flicking
-				// on one ScrollViewer, than another before the first flick completes.
-				// This is a possible ScrollViewer bug. Any time a manipulation
-				// occurs we force focus.
-				if (_itemState != ItemState.LostFocus && !_hasFocus)
-				{
-					Control> spThisAsControl;
-					UIElement spThisAsElement;
-					bool didSucceed = false;
-					xaml.FocusState focusState = xaml.FocusState.FocusState_Unfocused;
-					QueryInterface(__uuidof(Control), &spThisAsControl);
-					QueryInterface(__uuidof(UIElement), &spThisAsElement);
-					focusState = spThisAsElement.FocusState;
-					if (focusState == xaml.FocusState_Unfocused)
-					{
-						spThisAsControl.Focus(xaml.FocusState.FocusState_Programmatic, &didSucceed);
-					}
-				}
-
-				// During a manipulation no item should be highlighted.
-				if (_itemState == ItemState.Expanded)
-				{
-					TransitionItemsState(ItemState.ManipulationInProgress);
-					_itemState = ItemState.ManipulationInProgress;
-					AutomationRaiseExpandCollapse();
-				}
-			}
-			else
-			{
-				////LSTRACE("[%d] Skipping ViewChanging event, within scroll", (((int)this) >> 8) & 0xFF);
-			}
-		}
-
-		void OnPointerEntered(
-			object pSender,
-			PointerRoutedEventArgs pEventArgs)
-		{
-
-			//UNREFERENCED_PARAMETER(pSender);
-			//UNREFERENCED_PARAMETER(pEventArgs);
-			PointerDeviceType nPointerDeviceType = PointerDeviceType.Touch;
-			PointerPoint spPointerPoint;
-			PointerDevice spPointerDevice;
-
-			spPointerPoint = pEventArgs.GetCurrentPoint(null);
-			if (spPointerPoint == null) throw new ArgumentNullException();
-			spPointerDevice = spPointerPoint.PointerDevice;
-			if (spPointerDevice == null) throw new ArgumentNullException();
-			nPointerDeviceType = spPointerDevice.PointerDeviceType;
-			if (nPointerDeviceType != PointerDeviceType.Touch)
-			{
-				GoToState("PointerOver", false);
-			}
-		}
-
-		void OnPointerExited(
-			object pSender,
-			PointerRoutedEventArgs pEventArgs)
-		{
-
-			//UNREFERENCED_PARAMETER(pSender);
-			//UNREFERENCED_PARAMETER(pEventArgs);
-
-			GoToState("Normal", false);
-			TransitionItemsState(_itemState);
-			// Cleanup
-			// return hr;
-		}
-
-		void GoToState(string strState, bool useTransitions)
-		{
-			//VisualStateManagerStatics spVSMStatics;
-			//Control spThisAsControl;
-
-			//(wf.GetActivationFactory(
-			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_VisualStateManager),
-			//	&spVSMStatics));
-
-			//QueryInterface(__uuidof(Control), &spThisAsControl);
-
-			//bool returnValue = false;
-			//spVSMStatics.GoToState(spThisAsControl, strState, useTransitions, &returnValue);
-			VisualStateManager.GoToState(this, strState, useTransitions);
-
-			return;
-		}
-
-		void OnPressed(
-			object pSender,
-			PointerRoutedEventArgs pEventArgs)
-		{
-			//UNREFERENCED_PARAMETER(pSender);
-			//UNREFERENCED_PARAMETER(pEventArgs);
-
-			////LSTRACE("[%d] OnPressed called.", (((int)this) >> 8) & 0xFF);
-
-			if (_itemState == ItemState.LostFocus)
-			{
-				// LostFocus is only entered during a manipulation. Tapping
-				// the control after LostFocus will reactivate it.
-				_itemState = ItemState.ManipulationInProgress;
-			}
-
-			pEventArgs.Handled = true;
-		}
-
-		void OnLostFocus(
-			object pSender,
-			RoutedEventArgs pEventArgs)
-		{
-			//UNREFERENCED_PARAMETER(pSender);
-			//UNREFERENCED_PARAMETER(pEventArgs);
-
-			bool hasFocus = false;
-			HasFocus(out hasFocus);
-			// We check to ensure that we previously did have focus
-			// (stored in _hasFocus) but now don't (the result of hasFocus)
-			// to ensure this is actually a focus transition.
-			if (!hasFocus && _hasFocus)
-			{
-				_hasFocus = false;
-				if (_itemState == ItemState.ManipulationInProgress)
-				{
-					// If we're in the middle of a manipulation we
-					// set itemState to LostFocus so completion of the
-					// manipulation will collapse.
-					_itemState = ItemState.LostFocus;
-				}
-				else
-				{
-					ExpandIfNecessary();
-				}
-			}
-		}
-
-		void OnGotFocus(
-			object pSender,
-			RoutedEventArgs pEventArgs)
-		{
-			bool hasFocus = false;
-			HasFocus(out hasFocus);
-
-			if (hasFocus)
-			{
-				_hasFocus = true;
-			}
-
-			return;
-		}
-
-		void OnItemTapped(
-			object pSender,
-			TappedRoutedEventArgs pArgs)
-		{
-			if (_itemState == ItemState.Expanded)
-			{
-				LoopingSelectorItem spLsiInterface;
-				//pSender.QueryInterface<ILoopingSelectorItem>(spLsiInterface);
-				spLsiInterface = pSender as LoopingSelectorItem;
-
-				LoopingSelectorItem lsiPtr = (LoopingSelectorItem)(spLsiInterface);
-
-				int itemVisualIndex = 0;
-				uint itemIndex = 0;
-				itemVisualIndex = lsiPtr.GetVisualIndex();
-				VisualIndexToItemIndex(itemVisualIndex, out itemIndex);
-
-				// We need to make sure that we check against the selected index,
-				// not the midpoint index.  Normally, the item in the center of the view
-				// is also the selected item, but in the case of UI automation, it
-				// is not always guaranteed to be.
-				int selectedIndex = 0;
-				selectedIndex = SelectedIndex;
-
-				if (itemIndex == (uint)(selectedIndex))
-				{
-					ExpandIfNecessary();
-				}
-				else
-				{
-					// Tapping any other time scrolls to that item.
-					double pixelsToMove = (double)(itemVisualIndex - _realizedMidpointIdx) * (_scaledItemHeight);
-					SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
-				}
-			}
-
-			return;
-		}
-
-		void OnPropertyChanged(
-			DependencyPropertyChangedEventArgs pArgs)
-		{
-
-			DependencyProperty spPropertyInfo;
-
-			spPropertyInfo = pArgs.Property;
-			if (spPropertyInfo == ItemsProperty)
-			{
-				////LSTRACE("[%d] Items property refreshed.", (((int)this) >> 8) & 0xFF);
-
-				// Optimization: When items change the size of the scrollviewer does not.
-				// We clear all items and allow for the balancing function to realize
-				// and replace the items as instead of refreshing the entire thing.
-				ClearAllItems();
-				Balance(false /* isOnSnapPoint */ );
-				AutomationClearPeerMap();
-				AutomationRaiseSelectionChanged();
-			}
-			else if (spPropertyInfo == ShouldLoopProperty)
-			{
-				////LSTRACE("[%d] ShouldLoop property refreshed.", (((int)this) >> 8) & 0xFF);
-
-				// ShouldLoop will require resizing the bounds of the scrollviewer, as a result
-				// we start from scratch and resetup everything.
-				ClearAllItems();
-				_isSized = false;
-				_isSetupPending = true;
-				Balance(false /* isOnSnapPoint */ );
-			}
-			else if (spPropertyInfo == SelectedIndexProperty && !_disablePropertyChange)
-			{
-				////LSTRACE("[%d] Selected Index property refreshed.", (((int)this) >> 8) & 0xFF);
-				DependencyObject spValue;
-				int spReferenceInt;
-				int newIdx = 0;
-				int oldIdx = 0;
-
-				spValue = pArgs.NewValue;
-				spValue.As(spReferenceInt);
-				newIdx = spReferenceInt.Value;
-				spValue = pArgs.OldValue;
-				spValue.As(spReferenceInt);
-				oldIdx = spReferenceInt.Value;
-				// NOTE: This call only will be applied when the
-				// scrollviewer is not being manipulated. Once a
-				// manipulation has begun the user's eventual
-				// selection takes dominance.
-				SetSelectedIndex(oldIdx, newIdx);
-				Balance(false /* isOnSnapPoint */ );
-			}
-		}
-
-		void IsTemplateAndItemsAttached(out bool result)
-		{
-
-			IList<object> spItems;
-
-			result = false;
-
-			if (_tpScrollViewer is { } &&
-			    _tpPanel is { })
-			{
-				spItems = Items;
-				if (spItems is { })
-				{
-					uint itemCount = 0;
-					itemCount = (uint)spItems.Count;
-					_itemCount = itemCount;
-					if (itemCount > 0)
-					{
-						result = true;
-					}
-				}
-			}
-		}
-
-		void IsSetupForAutomation(out bool isSetup)
-		{
-			bool isTemplateAndItemsAttached = false;
-			IsTemplateAndItemsAttached(out isTemplateAndItemsAttached);
-			isSetup = isTemplateAndItemsAttached && _isSized && !_isSetupPending;
-		}
-
-		void Balance(bool isOnSnapPoint)
-		{
-
-
-			bool isTemplateAndItemsAttached = false;
-			bool abortBalance = false;
-
-			IsTemplateAndItemsAttached(out isTemplateAndItemsAttached);
-			abortBalance = !isTemplateAndItemsAttached;
-
-			// Normalize will call SetScrollPosition, which
-			// triggers another ViewChanged event to occur.
-			// We skip the balance called from ViewChanged.
-			if (!abortBalance && _skipNextBalance)
-			{
-				_skipNextBalance = false;
-				////LSTRACE("[%d] Skipping balance.", (((int)this) >> 8) & 0xFF);
-				abortBalance = true;
-			}
-
-			if (!abortBalance)
-			{
-				MeasureExtent(out _unpaddedExtentTop, out _unpaddedExtentBottom);
-
-				// 100000 is a arbitrary number that is larger than any possible screen size.
-				// If the visible area of the scrollviewer is larger than this value then
-				// it's likely the control is placed in a ScrollViewer or other layout element
-				// that feeds infinite size to its children. In these situations we avoid
-				// balancing.
-				if (_unpaddedExtentBottom - _unpaddedExtentTop > 100000)
-				{
-					_skipNextArrange = false;
-					////LSTRACE("[%d] Skipping balance. Extents too large, LoopingSelector is not designed to operate with infinite or very large extents.", (((int)this) >> 8) & 0xFF);
-					abortBalance = true;
-				}
-			}
-
-			if (!abortBalance)
-			{
-				EnsureSetup();
-				abortBalance = !_isSized || _isSetupPending;
-			}
-
-			if (!abortBalance)
-			{
-				uint headAdd = 0;
-				uint headTrim = 0;
-				uint tailAdd = 0;
-				uint tailTrim = 0;
-
-				int maxTopIdx = 0;
-				int maxBottomIdx = 0;
-				double paddedExtentTop = 0.0;
-				double paddedExtentBottom = 0.0;
-				double viewportHeight = 0.0;
-
-				GetMaximumAddIndexPosition(out maxTopIdx, out maxBottomIdx);
-				// We only normalize on snap points because otherwise a manipulation
-				// is in progress and SetScrollPosition will
-				// coherce the scroll offsetonto a snappoint, even if we're currently
-				// between two.
-				if (isOnSnapPoint)
-				{
-					Normalize();
-				}
-
-				viewportHeight = _unpaddedExtentBottom - _unpaddedExtentTop;
-				// Virtualization buffer is a half viewport in either direction.
-				paddedExtentTop = _unpaddedExtentTop - viewportHeight / 2;
-				paddedExtentBottom = _unpaddedExtentBottom + viewportHeight / 2;
-
-				// By adding a pixel we assure we never trim and re-add an element.
-				while (_realizedTop < (paddedExtentTop + 1.0 - _scaledItemHeight) && _realizedItems.size() > 0)
-				{
-					Trim(ListEnd.Head);
-					headTrim++;
-				}
-
-				while (_realizedBottom > (paddedExtentBottom - 1.0 + _scaledItemHeight) && _realizedItems.size() > 0)
-				{
-					Trim(ListEnd.Tail);
-					tailTrim++;
-				}
-
-				while (_realizedTop > paddedExtentTop && _realizedTopIdx > maxTopIdx)
-				{
-					Add(ListEnd.Head);
-					headAdd++;
-				}
-
-				while (_realizedBottom < paddedExtentBottom && _realizedBottomIdx < maxBottomIdx)
-				{
-					Add(ListEnd.Tail);
-					tailAdd++;
-				}
-
-				if (headAdd > 0 || tailAdd > 0 || tailTrim > 0 || tailAdd > 0)
-				{
-					AutomationRaiseStructureChanged();
-				}
-
-				////LSTRACE("[%d] HeadAdd: %d HeadTrim: %d TailAdd: %d TailTrim: %d Realized: %d Recycled: %d", (((int)this) >> 8) & 0xFF, headAdd, headTrim, tailAdd, tailTrim, _realizedItems.size(), _recycledItems.size());
-
-				// During manipulation we don't update the selected index. Only when
-				// we reach a final value.
-				if (isOnSnapPoint || _itemState == ItemState.Expanded)
-				{
-					UpdateSelectedItem();
-				}
-			}
-		}
-
-		void Normalize()
-		{
-
-			bool shouldLoop = false;
-
-			shouldLoop = ShouldLoop;
-			// Only normalize if strayed 50px+ from center and if
-			// in looping mode. Nonlooping selectors don't normalize.
-			if (shouldLoop && Math.Abs(_unpaddedExtentTop - _panelMidpointScrollPosition) > 50.0)
-			{
-				double delta = _panelMidpointScrollPosition - _unpaddedExtentTop;
-
-				// WORKAROUND: It's likely there's a bug in dmanip that causes it to
-				// end a manipulation not on a snap point when two fingers are on the
-				// scrollviewer. We explicitly make sure we are on a snappoint here.
-				// Delaying bug filing until our input system is more final.
-				// DManip work tracked by WPBLUE: 11547.
-				bool isActuallyOnSnapPoint = (Math.Abs(delta / _scaledItemHeight - Math.Floor(delta / _scaledItemHeight)) < 0.001);
-
-				if (isActuallyOnSnapPoint)
-				{
-					_realizedTop += delta;
-					_realizedBottom += delta;
-
-					// These are adjusted for the duration of the balance. ScrollViewer
-					// requires an invalidate pass which occurs before the next ViewChanged
-					// event for its extents to become correct , we manually account
-					// for the offset here since the next Balance happens before that.
-					_unpaddedExtentTop += delta;
-					_unpaddedExtentBottom += delta;
-
-					ShiftChildren(delta);
-					////LSTRACE("[%d] Shifted %f (%f items) %d", (((int)this) >> 8) & 0xFF, delta, delta / _scaledItemHeight, isActuallyOnSnapPoint);
-
-					SetScrollPosition(_panelMidpointScrollPosition, false);
-					// Skip the balance occuring after ViewChanged.
-					_skipNextBalance = true;
-				}
-			}
-		}
-
-		void EnsureSetup()
-		{
-			int selectedIdx = 0;
-
-			selectedIdx = SelectedIndex;
-			if (!_isSized)
-			{
-				//LSTRACE("[%d] Sizing panel.", (((int)this) >> 8) & 0xFF);
-				int itemDimAsInt = 0;
-				// Optimization: caching itemHeight and itemWidth.
-				itemDimAsInt = ItemHeight;
-				_itemHeight = (double)(itemDimAsInt);
-				_scaledItemHeight = (double)(itemDimAsInt);
-
-				itemDimAsInt = ItemWidth;
-				if (itemDimAsInt == 0)
-				{
-					// If we don't have an explictly set ItemWidth, we fallback to this value which is computed during Arrange.
-					_itemWidth = _itemWidthFallback;
-				}
-				else
-				{
-					_itemWidth = (double)(itemDimAsInt);
-				}
-
-				ClearAllItems();
-				SizePanel();
-				_isSized = true;
-			}
-
-			// ScrollViewer isn't fully initialized until the
-			// first Arrange pass and will return invalid extents
-			// and ignore SetScrollPosition requests.
-			if (_isScrollViewerInitialized && _isSetupPending)
-			{
-				//LSTRACE("[%d] Setting up bounds and scroll viewer.", (((int)this) >> 8) & 0xFF);
-				double viewportHeight = 0.0;
-				double verticalOffset = 0.0;
-				double newScrollPosition = 0.0;
-				double startPoint = 0.0;
-				bool shouldLoop = false;
-
-				shouldLoop = ShouldLoop;
-				viewportHeight = _tpScrollViewer.ViewportHeight;
-				verticalOffset = _tpScrollViewer.VerticalOffset;
-				SetupSnapPoints(0.0, _scaledItemHeight);
-				// If in looping mode the selector is setup
-				// in the middle of the scrollable area, if in nonlooping
-				// mode it is setup to be at the currently selected item's offset.
-				// (Nonlooping mode sizes the scrollable area to be percisely large
-				//  enough for the item count)
-				if (shouldLoop)
-				{
-					startPoint = _panelSize / 2;
-					_panelMidpointScrollPosition = startPoint - viewportHeight / 2 + _scaledItemHeight / 2;
-
-					_realizedTop = startPoint;
-					_realizedBottom = startPoint;
-					newScrollPosition = _panelMidpointScrollPosition;
-				}
-				else
-				{
-					startPoint = (_panelSize - (_itemCount) * _scaledItemHeight) / 2;
-					_panelMidpointScrollPosition = startPoint - viewportHeight / 2 + _scaledItemHeight / 2;
-					_realizedTop = startPoint + selectedIdx * _scaledItemHeight;
-					_realizedBottom = startPoint + selectedIdx * _scaledItemHeight;
-					newScrollPosition = _panelMidpointScrollPosition + selectedIdx * _scaledItemHeight;
-				}
-
-				_realizedTopIdx = selectedIdx;
-				_realizedBottomIdx = selectedIdx - 1;
-
-				// Optimization: skip scrolling if scrollviewer is
-				// in correct position (often true after normalization)
-				if (Math.Abs(verticalOffset - newScrollPosition) > 1.0)
-				{
-					SetScrollPosition(newScrollPosition, false);
-					_unpaddedExtentTop += newScrollPosition - verticalOffset;
-					_unpaddedExtentBottom += newScrollPosition - verticalOffset;
-
-					// Skip the balance caused by the ViewChange event fired
-					// from SetScrollPosition.
-					_skipNextBalance = true;
-				}
-
-				_isSetupPending = false;
-			}
-		}
-
-		void SetSelectedIndex(int oldIdx, int newIdx)
-		{
-			double pixelsToMove = 0.0;
-			bool isTemplateAndItemsAttached = false;
-
-			IsTemplateAndItemsAttached(out isTemplateAndItemsAttached);
-			// Only set the new index position if we're in the idle position
-			// and the control is properly initialized and the oldIndex is meanful.
-			if (oldIdx != -1 && isTemplateAndItemsAttached && _itemState == ItemState.Expanded)
-			{
-				//LSTRACE("[%d] SetSelectedIndex From %d To %d called.", (((int)this) >> 8) & 0xFF, oldIdx, newIdx);
-				pixelsToMove = (double)(newIdx - oldIdx) * (_scaledItemHeight);
-				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false);
-			}
-		}
-
-		void Trim(ListEnd end)
-		{
-			LoopingSelectorItem spChildAsLSI;
-
-			if (_realizedItems.empty())
-			{
-				//LSTRACE("[%d] Trim called with empty list.", (((int)this) >> 8) & 0xFF);
-				//goto Cleanup;
-				return;
-			}
-
-			if (end == ListEnd.Head)
-			{
-				//COMPtr assignment causes AddRef.
-				spChildAsLSI = _realizedItems.back();
-				_realizedItems.pop_back();
-			}
-			else
-			{
-				spChildAsLSI = _realizedItems.front();
-				_realizedItems.erase(_realizedItems.begin());
-			}
-
-			if (end == ListEnd.Head)
-			{
-				_realizedTop += _scaledItemHeight;
-				_realizedTopIdx++;
-			}
-			else
-			{
-				_realizedBottom -= _scaledItemHeight;
-				_realizedBottomIdx--;
-			}
-
-			RecycleItem(spChildAsLSI);
-		}
-
-		void Add(ListEnd end)
-		{
-			LoopingSelectorItem spChild;
-			UIElement spChildAsUI;
-
-			if (end == ListEnd.Head)
-			{
-				RealizeItem((uint)(_realizedTopIdx - 1), out spChild);
-				// Panel's Children keeps the reference to this item.
-				_realizedItems.push_back(spChild);
-				spChildAsUI = spChild;
-				SetPosition(spChildAsUI, _realizedTop - _scaledItemHeight);
-				_realizedTop -= _scaledItemHeight;
-				_realizedTopIdx--;
-			}
-			else
-			{
-				RealizeItem((uint)(_realizedBottomIdx + 1), out spChild);
-				// Panel's Children keeps the reference to this item.
-				_realizedItems.insert(_realizedItems.begin(), spChild);
-				spChildAsUI = spChild;
-				SetPosition(spChildAsUI, _realizedBottom);
-				_realizedBottom += _scaledItemHeight;
-				_realizedBottomIdx++;
-			}
-		}
-
-		void GetMaximumAddIndexPosition(out int headIdx, out int tailIdx)
-		{
-			bool shouldLoop;
-			shouldLoop = ShouldLoop;
-			if (shouldLoop)
-			{
-				headIdx = int.MinValue;
-				tailIdx = int.MaxValue;
-			}
-			else
-			{
-				headIdx = 0;
-				tailIdx = (int)(_itemCount - 1);
-			}
-		}
-
-		// In cases where we're directly setting the selected item (e.g., via UIA),
-		// we don't care whether we're in the middle of scrolling.
-		// We'll use ignoreScrollingState to flag such scenarios.
-		void UpdateSelectedItem(bool ignoreScrollingState)
-		{
-			IList<DependencyObject> spItemsCollection;
-			DependencyObject spSelectedItem;
-			DependencyObject spPreviouslySelectedItem;
-
-			uint itemCount = 0;
-			double midpoint = 0.0;
-			uint newIdx = 0;
-			int oldIdx = 0;
-
-			// This will be in the middle of the currently selected item.
-			midpoint = (_unpaddedExtentTop + _unpaddedExtentBottom) / 2 - _realizedTop;
-			newIdx = _realizedTopIdx +
-				(uint)(midpoint) / (uint)(_scaledItemHeight);
-
-			spItemsCollection = Items;
-			itemCount = spItemsCollection.Count;
-			// Normally, when an item is scrolled into the center of our view,
-			// we want to automatically select that item.  However, in the case of
-			// UI automation (e.g., Narrator), users will be iterating through the
-			// looping selector items one at a time to hear them read out,
-			// in order to find the one that they want to select.  In this case,
-			// we don't want to automatically select the item that is scrolled into view,
-			// so in that circumstance we skip selecting the new item.
-			// However, we do still want to put the item in the visual state
-			// of being selected, since it will be appearing in the middle,
-			// meaning that we want the font color of the item in that position
-			// to properly match the background.
-			UpdateVisualSelectedItem(_realizedMidpointIdx, newIdx);
-			_realizedMidpointIdx = newIdx;
-
-			if (ignoreScrollingState || !_skipSelectionChangeUntilFinalViewChanged)
-			{
-				newIdx = PositiveMod((int)newIdx, (int)itemCount);
-
-				spSelectedItem = spItemsCollection[(int)newIdx];
-				_disablePropertyChange = true;
-				oldIdx = SelectedIndex;
-				SelectedIndex = (int)(newIdx);
-				spPreviouslySelectedItem = SelectedItem as DependencyObject;
-				SelectedItem = spSelectedItem;
-				if ((uint)oldIdx != newIdx)
-				{
-					RaiseOnSelectionChanged(spPreviouslySelectedItem, spSelectedItem);
-					AutomationRaiseSelectionChanged();
-				}
-
-				_disablePropertyChange = false;
-			}
-		}
-
-
-		// NOTE: Only called when the ScrollViewer is done Running (e.g. no scrolling is happening).
-		void UpdateVisualSelectedItem(uint oldIdx, uint newIdx)
-		{
-			LoopingSelectorItem spEltAsLSI;
-			LoopingSelectorItem lsi = null;
-
-			if (_realizedItems.size() > 0)
-			{
-				if (_realizedItems.size() > oldIdx - _realizedTopIdx)
-				{
-					spEltAsLSI = _realizedItems[_realizedItems.size() - (oldIdx - _realizedTopIdx) - 1];
-					lsi = (LoopingSelectorItem)(spEltAsLSI);
-					if (_itemState == ItemState.Expanded)
-					{
-						lsi.SetState(LoopingSelectorItem.State.Expanded, true);
-					}
-					else
-					{
-						lsi.SetState(LoopingSelectorItem.State.Normal, true);
-					}
-				}
-
-				if (_realizedItems.size() > newIdx - _realizedTopIdx)
-				{
-					spEltAsLSI = _realizedItems[_realizedItems.size() - (newIdx - _realizedTopIdx) - 1];
-					lsi = (LoopingSelectorItem)(spEltAsLSI);
-					lsi.SetState(LoopingSelectorItem.State.Selected, true);
-				}
-			}
-		}
-
-		void VisualIndexToItemIndex(uint visualIndex, out uint itemIndex)
-		{
-			//if (itemIndex == null) { return; }
-
-			IList<object> itemsCollection;
-			itemsCollection = Items;
-
-			int itemCount = 0;
-			itemCount = itemsCollection.Count;
-
-			itemIndex = PositiveMod((int)visualIndex, itemCount);
-
-			return;
-		}
-
-		void RealizeItem(uint itemIdxToRealize, out LoopingSelectorItem ppItem)
-		{
-			LoopingSelectorItem spLoopingSelectorItem;
-			ContentControl spLoopingSelectorItemAsCC;
-			DependencyObject spLoopingSelectorItemAsDO;
-			LoopingSelectorItem lsi = null;
-
-			//if (ppItem == null) { return; }
-
-			uint moddedItemIdx = 0;
-			VisualIndexToItemIndex(itemIdxToRealize, out moddedItemIdx);
-
-			bool wasItemRecycled = false;
-
-			RetreiveItemFromAPRealizedItems(moddedItemIdx, out spLoopingSelectorItem);
-			if (!(spLoopingSelectorItem is { }) && _recycledItems.size() != 0)
-			{
-				spLoopingSelectorItem = _recycledItems.back();
-				wasItemRecycled = true;
-			}
-
-			if (!(spLoopingSelectorItem is { }))
-			{
-				UIElement spLSIAsUIElt;
-				FrameworkElement spLSIAsFE;
-				IList<UIElement> spPanelChildren;
-				DataTemplate spDataTemplate;
-				Control spLSIAsControl;
-				Control spThisAsControl;
-				//EventRegistrationToken tappedToken = default;
-				bool visualTreeRebuilt = false;
-
-				//QueryInterface(__uuidof(Control), &spThisAsControl);
-				spThisAsControl = this;
-
-				uint childCount;
-				GetPanelChildren(out spPanelChildren, out childCount);
-
-				//wrl.MakeAndInitialize<LoopingSelectorItem>(spLoopingSelectorItem);
-				spLoopingSelectorItem = new LoopingSelectorItem();
-				//spLoopingSelectorItem.As(spLSIAsUIElt);
-				spLSIAsUIElt = spLoopingSelectorItem;
-				//spLoopingSelectorItem.As(spLSIAsControl);
-				spLSIAsControl = spLoopingSelectorItem;
-				//spLoopingSelectorItem.As(spLoopingSelectorItemAsCC);
-				spLoopingSelectorItemAsCC = spLoopingSelectorItem;
-				//spLoopingSelectorItem.As(spLoopingSelectorItemAsDO);
-				spLoopingSelectorItemAsDO = spLoopingSelectorItem;
-				//spLoopingSelectorItem.As(spLSIAsFE);
-				spLSIAsFE = spLoopingSelectorItem;
-				lsi = (LoopingSelectorItem)(spLoopingSelectorItem);
-
-				lsi.SetParent(this);
-				spDataTemplate = ItemTemplate;
-				spLoopingSelectorItemAsCC.ContentTemplate = spDataTemplate;
-				spLSIAsFE.Width = _itemWidth;
-				spLSIAsFE.Height = _itemHeight;
-				spPanelChildren.Append(spLSIAsUIElt);
-
-				HorizontalAlignment horizontalAlignment;
-				Thickness padding;
-
-				horizontalAlignment = spThisAsControl.HorizontalContentAlignment;
-				spLSIAsControl.HorizontalContentAlignment = horizontalAlignment;
-
-				padding = spThisAsControl.Padding;
-				spLSIAsControl.Padding = padding;
-
-				// The event will be disconnected when the item is destroyed. No
-				// need to keep track of the token.
-				//(spLSIAsUIElt.add_Tapped(wrl.Callback<nput.ITappedEventHandler>
-				//		(this, &LoopingSelector.OnItemTapped),
-				//	&tappedToken));
-				spLSIAsUIElt.Tapped += OnItemTapped;
-
-				spLSIAsControl.ApplyTemplate(visualTreeRebuilt);
-			}
-			else
-			{
-				FrameworkElement spLSIAsFE;
-
-				lsi = (LoopingSelectorItem)(spLoopingSelectorItem);
-
-				if (wasItemRecycled)
-				{
-					_recycledItems.pop_back();
-				}
-
-				//spLoopingSelectorItem.As(spLoopingSelectorItemAsCC);
-				spLoopingSelectorItemAsCC = spLoopingSelectorItem;
-				//spLoopingSelectorItem.As(spLoopingSelectorItemAsDO);
-				spLoopingSelectorItemAsDO = spLoopingSelectorItem;
-				//spLoopingSelectorItem.As(spLSIAsFE);
-				spLSIAsFE = spLoopingSelectorItem;
-				spLSIAsFE.Width = _itemWidth;
-			}
-
-			// Retrieve the data item and set it as content.
-			IList<object> spItemsCollection;
-			spItemsCollection = Items;
-			DependencyObject spItem;
-			//spItemsCollection.GetAt(moddedItemIdx, &spItem);
-			spItem = spItemsCollection[(int)moddedItemIdx];
-			spLoopingSelectorItemAsCC.Content = spItem;
-
-			//xaml_automation.IAutomationPropertiesStatics> spAutomationPropertiesStatics;
-			//(wf.GetActivationFactory(
-			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_AutomationProperties),
-			//	&spAutomationPropertiesStatics));
-
-			// To get the position in set, we add 1 to the item index - this is so Narrator announces
-			// (e.g.) "1 of 30" for the item at index 0, since "0 of 30" through "29 of 30" would be
-			// very unexpected to users.
-			int itemCount = 0;
-			itemCount = spItemsCollection.Count;
-			//spAutomationPropertiesStatics.SetPositionInSet(spLoopingSelectorItemAsDO, moddedItemIdx + 1);
-			AutomationProperties.SetPositionInSet(spLoopingSelectorItemAsDO, (int)moddedItemIdx + 1);
-			//spAutomationPropertiesStatics.SetSizeOfSet(spLoopingSelectorItemAsDO, itemCount);
-			AutomationProperties.SetSizeOfSet(spLoopingSelectorItemAsDO, (int)itemCount);
-
-			lsi.SetVisualIndex(itemIdxToRealize);
-
-			if (_itemState == ItemState.Expanded || _itemState == ItemState.ManipulationInProgress ||
-				_itemState == ItemState.LostFocus)
-			{
-				lsi.SetState(LoopingSelectorItem.State.Expanded, false);
-			}
-			else
-			{
-				lsi.SetState(LoopingSelectorItem.State.Normal, false);
-			}
-
-			lsi.AutomationUpdatePeerIfExists(moddedItemIdx);
-			spLoopingSelectorItem.CopyTo(ppItem);
-		}
-
-		void RecycleItem(LoopingSelectorItem pItem)
-		{
-
-			LoopingSelectorItem spItemAsLSI;
-			UIElement spItemAsUI;
-
-			spItemAsLSI = pItem;
-			//spItemAsLSI.As(spItemAsUI);
-			spItemAsUI = spItemAsLSI;
-
-			_recycledItems.push_back(pItem);
-
-			// Removing from the visual tree is expensive. Place offscreen instead.
-			//NT_global.System.Diagnostics.Debug.Assert(_spCanvasStatics);
-			//_spCanvasStatics.SetLeft(spItemAsUI, -10000);
-			Canvas.SetLeft(spItemAsUI, -10000);
-		}
 
 		#region Helpers
 
@@ -1603,7 +1618,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				//	&spFocusManager));
 
 				//spFocusManager.GetFocusedElementWithRoot(xamlRoot, &spFocusedElt);
-				FocusManager.GetFocusedElementWithRoot(xamlRoot, out spFocusedElt);
+				spFocusedElt = FocusManager.GetFocusedElement(xamlRoot) as DependencyObject;
 
 				if (spFocusedElt is { })
 				{
@@ -1612,18 +1627,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					IsAscendantOfTarget(spFocusedEltAsDO, out pHasFocus);
 				}
 			}
-
-			return;
 		}
 
 		void IsAscendantOfTarget(DependencyObject pChild, out bool pIsChildOfTarget)
 		{
-			DependencyObject spCurrentDO = pChild;
+			var spCurrentDO = pChild;
 			DependencyObject spParentDO;
 			DependencyObject spThisAsDO;
 			//xaml_media.IVisualTreeHelperStatics> spVTHStatics;
 
-			bool isFound = false;
+			var isFound = false;
 
 			//(wf.GetActivationFactory(
 			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Media_VisualTreeHelper),
@@ -1640,7 +1653,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					//spVTHStatics.GetParent(spCurrentDO, spParentDO);
 					spParentDO = VisualTreeHelper.GetParent(spCurrentDO);
-					spCurrentDO.Attach(spParentDO.Detach());
+					//spCurrentDO.Attach(spParentDO.Detach());
+					spCurrentDO = spParentDO;
 				}
 			}
 
@@ -1649,16 +1663,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		void ShiftChildren(double delta)
 		{
-			LoopingSelectorItem.iterator iter;
+			//LoopingSelectorItem.iterator iter;
 
-			for (iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			//for (iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			foreach (var iter in _realizedItems)
 			{
 				LoopingSelectorItem spChild;
 				UIElement spChildAsUI;
-				double currentPosition = 0.0;
+				var currentPosition = 0.0;
 				// This keeps the count unchanged. Attach doesn't
 				// AddRef, and Detech doesn't Release.
-				spChild.Attach(iter);
+				//spChild.Attach(iter);
+				spChild = iter;
 				//spChild.As(spChildAsUI);
 				spChildAsUI = spChild;
 				//NT_global.System.Diagnostics.Debug.Assert(_spCanvasStatics);
@@ -1666,15 +1682,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				currentPosition = Canvas.GetTop(spChildAsUI);
 				//_spCanvasStatics.SetTop(spChildAsUI, currentPosition + delta);
 				Canvas.SetTop(spChildAsUI, currentPosition + delta);
-				spChild.Detach();
+				//spChild.Detach();
 			}
 		}
 
 		void MeasureExtent(out double extentTop, out double extentBottom)
 		{
-
-			double viewportHeight = 0.0;
-			double verticalOffset = 0.0;
+			var viewportHeight = 0.0;
+			var verticalOffset = 0.0;
 
 			viewportHeight = _tpScrollViewer.ViewportHeight;
 			verticalOffset = _tpScrollViewer.VerticalOffset;
@@ -1685,16 +1700,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		void ClearAllItems()
 		{
 			IList<object> spItems;
-			LoopingSelectorItem.iterator iter;
+			//LoopingSelectorItem.iterator iter;
 
-			for (iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			//for (iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			foreach (var iter in _realizedItems)
 			{
 				RecycleItem(iter);
 				_realizedBottom -= _scaledItemHeight;
 				_realizedBottomIdx--;
 			}
-			_realizedItems.clear();
-			_realizedItemsForAP.clear();
+
+			_realizedItems.Clear();
+			_realizedItemsForAP.Clear();
 
 			spItems = Items;
 			if (spItems is { })
@@ -1703,13 +1720,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// the item count. This makes scenarios where the items collection is
 				// changed while the user is manipulating the control do the 'expected'
 				// thing and not jump around.
-				int itemCount = 0;
-				int indexDelta = 0;
+				var itemCount = 0;
+				var indexDelta = 0;
 				itemCount = spItems.Count;
 				_itemCount = (uint)itemCount;
 				indexDelta = _realizedMidpointIdx - (int)PositiveMod(_realizedMidpointIdx, (int)_itemCount);
 
-				_realizedMidpointIdx -= indexDelta;
+				_realizedMidpointIdx = _realizedMidpointIdx - indexDelta;
 				_realizedTopIdx -= indexDelta;
 				_realizedBottomIdx -= indexDelta;
 			}
@@ -1725,7 +1742,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			spChildren = spPanel.Children;
 			//spChildren.get_Size(count);
 			count = (uint)spChildren.Count;
-			ppChildren = spChildren.Detach();
+			ppChildren = spChildren; //.Detach();
 		}
 
 		void SizePanel()
@@ -1733,7 +1750,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			FrameworkElement spPanelAsFE;
 			UIElement spThisAsUI;
 
-			bool shouldLoop = false;
+			var shouldLoop = false;
 			shouldLoop = ShouldLoop;
 			//QueryInterface(__uuidof(UIElement), &spThisAsUI);
 			spThisAsUI = this;
@@ -1741,7 +1758,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			spPanelAsFE = _tpPanel;
 			if (shouldLoop)
 			{
-				double scrollViewerHeight = 0.0;
+				var scrollViewerHeight = 0.0;
 				scrollViewerHeight = _tpScrollViewer.ViewportHeight;
 				// This is a large number. It is large enough to ensure for any
 				// item size the panel size exceeds that which is reasonable
@@ -1751,11 +1768,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// It is odd so the panel sizes correctly. The
 				// midpoint aligns with the snap points and visual item realization
 				// position.
-				_panelSize = scrollViewerHeight + (1001) * _scaledItemHeight;
+				_panelSize = scrollViewerHeight + 1001 * _scaledItemHeight;
 			}
 			else
 			{
-				double scrollViewerHeight = 0.0;
+				var scrollViewerHeight = 0.0;
 
 				scrollViewerHeight = _tpScrollViewer.ViewportHeight;
 				_panelSize = scrollViewerHeight + (_itemCount - 1) * _scaledItemHeight;
@@ -1772,30 +1789,30 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_panelSize += 1.0;
 			}
 
-			spPanelAsFE.Height = (double)(_panelSize);
+			spPanelAsFE.Height = _panelSize;
 		}
 
 		void SetScrollPosition(double offset, bool useAnimation)
 		{
-			DependencyObject spVerticalOffsetAsInspectable;
+			//DependencyObject spVerticalOffsetAsInspectable;
 			double spVerticalOffset;
 
-			Private.ValueBoxer.Createdouble(offset, &spVerticalOffsetAsInspectable);
-			spVerticalOffsetAsInspectable.As(spVerticalOffset);
+			//Private.ValueBoxer.Createdouble(offset, &spVerticalOffsetAsInspectable);
+			//spVerticalOffsetAsInspectable.As(spVerticalOffset);
+			spVerticalOffset = offset;
 			//LSTRACE("[%d] Setting scroll position %f", (((int)this) >> 8) & 0xFF, offset);
-
 
 			_skipNextBalance = true;
 
 			if (!useAnimation)
 			{
-				bool didSucceed = false;
+				var didSucceed = false;
 				// We use this booleaen as a performance optimization. When
 				// this function is called with useAnimation set to false it
 				// is an instantaneous jump, and balance will happen afterwards.
 				_isWithinScrollChange = true;
-				(_tpScrollViewer.ChangeViewWithOptionalAnimation(
-					null, spVerticalOffset, null, true /* disableAnimation */, &didSucceed));
+				didSucceed = _tpScrollViewer.ChangeViewWithOptionalAnimation(
+					null, spVerticalOffset, null, true /* disableAnimation */);
 
 				// If ChangeView doesn't succeed it implies the ScrollViewer is no longer in the visual tree.
 				// We delay the setting of the scroll position until after it's placed in the visual tree again.
@@ -1803,6 +1820,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					_delayScrollPositionY = offset;
 				}
+
 				_isWithinScrollChange = false;
 			}
 			else
@@ -1813,43 +1831,47 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// the viewport is no longer active. As a result ScrollViewer will skip
 				// the animation. To avoid this we schedule the ChangeView on the core dispatcher
 				// for execution immediately after this tick completes.
-				wsy.IDispatcherQueueStatics> spDispatcherQueueStatics;
-				wsy.IDispatcherQueue> spDispatcherQueue;
+				//DispatcherQueueStatics> spDispatcherQueueStatics;
+				DispatcherQueue spDispatcherQueue;
 				bool enqueued;
-				LoopingSelector> spThis(this);
-				wrl.WeakRef wrThis;
+				var spThis = this;
+				//wrl.WeakRef wrThis;
 
-				spThis.AsWeak(wrThis);
-				(wf.GetActivationFactory(
-					wrl_wrappers.Hstring(RuntimeClass_Windows_System_DispatcherQueue),
-					&spDispatcherQueueStatics));
-				spDispatcherQueueStatics.GetForCurrentThread(spDispatcherQueue);
-				(spDispatcherQueue.TryEnqueue(
-					WRLHelper.MakeAgileCallback<wsy.IDispatcherQueueHandler>([wrThis, spVerticalOffset]() mutable {
+				//spThis.AsWeak(wrThis);
+				//(wf.GetActivationFactory(
+				//	wrl_wrappers.Hstring(RuntimeClass_Windows_System_DispatcherQueue),
+				//	&spDispatcherQueueStatics));
+				//spDispatcherQueueStatics.GetForCurrentThread(spDispatcherQueue);
+				spDispatcherQueue = DispatcherQueue.GetForCurrentThread();
+				//(spDispatcherQueue.TryEnqueue(
+				//	WRLHelper.MakeAgileCallback<wsy.IDispatcherQueueHandler>([wrThis, spVerticalOffset]() mutable {
 
-					bool returnValue = false;
-					ILoopingSelector> spThis;
-					wrThis.As(spThis);
-					if (spThis)
-					{
-						(((LoopingSelector)(spThis))._tpScrollViewer.ChangeViewWithOptionalAnimation(
-							null, spVerticalOffset, null, false /* disableAnimation */, &returnValue));
-					}
-				}),
-			&enqueued));
-				IFCEXPECT(enqueued);
+				//	bool returnValue = false;
+				//	ILoopingSelector> spThis;
+				//	wrThis.As(spThis);
+				//	if (spThis)
+				//	{
+				//		(((LoopingSelector)(spThis))._tpScrollViewer.ChangeViewWithOptionalAnimation(
+				//			null, spVerticalOffset, null, false /* disableAnimation */, &returnValue));
+				//	}
+				//}),
+				//&enqueued));
+				//IFCEXPECT(enqueued);
+				enqueued = spDispatcherQueue.TryEnqueue(() =>
+				{
+					_tpScrollViewer.ChangeViewWithOptionalAnimation(null, spVerticalOffset, null,
+						false /* disableAnimation */);
+				});
 			}
 		}
 
 		void SetupSnapPoints(double offset, double size)
 		{
-
-
 			LoopingSelectorPanel lsp = null;
-			lsp = (LoopingSelectorPanel)(_tpPanel);
+			lsp = _tpPanel;
 
-			lsp.SetOffsetInPixels((float)(offset));
-			lsp.SetSizeInPixels((float)(size));
+			lsp.SetOffsetInPixels((float)offset);
+			lsp.SetSizeInPixels((float)size);
 		}
 
 		void SetPosition(UIElement pitem, double offset)
@@ -1875,11 +1897,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		void TransitionItemsState(ItemState state)
 		{
 			uint childIdx = 0;
-			LoopingSelectorItem>.iterator iter;
+			//LoopingSelectorItem.iterator iter;
 
-			for (iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			//for (iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			foreach (var iter in _realizedItems)
 			{
-				LoopingSelectorItem lsi = (LoopingSelectorItem)(iter);
+				var lsi = iter;
 
 				if (state == ItemState.ManipulationInProgress)
 				{
@@ -1887,7 +1910,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 				else if (state == ItemState.Expanded)
 				{
-					if (_realizedTopIdx + (_realizedItems.size() - 1 - childIdx) == (uint)(_realizedMidpointIdx))
+					if (_realizedTopIdx + (_realizedItems.Count - 1 - childIdx) == _realizedMidpointIdx)
 					{
 						lsi.SetState(LoopingSelectorItem.State.Selected, true);
 					}
@@ -1898,7 +1921,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 				else // collapsed
 				{
-					if (_realizedTopIdx + (_realizedItems.size() - 1 - childIdx) == (uint)(_realizedMidpointIdx))
+					if (_realizedTopIdx + (_realizedItems.Count - 1 - childIdx) == _realizedMidpointIdx)
 					{
 						lsi.SetState(LoopingSelectorItem.State.Selected, true);
 					}
@@ -1912,28 +1935,29 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		void AutomationGetSelectedItem(out LoopingSelectorItem ppItemNoRef)
+		internal void AutomationGetSelectedItem(out LoopingSelectorItem ppItemNoRef)
 		{
 			ppItemNoRef = null;
 
-			for (var iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			//for (var iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			foreach (var iter in _realizedItems)
 			{
-				LoopingSelectorItem pLSINoRef = (LoopingSelectorItem)(iter);
+				var pLSINoRef = iter;
 
-				int itemVisualIndex = 0;
-				pLSINoRef.GetVisualIndex(itemVisualIndex);
+				var itemVisualIndex = 0;
+				pLSINoRef.GetVisualIndex(out itemVisualIndex);
 
 				uint itemIndex = 0;
-				VisualIndexToItemIndex(itemVisualIndex, &itemIndex);
+				VisualIndexToItemIndex((uint)itemVisualIndex, out itemIndex);
 
 				// We need to make sure that we check against the selected index,
 				// not the midpoint index.  Normally, the item in the center of the view
 				// is also the selected item, but in the case of UI automation, it
 				// is not always guaranteed to be.
-				int selectedIndex = 0;
+				var selectedIndex = 0;
 				selectedIndex = SelectedIndex;
 
-				if (itemIndex == (uint)(selectedIndex))
+				if (itemIndex == (uint)selectedIndex)
 				{
 					ppItemNoRef = pLSINoRef;
 					break;
@@ -1944,41 +1968,34 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		void RetreiveItemFromAPRealizedItems(uint moddeItemdIdx, out LoopingSelectorItem ppItem)
 		{
 			ppItem = null;
-			std.map<int, ILoopingSelectorItem>>.iterator iter;
+			//map<int, LoopingSelectorItem>>.iterator iter;
 
-			iter = _realizedItemsForAP.find(moddeItemdIdx);
-			if (iter != _realizedItemsForAP.end())
+			//iter = _realizedItemsForAP.find(moddeItemdIdx);
+			//var iter = _realizedItemsForAP[(int)moddeItemdIdx];
+			//if (iter != _realizedItemsForAP.Last().Value)
+			if(_realizedItemsForAP.TryGetValue((int)moddeItemdIdx, out var iter))
 			{
-				ppItem = iter.second.Detach();
-				_realizedItemsForAP.erase(iter);
+				//ppItem = iter; //.Detach();
+				ppItem = iter;
+				_realizedItemsForAP.Remove((int)moddeItemdIdx);
 			}
 		}
 
-		#region Sound Helpers
-
-		void RequestInteractionSound(ElementSoundKind soundKind)
-		{
-			DependencyObject thisAsDO;
-
-			QueryInterface(__uuidof(DependencyObject), &thisAsDO);
-			PlatformHelpers.RequestInteractionSoundForElement(soundKind, thisAsDO);
-		}
-
-		#endregion Sound Helpers
+		#endregion
 
 		#region AutomationInternalInterface
 
-		void AutomationScrollToVisualIdx(int visualIdx, bool ignoreScrollingState)
+		internal void AutomationScrollToVisualIdx(int visualIdx, bool ignoreScrollingState = false)
 		{
-			bool isFullySetup = false;
-			IsSetupForAutomation(isFullySetup);
+			var isFullySetup = false;
+			IsSetupForAutomation(out isFullySetup);
 			if (isFullySetup && _itemState == ItemState.Expanded)
 			{
-				int idxMovement = visualIdx - _realizedMidpointIdx;
-				double pixelsToMove = idxMovement * _scaledItemHeight;
+				var idxMovement = visualIdx - _realizedMidpointIdx;
+				var pixelsToMove = idxMovement * _scaledItemHeight;
 
-				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */ );
-				Balance(true /* isOnSnapPoint */ );
+				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */);
+				Balance(true /* isOnSnapPoint */);
 				// If we aren't going to scroll at all, then we need to update the selected index,
 				// since we won't get a ViewChanged event during which to do that.
 				if (pixelsToMove == 0)
@@ -1988,19 +2005,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		void AutomationGetIsScrollable(out bool pIsScrollable)
+		internal void AutomationGetIsScrollable(out bool pIsScrollable)
 		{
 			// LoopingSelector doesn't currently have a disabled
 			// state so as long as the itemCount is greater than
 			// zero it is scrollable.
 			pIsScrollable = _itemCount > 0;
-			//return S_OK;
 		}
 
-		void AutomationGetScrollPercent(out double pScrollPercent)
+		internal void AutomationGetScrollPercent(out double pScrollPercent)
 		{
-
-
 			int selectedIndex;
 			// We assume the scroll percent can be derived from the currently
 			// selected item, since it's always in the middle.
@@ -2012,7 +2026,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (_itemCount > 0)
 			{
-				pScrollPercent = (double)(selectedIndex) / (double)(_itemCount) * 100.0;
+				pScrollPercent = selectedIndex / (double)_itemCount * 100.0;
 			}
 			else
 			{
@@ -2020,14 +2034,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		void AutomationGetScrollViewSize(out double pScrollPercent)
+		internal void AutomationGetScrollViewSize(out double pScrollPercent)
 		{
-			bool isSetup = false;
+			var isSetup = false;
 			pScrollPercent = 100.0;
-			IsSetupForAutomation(isSetup);
+			IsSetupForAutomation(out isSetup);
 			if (isSetup)
 			{
-				double viewportHeight = _unpaddedExtentBottom - _unpaddedExtentTop;
+				var viewportHeight = _unpaddedExtentBottom - _unpaddedExtentTop;
 				if (viewportHeight > 0)
 				{
 					pScrollPercent = viewportHeight / (_itemCount * _scaledItemHeight) * 100;
@@ -2035,84 +2049,87 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		void AutomationSetScrollPercent(double scrollPercent)
+		internal void AutomationSetScrollPercent(double scrollPercent)
 		{
-			bool isSetup = false;
+			var isSetup = false;
 
 			if (scrollPercent < 0.0 || scrollPercent > 100.0)
 			{
-				IFC_NOTRACE(UIA_E_INVALIDOPERATION);
+				//IFC_NOTRACE(UIA_E_INVALIDOPERATION);
+				throw new InvalidOperationException();
 			}
 
-			IsSetupForAutomation(isSetup);
+			IsSetupForAutomation(out isSetup);
 			if (isSetup && _itemState == ItemState.Expanded)
 			{
-				int itemIdxOffset = (INT)((_itemCount - 1) * scrollPercent / 100.0);
-				int currentItemIdx = PositiveMod(_realizedMidpointIdx, _itemCount);
-				int idxMovement = itemIdxOffset - currentItemIdx;
-				double pixelsToMove = idxMovement * _scaledItemHeight;
-				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */ );
-				Balance(true /* isOnSnapPoint */ );
+				var itemIdxOffset = (int)((_itemCount - 1) * scrollPercent / 100.0);
+				var currentItemIdx = (int)PositiveMod(_realizedMidpointIdx, (int)_itemCount);
+				var idxMovement = itemIdxOffset - currentItemIdx;
+				var pixelsToMove = idxMovement * _scaledItemHeight;
+				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */);
+				Balance(true /* isOnSnapPoint */);
 			}
 		}
 
-		void AutomationTryGetSelectionUIAPeer(out xaml.Automation.Peers.IAutomationPeer ppPeer)
+		internal void AutomationTryGetSelectionUIAPeer(out AutomationPeer ppPeer)
 		{
 			ppPeer = null;
 
 			LoopingSelectorItem pLSINoRef = null;
-			AutomationGetSelectedItem(pLSINoRef);
-			if (pLSINoRef)
+			AutomationGetSelectedItem(out pLSINoRef);
+			if (pLSINoRef is { })
 			{
-				xaml.Automation.Peers.FrameworkElementAutomationPeerStatics> spAutomationPeerStatics;
-				xaml.Automation.Peers.IAutomationPeer> spAutomationPeer;
+				//FrameworkElementAutomationPeerStatics spAutomationPeerStatics;
+				AutomationPeer spAutomationPeer;
 				UIElement spChildAsUI;
 
-				(pLSINoRef.QueryInterface(
-					__uuidof(UIElement),
-					&spChildAsUI));
-				(wf.GetActivationFactory(
-					  wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_Peers_FrameworkElementAutomationPeer),
-					  &spAutomationPeerStatics));
-				spAutomationPeerStatics.CreatePeerForElement(spChildAsUI, &spAutomationPeer);
-				spAutomationPeer.CopyTo(ppPeer);
+				//(pLSINoRef.QueryInterface(
+				//	__uuidof(UIElement),
+				//	&spChildAsUI));
+				spChildAsUI = this;
+				//(wf.GetActivationFactory(
+				//	wrl_wrappers.Hstring(
+				//		RuntimeClass_Microsoft_UI_Xaml_Automation_Peers_FrameworkElementAutomationPeer),
+				//	&spAutomationPeerStatics));
+				//spAutomationPeerStatics.CreatePeerForElement(spChildAsUI, &spAutomationPeer);
+				spAutomationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(spChildAsUI);
+				//spAutomationPeer.CopyTo(ppPeer);
+				ppPeer = spAutomationPeer;
 			}
 		}
 
-		void AutomationScroll(xaml.Automation.ScrollAmount scrollAmount)
+		internal void AutomationScroll(ScrollAmount scrollAmount)
 		{
-			bool isSetup = false;
-			IsSetupForAutomation(isSetup);
+			var isSetup = false;
+			IsSetupForAutomation(out isSetup);
 			// We don't allow automation interaction when the ScrollViewer is undergoing
 			// a manipulation.
 			if (isSetup && _itemState == ItemState.Expanded)
 			{
-				double pixelsToMove = 0.0;
-				int itemsToMove = 0;
+				var pixelsToMove = 0.0;
+				var itemsToMove = 0;
 
 				switch (scrollAmount)
 				{
-					case xaml.Automation.ScrollAmount_LargeDecrement:
+					case ScrollAmount.LargeDecrement:
 						itemsToMove = -c_automationLargeIncrement;
 						break;
-					case xaml.Automation.ScrollAmount_LargeIncrement:
+					case ScrollAmount.LargeIncrement:
 						itemsToMove = c_automationLargeIncrement;
 						break;
-					case xaml.Automation.ScrollAmount_SmallDecrement:
+					case ScrollAmount.SmallDecrement:
 						itemsToMove = -c_automationSmallIncrement;
 						break;
-					case xaml.Automation.ScrollAmount_SmallIncrement:
+					case ScrollAmount.SmallIncrement:
 						itemsToMove = c_automationSmallIncrement;
-						break;
-					default:
 						break;
 				}
 
-				int currentIndex = PositiveMod(_realizedMidpointIdx, _itemCount);
+				var currentIndex = (int)PositiveMod(_realizedMidpointIdx, (int)_itemCount);
 
-				if (currentIndex + itemsToMove > (INT)(_itemCount - 1))
+				if (currentIndex + itemsToMove > (int)(_itemCount - 1))
 				{
-					itemsToMove = _itemCount - currentIndex - 1;
+					itemsToMove = (int)_itemCount - currentIndex - 1;
 				}
 				else if (currentIndex + itemsToMove < 0)
 				{
@@ -2121,40 +2138,42 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				pixelsToMove = itemsToMove * _scaledItemHeight;
 
-				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */ );
-				Balance(true /* isOnSnapPoint */ );
+				SetScrollPosition(_unpaddedExtentTop + pixelsToMove, false /* use animation */);
+				Balance(true /* isOnSnapPoint */);
 			}
 		}
 
-		void AutomationFillCollectionWithRealizedItems(IList<DependencyObject pVector)
+		//internal void AutomationFillCollectionWithRealizedItems(IList<DependencyObject> pVector)
+		//{
+		//	// When the number of items is smaller than the number of items LoopingSelector calculates it
+		//	// needs to realize to ensure gapless scrolling the realizedItem list will contain duplicate items.
+		//	// This will cause infinite loops when UIA clients attempt to find an element because of the logic UIAutomationCore
+		//	// uses to traverse the UIA tree. Because the realizedItem list is in order we simply add items until we reach
+		//	// a point where we've added either all available items or added the number of items in the data list.
+		//	uint counter = 0;
+		//	for (var iter = _realizedItems.begin(); iter != _realizedItems.end() && counter < _itemCount; iter++)
+		//	{
+		//		ContentControl> spChildAsCC;
+		//		DependencyObject spChildContent;
+
+		//		counter++;
+
+		//		((iter).QueryInterface<ContentControl>(
+		//			&spChildAsCC));
+		//		spChildContent = spChildAsCC.Content;
+		//		pVector.Append(spChildContent);
+		//	}
+		//}
+
+		internal void AutomationTryScrollItemIntoView(DependencyObject pItem)
 		{
-			// When the number of items is smaller than the number of items LoopingSelector calculates it
-			// needs to realize to ensure gapless scrolling the realizedItem list will contain duplicate items.
-			// This will cause infinite loops when UIA clients attempt to find an element because of the logic UIAutomationCore
-			// uses to traverse the UIA tree. Because the realizedItem list is in order we simply add items until we reach
-			// a point where we've added either all available items or added the number of items in the data list.
-			uint counter = 0;
-			for (var iter = _realizedItems.begin(); iter != _realizedItems.end() && counter < _itemCount; iter++)
-			{
-				ContentControl> spChildAsCC;
-				DependencyObject spChildContent;
-
-				counter++;
-
-				((iter).QueryInterface<ContentControl>(
-					&spChildAsCC));
-				spChildContent = spChildAsCC.Content;
-				pVector.Append(spChildContent);
-			}
-		}
-
-		void AutomationTryScrollItemIntoView(DependencyObject pItem)
-		{
-			uint index = 0;
-			bool found = false;
-			IList<DependencyObject> spVector;
+			var index = 0;
+			var found = false;
+			IList<object> spVector;
 			spVector = Items;
-			spVector.IndexOf(pItem, &index, &found);
+			//spVector.IndexOf(pItem, &index, &found);
+			index = spVector.IndexOf(pItem);
+			found = index >= 0;
 			if (found)
 			{
 				_skipSelectionChangeUntilFinalViewChanged = true;
@@ -2162,125 +2181,134 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// The _realizedMidpointIdx points to the currently selected item's visual index. Because the visual index
 				// always starts at the first item we subtract it from itself modded with the item count to obtain the
 				// nearest first item visual index.
-				int desiredVisualIdx = _realizedMidpointIdx - PositiveMod(_realizedMidpointIdx, _itemCount) + index;
+				var desiredVisualIdx =
+					(int)(_realizedMidpointIdx - PositiveMod(_realizedMidpointIdx, (int)_itemCount) + index);
 				AutomationScrollToVisualIdx(desiredVisualIdx);
 			}
-
-			// Cleanup
-			// return hr;
 		}
 
 		void AutomationRaiseSelectionChanged()
 		{
-
-
 			UIElement spThisAsUI;
-			ScrollPatternIdentifiersStatics spScrollPatternStatics;
+			//ScrollPatternIdentifiersStatics spScrollPatternStatics;
 			AutomationProperty spAutomationScrollProperty;
 
 			UIElement spSelectedItemAsUI;
 			LoopingSelectorItem pLSINoRef = null;
 
-			DependencyObject spNewScrollValue;
+			//DependencyObject spNewScrollValue;
 
-			double scrollPercent = 0.0;
+			var scrollPercent = 0.0;
 
-			(QueryInterface(
-				__uuidof(UIElement),
-				&spThisAsUI));
+			//(QueryInterface(
+			//	__uuidof(UIElement),
+			//	&spThisAsUI));
+			spThisAsUI = this;
 
-			(wf.GetActivationFactory(
-				wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_ScrollPatternIdentifiers),
-				&spScrollPatternStatics));
-			spAutomationScrollProperty = spScrollPatternStatics.VerticalScrollPercentProperty;
-			AutomationGetScrollPercent(scrollPercent);
-			Private.ValueBoxer.Createdouble(scrollPercent, &spNewScrollValue);
-			AutomationGetSelectedItem(pLSINoRef);
-			if (pLSINoRef)
+			//(wf.GetActivationFactory(
+			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_ScrollPatternIdentifiers),
+			//	&spScrollPatternStatics));
+			//spAutomationScrollProperty = spScrollPatternStatics.VerticalScrollPercentProperty;
+			spAutomationScrollProperty = ScrollPatternIdentifiers.VerticalScrollPercentProperty;
+			AutomationGetScrollPercent(out scrollPercent);
+			//Private.ValueBoxer.Createdouble(scrollPercent, &spNewScrollValue);
+			AutomationGetSelectedItem(out pLSINoRef);
+			if (pLSINoRef is { })
 			{
-				(pLSINoRef.QueryInterface(
-					__uuidof(UIElement),
-					&spSelectedItemAsUI));
+				//(pLSINoRef.QueryInterface(
+				//	__uuidof(UIElement),
+				//	&spSelectedItemAsUI));
+				spSelectedItemAsUI = this;
 
-				(Private.AutomationHelper.RaiseEventIfListener(
-					spSelectedItemAsUI,
-					xaml.Automation.Peers.AutomationEvents_SelectionItemPatternOnElementSelected));
-				(Private.AutomationHelper.SetAutomationFocusIfListener(
-					spSelectedItemAsUI));
+				//(AutomationHelper.RaiseEventIfListener(
+				//	spSelectedItemAsUI,
+				//	Peers.AutomationEvents_SelectionItemPatternOnElementSelected));
+				AutomationHelper.RaiseEventIfListener(spSelectedItemAsUI,
+					AutomationEvents.SelectionItemPatternOnElementSelected);
+				AutomationHelper.SetAutomationFocusIfListener(spSelectedItemAsUI);
 			}
 
-		   (Private.AutomationHelper.RaisePropertyChangedIfListener(
-			   spThisAsUI,
-			   spAutomationScrollProperty,
-			   _tpPreviousScrollPosition,
-			   spNewScrollValue));
+			//(Private.AutomationHelper.RaisePropertyChangedIfListener(
+			//	spThisAsUI,
+			//	spAutomationScrollProperty,
+			//	_tpPreviousScrollPosition,
+			//	spNewScrollValue));
+			AutomationHelper.RaisePropertyChangedIfListener(
+				spThisAsUI,
+				spAutomationScrollProperty,
+				_tpPreviousScrollPosition,
+				scrollPercent);
 
-			_tpPreviousScrollPosition = spNewScrollValue;
+			_tpPreviousScrollPosition = scrollPercent;
 		}
 
 		void AutomationRaiseExpandCollapse()
 		{
 			UIElement spThisAsUI;
-			ExpandCollapsePatternIdentifiersStatics> spExpandCollapsePatternStatics;
-			AutomationProperty> spAutomationProperty;
+			//ExpandCollapsePatternIdentifiersStatics spExpandCollapsePatternStatics;
+			AutomationProperty spAutomationProperty;
 
-			DependencyObject spOldValue;
-			DependencyObject spNewValue;
-			wf.IPropertyValue> spOldValueAsPV;
-			wf.IPropertyValue> spNewValueAsPV;
+			//DependencyObject spOldValue;
+			//DependencyObject spNewValue;
+			ExpandCollapseState spOldValueAsPV;
+			ExpandCollapseState spNewValueAsPV;
 
-			(QueryInterface(
-				__uuidof(UIElement),
-				&spThisAsUI));
+			//(QueryInterface(
+			//	__uuidof(UIElement),
+			//	&spThisAsUI));
+			spThisAsUI = this;
 
-			(wf.GetActivationFactory(
-				wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_ExpandCollapsePatternIdentifiers),
-				&spExpandCollapsePatternStatics));
+			//(wf.GetActivationFactory(
+			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_ExpandCollapsePatternIdentifiers),
+			//	&spExpandCollapsePatternStatics));
 
-			spAutomationProperty = spExpandCollapsePatternStatics.ExpandCollapseStateProperty;
-			(Private.ValueBoxer.CreateReference<xaml.Automation.ExpandCollapseState>
-				(xaml.Automation.ExpandCollapseState_Collapsed, &spOldValueAsPV));
-			(Private.ValueBoxer.CreateReference<xaml.Automation.ExpandCollapseState>
-				(xaml.Automation.ExpandCollapseState_Expanded, &spNewValueAsPV));
+			//spAutomationProperty = spExpandCollapsePatternStatics.ExpandCollapseStateProperty;
+			spAutomationProperty = ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty;
+			//(Private.ValueBoxer.CreateReference<ExpandCollapseState>
+			//	(ExpandCollapseState_Collapsed, &spOldValueAsPV));
+			spOldValueAsPV = ExpandCollapseState.Collapsed;
+			//(Private.ValueBoxer.CreateReference<ExpandCollapseState>
+			//	(ExpandCollapseState_Expanded, &spNewValueAsPV));
+			spNewValueAsPV = ExpandCollapseState.Expanded;
 
-			spOldValueAsPV.As(spOldValue);
-			spNewValueAsPV.As(spNewValue);
-			(Private.AutomationHelper.RaisePropertyChangedIfListener(
-				spThisAsUI,
-				spAutomationProperty,
-				spOldValue,
-				spNewValue));
+			//spOldValueAsPV.As(spOldValue);
+			//spNewValueAsPV.As(spNewValue);
+			AutomationHelper.RaisePropertyChangedIfListener(spThisAsUI, spAutomationProperty, spOldValueAsPV,
+				spNewValueAsPV);
 		}
 
 		void AutomationRaiseStructureChanged()
 		{
 			UIElement spThisAsUI;
-			(QueryInterface(
-				__uuidof(UIElement),
-				&spThisAsUI));
+			//(QueryInterface(
+			//	__uuidof(UIElement),
+			//	&spThisAsUI));
+			spThisAsUI = this;
 
 			// The visible children has changed. Notify UIA of
 			// a new structure.
-			(Private.AutomationHelper.RaiseEventIfListener(
+			AutomationHelper.RaiseEventIfListener(
 				spThisAsUI,
-				xaml.Automation.Peers.AutomationEvents_StructureChanged));
+				AutomationEvents.StructureChanged);
 		}
 
-		void AutomationGetContainerUIAPeerForItem(
+		internal void AutomationGetContainerUIAPeerForItem(
 			DependencyObject pItem,
-		   out LoopingSelectorItemAutomationPeer ppPeer)
+			out LoopingSelectorItemAutomationPeer ppPeer)
 		{
 			ppPeer = null;
-			ILoopingSelectorItem> spChild;
+			LoopingSelectorItem spChild = default;
 
-			for (var iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			//for (var iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
+			foreach (var iter in _realizedItems)
 			{
-				ILoopingSelectorItem> spTentativeChild(iter);
-				ContentControl> spTentativeChildAsCC;
+				var spTentativeChild = iter;
+				ContentControl spTentativeChildAsCC;
 				DependencyObject spItem;
-				spTentativeChild.As(spTentativeChildAsCC);
+				//spTentativeChild.As(spTentativeChildAsCC);
+				spTentativeChildAsCC = spTentativeChild;
 
-				spItem = spTentativeChildAsCC.Content;
+				spItem = spTentativeChildAsCC.Content as DependencyObject;
 
 				if (spItem == pItem)
 				{
@@ -2289,16 +2317,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			if (!spChild)
+			if (spChild == null)
 			{
-				for (var iter = _realizedItemsForAP.begin(); iter != _realizedItemsForAP.end(); iter++)
+				//for (var iter = _realizedItemsForAP.begin(); iter != _realizedItemsForAP.end(); iter++)
+				foreach (var iter in _realizedItemsForAP)
 				{
-					ILoopingSelectorItem> spTentativeChild(iter.second);
-					ContentControl> spTentativeChildAsCC;
+					var spTentativeChild = iter.Value;
+					ContentControl spTentativeChildAsCC;
 					DependencyObject spItem;
-					spTentativeChild.As(spTentativeChildAsCC);
+					//spTentativeChild.As(spTentativeChildAsCC);
+					spTentativeChildAsCC = spTentativeChild;
 
-					spItem = spTentativeChildAsCC.Content;
+					spItem = spTentativeChildAsCC.Content as DependencyObject;
 
 					if (spItem == pItem)
 					{
@@ -2308,41 +2338,39 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			if (spChild)
+			if (spChild is { })
 			{
 				UIElement spChildAsUIElt;
-				AutomationPeer> spChildAP;
-				LoopingSelectorItemAutomationPeer> spChildAPAsLSIAP;
-				spChild.As(spChildAsUIElt);
-				(Private.AutomationHelper.CreatePeerForElement(spChildAsUIElt,
-					&spChildAP));
-				spChildAP.As(spChildAPAsLSIAP);
+				AutomationPeer spChildAP;
+				LoopingSelectorItemAutomationPeer spChildAPAsLSIAP;
+				//spChild.As(spChildAsUIElt);
+				spChildAsUIElt = spChild;
+				spChildAP = AutomationHelper.CreatePeerForElement(spChildAsUIElt);
+				//spChildAP.As(spChildAPAsLSIAP);
+				spChildAPAsLSIAP = spChildAP as LoopingSelectorItemAutomationPeer;
 
-				ppPeer = spChildAPAsLSIAP.Detach();
+				ppPeer = spChildAPAsLSIAP; //.Detach();
 			}
-
-			//return S_OK;
 		}
 
-		void AutomationClearPeerMap()
+		internal void AutomationClearPeerMap()
 		{
-			LoopingSelectorAutomationPeer spLSAP;
-			_wrAP.CopyTo<LoopingSelectorAutomationPeer>(spLSAP);
-			if (spLSAP)
+			LoopingSelectorAutomationPeer spLSAP = default;
+			//_wrAP.CopyTo<LoopingSelectorAutomationPeer>(spLSAP);
+			//if (spLSAP)
+			if (_wrAP?.TryGetTarget(out spLSAP) ?? false)
 			{
-				(LoopingSelectorAutomationPeer)(spLSAP).ClearPeerMap();
+				spLSAP.ClearPeerMap();
 			}
 		}
 
-		void AutomationRealizeItemForAP(uint itemIdxToRealize)
+		internal void AutomationRealizeItemForAP(uint itemIdxToRealize)
 		{
-			ILoopingSelectorItem> spItem;
-			RealizeItem(itemIdxToRealize, &spItem);
-			_realizedItemsForAP[itemIdxToRealize] = spItem;
-			//return S_OK;
+			LoopingSelectorItem spItem;
+			RealizeItem(itemIdxToRealize, out spItem);
+			_realizedItemsForAP[(int)itemIdxToRealize] = spItem;
 		}
 
 		#endregion
-
 	}
 }
