@@ -120,6 +120,12 @@ namespace Windows.Storage.Streams
 		}
 
 		/// <summary>
+		/// Gets a <see cref="ReadOnlyMemory{byte}"/> of the current buffer
+		/// </summary>
+		internal ReadOnlyMemory<byte> AsReadOnlyMemory()
+			=> _data.Slice(0, (int)Length);
+
+		/// <summary>
 		/// **CLONES** a part of the content of this buffer into a new byte[]
 		/// </summary>
 		internal byte[] ToArray(uint start, int count)

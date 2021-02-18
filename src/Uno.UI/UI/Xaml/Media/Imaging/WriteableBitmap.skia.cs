@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			_surface ??= new SkiaCompositionSurface();
 
-			_surface.SetPixels(PixelWidth, PixelHeight, _buffer.ToArray());
+			_surface.CopyPixels(PixelWidth, PixelHeight, _buffer.AsReadOnlyMemory());
 
 			image = new ImageData
 			{
