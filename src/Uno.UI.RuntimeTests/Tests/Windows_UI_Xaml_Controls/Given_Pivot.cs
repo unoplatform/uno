@@ -10,36 +10,33 @@ using Windows.UI.Xaml.Data;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using static Private.Infrastructure.TestServices;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	public class Given_Pivot
 	{
+		private TestsResources _testsResources;
+
+		private DataTemplate PivotHeaderTemplate => _testsResources["PivotHeaderTemplate"] as DataTemplate;
+
+		private DataTemplate PivotItemTemplate => _testsResources["PivotItemTemplate"] as DataTemplate;
+
+		[TestInitialize]
+		public void Init()
+		{
+			_testsResources = new TestsResources();
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Check_Binding()
 		{
-			var headerTemplate = new DataTemplate(() => {
-				var tb = new TextBlock();				
-				tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("Title") });
-				return tb;
-			});
-
-			var contentTemplate = new DataTemplate(() => {
-				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("Content") });
-
-				var sp = new StackPanel();
-				sp.Children.Add(tb);
-
-				return sp;
-			});
-
 			var SUT = new Pivot()
 			{
-				HeaderTemplate = headerTemplate,
-				ItemTemplate = contentTemplate
+				HeaderTemplate = PivotHeaderTemplate,
+				ItemTemplate = PivotItemTemplate
 			};
 
 			var root = new Grid
@@ -56,11 +53,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SetBinding(Pivot.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
 
-
 			PivotItem pi = null;
 			await WindowHelper.WaitFor(() => (pi = SUT.ContainerFromItem(items[0]) as PivotItem) != null);
 
-			var tbs = pi.EnumerateAllChildren(a => a is TextBlock).Cast<TextBlock>();
+			var tbs = pi.GetAllChildren(null, false).OfType<TextBlock>().Cast<TextBlock>();
 
 			tbs.Should().NotBeNull();
 			tbs.Should().HaveCount(1);
@@ -68,7 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => (pi = SUT.ContainerFromItem(items[1]) as PivotItem) != null);
 
-			var tbs2 = pi.EnumerateAllChildren(a => a is TextBlock).Cast<TextBlock>();
+			var tbs2 = pi.GetAllChildren(null, false).OfType<TextBlock>().Cast<TextBlock>();
 
 			tbs2.Should().NotBeNull();
 			tbs2.Should().HaveCount(1);

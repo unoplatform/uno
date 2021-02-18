@@ -148,4 +148,11 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<DataTemplate x:Key="PivotHeaderTemplate">
+		<TextBlock Text="{Binding Title}" />
+	</DataTemplate>
+
+	<DataTemplate x:Key="PivotItemTemplate">
+		<TextBlock Text="{Binding Content}" />
+	</DataTemplate>
 </ResourceDictionary>
