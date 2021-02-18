@@ -3238,6 +3238,46 @@ var Windows;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+var ContactProperty;
+(function (ContactProperty) {
+    ContactProperty["Address"] = "address";
+    ContactProperty["Email"] = "email";
+    ContactProperty["Icon"] = "icon";
+    ContactProperty["Name"] = "name";
+    ContactProperty["Tel"] = "tel";
+})(ContactProperty || (ContactProperty = {}));
+;
+var Windows;
+(function (Windows) {
+    var ApplicationModel;
+    (function (ApplicationModel) {
+        var Contacts;
+        (function (Contacts) {
+            class ContactPicker {
+                static isSupported() {
+                    return 'contacts' in navigator && 'ContactsManager' in window;
+                }
+                static pickContacts(pickMultiple) {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        const props = [ContactProperty.Name, ContactProperty.Email, ContactProperty.Tel, ContactProperty.Address];
+                        const opts = {
+                            multiple: pickMultiple
+                        };
+                        try {
+                            const contacts = yield navigator.contacts.select(props, opts);
+                            return JSON.stringify(contacts);
+                        }
+                        catch (ex) {
+                            console.log("Error occurred while picking contacts.");
+                            return null;
+                        }
+                    });
+                }
+            }
+            Contacts.ContactPicker = ContactPicker;
+        })(Contacts = ApplicationModel.Contacts || (ApplicationModel.Contacts = {}));
+    })(ApplicationModel = Windows.ApplicationModel || (Windows.ApplicationModel = {}));
+})(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
     var ApplicationModel;

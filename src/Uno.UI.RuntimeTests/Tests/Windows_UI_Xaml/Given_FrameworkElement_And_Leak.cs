@@ -45,9 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ListView), 15)]
 		[DataRow(typeof(ProgressRing), 15)]
 		[DataRow(typeof(Pivot), 15)]
-#if !__IOS__ // https://github.com/unoplatform/uno/issues/4953
 		[DataRow(typeof(ScrollBar), 15)]
-#endif
 		[DataRow(typeof(Slider), 15)]
 		[DataRow(typeof(SymbolIcon), 15)]
 		[DataRow(typeof(Viewbox), 15)]

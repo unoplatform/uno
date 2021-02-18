@@ -86,8 +86,16 @@ namespace Windows.UI.Xaml.Media.Animation
 
 
 		public event EventHandler<object> Completed;
+		internal event EventHandler<object> Failed;
+
+		event EventHandler<object> ITimeline.Failed
+		{
+			add => Failed += value;
+			remove => Failed += value;
+		}
 
 		protected void OnCompleted() => Completed?.Invoke(this, null);
+		protected void OnFailed() => Failed?.Invoke(this, null);
 
 		/// <summary>
 		/// Compute duration of the Timeline. Sometimes it's define by components.

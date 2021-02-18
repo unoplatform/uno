@@ -25,7 +25,44 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
+		public override bool PerformKeyEquivalent(NSEvent theEvent)
+		{
+			if (theEvent.Type == NSEventType.KeyDown)
+			{
+				if ((theEvent.ModifierFlags & NSEventModifierMask.DeviceIndependentModifierFlagsMask) == NSEventModifierMask.CommandKeyMask)
+				{
+					var selectorName = theEvent.CharactersIgnoringModifiers.ToLowerInvariant() switch
+					{
+						"x" => "cut:",
+						"c" => "copy:",
+						"v" => "paste:",
+						"z" => "undo:",
+						"a" => "selectAll:",
+						_ => string.Empty,
+					};
 
+					if (!string.IsNullOrWhiteSpace(selectorName))
+					{
+						if (NSApplication.SharedApplication.SendAction(new ObjCRuntime.Selector(selectorName), null, this))
+						{
+							return true;
+						}
+					}
+				}
+				else if ((theEvent.ModifierFlags & NSEventModifierMask.DeviceIndependentModifierFlagsMask) == (NSEventModifierMask.CommandKeyMask | NSEventModifierMask.ShiftKeyMask))
+				{
+					if (theEvent.CharactersIgnoringModifiers.ToLowerInvariant() == "z")
+					{
+						if (NSApplication.SharedApplication.SendAction(new ObjCRuntime.Selector("redo:"), null, this))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return base.PerformKeyEquivalent(theEvent);
+		}
 		private void OnEditingChanged(object sender, EventArgs e)
 		{
 			OnTextChanged();

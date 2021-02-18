@@ -76,6 +76,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private long m_listViewCanReorderItemsPropertyChangedRevoker;
 		private long m_listViewAllowDropPropertyChangedRevoker;
 
+		private long m_ScrollViewerScrollableWidthPropertyChangedRevoker; // Uno workaround
+
 		public TabView()
 		{
 			m_dispatcherHelper = new DispatcherHelper(this);
@@ -396,6 +398,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_scrollViewer.Loaded -= OnScrollViewerLoaded;
 				m_scrollViewer.ViewChanged -= OnScrollViewerViewChanged;
+				m_scrollViewer.UnregisterPropertyChangedCallback(ScrollViewer.ScrollableWidthProperty, m_ScrollViewerScrollableWidthPropertyChangedRevoker); // Uno workaround
 			}
 
 			if (m_scrollDecreaseButton != null)
@@ -557,6 +560,12 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						scrollViewer.Loaded += OnScrollViewerLoaded;
 					}
+					// Uno workaround: Since Loaded is called before measure, the increase/decrease button visibility is not initially set
+					// properly unless we subscribe to ScrollableWidth changing.
+					m_ScrollViewerScrollableWidthPropertyChangedRevoker = scrollViewer.RegisterPropertyChangedCallback(
+						ScrollViewer.ScrollableWidthProperty,
+						(_, __) => UpdateScrollViewerDecreaseAndIncreaseButtonsViewState()
+					);
 				}
 			}
 		}

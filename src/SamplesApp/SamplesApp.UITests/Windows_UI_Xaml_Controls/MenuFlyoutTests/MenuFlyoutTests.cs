@@ -41,6 +41,43 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		public void MenuFlyoutItem_Hierarchy()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyoutItem_Hierarchy");
+
+			_app.WaitForElement(_app.Marked("Help"));
+
+			TakeScreenshot("Initial");
+
+			_app.FastTap(_app.Marked("Help"));
+			TakeScreenshot("menuShown");
+
+			_app.FastTap(_app.Marked("MenuViewHelp"));
+			_app.WaitForText(_app.Marked("results"), "View Help");
+
+			_app.FastTap(_app.Marked("Help"));
+			_app.WaitForElement(_app.Marked("MenuFeedback"));
+			_app.FastTap(_app.Marked("MenuFeedback"));
+			_app.WaitForElement(_app.Marked("MenuReportProblem"));
+			_app.FastTap(_app.Marked("MenuReportProblem"));
+			_app.WaitForText(_app.Marked("results"), "Report Problem");
+
+
+			_app.FastTap(_app.Marked("Help"));
+			_app.WaitForElement(_app.Marked("MenuFeedback"));
+			_app.FastTap(_app.Marked("MenuFeedback"));
+			_app.WaitForElement(_app.Marked("MenuSettings"));
+			_app.FastTap(_app.Marked("MenuSettings"));
+			_app.WaitForElement(_app.Marked("MenuAutoSave"));
+			_app.FastTap(_app.Marked("MenuAutoSave"));
+			_app.WaitForText(_app.Marked("results"), "Auto Save");
+
+			TakeScreenshot("AfterSuccess");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // https://github.com/unoplatform/uno/issues/4795
 		public void Simple_MenuFlyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -70,6 +107,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)]  // https://github.com/unoplatform/uno/issues/4795
 		public void Simple_MenuFlyout_Toggle()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -103,6 +141,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // https://github.com/unoplatform/uno/issues/4795
 		public void Simple_SubMenuFlyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -129,7 +168,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.iOS)]
+		[ActivePlatforms(Platform.Browser)] // https://github.com/unoplatform/uno/issues/4795
 		public void Disabled_MenuFlyoutItem()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
@@ -159,6 +198,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // https://github.com/unoplatform/uno/issues/4795
 		public void Dismiss_MenuFlyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");

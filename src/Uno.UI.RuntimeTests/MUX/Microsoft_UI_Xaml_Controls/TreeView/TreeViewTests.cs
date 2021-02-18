@@ -38,7 +38,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using Uno.Extensions.Specialized;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace MUXControlsTestApp
 {
 	partial class SpecialTreeView : TreeView { }
 	partial class SpecialTreeViewItem : TreeViewItem { }

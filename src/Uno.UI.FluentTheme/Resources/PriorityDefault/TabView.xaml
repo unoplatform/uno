@@ -7,6 +7,7 @@
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:local="using:Microsoft.UI.Xaml.Controls"
+    xmlns:uno="using:Uno.UI.Xaml.Controls"
 	xmlns:ios="http://platform.uno/ios"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives">
 
@@ -170,7 +171,10 @@
     </Style>
 
     <Style x:Name="TabScrollViewerStyle" TargetType="ScrollViewer">
-        <Setter Property="Template">
+		<!--Uno workaround: ScrollBars are deliberately omitted from the style because they shouldn't appear-->
+		<Setter Property="uno:ScrollViewer.ShouldFallBackToNativeScrollBars"
+				Value="False"/>
+		<Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">
                     <Border x:Name="Root"

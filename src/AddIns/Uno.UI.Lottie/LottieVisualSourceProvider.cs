@@ -23,5 +23,23 @@ namespace Uno.UI.Lottie
 		public IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile) => new LottieVisualSource {UriSource = sourceFile};
 
 		public IThemableAnimatedVisualSource CreateTheamableFromLottieAsset(Uri sourceFile) => new ThemableLottieVisualSource {UriSource = sourceFile};
+
+		public bool TryCreateThemableFromAnimatedVisualSource(IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource? themableAnimatedVisualSource)
+		{
+			themableAnimatedVisualSource = default;
+			if (animatedVisualSource is ThemableLottieVisualSource themable)
+			{
+				themableAnimatedVisualSource = themable;
+				return true;
+			}
+
+			if (animatedVisualSource is LottieVisualSource lottieVisualSource)
+			{
+				themableAnimatedVisualSource = CreateTheamableFromLottieAsset(lottieVisualSource.UriSource);
+				return true;
+			}
+
+			return false;
+		}
 	}
 }

@@ -68,6 +68,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public event EventHandler AnimationCancel;
 
+#pragma warning disable 67
+		public event EventHandler AnimationFailed;
+#pragma warning restore 67
+
 		public event EventHandler Update;
 
 		public long StartDelay { get; set; }

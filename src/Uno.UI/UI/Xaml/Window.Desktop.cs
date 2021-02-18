@@ -31,7 +31,17 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement value)
 		{
+			if (_content != null)
+			{
+				_content.IsWindowRoot = false;
+				_content.IsVisualTreeRoot = false;
+			}
+
 			_content = value;
+
+			_content.IsWindowRoot = true;
+			_content.IsVisualTreeRoot = true;
+
 			TryLoadContent();
 		}
 

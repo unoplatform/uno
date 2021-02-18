@@ -235,8 +235,9 @@ namespace Uno.UI
 		{
 			/// <summary>
 			/// Sets the value to use for <see cref="ItemsStackPanel.CacheLength"/> and <see cref="ItemsWrapGrid.CacheLength"/> if not set
-			/// explicitly in Xaml or code. Higher values will cache more views either side of the visible window, improving list performance
-			/// at the expense of consuming more memory. Setting this to null will leave the default value at the UWP default of 4.0.
+			/// explicitly in Xaml or code. Higher values will cache more views either side of the visible window, improving list scroll
+			/// performance at the expense of consuming more memory and taking longer to initially load. Setting this to null will leave
+			/// the default value at the UWP default of 4.0.
 			/// </summary>
 			public static double? DefaultCacheLength = 1.0;
 		}

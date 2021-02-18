@@ -25,6 +25,7 @@ using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
+using System.Text;
 
 #if __IOS__
 using UIKit;
@@ -51,6 +52,11 @@ namespace Windows.UI.Xaml
 		/// Is this view set to Window.Current.Content?
 		/// </summary>
 		internal bool IsWindowRoot { get; set; }
+
+		/// <summary>
+		/// Is this view the top of the managed visual tree
+		/// </summary>
+		internal bool IsVisualTreeRoot { get; set; }
 
 		private void Initialize()
 		{
@@ -187,6 +193,9 @@ namespace Windows.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
+			var logInfoString = from.Log().IsEnabled(LogLevel.Information) ? new StringBuilder() : null;
+			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
+
 			if (from == to)
 			{
 				return Matrix3x2.Identity;
@@ -258,6 +267,7 @@ namespace Windows.UI.Xaml
 					offsetY -= elt.ScrollOffsets.Y;
 				}
 
+				logInfoString?.Append($"{elt}: ({offsetX}, {offsetY}), ");
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
@@ -273,10 +283,15 @@ namespace Windows.UI.Xaml
 				matrix *= rootToTo;
 			}
 
+			if (logInfoString != null)
+			{
+				logInfoString.Append($"], matrix: {matrix}");
+				from.Log().LogInformation(logInfoString.ToString());
+			}
 			return matrix;
 		}
 
-#if !__IOS__ && !__ANDROID__ // This is the default implementation, but it can be customized per platform
+#if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
@@ -341,13 +356,26 @@ namespace Windows.UI.Xaml
 		internal bool IsRenderingSuspended { get; set; }
 
 		[ThreadStatic]
-		private static bool _isInUpdateLayout;
+		private static bool _isInUpdateLayout; // Currently within the UpdateLayout() method (explicit managed layout request)
+
+#pragma warning disable CS0649 // Field not used on Desktop/Tests
+		[ThreadStatic]
+		private static bool _isLayoutingVisualTreeRoot; // Currently in Measure or Arrange of the element flagged with IsVisualTreeRoot (layout requested by the system)
+#pragma warning restore CS0649
+
+#if !__NETSTD__ // We need an internal accessor for the Layouter
+		internal static bool IsLayoutingVisualTreeRoot
+		{
+			get => _isLayoutingVisualTreeRoot;
+			set => _isLayoutingVisualTreeRoot = value;
+		}
+#endif
 
 		private const int MaxLayoutIterations = 250;
 
 		public void UpdateLayout()
 		{
-			if (_isInUpdateLayout)
+			if (_isInUpdateLayout || _isLayoutingVisualTreeRoot)
 			{
 				return;
 			}

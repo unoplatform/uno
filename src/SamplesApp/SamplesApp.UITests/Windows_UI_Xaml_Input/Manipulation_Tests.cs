@@ -29,6 +29,58 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ManipulateDelta_DragLeft() => ManipulationDelta_Dragging(dx: 100);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ManipulateDelta_DragUp() => ManipulationDelta_Dragging(dy: 100);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ManipulateDelta_DragRight() => ManipulationDelta_Dragging(dx: -100);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ManipulateDelta_DragDown() => ManipulationDelta_Dragging(dy: -100);
+
+		public void ManipulationDelta_Dragging(int dx = 0, int dy = 0)
+		{
+			if (!(dx == 0 ^ dy == 0))
+			{
+				throw new ArgumentException($"dx and dy cannot be both 0 or both have value: {dx}, {dy}");
+			}
+
+			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.ManipulationEvents");
+
+			// dragging
+			var rect = _app.WaitForElement("_thumb").Single().Rect;
+			_app.DragCoordinates(rect.CenterX, rect.CenterY, rect.CenterX + dx, rect.CenterY + dy);
+
+			// assert if the square translated in the opposite direction
+			var translateX = _app.Marked("DebugThumbTranslateX").GetDependencyPropertyValue<string>("Text");
+			var translateY = _app.Marked("DebugThumbTranslateY").GetDependencyPropertyValue<string>("Text");
+			if (float.TryParse(translateX, out var tx) && float.TryParse(translateY, out var ty))
+			{
+				var context = dx != 0
+					? new { Axis = 'X', Subscript = 'x', Delta = dx, Translation = tx }
+					: new { Axis = 'Y', Subscript = 'y', Delta = dy, Translation = ty };
+				Assert.IsTrue(
+					Math.Sign(context.Delta) * -1 == Math.Sign(context.Translation),
+					$"Expect TranslateTransform.{context.Axis} (t{context.Subscript}:{context.Translation}) to be in the opposite direction of dragging direction (d{context.Subscript}:{context.Delta})."
+				);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Failed to parse DebugThumbTranslate(X|Y) values: '{translateX}', '{translateY}'");
+			}
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)] // PinchToZoomInCoordinates is not supported on WASM yet
 		public void Test_Scale()
 		{

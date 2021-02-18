@@ -85,6 +85,7 @@ namespace Windows.UI.Xaml
 
 				_main = new Grid()
 				{
+					IsVisualTreeRoot = true,
 					Children =
 					{
 						_rootBorder,

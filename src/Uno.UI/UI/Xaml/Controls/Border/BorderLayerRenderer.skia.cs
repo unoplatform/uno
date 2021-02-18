@@ -133,6 +133,11 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					adjustedArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
 				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					Brush.AssignAndObserveBrush(acrylicBrush, color => backgroundShape.FillBrush = compositor.CreateColorBrush(color))
+						.DisposeWith(disposables);
+				}
 				else
 				{
 					backgroundShape.FillBrush = null;
@@ -146,12 +151,15 @@ namespace Windows.UI.Xaml.Shapes
 				borderShape.Geometry = compositor.CreatePathGeometry(borderPath);
 				outerShape.Geometry = compositor.CreatePathGeometry(outerPath);
 
-				var shapeVisual = compositor.CreateShapeVisual();
-				shapeVisual.Shapes.Add(backgroundShape);
-				shapeVisual.Shapes.Add(borderShape);
+				var borderVisual = compositor.CreateShapeVisual();
+				var backgroundVisual = compositor.CreateShapeVisual();
+				backgroundVisual.Shapes.Add(backgroundShape);
+				borderVisual.Shapes.Add(borderShape);
 
-				sublayers.Add(shapeVisual);
-				parent.Children.InsertAtTop(shapeVisual);
+				sublayers.Add(backgroundVisual);
+				sublayers.Add(borderVisual);
+				parent.Children.InsertAtBottom(backgroundVisual);
+				parent.Children.InsertAtTop(borderVisual);
 
 				owner.ClippingIsSetByCornerRadius = cornerRadius != CornerRadius.None;
 				if (owner.ClippingIsSetByCornerRadius)
@@ -193,6 +201,14 @@ namespace Windows.UI.Xaml.Shapes
 				else if (background is ImageBrush imgBackground)
 				{
 					backgroundArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, backgroundArea, imgBackground);
+				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					Brush.AssignAndObserveBrush(acrylicBrush, c => backgroundShape.FillBrush = compositor.CreateColorBrush(c))
+						.DisposeWith(disposables);
+
+					Disposable.Create(() => backgroundShape.FillBrush = null)
+						.DisposeWith(disposables);
 				}
 				else
 				{

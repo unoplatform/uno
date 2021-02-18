@@ -249,6 +249,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_animator.AnimationEnd += OnAnimatorAnimationEnd;
 
 				_animator.AnimationCancel += OnAnimatorCancelled;
+				_animator.AnimationFailed += OnAnimatorFailed;
 			}
 
 			private void OnAnimatorAnimationEnd(object sender, EventArgs e)
@@ -337,7 +338,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
 				{
-	#if __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__
 					// iOS && macOS: Here we make sure that the final frame is applied properly (it may have been skipped by animator)
 					// Note: The value is applied using the "Animations" precedence, which means that the user won't be able to alter
 					//		 it from application code. Instead we should set the value using a lower precedence
@@ -359,6 +360,19 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				_owner.OnCompleted();
+			}
+
+			/// <summary>
+			/// Stops the timeline when an animator failed
+			/// </summary>
+			private void OnAnimatorFailed(object sender, EventArgs e)
+			{
+				// Failed - Put back the initial state, and don't try to replay.
+				State = TimelineState.Stopped;
+
+				ClearValue();
+
+				_owner.OnFailed();
 			}
 
 			/// <summary>
