@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class ExpanderExpandingEventArgs : EventArgs
+	public partial class ExpanderExpandingEventArgs : EventArgs
 	{
 	}
 }

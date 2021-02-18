@@ -1,10 +1,12 @@
-#if __WASM__
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation;
@@ -15,17 +17,7 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
 	{
-		public PickerLocationId SuggestedStartLocation { get; set; }
-
-		public IAsyncOperation<StorageFile> PickSaveFileAsync() => PickFilesTask().AsAsyncOperation();
-
-		public FileSavePicker()
-		{
-			SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-			FileTypeChoices = new Dictionary<string, IList<string>>();
-		}
-
-		private async Task<StorageFile> PickFilesTask()
+		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
 			if (!FileTypeChoices.Any())
 			{
@@ -47,4 +39,3 @@ namespace Windows.Storage.Pickers
 		}
 	}
 }
-#endif

@@ -133,6 +133,11 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					adjustedArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
 				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					Brush.AssignAndObserveBrush(acrylicBrush, color => backgroundShape.FillBrush = compositor.CreateColorBrush(color))
+						.DisposeWith(disposables);
+				}
 				else
 				{
 					backgroundShape.FillBrush = null;
@@ -196,6 +201,14 @@ namespace Windows.UI.Xaml.Shapes
 				else if (background is ImageBrush imgBackground)
 				{
 					backgroundArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, backgroundArea, imgBackground);
+				}
+				else if (background is AcrylicBrush acrylicBrush)
+				{
+					Brush.AssignAndObserveBrush(acrylicBrush, c => backgroundShape.FillBrush = compositor.CreateColorBrush(c))
+						.DisposeWith(disposables);
+
+					Disposable.Create(() => backgroundShape.FillBrush = null)
+						.DisposeWith(disposables);
 				}
 				else
 				{
@@ -319,6 +332,12 @@ namespace Windows.UI.Xaml.Shapes
 					// surfaceBrush.Offset = new Vector2((float)imageFrame.Left, (float)imageFrame.Top);
 					var matrix = Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceImageSize.Width), (float)(backgroundArea.Height / sourceImageSize.Height));
 					matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+
+					if (imgBackground.Transform != null)
+					{
+						matrix *= imgBackground.Transform.ToMatrix(new Point());
+					}
+
 					surfaceBrush.TransformMatrix = matrix;
 
 					backgroundShape.FillBrush = surfaceBrush;

@@ -1,6 +1,7 @@
 using CoreGraphics;
 using System;
 using Uno.Extensions;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Foundation;
@@ -63,15 +64,9 @@ namespace Windows.UI.Xaml.Controls
 
 			return base.PerformKeyEquivalent(theEvent);
 		}
-		private void OnEditingChanged(object sender, EventArgs e)
-		{
-			OnTextChanged();
-		}
+		private void OnEditingChanged(object sender, EventArgs e) => OnTextChanged();
 
-		internal void OnChanged()
-		{
-			OnTextChanged();
-		}
+		internal void OnChanged() => OnTextChanged();
 
 		public string Text
 		{
@@ -80,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
-				value = value ?? string.Empty;
+				value ??= string.Empty;
 				if (base.StringValue != value)
 				{
 					base.StringValue = value;
@@ -89,6 +84,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private FrameworkElement _firstManagedParent;
+
 		private void OnTextChanged()
 		{
 			var textBox = _textBox?.GetTarget();
@@ -96,6 +93,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var text = textBox.ProcessTextInput(Text);
 				SetTextNative(text);
+
+				// Launch the invalidation of the measure + layout on the first _managed_ element
+				// Native elements will be relayouted correctly at the same time.
+				_firstManagedParent ??= this.FindFirstParent<FrameworkElement>();
+				_firstManagedParent?.InvalidateMeasure();
 			}
 		}
 
@@ -112,10 +114,7 @@ namespace Windows.UI.Xaml.Controls
 			Bezeled = false;
 		}
 
-		public override CGSize SizeThatFits(CGSize size)
-		{
-			return IFrameworkElementHelper.SizeThatFits(this, base.SizeThatFits(size));
-		}
+		public override CGSize SizeThatFits(CGSize size) => IFrameworkElementHelper.SizeThatFits(this, base.SizeThatFits(size));
 
 		public void UpdateFont()
 		{
@@ -135,8 +134,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public Brush Foreground
 		{
-			get { return (Brush)GetValue(ForegroundProperty); }
-			set { SetValue(ForegroundProperty, value); }
+			get => (Brush)GetValue(ForegroundProperty);
+			set => SetValue(ForegroundProperty, value);
 		}
 
 		public bool HasMarkedText => throw new NotImplementedException();
@@ -165,66 +164,53 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var textBox = _textBox.GetTarget();
 
-			if (textBox != null)
+			if (textBox != null && Brush.TryGetColorWithOpacity(newValue, out var color))
 			{
-				var scb = newValue as SolidColorBrush;
+				this.TextColor = color;
+				UpdateCaretColor(color);
+			}
+			else
+			{
+				UpdateCaretColor();
+			}
+		}
 
-				if (scb != null)
+		private void UpdateCaretColor(Color? color = null)
+		{
+			if (CurrentEditor is NSTextView textField)
+			{
+				if (color != null)
 				{
-					this.TextColor = scb.Color;
+					textField.InsertionPointColor = color;
+				}
+				else if (Brush.TryGetColorWithOpacity(Foreground, out var foregroundColor))
+				{
+					textField.InsertionPointColor = foregroundColor;
 				}
 			}
-
-			UpdateCaretColor();
 		}
 
-		private void UpdateCaretColor()
-		{
-			if (CurrentEditor is NSTextView textField && Foreground is SolidColorBrush scb)
-			{
-				textField.InsertionPointColor = scb.Color;
-			}
-		}
-
-		public void RefreshFont()
-		{
-			UpdateFont();
-		}
+		public void RefreshFont() => UpdateFont();
 
 		public override bool BecomeFirstResponder()
 		{
 			UpdateCaretColor();
+
+			_textBox.GetTarget()?.Focus(FocusState.Pointer);
+
 			return base.BecomeFirstResponder();
 		}
 
-		public void InsertText(NSObject insertString)
-		{
-			throw new NotImplementedException();
-		}
+		public void InsertText(NSObject insertString) => throw new NotImplementedException();
 
-		public void SetMarkedText(NSObject @string, NSRange selRange)
-		{
-			throw new NotImplementedException();
-		}
+		public void SetMarkedText(NSObject @string, NSRange selRange) => throw new NotImplementedException();
 
-		public void UnmarkText()
-		{
-			throw new NotImplementedException();
-		}
+		public void UnmarkText() => throw new NotImplementedException();
 
-		public NSAttributedString GetAttributedSubstring(NSRange range)
-		{
-			throw new NotImplementedException();
-		}
+		public NSAttributedString GetAttributedSubstring(NSRange range) => throw new NotImplementedException();
 
-		public CGRect GetFirstRectForCharacterRange(NSRange range)
-		{
-			throw new NotImplementedException();
-		}
+		public CGRect GetFirstRectForCharacterRange(NSRange range) => throw new NotImplementedException();
 
-		public nuint GetCharacterIndex(CGPoint point)
-		{
-			throw new NotImplementedException();
-		}
+		public nuint GetCharacterIndex(CGPoint point) => throw new NotImplementedException();
 	}
 }

@@ -60,13 +60,16 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal unsafe void SetPixels(int pixelWidth, int pixelHeight, byte[] data)
+		/// <summary>
+		/// Copies the provided pixels to the composition surface
+		/// </summary>
+		internal unsafe void CopyPixels(int pixelWidth, int pixelHeight, ReadOnlyMemory<byte> data)
 		{
-			var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+			var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 
-			fixed (byte* pData = data)
+			using (var pData = data.Pin())
 			{
-				_image = SKImage.FromPixels(info, (IntPtr)pData, pixelWidth * 4);
+				_image = SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4);
 			}
 		}
 	}

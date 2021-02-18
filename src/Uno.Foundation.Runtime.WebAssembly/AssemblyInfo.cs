@@ -7,6 +7,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.Wasm.Tests")]
 
 #if __IOS__
 [assembly: Foundation.LinkerSafe]

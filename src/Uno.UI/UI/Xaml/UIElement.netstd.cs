@@ -83,9 +83,13 @@ namespace Windows.UI.Xaml
 			// Explicit propagation of the loading even must be performed
 			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
 			// properties that affect the visual tree.
-			foreach (var child in _children)
+
+			// Get a materialized copy for Wasm to avoid the use of iterators
+			// where try/finally has a high cost.
+			var children = _children.Materialized;
+			for (int i = 0; i < children.Count; i++)
 			{
-				child.OnElementLoading(depth + 1);
+				children[i].OnElementLoading(depth + 1);
 			}
 		}
 
@@ -107,9 +111,12 @@ namespace Windows.UI.Xaml
 			OnFwEltLoaded();
 			UpdateHitTest();
 
-			foreach (var child in _children)
+			// Get a materialized copy for Wasm to avoid the use of iterators
+			// where try/finally has a high cost.
+			var children = _children.Materialized;
+			for (int i = 0; i < children.Count; i++)
 			{
-				child.OnElementLoaded();
+				children[i].OnElementLoaded();
 			}
 		}
 
@@ -123,9 +130,12 @@ namespace Windows.UI.Xaml
 			IsLoaded = false;
 			Depth = int.MinValue;
 
-			foreach (var child in _children)
+			// Get a materialized copy for Wasm to avoid the use of iterators
+			// where try/finally has a high cost.
+			var children = _children.Materialized;
+			for (int i = 0; i < children.Count; i++)
 			{
-				child.OnElementUnloaded();
+				children[i].OnElementUnloaded();
 			}
 
 			OnFwEltUnloaded();

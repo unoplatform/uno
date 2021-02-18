@@ -1,3 +1,4 @@
+#if !HAS_UNO_WINUI
 using System;
 using AVFoundation;
 using Uno.Extensions;
@@ -52,3 +53,4 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
+#endif

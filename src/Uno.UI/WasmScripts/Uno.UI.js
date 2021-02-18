@@ -117,6 +117,21 @@ var Windows;
 })(Windows || (Windows = {}));
 var Uno;
 (function (Uno) {
+    var Utils;
+    (function (Utils) {
+        class Guid {
+            static NewGuid() {
+                if (!Guid.newGuidMethod) {
+                    Guid.newGuidMethod = Module.mono_bind_static_method("[mscorlib] System.Guid:NewGuid");
+                }
+                return Guid.newGuidMethod();
+            }
+        }
+        Utils.Guid = Guid;
+    })(Utils = Uno.Utils || (Uno.Utils = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
     var UI;
     (function (UI) {
         class HtmlDom {
@@ -3152,6 +3167,65 @@ var Windows;
         })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class StorageFolderNative {
+            static AddHandle(guid, handle) {
+                StorageFolderNative._folderMap.set(guid, handle);
+            }
+            static RemoveHandle(guid) {
+                StorageFolderNative._folderMap.delete(guid);
+            }
+            static GetHandle(guid) {
+                return StorageFolderNative._folderMap.get(guid);
+            }
+            /**
+             * Creates a new folder inside another folder.
+             * @param parentGuid The GUID of the folder to create in.
+             * @param folderName The name of the new folder.
+             */
+            static CreateFolderAsync(parentGuid, folderName) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const parentHandle = StorageFolderNative.GetHandle(parentGuid);
+                    const newDirectoryHandle = yield parentHandle.getDirectoryHandle(folderName, {
+                        create: true,
+                    });
+                    var guid = Uno.Utils.Guid.NewGuid();
+                    StorageFolderNative.AddHandle(guid, newDirectoryHandle);
+                    return guid;
+                });
+            }
+            /**
+             * Gets a folder in the given parent folder by name.
+             * @param parentGuid The GUID of the parent folder to get.
+             * @param folderName The name of the folder to look for.
+             * @returns A GUID of the folder if found, otherwise "notfound" literal.
+             */
+            static GetFolderAsync(parentGuid, folderName) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const parentHandle = StorageFolderNative.GetHandle(parentGuid);
+                    let nestedDirectoryHandle = undefined;
+                    let returnedGuid = Uno.Utils.Guid.NewGuid();
+                    try {
+                        nestedDirectoryHandle = yield parentHandle.getDirectoryHandle(folderName);
+                    }
+                    catch (ex) {
+                        if (ex instanceof DOMException && ex.message.includes("could not be found")) {
+                            returnedGuid = "notfound";
+                        }
+                    }
+                    if (nestedDirectoryHandle)
+                        StorageFolderNative.AddHandle(returnedGuid, nestedDirectoryHandle);
+                    return returnedGuid;
+                });
+            }
+        }
+        StorageFolderNative._folderMap = new Map();
+        Storage.StorageFolderNative = StorageFolderNative;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Windows;
 (function (Windows) {
@@ -3721,6 +3795,26 @@ var Windows;
             Connectivity.NetworkInformation = NetworkInformation;
         })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
     })(Networking = Windows.Networking || (Windows.Networking = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class FolderPicker {
+                static pickSingleFolderAsync() {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        const selectedFolder = yield showDirectoryPicker();
+                        const guid = Uno.Utils.Guid.NewGuid();
+                        Storage.StorageFolderNative.AddHandle(guid, selectedFolder);
+                        return guid;
+                    });
+                }
+            }
+            Pickers.FolderPicker = FolderPicker;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
 var WakeLockType;
 (function (WakeLockType) {

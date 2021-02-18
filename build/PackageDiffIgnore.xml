@@ -3401,10 +3401,28 @@
 				reason="Constructor not public in UWP" />
 			<Member
 				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequest..ctor()"
+				reason="Constructor not public in UWP" />																		
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Media.Animation.BounceEase.BounceEaseIn(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)"
+				reason="Constructor not public in UWP" />																		
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Media.Animation.BounceEase.BounceEaseOut(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)"
+				reason="Constructor not public in UWP" />																		
+		 </Methods>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="3.5.1">
+		<Methods>
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FileExtensionVector..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FilePickerFileTypesOrderedMap..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FilePickerSelectedFilesArray..ctor()"
 				reason="Constructor not public in UWP" />
 		</Methods>
 	</IgnoreSet>
-
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>

@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class PagerControlAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
+	public partial class PagerControlAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
 	{
 		public bool CanSelectMultiple => false;
 

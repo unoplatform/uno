@@ -161,7 +161,11 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			return vsm.GoToStateCore(control, templateRoot, stateName, group, state, useTransitions);
+			var output = vsm.GoToStateCore(control, templateRoot, stateName, group, state, useTransitions);
+#if __WASM__
+			TryAssignDOMVisualStates(groups, templateRoot);
+#endif
+			return output;
 		}
 
 		private static (VisualStateGroup, VisualState) GetValidGroupAndState(string stateName, IList<VisualStateGroup> groups)

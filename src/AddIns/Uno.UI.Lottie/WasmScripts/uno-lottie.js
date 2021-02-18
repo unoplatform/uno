@@ -30,6 +30,8 @@ var Uno;
                     a.loop = looped;
                     const fromFrame = fromProgress * Lottie._numberOfFrames;
                     const toFrame = toProgress * Lottie._numberOfFrames;
+                    //Set forceFlag to true in order to force animation to start right away
+                    //Ensures calling play multiple times in quick succession plays the animation properly
                     a.playSegments([fromFrame, toFrame], true);
                     Lottie.raiseState(a);
                 });

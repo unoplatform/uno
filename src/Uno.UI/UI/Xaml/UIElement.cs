@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml
 			return matrix;
 		}
 
-#if !__IOS__ && !__ANDROID__ // This is the default implementation, but it can be customized per platform
+#if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
@@ -638,6 +638,8 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsViewHit() => true;
 
+		internal virtual bool IsEnabledOverride() => true;
+
 		internal double LayoutRound(double value)
 		{
 #if __SKIA__
@@ -798,7 +800,11 @@ namespace Windows.UI.Xaml
 				propertyName += "Property";
 			}
 			var propInfo = GetType().GetTypeInfo().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-			var dp = propInfo.GetValue(null) as DependencyProperty;
+			var dp = propInfo?.GetValue(null) as DependencyProperty;
+			if (dp == null)
+			{
+				return "[No such property]";
+			}
 			var bindings = (this as IDependencyObjectStoreProvider).Store.GetResourceBindingsForProperty(dp);
 			if (bindings.Any())
 			{

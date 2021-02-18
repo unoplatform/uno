@@ -55,6 +55,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
+		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
+
 		internal override void UpdateThemeBindings()
 		{
 			base.UpdateThemeBindings();
@@ -539,7 +541,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					15.0,
+					14.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)

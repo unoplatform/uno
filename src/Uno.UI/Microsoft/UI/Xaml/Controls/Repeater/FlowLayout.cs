@@ -405,7 +405,7 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
-#region private helpers
+		#region private helpers
 
 		double GetAverageLineInfo(
 
@@ -433,9 +433,26 @@ namespace Microsoft.UI.Xaml.Controls
 			avgCountInLine = Math.Max(1.0, flowState.TotalItemsPerLine / flowState.TotalLinesMeasured);
 			avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured);
 
-			return avgLineSize;
+			return _uno_lastKnownAverageLineSize = avgLineSize;
 		}
 
-#endregion
+		#endregion
+
+		#region Uno workaround
+		private double _uno_lastKnownAverageLineSize;
+
+		/// <inheritdoc />
+		protected internal override bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
+		{
+			var elementSize = _uno_lastKnownAverageLineSize;
+			if (elementSize <= 0)
+			{
+				return base.IsSignificantViewportChange(oldViewport, newViewport);
+			}
+
+			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > elementSize * 1.5
+				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > elementSize * 1.5;
+		}
+		#endregion
 	}
 }

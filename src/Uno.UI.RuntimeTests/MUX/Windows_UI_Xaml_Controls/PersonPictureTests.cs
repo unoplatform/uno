@@ -178,7 +178,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			PersonPicture personPicture = null;
 			TextBlock initialsTextBlock = null;
-
+#if WINDOWS_UWP
+			string symbolsFontName = "Segoe MDL2 Assets";
+#elif __ANDROID__ || __SKIA__
+			string symbolsFontName = "ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
+#else
+			string symbolsFontName = "Symbols";
+#endif
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				personPicture = new PersonPicture();
@@ -197,7 +203,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
+				Verify.AreEqual(initialsTextBlock.FontFamily.Source, symbolsFontName);
 				Verify.AreEqual(initialsTextBlock.Text, "\xE716");
 
 				personPicture.IsGroup = false;
@@ -220,7 +226,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
+				Verify.AreEqual(initialsTextBlock.FontFamily.Source, symbolsFontName);
 				Verify.AreEqual(initialsTextBlock.Text, "\xE77B");
 
 				// Make sure that custom FontFamily takes effect after the control is created
@@ -243,7 +249,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
+				Verify.AreEqual(initialsTextBlock.FontFamily.Source, symbolsFontName);
 				Verify.AreEqual(initialsTextBlock.Text, "\xE716");
 			});
 		}

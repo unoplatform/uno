@@ -90,7 +90,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal void SetTextNative(string text)
-			=> SetProperty("value", text);
+		{
+			SetProperty("value", text);
+
+			InvalidateMeasure();
+		}
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 

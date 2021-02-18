@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class PagerControlSelectedIndexChangedEventArgs
+	public partial class PagerControlSelectedIndexChangedEventArgs
 	{
 		public PagerControlSelectedIndexChangedEventArgs(int previousIndex, int newIndex)
 		{

@@ -458,8 +458,6 @@ namespace Windows.UI.Xaml
 			return base.ToString();
 		}
 
-		internal virtual bool IsEnabledOverride() => true;
-
 		public UIElement FindFirstChild() => _children.FirstOrDefault();
 
 		public virtual IEnumerable<UIElement> GetChildren() => _children;

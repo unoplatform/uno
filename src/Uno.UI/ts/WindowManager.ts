@@ -1450,7 +1450,6 @@ namespace Uno.UI {
 					// Create a temporary element that will contain the input's content
 					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
 					textOnlyElement.style.cssText = unconstrainedStyleCssText;
-					textOnlyElement.style.whiteSpace = "pre"; // Make sure to preserve space for measure, especially the ending new line!
 
 					// If the input is null or empty, add a no-width character to force the paragraph to take up one line height
 					// The trailing new lines are going to be ignored for measure, so we also append no-width char at the end.
