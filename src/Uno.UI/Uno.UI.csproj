@@ -175,12 +175,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="UI\Xaml\Controls\WebView\NativeWebView.wasm.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\WebView\NativeWebView.wasm.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 	  <Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 	  <Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 	  <Compile Include="Mixins\Android\VisualStatesMixins.g.cs" />
 	  <Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
 	  <Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
+	  <Compile Include="UI\Xaml\Controls\WebView\NativeWebView.wasm.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
