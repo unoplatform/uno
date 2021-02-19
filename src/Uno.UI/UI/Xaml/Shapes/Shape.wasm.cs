@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Shapes
 					_fillBrushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:
-					var (imageFill, subscription) = ib.ToSvgElement();
+					var (imageFill, subscription) = ib.ToSvgElement(this);
 					var imageFillId = imageFill.HtmlId;
 					GetDefs().Add(imageFill);
 					svgElement.SetStyle("fill", $"url(#{imageFillId})");
@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Shapes
 					_strokeBrushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:
-					var (imageFill, subscription) = ib.ToSvgElement();
+					var (imageFill, subscription) = ib.ToSvgElement(this);
 					var imageFillId = imageFill.HtmlId;
 					GetDefs().Add(imageFill);
 					svgElement.SetStyle("stroke", $"url(#{imageFillId})");

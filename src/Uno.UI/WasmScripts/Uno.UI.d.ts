@@ -548,6 +548,7 @@ declare namespace Uno.UI {
         private getIsConnectedToRootElement;
         private handleToString;
         setCursor(cssCursor: string): string;
+        getNaturalImageSize(imageUrl: string): Promise<string>;
     }
 }
 declare class ApplicationDataContainer_ClearParams {
