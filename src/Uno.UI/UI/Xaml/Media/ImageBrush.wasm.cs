@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Media
 {
 	partial class ImageBrush
 	{
-		private static readonly ConcurrentDictionary<string, Size> _naturalSizeCache = new ConcurrentDictionary<string, Size>();
+		private static readonly IDictionary<string, Size> _naturalSizeCache = new Dictionary<string, Size>();
 		private string _imageUri = string.Empty;
 
 		internal string ToCssPosition()
@@ -226,7 +226,10 @@ namespace Windows.UI.Xaml.Media
 					return;
 				}
 
-				_naturalSizeCache.TryAdd(_imageUri, naturalSize);
+				if (!_naturalSizeCache.ContainsKey(_imageUri))
+				{
+					_naturalSizeCache.Add(_imageUri, naturalSize);
+				}
 			}
 
 			var imgElement = pattern.FindFirstChild();
