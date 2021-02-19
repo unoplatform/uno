@@ -14,14 +14,17 @@ namespace Uno.UI.Samples.Controls
 			string controlName = null,
 			Type viewModelType = null,
 			bool ignoreInSnapshotTests = false,
+			bool isManualTest = false,
 			string description = null)
 			: base(category)
 		{
 			Name = controlName;
 			ViewModelType = viewModelType;
 			IgnoreInSnapshotTests = ignoreInSnapshotTests;
+			IsManualTest = isManualTest;
 			Description = description;
 		}
+
 	}
 
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
@@ -70,6 +73,11 @@ namespace Uno.UI.Samples.Controls
 		/// If this flag is not set, the sample will be included.
 		/// </summary>
 		public bool IgnoreInSnapshotTests { get; set; }
+
+		/// <summary>
+		/// Determines if this test should be manually tested (e.g. animations, external/untestable dependencies)
+		/// </summary>
+		public bool IsManualTest { get; set; }
 
 		/// <summary>
 		/// An optional ViewModel type that will be instantiated and set as DataContext of the sample control

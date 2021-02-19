@@ -590,7 +590,8 @@ namespace SampleControl.Presentation
 					ViewModelType = attribute.ViewModelType,
 					Description = attribute.Description,
 					ControlType = type.AsType(),
-					IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests
+					IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
+					IsManualTest = attribute.IsManualTest
 				};
 		}
 
@@ -846,7 +847,7 @@ description:
 		{
 			var q = from category in _categories
 					from test in category.SamplesContent
-					where !test.IgnoreInSnapshotTests
+					where !test.IgnoreInSnapshotTests && !test.IsManualTest
 					select test.ControlType.FullName;
 
 			return string.Join(";", q.Distinct());
