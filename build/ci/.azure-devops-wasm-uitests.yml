@@ -17,7 +17,7 @@ jobs:
     clean: true
 
   - template: templates/gitversion.yml
-  - template: templates/dotnet-sdks.yml
+  - template: templates/dotnet-install.yml
 
   - task: CacheBeta@0
     condition: eq(variables['enable_package_cache'], 'true')
@@ -91,7 +91,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet-sdks.yml
+  - template: templates/dotnet-install.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -104,6 +104,7 @@ jobs:
         artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - bash: |
@@ -164,8 +165,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet-sdks.yml
-
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
