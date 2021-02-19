@@ -37,7 +37,8 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Mode = UIDatePickerMode.Time;
 
 			UpdatePickerStyle();
-
+			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
+			SaveInitialTime();
 			_picker.ValueChanged += OnValueChanged;
 			_picker.EditingDidBegin += OnEditingDidBegin;
 
@@ -67,8 +68,6 @@ namespace Windows.UI.Xaml.Controls
 			UpdatePickerStyle();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
-			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
-			SaveInitialTime();
 		}
 
 		private void SetPickerMinuteIncrement(int minuteIncrement)
@@ -79,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void SaveInitialTime() => _initialTime = _picker.Date;
+		private void SaveInitialTime() => _initialTime = _picker?.Date;
 
 		internal void SaveTime()
 		{
