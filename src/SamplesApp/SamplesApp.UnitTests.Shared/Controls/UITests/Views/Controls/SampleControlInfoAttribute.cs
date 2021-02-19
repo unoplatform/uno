@@ -14,8 +14,9 @@ namespace Uno.UI.Samples.Controls
 			string controlName = null,
 			Type viewModelType = null,
 			bool ignoreInSnapshotTests = false,
-			bool isManualTest = false,
-			string description = null)
+			string description = null,
+			bool isManualTest = false
+		)
 			: base(category)
 		{
 			Name = controlName;
