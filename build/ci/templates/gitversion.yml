@@ -6,24 +6,30 @@ steps:
   - powershell: |
       $PR_VERSION="PullRequest-$env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER-$env:BUILD_BUILDID-$env:SYSTEM_JOBATTEMPT-"
       echo "Updating PR Version Tag in GitVersion to $PR_VERSION"
-      (Get-Content GitVersion.yml).replace("'PullRequest'", "$PR_VERSION") | Set-Content GitVersion.yml
+      (Get-Content gitversion.yml).replace("'PullRequest'", "$PR_VERSION") | Set-Content gitversion.yml
 
     condition: eq(variables['Build.Reason'], 'PullRequest')
     displayName: Update GitVersion file for PullRequests
 
   - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 3.1.x'
+    displayName: 'Use .Net Core runtime 5.0.3'
     inputs:
       packageType: runtime
-      version: 3.1.3
+      version: 5.0.3
+
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 3.1.12'
+    inputs:
+      packageType: runtime
+      version: 3.1.12
 
   - task: gitversion/setup@0
     inputs:
-      versionSpec: '5.5.1'
+      versionSpec: '5.6.6'
 
   - task: gitversion/execute@0
     inputs:
       updateAssemblyInfo: 'False'
       useConfigFile: true
-      configFilePath: GitVersion.yml
+      configFilePath: gitversion.yml
     displayName: Use GitVersion

@@ -32,7 +32,7 @@
 					not_skia:Content="⏹️ Stop"
 					skia:Content="Stop"
 					Click="OnStopTests" />
-				<TextBox x:Name="testFilter" PlaceholderText="Enter test filter here" Width="140" />
+				<TextBox x:Name="testFilter" PlaceholderText="Enter test filter here" Width="140" Text="When_Write" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
