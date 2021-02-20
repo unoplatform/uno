@@ -37,17 +37,9 @@
 
 			try {
 				const selectedFiles = await showOpenFilePicker(options);
-				var results = "";
-				for (const selectedFile of selectedFiles) {
-					const guid = Uno.Storage.NativeStorageItem.generateGuid();
-					NativeStorageFile.AddHandle(guid, selectedFile);
-					const fileInfo = await selectedFile.getFile();
-					const name = fileInfo.name;
-					const contentType = fileInfo.type;
-					results += guid + "\\" + name + "\\" + contentType + "\\\\";
-				}
-
-				return results;
+				const infos = Uno.Storage.NativeStorageItem.getInfos(...selectedFiles);
+				const json = JSON.stringify(infos);
+				return json;
 			}
 			catch (e) {			
 				console.log("User did not make a selection or it file selected was" +

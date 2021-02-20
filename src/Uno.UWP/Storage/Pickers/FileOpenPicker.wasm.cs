@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
+using Uno.Helpers.Serialization;
+using Uno.Storage.Internal;
 
 namespace Windows.Storage.Pickers
 {
@@ -33,19 +35,12 @@ namespace Windows.Storage.Pickers
 			var multipleParameter = multiple ? "true" : "false";
 			var fileTypeMapParameter = BuildFileTypesMap();
 
-			var returnValue = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickFilesAsync({multipleParameter},{showAllEntryParameter},{fileTypeMapParameter})");
-			var files = returnValue.Split(new string[] { FileSeparator }, StringSplitOptions.RemoveEmptyEntries);
+			var nativeStorageItemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickFilesAsync({multipleParameter},{showAllEntryParameter},{fileTypeMapParameter})");
+			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson);
 			var results = new List<StorageFile>();
-			foreach (var file in files)
+			foreach (var info in infos)
 			{
-				var fileInfoParts = file.Split(FileInfoSeparator);
-				if (!Guid.TryParse(fileInfoParts[0], out var guid))
-				{
-					throw new InvalidOperationException("Selected file ID is not valid.");
-				}
-				var name = fileInfoParts[1];
-				var contentType = fileInfoParts[2];
-				var storageFile = StorageFile.GetFileFromNativePath(guid, name, contentType);
+				var storageFile = StorageFile.GetFromNativeInfo(info);
 				results.Add(storageFile);
 			}
 			return new FilePickerSelectedFilesArray(results.ToArray());
