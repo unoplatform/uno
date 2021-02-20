@@ -417,6 +417,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFolderOperationsTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFolderTests\Persistence.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4260,6 +4264,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFileOperationsTests.xaml.cs">
       <DependentUpon>StorageFileOperationsTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFolderOperationsTests.xaml.cs">
+      <DependentUpon>StorageFolderOperationsTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFolderTests\Persistence.xaml.cs">
       <DependentUpon>Persistence.xaml</DependentUpon>

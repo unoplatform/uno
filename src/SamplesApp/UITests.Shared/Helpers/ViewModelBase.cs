@@ -40,6 +40,15 @@ namespace Uno.UI.Samples.UITests.Helpers
 			Disposables.Add(Disposable.Create(() => cts.Cancel()));
 		}
 
+		protected void Set<T>(ref T backingField, T value, [CallerMemberName] string propertyName = "")
+		{
+			if (!Equals(backingField, value))
+			{
+				backingField = value;
+				RaisePropertyChanged(propertyName);
+			}
+		}
+
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = "")
 		{
 			if (Dispatcher.HasThreadAccess)
