@@ -34,15 +34,25 @@
 				<StackPanel Orientation="Vertical" Spacing="8">
 					<Button Command="{x:Bind ViewModel.GetBasicPropertiesCommand}">Get Basic Properties</Button>
 
-					<TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Folder operations" />
-					<TextBox Header="Folder name" Text="{x:Bind ViewModel.FolderNameInput, Mode=TwoWay}" />
-					<Button Command="{x:Bind ViewModel.GetFolderCommand}" Content="Get folder" />
+					<TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Item operations" />
+					<TextBox Header="Folder name" Text="{x:Bind ViewModel.ItemNameInput, Mode=TwoWay}" />
+					
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Command="{x:Bind ViewModel.GetFolderCommand}" Content="Get folder" />
+						<Button Command="{x:Bind ViewModel.GetFileCommand}" Content="Get file" />
+					</StackPanel>
+					
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Command="{x:Bind ViewModel.TryGetItemCommand}" Content="Try get item" />
+						<Button Command="{x:Bind ViewModel.DeleteCommand}" Content="Delete item" />
+					</StackPanel>
 
 					<StackPanel Orientation="Horizontal" Spacing="8">
 						<Button Command="{x:Bind ViewModel.CreateFolderCommand}" Content="Create folder" />
+						<Button Command="{x:Bind ViewModel.CreateFileCommand}" Content="Create file" />
 						<ComboBox ItemsSource="{x:Bind ViewModel.CreationCollisionOptions}" SelectedItem="{x:Bind ViewModel.SelectedCreationCollisionOption, Mode=TwoWay}" />
 					</StackPanel>
-					
+
 					<StackPanel Orientation="Horizontal" Spacing="8">
 						<Button Command="{x:Bind ViewModel.ListItemsCommand}">List items</Button>
 						<Button Command="{x:Bind ViewModel.ListFilesCommand}">List files</Button>

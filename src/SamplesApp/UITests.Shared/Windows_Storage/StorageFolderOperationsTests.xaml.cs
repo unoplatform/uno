@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
@@ -36,7 +37,7 @@ namespace UITests.Windows_Storage
 	{
 		public StorageFolder _pickedFolder = null;
 		private ObservableCollection<IStorageItem> _storageItemList;
-		private string _folderNameInput;
+		private string _itemNameInput;
 		private string _errorMessage;
 		private CreationCollisionOption _selectedCreationCollisionOption = CreationCollisionOption.FailIfExists;
 
@@ -56,10 +57,10 @@ namespace UITests.Windows_Storage
 
 		public bool IsFolderPicked => PickedFolder != null;
 
-		public string FolderNameInput
+		public string ItemNameInput
 		{
-			get => _folderNameInput;
-			set => Set(ref _folderNameInput, value);
+			get => _itemNameInput;
+			set => Set(ref _itemNameInput, value);
 		}
 
 		public string ErrorMessage
@@ -140,11 +141,28 @@ namespace UITests.Windows_Storage
 			ErrorMessage = "";
 			try
 			{
-				PickedFolder = await PickedFolder.GetFolderAsync(FolderNameInput);
+				var pickedFolder = await PickedFolder.GetFolderAsync(ItemNameInput);
+				await ShowDialogAsync("Folder retrieved", $"Successfully retrieved folder '{pickedFolder.Name}'.");
 			}
 			catch (Exception ex)
 			{
 				ErrorMessage = $"Cannot retrieve folder: {ex}";
+			}
+		}
+
+		public ICommand GetFileCommand => GetOrCreateCommand(GetFile);
+
+		private async void GetFile()
+		{
+			ErrorMessage = "";
+			try
+			{
+				var pickedFile = await PickedFolder.GetFileAsync(ItemNameInput);
+				await ShowDialogAsync("File retrieved", $"Successfully retrieved file '{pickedFile.Name}' with extension '{pickedFile.FileType}'");
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = $"Cannot retrieve file: {ex}";
 			}
 		}
 
@@ -155,12 +173,88 @@ namespace UITests.Windows_Storage
 			ErrorMessage = "";
 			try
 			{
-				PickedFolder = await PickedFolder.CreateFolderAsync(FolderNameInput, SelectedCreationCollisionOption);
+				var createdFolder = await PickedFolder.CreateFolderAsync(ItemNameInput, SelectedCreationCollisionOption);
+				await ShowDialogAsync("Folder created", $"Successfully created folder '{createdFolder.Name}'.");
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				ErrorMessage = $"Cannot create folder: {ex}";
 			}
+		}
+
+		public ICommand CreateFileCommand => GetOrCreateCommand(CreateFile);
+
+		private async void CreateFile()
+		{
+			ErrorMessage = "";
+			try
+			{
+				var createdFile = await PickedFolder.CreateFileAsync(ItemNameInput, SelectedCreationCollisionOption);
+				await ShowDialogAsync("File created", $"Successfully created file '{createdFile.Name}' with extension '{createdFile.FileType}'.");
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = $"Cannot create folder: {ex}";
+			}
+		}
+
+		public ICommand TryGetItemCommand => GetOrCreateCommand(TryGetItem);
+
+		private async void TryGetItem()
+		{
+			ErrorMessage = "";
+			try
+			{
+				var retrievedItem = await PickedFolder.TryGetItemAsync(ItemNameInput);
+				if (retrievedItem != null)
+				{
+					var itemType = retrievedItem.IsOfType(StorageItemTypes.File) ? "file" : "folder";
+					await ShowDialogAsync("Item retrieved", $"Successfully retrieved item '{retrievedItem.Name}' which is a {itemType}.");
+				}
+				else
+				{
+					await ShowDialogAsync("Item not found", $"There is no item with such name.");
+				}
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = $"Cannot get item: {ex}";
+			}
+		}
+
+		public ICommand DeleteCommand => GetOrCreateCommand(Delete);
+
+		private async void Delete()
+		{
+			ErrorMessage = "";
+			try
+			{
+				var retrievedItem = await PickedFolder.TryGetItemAsync(ItemNameInput);
+				if (retrievedItem != null)
+				{
+					await retrievedItem.DeleteAsync();
+					await ShowDialogAsync("Item deleted", $"Item {ItemNameInput} was successfully deleted.");
+				}
+				else
+				{
+					await ShowDialogAsync("Item not found", $"There is no item with such name.");
+				}
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = $"Cannot create folder: {ex}";
+			}
+		}
+
+		private async Task ShowDialogAsync(string title, string text)
+		{
+			var dialog = new ContentDialog
+			{
+				Title = title,
+				Content = text,
+				PrimaryButtonText = "Ok"
+			};
+			await dialog.ShowAsync();
 		}
 	}
 
