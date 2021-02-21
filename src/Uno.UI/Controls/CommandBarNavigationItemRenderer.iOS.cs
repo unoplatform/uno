@@ -159,7 +159,7 @@ namespace Uno.UI.Controls
 		private Size _childSize;
 		private Size? _lastAvailableSize;
 
-		public TitleView()
+		internal TitleView()
 		{
 			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
 			{
