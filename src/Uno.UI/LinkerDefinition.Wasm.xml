@@ -62,8 +62,12 @@
 	  <method name="DispatchStorageInitialized" />
 	</type>
     <type fullname="Uno.Storage.NativeStorageItem">
-      <method name="GenerateGuid" />
+      <method name="GenerateGuids" />
     </type>
+
+    <type fullname="Uno.Storage.Internal.NativeStorageItemInfo" />
+    <type fullname="Uno.ApplicationModel.Contacts.Internal.WasmContact" />
+    <type fullname="Uno.ApplicationModel.Contacts.Internal.WasmContactAddress" />
   </assembly>
 
   <assembly fullname="Uno.Foundation">

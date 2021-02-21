@@ -872,40 +872,66 @@ declare namespace Windows.Storage {
         static DownloadAsset(path: string): Promise<string>;
     }
 }
-declare namespace Windows.Storage {
+declare namespace Uno.Storage {
     class NativeStorageFile {
-        private static _fileMap;
-        static AddHandle(guid: string, handle: FileSystemFileHandle): void;
-        static RemoveHandle(guid: string): void;
-        static GetHandle(guid: string): FileSystemFileHandle;
         static getBasicPropertiesAsync(guid: string): Promise<string>;
     }
 }
-declare namespace Windows.Storage {
+declare namespace Uno.Storage {
     class NativeStorageFolder {
-        private static _folderMap;
-        static AddHandle(guid: string, handle: FileSystemDirectoryHandle): void;
-        static RemoveHandle(guid: string): void;
-        static GetHandle(guid: string): FileSystemDirectoryHandle;
         /**
          * Creates a new folder inside another folder.
          * @param parentGuid The GUID of the folder to create in.
          * @param folderName The name of the new folder.
          */
-        static CreateFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+        static createFolderAsync(parentGuid: string, folderName: string): Promise<string>;
         /**
-         * Gets a folder in the given parent folder by name.
+         * Creates a new file inside another folder.
+         * @param parentGuid The GUID of the folder to create in.
+         * @param folderName The name of the new file.
+         */
+        static createFileAsync(parentGuid: string, fileName: string): Promise<string>;
+        /**
+         * Tries to get a folder in the given parent folder by name.
          * @param parentGuid The GUID of the parent folder to get.
          * @param folderName The name of the folder to look for.
-         * @returns A GUID of the folder if found, otherwise "notfound" literal.
+         * @returns A GUID of the folder if found, otherwise null.
          */
-        static GetFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+        static tryGetFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+        /**
+        * Tries to get a file in the given parent folder by name.
+        * @param parentGuid The GUID of the parent folder to get.
+        * @param folderName The name of the folder to look for.
+        * @returns A GUID of the folder if found, otherwise null.
+        */
+        static tryGetFileAsync(parentGuid: string, fileName: string): Promise<string>;
+        static deleteItemAsync(parentGuid: string, itemName: string): Promise<string>;
+        static getItemsAsync(folderGuid: string): Promise<string>;
+        static getFoldersAsync(folderGuid: string): Promise<string>;
+        static getFilesAsync(folderGuid: string): Promise<string>;
+        private static getEntriesAsync;
     }
 }
 declare namespace Uno.Storage {
     class NativeStorageItem {
         private static generateGuidBinding;
-        static generateGuid(): string;
+        private static _guidToHandleMap;
+        private static _handleToGuidMap;
+        static addHandle(guid: string, handle: FileSystemHandle): void;
+        static removeHandle(guid: string): void;
+        static getHandle(guid: string): FileSystemHandle;
+        static getGuid(handle: FileSystemHandle): string;
+        static getInfos(...handles: FileSystemHandle[]): NativeStorageItemInfo[];
+        private static storeHandles;
+        private static generateGuids;
+    }
+}
+declare namespace Uno.Storage {
+    class NativeStorageItemInfo {
+        id: string;
+        name: string;
+        path: string;
+        isFile: boolean;
     }
 }
 declare namespace Windows.Storage {

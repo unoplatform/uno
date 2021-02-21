@@ -1,8 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
+using Uno.Storage.Internal;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using SystemPath = global::System.IO.Path;
@@ -11,25 +14,33 @@ namespace Windows.Storage
 {
 	public partial class StorageFile
 	{
-		internal static StorageFile GetFileFromNativePath(Guid guid, string name, string contentType) =>
-			new StorageFile(new NativeStorageFile(guid, name, contentType));
+		internal static StorageFile GetFromNativeInfo(NativeStorageItemInfo info, StorageFolder? parent = null) =>
+			new StorageFile(new NativeStorageFile(info, parent));
 
-		private sealed class NativeStorageFile : ImplementationBase
+		internal sealed class NativeStorageFile : ImplementationBase
 		{
-			private const string JsType = "Windows.Storage.NativeStorageFile";
+			private const string JsType = "Uno.Storage.NativeStorageFile";
+			private static readonly StorageProvider _provider = new StorageProvider("JsFileAccessApi", "JS File Access API");
 
 			// Used to keep track of the File handle on the Typescript side.
 			private readonly Guid _id;
 			private readonly string _fileName;
-			private readonly string _contentType;
+			private readonly StorageFolder? _parent;
 
-			public NativeStorageFile(Guid id, string fileName, string contentType)
+			public NativeStorageFile(NativeStorageItemInfo nativeStorageItem, StorageFolder? parent = null)
 				: base(string.Empty)
 			{
-				_id = id;
-				_fileName = fileName;
-				_contentType = contentType;
+				if (parent != null && !(parent.Implementation is StorageFolder.NativeStorageFolder))
+				{
+					throw new ArgumentException("Parent folder of a native file must be a native folder", nameof(parent));
+				}
+
+				_id = nativeStorageItem.Id;
+				_fileName = nativeStorageItem.Name;
+				_parent = parent;
 			}
+
+			public override StorageProvider Provider => _provider;
 
 			public override string Name => _fileName;
 
@@ -37,13 +48,11 @@ namespace Windows.Storage
 
 			public override string FileType => SystemPath.GetExtension(_fileName);
 
-			public override string ContentType => _contentType;
+			public override DateTimeOffset DateCreated => throw NotSupported();
 
-			public override DateTimeOffset DateCreated => throw NotImplemented();
+			protected override bool IsEqual(ImplementationBase impl) => throw NotSupported();
 
-			protected override bool IsEqual(ImplementationBase impl) => throw NotImplemented();
-
-			public override Task<StorageFolder> GetParentAsync(CancellationToken ct) => throw NotImplemented();
+			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => Task.FromResult(_parent);
 
 			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 			{
@@ -63,11 +72,20 @@ namespace Windows.Storage
 
 			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => base.OpenStreamAsync(ct, accessMode, options);
 
-			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw NotImplemented();
+			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw NotSupported();
 
-			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw NotImplemented();
+			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw NotSupported();
 
-			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options) => throw NotImplemented();
+			public override async Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
+			{
+				if (_parent == null)
+				{
+					throw new NotSupportedException("Cannot create a folder unless we can access its parent folder.");
+				}
+
+				var nativeParent = (StorageFolder.NativeStorageFolder)_parent.Implementation;
+				await nativeParent.DeleteItemAsync(Name);
+			}
 		}
 	}
 }

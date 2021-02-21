@@ -13,11 +13,14 @@ namespace Windows.Storage.FileProperties
 			DateModified = dateModified;
 		}
 
-		internal static BasicProperties FromPath(string filePath)
+		internal static BasicProperties FromFilePath(string filePath)
 		{
 			var fileInfo = new FileInfo(filePath);
 			return new BasicProperties((ulong)fileInfo.Length, File.GetLastWriteTime(fileInfo.FullName));
 		}
+
+		internal static BasicProperties FromDirectoryPath(string directoryPath) =>
+			new BasicProperties(0UL, Directory.GetLastWriteTime(directoryPath));
 
 		public ulong Size { get; }
 

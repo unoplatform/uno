@@ -12,7 +12,7 @@ namespace Uno.Storage.Internal
 		public Guid Id { get; set; }
 
 		[DataMember(Name = "name")]
-		public string? Name { get; set; }
+		public string Name { get; set; } = null!;
 
 		[DataMember(Name = "isFile")]
 		public bool IsFile { get; set; }
