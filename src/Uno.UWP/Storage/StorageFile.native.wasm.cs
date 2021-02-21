@@ -70,7 +70,7 @@ namespace Windows.Storage
 				return new BasicProperties(size, dateTimeModified);
 			}
 
-			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => base.OpenStreamAsync(ct, accessMode, options);
+			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw NotSupported();
 
 			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw NotSupported();
 

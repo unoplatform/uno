@@ -60,9 +60,6 @@
 					</StackPanel>
 					<ListView Height="300" ItemsSource="{x:Bind ViewModel.StorageItemList}" ItemTemplateSelector="{x:Bind StorageItemListTemplateSelector}" />
 					<TextBlock
-						Foreground="Green"
-						TextWrapping="WrapWholeWords" />
-					<TextBlock
 						Foreground="Red"
 						Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
 						TextWrapping="WrapWholeWords" />

@@ -13,7 +13,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_Storage
 {
-	[Sample("Windows.Storage", Name = "StorageFolder_Operations", ViewModelType = typeof(StorageFolderOperationsTestsViewModel))]
+	[Sample("Windows.Storage", Name = "StorageFolder_Operations", ViewModelType = typeof(StorageFolderOperationsTestsViewModel), IsManualTest = true,
+		Description = "This test page verifies some basic StorageFolder operations on a folder picked by FolderPicker.")]
 	public sealed partial class StorageFolderOperationsTests : Page
 	{
 		public StorageFolderOperationsTests()

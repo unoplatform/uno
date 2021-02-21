@@ -9,7 +9,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_Storage
 {
-	[Sample("Windows.Storage", Name = "StorageFile_Operations", ViewModelType = typeof(StorageFileOperationsTestsViewModel))]
+	[Sample("Windows.Storage", Name = "StorageFile_Operations", ViewModelType = typeof(StorageFileOperationsTestsViewModel), IsManualTest = true,
+		Description = "This test page verifies some basic StorageFile operations on a file picked by FileOpenPicker.")]
 	public sealed partial class StorageFileOperationsTests : Page
 	{
 		public StorageFileOperationsTests()

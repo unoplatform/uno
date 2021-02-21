@@ -63,10 +63,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" Version="4.1.2" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />

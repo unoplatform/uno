@@ -63,7 +63,7 @@ namespace Windows.Storage
 			AsyncOperation.FromTask(token => Implementation.CreateFolderAsync(folderName, option, token));
 
 		public IAsyncOperation<StorageFile> GetFileAsync(string path) =>
-			AsyncOperation.FromTask(ct => Implementation.GetFileAsync(name, ct));
+			AsyncOperation.FromTask(ct => Implementation.GetFileAsync(path, ct));
 
 		public IAsyncOperation<IStorageItem> GetItemAsync(string name) =>
 			AsyncOperation.FromTask(ct => Implementation.GetItemAsync(name, ct));

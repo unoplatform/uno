@@ -35,7 +35,7 @@ namespace Windows.Storage
 				=> BasicProperties.FromFilePath(Owner.Path);
 
 			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateLocal(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
+				=> new RandomAccessStreamWithContentType(new FileRandomAccessStream(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
 
 			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 				=> File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));

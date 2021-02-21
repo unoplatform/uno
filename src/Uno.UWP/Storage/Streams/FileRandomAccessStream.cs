@@ -1,39 +1,84 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.IO;
 using Windows.Foundation;
 
 namespace Windows.Storage.Streams
 {
-	public partial class FileRandomAccessStream : IRandomAccessStream, IInputStream, IOutputStream, IDisposable, IStreamWrapper
+	public sealed partial class FileRandomAccessStream : IRandomAccessStream, IInputStream, IOutputStream, IDisposable, IStreamWrapper
 	{
-		private ImplementationBase _implementation;
+		private readonly string _path;
+		private readonly FileAccess _access;
+		private readonly FileShare _share;
 
-		public bool CanRead => throw new NotImplementedException();
+		private readonly Stream _source;
 
-		public bool CanWrite => throw new NotImplementedException();
+		internal FileRandomAccessStream(string path, FileAccess access, FileShare share)
+		{
+			_path = path;
+			_access = access;
 
-		public ulong Position => throw new NotImplementedException();
+			// In order to be able to CloneStream() and Get<Input|Output>Stream(),
+			// no matter the provided share, we enforce to 'share' the 'access'.
+			var readWriteAccess = (FileShare)(access & FileAccess.ReadWrite);
+			share &= ~readWriteAccess;
+			share |= readWriteAccess;
 
-		public ulong Size => throw new NotImplementedException();
+			_share = share;
+			_source = File.Open(_path, FileMode.OpenOrCreate, access, share);
+		}
 
-		private FileRandomAccessStream(ImplementationBase implementation) => _implementation = implementation;
+		Stream IStreamWrapper.FindStream() => _source;
 
-		public Stream FindStream() => throw new NotImplementedException();
+		public ulong Size
+		{
+			get => (ulong)_source.Length;
+			set => _source.SetLength((long)value);
+		}
 
-		public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer) => _implementation.WriteAsync(buffer);
+		public bool CanRead => _source.CanRead;
 
-		public IAsyncOperation<bool> FlushAsync() => _implementation.FlushAsync();
+		public bool CanWrite => _source.CanWrite;
 
-		public void Dispose() => _implementation.Dispose();
+		public ulong Position => (ulong)_source.Position;
 
-		public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) => _implementation.ReadAsync(buffer, count, options);
+		public IInputStream GetInputStreamAt(ulong position)
+		{
+			if (!CanRead)
+			{
+				throw new NotSupportedException("The file has been opened for read.");
+			}
 
-		public IInputStream GetInputStreamAt(ulong position) => _implementation.GetInputStreamAt(position);
+			return new FileInputStream(_path, _share, position);
+		}
 
-		public IOutputStream GetOutputStreamAt(ulong position) => _implementation.GetOutputStreamAt(position);
+		public IOutputStream GetOutputStreamAt(ulong position)
+		{
+			if (!CanWrite)
+			{
+				throw new NotSupportedException("The file has been opened for write.");
+			}
 
-		public void Seek(ulong position) => _implementation.Seek(position);
+			return new FileOutputStream(_path, _share, position);
+		}
 
-		public IRandomAccessStream CloneStream() => _implementation.CloneStream();
+		public void Seek(ulong position)
+			=> _source.Seek((long)position, SeekOrigin.Begin);
+
+		public IRandomAccessStream CloneStream()
+			=> new FileRandomAccessStream(_path, _access, _share);
+
+		public void Dispose()
+			=> _source.Dispose();
+
+		public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)
+			=> _source.ReadAsyncOperation(buffer, count, options);
+
+		public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer)
+			=> _source.WriteAsyncOperation(buffer);
+
+		public IAsyncOperation<bool> FlushAsync()
+			=> _source.FlushAsyncOperation();
 	}
 }
