@@ -269,5 +269,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			// Removing the global style we added for the CommandBar preventing other UITest to fail
 			_app.FastTap("UnsetGlobalStyleButton");
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_CustomContent_CommandBarTitleShouldBeVisible_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CustomContent.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("Result");
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
+		}
 	}
 }

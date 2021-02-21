@@ -44,10 +44,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.CustomContent
 	        ExpectedSize.Text = $"Title Content desired size: ({expectedWidth}x{expectedHeight})";
 	        CurrentSize.Text = $"Title Content current size: ({width}x{height})";
 
-	        Result.Text =
-		        (height > 0 || height <= 0 && expectedHeight <= 0) && (width > 0 || width <= 0 && expectedWidth <= 0)
-			        ? "PASSED"
-			        : "FAILED";
+	        Result.Text = height > 0 && width > 0 ? "PASSED" : "FAILED";
 #endif
         }
     }
