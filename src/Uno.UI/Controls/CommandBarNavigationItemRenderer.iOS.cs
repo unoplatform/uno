@@ -177,6 +177,12 @@ namespace Uno.UI.Controls
 			}
 		}
 
+		protected override void OnBeforeArrange()
+		{
+			//This is to ensure that the layouter gets the correct **finalRect**
+			LayoutSlotWithMarginsAndAlignments = RectFromUIRect(Frame);
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (_blockReentrantMeasure)
