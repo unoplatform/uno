@@ -33,126 +33,100 @@ namespace Windows.Storage
 			=> throw new NotImplementedException();
 #endif
 
-		private readonly ImplementationBase _impl;
-
-		private StorageFile(ImplementationBase impl)
+		private StorageFile(ImplementationBase implementation)
 		{
-			_impl = impl;
-			_impl.InitOwner(this);
+			Implementation = implementation;
+			Implementation.InitOwner(this);
 		}
 
-		public string Path => _impl.Path;
+		internal ImplementationBase Implementation { get; }
 
-		public string FileType => _impl.FileType;
+		public StorageProvider Provider => Implementation.Provider;
 
-		public string Name => _impl.Name;
+		public string Path => Implementation.Path;
 
-		public string DisplayName => _impl.DisplayName;
+		public string FileType => Implementation.FileType;
 
-		public string ContentType => _impl.ContentType;
+		public string Name => Implementation.Name;
 
-		public DateTimeOffset DateCreated => _impl.DateCreated;
+		public string DisplayName => Implementation.DisplayName;
+
+		public string ContentType => Implementation.ContentType;
+
+		public DateTimeOffset DateCreated => Implementation.DateCreated;
 
 		public bool IsOfType(StorageItemTypes type)
 			=> type == StorageItemTypes.File;
 
 		public bool IsEqual(IStorageItem item)
-			=> _impl.IsEqual(item);
+			=> Implementation.IsEqual(item);
 
 		#region internal API (Task)
-		internal Task<StorageFolder> GetParent(CancellationToken ct)
-			=> _impl.GetParentAsync(ct);
-
-		internal Task<BasicProperties> GetBasicProperties(CancellationToken ct)
-			=> _impl.GetBasicPropertiesAsync(ct);
-
-		internal Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-			=> _impl.OpenAsync(ct, accessMode, options);
 
 		internal Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-			=> _impl.OpenStreamAsync(ct, accessMode, options);
+			=> Implementation.OpenStreamAsync(ct, accessMode, options);
 
-		internal Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option)
-			=> _impl.OpenTransactedWriteAsync(ct, option);
-
-		internal Task Delete(CancellationToken ct, StorageDeleteOption options)
-			=> _impl.DeleteAsync(ct, options);
-
-		internal Task Rename(CancellationToken ct, string desiredName, NameCollisionOption option)
-			=> _impl.RenameAsync(ct, desiredName, option);
-
-		internal Task<StorageFile> Copy(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> _impl.CopyAsync(ct, destinationFolder, desiredNewName, option);
-
-		internal Task CopyAndReplace(CancellationToken ct, IStorageFile target)
-			=> _impl.CopyAndReplaceAsync(ct, target);
-
-		internal Task Move(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> _impl.MoveAsync(ct, destinationFolder, desiredNewName, option);
-
-		internal Task MoveAndReplace(CancellationToken ct, IStorageFile target)
-			=> _impl.MoveAndReplaceAsync(ct, target);
 		#endregion
 
 		#region public API (IAsync<Action|Operation>)
-		public IAsyncOperation<StorageFolder> GetParentAsync()
-			=> AsyncOperation.FromTask(_impl.GetParentAsync);
+		public IAsyncOperation<StorageFolder?> GetParentAsync()
+			=> AsyncOperation.FromTask(ct => Implementation.GetParentAsync(ct));
 
 		public IAsyncOperation<BasicProperties> GetBasicPropertiesAsync()
-			=> AsyncOperation.FromTask(_impl.GetBasicPropertiesAsync);
+			=> AsyncOperation.FromTask(ct => Implementation.GetBasicPropertiesAsync(ct));
 
 		public IAsyncOperation<IRandomAccessStreamWithContentType> OpenReadAsync()
-			=> AsyncOperation<IRandomAccessStreamWithContentType>.FromTask((ct, _) => _impl.OpenAsync(ct, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation<IRandomAccessStreamWithContentType>.FromTask((ct, _) => Implementation.OpenAsync(ct, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters));
 
 		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode)
-			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.OpenAsync(ct, accessMode, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await Implementation.OpenAsync(ct, accessMode, StorageOpenOptions.AllowReadersAndWriters));
 
 		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode, StorageOpenOptions options)
-			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await _impl.OpenAsync(ct, accessMode, options));
+			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await Implementation.OpenAsync(ct, accessMode, options));
 
 		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync()
-			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWriteAsync(ct, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => Implementation.OpenTransactedWriteAsync(ct, StorageOpenOptions.AllowReadersAndWriters));
 
 		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
 		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync(StorageOpenOptions options)
-			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => _impl.OpenTransactedWriteAsync(ct, options));
+			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => Implementation.OpenTransactedWriteAsync(ct, options));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.CopyAsync(ct, destinationFolder, global::System.IO.Path.GetFileName(Path), NameCollisionOption.FailIfExists));
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => Implementation.CopyAsync(ct, destinationFolder, global::System.IO.Path.GetFileName(Path), NameCollisionOption.FailIfExists));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder, string desiredNewName)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.CopyAsync(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => Implementation.CopyAsync(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => _impl.CopyAsync(ct, destinationFolder, desiredNewName, option));
+			=> AsyncOperation<StorageFile>.FromTask((ct, _) => Implementation.CopyAsync(ct, destinationFolder, desiredNewName, option));
 
 		public IAsyncAction CopyAndReplaceAsync(IStorageFile fileToReplace)
-			=> AsyncAction.FromTask(ct => _impl.CopyAndReplaceAsync(ct, fileToReplace));
+			=> AsyncAction.FromTask(ct => Implementation.CopyAndReplaceAsync(ct, fileToReplace));
 
 		public IAsyncAction RenameAsync(string desiredName)
-			=> AsyncAction.FromTask(ct => _impl.RenameAsync(ct, desiredName, NameCollisionOption.FailIfExists));
+			=> AsyncAction.FromTask(ct => Implementation.RenameAsync(ct, desiredName, NameCollisionOption.FailIfExists));
 
 		public IAsyncAction RenameAsync(string desiredName, NameCollisionOption option)
-			=> AsyncAction.FromTask(ct => _impl.RenameAsync(ct, desiredName, option));
+			=> AsyncAction.FromTask(ct => Implementation.RenameAsync(ct, desiredName, option));
 
 		public IAsyncAction MoveAsync(IStorageFolder destinationFolder)
-			=> AsyncAction.FromTask(ct => _impl.MoveAsync(ct, destinationFolder, Name, NameCollisionOption.FailIfExists));
+			=> AsyncAction.FromTask(ct => Implementation.MoveAsync(ct, destinationFolder, Name, NameCollisionOption.FailIfExists));
 
 		public IAsyncAction MoveAsync(IStorageFolder destinationFolder, string desiredNewName)
-			=> AsyncAction.FromTask(ct => _impl.MoveAsync(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
+			=> AsyncAction.FromTask(ct => Implementation.MoveAsync(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
 
 		public IAsyncAction MoveAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> AsyncAction.FromTask(ct => _impl.MoveAsync(ct, destinationFolder, desiredNewName, option));
+			=> AsyncAction.FromTask(ct => Implementation.MoveAsync(ct, destinationFolder, desiredNewName, option));
 
 		public IAsyncAction MoveAndReplaceAsync(IStorageFile fileToReplace)
-			=> AsyncAction.FromTask(ct => _impl.MoveAndReplaceAsync(ct, fileToReplace));
+			=> AsyncAction.FromTask(ct => Implementation.MoveAndReplaceAsync(ct, fileToReplace));
 
 		public IAsyncAction DeleteAsync()
-			=> AsyncAction.FromTask(ct => _impl.DeleteAsync(ct, StorageDeleteOption.Default));
+			=> AsyncAction.FromTask(ct => Implementation.DeleteAsync(ct, StorageDeleteOption.Default));
 
 		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
 		public IAsyncAction DeleteAsync(StorageDeleteOption option)
-			=> AsyncAction.FromTask(ct => _impl.DeleteAsync(ct, option));
+			=> AsyncAction.FromTask(ct => Implementation.DeleteAsync(ct, option));
 		#endregion
 
 #if false

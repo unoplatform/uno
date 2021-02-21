@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace Windows.Storage
 {
 	partial class StorageFile
 	{
-		private abstract class ImplementationBase
+		internal abstract class ImplementationBase
 		{
 			protected ImplementationBase(string path)
 				=> Path = path;
@@ -23,6 +22,8 @@ namespace Windows.Storage
 				=> Owner = owner; // Lazy initialized to avoid delegate in StorageFile ctor
 
 			protected StorageFile Owner { get; private set; } = null!; // Should probably be private
+
+			public abstract StorageProvider Provider { get; }
 
 			public virtual string Path { get; protected set; }
 
@@ -37,11 +38,11 @@ namespace Windows.Storage
 			public abstract DateTimeOffset DateCreated { get; }
 
 			public bool IsEqual(IStorageItem item)
-				=> item is StorageFile sf && IsEqual(sf._impl);
+				=> item is StorageFile sf && IsEqual(sf.Implementation);
 
-			protected abstract bool IsEqual(ImplementationBase impl);
+			protected abstract bool IsEqual(ImplementationBase implementation);
 
-			public abstract Task<StorageFolder> GetParentAsync(CancellationToken ct);
+			public abstract Task<StorageFolder?> GetParentAsync(CancellationToken ct);
 
 			public abstract Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct);
 
@@ -57,6 +58,11 @@ namespace Windows.Storage
 			public virtual async Task RenameAsync(CancellationToken ct, string desiredName, NameCollisionOption option)
 			{
 				var parent = await GetParentAsync(ct);
+				if (parent == null)
+				{
+					throw new InvalidOperationException("The file's parent is not accessible, so we cannot move the file to rename it.");
+				}
+
 				await MoveAsync(ct, parent, desiredName, option);
 			}
 
@@ -95,7 +101,7 @@ namespace Windows.Storage
 				Path = target.Path;
 			}
 
-			protected Exception NotImplemented([CallerMemberName] string? method = null)
+			protected Exception NotSupported([CallerMemberName] string? method = null)
 				=> new NotSupportedException($"{method} is not supported yet for {GetType().Name}");
 		}
 	}

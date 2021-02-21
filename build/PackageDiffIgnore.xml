@@ -3427,6 +3427,12 @@
 				fullName="System.Void Windows.Storage.Pickers.FilePickerSelectedFilesArray..ctor()"
 				reason="Constructor not public in UWP" />
 			<Member
+				fullName="System.Void Windows.Storage.StorageProvider..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="Windows.Foundation.IAsyncOperation`1<Windows.Storage.StorageFile> Windows.Storage.StorageFolder.SafeGetFileAsync(System.String path)"
+				reason="This method does not exist in UWP" />
+			<Member
 				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillChanged(Windows.UI.Xaml.Media.Brush newValue)"
 				reason="Not part of the WinUI API." />
 			<Member
