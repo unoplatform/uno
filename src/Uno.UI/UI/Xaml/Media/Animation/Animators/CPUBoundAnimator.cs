@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				CurrentPlayTime = 0;
 				_currentValue = _from;
 			}
-			else if (elapsed >= Duration)
+			else if (elapsed >= StartDelay + Duration)
 			{
 				IsRunning = false;
 				DisableFrameReporting();
