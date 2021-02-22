@@ -11,7 +11,8 @@ using Uno.Extensions;
 
 namespace UITests.Shared.Windows_Storage.Pickers
 {
-	[Sample("Windows.Storage", ViewModelType = typeof(FileOpenPickerTestsViewModel))]
+	[Sample("Windows.Storage", ViewModelType = typeof(FileOpenPickerTestsViewModel), IsManualTest = true,
+		Description = "Allows testing all features of FileOpenPicker. Currently not supported on Android, iOS, macOS and GTK. Not selecting a file should not cause an exception")]
 	public sealed partial class FileOpenPickerTests : Page
 	{
 		public FileOpenPickerTests()

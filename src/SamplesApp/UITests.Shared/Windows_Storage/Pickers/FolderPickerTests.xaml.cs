@@ -11,7 +11,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_Storage.Pickers
 {
-	[Sample("Windows.Storage", ViewModelType = typeof(FolderPickerTestsViewModel))]
+	[Sample("Windows.Storage", ViewModelType = typeof(FolderPickerTestsViewModel), IsManualTest = true,
+		Description = "Allows testing all features of FolderPicker. Currently not supported on Android, iOS, macOS and GTK. Not selecting a folder should not cause an exception")]
 	public sealed partial class FolderPickerTests : Page
 	{
 		public FolderPickerTests()

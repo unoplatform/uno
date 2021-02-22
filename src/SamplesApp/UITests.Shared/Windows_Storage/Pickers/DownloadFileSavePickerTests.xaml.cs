@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_Storage.Pickers
 {
-	[Sample("Windows.Storage")]
+	[Sample("Windows.Storage", IsManualTest = true, Description = "This sample is specifically suited for WASM, should trigger a download of a given file")]
     public sealed partial class DownloadFileSavePickerTests : Page
     {
         public DownloadFileSavePickerTests()
