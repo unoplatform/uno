@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls.Primitives
