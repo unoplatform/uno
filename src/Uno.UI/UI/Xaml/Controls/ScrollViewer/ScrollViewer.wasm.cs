@@ -21,15 +21,17 @@ namespace Windows.UI.Xaml.Controls
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 
-		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
 		{
 			if (_presenter != null)
 			{
 				_presenter.ScrollTo(horizontalOffset, verticalOffset, disableAnimation);
+				return true;
 			}
 			else if (_log.IsEnabled(LogLevel.Warning))
 			{
 				_log.Warn("Cannot ChangeView as ScrollContentPresenter is not ready yet.");
+				return false;
 			}
 		}
 

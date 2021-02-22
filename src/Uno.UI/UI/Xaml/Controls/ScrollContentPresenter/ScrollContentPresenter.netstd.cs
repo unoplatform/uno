@@ -47,19 +47,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (Content is UIElement child)
 			{
-				var slotSize = finalSize;
-				var desiredChildSize = child.DesiredSize;
+				Rect childRect = default;
 
-				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Height = Math.Max(desiredChildSize.Height, finalSize.Height);
-				}
-				if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Width = Math.Max(desiredChildSize.Width, finalSize.Width);
-				}
+				var desiredSize = child.DesiredSize;
 
-				child.Arrange(new Rect(new Point(0, 0), slotSize));
+				childRect.Width = Math.Max(Math.Max(finalSize.Width, desiredSize.Width), ExtentWidth);
+				childRect.Height = Math.Max(Math.Max(finalSize.Height, desiredSize.Height), ExtentHeight);
+
+				child.Arrange(childRect);
 			}
 
 			return finalSize;

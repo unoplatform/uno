@@ -35,8 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-
-		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
 		{
 			var physicalHorizontalOffset = ViewHelper.LogicalToPhysicalPixels(horizontalOffset ?? HorizontalOffset);
 			var physicalVerticalOffset = ViewHelper.LogicalToPhysicalPixels(verticalOffset ?? VerticalOffset);
@@ -45,17 +44,21 @@ namespace Windows.UI.Xaml.Controls
 			const int minScroll = -maxScroll;
 
 			// Clamp values (again) to avoid overflow in UnoTwoDScrollView.java
-			physicalHorizontalOffset = Clamp(physicalHorizontalOffset, minScroll, maxScroll);
-			physicalVerticalOffset = Clamp(physicalVerticalOffset, minScroll, maxScroll);
+			var adjustedPhysicalHorizontalOffset = Clamp(physicalHorizontalOffset, minScroll, maxScroll);
+			var adjustedPhysicalVerticalOffset = Clamp(physicalVerticalOffset, minScroll, maxScroll);
 
 			if (disableAnimation)
 			{
-				_presenter?.ScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
+				_presenter?.ScrollTo(adjustedPhysicalHorizontalOffset, adjustedPhysicalVerticalOffset);
 			}
 			else
 			{
-				_presenter?.SmoothScrollTo(physicalHorizontalOffset, physicalVerticalOffset);
+				_presenter?.SmoothScrollTo(adjustedPhysicalHorizontalOffset, adjustedPhysicalVerticalOffset);
 			}
+
+			// Return true if successfully scrolled to asked offsets
+			return (horizontalOffset == null || physicalHorizontalOffset == adjustedPhysicalHorizontalOffset) &&
+			       (verticalOffset == null || physicalVerticalOffset == adjustedPhysicalVerticalOffset);
 		}
 
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation)

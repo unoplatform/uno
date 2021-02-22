@@ -836,7 +836,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);
 
-			ApplyScrollContentPresenterContent();
+			ApplyScrollContentPresenterContent(Content);
 
 			OnApplyTemplatePartial();
 
@@ -874,20 +874,20 @@ namespace Windows.UI.Xaml.Controls
 				// for the lack of TemplatedParentScope support
 				ClearContentTemplatedParent(oldValue);
 
-				ApplyScrollContentPresenterContent();
+				ApplyScrollContentPresenterContent(newValue);
 			}
 
 			UpdateSizeChangedSubscription();
 		}
 
-		private void ApplyScrollContentPresenterContent()
+		private void ApplyScrollContentPresenterContent(object content)
 		{
 			// Stop the automatic propagation of the templated parent on the Content
 			// This prevents issues when the a ScrollViewer is hosted in a control template
 			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
 			// on the Content property. This can make the Content added twice in the visual tree.
 			// cf. https://github.com/unoplatform/uno/issues/3762
-			if (Content is IDependencyObjectStoreProvider provider)
+			if (content is IDependencyObjectStoreProvider provider)
 			{
 				var contentTemplatedParent = provider.Store.GetValue(provider.Store.TemplatedParentProperty);
 				if (contentTemplatedParent == null || contentTemplatedParent != TemplatedParent)
@@ -900,7 +900,7 @@ namespace Windows.UI.Xaml.Controls
 			// Then explicitly propagate the Content to the _presenter
 			if (_presenter != null)
 			{
-				_presenter.Content = Content as View;
+				_presenter.Content = content as View;
 			}
 
 			// Propagate the ScrollViewer's own templated parent, instead of 
@@ -1195,16 +1195,18 @@ namespace Windows.UI.Xaml.Controls
 
 			var zoomFactorChanged = zoomFactor != null && zoomFactor != ZoomFactor;
 
+			bool scrolledSuccessfully = true;
+
 			if (verticalOffsetChanged || horizontalOffsetChanged)
 			{
-				ChangeViewScroll(horizontalOffset, verticalOffset, disableAnimation);
+				scrolledSuccessfully = ChangeViewScroll(horizontalOffset, verticalOffset, disableAnimation);
 			}
 			if (zoomFactorChanged)
 			{
 				ChangeViewZoom(zoomFactor ?? 1, disableAnimation);
 			}
 
-			return verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged;
+			return scrolledSuccessfully && (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged);
 		}
 
 		/// <summary>
@@ -1216,7 +1218,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>true if the view is changed; otherwise, false.</returns>
 		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor) => ChangeView(horizontalOffset, verticalOffset, zoomFactor, false);
 
-		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
 
 #region Scroll indicators visual states (Managed scroll bars only)
