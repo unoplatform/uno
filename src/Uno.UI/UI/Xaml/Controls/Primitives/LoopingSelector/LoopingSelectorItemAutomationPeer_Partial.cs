@@ -23,10 +23,10 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 
 			//FrameworkElementAutomationPeerFactory spInnerFactory;
-			FrameworkElementAutomationPeer spInnerInstance;
-			FrameworkElement spLoopingSelectorItemAsFE;
-			LoopingSelectorItem spOwner = pOwner;
-			DependencyObject spInnerInspectable;
+			//FrameworkElementAutomationPeer spInnerInstance;
+			//FrameworkElement spLoopingSelectorItemAsFE;
+			//LoopingSelectorItem spOwner = pOwner;
+			//DependencyObject spInnerInspectable;
 
 			//LoopingSelectorItemAutomationPeerGenerated.InitializeImpl(pOwner);
 			//(wf.GetActivationFactory(
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 			//(((DependencyObject)(pOwner)).QueryInterface<FrameworkElement>(
 			//	&spLoopingSelectorItemAsFE));
-			spLoopingSelectorItemAsFE = pOwner;
+			//spLoopingSelectorItemAsFE = pOwner;
 
 			//(spInnerFactory.CreateInstanceWithOwner(
 			//	spLoopingSelectorItemAsFE,

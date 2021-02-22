@@ -20,8 +20,8 @@ namespace Windows.UI.Xaml.Automation.Peers
 			LoopingSelectorAutomationPeer pOwner)
 		{
 			//AutomationPeerFactory spInnerFactory;
-			AutomationPeer spInnerInstance;
-			DependencyObject spInnerInspectable;
+			//AutomationPeer spInnerInstance;
+			//DependencyObject spInnerInspectable;
 
 			//LoopingSelectorItemDataAutomationPeerGenerated.InitializeImpl(pItem, pOwner);
 			//(wf.GetActivationFactory(
@@ -51,6 +51,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			spThisAsAP = this;
 
 			//LoopingSelectorAutomationPeer(pOwner).AsWeak(_wrParent);
+			_wrParent = new WeakReference<LoopingSelectorAutomationPeer>(pOwner);
 			if (pOwner is { })
 			{
 				AutomationPeer spLSAsAP;

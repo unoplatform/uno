@@ -73,8 +73,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			//IControlFactory spInnerFactory;
 			//IControl spInnerInstance;
-			DependencyObject spInnerInspectable;
-			UIElement spUIElement;
+			//DependencyObject spInnerInspectable;
+			//UIElement spUIElement;
 
 			//LoopingSelectorGenerated.InitializeImpl();
 			//(wf.GetActivationFactory(
@@ -174,8 +174,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			SelectionChangedEventArgs spSelectionChangedEventArgs;
 			IList<object> spRemovedItems;
 			IList<object> spAddedItems;
-			DependencyObject spInner;
-			DependencyObject spThisAsInspectable;
+			//DependencyObject spInner;
+			//DependencyObject spThisAsInspectable;
 
 			//wfci_.Vector<DependencyObject.Make(spRemovedItems);
 			spRemovedItems = new List<object>(1);
@@ -1103,7 +1103,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				if (realizedItemsCount > oldIdx - _realizedTopIdx)
 				{
-					spEltAsLSI = _realizedItems.ElementAt(realizedItemsCount - ((int)oldIdx - _realizedTopIdx) - 1);
+					var selectionIndex = realizedItemsCount - ((int)oldIdx - _realizedTopIdx) - 1;
+					spEltAsLSI = _realizedItems.ElementAt(selectionIndex % realizedItemsCount);
 					lsi = spEltAsLSI;
 					if (_itemState == ItemState.Expanded)
 					{
@@ -1149,13 +1150,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			uint moddedItemIdx = 0;
 			VisualIndexToItemIndex(itemIdxToRealize, out moddedItemIdx);
 
-			var wasItemRecycled = false;
+			//var wasItemRecycled = false;
 
 			RetreiveItemFromAPRealizedItems(moddedItemIdx, out spLoopingSelectorItem);
 			if (!(spLoopingSelectorItem is { }) && _recycledItems.Count != 0)
 			{
 				spLoopingSelectorItem = _recycledItems.Pop();
-				wasItemRecycled = true;
+				//wasItemRecycled = true;
 			}
 
 			if (!(spLoopingSelectorItem is { }))
@@ -1167,7 +1168,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				Control spLSIAsControl;
 				Control spThisAsControl;
 				//EventRegistrationToken tappedToken = default;
-				var visualTreeRebuilt = false;
+				//var visualTreeRebuilt = false;
 
 				//QueryInterface(__uuidof(Control), &spThisAsControl);
 				spThisAsControl = this;
@@ -1315,6 +1316,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			////LSTRACE("[%d] Measure called.", (((int)this) >> 8) & 0xFF);
 
 			//LoopingSelectorGenerated.MeasureOverrideImpl(availableSize, returnValue);
+			returnValue = base.MeasureOverride(availableSize);
 
 			itemWidth = ItemWidth;
 
@@ -1349,106 +1351,115 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//	_isWithinArrangeOverride = false;
 			//});
 
-			itemWidth = ItemWidth;
-
-			if (itemWidth != 0)
+			try
 			{
-				// Override the width with that of the first item's
-				// width. A Canvas doesn't wrap
-				// content so we do this so the control sizes correctly.
-				widthToReturn = itemWidth;
-			}
-			else
-			{
-				// If no itemWidth has been set, we use all the available space.
-				widthToReturn = finalSize.Width;
 
-				// We compute a new value for _itemWidthFallback
-				var newItemWidthFallback = finalSize.Width;
-				if (_itemWidthFallback != newItemWidthFallback)
+				itemWidth = ItemWidth;
+
+				if (itemWidth != 0)
 				{
-					_itemWidthFallback = newItemWidthFallback;
-					_isSized = false;
+					// Override the width with that of the first item's
+					// width. A Canvas doesn't wrap
+					// content so we do this so the control sizes correctly.
+					widthToReturn = itemWidth;
 				}
-			}
-
-			if (_delayScrollPositionY != -1.0)
-			{
-				SetScrollPosition(_delayScrollPositionY, false /* useAnimation */);
-				// SetScrollPosition sets _skipNextBalance to true. This is to prevent the call to Balance from OnViewChanged from running.
-				// But OnViewChanged guards against calling Balance with _isWithinArrangeOverride. So the _skipNextBalance flag will not get cleared.
-				// We need to explictly clear the flag here, so that the call to Balance towards the end of this function has an effect.
-				// See bug MSFT: 4711432 for more details.
-				_skipNextBalance = false;
-
-				_delayScrollPositionY = -1.0;
-				expectedOffsetChange = true;
-			}
-
-			if (_isScrollViewerInitialized && !_isSetupPending)
-			{
-				Debug.Assert(_tpScrollViewer != null);
-				verticalOffsetBeforeArrangeImpl = _tpScrollViewer.VerticalOffset;
-			}
-
-			//Size returnValue = LoopingSelectorGenerated.ArrangeOverrideImpl(finalSize);
-			Size returnValue = base.ArrangeOverride(finalSize);
-
-			if (finalSize.Height != _lastArrangeSizeHeight && _isScrollViewerInitialized && !_isSetupPending)
-			{
-				// Orientation must have changed or we got resized, what used to be the middle point has changed.
-				// So we need to shift the items to restore the old middle point item.
-
-				var oldPanelSize = _panelSize;
-				var verticalOffsetAfterArrangeImpl = 0.0;
-
-				verticalOffsetAfterArrangeImpl = _tpScrollViewer.VerticalOffset;
-
-				SizePanel();
-
-				var delta = (_panelSize - oldPanelSize) / 2;
-				_realizedTop += delta;
-				_realizedBottom += delta;
-
-				ShiftChildren(delta);
-
-				if (verticalOffsetAfterArrangeImpl != verticalOffsetBeforeArrangeImpl && !expectedOffsetChange)
+				else
 				{
-					// When moving from a small viewport to a large viewport during an orientation change,
-					// the viewport vertical offset might get coerced and change. If that's the case,
-					// we defer the scroll operation to the next layout pass because it's too late by then.
-					_delayScrollPositionY = verticalOffsetBeforeArrangeImpl;
-					_skipNextArrange = true;
-				}
-			}
+					// If no itemWidth has been set, we use all the available space.
+					widthToReturn = finalSize.Width;
 
-			// Adding the first item on the first Arrange pass after the item has
-			// been added to the visual tree (and scrollViewer is initialized) causes
-			// a second Arrange pass to occur. We skip it as an optimization.
-			if (_skipNextArrange && _isScrollViewerInitialized)
-			{
-				////LSTRACE("[%d] Skipping balance during this arrange.", (((int)this) >> 8) & 0xFF);
-				_skipNextArrange = false;
-			}
-			else
-			{
-				// The ScrollViewer's extents aren't valid until the first
-				// arrange pass has occured.
-				if (!_isScrollViewerInitialized)
-				{
-					_isScrollViewerInitialized = true;
+					// We compute a new value for _itemWidthFallback
+					var newItemWidthFallback = finalSize.Width;
+					if (_itemWidthFallback != newItemWidthFallback)
+					{
+						_itemWidthFallback = newItemWidthFallback;
+						_isSized = false;
+					}
 				}
 
-				Balance(false /* isOnSnapPoint */);
+				if (_delayScrollPositionY != -1.0)
+				{
+					SetScrollPosition(_delayScrollPositionY, false /* useAnimation */);
+					// SetScrollPosition sets _skipNextBalance to true. This is to prevent the call to Balance from OnViewChanged from running.
+					// But OnViewChanged guards against calling Balance with _isWithinArrangeOverride. So the _skipNextBalance flag will not get cleared.
+					// We need to explictly clear the flag here, so that the call to Balance towards the end of this function has an effect.
+					// See bug MSFT: 4711432 for more details.
+					_skipNextBalance = false;
+
+					_delayScrollPositionY = -1.0;
+					expectedOffsetChange = true;
+				}
+
+				if (_isScrollViewerInitialized && !_isSetupPending)
+				{
+					global::System.Diagnostics.Debug.Assert(_tpScrollViewer != null);
+					verticalOffsetBeforeArrangeImpl = _tpScrollViewer.VerticalOffset;
+				}
+
+				//Size returnValue = LoopingSelectorGenerated.ArrangeOverrideImpl(finalSize);
+				Size returnValue = base.ArrangeOverride(finalSize);
+
+				if (finalSize.Height != _lastArrangeSizeHeight && _isScrollViewerInitialized && !_isSetupPending)
+				{
+					// Orientation must have changed or we got resized, what used to be the middle point has changed.
+					// So we need to shift the items to restore the old middle point item.
+
+					var oldPanelSize = _panelSize;
+					var verticalOffsetAfterArrangeImpl = 0.0;
+
+					verticalOffsetAfterArrangeImpl = _tpScrollViewer.VerticalOffset;
+
+					SizePanel();
+
+					var delta = (_panelSize - oldPanelSize) / 2;
+					_realizedTop += delta;
+					_realizedBottom += delta;
+
+					ShiftChildren(delta);
+
+					if (verticalOffsetAfterArrangeImpl != verticalOffsetBeforeArrangeImpl && !expectedOffsetChange)
+					{
+						// When moving from a small viewport to a large viewport during an orientation change,
+						// the viewport vertical offset might get coerced and change. If that's the case,
+						// we defer the scroll operation to the next layout pass because it's too late by then.
+						_delayScrollPositionY = verticalOffsetBeforeArrangeImpl;
+						_skipNextArrange = true;
+					}
+				}
+
+				// Adding the first item on the first Arrange pass after the item has
+				// been added to the visual tree (and scrollViewer is initialized) causes
+				// a second Arrange pass to occur. We skip it as an optimization.
+				if (_skipNextArrange && _isScrollViewerInitialized)
+				{
+					////LSTRACE("[%d] Skipping balance during this arrange.", (((int)this) >> 8) & 0xFF);
+					_skipNextArrange = false;
+				}
+				else
+				{
+					// The ScrollViewer's extents aren't valid until the first
+					// arrange pass has occured.
+					if (!_isScrollViewerInitialized)
+					{
+						_isScrollViewerInitialized = true;
+					}
+
+					Balance(false /* isOnSnapPoint */);
+				}
+
+
+				if (returnValue != null)
+				{
+					returnValue.Width = widthToReturn;
+				}
+
+				return returnValue;
 			}
-
-
-			if (returnValue != null)
+			finally
 			{
-				returnValue.Width = widthToReturn;
+				_lastArrangeSizeHeight = finalSize.Height;
+				_isWithinArrangeOverride = false;
 			}
-
-			return returnValue;
 		}
 
 		protected override void OnApplyTemplate()
@@ -1539,6 +1550,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				_tpScrollViewer = spScrollViewer;
 				//_tpScrollViewerPrivate = spScrollViewerPrivate;
+				_tpScrollViewerPrivate = spScrollViewer;
 			}
 
 			if (spScrollViewerAsCC is { })
@@ -1602,6 +1614,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		#region Helpers
 
+#if __ANDROID__
+		new
+#endif
 		void HasFocus(out bool pHasFocus)
 		{
 			DependencyObject spFocusedElt;
@@ -1669,6 +1684,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		void ShiftChildren(double delta)
 		{
+			if(delta == 0)
+			{
+				return;
+			}
 			//LoopingSelectorItem.iterator iter;
 
 			//for (iter = _realizedItems.begin(); iter != _realizedItems.end(); iter++)
@@ -1808,7 +1827,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			spVerticalOffset = offset;
 			//LSTRACE("[%d] Setting scroll position %f", (((int)this) >> 8) & 0xFF, offset);
 
-			_skipNextBalance = true;
+			//_skipNextBalance = true;
 
 			if (!useAnimation)
 			{

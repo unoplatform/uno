@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			{
 				var startIdx = 0;
 				var totalItems = 0;
-				string nameProperty;
+				//string nameProperty;
 				//AutomationPeerProtected spThisAsProtected;
 
 				// For the Name and IsSelected property search cases we cache these
@@ -318,7 +318,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			LoopingSelector pOwnerNoRef = null;
 			AutomationPeer spAutomationPeer;
 
-			int pReturnValueSize = 0;
+			//int pReturnValueSize = 0;
 			IRawElementProviderSimple[] pppReturnValue = null;
 
 			GetOwnerAsInternalPtrNoRef(out pOwnerNoRef);
@@ -328,7 +328,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				if (spAutomationPeer is { })
 				{
 					//AutomationPeerProtected spAutomationPeerAsProtected;
-					IRawElementProviderSimple spProvider;
+					//IRawElementProviderSimple spProvider;
 
 					//spAutomationPeer.As(spAutomationPeerAsProtected);
 

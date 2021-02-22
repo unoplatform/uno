@@ -1,4 +1,5 @@
 using Windows.Devices.Input;
+using Windows.Foundation;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
@@ -15,6 +16,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_hasPeerBeenCreated = false;
 
 			InitializeImpl();
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			var measureOverride = base.MeasureOverride(availableSize);
+			return measureOverride;
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var arrangeOverride = base.ArrangeOverride(finalSize);
+			return arrangeOverride;
 		}
 
 		void InitializeImpl()

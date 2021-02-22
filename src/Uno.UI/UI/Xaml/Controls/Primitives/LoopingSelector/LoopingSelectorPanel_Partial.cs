@@ -1,13 +1,8 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-
-
 using System;
 using System.Collections.Generic;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-
 	public partial class LoopingSelectorPanel
 	{
 		internal LoopingSelectorPanel()
@@ -16,28 +11,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_snapPointSpacing = 0.0f;
 
 			InitializeImpl();
-		}
-
-
-		void InitializeImpl()
-		{
-			//wrl.ComPtr<xaml_controls.ICanvasFactory> spInnerFactory;
-			//wrl.ComPtr<xaml_controls.ICanvas> spInnerInstance;
-			//wrl.ComPtr<DependencyObject> spInnerInspectable;
-
-			//LoopingSelectorPanelGenerated.InitializeImpl();
-			//(wf.GetActivationFactory(
-			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Controls_Canvas),
-			//	&spInnerFactory));
-
-			//(spInnerFactory.CreateInstance(
-			//	(DependencyObject)((ILoopingSelectorPanel)(this)),
-			//	&spInnerInspectable,
-			//	&spInnerInstance));
-
-			//(SetComposableBasePointers(
-			//	spInnerInspectable,
-			//	spInnerFactory));
 		}
 
 		//void get_AreHorizontalSnapPointsRegularImpl(out boolean pValue)
@@ -76,8 +49,33 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//if (offset == null) throw new ArgumentNullException();
 			//if (returnValue == null) throw new ArgumentNullException();
 
+			if (orientation != Orientation.Vertical) throw new InvalidOperationException();
+
 			offset = _snapPointOffset;
-			returnValue = _snapPointSpacing;
+			var returnValue = _snapPointSpacing;
+			return returnValue;
+		}
+
+
+		void InitializeImpl()
+		{
+			//wrl.ComPtr<xaml_controls.ICanvasFactory> spInnerFactory;
+			//wrl.ComPtr<xaml_controls.ICanvas> spInnerInstance;
+			//wrl.ComPtr<DependencyObject> spInnerInspectable;
+
+			//LoopingSelectorPanelGenerated.InitializeImpl();
+			//(wf.GetActivationFactory(
+			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Controls_Canvas),
+			//	&spInnerFactory));
+
+			//(spInnerFactory.CreateInstance(
+			//	(DependencyObject)((ILoopingSelectorPanel)(this)),
+			//	&spInnerInspectable,
+			//	&spInnerInstance));
+
+			//(SetComposableBasePointers(
+			//	spInnerInspectable,
+			//	spInnerFactory));
 		}
 
 
@@ -88,8 +86,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_snapPointOffset = offset;
 				RaiseSnapPointsChangedEvents();
 			}
-
-			return;
 		}
 
 
@@ -100,25 +96,23 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_snapPointSpacing = size;
 				RaiseSnapPointsChangedEvents();
 			}
-
-			return;
 		}
 
 
 		void RaiseSnapPointsChangedEvents()
 		{
-			DependencyObject spThisAsInspectable;
+			//DependencyObject spThisAsInspectable;
 
 			//(QueryInterface(
 			//	__uuidof(DependencyObject),
 			//	&spThisAsInspectable));
-			spThisAsInspectable = this;
+			//spThisAsInspectable = this;
 
 			//(_snapPointsChangedEventSource.InvokeAll(
 			//	spThisAsInspectable,
 			//	spThisAsInspectable));
-			_snapPointsChangedEventSource?.Invoke(spThisAsInspectable, spThisAsInspectable);
+			//_snapPointsChangedEventSource?.Invoke(spThisAsInspectable, spThisAsInspectable);
+			VerticalSnapPointsChanged?.Invoke(this, this);
 		}
-
 	}
 }

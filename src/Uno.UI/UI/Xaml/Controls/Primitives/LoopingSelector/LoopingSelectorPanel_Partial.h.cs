@@ -47,7 +47,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private float _snapPointOffset;
 		private float _snapPointSpacing;
 
-		EventHandler<DependencyObject> _snapPointsChangedEventSource;
+		//EventHandler<DependencyObject> _snapPointsChangedEventSource;
+
+#pragma warning disable CS0067
+		public event EventHandler<object> HorizontalSnapPointsChanged;
+		public event EventHandler<object> VerticalSnapPointsChanged;
 
 		//void RaiseSnapPointsChangedEvents();
 	}
