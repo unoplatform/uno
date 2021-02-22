@@ -68,6 +68,12 @@ To add a new sample to the SamplesApp:
 5. Double-check that the category name matches other samples for the control.
 6. Run the `SamplesApp` to check that your sample appears in the browser and works as expected.
 
+## Adding a manual test sample
+
+Some tests cannot be validated automatically, and need to be flagged with the `IsManualTest` property on `SampleAttribute`. These tests will be filtered in the Samples App to be validated by a human.
+
+The content of those tests must describe a scenario to follow, what to expect, and which exceptional conditions may need to be validated. If the result is visual, an image or video resource file may be needed as well.
+
 ## Sample snapshots on the CI
 
 Each CI build of Uno.UI records screenshots of each sample in the SamplesApp. A diff tool details screenshots that have changed from the previous master build, allowing unexpected changes in the visual output to be caught. 
