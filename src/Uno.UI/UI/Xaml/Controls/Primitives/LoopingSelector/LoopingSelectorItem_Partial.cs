@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class LoopingSelectorItem
 	{
-		public LoopingSelectorItem()
+		internal LoopingSelectorItem()
 		{
 			_state = State.Normal;
 			_visualIndex = 0;

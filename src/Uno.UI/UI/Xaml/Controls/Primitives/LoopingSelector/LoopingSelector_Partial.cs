@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private const double c_targetScreenWidth = 400.0;
 
 
-		public LoopingSelector()
+		internal LoopingSelector()
 		{
 			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged(e));
 
@@ -1089,6 +1089,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// NOTE: Only called when the ScrollViewer is done Running (e.g. no scrolling is happening).
 		void UpdateVisualSelectedItem(uint oldIdx, uint newIdx)
 		{
+			if(oldIdx == newIdx)
+			{
+				return;
+			}
+
 			LoopingSelectorItem spEltAsLSI;
 			LoopingSelectorItem lsi = null;
 

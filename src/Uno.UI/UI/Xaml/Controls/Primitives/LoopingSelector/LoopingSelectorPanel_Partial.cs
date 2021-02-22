@@ -10,8 +10,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 	public partial class LoopingSelectorPanel
 	{
-
-		public LoopingSelectorPanel()
+		internal LoopingSelectorPanel()
 		{
 			_snapPointOffset = 0.0f;
 			_snapPointSpacing = 0.0f;
@@ -46,17 +45,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		//	pValue = true;
 		//	return S_OK;
 		//}
-		internal bool AreHorizontalSnapPointsRegularImpl => true;
+		public bool AreHorizontalSnapPointsRegular => true;
 
 		//void get_AreVerticalSnapPointsRegularImpl(out boolean pValue)
 		//{
 		//	pValue = true;
 		//	return S_OK;
 		//}
-		internal bool AreVerticalSnapPointsRegularImp => true;
+		public bool AreVerticalSnapPointsRegular => true;
 
-		void GetIrregularSnapPointsImpl(Orientation orientation, SnapPointsAlignment alignment,
-			out IList<float> returnValue)
+		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
 			// NOTE: This method should never be called, both
 			// horizontal and vertical SnapPoints are ALWAYS regular.
@@ -68,10 +66,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 
-		void GetRegularSnapPointsImpl(Orientation orientation, SnapPointsAlignment alignment, out float offset,
-			out float returnValue)
+		public float GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset)
 		{
-
 			// For now the LoopingSelectorPanel will simply return a evenly spaced grid,
 			// the vertical and horizontal snap points will be identical.
 			//UNREFERENCED_PARAMETER(orientation);
