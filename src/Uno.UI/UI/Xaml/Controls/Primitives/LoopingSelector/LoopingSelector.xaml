@@ -2,6 +2,17 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 
+
+  <StaticResource x:Key="LoopingSelectorButtonBackground" ResourceKey="SystemControlBackgroundChromeMediumBrush" />
+  <!-- Resources for Windows.UI.Xaml.Controls.Primitives.LoopingSelectorItem -->
+  <StaticResource x:Key="LoopingSelectorItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+  <StaticResource x:Key="LoopingSelectorItemForegroundSelected" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+  <StaticResource x:Key="LoopingSelectorItemForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+  <StaticResource x:Key="LoopingSelectorItemForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+  <StaticResource x:Key="LoopingSelectorItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
+  <StaticResource x:Key="LoopingSelectorItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
+
+
   <!-- Default style for Windows.UI.Xaml.Controls.Primitives.LoopingSelector -->
   <Style TargetType="LoopingSelector">
 	<Setter Property="ShouldLoop" Value="True" />
