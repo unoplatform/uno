@@ -95,8 +95,6 @@
           href: guides\silverlight-migration\04-migrate-home-page-xaml-and-styles.md
         - name: Switching to string resources
           href: guides\silverlight-migration\05-string-resources.md
-        - name: Logging
-          href: guides\silverlight-migration\06-logging.md
         - name: Dialogs and errors
           href: guides\silverlight-migration\07-dialogs.md
         - name: Data access services
