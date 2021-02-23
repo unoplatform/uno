@@ -19,6 +19,8 @@
 					xmlns:macos="http://uno.ui/macos"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
+					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
+					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
 
@@ -4142,8 +4144,8 @@
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
-					<not_netstdref:ItemsWrapGrid Orientation="Horizontal" />
-					<netstdref:WrapPanel />
+					<itemswrapgridpresent:ItemsWrapGrid Orientation="Horizontal" />
+					<itemswrapgridnotpresent:WrapPanel />
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
