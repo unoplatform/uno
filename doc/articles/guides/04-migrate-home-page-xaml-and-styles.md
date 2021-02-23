@@ -6,7 +6,7 @@ The general approach for migrating a Silverlight page to UWP is to start by crea
 * Migrate/updates styles
 * Controls updates:
   * For those that map directly (such as **Button** or **TextBlock**), update any syntax differences
-  * For those with an alternate UWP control (such as Silverlight **DataGrid** and the Windows Community Toolkit **DataGrid**), update the XAMl as needed
+  * For those with an alternate UWP control (such as Silverlight **DataGrid** and the Windows Community Toolkit **DataGrid**), update the XAML as needed
   * For those with no alternatives, consider a custom control
 * Databinding - consider migrating to **x:Bind**
 * Convertors - convert or consider migrating to function bindings
