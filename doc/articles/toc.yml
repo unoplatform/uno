@@ -79,6 +79,46 @@
       href: native-views.md
     - name: How to consume a webservice
       href: howto-consume-webservices.md
+    - name: Silverlight Migration
+      items:
+        - name: Silverlight to Uno Migration
+          href: guides\00-overview.md
+        - name: Create the Uno solution for UWP and WASM
+          href: guides\01-create-uno-solution.md
+        - name: Considering navigation
+          href: guides\02-considering-navigation.md
+        - name: Reviewing the app startup
+          href: guides\03-review-app-startup.md
+        - name: Migrating the home page XAML and styles
+          href: guides\04-migrate-home-page-xaml-and-styles.md
+        - name: Switching to string resources
+          href: guides\05-string-resources.md
+        - name: Logging
+          href: guides\06-logging.md
+        - name: Dialogs and errors
+          href: guides\07-dialogs.md
+        - name: Data access services
+          href: guides\08-data-access-overview.md
+        - name: Client Authentication
+          href: guides\09-client-auth-service.md
+        - name: Implementing a singleton token service
+          href: guides\10-implementing-singleton-token-service.md
+        - name: Implementing an identity service client
+          href: guides\11-implementing-identity-service-client.md
+        - name: Migrating the authentication UI
+          href: guides\12-migrate-auth-ui.md
+        - name: Integrating authentication and navigation
+          href: guides\13-integrating-auth-and-navigation.md
+        - name: Implement the time entry service
+          href: guides\14-implement-timeentry-services.md
+        - name: Migrating the time entry UI
+          href: guides\15-migrate-timeentry-ui.md
+        - name: Wrap-up
+          href: guides\20-wrap-up.md
+        - name: The TimeEntry Sample apps
+          href: guides\98-timeentry-samples.md
+        - name: Useful resources
+          href: guides\99-useful-resources.md
     - name: Adding Splash Screens
       href: splash-screen.md
 - name: Using Uno - features and controls
