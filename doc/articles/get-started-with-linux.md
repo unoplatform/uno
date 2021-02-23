@@ -9,7 +9,9 @@ It is possible to develop :
 ## Setting for Windows and WSL
 
 Using VS 2019 16.6 or later:
-- Install the [VS WSL Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.Dot-Net-Core-Debugging-With-Wsl2)
+- Install the Visual Studio WSL Extension
+  - In VS 2019 16.8 or earlier [through the marketplace](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.Dot-Net-Core-Debugging-With-Wsl2)
+  - In VS 2019 16.9 Preview 1 and later through the Visual Studio installer by installing the individual component named **.NET Core Debugging with WSL 2**
 - Install [WSL Ubuntu 18.04 or later](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 - Install the prerequisites for Linux mentioned in the next section, in your installed distribution using the Ubuntu shell
 - Install [vcXsrv](https://sourceforge.net/projects/vcxsrv/), an X11 server for Windows
