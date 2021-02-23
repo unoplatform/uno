@@ -51,18 +51,21 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
+			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			DependenciesInitializer.Init(context);
-
 			try
 			{
-				if (PlatformHelper.IsValidPlatform(context)
-					&& !DesignTimeHelper.IsDesignTime(context))
+				var validPlatform = PlatformHelper.IsValidPlatform(context);
+				var isDesignTime = DesignTimeHelper.IsDesignTime(context);
+				var isApplication = IsApplication(context);
+
+				if (validPlatform
+					&& !isDesignTime)
 				{
-					if (IsApplication(context))
+					if (isApplication)
 					{
 						_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
@@ -89,6 +92,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						modules = modules.Concat(context.Compilation.SourceModule);
 
 						context.AddSource("BindableMetadata", GenerateTypeProviders(modules));
+					}
+					else
+					{
+						context.AddSource("BindableMetadata", $"// validPlatform: {validPlatform} designTime:{isDesignTime} isApplication:{isApplication}");
 					}
 				}
 			}

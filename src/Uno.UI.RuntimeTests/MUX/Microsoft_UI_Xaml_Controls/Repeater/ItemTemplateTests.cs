@@ -676,7 +676,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-#if NETSTANDARD // https://github.com/unoplatform/uno/issues/4529
+#if UNO_REFERENCE_API // https://github.com/unoplatform/uno/issues/4529
 		[TestMethod]
 		public void VerifyNullTemplateGivesMeaningfullError()
 		{

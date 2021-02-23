@@ -32,28 +32,36 @@ namespace Uno.UI.Tasks.Helpers
                 return;
             }
 
-            switch (logLevel)
-            {
-                case Microsoft.Extensions.Logging.LogLevel.Error:
-                    _taskLog?.LogError(message);
-                    break;
+			try
+			{
+				switch (logLevel)
+				{
+					case Microsoft.Extensions.Logging.LogLevel.Error:
+						_taskLog?.LogError(message);
+						break;
 
-                case Microsoft.Extensions.Logging.LogLevel.Warning:
-                    _taskLog?.LogWarning(message);
-                    break;
+					case Microsoft.Extensions.Logging.LogLevel.Warning:
+						_taskLog?.LogWarning(message);
+						break;
 
-                case Microsoft.Extensions.Logging.LogLevel.Information:
-                    _taskLog?.LogMessage(MessageImportance.Normal, message);
-                    break;
+					case Microsoft.Extensions.Logging.LogLevel.Information:
+						_taskLog?.LogMessage(MessageImportance.Normal, message);
+						break;
 
-                case Microsoft.Extensions.Logging.LogLevel.Debug:
-                    _taskLog?.LogMessage(MessageImportance.Low, message);
-                    break;
+					case Microsoft.Extensions.Logging.LogLevel.Debug:
+						_taskLog?.LogMessage(MessageImportance.Low, message);
+						break;
 
-                default:
-                    _taskLog?.LogMessage(message);
-                    break;
-            }
+					default:
+						_taskLog?.LogMessage(message);
+						break;
+				}
+			}
+			catch(Exception e)
+			{
+				// Logging may have failed, use the console instead
+				Console.WriteLine(message);
+			}
         }
     }
 }

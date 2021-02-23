@@ -1,12 +1,11 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
+
+	<Import Project="../netcore-build.props"/>
+	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
 		<AssemblyName>Uno</AssemblyName>
@@ -22,7 +21,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
@@ -32,7 +31,7 @@
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)" />
 	</ItemGroup>
 
 	<ItemGroup>

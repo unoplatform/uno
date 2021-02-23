@@ -113,7 +113,6 @@ namespace Uno.UI
 			public static bool UseLegacyTemplateSelectorOverload { get; set; } = false;
 		}
 
-
 		public static class DependencyObject
 		{
 			/// <summary>

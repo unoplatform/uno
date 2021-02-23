@@ -1,4 +1,4 @@
-﻿#if !NET461 && !NETSTANDARD2_0 && !__MACOS__
+﻿#if !NET461 && !UNO_REFERENCE_API && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

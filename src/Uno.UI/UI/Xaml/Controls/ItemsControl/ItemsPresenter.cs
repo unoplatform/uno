@@ -128,8 +128,8 @@ namespace Windows.UI.Xaml.Controls
 				this.AddSubview(_itemsPanel);
 #elif XAMARIN_ANDROID
 			this.AddView(_itemsPanel);
-#elif NETSTANDARD || NET461
-			AddChild(_itemsPanel);
+#elif UNO_REFERENCE_API || NET461
+				AddChild(_itemsPanel);
 #endif
 
 				PropagatePadding();
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 #elif XAMARIN_ANDROID
 			this.RemoveAllViews();
-#elif NETSTANDARD
+#elif UNO_REFERENCE_API
 			ClearChildren();
 #endif
 		}

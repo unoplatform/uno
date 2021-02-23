@@ -129,7 +129,7 @@ namespace Windows.UI.Input
 
 		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
 		{
-#if NET461 || NETSTANDARD2_0
+#if NET461 || UNO_REFERENCE_API
 			if (_gestures.TryGetValue(value.PointerId, out var gesture))
 			{
 				_gestures.Remove(value.PointerId);

@@ -13,7 +13,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	partial class LottieVisualSourceBase
 	{
-		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
+		private static readonly string? UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
 		private AnimatedVisualPlayer? _initializedPlayer;
 		private Uri? _lastSource;
@@ -157,13 +157,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 		}
 
-		private void OnAnimationDomLoaded(object sender, HtmlCustomEventArgs e)
+		private void OnAnimationDomLoaded(object? sender, HtmlCustomEventArgs e)
 		{
 			_domLoaded = true;
 			ApplyPlayState();
 		}
 
-		private void OnStateChanged(object sender, HtmlCustomEventArgs e) => ParseStateString(e.Detail);
+		private void OnStateChanged(object? sender, HtmlCustomEventArgs e) => ParseStateString(e.Detail);
 
 		private void ParseStateString(string stateString)
 		{

@@ -1,10 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-		
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -13,13 +17,14 @@
 
   <ItemGroup>
     <Content Include="tsconfig.json" />
-  </ItemGroup>
+ 		<ConfigFiles Include="tsconfig.json" />
+ </ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.Compiler" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
-		<PackageReference Include="Uno.SourceGenerationTasks"/>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
 	<ItemGroup>

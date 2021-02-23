@@ -39,7 +39,13 @@ namespace Windows.ApplicationModel.Contacts
 			using (var stream = new MemoryStream(Encoding.Default.GetBytes(pickResult)))
 			{
 				var serializer = new DataContractJsonSerializer(typeof(WasmContact[]));
-				return (WasmContact[])serializer.ReadObject(stream);
+
+				if(serializer.ReadObject(stream) is WasmContact[] contacts)
+				{
+					return contacts;
+				}
+
+				throw new InvalidDataException("Invalid DeserializePickResult deserialization content");
 			}
 		}
 

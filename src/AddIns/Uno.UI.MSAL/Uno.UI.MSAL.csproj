@@ -48,13 +48,6 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
 	</ItemGroup>
@@ -138,5 +131,8 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
+
+	<!-- Workaround for missing target running on .NET 5 -->
+	<Target Name="GetTargetPath" />
 
 </Project>

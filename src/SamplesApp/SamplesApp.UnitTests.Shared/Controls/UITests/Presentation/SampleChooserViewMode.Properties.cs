@@ -24,7 +24,7 @@ using System.ComponentModel;
 using Uno.UI.Common;
 using Microsoft.UI.Xaml.Controls;
 
-#if XAMARIN || NETSTANDARD2_0
+#if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;

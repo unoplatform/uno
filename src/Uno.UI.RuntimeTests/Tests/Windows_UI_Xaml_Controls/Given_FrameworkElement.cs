@@ -530,12 +530,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			hostPanel.Children.Remove(sut);
 
 			Assert.AreEqual(1, unloadCount);
-#if NETSTANDARD2_0
+#if UNO_REFERENCE_API
 			Assert.IsFalse(hostPanel._children.Contains(sut));
 #endif
 		}
 
-#if NETSTANDARD2_0
+#if UNO_REFERENCE_API
 		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
 		// (cf. notes in the tests)
 

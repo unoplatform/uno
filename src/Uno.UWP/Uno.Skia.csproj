@@ -1,7 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
-  
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../netcore-build.props"/>
+	<Import Project="../targetframework-override.props"/>
+
+	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -23,7 +28,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 

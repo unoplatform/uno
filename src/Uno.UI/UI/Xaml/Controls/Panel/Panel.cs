@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 	[Markup.ContentProperty(Name = "Children")]
 	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
 	{
-#if NET461 || NETSTANDARD2_0
+#if NET461 || UNO_REFERENCE_API
 		private new UIElementCollection _children;
 #else
 		private UIElementCollection _children;

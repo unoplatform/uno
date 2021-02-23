@@ -49,6 +49,7 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml

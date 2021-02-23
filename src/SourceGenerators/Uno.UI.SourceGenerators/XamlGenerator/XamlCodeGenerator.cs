@@ -21,12 +21,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
+			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			DependenciesInitializer.Init(context);
-
 			// No initialization required for this one
 			//if (!Process.GetCurrentProcess().ProcessName.Equals("devenv", StringComparison.OrdinalIgnoreCase))
 			//{

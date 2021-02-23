@@ -18,13 +18,13 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
+			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
 			if (!DesignTimeHelper.IsDesignTime(context))
 			{
-				DependenciesInitializer.Init(context);
 
 				var visitor = new SerializationMethodsGenerator(context);
 				visitor.Visit(context.Compilation.SourceModule);

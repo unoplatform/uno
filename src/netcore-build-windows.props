@@ -1,0 +1,19 @@
+<Project ToolsVersion="15.0">
+
+  <!--
+  UnoUIDisableNetCoreBuild is used during CI for disabling .NET 5 package generation
+  until completing the switch to .NET 5. Double building .NET 5 adds some significant
+  build time, and concurrency issues with the netstandad2.0 build.
+  -->
+  
+  <PropertyGroup Condition="'$(UnoUIDisableNetCoreBuild)'=='' and ('$(MSBuildRuntimeType)'=='Core' or '$(MSBuildVersion)' &gt;= '16.8')">
+	<TargetFrameworks>$(TargetFrameworks);net5.0-windows</TargetFrameworks>
+	<TargetFrameworksCI>$(TargetFrameworks);net5.0-windows</TargetFrameworksCI>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+	<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net5.0'">$(TargetFrameworks)-windows</TargetFrameworks>
+  </PropertyGroup>
+
+</Project>

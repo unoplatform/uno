@@ -25,12 +25,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		{
 			// Debugger.Launch();
 			// No initialization required for this one
-
+			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			DependenciesInitializer.Init(context);
+
 			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var visitor = new SerializationMethodsGenerator(context);

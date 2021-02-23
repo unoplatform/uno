@@ -1,7 +1,10 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
+
+	<Import Project="../netcore-build.props"/>
+	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>

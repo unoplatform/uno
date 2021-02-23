@@ -1,8 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
-  
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>

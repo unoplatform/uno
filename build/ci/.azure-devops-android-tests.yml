@@ -21,6 +21,8 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/dotnet-install.yml
+
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)

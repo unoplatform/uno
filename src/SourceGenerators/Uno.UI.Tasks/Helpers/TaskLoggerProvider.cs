@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Logging;
+using Uno.Extensions;
 
 namespace Uno.UI.Tasks.Helpers
 {
@@ -27,5 +29,12 @@ namespace Uno.UI.Tasks.Helpers
         {
 
         }
+
+		public static IDisposable Register(TaskLoggingHelper taskLog)
+		{
+			LogExtensionPoint.AmbientLoggerFactory.AddProvider(new TaskLoggerProvider(taskLog));
+
+			return new DisposableAction(() => LogExtensionPoint.AmbientLoggerFactory = null);
+		}
     }
 }

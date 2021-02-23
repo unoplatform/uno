@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				UnloadImageData();
 			}
 			InitFromUri(e.NewValue as Uri);
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 			InvalidateSource();
 #endif
 		}

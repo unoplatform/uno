@@ -253,7 +253,7 @@ namespace Windows.Foundation
 				&& value.Width == Width
 				&& value.Height == Height;
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 
 		public static bool operator ==(Rect left, Rect right) => left.Equals(right);

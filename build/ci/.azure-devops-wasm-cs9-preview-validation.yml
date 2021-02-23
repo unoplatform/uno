@@ -2,7 +2,7 @@ parameters:
   vmImage: ''
 
 jobs:
-- job: Wasm_cs9_preview_Build
+- job: Wasm_cs9_Build
   displayName: 'WebAssembly Build (C# 9.0 Compiler)'
   container: nv-bionic-wasm
 
@@ -15,11 +15,19 @@ jobs:
   steps:
   - checkout: self
     clean: true
-    
-  - bash: |
-      msbuild /r /p:Configuration=Release /p:LangVersion=preview /p:UnoUIUseRoslynSourceGenerators=true /p:MicrosoftNetCompilerVersionOverride=3.8.0-3.final src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj  /bl:$(build.artifactstagingdirectory)/build-cs9-preview-$(GitVersion.FullSemVer).binlog
 
-    displayName: 'Build sample app'
+  - template: templates/dotnet-install.yml
+
+  # Disabled for the next round of C# updates for forward validations
+  # - bash: |
+  #     msbuild /r /p:Configuration=Release /p:UnoTargetFrameworkOverride=netstandard2.0 /p:LangVersion=preview /p:UnoUIUseRoslynSourceGenerators=true /p:MicrosoftNetCompilerVersionOverride=3.8.0-3.final src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj  /bl:$(build.artifactstagingdirectory)/build-cs9-preview-$(GitVersion.FullSemVer).binlog
+  # 
+  #   displayName: 'Build sample app (netstandard2.0)'
+
+  - bash: |
+      dotnet msbuild /r /p:Configuration=Release /p:UnoTargetFrameworkOverride=netstandard2.0 /p:LangVersion=9.0 /p:UnoUIUseRoslynSourceGenerators=true src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj  /bl:$(build.artifactstagingdirectory)/build-cs9-preview-$(GitVersion.FullSemVer).binlog
+
+    displayName: 'Build sample app (netstandard2.0)'
 
   - task: CopyFiles@2
     displayName: 'Publish Wasm Site'

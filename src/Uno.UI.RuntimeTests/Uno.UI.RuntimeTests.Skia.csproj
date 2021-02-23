@@ -1,14 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+	
+	<Import Project="../netcore-build.props"/>
+	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 		
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
@@ -39,7 +42,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Skia.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>

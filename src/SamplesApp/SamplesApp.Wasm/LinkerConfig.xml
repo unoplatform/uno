@@ -4,6 +4,9 @@
   <assembly fullname="Uno.UI.Wasm.Tests" />
   <assembly fullname="Microsoft.Graph" />
 
+  <!-- Required for Microsoft.Extensions.Logging v5+ -->
+  <assembly fullname="Microsoft.Extensions.Options" />
+
   <assembly fullname="System.Core">
 	<!-- This is required by JSon.NET and any expression.Compile caller -->
 	<type fullname="System.Linq.Expressions*" />

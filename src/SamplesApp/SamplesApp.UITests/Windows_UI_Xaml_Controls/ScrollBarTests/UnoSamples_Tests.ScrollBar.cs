@@ -140,7 +140,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 			_app.DragCoordinates(thumbResult.Rect.CenterX, thumbResult.Rect.CenterY, thumbResult.Rect.CenterX + 10, thumbResult.Rect.CenterY);
 
 			_app.WaitForText(horizontalValue, "126.56666666666668");
-			_app.WaitForText(scrollValue, "Horizontal Scroll: EndScroll, 126.566666666667");
+			_app.WaitFor(() => scrollValue.GetDependencyPropertyValue<string>("Text")?.StartsWith("Horizontal Scroll: EndScroll, 126.56666") ?? false);
 		}
 
 		[Test]
@@ -174,7 +174,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 			_app.DragCoordinates(thumbResult.Rect.CenterX, thumbResult.Rect.CenterY, thumbResult.Rect.CenterX, thumbResult.Rect.CenterY + 10);
 
 			_app.WaitForText(verticalValue, "126.56666666666668");
-			_app.WaitForText(scrollValue, "Vertical Scroll: EndScroll, 126.566666666667");
+			_app.WaitFor(() => scrollValue.GetDependencyPropertyValue<string>("Text")?.StartsWith("Vertical Scroll: EndScroll, 126.56666") ?? false);
 		}
 	}
 }

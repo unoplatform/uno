@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
+
+	<Import Project="../netcore-build.props"/>
+	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -23,7 +26,7 @@
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core.Build" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
+		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />

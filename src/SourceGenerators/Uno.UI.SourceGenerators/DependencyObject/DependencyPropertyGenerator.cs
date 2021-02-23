@@ -24,12 +24,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
+			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			DependenciesInitializer.Init(context);
-
 			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var visitor = new SerializationMethodsGenerator(context);

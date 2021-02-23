@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml
 			public const int FrameworkElement_InvalidateMeasure = 5;
 		}
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		private FrameworkElementLayouter _layouter;
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize()
 		{
-#if !NETSTANDARD2_0
+#if !UNO_REFERENCE_API
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
@@ -176,7 +176,7 @@ namespace Windows.UI.Xaml
 
 			if (child != null)
 			{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 #else
 				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		/// <summary>
 		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
 		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml
 		/// <returns>The measured size - INCLUDES THE MARGIN</returns>
 		protected Size MeasureElement(View view, Size availableSize)
 		{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 			view.Measure(availableSize);
 			return view.DesiredSize;
 #else
@@ -264,7 +264,7 @@ namespace Windows.UI.Xaml
 			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
 
 			view.Arrange(rect);
-#elif NETSTANDARD
+#elif UNO_REFERENCE_API
 			view.Arrange(finalRect);
 #else
 			_layouter.ArrangeElement(view, finalRect);
@@ -276,7 +276,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		protected Size GetElementDesiredSize(View view)
 		{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 			return view.DesiredSize;
 #else
 			return (_layouter as ILayouter).GetDesiredSize(view);
@@ -737,7 +737,7 @@ namespace Windows.UI.Xaml
 
 #endregion
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		private class FrameworkElementLayouter : Layouter
 		{
 			private readonly MeasureOverrideHandler _measureOverrideHandler;
