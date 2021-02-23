@@ -196,7 +196,7 @@ The following steps will walk-through the creation of some extensions that simpl
     await errorDialog.ShowOneAtATimeAsync();
     ```
 
-    ![Dialog showing error resources](Assets/timeentry/Dialog-FatalError.png)
+    ![Dialog showing error resources](assets/Dialog-FatalError.png)
 
 ## Simplifying the display of error dialogs
 
@@ -280,3 +280,7 @@ An unfortunate fact of development is that there is often the need to display wa
     ```
 
     In the code above, an essential service is being initialized. Should the initialize fail, the error is logged and then the fatal error dialog is shown.
+
+> [!Note]
+> The Uno platform provides comprehensive support for logging - the article below provides the details on how to configure and use logging:
+> * [Logging](../../logging.md)

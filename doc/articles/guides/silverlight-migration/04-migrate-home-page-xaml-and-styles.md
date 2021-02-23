@@ -13,7 +13,7 @@ The general approach for migrating a Silverlight page to UWP is to start by crea
 
 In the sample Silverlight app, the home page uses 3 **HyperlinkButton** controls containing images as alternate means to navigate to the primary capabilities of the application and looks like the following:
 
-![Silverlight Home Page](Assets/timeentry/Silverlight-HomePage.png)
+![Silverlight Home Page](assets/Silverlight-HomePage.png)
 
 The next task will review the similarities and differences between the Silverlight version and UWP.
 
@@ -308,7 +308,7 @@ In the next few steps, the images will be copied to the Uno app.
 
 1. In the **Shared** project, right-click the **Assets** folder and **Add &gt; New Folder** and name the folder **Images**.
 
-1. Download the image assets via the following link: [Download icons.zip](Assets/timeentry/icons.zip)
+1. Download the image assets via the following link: [Download icons.zip](assets/icons.zip)
 
     > [!IMPORTANT]
     > The app uses image assets from [Icons8.com](https://icons8.com) - the free use license can be reviewed here:
@@ -376,4 +376,4 @@ As mentioned earlier, the navigation implementation differs between Silverlight 
 
     The WASM version of the application will look similar to:
 
-    ![Web Assembly version of the Time Entry app](Assets/timeentry/WASM-HomePage.png)
+    ![Web Assembly version of the Time Entry app](assets/WASM-HomePage.png)

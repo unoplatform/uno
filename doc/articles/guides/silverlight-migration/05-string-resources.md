@@ -6,11 +6,11 @@ The Silverlight Business App template includes string resources and a helper cla
 
 Reviewing the Silverlight TimeEntryRia sample app UI, the navigation link content is an example of string resources (see element 2 below):
 
-![Silverlight Business App Example Layout](Assets/timeentry/SilverlightBusinessApp.png)
+![Silverlight Business App Example Layout](assets/SilverlightBusinessApp.png)
 
 In the Silverlight project, the application string resources are found within the `Assets\Resources\ApplicationsStrings.resx` file. There are two additional resource files for error messages and security challenge questions. As an example, the **Home** navigation title is defined in the **ApplicationsStrings.resx** file as:
 
-![String Resource Home Navigation Page Title](Assets/timeentry/StringResource-HomeNav.png)
+![String Resource Home Navigation Page Title](assets/StringResource-HomeNav.png)
 
 The **ResourceWrapper** helper is instantiated in the application resources defined in **App.xaml** as:
 
@@ -63,11 +63,11 @@ If the following entries were added to **Resources.resw**:
 
 Then in UWP the control would be rendered as:
 
-![Resources defining values for TextBox control in UWP](Assets/timeentry/Resources-DemoTextBox.png)
+![Resources defining values for TextBox control in UWP](assets/Resources-DemoTextBox.png)
 
 In WASM, not all of the property conversions are currently supported (notably **Width** and **Background**), so the control is rendered as:
 
-![Resources defining values for TextBox control in WASM](Assets/timeentry/Resources-DemoTextBoxWASM.png)
+![Resources defining values for TextBox control in WASM](assets/Resources-DemoTextBoxWASM.png)
 
 > [!IMPORTANT]
 > There are some idiosyncrasies with Uno and WASM regarding the use of **x:Uid** - some properties must be defined in the XAML otherwise the resources won't be applied. This issue is documented by [Uno issue #921](https://github.com/unoplatform/uno/issues/921)
@@ -202,4 +202,4 @@ Although all resources can be added to single resource file, it is often conside
     }.SetPrimaryButton(ErrorMessageHelper.GetErrorMessageResource("ExitApp"));
     ```
 
-    ![Dialog showing error resources](Assets/timeentry/Dialog-FatalError.png)
+    ![Dialog showing error resources](assets/Dialog-FatalError.png)

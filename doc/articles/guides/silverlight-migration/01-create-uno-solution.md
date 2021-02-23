@@ -107,6 +107,6 @@ There are a few steps to adding WinUI 2.5 to the Uno project:
     > [!TIP]
     > If you do not see the desired version in the dropdown, you will need to install the appropriate version of the SDK using the Visual Studio Installer:
     >
-    > ![Visual Studio Installer UWP SDK Options](Assets/timeentry/VisualStudioInstaller-uwpsdkoptions.png)
+    > ![Visual Studio Installer UWP SDK Options](assets/VisualStudioInstaller-uwpsdkoptions.png)
 
 Now that the solution is created, it is time to consider navigation and an approach to implementing a similar capability in UWP.

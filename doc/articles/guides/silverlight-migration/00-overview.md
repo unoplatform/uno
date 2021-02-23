@@ -80,7 +80,7 @@ The guide will discuss the major aspects of migration as they arise during the c
 
 The following image shows the home page of the application. There are 3 key areas and the rest is "chrome" - the default style for Cosmopolitan was often criticized for the wasted space.
 
-![Silverlight Business App Example Layout](Assets/timeentry/SilverlightBusinessApp.png)
+![Silverlight Business App Example Layout](assets/SilverlightBusinessApp.png)
 
 The 3 areas are:
 
@@ -90,7 +90,7 @@ The 3 areas are:
 
 Here is an example of the app logged in, displaying the **About** view:
 
-![Time Entry RIA logged in displaying about view](Assets/timeentry/TimeEntryRia-LoggedInAbout.png)
+![Time Entry RIA logged in displaying about view](assets/TimeEntryRia-LoggedInAbout.png)
 
 The application navigation structure is as follows:
 

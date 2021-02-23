@@ -14,11 +14,11 @@ When looking to migrate these UI elements, an immediate challenge presents - the
 
 Here is an example of a **DataForm**:
 
-![Example Data Form](Assets/timeentry/SampleDataForm.png)
+![Example Data Form](assets/SampleDataForm.png)
 
 And here is the same data form with errors displayed:
 
-![Example Data Form with errors](Assets/timeentry/SampleDataForm-Errors.png)
+![Example Data Form with errors](assets/SampleDataForm-Errors.png)
 
 And here is the associated Silverlight XAML:
 
@@ -138,11 +138,11 @@ The following steps will create the **LoginForm**.
 
     This completes the XAML. The **LoginForm** look likes this when displayed in WASM:
 
-    ![LoginForm displayed in WASM](Assets/timeentry/LoginForm-Wasm.png)
+    ![LoginForm displayed in WASM](assets/LoginForm-Wasm.png)
 
     When an error is present, the **Border** and **TextBlock** are visible:
 
-    ![LoginForm displayed in WASM with errors](Assets/timeentry/LoginForm-Wasm-Errors.png)
+    ![LoginForm displayed in WASM with errors](assets/LoginForm-Wasm-Errors.png)
 
 ### Implement the LoginForm code-behind
 
@@ -334,15 +334,15 @@ Next, the **LoginStatus** control is considered.
 
 The **LoginStatus** control appears at the top of the UI (element 1 in the image below)
 
-![Silverlight Business App Example Layout](Assets/timeentry/SilverlightBusinessApp.png)
+![Silverlight Business App Example Layout](assets/SilverlightBusinessApp.png)
 
 In the TimeEntryRIA app, the status control displays in two states - logged out which provides a button to initiate the login process:
 
-![Login Status - Logged Out](Assets/timeentry/LoginStatus-LoggedOut.png)
+![Login Status - Logged Out](assets/LoginStatus-LoggedOut.png)
 
 And logged in, which displays the logged-in user and a button to logout:
 
-![Login Status - Logged In](Assets/timeentry/LoginStatus-LoggedIn.png)
+![Login Status - Logged In](assets/LoginStatus-LoggedIn.png)
 
 The control makes use of the the **VisualStateManager** to switch between the various layouts, a number of custom styles, and code-behind - the vast majority of which can be migrated to UWP without change. The following steps will walk-through the process of migrating the **UserControl** - an approach that can be used for migrating any **UserControl** or custom control.
 
@@ -386,7 +386,7 @@ In the following steps, the Silverlight styles used by the **LoginStatus** contr
 
 1. Review the **\\Resources\\Styles.xaml** file. The purpose is to idenitfy any issues with the XAML, such as properties that are not found. Issues are usually indicated by a blue "squiggle" underline - the image below indicates that the **TargetType** of **Button** lacks a **TextOptions.TextHintingMode** property:
 
-    ![XAML style property displaying an error](Assets/timeentry/Style-Property-error.png)
+    ![XAML style property displaying an error](assets/Style-Property-error.png)
 
     The **LoginPanelStyle** and **SpacerStyle** styles require no changes.
 

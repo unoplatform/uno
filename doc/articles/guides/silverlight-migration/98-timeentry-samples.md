@@ -41,7 +41,7 @@ The following steps outline the approach to create the database and update the *
 
     The database schema looks like this:
 
-    ![Time Entry Database Schema](Assets/timeentry/database-schema.png)
+    ![Time Entry Database Schema](assets/database-schema.png)
 
 1. Update the database security as required - i.e. add the current user as owner, configure **sa**, etc.
 
