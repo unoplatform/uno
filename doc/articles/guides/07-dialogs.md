@@ -8,7 +8,7 @@ The Silverlight **TimeEntryRia** makes use of **ChildWindow** controls to displa
 > * [Dialog controls](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
 > * [ContentDialog class](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
 
-The **ContentDialog** is a flexible control a dialog box that can be customized to contain checkboxes, hyperlinks, buttons and any other XAML content. It can be created simply from code, or as a new item added to a project with full designer support. However, there is one major limitation:
+The **ContentDialog** is a flexible control - a dialog box that can be customized to contain checkboxes, hyperlinks, buttons and any other XAML content. It can be created simply from code, or as a new item added to a project with full designer support. However, there is one major limitation:
 
 > [!WARNING]
 > There can only be one ContentDialog open per thread at a time. Attempting to open two ContentDialogs will throw an exception, even if they are attempting to open in separate AppWindows.

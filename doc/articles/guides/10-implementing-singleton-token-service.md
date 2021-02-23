@@ -1,6 +1,6 @@
 # Implementing a singleton token service
 
-It is common to use the **Singleton** pattern when creating services that consumed in multiple places in an applications code-base. The singleton pattern helps enforce the notion that only one instance of a service should exist. The following steps will walk through the implementation of generic abstract base class for a singleton and the use of it in the creation of the **TokenService**.
+It is common to use the **Singleton** pattern when creating services that are consumed in multiple places in an application's codebase. The singleton pattern helps enforce the notion that only one instance of a service should exist. The following steps will walk through the implementation of generic abstract base class for a singleton and the use of it in the creation of the **TokenService**.
 
 > [!TIP]
 > If you want to learn more about the **Singleton** pattern and how it can be implemented in C#, review the following resource:
