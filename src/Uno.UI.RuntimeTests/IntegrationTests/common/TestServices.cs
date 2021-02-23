@@ -162,6 +162,40 @@ namespace Private.Infrastructure
 				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
 			}
 
+			internal static async Task<T> WaitForNonNull<T>(
+				Func<T> getT,
+				int timeoutMS = 1000,
+				[CallerMemberName] string callerMemberName = null,
+				[CallerLineNumber] int lineNumber = 0)
+				where T : class
+			{
+				if (getT is null)
+				{
+					throw new ArgumentNullException(nameof(getT));
+				}
+
+				if (getT() is { } t)
+				{
+					return t;
+				}
+
+				var stopwatch = Stopwatch.StartNew();
+				while (stopwatch.ElapsedMilliseconds < timeoutMS)
+				{
+					await WaitForIdle();
+
+
+					if (getT() is { } t2)
+					{
+						return t2;
+					}
+				}
+
+				var message = $"{callerMemberName}():{lineNumber} Never received non-null value";
+
+				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
+			}
+
 #if DEBUG
 			/// <summary>
 			/// This will wait. Forever. Useful when debugging a runtime test if you wish to visually inspect or interact with a view added
