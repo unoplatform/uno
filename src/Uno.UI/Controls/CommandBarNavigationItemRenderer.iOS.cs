@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -185,9 +185,13 @@ namespace Uno.UI.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			//for the same reason expressed below we need to check if iOS sent a wrong availableSize which can be validated
+			// by checking the availableSize.Height
+			_blockReentrantMeasure = availableSize.Height == 0 && _lastAvailableSize?.Height != 0;
+
 			if (_blockReentrantMeasure)
 			{
-				// In some cases setting the Frame below can prompt iOS to call SizeThatFits with 0 height, which would screw up the desired 
+				// In some cases setting the Frame below can prompt iOS to call SizeThatFits with 0 height, which would screw up the desired
 				// size of children if we're within LayoutSubviews(). In this case simply return the existing measure.
 				return _childSize;
 			}
