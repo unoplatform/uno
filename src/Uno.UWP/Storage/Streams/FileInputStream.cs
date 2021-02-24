@@ -10,11 +10,8 @@ namespace Windows.Storage.Streams
 	{
 		private readonly Stream _stream;
 
-		internal FileInputStream(string path, FileShare fileShare, ulong position)
-		{
-			_stream = File.Open(path, FileMode.OpenOrCreate, FileAccess.Read, fileShare);
-			_stream.Seek((long)position, SeekOrigin.Begin);
-		}
+		internal FileInputStream(Stream stream) =>
+			_stream = stream ?? throw new ArgumentNullException(nameof(stream));
 
 		Stream IStreamWrapper.FindStream() => _stream;
 
