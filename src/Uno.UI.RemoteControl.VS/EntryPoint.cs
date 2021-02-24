@@ -159,13 +159,24 @@ namespace Uno.UI.RemoteControl.VS
 			try
 			{
 				await StartServerAsync();
-
+				var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
 				foreach (var p in await GetProjectsAsync())
 				{
-					if (GetMsbuildProject(p.FileName) is Microsoft.Build.Evaluation.Project msbProject && IsApplication(msbProject))
+					var filename = string.Empty;
+					try
 					{
-						var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-						SetGlobalProperty(p.FileName, RemoteControlServerPortProperty, portString);
+						filename = p.FileName;
+					}
+					catch (Exception ex)
+					{
+						_debugAction($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
+						_warningAction($"Cannot read {p.UniqueName} project details (It may be unloaded).");
+					}
+					if (string.IsNullOrWhiteSpace(filename) == false
+						&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
+						&& IsApplication(msbProject))
+					{
+						SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
 					}
 				}
 			}
