@@ -10,15 +10,15 @@
 
 	<StackPanel>
 		<TextBlock>Snap Points</TextBlock>
-		<ComboBox x:Name="snapPointsType" SelectedIndex="3">
+		<ComboBox x:Name="snapPointsType">
 			<ComboBoxItem>None</ComboBoxItem>
 			<ComboBoxItem>Optional</ComboBoxItem>
 			<ComboBoxItem>OptionalSingle</ComboBoxItem>
-			<ComboBoxItem>Mandatory</ComboBoxItem>
+			<ComboBoxItem IsSelected="True">Mandatory</ComboBoxItem>
 			<ComboBoxItem>MandatorySingle</ComboBoxItem>
 		</ComboBox>
-		<ComboBox x:Name="snapPointsAlignment" SelectedIndex="0">
-			<ComboBoxItem>Near</ComboBoxItem>
+		<ComboBox x:Name="snapPointsAlignment">
+			<ComboBoxItem IsSelected="True">Near</ComboBoxItem>
 			<ComboBoxItem>Center</ComboBoxItem>
 			<ComboBoxItem>Far</ComboBoxItem>
 		</ComboBox>
