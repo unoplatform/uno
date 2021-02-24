@@ -190,6 +190,8 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(DatePicker);
 
 			InitPartial();
+
+			PrepareState();
 		}
 
 		~DatePicker()
