@@ -159,7 +159,7 @@ namespace Uno.UI.Controls
 		private Size _childSize;
 		private Size? _lastAvailableSize;
 
-		public TitleView()
+		internal TitleView()
 		{
 			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
 			{
@@ -175,6 +175,12 @@ namespace Uno.UI.Controls
 				// The 44 height: Gives a valid default size that will be reused (god knows why) even after setting the height later on.
 				Frame = new CGRect(new CGPoint(0, 0), new CGSize(0, 44));
 			}
+		}
+
+		protected override void OnBeforeArrange()
+		{
+			//This is to ensure that the layouter gets the correct **finalRect**
+			LayoutSlotWithMarginsAndAlignments = RectFromUIRect(Frame);
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
