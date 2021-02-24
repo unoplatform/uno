@@ -6,11 +6,11 @@ The sample application is made up of 3 solutions containing multiple projects an
 
 * Uno.Samples
   * reference
-    * TimeEntryRia
+    * [TimeEntryRia](https://github.com/unoplatform/Uno.Samples/tree/master/reference/TimeEntryRia)
   * UI
     * TimeEntry
-      * TimeEntryServices
-      * TimeEntryUno
+      * [TimeEntryServices](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TimeEntry/TimeEntryServices)
+      * [TimeEntryUno](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TimeEntry/TimeEntryUno)
 
 ## Solutions
 
