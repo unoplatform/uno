@@ -1,5 +1,3 @@
-#define FAKE_LOOPINGSELECTOR // LoopingSelector not implemented yet in Uno
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,10 +7,6 @@ using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-
-#if FAKE_LOOPINGSELECTOR
-using LoopingSelector = Windows.UI.Xaml.Controls.ListView;
-#endif
 
 using DateTime = System.DateTimeOffset;
 
@@ -299,14 +293,14 @@ namespace Windows.UI.Xaml.Controls
 				LoopingSelector spMonthPicker;
 
 				//wrl.MakeAndInitialize<xaml_primitives.LoopingSelector>(spMonthPicker);
-				spMonthPicker = new LoopingSelector();
+				spMonthPicker = new LoopingSelector() {ShouldLoop = false};
 				_tpMonthPicker = spMonthPicker;
 				//spMonthPicker.As(spLSAsUI);
 				//spMonthPicker.As(spLSAsFE);
 				//spMonthPicker.As(spLSAsControl);
 				spLSAsControl = spMonthPicker;
 				//Don't set ItemWidth. We want the item to size to the width of its parent.
-				/*  spMonthPicker.ItemHeight = itemHeight;  NOT SUPPORTED BY LISTVIEW */
+				spMonthPicker.ItemHeight = itemHeight;
 				spLSAsControl.HorizontalContentAlignment = HorizontalAlignment.Left;
 				spLSAsControl.Padding = monthPadding;
 				spMonthPicker.Name = "MonthLoopingSelector";
@@ -330,14 +324,14 @@ namespace Windows.UI.Xaml.Controls
 				LoopingSelector spDayPicker;
 
 				//wrl.MakeAndInitialize<xaml_primitives.LoopingSelector>(spDayPicker);
-				spDayPicker = new LoopingSelector();
+				spDayPicker = new LoopingSelector() { ShouldLoop = false };
 				_tpDayPicker = spDayPicker;
 				//spDayPicker.As(spLSAsUI);
 				//spDayPicker.As(spLSAsFE);
 				//spDayPicker.As(spLSAsControl);
 				spLSAsControl = spDayPicker;
 				//Don't set ItemWidth. We want the item to size to the width of its parent.
-				/*  spMonthPicker.ItemHeight = itemHeight;  NOT SUPPORTED BY LISTVIEW */
+				spDayPicker.ItemHeight = itemHeight;
 				spLSAsControl.HorizontalContentAlignment = HorizontalAlignment.Center;
 				spLSAsControl.Padding = itemPadding;
 				spLSAsControl.Name = "DayLoopingSelector";
@@ -361,7 +355,7 @@ namespace Windows.UI.Xaml.Controls
 				LoopingSelector spYearPicker;
 
 				//wrl.MakeAndInitialize<xaml_primitives.LoopingSelector>(spYearPicker);
-				spYearPicker = new LoopingSelector();
+				spYearPicker = new LoopingSelector() { ShouldLoop = false };
 				_tpYearPicker = spYearPicker;
 				//spYearPicker.As(spLSAsUI);
 				//spYearPicker.As(spLSAsFE);
@@ -369,7 +363,7 @@ namespace Windows.UI.Xaml.Controls
 				spLSAsControl = spYearPicker;
 				/*  spYearPicker.ShouldLoop = false;  NOT SUPPORTED BY LISTVIEW */
 				//Don't set ItemWidth. We want the item to size to the width of its parent.
-				/*  spMonthPicker.ItemHeight = itemHeight;  NOT SUPPORTED BY LISTVIEW */
+				spYearPicker.ItemHeight = itemHeight;
 				spLSAsControl.HorizontalContentAlignment = HorizontalAlignment.Center;
 				spLSAsControl.Padding = itemPadding;
 				spLSAsControl.Name = "YearLoopingSelector";
@@ -464,16 +458,16 @@ namespace Windows.UI.Xaml.Controls
 				//IList<object> spCollectionAsInterface;
 
 				//wfci_.Vector<DependencyObject>.Make(spCollection);
-				spCollection = new ObservableCollection<object>();
+				spCollection = new List<object>();
 				//spCollection.As(spCollectionAsInterface);
 				//spCollectionAsInterface = spCollection;
 				_tpDaySource = spCollection;
 				//wfci_.Vector<DependencyObject>.Make(spCollection);
-				spCollection = new ObservableCollection<object>();
+				spCollection = new List<object>();
 				//spCollection.As(spCollectionAsInterface);
 				_tpMonthSource = spCollection;
 				//wfci_.Vector<DependencyObject>.Make(spCollection);
-				spCollection = new ObservableCollection<object>();
+				spCollection = new List<object>();
 				//spCollection.As(spCollectionAsInterface);
 				_tpYearSource = spCollection;
 			}
@@ -712,20 +706,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_tpDayPicker != null && clearDay)
 			{
-				//_tpDayPicker.Items = null;
-				_tpDayPicker.ItemsSource = null;
+				_tpDayPicker.Items = null;
 			}
 
 			if (_tpMonthPicker != null && clearMonth)
 			{
-				//_tpMonthPicker.Items = null;
-				_tpMonthPicker.ItemsSource = null;
+				_tpMonthPicker.Items = null;
 			}
 
 			if (_tpYearPicker != null && clearYear)
 			{
-				//_tpYearPicker.Items = null;
-				_tpYearPicker.ItemsSource = null;
+				_tpYearPicker.Items = null;
 			}
 		}
 
@@ -821,14 +812,13 @@ namespace Windows.UI.Xaml.Controls
 				{
 					GenerateYears();
 					//_tpYearPicker.Items = _tpYearSource;
-					if (_tpYearPicker.ItemsSource != _tpYearSource)
+					if (_tpYearPicker.Items != _tpYearSource)
 					{
-						_tpYearPicker.ItemsSource = _tpYearSource;
+						_tpYearPicker.Items = _tpYearSource;
 					}
 				}
 
 				_tpYearPicker.SelectedIndex = yearIndex;
-				_tpYearPicker.ScrollIntoView(_tpYearPicker.SelectedItem);
 			}
 
 			if (_tpMonthPicker != null)
@@ -837,14 +827,13 @@ namespace Windows.UI.Xaml.Controls
 				{
 					GenerateMonths(yearIndex);
 					//_tpMonthPicker.Items = _tpMonthSource;
-					if (_tpMonthPicker.ItemsSource != _tpMonthSource)
+					if (_tpMonthPicker.Items != _tpMonthSource)
 					{
-						_tpMonthPicker.ItemsSource = _tpMonthSource;
+						_tpMonthPicker.Items = _tpMonthSource;
 					}
 				}
 
 				_tpMonthPicker.SelectedIndex = monthIndex;
-				_tpMonthPicker.ScrollIntoView(_tpMonthPicker.SelectedItem);
 			}
 
 			if (_tpDayPicker != null)
@@ -853,14 +842,13 @@ namespace Windows.UI.Xaml.Controls
 				{
 					GenerateDays(yearIndex, monthIndex);
 					//_tpDayPicker.Items = _tpDaySource;
-					if (_tpDayPicker.ItemsSource != _tpDaySource)
+					if (_tpDayPicker.Items != _tpDaySource)
 					{
-						_tpDayPicker.ItemsSource = _tpDaySource;
+						_tpDayPicker.Items = _tpDaySource;
 					}
 				}
 
 				_tpDayPicker.SelectedIndex = dayIndex;
-				_tpDayPicker.ScrollIntoView(_tpDayPicker.SelectedItem);
 			}
 
 			AllowReactionToSelectionChange();

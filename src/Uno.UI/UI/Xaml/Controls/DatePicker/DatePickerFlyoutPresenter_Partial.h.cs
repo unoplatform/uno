@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Xaml.Controls.Primitives;
 
-using LoopingSelector = Windows.UI.Xaml.Controls.ListView;
 using DateTime = System.DateTimeOffset;
 
 namespace Windows.UI.Xaml.Controls
