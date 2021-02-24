@@ -41,34 +41,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AreHorizontalSnapPointsRegular
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool StackPanel.AreHorizontalSnapPointsRegular is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AreVerticalSnapPointsRegular
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool StackPanel.AreVerticalSnapPointsRegular is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AreScrollSnapPointsRegularProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AreScrollSnapPointsRegular), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.StackPanel), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
 		// Skipping already declared property OrientationProperty
 		// Skipping already declared property BorderBrushProperty
 		// Skipping already declared property BorderThicknessProperty
@@ -109,20 +81,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.VerticalSnapPointsChanged.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<float> StackPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float GetRegularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
-		{
-			throw new global::System.NotImplementedException("The member float StackPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetInsertionIndexes( global::Windows.Foundation.Point position, out int first, out int second)
 		{
 			throw new global::System.NotImplementedException("The member void StackPanel.GetInsertionIndexes(Point position, out int first, out int second) is not implemented in Uno.");
@@ -136,38 +94,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.PaddingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.AreScrollSnapPointsRegularProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.OrientationProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::System.EventHandler<object> HorizontalSnapPointsChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.StackPanel", "event EventHandler<object> StackPanel.HorizontalSnapPointsChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.StackPanel", "event EventHandler<object> StackPanel.HorizontalSnapPointsChanged");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::System.EventHandler<object> VerticalSnapPointsChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.StackPanel", "event EventHandler<object> StackPanel.VerticalSnapPointsChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.StackPanel", "event EventHandler<object> StackPanel.VerticalSnapPointsChanged");
-			}
-		}
-		#endif
 		// Processing: Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 		// Processing: Windows.UI.Xaml.Controls.IInsertionPanel
 	}

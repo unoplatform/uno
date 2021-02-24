@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewScrollNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
 			if (_scrollableContainer != null)
 			{
@@ -66,6 +66,11 @@ namespace Windows.UI.Xaml.Controls
 					.Clamp(CGPoint.Empty, _scrollableContainer.UpperScrollLimit);
 
 				_scrollableContainer.SetContentOffset(newOffset, !disableAnimation);
+
+				if(zoomFactor is { } zoom)
+				{
+					ChangeViewZoom(zoom, disableAnimation);
+				}
 
 				// Return true if successfully scrolled to asked offsets
 				return (horizontalOffset == null || horizontalOffset == newOffset.X) &&
@@ -92,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation)
+		private void ChangeViewZoom(float zoomFactor, bool disableAnimation)
 		{
 			_scrollableContainer?.SetZoomScale(zoomFactor, animated: !disableAnimation);
 		}

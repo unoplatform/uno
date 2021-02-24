@@ -21,18 +21,23 @@ namespace Windows.UI.Xaml.Controls
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 
-		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewScrollNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
+			if (zoomFactor.HasValue)
+			{
+				_log.Warn("ZoomFactor not supported yet on WASM target.");
+			}
+
 			if (_presenter != null)
 			{
 				_presenter.ScrollTo(horizontalOffset, verticalOffset, disableAnimation);
 				return true;
 			}
-			else if (_log.IsEnabled(LogLevel.Warning))
+			if (_log.IsEnabled(LogLevel.Warning))
 			{
 				_log.Warn("Cannot ChangeView as ScrollContentPresenter is not ready yet.");
-				return false;
 			}
+			return false;
 		}
 
 		partial void UpdatePartial(bool isIntermediate)

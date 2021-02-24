@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
 			if (_scrollableContainer != null)
 			{
@@ -62,6 +62,11 @@ namespace Windows.UI.Xaml.Controls
 				var newOffset = point.Clamp(CGPoint.Empty, _scrollableContainer.UpperScrollLimit);
 
 				_scrollableContainer.SetContentOffset(newOffset, !disableAnimation);
+
+				if (zoomFactor is { } zoom)
+				{
+					ChangeViewZoom(zoomFactor, disableAnimation);
+				}
 
 				// Return true if successfully scrolled to asked offsets
 				return (horizontalOffset == null || horizontalOffset == newOffset.X) &&
@@ -87,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation)
+		private void ChangeViewZoom(float zoomFactor, bool disableAnimation)
 		{
 			// Support for scaling https://github.com/unoplatform/uno/issues/626
 		}

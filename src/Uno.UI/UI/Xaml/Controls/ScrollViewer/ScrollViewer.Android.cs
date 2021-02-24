@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewScrollNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
 			var physicalHorizontalOffset = ViewHelper.LogicalToPhysicalPixels(horizontalOffset ?? HorizontalOffset);
 			var physicalVerticalOffset = ViewHelper.LogicalToPhysicalPixels(verticalOffset ?? VerticalOffset);
@@ -56,12 +56,17 @@ namespace Windows.UI.Xaml.Controls
 				_presenter?.SmoothScrollTo(adjustedPhysicalHorizontalOffset, adjustedPhysicalVerticalOffset);
 			}
 
+			if (zoomFactor is { } zoom)
+			{
+				ChangeViewZoom(zoom, disableAnimation);
+			}
+
 			// Return true if successfully scrolled to asked offsets
 			return (horizontalOffset == null || physicalHorizontalOffset == adjustedPhysicalHorizontalOffset) &&
 			       (verticalOffset == null || physicalVerticalOffset == adjustedPhysicalVerticalOffset);
 		}
 
-		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation)
+		private void ChangeViewZoom(float zoomFactor, bool disableAnimation)
 		{
 			if (!disableAnimation && this.Log().IsEnabled(LogLevel.Warning))
 			{

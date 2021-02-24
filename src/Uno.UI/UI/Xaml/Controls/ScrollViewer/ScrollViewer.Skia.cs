@@ -32,21 +32,33 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateZoomedContentAlignment() { }
 
 
-		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewScrollNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
 			if (_presenter is ScrollContentPresenter presenter)
 			{
-				if (horizontalOffset.HasValue)
+				bool hSuccess, vSuccess;
+
+				if (horizontalOffset is {} hOffset)
 				{
-					presenter.SetHorizontalOffset(horizontalOffset.Value);
+					hSuccess = presenter.SetHorizontalOffsetInternal(hOffset);
+				}
+				else
+				{
+					hSuccess = true;
 				}
 
-				if (verticalOffset.HasValue)
+				if (verticalOffset is {} vOffset)
 				{
-					presenter.SetVerticalOffset(verticalOffset.Value);
+					vSuccess = presenter.SetVerticalOffsetInternal(vOffset);
+				}
+				else
+				{
+					vSuccess = true;
 				}
 
-				return true;
+				// TODO: zoom factor
+
+				return hSuccess && vSuccess;
 			}
 
 			return false;
