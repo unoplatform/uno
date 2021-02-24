@@ -232,11 +232,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var buttonClickResult = _app.Marked("buttonClickResult");
 			_app.WaitForDependencyPropertyValue(buttonClickResult, "Text", "OnDialogInnerButtonClick");
 
-			var dialogTb = _app.Marked("dialogTb");
-			_app.FastTap(dialogTb);
-			_app.EnterText("This is some text");
+			var dialogTb = new QueryEx(q => q.All().Marked("dialogTb"));
+			// _app.FastTap(dialogTb);
+			_app.EnterText(dialogTb, "This is some text");
 
-			var dialogTextBinding = _app.Marked("dialogTextBinding");
+			var dialogTextBinding = new QueryEx(q => q.All().Marked("dialogTextBinding"));
 			_app.WaitForDependencyPropertyValue(dialogTextBinding, "Text", "This is some text");
 
 			CurrentTestTakeScreenShot("Secondary Button");
@@ -417,16 +417,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			{
 				if (AppInitializer.GetLocalPlatform() == Platform.Android)
 				{
-					// the status bar area needs to be excluded for image comparison
-					var screen = _app.GetScreenDimensions();
-					var statusBarRect = _app.GetRect(statusBarBackground);
+					try
+					{
+						// the status bar area needs to be excluded for image comparison
+						var screen = _app.GetScreenDimensions();
+						var statusBarRect = _app.GetRect(statusBarBackground);
 
-					return new Rectangle(
-						0,
-						(int)statusBarRect.Height,
-						(int)screen.Width,
-						(int)screen.Height - (int)statusBarRect.Height
-					);
+						return new Rectangle(
+							0,
+							(int)statusBarRect.Height,
+							(int)screen.Width,
+							(int)screen.Height - (int)statusBarRect.Height
+						);
+					}
+					catch (TimeoutException e)
+					{
+						// The status bar is not present in Android 11+
+						return default;
+					}
+					catch(Exception e)
+					{
+						return default;
+					}
 				}
 				else
 				{
