@@ -60,7 +60,6 @@ namespace Uno.UI.Samples.Tests
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
-			_cts = new CancellationTokenSource();
 			var filter = testFilter.Text.Trim();
 			if (string.IsNullOrEmpty(filter))
 			{

@@ -153,14 +153,6 @@ namespace Windows.UI.Xaml.Controls
 				_tpTitlePresenter.Text = _title;
 			}
 
-#if FAKE_LOOPINGSELECTOR
-			if(GetTemplateChild<FrameworkElement>("HighlightRect") is {} highlightRect)
-			{
-				//This HighlightRect make sense only when the LoopingSelectir is used.
-				highlightRect.Opacity = 0;
-			}	
-#endif
-
 			//(Private.AttachTemplatePart<Border>(
 			//	spControlProtected,
 			//	_firstPickerHostName,
