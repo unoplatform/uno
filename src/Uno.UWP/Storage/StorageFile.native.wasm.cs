@@ -71,7 +71,7 @@ namespace Windows.Storage
 			}
 
 			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateNative(_id, ToFileAccess(accessMode)), ContentType);
+				=> new RandomAccessStreamWithContentType(await FileRandomAccessStream.CreateNativeAsync(_id, ToFileAccess(accessMode)), ContentType);
 
 			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw NotSupported();
 
