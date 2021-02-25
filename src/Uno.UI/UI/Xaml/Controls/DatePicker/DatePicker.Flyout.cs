@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 
 
 #if __IOS__ || __ANDROID__
-		public static readonly DependencyProperty UseNativeStyleProperty = DependencyProperty.Register(
+		public static DependencyProperty UseNativeStyleProperty { get; }= DependencyProperty.Register(
 			"UseNativeStyle",
 			typeof(bool),
 			typeof(DatePicker),

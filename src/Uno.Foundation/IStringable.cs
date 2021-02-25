@@ -1,6 +1,6 @@
 ﻿namespace Windows.Foundation
 {
-	internal partial interface IStringable
+	public partial interface IStringable
 	{
 		string ToString();
 	}

@@ -5,7 +5,13 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class DatePickerFlyout
 	{
-		public TypedEventHandler<DatePickerFlyout, DatePickedEventArgs> DatePicked;
+		protected TypedEventHandler<DatePickerFlyout, DatePickedEventArgs> _datePicked;
+
+		public event TypedEventHandler<DatePickerFlyout, DatePickedEventArgs> DatePicked
+		{
+			add => _datePicked += value;
+			remove => _datePicked -= value;
+		}
 
 		public DateTimeOffset Date
 		{

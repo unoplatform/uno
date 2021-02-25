@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			var oldValue = Date;
 
 			Date = newValue;
-			DatePicked?.Invoke(this, new DatePickedEventArgs(newValue, oldValue));
+			_datePicked?.Invoke(this, new DatePickedEventArgs(newValue, oldValue));
 		}
 	}
 }

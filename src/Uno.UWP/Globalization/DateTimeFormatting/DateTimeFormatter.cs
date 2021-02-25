@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using Uno;
 using Uno.Extensions;
 
 namespace Windows.Globalization.DateTimeFormatting
@@ -224,6 +225,12 @@ namespace Windows.Globalization.DateTimeFormatting
 			{
 				return format + " : " + e.Message;
 			}
+		}
+
+		[NotImplemented]
+		public string Format(DateTimeOffset datetime, string timeZoneId)
+		{
+			throw new NotSupportedException();
 		}
 
 		private static readonly IDictionary<string, IDictionary<string, string>> _map_cache;

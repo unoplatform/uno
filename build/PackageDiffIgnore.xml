@@ -3386,7 +3386,7 @@
 				reason="Internal helper that should not be public" />
 			<Member
 				fullName="System.Void Windows.UI.Composition.CompositionPropertySet..ctor()"
-				reason="Constructor is not public in UWP" />			
+				reason="Constructor is not public in UWP" />
 			<Member
 				fullName="System.Void Windows.Foundation.PropertyValue..ctor()"
 				reason="Constructor is not public in UWP" />
@@ -3401,13 +3401,13 @@
 				reason="Constructor not public in UWP" />
 			<Member
 				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequest..ctor()"
-				reason="Constructor not public in UWP" />																		
+				reason="Constructor not public in UWP" />
 			<Member
 				fullName="System.Double Windows.UI.Xaml.Media.Animation.BounceEase.BounceEaseIn(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)"
-				reason="Constructor not public in UWP" />																		
+				reason="Constructor not public in UWP" />
 			<Member
 				fullName="System.Double Windows.UI.Xaml.Media.Animation.BounceEase.BounceEaseOut(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)"
-				reason="Constructor not public in UWP" />																		
+				reason="Constructor not public in UWP" />
 		 </Methods>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.5.1">
@@ -3477,7 +3477,64 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.SetStrokeDashEffect(Android.Graphics.Paint strokePaint)"
 				reason="Not part of the WinUI API." />																																																						
+
+			<Member
+				fullName="System.Void Windows.UI.Xaml.XamlRoot..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DatePickerFlyout.OnDateChanged(System.DateTimeOffset oldDate, System.DateTimeOffset newDate)"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DatePickerFlyout.OnMaxYearChanged(System.DateTimeOffset oldMaxYear, System.DateTimeOffset newMaxYear)"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DatePickerFlyout.OnMinYearChanged(System.DateTimeOffset oldMinYear, System.DateTimeOffset newMinYear)"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.LoopingSelector..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.LoopingSelectorItem..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.LoopingSelectorPanel..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.LoopingSelectorItemDataAutomationPeer..ctor()"
+				reason="Constructor not public in UWP" />
 		</Methods>
+		<Fields>
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::DayTextBlockPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::MonthTextBlockPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::YearTextBlockPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::FlyoutButtonGridPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::DayColumnPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::MonthColumnPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::YearColumnPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::FlyoutButtonPartName"
+				reason="Method not in UWP contract" />
+		</Fields>
 	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):

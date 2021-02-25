@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 		//#18331 If the Date property of DatePickerFlyout is two way binded, the ViewModel receives the control's default value while the ViewModel sends its default value which desynchronizes the values
 		//Set initial value of DatePicker to DateTimeOffset.MinValue to avoid 2 way binding issue where the DatePicker reset Date(DateTimeOffset.MinValue) after the initial binding value.
 		//We assume that this is the view model who will set the initial value just the time to fix #18331
-		public static readonly DependencyProperty DateProperty =
+		public static DependencyProperty DateProperty { get; } =
 			DependencyProperty.Register(
 				name: "Date",
 				propertyType: typeof(DateTimeOffset),
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(DayVisibleProperty, value);
 		}
 
-		public static readonly DependencyProperty DayVisibleProperty =
+		public static DependencyProperty DayVisibleProperty { get; } =
 			DependencyProperty.Register(
 				name: "DayVisible",
 				propertyType: typeof(bool),
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MonthVisibleProperty, value);
 		}
 
-		public static readonly DependencyProperty MonthVisibleProperty =
+		public static DependencyProperty MonthVisibleProperty { get; } =
 			DependencyProperty.Register(
 				name: "MonthVisible",
 				propertyType: typeof(bool),
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(YearVisibleProperty, value);
 		}
 
-		public static readonly DependencyProperty YearVisibleProperty =
+		public static DependencyProperty YearVisibleProperty { get; } =
 			DependencyProperty.Register(
 				name: "YearVisible",
 				propertyType: typeof(bool),
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MaxYearProperty, value);
 		}
 
-		public static readonly DependencyProperty MaxYearProperty =
+		public static DependencyProperty MaxYearProperty { get; } =
 			DependencyProperty.Register(
 				name: "MaxYear",
 				propertyType: typeof(DateTimeOffset),
@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MinYearProperty, value);
 		}
 
-		public static readonly DependencyProperty MinYearProperty =
+		public static DependencyProperty MinYearProperty { get; } =
 			DependencyProperty.Register(
 				name: "MinYear",
 				propertyType: typeof(DateTimeOffset),

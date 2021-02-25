@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Controls
 			var oldDate = Date;
 			Date = _selector.Date;
 
-			DatePicked?.Invoke(this, new DatePickedEventArgs(Date, oldDate));
+			_datePicked?.Invoke(this, new DatePickedEventArgs(Date, oldDate));
 		}
 
 		private void Dismiss()

@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			// Cleanup
 			// return hr;
 
-			DatePicked?.Invoke(this, new DatePickedEventArgs(newDateTime, oldDateTime) );
+			_datePicked?.Invoke(this, new DatePickedEventArgs(newDateTime, oldDateTime) );
 
 			Close();
 		}
@@ -81,11 +81,11 @@ namespace Windows.UI.Xaml.Controls
 			//_asyncOperationManager.Start(placementTarget);
 		} 
 
-		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement pTarget)
+		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement target)
 		{
-			_tpTarget = pTarget;
-			base.ShowAtCore(pTarget, null);
-			return _asyncOperationManager.Start(pTarget);
+			_tpTarget = target;
+			base.ShowAtCore(target, null);
+			return _asyncOperationManager.Start(target);
 		}
 
 		private protected override void OnOpening()
