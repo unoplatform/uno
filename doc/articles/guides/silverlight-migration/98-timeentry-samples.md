@@ -94,3 +94,7 @@ The **TimeEntryRia** sample is a Visual Studio 2015 solution and is, of course, 
 ### Running the Silverlight sample
 
 In order to execute the Silverlight application, the Silverlight 5 SDK must be installed and **Internet Explorer 11** must be configured as your default browser. The app can be run by launching from Visual Studio 2012
+
+## Next unit: Useful resources
+
+[![button](assets/NextButton.png)](99-useful-resources.md)

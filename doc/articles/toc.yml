@@ -82,6 +82,7 @@
     - name: How to consume a webservice
       href: howto-consume-webservices.md
     - name: Silverlight Migration
+      topicHref: silverlight-migration-landing.md
       items:
         - name: Silverlight to Uno Migration
           href: guides\silverlight-migration\00-overview.md

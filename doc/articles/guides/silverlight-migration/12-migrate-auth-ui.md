@@ -631,3 +631,7 @@ In order to test this code, the web services must be running.
     > During the first run, additional sample data for time entries is generated. If you experience a timeout, leave the server projects running, wait a few minutes and then retry the login.
 
 In the next task, authentication will be integrated with navigation to ensure a user can only view resources to which they have access.
+
+## Next unit: Integrating authentication and navigation
+
+[![button](assets/NextButton.png)](13-integrating-auth-and-navigation.md)

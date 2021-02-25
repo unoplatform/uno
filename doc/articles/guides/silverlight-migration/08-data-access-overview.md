@@ -32,3 +32,7 @@ Unfortunately, WCF itself has been discontinued, although there are, of course, 
 > * [Core WCF](https://github.com/CoreWCF/CoreWCF)
 
 In the sample application migration, REST-based services using ASP.NET Core Web APIs were chosen.
+
+## Next unit: Client authentication service
+
+[![button](assets/NextButton.png)](09-client-auth-service.md)

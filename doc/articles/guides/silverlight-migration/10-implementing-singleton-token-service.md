@@ -179,3 +179,7 @@ protected override void OnLaunched(LaunchActivatedEventArgs e)
 Notice the use of the **ContinueWith** method that logs an error and displays the fatal error dialog should the initialization fail.
 
 In the next task, the token service will be leveraged within the identity service.
+
+## Next unit: Implementing an identity service client
+
+[![button](assets/NextButton.png)](11-implementing-identity-service-client.md)

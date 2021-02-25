@@ -180,3 +180,7 @@ The code to retrieve the access token is encapsulated within the a class **Ident
     ```
 
 To simplify the use of the **IdentityServerClient** class, it can be encapsulated into a singleton service. The next task will show the implementation used in the **TimeEntryUno** app.
+
+## Next unit: Implementing a singleton token service
+
+[![button](assets/NextButton.png)](10-implementing-singleton-token-service.md)
