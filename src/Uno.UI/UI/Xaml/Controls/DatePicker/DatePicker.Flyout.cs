@@ -33,9 +33,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitPartial()
 		{
+#if __IOS__ || __ANDROID__
 			UseNativeStyle = !Style.ShouldUseUWPDefaultStyle(typeof(DatePicker));
 
-#if __IOS__ || __ANDROID__
 			DatePickerFlyout CreateFlyout()
 			{
 				var f = UseNativeStyle
