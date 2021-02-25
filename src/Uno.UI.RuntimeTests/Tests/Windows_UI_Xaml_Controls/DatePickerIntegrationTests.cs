@@ -42,6 +42,19 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			return new DateTimeOffset(year, month, day, 1, 0, 0, 0, TimeSpan.Zero);
 		}
 
+		private Calendar CreateCalendar(DateTimeOffset date)
+		{
+			var calendar = new Calendar();
+			calendar.SetDateTime(date);
+			return calendar;
+
+		}
+
+		private Calendar CreateCalendar(int month = 6, int day = 15, int year = 1990)
+		{
+			return CreateCalendar(CreateDate(month, day, year));
+		}
+
 		private bool AreClose(double a, double b, double threshold)
 		{
 			return Math.Abs(a - b) <= threshold;
@@ -129,7 +142,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				}
 
 				this.Log().Info("CanFireDateChangedEvent: Execute date change from null to today.");
-				datePicker.SelectedDate = (calendarNow);
+				datePicker.SelectedDate = (calendarNow.GetDateTime());
 
 				datePicker.SelectedDateChanged -= OnDatePickerOnSelectedDateChanged;
 
@@ -163,7 +176,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				}
 
 				this.Log().Info("CanFireDateChangedEvent: Execute date change from today to 12/31/1990.");
-				datePicker.SelectedDate = (calendarChanged);
+				datePicker.SelectedDate = (calendarChanged.GetDateTime());
 				datePicker.DateChanged -= OnDatePickerOnDateChanged;
 			});
 
@@ -720,7 +733,11 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
+#if NETFX_CORE
+				var flyoutPopup = VisualTreeHelper.GetOpenPopups(Window.Current)[0];
+#else
 				var flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot)[0];
+#endif
 				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter();
 
 				// The flyout popup, the flyout presenter and the button should have an RTL flow direction.
@@ -1080,6 +1097,11 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			Assert.AreEqual(expected.Year, actualCalendar.Year);
 			Assert.AreEqual(expected.Month, actualCalendar.Month);
 			Assert.AreEqual(expected.Day, actualCalendar.Day);
+		}
+
+		private void VerifyDatesAreEqual(DateTimeOffset expected, DateTimeOffset actual)
+		{
+			VerifyDatesAreEqual(CreateCalendar(expected), actual);
 		}
 
 		private async Task VerifyHasPlaceholder(DatePicker datePicker)

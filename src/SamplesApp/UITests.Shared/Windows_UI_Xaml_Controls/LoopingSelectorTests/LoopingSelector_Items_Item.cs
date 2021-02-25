@@ -15,7 +15,7 @@ namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(PrimaryText), typeof(string),
 				typeof(LoopingSelector_Items_Item),
-				new FrameworkPropertyMetadata("default"));
+				new PropertyMetadata("default"));
 
 		public override string ToString()
 		{

@@ -5,6 +5,10 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
+#if NETFX_CORE
+using Windows.UI.Xaml.Controls.Primitives;
+#endif
+
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
@@ -54,9 +58,15 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 
 		internal static IEnumerable<Popup> GetOpenPopups(DependencyObject element)
 		{
+#if NETFX_CORE
+			return VisualTreeHelper.GetOpenPopups(Window.Current);
+#else
 			return VisualTreeHelper.GetOpenPopupsForXamlRoot(GetXamlRoot(element));
+#endif
+
 		}
 
+#if !NETFX_CORE
 		internal static XamlRoot GetXamlRoot(DependencyObject obj)
 		{
 			XamlRoot xamlRoot = default;
@@ -78,5 +88,6 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			}
 			return xamlRoot;
 		}
+#endif
 	}
 }

@@ -9,8 +9,12 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 	{
 		public static FrameworkElement GetOpenFlyoutPresenter()
 		{
+#if NETFX_CORE
+			var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
+#else
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot.Current);
-			if(popups.Count != 1)
+#endif
+			if (popups.Count != 1)
 			{
 				throw new InvalidOperationException("Expected exactly one open Popup.");
 			}

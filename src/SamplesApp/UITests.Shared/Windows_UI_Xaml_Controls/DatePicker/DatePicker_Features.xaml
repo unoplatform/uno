@@ -10,13 +10,6 @@
 	mc:Ignorable="d ios android"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Page.Resources>
-		<FromNullableBoolToCustomValueConverter x:Name="styleConverter"
-			FromNullableBoolToCustomValueConverter.TrueValue="{StaticResource }"
-			FromNullableBoolToCustomValueConverter.NullOrFalseValue="">
-		</FromNullableBoolToCustomValueConverter>
-	</Page.Resources>
-
 	<StackPanel Spacing="10" Margin="20">
 		<StackPanel Orientation="Horizontal" Spacing="4">
 			<ToggleButton x:Name="dayVisible" IsChecked="True">DayVisible</ToggleButton>
