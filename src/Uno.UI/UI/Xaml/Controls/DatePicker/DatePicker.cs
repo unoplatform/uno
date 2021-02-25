@@ -871,49 +871,9 @@ namespace Windows.UI.Xaml.Controls
 				var asyncOperation = _flyout.ShowAtAsync(this);
 				m_tpAsyncSelectionInfo = asyncOperation;
 				var getOperation = asyncOperation.AsTask();
-				await getOperation ;
+				await getOperation;
 				OnGetDatePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
 			}
-
-		//	if (!CQuirksMode2.QuirkUseLegacyWindows8UI() && m_tpAsyncSelectionInfo == null)
-		//	{
-		//		DependencyObject spAsyncAsInspectable;
-		//		Task<DateTimeOffset> spAsyncOperation;
-		//		ctl.WeakRefPtr wpThis;
-
-		//		(ctl.AsWeak(this, &wpThis));
-
-		//		var callbackPtr = Microsoft.WRL.Callback<wf.IAsyncOperationCompletedHandler<wf.IReference<DateTimeOffset>*>>(
-
-
-
-		//			[wpThis](wf.IAsyncOperation < wf.IReference < DateTimeOffset > *> *getOperation, wf.AsyncStatus status) mutable
-
-
-
-		//{
-		//			HRESULT hr = S_OK;
-		//			DatePicker spThis;
-		//			spThis = wpThis.AsOrNull<xaml_controls.IDatePicker>() as DatePicker;
-
-		//			if (spThis)
-		//			{
-		//				(spThis.OnGetDatePickerSelectionAsyncCompleted(getOperation, status));
-		//			}
-
-		//		Cleanup:
-		//			RRETURN(hr);
-		//		});
-
-		//		var xamlControlsGetDatePickerSelectionPtr = reinterpret_cast < decltype(&XamlControlsGetDatePickerSelection) > (.GetProcAddress(GetPhoneModule(), "XamlControlsGetDatePickerSelection"));
-		//		(xamlControlsGetDatePickerSelectionPtr(ctl.as_iinspectable(this), ctl.as_iinspectable(m_tpFlyoutButton), spAsyncAsInspectable.GetAddressOf()));
-
-		//		spAsyncOperation = spAsyncAsInspectable.AsOrNull<wf.IAsyncOperation<wf.IReference<DateTimeOffset>*>>();
-		//		IFCEXPECT(spAsyncOperation);
-
-		//		(spAsyncOperation.Completed = callbackPtr);
-		//		(SetPtrValueWithQI(m_tpAsyncSelectionInfo, spAsyncOperation));
-		//	}
 		}
 
 		// Callback passed to the GetDatePickerSelectionAsync method. Called when a form-factor specific
@@ -2249,7 +2209,7 @@ namespace Windows.UI.Xaml.Controls
 		void RefreshFlyoutButtonAutomationName()
 		{
 			// UNO TODO
-			//if (m_tpFlyoutButton != null && !CQuirksMode2.QuirkShouldDateAndTimePickerFlyoutButtonHaveNoAccessibleName())
+			//if (m_tpFlyoutButton != null)
 			//{
 			//	string strParentAutomationName;
 			//	strParentAutomationName = AutomationProperties.GetName(this);
