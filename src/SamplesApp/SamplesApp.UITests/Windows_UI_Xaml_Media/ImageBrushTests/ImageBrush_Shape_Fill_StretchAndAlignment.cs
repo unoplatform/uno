@@ -22,71 +22,79 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)]
-		//Only include Browser as a platform until following issue is fixed: https://github.com/unoplatform/uno/issues/5271
+		[Timeout(7 * 60 * 1000)]
 		public void When_StretchAndAlignment()
 		{
-			Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrushShapeStretchesAlignments");
-			_app.WaitForElement("MyRectangle");
-
-
-			foreach (var expected in _expectedColors)
+			try
 			{
-				SetProperty("MyStretch", "SelectedIndex", ((int)expected.Stretch).ToString());
-				SetProperty("MyAlignmentX", "SelectedIndex", ((int)expected.AlignmentX).ToString());
-				SetProperty("MyAlignmentY", "SelectedIndex", ((int)expected.AlignmentY).ToString());
-
-				SetProperty("MyWidth", "Text", expected.Size.Width.ToString());
-				SetProperty("MyHeight", "Text", expected.Size.Height.ToString());
+				Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrushShapeStretchesAlignments");
+				_app.SetOrientationPortrait();
 
 
-				var greenContainer = _app.GetPhysicalRect("GreenBackground");
+				_app.WaitForElement("MyRectangle");
 
-				var permutation = $"{expected.Size.Width}-{expected.Size.Height}-{Enum.GetName(typeof(Stretch), expected.Stretch)}-X{Enum.GetName(typeof(AlignmentX), expected.AlignmentX)}-Y{Enum.GetName(typeof(AlignmentY), expected.AlignmentY)}";
-				using var snapshot = TakeScreenshot($"ImageBrush-{permutation}");
 
-				ImageAssert.HasPixels(
-					snapshot,
-					ExpectedPixels
-						.At($"middle-left-{permutation}", greenContainer.X, greenContainer.CenterY)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[0]),
-					ExpectedPixels
-						.At($"top-left-{permutation}", greenContainer.X, greenContainer.Y)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[1]),
-					ExpectedPixels
-						.At($"middle-top-{permutation}", greenContainer.CenterX, greenContainer.Y)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[2]),
-					ExpectedPixels
-						.At($"top-right-{permutation}", greenContainer.Right, greenContainer.Y)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[3]),
-					ExpectedPixels
-						.At($"middle-right-{permutation}", greenContainer.Right, greenContainer.CenterY)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[4]),
-					ExpectedPixels
-						.At($"bottom-right-{permutation}", greenContainer.Right, greenContainer.Bottom)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[5]),
-					ExpectedPixels
-						.At($"middle-bottom-{permutation}", greenContainer.CenterX, greenContainer.Bottom)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[6]),
-					ExpectedPixels
-						.At($"bottom-left-{permutation}", greenContainer.X, greenContainer.Bottom)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[7]),
-					ExpectedPixels
-						.At($"middle-middle-{permutation}", greenContainer.CenterX, greenContainer.CenterY)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[8])
-				);
+				foreach (var expected in _expectedColors)
+				{
+					SetProperty("MyStretch", "SelectedIndex", ((int)expected.Stretch).ToString());
+					SetProperty("MyAlignmentX", "SelectedIndex", ((int)expected.AlignmentX).ToString());
+					SetProperty("MyAlignmentY", "SelectedIndex", ((int)expected.AlignmentY).ToString());
+
+					SetProperty("MyWidth", "Text", expected.Size.Width.ToString());
+					SetProperty("MyHeight", "Text", expected.Size.Height.ToString());
+
+
+					var greenContainer = _app.GetPhysicalRect("GreenBackground");
+
+					var permutation = $"{expected.Size.Width}-{expected.Size.Height}-{Enum.GetName(typeof(Stretch), expected.Stretch)}-X{Enum.GetName(typeof(AlignmentX), expected.AlignmentX)}-Y{Enum.GetName(typeof(AlignmentY), expected.AlignmentY)}";
+					using var snapshot = TakeScreenshot($"ImageBrush-{permutation}");
+
+					ImageAssert.HasPixels(
+						snapshot,
+						ExpectedPixels
+							.At($"middle-left-{permutation}", greenContainer.X, greenContainer.CenterY)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[0]),
+						ExpectedPixels
+							.At($"top-left-{permutation}", greenContainer.X, greenContainer.Y)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[1]),
+						ExpectedPixels
+							.At($"middle-top-{permutation}", greenContainer.CenterX, greenContainer.Y)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[2]),
+						ExpectedPixels
+							.At($"top-right-{permutation}", greenContainer.Right, greenContainer.Y)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[3]),
+						ExpectedPixels
+							.At($"middle-right-{permutation}", greenContainer.Right, greenContainer.CenterY)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[4]),
+						ExpectedPixels
+							.At($"bottom-right-{permutation}", greenContainer.Right, greenContainer.Bottom)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[5]),
+						ExpectedPixels
+							.At($"middle-bottom-{permutation}", greenContainer.CenterX, greenContainer.Bottom)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[6]),
+						ExpectedPixels
+							.At($"bottom-left-{permutation}", greenContainer.X, greenContainer.Bottom)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[7]),
+						ExpectedPixels
+							.At($"middle-middle-{permutation}", greenContainer.CenterX, greenContainer.CenterY)
+							.WithPixelTolerance(1, 1)
+							.Pixel(expected.Colors[8])
+					);
+				}
+
 			}
-
-			
+			finally
+			{
+				_app.SetOrientationLandscape();
+			}
 		}
 
 		private void SetProperty(string name, string propertyName, string item)
