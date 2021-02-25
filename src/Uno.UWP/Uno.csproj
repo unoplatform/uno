@@ -42,22 +42,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="System\PlatformHelpers.cs" />
-	  <UpToDateCheckInput Remove="UI\Composition\ICompositionSurface.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Globalization\DateTimeFormatting\DateTimeFormatter.cs" />
-	  <UpToDateCheckInput Remove="Globalization\DateTimeFormatting\DayFormat.cs" />
-	  <UpToDateCheckInput Remove="Globalization\DateTimeFormatting\DayOfWeekFormat.cs" />
-	  <UpToDateCheckInput Remove="Globalization\DateTimeFormatting\HourFormat.cs" />
-	  <UpToDateCheckInput Remove="Globalization\DateTimeFormatting\MinuteFormat.cs" />
-	  <UpToDateCheckInput Remove="Globalization\DateTimeFormatting\MonthFormat.cs" />
-	  <UpToDateCheckInput Remove="Globalization\DateTimeFormatting\SecondFormat.cs" />
-	  <UpToDateCheckInput Remove="Globalization\DateTimeFormatting\YearFormat.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />

@@ -26,12 +26,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnDatePropertyChanged(DateTimeOffset newValue, DateTimeOffset oldValue)
 		{
-//#if XAMARIN
-//			UpdateDisplayedDate();
-//#endif
-
 			OnDateChangedPartial();
-			//DateChanged?.Invoke(this, new DatePickerValueChangedEventArgs(newValue, oldValue));
 		}
 
 		partial void OnDateChangedPartial();
