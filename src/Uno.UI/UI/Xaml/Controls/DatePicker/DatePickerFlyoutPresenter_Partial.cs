@@ -813,11 +813,7 @@ namespace Windows.UI.Xaml.Controls
 				if (refreshYear)
 				{
 					GenerateYears();
-					//_tpYearPicker.Items = _tpYearSource;
-					if (_tpYearPicker.Items != _tpYearSource)
-					{
-						_tpYearPicker.Items = _tpYearSource;
-					}
+					_tpYearPicker.Items = _tpYearSource;
 				}
 
 				_tpYearPicker.SelectedIndex = yearIndex;
@@ -828,11 +824,7 @@ namespace Windows.UI.Xaml.Controls
 				if (refreshMonth)
 				{
 					GenerateMonths(yearIndex);
-					//_tpMonthPicker.Items = _tpMonthSource;
-					if (_tpMonthPicker.Items != _tpMonthSource)
-					{
-						_tpMonthPicker.Items = _tpMonthSource;
-					}
+					_tpMonthPicker.Items = _tpMonthSource;
 				}
 
 				_tpMonthPicker.SelectedIndex = monthIndex;
@@ -843,11 +835,7 @@ namespace Windows.UI.Xaml.Controls
 				if (refreshDay)
 				{
 					GenerateDays(yearIndex, monthIndex);
-					//_tpDayPicker.Items = _tpDaySource;
-					if (_tpDayPicker.Items != _tpDaySource)
-					{
-						_tpDayPicker.Items = _tpDaySource;
-					}
+					_tpDayPicker.Items = _tpDaySource;
 				}
 
 				_tpDayPicker.SelectedIndex = dayIndex;
@@ -859,12 +847,15 @@ namespace Windows.UI.Xaml.Controls
 		// Generate the collection that we will populate our year picker with.
 		void GenerateYears()
 		{
-
 			string strYear;
 			DateTimeFormatter spPrimaryFormatter;
 			DateTimeOffset dateTime;
 
 			spPrimaryFormatter = GetYearFormatter(_calendarIdentifier);
+
+			var oldList = _tpYearSource;
+			var newList = new object[_numberOfYears];
+
 			for (int yearOffset = 0; yearOffset < _numberOfYears; yearOffset++)
 			{
 				DatePickerFlyoutItem spItem;
@@ -876,33 +867,22 @@ namespace Windows.UI.Xaml.Controls
 				_tpCalendar.Second = DATEPICKER_SENTINELTIME_SECOND;
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
-				spItem = new DatePickerFlyoutItem();
+				spItem = (oldList.Count > yearOffset ? oldList[yearOffset] as DatePickerFlyoutItem : null)
+				         ?? new DatePickerFlyoutItem();
 				strYear = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strYear;
 				spItem.SecondaryText = "";
 				//spItem.As(spInspectable);
 
-				if(_tpYearSource.Count <= yearOffset)
-				{
-					_tpYearSource.Add(spItem);
-				}
-				else if(!(_tpYearSource[yearOffset]?.Equals(spItem) ?? true))
-				{
-					_tpYearSource[yearOffset] = spItem;
-				}
+				newList[yearOffset] = spItem;
 			}
 
-			while (_tpYearSource.Count > _numberOfYears)
-			{
-				_tpYearSource.RemoveAt(_tpYearSource.Count - 1);
-			}
+			_tpYearSource = new List<object>(newList);
 		}
 
 		// Generate the collection that we will populate our month picker with.
-		void GenerateMonths(
-				int yearOffset)
+		void GenerateMonths(int yearOffset)
 		{
-
 			string strMonth;
 			DateTimeFormatter spPrimaryFormatter;
 			DateTimeOffset dateTime;
@@ -919,6 +899,10 @@ namespace Windows.UI.Xaml.Controls
 			numberOfMonths = _tpCalendar.NumberOfMonthsInThisYear;
 			firstMonthInThisYear = _tpCalendar.FirstMonthInThisYear;
 			//_tpMonthSource.Clear();
+
+			var oldList = _tpMonthSource;
+			var newList = new object[numberOfMonths];
+
 			for (monthOffset = 0; monthOffset < numberOfMonths; monthOffset++)
 			{
 				DatePickerFlyoutItem spItem;
@@ -928,25 +912,16 @@ namespace Windows.UI.Xaml.Controls
 				_tpCalendar.AddMonths(monthOffset);
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
-				spItem = new DatePickerFlyoutItem();
+				spItem = (oldList.Count > yearOffset ? oldList[yearOffset] as DatePickerFlyoutItem : null)
+				         ?? new DatePickerFlyoutItem();
 				strMonth = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strMonth;
 				//spItem.As(spInspectable);
 
-				if (_tpMonthSource.Count <= numberOfMonths)
-				{
-					_tpMonthSource.Add(spItem);
-				}
-				else if (!(_tpMonthSource[monthOffset]?.Equals(spItem) ?? true))
-				{
-					_tpMonthSource[monthOffset] = spItem;
-				}
+				newList[monthOffset] = spItem;
 			}
 
-			while (_tpMonthSource.Count > numberOfMonths)
-			{
-				_tpMonthSource.RemoveAt(_tpMonthSource.Count - 1);
-			}
+			_tpMonthSource = new List<object>(newList);
 		}
 
 
@@ -975,7 +950,11 @@ namespace Windows.UI.Xaml.Controls
 			_tpCalendar.Hour = DATEPICKER_SENTINELTIME_HOUR;
 			_tpCalendar.Minute = DATEPICKER_SENTINELTIME_MINUTE;
 			_tpCalendar.Second = DATEPICKER_SENTINELTIME_SECOND;
-			_tpDaySource.Clear();
+			//_tpDaySource.Clear();
+
+			var oldList = _tpDaySource;
+			var newList = new object[numberOfDays];
+
 			for (dayOffset = 0; dayOffset < numberOfDays; dayOffset++)
 			{
 				DatePickerFlyoutItem spItem;
@@ -984,25 +963,16 @@ namespace Windows.UI.Xaml.Controls
 				_tpCalendar.Day = firstDayInThisMonth + dayOffset;
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
-				spItem = new DatePickerFlyoutItem();
+				spItem = (oldList.Count > yearOffset ? oldList[yearOffset] as DatePickerFlyoutItem : null)
+				         ?? new DatePickerFlyoutItem();
 				strDay = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strDay;
 				//spItem.As(spInspectable);
 
-				if (_tpDaySource.Count <= dayOffset)
-				{
-					_tpDaySource.Add(spItem);
-				}
-				else if (!(_tpDaySource[dayOffset]?.Equals(spItem) ?? true))
-				{
-					_tpDaySource[dayOffset] = spItem;
-				}
+				newList[dayOffset] = spItem;
 			}
 
-			while (_tpDaySource.Count > numberOfDays)
-			{
-				_tpDaySource.RemoveAt(_tpDaySource.Count - 1);
-			}
+			_tpDaySource = new List<object>(newList);
 		}
 
 		// Reacts to change in selection of our selectors. Calculates the new date represented by the selected indices and updates the
