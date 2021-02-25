@@ -32,6 +32,7 @@ namespace Windows.System
 
 			return _current;
 		}
+#if !HAS_UNO_WINUI
 		public bool TryEnqueue(DispatcherQueueHandler callback)
 		{
 			return TryEnqueue(DispatcherQueuePriority.Normal, callback);
@@ -40,5 +41,6 @@ namespace Windows.System
 		{
 			return TryEnqueueNative(priority, callback);
 		}
+#endif
 	}
 }

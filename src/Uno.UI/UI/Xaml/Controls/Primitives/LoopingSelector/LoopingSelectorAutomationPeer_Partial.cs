@@ -409,7 +409,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		public double HorizontalViewSize => 100.0d;
 
-		
+
 		public void Scroll(ScrollAmount horizontalAmount, ScrollAmount verticalAmount)
 		{
 			//UNREFERENCED_PARAMETER(horizontalAmount);

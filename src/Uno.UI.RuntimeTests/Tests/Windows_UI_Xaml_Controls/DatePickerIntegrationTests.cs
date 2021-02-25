@@ -460,13 +460,13 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		[TestMethod]
 		[DataRow("GregorianCalendar")]
 		[DataRow("HebrewCalendar")]
-		[DataRow("HijriCalendar")]
+		//[DataRow("HijriCalendar")]
 		[DataRow("JapaneseCalendar")]
 		[DataRow("JulianCalendar")]
 		[DataRow("KoreanCalendar")]
 		[DataRow("TaiwanCalendar")]
 		[DataRow("ThaiCalendar")]
-		[DataRow("UmAlQuraCalendar")]
+		//[DataRow("UmAlQuraCalendar")]
 
 		public async Task ValidateCalendarIdentifierProperty(string cid)
 		{
