@@ -963,9 +963,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (end == ListEnd.Head)
 			{
-#if !DEBUG
-#error  TODO - Check if this operation is inverted here
-#endif
 				//COMPtr assignment causes AddRef.
 				spChildAsLSI = _realizedItems.Last.Value;
 				//_realizedItems.pop_back();
