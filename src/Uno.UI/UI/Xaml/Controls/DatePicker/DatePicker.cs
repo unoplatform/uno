@@ -863,16 +863,16 @@ namespace Windows.UI.Xaml.Controls
 			ShowPickerFlyout();
 		}
 
-		void ShowPickerFlyout()
+		async void ShowPickerFlyout()
 		{
 
 			if (m_tpAsyncSelectionInfo == null)
 			{
 				var asyncOperation = _flyout.ShowAtAsync(this);
 				m_tpAsyncSelectionInfo = asyncOperation;
-				asyncOperation
-					.AsTask()
-					.ContinueWith((t, s) => OnGetDatePickerSelectionAsyncCompleted(t, asyncOperation.Status), asyncOperation);
+				var getOperation = asyncOperation.AsTask();
+				await getOperation ;
+				OnGetDatePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
 			}
 
 		//	if (!CQuirksMode2.QuirkUseLegacyWindows8UI() && m_tpAsyncSelectionInfo == null)
