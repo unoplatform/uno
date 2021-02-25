@@ -3330,6 +3330,38 @@ var Uno;
             }
             Pickers.NativeFilePickerAcceptType = NativeFilePickerAcceptType;
         })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+        var Streams;
+        (function (Streams) {
+            class NativeFileReadStream {
+                constructor(file) {
+                    this._file = file;
+                }
+                static async openAsync(streamId, fileId) {
+                    const handle = Storage.NativeStorageItem.getHandle(fileId);
+                    const file = await handle.getFile();
+                    const fileSize = file.size;
+                    const stream = new NativeFileReadStream(file);
+                    NativeFileReadStream._streamMap.set(streamId, stream);
+                    return fileSize.toString();
+                }
+                static async readAsync(streamId, targetArrayPointer, offset, count, position) {
+                    const instance = NativeFileReadStream._streamMap.get(streamId);
+                    //TODO: Reuse buffer somehow (slice?)
+                    var buffer = await instance._file.slice(position, position + count).arrayBuffer();
+                    var byteBuffer = new Uint8Array(buffer);
+                    for (var i = 0; i < count; i++) {
+                        Module.HEAPU8[targetArrayPointer + offset + i] = byteBuffer[i];
+                    }
+                    return byteBuffer.length.toString();
+                }
+                static async closeAsync(streamId) {
+                    NativeFileReadStream._streamMap.delete(streamId);
+                    return "";
+                }
+            }
+            NativeFileReadStream._streamMap = new Map();
+            Streams.NativeFileReadStream = NativeFileReadStream;
+        })(Streams = Storage.Streams || (Storage.Streams = {}));
     })(Storage = Uno.Storage || (Uno.Storage = {}));
 })(Uno || (Uno = {}));
 var Uno;
@@ -3342,6 +3374,49 @@ var Uno;
             }
             Pickers.NativeFilePickerAcceptTypeItem = NativeFilePickerAcceptTypeItem;
         })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+        var Streams;
+        (function (Streams) {
+            class NativeFileWriteStream {
+                constructor(stream) {
+                    this._stream = stream;
+                }
+                static async openAsync(streamId, fileId) {
+                    const handle = Storage.NativeStorageItem.getHandle(fileId);
+                    const writableStream = await handle.createWritable({ keepExistingData: true });
+                    const fileSize = (await handle.getFile()).size;
+                    const stream = new NativeFileWriteStream(writableStream);
+                    NativeFileWriteStream._streamMap.set(streamId, stream);
+                    return fileSize.toString();
+                }
+                static async writeAsync(streamId, dataArrayPointer, offset, count, position) {
+                    const instance = NativeFileWriteStream._streamMap.get(streamId);
+                    //TODO: Reuse buffer somehow (slice?)
+                    var clampedArray = new Uint8Array(count);
+                    for (var i = 0; i < count; i++) {
+                        clampedArray[i] = Module.HEAPU8[dataArrayPointer + i];
+                    }
+                    await instance._stream.write({
+                        type: 'write',
+                        data: clampedArray.buffer,
+                        position: position
+                    });
+                    return "";
+                }
+                static async closeAsync(streamId) {
+                    var instance = NativeFileWriteStream._streamMap.get(streamId);
+                    await instance._stream.close();
+                    NativeFileWriteStream._streamMap.delete(streamId);
+                    return "";
+                }
+                static async truncateAsync(streamId, length) {
+                    var instance = NativeFileWriteStream._streamMap.get(streamId);
+                    await instance._stream.truncate(length);
+                    return "";
+                }
+            }
+            NativeFileWriteStream._streamMap = new Map();
+            Streams.NativeFileWriteStream = NativeFileWriteStream;
+        })(Streams = Storage.Streams || (Storage.Streams = {}));
     })(Storage = Uno.Storage || (Uno.Storage = {}));
 })(Uno || (Uno = {}));
 var WakeLockType;

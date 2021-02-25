@@ -30,7 +30,7 @@ namespace Windows.Storage.Streams
 				Stream backingStream;
 				if (access == FileAccess.Read)
 				{
-					backingStream = new NativeReadStreamAdapter(fileId);
+					backingStream = await NativeReadStreamAdapter.CreateAsync(fileId);
 				}
 				else
 				{
