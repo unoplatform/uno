@@ -904,7 +904,7 @@ namespace Windows.UI.Xaml.Controls
 				_tpCalendar.AddMonths(monthOffset);
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
-				spItem = (oldList.Count > yearOffset ? oldList[yearOffset] as DatePickerFlyoutItem : null)
+				spItem = (oldList.Count > monthOffset ? oldList[monthOffset] as DatePickerFlyoutItem : null)
 				         ?? new DatePickerFlyoutItem();
 				strMonth = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strMonth;
@@ -955,7 +955,7 @@ namespace Windows.UI.Xaml.Controls
 				_tpCalendar.Day = firstDayInThisMonth + dayOffset;
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
-				spItem = (oldList.Count > yearOffset ? oldList[yearOffset] as DatePickerFlyoutItem : null)
+				spItem = (oldList.Count > dayOffset ? oldList[dayOffset] as DatePickerFlyoutItem : null)
 				         ?? new DatePickerFlyoutItem();
 				strDay = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strDay;
