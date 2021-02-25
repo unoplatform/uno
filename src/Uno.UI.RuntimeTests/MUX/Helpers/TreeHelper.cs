@@ -3,10 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
-using Popup = Windows.UI.Xaml.Controls.Popup;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
@@ -70,7 +68,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			{
 				xamlRoot = te.XamlRoot;
 			}
-			else if (obj is FlyoutBase fb)
+			else if (obj is Windows.UI.Xaml.Controls.Primitives.FlyoutBase fb)
 			{
 				xamlRoot = fb.XamlRoot;
 			}

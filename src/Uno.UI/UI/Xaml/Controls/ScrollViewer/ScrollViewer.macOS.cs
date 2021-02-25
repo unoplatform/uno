@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (zoomFactor is { } zoom)
 				{
-					ChangeViewZoom(zoomFactor, disableAnimation);
+					ChangeViewZoom(zoom, disableAnimation);
 				}
 
 				// Return true if successfully scrolled to asked offsets
