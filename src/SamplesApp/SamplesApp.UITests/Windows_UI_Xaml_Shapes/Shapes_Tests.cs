@@ -137,10 +137,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		public void Default_StrokeThickness()
 		{
 			const string red = "#FF0000";
-			const string reddish = "#FF8080";
+			string reddish = GetReddish();
 
 			var shapeExpectations = new[]
-			{
+		   {
 				new ShapeExpectation
 				{
 					Name = "MyLine",
@@ -157,13 +157,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 				{
 					Name = "MyPolyline",
 					Offsets = new [] {2, 2, -1, -1},
-					Colors = AppInitializer.GetLocalPlatform() == Platform.Browser ? reddish : red,
+					Colors = reddish,
 				},
 				new ShapeExpectation
 				{
 					Name = "MyPolygon",
 					Offsets = new [] {2, 2, -1, -1},
-					Colors = AppInitializer.GetLocalPlatform() == Platform.Browser ? reddish : red,
+					Colors = reddish,
 				},
 				new ShapeExpectation
 				{
@@ -182,7 +182,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			_app.WaitForElement("TestZone");
 
-			foreach(var expectation in shapeExpectations)
+			foreach (var expectation in shapeExpectations)
 			{
 				_app.Marked($"{expectation.Name}Selector").FastTap();
 
@@ -200,7 +200,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 				else
 				{
 					var shapeContainer = _app.GetPhysicalRect($"{expectation}Grid");
-
+					
 					ImageAssert.HasColorAt(screenshot, shapeContainer.X + expectation.Offsets[0], shapeContainer.CenterY, expectation.Colors, tolerance: 15);
 					ImageAssert.HasColorAt(screenshot, shapeContainer.CenterX, shapeContainer.Y + expectation.Offsets[1], expectation.Colors, tolerance: 15);
 					ImageAssert.HasColorAt(screenshot, shapeContainer.Right + expectation.Offsets[2], shapeContainer.CenterY, expectation.Colors, tolerance: 15);
@@ -218,6 +218,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			}
 
 		}
+
+		private static string GetReddish() =>
+			AppInitializer.GetLocalPlatform() switch
+			{
+				Platform.Browser => "#FF8080",
+				Platform.Android => "#FF7F7F",
+				_ => "#FF0000",
+			};
 
 		private struct ShapeExpectation
 		{

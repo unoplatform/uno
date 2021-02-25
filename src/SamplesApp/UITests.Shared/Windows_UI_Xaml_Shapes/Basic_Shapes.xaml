@@ -58,11 +58,17 @@
 			VerticalScrollMode="Auto"
 			VerticalScrollBarVisibility="Visible"
 			ZoomMode="Enabled" />
-
+		<ScrollViewer
+			Grid.Row="1"
+			HorizontalScrollMode="Auto"
+			HorizontalScrollBarVisibility="Visible"
+			VerticalScrollMode="Auto"
+			VerticalScrollBarVisibility="Visible"
+			ZoomMode="Enabled">
 		<Border
 			x:Name="_testZone"
-			Grid.Row="1"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Top" />
+		</ScrollViewer>
 	</Grid>
 </Page>
