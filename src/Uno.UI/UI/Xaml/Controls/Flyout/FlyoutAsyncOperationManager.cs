@@ -202,7 +202,8 @@ namespace Windows.UI.Xaml.Controls
 					m_isShowAtForCurrentOperationDeferred = false;
 					m_tpTargetForDeferredShowAt = null;
 					m_spCurrentOperation.CompleteOperation(result);
-				//		IFC(spCurrentOperation->CompleteOperation(result));
+					m_spCurrentOperation = null;
+					//		IFC(spCurrentOperation->CompleteOperation(result));
 				}
 				//}
 
@@ -333,7 +334,7 @@ namespace Windows.UI.Xaml.Controls
 			//NT_ASSERTMSG(
 			//	"Attempting to complete an operation that's already been completed.",
 			//	status != wf::AsyncStatus::Completed);
-			Debug.Assert(status == AsyncStatus.Completed);
+			//Debug.Assert(status == AsyncStatus.Completed);
 
 			//NT_ASSERTMSG(
 			//	"Attempting to complete an operation but still waiting to show flyout",
