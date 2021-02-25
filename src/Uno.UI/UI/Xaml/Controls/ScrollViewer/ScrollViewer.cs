@@ -682,8 +682,42 @@ namespace Windows.UI.Xaml.Controls
 			ViewportHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
 			ViewportWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
 
-			ExtentHeight = (Content as IFrameworkElement)?.ActualHeight ?? 0;
-			ExtentWidth = (Content as IFrameworkElement)?.ActualWidth ?? 0;
+			if(Content is FrameworkElement fe)
+			{
+				var explicitHeight = fe.Height;
+				if (explicitHeight.IsFinite())
+				{
+					ExtentHeight = explicitHeight;
+				}
+				else
+				{
+					var canUseActualHeightAsExtent =
+						fe.ActualHeight > 0 &&
+						fe.VerticalAlignment == VerticalAlignment.Stretch;
+
+					ExtentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
+				}
+
+				var explicitWidth = fe.Width;
+				if (explicitWidth.IsFinite())
+				{
+					ExtentWidth = explicitWidth;
+				}
+				else
+				{
+					var canUseActualWidthAsExtent =
+						fe.ActualWidth > 0 &&
+						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
+
+					ExtentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
+				}
+			}
+			else
+			{
+				// TODO: fallback on native values (.ContentSize on iOS, for example)
+				ExtentHeight = 0;
+				ExtentWidth = 0;
+			}
 
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
