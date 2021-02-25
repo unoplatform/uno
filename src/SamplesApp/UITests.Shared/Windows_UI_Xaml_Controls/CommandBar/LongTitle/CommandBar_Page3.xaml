@@ -1,5 +1,5 @@
 <Page
-    x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle.CommandBar_Page1"
+    x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle.CommandBar_Page3"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle"
@@ -16,7 +16,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<CommandBar x:Name="Page1CommandBar">
+		<CommandBar x:Name="Page3CommandBar">
 			<CommandBar.Content>
 				<Border VerticalAlignment="Center"
 				        Height="44"
@@ -28,7 +28,7 @@
 				</Border>
 			</CommandBar.Content>
 			<CommandBar.PrimaryCommands>
-				<AppBarButton Content="Open" />
+				<AppBarButton Content="Close" />
 			</CommandBar.PrimaryCommands>
 		</CommandBar>
 
@@ -36,21 +36,13 @@
 					Spacing="10"
 					VerticalAlignment="Center">
 
-			<TextBlock Text="Main Page"
+			<TextBlock Text="Page 3"
 			           HorizontalAlignment="Center" />
 
-			<Button x:Name="NavigateToPage2Button"
-			        Content="Navigate to Page 2"
+			<Button x:Name="GoBackButton"
+			        Content="Go Back"
 			        Click="OnButtonClicked"
 			        HorizontalAlignment="Center"/>
-
-			<Button x:Name="CalculateSize"
-			        Content="Calculate TitleView Size"
-			        Click="OnCalculateSizeClicked"
-			        HorizontalAlignment="Center"/>
-
-			<TextBlock x:Name="Result"
-			           HorizontalAlignment="Center" />
 		</StackPanel>
 	</Grid>
 </Page>

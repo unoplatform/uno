@@ -15,15 +15,46 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-	<CommandBar Content="Title on Page 2"
-				x:Name="Page2CommandBar" />
+	<CommandBar x:Name="Page2CommandBar">
+		<CommandBar.Content>
+			<Border VerticalAlignment="Center"
+			        Height="44"
+			        HorizontalAlignment="Center">
+				<TextBlock Text="This is supposed to be a very long text used to overflow the CommandBar title and validate how it behaves on navigation and will try to make it very long in case this is run on an iPad"
+				           Foreground="Black"
+				           TextTrimming="CharacterEllipsis"
+				           TextWrapping="NoWrap" />
+			</Border>
+		</CommandBar.Content>
+		<CommandBar.PrimaryCommands>
+			<AppBarButton Content="Save" />
+		</CommandBar.PrimaryCommands>
+	</CommandBar>
 
 	<StackPanel Grid.Row="1"
-				VerticalAlignment="Center">
-				<Button x:Name="GoBackButton"
-						Content="Go Back"
-						Click="OnButtonClicked"
-						HorizontalAlignment="Center"/>
+	            Spacing="10"
+	            VerticalAlignment="Center">
+
+		<TextBlock Text="Page 2"
+		           HorizontalAlignment="Center" />
+
+		<Button x:Name="GoBackButton"
+		        Content="Go Back"
+		        Click="OnBackButtonClicked"
+		        HorizontalAlignment="Center"/>
+
+		<Button x:Name="NavigateToPage3Button"
+		        Content="Navigate to Page 3"
+		        Click="OnButtonClicked"
+		        HorizontalAlignment="Center"/>
+
+		<Button x:Name="CalculateSize"
+		        Content="Calculate TitleView Size"
+		        Click="OnCalculateSizeClicked"
+		        HorizontalAlignment="Center"/>
+
+		<TextBlock x:Name="Result"
+		           HorizontalAlignment="Center" />
 	</StackPanel>
 
 	</Grid>
