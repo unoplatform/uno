@@ -378,33 +378,46 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			object pSender,
 			ScrollViewerViewChangedEventArgs pEventArgs)
 		{
-			//UNREFERENCED_PARAMETER(pSender);
-
-			// In the new ScrollViwer2 interface OnViewChanged will actually
-			// fire for all the intermediate ViewChanging events as well.
-			// We only capture the final view.
-			var isIntermediate = false;
-			isIntermediate = pEventArgs.IsIntermediate;
-			if (!isIntermediate)
+			void ProcessEvent()
 			{
-				//LSTRACE("[%d] OnViewChanged called.", (((int)this) >> 8) & 0xFF);
+				//UNREFERENCED_PARAMETER(pSender);
 
-				if (!_isWithinScrollChange && !_isWithinArrangeOverride)
+				// In the new ScrollViwer2 interface OnViewChanged will actually
+				// fire for all the intermediate ViewChanging events as well.
+				// We only capture the final view.
+				var isIntermediate = false;
+				isIntermediate = pEventArgs.IsIntermediate;
+				if (!isIntermediate)
 				{
-					Balance(false /* isOnSnapPoint */);
-					if (_itemState == ItemState.ManipulationInProgress)
-					{
-						TransitionItemsState(ItemState.Expanded);
-						_itemState = ItemState.Expanded;
-					}
-					else if (_itemState == ItemState.LostFocus)
-					{
-						ExpandIfNecessary();
-					}
+					//LSTRACE("[%d] OnViewChanged called.", (((int)this) >> 8) & 0xFF);
 
-					_skipSelectionChangeUntilFinalViewChanged = false;
+					if (!_isWithinScrollChange && !_isWithinArrangeOverride)
+					{
+						Balance(true /* isOnSnapPoint */);
+						if (_itemState == ItemState.ManipulationInProgress)
+						{
+							TransitionItemsState(ItemState.Expanded);
+							_itemState = ItemState.Expanded;
+						}
+						else if (_itemState == ItemState.LostFocus)
+						{
+							ExpandIfNecessary();
+						}
+
+						_skipSelectionChangeUntilFinalViewChanged = false;
+					}
 				}
 			}
+
+#if __IOS__ || __ANDROID__
+			// On iOS & Android this event can be raised synchronously
+			// with the ScrollViewer's ChangeView().
+			// It must be delayed to prevent incorrect selection of previous value.
+			DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+#else
+			// On other platforms it's ok
+			ProcessEvent();
+#endif
 		}
 
 		void OnViewChanging(
