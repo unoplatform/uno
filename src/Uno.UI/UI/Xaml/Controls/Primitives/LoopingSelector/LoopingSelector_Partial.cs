@@ -667,7 +667,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if(ItemHeight == 0)
 			{
-				throw new InvalidOperationException("ItemHeight not set.");
+				return; // not ready yet...
 			}
 
 			if (_tpScrollViewer is { } &&
