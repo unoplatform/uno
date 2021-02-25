@@ -324,6 +324,34 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
 		}
+<<<<<<< HEAD
 >>>>>>> d9446aa937... test: Add CommandBar UITest
+=======
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_CustomContentAndLongTitleAndDoubleNavigation_TitleShouldNotOverlapBarButtons_OnNavigateBack_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("NavigateToPage3Button");
+			_app.FastTap("NavigateToPage3Button");
+
+			_app.WaitForElement("GoBackButton");
+			_app.FastTap("GoBackButton");
+
+			_app.WaitForElement("CalculateSize");
+			_app.FastTap("CalculateSize");
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
+		}
+>>>>>>> b78e4aafe5... test: Add CommandBar.iOS Test
 	}
 }

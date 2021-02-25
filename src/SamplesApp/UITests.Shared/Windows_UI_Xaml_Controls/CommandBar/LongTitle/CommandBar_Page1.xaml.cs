@@ -18,13 +18,11 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle
     {
         public CommandBar_Page1()
         {
-            this.InitializeComponent();
+	        this.InitializeComponent();
         }
 
         public async void OnButtonClicked(object sender, RoutedEventArgs e)
-		{
-			Frame.Navigate(typeof(CommandBar_Page2));
-		}
+	        => Frame.Navigate(typeof(CommandBar_Page2));
 
         public async void OnCalculateSizeClicked(object sender, RoutedEventArgs e)
         {
