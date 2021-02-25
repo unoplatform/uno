@@ -18,9 +18,16 @@
 			<TextBlock Text="{x:Bind ViewModel.PickedFile.Name}" />
 			<ContentControl IsEnabled="{x:Bind ViewModel.IsFilePicked}">
 				<StackPanel Spacing="8">
-					<Button Command="{x:Bind ViewModel.GetBasicPropertiesCommand}">Get Basic Properties</Button>
+				  <Button Command="{x:Bind ViewModel.GetBasicPropertiesCommand}">Get Basic Properties</Button>
+				  <Button Command="{x:Bind ViewModel.WriteHelloWorldCommand}">Write Hello World!</Button>
+				  <Button Command="{x:Bind ViewModel.AppendHelloWorldCommand}">Append Hello World!</Button>
+				  <Button Command="{x:Bind ViewModel.ReadTextCommand}">Read text</Button>
 				</StackPanel>
 			</ContentControl>
+		  <TextBlock
+			Foreground="Red"
+			Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+			TextWrapping="WrapWholeWords" />
 		</StackPanel>
 	</ScrollViewer>
 </Page>
