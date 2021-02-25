@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		private bool ChangeViewScroll(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
+		private bool ChangeViewScrollNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
 			if (_scrollableContainer != null)
 			{
