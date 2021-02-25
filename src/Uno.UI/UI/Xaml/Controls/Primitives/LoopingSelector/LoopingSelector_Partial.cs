@@ -391,7 +391,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				if (!_isWithinScrollChange && !_isWithinArrangeOverride)
 				{
-					Balance(true /* isOnSnapPoint */);
+					Balance(false /* isOnSnapPoint */);
 					if (_itemState == ItemState.ManipulationInProgress)
 					{
 						TransitionItemsState(ItemState.Expanded);
