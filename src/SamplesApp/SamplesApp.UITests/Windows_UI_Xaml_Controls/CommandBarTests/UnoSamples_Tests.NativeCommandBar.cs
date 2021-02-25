@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;
@@ -232,5 +232,98 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			// Removing the global style we added for the CommandBar preventing other UITest to fail
 			_app.FastTap("UnsetGlobalStyleButton");
 		}
+<<<<<<< HEAD
+=======
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_Navigated_CommandBarDisplayCustomBackButtonIcon_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+
+			// Will set the global style for the CommandBar to remove the Back Button Title
+			_app.FastTap("SetGlobalStyleButton");
+
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("BackButtonImageLoaderButton");
+
+			_app.FastTap("BackButtonImageLoaderButton");
+
+			_app.Wait(TimeSpan.FromMilliseconds(500));
+
+			using var bmp = TakeScreenshot("Source set");
+
+			var borderThickness = LogicalToPhysical(3);
+
+			var expectedRect = _app.GetPhysicalRect("RefImage").DeflateBy(borderThickness);
+			var lateRect = _app.GetPhysicalRect("ExpectedImage").DeflateBy(borderThickness);
+
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 10);
+
+			// Removing the global style we added for the CommandBar preventing other UITest to fail
+			_app.FastTap("UnsetGlobalStyleButton");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_CustomContent_CommandBarTitleShouldBeVisible_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CustomContent.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("Result");
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_CustomContentAndLongTitle_TitleShouldNotOverlapBarButtons_OnLoad_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("CalculateSize");
+			_app.FastTap("CalculateSize");
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_CustomContentAndLongTitle_TitleShouldNotOverlapBarButtons_OnNavigateBack_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("GoBackButton");
+			_app.FastTap("GoBackButton");
+
+			_app.WaitForElement("CalculateSize");
+			_app.FastTap("CalculateSize");
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
+		}
+>>>>>>> d9446aa937... test: Add CommandBar UITest
 	}
 }
