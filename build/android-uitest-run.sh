@@ -44,7 +44,7 @@ $ANDROID_HOME/emulator/emulator -accel-check
 echo "Starting emulator"
 
 # Start emulator in background
-nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x800 -memory 2048 -no-audio -no-snapshot -netfast -qemu > /dev/null 2>&1 &
+nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x800 -memory 2048 -no-audio -no-window -no-snapshot > /dev/null 2>&1 &
 
 export IsUiAutomationMappingEnabled=true
 
