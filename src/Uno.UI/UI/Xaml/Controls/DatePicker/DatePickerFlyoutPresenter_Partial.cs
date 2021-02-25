@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePickerFlyoutPresenter : Control
 	{
+		const bool PICKER_SHOULD_LOOP = true;
+
 		const int DATEPICKER_RTL_CHARACTER_CODE = 8207;
 		const int DATEPICKER_MIN_MAX_YEAR_DEAFULT_OFFSET = 100;
 		const int DATEPICKER_SENTINELTIME_HOUR = 12;
@@ -293,7 +295,7 @@ namespace Windows.UI.Xaml.Controls
 				LoopingSelector spMonthPicker;
 
 				//wrl.MakeAndInitialize<xaml_primitives.LoopingSelector>(spMonthPicker);
-				spMonthPicker = new LoopingSelector() {ShouldLoop = false};
+				spMonthPicker = new LoopingSelector() {ShouldLoop = PICKER_SHOULD_LOOP };
 				_tpMonthPicker = spMonthPicker;
 				//spMonthPicker.As(spLSAsUI);
 				//spMonthPicker.As(spLSAsFE);
@@ -324,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 				LoopingSelector spDayPicker;
 
 				//wrl.MakeAndInitialize<xaml_primitives.LoopingSelector>(spDayPicker);
-				spDayPicker = new LoopingSelector() { ShouldLoop = false };
+				spDayPicker = new LoopingSelector() { ShouldLoop = PICKER_SHOULD_LOOP };
 				_tpDayPicker = spDayPicker;
 				//spDayPicker.As(spLSAsUI);
 				//spDayPicker.As(spLSAsFE);
@@ -355,7 +357,7 @@ namespace Windows.UI.Xaml.Controls
 				LoopingSelector spYearPicker;
 
 				//wrl.MakeAndInitialize<xaml_primitives.LoopingSelector>(spYearPicker);
-				spYearPicker = new LoopingSelector() { ShouldLoop = false };
+				spYearPicker = new LoopingSelector() { ShouldLoop = PICKER_SHOULD_LOOP };
 				_tpYearPicker = spYearPicker;
 				//spYearPicker.As(spLSAsUI);
 				//spYearPicker.As(spLSAsFE);
