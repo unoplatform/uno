@@ -4,7 +4,7 @@ Silverlight will reach the end of support  on October 12, 2021. As luck would ha
 
 Enter Uno Platform. Hello “Rich Internet Applications (RIA)” again!
 
-There are 47 pages of Silverlight migration documentation to help you with migration – accompanying source code, techniques and considerations you need to make when migrating your Silverlight application.
+There are a number of pages of Silverlight migration documentation to help you with migration – accompanying source code, techniques and considerations you need to make when migrating your Silverlight application.
 
 ## Table of contents:
 
