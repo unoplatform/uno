@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using Uno.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Documents
 {
@@ -10,10 +12,12 @@ namespace Windows.UI.Xaml.Documents
 		public Hyperlink() : base("a")
 		{
 			UpdateNavigationProperties(null, _defaultNavigationTarget);
-
+			
 			PointerPressed += TextBlock.OnPointerPressed;
 			PointerReleased += TextBlock.OnPointerReleased;
 			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
+			ResourceResolver.ApplyResource(this, Hyperlink.ForegroundProperty, "SystemControlHyperlinkTextBrush", isThemeResourceExtension: true);
+
 		}
 
 		#region NavigationTarget DependencyProperty
