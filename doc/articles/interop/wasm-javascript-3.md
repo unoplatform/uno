@@ -231,9 +231,9 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    ![Final result](assets/flatpickr-final.gif)
 
 ## Troubleshooting
-If your javascript integration is not behaving properly, you can troubleshoot with hints below.
+If your JavaScript integration is not behaving properly, you can troubleshoot with hints below.
 
-### My javascript control does not accept pointer input
+### My JavaScript control does not accept pointer input
 In the constructor of your wrapper control, add the following:
 ```
 // XAML behavior: a non-null background is required on an element to be "visible to pointers".
