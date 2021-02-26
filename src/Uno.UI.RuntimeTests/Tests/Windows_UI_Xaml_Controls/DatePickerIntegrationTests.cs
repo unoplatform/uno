@@ -255,9 +255,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			return datePicker;
 		}
 
-#if __SKIA__
-		[Ignore]
-#endif
+		[Ignore] // Unstable test
 		[TestMethod]
 		public async Task ValidateDayMonthYearOrderForDifferentLocales()
 		{
