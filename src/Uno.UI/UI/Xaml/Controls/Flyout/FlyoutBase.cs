@@ -287,6 +287,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected internal virtual void Open()
 		{
+			EnsurePopupCreated();
+
 			SetPopupPositionPartial(Target, _popupPositionInTarget);
 
 			_popup.IsOpen = true;
