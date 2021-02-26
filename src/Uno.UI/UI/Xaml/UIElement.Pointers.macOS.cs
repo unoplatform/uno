@@ -203,5 +203,31 @@ namespace Windows.UI.Xaml
 				Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 		}
+
+		public override void ScrollWheel(NSEvent evt)
+		{
+			if (IsPointersSuspended)
+			{
+				return;
+			}
+
+			try
+			{
+				// evt.AllTouches raises a invalid selector exception
+				var args = new PointerRoutedEventArgs(null, evt, this);
+
+				var pointerEventIsHandledInManaged = OnNativePointerWheel(args);
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.ScrollWheel(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
 	}
 }

@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Input
 				IsInRange = true,
 				IsPrimary = true,
 				IsLeftButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & LeftMouseButtonMask) == LeftMouseButtonMask,
-				IsRightButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & RightMouseButtonMask) == RightMouseButtonMask,				
+				IsRightButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & RightMouseButtonMask) == RightMouseButtonMask,
 			};
 
 			if (Pointer.PointerDeviceType == PointerDeviceType.Pen)
@@ -63,6 +63,21 @@ namespace Windows.UI.Xaml.Input
 				properties.XTilt = (float)_nativeEvent.Tilt.X;
 				properties.YTilt = (float)_nativeEvent.Tilt.Y;
 				properties.Pressure = (float)_nativeEvent.Pressure;
+			}
+
+			if (_nativeEvent.Type == NSEventType.ScrollWheel)
+			{
+				var y = (int)_nativeEvent.ScrollingDeltaY;
+				if (y == 0)
+				{
+					// Note: if X and Y are != 0, we should raise 2 events!
+					properties.IsHorizontalMouseWheel = true;
+					properties.MouseWheelDelta = (int)_nativeEvent.ScrollingDeltaX;
+				}
+				else
+				{
+					properties.MouseWheelDelta = -y;
+				}
 			}
 
 			return new PointerPoint(
@@ -186,7 +201,7 @@ namespace Windows.UI.Xaml.Input
 			//(selector not working, although it should, according to docs)
 			if (IsMouseEvent(nativeEvent) &&
 				nativeEvent.Type != NSEventType.MouseEntered &&
-				nativeEvent.Type != NSEventType.MouseExited) 
+				nativeEvent.Type != NSEventType.MouseExited)
 			{
 				//Xamarin debugger proxy for NSEvent incorrectly says Subtype
 				//works only for Custom events, but that is not the case
