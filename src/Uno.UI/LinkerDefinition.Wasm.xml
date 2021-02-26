@@ -61,6 +61,9 @@
 	<type fullname="Windows.Storage.StorageFolder">
 	  <method name="DispatchStorageInitialized" />
 	</type>
+    <type fullname="Uno.Storage.NativeStorageItem">
+      <method name="GenerateGuid" />
+    </type>
   </assembly>
 
   <assembly fullname="Uno.Foundation">
