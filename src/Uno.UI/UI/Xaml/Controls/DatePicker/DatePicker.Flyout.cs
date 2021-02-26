@@ -6,11 +6,16 @@ namespace Windows.UI.Xaml.Controls
 	partial class DatePicker
 	{
 #if __IOS__ || __ANDROID__
-		public static DependencyProperty UseNativeStyleProperty { get; }= DependencyProperty.Register(
+		private const bool DEFAULT_NATIVE_STYLE = true;
+#else
+		private const bool DEFAULT_NATIVE_STYLE = false;
+#endif
+
+		public static DependencyProperty UseNativeStyleProperty { get; } = DependencyProperty.Register(
 			"UseNativeStyle",
 			typeof(bool),
 			typeof(DatePicker),
-			new PropertyMetadata(default(bool)));
+			new PropertyMetadata(DEFAULT_NATIVE_STYLE));
 
 		/// <summary>
 		/// If we should use the native picker for the platform.
@@ -21,6 +26,8 @@ namespace Windows.UI.Xaml.Controls
 			get => (bool)GetValue(UseNativeStyleProperty);
 			set => SetValue(UseNativeStyleProperty, value);
 		}
+
+#if __IOS__ || __ANDROID__
 
 		private Lazy<DatePickerFlyout> _lazyFlyout;
 
@@ -34,8 +41,6 @@ namespace Windows.UI.Xaml.Controls
 		private void InitPartial()
 		{
 #if __IOS__ || __ANDROID__
-			UseNativeStyle = !Style.ShouldUseUWPDefaultStyle(typeof(DatePicker));
-
 			DatePickerFlyout CreateFlyout()
 			{
 				var f = UseNativeStyle
