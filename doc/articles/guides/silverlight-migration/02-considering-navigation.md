@@ -148,3 +148,7 @@ In the next series of tasks, the Uno solution will be updated to implement the b
     * AboutPage
 
 Now that the top-level pages have been added, it is time to configure the app to use navigation on startup.
+
+## Next unit: Review app startup
+
+[![button](assets/NextButton.png)](03-review-app-startup.md)

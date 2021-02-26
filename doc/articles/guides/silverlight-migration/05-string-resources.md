@@ -203,3 +203,7 @@ Although all resources can be added to single resource file, it is often conside
     ```
 
     ![Dialog showing error resources](assets/Dialog-FatalError.png)
+
+## Next unit: Dialogs
+
+[![button](assets/NextButton.png)](07-dialogs.md)

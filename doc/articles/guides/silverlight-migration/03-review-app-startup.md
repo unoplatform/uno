@@ -386,3 +386,7 @@ In order to better align with the behavior of the Silverlight version of the app
     Try navigating to each page and using the back button. Notice that entrance animations play in UWP but are not supported in WASM. The apps should look similar to:
 
     ![UWP and WebAssembly views of the basic navigation](assets/BothHeadsBasicNav.png)
+
+## Next unit: Migrate home page XAML and styles
+
+[![button](assets/NextButton.png)](04-migrate-home-page-xaml-and-styles.md)

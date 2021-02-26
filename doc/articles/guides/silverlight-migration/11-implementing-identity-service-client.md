@@ -388,3 +388,7 @@ AuthenticationService.Instance.Logout();
 ```
 
 Now that the authentication services are available, it is time to consider the authentication UI.
+
+## Next unit: Migrate the Authentication UI
+
+[![button](assets/NextButton.png)](12-migrate-auth-ui.md)

@@ -284,3 +284,7 @@ An unfortunate fact of development is that there is often the need to display wa
 > [!Note]
 > The Uno platform provides comprehensive support for logging - the article below provides the details on how to configure and use logging:
 > * [Logging](../../logging.md)
+
+## Next unit: Data access overview
+
+[![button](assets/NextButton.png)](08-data-access-overview.md)

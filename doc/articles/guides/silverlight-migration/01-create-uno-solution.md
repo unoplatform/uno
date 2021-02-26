@@ -110,3 +110,7 @@ There are a few steps to adding WinUI 2.5 to the Uno project:
     > ![Visual Studio Installer UWP SDK Options](assets/VisualStudioInstaller-uwpsdkoptions.png)
 
 Now that the solution is created, it is time to consider navigation and an approach to implementing a similar capability in UWP.
+
+## Next unit: Considering navigation
+
+[![button](assets/NextButton.png)](02-considering-navigation.md)
