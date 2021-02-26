@@ -58,6 +58,9 @@
 										backed fields to handle opaque native reference pinning and avoid
 										memory leaks.
   - UNO_HAS_ENHANCED_HIT_TEST_PROPERTY: Used to mark if the ENUM hit test property is present or not
+  - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
+									  uses render transforms instead of native scroll feature (if any)
+
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
 
@@ -70,7 +73,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
-	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
@@ -82,7 +85,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsXamarinMac)">
-	<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+	<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsMonoAndroid)">
@@ -163,11 +166,11 @@
 	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 	  <_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
 	</ItemGroup>
-	
+
 	<MakeDir Directories="$(_TargetNugetFolder)" />
 
 	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
