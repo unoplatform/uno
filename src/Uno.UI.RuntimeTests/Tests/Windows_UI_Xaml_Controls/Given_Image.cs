@@ -60,6 +60,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			while (sw.Elapsed < TimeSpan.FromSeconds(5));
 
+			await TestServices.WindowHelper.WaitForIdle();
+
 			Assert.AreEqual(30, Math.Round(desiredContainer.Width));
 			Assert.AreEqual(30, Math.Round(desiredContainer.Height));
 
