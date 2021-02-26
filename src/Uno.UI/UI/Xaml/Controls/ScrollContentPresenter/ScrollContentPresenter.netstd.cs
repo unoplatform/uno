@@ -51,8 +51,8 @@ namespace Windows.UI.Xaml.Controls
 
 				var desiredSize = child.DesiredSize;
 
-				childRect.Width = Math.Max(Math.Max(finalSize.Width, desiredSize.Width), ExtentWidth);
-				childRect.Height = Math.Max(Math.Max(finalSize.Height, desiredSize.Height), ExtentHeight);
+				childRect.Width = Math.Max(finalSize.Width, desiredSize.Width);
+				childRect.Height = Math.Max(finalSize.Height, desiredSize.Height);
 
 				child.Arrange(childRect);
 			}
