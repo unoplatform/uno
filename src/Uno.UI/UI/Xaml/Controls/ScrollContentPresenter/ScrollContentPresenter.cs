@@ -48,8 +48,10 @@ namespace Windows.UI.Xaml.Controls
 
 #if XAMARIN
 		private NativeScrollContentPresenter Native => Content as NativeScrollContentPresenter;
+#if !__MACOS__
 		public ScrollBarVisibility HorizontalScrollBarVisibility => Native?.HorizontalScrollBarVisibility ?? default;
 		public ScrollBarVisibility VerticalScrollBarVisibility => Native?.VerticalScrollBarVisibility ?? default;
+#endif
 #endif
 
 		bool ILayoutConstraints.IsWidthConstrained(View requester)

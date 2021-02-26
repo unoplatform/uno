@@ -28,15 +28,15 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private View _content;
 
-		public View Content
+		public object Content
 		{
 			get { return _content; }
 			set
 			{
 				var previousView = _content;
-				_content = value;
+				_content = value as View;
 
-				OnContentChanged(previousView, value);
+				OnContentChanged(previousView, value as View);
 			}
 		}
 

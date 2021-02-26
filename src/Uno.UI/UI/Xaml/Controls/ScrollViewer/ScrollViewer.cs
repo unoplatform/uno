@@ -608,7 +608,7 @@ namespace Windows.UI.Xaml.Controls
 		internal Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode UpdatesMode { get; set; }
 
 		/// <summary>
-		/// If this flag is enabled, the ScrollViewer will report offsets less than 0 and greater than <see cref="ScrollableHeight"/> when 
+		/// If this flag is enabled, the ScrollViewer will report offsets less than 0 and greater than <see cref="ScrollableHeight"/> when
 		/// 'overscrolling' on iOS. By default this is false, matching Windows behaviour.
 		/// </summary>
 		[UnoOnly]
@@ -855,7 +855,7 @@ namespace Windows.UI.Xaml.Controls
 			_horizontalScrollbar = null;
 			_isHorizontalScrollBarMaterialized = false;
 
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__
 			if (scpTemplatePart is ScrollContentPresenter scp)
 			{
 				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
@@ -865,6 +865,11 @@ namespace Windows.UI.Xaml.Controls
 				_presenter = nativeSCP;
 			}
 #endif
+
+			if (scpTemplatePart is ScrollContentPresenter presenter)
+			{
+				presenter.ScrollOwner = this;
+			}
 
 			// We update the scrollability properties here in order to make sure to set the right scrollbar visibility
 			// on the _presenter as soon as possible
@@ -898,7 +903,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
 			base.OnContentChanged(oldValue, newValue);
@@ -940,7 +945,7 @@ namespace Windows.UI.Xaml.Controls
 				_presenter.Content = content as View;
 			}
 
-			// Propagate the ScrollViewer's own templated parent, instead of 
+			// Propagate the ScrollViewer's own templated parent, instead of
 			// the scrollviewer itself (through ScrollContentPresenter)
 			SynchronizeContentTemplatedParent(TemplatedParent);
 		}
@@ -985,9 +990,9 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
-#endregion
+		#endregion
 
-#region Managed scroll bars support
+		#region Managed scroll bars support
 		private bool _isTemplateApplied;
 		private ScrollBar? _verticalScrollbar;
 		private ScrollBar? _horizontalScrollbar;
@@ -1152,7 +1157,7 @@ namespace Windows.UI.Xaml.Controls
 				disableAnimation: immediate,
 				shouldSnap: true);
 		}
-#endregion
+		#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
@@ -1341,7 +1346,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>true if the view is changed; otherwise, false.</returns>
 		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor) => ChangeView(horizontalOffset, verticalOffset, zoomFactor, false);
 
-#region Scroll indicators visual states (Managed scroll bars only)
+		#region Scroll indicators visual states (Managed scroll bars only)
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
 
@@ -1420,6 +1425,6 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
 			}
 		}
-#endregion
+		#endregion
 	}
 }

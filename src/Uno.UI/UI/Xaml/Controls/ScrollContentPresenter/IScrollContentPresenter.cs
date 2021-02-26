@@ -12,7 +12,7 @@ using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 #elif __MACOS__
 using AppKit;
-using View = AppKit.NSView;
+using View = System.Object;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #else

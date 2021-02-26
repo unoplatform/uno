@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
+		// Disable clipping for Scrollviewer (edge seems to disable scrolling if
 		// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
@@ -48,5 +48,42 @@ namespace Windows.UI.Xaml.Controls
 				UpdateDOMXamlProperty(nameof(VerticalOffset), VerticalOffset);
 			}
 		}
+
+		/// <summary>
+		/// Trim excess scroll, which can be present if the content size is reduced.
+		/// </summary>
+		partial void TrimOverscroll(Orientation orientation)
+		{
+			if (_presenter is ContentPresenter presenter && presenter.Content is FrameworkElement presenterContent)
+			{
+				var presenterViewportSize = GetActualExtent(presenter, orientation);
+				var contentExtent = GetActualExtent(presenterContent, orientation);
+				var offset = GetOffsetForOrientation(orientation);
+				var viewportEnd = offset + presenterViewportSize;
+				var overscroll = contentExtent - viewportEnd;
+				if (offset > 0 && overscroll < -0.5)
+				{
+					ChangeViewForOrientation(orientation, overscroll);
+				}
+			}
+		}
+
+		private double GetOffsetForOrientation(Orientation orientation)
+			=> orientation == Orientation.Horizontal ? HorizontalOffset : VerticalOffset;
+
+		private void ChangeViewForOrientation(Orientation orientation, double scrollAdjustment)
+		{
+			if (orientation == Orientation.Vertical)
+			{
+				ChangeView(null, VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+			}
+			else
+			{
+				ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+			}
+		}
+
+		private static double GetActualExtent(FrameworkElement element, Orientation orientation)
+			=> orientation == Orientation.Horizontal ? element.ActualWidth : element.ActualHeight;
 	}
 }

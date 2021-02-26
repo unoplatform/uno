@@ -1,4 +1,5 @@
 ﻿#nullable enable
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,34 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.Foundation;
 using Windows.UI;
+using Uno;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer
 	{
+		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
+
+		[NotImplemented]
+		public Color BackgroundColor
+		{
+			get => throw new NotImplementedException();
+			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "Color ScrollContentPresenter.BackgroundColor");
+		}
+
+		[NotImplemented]
+		private void UpdateZoomedContentAlignment()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "float ZoomFactor");
+		}
+
+		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		{
+			(_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation);
+		}
+
+		#region Over scroll support
 		/// <summary>
 		/// Trim excess scroll, which can be present if the content size is reduced.
 		/// </summary>
@@ -35,7 +59,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private double GetOffsetForOrientation(Orientation orientation)
-			=> orientation == Orientation.Horizontal ? HorizontalOffset : VerticalOffset;
+			=> orientation == Orientation.Horizontal
+				? HorizontalOffset
+				: VerticalOffset;
+
+		private static double GetActualExtent(FrameworkElement element, Orientation orientation)
+			=> orientation == Orientation.Horizontal
+				? element.ActualWidth
+				: element.ActualHeight;
 
 		private void ChangeViewForOrientation(Orientation orientation, double scrollAdjustment)
 		{
@@ -48,8 +79,7 @@ namespace Windows.UI.Xaml.Controls
 				ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
 			}
 		}
-
-		private static double GetActualExtent(FrameworkElement element, Orientation orientation)
-			=> orientation == Orientation.Horizontal ? element.ActualWidth : element.ActualHeight;
+		#endregion
 	}
 }
+#endif
