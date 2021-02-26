@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;
@@ -282,6 +282,69 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			_app.FastTap("NavigateInitialButton");
 
 			_app.WaitForElement("Result");
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_CustomContentAndLongTitle_TitleShouldNotOverlapBarButtons_OnLoad_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("CalculateSize");
+			_app.FastTap("CalculateSize");
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_CustomContentAndLongTitle_TitleShouldNotOverlapBarButtons_OnNavigateBack_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("GoBackButton");
+			_app.FastTap("GoBackButton");
+
+			_app.WaitForElement("CalculateSize");
+			_app.FastTap("CalculateSize");
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_CustomContentAndLongTitleAndDoubleNavigation_TitleShouldNotOverlapBarButtons_OnNavigateBack_NativeFrame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle.CommandBar_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateToPage2Button");
+			_app.FastTap("NavigateToPage2Button");
+
+			_app.WaitForElement("NavigateToPage3Button");
+			_app.FastTap("NavigateToPage3Button");
+
+			_app.WaitForElement("GoBackButton");
+			_app.FastTap("GoBackButton");
+
+			_app.WaitForElement("CalculateSize");
+			_app.FastTap("CalculateSize");
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
 		}
