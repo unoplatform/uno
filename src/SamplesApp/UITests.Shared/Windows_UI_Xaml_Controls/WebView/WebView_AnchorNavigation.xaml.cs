@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -31,9 +32,14 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			NavigationCompletedTextBlock.Text = args.Uri.AbsoluteUri;
 		}
 
-		private void ButtonClicked(object sender, RoutedEventArgs args)
+		private void ButtonClicked()
 		{
 			webView.Navigate(new Uri("https://tools.ietf.org/html/rfc6749#section-1"));
+		}
+
+		private void OnClickAnchor()
+		{
+			_ = webView.InvokeScriptAsync("document.getElementById(\"page-4\").click()", null);
 		}
 	}
 }

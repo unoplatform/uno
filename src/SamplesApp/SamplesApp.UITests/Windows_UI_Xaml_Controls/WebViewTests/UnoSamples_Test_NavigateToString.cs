@@ -41,5 +41,34 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 
 		}
 
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void WebView_NavigateToAnchor()
+		{
+			Run("Uno.UI.Samples.Content.UITests.WebView.WebView_AnchorNavigation");
+
+			_app.WaitForElement(_app.Marked("NavigateToAnchorButton"));
+
+			TakeScreenshot("Initial");
+
+			var navigationCompletedTextBlock = _app.Marked("NavigationCompletedTextBlock");
+			var navigateToAnchorButton = _app.Marked("NavigateToAnchorButton");
+			var clickAnchorButton = _app.Marked("ClickAnchorButton");
+
+			_app.WaitForText(navigationCompletedTextBlock, "https://tools.ietf.org/html/rfc6749");
+
+			// navigate to anchor
+			_app.FastTap(navigateToAnchorButton);
+			_app.WaitForText(navigationCompletedTextBlock, "https://tools.ietf.org/html/rfc6749#section-1");
+
+			TakeScreenshot("navigate to anchor");
+
+			// user click in the browser itself
+			_app.FastTap(clickAnchorButton);
+			_app.WaitForText(navigationCompletedTextBlock, "https://tools.ietf.org/html/rfc6749#page-4");
+
+			TakeScreenshot("click anchor");
+		}
 	}
 }

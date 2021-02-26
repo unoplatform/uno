@@ -11,7 +11,7 @@
 			 d:DesignHeight="2000"
 			 d:DesignWidth="400">
 
-	<xamarin:Grid>
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
@@ -26,13 +26,19 @@
 			<TextBlock x:Name="NavigationCompletedTextBlock"
 					   Margin="0,0,0,12"/>
 
-			<Button Content="NavigateToAnchor"
-					Click="ButtonClicked"
+			<Button x:Name="NavigateToAnchorButton"
+					Content="Navigate To Anchor"
+					Click="{x:Bind ButtonClicked}"
+					Height="50" />
+
+			<Button x:Name="ClickAnchorButton"
+					Content="Click Anchor"
+					Click="{x:Bind OnClickAnchor}"
 					Height="50" />
 		</StackPanel>
 		
 		<WebView x:Name="webView"
 				 Grid.Row="1"
 				 Margin="32" />
-	</xamarin:Grid>
+	</Grid>
 </UserControl>
