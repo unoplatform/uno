@@ -901,12 +901,6 @@ namespace Windows.UI.Xaml.Controls
 #region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
-			if(_snapPointsInfo != null)
-			{
-				_snapPointsInfo.HorizontalSnapPointsChanged -= OnHorizontalSnapPointsChanged;
-				_snapPointsInfo.VerticalSnapPointsChanged -= OnVerticalSnapPointsChanged;
-			}
-
 			base.OnContentChanged(oldValue, newValue);
 
 			if (_presenter != null)
@@ -921,12 +915,6 @@ namespace Windows.UI.Xaml.Controls
 			UpdateSizeChangedSubscription();
 
 			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
-
-			if (_snapPointsInfo != null)
-			{
-				_snapPointsInfo.HorizontalSnapPointsChanged += OnHorizontalSnapPointsChanged;
-				_snapPointsInfo.VerticalSnapPointsChanged += OnVerticalSnapPointsChanged;
-			}
 		}
 
 		private void ApplyScrollContentPresenterContent(object content)

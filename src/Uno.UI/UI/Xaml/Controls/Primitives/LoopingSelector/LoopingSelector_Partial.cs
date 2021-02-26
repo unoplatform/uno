@@ -409,15 +409,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
-#if __IOS__ || __ANDROID__
-			// On iOS & Android this event can be raised synchronously
+			// This event can be raised synchronously
 			// with the ScrollViewer's ChangeView().
-			// It must be delayed to prevent incorrect selection of previous value.
+			// It must be delayed to prevent incorrect re-selection of another value.
 			Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
-#else
-			// On other platforms it's ok
-			ProcessEvent();
-#endif
 		}
 
 		void OnViewChanging(

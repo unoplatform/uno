@@ -11,22 +11,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private IScrollSnapPointsInfo _snapPointsInfo;
 
-		private void OnHorizontalSnapPointsChanged(object sender, object e)
-		{
-			if (HorizontalSnapPointsType == SnapPointsType.None)
-			{
-				return; // not interested by snap points
-			}
-		}
-
-		private void OnVerticalSnapPointsChanged(object sender, object e)
-		{
-			if (VerticalSnapPointsType == SnapPointsType.None)
-			{
-				return; // not interested by snap points
-			}
-		}
-
 		private void AdjustOffsetsForSnapPoints(ref double? horizontalOffset, ref double? verticalOffset, float? zoomFactor)
 		{
 			if (horizontalOffset is { } hOffset)
