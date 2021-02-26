@@ -159,7 +159,7 @@ namespace Uno.Media
 			}
 
 			bezierPath.ArcTo(
-				circle.LogicalToPhysicalPixels().ToRectF(),
+				circle.ToRectF(),
 				(float)startAngle,
 				(float)sweepAngle
 			);
