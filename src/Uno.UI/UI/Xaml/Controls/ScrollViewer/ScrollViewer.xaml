@@ -50,7 +50,7 @@
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						CornerRadius="{TemplateBinding CornerRadius}">
-						<netstdref:VisualStateManager.VisualStateGroups>
+						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="ScrollingIndicatorStates">
 								<VisualStateGroup.Transitions>
 									<VisualTransition From="MouseIndicator" To="NoIndicator">
@@ -245,25 +245,26 @@
 									</Storyboard>
 								</VisualState>
 							</VisualStateGroup>
-						</netstdref:VisualStateManager.VisualStateGroups>
+						</VisualStateManager.VisualStateGroups>
 
 						<Grid Background="{TemplateBinding Background}" x:Name="Root">
-							<netstdref:Grid.ColumnDefinitions>
+							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
-							</netstdref:Grid.ColumnDefinitions>
-							<netstdref:Grid.RowDefinitions>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
 								<RowDefinition Height="*" />
 								<RowDefinition Height="Auto" />
-							</netstdref:Grid.RowDefinitions>
+							</Grid.RowDefinitions>
+
 							<!-- ContentTemplate not yet supported for ScrollContentPresenter-->
 							<ScrollContentPresenter
 								x:Name="ScrollContentPresenter"
-								netstdref:Grid.RowSpan="2"
-								netstdref:Grid.ColumnSpan="2"
+								Grid.RowSpan="2"
+								Grid.ColumnSpan="2"
 								Margin="{TemplateBinding Padding}" />
 
-							<netstdref:ScrollBar
+							<ScrollBar
 								x:Name="VerticalScrollBar"
 								x:Load="False"
 								Grid.Column="1"
@@ -276,7 +277,7 @@
 								HorizontalAlignment="Right"
 								skia:Width="16"/>
 
-							<netstdref:ScrollBar
+							<ScrollBar
 								x:Name="HorizontalScrollBar"
 								x:Load="False"
 								IsTabStop="False"
@@ -288,7 +289,7 @@
 								ViewportSize="{TemplateBinding ViewportWidth}"
 								skia:Height="16"/>
 
-							<netstdref:Border
+							<Border
 								x:Name="ScrollBarSeparator"
 								Grid.Row="1"
 								Grid.Column="1"
@@ -323,8 +324,9 @@
 		</Setter>
 	</Style>
 
-	<Style
-		TargetType="ScrollViewer"
-		BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+	<macos:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+	<netstdref:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+	<ios:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
+	<android:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
 
 </ResourceDictionary>
