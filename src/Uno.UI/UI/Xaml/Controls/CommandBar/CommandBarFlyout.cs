@@ -4,6 +4,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CommandBarFlyout
 	{
-		protected override Control CreatePresenter() => throw new NotImplementedException();
+		//protected override Control CreatePresenter()
+		//{ }
 	}
 }

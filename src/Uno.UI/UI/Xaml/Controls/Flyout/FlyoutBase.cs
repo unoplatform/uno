@@ -21,7 +21,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public abstract partial class FlyoutBase : DependencyObject
+	public partial class FlyoutBase : DependencyObject
 	{
 		public event EventHandler Opened;
 		public event EventHandler Closed;
@@ -269,7 +269,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpened() { }
 
-		protected abstract Control CreatePresenter();
+		protected virtual Control CreatePresenter() => throw new InvalidOperationException();
 
 		private void OnPopupClosed(object sender, object e)
 		{

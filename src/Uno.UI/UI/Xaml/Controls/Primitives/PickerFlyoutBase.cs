@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public abstract partial class PickerFlyoutBase : FlyoutBase
+	public partial class PickerFlyoutBase : FlyoutBase
 	{
 		public static DependencyProperty TitleProperty { get; } =
 			Windows.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -16,9 +16,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public static void SetTitle(DependencyObject element, string value) => element.SetValue(TitleProperty, value);
 
-		protected abstract void OnConfirmed();
+		protected virtual void OnConfirmed() => throw new InvalidOperationException();
 
-		protected abstract bool ShouldShowConfirmationButtons();
+		protected virtual bool ShouldShowConfirmationButtons() => throw new InvalidOperationException();
 	}
 
 }

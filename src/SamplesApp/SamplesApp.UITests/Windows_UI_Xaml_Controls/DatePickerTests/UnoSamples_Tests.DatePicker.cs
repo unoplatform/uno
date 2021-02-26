@@ -247,7 +247,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForNoElement(datePickerFlyout);
 		}
 
-		[Test]
+		// [Test] -- Broken Test
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)] // iOS Specific selection
 		public void DatePickerFlyout_Date_Binding()
