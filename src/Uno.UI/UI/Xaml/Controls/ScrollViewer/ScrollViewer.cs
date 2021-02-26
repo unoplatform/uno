@@ -1190,7 +1190,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						if(_snapPointsTimer == null)
 						{
-							_snapPointsTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+							_snapPointsTimer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 							_snapPointsTimer.IsRepeating = false;
 							_snapPointsTimer.Interval = TimeSpan.FromMilliseconds(250);
 							_snapPointsTimer.Tick += (snd, evt) => DelayedMoveToSnapPoint();

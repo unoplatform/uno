@@ -8,6 +8,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
+using Windows.Globalization;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -100,8 +101,8 @@ namespace Windows.UI.Xaml.Controls
 
 			var winCalendar = new Windows.Globalization.Calendar(
 				new string[0],
-				Globalization.CalendarIdentifiers.Gregorian,
-				Globalization.ClockIdentifiers.TwentyFourHour);
+				Windows.Globalization.CalendarIdentifiers.Gregorian,
+				Windows.Globalization.ClockIdentifiers.TwentyFourHour);
 
 			var calendar = new NSCalendar(NSCalendarType.Gregorian);
 

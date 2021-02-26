@@ -413,7 +413,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// On iOS & Android this event can be raised synchronously
 			// with the ScrollViewer's ChangeView().
 			// It must be delayed to prevent incorrect selection of previous value.
-			DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+			Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
 #else
 			// On other platforms it's ok
 			ProcessEvent();
@@ -1882,7 +1882,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				//	wrl_wrappers.Hstring(RuntimeClass_Windows_System_DispatcherQueue),
 				//	&spDispatcherQueueStatics));
 				//spDispatcherQueueStatics.GetForCurrentThread(spDispatcherQueue);
-				spDispatcherQueue = DispatcherQueue.GetForCurrentThread();
+				spDispatcherQueue = Windows.System.DispatcherQueue.GetForCurrentThread();
 				//(spDispatcherQueue.TryEnqueue(
 				//	WRLHelper.MakeAgileCallback<wsy.IDispatcherQueueHandler>([wrThis, spVerticalOffset]() mutable {
 

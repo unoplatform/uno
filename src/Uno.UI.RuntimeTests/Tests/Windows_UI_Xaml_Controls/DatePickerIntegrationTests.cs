@@ -255,6 +255,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			return datePicker;
 		}
 
+#if __SKIA__
+		[Ignore]
+#endif
 		[TestMethod]
 		public async Task ValidateDayMonthYearOrderForDifferentLocales()
 		{
@@ -268,10 +271,10 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			// Note: In the DatePicker template's Grid the columns 1 and 3 are used by the cell dividers, so they are skipped.
 			// That is why the expected column positions for day/month/year are {0, 2, 4} and not {0, 1, 2}.
 
-			VerifyDayMonthYearOrderAndFlowDirection("en-US", 2, 0, 4, FlowDirection.LeftToRight);
-			VerifyDayMonthYearOrderAndFlowDirection("en-GB", 0, 2, 4, FlowDirection.LeftToRight);
-			VerifyDayMonthYearOrderAndFlowDirection("ar", 0, 2, 4, FlowDirection.RightToLeft);
-			VerifyDayMonthYearOrderAndFlowDirection("ts-ZA", 4, 2, 0, FlowDirection.LeftToRight);
+			await VerifyDayMonthYearOrderAndFlowDirection("en-US", 2, 0, 4, FlowDirection.LeftToRight);
+			await VerifyDayMonthYearOrderAndFlowDirection("en-GB", 0, 2, 4, FlowDirection.LeftToRight);
+			await VerifyDayMonthYearOrderAndFlowDirection("ar", 0, 2, 4, FlowDirection.RightToLeft);
+			await VerifyDayMonthYearOrderAndFlowDirection("ts-ZA", 4, 2, 0, FlowDirection.LeftToRight);
 		}
 
 		private async Task VerifyDayMonthYearOrderAndFlowDirection(string locale, int expectedDayTextBlockColumn, int
@@ -850,6 +853,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 #endif
 
 		[TestMethod]
+		[Ignore]
 		public async Task ValidateFootprint()
 		{
 			TestServices.WindowHelper.SetWindowSizeOverride(new Size(500, 600));

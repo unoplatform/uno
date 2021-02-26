@@ -333,12 +333,12 @@ namespace Windows.UI.Xaml.Automation.Peers
 					pOwnerNoRef.AutomationGetSelectionContainerUIAPeer(out spAutomationPeer);
 					if (spAutomationPeer is { })
 					{
-						AutomationPeer spAutomationPeerAsProtected;
-						IRawElementProviderSimple  spProvider;
+						//AutomationPeer spAutomationPeerAsProtected;
+						IRawElementProviderSimple  spProvider = default;
 
 						//spAutomationPeer.As(spAutomationPeerAsProtected);
-						spAutomationPeerAsProtected = spAutomationPeer;
-						spProvider = spAutomationPeerAsProtected.ProviderFromPeer(spAutomationPeer);
+						//spAutomationPeerAsProtected = spAutomationPeer;
+						//spProvider = spAutomationPeerAsProtected.ProviderFromPeer(spAutomationPeer);
 						ppValue = spProvider; //.Detach();
 					}
 				}

@@ -98,11 +98,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				using var _ = new AssertionScope($"{name} [{width}x{height}]");
 
+#if !NETFX_CORE
 				sut.ViewportMeasureSize.Width.Should().Be(width, "ViewportMeasureSize.Width");
 				sut.ViewportMeasureSize.Height.Should().Be(height, "ViewportMeasureSize.Height");
 
 				sut.ViewportArrangeSize.Width.Should().Be(width, "ViewportArrangeSize.Width");
 				sut.ViewportArrangeSize.Height.Should().Be(height, "ViewportArrangeSize.Height");
+#endif
 
 				sut.ExtentWidth.Should().Be(width, "Extent");
 				sut.ExtentHeight.Should().Be(height, "Extent");
