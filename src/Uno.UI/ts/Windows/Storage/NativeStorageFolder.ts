@@ -119,6 +119,20 @@
 			return await NativeStorageFolder.getEntriesAsync(folderGuid, true, false);
 		}
 
+		public static async getPrivateRootAsync(): Promise<string> {
+			if (!navigator.storage.getDirectory) {
+				return null;
+			}
+
+			const directory = await navigator.storage.getDirectory();
+			if (!directory) {
+				return null;
+			}
+
+			var info = NativeStorageItem.getInfos(directory)[0];
+			return JSON.stringify(info);
+		}
+
 		private static async getEntriesAsync(guid: string, includeFiles: boolean, includeDirectories: boolean): Promise<string> {
 			const folderHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(guid);
 

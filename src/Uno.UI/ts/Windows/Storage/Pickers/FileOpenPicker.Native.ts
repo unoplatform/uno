@@ -1,10 +1,14 @@
 ﻿namespace Windows.Storage.Pickers {
 
 	export class FileOpenPicker {
+		public static isNativeSupported(): boolean {
+			return typeof showOpenFilePicker === "function";
+		}
+
 		public static async pickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypes: any): Promise<string> {
 
-			if (!showOpenFilePicker) {
-				return "";
+			if (!FileOpenPicker.isNativeSupported()) {
+				return JSON.stringify([]);
 			}
 
 			const options: OpenFilePickerOptions  = {
@@ -44,7 +48,7 @@
 			catch (e) {			
 				console.log("User did not make a selection or it file selected was" +
 					"deemed too sensitive or dangerous to be exposed to the website - " + e);
-				return "";
+				return JSON.stringify([]);
 			}
 		}
 	}
