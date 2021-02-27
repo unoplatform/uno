@@ -29,7 +29,10 @@ namespace Windows.Storage
 				=> impl is Local other && Path.Equals(other.Path);
 
 			public override async Task<StorageFolder?> GetParentAsync(CancellationToken ct)
-				=> new StorageFolder(IOPath.GetDirectoryName(Path));
+			{
+				var directoryPath = IOPath.GetDirectoryName(Path);
+				return directoryPath != null ? new StorageFolder(directoryPath) : null;
+			} 
 
 			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 				=> BasicProperties.FromFilePath(Owner.Path);
