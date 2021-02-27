@@ -15,8 +15,6 @@ namespace Windows.Storage.Pickers
 	public partial class FileOpenPicker
 	{
 		private const string JsType = "Windows.Storage.Pickers.FileOpenPicker";
-		private const string FileSeparator = "\\\\";
-		private const char FileInfoSeparator = '\\';
 
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
