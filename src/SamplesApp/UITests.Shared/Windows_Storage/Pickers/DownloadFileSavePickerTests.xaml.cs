@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Uno;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -17,7 +18,19 @@ namespace UITests.Windows_Storage.Pickers
         public DownloadFileSavePickerTests()
         {
             this.InitializeComponent();
+			this.Loaded += DownloadFileSavePickerTests_Loaded;
+			this.Unloaded += DownloadFileSavePickerTests_Unloaded;
         }
+
+		private void DownloadFileSavePickerTests_Unloaded(object sender, RoutedEventArgs e)
+		{
+			WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = true;
+		}
+
+		private void DownloadFileSavePickerTests_Loaded(object sender, RoutedEventArgs e)
+		{
+			WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = false;
+		}
 
 		private enum FileType
 		{
