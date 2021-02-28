@@ -7,12 +7,18 @@ namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class AutomationPeer : DependencyObject
 	{
+		private AutomationPeer _parent;
+
 		[Uno.NotImplemented]
 		public static bool ListenerExists(Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId) => false;
 
 		#region Public
 
 		public object GetPattern(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => GetPatternCore(patternInterface);
+
+		public void SetParent(global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer) => _parent = peer;
+
+		public global::Windows.UI.Xaml.Automation.Peers.AutomationPeer GetParent() => _parent;
 
 		public string GetAcceleratorKey() => GetAcceleratorKeyCore();
 

@@ -21,7 +21,7 @@ using Font = UIKit.UIFont;
 
 namespace Windows.UI.Xaml.Controls
 {
-    partial class StackPanel
+	partial class StackPanel
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			if (isHorizontal)
 			{
 				slotSize.Width = float.PositiveInfinity;
-            }
+			}
 			else
 			{
 				slotSize.Height = float.PositiveInfinity;
@@ -96,6 +96,25 @@ namespace Windows.UI.Xaml.Controls
 			var spacing = Spacing;
 			var count = Children.Count;
 
+			var snapPoints = (_snapPoints ??= new List<float>(count)) as List<float>;
+
+			var snapPointsChanged = snapPoints.Count != count;
+
+			if(snapPoints.Capacity < count)
+			{
+				snapPoints.Capacity = count;
+			}
+
+			while(snapPoints.Count < count)
+			{
+				snapPoints.Add(default);
+			}
+
+			while(snapPoints.Count > count)
+			{
+				snapPoints.RemoveAt(count);
+			}
+
 			for (var i = 0; i < count; i++)
 			{
 				var view = Children[i];
@@ -114,6 +133,10 @@ namespace Windows.UI.Xaml.Controls
 					previousChildSize = desiredChildSize.Width;
 					childRectangle.Width = desiredChildSize.Width;
 					childRectangle.Height = Math.Max(arrangeSize.Height, desiredChildSize.Height);
+
+					var snapPoint = (float)childRectangle.Right;
+					snapPointsChanged |= snapPoints[i] == snapPoint;
+					snapPoints[i] = snapPoint;
 				}
 				else
 				{
@@ -127,6 +150,10 @@ namespace Windows.UI.Xaml.Controls
 					previousChildSize = desiredChildSize.Height;
 					childRectangle.Height = desiredChildSize.Height;
 					childRectangle.Width = Math.Max(arrangeSize.Width, desiredChildSize.Width);
+
+					var snapPoint = (float)childRectangle.Bottom;
+					snapPointsChanged |= snapPoints[i] == snapPoint;
+					snapPoints[i] = snapPoint;
 				}
 
 				var adjustedRectangle = childRectangle;
@@ -135,6 +162,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var finalSizeWithBorderAndPadding = arrangeSize.Add(borderAndPaddingSize);
+
+			if(snapPointsChanged)
+			{
+				if(isHorizontal)
+				{
+					HorizontalSnapPointsChanged?.Invoke(this, this);
+				}
+				else
+				{
+					VerticalSnapPointsChanged?.Invoke(this, this);
+				}
+			}
 
 			return finalSizeWithBorderAndPadding;
 		}

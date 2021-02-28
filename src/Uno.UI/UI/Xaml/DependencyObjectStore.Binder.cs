@@ -30,6 +30,7 @@ namespace Windows.UI.Xaml
 	{
 		private delegate void DataContextProviderAction(IDataContextProvider provider);
 		private delegate void ObjectAction(object instance);
+		internal delegate bool DefaultValueProvider(DependencyProperty property, out object defaultValue);
 
 		private readonly object _gate = new object();
 
@@ -467,6 +468,11 @@ namespace Windows.UI.Xaml
 		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object value)
 		{
 			_properties.SetSourceValue(propertyDetails, value);
+		}
+
+		internal void RegisterDefaultValueProvider(DefaultValueProvider provider)
+		{
+			_properties.RegisterDefaultValueProvider(provider);
 		}
 
 		/// <summary>

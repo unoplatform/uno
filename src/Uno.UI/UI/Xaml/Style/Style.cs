@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml
 			return style;
 		}
 
-		private static bool ShouldUseUWPDefaultStyle(Type type)
+		internal static bool ShouldUseUWPDefaultStyle(Type type)
 		{
 			if (type != null && FeatureConfiguration.Style.UseUWPDefaultStylesOverride.TryGetValue(type, out var value))
 			{

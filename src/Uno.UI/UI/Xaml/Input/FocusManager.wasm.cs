@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				_log.Value.LogDebug($"{nameof(ProcessControlFocused)}() _focusedElement={_focusedElement}, control={control}");
+				_log.Value.LogDebug($"{nameof(ProcessControlFocused)}() focusedElement={GetFocusedElement()}, control={control}");
 			}
 
 			UpdateFocus(control, FocusNavigationDirection.None, FocusState.Pointer);
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				_log.Value.LogDebug($"{nameof(ProcessElementFocused)}() _focusedElement={_focusedElement}, element={element}");
+				_log.Value.LogDebug($"{nameof(ProcessElementFocused)}() focusedElement={GetFocusedElement()}, element={element}");
 			}
 
 			// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())

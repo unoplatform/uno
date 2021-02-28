@@ -82,12 +82,47 @@ namespace Windows.UI.Xaml.Controls
 
 		public double ExtentHeight
 		{
-			get => Content is FrameworkElement fe ? fe.DesiredSize.Height : 0;
+			get
+			{
+				if (Content is FrameworkElement fe)
+				{
+					var explicitHeight = fe.Height;
+					if(!explicitHeight.IsNaN())
+					{
+						return explicitHeight;
+					}
+					var canUseActualHeightAsExtent =
+						ActualHeight > 0 &&
+						fe.VerticalAlignment == VerticalAlignment.Stretch;
+
+					return canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
+				}
+
+				return 0d;
+			}
 		}
 
 		public double ExtentWidth
 		{
-			get => Content is FrameworkElement fe ? fe.DesiredSize.Width : 0;
+			get
+			{
+				if (Content is FrameworkElement fe)
+				{
+					var explicitWidth = fe.Width;
+					if (!explicitWidth.IsNaN())
+					{
+						return explicitWidth;
+					}
+
+					var canUseActualWidthAsExtent =
+						ActualWidth > 0 &&
+						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
+
+					return canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
+				}
+
+				return 0d;
+			}
 		}
 
 		public double ViewportHeight => DesiredSize.Height;

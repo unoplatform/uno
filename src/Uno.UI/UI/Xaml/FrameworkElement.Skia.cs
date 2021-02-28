@@ -234,7 +234,6 @@ namespace Windows.UI.Xaml
 			}
 			remove
 			{
-				
 				_loading -= value;
 			}
 		}

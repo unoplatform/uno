@@ -38,6 +38,7 @@ namespace Windows.UI.Xaml
 		private int _entriesLength;
 		private int _minId;
 		private int _maxId;
+		private DependencyObjectStore.DefaultValueProvider? _defaultValueProvider;
 
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
@@ -114,6 +115,11 @@ namespace Windows.UI.Xaml
 				if (forceCreate && propertyEntry == null)
 				{
 					propertyEntry = new DependencyPropertyDetails(property, _ownerType);
+
+					if(_defaultValueProvider != null && _defaultValueProvider(property, out var v))
+					{
+						propertyEntry.SetValue(v, DependencyPropertyValuePrecedences.DefaultValue);
+					}
 				}
 
 				return propertyEntry;
@@ -146,7 +152,13 @@ namespace Windows.UI.Xaml
 					}
 
 					ref var propertyEntry = ref _entries![property.UniqueId - _minId];
-					return propertyEntry = new DependencyPropertyDetails(property, _ownerType);
+					propertyEntry = new DependencyPropertyDetails(property, _ownerType);
+					if (_defaultValueProvider != null && _defaultValueProvider(property, out var v))
+					{
+						propertyEntry.SetValue(v, DependencyPropertyValuePrecedences.DefaultValue);
+					}
+
+					return propertyEntry;
 				}
 				else
 				{
@@ -176,5 +188,10 @@ namespace Windows.UI.Xaml
 		}
 
 		internal IEnumerable<DependencyPropertyDetails> GetAllDetails() => _entries.Trim();
+
+		public void RegisterDefaultValueProvider(DependencyObjectStore.DefaultValueProvider provider)
+		{
+			_defaultValueProvider = provider;
+		}
 	}
 }

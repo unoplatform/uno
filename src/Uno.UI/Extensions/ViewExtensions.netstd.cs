@@ -7,6 +7,9 @@ using System.Text;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Uno.Extensions;
+using Uno.UI.Extensions;
 
 namespace Uno.UI
 {
@@ -97,7 +100,8 @@ namespace Uno.UI
 					.Append(fe!= null && fe.Opacity != 1 ? $"Opacity={fe.Opacity} " : "")
 					.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
 					.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
-					.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
+					.Append(uiElement?.GetElementSpecificDetails())
+					.Append(uiElement?.RenderTransform.GetTransformDetails())
 					.AppendLine();
 			}
 		}

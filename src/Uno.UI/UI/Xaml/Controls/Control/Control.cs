@@ -1135,5 +1135,28 @@ namespace Windows.UI.Xaml.Controls
 
 		public string[] CurrentVisualStates => VisualStateGroups.Select(vsg => vsg.CurrentState?.Name).ToArray();
 #endif
+
+		internal void ConditionallyGetTemplatePartAndUpdateVisibility<T>(
+			string strName,
+			bool visible,
+			ref T element) where T:UIElement
+        {
+            if (element == null && (visible /*|| !DXamlCore::GetCurrent()->GetHandle()->GetDeferredElementIfExists(strName, GetHandle(), Jupiter::NameScoping::NameScopeType::TemplateNameScope))*/))
+            {
+                // If element should be visible or is not deferred, then fetch it.
+				element = GetTemplateChild(strName) as T;
+			}
+
+            // If element was found then set its Visibility - this is behavior consistent with pre-Threshold releases.
+            if (element != null)
+            {
+                var spElementAsUIE = element as UIElement;
+
+                if (spElementAsUIE != null) 
+                {
+                    spElementAsUIE.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+        }
 	}
 }

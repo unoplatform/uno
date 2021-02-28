@@ -146,6 +146,17 @@ namespace Windows.UI.Xaml.Media
 				.AsReadOnly();
 		}
 
+		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot == XamlRoot.Current)
+			{
+				return GetOpenPopups(Window.Current);
+			}
+
+			return new Popup[0];
+		}
+
+
 		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
 #if XAMARIN

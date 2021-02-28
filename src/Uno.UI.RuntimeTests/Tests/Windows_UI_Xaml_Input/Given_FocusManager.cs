@@ -8,6 +8,8 @@ using Private.Infrastructure;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 {
@@ -18,6 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[RunsOnUIThread]
 		public async Task GotLostFocus()
 		{
+			using var _ = new AssertionScope();
 			try
 			{
 				var panel = new StackPanel();
@@ -27,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				var receivedLostFocus = new bool[4];
 
 				var buttons = new Button[4];
-				for (int i = 0; i < 4; i++)
+				for (var i = 0; i < 4; i++)
 				{
 					var button = new Button
 					{
@@ -45,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 				const int tries = 10;
 				var initialSuccess = false;
-				for (int i = 0; i < tries; i++)
+				for (var i = 0; i < tries; i++)
 				{
 					initialSuccess = buttons[0].Focus(FocusState.Programmatic);
 					if (initialSuccess)
@@ -56,38 +59,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 					await Task.Delay(50); //
 				}
 				
-				Assert.IsTrue(initialSuccess);
+				initialSuccess.Should().BeTrue("initialSuccess");
 				AssertHasFocus(buttons[0]);
 				await TestServices.WindowHelper.WaitForIdle();
 
 				AssertHasFocus(buttons[0]);
 
-				for (int i = 0; i < 4; i++)
+				for (var i = 0; i < 4; i++)
 				{
 					var inner = i;
 					buttons[i].GotFocus += (o, e) =>
 					{
 						receivedGotFocus[inner] = true;
 						wasEventRaised = true;
-						Assert.IsNotNull(FocusManager.GetFocusedElement());
+						FocusManager.GetFocusedElement().Should().NotBeNull($"buttons[{i}].GotFocus");
 					};
 
 					buttons[i].LostFocus += (o, e) =>
 					{
 						receivedLostFocus[inner] = true;
 						wasEventRaised = true;
-						Assert.IsNotNull(FocusManager.GetFocusedElement());
+						FocusManager.GetFocusedElement().Should().NotBeNull($"buttons[{i}].LostFocus");
 					};
 				}
 
 				FocusManager.GotFocus += (o, e) =>
 				{
-					Assert.IsNotNull(FocusManager.GetFocusedElement());
+					FocusManager.GetFocusedElement().Should().NotBeNull($"FocusManager.GotFocus - element");
 					wasEventRaised = true;
 				};
 				FocusManager.LostFocus += (o, e) =>
 				{
-					Assert.IsNotNull(FocusManager.GetFocusedElement());
+					FocusManager.GetFocusedElement().Should().NotBeNull($"FocusManager.LostFocus - element");
 					wasEventRaised = true;
 				};
 
@@ -96,20 +99,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				buttons[2].Focus(FocusState.Programmatic);
 
 				AssertHasFocus(buttons[2]);
-				Assert.IsFalse(wasEventRaised);
+				wasEventRaised.Should().BeFalse("No event raised");
 				await TestServices.WindowHelper.WaitForIdle();
 				AssertHasFocus(buttons[2]);
-				Assert.IsTrue(wasEventRaised);
+				wasEventRaised.Should().BeTrue("event raised");
 
-				Assert.IsFalse(receivedGotFocus[0]);
-				Assert.IsTrue(receivedGotFocus[1]);
-				Assert.IsTrue(receivedGotFocus[2]);
-				Assert.IsTrue(receivedGotFocus[3]);
 
-				Assert.IsTrue(receivedLostFocus[0]);
-				Assert.IsTrue(receivedLostFocus[1]);
-				Assert.IsFalse(receivedLostFocus[2]);
-				Assert.IsTrue(receivedLostFocus[3]);
+				receivedGotFocus[0].Should().BeFalse("receivedGotFocus[0]");
+				receivedGotFocus[1].Should().BeTrue("receivedGotFocus[1]");
+				receivedGotFocus[2].Should().BeTrue("receivedGotFocus[2]");
+				receivedGotFocus[3].Should().BeTrue("receivedGotFocus[3]");
+
+				receivedLostFocus[0].Should().BeTrue("receivedLostFocus[0]");
+				receivedLostFocus[1].Should().BeTrue("receivedLostFocus[1]");
+				receivedLostFocus[2].Should().BeFalse("receivedLostFocus[2]");
+				receivedLostFocus[3].Should().BeTrue("receivedLostFocus[3]");
 			}
 			finally
 			{
@@ -148,11 +152,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 		private void AssertHasFocus(Control control)
 		{
-			Assert.IsNotNull(control);
+			control.Should().NotBeNull("control");
 			var focused = FocusManager.GetFocusedElement();
-			Assert.IsNotNull(focused);
-			Assert.AreEqual(focused, control);
-			Assert.AreNotEqual(FocusState.Unfocused, control.FocusState);
+			focused.Should().NotBeNull("focused element");
+			focused.Should().BeSameAs(control, "must be same element");
+			control.FocusState.Should().NotBe(FocusState.Unfocused);
 		}
 	}
 }

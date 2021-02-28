@@ -6,10 +6,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class PickerFlyoutBase : FlyoutBase
 	{
-#if __IOS__ || __ANDROID__
-		protected PickerFlyoutBase()
-		{
-		}
-#endif
+		public static DependencyProperty TitleProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+				"Title", typeof(string),
+				typeof(PickerFlyoutBase),
+				new FrameworkPropertyMetadata(default(string)));
+
+		public static string GetTitle(DependencyObject element) => (string)element.GetValue(TitleProperty);
+
+		public static void SetTitle(DependencyObject element, string value) => element.SetValue(TitleProperty, value);
+
+		protected virtual void OnConfirmed() => throw new InvalidOperationException();
+
+		protected virtual bool ShouldShowConfirmationButtons() => throw new InvalidOperationException();
 	}
+
 }

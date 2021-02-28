@@ -60,7 +60,6 @@ namespace Uno.UI.Samples.Tests
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
-			_cts = new CancellationTokenSource();
 			var filter = testFilter.Text.Trim();
 			if (string.IsNullOrEmpty(filter))
 			{
@@ -135,7 +134,8 @@ namespace Uno.UI.Samples.Tests
 					{
 						Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})",
 						Foreground = new SolidColorBrush(Colors.White),
-						FontSize = 16d
+						FontSize = 16d,
+						IsTextSelectionEnabled = true
 					};
 
 					testResults.Children.Add(testResultBlock);
