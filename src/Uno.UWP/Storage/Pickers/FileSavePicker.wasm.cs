@@ -40,7 +40,7 @@ namespace Windows.Storage.Pickers
 			var showAllEntryParameter = "true";
 			var fileTypeMapParameter = JsonHelper.Serialize(BuildFileTypesMap());
 
-			var promise = $"{JsType}.pickSaveFileAsync({showAllEntryParameter},'{WebAssemblyRuntime.EscapeJs(fileTypeMapParameter)}')";
+			var promise = $"{JsType}.nativePickSaveFileAsync({showAllEntryParameter},'{WebAssemblyRuntime.EscapeJs(fileTypeMapParameter)}')";
 			var nativeStorageItemInfo = await WebAssemblyRuntime.InvokeAsync(promise);
 			if (nativeStorageItemInfo is null)
 			{

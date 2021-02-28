@@ -2,13 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno;
 using Uno.Foundation;
 using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
+using Uno.Storage.Pickers.Internal;
 
 namespace Windows.Storage.Pickers
 {
@@ -29,66 +31,133 @@ namespace Windows.Storage.Pickers
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
+			if (WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers && IsNativePickerSupported())
+			{
+				return await NativePickerPickFilesAsync(multiple, token);
+			}
+
+			return await UploadPickerPickSaveFileAsync(multiple, token);
+		}
+
+		private bool IsNativePickerSupported()
+		{
+			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
+			return bool.TryParse(isSupportedString, out var isSupported) && isSupported;
+		}
+
+		private async Task<FilePickerSelectedFilesArray> NativePickerPickFilesAsync(bool multiple, CancellationToken token)
+		{
 			var showAllEntryParameter = FileTypeFilter.Contains("*") ? "true" : "false";
 			var multipleParameter = multiple ? "true" : "false";
-			var fileTypeMapParameter = BuildFileTypesMap();
+			var fileTypeAcceptTypes = BuildFileTypesMap();
+			var fileTypeAcceptTypesJson = JsonHelper.Serialize(fileTypeAcceptTypes);
+			var fileTypeMapParameter = WebAssemblyRuntime.EscapeJs(fileTypeAcceptTypesJson);
 
-			var nativeStorageItemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickFilesAsync({multipleParameter},{showAllEntryParameter},{fileTypeMapParameter})");
+			var nativeStorageItemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.nativePickFilesAsync({multipleParameter},{showAllEntryParameter},'{fileTypeMapParameter}')");
 			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson);
+
 			var results = new List<StorageFile>();
 			foreach (var info in infos)
 			{
 				var storageFile = StorageFile.GetFromNativeInfo(info);
 				results.Add(storageFile);
 			}
+
 			return new FilePickerSelectedFilesArray(results.ToArray());
 		}
 
-		private string BuildFileTypesMap()
+		private NativeFilePickerAcceptType[] BuildFileTypesMap()
 		{
-			var mimeTypeMap = new Dictionary<string, List<string>>();
-			foreach (var fileType in FileTypeFilter)
+			var acceptTypes = new List<NativeFilePickerAcceptType>();
+
+			var mimeTypeGroups = FileTypeFilter
+				.Except(new[] { "*" })
+				.GroupBy(f => MimeTypeService.GetFromExtension(f))
+				.ToArray();
+
+			var allAccepts = new List<NativeFilePickerAcceptTypeItem>();
+
+			foreach (var mimeTypeGroup in mimeTypeGroups)
 			{
-				if (fileType == "*")
+				var extensions = mimeTypeGroup.ToArray();
+
+				var acceptType = new NativeFilePickerAcceptType();
+				acceptType.Description = extensions.Length > 1 ? string.Empty : extensions.First();
+
+				var acceptItem = new NativeFilePickerAcceptTypeItem()
+				{
+					MimeType = mimeTypeGroup.Key,
+					Extensions = extensions
+				};
+				allAccepts.Add(acceptItem);
+
+				acceptType.Accept = new[] { acceptItem };
+				acceptTypes.Add(acceptType);
+			}
+
+			if (allAccepts.Count > 1)
+			{
+				var fullAcceptType = new NativeFilePickerAcceptType()
+				{
+					Description = "All",
+					Accept = allAccepts.ToArray()
+				};
+
+				acceptTypes.Insert(0, fullAcceptType);
+			}
+
+			return acceptTypes.ToArray();
+		}
+
+		private async Task<FilePickerSelectedFilesArray> UploadPickerPickSaveFileAsync(bool multiple, CancellationToken token)
+		{
+			var multipleParameter = multiple ? "true" : "false";
+			var acceptParameter = WebAssemblyRuntime.EscapeJs(BuildAcceptString());
+			var temporaryFolder = ApplicationData.Current.LocalCacheFolder;
+			if (!Directory.Exists(temporaryFolder.Path))
+			{
+				temporaryFolder.MakePersistent();
+			}
+			var targetFolder = Directory.CreateDirectory(Path.Combine(temporaryFolder.Path, Guid.NewGuid().ToString()));
+			var targetFolderParameter = WebAssemblyRuntime.EscapeJs(targetFolder.FullName);
+			var jsUploadQuery = $"{JsType}.uploadPickFilesAsync({multipleParameter},'{targetFolderParameter}','{acceptParameter}')";
+			var fileCountString = await WebAssemblyRuntime.InvokeAsync(jsUploadQuery);
+			if (int.TryParse(fileCountString, out var fileCount))
+			{
+				var files = targetFolder
+					.GetFiles()
+					.Select(f => StorageFile.GetFileFromPath(f.FullName))
+					.ToArray();
+
+				return new FilePickerSelectedFilesArray(files);
+			}
+			return new FilePickerSelectedFilesArray(Array.Empty<StorageFile>());
+		}
+
+		private string BuildAcceptString()
+		{
+			var mimeTypes = new HashSet<string>();
+			foreach (var fileExtension in FileTypeFilter)
+			{
+				if (fileExtension == "*")
 				{
 					continue;
 				}
 
-				var mimeType = MimeTypeService.GetFromExtension(fileType);
-
-				if (!mimeTypeMap.TryGetValue(mimeType, out var extensionList))
+				var mimeType = MimeTypeService.GetFromExtension(fileExtension);
+				if (!mimeTypes.Contains(mimeType))
 				{
-					extensionList = new List<string>();
-					mimeTypeMap[mimeType] = extensionList;
+					mimeTypes.Add(mimeType);
 				}
-				extensionList.Add(fileType);
 			}
 
-			if (mimeTypeMap.Count == 0)
+			if (mimeTypes.Count == 0)
 			{
-				return "{}";
+				// No restriction
+				return string.Empty;
 			}
 
-			// Build JSON object with the extensions/MIME types
-			var builder = new StringBuilder();
-			builder.Append("{");
-			bool firstItem = true;
-			foreach (var mimeType in mimeTypeMap)
-			{
-				if (!firstItem)
-				{
-					builder.Append(",");
-				}
-				firstItem = false;
-
-				builder.Append("'");
-				builder.Append(mimeType.Key.Replace("'", "\'"));
-				builder.Append("':[");
-				builder.Append(string.Join(",", mimeType.Value.Select(extension => "'" + extension.Replace("'", "\'") + "'")));
-				builder.Append("]");
-			}
-			builder.Append("}");
-			return builder.ToString();
+			return string.Join(", ", mimeTypes);
 		}
 	}
 }

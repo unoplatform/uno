@@ -16,7 +16,7 @@ namespace Windows.Storage
 		internal static StorageFolder GetFromNativeInfo(NativeStorageItemInfo info, StorageFolder? parent) =>
 			new StorageFolder(new NativeStorageFolder(info, parent));
 
-		internal static Task<StorageFolder> GetPrivateRootAsync() => NativeStorageFolder.GetPrivateRootAsync();
+		internal static Task<StorageFolder?> GetPrivateRootAsync() => NativeStorageFolder.GetPrivateRootAsync();
 
 		internal sealed class NativeStorageFolder : ImplementationBase
 		{

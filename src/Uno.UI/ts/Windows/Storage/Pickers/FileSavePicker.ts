@@ -5,7 +5,7 @@
 			return typeof showSaveFilePicker === "function";
 		}
 
-		public static async pickSaveFileAsync(showAllEntry: boolean, fileTypesJson: any): Promise<string> {
+		public static async nativePickSaveFileAsync(showAllEntry: boolean, fileTypesJson: string): Promise<string> {
 
 			if (!FileSavePicker.isNativeSupported()) {
 				return null;
