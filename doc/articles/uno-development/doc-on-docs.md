@@ -6,6 +6,12 @@ We have a few different fill-in-the-blanks style templates, linked below.
 
 For the DocFX tool used to build the docs website, see [more info here](docfx.md).
 
+#### Key links
+
+ * howto template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
+ * WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
+ * Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
+
 ## Step-by-step guides
 
 Step-by-step guides that address a particular problem or use case that multiple developers are likely to encounter. 
@@ -34,10 +40,10 @@ If it's just a case of part of the functionality not being implemented yet, **an
 
 But sometimes the functionality **can't** be supported, due to intrinsic limitations of the target platform. (This is more likely to be the case with non-UI features.) And/or part of the functionality may implicitly fail to work, even though none of the entry points are marked `NotImplemented`. 
 
-In those cases, it's important to add documentation. Copy the [Uno-only feature template here](https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md) to the [features directory](https://github.com/unoplatform/uno/tree/master/doc/articles/features) (or [controls directory](https://github.com/unoplatform/uno/tree/master/doc/articles/controls) for controls inheriting from `FrameworkElement`) and fill in the appropriate sections. Make sure to fill in the matrix describing which features are supported on which platforms.
+In those cases, it's important to add documentation. Copy the [WinUI feature template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md) to the [features directory](https://github.com/unoplatform/uno/tree/master/doc/articles/features) (or [controls directory](https://github.com/unoplatform/uno/tree/master/doc/articles/controls) for controls inheriting from `FrameworkElement`) and fill in the appropriate sections. Make sure to fill in the matrix describing which features are supported on which platforms.
 
 ### I'm implementing a feature that's not part of WinUI
 
 Rarely, features are added to Uno Platform that aren't part of WinUI (`VisibleBoundsPadding` and `ElevatedView` are two examples). Somewhat more commonly, platform-specific functionality or options are added to an existing feature.
 
-It's important to document these novel features when you add them, since they aren't covered anywhere else. Again, copy the [WinUI feature template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md) to the [features directory](https://github.com/unoplatform/uno/tree/master/doc/articles/features) and fill in the sections.
+It's important to document these novel features when you add them, since they aren't covered anywhere else. Again, copy the [Uno-only feature template here](https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md) to the [features directory](https://github.com/unoplatform/uno/tree/master/doc/articles/features) and fill in the sections.
