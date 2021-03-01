@@ -63,7 +63,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" Version="4.1.2" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" Version="4.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>
