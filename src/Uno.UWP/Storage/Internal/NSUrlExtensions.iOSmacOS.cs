@@ -6,7 +6,7 @@ namespace Uno.Storage.Pickers.Internal
 {
 	internal static class NSUrlExtensions
     {
-		public static IDisposable CreateSecurityScopedAccess(this NSUrl nsUrl)
+		public static IDisposable BeginSecurityScopedAccess(this NSUrl nsUrl)
 		{
 			if (!nsUrl.StartAccessingSecurityScopedResource())
 			{

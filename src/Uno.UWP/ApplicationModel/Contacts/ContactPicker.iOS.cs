@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Contacts;
 using ContactsUI;
 using UIKit;
+using Uno.Helpers.Theming;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.ApplicationModel.Contacts
 {
@@ -34,6 +36,9 @@ namespace Windows.ApplicationModel.Contacts
 					(ICNContactPickerDelegate)new MultipleContactPickerDelegate(completionSource) :
 					(ICNContactPickerDelegate)new SingleContactPickerDelegate(completionSource),
 			};
+
+			picker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
+				UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
 
 			await controller.PresentViewControllerAsync(picker, true);
 
