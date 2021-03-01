@@ -62,9 +62,6 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		public Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
-			=> GetGeopositionAsync();
-
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
 		{
 			var status = GeolocationAccessStatus.Allowed;
