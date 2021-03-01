@@ -79,7 +79,7 @@
 		<PackageReference Include="Uno.Wasm.WebSockets" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" />
-		<PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
