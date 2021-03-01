@@ -48,8 +48,8 @@
       href: platform-specific-xaml.md
     - name: Feature flags
       href: feature-flags.md
-    - name: features/using-il-linker-webassembly.md
-      href: feature-flags.md
+    - name: IL Linker for WebAssembly
+      href: features/using-il-linker-webassembly.md
     - name: Uno.UI.Toolkit
       href: Uno.UI.Toolkit.md
     - name: Migrating from Previous Releases
