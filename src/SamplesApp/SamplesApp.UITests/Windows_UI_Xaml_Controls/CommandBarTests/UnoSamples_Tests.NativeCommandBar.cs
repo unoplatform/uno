@@ -232,9 +232,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			// Removing the global style we added for the CommandBar preventing other UITest to fail
 			_app.FastTap("UnsetGlobalStyleButton");
 		}
-<<<<<<< HEAD
-=======
 
+#if false // disabled because of missing tests APIs
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
@@ -258,7 +257,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.Wait(TimeSpan.FromMilliseconds(500));
 
-			using var bmp = TakeScreenshot("Source set");
+			var bmp = TakeScreenshot("Source set");
 
 			var borderThickness = LogicalToPhysical(3);
 
@@ -270,6 +269,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			// Removing the global style we added for the CommandBar preventing other UITest to fail
 			_app.FastTap("UnsetGlobalStyleButton");
 		}
+#endif
 
 		[Test]
 		[AutoRetry]
@@ -324,9 +324,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
 		}
-<<<<<<< HEAD
->>>>>>> d9446aa937... test: Add CommandBar UITest
-=======
 
 		[Test]
 		[AutoRetry]
@@ -352,6 +349,5 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
 		}
->>>>>>> b78e4aafe5... test: Add CommandBar.iOS Test
 	}
 }
