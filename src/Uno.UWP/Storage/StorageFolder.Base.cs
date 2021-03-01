@@ -56,7 +56,7 @@ namespace Windows.Storage
 
 			public abstract Task<IReadOnlyList<StorageFolder>> GetFoldersAsync(CancellationToken ct);
 
-			public abstract Task DeleteAsync(CancellationToken ct);
+			public abstract Task DeleteAsync(StorageDeleteOption options, CancellationToken ct);
 
 			protected Exception NotSupported([CallerMemberName] string? method = null) =>
 				new NotSupportedException($"{method} is not supported yet for {GetType().Name}");

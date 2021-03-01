@@ -82,8 +82,10 @@ namespace Windows.Storage
 		public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName, CreationCollisionOption options) =>
 			AsyncOperation.FromTask(ct => Implementation.CreateFileAsync(desiredName, options, ct));
 
-		public IAsyncAction DeleteAsync() =>
-			AsyncAction.FromTask(ct => Implementation.DeleteAsync(ct));
+		public IAsyncAction DeleteAsync() => DeleteAsync(StorageDeleteOption.Default);
+
+		public IAsyncAction DeleteAsync(StorageDeleteOption option) =>
+			AsyncAction.FromTask(ct => Implementation.DeleteAsync(option, ct));
 
 		public IAsyncOperation<IReadOnlyList<IStorageItem>> GetItemsAsync() =>
 			AsyncOperation.FromTask(ct => Implementation.GetItemsAsync(ct));

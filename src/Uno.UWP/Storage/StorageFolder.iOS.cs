@@ -9,7 +9,7 @@ namespace Windows.Storage
 {
 	public partial class StorageFolder
 	{
-		internal static StorageFolder GetFolderFromSecurityScopedUrl(NSUrl nsUrl) =>
+		internal static StorageFolder GetFromSecurityScopedUrl(NSUrl nsUrl) =>
 			new StorageFolder(new SecurityScopedFolder(nsUrl));
 
 		internal class SecurityScopedFolder : ImplementationBase
@@ -39,7 +39,7 @@ namespace Windows.Storage
 
 			public override Task<StorageFolder> CreateFolderAsync(string folderName, CreationCollisionOption option, CancellationToken token) => throw new global::System.NotImplementedException();
 
-			public override Task DeleteAsync(CancellationToken ct) => throw new global::System.NotImplementedException();
+			public override Task DeleteAsync(StorageDeleteOption options, CancellationToken ct) => throw new global::System.NotImplementedException();
 
 			public override Task<StorageFile> GetFileAsync(string name, CancellationToken token) => throw new global::System.NotImplementedException();
 
