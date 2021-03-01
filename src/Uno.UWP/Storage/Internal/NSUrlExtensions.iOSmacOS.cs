@@ -2,7 +2,7 @@
 using Foundation;
 using Uno.Disposables;
 
-namespace Uno.Storage.Pickers.Internal
+namespace Uno.Storage.Internal
 {
 	internal static class NSUrlExtensions
     {

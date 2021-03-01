@@ -40,7 +40,7 @@ namespace Windows.Storage.Pickers
 				return null;
 			}
 
-			return StorageFolder.GetFolderFromSecurityScopedUrl(nsUrl);
+			return StorageFolder.GetFromSecurityScopedUrl(nsUrl);
 		}
 
 		private class FolderPickerDelegate : UIDocumentPickerDelegate
