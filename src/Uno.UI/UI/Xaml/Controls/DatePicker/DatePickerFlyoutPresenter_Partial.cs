@@ -466,7 +466,11 @@ namespace Windows.UI.Xaml.Controls
 				_tpYearSource = spCollection;
 			}
 
-			RefreshSetup();
+			if (_calendarIdentifier != null)
+			{
+				RefreshSetup();
+			}
+
 			((IDatePickerFlyoutPresenter)this).SetAcceptDismissButtonsVisibility(_acceptDismissButtonsVisible);
 			// Apply a shadow
 			bool isDefaultShadowEnabled;
