@@ -1,5 +1,7 @@
 - name: Getting started
   items:
+    - name: Introduction
+      href: get-started.md
     - name: Getting Started on Visual Studio
       href: get-started-vs.md
     - name: Getting Started on Visual Studio for Mac
