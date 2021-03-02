@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if UNO_HAS_MANAGED_POINTERS
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -33,13 +34,13 @@ namespace Windows.UI.Xaml
 
 			public PointerManager()
 			{
-				Window.Current.CoreWindow.PointerMoved += CoreWindow_PointerMoved;
-				Window.Current.CoreWindow.PointerEntered += CoreWindow_PointerEntered;
-				Window.Current.CoreWindow.PointerExited += CoreWindow_PointerExited;
-				Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
-				Window.Current.CoreWindow.PointerReleased += CoreWindow_PointerReleased;
-				Window.Current.CoreWindow.PointerWheelChanged += CoreWindow_PointerWheelChanged;
-				Window.Current.CoreWindow.PointerCancelled += CoreWindow_PointerCancelled;
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerMoved += CoreWindow_PointerMoved;
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerEntered += CoreWindow_PointerEntered;
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerExited += CoreWindow_PointerExited;
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerReleased += CoreWindow_PointerReleased;
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerWheelChanged += CoreWindow_PointerWheelChanged;
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerCancelled += CoreWindow_PointerCancelled;
 			}
 
 			private void CoreWindow_PointerWheelChanged(CoreWindow sender, PointerEventArgs args)
@@ -48,8 +49,8 @@ namespace Windows.UI.Xaml
 
 				// Even if impossible for the Release, we are fallbacking on the RootElement for safety
 				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-				originalSource ??= Window.Current.Content;
+				// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Windows.UI.Xaml.Window.Current.Content;
 
 				if (originalSource is null)
 				{
@@ -104,8 +105,8 @@ namespace Windows.UI.Xaml
 
 				// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
 				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-				originalSource ??= Window.Current.Content;
+				// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Windows.UI.Xaml.Window.Current.Content;
 
 				if (originalSource is null)
 				{
@@ -134,8 +135,8 @@ namespace Windows.UI.Xaml
 
 				// Even if impossible for the Release, we are fallbacking on the RootElement for safety
 				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-				originalSource ??= Window.Current.Content;
+				// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Windows.UI.Xaml.Window.Current.Content;
 
 				if (originalSource is null)
 				{
@@ -184,8 +185,8 @@ namespace Windows.UI.Xaml
 				var (originalSource, staleBranch) = VisualTreeHelper.HitTest(args.CurrentPoint.Position, isStale: _isOver);
 
 				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-				originalSource ??= Window.Current.Content;
+				// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Windows.UI.Xaml.Window.Current.Content;
 
 				if (originalSource is null)
 				{
@@ -371,7 +372,11 @@ namespace Windows.UI.Xaml
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
-			if (!element.IsLoaded || !element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
+			if (
+#if !__MACOS__
+				!element.IsLoaded ||
+#endif
+				!element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
 			{
 				return HitTestability.Collapsed;
 			}
@@ -398,3 +403,4 @@ namespace Windows.UI.Xaml
 			=> CoreWindow.GetForCurrentThread()!.ReleasePointerCapture();
 	}
 }
+#endif

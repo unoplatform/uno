@@ -1,3 +1,4 @@
+#if UNO_HAS_MANAGED_POINTERS
 #nullable enable
 
 using System;
@@ -98,3 +99,4 @@ namespace Windows.UI.Core
 		void RaiseKeyDown(KeyEventArgs args);
 	}
 }
+#endif
