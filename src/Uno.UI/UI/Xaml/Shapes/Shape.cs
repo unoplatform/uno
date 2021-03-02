@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Shapes
 				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.NewValue)
 #else
 				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsArrange,
-				propertyChangedCallback: (s, e) => ((Shape)s)._brushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => s.InvalidateArrange())
+				propertyChangedCallback: (s, e) => ((Shape)s)._brushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => s.InvalidateArrange(), imageBrushCallback: () => s.InvalidateArrange())
 #endif
 			)
 		);
