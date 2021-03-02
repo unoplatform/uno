@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
 
-#if !__SKIA__
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
 			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 			// Note 2: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
@@ -1266,7 +1266,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdatePartial(isIntermediate);
 
-#if !__SKIA__
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Effective viewport support
 			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
 			InvalidateViewport();
