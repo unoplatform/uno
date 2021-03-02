@@ -230,6 +230,18 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
    ![Final result](assets/flatpickr-final.gif)
 
+## Troubleshooting
+If your JavaScript integration is not behaving properly, you can troubleshoot with hints below.
+
+### My JavaScript control does not accept pointer input
+In the constructor of your wrapper control, add the following:
+```
+// XAML behavior: a non-null background is required on an element to be "visible to pointers".
+// Uno reproduces this behavior, so we must set it here even if we're not using the background.
+// Not doing this will lead to a `pointer-events: none` CSS style on the control.
+Background = new SolidColorBrush(Colors.Transparent);
+```
+
 ## 🔬 Going further
 
 This article illustrates how to integrate external assets (JavaScript and css files) and how to leverage JavaScript's `CustomEvent` in an Uno application.

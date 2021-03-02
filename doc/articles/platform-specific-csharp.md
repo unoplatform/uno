@@ -32,9 +32,9 @@ The structure of an Uno app created with the default [Visual Studio template](ht
  | UWP         | `NETFX_CORE`  |
  | Android     | `__ANDROID__` |
  | iOS         | `__IOS__`     |
- | WebAssembly | `__WASM__`    |
+ | WebAssembly | `HAS_UNO_WASM`|
  | MacOS       | `__MACOS__`   |
- | Skia        | `__SKIA__`    |
+ | Skia        | `HAS_UNO_SKIA`|
  
 Note that you can combine conditionals with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. 
 
