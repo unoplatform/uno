@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+	#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FolderPicker 
@@ -93,7 +93,7 @@ namespace Windows.Storage.Pickers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__")]
 		public FolderPicker() 
 		{
@@ -118,7 +118,7 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.CommitButtonText.get
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.CommitButtonText.set
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.FileTypeFilter.get
-		#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> PickSingleFolderAsync()
 		{
