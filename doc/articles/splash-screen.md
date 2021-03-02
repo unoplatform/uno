@@ -1,4 +1,4 @@
-# Splash Screens
+# How to add a Splash Screen
 
 This article covers how to add a splash screen to your application.
 
