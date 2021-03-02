@@ -88,6 +88,8 @@
       href: using-uno-ui.md
     - name: About
       items:
+        - name: What is the Uno Platform?
+          href: what-is-uno.md
         - name: Supported platforms
           href: getting-started\requirements.md
         - name: Features list
