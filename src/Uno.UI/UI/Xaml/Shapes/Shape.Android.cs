@@ -63,15 +63,12 @@ namespace Windows.UI.Xaml.Shapes
 				return;
 			}
 
-			var translateMatrix = new Android.Graphics.Matrix();
-			var scaleMatrix = new Android.Graphics.Matrix();
+			var matrix = new Android.Graphics.Matrix();
 
-			translateMatrix.SetTranslate(ViewHelper.LogicalToPhysicalPixels(renderOriginX), ViewHelper.LogicalToPhysicalPixels(renderOriginY));
-			scaleMatrix.SetScale((float)scaleX * (float)ViewHelper.Scale, (float)scaleY * (float)ViewHelper.Scale);
+			matrix.SetScale((float)scaleX * (float)ViewHelper.Scale, (float)scaleY * (float)ViewHelper.Scale);
+			matrix.PostTranslate(ViewHelper.LogicalToPhysicalPixels(renderOriginX), ViewHelper.LogicalToPhysicalPixels(renderOriginY));
 
-			_path.Transform(scaleMatrix);
-			_path.Transform(translateMatrix);
-
+			_path.Transform(matrix);
 			size = size?.LogicalToPhysicalPixels();
 
 			_drawArea = GetPathBoundingBox(_path);
