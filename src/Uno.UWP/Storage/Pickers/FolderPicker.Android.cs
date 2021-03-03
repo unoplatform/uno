@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
-using Uno.Helpers.Activities;
 using Uno.UI;
 
 namespace Windows.Storage.Pickers
@@ -14,15 +13,22 @@ namespace Windows.Storage.Pickers
 	{
 		internal const int RequestCode = 6001;
 
-		private static TaskCompletionSource<Intent>? _currentFolderPickerRequest;
+		private static TaskCompletionSource<Intent?>? _currentFolderPickerRequest;
 
-		internal static bool TryHandleIntent(Intent intent)
+		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{
 			if (_currentFolderPickerRequest == null)
 			{
 				return false;
 			}
-			_currentFolderPickerRequest.SetResult(intent);
+			if (resultCode == Result.Canceled)
+			{
+				_currentFolderPickerRequest.SetResult(null);
+			}
+			else
+			{
+				_currentFolderPickerRequest.SetResult(intent);
+			}
 			return true;
 		}
 
@@ -33,19 +39,30 @@ namespace Windows.Storage.Pickers
 				throw new InvalidOperationException("Application activity is not yet set, API called too early.");
 			}
 			var intent = new Intent(Intent.ActionOpenDocumentTree);
-			_currentFolderPickerRequest = new TaskCompletionSource<Intent>();
+			_currentFolderPickerRequest = new TaskCompletionSource<Intent?>();
 
 			appActivity.StartActivityForResult(intent, RequestCode);
 
 			var resultIntent = await _currentFolderPickerRequest.Task;
 			_currentFolderPickerRequest = null;
 
-			if (resultIntent?.Data == null)
+			if (resultIntent?.Data != null)
 			{
-				return null;
+				return StorageFolder.GetFromSafUri(resultIntent.Data);
+			}
+			else if (resultIntent?.ClipData != null && resultIntent.ClipData.ItemCount > 0)
+			{
+				for (int itemIndex = 0; itemIndex < resultIntent.ClipData.ItemCount; itemIndex++)
+				{
+					var uri = resultIntent.ClipData.GetItemAt(itemIndex)?.Uri;
+					if (uri != null)
+					{
+						return StorageFolder.GetFromSafUri(uri);
+					}	
+				}
 			}
 
-			return StorageFolder.GetFromSafUri(resultIntent.Data);
+			return null;
 		}
 	}
 }

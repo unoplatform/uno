@@ -222,7 +222,10 @@ namespace Windows.UI.Xaml
 			switch (requestCode)
 			{
 				case FolderPicker.RequestCode:
-					FolderPicker.TryHandleIntent(data);
+					FolderPicker.TryHandleIntent(data, resultCode);
+					break;
+				case FileOpenPicker.RequestCode:
+					FileOpenPicker.TryHandleIntent(data, resultCode);
 					break;
 			}
 		}

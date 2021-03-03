@@ -18,6 +18,8 @@ namespace Windows.Storage.Pickers
 			_items = items ?? throw new ArgumentNullException(nameof(items));
 		}
 
+		internal static FilePickerSelectedFilesArray Empty { get; } = new FilePickerSelectedFilesArray(Array.Empty<StorageFile>());
+
 		public uint Size => (uint)_items.Count;
 
 		public StorageFile this[int index]
