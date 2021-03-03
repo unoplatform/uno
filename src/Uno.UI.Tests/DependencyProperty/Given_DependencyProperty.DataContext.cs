@@ -19,6 +19,7 @@ using Uno.UI;
 using Windows.UI.Xaml;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
+using System.Collections;
 
 namespace Uno.UI.Tests.BinderTests_DataContext
 {
@@ -177,6 +178,22 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			var templatedParent = new Grid();
 
 			SUT.MyList = new List<MyObject>() { sub1 };
+
+			SUT.DataContext = 42;
+			SUT.TemplatedParent = templatedParent;
+
+			Assert.AreEqual(42, sub1.DataContext);
+			Assert.AreEqual(templatedParent, sub1.TemplatedParent);
+		}
+
+		[TestMethod]
+		public void When_ValueInheritDataContext_And_IList_Non_Enumerable()
+		{
+			var SUT = new MyBasicListType();
+			var sub1 = new MyObject();
+			var templatedParent = new Grid();
+
+			SUT.MyList = new NonEnumerableList<MyObject>() { sub1 };
 
 			SUT.DataContext = 42;
 			SUT.TemplatedParent = templatedParent;
@@ -349,5 +366,42 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			get { return (MyControl)GetValue(InnerFrameworkProperty); }
 			set { SetValue(InnerFrameworkProperty, value); }
 		}
+	}
+
+	class NonEnumerableList<T> : IList<T>, IList
+	{
+		private List<T> _internal = new List<T>();
+
+		public T this[int index] { get => _internal[index]; set => _internal[index] = value; }
+
+		object IList.this[int index] { get => _internal[index]; set => _internal[index] = (T)value; }
+
+		public int Count => _internal.Count;
+
+		public bool IsReadOnly => false;
+
+		public bool IsFixedSize => false;
+
+		public object SyncRoot { get; } = new object();
+
+		public bool IsSynchronized => false;
+
+		public void Add(T item) => _internal.Add(item);
+
+		public int Add(object value) => throw new NotImplementedException();
+		public void Clear() => _internal.Clear();
+		public bool Contains(T item) => _internal.Contains(item);
+		public bool Contains(object value) => throw new NotImplementedException();
+		public void CopyTo(T[] array, int arrayIndex) => _internal.CopyTo(array, arrayIndex);
+		public void CopyTo(Array array, int index) => throw new NotImplementedException();
+		public IEnumerator<T> GetEnumerator() => throw new NotSupportedException();
+		public int IndexOf(T item) => _internal.IndexOf(item);
+		public int IndexOf(object value) => throw new NotImplementedException();
+		public void Insert(int index, T item) => _internal.Insert(index, item);
+		public void Insert(int index, object value) => throw new NotImplementedException();
+		public bool Remove(T item) => _internal.Remove(item);
+		public void Remove(object value) => throw new NotImplementedException();
+		public void RemoveAt(int index) => _internal.RemoveAt(index);
+		IEnumerator IEnumerable.GetEnumerator() => throw new NotSupportedException();
 	}
 }
