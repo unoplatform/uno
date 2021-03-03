@@ -130,16 +130,28 @@ namespace Windows.UI.Xaml
 					// The property value may be an enumerable of providers
 					var isValidEnumerable = !(child is string);
 
-					if (
-						isValidEnumerable
-						&& child is IEnumerable enumerable
-					)
+					if (isValidEnumerable)
 					{
-						foreach (var item in enumerable)
+						if (child is IList list)
 						{
-							if (item is IDependencyObjectStoreProvider provider2)
+							// Special case for IList where the child may not be enumerable
+
+							for (int childIndex = 0; childIndex < list.Count; childIndex++)
 							{
-								SetInherited(provider2);
+								if (list[childIndex] is IDependencyObjectStoreProvider provider2)
+								{
+									SetInherited(provider2);
+								}
+							}
+						}
+						else if (child is IEnumerable enumerable)
+						{
+							foreach (var item in enumerable)
+							{
+								if (item is IDependencyObjectStoreProvider provider2)
+								{
+									SetInherited(provider2);
+								}
 							}
 						}
 					}
