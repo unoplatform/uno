@@ -16,6 +16,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private TransformScrollStrategy() { }
 
+		public void Initialize(ScrollContentPresenter presenter) { }
+
 		public void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, bool disableAnimation)
 		{
 			var transform = view.RenderTransform as CompositeTransform ?? (CompositeTransform)(view.RenderTransform = new CompositeTransform());

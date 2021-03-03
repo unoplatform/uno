@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal interface IScrollStrategy
 	{
-		void Initialize(ScrollContentPresenter presenter) { }
+		void Initialize(ScrollContentPresenter presenter);
 		void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, bool disableAnimation);
 	}
 }

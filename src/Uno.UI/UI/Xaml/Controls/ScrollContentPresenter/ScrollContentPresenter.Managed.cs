@@ -1,4 +1,4 @@
-﻿//#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
@@ -10,7 +10,6 @@ using System.Text;
 using Windows.Foundation;
 using System.IO;
 using Windows.UI.Composition;
-using AppKit;
 using Uno.UI.Media;
 
 namespace Windows.UI.Xaml.Controls
@@ -143,78 +142,9 @@ namespace Windows.UI.Xaml.Controls
 
 			if (newValue is UIElement newElt)
 			{
-				AddSubview(newElt);
 				_strategy.Update(newElt, HorizontalOffset, VerticalOffset, 1, disableAnimation: true);
 			}
 		}
-
-
-		// DUPLICATE WITH NETSTD
-
-		protected override Size MeasureOverride(Size size)
-		{
-			if (Content is UIElement child)
-			{
-				var slotSize = size;
-
-				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Height = double.PositiveInfinity;
-				}
-				if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Width = double.PositiveInfinity;
-				}
-
-				child.Measure(slotSize);
-
-				return new Size(
-					Math.Min(size.Width, child.DesiredSize.Width),
-					Math.Min(size.Height, child.DesiredSize.Height)
-				);
-			}
-
-			return new Size(0, 0);
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			if (Content is UIElement child)
-			{
-				var slotSize = finalSize;
-				var desiredChildSize = child.DesiredSize;
-
-				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Height = Math.Max(desiredChildSize.Height, finalSize.Height);
-				}
-				if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				{
-					slotSize.Width = Math.Max(desiredChildSize.Width, finalSize.Width);
-				}
-
-				child.Arrange(new Rect(new Point(0, 0), slotSize));
-			}
-
-			return finalSize;
-		}
-
-		internal override bool IsViewHit()
-		{
-			return true;
-		}
-
-		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue)
-		{
-			MinimumZoomScale = newValue;
-		}
-
-		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue)
-		{
-			MaximumZoomScale = newValue;
-		}
-
-		// DUPLICATE WITH NETSTD
 
 		internal void Set(
 			double? horizontalOffset = null,
@@ -302,4 +232,4 @@ namespace Windows.UI.Xaml.Controls
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
 	}
 }
-//#endif
+#endif
