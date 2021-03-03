@@ -13,6 +13,7 @@ using Uno.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors;
+using Windows.Storage.Pickers;
 
 namespace Windows.UI.Xaml
 {
@@ -117,7 +118,7 @@ namespace Windows.UI.Xaml
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
-			
+
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.LayoutChanged += OnLayoutChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
@@ -212,6 +213,18 @@ namespace Windows.UI.Xaml
 			// In case this activity is in SingleTask mode, we try to handle
 			// the intent (for protocol activation scenarios).
 			(Application as NativeApplication)?.TryHandleIntent(intent);
+		}
+
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+		{
+			base.OnActivityResult(requestCode, resultCode, data);
+
+			switch (requestCode)
+			{
+				case FolderPicker.RequestCode:
+					FolderPicker.TryHandleIntent(data);
+					break;
+			}
 		}
 
 		/// <summary>
