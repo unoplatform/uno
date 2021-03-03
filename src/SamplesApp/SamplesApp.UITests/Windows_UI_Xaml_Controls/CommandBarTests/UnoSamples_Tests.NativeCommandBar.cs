@@ -271,6 +271,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 		}
 #endif
 
+#if false // test was not imported (origin from https://github.com/unoplatform/uno/pull/5287)
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
@@ -286,6 +287,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("Result"), "Text", "PASSED");
 		}
+#endif
 
 		[Test]
 		[AutoRetry]
