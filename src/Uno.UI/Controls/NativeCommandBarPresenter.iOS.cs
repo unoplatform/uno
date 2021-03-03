@@ -56,7 +56,9 @@ namespace Uno.UI.Controls
 			_navigationBar.SetNeedsLayout();
 
 			var navigationBarSuperview = _navigationBar?.Superview;
-			if (navigationBarSuperview == null || navigationBarSuperview is NativeCommandBarPresenter) // Prevents the UINavigationController's NavigationBar instance from being moved to the Page
+
+			// Prevents the UINavigationController's NavigationBar instance from being moved to the Page
+			if (FeatureConfiguration.CommandBar.AllowNativePresenterContent && (navigationBarSuperview == null || navigationBarSuperview is NativeCommandBarPresenter))
 			{
 				Content = _navigationBar;
 			}

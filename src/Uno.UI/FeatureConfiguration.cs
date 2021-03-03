@@ -287,13 +287,13 @@ namespace Uno.UI
 			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
 
 			/// <summary>
-			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
+			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="Windows.UI.Xaml.Controls.CommandBar"/>
 			/// and <see cref="AppBarButton"/>) to use their native styles.
 			/// </summary>
 			public static void ConfigureNativeFrameNavigation()
 			{
 				SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
-				SetUWPDefaultStylesOverride<CommandBar>(useUWPDefaultStyle: false);
+				SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
 				SetUWPDefaultStylesOverride<AppBarButton>(useUWPDefaultStyle: false);
 			}
 
@@ -474,6 +474,13 @@ namespace Uno.UI
 #if __IOS__
 			//TODO: Setting the default to true because of this: https://github.com/unoplatform/uno/issues/4611
 			public static bool UseLegacyStyle { get; set; } = true;
+#endif
+		}
+
+		public static class CommandBar
+		{
+#if __IOS__
+			public static bool AllowNativePresenterContent { get; set; } = false;
 #endif
 		}
 	}
