@@ -21,15 +21,16 @@ namespace Windows.UI.Xaml.Controls
 
 		protected internal override void Open()
 		{
+			var date = Date == DateTimeOffset.MinValue ? DateTimeOffset.Now : Date;
+
 			// Note: Month needs to be -1 since on Android months go from 0-11
 			// http://developer.android.com/reference/android/app/DatePickerDialog.OnDateSetListener.html#onDateSet(android.widget.DatePicker, int, int, int)
-
 			_dialog = new DatePickerDialog(
 				ContextHelper.Current,
 				OnDateSet,
-				Date.Year,
-				Date.Month - 1,
-				Date.Day
+				date.Year,
+				date.Month - 1,
+				date.Day
 			);
 
 			//Removes title that is unnecessary as it is a duplicate -> http://stackoverflow.com/questions/33486643/remove-title-from-datepickerdialog 

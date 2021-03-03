@@ -129,7 +129,8 @@ namespace Windows.UI.Xaml.Controls
 		private void DatePickerFlyout_Opening(object sender, EventArgs e)
 		{
 			InitializeContent();
-			UpdateSelectorDate(Date);
+			var date = Date == DateTimeOffset.MinValue ? DateTimeOffset.Now : Date;
+			UpdateSelectorDate(date);
 		}
 
 		private void DatePickerFlyout_Closed(object sender, EventArgs e)
