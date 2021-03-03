@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿#if !__MACOS__
+using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
@@ -53,3 +54,4 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
+#endif
