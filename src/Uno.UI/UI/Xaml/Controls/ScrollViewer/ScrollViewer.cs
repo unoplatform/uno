@@ -1129,7 +1129,7 @@ namespace Windows.UI.Xaml.Controls
 				_ => true
 			};
 
-			ChangeViewScroll(
+			ChangeViewCore(
 				horizontalOffset: null,
 				verticalOffset: e.NewValue,
 				zoomFactor: null,
@@ -1150,7 +1150,7 @@ namespace Windows.UI.Xaml.Controls
 				_ => true
 			};
 
-			ChangeViewScroll(
+			ChangeViewCore(
 				horizontalOffset: e.NewValue,
 				verticalOffset: null,
 				zoomFactor: null,
@@ -1178,8 +1178,8 @@ namespace Windows.UI.Xaml.Controls
 
 				if(!isIntermediate)
 				{
-					if (HorizontalSnapPointsType != SnapPointsType.None ||
-					    VerticalSnapPointsType != SnapPointsType.None)
+					if (HorizontalSnapPointsType != SnapPointsType.None
+						|| VerticalSnapPointsType != SnapPointsType.None)
 					{
 						if(_snapPointsTimer == null)
 						{
@@ -1214,7 +1214,7 @@ namespace Windows.UI.Xaml.Controls
 				return; // already on a snap point
 			}
 
-			ChangeViewScroll(
+			ChangeViewCore(
 				horizontalOffset: h,
 				verticalOffset: v,
 				zoomFactor: null,
@@ -1283,6 +1283,16 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="horizontalOffset">A value between 0 and ScrollableWidth that specifies the distance the content should be scrolled horizontally.</param>
 		/// <param name="verticalOffset">A value between 0 and ScrollableHeight that specifies the distance the content should be scrolled vertically.</param>
 		/// <param name="zoomFactor">A value between MinZoomFactor and MaxZoomFactor that specifies the required target ZoomFactor.</param>
+		/// <returns>true if the view is changed; otherwise, false.</returns>
+		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor)
+			=> ChangeView(horizontalOffset, verticalOffset, zoomFactor, false);
+
+		/// <summary>
+		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
+		/// </summary>
+		/// <param name="horizontalOffset">A value between 0 and ScrollableWidth that specifies the distance the content should be scrolled horizontally.</param>
+		/// <param name="verticalOffset">A value between 0 and ScrollableHeight that specifies the distance the content should be scrolled vertically.</param>
+		/// <param name="zoomFactor">A value between MinZoomFactor and MaxZoomFactor that specifies the required target ZoomFactor.</param>
 		/// <param name="disableAnimation">true to disable zoom/pan animations while changing the view; otherwise, false. The default is false.</param>
 		/// <returns>true if the view is changed; otherwise, false.</returns>
 		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
@@ -1299,25 +1309,24 @@ namespace Windows.UI.Xaml.Controls
 
 			var verticalOffsetChanged = verticalOffset != null && verticalOffset != VerticalOffset;
 			var horizontalOffsetChanged = horizontalOffset != null && horizontalOffset != HorizontalOffset;
-
 			var zoomFactorChanged = zoomFactor != null && zoomFactor != ZoomFactor;
-
-			bool scrolledSuccessfully = true;
 
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
-				scrolledSuccessfully = ChangeViewScroll(
+				return ChangeViewCore(
 					horizontalOffset,
 					verticalOffset,
 					zoomFactor,
 					disableAnimation,
 					shouldSnap: true);
 			}
-
-			return scrolledSuccessfully && (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged);
+			else
+			{
+				return false;
+			}
 		}
 
-		private bool ChangeViewScroll(
+		private bool ChangeViewCore(
 			double? horizontalOffset,
 			double? verticalOffset,
 			float? zoomFactor,
@@ -1334,17 +1343,8 @@ namespace Windows.UI.Xaml.Controls
 				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor);
 			}
 
-			return ChangeViewScrollNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
+			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
 		}
-
-		/// <summary>
-		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
-		/// </summary>
-		/// <param name="horizontalOffset">A value between 0 and ScrollableWidth that specifies the distance the content should be scrolled horizontally.</param>
-		/// <param name="verticalOffset">A value between 0 and ScrollableHeight that specifies the distance the content should be scrolled vertically.</param>
-		/// <param name="zoomFactor">A value between MinZoomFactor and MaxZoomFactor that specifies the required target ZoomFactor.</param>
-		/// <returns>true if the view is changed; otherwise, false.</returns>
-		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor) => ChangeView(horizontalOffset, verticalOffset, zoomFactor, false);
 
 		#region Scroll indicators visual states (Managed scroll bars only)
 		private DispatcherQueueTimer? _indicatorResetTimer;

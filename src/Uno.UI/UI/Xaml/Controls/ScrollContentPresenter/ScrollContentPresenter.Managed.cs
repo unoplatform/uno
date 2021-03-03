@@ -146,17 +146,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void Set(
+		internal bool Set(
 			double? horizontalOffset = null,
 			double? verticalOffset = null,
 			float? zoomFactor = null,
 			bool disableAnimation = true)
 		{
+			var success = true;
+
 			if (horizontalOffset is double hOffset)
 			{
 				var extentWidth = ExtentWidth;
 				var viewportWidth = ViewportWidth;
 				var scrollX = ValidateInputOffset(hOffset, 0, extentWidth - viewportWidth);
+
+				success &= scrollX == hOffset;
 
 				if (!NumericExtensions.AreClose(HorizontalOffset, scrollX))
 				{
@@ -170,6 +174,8 @@ namespace Windows.UI.Xaml.Controls
 				var viewportHeight = ViewportHeight;
 				var scrollY = ValidateInputOffset(vOffset, 0, extentHeight - viewportHeight);
 
+				success &= scrollY == vOffset;
+
 				if (!NumericExtensions.AreClose(VerticalOffset, scrollY))
 				{
 					VerticalOffset = scrollY;
@@ -177,6 +183,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			Apply(disableAnimation: true);
+
+			return success;
 		}
 
 		private void Apply(bool disableAnimation)
