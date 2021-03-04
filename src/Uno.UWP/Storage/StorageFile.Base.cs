@@ -30,7 +30,7 @@ namespace Windows.Storage
 
 			public virtual string Path { get; protected set; } = string.Empty;
 
-			public virtual string FileType => global::System.IO.Path.GetExtension(Path);
+			public virtual string FileType => global::System.IO.Path.GetExtension(Name);
 
 			public virtual string Name => global::System.IO.Path.GetFileName(Path);
 

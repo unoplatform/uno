@@ -8,8 +8,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
+using Android.Provider;
 using AndroidX.DocumentFile.Provider;
+using Uno.Storage.Internal;
 using Uno.UI;
+using Windows.Storage.FileProperties;
+using IOPath = System.IO.Path;
 
 namespace Windows.Storage
 {
@@ -45,92 +49,257 @@ namespace Windows.Storage
 			//TODO: Display name can be queried - https://developer.android.com/training/data-storage/shared/documents-files#examine-metadata
 			public override string Name => _directoryDocument?.Name ?? string.Empty;
 
-			public override Task<StorageFile> CreateFileAsync(string desiredName, Windows.Storage.CreationCollisionOption options, CancellationToken cancellationToken)
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 			{
-				throw new NotImplementedException();
+				var documentUriForTree = DocumentsContract.BuildDocumentUriUsingTree(_folderUri, DocumentsContract.GetTreeDocumentId(_folderUri));
+				return SafHelpers.GetBasicPropertiesAsync(_folderUri, false, ct);
 			}
 
-			public override Task<StorageFolder> CreateFolderAsync(string folderName, Windows.Storage.CreationCollisionOption option, CancellationToken token)
+			public override async Task<StorageFile> CreateFileAsync(string desiredName, Windows.Storage.CreationCollisionOption options, CancellationToken cancellationToken)
 			{
-				var directoryDocument = _directoryDocument.CreateDirectory(folderName);
-				return Task.FromResult(new StorageFolder(new SafFolder(directoryDocument)));
-			}
-
-			public override Task DeleteAsync(CancellationToken ct)
-			{
-				_directoryDocument.Delete();
-				return Task.CompletedTask;
-			}
-
-			public override Task<StorageFile> GetFileAsync(string name, CancellationToken token)
-			{
-				throw new NotImplementedException();
-			}
-
-			public override Task<IReadOnlyList<StorageFile>> GetFilesAsync(CancellationToken ct)
-			{
-				var contents = _directoryDocument
-					.ListFiles()
-					.Where(f => f.IsFile)
-					.Select(d => StorageFile.GetFromSafDocument(d))
-					.ToArray();
-				return Task.FromResult((IReadOnlyList<StorageFile>)contents);
-			}
-
-			public override Task<StorageFolder> GetFolderAsync(string name, CancellationToken token)
-			{
-				var file = _directoryDocument.FindFile(name);
-				if (file == null || !file.IsDirectory)
+				return await Task.Run(async () =>
 				{
-					throw new FileNotFoundException("Not found");
-				}
+					var actualName = desiredName;
 
-				return Task.FromResult(new StorageFolder(new SafFolder(file)));
+					var existingItem = await TryGetItemAsync(desiredName, cancellationToken);
+					switch (options)
+					{
+						case CreationCollisionOption.ReplaceExisting:
+							if (existingItem is StorageFolder)
+							{
+								throw new UnauthorizedAccessException("There is already a folder with the same name.");
+							}
+
+							if (existingItem is StorageFile)
+							{
+								// Delete existing file
+								await existingItem.DeleteAsync();
+							}
+							break;
+
+						case CreationCollisionOption.FailIfExists:
+							if (existingItem != null)
+							{
+								throw new UnauthorizedAccessException("There is already an item with the same name.");
+							}
+							break;
+
+						case CreationCollisionOption.OpenIfExists:
+							if (existingItem is StorageFile existingFile)
+							{
+								return existingFile;
+							}
+
+							if (existingItem is StorageFolder)
+							{
+								throw new UnauthorizedAccessException("There is already a file with the same name.");
+							}
+							break;
+
+						case CreationCollisionOption.GenerateUniqueName:
+							actualName = await FindAvailableNumberedFileNameAsync(desiredName);
+							break;
+
+						default:
+							throw new ArgumentOutOfRangeException(nameof(options));
+					}
+
+					var extension = IOPath.GetExtension(actualName);
+					var mimeType = MimeTypeService.GetFromExtension(extension);
+					var file = _directoryDocument.CreateFile(mimeType, actualName);
+					return StorageFile.GetFromSafDocument(file);
+				}, cancellationToken);
 			}
 
-			public override Task<IReadOnlyList<StorageFolder>> GetFoldersAsync(CancellationToken ct)
+			public override async Task<StorageFolder> CreateFolderAsync(string folderName, Windows.Storage.CreationCollisionOption option, CancellationToken token)
 			{
-				var contents = _directoryDocument
-					.ListFiles()
-					.Where(f => f.IsDirectory)
-					.Select(d => GetFromSafDocument(d))
-					.ToArray();
-				return Task.FromResult((IReadOnlyList<StorageFolder>)contents);
+				return await Task.Run(async () =>
+				{
+					var existingItem = await TryGetItemAsync(folderName, token);
+					switch (option)
+					{
+						case CreationCollisionOption.ReplaceExisting:
+							if (existingItem is StorageFile)
+							{
+								throw new UnauthorizedAccessException("There is already a file with the same name.");
+							}
+
+							if (existingItem is StorageFolder folder)
+							{
+								// Delete existing folder recursively
+								await folder.DeleteAsync();
+							}
+							break;
+
+						case CreationCollisionOption.FailIfExists:
+							if (existingItem != null)
+							{
+								throw new UnauthorizedAccessException("There is already an item with the same name.");
+							}
+							break;
+
+						case CreationCollisionOption.OpenIfExists:
+							if (existingItem is StorageFolder existingFolder)
+							{
+								return existingFolder;
+							}
+
+							if (existingItem is StorageFile)
+							{
+								throw new UnauthorizedAccessException("There is already a file with the same name.");
+							}
+							break;
+
+						case CreationCollisionOption.GenerateUniqueName:
+							folderName = await FindAvailableNumberedFolderNameAsync(folderName);
+							break;
+
+						default:
+							throw new ArgumentOutOfRangeException(nameof(option));
+					}
+
+					var directoryDocument = _directoryDocument.CreateDirectory(folderName);
+					return GetFromSafDocument(directoryDocument);
+				}, token);
 			}
 
-			public override Task<IStorageItem> GetItemAsync(string name, CancellationToken token)
+			public override async Task DeleteAsync(CancellationToken ct)
 			{
-				throw new NotImplementedException();
+				await Task.Run(() =>
+				{
+					_directoryDocument.Delete();
+				}, ct);
 			}
 
-			public override Task<IReadOnlyList<IStorageItem>> GetItemsAsync(CancellationToken ct)
+			public override async Task<StorageFile> GetFileAsync(string name, CancellationToken token)
 			{
-				var items = _directoryDocument.ListFiles();
-				var folders = items.Where(i => i.IsDirectory).Select(i => GetFromSafDocument(i));
-				var files = items.Where(i => i.IsFile).Select(i => StorageFile.GetFromSafDocument(i));
-				return Task.FromResult((IReadOnlyList<IStorageItem>)folders.OfType<IStorageItem>().Union(files).ToArray());
+				return await Task.Run(() =>
+				{
+					var item = _directoryDocument.FindFile(name);
+					if (item == null || !item.IsFile)
+					{
+						throw new FileNotFoundException("Not found");
+					}
+
+					return StorageFile.GetFromSafDocument(item);
+				}, token);
+			}
+
+			public override async Task<IReadOnlyList<StorageFile>> GetFilesAsync(CancellationToken ct)
+			{
+				return await Task.Run(() =>
+				{
+					var contents = _directoryDocument
+						.ListFiles()
+						.Where(f => f.IsFile)
+						.Select(d => StorageFile.GetFromSafDocument(d))
+						.ToArray();
+					return Task.FromResult((IReadOnlyList<StorageFile>)contents);
+				}, ct);
+			}
+
+			public override async Task<StorageFolder> GetFolderAsync(string name, CancellationToken token)
+			{
+				return await Task.Run(() =>
+				{
+					var item = _directoryDocument.FindFile(name);
+					if (item == null || !item.IsDirectory)
+					{
+						throw new FileNotFoundException("Not found");
+					}
+
+					return new StorageFolder(new SafFolder(item));
+				}, token);
+			}
+
+			public override async Task<IReadOnlyList<StorageFolder>> GetFoldersAsync(CancellationToken ct)
+			{
+				return await Task.Run(() =>
+				{
+					var contents = _directoryDocument
+						.ListFiles()
+						.Where(f => f.IsDirectory)
+						.Select(d => GetFromSafDocument(d))
+						.ToArray();
+					return (IReadOnlyList<StorageFolder>)contents;
+				});
+			}
+
+			public override async Task<IStorageItem> GetItemAsync(string name, CancellationToken token)
+			{
+				return await Task.Run<IStorageItem>(() =>
+				{
+					var item = _directoryDocument.FindFile(name);
+					if (item == null || (!item.IsDirectory && !item.IsFile))
+					{
+						throw new FileNotFoundException("Not found");
+					}
+
+					if (item.IsDirectory)
+					{
+						return GetFromSafDocument(item);
+					}
+
+					return StorageFile.GetFromSafDocument(item);
+				}, token);
+			}
+
+			public override async Task<IReadOnlyList<IStorageItem>> GetItemsAsync(CancellationToken ct)
+			{
+				return await Task.Run(() =>
+				{
+					var items = _directoryDocument.ListFiles();
+					var folders = items.Where(i => i.IsDirectory).Select(i => GetFromSafDocument(i));
+					var files = items.Where(i => i.IsFile).Select(i => StorageFile.GetFromSafDocument(i));
+					return Task.FromResult((IReadOnlyList<IStorageItem>)folders.OfType<IStorageItem>().Union(files).ToArray());
+				}, ct);
 			}
 
 			public override Task<StorageFolder?> GetParentAsync(CancellationToken token)
 			{
 				if (_directoryDocument.ParentFile == null)
 				{
-					// TODO: Should we throw?
 					return Task.FromResult<StorageFolder?>(null);
 				}
 
-				var parentFolder = new StorageFolder(new SafFolder(_directoryDocument.ParentFile));
+				var parentFolder = GetFromSafDocument(_directoryDocument.ParentFile);
 				return Task.FromResult<StorageFolder?>(parentFolder);
 			}
 
-			public override Task<IStorageItem?> TryGetItemAsync(string name, CancellationToken token)
+			public override async Task<IStorageItem?> TryGetItemAsync(string name, CancellationToken token)
 			{
-				throw new NotImplementedException();
+				return await Task.Run<IStorageItem?>(() =>
+				{
+					var item = _directoryDocument.FindFile(name);
+					if (item == null)
+					{
+						return null;
+					}
+
+					if (item.IsDirectory)
+					{
+						return GetFromSafDocument(item);
+					}
+
+					if (item.IsFile)
+					{
+						return StorageFile.GetFromSafDocument(item);
+					}
+
+					return null;
+				}, token);
 			}
 
 			protected override bool IsEqual(ImplementationBase implementation)
 			{
-				throw new NotImplementedException();
+				if (implementation is SafFolder otherFolder)
+				{
+					var path = _directoryDocument.Uri?.ToString() ?? string.Empty;
+					var otherPath = otherFolder._directoryDocument.Uri?.ToString() ?? string.Empty;
+					return path.Equals(otherPath, StringComparison.InvariantCulture);
+				}
+
+				return false;
 			}
 		}
 	}
