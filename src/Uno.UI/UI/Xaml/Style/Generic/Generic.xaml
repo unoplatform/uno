@@ -788,7 +788,7 @@
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
 		<Setter Property="FontSize"
 				Value="{ThemeResource ControlContentThemeFontSize}" />
-			<Setter Property="Template">
+		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ComboBoxItem">
 					<Grid x:Name="LayoutRoot"
@@ -1805,7 +1805,7 @@
 	<!-- Default style for Windows.UI.Xaml.Controls.TimePicker -->
 	<!--https://msdn.microsoft.com/en-us/library/windows/apps/mt299156.aspx-->
 	<xamarin:Style TargetType="TimePicker">
-        <Setter Property="IsTabStop"
+		<Setter Property="IsTabStop"
                 Value="False" />
 		<Setter Property="MinWidth"
 				Value="242" />
@@ -1821,10 +1821,10 @@
 				Value="Left" />
 		<Setter Property="VerticalAlignment"
 				Value="Center" />
-        <!-- Uno specific property use only in ios, set placement to "Full" to dock of the flyout at the bottom of the screen -->
-        <ios:Setter Property="FlyoutPlacement"
+		<!-- Uno specific property use only in ios, set placement to "Full" to dock of the flyout at the bottom of the screen -->
+		<ios:Setter Property="FlyoutPlacement"
 				Value="Full" />
-        <Setter Property="Template">
+		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="TimePicker">
 					<StackPanel x:Name="LayoutRoot"
@@ -3720,7 +3720,7 @@
 		</Setter>
 	</Style>
 
-<!-- Default style for Windows.UI.Xaml.Controls.Slider -->
+	<!-- Default style for Windows.UI.Xaml.Controls.Slider -->
 	<xamarin:Style TargetType="Thumb"
 				   x:Key="SliderThumbStyle">
 		<Setter Property="ManipulationMode"
@@ -4076,7 +4076,8 @@
 							BorderThickness="{TemplateBinding BorderThickness}"
 							CornerRadius="{TemplateBinding CornerRadius}">
 						<ScrollViewer x:Name="ScrollViewer"
-									  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+									  ios:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+									  android:Style="{StaticResource ListViewBaseScrollViewerStyle}"
 									  TabNavigation="{TemplateBinding TabNavigation}"
 									  HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
 									  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
@@ -4157,7 +4158,8 @@
 							BorderThickness="{TemplateBinding BorderThickness}"
 							CornerRadius="{TemplateBinding CornerRadius}">
 						<ScrollViewer x:Name="ScrollViewer"
-									  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+									  ios:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+									  android:Style="{StaticResource ListViewBaseScrollViewerStyle}"
 									  TabNavigation="{TemplateBinding TabNavigation}"
 									  HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
 									  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
@@ -4225,7 +4227,7 @@
 				Value="Hidden" />
 		<Setter Property="Padding"
 				Value="{ThemeResource TextControlThemePadding}" />
-	<!-- macOS PasswordBox implemeentation will not display the RevealButton -->
+		<!-- macOS PasswordBox implemeentation will not display the RevealButton -->
 		<macos:Setter Property="IsPasswordRevealButtonEnabled"
 					  Value="False" />
 		<Setter Property="Template">
@@ -7192,23 +7194,23 @@
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
 	<Style x:Name="XamlDefaultRepeatButton" TargetType="RepeatButton">
-	  <Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
-	  <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
-	  <Setter Property="Foreground" Value="{ThemeResource RepeatButtonForeground}" />
-	  <Setter Property="BorderBrush" Value="{ThemeResource RepeatButtonBorderBrush}" />
-	  <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
-	  <Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
-	  <Setter Property="HorizontalAlignment" Value="Left" />
-	  <Setter Property="VerticalAlignment" Value="Center" />
-	  <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-	  <Setter Property="FontWeight" Value="Normal" />
-	  <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-	  <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-	  <Setter Property="FocusVisualMargin" Value="-3" />
-	  <Setter Property="Template">
-		<Setter.Value>
-		  <ControlTemplate TargetType="RepeatButton">
-			<ContentPresenter x:Name="ContentPresenter"
+		<Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
+		<Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
+		<Setter Property="Foreground" Value="{ThemeResource RepeatButtonForeground}" />
+		<Setter Property="BorderBrush" Value="{ThemeResource RepeatButtonBorderBrush}" />
+		<Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
+		<Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+		<Setter Property="FontWeight" Value="Normal" />
+		<Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+		<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+		<Setter Property="FocusVisualMargin" Value="-3" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="RepeatButton">
+					<ContentPresenter x:Name="ContentPresenter"
 				Background="{TemplateBinding Background}"
 				BackgroundSizing="{TemplateBinding BackgroundSizing}"
 				BorderBrush="{TemplateBinding BorderBrush}"
@@ -7222,63 +7224,63 @@
 				VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
 				AutomationProperties.AccessibilityView="Raw">
 
-			  <VisualStateManager.VisualStateGroups>
-				<VisualStateGroup x:Name="CommonStates">
-				  <VisualState x:Name="Normal" />
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
 
-				  <VisualState x:Name="PointerOver">
+								<VisualState x:Name="PointerOver">
 
-					<Storyboard>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPointerOver}" />
-					  </ObjectAnimationUsingKeyFrames>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPointerOver}" />
-					  </ObjectAnimationUsingKeyFrames>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPointerOver}" />
-					  </ObjectAnimationUsingKeyFrames>
-					</Storyboard>
-				  </VisualState>
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
 
-				  <VisualState x:Name="Pressed">
+								<VisualState x:Name="Pressed">
 
-					<Storyboard>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPressed}" />
-					  </ObjectAnimationUsingKeyFrames>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPressed}" />
-					  </ObjectAnimationUsingKeyFrames>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPressed}" />
-					  </ObjectAnimationUsingKeyFrames>
-					</Storyboard>
-				  </VisualState>
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
 
-				  <VisualState x:Name="Disabled">
+								<VisualState x:Name="Disabled">
 
-					<Storyboard>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundDisabled}" />
-					  </ObjectAnimationUsingKeyFrames>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushDisabled}" />
-					  </ObjectAnimationUsingKeyFrames>
-					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundDisabled}" />
-					  </ObjectAnimationUsingKeyFrames>
-					</Storyboard>
-				  </VisualState>
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
 
-				</VisualStateGroup>
+							</VisualStateGroup>
 
-			  </VisualStateManager.VisualStateGroups>
-			</ContentPresenter>
+						</VisualStateManager.VisualStateGroups>
+					</ContentPresenter>
 
-		  </ControlTemplate>
-		</Setter.Value>
-	  </Setter>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style TargetType="RepeatButton" BasedOn="{StaticResource XamlDefaultRepeatButton}" />
@@ -7540,78 +7542,78 @@
 	</not_netstdref:Style>
 
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
-        <Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
-        <Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
-        <Setter Property="MinWidth" Value="0" />
-        <Setter Property="MinHeight" Value="0" />
-        <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ButtonBase">
-                    <Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                        <ContentPresenter x:Name="Text"
+		<Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
+		<Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
+		<Setter Property="MinWidth" Value="0" />
+		<Setter Property="MinHeight" Value="0" />
+		<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ButtonBase">
+					<Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+						<ContentPresenter x:Name="Text"
                             Content="{TemplateBinding Content}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal" />
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
 
-                                <VisualState x:Name="PointerOver">
+								<VisualState x:Name="PointerOver">
 
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundPointerOver}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundPointerOver}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushPointerOver}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
 
-                                <VisualState x:Name="Pressed">
+								<VisualState x:Name="Pressed">
 
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundPressed}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundPressed}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushPressed}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
 
-                                <VisualState x:Name="Disabled">
+								<VisualState x:Name="Disabled">
 
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundDisabled}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundDisabled}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushDisabled}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
 
-                            </VisualStateGroup>
+							</VisualStateGroup>
 
-                        </VisualStateManager.VisualStateGroups>
+						</VisualStateManager.VisualStateGroups>
 
-                    </Grid>
+					</Grid>
 
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
 </ResourceDictionary>
