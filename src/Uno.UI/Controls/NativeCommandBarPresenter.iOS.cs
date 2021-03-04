@@ -56,7 +56,12 @@ namespace Uno.UI.Controls
 			_navigationBar.SetNeedsLayout();
 
 			var navigationBarSuperview = _navigationBar?.Superview;
-			if (navigationBarSuperview == null || navigationBarSuperview is NativeCommandBarPresenter) // Prevents the UINavigationController's NavigationBar instance from being moved to the Page
+
+			// Allows the UINavigationController's NavigationBar instance to be moved to the Page. This feature
+			// is used in the context of the sample application to test NavigationBars outside of a NativeFramePresenter for 
+			// UI Testing. In general cases, this should not happen as the bar may be moved back to to this presenter while
+			// another page is already visible, making this bar overlay on top of another.			
+			if (FeatureConfiguration.CommandBar.AllowNativePresenterContent && (navigationBarSuperview == null || navigationBarSuperview is NativeCommandBarPresenter))
 			{
 				Content = _navigationBar;
 			}
