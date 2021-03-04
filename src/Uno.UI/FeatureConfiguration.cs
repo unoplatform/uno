@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml;
@@ -480,6 +480,13 @@ namespace Uno.UI
 		public static class CommandBar
 		{
 #if __IOS__
+			/// <summary>
+			/// Gets or Set whether the AllowNativePresenterContent feature is on or off.
+			/// This feature is used in the context of the sample application to test NavigationBars outside of a NativeFramePresenter for
+			/// UI Testing. In general cases, this should not happen as the bar may be moved back to to this presenter while
+			/// another page is already visible, making this bar overlay on top of another.
+			/// </summary>
+			/// <returns>True if this feature is on, False otherwise</returns>
 			public static bool AllowNativePresenterContent { get; set; } = false;
 #endif
 		}
