@@ -57,6 +57,11 @@ namespace Windows.UI.Xaml.Controls
 			_eventSubscriptions.Disposable = null;
 
 			_headerContentPresenter = GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
+			if (_headerContentPresenter != null)
+			{
+				UpdateHeaderVisibility();
+			}
+
 			_horizontalThumb = GetTemplateChild("HorizontalThumb") as Thumb;
 			_verticalThumb = GetTemplateChild("VerticalThumb") as Thumb;
 
@@ -392,6 +397,15 @@ namespace Windows.UI.Xaml.Controls
 			Thumb?.CompleteDrag(args);
 		}
 
+		private void UpdateHeaderVisibility()
+		{
+			if (_headerContentPresenter != null)
+			{
+				_headerContentPresenter.Visibility =
+					Header != null ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
+
 		#region IsTrackerEnabled DependencyProperty
 		/// <summary>
 		/// Enables or disables tracking on the Slider container. <para />
@@ -655,13 +669,8 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register("Header", typeof(object), typeof(Slider), new FrameworkPropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderChanged(e)));
 
-		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e)
-		{
-			if (_headerContentPresenter != null)
-			{
-				_headerContentPresenter.Visibility = e.NewValue != null ? Visibility.Visible : Visibility.Collapsed;
-			}
-		}
+		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e) =>
+			UpdateHeaderVisibility();
 
 		#endregion
 	}

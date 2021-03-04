@@ -850,7 +850,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			var size = _layouter.MeasureChild(child, slotSize);
 
-			size = ApplyChildStretch(size, slotSize, viewType);
+			if (ShouldApplyChildStretch)
+			{
+				size = ApplyChildStretch(size, slotSize, viewType);
+			}
 
 			if (!child.IsInLayout)
 			{
@@ -2251,5 +2254,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return message + $" - {name}, line {lineNumber}";
 		}
+
+		Uno.UI.IndexPath? GetReorderingIndex() => null;
 	}
 }

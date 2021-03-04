@@ -13,9 +13,11 @@ using Uno.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	public partial class CoreDragInfo 
+	public partial class CoreDragInfo
 	{
-		private ImmutableList<Action<DataPackageOperation>>? _completions = ImmutableList<Action<DataPackageOperation>>.Empty;
+		internal delegate void Completed(DataPackageOperation result);
+
+		private ImmutableList<Completed>? _completions = ImmutableList<Completed>.Empty;
 		private int _result = -1;
 		private IDragEventSource _source;
 
@@ -65,7 +67,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			(Position, Modifiers) = src.GetState();
 		}
 
-		internal void RegisterCompletedCallback(Action<DataPackageOperation> onCompleted)
+		internal void RegisterCompletedCallback(Completed onCompleted)
 		{
 			if (_result > 0
 				// If the Update return false, it means that the _completions is null, which means that the _result is now ready!
@@ -76,7 +78,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				onCompleted((DataPackageOperation)_result);
 			}
 
-			ImmutableList<Action<DataPackageOperation>>? AddCompletion(ImmutableList<Action<DataPackageOperation>>? completions, Action<DataPackageOperation> callback)
+			ImmutableList<Completed>? AddCompletion(ImmutableList<Completed>? completions, Completed callback)
 				=> completions?.Add(callback);
 		}
 

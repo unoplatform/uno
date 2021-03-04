@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
@@ -130,5 +131,110 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			ImageAssert.HasColorAt(screenshot, bounds.CenterX, bounds.CenterY, Color.Blue);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Default_StrokeThickness()
+		{
+			const string red = "#FF0000";
+			string reddish = GetReddish();
+
+			var shapeExpectations = new[]
+		   {
+				new ShapeExpectation
+				{
+					Name = "MyLine",
+					Offsets = new [] {0, 0, 0, 0},
+					Colors = red,
+				},
+				new ShapeExpectation
+				{
+					Name = "MyRect",
+					Offsets = new [] {0, 0, -1, -1},
+					Colors = red,
+				},
+				new ShapeExpectation
+				{
+					Name = "MyPolyline",
+					Offsets = new [] {2, 2, -1, -1},
+					Colors = reddish,
+				},
+				new ShapeExpectation
+				{
+					Name = "MyPolygon",
+					Offsets = new [] {2, 2, -1, -1},
+					Colors = reddish,
+				},
+				new ShapeExpectation
+				{
+					Name = "MyEllipse",
+					Offsets = new [] {0, 0, -1, -1},
+					Colors = red,
+				},
+				new ShapeExpectation
+				{
+					Name = "MyPath",
+					Offsets = new [] {0, 0, 0, 0},
+					Colors = red,
+				},
+			};
+			Run("UITests.Windows_UI_Xaml_Shapes.Shapes_Default_StrokeThickness");
+
+			_app.WaitForElement("TestZone");
+
+			foreach (var expectation in shapeExpectations)
+			{
+				_app.Marked($"{expectation.Name}Selector").FastTap();
+
+				using var screenshot = TakeScreenshot($"{expectation}");
+				if (expectation.Name == "MyLine" || expectation.Name == "MyPath")
+				{
+					var targetRect = _app.GetPhysicalRect($"{expectation.Name}Target");
+					ImageAssert.DoesNotHaveColorAt(screenshot, targetRect.CenterX, targetRect.CenterY, Color.White);
+
+					_app.Marked("StrokeThicknessButton").FastTap();
+
+					using var zeroStrokeThicknessScreenshot = TakeScreenshot($"{expectation.Name}_0_StrokeThickness");
+					ImageAssert.HasColorAt(zeroStrokeThicknessScreenshot, targetRect.CenterX, targetRect.CenterY, Color.White);
+				}
+				else
+				{
+					var shapeContainer = _app.GetPhysicalRect($"{expectation}Grid");
+					
+					ImageAssert.HasColorAt(screenshot, shapeContainer.X + expectation.Offsets[0], shapeContainer.CenterY, expectation.Colors, tolerance: 15);
+					ImageAssert.HasColorAt(screenshot, shapeContainer.CenterX, shapeContainer.Y + expectation.Offsets[1], expectation.Colors, tolerance: 15);
+					ImageAssert.HasColorAt(screenshot, shapeContainer.Right + expectation.Offsets[2], shapeContainer.CenterY, expectation.Colors, tolerance: 15);
+					ImageAssert.HasColorAt(screenshot, shapeContainer.CenterX, shapeContainer.Bottom + expectation.Offsets[3], expectation.Colors, tolerance: 15);
+
+					_app.Marked("StrokeThicknessButton").FastTap();
+
+					using var zeroStrokeThicknessScreenshot = TakeScreenshot($"{expectation.Name}_0_StrokeThickness");
+
+					ImageAssert.DoesNotHaveColorAt(zeroStrokeThicknessScreenshot, shapeContainer.X + expectation.Offsets[0], shapeContainer.CenterY, expectation.Colors);
+					ImageAssert.DoesNotHaveColorAt(zeroStrokeThicknessScreenshot, shapeContainer.CenterX, shapeContainer.Y + expectation.Offsets[1], expectation.Colors);
+					ImageAssert.DoesNotHaveColorAt(zeroStrokeThicknessScreenshot, shapeContainer.Right + expectation.Offsets[2], shapeContainer.CenterY, expectation.Colors);
+					ImageAssert.DoesNotHaveColorAt(zeroStrokeThicknessScreenshot, shapeContainer.CenterX, shapeContainer.Bottom + expectation.Offsets[3], expectation.Colors);
+				}
+			}
+
+		}
+
+		private static string GetReddish() =>
+			AppInitializer.GetLocalPlatform() switch
+			{
+				Platform.Browser => "#FF8080",
+				Platform.Android => "#FF7F7F",
+				_ => "#FF0000",
+			};
+
+		private struct ShapeExpectation
+		{
+			public string Name  { get; set; }
+			public int[] Offsets { get; set; } 
+			public string Colors { get; set; }
+
+			public override string ToString() => $"{Name}";
+		}
+
 	}
 }

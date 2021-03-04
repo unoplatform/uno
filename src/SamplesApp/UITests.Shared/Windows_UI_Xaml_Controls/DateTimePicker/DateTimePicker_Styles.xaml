@@ -9,7 +9,7 @@
 		<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="../TimePicker/Sample2_Styles.xaml" />
 		</ResourceDictionary.MergedDictionaries>
-		
+
 	<!-- DatePicker Style -->
 	<Style x:Key="DatePickerStyle"
 		   TargetType="DatePicker">
@@ -132,7 +132,7 @@
 		<Setter Property="Foreground"
 				Value="#FF4A4A4A" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="14" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">

@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml.xBindTests
 {
-	[SampleControlInfo("XAML", "xBind_Field")]
+	[SampleControlInfo("XBind", "XBind_Field")]
 	public sealed partial class xBind_Field : UserControl
 	{
 		public xBind_Field()

@@ -20,8 +20,8 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<Reference Include="System.Xml" />
@@ -63,7 +63,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
-		<PackageReference Include="Microsoft.UI.Xaml" Version="2.4.3" />
+		<PackageReference Include="Microsoft.UI.Xaml" Version="2.5.0" />
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
@@ -101,6 +101,12 @@
 	
 	<ItemGroup>
 	  <Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">
+	    <SubType>Designer</SubType>
+	  </Page>
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

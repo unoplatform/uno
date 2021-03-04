@@ -15,7 +15,6 @@ using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
-using Uno.UI.SourceGenerators.Helpers;
 #endif
 
 namespace Uno.UI.SourceGenerators.TSBindings
@@ -40,11 +39,11 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
+			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			DependenciesInitializer.Init(context);
 
 			if (!DesignTimeHelper.IsDesignTime(context))
 			{
@@ -222,7 +221,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				foreach (var field in parametersType.GetFields())
 				{
 					var fieldSize = GetNativeFieldSize(field);
-					bool isStringField = Equals(field.Type, _stringSymbol);
+					bool isStringField = SymbolEqualityComparer.Default.Equals(field.Type, _stringSymbol);
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
@@ -285,7 +284,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 						var elementType = arraySymbol.ElementType;
 						var elementTSType = GetTSType(elementType);
-						var isElementString = Equals(elementType, _stringSymbol);
+						var isElementString = SymbolEqualityComparer.Default.Equals(elementType, _stringSymbol);
 						var elementSize = isElementString ? 4 : fieldSize;
 
 						using (sb.BlockInvariant(""))
@@ -329,7 +328,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 					{
 						using (sb.BlockInvariant(""))
 						{
-							if(Equals(field.Type, _stringSymbol))
+							if(SymbolEqualityComparer.Default.Equals(field.Type, _stringSymbol))
 							{
 								sb.AppendLineInvariant($"const ptr = Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\");");
 
@@ -366,17 +365,17 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private int GetNativeFieldSize(IFieldSymbol field)
 		{
 			if(
-				Equals(field.Type, _stringSymbol)
-				|| Equals(field.Type, _intSymbol)
-				|| Equals(field.Type, _intPtrSymbol)
-				|| Equals(field.Type, _floatSymbol)
-				|| Equals(field.Type, _boolSymbol)
+				SymbolEqualityComparer.Default.Equals(field.Type, _stringSymbol)
+				|| SymbolEqualityComparer.Default.Equals(field.Type, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(field.Type, _intPtrSymbol)
+				|| SymbolEqualityComparer.Default.Equals(field.Type, _floatSymbol)
+				|| SymbolEqualityComparer.Default.Equals(field.Type, _boolSymbol)
 				|| field.Type is IArrayTypeSymbol
 			)
 			{
 				return 4;
 			}
-			else if(Equals(field.Type, _doubleSymbol))
+			else if(SymbolEqualityComparer.Default.Equals(field.Type, _doubleSymbol))
 			{
 				return 8;
 			}
@@ -389,37 +388,37 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private static string GetEMField(ITypeSymbol fieldType)
 		{
 			if (
-				Equals(fieldType, _stringSymbol)
-				|| Equals(fieldType, _intPtrSymbol)
+				SymbolEqualityComparer.Default.Equals(fieldType, _stringSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
 				|| fieldType is IArrayTypeSymbol
 			)
 			{
 				return "*";
 			}
 			else if (
-				Equals(fieldType, _intSymbol)
-				|| Equals(fieldType, _boolSymbol)
+				SymbolEqualityComparer.Default.Equals(fieldType, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _boolSymbol)
 			)
 			{
 				return "i32";
 			}
-			else if (Equals(fieldType, _longSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _longSymbol))
 			{
 				return "i64";
 			}
-			else if (Equals(fieldType, _shortSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _shortSymbol))
 			{
 				return "i16";
 			}
-			else if (Equals(fieldType, _byteSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _byteSymbol))
 			{
 				return "i8";
 			}
-			else if (Equals(fieldType, _floatSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _floatSymbol))
 			{
 				return "float";
 			}
-			else if (Equals(fieldType, _doubleSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _doubleSymbol))
 			{
 				return "double";
 			}
@@ -440,22 +439,22 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			{
 				return $"Array<{GetTSType(array.ElementType)}>";
 			}
-			else if (Equals(type, _stringSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(type, _stringSymbol))
 			{
 				return "String";
 			}
 			else if (
-				Equals(type, _intSymbol)
-				|| Equals(type, _floatSymbol)
-				|| Equals(type, _doubleSymbol)
-				|| Equals(type, _byteSymbol)
-				|| Equals(type, _shortSymbol)
-				|| Equals(type, _intPtrSymbol)
+				SymbolEqualityComparer.Default.Equals(type, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _floatSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _doubleSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _byteSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _shortSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
 			)
 			{
 				return "Number";
 			}
-			else if (Equals(type, _boolSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(type, _boolSymbol))
 			{
 				return "Boolean";
 			}
@@ -476,22 +475,22 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			{
 				return $"Array<{GetTSFieldType(array.ElementType)}>";
 			}
-			else if (Equals(type, _stringSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(type, _stringSymbol))
 			{
 				return "string";
 			}
 			else if (
-				Equals(type, _intSymbol)
-				|| Equals(type, _floatSymbol)
-				|| Equals(type, _doubleSymbol)
-				|| Equals(type, _byteSymbol)
-				|| Equals(type, _shortSymbol)
-				|| Equals(type, _intPtrSymbol)
+				SymbolEqualityComparer.Default.Equals(type, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _floatSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _doubleSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _byteSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _shortSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
 			)
 			{
 				return "number";
 			}
-			else if (Equals(type, _boolSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(type, _boolSymbol))
 			{
 				return "boolean";
 			}

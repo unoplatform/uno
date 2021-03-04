@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-    public class InfoBarClosingEventArgs
+    public partial class InfoBarClosingEventArgs
     {
 		internal InfoBarClosingEventArgs(InfoBarCloseReason reason) =>
 			Reason = reason;

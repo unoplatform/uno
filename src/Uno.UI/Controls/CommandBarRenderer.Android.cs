@@ -64,7 +64,7 @@ namespace Uno.UI.Controls
 
 		public CommandBarRenderer(CommandBar element) : base(element) { }
 
-		protected override Toolbar CreateNativeInstance() => new Toolbar(UI.ContextHelper.Current);
+		protected override Toolbar CreateNativeInstance() => new Toolbar(ContextHelper.Current);
 
 		protected override IEnumerable<IDisposable> Initialize()
 		{

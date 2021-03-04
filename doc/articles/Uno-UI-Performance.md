@@ -20,6 +20,7 @@ Here's what to look for:
 		- Unless the visual tree of the element is very big, where in this case `Visibility` is better suited.
 	- Prefer Storyboard setters to `ObjectAnimationUsingKeyFrames` if there is only one key frame.
 	- Prefer changing the properties of a visual element instead of switching opacity or visibility of an element.
+        - Manually created `Storyboard` instances do not stop automatically. Make sure that if you invoke `Storyboard.Begin()`, invoke `Storyboard.Stop()` when the animated content is unloaded, otherwise resources may be spent animating invisible content.
 - Image Assets
 	- Try using an image that is appropriate for the DPI and screen size.
     - Whenever possible, specify and explicit Width and Height on `Image`.

@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-#elif XAMARIN || NETSTANDARD2_0
+#elif XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 using System.Globalization;
 #endif

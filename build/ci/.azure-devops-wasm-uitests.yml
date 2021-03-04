@@ -16,6 +16,9 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/gitversion.yml
+  - template: templates/dotnet-install.yml
+
   - task: CacheBeta@0
     condition: eq(variables['enable_package_cache'], 'true')
     inputs:
@@ -24,6 +27,7 @@ jobs:
     displayName: Cache NuGet packages
     
   - template: templates/optimize-roslyn-mono.yml
+  - template: templates/dotnet-install.yml
 
   - bash: |
       sudo cert-sync /etc/ssl/certs/ca-certificates.crt
@@ -31,22 +35,37 @@ jobs:
     displayName: 'Update the SSL trusted certificates'
     
   - bash: |
-      source /emsdk/emsdk_env.sh
-      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
+      msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoTargetFrameworkOverride=netstandard2.0 /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-netstd20-$(GitVersion.FullSemVer).binlog
 
-    displayName: 'Build sample app'
+    displayName: 'Build sample app (netstandard2.0)'
+    
+  - bash: |
+      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net5-$(GitVersion.FullSemVer).binlog
+
+    displayName: 'Build sample app (net5.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site'
+    displayName: 'Publish Wasm Site (netstandard2.0)'
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/netstandard2.0/dist
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/site
+      TargetFolder: $(build.artifactstagingdirectory)/site-netstandard2.0
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Site (net5.0)'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net5.0/dist
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/site-net5.0
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
 
   - task: PublishBuildArtifacts@1
+    condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: wasm-uitest-binaries
@@ -66,10 +85,13 @@ jobs:
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+    SITE_SUFFIX: 'netstandard2.0'
 
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/dotnet-install.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -82,12 +104,13 @@ jobs:
         artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - bash: |
       set -euo pipefail
       IFS=$'\n\t'
-      cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site
+      cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-netstandard2.0
       python server.py &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
@@ -96,6 +119,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      SITE_SUFFIX: "$(SITE_SUFFIX)"
 
     displayName: 'Running UI Tests'
 
@@ -123,6 +147,14 @@ jobs:
   - SamplesApp_UITests_Build
   container: nv-bionic-wasm
 
+  strategy:
+    matrix:
+      net5:
+        SITE_SUFFIX: 'net5.0'
+
+      netstd2_0:
+        SITE_SUFFIX: 'netstandard2.0'
+
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -133,6 +165,7 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
@@ -165,6 +198,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      SITE_SUFFIX: "$(SITE_SUFFIX)"
 
     displayName: 'Running UI Tests'
 
@@ -172,7 +206,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      testRunTitle: 'WebAssembly Test Run'
+      testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072

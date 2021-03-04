@@ -20,6 +20,10 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
+    # Disable .NET 5 build on CI for package generation
+    # Build validation is performed on other jobs
+    UnoUIDisableNetCoreBuild: true
+
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 

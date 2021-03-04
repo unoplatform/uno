@@ -1,4 +1,4 @@
-#if XAMARIN || NETSTANDARD
+#if XAMARIN || UNO_REFERENCE_API
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsActiveChangedPartial(bool newValue);
 
-#if !NETSTANDARD && !__MACOS__ && !__NETSTD_REFERENCE__
+#if !UNO_REFERENCE_API && !__MACOS__ && !__NETSTD_REFERENCE__
 
 		private protected override void OnLoaded()
 		{

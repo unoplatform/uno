@@ -117,6 +117,21 @@ var Windows;
 })(Windows || (Windows = {}));
 var Uno;
 (function (Uno) {
+    var Utils;
+    (function (Utils) {
+        class Guid {
+            static NewGuid() {
+                if (!Guid.newGuidMethod) {
+                    Guid.newGuidMethod = Module.mono_bind_static_method("[mscorlib] System.Guid:NewGuid");
+                }
+                return Guid.newGuidMethod();
+            }
+        }
+        Utils.Guid = Guid;
+    })(Utils = Uno.Utils || (Uno.Utils = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
     var UI;
     (function (UI) {
         class HtmlDom {
@@ -141,49 +156,37 @@ var Uno;
         UI.HtmlDom = HtmlDom;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var Uno;
 (function (Uno) {
     var Http;
     (function (Http) {
         class HttpClient {
-            static send(config) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const params = {
-                        method: config.method,
-                        cache: config.cacheMode || "default",
-                        headers: new Headers(config.headers)
-                    };
-                    if (config.payload) {
-                        params.body = yield this.blobFromBase64(config.payload, config.payloadType);
-                    }
-                    try {
-                        const response = yield fetch(config.url, params);
-                        let responseHeaders = "";
-                        response.headers.forEach((v, k) => responseHeaders += `${k}:${v}\n`);
-                        const responseBlob = yield response.blob();
-                        const responsePayload = responseBlob ? yield this.base64FromBlob(responseBlob) : "";
-                        this.dispatchResponse(config.id, response.status, responseHeaders, responsePayload);
-                    }
-                    catch (error) {
-                        this.dispatchError(config.id, `${error.message || error}`);
-                        console.error(error);
-                    }
-                });
+            static async send(config) {
+                const params = {
+                    method: config.method,
+                    cache: config.cacheMode || "default",
+                    headers: new Headers(config.headers)
+                };
+                if (config.payload) {
+                    params.body = await this.blobFromBase64(config.payload, config.payloadType);
+                }
+                try {
+                    const response = await fetch(config.url, params);
+                    let responseHeaders = "";
+                    response.headers.forEach((v, k) => responseHeaders += `${k}:${v}\n`);
+                    const responseBlob = await response.blob();
+                    const responsePayload = responseBlob ? await this.base64FromBlob(responseBlob) : "";
+                    this.dispatchResponse(config.id, response.status, responseHeaders, responsePayload);
+                }
+                catch (error) {
+                    this.dispatchError(config.id, `${error.message || error}`);
+                    console.error(error);
+                }
             }
-            static blobFromBase64(base64, contentType) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    contentType = contentType || "application/octet-stream";
-                    const url = `data:${contentType};base64,${base64}`;
-                    return yield (yield fetch(url)).blob();
-                });
+            static async blobFromBase64(base64, contentType) {
+                contentType = contentType || "application/octet-stream";
+                const url = `data:${contentType};base64,${base64}`;
+                return await (await fetch(url)).blob();
             }
             static base64FromBlob(blob) {
                 return new Promise(resolve => {
@@ -897,7 +900,7 @@ var Uno;
                 return true;
             }
             registerPointerEventsOnView(pParams) {
-                const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+                const params = WindowManagerRegisterPointerEventsOnViewParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
                 element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
@@ -1430,7 +1433,6 @@ var Uno;
                         // Create a temporary element that will contain the input's content
                         var textOnlyElement = document.createElement("p");
                         textOnlyElement.style.cssText = unconstrainedStyleCssText;
-                        textOnlyElement.style.whiteSpace = "pre"; // Make sure to preserve space for measure, especially the ending new line!
                         // If the input is null or empty, add a no-width character to force the paragraph to take up one line height
                         // The trailing new lines are going to be ignored for measure, so we also append no-width char at the end.
                         textOnlyElement.innerText = inputElement.value ? (inputElement.value + "\u200B") : "\u200B";
@@ -1787,6 +1789,25 @@ var Uno;
                 }
                 return "ok";
             }
+            getNaturalImageSize(imageUrl) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    let loadingDone = () => {
+                        this.containerElement.removeChild(img);
+                        resolve(`${img.width};${img.height}`);
+                    };
+                    let loadingError = (e) => {
+                        this.containerElement.removeChild(img);
+                        reject(e);
+                    };
+                    img.style.pointerEvents = "none";
+                    img.style.opacity = "0";
+                    img.onload = loadingDone;
+                    img.onerror = loadingError;
+                    img.src = imageUrl;
+                    this.containerElement.appendChild(img);
+                });
+            }
         }
         WindowManager._isHosted = false;
         WindowManager._isLoadEventsEnabled = false;
@@ -1812,6 +1833,1674 @@ var Uno;
 // Ensure the "Uno" namespace is available globally
 window.Uno = Uno;
 window.Windows = Windows;
+PointerEvent.prototype.isOver = function (element) {
+    const bounds = element.getBoundingClientRect();
+    return this.pageX >= bounds.left
+        && this.pageX < bounds.right
+        && this.pageY >= bounds.top
+        && this.pageY < bounds.bottom;
+};
+PointerEvent.prototype.isOverDeep = function (element) {
+    if (!element) {
+        return false;
+    }
+    else if (element.style.pointerEvents != "none") {
+        return this.isOver(element);
+    }
+    else {
+        for (let elt of element.children) {
+            if (this.isOverDeep(elt)) {
+                return true;
+            }
+        }
+    }
+};
+var Uno;
+(function (Uno) {
+    var UI;
+    (function (UI) {
+        var Interop;
+        (function (Interop) {
+            class AsyncInteropHelper {
+                static init() {
+                    if (AsyncInteropHelper.dispatchErrorMethod) {
+                        return; // already initialized
+                    }
+                    const w = window;
+                    AsyncInteropHelper.dispatchResultMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
+                    AsyncInteropHelper.dispatchErrorMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+                }
+                static Invoke(handle, promiseFunction) {
+                    AsyncInteropHelper.init();
+                    try {
+                        promiseFunction()
+                            .then(str => {
+                            if (typeof str == "string") {
+                                AsyncInteropHelper.dispatchResultMethod(handle, str);
+                            }
+                            else {
+                                AsyncInteropHelper.dispatchResultMethod(handle, null);
+                            }
+                        })
+                            .catch(err => {
+                            AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                        });
+                    }
+                    catch (err) {
+                        AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                    }
+                }
+            }
+            Interop.AsyncInteropHelper = AsyncInteropHelper;
+        })(Interop = UI.Interop || (UI.Interop = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var Foundation;
+    (function (Foundation) {
+        var Interop;
+        (function (Interop) {
+            class ManagedObject {
+                static init() {
+                    ManagedObject.dispatchMethod = Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.Interop.JSObject:Dispatch");
+                }
+                static dispatch(handle, method, parameters) {
+                    if (!ManagedObject.dispatchMethod) {
+                        ManagedObject.init();
+                    }
+                    ManagedObject.dispatchMethod(handle, method, parameters || "");
+                }
+            }
+            Interop.ManagedObject = ManagedObject;
+        })(Interop = Foundation.Interop || (Foundation.Interop = {}));
+    })(Foundation = Uno.Foundation || (Uno.Foundation = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var UI;
+    (function (UI) {
+        var Interop;
+        (function (Interop) {
+            class Runtime {
+                static init() {
+                    return "";
+                }
+            }
+            Runtime.engine = Runtime.init();
+            Interop.Runtime = Runtime;
+        })(Interop = UI.Interop || (UI.Interop = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var UI;
+    (function (UI) {
+        var Interop;
+        (function (Interop) {
+            class Xaml {
+            }
+            Interop.Xaml = Xaml;
+        })(Interop = UI.Interop || (UI.Interop = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
+// ReSharper disable InconsistentNaming
+var ContactProperty;
+(function (ContactProperty) {
+    ContactProperty["Address"] = "address";
+    ContactProperty["Email"] = "email";
+    ContactProperty["Icon"] = "icon";
+    ContactProperty["Name"] = "name";
+    ContactProperty["Tel"] = "tel";
+})(ContactProperty || (ContactProperty = {}));
+;
+var Windows;
+(function (Windows) {
+    var ApplicationModel;
+    (function (ApplicationModel) {
+        var Contacts;
+        (function (Contacts) {
+            class ContactPicker {
+                static isSupported() {
+                    return 'contacts' in navigator && 'ContactsManager' in window;
+                }
+                static async pickContacts(pickMultiple) {
+                    const props = [ContactProperty.Name, ContactProperty.Email, ContactProperty.Tel, ContactProperty.Address];
+                    const opts = {
+                        multiple: pickMultiple
+                    };
+                    try {
+                        const contacts = await navigator.contacts.select(props, opts);
+                        return JSON.stringify(contacts);
+                    }
+                    catch (ex) {
+                        console.log("Error occurred while picking contacts.");
+                        return null;
+                    }
+                }
+            }
+            Contacts.ContactPicker = ContactPicker;
+        })(Contacts = ApplicationModel.Contacts || (ApplicationModel.Contacts = {}));
+    })(ApplicationModel = Windows.ApplicationModel || (Windows.ApplicationModel = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var ApplicationModel;
+    (function (ApplicationModel) {
+        var DataTransfer;
+        (function (DataTransfer) {
+            class DataTransferManager {
+                static isSupported() {
+                    var navigatorAny = navigator;
+                    return typeof navigatorAny.share === "function";
+                }
+                static async showShareUI(title, text, url) {
+                    var data = {};
+                    if (title) {
+                        data.title = title;
+                    }
+                    if (text) {
+                        data.text = text;
+                    }
+                    if (url) {
+                        data.url = url;
+                    }
+                    if (navigator.share) {
+                        try {
+                            await navigator.share(data);
+                            return "true";
+                        }
+                        catch (e) {
+                            console.log("Sharing failed:" + e);
+                            return "false";
+                        }
+                    }
+                    console.log("navigator.share API is not available in this browser");
+                    return "false";
+                }
+            }
+            DataTransfer.DataTransferManager = DataTransferManager;
+        })(DataTransfer = ApplicationModel.DataTransfer || (ApplicationModel.DataTransfer = {}));
+    })(ApplicationModel = Windows.ApplicationModel || (Windows.ApplicationModel = {}));
+})(Windows || (Windows = {}));
+var Uno;
+(function (Uno) {
+    var Devices;
+    (function (Devices) {
+        var Enumeration;
+        (function (Enumeration) {
+            var Internal;
+            (function (Internal) {
+                var Providers;
+                (function (Providers) {
+                    var Midi;
+                    (function (Midi) {
+                        class MidiDeviceClassProvider {
+                            static findDevices(findInputDevices) {
+                                var result = "";
+                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                                if (findInputDevices) {
+                                    midi.inputs.forEach((input, key) => {
+                                        const inputId = input.id;
+                                        const name = input.name;
+                                        const encodedMetadata = encodeURIComponent(inputId) + '#' + encodeURIComponent(name);
+                                        result += encodedMetadata + '&';
+                                    });
+                                }
+                                else {
+                                    midi.outputs.forEach((output, key) => {
+                                        const outputId = output.id;
+                                        const name = output.name;
+                                        const encodedMetadata = encodeURIComponent(outputId) + '#' + encodeURIComponent(name);
+                                        result += encodedMetadata + '&';
+                                    });
+                                }
+                                return result;
+                            }
+                        }
+                        Midi.MidiDeviceClassProvider = MidiDeviceClassProvider;
+                    })(Midi = Providers.Midi || (Providers.Midi = {}));
+                })(Providers = Internal.Providers || (Internal.Providers = {}));
+            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
+        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
+    })(Devices = Uno.Devices || (Uno.Devices = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var Devices;
+    (function (Devices) {
+        var Enumeration;
+        (function (Enumeration) {
+            var Internal;
+            (function (Internal) {
+                var Providers;
+                (function (Providers) {
+                    var Midi;
+                    (function (Midi) {
+                        class MidiDeviceConnectionWatcher {
+                            static startStateChanged() {
+                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                                midi.addEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
+                            }
+                            static stopStateChanged() {
+                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                                midi.removeEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
+                            }
+                            static onStateChanged(event) {
+                                if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
+                                    MidiDeviceConnectionWatcher.dispatchStateChanged =
+                                        Module.mono_bind_static_method("[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
+                                }
+                                const port = event.port;
+                                const isInput = port.type == "input";
+                                const isConnected = port.state == "connected";
+                                MidiDeviceConnectionWatcher.dispatchStateChanged(port.id, port.name, isInput, isConnected);
+                            }
+                        }
+                        Midi.MidiDeviceConnectionWatcher = MidiDeviceConnectionWatcher;
+                    })(Midi = Providers.Midi || (Providers.Midi = {}));
+                })(Providers = Internal.Providers || (Internal.Providers = {}));
+            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
+        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
+    })(Devices = Uno.Devices || (Uno.Devices = {}));
+})(Uno || (Uno = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Geolocation;
+        (function (Geolocation) {
+            let GeolocationAccessStatus;
+            (function (GeolocationAccessStatus) {
+                GeolocationAccessStatus["Allowed"] = "Allowed";
+                GeolocationAccessStatus["Denied"] = "Denied";
+                GeolocationAccessStatus["Unspecified"] = "Unspecified";
+            })(GeolocationAccessStatus || (GeolocationAccessStatus = {}));
+            let PositionStatus;
+            (function (PositionStatus) {
+                PositionStatus["Ready"] = "Ready";
+                PositionStatus["Initializing"] = "Initializing";
+                PositionStatus["NoData"] = "NoData";
+                PositionStatus["Disabled"] = "Disabled";
+                PositionStatus["NotInitialized"] = "NotInitialized";
+                PositionStatus["NotAvailable"] = "NotAvailable";
+            })(PositionStatus || (PositionStatus = {}));
+            class Geolocator {
+                static initialize() {
+                    this.positionWatches = {};
+                    if (!this.dispatchAccessRequest) {
+                        this.dispatchAccessRequest = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
+                    }
+                    if (!this.dispatchError) {
+                        this.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchError");
+                    }
+                    if (!this.dispatchGeoposition) {
+                        this.dispatchGeoposition = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
+                    }
+                }
+                //checks for permission to the geolocation services
+                static requestAccess() {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((_) => {
+                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                        }, (error) => {
+                            if (error.code == error.PERMISSION_DENIED) {
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
+                            }
+                            else if (error.code == error.POSITION_UNAVAILABLE ||
+                                error.code == error.TIMEOUT) {
+                                //position unavailable but we still have permission
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                            }
+                            else {
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
+                            }
+                        }, { enableHighAccuracy: false, maximumAge: 86400000, timeout: 100 });
+                    }
+                    else {
+                        Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
+                    }
+                }
+                //retrieves a single geoposition
+                static getGeoposition(desiredAccuracyInMeters, maximumAge, timeout, requestId) {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, {
+                            enableHighAccuracy: desiredAccuracyInMeters < 50,
+                            maximumAge: maximumAge,
+                            timeout: timeout
+                        });
+                    }
+                    else {
+                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
+                    }
+                }
+                static startPositionWatch(desiredAccuracyInMeters, requestId) {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        Geolocator.positionWatches[requestId] = navigator.geolocation.watchPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId));
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                static stopPositionWatch(desiredAccuracyInMeters, requestId) {
+                    navigator.geolocation.clearWatch(Geolocator.positionWatches[requestId]);
+                    delete Geolocator.positionWatches[requestId];
+                }
+                static handleGeoposition(position, requestId) {
+                    var serializedGeoposition = position.coords.latitude + ":" +
+                        position.coords.longitude + ":" +
+                        position.coords.altitude + ":" +
+                        position.coords.altitudeAccuracy + ":" +
+                        position.coords.accuracy + ":" +
+                        position.coords.heading + ":" +
+                        position.coords.speed + ":" +
+                        position.timestamp;
+                    Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
+                }
+                static handleError(error, requestId) {
+                    if (error.code == error.TIMEOUT) {
+                        Geolocator.dispatchError(PositionStatus.NoData, requestId);
+                    }
+                    else if (error.code == error.PERMISSION_DENIED) {
+                        Geolocator.dispatchError(PositionStatus.Disabled, requestId);
+                    }
+                    else if (error.code == error.POSITION_UNAVAILABLE) {
+                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
+                    }
+                }
+                //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout
+                //adapted from https://github.com/gregsramblings/getAccurateCurrentPosition/blob/master/geo.js		
+                static getAccurateCurrentPosition(geolocationSuccess, geolocationError, desiredAccuracy, options) {
+                    var lastCheckedPosition;
+                    var locationEventCount = 0;
+                    var watchId;
+                    var timerId;
+                    var checkLocation = function (position) {
+                        lastCheckedPosition = position;
+                        locationEventCount = locationEventCount + 1;
+                        //is the accuracy enough?
+                        if (position.coords.accuracy <= desiredAccuracy) {
+                            clearTimeout(timerId);
+                            navigator.geolocation.clearWatch(watchId);
+                            foundPosition(position);
+                        }
+                    };
+                    var stopTrying = function () {
+                        navigator.geolocation.clearWatch(watchId);
+                        foundPosition(lastCheckedPosition);
+                    };
+                    var onError = function (error) {
+                        clearTimeout(timerId);
+                        navigator.geolocation.clearWatch(watchId);
+                        geolocationError(error);
+                    };
+                    var foundPosition = function (position) {
+                        geolocationSuccess(position);
+                    };
+                    watchId = navigator.geolocation.watchPosition(checkLocation, onError, options);
+                    timerId = setTimeout(stopTrying, options.timeout);
+                }
+                ;
+            }
+            Geolocation.Geolocator = Geolocator;
+        })(Geolocation = Devices.Geolocation || (Devices.Geolocation = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Midi;
+        (function (Midi) {
+            class MidiInPort {
+                constructor(managedId, inputPort) {
+                    this.messageReceived = (event) => {
+                        var serializedMessage = event.data[0].toString();
+                        for (var i = 1; i < event.data.length; i++) {
+                            serializedMessage += ':' + event.data[i];
+                        }
+                        MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.timeStamp);
+                    };
+                    this.managedId = managedId;
+                    this.inputPort = inputPort;
+                }
+                static createPort(managedId, encodedDeviceId) {
+                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                    const deviceId = decodeURIComponent(encodedDeviceId);
+                    const input = midi.inputs.get(deviceId);
+                    MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
+                }
+                static removePort(managedId) {
+                    MidiInPort.stopMessageListener(managedId);
+                    delete MidiInPort.instanceMap[managedId];
+                }
+                static startMessageListener(managedId) {
+                    if (!MidiInPort.dispatchMessage) {
+                        MidiInPort.dispatchMessage = Module.mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
+                    }
+                    const instance = MidiInPort.instanceMap[managedId];
+                    instance.inputPort.addEventListener("midimessage", instance.messageReceived);
+                }
+                static stopMessageListener(managedId) {
+                    const instance = MidiInPort.instanceMap[managedId];
+                    instance.inputPort.removeEventListener("midimessage", instance.messageReceived);
+                }
+            }
+            MidiInPort.instanceMap = {};
+            Midi.MidiInPort = MidiInPort;
+        })(Midi = Devices.Midi || (Devices.Midi = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Midi;
+        (function (Midi) {
+            class MidiOutPort {
+                static sendBuffer(encodedDeviceId, timestamp, ...args) {
+                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                    const deviceId = decodeURIComponent(encodedDeviceId);
+                    const output = midi.outputs.get(deviceId);
+                    output.send(args, timestamp);
+                }
+            }
+            Midi.MidiOutPort = MidiOutPort;
+        })(Midi = Devices.Midi || (Devices.Midi = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Uno;
+(function (Uno) {
+    var Devices;
+    (function (Devices) {
+        var Midi;
+        (function (Midi) {
+            var Internal;
+            (function (Internal) {
+                class WasmMidiAccess {
+                    static request(systemExclusive) {
+                        if (navigator.requestMIDIAccess) {
+                            return navigator.requestMIDIAccess({ sysex: systemExclusive })
+                                .then((midi) => {
+                                WasmMidiAccess.midiAccess = midi;
+                                return "true";
+                            }, () => "false");
+                        }
+                        else {
+                            return Promise.resolve("false");
+                        }
+                    }
+                    static getMidi() {
+                        return WasmMidiAccess.midiAccess;
+                    }
+                }
+                Internal.WasmMidiAccess = WasmMidiAccess;
+            })(Internal = Midi.Internal || (Midi.Internal = {}));
+        })(Midi = Devices.Midi || (Devices.Midi = {}));
+    })(Devices = Uno.Devices || (Uno.Devices = {}));
+})(Uno || (Uno = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Accelerometer {
+                static initialize() {
+                    if (window.DeviceMotionEvent) {
+                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
+                        return true;
+                    }
+                    return false;
+                }
+                static startReading() {
+                    window.addEventListener("devicemotion", Accelerometer.readingChangedHandler);
+                }
+                static stopReading() {
+                    window.removeEventListener("devicemotion", Accelerometer.readingChangedHandler);
+                }
+                static readingChangedHandler(event) {
+                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                }
+            }
+            Sensors.Accelerometer = Accelerometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Gyrometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Gyroscope === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Gyrometer:DispatchReading");
+                            let GyroscopeClass = window.Gyroscope;
+                            this.gyroscope = new GyroscopeClass({ referenceFrame: "device" });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log("Gyroscope could not be initialized.");
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.gyroscope.addEventListener("reading", Gyrometer.readingChangedHandler);
+                    this.gyroscope.start();
+                }
+                static stopReading() {
+                    this.gyroscope.removeEventListener("reading", Gyrometer.readingChangedHandler);
+                    this.gyroscope.stop();
+                }
+                static readingChangedHandler(event) {
+                    Gyrometer.dispatchReading(Gyrometer.gyroscope.x, Gyrometer.gyroscope.y, Gyrometer.gyroscope.z);
+                }
+            }
+            Sensors.Gyrometer = Gyrometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Magnetometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            let MagnetometerClass = window.Magnetometer;
+                            this.magnetometer = new MagnetometerClass({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log("Magnetometer could not be initialized.");
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.magnetometer.addEventListener("reading", Magnetometer.readingChangedHandler);
+                    this.magnetometer.start();
+                }
+                static stopReading() {
+                    this.magnetometer.removeEventListener("reading", Magnetometer.readingChangedHandler);
+                    this.magnetometer.stop();
+                }
+                static readingChangedHandler(event) {
+                    Magnetometer.dispatchReading(Magnetometer.magnetometer.x, Magnetometer.magnetometer.y, Magnetometer.magnetometer.z);
+                }
+            }
+            Sensors.Magnetometer = Magnetometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Graphics;
+    (function (Graphics) {
+        var Display;
+        (function (Display) {
+            class DisplayInformation {
+                static startOrientationChanged() {
+                    window.screen.orientation.addEventListener("change", DisplayInformation.onOrientationChange);
+                }
+                static stopOrientationChanged() {
+                    window.screen.orientation.removeEventListener("change", DisplayInformation.onOrientationChange);
+                }
+                static startDpiChanged() {
+                    // DPI can be observed using matchMedia query, but only for certain breakpoints
+                    // for accurate observation, we use polling
+                    DisplayInformation.lastDpi = window.devicePixelRatio;
+                    // start polling the devicePixel
+                    DisplayInformation.dpiWatcher = window.setInterval(DisplayInformation.updateDpi, DisplayInformation.DpiCheckInterval);
+                }
+                static stopDpiChanged() {
+                    window.clearInterval(DisplayInformation.dpiWatcher);
+                }
+                static updateDpi() {
+                    const currentDpi = window.devicePixelRatio;
+                    if (Math.abs(DisplayInformation.lastDpi - currentDpi) > 0.001) {
+                        if (DisplayInformation.dispatchDpiChanged == null) {
+                            DisplayInformation.dispatchDpiChanged =
+                                Module.mono_bind_static_method("[Uno] Windows.Graphics.Display.DisplayInformation:DispatchDpiChanged");
+                        }
+                        DisplayInformation.dispatchDpiChanged(currentDpi);
+                    }
+                    DisplayInformation.lastDpi = currentDpi;
+                }
+                static onOrientationChange() {
+                    if (DisplayInformation.dispatchOrientationChanged == null) {
+                        DisplayInformation.dispatchOrientationChanged =
+                            Module.mono_bind_static_method("[Uno] Windows.Graphics.Display.DisplayInformation:DispatchOrientationChanged");
+                    }
+                    DisplayInformation.dispatchOrientationChanged(window.screen.orientation.type);
+                }
+            }
+            DisplayInformation.DpiCheckInterval = 1000;
+            Display.DisplayInformation = DisplayInformation;
+        })(Display = Graphics.Display || (Graphics.Display = {}));
+    })(Graphics = Windows.Graphics || (Windows.Graphics = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Media;
+    (function (Media) {
+        class SpeechRecognizer {
+            constructor(managedId, culture) {
+                this.onResult = (event) => {
+                    if (event.results[0].isFinal) {
+                        if (!SpeechRecognizer.dispatchResult) {
+                            SpeechRecognizer.dispatchResult = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchResult");
+                        }
+                        SpeechRecognizer.dispatchResult(this.managedId, event.results[0][0].transcript, event.results[0][0].confidence);
+                    }
+                    else {
+                        if (!SpeechRecognizer.dispatchHypothesis) {
+                            SpeechRecognizer.dispatchHypothesis = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchHypothesis");
+                        }
+                        SpeechRecognizer.dispatchHypothesis(this.managedId, event.results[0][0].transcript);
+                    }
+                };
+                this.onSpeechStart = () => {
+                    if (!SpeechRecognizer.dispatchStatus) {
+                        SpeechRecognizer.dispatchStatus = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchStatus");
+                    }
+                    SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected");
+                };
+                this.onError = (event) => {
+                    if (!SpeechRecognizer.dispatchError) {
+                        SpeechRecognizer.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchError");
+                    }
+                    SpeechRecognizer.dispatchError(this.managedId, event.error);
+                };
+                this.managedId = managedId;
+                if (window.SpeechRecognition) {
+                    this.recognition = new window.SpeechRecognition(culture);
+                }
+                else if (window.webkitSpeechRecognition) {
+                    this.recognition = new window.webkitSpeechRecognition(culture);
+                }
+                if (this.recognition) {
+                    this.recognition.addEventListener("result", this.onResult);
+                    this.recognition.addEventListener("speechstart", this.onSpeechStart);
+                    this.recognition.addEventListener("error", this.onError);
+                }
+            }
+            static initialize(managedId, culture) {
+                const recognizer = new SpeechRecognizer(managedId, culture);
+                SpeechRecognizer.instanceMap[managedId] = recognizer;
+            }
+            static recognize(managedId) {
+                const recognizer = SpeechRecognizer.instanceMap[managedId];
+                if (recognizer.recognition) {
+                    recognizer.recognition.continuous = false;
+                    recognizer.recognition.interimResults = true;
+                    recognizer.recognition.start();
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            static removeInstance(managedId) {
+                const recognizer = SpeechRecognizer.instanceMap[managedId];
+                recognizer.recognition.removeEventListener("result", recognizer.onResult);
+                recognizer.recognition.removeEventListener("speechstart", recognizer.onSpeechStart);
+                recognizer.recognition.removeEventListener("error", recognizer.onError);
+                delete SpeechRecognizer.instanceMap[managedId];
+            }
+        }
+        SpeechRecognizer.instanceMap = {};
+        Media.SpeechRecognizer = SpeechRecognizer;
+    })(Media = Windows.Media || (Windows.Media = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Networking;
+    (function (Networking) {
+        var Connectivity;
+        (function (Connectivity) {
+            class ConnectionProfile {
+                static hasInternetAccess() {
+                    return navigator.onLine;
+                }
+            }
+            Connectivity.ConnectionProfile = ConnectionProfile;
+        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
+    })(Networking = Windows.Networking || (Windows.Networking = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Networking;
+    (function (Networking) {
+        var Connectivity;
+        (function (Connectivity) {
+            class NetworkInformation {
+                static startStatusChanged() {
+                    window.addEventListener("online", NetworkInformation.networkStatusChanged);
+                    window.addEventListener("offline", NetworkInformation.networkStatusChanged);
+                }
+                static stopStatusChanged() {
+                    window.removeEventListener("online", NetworkInformation.networkStatusChanged);
+                    window.removeEventListener("offline", NetworkInformation.networkStatusChanged);
+                }
+                static networkStatusChanged() {
+                    if (NetworkInformation.dispatchStatusChanged == null) {
+                        NetworkInformation.dispatchStatusChanged =
+                            Module.mono_bind_static_method("[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
+                    }
+                    NetworkInformation.dispatchStatusChanged();
+                }
+            }
+            Connectivity.NetworkInformation = NetworkInformation;
+        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
+    })(Networking = Windows.Networking || (Windows.Networking = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Phone;
+    (function (Phone) {
+        var Devices;
+        (function (Devices) {
+            var Notification;
+            (function (Notification) {
+                class VibrationDevice {
+                    static initialize() {
+                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                        if (navigator.vibrate) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    static vibrate(duration) {
+                        return window.navigator.vibrate(duration);
+                    }
+                }
+                Notification.VibrationDevice = VibrationDevice;
+            })(Notification = Devices.Notification || (Devices.Notification = {}));
+        })(Devices = Phone.Devices || (Phone.Devices = {}));
+    })(Phone = Windows.Phone || (Windows.Phone = {}));
+})(Windows || (Windows = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer {
+            static buildStorageKey(locality, key) {
+                return `UnoApplicationDataContainer_${locality}_${key}`;
+            }
+            static buildStoragePrefix(locality) {
+                return `UnoApplicationDataContainer_${locality}_`;
+            }
+            /**
+             * Try to get a value from localStorage
+             * */
+            static tryGetValue(pParams, pReturn) {
+                const params = ApplicationDataContainer_TryGetValueParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_TryGetValueReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                if (localStorage.hasOwnProperty(storageKey)) {
+                    ret.HasValue = true;
+                    ret.Value = localStorage.getItem(storageKey);
+                }
+                else {
+                    ret.Value = "";
+                    ret.HasValue = false;
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Set a value to localStorage
+             * */
+            static setValue(pParams) {
+                const params = ApplicationDataContainer_SetValueParams.unmarshal(pParams);
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                localStorage.setItem(storageKey, params.Value);
+                return true;
+            }
+            /**
+             * Determines if a key is contained in localStorage
+             * */
+            static containsKey(pParams, pReturn) {
+                const params = ApplicationDataContainer_ContainsKeyParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_ContainsKeyReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                ret.ContainsKey = localStorage.hasOwnProperty(storageKey);
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Gets a key by index in localStorage
+             * */
+            static getKeyByIndex(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetKeyByIndexParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
+                let localityIndex = 0;
+                let returnKey = "";
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        if (localityIndex === params.Index) {
+                            returnKey = storageKey.substr(prefix.length);
+                        }
+                        localityIndex++;
+                    }
+                }
+                ret.Value = returnKey;
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Determines the number of items contained in localStorage
+             * */
+            static getCount(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetCountParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetCountReturn();
+                ret.Count = 0;
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        ret.Count++;
+                    }
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Clears items contained in localStorage
+             * */
+            static clear(pParams) {
+                const params = ApplicationDataContainer_ClearParams.unmarshal(pParams);
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                const itemsToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        itemsToRemove.push(storageKey);
+                    }
+                }
+                for (const item in itemsToRemove) {
+                    localStorage.removeItem(itemsToRemove[item]);
+                }
+                return true;
+            }
+            /**
+             * Removes an item contained in localStorage
+             * */
+            static remove(pParams, pReturn) {
+                const params = ApplicationDataContainer_RemoveParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_RemoveReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                ret.Removed = localStorage.hasOwnProperty(storageKey);
+                if (ret.Removed) {
+                    localStorage.removeItem(storageKey);
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Gets a key by index in localStorage
+             * */
+            static getValueByIndex(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetValueByIndexParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
+                let localityIndex = 0;
+                let returnKey = "";
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        if (localityIndex === params.Index) {
+                            returnKey = localStorage.getItem(storageKey);
+                        }
+                        localityIndex++;
+                    }
+                }
+                ret.Value = returnKey;
+                ret.marshal(pReturn);
+                return true;
+            }
+        }
+        Storage.ApplicationDataContainer = ApplicationDataContainer;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class AssetManager {
+            static async DownloadAssetsManifest(path) {
+                const response = await fetch(path);
+                return response.text();
+            }
+            static async DownloadAsset(path) {
+                const response = await fetch(path);
+                const arrayBuffer = await response.blob().then(b => b.arrayBuffer());
+                const size = arrayBuffer.byteLength;
+                const responseArray = new Uint8ClampedArray(arrayBuffer);
+                const pData = Module._malloc(size);
+                Module.HEAPU8.set(responseArray, pData);
+                return `${pData};${size}`;
+            }
+        }
+        Storage.AssetManager = AssetManager;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class NativeStorageFile {
+            static AddHandle(guid, handle) {
+                NativeStorageFile._fileMap.set(guid, handle);
+            }
+            static RemoveHandle(guid) {
+                NativeStorageFile._fileMap.delete(guid);
+            }
+            static GetHandle(guid) {
+                return NativeStorageFile._fileMap.get(guid);
+            }
+        }
+        NativeStorageFile._fileMap = new Map();
+        Storage.NativeStorageFile = NativeStorageFile;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class NativeStorageFolder {
+            static AddHandle(guid, handle) {
+                NativeStorageFolder._folderMap.set(guid, handle);
+            }
+            static RemoveHandle(guid) {
+                NativeStorageFolder._folderMap.delete(guid);
+            }
+            static GetHandle(guid) {
+                return NativeStorageFolder._folderMap.get(guid);
+            }
+            /**
+             * Creates a new folder inside another folder.
+             * @param parentGuid The GUID of the folder to create in.
+             * @param folderName The name of the new folder.
+             */
+            static async CreateFolderAsync(parentGuid, folderName) {
+                const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
+                const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
+                    create: true,
+                });
+                var guid = Uno.Utils.Guid.NewGuid();
+                NativeStorageFolder.AddHandle(guid, newDirectoryHandle);
+                return guid;
+            }
+            /**
+             * Gets a folder in the given parent folder by name.
+             * @param parentGuid The GUID of the parent folder to get.
+             * @param folderName The name of the folder to look for.
+             * @returns A GUID of the folder if found, otherwise "notfound" literal.
+             */
+            static async GetFolderAsync(parentGuid, folderName) {
+                const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
+                let nestedDirectoryHandle = undefined;
+                let returnedGuid = Uno.Utils.Guid.NewGuid();
+                try {
+                    nestedDirectoryHandle = await parentHandle.getDirectoryHandle(folderName);
+                }
+                catch (ex) {
+                    if (ex instanceof DOMException && ex.message.includes("could not be found")) {
+                        returnedGuid = "notfound";
+                    }
+                }
+                if (nestedDirectoryHandle)
+                    NativeStorageFolder.AddHandle(returnedGuid, nestedDirectoryHandle);
+                return returnedGuid;
+            }
+        }
+        NativeStorageFolder._folderMap = new Map();
+        Storage.NativeStorageFolder = NativeStorageFolder;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Uno;
+(function (Uno) {
+    var Storage;
+    (function (Storage) {
+        class NativeStorageItem {
+            static generateGuid() {
+                if (!NativeStorageItem.generateGuidBinding) {
+                    NativeStorageItem.generateGuidBinding = Module.mono_bind_static_method("[Uno] Uno.Storage.NativeStorageItem:GenerateGuid");
+                }
+                return NativeStorageItem.generateGuidBinding();
+            }
+        }
+        Storage.NativeStorageItem = NativeStorageItem;
+    })(Storage = Uno.Storage || (Uno.Storage = {}));
+})(Uno || (Uno = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class StorageFolder {
+            /**
+             * Determine if IndexDB is available, some browsers and modes disable it.
+             * */
+            static isIndexDBAvailable() {
+                try {
+                    // IndexedDB may not be available in private mode
+                    window.indexedDB;
+                    return true;
+                }
+                catch (err) {
+                    return false;
+                }
+            }
+            /**
+             * Setup the storage persistence of a given set of paths.
+             * */
+            static makePersistent(pParams) {
+                const params = StorageFolderMakePersistentParams.unmarshal(pParams);
+                for (var i = 0; i < params.Paths.length; i++) {
+                    this.setupStorage(params.Paths[i]);
+                }
+            }
+            /**
+             * Setup the storage persistence of a given path.
+             * */
+            static setupStorage(path) {
+                if (Uno.UI.WindowManager.isHosted) {
+                    console.debug("Hosted Mode: skipping IndexDB initialization");
+                    StorageFolder.onStorageInitialized();
+                    return;
+                }
+                if (!this.isIndexDBAvailable()) {
+                    console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    StorageFolder.onStorageInitialized();
+                    return;
+                }
+                if (typeof IDBFS === 'undefined') {
+                    console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+                    StorageFolder.onStorageInitialized();
+                    return;
+                }
+                console.debug("Making persistent: " + path);
+                FS.mkdir(path);
+                FS.mount(IDBFS, {}, path);
+                // Ensure to sync pseudo file system on unload (and periodically for safety)
+                if (!this._isInit) {
+                    // Request an initial sync to populate the file system
+                    FS.syncfs(true, err => {
+                        if (err) {
+                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+                        }
+                        StorageFolder.onStorageInitialized();
+                    });
+                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
+                    setInterval(this.synchronizeFileSystem, 10000);
+                    this._isInit = true;
+                }
+            }
+            static onStorageInitialized() {
+                if (!StorageFolder.dispatchStorageInitialized) {
+                    StorageFolder.dispatchStorageInitialized =
+                        Module.mono_bind_static_method("[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
+                }
+                StorageFolder.dispatchStorageInitialized();
+            }
+            /**
+             * Synchronize the IDBFS memory cache back to IndexDB
+             * */
+            static synchronizeFileSystem() {
+                FS.syncfs(err => {
+                    if (err) {
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+                    }
+                });
+            }
+        }
+        StorageFolder._isInit = false;
+        Storage.StorageFolder = StorageFolder;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class FileOpenPicker {
+                static async pickFilesAsync(multiple, showAllEntry, fileTypes) {
+                    if (!showOpenFilePicker) {
+                        return "";
+                    }
+                    const options = {
+                        multiple: multiple,
+                        excludeAcceptAllOption: !showAllEntry,
+                        types: [],
+                    };
+                    var fullAccept = {};
+                    for (var property in fileTypes) {
+                        const mimeType = property;
+                        const extensions = fileTypes[property];
+                        const acceptType = {
+                            accept: {
+                                [mimeType]: extensions
+                            },
+                            description: extensions.length > 1 ? "" : extensions[0],
+                        };
+                        fullAccept[mimeType] = extensions;
+                        options.types.push(acceptType);
+                    }
+                    if (fileTypes.length > 1) {
+                        options.types.unshift({
+                            accept: fullAccept,
+                            description: "All"
+                        });
+                    }
+                    try {
+                        const selectedFiles = await showOpenFilePicker(options);
+                        var results = "";
+                        for (const selectedFile of selectedFiles) {
+                            const guid = Uno.Storage.NativeStorageItem.generateGuid();
+                            Storage.NativeStorageFile.AddHandle(guid, selectedFile);
+                            const fileInfo = await selectedFile.getFile();
+                            const name = fileInfo.name;
+                            const contentType = fileInfo.type;
+                            results += guid + "\\" + name + "\\" + contentType + "\\\\";
+                        }
+                        return results;
+                    }
+                    catch (e) {
+                        console.log("User did not make a selection or it file selected was" +
+                            "deemed too sensitive or dangerous to be exposed to the website - " + e);
+                        return "";
+                    }
+                }
+            }
+            Pickers.FileOpenPicker = FileOpenPicker;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class FileSavePicker {
+                static SaveAs(fileName, dataPtr, size) {
+                    const buffer = new Uint8Array(size);
+                    for (var i = 0; i < size; i++) {
+                        buffer[i] = Module.getValue(dataPtr + i, "i8");
+                    }
+                    const a = window.document.createElement('a');
+                    const blob = new Blob([buffer]);
+                    a.href = window.URL.createObjectURL(blob);
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            }
+            Pickers.FileSavePicker = FileSavePicker;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class FolderPicker {
+                static async pickSingleFolderAsync() {
+                    try {
+                        const selectedFolder = await showDirectoryPicker();
+                        const guid = Uno.Utils.Guid.NewGuid();
+                        Storage.NativeStorageFolder.AddHandle(guid, selectedFolder);
+                        return guid;
+                    }
+                    catch (e) {
+                        console.log("The user dismissed the prompt without making a selection, " +
+                            "or the user agent deems the selected content to be too sensitive or dangerous - " + e);
+                        return null;
+                    }
+                }
+            }
+            Pickers.FolderPicker = FolderPicker;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var WakeLockType;
+(function (WakeLockType) {
+    WakeLockType["screen"] = "screen";
+})(WakeLockType || (WakeLockType = {}));
+;
+;
+;
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        var Display;
+        (function (Display) {
+            class DisplayRequest {
+                static activateScreenLock() {
+                    if (navigator.wakeLock) {
+                        DisplayRequest.activeScreenLockPromise = navigator.wakeLock.request(WakeLockType.screen);
+                        DisplayRequest.activeScreenLockPromise.catch(reason => console.log("Could not acquire screen lock (" + reason + ")"));
+                    }
+                    else {
+                        console.log("Wake Lock API is not available in this browser.");
+                    }
+                }
+                static deactivateScreenLock() {
+                    if (DisplayRequest.activeScreenLockPromise) {
+                        DisplayRequest.activeScreenLockPromise.then(sentinel => sentinel.release());
+                        DisplayRequest.activeScreenLockPromise = null;
+                    }
+                }
+            }
+            Display.DisplayRequest = DisplayRequest;
+        })(Display = System.Display || (System.Display = {}));
+    })(System = Windows.System || (Windows.System = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        var Profile;
+        (function (Profile) {
+            class AnalyticsInfo {
+                static getDeviceType() {
+                    // Logic based on https://github.com/barisaydinoglu/Detectizr
+                    var ua = navigator.userAgent;
+                    if (!ua || ua === '') {
+                        // No user agent.
+                        return "unknown";
+                    }
+                    if (ua.match(/GoogleTV|SmartTV|SMART-TV|Internet TV|NetCast|NETTV|AppleTV|boxee|Kylo|Roku|DLNADOC|hbbtv|CrKey|CE\-HTML/i)) {
+                        // if user agent is a smart TV - http://goo.gl/FocDk
+                        return "Television";
+                    }
+                    else if (ua.match(/Xbox|PLAYSTATION|Wii/i)) {
+                        // if user agent is a TV Based Gaming Console
+                        return "GameConsole";
+                    }
+                    else if (ua.match(/QtCarBrowser/i)) {
+                        // if the user agent is a car
+                        return "Car";
+                    }
+                    else if (ua.match(/iP(a|ro)d/i) || (ua.match(/tablet/i) && !ua.match(/RX-34/i)) || ua.match(/FOLIO/i)) {
+                        // if user agent is a Tablet
+                        return "Tablet";
+                    }
+                    else if (ua.match(/Linux/i) && ua.match(/Android/i) && !ua.match(/Fennec|mobi|HTC Magic|HTCX06HT|Nexus One|SC-02B|fone 945/i)) {
+                        // if user agent is an Android Tablet
+                        return "Tablet";
+                    }
+                    else if (ua.match(/Kindle/i) || (ua.match(/Mac OS/i) && ua.match(/Silk/i)) || (ua.match(/AppleWebKit/i) && ua.match(/Silk/i) && !ua.match(/Playstation Vita/i))) {
+                        // if user agent is a Kindle or Kindle Fire
+                        return "Tablet";
+                    }
+                    else if (ua.match(/GT-P10|SC-01C|SHW-M180S|SGH-T849|SCH-I800|SHW-M180L|SPH-P100|SGH-I987|zt180|HTC( Flyer|_Flyer)|Sprint ATP51|ViewPad7|pandigital(sprnova|nova)|Ideos S7|Dell Streak 7|Advent Vega|A101IT|A70BHT|MID7015|Next2|nook/i) || (ua.match(/MB511/i) && ua.match(/RUTEM/i))) {
+                        // if user agent is a pre Android 3.0 Tablet
+                        return "Tablet";
+                    }
+                    else if (ua.match(/BOLT|Fennec|Iris|Maemo|Minimo|Mobi|mowser|NetFront|Novarra|Prism|RX-34|Skyfire|Tear|XV6875|XV6975|Google Wireless Transcoder/i) && !ua.match(/AdsBot-Google-Mobile/i)) {
+                        // if user agent is unique phone User Agent
+                        return "Mobile";
+                    }
+                    else if (ua.match(/Opera/i) && ua.match(/Windows NT 5/i) && ua.match(/HTC|Xda|Mini|Vario|SAMSUNG\-GT\-i8000|SAMSUNG\-SGH\-i9/i)) {
+                        // if user agent is an odd Opera User Agent - http://goo.gl/nK90K
+                        return "Mobile";
+                    }
+                    else if ((ua.match(/Windows( )?(NT|XP|ME|9)/) && !ua.match(/Phone/i)) && !ua.match(/Bot|Spider|ia_archiver|NewsGator/i) || ua.match(/Win( ?9|NT)/i) || ua.match(/Go-http-client/i)) {
+                        // if user agent is Windows Desktop
+                        return "Desktop";
+                    }
+                    else if (ua.match(/Macintosh|PowerPC/i) && !ua.match(/Silk|moatbot/i)) {
+                        // if agent is Mac Desktop
+                        return "Desktop";
+                    }
+                    else if (ua.match(/Linux/i) && ua.match(/X11/i) && !ua.match(/Charlotte|JobBot/i)) {
+                        // if user agent is a Linux Desktop
+                        return "Desktop";
+                    }
+                    else if (ua.match(/CrOS/)) {
+                        // if user agent is a Chrome Book
+                        return "Desktop";
+                    }
+                    else if (ua.match(/Solaris|SunOS|BSD/i)) {
+                        // if user agent is a Solaris, SunOS, BSD Desktop
+                        return "Desktop";
+                    }
+                    else {
+                        // Otherwise returning the unknown type configured
+                        return "Unknown";
+                    }
+                }
+            }
+            Profile.AnalyticsInfo = AnalyticsInfo;
+        })(Profile = System.Profile || (System.Profile = {}));
+    })(System = Windows.System || (Windows.System = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        var Profile;
+        (function (Profile) {
+            class AnalyticsVersionInfo {
+                static getUserAgent() {
+                    return navigator.userAgent;
+                }
+                static getBrowserName() {
+                    // Opera 8.0+
+                    if ((!!window.opr && !!window.opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0) {
+                        return "Opera";
+                    }
+                    // Firefox 1.0+
+                    if (typeof window.InstallTrigger !== 'undefined') {
+                        return "Firefox";
+                    }
+                    // Safari 3.0+ "[object HTMLElementConstructor]" 
+                    if (/constructor/i.test(window.HTMLElement) ||
+                        ((p) => p.toString() === "[object SafariRemoteNotification]")(typeof window.safari !== 'undefined' && window.safari.pushNotification)) {
+                        return "Safari";
+                    }
+                    // Edge 20+
+                    if (!!window.StyleMedia) {
+                        return "Edge";
+                    }
+                    // Chrome 1 - 71
+                    if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
+                        return "Chrome";
+                    }
+                }
+            }
+            Profile.AnalyticsVersionInfo = AnalyticsVersionInfo;
+        })(Profile = System.Profile || (System.Profile = {}));
+    })(System = Windows.System || (Windows.System = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Core;
+        (function (Core) {
+            class SystemNavigationManager {
+                constructor() {
+                    var that = this;
+                    var dispatchBackRequest = Module.mono_bind_static_method("[Uno] Windows.UI.Core.SystemNavigationManager:DispatchBackRequest");
+                    window.history.replaceState(0, document.title, null);
+                    window.addEventListener("popstate", function (evt) {
+                        if (that._isEnabled) {
+                            if (evt.state === 0) {
+                                // Push something in the stack only if we know that we reached the first page.
+                                // There is no way to track our location in the stack, so we use indexes (in the 'state').
+                                window.history.pushState(1, document.title, null);
+                            }
+                            dispatchBackRequest();
+                        }
+                        else if (evt.state === 1) {
+                            // The manager is disabled, but the user requested to navigate forward to our dummy entry,
+                            // but we prefer to keep this dummy entry in the forward stack (is more prompt to be cleared by the browser,
+                            // and as it's less commonly used it should be less annoying for the user)
+                            window.history.back();
+                        }
+                    });
+                }
+                static get current() {
+                    if (!this._current) {
+                        this._current = new SystemNavigationManager();
+                    }
+                    return this._current;
+                }
+                enable() {
+                    if (this._isEnabled) {
+                        return;
+                    }
+                    // Clear the back stack, so the only items will be ours (and we won't have any remaining forward item)
+                    this.clearStack();
+                    window.history.pushState(1, document.title, null);
+                    // Then set the enabled flag so the handler will begin its work
+                    this._isEnabled = true;
+                }
+                disable() {
+                    if (!this._isEnabled) {
+                        return;
+                    }
+                    // Disable the handler, then clear the history
+                    // Note: As a side effect, the forward button will be enabled :(
+                    this._isEnabled = false;
+                    this.clearStack();
+                }
+                clearStack() {
+                    // There is no way to determine our position in the stack, so we only navigate back if we determine that
+                    // we are currently on our dummy target page.
+                    if (window.history.state === 1) {
+                        window.history.back();
+                    }
+                    window.history.replaceState(0, document.title, null);
+                }
+            }
+            Core.SystemNavigationManager = SystemNavigationManager;
+        })(Core = UI.Core || (UI.Core = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var ViewManagement;
+        (function (ViewManagement) {
+            class ApplicationView {
+                static setFullScreenMode(turnOn) {
+                    if (turnOn) {
+                        if (document.fullscreenEnabled) {
+                            document.documentElement.requestFullscreen();
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        document.exitFullscreen();
+                        return true;
+                    }
+                }
+            }
+            ViewManagement.ApplicationView = ApplicationView;
+        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var ViewManagement;
+        (function (ViewManagement) {
+            class ApplicationViewTitleBar {
+                static setBackgroundColor(colorString) {
+                    if (colorString == null) {
+                        //remove theme-color meta
+                        var metaThemeColorEntries = document.querySelectorAll("meta[name='theme-color']");
+                        for (let entry of metaThemeColorEntries) {
+                            entry.remove();
+                        }
+                    }
+                    else {
+                        var metaThemeColorEntries = document.querySelectorAll("meta[name='theme-color']");
+                        var metaThemeColor;
+                        if (metaThemeColorEntries.length == 0) {
+                            //create meta
+                            metaThemeColor = document.createElement("meta");
+                            metaThemeColor.setAttribute("name", "theme-color");
+                            document.head.appendChild(metaThemeColor);
+                        }
+                        else {
+                            metaThemeColor = metaThemeColorEntries[0];
+                        }
+                        metaThemeColor.setAttribute("content", colorString);
+                    }
+                }
+            }
+            ViewManagement.ApplicationViewTitleBar = ApplicationViewTitleBar;
+        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            class Application {
+                static getDefaultSystemTheme() {
+                    if (window.matchMedia) {
+                        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                            return Xaml.ApplicationTheme.Dark;
+                        }
+                        if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+                            return Xaml.ApplicationTheme.Light;
+                        }
+                    }
+                    return null;
+                }
+                static observeSystemTheme() {
+                    if (!this.dispatchThemeChange) {
+                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+                    }
+                    if (window.matchMedia) {
+                        window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
+                            Application.dispatchThemeChange();
+                        });
+                    }
+                }
+            }
+            Xaml.Application = Application;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            let ApplicationTheme;
+            (function (ApplicationTheme) {
+                ApplicationTheme["Light"] = "Light";
+                ApplicationTheme["Dark"] = "Dark";
+            })(ApplicationTheme = Xaml.ApplicationTheme || (Xaml.ApplicationTheme = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Media;
+            (function (Media) {
+                var Animation;
+                (function (Animation) {
+                    class RenderingLoopFloatAnimator {
+                        constructor(managedHandle) {
+                            this.managedHandle = managedHandle;
+                            this._isEnabled = false;
+                        }
+                        static createInstance(managedHandle, jsHandle) {
+                            RenderingLoopFloatAnimator.activeInstances[jsHandle] = new RenderingLoopFloatAnimator(managedHandle);
+                        }
+                        static getInstance(jsHandle) {
+                            return RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                        }
+                        static destroyInstance(jsHandle) {
+                            delete RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                        }
+                        SetStartFrameDelay(delay) {
+                            this.unscheduleFrame();
+                            if (this._isEnabled) {
+                                this.scheduleDelayedFrame(delay);
+                            }
+                        }
+                        SetAnimationFramesInterval() {
+                            this.unscheduleFrame();
+                            if (this._isEnabled) {
+                                this.onFrame();
+                            }
+                        }
+                        EnableFrameReporting() {
+                            if (this._isEnabled) {
+                                return;
+                            }
+                            this._isEnabled = true;
+                            this.scheduleAnimationFrame();
+                        }
+                        DisableFrameReporting() {
+                            this._isEnabled = false;
+                            this.unscheduleFrame();
+                        }
+                        onFrame() {
+                            Uno.Foundation.Interop.ManagedObject.dispatch(this.managedHandle, "OnFrame", null);
+                            // Schedule a new frame only if still enabled and no frame was scheduled by the managed OnFrame
+                            if (this._isEnabled && this._frameRequestId == null && this._delayRequestId == null) {
+                                this.scheduleAnimationFrame();
+                            }
+                        }
+                        unscheduleFrame() {
+                            if (this._delayRequestId != null) {
+                                clearTimeout(this._delayRequestId);
+                                this._delayRequestId = null;
+                            }
+                            if (this._frameRequestId != null) {
+                                window.cancelAnimationFrame(this._frameRequestId);
+                                this._frameRequestId = null;
+                            }
+                        }
+                        scheduleDelayedFrame(delay) {
+                            this._delayRequestId = setTimeout(() => {
+                                this._delayRequestId = null;
+                                this.onFrame();
+                            }, delay);
+                        }
+                        scheduleAnimationFrame() {
+                            this._frameRequestId = window.requestAnimationFrame(() => {
+                                this._frameRequestId = null;
+                                this.onFrame();
+                            });
+                        }
+                    }
+                    RenderingLoopFloatAnimator.activeInstances = {};
+                    Animation.RenderingLoopFloatAnimator = RenderingLoopFloatAnimator;
+                })(Animation = Media.Animation || (Media.Animation = {}));
+            })(Media = Xaml.Media || (Xaml.Media = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class ApplicationDataContainer_ClearParams {
     static unmarshal(pData) {
@@ -2766,1424 +4455,3 @@ class WindowManagerSetXUidParams {
         return ret;
     }
 }
-PointerEvent.prototype.isOver = function (element) {
-    const bounds = element.getBoundingClientRect();
-    return this.pageX >= bounds.left
-        && this.pageX < bounds.right
-        && this.pageY >= bounds.top
-        && this.pageY < bounds.bottom;
-};
-PointerEvent.prototype.isOverDeep = function (element) {
-    if (!element) {
-        return false;
-    }
-    else if (element.style.pointerEvents != "none") {
-        return this.isOver(element);
-    }
-    else {
-        for (let elt of element.children) {
-            if (this.isOverDeep(elt)) {
-                return true;
-            }
-        }
-    }
-};
-var Uno;
-(function (Uno) {
-    var UI;
-    (function (UI) {
-        var Interop;
-        (function (Interop) {
-            class AsyncInteropHelper {
-                static init() {
-                    if (AsyncInteropHelper.dispatchErrorMethod) {
-                        return; // already initialized
-                    }
-                    const w = window;
-                    AsyncInteropHelper.dispatchResultMethod =
-                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
-                    AsyncInteropHelper.dispatchErrorMethod =
-                        w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
-                }
-                static Invoke(handle, promiseFunction) {
-                    AsyncInteropHelper.init();
-                    try {
-                        promiseFunction()
-                            .then(str => {
-                            if (typeof str == "string") {
-                                AsyncInteropHelper.dispatchResultMethod(handle, str);
-                            }
-                            else {
-                                AsyncInteropHelper.dispatchResultMethod(handle, null);
-                            }
-                        })
-                            .catch(err => {
-                            AsyncInteropHelper.dispatchErrorMethod(handle, err);
-                        });
-                    }
-                    catch (err) {
-                        AsyncInteropHelper.dispatchErrorMethod(handle, err);
-                    }
-                }
-            }
-            Interop.AsyncInteropHelper = AsyncInteropHelper;
-        })(Interop = UI.Interop || (UI.Interop = {}));
-    })(UI = Uno.UI || (Uno.UI = {}));
-})(Uno || (Uno = {}));
-var Uno;
-(function (Uno) {
-    var Foundation;
-    (function (Foundation) {
-        var Interop;
-        (function (Interop) {
-            class ManagedObject {
-                static init() {
-                    ManagedObject.dispatchMethod = Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.Interop.JSObject:Dispatch");
-                }
-                static dispatch(handle, method, parameters) {
-                    if (!ManagedObject.dispatchMethod) {
-                        ManagedObject.init();
-                    }
-                    ManagedObject.dispatchMethod(handle, method, parameters || "");
-                }
-            }
-            Interop.ManagedObject = ManagedObject;
-        })(Interop = Foundation.Interop || (Foundation.Interop = {}));
-    })(Foundation = Uno.Foundation || (Uno.Foundation = {}));
-})(Uno || (Uno = {}));
-var Uno;
-(function (Uno) {
-    var UI;
-    (function (UI) {
-        var Interop;
-        (function (Interop) {
-            class Runtime {
-                static init() {
-                    return "";
-                }
-            }
-            Runtime.engine = Runtime.init();
-            Interop.Runtime = Runtime;
-        })(Interop = UI.Interop || (UI.Interop = {}));
-    })(UI = Uno.UI || (Uno.UI = {}));
-})(Uno || (Uno = {}));
-var Uno;
-(function (Uno) {
-    var UI;
-    (function (UI) {
-        var Interop;
-        (function (Interop) {
-            class Xaml {
-            }
-            Interop.Xaml = Xaml;
-        })(Interop = UI.Interop || (UI.Interop = {}));
-    })(UI = Uno.UI || (Uno.UI = {}));
-})(Uno || (Uno = {}));
-// ReSharper disable InconsistentNaming
-var Windows;
-(function (Windows) {
-    var Media;
-    (function (Media) {
-        class SpeechRecognizer {
-            constructor(managedId, culture) {
-                this.onResult = (event) => {
-                    if (event.results[0].isFinal) {
-                        if (!SpeechRecognizer.dispatchResult) {
-                            SpeechRecognizer.dispatchResult = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchResult");
-                        }
-                        SpeechRecognizer.dispatchResult(this.managedId, event.results[0][0].transcript, event.results[0][0].confidence);
-                    }
-                    else {
-                        if (!SpeechRecognizer.dispatchHypothesis) {
-                            SpeechRecognizer.dispatchHypothesis = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchHypothesis");
-                        }
-                        SpeechRecognizer.dispatchHypothesis(this.managedId, event.results[0][0].transcript);
-                    }
-                };
-                this.onSpeechStart = () => {
-                    if (!SpeechRecognizer.dispatchStatus) {
-                        SpeechRecognizer.dispatchStatus = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchStatus");
-                    }
-                    SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected");
-                };
-                this.onError = (event) => {
-                    if (!SpeechRecognizer.dispatchError) {
-                        SpeechRecognizer.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchError");
-                    }
-                    SpeechRecognizer.dispatchError(this.managedId, event.error);
-                };
-                this.managedId = managedId;
-                if (window.SpeechRecognition) {
-                    this.recognition = new window.SpeechRecognition(culture);
-                }
-                else if (window.webkitSpeechRecognition) {
-                    this.recognition = new window.webkitSpeechRecognition(culture);
-                }
-                if (this.recognition) {
-                    this.recognition.addEventListener("result", this.onResult);
-                    this.recognition.addEventListener("speechstart", this.onSpeechStart);
-                    this.recognition.addEventListener("error", this.onError);
-                }
-            }
-            static initialize(managedId, culture) {
-                const recognizer = new SpeechRecognizer(managedId, culture);
-                SpeechRecognizer.instanceMap[managedId] = recognizer;
-            }
-            static recognize(managedId) {
-                const recognizer = SpeechRecognizer.instanceMap[managedId];
-                if (recognizer.recognition) {
-                    recognizer.recognition.continuous = false;
-                    recognizer.recognition.interimResults = true;
-                    recognizer.recognition.start();
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-            static removeInstance(managedId) {
-                const recognizer = SpeechRecognizer.instanceMap[managedId];
-                recognizer.recognition.removeEventListener("result", recognizer.onResult);
-                recognizer.recognition.removeEventListener("speechstart", recognizer.onSpeechStart);
-                recognizer.recognition.removeEventListener("error", recognizer.onError);
-                delete SpeechRecognizer.instanceMap[managedId];
-            }
-        }
-        SpeechRecognizer.instanceMap = {};
-        Media.SpeechRecognizer = SpeechRecognizer;
-    })(Media = Windows.Media || (Windows.Media = {}));
-})(Windows || (Windows = {}));
-// eslint-disable-next-line @typescript-eslint/no-namespace
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        class ApplicationDataContainer {
-            static buildStorageKey(locality, key) {
-                return `UnoApplicationDataContainer_${locality}_${key}`;
-            }
-            static buildStoragePrefix(locality) {
-                return `UnoApplicationDataContainer_${locality}_`;
-            }
-            /**
-             * Try to get a value from localStorage
-             * */
-            static tryGetValue(pParams, pReturn) {
-                const params = ApplicationDataContainer_TryGetValueParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_TryGetValueReturn();
-                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
-                if (localStorage.hasOwnProperty(storageKey)) {
-                    ret.HasValue = true;
-                    ret.Value = localStorage.getItem(storageKey);
-                }
-                else {
-                    ret.Value = "";
-                    ret.HasValue = false;
-                }
-                ret.marshal(pReturn);
-                return true;
-            }
-            /**
-             * Set a value to localStorage
-             * */
-            static setValue(pParams) {
-                const params = ApplicationDataContainer_SetValueParams.unmarshal(pParams);
-                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
-                localStorage.setItem(storageKey, params.Value);
-                return true;
-            }
-            /**
-             * Determines if a key is contained in localStorage
-             * */
-            static containsKey(pParams, pReturn) {
-                const params = ApplicationDataContainer_ContainsKeyParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_ContainsKeyReturn();
-                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
-                ret.ContainsKey = localStorage.hasOwnProperty(storageKey);
-                ret.marshal(pReturn);
-                return true;
-            }
-            /**
-             * Gets a key by index in localStorage
-             * */
-            static getKeyByIndex(pParams, pReturn) {
-                const params = ApplicationDataContainer_GetKeyByIndexParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
-                let localityIndex = 0;
-                let returnKey = "";
-                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
-                for (let i = 0; i < localStorage.length; i++) {
-                    const storageKey = localStorage.key(i);
-                    if (storageKey.startsWith(prefix)) {
-                        if (localityIndex === params.Index) {
-                            returnKey = storageKey.substr(prefix.length);
-                        }
-                        localityIndex++;
-                    }
-                }
-                ret.Value = returnKey;
-                ret.marshal(pReturn);
-                return true;
-            }
-            /**
-             * Determines the number of items contained in localStorage
-             * */
-            static getCount(pParams, pReturn) {
-                const params = ApplicationDataContainer_GetCountParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_GetCountReturn();
-                ret.Count = 0;
-                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
-                for (let i = 0; i < localStorage.length; i++) {
-                    const storageKey = localStorage.key(i);
-                    if (storageKey.startsWith(prefix)) {
-                        ret.Count++;
-                    }
-                }
-                ret.marshal(pReturn);
-                return true;
-            }
-            /**
-             * Clears items contained in localStorage
-             * */
-            static clear(pParams) {
-                const params = ApplicationDataContainer_ClearParams.unmarshal(pParams);
-                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
-                const itemsToRemove = [];
-                for (let i = 0; i < localStorage.length; i++) {
-                    const storageKey = localStorage.key(i);
-                    if (storageKey.startsWith(prefix)) {
-                        itemsToRemove.push(storageKey);
-                    }
-                }
-                for (const item in itemsToRemove) {
-                    localStorage.removeItem(itemsToRemove[item]);
-                }
-                return true;
-            }
-            /**
-             * Removes an item contained in localStorage
-             * */
-            static remove(pParams, pReturn) {
-                const params = ApplicationDataContainer_RemoveParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_RemoveReturn();
-                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
-                ret.Removed = localStorage.hasOwnProperty(storageKey);
-                if (ret.Removed) {
-                    localStorage.removeItem(storageKey);
-                }
-                ret.marshal(pReturn);
-                return true;
-            }
-            /**
-             * Gets a key by index in localStorage
-             * */
-            static getValueByIndex(pParams, pReturn) {
-                const params = ApplicationDataContainer_GetValueByIndexParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
-                let localityIndex = 0;
-                let returnKey = "";
-                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
-                for (let i = 0; i < localStorage.length; i++) {
-                    const storageKey = localStorage.key(i);
-                    if (storageKey.startsWith(prefix)) {
-                        if (localityIndex === params.Index) {
-                            returnKey = localStorage.getItem(storageKey);
-                        }
-                        localityIndex++;
-                    }
-                }
-                ret.Value = returnKey;
-                ret.marshal(pReturn);
-                return true;
-            }
-        }
-        Storage.ApplicationDataContainer = ApplicationDataContainer;
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-// eslint-disable-next-line @typescript-eslint/no-namespace
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        class AssetManager {
-            static DownloadAssetsManifest(path) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const response = yield fetch(path);
-                    return response.text();
-                });
-            }
-            static DownloadAsset(path) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const response = yield fetch(path);
-                    const arrayBuffer = yield response.blob().then(b => b.arrayBuffer());
-                    const size = arrayBuffer.byteLength;
-                    const responseArray = new Uint8ClampedArray(arrayBuffer);
-                    const pData = Module._malloc(size);
-                    Module.HEAPU8.set(responseArray, pData);
-                    return `${pData};${size}`;
-                });
-            }
-        }
-        Storage.AssetManager = AssetManager;
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        var Pickers;
-        (function (Pickers) {
-            class FileSavePicker {
-                static SaveAs(fileName, dataPtr, size) {
-                    const buffer = new Uint8Array(size);
-                    for (var i = 0; i < size; i++) {
-                        buffer[i] = Module.getValue(dataPtr + i, "i8");
-                    }
-                    const a = window.document.createElement('a');
-                    const blob = new Blob([buffer]);
-                    a.href = window.URL.createObjectURL(blob);
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
-            }
-            Pickers.FileSavePicker = FileSavePicker;
-        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-// eslint-disable-next-line @typescript-eslint/no-namespace
-var Windows;
-(function (Windows) {
-    var Storage;
-    (function (Storage) {
-        class StorageFolder {
-            /**
-             * Determine if IndexDB is available, some browsers and modes disable it.
-             * */
-            static isIndexDBAvailable() {
-                try {
-                    // IndexedDB may not be available in private mode
-                    window.indexedDB;
-                    return true;
-                }
-                catch (err) {
-                    return false;
-                }
-            }
-            /**
-             * Setup the storage persistence of a given set of paths.
-             * */
-            static makePersistent(pParams) {
-                const params = StorageFolderMakePersistentParams.unmarshal(pParams);
-                for (var i = 0; i < params.Paths.length; i++) {
-                    this.setupStorage(params.Paths[i]);
-                }
-            }
-            /**
-             * Setup the storage persistence of a given path.
-             * */
-            static setupStorage(path) {
-                if (Uno.UI.WindowManager.isHosted) {
-                    console.debug("Hosted Mode: skipping IndexDB initialization");
-                    StorageFolder.onStorageInitialized();
-                    return;
-                }
-                if (!this.isIndexDBAvailable()) {
-                    console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
-                    StorageFolder.onStorageInitialized();
-                    return;
-                }
-                if (typeof IDBFS === 'undefined') {
-                    console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
-                    StorageFolder.onStorageInitialized();
-                    return;
-                }
-                console.debug("Making persistent: " + path);
-                FS.mkdir(path);
-                FS.mount(IDBFS, {}, path);
-                // Ensure to sync pseudo file system on unload (and periodically for safety)
-                if (!this._isInit) {
-                    // Request an initial sync to populate the file system
-                    FS.syncfs(true, err => {
-                        if (err) {
-                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-                        }
-                        StorageFolder.onStorageInitialized();
-                    });
-                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
-                    setInterval(this.synchronizeFileSystem, 10000);
-                    this._isInit = true;
-                }
-            }
-            static onStorageInitialized() {
-                if (!StorageFolder.dispatchStorageInitialized) {
-                    StorageFolder.dispatchStorageInitialized =
-                        Module.mono_bind_static_method("[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
-                }
-                StorageFolder.dispatchStorageInitialized();
-            }
-            /**
-             * Synchronize the IDBFS memory cache back to IndexDB
-             * */
-            static synchronizeFileSystem() {
-                FS.syncfs(err => {
-                    if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-                    }
-                });
-            }
-        }
-        StorageFolder._isInit = false;
-        Storage.StorageFolder = StorageFolder;
-    })(Storage = Windows.Storage || (Windows.Storage = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Geolocation;
-        (function (Geolocation) {
-            let GeolocationAccessStatus;
-            (function (GeolocationAccessStatus) {
-                GeolocationAccessStatus["Allowed"] = "Allowed";
-                GeolocationAccessStatus["Denied"] = "Denied";
-                GeolocationAccessStatus["Unspecified"] = "Unspecified";
-            })(GeolocationAccessStatus || (GeolocationAccessStatus = {}));
-            let PositionStatus;
-            (function (PositionStatus) {
-                PositionStatus["Ready"] = "Ready";
-                PositionStatus["Initializing"] = "Initializing";
-                PositionStatus["NoData"] = "NoData";
-                PositionStatus["Disabled"] = "Disabled";
-                PositionStatus["NotInitialized"] = "NotInitialized";
-                PositionStatus["NotAvailable"] = "NotAvailable";
-            })(PositionStatus || (PositionStatus = {}));
-            class Geolocator {
-                static initialize() {
-                    this.positionWatches = {};
-                    if (!this.dispatchAccessRequest) {
-                        this.dispatchAccessRequest = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
-                    }
-                    if (!this.dispatchError) {
-                        this.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchError");
-                    }
-                    if (!this.dispatchGeoposition) {
-                        this.dispatchGeoposition = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
-                    }
-                }
-                //checks for permission to the geolocation services
-                static requestAccess() {
-                    Geolocator.initialize();
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition((_) => {
-                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
-                        }, (error) => {
-                            if (error.code == error.PERMISSION_DENIED) {
-                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
-                            }
-                            else if (error.code == error.POSITION_UNAVAILABLE ||
-                                error.code == error.TIMEOUT) {
-                                //position unavailable but we still have permission
-                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
-                            }
-                            else {
-                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
-                            }
-                        }, { enableHighAccuracy: false, maximumAge: 86400000, timeout: 100 });
-                    }
-                    else {
-                        Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
-                    }
-                }
-                //retrieves a single geoposition
-                static getGeoposition(desiredAccuracyInMeters, maximumAge, timeout, requestId) {
-                    Geolocator.initialize();
-                    if (navigator.geolocation) {
-                        this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, {
-                            enableHighAccuracy: desiredAccuracyInMeters < 50,
-                            maximumAge: maximumAge,
-                            timeout: timeout
-                        });
-                    }
-                    else {
-                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
-                    }
-                }
-                static startPositionWatch(desiredAccuracyInMeters, requestId) {
-                    Geolocator.initialize();
-                    if (navigator.geolocation) {
-                        Geolocator.positionWatches[requestId] = navigator.geolocation.watchPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId));
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                static stopPositionWatch(desiredAccuracyInMeters, requestId) {
-                    navigator.geolocation.clearWatch(Geolocator.positionWatches[requestId]);
-                    delete Geolocator.positionWatches[requestId];
-                }
-                static handleGeoposition(position, requestId) {
-                    var serializedGeoposition = position.coords.latitude + ":" +
-                        position.coords.longitude + ":" +
-                        position.coords.altitude + ":" +
-                        position.coords.altitudeAccuracy + ":" +
-                        position.coords.accuracy + ":" +
-                        position.coords.heading + ":" +
-                        position.coords.speed + ":" +
-                        position.timestamp;
-                    Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
-                }
-                static handleError(error, requestId) {
-                    if (error.code == error.TIMEOUT) {
-                        Geolocator.dispatchError(PositionStatus.NoData, requestId);
-                    }
-                    else if (error.code == error.PERMISSION_DENIED) {
-                        Geolocator.dispatchError(PositionStatus.Disabled, requestId);
-                    }
-                    else if (error.code == error.POSITION_UNAVAILABLE) {
-                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
-                    }
-                }
-                //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout
-                //adapted from https://github.com/gregsramblings/getAccurateCurrentPosition/blob/master/geo.js		
-                static getAccurateCurrentPosition(geolocationSuccess, geolocationError, desiredAccuracy, options) {
-                    var lastCheckedPosition;
-                    var locationEventCount = 0;
-                    var watchId;
-                    var timerId;
-                    var checkLocation = function (position) {
-                        lastCheckedPosition = position;
-                        locationEventCount = locationEventCount + 1;
-                        //is the accuracy enough?
-                        if (position.coords.accuracy <= desiredAccuracy) {
-                            clearTimeout(timerId);
-                            navigator.geolocation.clearWatch(watchId);
-                            foundPosition(position);
-                        }
-                    };
-                    var stopTrying = function () {
-                        navigator.geolocation.clearWatch(watchId);
-                        foundPosition(lastCheckedPosition);
-                    };
-                    var onError = function (error) {
-                        clearTimeout(timerId);
-                        navigator.geolocation.clearWatch(watchId);
-                        geolocationError(error);
-                    };
-                    var foundPosition = function (position) {
-                        geolocationSuccess(position);
-                    };
-                    watchId = navigator.geolocation.watchPosition(checkLocation, onError, options);
-                    timerId = setTimeout(stopTrying, options.timeout);
-                }
-                ;
-            }
-            Geolocation.Geolocator = Geolocator;
-        })(Geolocation = Devices.Geolocation || (Devices.Geolocation = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Midi;
-        (function (Midi) {
-            class MidiInPort {
-                constructor(managedId, inputPort) {
-                    this.messageReceived = (event) => {
-                        var serializedMessage = event.data[0].toString();
-                        for (var i = 1; i < event.data.length; i++) {
-                            serializedMessage += ':' + event.data[i];
-                        }
-                        MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.timeStamp);
-                    };
-                    this.managedId = managedId;
-                    this.inputPort = inputPort;
-                }
-                static createPort(managedId, encodedDeviceId) {
-                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                    const deviceId = decodeURIComponent(encodedDeviceId);
-                    const input = midi.inputs.get(deviceId);
-                    MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
-                }
-                static removePort(managedId) {
-                    MidiInPort.stopMessageListener(managedId);
-                    delete MidiInPort.instanceMap[managedId];
-                }
-                static startMessageListener(managedId) {
-                    if (!MidiInPort.dispatchMessage) {
-                        MidiInPort.dispatchMessage = Module.mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
-                    }
-                    const instance = MidiInPort.instanceMap[managedId];
-                    instance.inputPort.addEventListener("midimessage", instance.messageReceived);
-                }
-                static stopMessageListener(managedId) {
-                    const instance = MidiInPort.instanceMap[managedId];
-                    instance.inputPort.removeEventListener("midimessage", instance.messageReceived);
-                }
-            }
-            MidiInPort.instanceMap = {};
-            Midi.MidiInPort = MidiInPort;
-        })(Midi = Devices.Midi || (Devices.Midi = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Midi;
-        (function (Midi) {
-            class MidiOutPort {
-                static sendBuffer(encodedDeviceId, timestamp, ...args) {
-                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                    const deviceId = decodeURIComponent(encodedDeviceId);
-                    const output = midi.outputs.get(deviceId);
-                    output.send(args, timestamp);
-                }
-            }
-            Midi.MidiOutPort = MidiOutPort;
-        })(Midi = Devices.Midi || (Devices.Midi = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Sensors;
-        (function (Sensors) {
-            class Accelerometer {
-                static initialize() {
-                    if (window.DeviceMotionEvent) {
-                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
-                        return true;
-                    }
-                    return false;
-                }
-                static startReading() {
-                    window.addEventListener("devicemotion", Accelerometer.readingChangedHandler);
-                }
-                static stopReading() {
-                    window.removeEventListener("devicemotion", Accelerometer.readingChangedHandler);
-                }
-                static readingChangedHandler(event) {
-                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
-                }
-            }
-            Sensors.Accelerometer = Accelerometer;
-        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Sensors;
-        (function (Sensors) {
-            class Gyrometer {
-                static initialize() {
-                    try {
-                        if (typeof window.Gyroscope === "function") {
-                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Gyrometer:DispatchReading");
-                            let GyroscopeClass = window.Gyroscope;
-                            this.gyroscope = new GyroscopeClass({ referenceFrame: "device" });
-                            return true;
-                        }
-                    }
-                    catch (error) {
-                        //sensor not available
-                        console.log("Gyroscope could not be initialized.");
-                    }
-                    return false;
-                }
-                static startReading() {
-                    this.gyroscope.addEventListener("reading", Gyrometer.readingChangedHandler);
-                    this.gyroscope.start();
-                }
-                static stopReading() {
-                    this.gyroscope.removeEventListener("reading", Gyrometer.readingChangedHandler);
-                    this.gyroscope.stop();
-                }
-                static readingChangedHandler(event) {
-                    Gyrometer.dispatchReading(Gyrometer.gyroscope.x, Gyrometer.gyroscope.y, Gyrometer.gyroscope.z);
-                }
-            }
-            Sensors.Gyrometer = Gyrometer;
-        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Sensors;
-        (function (Sensors) {
-            class Magnetometer {
-                static initialize() {
-                    try {
-                        if (typeof window.Magnetometer === "function") {
-                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
-                            let MagnetometerClass = window.Magnetometer;
-                            this.magnetometer = new MagnetometerClass({ referenceFrame: 'device' });
-                            return true;
-                        }
-                    }
-                    catch (error) {
-                        //sensor not available
-                        console.log("Magnetometer could not be initialized.");
-                    }
-                    return false;
-                }
-                static startReading() {
-                    this.magnetometer.addEventListener("reading", Magnetometer.readingChangedHandler);
-                    this.magnetometer.start();
-                }
-                static stopReading() {
-                    this.magnetometer.removeEventListener("reading", Magnetometer.readingChangedHandler);
-                    this.magnetometer.stop();
-                }
-                static readingChangedHandler(event) {
-                    Magnetometer.dispatchReading(Magnetometer.magnetometer.x, Magnetometer.magnetometer.y, Magnetometer.magnetometer.z);
-                }
-            }
-            Sensors.Magnetometer = Magnetometer;
-        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Graphics;
-    (function (Graphics) {
-        var Display;
-        (function (Display) {
-            class DisplayInformation {
-                static startOrientationChanged() {
-                    window.screen.orientation.addEventListener("change", DisplayInformation.onOrientationChange);
-                }
-                static stopOrientationChanged() {
-                    window.screen.orientation.removeEventListener("change", DisplayInformation.onOrientationChange);
-                }
-                static startDpiChanged() {
-                    // DPI can be observed using matchMedia query, but only for certain breakpoints
-                    // for accurate observation, we use polling
-                    DisplayInformation.lastDpi = window.devicePixelRatio;
-                    // start polling the devicePixel
-                    DisplayInformation.dpiWatcher = window.setInterval(DisplayInformation.updateDpi, DisplayInformation.DpiCheckInterval);
-                }
-                static stopDpiChanged() {
-                    window.clearInterval(DisplayInformation.dpiWatcher);
-                }
-                static updateDpi() {
-                    const currentDpi = window.devicePixelRatio;
-                    if (Math.abs(DisplayInformation.lastDpi - currentDpi) > 0.001) {
-                        if (DisplayInformation.dispatchDpiChanged == null) {
-                            DisplayInformation.dispatchDpiChanged =
-                                Module.mono_bind_static_method("[Uno] Windows.Graphics.Display.DisplayInformation:DispatchDpiChanged");
-                        }
-                        DisplayInformation.dispatchDpiChanged(currentDpi);
-                    }
-                    DisplayInformation.lastDpi = currentDpi;
-                }
-                static onOrientationChange() {
-                    if (DisplayInformation.dispatchOrientationChanged == null) {
-                        DisplayInformation.dispatchOrientationChanged =
-                            Module.mono_bind_static_method("[Uno] Windows.Graphics.Display.DisplayInformation:DispatchOrientationChanged");
-                    }
-                    DisplayInformation.dispatchOrientationChanged(window.screen.orientation.type);
-                }
-            }
-            DisplayInformation.DpiCheckInterval = 1000;
-            Display.DisplayInformation = DisplayInformation;
-        })(Display = Graphics.Display || (Graphics.Display = {}));
-    })(Graphics = Windows.Graphics || (Windows.Graphics = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Networking;
-    (function (Networking) {
-        var Connectivity;
-        (function (Connectivity) {
-            class ConnectionProfile {
-                static hasInternetAccess() {
-                    return navigator.onLine;
-                }
-            }
-            Connectivity.ConnectionProfile = ConnectionProfile;
-        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
-    })(Networking = Windows.Networking || (Windows.Networking = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var Networking;
-    (function (Networking) {
-        var Connectivity;
-        (function (Connectivity) {
-            class NetworkInformation {
-                static startStatusChanged() {
-                    window.addEventListener("online", NetworkInformation.networkStatusChanged);
-                    window.addEventListener("offline", NetworkInformation.networkStatusChanged);
-                }
-                static stopStatusChanged() {
-                    window.removeEventListener("online", NetworkInformation.networkStatusChanged);
-                    window.removeEventListener("offline", NetworkInformation.networkStatusChanged);
-                }
-                static networkStatusChanged() {
-                    if (NetworkInformation.dispatchStatusChanged == null) {
-                        NetworkInformation.dispatchStatusChanged =
-                            Module.mono_bind_static_method("[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
-                    }
-                    NetworkInformation.dispatchStatusChanged();
-                }
-            }
-            Connectivity.NetworkInformation = NetworkInformation;
-        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
-    })(Networking = Windows.Networking || (Windows.Networking = {}));
-})(Windows || (Windows = {}));
-var WakeLockType;
-(function (WakeLockType) {
-    WakeLockType["screen"] = "screen";
-})(WakeLockType || (WakeLockType = {}));
-;
-;
-;
-var Windows;
-(function (Windows) {
-    var System;
-    (function (System) {
-        var Display;
-        (function (Display) {
-            class DisplayRequest {
-                static activateScreenLock() {
-                    if (navigator.wakeLock) {
-                        DisplayRequest.activeScreenLockPromise = navigator.wakeLock.request(WakeLockType.screen);
-                        DisplayRequest.activeScreenLockPromise.catch(reason => console.log("Could not acquire screen lock (" + reason + ")"));
-                    }
-                    else {
-                        console.log("Wake Lock API is not available in this browser.");
-                    }
-                }
-                static deactivateScreenLock() {
-                    if (DisplayRequest.activeScreenLockPromise) {
-                        DisplayRequest.activeScreenLockPromise.then(sentinel => sentinel.release());
-                        DisplayRequest.activeScreenLockPromise = null;
-                    }
-                }
-            }
-            Display.DisplayRequest = DisplayRequest;
-        })(Display = System.Display || (System.Display = {}));
-    })(System = Windows.System || (Windows.System = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var System;
-    (function (System) {
-        var Profile;
-        (function (Profile) {
-            class AnalyticsInfo {
-                static getDeviceType() {
-                    // Logic based on https://github.com/barisaydinoglu/Detectizr
-                    var ua = navigator.userAgent;
-                    if (!ua || ua === '') {
-                        // No user agent.
-                        return "unknown";
-                    }
-                    if (ua.match(/GoogleTV|SmartTV|SMART-TV|Internet TV|NetCast|NETTV|AppleTV|boxee|Kylo|Roku|DLNADOC|hbbtv|CrKey|CE\-HTML/i)) {
-                        // if user agent is a smart TV - http://goo.gl/FocDk
-                        return "Television";
-                    }
-                    else if (ua.match(/Xbox|PLAYSTATION|Wii/i)) {
-                        // if user agent is a TV Based Gaming Console
-                        return "GameConsole";
-                    }
-                    else if (ua.match(/QtCarBrowser/i)) {
-                        // if the user agent is a car
-                        return "Car";
-                    }
-                    else if (ua.match(/iP(a|ro)d/i) || (ua.match(/tablet/i) && !ua.match(/RX-34/i)) || ua.match(/FOLIO/i)) {
-                        // if user agent is a Tablet
-                        return "Tablet";
-                    }
-                    else if (ua.match(/Linux/i) && ua.match(/Android/i) && !ua.match(/Fennec|mobi|HTC Magic|HTCX06HT|Nexus One|SC-02B|fone 945/i)) {
-                        // if user agent is an Android Tablet
-                        return "Tablet";
-                    }
-                    else if (ua.match(/Kindle/i) || (ua.match(/Mac OS/i) && ua.match(/Silk/i)) || (ua.match(/AppleWebKit/i) && ua.match(/Silk/i) && !ua.match(/Playstation Vita/i))) {
-                        // if user agent is a Kindle or Kindle Fire
-                        return "Tablet";
-                    }
-                    else if (ua.match(/GT-P10|SC-01C|SHW-M180S|SGH-T849|SCH-I800|SHW-M180L|SPH-P100|SGH-I987|zt180|HTC( Flyer|_Flyer)|Sprint ATP51|ViewPad7|pandigital(sprnova|nova)|Ideos S7|Dell Streak 7|Advent Vega|A101IT|A70BHT|MID7015|Next2|nook/i) || (ua.match(/MB511/i) && ua.match(/RUTEM/i))) {
-                        // if user agent is a pre Android 3.0 Tablet
-                        return "Tablet";
-                    }
-                    else if (ua.match(/BOLT|Fennec|Iris|Maemo|Minimo|Mobi|mowser|NetFront|Novarra|Prism|RX-34|Skyfire|Tear|XV6875|XV6975|Google Wireless Transcoder/i) && !ua.match(/AdsBot-Google-Mobile/i)) {
-                        // if user agent is unique phone User Agent
-                        return "Mobile";
-                    }
-                    else if (ua.match(/Opera/i) && ua.match(/Windows NT 5/i) && ua.match(/HTC|Xda|Mini|Vario|SAMSUNG\-GT\-i8000|SAMSUNG\-SGH\-i9/i)) {
-                        // if user agent is an odd Opera User Agent - http://goo.gl/nK90K
-                        return "Mobile";
-                    }
-                    else if ((ua.match(/Windows( )?(NT|XP|ME|9)/) && !ua.match(/Phone/i)) && !ua.match(/Bot|Spider|ia_archiver|NewsGator/i) || ua.match(/Win( ?9|NT)/i) || ua.match(/Go-http-client/i)) {
-                        // if user agent is Windows Desktop
-                        return "Desktop";
-                    }
-                    else if (ua.match(/Macintosh|PowerPC/i) && !ua.match(/Silk|moatbot/i)) {
-                        // if agent is Mac Desktop
-                        return "Desktop";
-                    }
-                    else if (ua.match(/Linux/i) && ua.match(/X11/i) && !ua.match(/Charlotte|JobBot/i)) {
-                        // if user agent is a Linux Desktop
-                        return "Desktop";
-                    }
-                    else if (ua.match(/CrOS/)) {
-                        // if user agent is a Chrome Book
-                        return "Desktop";
-                    }
-                    else if (ua.match(/Solaris|SunOS|BSD/i)) {
-                        // if user agent is a Solaris, SunOS, BSD Desktop
-                        return "Desktop";
-                    }
-                    else {
-                        // Otherwise returning the unknown type configured
-                        return "Unknown";
-                    }
-                }
-            }
-            Profile.AnalyticsInfo = AnalyticsInfo;
-        })(Profile = System.Profile || (System.Profile = {}));
-    })(System = Windows.System || (Windows.System = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var System;
-    (function (System) {
-        var Profile;
-        (function (Profile) {
-            class AnalyticsVersionInfo {
-                static getUserAgent() {
-                    return navigator.userAgent;
-                }
-                static getBrowserName() {
-                    // Opera 8.0+
-                    if ((!!window.opr && !!window.opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0) {
-                        return "Opera";
-                    }
-                    // Firefox 1.0+
-                    if (typeof window.InstallTrigger !== 'undefined') {
-                        return "Firefox";
-                    }
-                    // Safari 3.0+ "[object HTMLElementConstructor]" 
-                    if (/constructor/i.test(window.HTMLElement) ||
-                        ((p) => p.toString() === "[object SafariRemoteNotification]")(typeof window.safari !== 'undefined' && window.safari.pushNotification)) {
-                        return "Safari";
-                    }
-                    // Edge 20+
-                    if (!!window.StyleMedia) {
-                        return "Edge";
-                    }
-                    // Chrome 1 - 71
-                    if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
-                        return "Chrome";
-                    }
-                }
-            }
-            Profile.AnalyticsVersionInfo = AnalyticsVersionInfo;
-        })(Profile = System.Profile || (System.Profile = {}));
-    })(System = Windows.System || (Windows.System = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var UI;
-    (function (UI) {
-        var Core;
-        (function (Core) {
-            class SystemNavigationManager {
-                constructor() {
-                    var that = this;
-                    var dispatchBackRequest = Module.mono_bind_static_method("[Uno] Windows.UI.Core.SystemNavigationManager:DispatchBackRequest");
-                    window.history.replaceState(0, document.title, null);
-                    window.addEventListener("popstate", function (evt) {
-                        if (that._isEnabled) {
-                            if (evt.state === 0) {
-                                // Push something in the stack only if we know that we reached the first page.
-                                // There is no way to track our location in the stack, so we use indexes (in the 'state').
-                                window.history.pushState(1, document.title, null);
-                            }
-                            dispatchBackRequest();
-                        }
-                        else if (evt.state === 1) {
-                            // The manager is disabled, but the user requested to navigate forward to our dummy entry,
-                            // but we prefer to keep this dummy entry in the forward stack (is more prompt to be cleared by the browser,
-                            // and as it's less commonly used it should be less annoying for the user)
-                            window.history.back();
-                        }
-                    });
-                }
-                static get current() {
-                    if (!this._current) {
-                        this._current = new SystemNavigationManager();
-                    }
-                    return this._current;
-                }
-                enable() {
-                    if (this._isEnabled) {
-                        return;
-                    }
-                    // Clear the back stack, so the only items will be ours (and we won't have any remaining forward item)
-                    this.clearStack();
-                    window.history.pushState(1, document.title, null);
-                    // Then set the enabled flag so the handler will begin its work
-                    this._isEnabled = true;
-                }
-                disable() {
-                    if (!this._isEnabled) {
-                        return;
-                    }
-                    // Disable the handler, then clear the history
-                    // Note: As a side effect, the forward button will be enabled :(
-                    this._isEnabled = false;
-                    this.clearStack();
-                }
-                clearStack() {
-                    // There is no way to determine our position in the stack, so we only navigate back if we determine that
-                    // we are currently on our dummy target page.
-                    if (window.history.state === 1) {
-                        window.history.back();
-                    }
-                    window.history.replaceState(0, document.title, null);
-                }
-            }
-            Core.SystemNavigationManager = SystemNavigationManager;
-        })(Core = UI.Core || (UI.Core = {}));
-    })(UI = Windows.UI || (Windows.UI = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var UI;
-    (function (UI) {
-        var ViewManagement;
-        (function (ViewManagement) {
-            class ApplicationView {
-                static setFullScreenMode(turnOn) {
-                    if (turnOn) {
-                        if (document.fullscreenEnabled) {
-                            document.documentElement.requestFullscreen();
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
-                    }
-                    else {
-                        document.exitFullscreen();
-                        return true;
-                    }
-                }
-            }
-            ViewManagement.ApplicationView = ApplicationView;
-        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
-    })(UI = Windows.UI || (Windows.UI = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var UI;
-    (function (UI) {
-        var ViewManagement;
-        (function (ViewManagement) {
-            class ApplicationViewTitleBar {
-                static setBackgroundColor(colorString) {
-                    if (colorString == null) {
-                        //remove theme-color meta
-                        var metaThemeColorEntries = document.querySelectorAll("meta[name='theme-color']");
-                        for (let entry of metaThemeColorEntries) {
-                            entry.remove();
-                        }
-                    }
-                    else {
-                        var metaThemeColorEntries = document.querySelectorAll("meta[name='theme-color']");
-                        var metaThemeColor;
-                        if (metaThemeColorEntries.length == 0) {
-                            //create meta
-                            metaThemeColor = document.createElement("meta");
-                            metaThemeColor.setAttribute("name", "theme-color");
-                            document.head.appendChild(metaThemeColor);
-                        }
-                        else {
-                            metaThemeColor = metaThemeColorEntries[0];
-                        }
-                        metaThemeColor.setAttribute("content", colorString);
-                    }
-                }
-            }
-            ViewManagement.ApplicationViewTitleBar = ApplicationViewTitleBar;
-        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
-    })(UI = Windows.UI || (Windows.UI = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var UI;
-    (function (UI) {
-        var Xaml;
-        (function (Xaml) {
-            class Application {
-                static getDefaultSystemTheme() {
-                    if (window.matchMedia) {
-                        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                            return Xaml.ApplicationTheme.Dark;
-                        }
-                        if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-                            return Xaml.ApplicationTheme.Light;
-                        }
-                    }
-                    return null;
-                }
-                static observeSystemTheme() {
-                    if (!this.dispatchThemeChange) {
-                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
-                    }
-                    if (window.matchMedia) {
-                        window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
-                            Application.dispatchThemeChange();
-                        });
-                    }
-                }
-            }
-            Xaml.Application = Application;
-        })(Xaml = UI.Xaml || (UI.Xaml = {}));
-    })(UI = Windows.UI || (Windows.UI = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var UI;
-    (function (UI) {
-        var Xaml;
-        (function (Xaml) {
-            let ApplicationTheme;
-            (function (ApplicationTheme) {
-                ApplicationTheme["Light"] = "Light";
-                ApplicationTheme["Dark"] = "Dark";
-            })(ApplicationTheme = Xaml.ApplicationTheme || (Xaml.ApplicationTheme = {}));
-        })(Xaml = UI.Xaml || (UI.Xaml = {}));
-    })(UI = Windows.UI || (Windows.UI = {}));
-})(Windows || (Windows = {}));
-var Uno;
-(function (Uno) {
-    var Devices;
-    (function (Devices) {
-        var Midi;
-        (function (Midi) {
-            var Internal;
-            (function (Internal) {
-                class WasmMidiAccess {
-                    static request(systemExclusive) {
-                        if (navigator.requestMIDIAccess) {
-                            return navigator.requestMIDIAccess({ sysex: systemExclusive })
-                                .then((midi) => {
-                                WasmMidiAccess.midiAccess = midi;
-                                return "true";
-                            }, () => "false");
-                        }
-                        else {
-                            return Promise.resolve("false");
-                        }
-                    }
-                    static getMidi() {
-                        return WasmMidiAccess.midiAccess;
-                    }
-                }
-                Internal.WasmMidiAccess = WasmMidiAccess;
-            })(Internal = Midi.Internal || (Midi.Internal = {}));
-        })(Midi = Devices.Midi || (Devices.Midi = {}));
-    })(Devices = Uno.Devices || (Uno.Devices = {}));
-})(Uno || (Uno = {}));
-var Windows;
-(function (Windows) {
-    var Phone;
-    (function (Phone) {
-        var Devices;
-        (function (Devices) {
-            var Notification;
-            (function (Notification) {
-                class VibrationDevice {
-                    static initialize() {
-                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
-                        if (navigator.vibrate) {
-                            return true;
-                        }
-                        return false;
-                    }
-                    static vibrate(duration) {
-                        return window.navigator.vibrate(duration);
-                    }
-                }
-                Notification.VibrationDevice = VibrationDevice;
-            })(Notification = Devices.Notification || (Devices.Notification = {}));
-        })(Devices = Phone.Devices || (Phone.Devices = {}));
-    })(Phone = Windows.Phone || (Windows.Phone = {}));
-})(Windows || (Windows = {}));
-var Windows;
-(function (Windows) {
-    var UI;
-    (function (UI) {
-        var Xaml;
-        (function (Xaml) {
-            var Media;
-            (function (Media) {
-                var Animation;
-                (function (Animation) {
-                    class RenderingLoopFloatAnimator {
-                        constructor(managedHandle) {
-                            this.managedHandle = managedHandle;
-                            this._isEnabled = false;
-                        }
-                        static createInstance(managedHandle, jsHandle) {
-                            RenderingLoopFloatAnimator.activeInstances[jsHandle] = new RenderingLoopFloatAnimator(managedHandle);
-                        }
-                        static getInstance(jsHandle) {
-                            return RenderingLoopFloatAnimator.activeInstances[jsHandle];
-                        }
-                        static destroyInstance(jsHandle) {
-                            delete RenderingLoopFloatAnimator.activeInstances[jsHandle];
-                        }
-                        SetStartFrameDelay(delay) {
-                            this.unscheduleFrame();
-                            if (this._isEnabled) {
-                                this.scheduleDelayedFrame(delay);
-                            }
-                        }
-                        SetAnimationFramesInterval() {
-                            this.unscheduleFrame();
-                            if (this._isEnabled) {
-                                this.onFrame();
-                            }
-                        }
-                        EnableFrameReporting() {
-                            if (this._isEnabled) {
-                                return;
-                            }
-                            this._isEnabled = true;
-                            this.scheduleAnimationFrame();
-                        }
-                        DisableFrameReporting() {
-                            this._isEnabled = false;
-                            this.unscheduleFrame();
-                        }
-                        onFrame() {
-                            Uno.Foundation.Interop.ManagedObject.dispatch(this.managedHandle, "OnFrame", null);
-                            // Schedule a new frame only if still enabled and no frame was scheduled by the managed OnFrame
-                            if (this._isEnabled && this._frameRequestId == null && this._delayRequestId == null) {
-                                this.scheduleAnimationFrame();
-                            }
-                        }
-                        unscheduleFrame() {
-                            if (this._delayRequestId != null) {
-                                clearTimeout(this._delayRequestId);
-                                this._delayRequestId = null;
-                            }
-                            if (this._frameRequestId != null) {
-                                window.cancelAnimationFrame(this._frameRequestId);
-                                this._frameRequestId = null;
-                            }
-                        }
-                        scheduleDelayedFrame(delay) {
-                            this._delayRequestId = setTimeout(() => {
-                                this._delayRequestId = null;
-                                this.onFrame();
-                            }, delay);
-                        }
-                        scheduleAnimationFrame() {
-                            this._frameRequestId = window.requestAnimationFrame(() => {
-                                this._frameRequestId = null;
-                                this.onFrame();
-                            });
-                        }
-                    }
-                    RenderingLoopFloatAnimator.activeInstances = {};
-                    Animation.RenderingLoopFloatAnimator = RenderingLoopFloatAnimator;
-                })(Animation = Media.Animation || (Media.Animation = {}));
-            })(Media = Xaml.Media || (Xaml.Media = {}));
-        })(Xaml = UI.Xaml || (UI.Xaml = {}));
-    })(UI = Windows.UI || (Windows.UI = {}));
-})(Windows || (Windows = {}));
-var Uno;
-(function (Uno) {
-    var Devices;
-    (function (Devices) {
-        var Enumeration;
-        (function (Enumeration) {
-            var Internal;
-            (function (Internal) {
-                var Providers;
-                (function (Providers) {
-                    var Midi;
-                    (function (Midi) {
-                        class MidiDeviceClassProvider {
-                            static findDevices(findInputDevices) {
-                                var result = "";
-                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                                if (findInputDevices) {
-                                    midi.inputs.forEach((input, key) => {
-                                        const inputId = input.id;
-                                        const name = input.name;
-                                        const encodedMetadata = encodeURIComponent(inputId) + '#' + encodeURIComponent(name);
-                                        result += encodedMetadata + '&';
-                                    });
-                                }
-                                else {
-                                    midi.outputs.forEach((output, key) => {
-                                        const outputId = output.id;
-                                        const name = output.name;
-                                        const encodedMetadata = encodeURIComponent(outputId) + '#' + encodeURIComponent(name);
-                                        result += encodedMetadata + '&';
-                                    });
-                                }
-                                return result;
-                            }
-                        }
-                        Midi.MidiDeviceClassProvider = MidiDeviceClassProvider;
-                    })(Midi = Providers.Midi || (Providers.Midi = {}));
-                })(Providers = Internal.Providers || (Internal.Providers = {}));
-            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
-        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
-    })(Devices = Uno.Devices || (Uno.Devices = {}));
-})(Uno || (Uno = {}));
-var Uno;
-(function (Uno) {
-    var Devices;
-    (function (Devices) {
-        var Enumeration;
-        (function (Enumeration) {
-            var Internal;
-            (function (Internal) {
-                var Providers;
-                (function (Providers) {
-                    var Midi;
-                    (function (Midi) {
-                        class MidiDeviceConnectionWatcher {
-                            static startStateChanged() {
-                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                                midi.addEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
-                            }
-                            static stopStateChanged() {
-                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                                midi.removeEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
-                            }
-                            static onStateChanged(event) {
-                                if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
-                                    MidiDeviceConnectionWatcher.dispatchStateChanged =
-                                        Module.mono_bind_static_method("[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
-                                }
-                                const port = event.port;
-                                const isInput = port.type == "input";
-                                const isConnected = port.state == "connected";
-                                MidiDeviceConnectionWatcher.dispatchStateChanged(port.id, port.name, isInput, isConnected);
-                            }
-                        }
-                        Midi.MidiDeviceConnectionWatcher = MidiDeviceConnectionWatcher;
-                    })(Midi = Providers.Midi || (Providers.Midi = {}));
-                })(Providers = Internal.Providers || (Internal.Providers = {}));
-            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
-        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
-    })(Devices = Uno.Devices || (Uno.Devices = {}));
-})(Uno || (Uno = {}));

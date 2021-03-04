@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,7 +95,7 @@ namespace Uno.UI.Controls
 				.PrimaryCommands
 				.OfType<AppBarButton>()
 				.Where(btn => btn.Visibility == Visibility.Visible && (((btn.Content as FrameworkElement)?.Visibility ?? Visibility.Visible) == Visibility.Visible))
-				.Do(appBarButton => appBarButton.SetParent(element)) // This ensures that Behaviors expecting this button to be in the logical tree work. 
+				.Do(appBarButton => appBarButton.SetParent(element)) // This ensures that Behaviors expecting this button to be in the logical tree work.
 				.Select(appBarButton => appBarButton.GetRenderer(() => new AppBarButtonRenderer(appBarButton)).Native)
 				.Reverse()
 				.ToArray();
@@ -104,7 +104,7 @@ namespace Uno.UI.Controls
 			var navigationCommand = element.GetValue(NavigationCommandProperty) as AppBarButton;
 			if (navigationCommand?.Visibility == Visibility.Visible)
 			{
-				navigationCommand.SetParent(element); // This ensures that Behaviors expecting this button to be in the logical tree work. 
+				navigationCommand.SetParent(element); // This ensures that Behaviors expecting this button to be in the logical tree work.
 				native.LeftBarButtonItem = navigationCommand.GetRenderer(() => new AppBarButtonRenderer(navigationCommand)).Native;
 			}
 			else
@@ -112,7 +112,7 @@ namespace Uno.UI.Controls
 				native.LeftBarButtonItem = null;
 			}
 
-			// CommandBarExtensions.BackButtonText	
+			// CommandBarExtensions.BackButtonText
 			if (element.GetValue(BackButtonTitleProperty) is string backButtonText)
 			{
 				native.BackBarButtonItem = new UIBarButtonItem(backButtonText, UIBarButtonItemStyle.Plain, null);
@@ -159,7 +159,7 @@ namespace Uno.UI.Controls
 		private Size _childSize;
 		private Size? _lastAvailableSize;
 
-		public TitleView()
+		internal TitleView()
 		{
 			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
 			{
@@ -177,12 +177,25 @@ namespace Uno.UI.Controls
 			}
 		}
 
+		protected override void OnBeforeArrange()
+		{
+			//This is to ensure that the layouter gets the correct **finalRect**
+			LayoutSlotWithMarginsAndAlignments = RectFromUIRect(Frame);
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (_blockReentrantMeasure)
 			{
-				// In some cases setting the Frame below can prompt iOS to call SizeThatFits with 0 height, which would screw up the desired 
+				// In some cases setting the Frame below can prompt iOS to call SizeThatFits with 0 height, which would screw up the desired
 				// size of children if we're within LayoutSubviews(). In this case simply return the existing measure.
+				return _childSize;
+			}
+
+			//for the same reason expressed above we need to check if iOS sent a wrong availableSize which can be validated
+			// by checking the availableSize.Height
+			if (availableSize.Height == 0 && _lastAvailableSize?.Height != 0)
+			{
 				return _childSize;
 			}
 
@@ -211,11 +224,17 @@ namespace Uno.UI.Controls
 						&& !_childSize.Height.IsNaN()
 						&& _childSize.Height != 0
 						&& _childSize.Width != 0
-						&& (Frame.Width != _childSize.Width
-						|| Frame.Height != _childSize.Height))
+						&& ( (Frame.Width != _childSize.Width && _childSize.Width < Frame.Width)
+						|| (Frame.Height != _childSize.Height && _childSize.Height < Frame.Height)))
 					{
 						// Set the frame size to the child size so that the OS centers properly.
-						Frame = new CGRect(Frame.X, Frame.Y, _childSize.Width, _childSize.Height);
+						// but only when the Frame is bigger than the Child preventing cases where
+						// the Child Size is bigger making the Frame to overflow the Available Size.
+
+						var width = _childSize.Width < Frame.Width ? _childSize.Width : Frame.Width;
+						var height = _childSize.Height < Frame.Height ? _childSize.Height : Frame.Height;
+
+						Frame = new CGRect(Frame.X, Frame.Y, width, height);
 					}
 				}
 

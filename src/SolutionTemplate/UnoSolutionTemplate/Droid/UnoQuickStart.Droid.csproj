@@ -88,13 +88,13 @@
 	<ItemGroup>
 		<AndroidResource Include="Resources\values\Styles.xml" />
 	</ItemGroup>
-	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
+	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 
 	<!-- This will force the generation of the APK when not building inside visual studio -->
 	<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />
-	
-	<Target Name="Issue3897Workaround" 
+
+	<Target Name="Issue3897Workaround"
 		Condition=" '$(ManagedDesignTimeBuild)' == 'True' "
 		AfterTargets="_RemoveLegacyDesigner">
 		<!-- See https://github.com/unoplatform/uno/issues/3897 and https://github.com/xamarin/xamarin-android/issues/5069 for more details -->

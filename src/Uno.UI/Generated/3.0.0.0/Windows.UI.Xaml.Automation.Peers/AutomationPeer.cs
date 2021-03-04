@@ -154,13 +154,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.SetFocus()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Automation.Peers.AutomationPeer GetParent()
-		{
-			throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.GetParent() is not implemented in Uno.");
-		}
-		#endif
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.InvalidatePeer()
 		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -216,13 +209,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		public  global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation> GetAnnotations()
 		{
 			throw new global::System.NotImplementedException("The member IList<AutomationPeerAnnotation> AutomationPeer.GetAnnotations() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetParent( global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.SetParent(AutomationPeer peer)");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -332,7 +318,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer( global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer)
+		protected internal global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer( global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer)
 		{
 			throw new global::System.NotImplementedException("The member IRawElementProviderSimple AutomationPeer.ProviderFromPeer(AutomationPeer peer) is not implemented in Uno.");
 		}

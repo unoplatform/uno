@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UpdateCommonStates(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
-			var state = GetState(IsSelected, IsPointerOver, HasPointerCapture);
+			var state = GetState(IsEnabled, IsSelected, IsPointerOver, HasPointerCapture);
 
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// When clicked (i.e. pointer released), but not yet in pressed state, we force to go immediately in pressed state
 				// Then we let the standard go to state process (i.e. with delay handling) reach the final expected state.
 
-				var pressedState = GetState(IsSelected, IsPointerOver, isPressed: true);
+				var pressedState = GetState(IsEnabled, IsSelected, IsPointerOver, isPressed: true);
 				_currentState = pressedState;
 				VisualStateManager.GoToState(this, pressedState, true);
 
@@ -200,30 +200,42 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private string GetState(bool isSelected, bool isOver, bool isPressed)
-		{
+		private string GetState(bool isEnabled, bool isSelected, bool isOver, bool isPressed)
+		{			
 			var state = CommonStates.Normal;
-			if (isSelected && isPressed)
+
+			if (isEnabled)
 			{
-				state = CommonStates.PressedSelected;
+				if (isSelected && isPressed)
+				{
+					state = CommonStates.PressedSelected;
+				}
+				else if (FeatureConfiguration.SelectorItem.UseOverStates
+					&& isSelected && isOver)
+				{
+					state = CommonStates.OverSelected;
+				}
+				else if (isSelected)
+				{
+					state = CommonStates.Selected;
+				}
+				else if (isPressed)
+				{
+					state = CommonStates.Pressed;
+				}
+				else if (FeatureConfiguration.SelectorItem.UseOverStates
+					&& isOver)
+				{
+					state = CommonStates.Over;
+				}
 			}
-			else if (FeatureConfiguration.SelectorItem.UseOverStates
-				&& isSelected && isOver)
+			else
 			{
-				state = CommonStates.OverSelected;
-			}
-			else if (isSelected)
-			{
-				state = CommonStates.Selected;
-			}
-			else if (isPressed)
-			{
-				state = CommonStates.Pressed;
-			}
-			else if (FeatureConfiguration.SelectorItem.UseOverStates
-				&& isOver)
-			{
-				state = CommonStates.Over;
+				// If item is disabled, we only care about selection state
+				if (isSelected)
+				{
+					state = CommonStates.Selected;
+				}
 			}
 
 			return state;

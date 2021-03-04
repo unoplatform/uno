@@ -32,7 +32,7 @@ namespace Windows.Globalization
 				// case CalendarIdentifiers.TaiwanLunarValue: return new global::System.Globalization.TaiwanLunarCalendar();
 				// case CalendarIdentifiers.KoreanLunarValue: return new global::System.Globalization.KoreanLunarCalendar();
 				// case CalendarIdentifiers.JapaneseLunarValue: return new global::System.Globalization.JapaneseLunarCalendar();
-				_ => throw new ArgumentException(nameof(calendar)),
+				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
 			};
 		}
 
@@ -57,7 +57,7 @@ namespace Windows.Globalization
 				// case CalendarIdentifiers.TaiwanLunar: return new global::System.Globalization.TaiwanLunarCalendar();
 				// case CalendarIdentifiers.KoreanLunar: return new global::System.Globalization.KoreanLunarCalendar();
 				// case CalendarIdentifiers.JapaneseLunar: return new global::System.Globalization.JapaneseLunarCalendar();
-				_ => throw new ArgumentException(nameof(calendar)),
+				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
 			};
 		}
 
@@ -81,7 +81,7 @@ namespace Windows.Globalization
 		#endregion
 
 		private IReadOnlyList<string> _languages;
-		private CultureInfo _resolvedCulture;
+		private readonly CultureInfo _resolvedCulture;
 		private _Calendar _calendar;
 		private TimeZoneInfo _timeZone;
 		private string _clock;
@@ -89,7 +89,7 @@ namespace Windows.Globalization
 
 		public Calendar()
 		{
-			_languages = new string[1] { CultureInfo.CurrentCulture.IetfLanguageTag };
+			_languages = ApplicationLanguages.Languages;
 			_resolvedCulture = CultureInfo.CurrentCulture;
 			_calendar = CultureInfo.CurrentCulture.Calendar;
 			_timeZone = TimeZoneInfo.Local;
@@ -260,6 +260,9 @@ namespace Windows.Globalization
 						AddHours(-12);
 						break;
 
+					case 2 when _clock == ClockIdentifiers.TwelveHour:
+						break;
+
 					case 2 when _clock == ClockIdentifiers.TwentyFourHour && _time.Hour < 12:
 						AddHours(12);
 						break;
@@ -286,10 +289,18 @@ namespace Windows.Globalization
 			=> _time = DateTime.Now;
 
 		public void SetToMin()
-			=> _time = DateTimeOffset.MinValue;
+		{
+			var calendarMinSupportedDateTime = _calendar.MinSupportedDateTime;
+			var dateTimeOffset = calendarMinSupportedDateTime.ToLocalTime();
+			_time = dateTimeOffset;
+		}
 
 		public void SetToMax()
-			=> _time = DateTimeOffset.MaxValue;
+		{
+			var calendarMaxSupportedDateTime = _calendar.MaxSupportedDateTime;
+			var dateTimeOffset = calendarMaxSupportedDateTime.ToLocalTime();
+			_time = dateTimeOffset;
+		}
 
 		public DateTimeOffset GetDateTime()
 			=> _time;
@@ -373,10 +384,10 @@ namespace Windows.Globalization
 			=> throw new global::System.NotImplementedException("The member string Calendar.EraAsString(int idealLength) is not implemented in Uno.");
 
 		public string YearAsString()
-			=> DateTimeOffset.Now.Year.ToString(_resolvedCulture);
+			=> _time.Year.ToString(_resolvedCulture);
 
 		public string YearAsTruncatedString(int remainingDigits)
-			=> DateTimeOffset.Now.ToString("yy", _resolvedCulture);
+			=> _time.ToString("yy", _resolvedCulture);
 
 		public string YearAsPaddedString(int minDigits)
 			=> _time.Year.ToString(new string('0', minDigits), _resolvedCulture);
@@ -455,5 +466,16 @@ namespace Windows.Globalization
 
 		public string TimeZoneAsString(int idealLength)
 			=> _time.ToString("zz", _resolvedCulture);
+
+		public static implicit operator DateTimeOffset(Calendar c)
+		{
+			return c.GetDateTime();
+		}
+		public static implicit operator Calendar(DateTimeOffset dto)
+		{
+			var calendar = new Calendar();
+			calendar.SetDateTime(dto);
+			return calendar;
+		}
 	}
 }

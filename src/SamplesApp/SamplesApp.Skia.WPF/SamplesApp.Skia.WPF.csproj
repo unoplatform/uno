@@ -1,8 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../../netcore-build-windows.props"/>
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
 		<UseWPF>true</UseWPF>
 	  <Prefer32Bit>true</Prefer32Bit>
 	</PropertyGroup>

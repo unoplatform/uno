@@ -82,5 +82,13 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   public void OnUncheckedRaised(object sender, RoutedEventArgs args) { }
   ```
 
-# Not supported
 - Type casts
+  ```xaml
+  <TextBox FontFamily="{x:Bind (FontFamily)MyComboBox.SelectedValue}" />
+  ```
+
+- `x:Load` binding
+  ```xaml
+  <TextBox x:Load="{x:Bind IsMyControlVisible}" />
+  ```
+  See the [WinUI documentation](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-load-attribute) for more details.

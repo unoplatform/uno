@@ -1,13 +1,25 @@
 #nullable enable
 
+using Uno;
+
 namespace Windows.Storage
 {
 	internal static class MimeTypeService
 	{
+		public static string GetFromExtension(string? fileExtension)
+		{
+			if (WinRTFeatureConfiguration.FileTypes.FileTypeToMimeMapping.TryGetValue(fileExtension, out var customMimeType))
+			{
+				return customMimeType;
+			}
+
+			return GetFromFileExtension(fileExtension);
+		}
+
 		/// <summary>
 		/// Gets the MIME type from the file extension (a.k.a. file type)
 		/// </summary>
-		public static string GetFromFileExtension(string? extension)
+		private static string GetFromFileExtension(string? extension)
 			// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 			=> extension?.ToLowerInvariant() switch
 			{

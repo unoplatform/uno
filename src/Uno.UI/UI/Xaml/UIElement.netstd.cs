@@ -46,7 +46,11 @@ namespace Windows.UI.Xaml
 		internal bool IsLoading { get; private set; }
 #endif
 
-		private protected int Depth { get; private set; } = int.MinValue;
+		/// <summary>
+		/// Gets the element depth in the visual tree.
+		/// ** WARNING** This is set before the FrameworkElement loading event and cleared on unload.
+		/// </summary>
+		internal int Depth { get; private set; } = int.MinValue;
 
 		internal static void LoadingRootElement(UIElement visualTreeRoot)
 			=> visualTreeRoot.OnElementLoading(1);
@@ -79,9 +83,13 @@ namespace Windows.UI.Xaml
 			// Explicit propagation of the loading even must be performed
 			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
 			// properties that affect the visual tree.
-			foreach (var child in _children)
+
+			// Get a materialized copy for Wasm to avoid the use of iterators
+			// where try/finally has a high cost.
+			var children = _children.Materialized;
+			for (int i = 0; i < children.Count; i++)
 			{
-				child.OnElementLoading(depth + 1);
+				children[i].OnElementLoading(depth + 1);
 			}
 		}
 
@@ -103,9 +111,12 @@ namespace Windows.UI.Xaml
 			OnFwEltLoaded();
 			UpdateHitTest();
 
-			foreach (var child in _children)
+			// Get a materialized copy for Wasm to avoid the use of iterators
+			// where try/finally has a high cost.
+			var children = _children.Materialized;
+			for (int i = 0; i < children.Count; i++)
 			{
-				child.OnElementLoaded();
+				children[i].OnElementLoaded();
 			}
 		}
 
@@ -119,9 +130,12 @@ namespace Windows.UI.Xaml
 			IsLoaded = false;
 			Depth = int.MinValue;
 
-			foreach (var child in _children)
+			// Get a materialized copy for Wasm to avoid the use of iterators
+			// where try/finally has a high cost.
+			var children = _children.Materialized;
+			for (int i = 0; i < children.Count; i++)
 			{
-				child.OnElementUnloaded();
+				children[i].OnElementUnloaded();
 			}
 
 			OnFwEltUnloaded();

@@ -58,8 +58,12 @@ namespace Windows.UI.Composition
 
 		public CompositionGeometricClip CreateGeometricClip()
 			=> new CompositionGeometricClip(this);
+
 		public CompositionGeometricClip CreateGeometricClip(CompositionGeometry geometry)
 			=> new CompositionGeometricClip(this) { Geometry = geometry };
+
+		public CompositionPropertySet CreatePropertySet()
+			=> new CompositionPropertySet(this);
 
 		public InsetClip CreateInsetClip()
 			=> new InsetClip(this);

@@ -778,7 +778,7 @@ namespace Uno.UI {
 		}
 
 		public registerPointerEventsOnView(pParams: number): void {
-			const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+			const params = WindowManagerRegisterPointerEventsOnViewParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
 
 			element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
@@ -1450,7 +1450,6 @@ namespace Uno.UI {
 					// Create a temporary element that will contain the input's content
 					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
 					textOnlyElement.style.cssText = unconstrainedStyleCssText;
-					textOnlyElement.style.whiteSpace = "pre"; // Make sure to preserve space for measure, especially the ending new line!
 
 					// If the input is null or empty, add a no-width character to force the paragraph to take up one line height
 					// The trailing new lines are going to be ignored for measure, so we also append no-width char at the end.
@@ -1903,6 +1902,31 @@ namespace Uno.UI {
 			}
 			return "ok";
 		}
+
+		public getNaturalImageSize(imageUrl: string): Promise<string> {
+			return new Promise<string>((resolve, reject) => {
+				const img = new Image();
+
+				let loadingDone = () => {
+					this.containerElement.removeChild(img);
+					resolve(`${img.width};${img.height}`);
+				};
+				let loadingError = (e: Event) => {
+					this.containerElement.removeChild(img);
+					reject(e);
+				}
+
+				img.style.pointerEvents = "none";
+				img.style.opacity = "0";
+				img.onload = loadingDone;
+				img.onerror = loadingError;
+				img.src = imageUrl;
+
+				this.containerElement.appendChild(img);
+
+			});
+		}
+
 	}
 
 	if (typeof define === "function") {

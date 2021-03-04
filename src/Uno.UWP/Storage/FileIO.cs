@@ -260,6 +260,11 @@ namespace Windows.Storage
 			}
 
 			using StreamWriter streamWriter = new StreamWriter(fileStream, systemEncoding);
+
+			// Configure autoflush, for it seems FlushAsync does not flush properly
+			// on .NET 6 preview 1 (WebAssembly). Failure in runtime tests otherwise.
+			streamWriter.AutoFlush = true;
+
 			await streamWriter.WriteAsync(contents);
 			await streamWriter.FlushAsync();
 		}

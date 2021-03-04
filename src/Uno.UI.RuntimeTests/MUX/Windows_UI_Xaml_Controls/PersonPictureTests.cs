@@ -79,52 +79,55 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyAutomationName()
 		{
-			await RunOnUIThread.ExecuteAsync(() =>
+			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer"))
 			{
-				PersonPicture personPicture = new PersonPicture();
-				Verify.IsNotNull(personPicture);
+				await RunOnUIThread.ExecuteAsync(() =>
+				{
+					PersonPicture personPicture = new PersonPicture();
+					Verify.IsNotNull(personPicture);
 
 				// Set properties and ensure that the AutomationName updates accordingly
 				personPicture.Initials = "AB";
-				String automationName = AutomationProperties.GetName(personPicture);
-				Verify.AreEqual(automationName, "AB");
+					String automationName = AutomationProperties.GetName(personPicture);
+					Verify.AreEqual(automationName, "AB");
 
-				personPicture.DisplayName = "Jane Smith";
-				automationName = AutomationProperties.GetName(personPicture);
-				Verify.AreEqual(automationName, "Jane Smith");
-
-				if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Contacts.Contact"))
-				{
-					Contact contact = new Contact();
-					contact.FirstName = "John";
-					contact.LastName = "Doe";
-					personPicture.Contact = contact;
+					personPicture.DisplayName = "Jane Smith";
 					automationName = AutomationProperties.GetName(personPicture);
-					Verify.AreEqual(automationName, "John Doe");
+					Verify.AreEqual(automationName, "Jane Smith");
 
-					personPicture.IsGroup = true;
-					automationName = AutomationProperties.GetName(personPicture);
-					Verify.AreEqual(automationName, "Group");
-					personPicture.IsGroup = false;
+					if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Contacts.Contact"))
+					{
+						Contact contact = new Contact();
+						contact.FirstName = "John";
+						contact.LastName = "Doe";
+						personPicture.Contact = contact;
+						automationName = AutomationProperties.GetName(personPicture);
+						Verify.AreEqual(automationName, "John Doe");
 
-					personPicture.BadgeGlyph = "\uE765";
-					automationName = AutomationProperties.GetName(personPicture);
-					Verify.AreEqual(automationName, "John Doe, icon");
+						personPicture.IsGroup = true;
+						automationName = AutomationProperties.GetName(personPicture);
+						Verify.AreEqual(automationName, "Group");
+						personPicture.IsGroup = false;
 
-					personPicture.BadgeText = "Skype";
-					automationName = AutomationProperties.GetName(personPicture);
-					Verify.AreEqual(automationName, "John Doe, Skype");
-					personPicture.BadgeText = "";
+						personPicture.BadgeGlyph = "\uE765";
+						automationName = AutomationProperties.GetName(personPicture);
+						Verify.AreEqual(automationName, "John Doe, icon");
 
-					personPicture.BadgeNumber = 5;
-					automationName = AutomationProperties.GetName(personPicture);
-					Verify.AreEqual(automationName, "John Doe, 5 items");
+						personPicture.BadgeText = "Skype";
+						automationName = AutomationProperties.GetName(personPicture);
+						Verify.AreEqual(automationName, "John Doe, Skype");
+						personPicture.BadgeText = "";
 
-					personPicture.BadgeText = "direct reports";
-					automationName = AutomationProperties.GetName(personPicture);
-					Verify.AreEqual(automationName, "John Doe, 5 direct reports");
-				}
-			});
+						personPicture.BadgeNumber = 5;
+						automationName = AutomationProperties.GetName(personPicture);
+						Verify.AreEqual(automationName, "John Doe, 5 items");
+
+						personPicture.BadgeText = "direct reports";
+						automationName = AutomationProperties.GetName(personPicture);
+						Verify.AreEqual(automationName, "John Doe, 5 direct reports");
+					}
+				});
+			}
 		}
 
 #if false // XamlControlsXamlMetaDataProvider is not supported
@@ -175,7 +178,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			PersonPicture personPicture = null;
 			TextBlock initialsTextBlock = null;
-
+#if WINDOWS_UWP
+			string symbolsFontName = "Segoe MDL2 Assets";
+#elif __ANDROID__ || __SKIA__
+			string symbolsFontName = "ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
+#else
+			string symbolsFontName = "Symbols";
+#endif
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				personPicture = new PersonPicture();
@@ -194,7 +203,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
+				Verify.AreEqual(initialsTextBlock.FontFamily.Source, symbolsFontName);
 				Verify.AreEqual(initialsTextBlock.Text, "\xE716");
 
 				personPicture.IsGroup = false;
@@ -217,7 +226,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
+				Verify.AreEqual(initialsTextBlock.FontFamily.Source, symbolsFontName);
 				Verify.AreEqual(initialsTextBlock.Text, "\xE77B");
 
 				// Make sure that custom FontFamily takes effect after the control is created
@@ -240,7 +249,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Verify.AreEqual(initialsTextBlock.FontFamily.Source, "Segoe MDL2 Assets");
+				Verify.AreEqual(initialsTextBlock.FontFamily.Source, symbolsFontName);
 				Verify.AreEqual(initialsTextBlock.Text, "\xE716");
 			});
 		}

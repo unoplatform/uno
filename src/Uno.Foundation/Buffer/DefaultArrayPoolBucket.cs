@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Uno.Buffers
 {
-    internal sealed partial class DefaultArrayPool<T> : ArrayPool<T>
+    internal sealed partial class ArrayPool<T>
     {
         /// <summary>Provides a thread-safe bucket containing buffers that can be Rent'd and Return'd.</summary>
         private sealed class Bucket

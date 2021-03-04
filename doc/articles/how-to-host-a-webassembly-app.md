@@ -1,6 +1,6 @@
 # How to host a WebAssembly App
 
-- [WASM Web Server Configuration](#wasm-web-server-configuration)
+- WASM Web Server Configuration
   - [Nginx](#nginx)
   - [Apache](#apache)
 
@@ -166,6 +166,7 @@ For *Apache*, please use the [`AddType` directive](https://httpd.apache.org/docs
 ```apache
 AddType application/wasm .wasm
 AddType application/octet-stream .clr
+AddType application/octet-stream .dat
 AddType application/octet-stream .pdb
 AddType application/font-woff .woff
 AddType application/font-woff .woff2

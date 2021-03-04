@@ -13,13 +13,12 @@ using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Xaml;
+using System.Numerics;
 
 namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
-		private Size _actualSize;
-
 		private readonly static Thickness _thicknessCache = Thickness.Empty;
 
 		public FrameworkElement()
@@ -37,13 +36,11 @@ namespace Windows.UI.Xaml
 			return Parent != null;
 		}
 
-		internal void SetActualSize(Size size) => _actualSize = size;
+		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
 		public double ActualWidth => GetActualWidth();
-		public double ActualHeight => GetActualHeight();
 
-		private protected virtual double GetActualWidth() => _actualSize.Width;
-		private protected virtual double GetActualHeight() => _actualSize.Height;
+		public double ActualHeight => GetActualHeight();
 
 		partial void OnMeasurePartial(Size slotSize)
 		{
@@ -237,7 +234,6 @@ namespace Windows.UI.Xaml
 			}
 			remove
 			{
-				
 				_loading -= value;
 			}
 		}

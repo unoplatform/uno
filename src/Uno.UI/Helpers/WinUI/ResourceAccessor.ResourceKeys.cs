@@ -80,6 +80,13 @@
 		public const string SR_DefaultItemString = "DefaultItemString";
 		public const string SR_DropIntoNodeString = "DropIntoNodeString";
 		public const string SR_FallBackPlaceString = "FallBackPlaceString";
+		public const string SR_PagerControlPageTextName = "PagerControlPageText";
+		public const string SR_PagerControlPrefixTextName = "PagerControlPrefixText";
+		public const string SR_PagerControlSuffixTextName = "PagerControlPrefixText";
+		public const string SR_PagerControlFirstPageButtonTextName = "PagerControlFirstPageButtonText";
+		public const string SR_PagerControlPreviousPageButtonTextName = "PagerControlPreviousPageButtonText";
+		public const string SR_PagerControlNextPageButtonTextName = "PagerControlNextPageButtonText";
+		public const string SR_PagerControlLastPageButtonTextName = "PagerControlLastPageButtonText";
 		public const string SR_PlaceAfterString = "PlaceAfterString";
 		public const string SR_PlaceBeforeString = "PlaceBeforeString";
 		public const string SR_PlaceBetweenString = "PlaceBetweenString";

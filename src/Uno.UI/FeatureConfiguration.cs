@@ -113,6 +113,26 @@ namespace Uno.UI
 			public static bool UseLegacyTemplateSelectorOverload { get; set; } = false;
 		}
 
+		public static class DependencyObject
+		{
+			/// <summary>
+			/// When set to true, the <see cref="DependencyObjectStore"/> will create hard references
+			/// instead of weak references for some highly used fields, in common cases to improve the
+			/// overall performance.
+			/// </summary>
+			/// <remarks>
+			/// This feature is disabled on WebAssembly as it reveals or creates a memory corruption issue
+			/// in the garbage collector. This can be revisited when upgrading tests to .NET 5+.
+			/// See https://github.com/unoplatform/uno/issues/4730 for details.
+			/// </remarks>
+			public static bool IsStoreHardReferenceEnabled { get; set; }
+#if __WASM__
+				= false;
+#else
+				= true;
+#endif
+		}
+
 		public static class Font
 		{
 			/// <summary>
@@ -207,14 +227,16 @@ namespace Uno.UI
 		public static class ProgressRing
 		{
 			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
+			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
 		}
 
 		public static class ListViewBase
 		{
 			/// <summary>
 			/// Sets the value to use for <see cref="ItemsStackPanel.CacheLength"/> and <see cref="ItemsWrapGrid.CacheLength"/> if not set
-			/// explicitly in Xaml or code. Higher values will cache more views either side of the visible window, improving list performance
-			/// at the expense of consuming more memory. Setting this to null will leave the default value at the UWP default of 4.0.
+			/// explicitly in Xaml or code. Higher values will cache more views either side of the visible window, improving list scroll
+			/// performance at the expense of consuming more memory and taking longer to initially load. Setting this to null will leave
+			/// the default value at the UWP default of 4.0.
 			/// </summary>
 			public static double? DefaultCacheLength = 1.0;
 		}
@@ -371,6 +393,17 @@ namespace Uno.UI
 			public static int ShowDuration { get; set; } = 7000;
 		}
 
+		public static class NativeFramePresenter
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Determines if pages in the backstack are kept in the visual tree.
+			/// Defaults to false for performance considerations.
+			/// </summary>
+			public static bool AndroidUnloadInactivePages { get; set; } = false;
+#endif
+		}
+
 		public static class UIElement
 		{
 			/// <summary>
@@ -449,6 +482,20 @@ namespace Uno.UI
 			[Obsolete("This flag is no longer used.")]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
+		}
+
+		public static class DatePicker
+		{
+#if __IOS__
+			public static bool UseLegacyStyle { get; set; } = false;
+#endif
+		}
+
+		public static class TimePicker
+		{
+#if __IOS__
+			public static bool UseLegacyStyle { get; set; } = false;
+#endif
 		}
 	}
 }

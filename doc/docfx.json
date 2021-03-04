@@ -1,25 +1,4 @@
 {
-  //"metadata": [
-  //  {
-  //    "src": [
-  //      {
-  //        "src": "../src",
-  //        "exclude": [
-  //          "SolutionTemplate/**",
-  //          "SourceGenerators/SourceGeneratorsConsole/**",
-  //          "SourceGenerators/System.Xaml/**",
-  //          "T4Generator/**",
-  //          "ResourceConverter/**"
-  //        ],
-  //        "files": [
-  //          "**.csproj"
-  //        ]
-  //      }
-  //    ],
-  //    "dest": "api",
-  //    "disableGitFeatures": false
-  //  }
-  //],
   "build": {
     "content": [
       {

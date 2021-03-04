@@ -7,7 +7,7 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
-
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using Android.Views;
 using Android.Graphics;
@@ -95,23 +95,16 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region CornerRadius
+		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
+
 		public CornerRadius CornerRadius
 		{
-			get => (CornerRadius)this.GetValue(CornerRadiusProperty);
-			set => this.SetValue(CornerRadiusProperty, value);
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
-
-		public static DependencyProperty CornerRadiusProperty { get ; } =
-			DependencyProperty.Register(
-				nameof(CornerRadius),
-				typeof(CornerRadius),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					CornerRadius.None,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					(s, e) => ((Border)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
-				)
-			);
 
 		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 		{

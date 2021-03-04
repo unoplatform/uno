@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.System;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
@@ -52,32 +53,43 @@ namespace Uno.UI.Runtime.Skia
 				Gtk.Application.Quit();
 			};
 
-			Windows.UI.Core.CoreDispatcher.DispatchOverride
-			   = d =>
-			   {
-				   if (Gtk.Application.EventsPending())
-				   {
-					   Gtk.Application.RunIteration(false);
-				   }
+			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
+			{
+				Dispatch(() => callback());
 
-				   GLib.Idle.Add(delegate
-				   {
-					   if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
-					   {
-						   this.Log().Trace($"Iteration");
-					   }
+				return true;
+			}
 
-					   try
-					   {
-						   d();
-					   }
-					   catch (Exception e)
-					   {
-						   Console.WriteLine(e);
-					   }
-					   return false;
-				   });
-			   };
+			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
+
+			void Dispatch(Action d)
+			{
+				if (Gtk.Application.EventsPending())
+				{
+					Gtk.Application.RunIteration(false);
+				}
+
+				GLib.Idle.Add(delegate
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+					{
+						this.Log().Trace($"Iteration");
+					}
+
+					try
+					{
+						d();
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine(e);
+					}
+
+					return false;
+				});
+			}
+
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 			_window.Realized += (s, e) =>

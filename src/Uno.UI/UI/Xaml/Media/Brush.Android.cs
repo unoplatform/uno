@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Media
 		internal Paint GetFillPaint(Windows.Foundation.Rect destinationRect)
 		{
 			var paint = GetPaintInner(destinationRect);
-			paint.SetStyle(Paint.Style.Fill);
+			paint?.SetStyle(Paint.Style.Fill);
 			return paint;
 		}
 
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media
 		internal Paint GetStrokePaint(Windows.Foundation.Rect destinationRect)
 		{
 			var paint = GetPaintInner(destinationRect);
-			paint.SetStyle(Paint.Style.Stroke);
+			paint?.SetStyle(Paint.Style.Stroke);
 			return paint;
 		}
 
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			else if (b is ImageBrush imageBrush && imageBrushCallback != null)
 			{
-				var disposables = new CompositeDisposable(3);
+				var disposables = new CompositeDisposable(5);
 				imageBrush.RegisterDisposablePropertyChangedCallback(
 					ImageBrush.ImageSourceProperty,
 					(_, __) => imageBrushCallback()
@@ -89,6 +89,16 @@ namespace Windows.UI.Xaml.Media
 
 				imageBrush.RegisterDisposablePropertyChangedCallback(
 					ImageBrush.StretchProperty,
+					(_, __) => imageBrushCallback()
+				).DisposeWith(disposables);
+
+				imageBrush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.AlignmentXProperty,
+					(_, __) => imageBrushCallback()
+				).DisposeWith(disposables);
+
+				imageBrush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.AlignmentYProperty,
 					(_, __) => imageBrushCallback()
 				).DisposeWith(disposables);
 

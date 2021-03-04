@@ -67,6 +67,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			switch (scale)
 			{
 				case null:
+					return "-nodpi";
 				case "100":
 					return "-mdpi";
 				case "150":

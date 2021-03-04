@@ -21,8 +21,15 @@ using Uno.UI.Runtime.Skia.Tizen.Devices.Haptics;
 using Windows.System.Profile;
 using Uno.UI.Runtime.Skia.Tizen.System.Profile;
 using Windows.ApplicationModel;
+using Windows.System;
 using Uno.UI.Runtime.Skia.Tizen.ApplicationModel;
 using Uno.ApplicationModel;
+using Windows.ApplicationModel.Contacts;
+using Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.UI.Runtime.Skia.Tizen.ApplicationModel.DataTransfer;
+using Uno.UI.Runtime.Skia.Tizen.System;
+using Uno.Extensions.System;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -59,7 +66,16 @@ namespace Uno.UI.Runtime.Skia
 				.GetCommandLineArgs()
 				.Skip(1)
 				.ToArray();
-			
+
+			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
+			{
+				EcoreMainloop.PostAndWakeUp(() => callback());
+
+				return true;
+			}
+
+			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
+
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
 
@@ -76,6 +92,9 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(ISimpleHapticsControllerExtension), o => new TizenSimpleHapticsControllerExtension(o));
 			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new TizenAnalyticsInfoExtension(o));
 			ApiExtensibility.Register(typeof(IPackageIdExtension), o => new TizenPackageIdExtension(o));
+			ApiExtensibility.Register(typeof(IDataTransferManagerExtension), o => new TizenDataTransferManagerExtension(o));
+			ApiExtensibility.Register(typeof(IContactPickerExtension), o => new TizenContactPickerExtension(o));
+			ApiExtensibility.Register(typeof(ILauncherExtension), o => new TizenLauncherExtension(o));
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{

@@ -10,7 +10,7 @@ using Uno.UI.DataBinding;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
-
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 	[Markup.ContentProperty(Name = "Children")]
 	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
 	{
-#if NET461 || NETSTANDARD2_0
+#if NET461 || UNO_REFERENCE_API
 		private new UIElementCollection _children;
 #else
 		private UIElementCollection _children;
@@ -197,25 +197,16 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region CornerRadius DependencyProperty
+		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		public CornerRadius CornerRadius
 		{
-			get { return (CornerRadius)this.GetValue(CornerRadiusProperty); }
-			set { this.SetValue(CornerRadiusProperty, value); }
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
-
-		// Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
-		public static DependencyProperty CornerRadiusProperty { get ; } =
-			DependencyProperty.Register(
-				"CornerRadius",
-				typeof(CornerRadius),
-				typeof(Panel),
-				new FrameworkPropertyMetadata(
-					CornerRadius.None,
-					(s, e) => ((Panel)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
-				)
-			);
-
 		#endregion
 
 		#region IsItemsHost DependencyProperty

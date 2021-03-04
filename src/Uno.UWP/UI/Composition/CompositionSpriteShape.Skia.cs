@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 						surface.Canvas.DrawPath(geometrySource.Geometry, _fillPaint);
 					}
 
-					if (StrokeBrush != null)
+					if (StrokeBrush != null && StrokeThickness > 0)
 					{
 						var strokePaint = TryCreateStrokePaint();
 

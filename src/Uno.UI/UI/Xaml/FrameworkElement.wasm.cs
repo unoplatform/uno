@@ -93,8 +93,7 @@ namespace Windows.UI.Xaml
 		{
 			return Parent != null;
 		}
-
-		private Size _actualSize;
+		
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
@@ -106,10 +105,7 @@ namespace Windows.UI.Xaml
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
-		internal void SetActualSize(Size size) => _actualSize = size;
-
-		private protected virtual double GetActualWidth() => _actualSize.Width;
-		private protected virtual double GetActualHeight() => _actualSize.Height;
+		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
@@ -124,7 +120,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("loading", value);
+					RegisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -135,7 +131,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("loading", value);
+					UnregisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -151,7 +147,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("loaded", value);
+					RegisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -162,7 +158,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("loaded", value);
+					UnregisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -178,7 +174,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					RegisterEventHandler("unloaded", value);
+					RegisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 			remove
@@ -189,7 +185,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					UnregisterEventHandler("unloaded", value);
+					UnregisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
 				}
 			}
 		}
@@ -450,6 +446,11 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
 				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
+
+				if (this.TryGetPadding(out var padding))
+				{
+					UpdateDOMXamlProperty("Padding", padding);
+				}
 
 				base.UpdateDOMProperties();
 			}

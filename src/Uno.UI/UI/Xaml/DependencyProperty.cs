@@ -172,7 +172,8 @@ namespace Windows.UI.Xaml
 			{
 				if (
 					!IsTypeDependencyObject(forType)
-#if !NETSTANDARD // Perf: On generic API the Panel.Children are UIElement, so avoid costly check
+#if !UNO_REFERENCE_API
+					// Perf: On generic API the Panel.Children are UIElement, so avoid costly check
 					// This check must be removed when Panel.Children will support only
 					// UIElement as its elements. See #103492
 					&& !forType.Is<_View>()

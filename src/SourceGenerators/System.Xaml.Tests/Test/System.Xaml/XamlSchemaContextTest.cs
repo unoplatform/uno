@@ -29,6 +29,7 @@ using System.Windows.Markup;
 using Uno.Xaml;
 using Uno.Xaml.Schema;
 using NUnit.Framework;
+using System.Diagnostics;
 
 [assembly:XmlnsDefinition ("urn:mono-test", "MonoTests.Uno.Xaml.NamespaceTest")]
 [assembly:XmlnsDefinition ("urn:mono-test2", "MonoTests.Uno.Xaml.NamespaceTest2")]
@@ -60,10 +61,10 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		public void ConstructorNullSettings ()
+		public void ConstructorNullSettings()
 		{
 			// allowed.
-			var ctx = new XamlSchemaContext ((XamlSchemaContextSettings) null);
+			var ctx = new XamlSchemaContext((XamlSchemaContextSettings)null);
 		}
 
 		[Test]
@@ -279,6 +280,27 @@ namespace MonoTests.Uno.Xaml
 			ctx = new XamlSchemaContext ();
 			xt = ctx.GetXamlType (xn);
 			Assert.IsNotNull (xt, "#2");
+		}
+
+		[Test]
+		public void ConstructorDefaultNoLeak()
+		{
+			WeakReference Create()
+			{
+				var ctx = new XamlSchemaContext();
+				return new WeakReference(ctx);
+			}
+
+			var weakRef = Create();
+
+			var sw = Stopwatch.StartNew();
+			while (weakRef.IsAlive && sw.Elapsed < TimeSpan.FromSeconds(1))
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsFalse(weakRef.IsAlive);
 		}
 	}
 }

@@ -8,49 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class DatePicker : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property YearVisible
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string YearFormat
-		{
-			get
-			{
-				return (string)this.GetValue(YearFormatProperty);
-			}
-			set
-			{
-				this.SetValue(YearFormatProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.Orientation Orientation
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.Orientation)this.GetValue(OrientationProperty);
-			}
-			set
-			{
-				this.SetValue(OrientationProperty, value);
-			}
-		}
-		#endif
 		// Skipping already declared property MonthVisible
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string MonthFormat
-		{
-			get
-			{
-				return (string)this.GetValue(MonthFormatProperty);
-			}
-			set
-			{
-				this.SetValue(MonthFormatProperty, value);
-			}
-		}
-		#endif
 		// Skipping already declared property MinYear
 		// Skipping already declared property MaxYear
 		#if false
@@ -82,54 +40,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property DayVisible
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DayFormat
-		{
-			get
-			{
-				return (string)this.GetValue(DayFormatProperty);
-			}
-			set
-			{
-				this.SetValue(DayFormatProperty, value);
-			}
-		}
-		#endif
 		// Skipping already declared property Date
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CalendarIdentifier
-		{
-			get
-			{
-				return (string)this.GetValue(CalendarIdentifierProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarIdentifierProperty, value);
-			}
-		}
-		#endif
 		// Skipping already declared property LightDismissOverlayMode
 		// Skipping already declared property SelectedDate
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarIdentifierProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarIdentifier), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
 		// Skipping already declared property DateProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DayFormatProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DayFormat), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-#endif
 		// Skipping already declared property DayVisibleProperty
 #if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -149,31 +63,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		// Skipping already declared property MaxYearProperty
 		// Skipping already declared property MinYearProperty
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MonthFormatProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MonthFormat), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
 		// Skipping already declared property MonthVisibleProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty YearFormatProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(YearFormat), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
 		// Skipping already declared property YearVisibleProperty
 		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property SelectedDateProperty

@@ -23,15 +23,17 @@ This is useful if you're debugging a problem that can't easily be reproduced out
 
 It can even speed up your development loop when working on a new feature or fixing a bug with a standalone repro, because a small 'Hello World' app builds considerably faster than the full SamplesApp.
 
-Here are the steps to use a local build of Uno.UI in another application:
+First, you'll need to install, in the app you want to debug with, a published Uno package version which is close to your branch's code, preferably a `-dev.xxx` version. Make sure update all `Uno.UI.*` packages to the same version.
+
+Then, here are the steps to use a local build of Uno.UI in another application:
 
 1. Configure Uno.UI to build for the target platform you wish to debug, [as detailed here](building-uno-ui.md).
 2. Close any instances of Visual Studio with Uno.UI open.
 3. Open the solution containing the application you wish to debug.
 4. Note the NuGet version of Uno.UI (or Uno.UI.WebAssembly/Uno.UI.Skia) being used by the application (eg `3.0.17`).
-5. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>2.23.2-dev.667</UnoNugetOverrideVersion>-->`.
+5. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->`.
 6. Replace the version number with the version being used by the application you wish to debug.
-7. Open the appropriate Uno.UI solution filter and build the Uno.UI project (or Uno.UI.WebAssembly/Uno.UI.Skia projects for WebAssembly or Skia). Be aware that this will **overwrite your local NuGet cache** for the nominated Uno.UI version. Any applications that you build locally will use your local build if they depend on that Uno.UI version.
+7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia). Be aware that this will **overwrite your local NuGet cache** for the nominated Uno.UI version. Any applications that you build locally will use your local build if they depend on that Uno.UI version.
 
 To debug Uno.UI code in the application, follow these steps (using `FrameworkElement.MeasureOverride()` as an example):
 
@@ -43,6 +45,15 @@ To debug Uno.UI code in the application, follow these steps (using `FrameworkEle
 6. Launch the application.
 7. You should hit the breakpoint, opening the `FrameworkElement.cs` file, and be able to see local variable values, etc.
 8. To revert to the original Uno.UI version from NuGet, simply navigate to the NuGet cache folder (`%USERPROFILE%\.nuget\packages`) and delete the `Uno.UI` folder within it. You may need to close Visual Studio first. The original version will be automatically restored the next time the application builds.
+
+### Troubleshooting
+It may happen that the package cache for the version you're debugging is corrupted, and the override is not working as intended.
+
+If this is the case:
+- In your debugged app, select another package version you've never debugged with
+- Make sure to build the app once to populate the nuget cache
+- Rebuild the Uno.UI project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia**) to replace the binaries with your debug ones
+- Rebuild your app and debug your again
 
 ## Microsoft Source Link support
 Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now possible to

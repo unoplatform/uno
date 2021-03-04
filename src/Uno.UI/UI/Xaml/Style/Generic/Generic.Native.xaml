@@ -293,21 +293,21 @@
 
 	<wasm:Style
 		x:Key="NativeDefaultProgressBar"
-		TargetType="ProgressBar" 
+		TargetType="ProgressBar"
 		BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
 	<skia:Style
 		x:Key="NativeDefaultProgressBar"
-		TargetType="ProgressBar" 
+		TargetType="ProgressBar"
 		BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
 	<macos:Style
 		x:Key="NativeDefaultProgressBar"
-		TargetType="ProgressBar" 
+		TargetType="ProgressBar"
 		BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
 	<xamarin:Style
-		TargetType="ProgressBar" 
+		TargetType="ProgressBar"
 		xamarin:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultProgressBar}" />
 
@@ -550,15 +550,15 @@
 		BasedOn="{StaticResource NativeDefaultFrame}" />
 
 	<!--
-		Official recommendation: 
+		Official recommendation:
 		"Side nav width: Equal to the screen width minus the height of the action bar."
 		Source: https://material.io/guidelines/patterns/navigation-drawer.html#navigation-drawer-specs
-				
+
 		Current approximation:
 		- Most small devices sold now have a screen width of 360dp.
 		- The action bar has a height of 56dp on most phones.
 		Value: 360 - 56 = 304
-				
+
 		TODO: Calculate programmatically.
 	-->
 	<android:Double x:Key="NativeDefaultSplitViewOpenPaneLength">304</android:Double>
@@ -610,7 +610,7 @@
 	<ios:Style x:Key="IosPickerFlyoutTextButtonStyle"
 			   TargetType="Button">
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="14" />
 		<Setter Property="Background"
 				Value="Transparent" />
 		<Setter Property="Foreground"
@@ -638,7 +638,7 @@
 	</ios:Style>
 
 	<!-- DatePicker -->
-	<ios:Style TargetType="DatePickerFlyoutPresenter">
+	<ios:Style TargetType="NativeDatePickerFlyoutPresenter">
 		<Setter Property="Background"
 				Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
 		<Setter Property="VerticalAlignment"
@@ -653,7 +653,7 @@
 				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="DatePickerFlyoutPresenter">
+				<ControlTemplate TargetType="NativeDatePickerFlyoutPresenter">
 					<Grid x:Name="ContentPanel"
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"

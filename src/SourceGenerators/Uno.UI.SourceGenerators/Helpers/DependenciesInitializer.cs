@@ -16,19 +16,27 @@ namespace Uno.UI.SourceGenerators
 {
 	internal class DependenciesInitializer
 	{
-		internal static void Init(GeneratorExecutionContext context)
+		internal static void Init()
 		{
+#if NETSTANDARD2_0
 			// Kept until dependencies can be added automatically and this is not needed anymore
 			//
-			// var assemblyName = typeof(DependenciesInitializer).Assembly.GetName().Name;
-			// var baseAnalyzer = context.GetMSBuildItems("Analyzer")
-			// 	.Where(f => f.Identity.EndsWith(assemblyName + ".dll"))
-			// 	.FirstOrDefault();
-			   
-			// if (baseAnalyzer != null)
-			// {
-			// 	Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(baseAnalyzer.Identity), "Uno.Core.dll"));
-			// }
+			var baseAnalyzer = typeof(DependenciesInitializer).Assembly.Location;
+
+			if (baseAnalyzer != null)
+			{
+				var basePath = Path.GetDirectoryName(baseAnalyzer);
+
+				var files = Directory
+					.EnumerateFiles(basePath, "*.dll")
+					.Where(f => Path.GetFileName(f).StartsWith("Uno."));
+
+				foreach (var file in files)
+				{
+					Assembly.LoadFrom(file);
+				}
+			}
+#endif
 		}
 	}
 }

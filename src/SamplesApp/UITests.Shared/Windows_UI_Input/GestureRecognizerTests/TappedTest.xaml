@@ -23,10 +23,11 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition />
+			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
 		<TextBlock
-			Text="Double on each zones. Last double tapped:"
+			Text="Tap on each zones. Last tapped:"
 			TextWrapping="Wrap"
 			Grid.Row="0"
 			Grid.ColumnSpan="2"/>
@@ -203,5 +204,52 @@
 				</ListView.ItemTemplate>
 			</ListView>
 		</Border>
+
+		<TextBlock
+			Text="Nested"
+			Grid.Row="2"
+			Grid.Column="2"
+			HorizontalAlignment="Center"/>
+		<Border
+			x:Name="Nested_Parent"
+			Grid.Row="3"
+			Grid.Column="2"
+			Width="150"
+			Height="150"
+			Background="#FF0018"
+			Tapped="TargetTapped">
+			<Border
+				x:Name="Nested_Target"
+				Width="100"
+				Height="100"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Background="#33000000"
+				Tapped="TargetTapped" />
+		</Border>
+
+		<TextBlock
+			Text="Nested"
+			Grid.Row="4"
+			Grid.Column="2"
+			HorizontalAlignment="Center"/>
+		<Border
+			x:Name="Nested_Handling_Parent"
+			Grid.Row="5"
+			Grid.Column="2"
+			Width="150"
+			Height="150"
+			Background="#FFA52C"
+			Tapped="TargetTapped">
+			<Border
+				x:Name="Nested_Handling_Target"
+				Width="100"
+				Height="100"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Background="#33000000"
+				Tapped="TargetTapped" />
+		</Border>
+
 	</Grid>
 </Page>

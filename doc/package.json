@@ -15,5 +15,8 @@
     "gulp-sourcemaps": "^2.6.4"
   },
   "description": "nventive gulp automation",
-  "main": "gulpfile.js"
+  "main": "gulpfile.js",
+  "scripts": {
+      "generate": "docfx docfx.json"
+  }
 }

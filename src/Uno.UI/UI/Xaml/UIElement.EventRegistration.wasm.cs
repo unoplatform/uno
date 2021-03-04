@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Extensions.Logging;
 using Uno;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
@@ -13,17 +15,31 @@ namespace Windows.UI.Xaml
 	{
 		private delegate bool RawEventHandler(UIElement sender, string paylaod);
 
+		internal delegate object GenericEventHandler(Delegate d, object sender, object args);
+
 		private class EventRegistration
 		{
 			private static readonly string[] noRegistrationEventNames = { "loading", "loaded", "unloaded", "pointerenter", "pointerleave", "pointerdown", "pointerup", "pointercancel" };
+
+			private class InvocationItem
+			{
+				public InvocationItem(Delegate handler, GenericEventHandler invoker)
+				{
+					Handler = handler;
+					Invoker = invoker;
+				}
+
+				public Delegate Handler { get; }
+				public GenericEventHandler Invoker { get; }
+			}
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
 			private readonly EventArgsParser _payloadConverter;
 			private readonly Action _subscribeCommand;
 
-			private List<Delegate> _invocationList = new List<Delegate>();
-			private List<Delegate> _pendingInvocationList;
+			private List<InvocationItem> _invocationList = new List<InvocationItem>();
+			private List<InvocationItem> _pendingInvocationList;
 			private bool _isSubscribed = false;
 			private bool _isDispatching;
 
@@ -48,19 +64,21 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			public void Add(Delegate handler)
+			public void Add(Delegate handler, GenericEventHandler invoker)
 			{
+				var invocationItem = new InvocationItem(handler, invoker);
+
 				// Do not alter the invocation list while enumerating it (_isDispatching)
 				var invocationList = _isDispatching
-					? _pendingInvocationList ?? (_pendingInvocationList = new List<Delegate>(_invocationList))
+					? _pendingInvocationList ?? (_pendingInvocationList = new List<InvocationItem>(_invocationList))
 					: _invocationList;
 
-				if (invocationList.Contains(handler))
+				if (invocationList.Contains(invocationItem))
 				{
 					return;
 				}
 
-				invocationList.Add(handler);
+				invocationList.Add(invocationItem);
 				if (_subscribeCommand != null && invocationList.Count == 1 && !_isSubscribed)
 				{
 					_subscribeCommand();
@@ -68,14 +86,16 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			public void Remove(Delegate handler)
+			public void Remove(Delegate handler, GenericEventHandler invoker)
 			{
+				var invocationItem = new InvocationItem(handler, invoker);
+
 				// Do not alter the invocation list while enumerating it (_isDispatching)
 				var invocationList = _isDispatching
-					? _pendingInvocationList ?? (_pendingInvocationList = new List<Delegate>(_invocationList))
+					? _pendingInvocationList ?? (_pendingInvocationList = new List<InvocationItem>(_invocationList))
 					: _invocationList;
 
-				invocationList.Remove(handler);
+				invocationList.Remove(invocationItem);
 
 				// TODO: Removing handler in HTML not supported yet
 				// var command = $"Uno.UI.WindowManager.current.unregisterEventOnView(\"{HtmlId}\", \"{eventName}\");";
@@ -106,9 +126,9 @@ namespace Windows.UI.Xaml
 						args = _payloadConverter(_owner, nativeEventPayload);
 					}
 
-					foreach (var handler in _invocationList)
+					foreach (var invocationItem in _invocationList)
 					{
-						if (handler is RawEventHandler rawHandler)
+						if (invocationItem.Handler is RawEventHandler rawHandler)
 						{
 							if (rawHandler(_owner, nativeEventPayload))
 							{
@@ -117,7 +137,7 @@ namespace Windows.UI.Xaml
 						}
 						else
 						{
-							var result = handler.DynamicInvoke(_owner, args);
+							var result = invocationItem.Invoker(invocationItem.Handler, _owner, args);
 
 							if (result is bool isHandedInManaged && isHandedInManaged)
 							{
@@ -154,6 +174,7 @@ namespace Windows.UI.Xaml
 		internal void RegisterEventHandler(
 			string eventName,
 			Delegate handler,
+			GenericEventHandler invoker,
 			bool onCapturePhase = false,
 			HtmlEventExtractor? eventExtractor = null,
 			EventArgsParser payloadConverter = null)
@@ -173,14 +194,14 @@ namespace Windows.UI.Xaml
 					payloadConverter);
 			}
 
-			registration.Add(handler);
+			registration.Add(handler, invoker);
 		}
 
-		internal void UnregisterEventHandler(string eventName, Delegate handler)
+		internal void UnregisterEventHandler(string eventName, Delegate handler, GenericEventHandler invoker)
 		{
 			if (_eventHandlers.TryGetValue(eventName, out var registration))
 			{
-				registration.Remove(handler);
+				registration.Remove(handler, invoker);
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{

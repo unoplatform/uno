@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using Windows.Foundation.Metadata;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using System.Diagnostics;
+using Uno.Roslyn;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -20,13 +21,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
-
+		private readonly RoslynMetadataHelper _metadataHelper;
 		private int _depth = 0;
 
-		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces)
+		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
 		{
 			_excludeXamlNamespaces = excludeXamlNamespaces;
 			_includeXamlNamespaces = includeXamlNamespaces;
+			this._metadataHelper = roslynMetadataHelper;
 		}
 
 		public XamlFileDefinition[] ParseFiles(string[] xamlSourceFiles)
@@ -275,7 +277,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var elements = valueSplit[1].Split('(', ',', ')');
 
-					switch (elements[0])
+					var methodName = elements[0];
+
+					switch (methodName)
 					{
 						case nameof(ApiInformation.IsApiContractPresent):
 						case nameof(ApiInformation.IsApiContractNotPresent):
@@ -284,11 +288,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
 							}
 
-							return elements[0] == nameof(ApiInformation.IsApiContractPresent) ?
+							return methodName == nameof(ApiInformation.IsApiContractPresent) ?
 								ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
 								ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+						case nameof(ApiInformation.IsTypePresent):
+						case nameof(ApiInformation.IsTypeNotPresent):
+							if (elements.Length < 2)
+							{
+								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
+							}
+							var expectedType = elements[1];
+							return methodName == nameof(ApiInformation.IsTypePresent) ?
+								ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
+								ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
 						default:
-							return null;// TODO: support IsTypePresent and IsPropertyPresent
+							return null;// TODO: support IsPropertyPresent
 					}
 				}
 			}

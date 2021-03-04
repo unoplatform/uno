@@ -14,6 +14,7 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.Extensions.Logging;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -31,7 +32,7 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
-#elif NETSTANDARD2_0 || NET461
+#elif UNO_REFERENCE_API || NET461
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
@@ -219,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
-					15.0,
+					14.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((ContentPresenter)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -525,23 +526,16 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region CornerRadius DependencyProperty
+		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty CornerRadiusProperty = CreateCornerRadiusProperty();
 
 		public CornerRadius CornerRadius
 		{
-			get { return (CornerRadius)GetValue(CornerRadiusProperty); }
-			set { SetValue(CornerRadiusProperty, value); }
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
-
-		public static DependencyProperty CornerRadiusProperty =
-			DependencyProperty.Register(
-				"CornerRadius",
-				typeof(CornerRadius),
-				typeof(ContentPresenter),
-				new FrameworkPropertyMetadata(
-					CornerRadius.None,
-					(s, e) => ((ContentPresenter)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
-				)
-			);
 
 		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 		{

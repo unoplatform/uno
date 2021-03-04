@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;

@@ -1,6 +1,6 @@
 ## Uno Platform Build tools telemetry
 
-The [Uno Platform SDK](https://github.com/unoplatform/uno) includes a [telemetry feature](SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.Telemetry.cs)
+The [Uno Platform SDK](https://github.com/unoplatform/uno) includes a [telemetry feature](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.Telemetry.cs)
 that collects usage information. It is important that the Uno Platform Team understands how the build tools are used so they can be improved.
 
 The collected data is anonymous.

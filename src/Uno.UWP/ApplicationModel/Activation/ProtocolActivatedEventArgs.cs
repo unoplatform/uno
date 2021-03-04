@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno;
 
 namespace Windows.ApplicationModel.Activation
 {
@@ -44,6 +45,18 @@ namespace Windows.ApplicationModel.Activation
 		/// Gets the Uniform Resource Identifier (URI) for which the app was activated.
 		/// </summary>
 		public Uri Uri { get; }
+
+		[NotImplemented]
+		public SplashScreen SplashScreen
+		{
+			get;
+		}
+
+		[NotImplemented]
+		public int CurrentlyShownApplicationViewId
+		{
+			get;
+		}
 #endif
 	}
 }

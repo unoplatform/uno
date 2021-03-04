@@ -55,8 +55,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void InitializeDefaultValues()
 		{
-            this.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, DependencyPropertyValuePrecedences.DefaultValue);
-        }
+			this.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, DependencyPropertyValuePrecedences.DefaultValue);
+		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)
 		{
@@ -134,9 +134,21 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns></returns>
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var arrangeSize = IsLayoutConstrainedByMaxLines
-				? DesiredSize
-				: finalSize;
+			Size arrangeSize;
+			if (IsLayoutConstrainedByMaxLines)
+			{
+				arrangeSize = DesiredSize;
+
+				if (HorizontalAlignment == HorizontalAlignment.Stretch)
+				{
+					arrangeSize.Width = finalSize.Width;
+				}
+			}
+			else
+			{
+				arrangeSize = finalSize;
+			}
+
 			return base.ArrangeOverride(arrangeSize);
 		}
 

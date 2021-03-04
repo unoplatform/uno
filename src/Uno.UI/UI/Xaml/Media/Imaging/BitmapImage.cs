@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				UnloadImageData();
 			}
 			InitFromUri(e.NewValue as Uri);
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 			InvalidateSource();
 #endif
 		}
@@ -128,19 +128,37 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public BitmapImage() { }
 
-		private void RaiseDownloadProgress(DownloadProgressEventArgs args)
+		private void RaiseDownloadProgress(int progress = 0)
 		{
-			DownloadProgress?.Invoke(this, args);
+			if (DownloadProgress is { } evt)
+			{
+				evt?.Invoke(this, new DownloadProgressEventArgs {Progress = progress});
+
+			}
 		}
 
 		private void RaiseImageFailed(ExceptionRoutedEventArgs args)
 		{
-			ImageFailed?.Invoke(this, args);
+			if (ImageFailed is { } evt)
+			{
+				evt?.Invoke(this, args);
+			}
 		}
 
-		private void RaiseImageOpened(RoutedEventArgs args)
+		private void RaiseImageFailed(Exception ex)
 		{
-			ImageOpened?.Invoke(this, args);
+			if (ImageFailed is { } evt)
+			{
+				evt?.Invoke(this, new ExceptionRoutedEventArgs(this, ex.Message));
+			}
+		}
+
+		private void RaiseImageOpened()
+		{
+			if (ImageOpened is { } evt)
+			{
+				evt?.Invoke(this, new RoutedEventArgs(this));
+			}
 		}
 	}
 }

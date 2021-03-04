@@ -146,6 +146,7 @@ namespace Windows.UI.Xaml
 				_popupRoot = new PopupRoot();
 				_window = new Grid()
 				{
+					IsVisualTreeRoot = true,
 					Children =
 					{
 						_rootScrollViewer,

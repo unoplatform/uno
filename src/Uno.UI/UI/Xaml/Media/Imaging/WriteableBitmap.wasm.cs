@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				image = new ImageData
 				{
-					Kind = ImageDataKind.Base64,
+					Kind = ImageDataKind.DataUri,
 					Value = value
 				};
 				return true;

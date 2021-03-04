@@ -44,7 +44,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 		public override bool Execute()
 		{
-			LogExtensionPoint.AmbientLoggerFactory.AddProvider(new TaskLoggerProvider(Log));
+			using var logger = TaskLoggerProvider.Register(Log);
 
 			this.Log().Info("Generating resources for platform : {0}".InvariantCultureFormat(TargetPlatform));
 

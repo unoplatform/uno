@@ -3,17 +3,19 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Path : ArbitraryShapeBase
+	public partial class Path : Shape
 	{
-		protected override Android.Graphics.Path GetPath(Size availableSize)
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureAbsoluteShape(availableSize, GetPath());
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeAbsoluteShape(finalSize, GetPath());
+
+		private Android.Graphics.Path GetPath()
 		{
 			var streamGeometry = Data.ToStreamGeometry();
 			return streamGeometry?.ToPath();
-		}
-
-		partial void OnDataChanged()
-		{
-			RequestLayout();
 		}
 	}
 }

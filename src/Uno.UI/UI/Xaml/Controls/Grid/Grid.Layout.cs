@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using Uno.Disposables;
 using Uno.Collections;
 using Microsoft.Extensions.Logging;
+using Uno.Buffers;
 using Uno.UI.DataBinding;
 
 #if XAMARIN_ANDROID
@@ -43,6 +44,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private Memory<DoubleRange> _calculatedRows;
 		private Memory<DoubleRange> _calculatedColumns;
+
+		private static ArrayPool<ViewPosition> _resCachePool = ArrayPool<ViewPosition>.Create();
+		private ViewPosition[] _resCache;
 
 		private Memory<Column> GetColumns(bool considerStarAsAuto)
 		{
@@ -980,9 +984,21 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private static double GetAdjustmentForSpacing(int rowOrColumnSpan, double spacing) => spacing * (rowOrColumnSpan - 1);
 
-		private static Memory<ViewPosition> FindStarSizeChildren(Span<ViewPosition> positions, Memory<ViewPosition> pixelSizeChildren, List<ViewPosition> autoSizeChildren)
+		private Memory<ViewPosition> FindStarSizeChildren(Span<ViewPosition> positions, Memory<ViewPosition> pixelSizeChildren, List<ViewPosition> autoSizeChildren)
 		{
-			var res = new Memory<ViewPosition>(new ViewPosition[positions.Length]);
+			// As configuration of Grids are usually pretty stable, for perf consideration (Avoids GC) we try to re-use the same array
+			// Note: Even if we use a pool for it, we still localy cache the "res" array to avoid multiple pool lookup for each layouting pass.
+			if (_resCache is null)
+			{
+				_resCache = _resCachePool.Rent(positions.Length);
+			}
+			else if (_resCache.Length < positions.Length)
+			{
+				_resCachePool.Return(_resCache, clearArray: false);
+				_resCache = _resCachePool.Rent(positions.Length);
+			}
+
+			var res = new Memory<ViewPosition>(_resCache);
 			int count = 0;
 
 			// Use local function to avoid the use of Enumerable.Any. foreach on List<T> uses allocation less
@@ -1328,6 +1344,14 @@ namespace Windows.UI.Xaml.Controls
 						rowSpan
 					)
 				);
+			}
+		}
+
+		~Grid()
+		{
+			if (_resCache is { })
+			{
+				_resCachePool.Return(_resCache, clearArray: false);
 			}
 		}
 

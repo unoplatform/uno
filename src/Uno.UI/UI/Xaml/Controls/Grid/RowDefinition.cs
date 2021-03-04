@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial class RowDefinition : DependencyObject
 	{
 		public RowDefinition()
@@ -76,5 +78,7 @@ namespace Windows.UI.Xaml.Controls
 				return result;
 			}
 		}
+
+		private string DebugDisplay => $"RowDefinition(Height={Height.ToDisplayString()};MinHeight={MinHeight};MaxHeight={MaxHeight};ActualHeight={ActualHeight}";
 	}
 }

@@ -631,5 +631,146 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Assert.AreEqual(text.ToUpperInvariant(), upperCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
 		}
 
+		[Test]
+		[AutoRetry]
+		public void TextBox_AutoGrow_Vertically_Test()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Multiline_AutoHeight");
+
+			_app.FastTap("btnSingle");
+			_app.WaitForElement("Test");
+			var height1 = _app.GetLogicalRect("Test").Height;
+
+			_app.FastTap("btnDouble");
+			_app.WaitForElement("Test");
+			var height2 = _app.GetLogicalRect("Test").Height;
+
+			using var _ = new AssertionScope();
+			height2.Should().BeGreaterThan(height1);
+
+
+			_app.FastTap("btnSingle");
+			_app.WaitForElement("Test");
+			var height3 = _app.GetLogicalRect("Test").Height;
+
+			height3.Should().Be(height1);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_AutoGrow_Vertically_Wrapping_Test()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Multiline_AutoHeight");
+
+			_app.Marked("Test").SetDependencyPropertyValue("MaxWidth", "200");
+			_app.Marked("Test").SetDependencyPropertyValue("TextWrapping", "Wrap");
+			_app.Marked("Test").SetDependencyPropertyValue("Text", "Short");
+			_app.WaitForElement("Test");
+			var height1 = _app.GetLogicalRect("Test").Height;
+
+			_app.EnterText("Test", "This is a significantly longer text. It should wraps.");
+			_app.WaitForElement("Test");
+			var height2 = _app.GetLogicalRect("Test").Height;
+
+			using var _ = new AssertionScope();
+			height2.Should().BeGreaterThan(height1);
+
+
+			_app.Marked("Test").SetDependencyPropertyValue("Text", "Short");
+			var height3 = _app.GetLogicalRect("Test").Height;
+
+			height3.Should().Be(height1);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
+		public void TextBox_AutoGrow_Vertically_NoWrapping_Test()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Multiline_AutoHeight");
+
+			_app.Marked("Test").SetDependencyPropertyValue("MaxWidth", "200");
+			_app.Marked("Test").SetDependencyPropertyValue("Text", "Short");
+			_app.WaitForElement("Test");
+			var height1 = _app.GetLogicalRect("Test").Height;
+
+			_app.EnterText("Test", "This is a significantly longer text. Since there's no wrapping, it should remains on a single line.");
+			_app.WaitForElement("Test");
+			var height2 = _app.GetLogicalRect("Test").Height;
+
+			height2.Should().Be(height1);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_AutoGrow_Horizontally_Test()
+		{
+			using var _ = new AssertionScope();
+
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Multiline_AutoHeight");
+
+			_app.Marked("Test").SetDependencyPropertyValue("MinWidth", "120");
+			_app.Marked("Test").SetDependencyPropertyValue("HorizontalAlignment", "Left");
+			_app.Marked("Test").SetDependencyPropertyValue("Text", "Short");
+
+			_app.WaitForElement("Test");
+			var width1 = _app.GetLogicalRect("Test").Width;
+			var height1 = _app.GetLogicalRect("Test").Height;
+
+			width1.Should().Be(120f);
+
+
+			_app.EnterText("Test", "This is a significantly larger text. Since there's no wrapping, it should remains on a single line.");
+			_app.WaitForElement("Test");
+			var width2 = _app.GetLogicalRect("Test").Width;
+			var height2 = _app.GetLogicalRect("Test").Height;
+
+			width2.Should().BeGreaterThan(width1);
+			height2.Should().Be(height1);
+
+			_app.Marked("Test").SetDependencyPropertyValue("Text", "Short");
+			_app.WaitForElement("Test");
+			var width3 = _app.GetLogicalRect("Test").Width;
+			var height3 = _app.GetLogicalRect("Test").Height;
+
+			width1.Should().Be(width1);
+			height3.Should().Be(height1);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void PasswordBox_AutoGrow_Horizontally_Test()
+		{
+			using var _ = new AssertionScope();
+
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Simple");
+
+			_app.Marked("autoGrow").SetDependencyPropertyValue("MinWidth", "120");
+			_app.Marked("autoGrow").SetDependencyPropertyValue("HorizontalAlignment", "Left");
+			_app.Marked("autoGrow").SetDependencyPropertyValue("Password", "");
+
+			_app.WaitForElement("autoGrow");
+			var width1 = _app.GetLogicalRect("autoGrow").Width;
+			var height1 = _app.GetLogicalRect("autoGrow").Height;
+
+			width1.Should().Be(120f);
+
+
+			_app.EnterText("autoGrow", "This is a long password.");
+			_app.WaitForElement("autoGrow");
+			var width2 = _app.GetLogicalRect("autoGrow").Width;
+			var height2 = _app.GetLogicalRect("autoGrow").Height;
+
+			width2.Should().BeGreaterThan(width1);
+			height2.Should().Be(height1);
+
+			_app.Marked("autoGrow").SetDependencyPropertyValue("Password", "short");
+			_app.WaitForElement("autoGrow");
+			var width3 = _app.GetLogicalRect("autoGrow").Width;
+			var height3 = _app.GetLogicalRect("autoGrow").Height;
+
+			width3.Should().Be(width1);
+			height3.Should().Be(height1);
+		}
 	}
 }

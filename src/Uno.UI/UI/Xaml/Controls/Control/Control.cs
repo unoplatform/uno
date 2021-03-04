@@ -31,7 +31,7 @@ using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
-#elif NETSTANDARD2_0 || NET461
+#elif UNO_REFERENCE_API || NET461
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -54,6 +54,8 @@ namespace Windows.UI.Xaml.Controls
 		protected object DefaultStyleKey { get; set; }
 
 		protected override bool IsSimpleLayout => true;
+
+		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
 		internal override void UpdateThemeBindings()
 		{
@@ -157,9 +159,25 @@ namespace Windows.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-						if (!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						if (
+#if NETSTANDARD
+							!IsLoading &&
+#endif
+							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
+
+							// Note: we however still allow if already 'IsLoading':
+							//
+							// If this child is added to its parent while this parent is 'IsLoading' itself (eg. loading its template),
+							// the parent will invoke the Loading on this child element (and the PostLoading which will "dequeue" the _applyTemplateShouldBeInvoked),
+							// which will set the 'IsLoading' flag.
+							//
+							// The parent will then apply its own style, which might set/change the template of this element (if data-bound or set using VisualState),
+							// which would end here and set this _applyTemplateShouldBeInvoked flag (if IsLoaded were not allowed!).
+							//
+							// The parent will then invoke the Loading on all its children, but as this child has already been flagged as 'IsLoading',
+							// it will be ignored and the 'PostLoading' won't be invokes a second time, driving the control to never "dequeue" the _applyTemplateShouldBeInvoked.
 							_applyTemplateShouldBeInvoked = true;
 						}
 						else
@@ -523,7 +541,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					15.0,
+					14.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -1117,5 +1135,28 @@ namespace Windows.UI.Xaml.Controls
 
 		public string[] CurrentVisualStates => VisualStateGroups.Select(vsg => vsg.CurrentState?.Name).ToArray();
 #endif
+
+		internal void ConditionallyGetTemplatePartAndUpdateVisibility<T>(
+			string strName,
+			bool visible,
+			ref T element) where T:UIElement
+        {
+            if (element == null && (visible /*|| !DXamlCore::GetCurrent()->GetHandle()->GetDeferredElementIfExists(strName, GetHandle(), Jupiter::NameScoping::NameScopeType::TemplateNameScope))*/))
+            {
+                // If element should be visible or is not deferred, then fetch it.
+				element = GetTemplateChild(strName) as T;
+			}
+
+            // If element was found then set its Visibility - this is behavior consistent with pre-Threshold releases.
+            if (element != null)
+            {
+                var spElementAsUIE = element as UIElement;
+
+                if (spElementAsUIE != null) 
+                {
+                    spElementAsUIE.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+        }
 	}
 }

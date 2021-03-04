@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using Windows.UI.Xaml.Controls;
 using Windows.UI;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -45,6 +46,17 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		#endregion
+
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
+
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public Windows.UI.Xaml.Media.Transform Transform
+		{
+			get => GetTransformValue();
+			set => SetTransformValue(value);
+		}
 
 		public Transform RelativeTransform
 		{
@@ -97,5 +109,10 @@ namespace Windows.UI.Xaml.Media
 					return false;
 			}
 		}
+
+#if !__WASM__
+		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
+		internal bool SupportsAssignAndObserveBrush => true;
+#endif
 	}
 }

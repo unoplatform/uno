@@ -71,7 +71,7 @@ On Skia however, they are fully managed events.
 
 Like on WinUI as soon as the system detects that the user wants to scroll, a control gets a `PointerCancelled` and that control won't receive
 any other pointer event until the user releases the pointer. That behavior can be prevented by setting the `ManipulationMode` 
-to something else than `System` on a control nested in the `ScrollViewer`. (cf. [Manipulation events](#Manipulation_Events))
+to something else than `System` on a control nested in the `ScrollViewer`. (cf. [Manipulation events](#manipulation-events))
 
 Be aware that on iOS this will set `DelaysContentTouches` to `false` so it means that it will slightly reduce the performance
 of the scrolling (cf. [documentation](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches)).

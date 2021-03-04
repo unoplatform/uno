@@ -31,7 +31,7 @@ using View = AppKit.NSView;
 #elif XAMARIN_ANDROID
 using Color = Android.Resource.Color;
 using View = Android.Views.View;
-#elif NET461 || NETSTANDARD2_0
+#elif NET461 || UNO_REFERENCE_API
 using Color = System.Object;
 using View = Windows.UI.Xaml.FrameworkElement;
 #endif  

@@ -18,20 +18,6 @@ namespace Windows.System
 		}
 		#endif
 		// Skipping already declared method Windows.System.DispatcherQueue.CreateTimer()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TryEnqueue( global::Windows.System.DispatcherQueueHandler callback)
-		{
-			throw new global::System.NotImplementedException("The member bool DispatcherQueue.TryEnqueue(DispatcherQueueHandler callback) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TryEnqueue( global::Windows.System.DispatcherQueuePriority priority,  global::Windows.System.DispatcherQueueHandler callback)
-		{
-			throw new global::System.NotImplementedException("The member bool DispatcherQueue.TryEnqueue(DispatcherQueuePriority priority, DispatcherQueueHandler callback) is not implemented in Uno.");
-		}
-		#endif
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.add
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.remove
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownCompleted.add

@@ -9,6 +9,8 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using Uno.UI.DataBinding;
+
 #if XAMARIN_IOS
 using UIKit;
 #elif __MACOS__
@@ -19,7 +21,17 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal partial class PopupPanel : Panel
 	{
-		public Popup Popup { get; }
+		private ManagedWeakReference _popup;
+
+		public Popup Popup
+		{
+			get => _popup?.Target as Popup;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _popup);
+				_popup = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
 
 		public PopupPanel(Popup popup)
 		{
@@ -106,6 +118,23 @@ namespace Windows.UI.Xaml.Controls
 				//		 (And actually it also lets the view appear out of the window ...)
 				var anchor = Popup.Anchor ?? Popup;
 				var anchorLocation = anchor.TransformToVisual(this).TransformPoint(new Point());
+
+#if __ANDROID__
+				// for android, the above line returns the absolute coordinates of anchor on the screen
+				// because the parent view of this PopupPanel is a PopupWindow and GetLocationInWindow will be (0,0)
+				// therefore, we need to make the relative adjustment
+				if (this.GetParent() is Android.Views.View view)
+				{
+					var windowLocation = Point.From(view.GetLocationInWindow);
+					var screenLocation = Point.From(view.GetLocationOnScreen);
+
+					if (windowLocation == default)
+					{
+						anchorLocation -= ViewHelper.PhysicalToLogicalPixels(screenLocation);
+					}
+				}
+#endif
+
 				var finalFrame = new Rect(
 					anchorLocation.X + (float)Popup.HorizontalOffset,
 					anchorLocation.Y + (float)Popup.VerticalOffset,

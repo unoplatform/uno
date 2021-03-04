@@ -979,7 +979,7 @@
 		<Assemblies>
 			<Member fullName="Uno.UI.Wasm" reason="Moved to another package" />
 		</Assemblies>
-		
+
 		<Types>
 			<Member
 				fullName="Windows.Gaming.UI.GameMonitor"
@@ -1195,10 +1195,10 @@
 				fullName="System.Object Windows.UI.Xaml.ResourceDictionary.Lookup(System.Object key)"
 				reason="Not a public WinUI method (in the .NET projection)"/>
 			<!-- ^^ Styles overhaul -->
-			<Member 
+			<Member
 				fullName="System.Void Windows.UI.Text.FontWeight..ctor(System.Int32 weight)"
 				reason="Changed from int to ushort to replicate uwp definition"/>
-			<Member 
+			<Member
 				fullName="System.Int32 Windows.UI.Text.FontWeight.get_Weight()"
 				reason="Changed from int to ushort to replicate uwp definition"/>
 			<Member
@@ -1218,7 +1218,7 @@
 				reason="Constructor not part of UWP API" />
 			<Member
 				fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()"
-				reason="Constructor not part of UWP API" />															
+				reason="Constructor not part of UWP API" />
 
 			<!-- INPC on base view removal -->
 		  <Member
@@ -1257,7 +1257,7 @@
 				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.MediaTransportControls.set_FastPlayFallbackBehaviour(System.Boolean value)"
-				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />				
+				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition" />
 
 			<!-- Begin OnLoaded/OnUnloaded removal -->
 			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLoaded()" reason="Removed OnLoaded/OnUnloaded"/>
@@ -1761,7 +1761,7 @@
 				reason="UWP does not have this ctor" />
 			<Member
 				fullName="System.Void Windows.Devices.Midi.MidiInPort..ctor()"
-				reason="UWP does not have this ctor" />	
+				reason="UWP does not have this ctor" />
 			<Member
 				fullName="System.Void Windows.Devices.Enumeration.DeviceInformation..ctor()"
 				reason="UWP does not have this ctor" />
@@ -1782,13 +1782,13 @@
 				reason="UWP does not have this method" />
 			<Member
 				fullName="System.Void Windows.Storage.Streams.InMemoryBuffer.set_Length(System.UInt32 value)"
-				reason="UWP does not have this method" />	   
+				reason="UWP does not have this method" />
 			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor()"
 				reason="This ctor does not exist in UWP"/>
 			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationManagerPreview..ctor()"
-				reason="This ctor does not exist in UWP"/> 
+				reason="This ctor does not exist in UWP"/>
 			<Member
 				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.get_HorizontalScrollMode()"
 				reason="Not part of WinUI API"/>
@@ -1827,9 +1827,9 @@
 				fullName="Windows.UI.Xaml.Style Windows.UI.Xaml.Controls.NativePage::Style()"
 				reason="Removed unused non-standard property"/>
 			<!-- ^^ Styles overhaul -->
-			<Member 
+			<Member
 				fullName="System.Int32 Windows.UI.Text.FontWeight::Weight()"
-				reason="Changed from int to ushort to replicate uwp definition"/>	
+				reason="Changed from int to ushort to replicate uwp definition"/>
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Controls.MediaTransportControls::FastPlayFallbackBehaviour()"
 				reason="Changed from boolean to Windows.UI.Xaml.Media.FastPlayFallbackBehaviour to replicate uwp definition"/>
@@ -1893,7 +1893,7 @@
 			<Member
 				fullName="AppKit.NSView Windows.UI.Xaml.Controls.PopupBase::Child()"
 				reason="Removed references to native view"/>
-				
+
 			<Member
 				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Controls.PopupBase::Child()"
 				reason="Property type corrected from FrameworkElement to UIElement as part of native views clean-up"/>
@@ -3068,12 +3068,12 @@
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.1.6">
 		<Types>
-			<Member 
+			<Member
 				fullName="Windows.Storage.StorageItem"
 				reason="Not part of the UWP API"/>
 		  </Types>
 		<Methods>
-			<Member 
+			<Member
 				fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
@@ -3297,6 +3297,12 @@
 			<Member
 				fullName="System.Boolean Windows.UI.Core.CoreDispatcher::HasThreadAccessOverride()"
 				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel::HorizontalMarginProperty()"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel::VerticalMarginProperty()"
+				reason="Renamed in WinUI" />
 		</Properties>
 		<Methods>
 			<Member
@@ -3317,23 +3323,259 @@
 			<Member
 				fullName="Windows.UI.Xaml.FrameworkElement Windows.UI.Xaml.Media.VisualTreeHelper.TryAdaptNative(System.Object view)"
 				reason="Non UWP API - Has been updated to use UIElement instead of Object"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.ImageSource..ctor(System.IO.Stream stream)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FileSavePicker.set_FileTypeChoices(System.Collections.Generic.IDictionary`2&lt;System.String,System.Collections.Generic.IList`1&lt;System.String&gt;&gt; value)"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs..ctor()"
+				reason="Not part of the UWP API"/>
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Microsoft.UI.Xaml.Controls.InfoBarPanel.GetHorizontalMargin(Windows.UI.Xaml.DependencyObject obj)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarPanel.SetHorizontalMargin(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Thickness value)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel.get_HorizontalMarginProperty()"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Microsoft.UI.Xaml.Controls.InfoBarPanel.GetVerticalMargin(Windows.UI.Xaml.DependencyObject obj)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBarPanel.SetVerticalMargin(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Thickness value)"
+				reason="Renamed in WinUI" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarPanel.get_VerticalMarginProperty()"
+				reason="Renamed in WinUI" />
 		</Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="3.4.0">
+		<Methods>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackagePropertySet..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataTransferManager..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.ShareTargetInfo..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.String UIKit.UIViewExtensions.GetDebugIdentifier(UIKit.UIView element)"
+				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.String AppKit.UIViewExtensions.GetDebugIdentifier(AppKit.NSView element)"
+				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.String Uno.UI.ViewExtensions.GetDebugIdentifier(Android.Views.View element)"
+				reason="Internal helper that should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionPropertySet..ctor()"
+				reason="Constructor is not public in UWP" />
+			<Member
+				fullName="System.Void Windows.Foundation.PropertyValue..ctor()"
+				reason="Constructor is not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequestDeferral..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.DataRequest..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Media.Animation.BounceEase.BounceEaseIn(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Media.Animation.BounceEase.BounceEaseOut(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)"
+				reason="Constructor not public in UWP" />
+		 </Methods>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="3.5.1">
+		<Types>
+			<Member
+				fullName="Windows.UI.Xaml.Shapes.ArbitraryShapeBase"
+				reason="Not part of the WinUI API." />
+		</Types>
+		<Methods>
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FileExtensionVector..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FilePickerFileTypesOrderedMap..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.Storage.Pickers.FilePickerSelectedFilesArray..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillChanged(Windows.UI.Xaml.Media.Brush newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillUpdated(Windows.UI.Xaml.Media.Brush newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeUpdated(Windows.UI.Xaml.Media.Brush newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStretchUpdated(Windows.UI.Xaml.Media.Stretch newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeThicknessUpdated(System.Double newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeDashArrayUpdated(Windows.UI.Xaml.Media.DoubleCollection newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="Windows.Foundation.Rect Windows.UI.Xaml.Shapes.Shape.GetDrawArea(Android.Graphics.Canvas canvas)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.DrawFill(Android.Graphics.Canvas canvas, Windows.Foundation.Rect fillArea, Android.Graphics.Path fillPath)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.DrawStroke(Android.Graphics.Canvas canvas, Windows.Foundation.Rect strokeArea, System.Action`3&lt;Android.Graphics.Canvas,Windows.Foundation.Rect,Android.Graphics.Paint&gt; drawingMethod)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.SetStrokeDashEffect(Android.Graphics.Paint strokePaint)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeDashArrayUpdated(Windows.UI.Xaml.Media.DoubleCollection newValue)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="Windows.Foundation.Rect Windows.UI.Xaml.Shapes.Shape.GetDrawArea(Android.Graphics.Canvas canvas)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.DrawFill(Android.Graphics.Canvas canvas, Windows.Foundation.Rect fillArea, Android.Graphics.Path fillPath)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.DrawStroke(Android.Graphics.Canvas canvas, Windows.Foundation.Rect strokeArea, System.Action`3&lt;Android.Graphics.Canvas,Windows.Foundation.Rect,Android.Graphics.Paint&gt; drawingMethod)"
+				reason="Not part of the WinUI API." />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.SetStrokeDashEffect(Android.Graphics.Paint strokePaint)"
+				reason="Not part of the WinUI API." />
 
+			<Member
+				fullName="Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple Windows.UI.Xaml.Automation.Peers.AutomationPeer.ProviderFromPeer(Windows.UI.Xaml.Automation.Peers.AutomationPeer peer)"
+				reason="False positive: bug in diff tool" />
+			<Member
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.UI.Xaml.Controls.Primitives.Popup&gt; Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(Windows.UI.Xaml.XamlRoot xamlRoot)"
+				reason="False positive: bug in diff tool" />
+			<Member
+				fullName="System.Void Windows.Globalization.ApplicationLanguages..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.XamlRoot..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode Windows.UI.Xaml.Controls.DatePicker.get_FlyoutPlacement()"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DatePicker.set_FlyoutPlacement(Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode value)"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DatePickerFlyout.OnDateChanged(System.DateTimeOffset oldDate, System.DateTimeOffset newDate)"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DatePickerFlyout.OnMaxYearChanged(System.DateTimeOffset oldMaxYear, System.DateTimeOffset newMaxYear)"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.DatePickerFlyout.OnMinYearChanged(System.DateTimeOffset oldMinYear, System.DateTimeOffset newMinYear)"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.LoopingSelector..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.LoopingSelectorItem..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.LoopingSelectorPanel..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer..ctor()"
+				reason="Constructor not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.LoopingSelectorItemDataAutomationPeer..ctor()"
+				reason="Constructor not public in UWP" />
+		</Methods>
+		<Fields>
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::DayTextBlockPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::MonthTextBlockPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::YearTextBlockPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::FlyoutButtonGridPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::DayColumnPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::MonthColumnPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::YearColumnPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::FlyoutButtonPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePickerFlyout::AcceptButtonPartName"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.String Windows.UI.Xaml.Controls.DatePickerFlyout::DismissButtonPartName"
+				reason="Method not in UWP contract" />
+		</Fields>
+		<Properties>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode Windows.UI.Xaml.Controls.DatePicker::FlyoutPlacement()"
+				reason="Method not in UWP contract" />
+		</Properties>
+	</IgnoreSet>
 	<!--
-	Supported nodes (please at the bottom of this file):
+	Supported nodes (please keep at the bottom of this file):
 		<Types>
 		</Types>
-		
+
 		<Events>
 		</Events>
-		
+
 		<Fields>
 		</Fields>
-		
+
 		<Properties>
 		</Properties>
-		
+
 		<Methods>
 		</Methods>
 	-->

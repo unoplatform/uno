@@ -188,15 +188,25 @@ h3 {
 
 .subnav {
     position: fixed;
-    top: 57px;
+    top: 75px;
     width: 100%;
     z-index: 999;
 }
+
+
 
 #navbar {
     margin: 0;
     margin-left: auto;
     padding: 15px 0 0;
+
+    & > .navbar-nav {
+        display: block;
+
+        &.hidden {
+            display: none;
+        }
+    }
 
     .menu,
     .level1 {

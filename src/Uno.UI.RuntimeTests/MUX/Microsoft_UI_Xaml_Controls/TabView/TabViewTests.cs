@@ -33,9 +33,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
-	public class TabViewTests
+	public partial class TabViewTests
 	{
-
 		[TestMethod]
 		[Ignore("Automation peers are not fully supported on Uno https://github.com/unoplatform/uno/issues/4558")]
 		public void VerifyCompactTabWidthVisualStates()

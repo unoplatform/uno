@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -40,6 +41,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(hasWinOnlyBrush);
 #else
 			Assert.IsFalse(hasWinOnlyBrush);
+#endif
+		}
+
+		[TestMethod]
+		public void When_Conditional_IsTypePresent()
+		{
+			var page = new When_Conditional_IsTypePresent_Page();
+
+			Assert.AreEqual("Is present", page.fepresentTextBlock.Text);
+			Assert.AreEqual("", page.fenotpresentTextBlock.Text);
+			Assert.AreEqual("", page.fthepresentTextBlock.Text);
+			Assert.AreEqual("Is not present", page.fthenotpresentTextBlock.Text);
+#if NETFX_CORE
+			Assert.AreEqual("Is present", page.easpresentTextBlock.Text);
+			Assert.AreEqual("", page.easnotpresentTextBlock.Text);
+#else
+			// This will need to be adjusted if we ever implement... *checks notes*... Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation
+			Assert.AreEqual("", page.easpresentTextBlock.Text);
+			Assert.AreEqual("Is not present", page.easnotpresentTextBlock.Text);
 #endif
 		}
 	}

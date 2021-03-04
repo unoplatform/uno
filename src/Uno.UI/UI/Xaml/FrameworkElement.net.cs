@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml
 
 		public global::System.Uri BaseUri { get; internal set; }
 
-		private protected virtual double GetActualWidth() => ActualWidth;
-		private protected virtual double GetActualHeight() => ActualHeight;
+		private protected override double GetActualWidth() => ActualWidth;
+		private protected override double GetActualHeight() => ActualHeight;
 	}
 }

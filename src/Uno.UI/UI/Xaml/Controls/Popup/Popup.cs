@@ -146,23 +146,28 @@ namespace Windows.UI.Xaml.Controls
 
 			e.Handled = true;
 
-			if (!(popup.Child is FrameworkElement content))
+			if (popup.Child is FrameworkElement content)
 			{
-				popup.Log().Warn("Dismiss is not supported if the 'Child' of the 'Popup' is not a 'FrameworkElement'.");
-
-				return;
+				var position = e.GetCurrentPoint(content).Position;
+				if (
+					position.X < 0 || position.X > content.ActualWidth
+					               || position.Y < 0 || position.Y > content.ActualHeight)
+				{
+					popup.IsOpen = false;
+				}
+			}
+			else if (popup.Child == null)
+			{
+				popup.Log().Warn($"Dismiss is not supported if the 'Child' is null.");
+			}
+			else
+			{
+				popup.Log().Warn($"Dismiss is not supported if the 'Child' ({popup.Child?.GetType()}) of the 'Popup' is not a 'FrameworkElement'.");
 			}
 
 			// Note: This is not the right way: we should instead listen for the PointerPressed directly on the Child
 			//		 so we should be able to still dismiss the Popup if the background if the Child is `null`.
 			//		 But this would require us to refactor more deeply the Popup which is not the purpose of the current work.
-			var position = e.GetCurrentPoint(content).Position;
-			if (
-				position.X < 0 || position.X > content.ActualWidth
-				|| position.Y < 0 || position.Y > content.ActualHeight)
-			{
-				popup.IsOpen = false;
-			}
 		};
 
 		public LightDismissOverlayMode LightDismissOverlayMode

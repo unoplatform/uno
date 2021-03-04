@@ -7,6 +7,8 @@ using Uno.UI.Extensions;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
+using Uno.UI;
+using Windows.Globalization;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -35,10 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.TimeZone = NSTimeZone.LocalTimeZone;
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 
-			if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
-			{
-				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
-			}
+			UpdatePickerStyle();
 
 			UpdatePickerValue(Date, animated: false);
 
@@ -52,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 				parent.AddSubview(_picker);
 			}
 
-			UpdatMinMaxYears();
+			UpdateMinMaxYears();
 		}
 
 		private protected override void OnUnloaded()
@@ -86,33 +85,49 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnMinYearChangedPartialNative(DateTimeOffset oldMinYear, DateTimeOffset newMinYear)
-			=> UpdatMinMaxYears();
+			=> UpdateMinMaxYears();
 
 		partial void OnMaxYearChangedPartialNative(DateTimeOffset oldMaxYear, DateTimeOffset newMaxYear)
-			=> UpdatMinMaxYears();
+			=> UpdateMinMaxYears();
 
-		private void UpdatMinMaxYears()
+		private void UpdateMinMaxYears()
 		{
 			if (_picker == null)
 			{
 				return;
 			}
 
+			// TODO: support non-gregorian calendars
+
+			var winCalendar = new Windows.Globalization.Calendar(
+				new string[0],
+				Windows.Globalization.CalendarIdentifiers.Gregorian,
+				Windows.Globalization.ClockIdentifiers.TwentyFourHour);
+
 			var calendar = new NSCalendar(NSCalendarType.Gregorian);
+
+			winCalendar.SetDateTime(MaxYear);
+			winCalendar.Month = winCalendar.LastMonthInThisYear;
+			winCalendar.Day = winCalendar.LastDayInThisMonth;
+
 			var maximumDateComponents = new NSDateComponents
 			{
-				Day = MaxYear.Day,
-				Month = MaxYear.Month,
-				Year = MaxYear.Year
+				Day = winCalendar.Day,
+				Month = winCalendar.Month,
+				Year = winCalendar.Year
 			};
 
 			_picker.MaximumDate = calendar.DateFromComponents(maximumDateComponents);
 
+			winCalendar.SetDateTime(MinYear);
+			winCalendar.Month = winCalendar.FirstMonthInThisYear;
+			winCalendar.Day = winCalendar.FirstDayInThisMonth;
+
 			var minimumDateComponents = new NSDateComponents
 			{
-				Day = MinYear.Day,
-				Month = MinYear.Month,
-				Year = MinYear.Year
+				Day = winCalendar.Day,
+				Month = winCalendar.Month,
+				Year = winCalendar.Year
 			};
 
 			_picker.MinimumDate = calendar.DateFromComponents(minimumDateComponents);
@@ -134,7 +149,10 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void Cancel()
 		{
-			_picker?.SetDate(_initialValue, false);
+			if (_initialValue is {} initialDate)
+			{
+				_picker?.SetDate(initialDate, false);
+			}
 			_picker?.EndEditing(false);
 		}
 
@@ -162,6 +180,21 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 			return date;
+		}
+
+		private void UpdatePickerStyle()
+		{
+			if (_picker == null)
+			{
+				return;
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 14))
+			{
+				_picker.PreferredDatePickerStyle = FeatureConfiguration.DatePicker.UseLegacyStyle
+																			? UIDatePickerStyle.Wheels
+																			: UIDatePickerStyle.Inline;
+			}
 		}
 	}
 }

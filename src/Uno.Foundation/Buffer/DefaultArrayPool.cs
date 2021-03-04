@@ -8,7 +8,7 @@ using System;
 
 namespace Uno.Buffers
 {
-    internal sealed partial class DefaultArrayPool<T> : ArrayPool<T>
+    internal sealed partial class ArrayPool<T>
     {
         /// <summary>The default maximum length of each array in the pool (2^20).</summary>
         private const int DefaultMaxArrayLength = 1024 * 1024;
@@ -19,11 +19,11 @@ namespace Uno.Buffers
 
         private readonly Bucket[] _buckets;
 
-        internal DefaultArrayPool() : this(DefaultMaxArrayLength, DefaultMaxNumberOfArraysPerBucket)
+        internal ArrayPool() : this(DefaultMaxArrayLength, DefaultMaxNumberOfArraysPerBucket)
         {
         }
 
-        internal DefaultArrayPool(int maxArrayLength, int maxArraysPerBucket)
+        internal ArrayPool(int maxArrayLength, int maxArraysPerBucket)
         {
             if (maxArrayLength <= 0)
             {
@@ -60,7 +60,21 @@ namespace Uno.Buffers
         /// <summary>Gets an ID for the pool to use with events.</summary>
         private int Id => GetHashCode();
 
-        public override T[] Rent(int minimumLength)
+		/// <summary>
+		/// Retrieves a buffer that is at least the requested length.
+		/// </summary>
+		/// <param name="minimumLength">The minimum length of the array needed.</param>
+		/// <returns>
+		/// An <see cref="T:T[]"/> that is at least <paramref name="minimumLength"/> in length.
+		/// </returns>
+		/// <remarks>
+		/// This buffer is loaned to the caller and should be returned to the same pool via 
+		/// <see cref="Return"/> so that it may be reused in subsequent usage of <see cref="Rent"/>.  
+		/// It is not a fatal error to not return a rented buffer, but failure to do so may lead to 
+		/// decreased application performance, as the pool may need to create a new buffer to replace
+		/// the one lost.
+		/// </remarks>
+		public T[] Rent(int minimumLength)
         {
             // Arrays can't be smaller than zero.  We allow requesting zero-length arrays (even though
             // pooling such an array isn't valuable) as it's a valid length array, and we want the pool
@@ -94,7 +108,7 @@ namespace Uno.Buffers
                         return buffer;
                     }
                 }
-                while (++i < _buckets.Length && i != index + MaxBucketsToTry);
+                while (++i < _buckets.Length && i < index + MaxBucketsToTry);
 
                 // The pool was exhausted for this buffer size.  Allocate a new buffer with a size corresponding
                 // to the appropriate bucket.
@@ -110,7 +124,27 @@ namespace Uno.Buffers
             return buffer;
         }
 
-        public override void Return(T[] array, bool clearArray = false)
+		/// <summary>
+		/// Returns to the pool an array that was previously obtained via <see cref="Rent"/> on the same 
+		/// <see cref="ArrayPool{T}"/> instance.
+		/// </summary>
+		/// <param name="array">
+		/// The buffer previously obtained from <see cref="Rent"/> to return to the pool.
+		/// </param>
+		/// <param name="clearArray">
+		/// If <c>true</c> and if the pool will store the buffer to enable subsequent reuse, <see cref="Return"/>
+		/// will clear <paramref name="array"/> of its contents so that a subsequent consumer via <see cref="Rent"/> 
+		/// will not see the previous consumer's content.  If <c>false</c> or if the pool will release the buffer,
+		/// the array's contents are left unchanged.
+		/// </param>
+		/// <remarks>
+		/// Once a buffer has been returned to the pool, the caller gives up all ownership of the buffer 
+		/// and must not use it. The reference returned from a given call to <see cref="Rent"/> must only be
+		/// returned via <see cref="Return"/> once.  The default <see cref="ArrayPool{T}"/>
+		/// may hold onto the returned buffer in order to rent it again, or it may release the returned buffer
+		/// if it's determined that the pool already has enough buffers stored.
+		/// </remarks>
+		public void Return(T[] array, bool clearArray = false)
         {
             if (array == null)
             {

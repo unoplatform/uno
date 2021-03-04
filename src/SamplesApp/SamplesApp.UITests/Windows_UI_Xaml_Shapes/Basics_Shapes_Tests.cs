@@ -5,8 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
@@ -16,35 +18,35 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Rectangle()
 			=> ValidateShape("Rectangle");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Ellipse()
 			=> ValidateShape("Ellipse");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Line()
 			=> ValidateShape("Line");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Polyline()
 			=> ValidateShape("Polyline");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Polygon()
 		{
@@ -153,8 +155,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 						}
 
 						using (var actual = (Bitmap)testResult)
-						{
-							var scale = 2.0;
+						{ 
+							var scale = _app.GetDisplayScreenScaling();
 							ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, ImageAssert.FirstQuadrant, scale, tolerance.Value);
 						}
 					}

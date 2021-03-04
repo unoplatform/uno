@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __MACOS__ || __SKIA__
+﻿#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -20,6 +20,11 @@ using NativeSingle = System.nfloat;
 #elif __SKIA__
 using _Color = Windows.UI.Color;
 using NativePath = Windows.UI.Composition.SkiaGeometrySource2D;
+using NativeSingle = System.Double;
+
+#elif __ANDROID__
+using _Color = Android.Graphics.Color;
+using NativePath = Android.Graphics.Path;
 using NativeSingle = System.Double;
 #endif
 
@@ -273,7 +278,7 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 
 				case Stretch.Fill:
-					size = userMaxSize.FiniteOrDefault(availableSize);
+					size = userMaxSize.FiniteOrDefault(availableSize.FiniteOrDefault(pathSize));
 					break;
 
 #if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
@@ -541,6 +546,8 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 #elif __SKIA__
 			Render(path, renderScale.x, renderScale.y, renderOrigin.x, renderOrigin.y);
+#elif __ANDROID__
+			Render(path, size, renderScale.x, renderScale.y, renderOrigin.x, renderOrigin.y);
 #endif
 
 			return size;
@@ -626,6 +633,11 @@ namespace Windows.UI.Xaml.Shapes
 				x = 1;
 				renderSize.Width = strokeThickness;
 			}
+			else if (double.IsInfinity(renderSize.Width))
+			{
+				x = 1;
+				renderSize.Width = geometrySize.Width;
+			}
 			else
 			{
 				x = (float)((renderSize.Width - strokeThickness) / geometrySize.Width);
@@ -634,6 +646,11 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				y = 1;
 				renderSize.Height = strokeThickness;
+			}
+			else if (double.IsInfinity(renderSize.Height))
+			{
+				y = 1;
+				renderSize.Height = geometrySize.Height;
 			}
 			else
 			{

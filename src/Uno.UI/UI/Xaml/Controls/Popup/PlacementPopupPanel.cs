@@ -5,6 +5,8 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.UI.Core;
+using Uno.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,40 +18,40 @@ namespace Windows.UI.Xaml.Controls
 	/// </remarks>
 	internal abstract partial class PlacementPopupPanel : PopupPanel
 	{
-		private static readonly Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>> PlacementsToTry =
-			new Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>>()
+		private static readonly Dictionary<FlyoutBase.MajorPlacementMode, Memory<FlyoutBase.MajorPlacementMode>> PlacementsToTry =
+			new Dictionary<FlyoutBase.MajorPlacementMode, Memory<FlyoutBase.MajorPlacementMode>>()
 			{
-				 {FlyoutPlacementMode.Top, new []
+				 {FlyoutBase.MajorPlacementMode.Top, new []
 				 {
-					 FlyoutPlacementMode.Top,
-					 FlyoutPlacementMode.Bottom,
-					 FlyoutPlacementMode.Left,
-					 FlyoutPlacementMode.Right,
-					 FlyoutPlacementMode.Full // last resort placement
+					 FlyoutBase.MajorPlacementMode.Top,
+					 FlyoutBase.MajorPlacementMode.Bottom,
+					 FlyoutBase.MajorPlacementMode.Left,
+					 FlyoutBase.MajorPlacementMode.Right,
+					 FlyoutBase.MajorPlacementMode.Top // use preferred choice if no others fit
 				 }},
-				 {FlyoutPlacementMode.Bottom, new []
+				 {FlyoutBase.MajorPlacementMode.Bottom, new []
 				 {
-					 FlyoutPlacementMode.Bottom,
-					 FlyoutPlacementMode.Top,
-					 FlyoutPlacementMode.Left,
-					 FlyoutPlacementMode.Right,
-					 FlyoutPlacementMode.Full // last resort placement
+					 FlyoutBase.MajorPlacementMode.Bottom,
+					 FlyoutBase.MajorPlacementMode.Top,
+					 FlyoutBase.MajorPlacementMode.Left,
+					 FlyoutBase.MajorPlacementMode.Right,
+					 FlyoutBase.MajorPlacementMode.Bottom // use preferred choice if no others fit
 				 }},
-				 {FlyoutPlacementMode.Left, new []
+				 {FlyoutBase.MajorPlacementMode.Left, new []
 				 {
-					 FlyoutPlacementMode.Left,
-					 FlyoutPlacementMode.Right,
-					 FlyoutPlacementMode.Top,
-					 FlyoutPlacementMode.Bottom,
-					 FlyoutPlacementMode.Full // last resort placement
+					 FlyoutBase.MajorPlacementMode.Left,
+					 FlyoutBase.MajorPlacementMode.Right,
+					 FlyoutBase.MajorPlacementMode.Top,
+					 FlyoutBase.MajorPlacementMode.Bottom,
+					 FlyoutBase.MajorPlacementMode.Left // use preferred choice if no others fit
 				 }},
-				 {FlyoutPlacementMode.Right, new []
+				 {FlyoutBase.MajorPlacementMode.Right, new []
 				 {
-					 FlyoutPlacementMode.Right,
-					 FlyoutPlacementMode.Left,
-					 FlyoutPlacementMode.Top,
-					 FlyoutPlacementMode.Bottom,
-					 FlyoutPlacementMode.Full // last resort placement
+					 FlyoutBase.MajorPlacementMode.Right,
+					 FlyoutBase.MajorPlacementMode.Left,
+					 FlyoutBase.MajorPlacementMode.Top,
+					 FlyoutBase.MajorPlacementMode.Bottom,
+					 FlyoutBase.MajorPlacementMode.Right // use preferred choice if no others fit
 				 }},
 			};
 
@@ -107,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
 			desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
 
-			if(PositionInAnchorControl is Point point)
+			if (PositionInAnchorControl is Point point)
 			{
 				return new Rect(
 					x: anchorRect.X + point.X,
@@ -117,9 +119,15 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Try all placements...
-			var placementsToTry = PlacementsToTry.TryGetValue(PopupPlacement, out var p)
+			var preferredPlacement = FlyoutBase.GetMajorPlacementFromPlacement(PopupPlacement);
+			var placementsToTry = PlacementsToTry.TryGetValue(preferredPlacement, out var p)
 				? p
-				: new[] { PopupPlacement };
+				: new[] { preferredPlacement };
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(PopupPlacement)} from PopupPlacement={PopupPlacement}, for desiredSize={desiredSize}, maxSize={maxSize}");
+			}
 
 			var halfAnchorWidth = anchorRect.Width / 2;
 			var halfAnchorHeight = anchorRect.Height / 2;
@@ -136,27 +144,27 @@ namespace Windows.UI.Xaml.Controls
 
 				switch (placement)
 				{
-					case FlyoutPlacementMode.Top:
+					case FlyoutBase.MajorPlacementMode.Top:
 						finalPosition = new Point(
-							x: Math.Max(anchorRect.Left + halfAnchorWidth - halfChildWidth, 0d),
-							y: Math.Max(anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height, 0d));
+							x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
+							y: anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height);
 						break;
-					case FlyoutPlacementMode.Bottom:
+					case FlyoutBase.MajorPlacementMode.Bottom:
 						finalPosition = new Point(
-							x: Math.Max(anchorRect.Left + halfAnchorWidth - halfChildWidth, 0d),
+							x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
 							y: anchorRect.Bottom + PopupPlacementTargetMargin);
 						break;
-					case FlyoutPlacementMode.Left:
+					case FlyoutBase.MajorPlacementMode.Left:
 						finalPosition = new Point(
-							x: Math.Max(anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width, 0d),
-							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
+							x: anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width,
+							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
 						break;
-					case FlyoutPlacementMode.Right:
+					case FlyoutBase.MajorPlacementMode.Right:
 						finalPosition = new Point(
 							x: anchorRect.Right + PopupPlacementTargetMargin,
-							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
+							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
 						break;
-					case FlyoutPlacementMode.Full:
+					case FlyoutBase.MajorPlacementMode.Full:
 						desiredSize = visibleBounds.Size.AtMost(maxSize);
 						finalPosition = new Point(
 							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
@@ -169,15 +177,131 @@ namespace Windows.UI.Xaml.Controls
 						break;
 				}
 
+				var justification = FlyoutBase.GetJustificationFromPlacementMode(PopupPlacement);
+
+				var fits = true;
+				if (PopupPlacement != FlyoutPlacementMode.Full)
+				{
+					if (IsPlacementModeVertical(placement))
+					{
+						var controlXPos = finalPosition.X;
+						fits = TestAndCenterAlignWithinLimits(
+							anchorRect.X,
+							anchorRect.Width,
+							desiredSize.Width,
+							visibleBounds.Left,
+							visibleBounds.Right,
+							justification,
+							ref controlXPos
+						);
+						finalPosition.X = controlXPos;
+					}
+					else
+					{
+						var controlYPos = finalPosition.Y;
+						fits = TestAndCenterAlignWithinLimits(
+							anchorRect.Y,
+							anchorRect.Height,
+							desiredSize.Height,
+							visibleBounds.Top,
+							visibleBounds.Bottom,
+							justification,
+							ref controlYPos
+						);
+						finalPosition.Y = controlYPos;
+					}
+				}
+
 				finalRect = new Rect(finalPosition, desiredSize);
 
-				if (RectHelper.Union(visibleBounds, finalRect).Equals(visibleBounds))
+				if (fits && RectHelper.Union(visibleBounds, finalRect).Equals(visibleBounds))
 				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Accepted placement {placement} (choice {i}) with finalRect={finalRect} in visibleBounds={visibleBounds}");
+					}
 					break; // this placement is acceptable
 				}
 			}
 
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Calculated placement, finalRect={finalRect}");
+			}
 			return finalRect;
+		}
+
+		// Return true if placement is along vertical axis, false otherwise.
+		private static bool IsPlacementModeVertical(
+			FlyoutBase.MajorPlacementMode placementMode)
+		{
+			// We are safe even if placementMode is Full. because the case for placementMode is Full has already been put in another if branch in function PerformPlacement.
+			// if necessary, we can add another function : IsPlacementModeHorizontal
+			return (placementMode == FlyoutBase.MajorPlacementMode.Top ||
+					placementMode == FlyoutBase.MajorPlacementMode.Bottom);
+		}
+
+		// Align centers of anchor and control while keeping control coordinates within limits.
+		private static bool TestAndCenterAlignWithinLimits(
+			double anchorPos,
+			double anchorSize,
+			double controlSize,
+			double lowLimit,
+			double highLimit,
+			FlyoutBase.PreferredJustification justification,
+			ref double controlPos
+		)
+		{
+			bool fits = true;
+
+			if (anchorSize == 0 && typeof(PlacementPopupPanel).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(PlacementPopupPanel).Log().LogWarning($"{nameof(anchorSize)} is 0");
+			}
+
+			if (controlSize == 0 && typeof(PlacementPopupPanel).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(PlacementPopupPanel).Log().LogWarning($"{nameof(anchorSize)} is 0");
+			}
+
+			if ((highLimit - lowLimit) > controlSize &&
+				anchorSize >= 0.0 &&
+				controlSize >= 0.0)
+			{
+
+				if (justification == FlyoutBase.PreferredJustification.Center)
+				{
+					controlPos = anchorPos + 0.5 * (anchorSize - controlSize);
+				}
+				else if (justification == FlyoutBase.PreferredJustification.Top || justification == FlyoutBase.PreferredJustification.Left)
+				{
+					controlPos = anchorPos;
+				}
+				else if (justification == FlyoutBase.PreferredJustification.Bottom || justification == FlyoutBase.PreferredJustification.Right)
+				{
+					controlPos = anchorPos + (anchorSize - controlSize);
+				}
+				else
+				{
+					throw new InvalidOperationException("Unsupported FlyoutBase.PreferredJustification");
+				}
+
+				if (controlPos < lowLimit)
+				{
+					controlPos = lowLimit;
+				}
+				else if (controlPos + controlSize > highLimit)
+				{
+					controlPos = highLimit - controlSize;
+				}
+			}
+			else
+			{
+				controlPos = lowLimit;
+				fits = false;
+			}
+
+			return fits;
 		}
 	}
 }

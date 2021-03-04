@@ -67,6 +67,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private IDisposable m_layoutUpdatedRevoker;
 		private IDisposable m_renderingToken;
 
+		private Rect _uno_viewportUsedInLastMeasure;
+
 		private bool HasScroller => m_scroller != null;
 
 		public ViewportManagerWithPlatformFeatures(ItemsRepeater owner)
@@ -255,7 +257,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_effectiveViewportChangedRevoker?.Dispose();
 			}
-			else if (m_effectiveViewportChangedRevoker == null)
+			else if (m_effectiveViewportChangedRevoker == null
+				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
+				&& m_owner.ItemsSourceView?.Count > 0)
 			{
 				m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 				{
@@ -287,6 +291,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// fire if you register during arrange.
 			// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 			EnsureScroller();
+
+			// Uno workaround: Perf
+			_uno_viewportUsedInLastMeasure = m_visibleWindow;
 		}
 
 		public override void OnOwnerArranged()
@@ -489,6 +496,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ResetScrollers();
 
+				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
+				if (m_owner.ItemsSourceView?.Count <= 0)
+				{
+					return;
+				}
+
 				var parent = CachedVisualTreeHelpers.GetParent(m_owner);
 				while (parent != null)
 				{
@@ -501,13 +514,20 @@ namespace Microsoft.UI.Xaml.Controls
 					parent = CachedVisualTreeHelpers.GetParent(parent);
 				}
 
+				/*
+				Uno workaround:
+					This a workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/2349.
+					While this bugs occurs only for `Popup` on WinUI, it might occurs even in the "main" visual tree on uno.
+					The reason is that they do have a `ScrollViewer` at the root of the app on WinUI (to support the SIP), but we don't in Uno.
+
 				if (m_scroller == null)
 				{
 					// We usually update the viewport in the post arrange handler. But, since we don't have
 					// a scroller, let's do it now.
 					UpdateViewport(new Rect( ));
 				}
-				else if (!m_managingViewportDisabled)
+				else*/
+				if (!m_managingViewportDisabled)
 				{
 					m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 					{
@@ -523,7 +543,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void UpdateViewport(Rect viewport)
 		{
-			global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+			// Disabled for non-virtualizing layout in RadioButtons, may need to be revisited (https://github.com/unoplatform/uno/issues/4752)
+			// global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+
 			var previousVisibleWindow = m_visibleWindow;
 			REPEATER_TRACE_INFO("%ls: \tEffective Viewport: (%.0f,%.0f,%.0f,%.0f).(%.0f,%.0f,%.0f,%.0f). \n",
 				GetLayoutId(),
@@ -548,7 +570,14 @@ namespace Microsoft.UI.Xaml.Controls
 				m_visibleWindow = currentVisibleWindow;
 			}
 
-			TryInvalidateMeasure();
+			// Uno workaround [BEGIN]: For perf considerations, do not invalidate the tree on each viewport update
+			// (Viewport updates are quite frequent, this would cause lot of unnecessary layout pass which would impact scroll perf, especially on Android).
+			if (m_owner.Layout is VirtualizingLayout vl // If not a VirtualizingLayout, we actually don't have to re-measure items!
+				&& vl.IsSignificantViewportChange(_uno_viewportUsedInLastMeasure, m_visibleWindow))
+			// Uno workaround [END]
+			{
+				TryInvalidateMeasure();
+			}
 		}
 
 		void ResetCacheBuffer()
@@ -590,13 +619,26 @@ namespace Microsoft.UI.Xaml.Controls
 		void TryInvalidateMeasure()
 		{
 			// Don't invalidate measure if we have an invalid window.
-			if (m_visibleWindow != new Rect())
+			if (m_visibleWindow != new Rect()
+				// Uno workaround: [Perf] Do not invalidate measure if nothing to render!
+				&& m_owner.ItemsSourceView?.Count > 0)
 			{
 				// We invalidate measure instead of just invalidating arrange because
 				// we don't invalidate measure in UpdateViewport if the view is changing to
 				// avoid layout cycles.
 				REPEATER_TRACE_INFO("%ls: \tInvalidating measure due to viewport change. \n", GetLayoutId());
+#if __ANDROID__
+				// Uno workaround:
+				// This method is mainly used by the UpdateViewport but also the OnLayoutUpdated.
+				// Both are usually being invoked while in the Arrange phase, but on Android we cannot invalidate the layout while arranging it,
+				// we have to defer the invalidate.
+				// Note: We use RunAnimation to get it as soon as possible.
+				// Note: UpdateViewport might also be invoked on Load, but in that case we expect either the viewport to not change,
+				//		 either the layout is pending anyway, so we should not have an extra useless layout pass.
+				m_owner.Dispatcher.RunAnimation(() => m_owner.InvalidateMeasure());
+#else
 				m_owner.InvalidateMeasure();
+#endif
 			}
 		}
 

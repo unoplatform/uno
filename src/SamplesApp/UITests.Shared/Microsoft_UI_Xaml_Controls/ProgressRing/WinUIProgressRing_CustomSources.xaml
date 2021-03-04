@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIProgressRing_CustomSources"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ProgressRing"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<Page.Resources>
+		<lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/squirrel.json" x:Key="SquirrelAnimation"/>
+		<lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/acrobat.json" x:Key="AcrobatAnimation"/>
+	</Page.Resources>
+	<StackPanel Margin="50">
+		<TextBlock Text="Indeterminate"/>
+		<muxc:ProgressRing IsActive="True"
+						   IndeterminateSource="{StaticResource SquirrelAnimation}"/>
+		<muxc:ProgressRing IsActive="True"
+						   IndeterminateSource="{StaticResource AcrobatAnimation}"/>
+		<TextBlock Text="Determinate"/>
+		<muxc:ProgressRing IsIndeterminate="False"
+						   IsActive="True"
+						   DeterminateSource="{StaticResource SquirrelAnimation}"
+						    Value="{Binding Value, ElementName=progressSlider}"
+							Minimum="0"
+							Maximum="100"/>
+		<muxc:ProgressRing IsIndeterminate="False"
+						   IsActive="True"
+						   DeterminateSource="{StaticResource AcrobatAnimation}"
+						   Value="{Binding Value, ElementName=progressSlider}"
+							Minimum="0"
+							Maximum="100"/>
+		<Slider x:Name="progressSlider"
+					Minimum="0"
+					Maximum="100"
+					HorizontalAlignment="Left"
+					Width="250"
+					Margin="0,10" />
+	</StackPanel>
+</Page>

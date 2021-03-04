@@ -107,8 +107,14 @@ namespace Windows.Foundation
 			}
 
 			var parts = text
-				.Split(new[] { ',' })
+				.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
 				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
+
+			if(parts.Length != 4)
+			{
+				throw new ArgumentException(
+					"Cannot create a Rect from " + text + ": needs 4 parts separated by a comma or a space.");
+			}
 
 			return new Rect
 			(
@@ -135,7 +141,7 @@ namespace Windows.Foundation
 		public override string ToString() => (string)this;
 
 		internal string ToDebugString()
-			=> FormattableString.Invariant($"{Width:F2},{Height:F2}@{Location.ToDebugString()}");
+			=> IsEmpty ? "--empty--" : FormattableString.Invariant($"{Size.ToDebugString()}@{Location.ToDebugString()}");
 
 		/// <summary>
 		/// Provides the size of this rectangle.
@@ -247,7 +253,7 @@ namespace Windows.Foundation
 				&& value.Width == Width
 				&& value.Height == Height;
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 
 		public static bool operator ==(Rect left, Rect right) => left.Equals(right);

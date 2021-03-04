@@ -17,7 +17,7 @@ namespace Windows.System
 
 		public static Task<bool> LaunchUriAsync(Uri uri)
 		{
-#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
+#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__ || __SKIA__
 
 			if (uri == null)
 			{

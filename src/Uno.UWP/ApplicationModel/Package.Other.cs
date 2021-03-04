@@ -27,9 +27,9 @@ namespace Windows.ApplicationModel
 
 		private string GetInstalledLocation()
 		{
-			if (Assembly.GetEntryAssembly() is Assembly assembly)
+			if (!string.IsNullOrEmpty(AppContext.BaseDirectory))
 			{
-				return global::System.IO.Path.GetDirectoryName(new Uri(assembly.Location).LocalPath);
+				return global::System.IO.Path.GetDirectoryName(AppContext.BaseDirectory) ?? "";
 			}
 			else
 			{

@@ -18,13 +18,13 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
+			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
 			if (!DesignTimeHelper.IsDesignTime(context))
 			{
-				DependenciesInitializer.Init(context);
 
 				var visitor = new SerializationMethodsGenerator(context);
 				visitor.Visit(context.Compilation.SourceModule);
@@ -141,7 +141,7 @@ namespace {0}
 				{
 					var nativeCtor = typeSymbol
 						.GetMethods()
-						.Where(m => m.MethodKind == MethodKind.Constructor && Equals(m.Parameters.FirstOrDefault()?.Type, _intPtrSymbol))
+						.Where(m => m.MethodKind == MethodKind.Constructor && SymbolEqualityComparer.Default.Equals(m.Parameters.FirstOrDefault()?.Type, _intPtrSymbol))
 						.FirstOrDefault();
 					
 					if (nativeCtor == null)

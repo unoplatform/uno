@@ -20,7 +20,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
-
+    
+  - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
@@ -31,6 +32,13 @@ jobs:
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+  # Apply workaround for https://github.com/xamarin/xamarin-macios/issues/10652
+  - bash: |
+        curl -o xamarinmac.pkg 'https://bosstoragemirror.blob.core.windows.net/wrench/xcode12.4/a4c70e7d04e3904d17aa60f6d640eb048081c757/4477741/package/notarized/xamarin.mac-7.4.0.10.pkg'
+        sudo installer -pkg xamarinmac.pkg -target /
+
+    displayName: Apply Xamarin.mac workaround
 
   - task: NuGetToolInstaller@0
     inputs:

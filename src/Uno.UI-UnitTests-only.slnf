@@ -2,6 +2,7 @@
   "solution": {
     "path": "Uno.UI.sln",
     "projects": [
+      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
       "SourceGenerators\\System.Xaml.Tests\\Uno.Xaml.Tests.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Tests\\Uno.UI.SourceGenerators.Tests.csproj",
@@ -10,6 +11,7 @@
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
+      "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
       "Uno.UI.Tests\\Uno.UI.Tests.csproj",
       "Uno.UI\\Uno.UI.csproj",

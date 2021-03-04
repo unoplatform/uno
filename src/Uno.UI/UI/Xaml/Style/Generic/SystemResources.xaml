@@ -81,9 +81,6 @@
 			<x:Double x:Key="ContentDialogButtonMaxWidth">202</x:Double>
 			<x:Double x:Key="ContentDialogButtonHeight">32</x:Double>
 			<x:Double x:Key="ContentDialogTitleMaxHeight">56</x:Double>
-			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
 			<x:Double x:Key="GridViewItemSelectedBorderThemeThickness">4</x:Double>
 			<x:Double x:Key="HubHeaderThemeFontSize">34</x:Double>
 			<x:Double x:Key="HubSectionHeaderThemeFontSize">20</x:Double>
@@ -179,7 +176,6 @@
 			<Thickness x:Key="ContentDialogContentMargin">24,0,24,0</Thickness>
 			<Thickness x:Key="ContentDialogContentScrollViewerMargin">0,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogTitleMargin">24,18,24,0</Thickness>
-			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,8</Thickness>
 			<Thickness x:Key="DateTimeFlyoutBorderThickness">1</Thickness>
 			<Thickness x:Key="DateTimeFlyoutButtonBorderThickness">0</Thickness>
 			<Thickness x:Key="DateTimeFlyoutContentPanelPortraitThemeMargin">0,37,0,0</Thickness>
@@ -231,7 +227,6 @@
 			<Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
 			<FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="ComboBoxPlaceholderTextThemeFontWeight">SemiLight</FontWeight>
-			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="PivotHeaderItemThemeFontWeight">SemiLight</FontWeight>
 			<FontWeight x:Key="PivotTitleThemeFontWeight">Bold</FontWeight>
 			<FontWeight x:Key="SearchBoxButtonThemeFontWeight">Normal</FontWeight>
@@ -312,6 +307,13 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+			
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
 
 			<!--
     ******************************************************************
@@ -607,8 +609,6 @@
 			<SolidColorBrush x:Key="ContentDialogBorderThemeBrush" Color="{ThemeResource SystemAccentColor}" />
 			<SolidColorBrush x:Key="ContentDialogContentForegroundBrush" Color="Black" />
 			<SolidColorBrush x:Key="ContentDialogDimmingThemeBrush" Color="#99FFFFFF" />
-			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
-			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource SystemBaseHighColor}" />
 			<SolidColorBrush x:Key="FlipViewButtonBackgroundThemeBrush" Color="#59D5D5D5" />
 			<SolidColorBrush x:Key="FlipViewButtonBorderThemeBrush" Color="#59D5D5D5" />
@@ -1111,7 +1111,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}" />
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
@@ -1376,9 +1376,6 @@
 			<x:Double x:Key="ContentDialogButtonMaxWidth">202</x:Double>
 			<x:Double x:Key="ContentDialogButtonHeight">32</x:Double>
 			<x:Double x:Key="ContentDialogTitleMaxHeight">56</x:Double>
-			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
 			<x:Double x:Key="GridViewItemSelectedBorderThemeThickness">4</x:Double>
 			<x:Double x:Key="HubHeaderThemeFontSize">34</x:Double>
 			<x:Double x:Key="HubSectionHeaderThemeFontSize">20</x:Double>
@@ -1474,7 +1471,6 @@
 			<Thickness x:Key="ContentDialogContentMargin">24,0,24,0</Thickness>
 			<Thickness x:Key="ContentDialogContentScrollViewerMargin">0,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogTitleMargin">24,18,24,0</Thickness>
-			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,8</Thickness>
 			<Thickness x:Key="DateTimeFlyoutBorderThickness">1</Thickness>
 			<Thickness x:Key="DateTimeFlyoutButtonBorderThickness">0</Thickness>
 			<Thickness x:Key="DateTimeFlyoutContentPanelPortraitThemeMargin">0,37,0,0</Thickness>
@@ -1526,7 +1522,6 @@
 			<Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
 			<FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="ComboBoxPlaceholderTextThemeFontWeight">SemiLight</FontWeight>
-			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="PivotHeaderItemThemeFontWeight">SemiLight</FontWeight>
 			<FontWeight x:Key="PivotTitleThemeFontWeight">Bold</FontWeight>
 			<FontWeight x:Key="SearchBoxButtonThemeFontWeight">Normal</FontWeight>
@@ -1606,6 +1601,14 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
+
 			<!--
     ******************************************************************
     DEFAULT COMMON CONTROL COLORS
@@ -1899,8 +1902,6 @@
 			<SolidColorBrush x:Key="ContentDialogBorderThemeBrush" Color="{ThemeResource SystemAccentColor}" />
 			<SolidColorBrush x:Key="ContentDialogContentForegroundBrush" Color="Black" />
 			<SolidColorBrush x:Key="ContentDialogDimmingThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
-			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
-			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
 			<SolidColorBrush x:Key="FlipViewButtonBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 			<SolidColorBrush x:Key="FlipViewButtonBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
@@ -2392,7 +2393,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></xamarin:SolidColorBrush> <!-- TODO: Uno specific - should fall back to SystemColorWindowColor in HighContrast-->
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
@@ -2658,9 +2659,6 @@
 			<x:Double x:Key="ContentDialogButtonMaxWidth">202</x:Double>
 			<x:Double x:Key="ContentDialogButtonHeight">32</x:Double>
 			<x:Double x:Key="ContentDialogTitleMaxHeight">56</x:Double>
-			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
 			<x:Double x:Key="GridViewItemSelectedBorderThemeThickness">4</x:Double>
 			<x:Double x:Key="HubHeaderThemeFontSize">34</x:Double>
 			<x:Double x:Key="HubSectionHeaderThemeFontSize">20</x:Double>
@@ -2756,7 +2754,6 @@
 			<Thickness x:Key="ContentDialogContentMargin">24,0,24,0</Thickness>
 			<Thickness x:Key="ContentDialogContentScrollViewerMargin">0,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogTitleMargin">24,18,24,0</Thickness>
-			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,8</Thickness>
 			<Thickness x:Key="DateTimeFlyoutBorderThickness">1</Thickness>
 			<Thickness x:Key="DateTimeFlyoutButtonBorderThickness">0</Thickness>
 			<Thickness x:Key="DateTimeFlyoutContentPanelPortraitThemeMargin">0,37,0,0</Thickness>
@@ -2808,7 +2805,6 @@
 			<Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
 			<FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="ComboBoxPlaceholderTextThemeFontWeight">SemiLight</FontWeight>
-			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="PivotHeaderItemThemeFontWeight">SemiLight</FontWeight>
 			<FontWeight x:Key="PivotTitleThemeFontWeight">Bold</FontWeight>
 			<FontWeight x:Key="SearchBoxButtonThemeFontWeight">Normal</FontWeight>
@@ -2888,6 +2884,13 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
+			
+			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+			<x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
 
 			<!--
     ******************************************************************
@@ -3181,8 +3184,6 @@
 			<SolidColorBrush x:Key="ContentDialogBorderThemeBrush" Color="{ThemeResource SystemAccentColor}" />
 			<SolidColorBrush x:Key="ContentDialogContentForegroundBrush" Color="Black" />
 			<SolidColorBrush x:Key="ContentDialogDimmingThemeBrush" Color="#99FFFFFF" />
-			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="#FF000000" />
-			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="Black" />
 			<SolidColorBrush x:Key="FlipViewButtonBackgroundThemeBrush" Color="#59D5D5D5" />
 			<SolidColorBrush x:Key="FlipViewButtonBorderThemeBrush" Color="#59D5D5D5" />
@@ -3684,7 +3685,7 @@
 
 			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
 			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="White"></xamarin:SolidColorBrush>
+			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></xamarin:SolidColorBrush>
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />

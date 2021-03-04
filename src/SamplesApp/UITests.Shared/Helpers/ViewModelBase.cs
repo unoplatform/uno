@@ -12,6 +12,7 @@ using Windows.UI.Core;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Samples.UITests.Helpers
 {
@@ -24,6 +25,10 @@ namespace Uno.UI.Samples.UITests.Helpers
 
 		protected readonly CompositeDisposable Disposables = new CompositeDisposable();
 		protected readonly CancellationToken CT;
+
+		public ViewModelBase() : this(CoreWindow.GetForCurrentThread().Dispatcher)
+		{
+		}
 
 		public ViewModelBase(CoreDispatcher dispatcher)
 		{

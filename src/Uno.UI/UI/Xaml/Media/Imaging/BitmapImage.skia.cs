@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Windows.Foundation;
@@ -14,14 +15,16 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
-		private protected override bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
+		private const int MIN_DIMENSION_SYNC_LOADING = 100;
+
+		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
-			asyncImage = TryOpenSourceAsync(targetWidth, targetHeight);
+			asyncImage = TryOpenSourceAsync(ct, targetWidth, targetHeight);
 
 			return true;
 		}
 
-		private async Task<ImageData> TryOpenSourceAsync(int? targetWidth, int? targetHeight)
+		private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight)
 		{
 			var surface = new SkiaCompositionSurface();
 
@@ -31,27 +34,24 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					if (UriSource.Scheme == "http" || UriSource.Scheme == "https")
 					{
-
 						var client = new HttpClient();
-						var response = await client.GetAsync(UriSource);
-
+						var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
 						var imageStream = await response.Content.ReadAsStreamAsync();
+
 						return OpenFromStream(targetWidth, targetHeight, surface, imageStream);
 					}
 					else if (UriSource.Scheme == "ms-appx")
 					{
 						var path = UriSource.PathAndQuery;
-
 						var filePath = GetScaledPath(path);
-
 						using var fileStream = File.OpenRead(filePath);
 
 						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
 					}
 				}
-				else if (Stream != null)
+				else if (_stream != null)
 				{
-					return OpenFromStream(targetWidth, targetHeight, surface, Stream);
+					return OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
 				}
 			}
 			catch (Exception e)
@@ -78,18 +78,21 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			if(Stream != null &&
-				targetWidth is int width && targetHeight is int height && height < 100 && width < 100)
+			if(_stream != null &&
+				targetWidth is { } width &&
+				targetHeight is { } height &&
+				height < MIN_DIMENSION_SYNC_LOADING &&
+				width < MIN_DIMENSION_SYNC_LOADING)
 			{
 				var surface = new SkiaCompositionSurface();
-				image = OpenFromStream(targetWidth, targetHeight, surface, Stream);
+				image = OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
 				return image.Value != null;
 			}
 
 			return base.TryOpenSourceSync(targetWidth, targetHeight, out image);
 		}
 
-		private static int[] KnownScales =
+		private static readonly int[] KnownScales =
 		{
 			(int)ResolutionScale.Scale100Percent,
 			(int)ResolutionScale.Scale120Percent,

@@ -1,4 +1,6 @@
-﻿using System;
+﻿// #define TRACK_REFS
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
@@ -22,7 +24,7 @@ using System.IO;
 using Windows.UI.Popups;
 using Uno.Disposables;
 
-#if XAMARIN || NETSTANDARD2_0
+#if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
@@ -51,7 +53,7 @@ namespace SampleControl.Presentation
 		private List<SampleChooserCategory> _categories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
-#if !NETSTANDARD2_0
+#if !UNO_REFERENCE_API
 		private readonly string SampleChooserFileAddress = "SampleChooserFileAddress.";
 #endif
 
@@ -77,6 +79,10 @@ namespace SampleControl.Presentation
 		public SampleChooserViewModel()
 		{
 			Instance = this;
+
+#if TRACK_REFS
+			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
+#endif
 
 #if HAS_UNO
 			// Disable all pooling so that controls get collected quickly.
@@ -274,7 +280,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
-#if XAMARIN
+#if TRACK_REFS
 				var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
 				var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
@@ -312,7 +318,7 @@ namespace SampleControl.Presentation
 				{
 					try
 					{
-#if XAMARIN
+#if TRACK_REFS
 						var inactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
 						var activeStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
@@ -349,9 +355,17 @@ namespace SampleControl.Presentation
 							this.Log().Error($"Failed to execute test for {fileName}", e);
 						}
 
-#if XAMARIN
+#if TRACK_REFS
 						Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(inactiveStats);
 						Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(activeStats);
+#endif
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Initial diff");
+						}
+#if TRACK_REFS
+						Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
+						Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
 #endif
 					}
 					catch (Exception e)
@@ -370,7 +384,7 @@ namespace SampleControl.Presentation
 					this.Log().Debug($"Final binder reference stats");
 				}
 
-#if XAMARIN
+#if TRACK_REFS
 				Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
 				Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
 #endif
@@ -590,7 +604,8 @@ namespace SampleControl.Presentation
 					ViewModelType = attribute.ViewModelType,
 					Description = attribute.Description,
 					ControlType = type.AsType(),
-					IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests
+					IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
+					IsManualTest = attribute.IsManualTest
 				};
 		}
 
@@ -780,7 +795,9 @@ description:
 				{
 					void Dispose(object snd, RoutedEventArgs e)
 					{
+						container.DataContext = null;
 						container.Unloaded -= Dispose;
+						container.DataContext = null;
 						disposable.Dispose();
 					}
 
@@ -845,7 +862,7 @@ description:
 		{
 			var q = from category in _categories
 					from test in category.SamplesContent
-					where !test.IgnoreInSnapshotTests
+					where !test.IgnoreInSnapshotTests && !test.IsManualTest
 					select test.ControlType.FullName;
 
 			return string.Join(";", q.Distinct());
@@ -888,7 +905,7 @@ description:
 
 		private async Task Set<T>(string key, T value)
 		{
-#if !NETSTANDARD2_0
+#if !UNO_REFERENCE_API
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
 			ApplicationData.Current.LocalSettings.Values[key] = json;
 #endif
@@ -896,7 +913,7 @@ description:
 
 		private async Task<T> Get<T>(string key, Func<T> d = null)
 		{
-#if !NETSTANDARD2_0
+#if !UNO_REFERENCE_API
 			var json = (string)ApplicationData.Current.LocalSettings.Values[key];
 			return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
 #else
@@ -906,7 +923,7 @@ description:
 
 		private async Task SetFile<T>(string key, T value)
 		{
-#if !NETSTANDARD2_0
+#if !UNO_REFERENCE_API
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
 
 			using (await _fileLock.LockAsync(CancellationToken.None))
@@ -926,7 +943,7 @@ description:
 
 		private async Task<T> GetFile<T>(string key, Func<T> defaultValue = null)
 		{
-#if !NETSTANDARD2_0
+#if !UNO_REFERENCE_API
 			string json = null;
 
 			using (await _fileLock.LockAsync(CancellationToken.None))

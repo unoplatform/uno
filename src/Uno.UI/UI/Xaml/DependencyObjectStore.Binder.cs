@@ -30,6 +30,7 @@ namespace Windows.UI.Xaml
 	{
 		private delegate void DataContextProviderAction(IDataContextProvider provider);
 		private delegate void ObjectAction(object instance);
+		internal delegate bool DefaultValueProvider(DependencyProperty property, out object defaultValue);
 
 		private readonly object _gate = new object();
 
@@ -105,10 +106,21 @@ namespace Windows.UI.Xaml
 					provider.Store.SetInheritedDataContext(inheritedValue);
 				}
 			}
-
 			for (int i = 0; i < _childrenBindable.Count; i++)
 			{
 				var child = _childrenBindable[i];
+				var parent = child?.GetParent();
+
+				//Do not propagate value if you are not this child's parent
+				//Covers case where a child may hold a binding to a view higher up the tree
+				//Example: Button A contains a Flyout with Button B inside of it
+				//	Button B has a binding to the Flyout itself
+				//	We should not propagate Button B's DataContext to the Flyout
+				//	since its real parent is actually Button A 
+				if (parent != null && parent != ActualInstance)
+				{
+					continue;
+				}
 
 				if (child is IDependencyObjectStoreProvider provider)
 				{
@@ -119,16 +131,28 @@ namespace Windows.UI.Xaml
 					// The property value may be an enumerable of providers
 					var isValidEnumerable = !(child is string);
 
-					if (
-						isValidEnumerable
-						&& child is IEnumerable enumerable
-					)
+					if (isValidEnumerable)
 					{
-						foreach (var item in enumerable)
+						if (child is IList list)
 						{
-							if (item is IDependencyObjectStoreProvider provider2)
+							// Special case for IList where the child may not be enumerable
+
+							for (int childIndex = 0; childIndex < list.Count; childIndex++)
 							{
-								SetInherited(provider2);
+								if (list[childIndex] is IDependencyObjectStoreProvider provider2)
+								{
+									SetInherited(provider2);
+								}
+							}
+						}
+						else if (child is IEnumerable enumerable)
+						{
+							foreach (var item in enumerable)
+							{
+								if (item is IDependencyObjectStoreProvider provider2)
+								{
+									SetInherited(provider2);
+								}
 							}
 						}
 					}
@@ -374,7 +398,7 @@ namespace Windows.UI.Xaml
 			if (fullBinding != null)
 			{
 				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty) 
-					?? FindStandardProperty(_originalObjectType, dependencyProperty);
+					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.CompiledSource != null);
 
 				if (boundProperty != null)
 				{
@@ -390,9 +414,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Finds a DependencyProperty for the specified C# property
 		/// </summary>
-		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty)
+		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty, bool allowPrivateMembers)
 		{
-			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty);
+			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty, allowPrivateMembers);
 
 			if (propertyType != null)
 			{
@@ -427,7 +451,12 @@ namespace Windows.UI.Xaml
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
 
-			if(property != null)
+			if(property == null && propertyName != null)
+			{
+				property = FindStandardProperty(_originalObjectType, propertyName, false);
+			}
+
+			if (property != null)
 			{
 				SetBindingValue(value, property);
 			}
@@ -451,6 +480,11 @@ namespace Windows.UI.Xaml
 		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object value)
 		{
 			_properties.SetSourceValue(propertyDetails, value);
+		}
+
+		internal void RegisterDefaultValueProvider(DefaultValueProvider provider)
+		{
+			_properties.RegisterDefaultValueProvider(provider);
 		}
 
 		/// <summary>

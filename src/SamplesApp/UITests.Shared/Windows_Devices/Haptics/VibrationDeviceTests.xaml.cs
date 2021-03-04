@@ -109,7 +109,7 @@ namespace UITests.Windows_Devices.Haptics
 			}
 		}
 
-		private static SimpleHapticsControllerFeedback FindFeedback(SimpleHapticsController controller, ushort type) =>
+		private static SimpleHapticsControllerFeedback? FindFeedback(SimpleHapticsController controller, ushort type) =>
 			controller.SupportedFeedback.FirstOrDefault(feedback => feedback.Waveform == type);
 	}
 }

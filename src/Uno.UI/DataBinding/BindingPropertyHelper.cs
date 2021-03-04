@@ -53,7 +53,7 @@ namespace Uno.UI.DataBinding
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getSubstituteValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler> _getValueUnsetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string>, bool> _isEvent = new Dictionary<CachedTuple<Type, string>, bool>(CachedTuple<Type, string>.Comparer);
-		private static Dictionary<CachedTuple<Type, string>, Type?> _getPropertyType = new Dictionary<CachedTuple<Type, string>, Type?>(CachedTuple<Type, string>.Comparer);
+		private static Dictionary<CachedTuple<Type, string, bool>, Type?> _getPropertyType = new Dictionary<CachedTuple<Type, string, bool>, Type?>(CachedTuple<Type, string, bool>.Comparer);
 
 		static BindingPropertyHelper()
 		{
@@ -96,9 +96,9 @@ namespace Uno.UI.DataBinding
 			return result;
 		}
 
-		public static Type? GetPropertyType(Type type, string property)
+		public static Type? GetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
-			var key = CachedTuple.Create(type, property);
+			var key = CachedTuple.Create(type, property, allowPrivateMembers);
 
 			Type? result;
 
@@ -106,7 +106,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (!_getPropertyType.TryGetValue(key, out result))
 				{
-					_getPropertyType.Add(key, result = InternalGetPropertyType(type, property));
+					_getPropertyType.Add(key, result = InternalGetPropertyType(type, property, allowPrivateMembers));
 				}
 			}
 
@@ -227,7 +227,7 @@ namespace Uno.UI.DataBinding
 #endif
 		}
 
-		private static Type? InternalGetPropertyType(Type type, string property)
+		private static Type? InternalGetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
 			if(type == typeof(UnsetValue))
 			{
@@ -301,6 +301,16 @@ namespace Uno.UI.DataBinding
 					if (propertyInfo != null)
 					{
 						return propertyInfo.PropertyType;
+					}
+
+					// Look for a field (permitted for x:Bind only)
+					if (allowPrivateMembers)
+					{
+						var fieldInfo = GetFieldInfo(type, property, true);
+						if (fieldInfo != null)
+						{
+							return fieldInfo.FieldType;
+						}
 					}
 
 					// Look for an attached property

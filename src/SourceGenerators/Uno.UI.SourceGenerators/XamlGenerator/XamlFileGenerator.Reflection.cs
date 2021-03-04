@@ -33,7 +33,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>> _getEventsForType;
 		private Func<INamedTypeSymbol, string[]> _findLocalizableDeclaredProperties;
 		private (string ns, string className) _className;
-		private bool _hasLiteralEventsRegistration = false;
 		private string[] _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
@@ -119,7 +118,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						break;
 					}
 
-				} while (!Equals(type, _objectSymbol));
+				} while (!SymbolEqualityComparer.Default.Equals(type, _objectSymbol));
 			}
 
 			return false;
@@ -129,26 +128,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var type = FindType(xamlType);
 
-			if (type != null)
+			return IsType(type, typeSymbol);
+		}
+
+		private bool IsType(INamedTypeSymbol namedTypeSymbol, ISymbol typeSymbol)
+		{
+			if (namedTypeSymbol != null)
 			{
 				do
 				{
-					if (Equals(type, typeSymbol))
+					if (SymbolEqualityComparer.Default.Equals(namedTypeSymbol, typeSymbol))
 					{
 						return true;
 					}
 
-					type = type.BaseType;
+					namedTypeSymbol = namedTypeSymbol.BaseType;
 
-					if (type == null)
+					if (namedTypeSymbol == null)
 					{
 						break;
 					}
 
-				} while (!Equals(type, _objectSymbol));
+				} while (!SymbolEqualityComparer.Default.Equals(namedTypeSymbol, _objectSymbol));
 			}
 
 			return false;
+		}
+
+		private bool IsType(string stringType, ISymbol typeSymbol)
+		{
+			var type = FindType(stringType);
+
+			return IsType(type, typeSymbol);
 		}
 
 		public bool HasProperty(XamlType xamlType, string propertyName)
@@ -190,7 +201,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsImplementingInterface(INamedTypeSymbol symbol, INamedTypeSymbol interfaceName)
 		{
 			bool isSameType(INamedTypeSymbol source, INamedTypeSymbol iface) =>
-				Equals(source, iface) || Equals(source.OriginalDefinition, iface);
+				SymbolEqualityComparer.Default.Equals(source, iface) || SymbolEqualityComparer.Default.Equals(source.OriginalDefinition, iface);
 
 			if (symbol != null)
 			{
@@ -251,19 +262,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, XamlConstants.Types.FrameworkElement);
 		}
 
+		private bool IsDependencyObject(XamlType xamlType)
+		{
+			return IsType(xamlType, _dependencyObjectSymbol);
+		}
+
 		private bool IsAndroidView(XamlType xamlType)
 		{
-			return IsType(xamlType, "Android.Views.View");
+			return IsType(xamlType, _androidViewSymbol);
 		}
 
 		private bool IsIOSUIView(XamlType xamlType)
 		{
-			return IsType(xamlType, "UIKit.UIView");
+			return IsType(xamlType, _iOSViewSymbol);
 		}
 
 		private bool IsMacOSNSView(XamlType xamlType)
 		{
-			return IsType(xamlType, "AppKit.NSView");
+			return IsType(xamlType, _appKitViewSymbol);
 		}
 
 		/// <summary>
@@ -275,7 +291,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
 		/// FrameworkElement is valid too)
 		/// </summary>
-		private bool IsManagedViewBaseType(INamedTypeSymbol targetType) => Equals(targetType, _uiElementSymbol) || Equals(targetType, _frameworkElementSymbol);
+		private bool IsManagedViewBaseType(INamedTypeSymbol targetType) => SymbolEqualityComparer.Default.Equals(targetType, _uiElementSymbol) || SymbolEqualityComparer.Default.Equals(targetType, _frameworkElementSymbol);
 
 		private bool IsTransform(XamlType xamlType)
 		{
@@ -662,10 +678,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
 		{
-			return Equals(type, _iCollectionSymbol)
-				|| Equals(type.OriginalDefinition, _iCollectionOfTSymbol)
-				|| Equals(type, _iListSymbol)
-				|| Equals(type.OriginalDefinition, _iListOfTSymbol);
+			return SymbolEqualityComparer.Default.Equals(type, _iCollectionSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, _iCollectionOfTSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _iListSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, _iListOfTSymbol);
 		}
 
 		/// <summary>

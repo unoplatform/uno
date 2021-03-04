@@ -1,14 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../netcore-build.props"/>
+	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 		
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
@@ -19,9 +22,10 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core.Build" />
 		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 		<Reference Include="System.Xml" />
@@ -43,13 +47,13 @@
 		</Compile>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(_IsNetStd) or $(IsXamarinMac)">
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" />

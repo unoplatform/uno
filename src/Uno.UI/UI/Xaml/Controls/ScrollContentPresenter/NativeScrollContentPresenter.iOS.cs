@@ -33,6 +33,12 @@ namespace Windows.UI.Xaml.Controls
 		internal NativeScrollContentPresenter(ScrollViewer scroller) : this()
 		{
 			_scrollViewer = new WeakReference<ScrollViewer>(scroller);
+
+			// Because the arrange pass is asynchronous on iOS, this is required for the ScrollViewer to get up-to-date viewport dimensions
+			SizeChanged += (_, __) =>
+			{
+				GetParentScrollViewer()?.UpdateDimensionProperties();
+			};
 		}
 
 		public NativeScrollContentPresenter()
@@ -50,6 +56,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Never;
 			}
+
+			IFrameworkElementHelper.Initialize(this);
 		}
 
 		private void OnScrolled(object sender, EventArgs e)
@@ -59,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InvokeOnScroll()
 		{
-			var scroller = _scrollViewer.TryGetTarget(out var s) ? s : TemplatedParent as ScrollViewer;
+			var scroller = GetParentScrollViewer();
 			if (scroller is null)
 			{
 				return;
@@ -71,6 +79,8 @@ namespace Windows.UI.Xaml.Controls
 				: ContentOffset.Clamp(CGPoint.Empty, UpperScrollLimit);
 			scroller.OnScrollInternal(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
+
+		private ScrollViewer GetParentScrollViewer() => _scrollViewer.TryGetTarget(out var s) ? s : TemplatedParent as ScrollViewer;
 
 		// Called when user starts dragging
 		private void OnDraggingStarted(object sender, EventArgs e)

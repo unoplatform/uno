@@ -7,13 +7,6 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class FocusManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static object GetFocusedElement( global::Windows.UI.Xaml.XamlRoot xamlRoot)
-		{
-			throw new global::System.NotImplementedException("The member object FocusManager.GetFocusedElement(XamlRoot xamlRoot) is not implemented in Uno.");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GotFocus.add
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GotFocus.remove
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.LostFocus.add

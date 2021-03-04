@@ -80,6 +80,16 @@ namespace Windows.UI.Xaml
 			return new Size(width, height).PhysicalToLogicalPixels();
 		}
 
+		protected Rect RectFromUIRect(CGRect rect)
+		{
+			var size = SizeFromUISize(rect.Size);
+			var location = new Point(
+				nfloat.IsNaN(rect.X) ? float.PositiveInfinity : rect.X,
+				nfloat.IsNaN(rect.Y) ? float.PositiveInfinity : rect.Y);
+
+			return new Rect(location.LogicalToPhysicalPixels(), size.LogicalToPhysicalPixels());
+		}
+
 		private bool IsTopLevelXamlView()
 		{
 			_View parent = this;

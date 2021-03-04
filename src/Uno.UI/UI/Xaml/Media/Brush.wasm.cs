@@ -70,5 +70,9 @@ namespace Windows.UI.Xaml.Media
 			colorSetter(SolidColorBrushHelper.Transparent.Color);
 			return Disposable.Empty;
 		}
+
+		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
+		internal bool SupportsAssignAndObserveBrush => !(this is ImageBrush || this is AcrylicBrush);
 	}
+
 }

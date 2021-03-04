@@ -29,12 +29,13 @@ resources:
     image: unoplatform/wasm-build:3.0
 
 variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   windowsHostedVMImage: 'windows-2019'
-  windowsScaledPool: 'Windows2019-20200920-1'
+  windowsScaledPool: 'Windows2019-20201210-0'
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
-  xCodeRoot: '/Applications/Xcode_12.app'
-  XamarinSDKVersion: 6_12_0
+  xCodeRoot: '/Applications/Xcode_12.3.app'
+  XamarinSDKVersion: 6_12_4
   xCodeRoot_iOS_UITests: '/Applications/Xcode_11.5.app'
   XamarinSDKVersion_iOS_UITests: 6_10_0
 
@@ -45,7 +46,8 @@ jobs:
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImageWindows: '$(windowsHostedVMImage)'
+    vmImageLinux: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml
   parameters:
@@ -83,15 +85,18 @@ jobs:
 
 - template: build/ci/.azure-devops-android-tests.yml
   parameters:
-    vmImage: '$(macOSVMImage)'
+    vmWindowsImage: '$(windowsHostedVMImage)'
+    vmMacOSImage: '$(macOSVMImage)'
     xCodeRoot: '$(xCodeRoot)'
     XamarinSDKVersion: '$(XamarinSDKVersion)'
 
 - template: build/ci/.azure-devops-ios-tests.yml
   parameters:
     vmImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot_iOS_UITests)'
-    XamarinSDKVersion: '$(XamarinSDKVersion_iOS_UITests)'
+    xCodeRootBuild: '$(xCodeRoot)'
+    XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
+    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
 - template: build/ci/.azure-devops-screenshot-compare.yml
   parameters:

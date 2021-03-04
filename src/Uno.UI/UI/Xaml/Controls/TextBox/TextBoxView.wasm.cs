@@ -53,8 +53,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private event EventHandler HtmlInput
 		{
-			add => RegisterEventHandler("input", value);
-			remove => UnregisterEventHandler("input", value);
+			add => RegisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
+			remove => UnregisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
 		}
 
 		internal bool IsMultiline { get; }
@@ -90,7 +90,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal void SetTextNative(string text)
-			=> SetProperty("value", text);
+		{
+			SetProperty("value", text);
+
+			InvalidateMeasure();
+		}
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 

@@ -1,0 +1,36 @@
+﻿<Page x:Class="Uno.UI.Tests.Windows_UI_Xaml.Controls.When_Conditional_IsTypePresent_Page"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:local="using:Uno.UI.Tests.Windows_UI_Xaml.Controls"
+	  xmlns:fepresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.FrameworkElement)"
+	  xmlns:fthepresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.FifthElement)"
+	  xmlns:fenotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.FrameworkElement)"
+	  xmlns:fthenotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.FifthElement)"
+	  xmlns:easpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation)"
+	  xmlns:easnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation)"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<TextBlock x:Name="fepresentTextBlock"
+				   x:FieldModifier="public"
+				   fepresent:Text="Is present" />
+		<TextBlock x:Name="fenotpresentTextBlock"
+				   x:FieldModifier="public"
+				   fenotpresent:Text="Is not present" />
+		<TextBlock x:Name="fthepresentTextBlock"
+				   x:FieldModifier="public"
+				   fthepresent:Text="Is present" />
+		<TextBlock x:Name="fthenotpresentTextBlock"
+				   x:FieldModifier="public"
+				   fthenotpresent:Text="Is not present" />
+		<TextBlock x:Name="easpresentTextBlock"
+				   x:FieldModifier="public"
+				   easpresent:Text="Is present" />
+		<TextBlock x:Name="easnotpresentTextBlock"
+				   x:FieldModifier="public"
+				   easnotpresent:Text="Is not present" />
+	</Grid>
+</Page>

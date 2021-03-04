@@ -1,7 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../../netcore-build.props"/>
+	<Import Project="../../targetframework-override.props"/>
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
@@ -9,9 +14,9 @@
 		<RootNamespace>Uno.UI.MSAL</RootNamespace>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
@@ -19,14 +24,15 @@
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	<ItemGroup>
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Remove="WasmScripts\*.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
+		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2">
+	<ItemGroup>
+		<PackageReference Include="Microsoft.TypeScript.MSBuild">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -55,7 +61,9 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -67,5 +75,8 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<!-- Workaround for missing target running on .NET 5 -->
+	<Target Name="GetTargetPath" />
 
 </Project>

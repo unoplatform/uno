@@ -25,6 +25,7 @@ using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
+using System.Text;
 
 #if __IOS__
 using UIKit;
@@ -52,10 +53,23 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool IsWindowRoot { get; set; }
 
+		/// <summary>
+		/// Is this view the top of the managed visual tree
+		/// </summary>
+		internal bool IsVisualTreeRoot { get; set; }
+
 		private void Initialize()
 		{
 			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
 		}
+
+		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
+
+		internal Size AssignedActualSize { get; set; }
+
+		private protected virtual double GetActualWidth() => AssignedActualSize.Width;
+
+		private protected virtual double GetActualHeight() => AssignedActualSize.Height;
 
 		string IXUidProvider.Uid
 		{
@@ -179,12 +193,15 @@ namespace Windows.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
+			var logInfoString = from.Log().IsEnabled(LogLevel.Information) ? new StringBuilder() : null;
+			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
+
 			if (from == to)
 			{
 				return Matrix3x2.Identity;
 			}
 
-#if NETSTANDARD // Depth is defined properly only on WASM and Skia
+#if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
 			// to find an element in the parent hierarchy of the other element.
 			if (to is { } && from.Depth < to.Depth)
@@ -250,6 +267,7 @@ namespace Windows.UI.Xaml
 					offsetY -= elt.ScrollOffsets.Y;
 				}
 
+				logInfoString?.Append($"{elt}: ({offsetX}, {offsetY}), ");
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
@@ -265,10 +283,15 @@ namespace Windows.UI.Xaml
 				matrix *= rootToTo;
 			}
 
+			if (logInfoString != null)
+			{
+				logInfoString.Append($"], matrix: {matrix}");
+				from.Log().LogInformation(logInfoString.ToString());
+			}
 			return matrix;
 		}
 
-#if !__IOS__ && !__ANDROID__ // This is the default implementation, but it can be customized per platform
+#if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
@@ -333,13 +356,26 @@ namespace Windows.UI.Xaml
 		internal bool IsRenderingSuspended { get; set; }
 
 		[ThreadStatic]
-		private static bool _isInUpdateLayout;
+		private static bool _isInUpdateLayout; // Currently within the UpdateLayout() method (explicit managed layout request)
+
+#pragma warning disable CS0649 // Field not used on Desktop/Tests
+		[ThreadStatic]
+		private static bool _isLayoutingVisualTreeRoot; // Currently in Measure or Arrange of the element flagged with IsVisualTreeRoot (layout requested by the system)
+#pragma warning restore CS0649
+
+#if !__NETSTD__ // We need an internal accessor for the Layouter
+		internal static bool IsLayoutingVisualTreeRoot
+		{
+			get => _isLayoutingVisualTreeRoot;
+			set => _isLayoutingVisualTreeRoot = value;
+		}
+#endif
 
 		private const int MaxLayoutIterations = 250;
 
 		public void UpdateLayout()
 		{
-			if (_isInUpdateLayout)
+			if (_isInUpdateLayout || _isLayoutingVisualTreeRoot)
 			{
 				return;
 			}
@@ -354,17 +390,31 @@ namespace Windows.UI.Xaml
 			{
 				_isInUpdateLayout = true;
 
+				// On UWP, the UpdateLayout method has an overload which accepts the desired size used by the window/app to layout the visual tree,
+				// then this overload without parameter is only using the internally cached last desired size.
+				// With Uno this method is not used for standard layouting passes, so we cannot properly internally cache the value,
+				// and we instead could use the LayoutInformation.GetLayoutSlot(root).
+				//
+				// The issue is that unlike UWP which will ends by requesting an UpdateLayout with the right window bounds,
+				// Uno instead exclusively relies on measure/arrange invalidation.
+				// So if we invoke the `UpdateLayout()` **before** the tree has been measured at least once
+				// (which is the case when using a MUX.NavigationView in the "MainPage" on iOS as OnApplyTemplate is invoked too early),
+				// then the whole tree will be measured at the last known value which is 0x0 and will never be invalidated.
+				//
+				// To avoid this we are instead using the Window Bounds as anyway they are the same as the root's slot.
+				var bounds = Windows.UI.Xaml.Window.Current.Bounds;
+
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
-				root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
-				root.Arrange(LayoutInformation.GetLayoutSlot(root));
+				root.Measure(bounds.Size);
+				root.Arrange(bounds);
 #elif __ANDROID__
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
 					// On Android, Measure and arrange are the same
 					if (root.IsMeasureDirty)
 					{
-						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
-						root.Arrange(LayoutInformation.GetLayoutSlot(root));
+						root.Measure(bounds.Size);
+						root.Arrange(bounds);
 					}
 					else
 					{
@@ -376,11 +426,11 @@ namespace Windows.UI.Xaml
 				{
 					if (root.IsMeasureDirty)
 					{
-						root.Measure(LayoutInformation.GetLayoutSlot(root).Size);
+						root.Measure(bounds.Size);
 					}
 					else if (root.IsArrangeDirty)
 					{
-						root.Arrange(LayoutInformation.GetLayoutSlot(root));
+						root.Arrange(bounds);
 					}
 					else
 					{
@@ -407,7 +457,7 @@ namespace Windows.UI.Xaml
 
 				if (NeedsClipToSlot)
 				{
-#if NETSTANDARD
+#if UNO_REFERENCE_API
 					rect = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
 #else
 					rect = ClippedFrame ?? Rect.Empty;
@@ -511,7 +561,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		Size IUIElement.DesiredSize { get; set; }
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
@@ -529,7 +579,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>
@@ -587,6 +637,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal virtual bool IsViewHit() => true;
+
+		internal virtual bool IsEnabledOverride() => true;
 
 		internal double LayoutRound(double value)
 		{
@@ -748,7 +800,11 @@ namespace Windows.UI.Xaml
 				propertyName += "Property";
 			}
 			var propInfo = GetType().GetTypeInfo().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-			var dp = propInfo.GetValue(null) as DependencyProperty;
+			var dp = propInfo?.GetValue(null) as DependencyProperty;
+			if (dp == null)
+			{
+				return "[No such property]";
+			}
 			var bindings = (this as IDependencyObjectStoreProvider).Store.GetResourceBindingsForProperty(dp);
 			if (bindings.Any())
 			{

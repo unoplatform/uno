@@ -1,5 +1,6 @@
 parameters:
-  vmImage: ''
+  vmMacOSImage: ''
+  vmWindowsImage: ''
   xCodeRoot: ''
   XamarinSDKVersion: ''
 
@@ -9,7 +10,7 @@ jobs:
   displayName: 'Android UI Tests (Build)'
 
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmMacOSImage }}
 
   variables:
     CI_Build: true
@@ -20,25 +21,33 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/optimize-roslyn-mono.yml
+  - template: templates/dotnet-install.yml
 
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/ios-build-select-version.yml
-    parameters:
-      xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+  - task: MSBuild@1
+    inputs:
+      solution: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
 
-  - bash: |
-      $(build.sourcesdirectory)/build/android-uitest-build.sh
-
-    displayName: Build Android Test Package
-
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/bin/Release/
+      Contents: 'uno.platform.unosampleapp-Signed.apk'
+      TargetFolder: $(build.artifactstagingdirectory)/android
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -60,7 +69,7 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmMacOSImage }}
 
   strategy:
     matrix:

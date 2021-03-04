@@ -1,13 +1,11 @@
 ﻿using System;
+using System.Threading;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Airbnb.Lottie;
 using Foundation;
-using Microsoft.Extensions.Logging;
-using Uno.Extensions;
-using Uno.Logging;
-using Uno.UI;
+using System.Threading.Tasks;
+using Uno.Disposables;
 #if __IOS__
 using _ViewContentMode = UIKit.UIViewContentMode;
 #else
@@ -16,39 +14,57 @@ using _ViewContentMode = Airbnb.Lottie.LOTViewContentMode;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
-	partial class LottieVisualSource
+	partial class LottieVisualSourceBase
 	{
-		private LOTAnimationView _animation;
+		private LOTAnimationView? _animation;
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
-		private Uri _lastSource;
+		private Uri? _lastSource;
 		private (double fromProgress, double toProgress, bool looped)? _playState;
 
-		partial void InnerUpdate()
+		private readonly SerialDisposable _animationDataSubscription = new SerialDisposable();
+
+		async Task InnerUpdate(CancellationToken ct)
 		{
 			var player = _player;
-			SetProperties();
 
-			void SetProperties()
+			if (player == null)
 			{
-				var source = UriSource;
-				if (_lastSource == null || !_lastSource.Equals(source))
-				{
-					_lastSource = source;
+				return;
+			}
 
-					if (TryLoadEmbeddedJson(source, out var json))
+			await SetProperties();
+
+			async Task SetProperties()
+			{
+				var sourceUri = UriSource;
+				if (_lastSource == null || !_lastSource.Equals(sourceUri))
+				{
+					_lastSource = sourceUri;
+					if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
 					{
-						var jsonData = NSJsonSerialization.Deserialize(NSData.FromString(json), default, out var _) as NSDictionary;
-						if (jsonData != null)
+						var cacheKey = sourceUri.OriginalString;
+						_animationDataSubscription.Disposable = null;
+						_animationDataSubscription.Disposable =
+							LoadAndObserveAnimationData(jsonStream, cacheKey, OnJsonChanged);
+
+						void OnJsonChanged(string updatedJson, string updatedCacheKey)
 						{
+							var jsonData = NSJsonSerialization.Deserialize(NSData.FromString(updatedJson), default, out var _) as NSDictionary;
 							var animation = LOTAnimationView.AnimationFromJSON(jsonData);
 							SetAnimation(animation);
+
+							if (_playState != null)
+							{
+								var (fromProgress, toProgress, looped) = _playState.Value;
+								Play(fromProgress, toProgress, looped);
+							}
 						}
 					}
 					else
 					{
-						var path = source?.PathAndQuery ?? "";
+						var path = sourceUri?.PathAndQuery ?? "";
 						if (path.StartsWith("/"))
 						{
 							path = path.Substring(1);
@@ -57,7 +73,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						if (_animation == null)
 						{
 							var animation = new LOTAnimationView();
-							SetAnimation(animation);
+							_animation = SetAnimation(animation);
 						}
 
 						_animation.SetAnimationNamed(path);
@@ -76,6 +92,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					{
 						Play(0, 1, true);
 					}
+				}
+
+				if (_animation == null)
+				{
+					return;
 				}
 
 				switch (player.Stretch)
@@ -109,18 +130,19 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 		}
 
-		private void SetAnimation(LOTAnimationView animation)
+		private LOTAnimationView SetAnimation(LOTAnimationView animation)
 		{
 			if (!ReferenceEquals(_animation, animation))
 			{
 				_animation?.RemoveFromSuperview();
 			}
 #if __IOS__
-			_player.Add(animation);
+			_player?.Add(animation);
 #else
-			_player.AddSubview(animation);
+			_player?.AddSubview(animation);
 #endif
 			_animation = animation;
+			return animation;
 		}
 
 		public void Play(double fromProgress, double toProgress, bool looped)
@@ -180,7 +202,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Load()
 		{
-			if (_player.IsPlaying)
+			if (_player?.IsPlaying ?? false)
 			{
 				_animation?.Play();
 			}
@@ -188,7 +210,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Unload()
 		{
-			if (_player.IsPlaying)
+			if (_player?.IsPlaying ?? false)
 			{
 				_animation?.Pause();
 			}

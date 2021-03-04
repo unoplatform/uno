@@ -17,6 +17,8 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Child")]
 	public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement
 	{
+		private const double SCALE_EPSILON = 0.00001d;
+
 		private readonly Border _container;
 
 		public Viewbox()
@@ -55,13 +57,24 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			if(finalSize.Width == 0 || finalSize.Height == 0)
+			{
+				return default;
+			}
+
 			var (scaleX, scaleY) = GetScale(finalSize, _container.DesiredSize);
 
-			_container.RenderTransform = new ScaleTransform()
+			if (Math.Abs(scaleX - 1d) < SCALE_EPSILON && Math.Abs(scaleY - 1d) < SCALE_EPSILON)
 			{
-				ScaleX = scaleX,
-				ScaleY = scaleY
-			};
+				_container.RenderTransform = null;
+			}
+			else
+			{
+				var transform = _container.RenderTransform as ScaleTransform ?? new ScaleTransform();
+				transform.ScaleX = scaleX;
+				transform.ScaleY = scaleY;
+				_container.RenderTransform = transform;
+			}
 
 			base.ArrangeElement(_container, new Rect(new Point(), _container.DesiredSize));
 

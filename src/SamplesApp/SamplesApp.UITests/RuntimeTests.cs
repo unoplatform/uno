@@ -10,7 +10,7 @@ using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
 
-namespace SamplesApp.UITests
+namespace SamplesApp.UITests.Runtime
 {
 	[TestFixture]
 	public partial class RuntimeTests : SampleControlUITestBase
@@ -19,8 +19,8 @@ namespace SamplesApp.UITests
 		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
 
 		[Test]
-		[AutoRetry]
-		[Timeout(600000)] // Adjust this timeout based on average test run duration
+		[AutoRetry(tryCount: 1)]
+		[Timeout(800000)] // Adjust this timeout based on average test run duration
 		public async Task RunRuntimeTests()
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");

@@ -1,21 +1,10 @@
-﻿using Uno.Extensions;
-using Uno.Logging;
+﻿#nullable enable
+
+using Uno.Extensions;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Controls.Primitives;
-using Uno;
-using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Media.Imaging;
-using Uno.Disposables;
+using Windows.Storage.Streams;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -26,32 +15,43 @@ namespace Windows.UI.Xaml.Media
 {
 	partial class ImageSource
 	{
-		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
-
 		partial void InitFromResource(Uri uri)
 		{
 			WebUri = new Uri(uri.PathAndQuery.TrimStart("/"), UriKind.Relative);
 		}
 
-		// TODO: All those should be implemented by sub-classes in TryOpenSource<Sync|Async> overloads!
-		private bool TryOpenSourceLegacy(out ImageData img)
+		private protected async Task<ImageData> OpenFromStream(IRandomAccessStreamWithContentType stream, Action<ulong, ulong?>? progress, CancellationToken ct)
 		{
-			var stream = Stream;
-			if (stream != null)
+			try
 			{
-				stream.Position = 0;
-				var encodedBytes = Convert.ToBase64String(stream.ReadBytes());
+				var bytes = await stream.ReadBytesAsync(ct, progressCallback: progress);
+				var encodedBytes = Convert.ToBase64String(bytes);
 
-				img = new ImageData
+				ReportImageLoaded();
+
+				return new ImageData
 				{
-					Kind = ImageDataKind.Base64,
-					Value = "data:application/octet-stream;base64," + encodedBytes
+					Kind = ImageDataKind.DataUri,
+					Value = "data:" + stream.ContentType + ";base64," + encodedBytes
 				};
-				return true;
 			}
+			catch (Exception ex)
+			{
+				ReportImageFailed(ex.Message);
 
-			img = default;
-			return false;
+				return new ImageData {Kind = ImageDataKind.Error, Error = ex};
+			}
 		}
+
+		internal virtual void ReportImageLoaded()
+		{
+
+		}
+
+		internal virtual void ReportImageFailed(string errorMessage)
+		{
+
+		}
+
 	}
 }

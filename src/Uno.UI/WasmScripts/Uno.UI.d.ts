@@ -37,6 +37,12 @@ declare namespace Windows.UI.Core {
         private static initMethods;
     }
 }
+declare namespace Uno.Utils {
+    class Guid {
+        private static newGuidMethod;
+        static NewGuid(): string;
+    }
+}
 declare namespace Uno.UI {
     class HtmlDom {
         /**
@@ -127,12 +133,12 @@ declare namespace Uno.UI {
          * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
          * to improve debuggability.
          */
-        static readonly isHosted: boolean;
+        static get isHosted(): boolean;
         /**
          * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
          * or if they are raised directly by the managed code to reduce interop.
          */
-        static readonly isLoadEventsEnabled: boolean;
+        static get isLoadEventsEnabled(): boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
         private static _cctor;
@@ -376,7 +382,7 @@ declare namespace Uno.UI {
          */
         private static pointerEventExtractor;
         private static _wheelLineSize;
-        private static readonly wheelLineSize;
+        private static get wheelLineSize();
         /**
          * keyboard event extractor to be used with registerEventOnView
          * @param evt
@@ -542,6 +548,501 @@ declare namespace Uno.UI {
         private getIsConnectedToRootElement;
         private handleToString;
         setCursor(cssCursor: string): string;
+        getNaturalImageSize(imageUrl: string): Promise<string>;
+    }
+}
+interface PointerEvent {
+    isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+    isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+}
+declare namespace Uno.UI.Interop {
+    class AsyncInteropHelper {
+        private static dispatchResultMethod;
+        private static dispatchErrorMethod;
+        private static init;
+        static Invoke(handle: number, promiseFunction: () => Promise<string>): void;
+    }
+}
+declare module Uno.UI {
+    interface IAppManifest {
+        splashScreenImage: URL;
+        splashScreenColor: string;
+        displayName: string;
+    }
+}
+declare module Uno.UI.Interop {
+    interface IMonoAssemblyHandle {
+    }
+}
+declare module Uno.UI.Interop {
+    interface IMonoClassHandle {
+    }
+}
+declare module Uno.UI.Interop {
+    interface IMonoMethodHandle {
+    }
+}
+declare module Uno.UI.Interop {
+    interface IMonoRuntime {
+        assembly_load(assemblyName: string): Interop.IMonoAssemblyHandle;
+        find_class(moduleHandle: Interop.IMonoAssemblyHandle, namespace: string, typeName: string): Interop.IMonoClassHandle;
+        find_method(classHandle: Interop.IMonoClassHandle, methodName: string, _: number): Interop.IMonoMethodHandle;
+        call_method(methodHandle: Interop.IMonoMethodHandle, object: any, params?: any[]): any;
+        mono_string(str: string): Interop.IMonoStringHandle;
+        conv_string(strHandle: Interop.IMonoStringHandle): string;
+    }
+}
+declare module Uno.UI.Interop {
+    interface IMonoStringHandle {
+    }
+}
+declare module Uno.UI.Interop {
+    interface IUnoDispatch {
+        resize(size: string): void;
+        dispatch(htmlIdStr: string, eventNameStr: string, eventPayloadStr: string): string;
+    }
+}
+declare module Uno.UI.Interop {
+    interface IWebAssemblyApp {
+        main_module: Interop.IMonoAssemblyHandle;
+        main_class: Interop.IMonoClassHandle;
+    }
+}
+declare namespace Uno.Foundation.Interop {
+    class ManagedObject {
+        private static assembly;
+        private static dispatchMethod;
+        private static init;
+        static dispatch(handle: string, method: string, parameters: string): void;
+    }
+}
+declare namespace Uno.UI.Interop {
+    class Runtime {
+        static readonly engine: any;
+        private static init;
+    }
+}
+declare namespace Uno.UI.Interop {
+    class Xaml {
+    }
+}
+declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
+declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
+declare const UnoAppManifest: Uno.UI.IAppManifest;
+declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
+declare enum ContactProperty {
+    Address = "address",
+    Email = "email",
+    Icon = "icon",
+    Name = "name",
+    Tel = "tel"
+}
+declare class ContactInfo {
+    address: PaymentAddress[];
+    email: string[];
+    name: string;
+    tel: string;
+}
+declare class ContactsManager {
+    select(props: ContactProperty[], options: any): Promise<ContactInfo[]>;
+}
+interface Navigator {
+    contacts: ContactsManager;
+}
+declare namespace Windows.ApplicationModel.Contacts {
+    class ContactPicker {
+        static isSupported(): boolean;
+        static pickContacts(pickMultiple: boolean): Promise<string>;
+    }
+}
+interface NavigatorDataTransferManager {
+    share(data: any): Promise<void>;
+}
+interface Navigator extends NavigatorDataTransferManager {
+}
+declare namespace Windows.ApplicationModel.DataTransfer {
+    class DataTransferManager {
+        static isSupported(): boolean;
+        static showShareUI(title: string, text: string, url: string): Promise<string>;
+    }
+}
+declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
+    class MidiDeviceClassProvider {
+        static findDevices(findInputDevices: boolean): string;
+    }
+}
+declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
+    class MidiDeviceConnectionWatcher {
+        private static dispatchStateChanged;
+        static startStateChanged(): void;
+        static stopStateChanged(): void;
+        static onStateChanged(event: WebMidi.MIDIConnectionEvent): void;
+    }
+}
+declare namespace Windows.Devices.Geolocation {
+    class Geolocator {
+        private static dispatchAccessRequest;
+        private static dispatchGeoposition;
+        private static dispatchError;
+        private static positionWatches;
+        static initialize(): void;
+        static requestAccess(): void;
+        static getGeoposition(desiredAccuracyInMeters: number, maximumAge: number, timeout: number, requestId: string): void;
+        static startPositionWatch(desiredAccuracyInMeters: number, requestId: string): boolean;
+        static stopPositionWatch(desiredAccuracyInMeters: number, requestId: string): void;
+        private static handleGeoposition;
+        private static handleError;
+        private static getAccurateCurrentPosition;
+    }
+}
+declare namespace Windows.Devices.Midi {
+    class MidiInPort {
+        private static dispatchMessage;
+        private static instanceMap;
+        private managedId;
+        private inputPort;
+        private constructor();
+        static createPort(managedId: string, encodedDeviceId: string): void;
+        static removePort(managedId: string): void;
+        static startMessageListener(managedId: string): void;
+        static stopMessageListener(managedId: string): void;
+        private messageReceived;
+    }
+}
+declare namespace Windows.Devices.Midi {
+    class MidiOutPort {
+        static sendBuffer(encodedDeviceId: string, timestamp: number, ...args: number[]): void;
+    }
+}
+declare namespace Uno.Devices.Midi.Internal {
+    class WasmMidiAccess {
+        private static midiAccess;
+        static request(systemExclusive: boolean): Promise<string>;
+        static getMidi(): WebMidi.MIDIAccess;
+    }
+}
+interface Window {
+    DeviceMotionEvent(): void;
+}
+declare namespace Windows.Devices.Sensors {
+    class Accelerometer {
+        private static dispatchReading;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare class Gyroscope {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+}
+interface Window {
+    Gyroscope: Gyroscope;
+}
+declare namespace Windows.Devices.Sensors {
+    class Gyrometer {
+        private static dispatchReading;
+        private static gyroscope;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare class Magnetometer {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+}
+interface Window {
+    Magnetometer: Magnetometer;
+}
+declare namespace Windows.Devices.Sensors {
+    class Magnetometer {
+        private static dispatchReading;
+        private static magnetometer;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare namespace Windows.Graphics.Display {
+    class DisplayInformation {
+        private static readonly DpiCheckInterval;
+        private static lastDpi;
+        private static dpiWatcher;
+        private static dispatchOrientationChanged;
+        private static dispatchDpiChanged;
+        static startOrientationChanged(): void;
+        static stopOrientationChanged(): void;
+        static startDpiChanged(): void;
+        static stopDpiChanged(): void;
+        private static updateDpi;
+        private static onOrientationChange;
+    }
+}
+interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+}
+declare namespace Windows.Media {
+    class SpeechRecognizer {
+        private static dispatchResult;
+        private static dispatchHypothesis;
+        private static dispatchStatus;
+        private static dispatchError;
+        private static instanceMap;
+        private managedId;
+        private recognition;
+        private constructor();
+        static initialize(managedId: string, culture: string): void;
+        static recognize(managedId: string): boolean;
+        static removeInstance(managedId: string): void;
+        private onResult;
+        private onSpeechStart;
+        private onError;
+    }
+}
+declare namespace Windows.Networking.Connectivity {
+    class ConnectionProfile {
+        static hasInternetAccess(): boolean;
+    }
+}
+declare namespace Windows.Networking.Connectivity {
+    class NetworkInformation {
+        private static dispatchStatusChanged;
+        static startStatusChanged(): void;
+        static stopStatusChanged(): void;
+        static networkStatusChanged(): void;
+    }
+}
+interface Navigator {
+    webkitVibrate(pattern: number | number[]): boolean;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+}
+declare namespace Windows.Phone.Devices.Notification {
+    class VibrationDevice {
+        static initialize(): boolean;
+        static vibrate(duration: number): boolean;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer {
+        private static buildStorageKey;
+        private static buildStoragePrefix;
+        /**
+         * Try to get a value from localStorage
+         * */
+        private static tryGetValue;
+        /**
+         * Set a value to localStorage
+         * */
+        private static setValue;
+        /**
+         * Determines if a key is contained in localStorage
+         * */
+        private static containsKey;
+        /**
+         * Gets a key by index in localStorage
+         * */
+        private static getKeyByIndex;
+        /**
+         * Determines the number of items contained in localStorage
+         * */
+        private static getCount;
+        /**
+         * Clears items contained in localStorage
+         * */
+        private static clear;
+        /**
+         * Removes an item contained in localStorage
+         * */
+        private static remove;
+        /**
+         * Gets a key by index in localStorage
+         * */
+        private static getValueByIndex;
+    }
+}
+declare namespace Windows.Storage {
+    class AssetManager {
+        static DownloadAssetsManifest(path: string): Promise<string>;
+        static DownloadAsset(path: string): Promise<string>;
+    }
+}
+declare namespace Windows.Storage {
+    class NativeStorageFile {
+        private static _fileMap;
+        static AddHandle(guid: string, handle: FileSystemFileHandle): void;
+        static RemoveHandle(guid: string): void;
+        static GetHandle(guid: string): FileSystemFileHandle;
+    }
+}
+declare namespace Windows.Storage {
+    class NativeStorageFolder {
+        private static _folderMap;
+        static AddHandle(guid: string, handle: FileSystemDirectoryHandle): void;
+        static RemoveHandle(guid: string): void;
+        static GetHandle(guid: string): FileSystemDirectoryHandle;
+        /**
+         * Creates a new folder inside another folder.
+         * @param parentGuid The GUID of the folder to create in.
+         * @param folderName The name of the new folder.
+         */
+        static CreateFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+        /**
+         * Gets a folder in the given parent folder by name.
+         * @param parentGuid The GUID of the parent folder to get.
+         * @param folderName The name of the folder to look for.
+         * @returns A GUID of the folder if found, otherwise "notfound" literal.
+         */
+        static GetFolderAsync(parentGuid: string, folderName: string): Promise<string>;
+    }
+}
+declare namespace Uno.Storage {
+    class NativeStorageItem {
+        private static generateGuidBinding;
+        static generateGuid(): string;
+    }
+}
+declare namespace Windows.Storage {
+    class StorageFolder {
+        private static _isInit;
+        private static dispatchStorageInitialized;
+        /**
+         * Determine if IndexDB is available, some browsers and modes disable it.
+         * */
+        static isIndexDBAvailable(): boolean;
+        /**
+         * Setup the storage persistence of a given set of paths.
+         * */
+        private static makePersistent;
+        /**
+         * Setup the storage persistence of a given path.
+         * */
+        static setupStorage(path: string): void;
+        private static onStorageInitialized;
+        /**
+         * Synchronize the IDBFS memory cache back to IndexDB
+         * */
+        private static synchronizeFileSystem;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FileOpenPicker {
+        static pickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypes: any): Promise<string>;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FileSavePicker {
+        static SaveAs(fileName: string, dataPtr: any, size: number): void;
+    }
+}
+declare namespace Windows.Storage.Pickers {
+    class FolderPicker {
+        static pickSingleFolderAsync(): Promise<string>;
+    }
+}
+interface Navigator {
+    wakeLock: WakeLock;
+}
+declare enum WakeLockType {
+    screen = "screen"
+}
+interface WakeLock {
+    request(type: WakeLockType): Promise<WakeLockSentinel>;
+}
+interface WakeLockSentinel {
+    release(): Promise<void>;
+}
+declare namespace Windows.System.Display {
+    class DisplayRequest {
+        private static activeScreenLockPromise;
+        static activateScreenLock(): void;
+        static deactivateScreenLock(): void;
+    }
+}
+declare namespace Windows.System.Profile {
+    class AnalyticsInfo {
+        static getDeviceType(): string;
+    }
+}
+interface Window {
+    opr: any;
+    opera: any;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+    InstallTrigger: any;
+    HTMLElement: any;
+    StyleMedia: any;
+    chrome: any;
+    CSS: any;
+    safari: any;
+}
+interface Document {
+    documentMode: any;
+}
+declare namespace Windows.System.Profile {
+    class AnalyticsVersionInfo {
+        static getUserAgent(): string;
+        static getBrowserName(): string;
+    }
+}
+declare namespace Windows.UI.Core {
+    class SystemNavigationManager {
+        private static _current;
+        static get current(): SystemNavigationManager;
+        private _isEnabled;
+        constructor();
+        enable(): void;
+        disable(): void;
+        private clearStack;
+    }
+}
+declare namespace Windows.UI.ViewManagement {
+    class ApplicationView {
+        static setFullScreenMode(turnOn: boolean): boolean;
+    }
+}
+declare namespace Windows.UI.ViewManagement {
+    class ApplicationViewTitleBar {
+        static setBackgroundColor(colorString: string): void;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class Application {
+        private static dispatchThemeChange;
+        static getDefaultSystemTheme(): string;
+        static observeSystemTheme(): void;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    enum ApplicationTheme {
+        Light = "Light",
+        Dark = "Dark"
+    }
+}
+declare namespace Windows.UI.Xaml.Media.Animation {
+    class RenderingLoopFloatAnimator {
+        private managedHandle;
+        private static activeInstances;
+        static createInstance(managedHandle: string, jsHandle: number): void;
+        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
+        static destroyInstance(jsHandle: number): void;
+        private constructor();
+        SetStartFrameDelay(delay: number): void;
+        SetAnimationFramesInterval(): void;
+        EnableFrameReporting(): void;
+        DisableFrameReporting(): void;
+        private onFrame;
+        private unscheduleFrame;
+        private scheduleDelayedFrame;
+        private scheduleAnimationFrame;
+        private _delayRequestId?;
+        private _frameRequestId?;
+        private _isEnabled;
     }
 }
 declare class ApplicationDataContainer_ClearParams {
@@ -813,417 +1314,4 @@ declare class WindowManagerSetXUidParams {
     HtmlId: number;
     Uid: string;
     static unmarshal(pData: number): WindowManagerSetXUidParams;
-}
-interface PointerEvent {
-    isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
-    isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
-}
-declare namespace Uno.UI.Interop {
-    class AsyncInteropHelper {
-        private static dispatchResultMethod;
-        private static dispatchErrorMethod;
-        private static init;
-        static Invoke(handle: number, promiseFunction: () => Promise<string>): void;
-    }
-}
-declare module Uno.UI {
-    interface IAppManifest {
-        splashScreenImage: URL;
-        splashScreenColor: string;
-        displayName: string;
-    }
-}
-declare module Uno.UI.Interop {
-    interface IMonoAssemblyHandle {
-    }
-}
-declare module Uno.UI.Interop {
-    interface IMonoClassHandle {
-    }
-}
-declare module Uno.UI.Interop {
-    interface IMonoMethodHandle {
-    }
-}
-declare module Uno.UI.Interop {
-    interface IMonoRuntime {
-        assembly_load(assemblyName: string): Interop.IMonoAssemblyHandle;
-        find_class(moduleHandle: Interop.IMonoAssemblyHandle, namespace: string, typeName: string): Interop.IMonoClassHandle;
-        find_method(classHandle: Interop.IMonoClassHandle, methodName: string, _: number): Interop.IMonoMethodHandle;
-        call_method(methodHandle: Interop.IMonoMethodHandle, object: any, params?: any[]): any;
-        mono_string(str: string): Interop.IMonoStringHandle;
-        conv_string(strHandle: Interop.IMonoStringHandle): string;
-    }
-}
-declare module Uno.UI.Interop {
-    interface IMonoStringHandle {
-    }
-}
-declare module Uno.UI.Interop {
-    interface IUnoDispatch {
-        resize(size: string): void;
-        dispatch(htmlIdStr: string, eventNameStr: string, eventPayloadStr: string): string;
-    }
-}
-declare module Uno.UI.Interop {
-    interface IWebAssemblyApp {
-        main_module: Interop.IMonoAssemblyHandle;
-        main_class: Interop.IMonoClassHandle;
-    }
-}
-declare namespace Uno.Foundation.Interop {
-    class ManagedObject {
-        private static assembly;
-        private static dispatchMethod;
-        private static init;
-        static dispatch(handle: string, method: string, parameters: string): void;
-    }
-}
-declare namespace Uno.UI.Interop {
-    class Runtime {
-        static readonly engine: any;
-        private static init;
-    }
-}
-declare namespace Uno.UI.Interop {
-    class Xaml {
-    }
-}
-declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
-declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
-declare const UnoAppManifest: Uno.UI.IAppManifest;
-declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
-interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
-}
-declare namespace Windows.Media {
-    class SpeechRecognizer {
-        private static dispatchResult;
-        private static dispatchHypothesis;
-        private static dispatchStatus;
-        private static dispatchError;
-        private static instanceMap;
-        private managedId;
-        private recognition;
-        private constructor();
-        static initialize(managedId: string, culture: string): void;
-        static recognize(managedId: string): boolean;
-        static removeInstance(managedId: string): void;
-        private onResult;
-        private onSpeechStart;
-        private onError;
-    }
-}
-declare namespace Windows.Storage {
-    class ApplicationDataContainer {
-        private static buildStorageKey;
-        private static buildStoragePrefix;
-        /**
-         * Try to get a value from localStorage
-         * */
-        private static tryGetValue;
-        /**
-         * Set a value to localStorage
-         * */
-        private static setValue;
-        /**
-         * Determines if a key is contained in localStorage
-         * */
-        private static containsKey;
-        /**
-         * Gets a key by index in localStorage
-         * */
-        private static getKeyByIndex;
-        /**
-         * Determines the number of items contained in localStorage
-         * */
-        private static getCount;
-        /**
-         * Clears items contained in localStorage
-         * */
-        private static clear;
-        /**
-         * Removes an item contained in localStorage
-         * */
-        private static remove;
-        /**
-         * Gets a key by index in localStorage
-         * */
-        private static getValueByIndex;
-    }
-}
-declare namespace Windows.Storage {
-    class AssetManager {
-        static DownloadAssetsManifest(path: string): Promise<string>;
-        static DownloadAsset(path: string): Promise<string>;
-    }
-}
-declare namespace Windows.Storage.Pickers {
-    class FileSavePicker {
-        static SaveAs(fileName: string, dataPtr: any, size: number): void;
-    }
-}
-declare namespace Windows.Storage {
-    class StorageFolder {
-        private static _isInit;
-        private static dispatchStorageInitialized;
-        /**
-         * Determine if IndexDB is available, some browsers and modes disable it.
-         * */
-        static isIndexDBAvailable(): boolean;
-        /**
-         * Setup the storage persistence of a given set of paths.
-         * */
-        private static makePersistent;
-        /**
-         * Setup the storage persistence of a given path.
-         * */
-        static setupStorage(path: string): void;
-        private static onStorageInitialized;
-        /**
-         * Synchronize the IDBFS memory cache back to IndexDB
-         * */
-        private static synchronizeFileSystem;
-    }
-}
-declare namespace Windows.Devices.Geolocation {
-    class Geolocator {
-        private static dispatchAccessRequest;
-        private static dispatchGeoposition;
-        private static dispatchError;
-        private static positionWatches;
-        static initialize(): void;
-        static requestAccess(): void;
-        static getGeoposition(desiredAccuracyInMeters: number, maximumAge: number, timeout: number, requestId: string): void;
-        static startPositionWatch(desiredAccuracyInMeters: number, requestId: string): boolean;
-        static stopPositionWatch(desiredAccuracyInMeters: number, requestId: string): void;
-        private static handleGeoposition;
-        private static handleError;
-        private static getAccurateCurrentPosition;
-    }
-}
-declare namespace Windows.Devices.Midi {
-    class MidiInPort {
-        private static dispatchMessage;
-        private static instanceMap;
-        private managedId;
-        private inputPort;
-        private constructor();
-        static createPort(managedId: string, encodedDeviceId: string): void;
-        static removePort(managedId: string): void;
-        static startMessageListener(managedId: string): void;
-        static stopMessageListener(managedId: string): void;
-        private messageReceived;
-    }
-}
-declare namespace Windows.Devices.Midi {
-    class MidiOutPort {
-        static sendBuffer(encodedDeviceId: string, timestamp: number, ...args: number[]): void;
-    }
-}
-interface Window {
-    DeviceMotionEvent(): void;
-}
-declare namespace Windows.Devices.Sensors {
-    class Accelerometer {
-        private static dispatchReading;
-        static initialize(): boolean;
-        static startReading(): void;
-        static stopReading(): void;
-        private static readingChangedHandler;
-    }
-}
-declare class Gyroscope {
-    constructor(config: any);
-    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
-}
-interface Window {
-    Gyroscope: Gyroscope;
-}
-declare namespace Windows.Devices.Sensors {
-    class Gyrometer {
-        private static dispatchReading;
-        private static gyroscope;
-        static initialize(): boolean;
-        static startReading(): void;
-        static stopReading(): void;
-        private static readingChangedHandler;
-    }
-}
-declare class Magnetometer {
-    constructor(config: any);
-    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
-}
-interface Window {
-    Magnetometer: Magnetometer;
-}
-declare namespace Windows.Devices.Sensors {
-    class Magnetometer {
-        private static dispatchReading;
-        private static magnetometer;
-        static initialize(): boolean;
-        static startReading(): void;
-        static stopReading(): void;
-        private static readingChangedHandler;
-    }
-}
-declare namespace Windows.Graphics.Display {
-    class DisplayInformation {
-        private static readonly DpiCheckInterval;
-        private static lastDpi;
-        private static dpiWatcher;
-        private static dispatchOrientationChanged;
-        private static dispatchDpiChanged;
-        static startOrientationChanged(): void;
-        static stopOrientationChanged(): void;
-        static startDpiChanged(): void;
-        static stopDpiChanged(): void;
-        private static updateDpi;
-        private static onOrientationChange;
-    }
-}
-declare namespace Windows.Networking.Connectivity {
-    class ConnectionProfile {
-        static hasInternetAccess(): boolean;
-    }
-}
-declare namespace Windows.Networking.Connectivity {
-    class NetworkInformation {
-        private static dispatchStatusChanged;
-        static startStatusChanged(): void;
-        static stopStatusChanged(): void;
-        static networkStatusChanged(): void;
-    }
-}
-interface Navigator {
-    wakeLock: WakeLock;
-}
-declare enum WakeLockType {
-    screen = "screen"
-}
-interface WakeLock {
-    request(type: WakeLockType): Promise<WakeLockSentinel>;
-}
-interface WakeLockSentinel {
-    release(): Promise<void>;
-}
-declare namespace Windows.System.Display {
-    class DisplayRequest {
-        private static activeScreenLockPromise;
-        static activateScreenLock(): void;
-        static deactivateScreenLock(): void;
-    }
-}
-declare namespace Windows.System.Profile {
-    class AnalyticsInfo {
-        static getDeviceType(): string;
-    }
-}
-interface Window {
-    opr: any;
-    opera: any;
-    mozVibrate(pattern: number | number[]): boolean;
-    msVibrate(pattern: number | number[]): boolean;
-    InstallTrigger: any;
-    HTMLElement: any;
-    StyleMedia: any;
-    chrome: any;
-    CSS: any;
-    safari: any;
-}
-interface Document {
-    documentMode: any;
-}
-declare namespace Windows.System.Profile {
-    class AnalyticsVersionInfo {
-        static getUserAgent(): string;
-        static getBrowserName(): string;
-    }
-}
-declare namespace Windows.UI.Core {
-    class SystemNavigationManager {
-        private static _current;
-        static readonly current: SystemNavigationManager;
-        private _isEnabled;
-        constructor();
-        enable(): void;
-        disable(): void;
-        private clearStack;
-    }
-}
-declare namespace Windows.UI.ViewManagement {
-    class ApplicationView {
-        static setFullScreenMode(turnOn: boolean): boolean;
-    }
-}
-declare namespace Windows.UI.ViewManagement {
-    class ApplicationViewTitleBar {
-        static setBackgroundColor(colorString: string): void;
-    }
-}
-declare namespace Windows.UI.Xaml {
-    class Application {
-        private static dispatchThemeChange;
-        static getDefaultSystemTheme(): string;
-        static observeSystemTheme(): void;
-    }
-}
-declare namespace Windows.UI.Xaml {
-    enum ApplicationTheme {
-        Light = "Light",
-        Dark = "Dark"
-    }
-}
-declare namespace Uno.Devices.Midi.Internal {
-    class WasmMidiAccess {
-        private static midiAccess;
-        static request(systemExclusive: boolean): Promise<string>;
-        static getMidi(): WebMidi.MIDIAccess;
-    }
-}
-interface Navigator {
-    webkitVibrate(pattern: number | number[]): boolean;
-    mozVibrate(pattern: number | number[]): boolean;
-    msVibrate(pattern: number | number[]): boolean;
-}
-declare namespace Windows.Phone.Devices.Notification {
-    class VibrationDevice {
-        static initialize(): boolean;
-        static vibrate(duration: number): boolean;
-    }
-}
-declare namespace Windows.UI.Xaml.Media.Animation {
-    class RenderingLoopFloatAnimator {
-        private managedHandle;
-        private static activeInstances;
-        static createInstance(managedHandle: string, jsHandle: number): void;
-        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
-        static destroyInstance(jsHandle: number): void;
-        private constructor();
-        SetStartFrameDelay(delay: number): void;
-        SetAnimationFramesInterval(): void;
-        EnableFrameReporting(): void;
-        DisableFrameReporting(): void;
-        private onFrame;
-        private unscheduleFrame;
-        private scheduleDelayedFrame;
-        private scheduleAnimationFrame;
-        private _delayRequestId?;
-        private _frameRequestId?;
-        private _isEnabled;
-    }
-}
-declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
-    class MidiDeviceClassProvider {
-        static findDevices(findInputDevices: boolean): string;
-    }
-}
-declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
-    class MidiDeviceConnectionWatcher {
-        private static dispatchStateChanged;
-        static startStateChanged(): void;
-        static stopStateChanged(): void;
-        static onStateChanged(event: WebMidi.MIDIConnectionEvent): void;
-    }
 }

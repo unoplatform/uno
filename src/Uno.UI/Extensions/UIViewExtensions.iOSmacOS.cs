@@ -15,7 +15,7 @@ using Uno.Logging;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Controls;
-
+using Windows.UI.Xaml.Media;
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
@@ -533,22 +533,6 @@ namespace AppKit
 		}
 
 		/// <summary>
-		/// Gets an identifier that can be used for logging
-		/// </summary>
-		public static string GetDebugIdentifier(this _View element)
-		{
-			if (element == null)
-			{
-				return "--NULL--";
-			}
-
-			var name = (element as IFrameworkElement)?.Name;
-			return name.HasValue()
-				? element.GetType().Name + "_" + name + "_" + element.GetHashCode()
-				: element.GetType().Name + "_" + element.GetHashCode();
-		}
-
-		/// <summary>
 		/// Enumerates the children for the specified instance, either using _View.Subviews or using IShadowChildrenProvider.
 		/// </summary>
 		/// <param name="view"></param>
@@ -640,7 +624,7 @@ namespace AppKit
 						.Append(innerView == viewOfInterest ? "*>" : ">")
 						.Append(innerView.ToString() + namePart)
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
-						.Append($" d:{desiredSize}")
+						.Append($" ds:{desiredSize}")
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
@@ -650,10 +634,12 @@ namespace AppKit
 						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
 						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
+						.Append(fe != null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
 						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
-						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}, AvailableSize={uiElement.LastAvailableSize}" : "")
+						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
-						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
+						.Append(uiElement?.GetElementSpecificDetails())
+						.Append(uiElement?.RenderTransform.GetTransformDetails())
 						.AppendLine();
 			}
 		}

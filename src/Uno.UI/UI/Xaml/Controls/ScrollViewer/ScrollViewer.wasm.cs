@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 using Uno.UI.Xaml;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -20,15 +21,31 @@ namespace Windows.UI.Xaml.Controls
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 
-		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewScrollNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
+			if (zoomFactor.HasValue)
+			{
+				_log.Warn("ZoomFactor not supported yet on WASM target.");
+			}
+
 			if (_presenter != null)
 			{
 				_presenter.ScrollTo(horizontalOffset, verticalOffset, disableAnimation);
+				return true;
 			}
-			else if (_log.IsEnabled(LogLevel.Warning))
+			if (_log.IsEnabled(LogLevel.Warning))
 			{
 				_log.Warn("Cannot ChangeView as ScrollContentPresenter is not ready yet.");
+			}
+			return false;
+		}
+
+		partial void UpdatePartial(bool isIntermediate)
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMXamlProperty(nameof(HorizontalOffset), HorizontalOffset);
+				UpdateDOMXamlProperty(nameof(VerticalOffset), VerticalOffset);
 			}
 		}
 	}

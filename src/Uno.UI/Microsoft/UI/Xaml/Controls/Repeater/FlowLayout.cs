@@ -6,12 +6,8 @@ using System.Collections.Specialized;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Uno.Extensions;
 using static Microsoft.UI.Xaml.Controls._Tracing;
-#if !XAMARIN
-using _Float = Uno.UI.LayoutHelper;
-#else
-using _Float = System.Single;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -227,7 +223,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// If the available size is infinite, we will have realized all the items in one line.
 					// In that case, the extent in the non virtualizing direction should be based on the
 					// right/bottom of the last realized element.
-					SetMinorSize(ref extent, _Float.IsFinite(availableSizeMinor) ? availableSizeMinor : Math.Max(0.0f, MinorEnd(lastRealizedLayoutBounds)));
+					SetMinorSize(ref extent, availableSizeMinor.IsFinite() ? availableSizeMinor : Math.Max(0.0f, MinorEnd(lastRealizedLayoutBounds)));
 				}
 				else
 				{
@@ -236,7 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// We dont have anything realized. make an educated guess.
 					int numLines = (int)Math.Ceiling(itemsCount / averageItemsPerLine);
 					extent =
-						_Float.IsFinite(availableSizeMinor)
+						availableSizeMinor.IsFinite()
 							? MinorMajorRect(0, 0, availableSizeMinor, Math.Max(0.0f, (float)(numLines * averageLineSize - lineSpacing)))
 							: MinorMajorRect(
 								0,
@@ -405,7 +401,7 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
-#region private helpers
+		#region private helpers
 
 		double GetAverageLineInfo(
 
@@ -433,9 +429,26 @@ namespace Microsoft.UI.Xaml.Controls
 			avgCountInLine = Math.Max(1.0, flowState.TotalItemsPerLine / flowState.TotalLinesMeasured);
 			avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured);
 
-			return avgLineSize;
+			return _uno_lastKnownAverageLineSize = avgLineSize;
 		}
 
-#endregion
+		#endregion
+
+		#region Uno workaround
+		private double _uno_lastKnownAverageLineSize;
+
+		/// <inheritdoc />
+		protected internal override bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
+		{
+			var elementSize = _uno_lastKnownAverageLineSize;
+			if (elementSize <= 0)
+			{
+				return base.IsSignificantViewportChange(oldViewport, newViewport);
+			}
+
+			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > elementSize * 1.5
+				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > elementSize * 1.5;
+		}
+		#endregion
 	}
 }

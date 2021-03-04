@@ -12,7 +12,7 @@
 	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
 	<description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
 	<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
-	<repository type="git" url="https://github.com/unoplatform/uno.git" />
+	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 	<dependencies>
 
@@ -23,9 +23,9 @@
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="3.0.0-dev.18" />
-		<dependency id="Uno.Core" version="2.0.0" />
-		<dependency id="Uno.Core.Build" version="2.0.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
+		<dependency id="Uno.Core" version="2.2.0" />
+		<dependency id="Uno.Core.Build" version="2.2.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
@@ -35,33 +35,33 @@
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="3.0.0-dev.18" />
-		<dependency id="Uno.Core" version="2.0.0" />
-		<dependency id="Uno.Core.Build" version="2.0.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
+		<dependency id="Uno.Core" version="2.2.0" />
+		<dependency id="Uno.Core.Build" version="2.2.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.SourceGenerationTasks" version="3.0.0-dev.18" />
-		<dependency id="Uno.Core" version="2.0.0" />
-		<dependency id="Uno.Core.Build" version="2.0.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
+		<dependency id="Uno.Core" version="2.2.0" />
+		<dependency id="Uno.Core.Build" version="2.2.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
       <!-- macOS -->
       <group targetFramework="xamarinmac20">
-        <dependency id="Uno.SourceGenerationTasks" version="3.0.0-dev.18" />
-        <dependency id="Uno.Core" version="2.0.0" />
-        <dependency id="Uno.Core.Build" version="2.0.0" />
+        <dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
+        <dependency id="Uno.Core" version="2.2.0" />
+        <dependency id="Uno.Core.Build" version="2.2.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
       <!-- .NET Standard 2.0 -->
       <group targetFramework="netstandard2.0">
-        <dependency id="Uno.SourceGenerationTasks" version="3.0.0-dev.18" />
-        <dependency id="Uno.Core" version="2.0.0" />
-        <dependency id="Uno.Core.Build" version="2.0.0" />
+        <dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
+        <dependency id="Uno.Core" version="2.2.0" />
+        <dependency id="Uno.Core.Build" version="2.2.0" />
         <dependency id="System.Numerics.Vectors" version="4.5.0" />
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
         <dependency id="System.Memory" version="4.5.2" />

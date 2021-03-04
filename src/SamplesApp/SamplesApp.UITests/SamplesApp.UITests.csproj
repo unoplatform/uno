@@ -5,11 +5,11 @@
 	</PropertyGroup>
 
 	<ItemGroup> 
-		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" /> 
-		<PackageReference Include="Xamarin.UITest" Version="3.0.7" />
+		<PackageReference Include="Xamarin.UITest" Version="3.0.13" />
 		<PackageReference Include="Uno.UITest" />
 		<PackageReference Include="Uno.UITest.Selenium" />
 		<PackageReference Include="Uno.UITest.Xamarin" />

@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Documents
 			{
 				if (_defaultForeground == null)
 				{
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __MACOS__ || __ANDROID__
 					_defaultForeground = GetDefaultForeground();
 #else
 					_defaultForeground = null;

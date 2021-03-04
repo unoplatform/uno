@@ -6,7 +6,7 @@
     "noImplicitAny": true,
     "outFile": "WasmScripts/uno-lottie.js",
     "locale": "en-US",
-    "target": "es2015"
+    "target": "es2017"
   },
   "include": [
     "ts/**/*"

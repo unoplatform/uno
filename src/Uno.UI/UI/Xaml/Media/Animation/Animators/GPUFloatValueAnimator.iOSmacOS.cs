@@ -229,6 +229,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public event EventHandler AnimationCancel;
 
+		public event EventHandler AnimationFailed;
+
 		public void SetDuration(long duration)
 		{
 			_duration = duration;
@@ -405,7 +407,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			return NSValue.FromCATransform3D(CATransform3D.MakeFromAffine(matrix));
 		}
 
-		private void FinalizeAnimation()
+		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo completedInfo)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -417,7 +419,13 @@ namespace Windows.UI.Xaml.Media.Animation
 				_valueAnimator.Cancel();
 			}
 
-			AnimationEnd?.Invoke(this, EventArgs.Empty);
+			switch(completedInfo)
+			{
+				case UnoCoreAnimation.CompletedInfo.Sucesss: AnimationEnd?.Invoke(this, EventArgs.Empty); break;
+				case UnoCoreAnimation.CompletedInfo.Error: AnimationFailed?.Invoke(this, EventArgs.Empty); break;
+				default: throw new NotSupportedException($"{completedInfo} is not supported");
+			};
+
 			ReleaseCoreAnimation();
 		}
 

@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 
-#if !NETSTANDARD
+#if !UNO_REFERENCE_API
 		public TextBlock()
 		{
 			IFrameworkElementHelper.Initialize(this);
@@ -280,7 +280,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: 15.0,
+					defaultValue: 14.0,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontSizeChanged()
 				)

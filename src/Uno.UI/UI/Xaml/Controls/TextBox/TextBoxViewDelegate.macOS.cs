@@ -7,6 +7,7 @@ using System.Text;
 using AppKit;
 using Windows.UI.Core;
 using System.Threading.Tasks;
+using ObjCRuntime;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -22,6 +23,23 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public bool IsKeyboardHiddenOnEnter { get; set; }
+
+		public override bool DoCommandBySelector(NSControl control, NSTextView textView, Selector commandSelector)
+		{
+			switch (commandSelector.Name)
+			{
+				case "insertNewline:":
+					if (_textBox.TryGetTarget(out var textBox) && textBox.AcceptsReturn)
+					{
+						textView.InsertText((NSString)"\n");
+						return true;
+					}
+
+					break;
+			}
+
+			return false;
+		}
 
 		public override bool TextShouldBeginEditing(NSControl control, NSText fieldEditor)
 		{

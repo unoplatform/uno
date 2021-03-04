@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
+
+	<Import Project="../netcore-build.props" />
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<UnoSourceGeneratorUseGenerationHost>false</UnoSourceGeneratorUseGenerationHost>
@@ -14,7 +17,7 @@
 		<RootNamespace>Uno.UI</RootNamespace>
 		<AssemblyName>Uno.UI</AssemblyName>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
@@ -29,7 +32,7 @@
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
+		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
@@ -108,5 +111,19 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Mixins\Wasm\VisualStatesMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>VisualStatesMixins.tt</DependentUpon>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
+	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+	  </None>
 	</ItemGroup>
 </Project>

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Media;
 using System.IO;
 using System.Numerics;
 using Windows.UI.Composition;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -101,7 +102,9 @@ namespace Windows.UI.Xaml.Controls
 			RegisterAsScrollPort(this);
 		}
 
-		public void SetVerticalOffset(double offset)
+		public void SetVerticalOffset(double offset) => SetVerticalOffsetInternal(offset);
+
+		internal bool SetVerticalOffsetInternal(double offset)
 		{
 			var extentHeight = ExtentHeight;
 			var viewportHeight = ViewportHeight;
@@ -114,9 +117,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateTransform();
+
+			return scrollY == offset;
 		}
 
-		public void SetHorizontalOffset(double offset)
+		public void SetHorizontalOffset(double offset) => SetHorizontalOffsetInternal(offset);
+
+		internal bool SetHorizontalOffsetInternal(double offset)
 		{
 			var extentWidth = ExtentWidth;
 			var viewportWidth = ViewportWidth;
@@ -129,6 +136,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateTransform();
+
+			return scrollX == offset;
 		}
 
 		// Ensure the offset we're scrolling to is valid.
@@ -186,7 +195,11 @@ namespace Windows.UI.Xaml.Controls
 				var canScrollHorizontally = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
 				var canScrollVertically = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
 
-				if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers.HasFlag(global::Windows.System.VirtualKeyModifiers.Shift))
+				if (e.KeyModifiers == global::Windows.System.VirtualKeyModifiers.Control)
+				{
+					// TODO: Handle zoom
+				}
+				else if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == global::Windows.System.VirtualKeyModifiers.Shift)
 				{
 					if (canScrollHorizontally)
 					{

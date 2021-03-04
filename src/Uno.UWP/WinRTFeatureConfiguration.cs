@@ -64,5 +64,13 @@ namespace Uno
 		{
 			public static string ReachabilityHostname { get; set; } = "www.example.com";
 		}
+
+		public static class FileTypes
+		{
+			/// <summary>
+			/// Allows definition of custom file type MIME mappings.
+			/// </summary>
+			public static Dictionary<string, string> FileTypeToMimeMapping { get; } = new Dictionary<string, string>();
+		}
 	}
 }

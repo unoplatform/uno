@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -18,6 +19,8 @@
 					xmlns:macos="http://uno.ui/macos"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
+					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
+					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
 
@@ -61,7 +64,7 @@
 		<Setter Property="FontWeight"
 				Value="SemiBold" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="14" />
 		<Setter Property="TextTrimming"
 				Value="None" />
 		<Setter Property="TextWrapping"
@@ -117,7 +120,7 @@
 		<Setter Property="FontWeight"
 				Value="Normal" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="14" />
 	</xamarin:Style>
 	<xamarin:Style x:Key="CaptionTextBlockStyle"
 				   TargetType="TextBlock"
@@ -3727,15 +3730,15 @@
 		<Setter Property="Background"
 				Value="{ThemeResource SystemControlForegroundAccentBrush}" />
 		<Setter Property="Template">
-			<Setter.Value>	
-				<ControlTemplate TargetType="Thumb">	
-					<Border Background="{TemplateBinding Background}"	
-							BorderBrush="{TemplateBinding BorderBrush}"	
-							BorderThickness="{TemplateBinding BorderThickness}"	
-							CornerRadius="4" />	
-				</ControlTemplate>	
-			</Setter.Value>	
-		</Setter>	
+			<Setter.Value>
+				<ControlTemplate TargetType="Thumb">
+					<Border Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="4" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
 	</xamarin:Style>
 
 	<Style x:Key="XamlDefaultSlider"
@@ -4141,8 +4144,8 @@
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
-					<not_netstdref:ItemsWrapGrid Orientation="Horizontal" />
-					<netstdref:WrapPanel />
+					<itemswrapgridpresent:ItemsWrapGrid Orientation="Horizontal" />
+					<itemswrapgridnotpresent:WrapPanel />
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
@@ -4223,7 +4226,7 @@
 		<Setter Property="Padding"
 				Value="{ThemeResource TextControlThemePadding}" />
 	<!-- macOS PasswordBox implemeentation will not display the RevealButton -->
-		<macos:Setter Property="IsPasswordRevealButtonEnabled" 
+		<macos:Setter Property="IsPasswordRevealButtonEnabled"
 					  Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
@@ -4581,7 +4584,7 @@
 
 	<Style TargetType="ProgressBar"
 		   BasedOn="{StaticResource XamlDefaultProgressBar}" />
-	
+
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ListViewHeaderItem -->
 	<Style TargetType="ListViewHeaderItem">
@@ -5097,7 +5100,7 @@
 		<Setter Property="FontWeight"
 				Value="SemiBold" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="14" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ContentControl">
@@ -5746,7 +5749,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
 	<Style x:Name="AutoSuggestBoxDeleteButtonStyle" TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -5808,7 +5811,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
 	<Style x:Name="AutoSuggestBoxQueryButtonStyle" TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -6050,13 +6053,13 @@
 							Width="{TemplateBinding Height}"
 							VerticalAlignment="Stretch"
 							AutomationProperties.AccessibilityView="Raw"/>
-					
+
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
 	<!-- Default Style for AutoSuggestBox -->
 	<Style TargetType="AutoSuggestBox">
 		<Setter Property="VerticalAlignment" Value="Top" />
@@ -6108,14 +6111,14 @@
 								</ListView>
 							</Border>
 						</Popup>
-					
+
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>
 
-	<Style TargetType="MediaPlayerElement">
+	<not_mux:Style TargetType="MediaPlayerElement">
 		<Setter Property="HorizontalAlignment"
 				Value="Stretch" />
 		<Setter Property="VerticalAlignment"
@@ -6148,7 +6151,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</not_mux:Style>
 
 	<Style x:Key="MTC_ButtonStyle"
 		   TargetType="Button">
@@ -6208,7 +6211,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
 	<Style TargetType="ProgressBar"
 		   x:Key="MediaSliderProgressBarStyle">
 		<Setter Property="Height"
@@ -6601,19 +6604,19 @@
 					<Border Background="{TemplateBinding Background}"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch">
-						
+
 						<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  Content="{TemplateBinding Content}"
 										  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-					</Border>					
+					</Border>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>
 
-	<Style TargetType="MediaTransportControls">
+	<not_mux:Style TargetType="MediaTransportControls">
 		<Setter Property="IsTabStop"
 				Value="False" />
 		<Setter Property="Background"
@@ -7097,7 +7100,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</not_mux:Style>
 
 	<Style x:Key="AccentButtonStyle" TargetType="Button">
 		<Setter Property="Foreground" Value="{ThemeResource AccentButtonForeground}" />
@@ -7976,7 +7979,7 @@
 										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 									</VisualState.Setters>
 									 <!-- The storyboard below cannot be moved to a transition since transitions
-											will not be run by the framework when animations are disabled in the system--> 
+											will not be run by the framework when animations are disabled in the system-->
 
 									<Storyboard>
 										<ColorAnimation Duration="0" BeginTime="{ThemeResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" To="{ThemeResource ScrollBarThumbBackgroundColor}" />
@@ -8060,7 +8063,7 @@
 								<not_netstdref:VisualState x:Name="CollapsedWithoutAnimation">
 								<!-- The storyboard below cannot be moved to a transition since transitions
                                              will not be run by the framework when animations are disabled in the system -->
-								
+
 									<Storyboard>
 										<ColorAnimation Duration="0" BeginTime="{ThemeResource ScrollBarContractBeginTime}" Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" To="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
 										<ColorAnimation Duration="0" BeginTime="{ThemeResource ScrollBarContractBeginTime}" Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" To="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
@@ -8395,7 +8398,7 @@
 			</Setter.Value>
 		</Setter>
 	</not_netstdref:Style>
-	
+
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
         <Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />

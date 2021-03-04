@@ -66,6 +66,20 @@ A more advanced example which will not generate the android and macOS heads:
 dotnet new unoapp -o MyApp -android=false -macos=false
 ```
 
+## Uno Platform Uno.UITest library
+This templates creates a project for creating and running UI Tests based on [Uno.UITest](https://github.com/unoplatform/Uno.UITest).
+
+Considering you've created an application as follows:
+- `dotnet new unoapp -o MyApp`
+
+To create a UI Tests library:
+- Create a folder name `MyApp\MyApp.UITests`
+- In that folder, run `dotnet new unoapp-uitest`
+
+This will automatically add the new project to the existing solution.
+
+For additional information about UI Tests creation, visit the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) documentation.
+
 ## Uno Platform WebAssembly support for Xamarin Forms
 
 This template is built to enhance an existing Xamarin.Forms application with the [Uno Platform WebAssembly support](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform).
@@ -83,3 +97,7 @@ To use it:
 1. Set the Wasm project as the startup project 
 1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
 1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you�re good to go!
+
+### Getting Help
+
+If you need help with Uno Platform please visit our [Discord](https://wwww.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 

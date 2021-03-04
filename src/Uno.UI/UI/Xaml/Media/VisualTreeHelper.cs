@@ -146,6 +146,17 @@ namespace Windows.UI.Xaml.Media
 				.AsReadOnly();
 		}
 
+		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot == XamlRoot.Current)
+			{
+				return GetOpenPopups(Window.Current);
+			}
+
+			return new Popup[0];
+		}
+
+
 		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
 #if XAMARIN
@@ -221,7 +232,7 @@ namespace Windows.UI.Xaml.Media
 			view.AddView(child);
 #elif __IOS__ || __MACOS__
 			view.AddSubview(child);
-#elif NETSTANDARD
+#elif UNO_REFERENCE_API
 			view.AddChild(child);
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
@@ -240,7 +251,7 @@ namespace Windows.UI.Xaml.Media
 			children.ForEach(v => v.RemoveFromSuperview());
 
 			return children; 
-#elif NETSTANDARD
+#elif UNO_REFERENCE_API
 			var children = GetChildren<_View>(view).ToList();
 			view.ClearChildren();
 
@@ -250,7 +261,11 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		private static readonly GetHitTestability _defaultGetTestability = elt => elt.GetHitTestVisibility();
+		internal static readonly GetHitTestability DefaultGetTestability;
+		static VisualTreeHelper()
+		{
+			DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability!);
+		}
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
@@ -267,7 +282,7 @@ namespace Windows.UI.Xaml.Media
 #endif
 			if (Window.Current.RootElement is UIElement root)
 			{
-				return SearchDownForTopMostElementAt(position, root, getTestability ?? _defaultGetTestability, isStale);
+				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
 
 			return default;
@@ -281,7 +296,8 @@ namespace Windows.UI.Xaml.Media
 			Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
 		{
 			var stale = default(Branch?);
-			var elementHitTestVisibility = getVisibility(element);
+			HitTestability elementHitTestVisibility;
+			(elementHitTestVisibility, getVisibility) = getVisibility(element);
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);

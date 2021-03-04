@@ -14,10 +14,28 @@ namespace Uno.UI.Extensions
 		/// <summary>
 		/// Get a display name for the element for debug purposes
 		/// </summary>
-		internal static string GetDebugName(this UIElement? elt)
-			=> elt is null ? "--null--" : $"{(elt as FrameworkElement)?.Name ?? elt.GetType().Name}-{elt.GetHashCode():X8}";
+		internal static string GetDebugName(this object? elt)
+			=> elt switch
+			{
+				null => "--null--",
+				FrameworkElement fwElt when fwElt.Name.HasValue() => $"{fwElt.Name} -{elt.GetHashCode():X8}",
+				_ => $"{elt.GetType().Name} -{elt.GetHashCode():X8}",
+			};
 
-		internal static Thickness GetPadding(this UIElement uiElement)
+		internal static string GetDebugIdentifier(this object? elt)
+			=> $"{new string('\t', elt.GetDebugDepth())} [{elt.GetDebugName()}]";
+
+		internal static int GetDebugDepth(this object? elt) =>
+			elt switch
+			{
+				null => 0,
+#if NETSTANDARD
+				UIElement fwElt => fwElt.Depth,
+#endif
+				_ => elt.GetParent()?.GetDebugDepth() + 1?? 0,
+			};
+
+			internal static Thickness GetPadding(this UIElement uiElement)
 		{
 			if(uiElement is FrameworkElement fe && fe.TryGetPadding(out var padding))
 			{

@@ -166,6 +166,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
+#pragma warning disable 67
+		public event EventHandler AnimationFailed;
+#pragma warning restore 67
+
 		/// <inheritdoc />
 		public object AnimatedValue => _adaptee.AnimatedValue;
 
