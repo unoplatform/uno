@@ -9,7 +9,7 @@ namespace Windows.Storage
 	{
 		private static readonly Lazy<ResourceLoader> _resourceLoader = new Lazy<ResourceLoader>(() => ResourceLoader.GetForViewIndependentUse());
 
-		private string _displayNameResourceKey;
+		private readonly string _displayNameResourceKey;
 
 		internal StorageProvider(string id, string displayNameResourceKey)
 		{
