@@ -87,8 +87,9 @@ namespace Windows.UI.Xaml
 			base.OnVisibilityChanged(oldValue, newValue);
 
 			if (ContentBuilder != null
-				&& oldValue == Visibility.Collapsed 
+				&& oldValue == Visibility.Collapsed
 				&& newValue == Visibility.Visible
+				&& Parent != null
 			)
 			{
 				Materialize(isVisibilityChanged: true);
