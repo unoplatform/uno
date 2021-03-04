@@ -1,10 +1,10 @@
 # The Uno.UI WebAssembly WPF Host
 
-The Uno Platform provides the ability to run UWP and .NET code through the Mono runtime. While WebAssembly makes it very easy to deploy on the Web, it currently is, as of October 2018, not very easy to debug a application running in this context.
+The Uno Platform provides the ability to run UWP and .NET code through the Mono runtime. While WebAssembly makes it very easy to deploy on the Web, it currently is, as of October 2018, not very easy to debug an application running in this context.
 
-In order to ease the debugging of such an application, the Uno Platform provides the [Uno.UI.WpfHost package](https://www.nuget.org/packages/Uno.UI.WpfHost) to allow running the Uno Platform inside of a WPF application, using a Chromium WebView.
+In order to ease the debugging of such an application, the Uno Platform provides the [Uno.UI.WpfHost package](https://www.nuget.org/packages/Uno.UI.WpfHost). It supports the Uno Platform inside of a WPF application, using a Chromium WebView.
 
-This mode is possible by replacing the WebAssembly runtime by the Desktop .NET Framework, and have it communicate with the WebView via Javascript `eval()` calls on the WebView control. This enables easier troubleshooting of the .NET code, as all the C# code is running in a VisualStudio supported scenario, where C# edit and continue and all the debugger features are available.
+This mode is replaces the WebAssembly runtime with the Desktop .NET Framework. It communicates with the WebView via Javascript `eval()` calls on the WebView control. This enables easier troubleshooting of the .NET code, because all the C# code is running in a Visual Studio-supported scenario. In this scenario, C# edit-and-continue and all the debugger features are available.
 
 ## Using the Uno.UI.WpfHost package
 
@@ -35,4 +35,4 @@ UnoHostView.Init(() => MyApp.Wasm.Program.Main(new string[0]), $@"..\..\..\..\My
 </Window>
 ```
 
-Running the application will then execute the Wasm head code inside of the WPF application, allowing for the debugging of the C# code.
+Running the application will then execute the Wasm head code inside of the WPF application, allowing the debugger to attach to the C# code.
