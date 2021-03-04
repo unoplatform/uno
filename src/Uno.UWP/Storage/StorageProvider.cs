@@ -1,17 +1,24 @@
 ﻿#nullable enable
 
+using System;
+using Windows.ApplicationModel.Resources;
+
 namespace Windows.Storage
 {
 	public partial class StorageProvider
 	{
-		internal StorageProvider(string id, string displayName)
+		private static readonly Lazy<ResourceLoader> _resourceLoader = new Lazy<ResourceLoader>(() => ResourceLoader.GetForViewIndependentUse());
+
+		private string _displayNameResourceKey;
+
+		internal StorageProvider(string id, string displayNameResourceKey)
 		{
 			Id = id;
-			DisplayName = displayName;
+			_displayNameResourceKey = displayNameResourceKey;
 		}
 
 		public string Id { get; }
 
-		public string DisplayName { get; }
+		public string DisplayName => _resourceLoader.Value.GetString(_displayNameResourceKey);
 	}
 }

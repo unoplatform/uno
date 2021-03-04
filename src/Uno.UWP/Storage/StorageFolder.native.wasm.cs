@@ -19,7 +19,6 @@ namespace Windows.Storage
 		internal sealed class NativeStorageFolder : ImplementationBase
 		{
 			private const string JsType = "Uno.Storage.NativeStorageFolder";
-			private static readonly StorageProvider _provider = new StorageProvider("JsFileAccessApi", "JS File Access API");
 
 			// Used to keep track of the Folder handle on the Typescript side.
 			private Guid _id;
@@ -39,7 +38,7 @@ namespace Windows.Storage
 				_parent = parent;
 			}
 
-			public override StorageProvider Provider => _provider;
+			public override StorageProvider Provider => StorageProviders.NativeWasm;
 
 			public override string Name => _name;
 

@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Storage.Internal;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using IOPath = System.IO.Path;
@@ -14,14 +15,12 @@ namespace Windows.Storage
 	{
 		private sealed class Local : ImplementationBase
 		{
-			private static readonly StorageProvider _provider = new StorageProvider("computer", "This PC");
-
 			public Local(string path)
 				: base(path)
 			{
 			}
 
-			public override StorageProvider Provider => _provider;
+			public override StorageProvider Provider => StorageProviders.Local;
 
 			public override DateTimeOffset DateCreated => File.GetCreationTime(Path);
 

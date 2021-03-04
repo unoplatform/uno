@@ -7,8 +7,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
+using Uno.Storage.Internal;
 using Windows.Storage.FileProperties;
-using Windows.Storage.Internal;
 using IOPath = global::System.IO.Path;
 
 #if __IOS__
@@ -32,8 +32,6 @@ namespace Windows.Storage
 
 		private sealed class Local : ImplementationBase
 		{
-			private static readonly StorageProvider _provider = new StorageProvider("computer", "This PC");
-
 			private string _name;
 
 			public Local(string name, string path)
@@ -42,7 +40,7 @@ namespace Windows.Storage
 				_name = name;
 			}
 
-			public override StorageProvider Provider => _provider;
+			public override StorageProvider Provider => StorageProviders.Local;
 
 			public override string Name => _name;
 

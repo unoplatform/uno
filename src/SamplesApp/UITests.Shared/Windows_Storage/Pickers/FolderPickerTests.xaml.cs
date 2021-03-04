@@ -63,7 +63,7 @@ namespace UITests.Windows_Storage.Pickers
 			}
 		}
 
-		public ObservableCollection<string> FileTypeFilter { get; } = new ObservableCollection<string>();
+		public ObservableCollection<string> FileTypeFilter { get; } = new ObservableCollection<string>() { "*" };
 
 		public string ErrorMessage
 		{
