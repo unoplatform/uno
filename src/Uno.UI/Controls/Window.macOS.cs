@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Input;
+using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.Controls
 {
@@ -84,29 +85,35 @@ namespace Uno.UI.Controls
 		{
 			try
 			{
+				// The effective location in top/left coordinates.
+				var posInWindow = new Point(evt.LocationInWindow.X, VisibleFrame.Height - evt.LocationInWindow.Y);
+				if (posInWindow.Y < 0)
+				{
+					// We are in the titlebar, let send the event to native code ... so close button will continue to work
+					base.SendEvent(evt);
+					return;
+				}
+
 				switch (evt.Type)
 				{
-					// Note: To get the mouse entered / exited and moves while not pressed,
-					//		 we set a TrackingArea on the root NSView in the Windows.UI.Xaml.Window.
-
 					case NSEventType.MouseEntered:
-						CoreWindowEvents?.RaisePointerEntered(ToPointerArgs(evt, VisibleFrame.Height));
+						CoreWindowEvents?.RaisePointerEntered(ToPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.MouseExited:
-						CoreWindowEvents?.RaisePointerExited(ToPointerArgs(evt, VisibleFrame.Height));
+						CoreWindowEvents?.RaisePointerExited(ToPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.LeftMouseDown:
 					case NSEventType.OtherMouseDown:
 					case NSEventType.RightMouseDown:
-						CoreWindowEvents?.RaisePointerPressed(ToPointerArgs(evt, VisibleFrame.Height));
+						CoreWindowEvents?.RaisePointerPressed(ToPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.LeftMouseUp:
 					case NSEventType.OtherMouseUp:
 					case NSEventType.RightMouseUp:
-						CoreWindowEvents?.RaisePointerReleased(ToPointerArgs(evt, VisibleFrame.Height));
+						CoreWindowEvents?.RaisePointerReleased(ToPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.MouseMoved:
@@ -116,11 +123,11 @@ namespace Uno.UI.Controls
 					case NSEventType.TabletPoint:
 					case NSEventType.TabletProximity:
 					case NSEventType.DirectTouch:
-						CoreWindowEvents?.RaisePointerMoved(ToPointerArgs(evt, VisibleFrame.Height));
+						CoreWindowEvents?.RaisePointerMoved(ToPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.ScrollWheel:
-						CoreWindowEvents?.RaisePointerWheelChanged(ToPointerArgs(evt, VisibleFrame.Height));
+						CoreWindowEvents?.RaisePointerWheelChanged(ToPointerArgs(evt, posInWindow));
 						break;
 
 					default:
@@ -145,16 +152,16 @@ namespace Uno.UI.Controls
 
 		internal ICoreWindowEvents CoreWindowEvents { private get; set; }
 
-		private static PointerEventArgs ToPointerArgs(NSEvent nativeEvent, double windowHeight)
+		private static PointerEventArgs ToPointerArgs(NSEvent nativeEvent, Point posInWindow)
 		{
-			var point = GetPointerPoint(nativeEvent, windowHeight);
+			var point = GetPointerPoint(nativeEvent, posInWindow);
 			var modifiers = GetVirtualKeyModifiers(nativeEvent);
 			var args = new PointerEventArgs(point, modifiers);
 
 			return args;
 		}
 
-		private static PointerPoint GetPointerPoint(NSEvent nativeEvent, double windowHeight)
+		private static PointerPoint GetPointerPoint(NSEvent nativeEvent, Point posInWindow)
 		{
 			var frameId = ToFrameId(nativeEvent.Timestamp);
 			var timestamp = ToTimestamp(nativeEvent.Timestamp);
@@ -163,11 +170,10 @@ namespace Uno.UI.Controls
 			var pointerId = pointerDeviceType == PointerDeviceType.Pen
 				? (uint)nativeEvent.PointingDeviceID()
 				: (uint)0;
-			var rawPosition = new Windows.Foundation.Point(nativeEvent.LocationInWindow.X, windowHeight - nativeEvent.LocationInWindow.Y);
 			var isInContact = GetIsInContact(nativeEvent);
 			var properties = GetPointerProperties(nativeEvent, pointerDeviceType);
 
-			return new PointerPoint(frameId, timestamp, pointerDevice, pointerId, rawPosition, rawPosition, isInContact, properties);
+			return new PointerPoint(frameId, timestamp, pointerDevice, pointerId, posInWindow, posInWindow, isInContact, properties);
 		}
 
 		private static PointerPointProperties GetPointerProperties(NSEvent nativeEvent, PointerDeviceType pointerType)
@@ -331,10 +337,10 @@ namespace Uno.UI.Controls
 		/// Method invoked when a drag operation enters the <see cref="NSWindow"/>.
 		/// </summary>
 		/// <remarks>
-		///
+		/// 
 		/// While it is never documented directly, DraggingEntered can be added to NSWindow just like NSView.
 		/// Key docs telling this story include:
-		///
+		/// 
 		///  (1) NSWindow documentation does not include most NSView drag/drop methods
 		///      https://developer.apple.com/documentation/appkit/nswindow
 		///  (2) Since NSWindow documentation doesn't reference them, they also aren't included in Xamarin
@@ -347,11 +353,11 @@ namespace Uno.UI.Controls
 		///      https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/DragandDrop/Concepts/dragdestination.html#//apple_ref/doc/uid/20000977-BAJBJFBG
 		///  (5) Other macOS drag/drop articles and blogs refer to dragging/dropping directly from Window - although
 		///      give no examples.
-		///
+		/// 
 		/// The Export "method_name" attribute is fundamentally important to make this work, removing it will
 		/// break functionality and the method will never be called by macOS. Again, this seemingly is because
 		/// Xamarin.macOS is not aware of it.
-		///
+		/// 
 		/// </remarks>
 		/// <param name="info">Information about the dragging session from the sender.</param>
 		/// <returns>The accepted drag operation(s).</returns>
