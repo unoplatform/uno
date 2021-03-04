@@ -143,32 +143,13 @@ namespace Windows.UI.Xaml
 				case NSView view:
 					do
 					{
-						//If we found an NSClipView, we are assuming that we are inside of an NSScrollView.
-						//So "skip" past the NSClipView and allow the logic to flow through to the check for NativeScrollContentPresenter
-						if (view is NSClipView && view.Superview is NativeScrollContentPresenter)
-						{
-							parent = view.Superview?.GetParent();
-							view = view.Superview;
-						}
-						else
-						{
-							parent = parent?.GetParent();
-						}
+						parent = parent?.GetParent();
 
 						switch (parent)
 						{
 							case UIElement eltParent:
 								// We found a UIElement in the parent hierarchy, we compute the X/Y offset between the
 								// first parent 'view' and this 'elt', and return it.
-
-								if (view is NativeScrollContentPresenter)
-								{
-									// The NativeScrollContentPresenter will include the scroll offset when converting point to coordinates
-									// space of the parent, but the same scroll offset will be applied by the parent ScrollViewer.
-									// So as it's not expected to have any transform/margins/etc., we compute offset directly from its parent.
-
-									view = view.Superview;
-								}
 
 								var offset = view?.ConvertPointToView(default, eltParent) ?? default;
 
