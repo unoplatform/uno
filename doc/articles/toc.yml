@@ -308,6 +308,10 @@
       href: contributing\guidelines\updating-dependencies.md
     - name: Guidelines for issue triage
       href: contributing\guidelines\issue-triage.md
+    - name: Adding documentation
+      href: uno-development\doc-on-docs.md
+    - name: DocFX
+      href: uno-development\docfx.md
     - name: Uno.UI release procedure
       href: uno-development\release-procedure.md
     - name: Build Artifacts

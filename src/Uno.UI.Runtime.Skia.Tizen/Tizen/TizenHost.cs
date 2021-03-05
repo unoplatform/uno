@@ -21,6 +21,7 @@ using Uno.UI.Runtime.Skia.Tizen.Devices.Haptics;
 using Windows.System.Profile;
 using Uno.UI.Runtime.Skia.Tizen.System.Profile;
 using Windows.ApplicationModel;
+using Windows.System;
 using Uno.UI.Runtime.Skia.Tizen.ApplicationModel;
 using Uno.ApplicationModel;
 using Windows.ApplicationModel.Contacts;
@@ -65,7 +66,16 @@ namespace Uno.UI.Runtime.Skia
 				.GetCommandLineArgs()
 				.Skip(1)
 				.ToArray();
-			
+
+			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
+			{
+				EcoreMainloop.PostAndWakeUp(() => callback());
+
+				return true;
+			}
+
+			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
+
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
 

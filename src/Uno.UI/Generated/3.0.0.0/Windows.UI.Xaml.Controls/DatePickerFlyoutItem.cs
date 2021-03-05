@@ -9,34 +9,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SecondaryText
-		{
-			get
-			{
-				return (string)this.GetValue(SecondaryTextProperty);
-			}
-			set
-			{
-				this.SetValue(SecondaryTextProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string PrimaryText
-		{
-			get
-			{
-				return (string)this.GetValue(PrimaryTextProperty);
-			}
-			set
-			{
-				this.SetValue(PrimaryTextProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Type Type
 		{
 			get
@@ -44,22 +16,6 @@ namespace Windows.UI.Xaml.Controls
 				throw new global::System.NotImplementedException("The member Type DatePickerFlyoutItem.Type is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PrimaryText), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SecondaryTextProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SecondaryText), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem), 
-			new FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryText.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryText.set

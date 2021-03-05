@@ -38,7 +38,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-        public void FlyoutTest_DataBoundButton_CommandExecutes()
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
+		public void FlyoutTest_DataBoundButton_CommandExecutes()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent");
 
@@ -137,6 +138,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
 		public void FlyoutTest_Simple_FlyoutsCanBeDismissed()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Simple");
@@ -193,6 +195,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
 		public void Flyout_TemplatedParent()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.Flyout.Flyout_TemplatedParent");

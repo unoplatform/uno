@@ -15,13 +15,25 @@ namespace Windows.UI.Xaml.Input
 	{
 		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(FocusManager).Log());
 
-		private static object _focusedElement;
+		private static readonly Dictionary<XamlRoot, object> _focusedElement = new Dictionary<XamlRoot, object>(1);
 
 		/// <summary>
 		/// Get the currently focused element, if any
 		/// </summary>
 		/// <returns>null means nothing is focused.</returns>
-		public static object GetFocusedElement() => _focusedElement;
+		public static object GetFocusedElement() => GetFocusedElement(XamlRoot.Current);
+
+		private static void SetFocusedElement(object element) => SetFocusedElement(XamlRoot.Current, element);
+
+
+		public static object GetFocusedElement(XamlRoot xamlRoot)
+		{
+			return _focusedElement.TryGetValue(xamlRoot, out var element) ? element : null;
+		}
+		private static void SetFocusedElement(XamlRoot xamlRoot, object element)
+		{
+			_focusedElement[xamlRoot] = element;
+		}
 
 		/// <summary>
 		/// Attempts to change focus from the element with focus to the next focusable element in the specified direction.
@@ -72,7 +84,7 @@ namespace Windows.UI.Xaml.Input
 		internal static bool SetFocusedElement(DependencyObject newFocus, FocusNavigationDirection focusNavigationDirection, FocusState focusState)
 		{
 			var control = newFocus as Control; // For now only called for Control
-			if (!control.IsFocusable)
+			if (control != null && !control.IsFocusable)
 			{
 				control = control.FindFirstChild<Control>(c => c.IsFocusable);
 			}
@@ -88,22 +100,23 @@ namespace Windows.UI.Xaml.Input
 		private static bool UpdateFocus(DependencyObject newFocus, FocusNavigationDirection focusNavigationDirection, FocusState focusState)
 		{
 			// TODO: check AllowFocusOnInteraction
+			var oldFocusedElement = GetFocusedElement();
+
 			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				_log.Value.LogDebug($"{nameof(UpdateFocus)}()- oldFocus={_focusedElement}, newFocus={newFocus}, oldFocus.FocusState={(_focusedElement as Control)?.FocusState}, focusState={focusState}");
+				_log.Value.LogDebug($"{nameof(UpdateFocus)}()- oldFocus={oldFocusedElement}, newFocus={newFocus}, oldFocus.FocusState={(oldFocusedElement as Control)?.FocusState}, focusState={focusState}");
 			}
 
-			if (newFocus == _focusedElement)
+			if (newFocus == oldFocusedElement)
 			{
-				var newFocusAsControl = newFocus as Control;
-				if (newFocusAsControl != null && newFocusAsControl.FocusState != focusState)
+				if (newFocus is Control newFocusAsControl && newFocusAsControl.FocusState != focusState)
 				{
 					// We do not raise GettingFocus here since the OldFocusedElement and NewFocusedElement
 					// would be the same element.
-					RaiseGotFocusEvent(_focusedElement);
+					RaiseGotFocusEvent(oldFocusedElement);
 
 					// Make sure the FocusState is up-to-date.
-					(newFocus as Control)?.UpdateFocusState(focusState);
+					newFocusAsControl.UpdateFocusState(focusState);
 				}
 				// No change in focus element - can skip the rest of this method.
 				return true;
@@ -111,12 +124,10 @@ namespace Windows.UI.Xaml.Input
 
 			//TODO: RaiseAndProcessGettingAndLosingFocusEvents
 
-			var oldFocusedElement = _focusedElement;
-
 			(oldFocusedElement as Control)?.UpdateFocusState(FocusState.Unfocused); // Set previous unfocused
 
 			// Update the focused control
-			_focusedElement = newFocus;
+			SetFocusedElement(newFocus);
 
 			(newFocus as Control)?.UpdateFocusState(focusState);
 
@@ -127,9 +138,9 @@ namespace Windows.UI.Xaml.Input
 				RaiseLostFocusEvent(oldFocusedElement);
 			}
 
-			if (_focusedElement != null)
+			if (newFocus != null)
 			{
-				RaiseGotFocusEvent(_focusedElement);
+				RaiseGotFocusEvent(newFocus);
 			}
 
 			return true;

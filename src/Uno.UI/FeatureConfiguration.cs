@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml;
@@ -309,13 +309,13 @@ namespace Uno.UI
 			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
 
 			/// <summary>
-			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
+			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="Windows.UI.Xaml.Controls.CommandBar"/>
 			/// and <see cref="AppBarButton"/>) to use their native styles.
 			/// </summary>
 			public static void ConfigureNativeFrameNavigation()
 			{
 				SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
-				SetUWPDefaultStylesOverride<CommandBar>(useUWPDefaultStyle: false);
+				SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
 				SetUWPDefaultStylesOverride<AppBarButton>(useUWPDefaultStyle: false);
 			}
 
@@ -495,6 +495,20 @@ namespace Uno.UI
 		{
 #if __IOS__
 			public static bool UseLegacyStyle { get; set; } = false;
+#endif
+		}
+
+		public static class CommandBar
+		{
+#if __IOS__
+			/// <summary>
+			/// Gets or Set whether the AllowNativePresenterContent feature is on or off.
+			/// This feature is used in the context of the sample application to test NavigationBars outside of a NativeFramePresenter for
+			/// UI Testing. In general cases, this should not happen as the bar may be moved back to to this presenter while
+			/// another page is already visible, making this bar overlay on top of another.
+			/// </summary>
+			/// <returns>True if this feature is on, False otherwise</returns>
+			public static bool AllowNativePresenterContent { get; set; } = false;
 #endif
 		}
 	}

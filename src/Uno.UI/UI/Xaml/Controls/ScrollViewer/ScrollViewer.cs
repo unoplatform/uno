@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -681,8 +682,42 @@ namespace Windows.UI.Xaml.Controls
 			ViewportHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
 			ViewportWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
 
-			ExtentHeight = (Content as IFrameworkElement)?.ActualHeight ?? 0;
-			ExtentWidth = (Content as IFrameworkElement)?.ActualWidth ?? 0;
+			if(Content is FrameworkElement fe)
+			{
+				var explicitHeight = fe.Height;
+				if (explicitHeight.IsFinite())
+				{
+					ExtentHeight = explicitHeight;
+				}
+				else
+				{
+					var canUseActualHeightAsExtent =
+						fe.ActualHeight > 0 &&
+						fe.VerticalAlignment == VerticalAlignment.Stretch;
+
+					ExtentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
+				}
+
+				var explicitWidth = fe.Width;
+				if (explicitWidth.IsFinite())
+				{
+					ExtentWidth = explicitWidth;
+				}
+				else
+				{
+					var canUseActualWidthAsExtent =
+						fe.ActualWidth > 0 &&
+						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
+
+					ExtentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
+				}
+			}
+			else
+			{
+				// TODO: fallback on native values (.ContentSize on iOS, for example)
+				ExtentHeight = 0;
+				ExtentWidth = 0;
+			}
 
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
@@ -836,7 +871,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);
 
-			ApplyScrollContentPresenterContent();
+			ApplyScrollContentPresenterContent(Content);
 
 			OnApplyTemplatePartial();
 
@@ -874,20 +909,22 @@ namespace Windows.UI.Xaml.Controls
 				// for the lack of TemplatedParentScope support
 				ClearContentTemplatedParent(oldValue);
 
-				ApplyScrollContentPresenterContent();
+				ApplyScrollContentPresenterContent(newValue);
 			}
 
 			UpdateSizeChangedSubscription();
+
+			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
 		}
 
-		private void ApplyScrollContentPresenterContent()
+		private void ApplyScrollContentPresenterContent(object content)
 		{
 			// Stop the automatic propagation of the templated parent on the Content
 			// This prevents issues when the a ScrollViewer is hosted in a control template
 			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
 			// on the Content property. This can make the Content added twice in the visual tree.
 			// cf. https://github.com/unoplatform/uno/issues/3762
-			if (Content is IDependencyObjectStoreProvider provider)
+			if (content is IDependencyObjectStoreProvider provider)
 			{
 				var contentTemplatedParent = provider.Store.GetValue(provider.Store.TemplatedParentProperty);
 				if (contentTemplatedParent == null || contentTemplatedParent != TemplatedParent)
@@ -900,7 +937,7 @@ namespace Windows.UI.Xaml.Controls
 			// Then explicitly propagate the Content to the _presenter
 			if (_presenter != null)
 			{
-				_presenter.Content = Content as View;
+				_presenter.Content = content as View;
 			}
 
 			// Propagate the ScrollViewer's own templated parent, instead of 
@@ -1087,7 +1124,12 @@ namespace Windows.UI.Xaml.Controls
 				_ => true
 			};
 
-			ChangeViewScroll(null, e.NewValue, disableAnimation: immediate);
+			ChangeViewScroll(
+				horizontalOffset: null,
+				verticalOffset: e.NewValue,
+				zoomFactor: null,
+				disableAnimation: immediate,
+				shouldSnap: true);
 		}
 
 		private void OnHorizontalScrollBarScrolled(object sender, ScrollEventArgs e)
@@ -1103,13 +1145,21 @@ namespace Windows.UI.Xaml.Controls
 				_ => true
 			};
 
-			ChangeViewScroll(e.NewValue, null, disableAnimation: immediate);
+			ChangeViewScroll(
+				horizontalOffset: e.NewValue,
+				verticalOffset: null,
+				zoomFactor: null,
+				disableAnimation: immediate,
+				shouldSnap: true);
 		}
 #endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
+			var h = horizontalOffset == HorizontalOffset ? null : (double?)horizontalOffset;
+			var v = verticalOffset == VerticalOffset ? null : (double?)verticalOffset;
+
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
 
@@ -1120,7 +1170,54 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				Update(isIntermediate);
+
+				if(!isIntermediate)
+				{
+					if (HorizontalSnapPointsType != SnapPointsType.None ||
+					    VerticalSnapPointsType != SnapPointsType.None)
+					{
+						if(_snapPointsTimer == null)
+						{
+							_snapPointsTimer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
+							_snapPointsTimer.IsRepeating = false;
+							_snapPointsTimer.Interval = TimeSpan.FromMilliseconds(250);
+							_snapPointsTimer.Tick += (snd, evt) => DelayedMoveToSnapPoint();
+						}
+
+						_horizontalOffsetForSnapPoints = h ?? horizontalOffset;
+						_verticalOffsetForSnapPoints = v ?? verticalOffset;
+
+						_snapPointsTimer.Start();
+					}
+				}
 			}
+		}
+
+		private DispatcherQueueTimer? _snapPointsTimer;
+		private double? _horizontalOffsetForSnapPoints;
+		private double? _verticalOffsetForSnapPoints;
+
+		private void DelayedMoveToSnapPoint()
+		{
+			var h = _horizontalOffsetForSnapPoints;
+			var v = _verticalOffsetForSnapPoints;
+
+			AdjustOffsetsForSnapPoints(ref h, ref v, ZoomFactor);
+
+			if ((h == null || h == HorizontalOffset) && (v == null || v == VerticalOffset))
+			{
+				return; // already on a snap point
+			}
+
+			ChangeViewScroll(
+				horizontalOffset: h,
+				verticalOffset: v,
+				zoomFactor: null,
+				disableAnimation: false,
+				shouldSnap: false);
+
+			_horizontalOffsetForSnapPoints = null;
+			_verticalOffsetForSnapPoints = null;
 		}
 
 		// Presenter to Control, i.e. OnPresenterZoomed
@@ -1190,21 +1287,49 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"ChangeView(horizontalOffset={horizontalOffset}, verticalOffset={verticalOffset}, zoomFactor={zoomFactor}, disableAnimation={disableAnimation})");
 			}
 
+			if(horizontalOffset == null && verticalOffset == null && zoomFactor == null)
+			{
+				return true; // nothing to do
+			}
+
 			var verticalOffsetChanged = verticalOffset != null && verticalOffset != VerticalOffset;
 			var horizontalOffsetChanged = horizontalOffset != null && horizontalOffset != HorizontalOffset;
 
 			var zoomFactorChanged = zoomFactor != null && zoomFactor != ZoomFactor;
 
-			if (verticalOffsetChanged || horizontalOffsetChanged)
+			bool scrolledSuccessfully = true;
+
+			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
-				ChangeViewScroll(horizontalOffset, verticalOffset, disableAnimation);
-			}
-			if (zoomFactorChanged)
-			{
-				ChangeViewZoom(zoomFactor ?? 1, disableAnimation);
+				scrolledSuccessfully = ChangeViewScroll(
+					horizontalOffset,
+					verticalOffset,
+					zoomFactor,
+					disableAnimation,
+					shouldSnap: true);
 			}
 
-			return verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged;
+			return scrolledSuccessfully && (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged);
+		}
+
+		private bool ChangeViewScroll(
+			double? horizontalOffset,
+			double? verticalOffset,
+			float? zoomFactor,
+			bool disableAnimation,
+			bool shouldSnap)
+		{
+			if (horizontalOffset is null && verticalOffset is null && zoomFactor is null)
+			{
+				return false;
+			}
+
+			if (shouldSnap)
+			{
+				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor);
+			}
+
+			return ChangeViewScrollNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
 		}
 
 		/// <summary>
@@ -1215,9 +1340,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="zoomFactor">A value between MinZoomFactor and MaxZoomFactor that specifies the required target ZoomFactor.</param>
 		/// <returns>true if the view is changed; otherwise, false.</returns>
 		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor) => ChangeView(horizontalOffset, verticalOffset, zoomFactor, false);
-
-		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);
-		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
 
 #region Scroll indicators visual states (Managed scroll bars only)
 		private DispatcherQueueTimer? _indicatorResetTimer;

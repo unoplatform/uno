@@ -11,9 +11,19 @@
 	<TargetFrameworksCI>$(TargetFrameworks);net5.0-windows</TargetFrameworksCI>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-	<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net5.0'">$(TargetFrameworks)-windows</TargetFrameworks>
-  </PropertyGroup>
+  <Choose>
+	<When Condition="'$(UnoTargetFrameworkOverride)'=='netstandard2.0'">
+	  <PropertyGroup>
+		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+	  </PropertyGroup>
+	</When>
+	<When Condition="'$(UnoTargetFrameworkOverride)'!=''">
+	  <PropertyGroup>
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net5.0'">$(TargetFrameworks)-windows</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net6.0'">$(TargetFrameworks)-windows</TargetFrameworks>
+	  </PropertyGroup>
+	</When>
+  </Choose>
 
 </Project>

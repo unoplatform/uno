@@ -618,19 +618,6 @@ namespace AppKit
 				var uiElement = innerView as UIElement;
 				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
 				var fe = innerView as IFrameworkElement;
-				var transforms = GetTransforms(uiElement?.RenderTransform);
-
-				string GetTransforms(Transform transform)
-				{
-					return transform switch
-					{
-						TransformGroup group => $"Grp({@group.Children.Select(GetTransforms)})",
-						ScaleTransform scale => $"Scale({scale.ScaleX}, {scale.ScaleY} @{scale.CenterX},{scale.CenterY})",
-						MatrixTransform matrix => $"Matrix({matrix.Matrix.M11}, {matrix.Matrix.M12}, {matrix.Matrix.M21}, {matrix.Matrix.M22})",
-						TranslateTransform translate => $"Translate({translate.X}, {translate.Y})",
-						_ => ""
-					};
-				}
 
 				return sb
 						.Append(spacing)
@@ -647,12 +634,12 @@ namespace AppKit
 						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
 						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
+						.Append(fe != null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
 						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
 						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
-						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\" - {textBlock.FontFamily}/{textBlock.FontSize}" : "")
-						.Append(innerView is Viewbox viewBox ? $" Stretch={viewBox.Stretch}/{viewBox.StretchDirection}" : "")
-						.Append(" " + transforms)
+						.Append(uiElement?.GetElementSpecificDetails())
+						.Append(uiElement?.RenderTransform.GetTransformDetails())
 						.AppendLine();
 			}
 		}

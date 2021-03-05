@@ -1,11 +1,15 @@
 #nullable enable
 
+using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml
 {
-	public partial class XamlRoot
+	public sealed partial class XamlRoot
 	{
+		private XamlRoot() { }
+
 		internal static XamlRoot Current { get; } = new XamlRoot();
 
 		public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;

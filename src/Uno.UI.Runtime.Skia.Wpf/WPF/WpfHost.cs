@@ -8,10 +8,12 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Uno.Extensions.Storage.Pickers;
+using System.Windows.Threading;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
 using Windows.Graphics.Display;
+using Windows.System;
 using WinUI = Windows.UI.Xaml;
 using WpfApplication = System.Windows.Application;
 
@@ -59,6 +61,28 @@ namespace Uno.UI.Skia.Platform
 				var app = appBuilder();
 				app.Host = this;
 			}
+
+			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
+			{
+				if(priority == DispatcherQueuePriority.Normal)
+				{
+					dispatcher.BeginInvoke(callback);
+				}
+				else
+				{
+					var p = priority switch
+					{
+						DispatcherQueuePriority.Low => DispatcherPriority.Background,
+						DispatcherQueuePriority.High => DispatcherPriority.Send, // This one is higher than normal
+						_ => DispatcherPriority.Normal
+					};
+					dispatcher.BeginInvoke(p, callback);
+				}
+
+				return true;
+			}
+
+			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;

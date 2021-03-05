@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Set strings with fallback to default English
-			OkString = !string.IsNullOrEmpty(ok) ? ok : "OK"; 
+			OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
 			CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
 
 #if __IOS__
@@ -85,15 +85,7 @@ namespace Windows.UI.Xaml.Controls
 			this.Configuration.Preferences.JavaScriptCanOpenWindowsAutomatically = true;
 			this.Configuration.Preferences.JavaScriptEnabled = true;
 
-			NavigationDelegate = new WebViewNavigationDelegate(
-				//Removed the OnStarted Here because it was calling OnStarted Event twice, On NavigationCommited and OnNavigationStarted
-				onNavigationCommited: null,
-				onNavigationFinished: OnNavigationFinished,
-				onNavigationFailed: OnError,
-				onProvisionalNavigationStarted: OnStarted,
-				onProvisionalNavigationFailed: OnError,
-				onUnsupportedUriSchemeIdentified: OnUnsupportedUriSchemeIdentified
-			);
+			NavigationDelegate = new WebViewNavigationDelegate(this);
 
 			UIDelegate = new LocalWKUIDelegate(
 				onCreateWebView: OnCreateWebView,
@@ -124,16 +116,16 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private NSUrl _urlLastNavigation;
 
-		private void OnNavigationFinished(WKWebView webView, WKNavigation navigation)
+		private void OnNavigationFinished(Uri destinationUrl)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("OnNavigationFinished: {0}", webView.Url?.ToUri());
+				this.Log().DebugFormat("OnNavigationFinished: {0}", destinationUrl);
 			}
 
-			_parentWebView.DocumentTitle = webView.Title;
-			_parentWebView.OnComplete(webView.Url, isSuccessful: true, status: WebErrorStatus.Unknown);
-			_urlLastNavigation = webView.Url;
+			_parentWebView.DocumentTitle = Title;
+			_parentWebView.OnComplete(destinationUrl, isSuccessful: true, status: WebErrorStatus.Unknown);
+			_urlLastNavigation = destinationUrl;
 		}
 
 		private WKWebView OnCreateWebView(WKWebView owner, WKWebViewConfiguration configuration, WKNavigationAction action, WKWindowFeatures windowFeatures)
@@ -314,11 +306,19 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		private void OnStarted(WKWebView webView, WKNavigation navigation)
+		/// <summary>
+		/// Raises <see cref="WebView.NavigationStarting"/> to allow cancellation of navigation.
+		/// </summary>
+		/// <param name="stopLoadingOnCanceled">
+		/// Whether <see cref="WKWebView.StopLoading"/> should be called if the user cancels the navigation.
+		/// This parameter should be false when the <see cref="WKWebView"/> is not actually loading a request (like for anchors navigation).
+		/// </param>
+		/// <returns>True if the user cancelled the navigation, false otherwise.</returns>
+		private bool OnStarted(Uri targetUrl, bool stopLoadingOnCanceled = true)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("OnStarted: {0}", webView.Url.ToUri());
+				this.Log().DebugFormat("OnStarted: {0}", targetUrl);
 			}
 
 			_isCancelling = false;
@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			var args = new WebViewNavigationStartingEventArgs()
 			{
 				Cancel = false,
-				Uri = webView.Url.ToUri() ?? _parentWebView.Source
+				Uri = targetUrl ?? _parentWebView.Source
 			};
 
 			_parentWebView.OnNavigationStarting(args);
@@ -334,8 +334,13 @@ namespace Windows.UI.Xaml.Controls
 			if (args.Cancel)
 			{
 				_isCancelling = true;
-				StopLoading();
+				if (stopLoadingOnCanceled)
+				{
+					StopLoading();
+				}
 			}
+
+			return args.Cancel;
 		}
 
 		private void OnError(WKWebView webView, WKNavigation navigation, NSError error)
@@ -449,19 +454,6 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				LoadRequest(request);
-			}
-
-			// If we navigate to the exact same page but with a different location, the native control will not notify us of
-			// any navigation. We need to create this notification to indicate that the navigation worked (only a scroll in the page)
-			var currentUrlParts = _urlLastNavigation?.AbsoluteUrl?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
-			var newUrlParts = uri?.AbsoluteUri?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
-
-			if (currentUrlParts?.Length > 0
-				&& newUrlParts?.Length > 0
-				&& newUrlParts.Length > 1
-				&& currentUrlParts[0].Equals(newUrlParts[0]))
-			{
-				OnNavigationFinished(this, null);
 			}
 		}
 
@@ -649,48 +641,73 @@ namespace Windows.UI.Xaml.Controls
 
 		private class WebViewNavigationDelegate : WKNavigationDelegate
 		{
-			private readonly Action<WKWebView, WKNavigation> _onNavigationCommited;
-			private readonly Action<WKWebView, WKNavigation> _onNavigationFinished;
-			private readonly Action<WKWebView, WKNavigation, NSError> _onNavigationFailed;
-			private readonly Action<WKWebView, WKNavigation> _onProvisionalNavigationStarted;
-			private readonly Action<WKWebView, WKNavigation, NSError> _onProvisionalNavigationFailed;
-			private readonly Func<Uri, bool> _onUnsupportedUriSchemeIdentified;
+			/// <summary>
+			/// The reference to the parent UnoWKWebView class on which we invoke callbacks.
+			/// </summary>
+			[Weak]
+			private readonly UnoWKWebView _unoWKWebView;
 
-			public WebViewNavigationDelegate(
-				Action<WKWebView, WKNavigation> onNavigationCommited,
-				Action<WKWebView, WKNavigation> onNavigationFinished,
-				Action<WKWebView, WKNavigation, NSError> onNavigationFailed,
-				Action<WKWebView, WKNavigation> onProvisionalNavigationStarted,
-				Action<WKWebView, WKNavigation, NSError> onProvisionalNavigationFailed,
-				Func<Uri, bool> onUnsupportedUriSchemeIdentified
-			)
+			public WebViewNavigationDelegate(UnoWKWebView unoWKWebView)
 			{
-				_onNavigationCommited = onNavigationCommited;
-				_onNavigationFinished = onNavigationFinished;
-				_onNavigationFailed = onNavigationFailed;
-				_onProvisionalNavigationStarted = onProvisionalNavigationStarted;
-				_onProvisionalNavigationFailed = onProvisionalNavigationFailed;
-				_onUnsupportedUriSchemeIdentified = onUnsupportedUriSchemeIdentified;
+				_unoWKWebView = unoWKWebView;
 			}
 
 			public override void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, Action<WKNavigationActionPolicy> decisionHandler)
 			{
+				var requestUrl = navigationAction.Request?.Url.ToUri();
+
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"WKNavigationDelegate.DecidePolicy: Request:{navigationAction.Request?.Url.ToUri()} TargetRequest: {navigationAction.TargetFrame?.Request}");
+					this.Log().Debug($"WKNavigationDelegate.DecidePolicy: NavigationType: {navigationAction.NavigationType} Request:{requestUrl} TargetRequest: {navigationAction.TargetFrame?.Request}");
 				}
 
-				var scheme = navigationAction.Request.Url.Scheme.ToLower();
+				var scheme = requestUrl.Scheme.ToLower();
 
-				if (scheme != "http" && scheme != "https")
+				// Note that the "file" scheme is not officially supported by the UWP WebView (https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.webview.unsupportedurischemeidentified?view=winrt-19041#remarks).
+				// We have to support it here for anchor navigation (as long as https://github.com/unoplatform/uno/issues/2998 is not resolved).
+				var isUnsupportedScheme = scheme != "http" && scheme != "https" && scheme != "file";
+				if (isUnsupportedScheme)
 				{
-					bool cancelled = _onUnsupportedUriSchemeIdentified?.Invoke(navigationAction.Request.Url.ToUri()) ?? false;
+					bool cancelled = _unoWKWebView.OnUnsupportedUriSchemeIdentified(requestUrl);
 
 					decisionHandler(cancelled ? WKNavigationActionPolicy.Cancel : WKNavigationActionPolicy.Allow);
+
+					return;
 				}
-				else
+
+				// The WKWebView doesn't raise navigation event for anchor navigation.
+				// When we detect anchor navigation, we must raise the events (NavigationStarting & NavigationFinished) ourselves.
+				var isAnchorNavigation = GetIsAnchorNavigation();
+				if (isAnchorNavigation)
 				{
-					decisionHandler(WKNavigationActionPolicy.Allow);
+					bool cancelled = _unoWKWebView.OnStarted(requestUrl, stopLoadingOnCanceled: false);
+
+					decisionHandler(cancelled ? WKNavigationActionPolicy.Cancel : WKNavigationActionPolicy.Allow);
+
+					if (!cancelled)
+					{
+						_unoWKWebView.OnNavigationFinished(requestUrl);
+					}
+
+					return;
+				}
+
+				// For all other cases, we allow the navigation. This will results in other WKNavigationDelegate methods being called.
+				decisionHandler(WKNavigationActionPolicy.Allow);
+
+				bool GetIsAnchorNavigation()
+				{
+					// If we navigate to the exact same page but with a different location (using anchors), the native control will not notify us of
+					// any navigation. We need to create this notification to indicate that the navigation worked.
+
+					// To detect an anchor navigation, both the previous and new urls need to match on the left part of the anchor indicator ("#")
+					// AND the new url needs to have content on the right of the anchor indicator.
+					var currentUrlParts = _unoWKWebView._urlLastNavigation?.AbsoluteUrl?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
+					var newUrlParts = requestUrl?.AbsoluteUri?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
+
+					return currentUrlParts?.Length > 0
+						&& newUrlParts?.Length > 1
+						&& currentUrlParts[0].Equals(newUrlParts[0]);
 				}
 			}
 
@@ -711,7 +728,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"WKNavigationDelegate.DidReceiveServerRedirectForProvisionalNavigation: Request:{webView.Url?.ToUri()}");
 				}
 
-				_onProvisionalNavigationStarted?.Invoke(webView, navigation);
+				_unoWKWebView.OnStarted(webView.Url?.ToUri());
 			}
 
 			public override void ContentProcessDidTerminate(WKWebView webView)
@@ -728,18 +745,17 @@ namespace Windows.UI.Xaml.Controls
 				{
 					this.Log().Debug($"WKNavigationDelegate.DidCommitNavigation: Request:{webView.Url?.ToUri()}");
 				}
-
-				_onNavigationCommited?.Invoke(webView, navigation);
 			}
 
 			public override void DidFinishNavigation(WKWebView webView, WKNavigation navigation)
 			{
+				var url = webView.Url?.ToUri();
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"WKNavigationDelegate.DidFinishNavigation: Request:{webView.Url?.ToUri()}");
+					this.Log().Debug($"WKNavigationDelegate.DidFinishNavigation: Request:{url}");
 				}
 
-				_onNavigationFinished?.Invoke(webView, navigation);
+				_unoWKWebView.OnNavigationFinished(url);
 			}
 
 			public override void DidFailNavigation(WKWebView webView, WKNavigation navigation, NSError error)
@@ -749,16 +765,16 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"WKNavigationDelegate.DidCommitNavigation: Request:{webView.Url?.ToUri()}");
 				}
 
-				_onNavigationFailed?.Invoke(webView, navigation, error);
+				_unoWKWebView.OnError(webView, navigation, error);
 			}
 			public override void DidStartProvisionalNavigation(WKWebView webView, WKNavigation navigation)
 			{
-				_onProvisionalNavigationStarted?.Invoke(webView, navigation);
+				_unoWKWebView.OnStarted(webView.Url?.ToUri());
 			}
 
 			public override void DidFailProvisionalNavigation(WKWebView webView, WKNavigation navigation, NSError error)
 			{
-				_onProvisionalNavigationFailed?.Invoke(webView, navigation, error);
+				_unoWKWebView.OnError(webView, navigation, error);
 			}
 		}
 	}

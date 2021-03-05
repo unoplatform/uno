@@ -89,6 +89,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\Item1Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\Item2Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\Item3Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\NavigationViewSample.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Footer\PaneLayoutTestPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1117,6 +1137,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Features.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Header.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1313,6 +1337,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\LoopingSelectorTests\LoopingSelector_Items.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\LoopingSelectorTests\LoopingSelector_Short.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Sources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1414,6 +1446,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_SnapPoints.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2861,6 +2897,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_AnchorNavigation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_Animated_Opacity.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4019,6 +4059,21 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\DialogWithNavView.xaml.cs">
       <DependentUpon>DialogWithNavView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\Item1Page.xaml.cs">
+      <DependentUpon>Item1Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\Item2Page.xaml.cs">
+      <DependentUpon>Item2Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\Item3Page.xaml.cs">
+      <DependentUpon>Item3Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\NavigationViewSample.xaml.cs">
+      <DependentUpon>NavigationViewSample.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\FluentStyle\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Footer\PaneLayoutTestPage.xaml.cs">
       <DependentUpon>PaneLayoutTestPage.xaml</DependentUpon>
     </Compile>
@@ -4646,7 +4701,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\LongTitle\CommandBar_Page3.xaml.cs">
       <DependentUpon>CommandBar_Page3.xaml</DependentUpon>
-    </Compile>    
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\Native_Frame\Page_Detail.xaml.cs">
       <DependentUpon>Page_Detail.xaml</DependentUpon>
     </Compile>
@@ -4691,6 +4746,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_DatePartVisibility.xaml.cs">
       <DependentUpon>DatePicker_DatePartVisibility.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Features.xaml.cs">
+      <DependentUpon>DatePicker_Features.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Header.xaml.cs">
       <DependentUpon>DatePicker_Header.xaml</DependentUpon>
@@ -4828,6 +4886,13 @@
       <DependentUpon>RotatedListView_WithRotatedItems.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\WeirdMeasureSequenceControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\LoopingSelectorTests\LoopingSelector_Items.xaml.cs">
+      <DependentUpon>LoopingSelector_Items.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\LoopingSelectorTests\LoopingSelector_Items_Item.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\LoopingSelectorTests\LoopingSelector_Short.xaml.cs">
+      <DependentUpon>LoopingSelector_Short.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Sources.xaml.cs">
       <DependentUpon>MediaPlayerElement_Sources.xaml</DependentUpon>
     </Compile>
@@ -4907,6 +4972,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_ScrollBars.xaml.cs">
       <DependentUpon>ScrollViewer_ScrollBars.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_SnapPoints.xaml.cs">
+      <DependentUpon>ScrollViewer_SnapPoints.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_Header.xaml.cs">
       <DependentUpon>Slider_Header.xaml</DependentUpon>
@@ -5731,6 +5799,9 @@
       <DependentUpon>UndefinedHeightListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebViewViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_AnchorNavigation.xaml.cs">
+      <DependentUpon>WebView_AnchorNavigation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_Animated_Opacity.xaml.cs">
       <DependentUpon>WebView_Animated_Opacity.xaml</DependentUpon>
     </Compile>
