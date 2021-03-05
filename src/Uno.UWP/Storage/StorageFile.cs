@@ -63,8 +63,38 @@ namespace Windows.Storage
 
 		#region internal API (Task)
 
+		internal Task<StorageFolder?> GetParent(CancellationToken ct)
+			=> Implementation.GetParentAsync(ct);
+
+		internal Task<BasicProperties> GetBasicProperties(CancellationToken ct)
+			=> Implementation.GetBasicPropertiesAsync(ct);
+
+		internal Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			=> Implementation.OpenAsync(ct, accessMode, options);
+
 		internal Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 			=> Implementation.OpenStreamAsync(ct, accessMode, options);
+
+		internal Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option)
+			=> Implementation.OpenTransactedWriteAsync(ct, option);
+
+		internal Task Delete(CancellationToken ct, StorageDeleteOption options)
+			=> Implementation.DeleteAsync(ct, options);
+
+		internal Task Rename(CancellationToken ct, string desiredName, NameCollisionOption option)
+			=> Implementation.RenameAsync(ct, desiredName, option);
+
+		internal Task<StorageFile> Copy(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			=> Implementation.CopyAsync(ct, destinationFolder, desiredNewName, option);
+
+		internal Task CopyAndReplace(CancellationToken ct, IStorageFile target)
+			=> Implementation.CopyAndReplaceAsync(ct, target);
+
+		internal Task Move(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			=> Implementation.MoveAsync(ct, destinationFolder, desiredNewName, option);
+
+		internal Task MoveAndReplace(CancellationToken ct, IStorageFile target)
+			=> Implementation.MoveAndReplaceAsync(ct, target);
 
 		#endregion
 
