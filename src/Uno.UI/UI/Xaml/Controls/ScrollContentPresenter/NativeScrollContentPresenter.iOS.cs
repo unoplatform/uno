@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			TouchesManager = new ScrollContentPresenterManipulationManager(this);
 			Scrolled += OnScrolled;
-			ViewForZoomingInScrollView = _ => Content;
+			ViewForZoomingInScrollView = _ => Content as UIView;
 			DidZoom += OnZoom;
 			DraggingStarted += OnDraggingStarted;
 			DraggingEnded += OnDraggingEnded;
