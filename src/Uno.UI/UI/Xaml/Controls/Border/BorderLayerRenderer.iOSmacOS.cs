@@ -103,12 +103,12 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (cornerRadius != CornerRadius.None)
 			{
-				var maxRadius = Math.Max(0, Math.Min((float)area.Width / 2 - widthOffset, (float)area.Height / 2 - heightOffset));
-				cornerRadius = new CornerRadius(
-					Math.Min(cornerRadius.TopLeft, maxRadius),
-					Math.Min(cornerRadius.TopRight, maxRadius),
-					Math.Min(cornerRadius.BottomRight, maxRadius),
-					Math.Min(cornerRadius.BottomLeft, maxRadius));
+				var maxInnerRadius = Math.Max(0, Math.Min((float)area.Width / 2 - widthOffset, (float)area.Height / 2 - heightOffset));
+				var innerCornerRadius = new CornerRadius(
+					Math.Min(cornerRadius.TopLeft, maxInnerRadius),
+					Math.Min(cornerRadius.TopRight, maxInnerRadius),
+					Math.Min(cornerRadius.BottomRight, maxInnerRadius),
+					Math.Min(cornerRadius.BottomLeft, maxInnerRadius));
 
 				var outerLayer = new CAShapeLayer();
 				var innerLayer = new CAShapeLayer();
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Shapes
 					})
 					.DisposeWith(disposables);
 
-				var path = GetRoundedRect(cornerRadius, area, adjustedArea);
+				var path = GetRoundedRect(cornerRadius, innerCornerRadius, area, adjustedArea);
 				var innerPath = GetRoundedPath(cornerRadius, adjustedArea);
 
 				var insertionIndex = 0;
@@ -353,12 +353,12 @@ namespace Windows.UI.Xaml.Shapes
 		/// <summary>
 		/// Creates a rounded-rectangle path from the nominated bounds and corner radius.
 		/// </summary>
-		private static CGPath GetRoundedRect(CornerRadius cornerRadius, CGRect area, CGRect insetArea)
+		private static CGPath GetRoundedRect(CornerRadius cornerRadius, CornerRadius innerCornerRadius, CGRect area, CGRect insetArea)
 		{
 			var path = new CGPath();
 
 			GetRoundedPath(cornerRadius, area, path);
-			GetRoundedPath(cornerRadius, insetArea, path);
+			GetRoundedPath(innerCornerRadius, insetArea, path);
 
 			return path;
 		}
@@ -368,7 +368,6 @@ namespace Windows.UI.Xaml.Shapes
 			path ??= new CGPath();
 			// How AddArcToPoint works:
 			// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
-
 			path.MoveToPoint(area.GetMidX(), area.Y);
 			path.AddArcToPoint(area.Right, area.Top, area.Right, area.GetMidY(), (float)cornerRadius.TopRight);
 			path.AddArcToPoint(area.Right, area.Bottom, area.GetMidX(), area.Bottom, (float)cornerRadius.BottomRight);
