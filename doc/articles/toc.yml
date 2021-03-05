@@ -96,11 +96,16 @@
           href: getting-started\requirements.md
         - name: Features list
           href: supported-features.md
+        - name: How Uno works
+          href: how-uno-works.md
         - name: Differences from WinUI
           href: api-differences.md
         - name: Philosophy of Uno
           href: concepts/overview/philosophy-of-uno.md
-    - name: UWP documentation
+        - name: UWP vs WinUI 3
+          href: uwp-vs-winui3.md
+    - name: WinUI links
+      href: winui-doc-links.md
     - name: Uno basics
       items:
         - name: Platform-specific C# code
@@ -259,6 +264,8 @@
               href: migrating-guidance.md
         - name: Creating a cross-targeted library
           href: cross-targeted-libraries.md
+    - name: Supported 3rd-party libraries
+      href: supported-libraries.md
     - name: Performance
       href: Uno-UI-Performance.md
     - name: Advanced topics
