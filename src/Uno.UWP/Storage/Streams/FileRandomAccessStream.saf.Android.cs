@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Android.App;
+using Uno.Storage.Streams.Internal;
 
 namespace Windows.Storage.Streams
 {
@@ -12,8 +13,21 @@ namespace Windows.Storage.Streams
 
 		private class SafStream : ImplementationBase
 		{
-			private SafStream(Stream stream) : base(stream)
+			private readonly Android.Net.Uri _fileUri;
+			private readonly IRentableStream _rentableStream;
+			private readonly FileAccessMode _accessMode;
+
+			private SafStream(Android.Net.Uri fileUri, Stream stream) : base(stream)
 			{
+				_fileUri = fileUri;
+				_accessMode = FileAccessMode.Read;
+			}
+
+			private SafStream(Android.Net.Uri fileUri, Stream stream, IRentableStream rentableStream) : base(stream)
+			{
+				_fileUri = fileUri;
+				_rentableStream = rentableStream;
+				_accessMode = FileAccessMode.ReadWrite;
 			}
 
 			public static async Task<SafStream> CreateAsync(Android.Net.Uri fileUri, FileAccessMode access)
@@ -23,31 +37,59 @@ namespace Windows.Storage.Streams
 					throw new ArgumentNullException(nameof(fileUri));
 				}
 
-				Stream backingStream;
 				if (access == FileAccessMode.Read)
 				{
-					backingStream = Application.Context.ContentResolver.OpenInputStream(fileUri);
+					var backingStream = Application.Context.ContentResolver.OpenInputStream(fileUri);
+					return new SafStream(fileUri, backingStream);
 				}
 				else
 				{
-					backingStream = Application.Context.ContentResolver.OpenOutputStream(fileUri);
+					var backingStream = await SafOutputStream.CreateAsync(fileUri);
+					var rentedStream = backingStream.Rent();
+					return new SafStream(fileUri, rentedStream, backingStream);
 				}
-				return new SafStream(backingStream);
 			}
 
 			public override IRandomAccessStream CloneStream()
 			{
-				return new FileRandomAccessStream(new SafStream(_stream));
+				if (_accessMode == FileAccessMode.Read)
+				{
+					var newReadStream = Application.Context.ContentResolver.OpenInputStream(_fileUri);
+					return new FileRandomAccessStream(new SafStream(_fileUri, newReadStream));
+				}
+				else
+				{
+					var rentedStream = _rentableStream.Rent();
+					return new FileRandomAccessStream(new SafStream(_fileUri, rentedStream, _rentableStream));
+				}
 			}
 
 			public override IInputStream GetInputStreamAt(ulong position)
 			{
-				return new FileInputStream(_stream);
+				if (!CanRead)
+				{
+					throw new NotSupportedException("The file has not been opened for read.");
+				}
+
+				var newReadStream = Application.Context.ContentResolver.OpenInputStream(_fileUri);
+
+				newReadStream.Seek((long)position, SeekOrigin.Begin);
+
+				return new FileInputStream(newReadStream);
 			}
 
 			public override IOutputStream GetOutputStreamAt(ulong position)
 			{
-				return new FileOutputStream(_stream);
+				if (!CanWrite)
+				{
+					throw new NotSupportedException("The file has not been opened for write.");
+				}
+
+				var rentedStream = _rentableStream.Rent();
+
+				rentedStream.Seek((long)position, SeekOrigin.Begin);
+
+				return new FileOutputStream(rentedStream);
 			}
 		}
 	}
