@@ -13,12 +13,6 @@
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<EmbeddedResource Include="WasmScripts\**\*.js" />
-		<UpToDateCheckInput Remove="WasmScripts\uno-lottie.js" />
-		<UpToDateCheckInput Include="ts\**\*" />
-	</ItemGroup>
-
 	<ItemGroup>
 	  <None Remove="buildTransitive\Uno.UI.Lottie.targets" />
 	</ItemGroup>

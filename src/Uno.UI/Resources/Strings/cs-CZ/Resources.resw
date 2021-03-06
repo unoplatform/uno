@@ -121,7 +121,7 @@
     <value>Settings</value>
   </data>
   <data name="StorageProviderLocalDisplayName" xml:space="preserve">
-    <value>This PC</value>
+    <value>Tento počítač</value>
   </data>
   <data name="StorageProviderNativeWasmDisplayName" xml:space="preserve">
     <value>JS File Access API</value>

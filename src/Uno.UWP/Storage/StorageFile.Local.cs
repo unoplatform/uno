@@ -1,10 +1,13 @@
+#nullable enable
+
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Storage.Internal;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
+using IOPath = System.IO.Path;
 
 namespace Windows.Storage
 {
@@ -17,55 +20,60 @@ namespace Windows.Storage
 			{
 			}
 
+			public override StorageProvider Provider => StorageProviders.Local;
+
 			public override DateTimeOffset DateCreated => File.GetCreationTime(Path);
 
 			protected override bool IsEqual(ImplementationBase impl)
 				=> impl is Local other && Path.Equals(other.Path);
 
-			public override async Task<StorageFolder> GetParent(CancellationToken ct)
-				=> new StorageFolder(global::System.IO.Path.GetDirectoryName(Path));
+			public override async Task<StorageFolder?> GetParentAsync(CancellationToken ct)
+			{
+				var directoryPath = IOPath.GetDirectoryName(Path);
+				return directoryPath != null ? new StorageFolder(directoryPath) : null;
+			} 
 
-			public override async Task<BasicProperties> GetBasicProperties(CancellationToken ct)
-				=> new BasicProperties(Owner);
+			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
+				=> BasicProperties.FromFilePath(Owner.Path);
 
-			public override async Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 				=> new RandomAccessStreamWithContentType(new FileRandomAccessStream(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
 
-			public override async Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 				=> File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));
 
-			public override async Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option)
+			public override async Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option)
 				=> new StorageStreamTransaction(Owner, ToFileShare(option));
 
-			public override async Task Delete(CancellationToken ct, StorageDeleteOption options)
+			public override async Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
 				=> File.Delete(Path);
 
-			public override async Task CopyAndReplace(CancellationToken ct, IStorageFile target)
+			public override async Task CopyAndReplaceAsync(CancellationToken ct, IStorageFile target)
 			{
 				switch (target)
 				{
-					case StorageFile file when file._impl is Local:
+					case StorageFile file when file.Implementation is Local:
 						File.Copy(Path, file.Path, overwrite: true);
 						break;
 
 					default:
-						await base.CopyAndReplace(ct, target);
+						await base.CopyAndReplaceAsync(ct, target);
 						break;
 				}
 			}
 
-			public override async Task MoveAndReplace(CancellationToken ct, IStorageFile target)
+			public override async Task MoveAndReplaceAsync(CancellationToken ct, IStorageFile target)
 			{
 				switch (target)
 				{
-					case StorageFile file when file._impl is Local:
+					case StorageFile file when file.Implementation is Local:
 						File.Delete(file.Path);
 						File.Move(Path, file.Path);
 						Path = target.Path;
 						break;
 
 					default:
-						await base.MoveAndReplace(ct, target);
+						await base.MoveAndReplaceAsync(ct, target);
 						break;
 				}
 			}

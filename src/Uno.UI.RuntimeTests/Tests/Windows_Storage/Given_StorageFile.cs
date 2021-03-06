@@ -1,15 +1,9 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources;
-using Windows.ApplicationModel.Resources.Core;
-using Windows.Storage;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams;
+using Windows.Storage;
 
 namespace Uno.UI.RuntimeTests.Tests
 {
@@ -17,7 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests
 	public class Given_StorageFile
 	{
 		String _filename;
-		
+
 		[TestInitialize]
 		public void Init()
 		{
@@ -32,26 +26,26 @@ namespace Uno.UI.RuntimeTests.Tests
 		[TestMethod]
 		public async Task When_DeleteFile()
 		{
-			
+
 			var _folder = Windows.Storage.ApplicationData.Current.LocalFolder;
 			Assert.IsNotNull(_folder, "cannot get LocalFolder - error outside tested method");
 
 			Windows.Storage.StorageFile _file = null;
-			
+
 			try
 			{
-				_file = await _folder.CreateFileAsync( _filename, Windows.Storage.CreationCollisionOption.FailIfExists);
+				_file = await _folder.CreateFileAsync(_filename, Windows.Storage.CreationCollisionOption.FailIfExists);
 				Assert.IsNotNull(_file, "cannot create file - error outside tested method");
 			}
 			catch
 			{
-				  Assert.Fail("CreateFile exception - error outside tested method");
+				Assert.Fail("CreateFile exception - error outside tested method");
 			}
 
 			// try delete file
 			try
 			{
-				  await _file.DeleteAsync();
+				await _file.DeleteAsync();
 			}
 			catch
 			{
@@ -165,8 +159,179 @@ namespace Uno.UI.RuntimeTests.Tests
 			Assert.AreNotEqual(file1.Position, file2.Position);
 		}
 
+		[TestMethod]
+		public async Task When_CreateFile_GenerateUnique_Not_Exists()
+		{
+			var path = "";
+			try
+			{
+				path = GetRandomFolderPath();
+				var folder = await StorageFolder.GetFolderFromPathAsync(path);
+
+				// Create some other file
+				await folder.CreateFileAsync("something.txt");
+
+				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
+
+				// No suffix should be generated
+				Assert.AreEqual("test.txt", createdFile.Name);
+			}
+			finally
+			{
+				Directory.Delete(path, true);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_GenerateUnique_Exists()
+		{
+			var path = "";
+			try
+			{
+				path = GetRandomFolderPath();
+				var folder = await StorageFolder.GetFolderFromPathAsync(path);
+
+				await folder.CreateFileAsync("test.txt");
+
+				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
+				
+				Assert.AreEqual("test (2).txt", createdFile.Name);
+			}
+			finally
+			{
+				Directory.Delete(path, true);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_GenerateUnique_Exists_No_Extension()
+		{
+			var path = "";
+			try
+			{
+				path = GetRandomFolderPath();
+				var folder = await StorageFolder.GetFolderFromPathAsync(path);
+
+				await folder.CreateFileAsync("test");
+
+				var createdFile = await folder.CreateFileAsync("test", CreationCollisionOption.GenerateUniqueName);
+
+				Assert.AreEqual("test (2)", createdFile.Name);
+			}
+			finally
+			{
+				Directory.Delete(path, true);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_GenerateUnique_Exists_Increments()
+		{
+			var path = "";
+			try
+			{
+				path = GetRandomFolderPath();
+				var folder = await StorageFolder.GetFolderFromPathAsync(path);
+
+				await folder.CreateFileAsync("test.txt");
+
+				await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
+				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
+
+				Assert.AreEqual("test (3).txt", createdFile.Name);
+			}
+			finally
+			{
+				Directory.Delete(path, true);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_GenerateUnique_Multiple()
+		{
+			var path = "";
+			try
+			{
+				path = GetRandomFolderPath();
+				var folder = await StorageFolder.GetFolderFromPathAsync(path);
+
+				await folder.CreateFileAsync("test.txt");
+
+				for (int i = 2; i < 20; i++)
+				{
+					await folder.CreateFileAsync($"test ({i}).txt");
+				}
+
+				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
+
+				Assert.AreEqual("test (20).txt", createdFile.Name);
+			}
+			finally
+			{
+				Directory.Delete(path, true);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_GenerateUnique_Multiple_With_Gap()
+		{
+			var path = "";
+			try
+			{
+				path = GetRandomFolderPath();
+				var folder = await StorageFolder.GetFolderFromPathAsync(path);
+
+				await folder.CreateFileAsync("test.txt");
+
+				for (int i = 2; i < 20; i++)
+				{
+					await folder.CreateFileAsync($"test ({i}).txt");
+				}
+
+				var gapFile = await folder.GetFileAsync("test (14).txt");
+				await gapFile.DeleteAsync();
+
+				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
+
+				Assert.AreEqual("test (14).txt", createdFile.Name);
+			}
+			finally
+			{
+				Directory.Delete(path, true);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_GenerateUnique_Exists_Folder()
+		{
+			var path = "";
+			try
+			{
+				path = GetRandomFolderPath();
+				var folder = await StorageFolder.GetFolderFromPathAsync(path);
+
+				await folder.CreateFileAsync("test.txt");
+				await folder.CreateFolderAsync("test (2).txt");
+
+				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
+
+				Assert.AreEqual("test (3).txt", createdFile.Name);
+			}
+			finally
+			{
+				Directory.Delete(path, true);
+			}
+		}
+
 		private string GetRandomFilePath()
 			=> Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{Guid.NewGuid()}.txt");
+
+		private string GetRandomFolderPath()
+		{
+			var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, Guid.NewGuid().ToString());
+			Directory.CreateDirectory(path);
+			return path;
+		}
 
 		public async Task<StorageFile> GetFile(string filePath)
 			=> await StorageFile.GetFileFromPathAsync(filePath);

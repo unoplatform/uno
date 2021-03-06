@@ -5,11 +5,8 @@
 			try {
 				const selectedFolder = await showDirectoryPicker();
 
-				const guid = Uno.Utils.Guid.NewGuid();
-
-				NativeStorageFolder.AddHandle(guid, selectedFolder);
-
-				return guid;
+				const info = Uno.Storage.NativeStorageItem.getInfos(selectedFolder)[0];
+				return JSON.stringify(info);
 			}
 			catch (e) {
 				console.log("The user dismissed the prompt without making a selection, " +

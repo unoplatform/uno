@@ -1,7 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Foundation;
+using Uno.Storage.Internal;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using SystemPath = global::System.IO.Path;
@@ -10,25 +14,33 @@ namespace Windows.Storage
 {
 	public partial class StorageFile
 	{
-		internal static StorageFile GetFileFromNativePath(Guid guid, string name, string contentType) =>
-			new StorageFile(new NativeStorageFile(guid, name, contentType));
+		internal static StorageFile GetFromNativeInfo(NativeStorageItemInfo info, StorageFolder? parent = null) =>
+			new StorageFile(new NativeStorageFile(info, parent));
 
-		private sealed class NativeStorageFile : ImplementationBase
+		internal sealed class NativeStorageFile : ImplementationBase
 		{
-			private const string JsType = "Windows.Storage.NativeStorageFile";
+			private const string JsType = "Uno.Storage.NativeStorageFile";
+			private static readonly StorageProvider _provider = new StorageProvider("JsFileAccessApi", "JS File Access API");
 
 			// Used to keep track of the File handle on the Typescript side.
 			private readonly Guid _id;
 			private readonly string _fileName;
-			private readonly string _contentType;
+			private readonly StorageFolder? _parent;
 
-			public NativeStorageFile(Guid id, string fileName, string contentType)
+			public NativeStorageFile(NativeStorageItemInfo nativeStorageItem, StorageFolder? parent = null)
 				: base(string.Empty)
 			{
-				_id = id;
-				_fileName = fileName;
-				_contentType = contentType;
+				if (parent != null && !(parent.Implementation is StorageFolder.NativeStorageFolder))
+				{
+					throw new ArgumentException("Parent folder of a native file must be a native folder", nameof(parent));
+				}
+
+				_id = nativeStorageItem.Id;
+				_fileName = nativeStorageItem.Name;
+				_parent = parent;
 			}
+
+			public override StorageProvider Provider => StorageProviders.NativeWasm;
 
 			public override string Name => _fileName;
 
@@ -36,23 +48,44 @@ namespace Windows.Storage
 
 			public override string FileType => SystemPath.GetExtension(_fileName);
 
-			public override string ContentType => _contentType;
+			public override DateTimeOffset DateCreated => throw NotSupported();
 
-			public override DateTimeOffset DateCreated => throw new NotSupportedException("IsEqual is currently not supported on WASM native file system.");
+			protected override bool IsEqual(ImplementationBase impl) => throw NotSupported();
 
-			protected override bool IsEqual(ImplementationBase impl) => throw new NotSupportedException("IsEqual is currently not supported on WASM native file system.");
+			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => Task.FromResult(_parent);
 
-			public override Task<StorageFolder> GetParent(CancellationToken ct) => throw new NotImplementedException();
+			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
+			{
+				var basicPropertiesString = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getBasicPropertiesAsync(\"{_id}\")");
+				var parts = basicPropertiesString.Split('|');
 
-			public override Task<BasicProperties> GetBasicProperties(CancellationToken ct) => throw new NotImplementedException();
+				ulong.TryParse(parts[0], out ulong size);
 
-			public override Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => base.OpenStream(ct, accessMode, options);
+				var dateTimeModified = DateTimeOffset.UtcNow;
+				if (long.TryParse(parts[1], out var dateModifiedUnixMilliseconds))
+				{
+					dateTimeModified = DateTimeOffset.FromUnixTimeMilliseconds(dateModifiedUnixMilliseconds);
+				}
 
-			public override Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw new NotImplementedException();
+				return new BasicProperties(size, dateTimeModified);
+			}
 
-			public override Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
+			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw NotSupported();
 
-			public override Task Delete(CancellationToken ct, StorageDeleteOption options) => throw new NotImplementedException();
+			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw NotSupported();
+
+			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw NotSupported();
+
+			public override async Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
+			{
+				if (_parent == null)
+				{
+					throw new NotSupportedException("Cannot create a folder unless we can access its parent folder.");
+				}
+
+				var nativeParent = (StorageFolder.NativeStorageFolder)_parent.Implementation;
+				await nativeParent.DeleteItemAsync(Name);
+			}
 		}
 	}
 }

@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace Windows.Storage
 {
 	partial class StorageFile
 	{
-		private abstract class ImplementationBase
+		internal abstract class ImplementationBase
 		{
 			protected ImplementationBase(string path)
 				=> Path = path;
@@ -23,6 +22,8 @@ namespace Windows.Storage
 				=> Owner = owner; // Lazy initialized to avoid delegate in StorageFile ctor
 
 			protected StorageFile Owner { get; private set; } = null!; // Should probably be private
+
+			public abstract StorageProvider Provider { get; }
 
 			public virtual string Path { get; protected set; }
 
@@ -37,37 +38,42 @@ namespace Windows.Storage
 			public abstract DateTimeOffset DateCreated { get; }
 
 			public bool IsEqual(IStorageItem item)
-				=> item is StorageFile sf && IsEqual(sf._impl);
+				=> item is StorageFile sf && IsEqual(sf.Implementation);
 
-			protected abstract bool IsEqual(ImplementationBase impl);
+			protected abstract bool IsEqual(ImplementationBase implementation);
 
-			public abstract Task<StorageFolder> GetParent(CancellationToken ct);
+			public abstract Task<StorageFolder?> GetParentAsync(CancellationToken ct);
 
-			public abstract Task<BasicProperties> GetBasicProperties(CancellationToken ct);
+			public abstract Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct);
 
-			public abstract Task<IRandomAccessStreamWithContentType> Open(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options);
+			public abstract Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options);
 
-			public virtual async Task<Stream> OpenStream(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> (await Open(ct, accessMode, options).AsTask(ct)).AsStream();
+			public virtual async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+				=> (await OpenAsync(ct, accessMode, options).AsTask(ct)).AsStream();
 
-			public abstract Task<StorageStreamTransaction> OpenTransactedWrite(CancellationToken ct, StorageOpenOptions option);
+			public abstract Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option);
 
-			public abstract Task Delete(CancellationToken ct, StorageDeleteOption options);
+			public abstract Task DeleteAsync(CancellationToken ct, StorageDeleteOption options);
 
-			public virtual async Task Rename(CancellationToken ct, string desiredName, NameCollisionOption option)
+			public virtual async Task RenameAsync(CancellationToken ct, string desiredName, NameCollisionOption option)
 			{
-				var parent = await GetParent(ct);
-				await Move(ct, parent, desiredName, option);
+				var parent = await GetParentAsync(ct);
+				if (parent == null)
+				{
+					throw new InvalidOperationException("The file's parent is not accessible, so we cannot move the file to rename it.");
+				}
+
+				await MoveAsync(ct, parent, desiredName, option);
 			}
 
-			public virtual async Task<StorageFile> Copy(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			public virtual async Task<StorageFile> CopyAsync(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
 			{
 				var dst = await CreateDestination(ct, destinationFolder, desiredNewName, option);
-				await CopyAndReplace(ct, dst);
+				await CopyAndReplaceAsync(ct, dst);
 				return dst;
 			}
 
-			public virtual async Task CopyAndReplace(CancellationToken ct, IStorageFile target)
+			public virtual async Task CopyAndReplaceAsync(CancellationToken ct, IStorageFile target)
 			{
 				using (var src = await Owner.OpenStreamForReadAsync())
 				using (var dst = await target.OpenStreamForReadAsync())
@@ -76,13 +82,13 @@ namespace Windows.Storage
 				}
 			}
 
-			public virtual async Task Move(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			public virtual async Task MoveAsync(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
 			{
 				var dst = await CreateDestination(ct, destinationFolder, desiredNewName, option);
-				await MoveAndReplace(ct, dst);
+				await MoveAndReplaceAsync(ct, dst);
 			}
 
-			public virtual async Task MoveAndReplace(CancellationToken ct, IStorageFile target)
+			public virtual async Task MoveAndReplaceAsync(CancellationToken ct, IStorageFile target)
 			{
 				using (var src = await Owner.OpenStreamForReadAsync())
 				using (var dst = await target.OpenStreamForReadAsync())
@@ -90,12 +96,12 @@ namespace Windows.Storage
 					await src.CopyToAsync(dst, Buffer.DefaultCapacity, ct);
 				}
 
-				await Delete(ct, StorageDeleteOption.PermanentDelete);
+				await DeleteAsync(ct, StorageDeleteOption.PermanentDelete);
 
 				Path = target.Path;
 			}
 
-			protected Exception NotImplemented([CallerMemberName] string? method = null)
+			protected Exception NotSupported([CallerMemberName] string? method = null)
 				=> new NotSupportedException($"{method} is not supported yet for {GetType().Name}");
 		}
 	}

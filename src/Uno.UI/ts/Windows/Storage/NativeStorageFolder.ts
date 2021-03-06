@@ -1,64 +1,157 @@
-﻿
-namespace Windows.Storage {
+﻿namespace Uno.Storage {
 
 	export class NativeStorageFolder {
-		private static _folderMap: Map<string, FileSystemDirectoryHandle> = new Map<string, FileSystemDirectoryHandle>();
-
-		public static AddHandle(guid: string, handle: FileSystemDirectoryHandle) {
-			NativeStorageFolder._folderMap.set(guid, handle);
-		}
-
-		public static RemoveHandle(guid: string) {
-			NativeStorageFolder._folderMap.delete(guid);
-		}
-
-		public static GetHandle(guid: string): FileSystemDirectoryHandle {
-			return NativeStorageFolder._folderMap.get(guid);
-		}
 
 		/**
 		 * Creates a new folder inside another folder.
 		 * @param parentGuid The GUID of the folder to create in.
 		 * @param folderName The name of the new folder.
 		 */
-		public static async CreateFolderAsync(parentGuid: string, folderName: string): Promise<string> {
-			const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
+		public static async createFolderAsync(parentGuid: string, folderName: string): Promise<string> {
+			try {
+				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
 
-			const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
-				create: true,
-			});
+				const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
+					create: true,
+				});
 
-			var guid = Uno.Utils.Guid.NewGuid();
-
-			NativeStorageFolder.AddHandle(guid, newDirectoryHandle);
-
-			return guid;
+				var info = NativeStorageItem.getInfos(newDirectoryHandle)[0];
+				return JSON.stringify(info);
+			}
+			catch {
+				console.log("Could not create folder" + folderName);
+				return null;
+			}
 		}
 
 		/**
-		 * Gets a folder in the given parent folder by name.
+		 * Creates a new file inside another folder.
+		 * @param parentGuid The GUID of the folder to create in.
+		 * @param folderName The name of the new file.
+		 */
+		public static async createFileAsync(parentGuid: string, fileName: string): Promise<string> {
+			try {
+				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
+
+				const newFileHandle = await parentHandle.getFileHandle(fileName, {
+					create: true,
+				});
+
+				var info = NativeStorageItem.getInfos(newFileHandle)[0];
+				return JSON.stringify(info);
+			}
+			catch {
+				console.log("Could not create file " + fileName);
+				return null;
+			}
+		}
+
+		/**
+		 * Tries to get a folder in the given parent folder by name.
 		 * @param parentGuid The GUID of the parent folder to get.
 		 * @param folderName The name of the folder to look for.
-		 * @returns A GUID of the folder if found, otherwise "notfound" literal.
+		 * @returns A GUID of the folder if found, otherwise null.
 		 */
-		public static async GetFolderAsync(parentGuid: string, folderName: string): Promise<string> {
-			const parentHandle = NativeStorageFolder.GetHandle(parentGuid);
+		public static async tryGetFolderAsync(parentGuid: string, folderName: string): Promise<string> {
+			const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
 
 			let nestedDirectoryHandle: FileSystemDirectoryHandle = undefined;
-			let returnedGuid = Uno.Utils.Guid.NewGuid();
 
 			try {
 				nestedDirectoryHandle = await parentHandle.getDirectoryHandle(folderName);
 			} catch (ex) {
-				if (ex instanceof DOMException && (ex as DOMException).message.includes("could not be found")) {
-					returnedGuid = "notfound";
+				return null;
+			}
+
+			if (nestedDirectoryHandle) {
+				return JSON.stringify(NativeStorageItem.getInfos(nestedDirectoryHandle)[0]);
+			}
+
+			return null;
+		}
+
+		/**
+		* Tries to get a file in the given parent folder by name.
+		* @param parentGuid The GUID of the parent folder to get.
+		* @param folderName The name of the folder to look for.
+		* @returns A GUID of the folder if found, otherwise null.
+		*/
+		public static async tryGetFileAsync(parentGuid: string, fileName: string): Promise<string> {
+			const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
+
+			let fileHandle: FileSystemFileHandle = undefined;
+
+			try {
+				fileHandle = await parentHandle.getFileHandle(fileName);
+			} catch (ex) {
+				return null;
+			}
+
+			if (fileHandle) {
+				return JSON.stringify(NativeStorageItem.getInfos(fileHandle)[0]);
+			}
+
+			return null;
+		}
+
+		public static async deleteItemAsync(parentGuid: string, itemName: string): Promise<string> {
+			try {
+				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
+
+				await parentHandle.removeEntry(itemName, { recursive: true });
+
+				return "OK";
+			}
+			catch {
+				return null;
+			}
+		}
+
+		public static async getItemsAsync(folderGuid: string): Promise<string> {
+			return await NativeStorageFolder.getEntriesAsync(folderGuid, true, true);
+		}
+
+		public static async getFoldersAsync(folderGuid: string): Promise<string> {
+			return await NativeStorageFolder.getEntriesAsync(folderGuid, false, true);
+		}
+
+		public static async getFilesAsync(folderGuid: string): Promise<string> {
+			return await NativeStorageFolder.getEntriesAsync(folderGuid, true, false);
+		}
+
+		private static async getEntriesAsync(guid: string, includeFiles: boolean, includeDirectories: boolean): Promise<string> {
+			const folderHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(guid);
+
+			var entries: FileSystemHandle[] = [];
+
+			// Default to "modern" implementation
+			if (folderHandle.values) {
+				for await (var entry of folderHandle.values()) {
+					entries.push(entry);
+				}
+			}
+			else {
+				for await (var handle of folderHandle.getEntries()) {
+					entries.push(handle);
 				}
 			}
 
-			if (nestedDirectoryHandle)
-				NativeStorageFolder.AddHandle(returnedGuid, nestedDirectoryHandle);
+			var filteredHandles: FileSystemHandle[] = [];
 
-			return returnedGuid;
+			// Filter
+			for (var handle of entries) {
+				if (handle.kind == "file" && includeFiles) {
+					filteredHandles.push(handle);
+				}
+				else if (handle.kind == "directory" && includeDirectories) {
+					filteredHandles.push(handle);
+				}
+			}
+
+			// Get infos
+			var infos = NativeStorageItem.getInfos(...filteredHandles);
+			var json = JSON.stringify(infos);
+			return json;
 		}
 	}
 }
