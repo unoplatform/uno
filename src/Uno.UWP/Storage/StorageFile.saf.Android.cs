@@ -70,8 +70,8 @@ namespace Windows.Storage
 				return Task.FromResult<StorageFolder?>(parentFolder);
 			}
 
-			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) =>
-				Task.FromResult<IRandomAccessStreamWithContentType>(new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateFromSafUri(_fileUri, accessMode), ContentType));
+			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) =>
+				new RandomAccessStreamWithContentType(await FileRandomAccessStream.CreateFromSafUriAsync(_fileUri, accessMode), ContentType);
 
 			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
 
