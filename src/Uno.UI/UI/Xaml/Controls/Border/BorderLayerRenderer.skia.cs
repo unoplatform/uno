@@ -96,12 +96,12 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (cornerRadius != CornerRadius.None)
 			{
-				var maxRadius = Math.Max(0, Math.Min((float)area.Width / 2 - heightOffset, (float)area.Height / 2 - widthOffset));
-				cornerRadius = new CornerRadius(
-					Math.Min(cornerRadius.TopLeft, maxRadius),
-					Math.Min(cornerRadius.TopRight, maxRadius),
-					Math.Min(cornerRadius.BottomRight, maxRadius),
-					Math.Min(cornerRadius.BottomLeft, maxRadius));
+				var maxInnerRadius = Math.Max(0, Math.Min((float)area.Width / 2 - widthOffset, (float)area.Height / 2 - heightOffset));
+				var innerCornerRadius = new CornerRadius(
+					Math.Min(cornerRadius.TopLeft, maxInnerRadius),
+					Math.Min(cornerRadius.TopRight, maxInnerRadius),
+					Math.Min(cornerRadius.BottomRight, maxInnerRadius),
+					Math.Min(cornerRadius.BottomLeft, maxInnerRadius));
 
 				var borderShape = compositor.CreateSpriteShape();
 				var backgroundShape = compositor.CreateSpriteShape();
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Shapes
 					backgroundShape.FillBrush = null;
 				}
 
-				var borderPath = GetRoundedRect(cornerRadius, area, adjustedArea);
+				var borderPath = GetRoundedRect(cornerRadius, innerCornerRadius, area, adjustedArea);
 				var backgroundPath = GetRoundedPath(cornerRadius, adjustedArea);
 				var outerPath = GetRoundedPath(cornerRadius, area);
 
@@ -372,12 +372,12 @@ namespace Windows.UI.Xaml.Shapes
 			return new CompositionPath(geometrySource);
 		}
 
-		private static CompositionPath GetRoundedRect(CornerRadius cornerRadius, Rect area, Rect insetArea)
+		private static CompositionPath GetRoundedRect(CornerRadius cornerRadius, CornerRadius innerCornerRadius, Rect area, Rect insetArea)
 		{
 			var geometrySource = new SkiaGeometrySource2D();
 
 			GetRoundedPath(cornerRadius, area, geometrySource);
-			GetRoundedPath(cornerRadius, insetArea, geometrySource);
+			GetRoundedPath(innerCornerRadius, insetArea, geometrySource);
 			geometrySource.Geometry.FillType = SKPathFillType.EvenOdd;
 			return new CompositionPath(geometrySource);
 		}
