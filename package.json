@@ -1,5 +1,6 @@
 {
     "name": "uno-platform",
+    "icon": "media/uno-logo-alpha.png",
     "displayName": "VS Code Uno Platform Extension",
     "preview": true,
     "publisher": "microhobby",
