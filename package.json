@@ -6,6 +6,9 @@
     "publisher": "microhobby",
     "description": "Create Uno Platform Projects with Hot Reload and XAML Preview",
     "version": "0.1.42",
+    "repository": {
+        "url": "https://github.com/microhobby/vs-code-uno-platform"
+    },
     "engines": {
         "vscode": "^1.52.0"
     },
