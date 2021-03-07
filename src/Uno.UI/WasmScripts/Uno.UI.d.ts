@@ -909,6 +909,7 @@ declare namespace Uno.Storage {
         static getItemsAsync(folderGuid: string): Promise<string>;
         static getFoldersAsync(folderGuid: string): Promise<string>;
         static getFilesAsync(folderGuid: string): Promise<string>;
+        static getPrivateRootAsync(): Promise<string>;
         private static getEntriesAsync;
     }
 }
@@ -959,17 +960,34 @@ declare namespace Windows.Storage {
 }
 declare namespace Windows.Storage.Pickers {
     class FileOpenPicker {
-        static pickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypes: any): Promise<string>;
+        static isNativeSupported(): boolean;
+        static nativePickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypesJson: string): Promise<string>;
+        static uploadPickFilesAsync(multiple: boolean, targetPath: string, accept: string): Promise<string>;
     }
 }
 declare namespace Windows.Storage.Pickers {
     class FileSavePicker {
+        static isNativeSupported(): boolean;
+        static nativePickSaveFileAsync(showAllEntry: boolean, fileTypesJson: string): Promise<string>;
         static SaveAs(fileName: string, dataPtr: any, size: number): void;
     }
 }
 declare namespace Windows.Storage.Pickers {
     class FolderPicker {
+        static isNativeSupported(): boolean;
         static pickSingleFolderAsync(): Promise<string>;
+    }
+}
+declare namespace Uno.Storage.Pickers {
+    class NativeFilePickerAcceptType {
+        description: string;
+        accept: NativeFilePickerAcceptTypeItem[];
+    }
+}
+declare namespace Uno.Storage.Pickers {
+    class NativeFilePickerAcceptTypeItem {
+        mimeType: string;
+        extensions: string[];
     }
 }
 interface Navigator {

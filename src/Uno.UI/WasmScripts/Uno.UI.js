@@ -2933,6 +2933,17 @@ var Uno;
             static async getFilesAsync(folderGuid) {
                 return await NativeStorageFolder.getEntriesAsync(folderGuid, true, false);
             }
+            static async getPrivateRootAsync() {
+                if (!navigator.storage.getDirectory) {
+                    return null;
+                }
+                const directory = await navigator.storage.getDirectory();
+                if (!directory) {
+                    return null;
+                }
+                var info = Storage.NativeStorageItem.getInfos(directory)[0];
+                return JSON.stringify(info);
+            }
             static async getEntriesAsync(guid, includeFiles, includeDirectories) {
                 var e_1, _a, e_2, _b;
                 const folderHandle = Storage.NativeStorageItem.getHandle(guid);
@@ -3148,33 +3159,28 @@ var Windows;
         var Pickers;
         (function (Pickers) {
             class FileOpenPicker {
-                static async pickFilesAsync(multiple, showAllEntry, fileTypes) {
-                    if (!showOpenFilePicker) {
-                        return "";
+                static isNativeSupported() {
+                    return typeof showOpenFilePicker === "function";
+                }
+                static async nativePickFilesAsync(multiple, showAllEntry, fileTypesJson) {
+                    if (!FileOpenPicker.isNativeSupported()) {
+                        return JSON.stringify([]);
                     }
                     const options = {
                         multiple: multiple,
                         excludeAcceptAllOption: !showAllEntry,
                         types: [],
                     };
-                    var fullAccept = {};
-                    for (var property in fileTypes) {
-                        const mimeType = property;
-                        const extensions = fileTypes[property];
-                        const acceptType = {
-                            accept: {
-                                [mimeType]: extensions
-                            },
-                            description: extensions.length > 1 ? "" : extensions[0],
+                    const acceptTypes = JSON.parse(fileTypesJson);
+                    for (var acceptType of acceptTypes) {
+                        const pickerAcceptType = {
+                            accept: {},
+                            description: acceptType.description,
                         };
-                        fullAccept[mimeType] = extensions;
-                        options.types.push(acceptType);
-                    }
-                    if (fileTypes.length > 1) {
-                        options.types.unshift({
-                            accept: fullAccept,
-                            description: "All"
-                        });
+                        for (var acceptTypeItem of acceptType.accept) {
+                            pickerAcceptType.accept[acceptTypeItem.mimeType] = acceptTypeItem.extensions;
+                        }
+                        options.types.push(pickerAcceptType);
                     }
                     try {
                         const selectedFiles = await showOpenFilePicker(options);
@@ -3183,10 +3189,41 @@ var Windows;
                         return json;
                     }
                     catch (e) {
-                        console.log("User did not make a selection or it file selected was" +
+                        console.log("User did not make a selection or the file selected was" +
                             "deemed too sensitive or dangerous to be exposed to the website - " + e);
-                        return "";
+                        return JSON.stringify([]);
                     }
+                }
+                static uploadPickFilesAsync(multiple, targetPath, accept) {
+                    return new Promise((resolve, reject) => {
+                        var inputElement = document.createElement("input");
+                        inputElement.type = "file";
+                        inputElement.multiple = multiple;
+                        inputElement.accept = accept;
+                        inputElement.onchange = async (e) => {
+                            const existingFileNames = new Set();
+                            if (!targetPath.endsWith('/')) {
+                                targetPath += '/';
+                            }
+                            var duplicateFileId = 0;
+                            for (var file of inputElement.files) {
+                                const fileBuffer = await file.arrayBuffer();
+                                const fileBufferView = new Uint8Array(fileBuffer);
+                                var targetFileName = "";
+                                if (!existingFileNames.has(file.name)) {
+                                    targetFileName = targetPath + file.name;
+                                    existingFileNames.add(file.name);
+                                }
+                                else {
+                                    targetFileName = targetPath + duplicateFileId + "_" + file.name;
+                                    duplicateFileId++;
+                                }
+                                FS.writeFile(targetFileName, fileBufferView);
+                            }
+                            resolve(inputElement.files.length.toString());
+                        };
+                        inputElement.click();
+                    });
                 }
             }
             Pickers.FileOpenPicker = FileOpenPicker;
@@ -3200,6 +3237,40 @@ var Windows;
         var Pickers;
         (function (Pickers) {
             class FileSavePicker {
+                static isNativeSupported() {
+                    return typeof showSaveFilePicker === "function";
+                }
+                static async nativePickSaveFileAsync(showAllEntry, fileTypesJson) {
+                    if (!FileSavePicker.isNativeSupported()) {
+                        return null;
+                    }
+                    const options = {
+                        excludeAcceptAllOption: !showAllEntry,
+                        types: [],
+                    };
+                    const acceptTypes = JSON.parse(fileTypesJson);
+                    for (var acceptType of acceptTypes) {
+                        const pickerAcceptType = {
+                            accept: {},
+                            description: acceptType.description,
+                        };
+                        for (var acceptTypeItem of acceptType.accept) {
+                            pickerAcceptType.accept[acceptTypeItem.mimeType] = acceptTypeItem.extensions;
+                        }
+                        options.types.push(pickerAcceptType);
+                    }
+                    try {
+                        const selectedFile = await showSaveFilePicker(options);
+                        const info = Uno.Storage.NativeStorageItem.getInfos(selectedFile)[0];
+                        const json = JSON.stringify(info);
+                        return json;
+                    }
+                    catch (e) {
+                        console.log("User did not make a selection or it file selected was" +
+                            "deemed too sensitive or dangerous to be exposed to the website - " + e);
+                        return null;
+                    }
+                }
                 static SaveAs(fileName, dataPtr, size) {
                     const buffer = new Uint8Array(size);
                     for (var i = 0; i < size; i++) {
@@ -3225,7 +3296,13 @@ var Windows;
         var Pickers;
         (function (Pickers) {
             class FolderPicker {
+                static isNativeSupported() {
+                    return typeof showDirectoryPicker === "function";
+                }
                 static async pickSingleFolderAsync() {
+                    if (!FolderPicker.isNativeSupported()) {
+                        return null;
+                    }
                     try {
                         const selectedFolder = await showDirectoryPicker();
                         const info = Uno.Storage.NativeStorageItem.getInfos(selectedFolder)[0];
@@ -3242,6 +3319,30 @@ var Windows;
         })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+var Uno;
+(function (Uno) {
+    var Storage;
+    (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class NativeFilePickerAcceptType {
+            }
+            Pickers.NativeFilePickerAcceptType = NativeFilePickerAcceptType;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Uno.Storage || (Uno.Storage = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var Storage;
+    (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class NativeFilePickerAcceptTypeItem {
+            }
+            Pickers.NativeFilePickerAcceptTypeItem = NativeFilePickerAcceptTypeItem;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Uno.Storage || (Uno.Storage = {}));
+})(Uno || (Uno = {}));
 var WakeLockType;
 (function (WakeLockType) {
     WakeLockType["screen"] = "screen";
