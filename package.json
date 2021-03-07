@@ -1,47 +1,115 @@
 {
-	"name": "uno-platform",
-	"displayName": "uno-platform",
-	"description": "Create Uno Platform Projects with Hot Reload and XAML Preview",
-	"version": "0.0.1",
-	"engines": {
-		"vscode": "^1.52.0"
-	},
-	"categories": [
-		"Visualization",
-		"Linters",
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:uno-platform.helloWorld"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "uno-platform.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/vscode": "^1.52.0",
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.0.4",
-		"@types/node": "^12.11.7",
-		"eslint": "^7.15.0",
-		"@typescript-eslint/eslint-plugin": "^4.9.0",
-		"@typescript-eslint/parser": "^4.9.0",
-		"glob": "^7.1.6",
-		"mocha": "^8.1.3",
-		"typescript": "^4.1.2",
-		"vscode-test": "^1.4.1"
-	}
+    "name": "uno-platform",
+    "displayName": "uno-platform",
+    "publisher": "microhobby",
+    "description": "Create Uno Platform Projects with Hot Reload and XAML Preview",
+    "version": "0.1.42",
+    "engines": {
+        "vscode": "^1.52.0"
+    },
+    "categories": [
+        "Visualization",
+        "Linters",
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:xml"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Uno Platform",
+            "properties": {
+                "xamlComplete.formattingStyle": {
+                    "description": "Defines if attributes should be single line or not.",
+                    "type": "string",
+                    "enum": [
+                        "singleLineAttributes",
+                        "multiLineAttributes",
+                        "fileSizeOptimized"
+                    ],
+                    "scope": "resource",
+                    "default": []
+                },
+                "xamlComplete.schemaMapping": {
+                    "description": "Maps xmlns to xsd location Uri.",
+                    "type": "array",
+                    "scope": "resource",
+                    "default": [
+                        {
+                            "xmlns": "http://www.w3.org/2001/XMLSchema",
+                            "xsdUri": "https://www.w3.org/2001/XMLSchema.xsd",
+                            "strict": true
+                        },
+                        {
+                            "xmlns": "http://schemas.microsoft.com/winfx/2006/xaml/presentation",
+                            "xsdUri": "https://raw.githubusercontent.com/rogalmic/vscode-xml-complete/master/test/Wpf/Wpf.xsd",
+                            "strict": false
+                        },
+                        {
+                            "xmlns": "http://www.w3.org/2000/svg",
+                            "xsdUri": "https://raw.githubusercontent.com/dumistoklus/svg-xsd-schema/master/svg.xsd https://raw.githubusercontent.com/dumistoklus/svg-xsd-schema/master/xlink.xsd https://raw.githubusercontent.com/dumistoklus/svg-xsd-schema/master/namespace.xsd",
+                            "strict": true
+                        },
+                        {
+                            "xmlns": "http://schemas.microsoft.com/developer/msbuild/2003",
+                            "xsdUri": "https://raw.githubusercontent.com/Microsoft/msbuild/master/src/MSBuild/MSBuild/Microsoft.Build.CommonTypes.xsd https://raw.githubusercontent.com/Microsoft/msbuild/master/src/MSBuild/MSBuild/Microsoft.Build.Core.xsd",
+                            "strict": true
+                        }
+                    ]
+                }
+            }
+        },
+        "languages": [
+            {
+                "id": "xml",
+                "configuration": "./src/xaml/language-configuration.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "unoplatform.xamlPreview",
+                "title": "Preview Uno Platform XAML",
+                "icon": {
+                    "light": "media/light/eye.svg",
+                    "dark": "media/dark/eye.svg"
+                }
+            }
+        ],
+        "menus": {
+            "editor/title": [
+                {
+                    "command": "unoplatform.xamlPreview",
+                    "when": "resourceExtname == .xaml",
+                    "group": "navigation"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "package": "vsce package"
+    },
+    "dependencies": {
+        "sax": "1.2.4",
+        "@types/vscode": "^1.52.0",
+        "@types/glob": "^7.1.3",
+        "@types/mocha": "^8.0.4",
+        "@types/node": "^12.11.7",
+        "eslint": "^7.15.0",
+        "@typescript-eslint/eslint-plugin": "^4.9.0",
+        "@typescript-eslint/parser": "^4.9.0",
+        "ts-standard": "^10.0.0",
+        "glob": "^7.1.6",
+        "mocha": "^8.1.3",
+        "typescript": "^4.1.2",
+        "vscode-test": "^1.4.1",
+        "which": "2.0.2",
+        "@types/which": "1.3.2"
+    }
 }

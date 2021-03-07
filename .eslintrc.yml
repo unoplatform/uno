@@ -1,0 +1,29 @@
+env:
+  browser: true
+  es2021: true
+extends:
+  - standard-with-typescript
+  - standard-jsx
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaVersion: 12
+  sourceType: module
+  project: tsconfig.json
+plugins:
+  - "@typescript-eslint"
+rules:
+  "@typescript-eslint/semi": "off"
+  "@typescript-eslint/quotes": "off"
+  "@typescript-eslint/no-non-null-assertion": "off"
+  "@typescript-eslint/member-delimiter-style": "off"
+  # this is off so we can have "static classes"
+  "@typescript-eslint/no-extraneous-class": "off"
+  indent: "off"
+  "@typescript-eslint/indent":
+    - "error"
+    - 4
+  complexity:
+    - warn
+    - 30
+  # TODO check these rules to improve code quality
+  no-void: "off"
