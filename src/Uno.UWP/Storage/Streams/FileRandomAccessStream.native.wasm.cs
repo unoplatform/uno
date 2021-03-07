@@ -1,59 +1,73 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using Uno.Storage.Streams;
 using Uno.Storage.Streams.Internal;
 
 namespace Windows.Storage.Streams
 {
 	public partial class FileRandomAccessStream
 	{
-		internal static async Task<FileRandomAccessStream> CreateNativeAsync(Guid fileId, FileAccess access) =>
+		internal static async Task<FileRandomAccessStream> CreateNativeAsync(Guid fileId, FileAccessMode access) =>
 			new FileRandomAccessStream(await Native.CreateAsync(fileId, access));
 
 		private class Native : ImplementationBase
 		{
 			private readonly Guid _fileId;
-			private readonly FileAccess _access;
-			private readonly INativeStreamAdapter _backingStream;
+			private readonly FileAccessMode _access;
+			private readonly IRentableStream _rentableStream;
 
-			private Native(Stream stream, Guid fileId, FileAccess access) : base(stream)
+			private Native(Guid fileId, Stream stream, IRentableStream rentableStream, FileAccessMode access) : base(stream)
 			{
 				_fileId = fileId;
+				_rentableStream = rentableStream;
 				_access = access;
-				_backingStream = (INativeStreamAdapter)stream;
-				_backingStream.Rent();
 			}
 
-			public static async Task<Native> CreateAsync(Guid fileId, FileAccess access)
+			public static async Task<Native> CreateAsync(Guid fileId, FileAccessMode access)
 			{
-				Stream backingStream;
-				if (access == FileAccess.Read)
+				IRentableStream rentableStream;
+				if (access == FileAccessMode.Read)
 				{
-					backingStream = await NativeReadStreamAdapter.CreateAsync(fileId);
+					rentableStream = await NativeReadStream.CreateAsync(fileId);
 				}
 				else
 				{
-					backingStream = await NativeWriteStreamAdapter.CreateAsync(fileId);
+					rentableStream = await NativeWriteStream.CreateAsync(fileId);
 				}
-				return new Native(backingStream, fileId, access);
+				var rentedStream = rentableStream.Rent();
+				return new Native(fileId, rentedStream, rentableStream, access);
 			}
 
 			public override IRandomAccessStream CloneStream()
 			{
-				return new FileRandomAccessStream(new Native(_stream, _fileId, _access));
+				var rentedStream = _rentableStream.Rent();
+				return new FileRandomAccessStream(new Native(_fileId, rentedStream, _rentableStream, _access));
 			}
 
 			public override IInputStream GetInputStreamAt(ulong position)
 			{
-				_backingStream.Rent();
-				return new FileInputStream(_stream);
+				if (!CanRead)
+				{
+					throw new NotSupportedException("The file has not been opened for read.");
+				}
+
+				var rentedStream = _rentableStream.Rent();
+				rentedStream.Seek((long)position, SeekOrigin.Begin);
+				return new FileInputStream(rentedStream);
 			}
 
 			public override IOutputStream GetOutputStreamAt(ulong position)
 			{
-				_backingStream.Rent();
-				return new FileOutputStream(_stream);
+				if (!CanWrite)
+				{
+					throw new NotSupportedException("The file has not been opened for write.");
+				}
+
+				var rentedStream = _rentableStream.Rent();
+				rentedStream.Seek((long)position, SeekOrigin.Begin);
+				return new FileOutputStream(rentedStream);
 			}
 		}
 	}

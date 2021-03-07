@@ -8,13 +8,12 @@ using Uno.Foundation;
 
 namespace Uno.Storage.Streams
 {
-	internal class NativeWriteStreamAdapter : Stream, INativeStreamAdapter
+	internal class NativeWriteStreamAdapter : Stream
 	{
 		private const string JsType = "Uno.Storage.Streams.NativeFileWriteStream";
 
 		private readonly Guid _streamId;
 
-		private int _rentCount = 0;
 		private long _length = 0;
 		private long _position = 0;
 
@@ -116,20 +115,15 @@ namespace Uno.Storage.Streams
 
 		protected override async void Dispose(bool disposing)
 		{
-			if (Interlocked.Decrement(ref _rentCount) == 0)
-			{
-				await ProcessPendingAsync();
-				// Close and dispose.
-				await WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
-			}
+			await ProcessPendingAsync();
+			// Close and dispose.
+			await WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
 		}
 
-		public void Rent() => Interlocked.Increment(ref _rentCount);
-
-		private async Task TruncateAsync(long length)
+		public async Task TruncateAsync(long length)
 		{
 			await ProcessPendingAsync();
-			await WebAssemblyRuntime.InvokeAsync($"{JsType}.truncateAsync({length})");
+			await WebAssemblyRuntime.InvokeAsync($"{JsType}.truncateAsync('{_streamId}',{length})");
 		}
 
 		private async Task ProcessPendingAsync()

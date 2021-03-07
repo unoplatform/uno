@@ -24,7 +24,7 @@
 			//TODO: Reuse buffer somehow (slice?)
 			var clampedArray = new Uint8Array(count);
 			for (var i = 0; i < count; i++) {
-				clampedArray[i] = Module.HEAPU8[dataArrayPointer + i];
+				clampedArray[i] = Module.HEAPU8[dataArrayPointer + i + offset];
 			}
 
 			await instance._stream.write({

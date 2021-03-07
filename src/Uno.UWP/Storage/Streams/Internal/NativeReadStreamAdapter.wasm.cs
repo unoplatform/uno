@@ -7,7 +7,7 @@ using Uno.Foundation;
 
 namespace Uno.Storage.Streams.Internal
 {
-	internal class NativeReadStreamAdapter : Stream, INativeStreamAdapter
+	internal class NativeReadStreamAdapter : Stream
     {
 		private const string JsType = "Uno.Storage.Streams.NativeFileReadStream";
 
