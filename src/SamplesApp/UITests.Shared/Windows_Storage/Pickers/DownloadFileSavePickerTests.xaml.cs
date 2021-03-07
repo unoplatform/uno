@@ -24,12 +24,16 @@ namespace UITests.Windows_Storage.Pickers
 
 		private void DownloadFileSavePickerTests_Unloaded(object sender, RoutedEventArgs e)
 		{
+#if __WASM__
 			WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = true;
+#endif
 		}
 
 		private void DownloadFileSavePickerTests_Loaded(object sender, RoutedEventArgs e)
 		{
+#if __WASM__
 			WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = false;
+#endif
 		}
 
 		private enum FileType
