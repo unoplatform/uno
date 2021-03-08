@@ -34,7 +34,36 @@ namespace Uno.UI.Tasks.Helpers
 		{
 			LogExtensionPoint.AmbientLoggerFactory.AddProvider(new TaskLoggerProvider(taskLog));
 
-			return new DisposableAction(() => LogExtensionPoint.AmbientLoggerFactory = null);
+			return new DisposableAction(CleanupProvider);
+		}
+
+		private static void CleanupProvider()
+		{
+			var property = typeof(LogExtensionPoint).GetProperty(nameof(LogExtensionPoint.AmbientLoggerFactory));
+
+			if (property != null)
+			{
+				if (property.CanWrite)
+				{
+					LogExtensionPoint.AmbientLoggerFactory = null;
+				}
+				else
+				{
+					// We're in the context where an older version of Uno.Core (2.1 or earlier) of the binary
+					// has been loaded by another msbuild task.
+					// We still need to cleanup the logggers, so we're doing this through reflection
+					// from the known backing field.
+
+					var loggerFactoryField = typeof(LogExtensionPoint).GetField(
+						"_loggerFactory",
+						System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.NonPublic);
+
+					if(loggerFactoryField != null)
+					{
+						loggerFactoryField.SetValue(null, null);
+					}
+				}
+			}
 		}
     }
 }
