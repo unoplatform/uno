@@ -18,13 +18,13 @@
 
 			const acceptTypes = <Uno.Storage.Pickers.NativeFilePickerAcceptType[]>JSON.parse(fileTypesJson);
 
-			for (var acceptType of acceptTypes) {				
+			for (const acceptType of acceptTypes) {				
 				const pickerAcceptType: FilePickerAcceptType = {
 					accept: {},
 					description: acceptType.description,
 				};
 
-				for (var acceptTypeItem of acceptType.accept) {
+				for (const acceptTypeItem of acceptType.accept) {
 					pickerAcceptType.accept[acceptTypeItem.mimeType] = acceptTypeItem.extensions
 				}
 

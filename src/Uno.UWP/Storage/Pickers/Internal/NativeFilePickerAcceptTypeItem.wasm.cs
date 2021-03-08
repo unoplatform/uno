@@ -4,7 +4,7 @@ namespace Uno.Storage.Pickers.Internal
 {
 	[DataContract]
 	internal class NativeFilePickerAcceptTypeItem
-    {
+	{
 		[DataMember(Name = "mimeType")]
 		public string MimeType { get; set; }
 

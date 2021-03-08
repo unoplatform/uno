@@ -15,7 +15,7 @@
 					create: true,
 				});
 
-				var info = NativeStorageItem.getInfos(newDirectoryHandle)[0];
+				const info = NativeStorageItem.getInfos(newDirectoryHandle)[0];
 				return JSON.stringify(info);
 			}
 			catch {
@@ -37,7 +37,7 @@
 					create: true,
 				});
 
-				var info = NativeStorageItem.getInfos(newFileHandle)[0];
+				const info = NativeStorageItem.getInfos(newFileHandle)[0];
 				return JSON.stringify(info);
 			}
 			catch {
@@ -129,7 +129,7 @@
 				return null;
 			}
 
-			var info = NativeStorageItem.getInfos(directory)[0];
+			const info = NativeStorageItem.getInfos(directory)[0];
 			return JSON.stringify(info);
 		}
 

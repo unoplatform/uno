@@ -1,6 +1,6 @@
 ﻿namespace Uno.Storage.Pickers {
 	export class NativeFilePickerAcceptType {
-		description: string;
-		accept: NativeFilePickerAcceptTypeItem[];
+		public description: string;
+		public accept: NativeFilePickerAcceptTypeItem[];
 	}
 }

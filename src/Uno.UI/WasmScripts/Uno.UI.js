@@ -2847,7 +2847,7 @@ var Uno;
                     const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
                         create: true,
                     });
-                    var info = Storage.NativeStorageItem.getInfos(newDirectoryHandle)[0];
+                    const info = Storage.NativeStorageItem.getInfos(newDirectoryHandle)[0];
                     return JSON.stringify(info);
                 }
                 catch (_a) {
@@ -2866,7 +2866,7 @@ var Uno;
                     const newFileHandle = await parentHandle.getFileHandle(fileName, {
                         create: true,
                     });
-                    var info = Storage.NativeStorageItem.getInfos(newFileHandle)[0];
+                    const info = Storage.NativeStorageItem.getInfos(newFileHandle)[0];
                     return JSON.stringify(info);
                 }
                 catch (_a) {
@@ -2941,7 +2941,7 @@ var Uno;
                 if (!directory) {
                     return null;
                 }
-                var info = Storage.NativeStorageItem.getInfos(directory)[0];
+                const info = Storage.NativeStorageItem.getInfos(directory)[0];
                 return JSON.stringify(info);
             }
             static async getEntriesAsync(guid, includeFiles, includeDirectories) {
@@ -3167,17 +3167,17 @@ var Windows;
                         return JSON.stringify([]);
                     }
                     const options = {
-                        multiple: multiple,
                         excludeAcceptAllOption: !showAllEntry,
+                        multiple: multiple,
                         types: [],
                     };
                     const acceptTypes = JSON.parse(fileTypesJson);
-                    for (var acceptType of acceptTypes) {
+                    for (const acceptType of acceptTypes) {
                         const pickerAcceptType = {
                             accept: {},
                             description: acceptType.description,
                         };
-                        for (var acceptTypeItem of acceptType.accept) {
+                        for (const acceptTypeItem of acceptType.accept) {
                             pickerAcceptType.accept[acceptTypeItem.mimeType] = acceptTypeItem.extensions;
                         }
                         options.types.push(pickerAcceptType);
@@ -3196,26 +3196,27 @@ var Windows;
                 }
                 static uploadPickFilesAsync(multiple, targetPath, accept) {
                     return new Promise((resolve, reject) => {
-                        var inputElement = document.createElement("input");
+                        const inputElement = document.createElement("input");
                         inputElement.type = "file";
                         inputElement.multiple = multiple;
                         inputElement.accept = accept;
                         inputElement.onchange = async (e) => {
                             const existingFileNames = new Set();
-                            if (!targetPath.endsWith('/')) {
-                                targetPath += '/';
+                            var adjustedTargetPath = targetPath;
+                            if (!adjustedTargetPath.endsWith('/')) {
+                                adjustedTargetPath += '/';
                             }
                             var duplicateFileId = 0;
-                            for (var file of inputElement.files) {
+                            for (const file of inputElement.files) {
                                 const fileBuffer = await file.arrayBuffer();
                                 const fileBufferView = new Uint8Array(fileBuffer);
                                 var targetFileName = "";
                                 if (!existingFileNames.has(file.name)) {
-                                    targetFileName = targetPath + file.name;
+                                    targetFileName = adjustedTargetPath + file.name;
                                     existingFileNames.add(file.name);
                                 }
                                 else {
-                                    targetFileName = targetPath + duplicateFileId + "_" + file.name;
+                                    targetFileName = adjustedTargetPath + duplicateFileId + "_" + file.name;
                                     duplicateFileId++;
                                 }
                                 FS.writeFile(targetFileName, fileBufferView);
@@ -3249,12 +3250,12 @@ var Windows;
                         types: [],
                     };
                     const acceptTypes = JSON.parse(fileTypesJson);
-                    for (var acceptType of acceptTypes) {
+                    for (const acceptType of acceptTypes) {
                         const pickerAcceptType = {
                             accept: {},
                             description: acceptType.description,
                         };
-                        for (var acceptTypeItem of acceptType.accept) {
+                        for (const acceptTypeItem of acceptType.accept) {
                             pickerAcceptType.accept[acceptTypeItem.mimeType] = acceptTypeItem.extensions;
                         }
                         options.types.push(pickerAcceptType);
