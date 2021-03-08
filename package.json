@@ -18,7 +18,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onLanguage:xml"
+        "onLanguage:xml",
+        "workspaceContains:*/**/*.Shared.shproj"
     ],
     "main": "./out/extension.js",
     "contributes": {
