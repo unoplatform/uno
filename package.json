@@ -90,6 +90,23 @@
                     "group": "navigation"
                 }
             ]
+        },
+        "views": {
+            "uno-platform-commands": [
+                {
+                    "id": "unoDevCmdView",
+                    "name": "Commands"
+                }
+            ]
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "uno-platform-commands",
+                    "title": "Uno Platform",
+                    "icon": "media/uno-logo.png"
+                }
+            ]
         }
     },
     "scripts": {
@@ -115,6 +132,10 @@
         "typescript": "^4.1.2",
         "vscode-test": "^1.4.1",
         "which": "2.0.2",
-        "@types/which": "1.3.2"
+        "@types/which": "1.3.2",
+        "xml2js": "^0.4.23",
+        "@types/xml2js": "^0.4.8",
+        "ip": "^1.1.5",
+        "@types/ip": "^1.1.0"
     }
 }

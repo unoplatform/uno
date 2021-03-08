@@ -4,6 +4,8 @@ import * as XamlComplete from './xaml/XamlExt';
 import { ExtensionUtils } from './ExtensionUtils';
 import which from 'which';
 import * as path from 'path';
+import { UnoPlatformCmdProvider } from './UnoPlatformCmdProvider';
+import { UnoCsprojManager } from './UnoCsprojManager';
 
 export function activate (context: vscode.ExtensionContext): void {
     // load the xaml contributions
@@ -45,6 +47,13 @@ export function activate (context: vscode.ExtensionContext): void {
                     "--httpPort=8090"
                 ]
             );
+
+            // register the commands
+            UnoCsprojManager.Register();
+
+            // ok now create the activity bar view content
+            const cmdNodesProvider = new UnoPlatformCmdProvider();
+            vscode.window.registerTreeDataProvider("unoDevCmdView", cmdNodesProvider);
 
             res();
         });
