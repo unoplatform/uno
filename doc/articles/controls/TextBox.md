@@ -1,4 +1,6 @@
-# InputScopes Mapping Table
+# TextBox
+
+## InputScopes Mapping Table
 
 |	Value	|	Description	|	Android	|	iOS	|
 |	-----------------------	|	-----------------------------------------------------------------------------------------------------------------------------------------	|	:----------------------------------------------------------:	|	:-----------------------------------:	|
@@ -47,3 +49,7 @@
 |	Url	|	Indicates a Uniform Resource Identifier (URI). This can include URL, File, or File Transfer Protocol (FTP) formats.	|	InputTypes.ClassText OR InputTypes.TextVariationUri	|	UIKeyboardType.Url	|
 								
 	* Workaround							
+
+## Controlling the Keyboard on iOS
+
+If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.Controls.Window.SetNeedsKeyboard` attached property.

@@ -116,22 +116,28 @@
           href: feature-flags.md
         - name: Uno app solution structure
           href: uno-app-solution-structure.md
+        - name: Best practices
+          href: best-practices-uno.md
     - name: WinUI features
       items:
         - name: Accessibility
           href: features/working-with-accessibility.md
         - name: Animations
           href: features/working-with-animations.md
-        - name: Assets
+        - name: Assets and image display
           href: features/working-with-assets.md
         - name: Fluent styles
           href: features\fluent-styles.md
         - name: Fonts
           href: features/custom-fonts.md
+        - name: Orientation
+          href: features/orientation.md
         - name: Routed Events
           href: features/routed-events.md
         - name: Shapes & Brushes
           href: features/shapes-and-brushes.md
+        - name: String resources and localization
+          href: features\working-with-strings.md
         - name: Themes
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
@@ -156,6 +162,8 @@
           href: controls\Pivot.md
         - name: ProgressRing
           href: features/progressring.md
+        - name: TextBox
+          href: controls\TextBox.md
         - name: ToggleSwitch
           href: controls\ToggleSwitch.md
     - name: WinRT features
@@ -230,12 +238,16 @@
       items:
         - name: Logging
           href: logging.md
+        - name: AppManifest (WebAssembly)
+          href: wasm-appmanifest.md
         - name: IL Linker for WebAssembly
           href: features/using-il-linker-webassembly.md
         - name: Build telemetry
           href: uno-toolchain-telemetry.md
         - name: Adding native views
           href: native-views.md
+        - name: Native control styles
+          href: native-styles.md
         - name: URI Protocol activation
           href: features\protocol-activation.md
     - name: Debugging
@@ -246,6 +258,8 @@
           href: debugging-wasm.md
         - name: XAML Hot Reload
           href: features\working-with-xaml-hot-reload.md
+        - name: Activities in Android
+          href: android-activities.md
     - name: Common tasks
       items:
         - name: Migrating from Previous Releases
