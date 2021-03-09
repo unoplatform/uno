@@ -97,9 +97,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public float MaximumZoomScale { get; set; }
 
-		public ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+		ScrollBarVisibility IScrollContentPresenter.VerticalScrollBarVisibility { get => VerticalScrollBarVisibility; set => VerticalScrollBarVisibility = value; }
+		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 
-		public ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+		ScrollBarVisibility IScrollContentPresenter.HorizontalScrollBarVisibility { get => HorizontalScrollBarVisibility; set => HorizontalScrollBarVisibility = value; }
+		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 
 		public double HorizontalOffset { get; private set; }
 
