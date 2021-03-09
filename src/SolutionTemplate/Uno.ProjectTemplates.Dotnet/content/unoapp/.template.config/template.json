@@ -200,7 +200,7 @@
         {
           "condition": "(!WebAssembly)",
           "exclude": [
-            "UnoQuickStart.Gtk/**/*"
+            "UnoQuickStart.Wasm/**/*"
           ]
         },
         {
