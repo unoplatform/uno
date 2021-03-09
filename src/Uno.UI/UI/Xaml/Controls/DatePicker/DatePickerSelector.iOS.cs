@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 14))
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
 			{
 				_picker.PreferredDatePickerStyle = FeatureConfiguration.DatePicker.UseLegacyStyle
 																			? UIDatePickerStyle.Wheels
