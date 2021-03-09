@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using System.ComponentModel;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI
 {
@@ -310,13 +311,13 @@ namespace Uno.UI
 
 			/// <summary>
 			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="Windows.UI.Xaml.Controls.CommandBar"/>
-			/// and <see cref="AppBarButton"/>) to use their native styles.
+			/// and <see cref="Windows.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
 			/// </summary>
 			public static void ConfigureNativeFrameNavigation()
 			{
 				SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
 				SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
-				SetUWPDefaultStylesOverride<AppBarButton>(useUWPDefaultStyle: false);
+				SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
 			}
 
 			/// <summary>
@@ -503,12 +504,31 @@ namespace Uno.UI
 #if __IOS__
 			/// <summary>
 			/// Gets or Set whether the AllowNativePresenterContent feature is on or off.
+			/// </summary>
+			/// <remarks>
 			/// This feature is used in the context of the sample application to test NavigationBars outside of a NativeFramePresenter for
 			/// UI Testing. In general cases, this should not happen as the bar may be moved back to to this presenter while
 			/// another page is already visible, making this bar overlay on top of another.
-			/// </summary>
+			/// </remarks>
 			/// <returns>True if this feature is on, False otherwise</returns>
 			public static bool AllowNativePresenterContent { get; set; } = false;
+#endif
+		}
+
+		public static class AppBarButton
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Gets or set whether the EnableBitmapIconTint feature is on or off.
+			/// </summary>
+			/// <remarks>
+			/// This Feature will allow any <see cref="Windows.UI.Xaml.Controls.AppBarButton"/>
+			/// inside a <see cref="Windows.UI.Xaml.Controls.CommandBar"/> to use the Foreground <see cref="SolidColorBrush"/>
+			/// as their tint Color.
+			/// <para/>Default value is False.
+			/// </remarks>
+			/// <returns>True if this feature is on, False otherwise</returns>
+			public static bool EnableBitmapIconTint { get; set; } = false;
 #endif
 		}
 	}
