@@ -104,6 +104,8 @@
           href: concepts/overview/philosophy-of-uno.md
         - name: UWP vs WinUI 3
           href: uwp-vs-winui3.md
+        - name: .NET version support
+          href: net-version-support.md
     - name: WinUI links
       href: winui-doc-links.md
     - name: Uno basics
