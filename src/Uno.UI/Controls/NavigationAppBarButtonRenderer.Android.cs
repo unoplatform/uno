@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using AndroidX.Core.Graphics.Drawable;
+﻿using AndroidX.Core.Graphics.Drawable;
 using AndroidX.AppCompat.Widget;
 using System;
 using System.Collections.Generic;
@@ -82,4 +81,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif
