@@ -1,6 +1,6 @@
 - name: Getting started
   items:
-    - name: Introduction
+    - name: Overview
       href: get-started.md
     - name: Getting Started on Visual Studio
       href: get-started-vs.md
@@ -8,12 +8,12 @@
       href: get-started-vsmac.md
     - name: Getting Started on Visual Studio Code
       href: get-started-vscode.md
-    - name: Getting Started with Linux
-      href: get-started-with-linux.md
     - name: Getting Started on Rider
       href: get-started-rider.md
     - name: dotnet new templates for Uno Platform
       href: get-started-dotnet-new.md
+    - name: Additional setup for Linux
+      href: get-started-with-linux.md
     - name: Creating an app - Tutorial
       items:
         - name: Getting Started Tutorial 1
@@ -26,19 +26,21 @@
       href: get-started-wizard.md
 - name: How-tos and tutorials
   items:
-    - name: How to consume a webservice
-      href: howto-consume-webservices.md
-    - name: How to add a splash screen
-      href: splash-screen.md
-    - name: How to integrate SignalR
-      href: signalr.md
+    - name: Overview
+      href: tutorials-intro.md
     - name: How to use Windows Community Toolkit
       href: uno-community-toolkit.md
+    - name: How to add a splash screen
+      href: splash-screen.md
+    - name: How to consume a webservice
+      href: howto-consume-webservices.md
+    - name: How to integrate SignalR
+      href: signalr.md
     - name: How to use MSAL for Azure Authentication
       href: interop/MSAL.md
     - name: Tutorial - Silverlight migration
       items:
-        - name: Introduction
+        - name: Overview
           href: silverlight-migration-landing.md
         - name: Silverlight to Uno Migration
           href: guides\silverlight-migration\00-overview.md
@@ -86,14 +88,14 @@
           href: interop/wasm-javascript-3.md
 - name: Development
   items:
-    - name: Introduction
+    - name: Overview
       href: using-uno-ui.md
     - name: About
       items:
-        - name: What is the Uno Platform?
+        - name: Overview
           href: what-is-uno.md
         - name: Supported platforms
-          href: getting-started\requirements.md
+          href: getting-started/requirements.md
         - name: Features list
           href: supported-features.md
         - name: How Uno works
@@ -102,10 +104,12 @@
           href: api-differences.md
         - name: Philosophy of Uno
           href: concepts/overview/philosophy-of-uno.md
-        - name: UWP vs WinUI 3
+        - name: Uno and WinUI 3
           href: uwp-vs-winui3.md
         - name: .NET version support
           href: net-version-support.md
+        - name: FAQ
+          href: faq.md
     - name: WinUI links
       href: winui-doc-links.md
     - name: Uno basics
@@ -144,6 +148,8 @@
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
           href: features/pointers-keyboard-and-other-user-inputs.md
+        - name: WinUI 2 controls
+          href: features/using-winui2.md
         - name: x:Bind
           href: features\windows-ui-xaml-xbind.md
     - name: WinUI controls
@@ -227,15 +233,19 @@
     - name: Uno features
       items:
         - name: Uno.UI.Toolkit
-          href: Uno.UI.Toolkit.md
-        - name: ElevatedView
-          href: features\ElevatedView.md
+          items:
+            - name: VisibleBoundsPadding
+              href: features\VisibleBoundsPadding.md
+            - name: ElevatedView
+              href: features\ElevatedView.md
+            - name: Other features
+              href: Uno.UI.Toolkit.md
+        - name: Uno Material
+          href: features/uno-material.md
         - name: Fluent icon font
           href: uno-fluent-assets.md
         - name: Lottie animations
           href: features/Lottie.md
-        - name: VisibleBoundsPadding
-          href: features\VisibleBoundsPadding.md
     - name: Core functionality
       items:
         - name: Logging
@@ -252,23 +262,15 @@
           href: native-styles.md
         - name: URI Protocol activation
           href: features\protocol-activation.md
-    - name: Debugging
-      items:
-        - name: Troubleshooting build errors
-          href: uno-builds-troubleshooting.md
-        - name: 'Debugging C# on WASM'
-          href: debugging-wasm.md
-        - name: XAML Hot Reload
-          href: features\working-with-xaml-hot-reload.md
         - name: Activities in Android
           href: android-activities.md
     - name: Common tasks
       items:
-        - name: Migrating from Previous Releases
+        - name: Upgrading from previous releases
           href: migrating-from-previous-releases.md
         - name: Migrating UWP-only code
           items:
-            - name: Introduction
+            - name: Overview
               href: howto-migrate-existing-code.md
             - name: Checklist
               href: migrating-before-you-start.md
@@ -280,6 +282,16 @@
               href: migrating-guidance.md
         - name: Creating a cross-targeted library
           href: cross-targeted-libraries.md
+        - name: Updating to WinUI 3.0
+          href: updating-to-winui3.md
+    - name: Debugging
+      items:
+        - name: Troubleshooting build errors
+          href: uno-builds-troubleshooting.md
+        - name: 'Debugging C# on WASM'
+          href: debugging-wasm.md
+        - name: XAML Hot Reload
+          href: features\working-with-xaml-hot-reload.md
     - name: Supported 3rd-party libraries
       href: supported-libraries.md
     - name: Performance
@@ -290,14 +302,12 @@
           href: wasm-custom-events.md
         - name: Using Uno Platform Controls in Xamarin.Forms
           href: howto-use-uno-in-xamarin-forms.md
-- name: FAQ
-  topicHref: faq.md
 - name: Reference
   href: implemented/toc.yml
   topicHref: implemented-views.md
 - name: Contributing to Uno
   items:
-    - name: Introduction
+    - name: Overview
       href: uno-development\contributing-intro.md
     - name: Code of Conduct
       href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
@@ -305,7 +315,7 @@
       href: uno-development\ways-to-contribute.md
     - name: How Uno works
       items:
-        - name: Introduction
+        - name: Overview
           href: uno-development\uno-internals-overview.md
         - name: Android
           href: uno-development\uno-internals-android.md
@@ -339,7 +349,7 @@
       href: uno-development\working-with-the-samples-apps.md
     - name: Guidelines for creating tests
       items:
-        - name: Introduction
+        - name: Overview
           href: contributing\guidelines\creating-tests.md
         - name: Mocked unit tests (Uno.UI.Tests)
           href: uno-development\creating-mocked-tests.md
