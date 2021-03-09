@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Input
 			UIElement source) : this()
 		{
 			_pointerEventArgs = pointerEventArgs;
-			_absolutePosition = pointerEventArgs.CurrentPoint.RawPosition;
+			_absolutePosition = pointerEventArgs.CurrentPoint.Position;
 
 			FrameId = pointerEventArgs.CurrentPoint.FrameId;
 			Pointer = GetPointer(pointerEventArgs);
