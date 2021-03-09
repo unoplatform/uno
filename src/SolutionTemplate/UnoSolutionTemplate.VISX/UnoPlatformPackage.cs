@@ -232,7 +232,7 @@ namespace UnoSolutionTemplate
 							}
 							else
 							{
-								_infoAction("The loaded solution contains an Uno.UI Remote Control service.");
+								_infoAction($"Unable to load {unoNuGetPackage.Id} Remote Control service ({unoNuGetPackage.VersionString}) (The constructor is invalid).");
 							}
 						}
 					}
