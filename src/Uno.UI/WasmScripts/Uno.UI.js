@@ -3267,7 +3267,7 @@ var Windows;
                         return json;
                     }
                     catch (e) {
-                        console.log("User did not make a selection or it file selected was" +
+                        console.log("User did not make a selection or the file selected was" +
                             "deemed too sensitive or dangerous to be exposed to the website - " + e);
                         return null;
                     }

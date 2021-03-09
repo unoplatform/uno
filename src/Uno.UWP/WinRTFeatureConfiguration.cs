@@ -79,8 +79,9 @@ namespace Uno
 			{
 				/// <summary>
 				/// Gets or sets a value indicating whether the file pickers based on
-				/// JS File System Access API are allowed. When set to false,
-				/// FileOpenPicker and FileSavePicker will default to "upload" and "download"
+				/// JS File System Access API are used. When set to false, or if the user's
+				/// browser doesn't support the File System Access APIs, FileOpenPicker
+				/// and FileSavePicker will default to "upload" and "download"
 				/// based pickers.
 				/// </summary>
 				public static bool AllowWasmNativePickers { get; set; } = true;

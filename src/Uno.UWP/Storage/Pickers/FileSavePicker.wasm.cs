@@ -55,7 +55,6 @@ namespace Windows.Storage.Pickers
 		{
 			var acceptTypes = new List<NativeFilePickerAcceptType>();
 
-			var mimeTypeMap = new Dictionary<string, List<string>>();
 			foreach (var choice in FileTypeChoices)
 			{
 				var acceptType = new NativeFilePickerAcceptType();
