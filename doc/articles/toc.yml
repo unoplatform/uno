@@ -111,7 +111,15 @@
         - name: FAQ
           href: faq.md
     - name: WinUI links
-      href: winui-doc-links.md
+      items:
+        - name: Overview
+          href: winui-doc-links.md
+        - name: Tutorials
+          href: winui-doc-links-tutorials.md
+        - name: Development
+          href: winui-doc-links-development.md
+        - name: Design
+          href: winui-doc-links-design.md
     - name: Uno basics
       items:
         - name: Platform-specific C# code
