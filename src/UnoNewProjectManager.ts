@@ -37,7 +37,7 @@ export class UnoNewProjectManager {
         });
     }
 
-    private async prepareProjectLocation (projectName: string): Promise<PathLike> {
+    private async prepareProjectLocation (projectName: string): Promise<PathLike | undefined> {
         return await new Promise(resolve => {
             const options: vscode.OpenDialogOptions = {
                 canSelectMany: false,
@@ -53,6 +53,8 @@ export class UnoNewProjectManager {
                     const projectLocation = path.join(fileUri[0].fsPath, projectName);
                     fs.mkdirSync(projectLocation);
                     resolve(projectLocation);
+                } else {
+                    resolve(undefined);
                 }
             });
         });
@@ -96,7 +98,7 @@ export class UnoNewProjectManager {
             prog?.report({
                 message: `Creating ${projectName!}`
             });
-            const createSuccess = await this.executeDotnetWithArgs(projectLocation,
+            const createSuccess = await this.executeDotnetWithArgs(projectLocation!,
                 [
                     "new",
                     "unoapp",
@@ -129,13 +131,13 @@ export class UnoNewProjectManager {
             });
             const unoOmnisharpManager = new UnoOmnisharpManager();
             unoOmnisharpManager.context = this.context;
-            await unoOmnisharpManager.createSkiaGtkConfiguration(projectName!, projectLocation);
+            await unoOmnisharpManager.createSkiaGtkConfiguration(projectName!, projectLocation!);
 
             // first build to generate code behind
             prog?.report({
                 message: `Building ${projectName!} unoapp`
             });
-            const buildSuccess = await this.executeDotnetWithArgs(projectLocation,
+            const buildSuccess = await this.executeDotnetWithArgs(projectLocation!,
                 [
                     "build"
                 ]
@@ -145,7 +147,7 @@ export class UnoNewProjectManager {
             }
 
             // reload the workspace
-            await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(projectLocation.toString()), false);
+            await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(projectLocation!.toString()), false);
         });
     }
 }
