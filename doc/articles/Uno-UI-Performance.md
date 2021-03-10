@@ -38,7 +38,7 @@ Here's what to look for:
 	- It is only supported for elements under the `DataTemplate` of a `ListViewItem`. The 
 	attribute is ignored for templates of `ContentControl` instances, or any other control.
     - When binding to Brushes with a solid color, prefer binding to the `Color` property like this if the brush type does not change:
-    ```xaml
+    ```xml
     <TextBlock Text="My Text">
         <TextBlock.Foreground>
             <SolidColorBrush Color="{x:Bind Color, Mode=OneWay, FallbackValue=Red}" />

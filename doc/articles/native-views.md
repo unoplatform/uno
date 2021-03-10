@@ -8,7 +8,7 @@ There's no special syntax required when adding native views in Xaml, apart from 
 
 An example:
 
-```xaml
+```xml
       ...
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:android="http://uno.ui/android"

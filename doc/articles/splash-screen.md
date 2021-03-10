@@ -15,7 +15,7 @@ In your UWP project head, navigate to `Package.appxmaifest > Visual Assets > Spl
 1. In the Android project head, navigate to `Resources/values/Styles.xml`
 
 2. Add an `android:windowBackground` `item` to the `AppTheme` style.  
-```xaml
+```xml
 <item name=“android:windowBackground“>@drawable/splash</item>
 ```
 

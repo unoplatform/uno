@@ -25,7 +25,7 @@ There might be differences in the date picker on different platform since it wra
 If you want to show a dimmed overlay underneath the picker, set the `DatePicker.LightDismissOverlayMode` property to `On`.
 
 If you wish to customise the overlay color, add the following to your top-level `App.Resources`:
-```xaml
+```xml
 <SolidColorBrush x:Key="DatePickerLightDismissOverlayBackground"
 		Color="Pink" />
 ```

@@ -26,7 +26,7 @@ For prefixes which will be excluded on Windows (e.g. `android`, `ios`), the actu
 
 Using the following XAML:
 
-```xaml
+```xml
 <Page x:Class="HelloWorld.MainPage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -67,7 +67,7 @@ Platform-specific XAML also allows you to exclude a parent element and all its c
 
 Consider the following XAML which is using the Windows Community Toolkit's [Blur](https://docs.microsoft.com/en-us/windows/communitytoolkit/animations/blur) animation. While this runs for UWP, it is not currently supported in the Uno Platform and needs to be conditionally disabled. It isn't possible to add something like `<win:interactivity:Interaction.Behaviors>` to disable the behavior itself. Instead, the entire `Grid` is disabled on any platforms except Windows and child elements will be disabled along with it.
 
-```xaml
+```xml
 <Page x:Class="HelloWorld.MainPage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

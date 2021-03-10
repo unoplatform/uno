@@ -21,7 +21,7 @@ Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement = DropDow
 
 ### Change only for a specific `ComboBox`
 
-```xaml
+```xml
 <Page
 	[...]
 	xmlns:not_win="using:Uno.UI.Xaml.Controls"

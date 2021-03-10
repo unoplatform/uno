@@ -62,7 +62,7 @@ This will create a solution that only contains the WebAssembly platform support.
 
 1. In `MainPage.xaml`, replace the Grid's content with the following:
 
-    ```xaml
+    ```xml
     <StackPanel>
         <TextBlock x:Name="txt"
                     Text="Hello, world!"
