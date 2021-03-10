@@ -138,6 +138,9 @@
         "xml2js": "^0.4.23",
         "@types/xml2js": "^0.4.8",
         "ip": "^1.1.5",
-        "@types/ip": "^1.1.0"
+        "@types/ip": "^1.1.0",
+        "replace-in-file": "^5.0.2",
+        "fs-extra": "^9.1.0",
+        "@types/fs-extra": "^9.0.8"
     }
 }
