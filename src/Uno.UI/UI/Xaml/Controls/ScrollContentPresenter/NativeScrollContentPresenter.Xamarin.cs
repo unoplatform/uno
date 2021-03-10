@@ -1,4 +1,4 @@
-﻿#if !__MACOS__
+﻿#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.DataBinding;
