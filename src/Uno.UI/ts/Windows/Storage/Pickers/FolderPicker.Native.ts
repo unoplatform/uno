@@ -1,7 +1,15 @@
 ﻿namespace Windows.Storage.Pickers {
 
 	export class FolderPicker {
+		public static isNativeSupported(): boolean {
+			return typeof showDirectoryPicker === "function";
+		}
+
 		public static async pickSingleFolderAsync(): Promise<string> {
+			if (!FolderPicker.isNativeSupported()) {
+				return null;
+			}
+
 			try {
 				const selectedFolder = await showDirectoryPicker();
 

@@ -57,7 +57,7 @@ namespace SamplesApp
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-			
+
 			ConfigureFeatureFlags();
 
 			AssertIssue1790();
@@ -126,7 +126,7 @@ namespace SamplesApp
 
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
 
-			DisplayLaunchArguments(e);
+			HandleLaunchArguments(e);
 		}
 
 		private static void ProcessEventArgs(LaunchActivatedEventArgs e)
@@ -259,8 +259,13 @@ namespace SamplesApp
 			}
 		}
 
-		private async void DisplayLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
+		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
+			if (await TryNavigateToLaunchSampleAsync(launchActivatedEventArgs))
+			{
+				return;
+			}
+
 			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
 			{
 				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
@@ -269,6 +274,33 @@ namespace SamplesApp
 					await dlg.ShowAsync();
 				}
 			}
+		}
+
+		private async Task<bool> TryNavigateToLaunchSampleAsync(LaunchActivatedEventArgs launchActivatedEventArgs)
+		{
+			const string samplePrefix = "sample=";
+			try
+			{
+				var args = Uri.UnescapeDataString(launchActivatedEventArgs.Arguments);
+				if (string.IsNullOrEmpty(args) || !args.StartsWith(samplePrefix))
+				{
+					return false;
+				}
+
+				args = args.Substring(samplePrefix.Length);
+
+				var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+				var category = pathParts[0];
+				var sampleName = pathParts[1];
+
+				await SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error($"Could not navigate to initial sample - {ex}");
+			}
+			return false;
 		}
 
 		/// <summary>

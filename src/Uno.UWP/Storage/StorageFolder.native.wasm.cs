@@ -16,6 +16,8 @@ namespace Windows.Storage
 		internal static StorageFolder GetFromNativeInfo(NativeStorageItemInfo info, StorageFolder? parent) =>
 			new StorageFolder(new NativeStorageFolder(info, parent));
 
+		internal static Task<StorageFolder?> GetPrivateRootAsync() => NativeStorageFolder.GetPrivateRootAsync();
+
 		internal sealed class NativeStorageFolder : ImplementationBase
 		{
 			private const string JsType = "Uno.Storage.NativeStorageFolder";
@@ -39,6 +41,18 @@ namespace Windows.Storage
 			}
 
 			public override StorageProvider Provider => StorageProviders.NativeWasm;
+			
+			public static async Task<StorageFolder?> GetPrivateRootAsync()
+			{
+				var itemInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getPrivateRootAsync()");
+				if (itemInfoJson == null)
+				{
+					return null;
+				}
+
+				var item = JsonHelper.Deserialize<NativeStorageItemInfo>(itemInfoJson);
+				return GetFromNativeInfo(item, null);
+			}
 
 			public override string Name => _name;
 

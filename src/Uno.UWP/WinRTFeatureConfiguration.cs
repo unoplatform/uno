@@ -72,5 +72,20 @@ namespace Uno
 			/// </summary>
 			public static Dictionary<string, string> FileTypeToMimeMapping { get; } = new Dictionary<string, string>();
 		}
+
+		public static class Storage
+		{
+			public static class Pickers
+			{
+				/// <summary>
+				/// Gets or sets a value indicating whether the file pickers based on
+				/// JS File System Access API are used. When set to false, or if the user's
+				/// browser doesn't support the File System Access APIs, FileOpenPicker
+				/// and FileSavePicker will default to "upload" and "download"
+				/// based pickers.
+				/// </summary>
+				public static bool AllowWasmNativePickers { get; set; } = true;
+			}
+		}
 	}
 }

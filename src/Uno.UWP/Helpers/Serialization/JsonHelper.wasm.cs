@@ -34,5 +34,15 @@ namespace Uno.Helpers.Serialization
 				return false;
 			}
 		}
+
+		public static string Serialize<T>(T value)
+		{
+			using var stream = new MemoryStream();
+			var serializer = new DataContractJsonSerializer(typeof(T));
+			serializer.WriteObject(stream, value);
+			stream.Position = 0;
+			using StreamReader reader = new StreamReader(stream);
+			return reader.ReadToEnd();
+		}
 	}
 }

@@ -68,6 +68,8 @@
     <type fullname="Uno.Storage.Internal.NativeStorageItemInfo" />
     <type fullname="Uno.ApplicationModel.Contacts.Internal.WasmContact" />
     <type fullname="Uno.ApplicationModel.Contacts.Internal.WasmContactAddress" />
+    <type fullname="Uno.Storage.Pickers.Internal.NativeFilePickerAcceptType" />
+    <type fullname="Uno.Storage.Pickers.Internal.NativeFilePickerAcceptTypeItem" />
   </assembly>
 
   <assembly fullname="Uno.Foundation">

@@ -15,7 +15,7 @@
 					create: true,
 				});
 
-				var info = NativeStorageItem.getInfos(newDirectoryHandle)[0];
+				const info = NativeStorageItem.getInfos(newDirectoryHandle)[0];
 				return JSON.stringify(info);
 			}
 			catch {
@@ -37,7 +37,7 @@
 					create: true,
 				});
 
-				var info = NativeStorageItem.getInfos(newFileHandle)[0];
+				const info = NativeStorageItem.getInfos(newFileHandle)[0];
 				return JSON.stringify(info);
 			}
 			catch {
@@ -117,6 +117,20 @@
 
 		public static async getFilesAsync(folderGuid: string): Promise<string> {
 			return await NativeStorageFolder.getEntriesAsync(folderGuid, true, false);
+		}
+
+		public static async getPrivateRootAsync(): Promise<string> {
+			if (!navigator.storage.getDirectory) {
+				return null;
+			}
+
+			const directory = await navigator.storage.getDirectory();
+			if (!directory) {
+				return null;
+			}
+
+			const info = NativeStorageItem.getInfos(directory)[0];
+			return JSON.stringify(info);
 		}
 
 		private static async getEntriesAsync(guid: string, includeFiles: boolean, includeDirectories: boolean): Promise<string> {

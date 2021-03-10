@@ -12,8 +12,6 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Entities;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
-using Windows.UI.Xaml.Data;
-using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.Storage;
 using Uno.Extensions;
@@ -22,7 +20,6 @@ using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
 using System.IO;
 using Windows.UI.Popups;
-using Uno.Disposables;
 
 #if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
@@ -721,10 +718,10 @@ namespace SampleControl.Presentation
 			if (sample != null)
 			{
 				var text = $@"
+query string: ?sample={sample.Categories.FirstOrDefault() ?? ""}/{sample.ControlName}
 view: {sample.ControlType.FullName}
 categories: {sample.Categories?.JoinBy(", ")}
-description:
-" + sample.Description;
+description: {sample.Description}";
 
 				await new MessageDialog(text.Trim(), sample.ControlName).ShowAsync();
 			}
@@ -866,6 +863,30 @@ description:
 					select test.ControlType.FullName;
 
 			return string.Join(";", q.Distinct());
+		}
+
+		public async Task SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
+		{
+			var category = _categories.FirstOrDefault(
+				c => c.Category != null &&
+				c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase));
+
+			if (category == null)
+			{
+				return;
+			}
+
+			var sample = category.SamplesContent.FirstOrDefault(
+				s => s.ControlName != null && s.ControlName.Equals(sampleName, StringComparison.InvariantCultureIgnoreCase));
+
+			if (sample == null)
+			{
+				return;
+			}
+
+			await ShowNewSection(token, Section.SamplesContent);
+
+			SelectedLibrarySample = sample;
 		}
 
 		public async Task SetSelectedSample(CancellationToken ct, string metadataName)

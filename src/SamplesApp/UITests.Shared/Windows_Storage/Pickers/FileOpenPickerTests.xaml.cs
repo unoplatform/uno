@@ -8,6 +8,8 @@ using Windows.Storage;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Uno.Extensions;
+using Uno.Disposables;
+using Uno;
 
 namespace UITests.Shared.Windows_Storage.Pickers
 {
@@ -39,6 +41,12 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		public FileOpenPickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
+			Disposables.Add(Disposable.Create(()=>
+			{
+#if __WASM__
+				WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = true;
+#endif
+			}));
 		}
 
 		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues(typeof(PickerLocationId)).OfType<PickerLocationId>().ToArray();
@@ -74,6 +82,21 @@ namespace UITests.Shared.Windows_Storage.Pickers
 				RaisePropertyChanged();
 			}
 		}
+
+#if __WASM__
+		public bool UseNativePicker
+		{
+			get => WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers;
+			set
+			{
+				if (WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers != value)
+				{
+					WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = value;
+					RaisePropertyChanged();
+				}
+			}
+		}
+#endif
 
 		public string StatusMessage
 		{
