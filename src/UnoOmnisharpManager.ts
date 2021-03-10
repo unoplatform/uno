@@ -12,9 +12,9 @@ export class UnoOmnisharpManager {
         unoOmnisharpManager.context = context;
     }
 
-    public async createSkiaGtkConfiguration (projectName: string, projectLocation: PathLike): Promise<void> {
+    private async createOmnisharpLaunchTasks (projectType: string, projectName: string, projectLocation: PathLike): Promise<void> {
         // get the .vscode template
-        const vscodeTemplate = path.join(this.context.extensionPath, "templates", "gtk", ".vscode");
+        const vscodeTemplate = path.join(this.context.extensionPath, "templates", projectType, ".vscode");
         // move to the new project workspace
         fs.copySync(vscodeTemplate, path.join(projectLocation.toString(), ".vscode"));
         // replace pattern
@@ -33,6 +33,10 @@ export class UnoOmnisharpManager {
         };
 
         await replace(options);
+    }
+
+    public async createSkiaGtkConfiguration (projectName: string, projectLocation: PathLike): Promise<void> {
+        await this.createOmnisharpLaunchTasks("gtk", projectName, projectLocation);
     }
 
     public createWasmConfiguration (): void { }
