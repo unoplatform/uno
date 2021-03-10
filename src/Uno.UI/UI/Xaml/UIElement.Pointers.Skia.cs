@@ -39,6 +39,7 @@ namespace Windows.UI.Xaml
 				Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
 				Window.Current.CoreWindow.PointerReleased += CoreWindow_PointerReleased;
 				Window.Current.CoreWindow.PointerWheelChanged += CoreWindow_PointerWheelChanged;
+				Window.Current.CoreWindow.PointerCancelled += CoreWindow_PointerCancelled;
 			}
 
 			private void CoreWindow_PointerWheelChanged(CoreWindow sender, PointerEventArgs args)
@@ -230,6 +231,55 @@ namespace Windows.UI.Xaml
 					// Note: We prefer to use the "WithOverCheck" overload as we already know that the pointer is effectively over
 					routedArgs.Handled = false;
 					originalSource.OnNativePointerMoveWithOverCheck(routedArgs, isOver: true);
+				}
+			}
+
+			private void CoreWindow_PointerCancelled(CoreWindow sender, PointerEventArgs args)
+			{
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Window.Current.Content;
+
+				if (originalSource is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerCancelled ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"CoreWindow_PointerCancelled [{originalSource.GetDebugName()}");
+				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				// Second raise the event, either on the OriginalSource or on the capture owners if any
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+				{
+					foreach (var target in capture.Targets.ToArray())
+					{
+						target.Element.OnNativePointerCancel(routedArgs, isSwallowedBySystem: false);
+					}
+				}
+				else
+				{
+					originalSource.OnNativePointerCancel(routedArgs, isSwallowedBySystem: false);
+				}
+
+				if (_pressedElements.TryGetValue(routedArgs.Pointer, out var pressedLeaf))
+				{
+					// We must make sure to clear the pressed state on all elements that was flagged as pressed.
+					// This is required as the current originalSource might not be the same as when we pressed (pointer moved),
+					// ** OR ** the pointer has been captured by a parent element so we didn't raised to released on the sub elements.
+
+					_pressedElements.Remove(routedArgs.Pointer);
+					ClearPointerState(routedArgs, root: null, pressedLeaf, clearOver: false);
 				}
 			}
 

@@ -44,5 +44,9 @@ namespace Windows.UI.Input
 		public bool IsInContact { get; }
 
 		public PointerPointProperties Properties { get; }
+
+		/// <inheritdoc />
+		public override string ToString()
+			=> $"[{PointerDevice.PointerDeviceType}-{PointerId}] @{Position.ToDebugString()} (raw: {RawPosition.ToDebugString()} | ts: {Timestamp} | props: {Properties} | inContact: {IsInContact})";
 	}
 }

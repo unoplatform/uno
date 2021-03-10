@@ -106,13 +106,7 @@ namespace Uno.UI.Runtime.Skia
 			_window.Add(_area);
 
 			/* avoids double invokes at window level */
-			_area.AddEvents((int)(
-				Gdk.EventMask.PointerMotionMask
-			 | Gdk.EventMask.ButtonPressMask
-			 | Gdk.EventMask.ButtonReleaseMask
-			 | Gdk.EventMask.KeyPressMask
-			 | Gdk.EventMask.KeyReleaseMask
-			));
+			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
 
 			_window.ShowAll();
 
