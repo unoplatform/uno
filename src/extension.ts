@@ -6,6 +6,7 @@ import which from 'which';
 import * as path from 'path';
 import { UnoPlatformCmdProvider } from './UnoPlatformCmdProvider';
 import { UnoCsprojManager } from './UnoCsprojManager';
+import { UnoNewProjectManager } from './UnoNewProjectManager';
 
 export function activate (context: vscode.ExtensionContext): void {
     // load the xaml contributions
@@ -40,7 +41,7 @@ export function activate (context: vscode.ExtensionContext): void {
             toUnoRemoteHost.shellArgs = ["Uno.UI.RemoteControl.Host.dll", "--httpPort=8090"];
 
             ExtensionUtils.createTerminal(context, "HotReload Server",
-                "uno-remote-host", dotnetPath,
+                `${context.extensionPath}\\uno-remote-host`, dotnetPath,
                 [
                     "Uno.UI.RemoteControl.Host.dll",
                     // TODO: make this configurable
@@ -50,6 +51,7 @@ export function activate (context: vscode.ExtensionContext): void {
 
             // register the commands
             UnoCsprojManager.Register();
+            UnoNewProjectManager.Register(context);
 
             // ok now create the activity bar view content
             const cmdNodesProvider = new UnoPlatformCmdProvider();

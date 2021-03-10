@@ -50,26 +50,33 @@ export class UnoCsprojManager {
         this.writeJsonToXML(result, path);
     }
 
-    private getPath (pattern: string): PathLike | undefined {
+    private getPath (pattern: string, location?: PathLike): PathLike | undefined {
         // get the workspace directories
-        const workspacePath: PathLike = path.join(vscode.workspace.rootPath!);
+        let workspacePath: PathLike;
+
+        if (location === undefined) {
+            workspacePath = path.join(vscode.workspace.rootPath!);
+        } else {
+            workspacePath = location;
+        }
+
         const dirs: string[] = fs.readdirSync(workspacePath);
         let getPath: PathLike;
 
         // check if the pattern exists
         const dirName = dirs.filter(dirname => dirname.includes(pattern));
         if (dirName.length === 1) {
-            getPath = path.join(vscode.workspace.rootPath!, dirName[0], `${dirName[0]}.csproj`);
+            getPath = path.join(workspacePath.toString(), dirName[0], `${dirName[0]}.csproj`);
             return getPath;
         }
 
         return undefined;
     }
 
-    public setHotReloadHostAddress (): void {
+    public setHotReloadHostAddress (location?: PathLike): void {
         // get the workspace directories
-        const skiaGtkPath: PathLike | undefined = this.getPath(".Skia.Gtk");
-        const skiaWasmPath: PathLike | undefined = this.getPath(".Wasm");
+        const skiaGtkPath: PathLike | undefined = this.getPath(".Skia.Gtk", location);
+        const skiaWasmPath: PathLike | undefined = this.getPath(".Wasm", location);
 
         // check if the .Skia.Gtk exists
         if (skiaGtkPath !== undefined) {
@@ -122,10 +129,10 @@ export class UnoCsprojManager {
         }
     }
 
-    public setDisableRoslynGenerators (): void {
+    public setDisableRoslynGenerators (location?: PathLike): void {
         // get the workspace directories
-        const skiaGtkPath: PathLike | undefined = this.getPath(".Skia.Gtk");
-        const skiaWasmPath: PathLike | undefined = this.getPath(".Wasm");
+        const skiaGtkPath: PathLike | undefined = this.getPath(".Skia.Gtk", location);
+        const skiaWasmPath: PathLike | undefined = this.getPath(".Wasm", location);
 
         // check if the .Skia.Gtk exists
         if (skiaGtkPath !== undefined) {

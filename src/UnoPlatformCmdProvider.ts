@@ -30,7 +30,7 @@ export class UnoPlatformCmdProvider implements vscode.TreeDataProvider<vscode.Tr
                 vscode.TreeItemCollapsibleState.None,
                 "",
                 {
-                    command: "",
+                    command: "createSkiaGtkProject",
                     title: "",
                     arguments: []
                 },

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import which from 'which';
 
 type ProgressCallback = (resolve?: any, progress?: vscode.Progress<{
     message?: string | undefined;
@@ -66,8 +67,8 @@ export class ExtensionUtils {
     }
 
     static createTerminal (context: vscode.ExtensionContext, name: string,
-        shellCwd: string, shellPath: string | undefined, shellArgs: string[]): void {
-        var cwd = path.join(context.extensionPath, shellCwd);
+        shellCwd: string, shellPath: string | undefined, shellArgs: string[]): vscode.Terminal {
+        var cwd = path.join(shellCwd);
 
         var toUnoRemoteHost: vscode.TerminalOptions = { shellArgs: [] };
         toUnoRemoteHost.name = name;
@@ -75,6 +76,17 @@ export class ExtensionUtils {
         toUnoRemoteHost.shellPath = shellPath;
         toUnoRemoteHost.shellArgs = shellArgs;
 
-        vscode.window.createTerminal(toUnoRemoteHost);
+        return vscode.window.createTerminal(toUnoRemoteHost);
+    }
+
+    static async getDotnetPath (): Promise<string | undefined> {
+        var dotnetPath: string | undefined;
+        await which("dotnet", (err, path) => {
+            if (err === null) {
+                dotnetPath = path;
+            }
+        });
+
+        return dotnetPath;
     }
 }
