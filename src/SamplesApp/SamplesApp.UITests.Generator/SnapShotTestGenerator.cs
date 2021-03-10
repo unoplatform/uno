@@ -42,21 +42,22 @@ namespace Uno.Samples.UITest.Generator
 						where info != null
 						let sampleInfo = GetSampleInfo(typeSymbol, info)
 						orderby sampleInfo.categories.First()
-						select (typeSymbol, sampleInfo.categories, sampleInfo.name, sampleInfo.ignoreInSnapshotTests);
+						select (typeSymbol, sampleInfo.categories, sampleInfo.name, sampleInfo.ignoreInSnapshotTests, sampleInfo.isManual);
 
 			query = query.Distinct();
 
 			GenerateTests(assembly, context, query);
 		}
 
-		private (string[] categories, string name, bool ignoreInSnapshotTests) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr)
+		private (string[] categories, string name, bool ignoreInSnapshotTests, bool isManual) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr)
 		{
 			if (attr.AttributeClass == _sampleControlInfoSymbol)
 			{
 				return (
 					categories: new[] { GetConstructorParameterValue(attr, "category")?.ToString() ?? "Default" },
 					name: AlignName(GetConstructorParameterValue(attr, "controlName")?.ToString() ?? symbol.ToDisplayString()),
-					ignoreInSnapshotTests: GetConstructorParameterValue(attr, "ignoreInSnapshotTests") is bool b && b
+					ignoreInSnapshotTests: GetConstructorParameterValue(attr, "ignoreInSnapshotTests") is bool b && b,
+					isManual: GetConstructorParameterValue(attr, "isManualTest") is bool m && m
 				);
 			}
 			else
@@ -79,8 +80,9 @@ namespace Uno.Samples.UITest.Generator
 				return (
 					categories: (categories?.Any() ?? false) ? categories : new[] { "Default" },
 					name: AlignName(GetAttributePropertyValue(attr, "Name")?.ToString() ?? symbol.ToDisplayString()),
-					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b
-				);
+					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b,
+					isManual: GetAttributePropertyValue(attr, "IsManualTest") is bool m && m
+					);
 
 				string[] GetCategories(ImmutableArray<TypedConstant> args) => args
 					.Select(v =>
@@ -118,7 +120,7 @@ namespace Uno.Samples.UITest.Generator
 		private void GenerateTests(
 			string assembly,
 			SourceGeneratorContext context,
-			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests)> symbols)
+			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests, bool isManual)> symbols)
 		{
 			var groups = 
 				from symbol in symbols.Select((v, i) => (index:i, value:v))
@@ -154,6 +156,10 @@ namespace Uno.Samples.UITest.Generator
 							if (test.ignoreInSnapshotTests)
 							{
 								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"ignoreInSnapshotTests is set for attribute\")]");
+							}
+							if (test.isManual)
+							{
+								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"isManualTest is set for attribute\")]");
 							}
 
 							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
