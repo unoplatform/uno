@@ -75,6 +75,7 @@ export class UnoNewProjectManager {
     }
 
     public async createSkiaGtkProject (): Promise<void> {
+        ExtensionUtils.writeln(`Creating a new Skia.Gtk unoapp`);
         ExtensionUtils.showProgress("Uno Skia Gtk Project", "", async (res, prog) => {
             // choose app name
             prog?.report({
@@ -82,6 +83,7 @@ export class UnoNewProjectManager {
             });
             const projectName = await this.getProjectName();
             if (projectName === undefined) {
+                ExtensionUtils.writeln(`Aborting creation, name cannot be undefined`);
                 res();
             }
 
@@ -91,6 +93,7 @@ export class UnoNewProjectManager {
             });
             const projectLocation = await this.prepareProjectLocation(projectName!);
             if (projectLocation === undefined) {
+                ExtensionUtils.writeln(`Aborting creation, project location cannot be undefined`);
                 res();
             }
 
@@ -112,6 +115,7 @@ export class UnoNewProjectManager {
                 ]
             );
             if (!createSuccess) {
+                ExtensionUtils.writeln(`Aborting creation, errors during dotnet new`);
                 res();
             }
 
@@ -143,6 +147,8 @@ export class UnoNewProjectManager {
                 ]
             );
             if (!buildSuccess) {
+                // TODO: in this case maybe we need a cleanup 🤷‍♂️
+                ExtensionUtils.writeln(`Aborting creation, errors during dotnet build`);
                 res();
             }
 

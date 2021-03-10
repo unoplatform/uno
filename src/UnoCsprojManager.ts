@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { PathLike } from 'node:fs';
 import ip from "ip";
+import { ExtensionUtils } from './ExtensionUtils';
 
 export class UnoCsprojManager {
     public static Register (): void {
@@ -32,6 +33,8 @@ export class UnoCsprojManager {
 
         // write back
         this.writeJsonToXML(result, path);
+        ExtensionUtils.writeln(`Hot Reload server address ${ip.address()}`);
+        ExtensionUtils.writeln(`Hot Reload server port 8090`);
     }
 
     private setDisableRoslynGeneratorsProperty (result: any, path: PathLike): void {
@@ -74,6 +77,7 @@ export class UnoCsprojManager {
     }
 
     public setHotReloadHostAddress (location?: PathLike): void {
+        ExtensionUtils.writeln("Configuring Hot Reload server address");
         // get the workspace directories
         const skiaGtkPath: PathLike | undefined = this.getPath(".Skia.Gtk", location);
         const skiaWasmPath: PathLike | undefined = this.getPath(".Wasm", location);
@@ -96,12 +100,14 @@ export class UnoCsprojManager {
             xml2js.parseString(wasmCsproj, (err, result): void => {
                 if (err === null) {
                     this.setHotReloadHostAddressProperty(result, skiaWasmPath);
+                    ExtensionUtils.writeln("Hot Reload server address configured");
                 }
             });
         }
     }
 
     public setEnableRoslynGenerators (): void {
+        ExtensionUtils.writeln(`Configuring UnoUIUseRoslynSourceGenerators`);
         // get the workspace directories
         const skiaGtkPath: PathLike | undefined = this.getPath(".Skia.Gtk");
         const skiaWasmPath: PathLike | undefined = this.getPath(".Wasm");
@@ -113,6 +119,7 @@ export class UnoCsprojManager {
             xml2js.parseString(gtkCsproj, (err, result): void => {
                 if (err === null) {
                     this.setEnableRoslynGeneratorsProperty(result, skiaGtkPath);
+                    ExtensionUtils.writeln(`Skia.Gtk UnoUIUseRoslynSourceGenerators seted to true`);
                 }
             });
         }
@@ -124,12 +131,14 @@ export class UnoCsprojManager {
             xml2js.parseString(wasmCsproj, (err, result): void => {
                 if (err === null) {
                     this.setEnableRoslynGeneratorsProperty(result, skiaWasmPath);
+                    ExtensionUtils.writeln(`WASM UnoUIUseRoslynSourceGenerators seted to true`);
                 }
             });
         }
     }
 
     public setDisableRoslynGenerators (location?: PathLike): void {
+        ExtensionUtils.writeln(`Configuring UnoUIUseRoslynSourceGenerators`);
         // get the workspace directories
         const skiaGtkPath: PathLike | undefined = this.getPath(".Skia.Gtk", location);
         const skiaWasmPath: PathLike | undefined = this.getPath(".Wasm", location);
@@ -141,6 +150,7 @@ export class UnoCsprojManager {
             xml2js.parseString(gtkCsproj, (err, result): void => {
                 if (err === null) {
                     this.setDisableRoslynGeneratorsProperty(result, skiaGtkPath);
+                    ExtensionUtils.writeln(`Skia.Gtk UnoUIUseRoslynSourceGenerators seted to false`);
                 }
             });
         }
@@ -152,6 +162,7 @@ export class UnoCsprojManager {
             xml2js.parseString(wasmCsproj, (err, result): void => {
                 if (err === null) {
                     this.setDisableRoslynGeneratorsProperty(result, skiaWasmPath);
+                    ExtensionUtils.writeln(`WASM UnoUIUseRoslynSourceGenerators seted to false`);
                 }
             });
         }

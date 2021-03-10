@@ -22,17 +22,24 @@ export function activate (context: vscode.ExtensionContext): void {
 
     ExtensionUtils.showProgress("Initializing Uno Platform Ext ...", "",
         async (res, pro): Promise<void> => {
+            // validate environment
             // check dotnet
             var dotnetPath: string | undefined;
             await which("dotnet", (err, path) => {
                 if (err === null) {
                     dotnetPath = path;
+                } else {
+                    ExtensionUtils.showError(
+                        "dotnet was not found. Make sure you have the dotnet SDK installed."
+                    );
+                    res();
                 }
             });
 
             // TODO: it would be nice to have some way to update it through CI
             // artifacts instead of distributing it in the repository
-            ExtensionUtils.createTerminal(context, "HotReload Server",
+            ExtensionUtils.writeln("Creating HotReload Server", true);
+            const term = ExtensionUtils.createTerminal(context, "HotReload Server",
                 path.join(context.extensionPath, "uno-remote-host"), dotnetPath,
                 [
                     "Uno.UI.RemoteControl.Host.dll",
@@ -41,7 +48,24 @@ export function activate (context: vscode.ExtensionContext): void {
                 ]
             );
 
+            // monitor for the hot reload server close
+            const termMonitor = vscode.window.onDidCloseTerminal(terminal => {
+                if (terminal === term && (terminal.exitStatus?.code !== 0)) {
+                    process.env.UNO_HOT_RELOAD_HOST_RUNNING = "false";
+                    // we had an error
+                    ExtensionUtils.showWarning(
+                        "Uno Platform Hot Reload server does not running."
+                    );
+                    ExtensionUtils.writeln("Please, make sure there is no other instance of uno-host-reload running.");
+                    ExtensionUtils.writeln("Please, make sure you have dotnet runtime 3.1 installed.");
+                    ExtensionUtils.writeln("Please, make sure that the port 8090 is not in use.");
+
+                    termMonitor.dispose();
+                }
+            });
+
             // register the commands
+            ExtensionUtils.writeln("Registering commands");
             UnoCsprojManager.Register();
             UnoNewProjectManager.Register(context);
 
@@ -49,6 +73,7 @@ export function activate (context: vscode.ExtensionContext): void {
             const cmdNodesProvider = new UnoPlatformCmdProvider();
             vscode.window.registerTreeDataProvider("unoDevCmdView", cmdNodesProvider);
 
+            ExtensionUtils.writeln("Uno Platform VS Code extension running 😎", true);
             res();
         });
 
