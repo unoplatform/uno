@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Uno.Extensions;
 
 namespace Uno.UI.Tasks.ResourcesGenerator
 {
@@ -23,7 +22,10 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 				))
 			);
 
-			comment.Maybe(c => document.AddFirst(new XComment(c)));
+			if (comment != null)
+			{
+				document.AddFirst(new XComment(comment));
+			}
 			
 			document.Save(path);
 		}
