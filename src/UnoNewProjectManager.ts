@@ -4,6 +4,7 @@ import { ExtensionUtils } from './ExtensionUtils';
 import * as fs from 'fs';
 import * as path from 'path';
 import { UnoCsprojManager } from './UnoCsprojManager';
+import { UnoOmnisharpManager } from './UnoOmnisharpManager';
 
 export class UnoNewProjectManager {
     public context: vscode.ExtensionContext;
@@ -72,7 +73,7 @@ export class UnoNewProjectManager {
     }
 
     public async createSkiaGtkProject (): Promise<void> {
-        ExtensionUtils.showProgress("Creating Uno Skia Gtk Project", "", async (res, prog) => {
+        ExtensionUtils.showProgress("Uno Skia Gtk Project", "", async (res, prog) => {
             // choose app name
             prog?.report({
                 message: "Choosing unoapp name"
@@ -93,7 +94,7 @@ export class UnoNewProjectManager {
 
             // use dotnet new
             prog?.report({
-                message: `Creating ${projectName!} unoapp`
+                message: `Creating ${projectName!}`
             });
             const createSuccess = await this.executeDotnetWithArgs(projectLocation,
                 [
@@ -112,17 +113,23 @@ export class UnoNewProjectManager {
                 res();
             }
 
-            // create the .vscode
-            // TODO: I will not automaticaly create the .vscode for Skia.Gtk let's omnisharp do it
             // csproj automations
             prog?.report({
-                message: `Configuring ${projectName!} unoapp`
+                message: `Configuring ${projectName!}`
             });
             const unoCsprojManager = new UnoCsprojManager();
             // fix roslyn generators
             unoCsprojManager.setDisableRoslynGenerators(projectLocation);
             // add the localhost to the hot reload address
             unoCsprojManager.setHotReloadHostAddress(projectLocation);
+
+            // create the .vscode
+            prog?.report({
+                message: `Setting debug targets for ${projectName!}`
+            });
+            const unoOmnisharpManager = new UnoOmnisharpManager();
+            unoOmnisharpManager.context = this.context;
+            await unoOmnisharpManager.createSkiaGtkConfiguration(projectName!, projectLocation);
 
             // first build to generate code behind
             prog?.report({
