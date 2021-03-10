@@ -41,7 +41,7 @@ export function activate (context: vscode.ExtensionContext): void {
             toUnoRemoteHost.shellArgs = ["Uno.UI.RemoteControl.Host.dll", "--httpPort=8090"];
 
             ExtensionUtils.createTerminal(context, "HotReload Server",
-                `${context.extensionPath}\\uno-remote-host`, dotnetPath,
+                path.join(context.extensionPath, "uno-remote-host"), dotnetPath,
                 [
                     "Uno.UI.RemoteControl.Host.dll",
                     // TODO: make this configurable
