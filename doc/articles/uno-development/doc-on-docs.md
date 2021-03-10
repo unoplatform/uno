@@ -26,6 +26,7 @@ Step-by-step guides that address a particular problem or use case that multiple 
  * For longer tutorials, it's fine to split the content over multiple pages.
  * Guides should always be accompanied by working code. Standalone applications should be added to the [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples) and linked to from the associated tutorial.
  * Use the [howto template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md) as a starting point.
+ * Structure guides as a series of clear, actionable steps. After carrying out every step as described, the user should end up with working code that demonstrates the objective of the guide (either a standalone sample, or a new feature in their existing app).
 
 ## Documenting features
 
