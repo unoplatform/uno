@@ -74,9 +74,10 @@ export class UnoNewProjectManager {
         });
     }
 
-    public async createSkiaGtkProject (): Promise<void> {
-        ExtensionUtils.writeln(`Creating a new Skia.Gtk unoapp`);
-        ExtensionUtils.showProgress("Uno Skia Gtk Project", "", async (res, prog) => {
+    private async createGenericProject (specificTitle: string,
+        specific: (prjName: string | undefined, prjLocate: PathLike | undefined) => Promise<boolean>): Promise<void> {
+        ExtensionUtils.writeln(specificTitle);
+        ExtensionUtils.showProgress(specificTitle, "", async (res, prog) => {
             // choose app name
             prog?.report({
                 message: "Choosing unoapp name"
@@ -97,23 +98,11 @@ export class UnoNewProjectManager {
                 res();
             }
 
-            // use dotnet new
+            // creation is specific
             prog?.report({
                 message: `Creating ${projectName!}`
             });
-            const createSuccess = await this.executeDotnetWithArgs(projectLocation!,
-                [
-                    "new",
-                    "unoapp",
-                    "-wasm=false",
-                    "-uwp=false",
-                    "-ios=false",
-                    "-android=false",
-                    "-macos=false",
-                    "-skia-wpf=false",
-                    "-st=false"
-                ]
-            );
+            const createSuccess = await specific(projectName, projectLocation);
             if (!createSuccess) {
                 ExtensionUtils.writeln(`Aborting creation, errors during dotnet new`);
                 res();
@@ -155,5 +144,33 @@ export class UnoNewProjectManager {
             // reload the workspace
             await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(projectLocation!.toString()), false);
         });
+    }
+
+    public async createSkiaGtkProject (): Promise<void> {
+        await this.createGenericProject("New Uno Skia.Gtk app",
+            async (projectName: string | undefined, projectLocation: PathLike | undefined): Promise<boolean> => {
+                const success = await this.executeDotnetWithArgs(projectLocation!,
+                    [
+                        "new",
+                        "unoapp",
+                        "-wasm=false",
+                        "-uwp=false",
+                        "-ios=false",
+                        "-android=false",
+                        "-macos=false",
+                        "-skia-wpf=false",
+                        "-st=false"
+                    ]
+                );
+
+                if (success) {
+                    const unoOmnisharpManager = new UnoOmnisharpManager();
+                    unoOmnisharpManager.context = this.context;
+                    await unoOmnisharpManager.createSkiaGtkConfiguration(projectName!, projectLocation!);
+                    ExtensionUtils.writeln(`.vscode settings for Skia.Gtk ${projectName!} App created`);
+                }
+
+                return success;
+            });
     }
 }
