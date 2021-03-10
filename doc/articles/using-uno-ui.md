@@ -1,6 +1,6 @@
 ﻿# Developing with Uno Platform
 
-Write applications once in Xaml and C# and deploy them to [any target platform](getting-started/requirements.md).
+Write applications once in XAML and C# and deploy them to [any target platform](getting-started/requirements.md).
 
 ## About Uno
 

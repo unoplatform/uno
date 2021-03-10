@@ -43,7 +43,7 @@ The standard Uno template configures logging in the **Shared** project **App.xam
                     // Debug JS interop
                     // { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
 
-                    // Generic Xaml events
+                    // Generic XAML events
                     // { "Windows.UI.Xaml", LogLevel.Debug },
                     // { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
                     // { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
@@ -116,7 +116,7 @@ In order to support logging to the debug output view in Visual Studio, complete 
                     // Debug JS interop
                     // { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
 
-                    // Generic Xaml events
+                    // Generic XAML events
                     // { "Windows.UI.Xaml", LogLevel.Debug },
                     // { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
                     // { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },

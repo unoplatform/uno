@@ -54,7 +54,7 @@ Browse the set of available controls and their properties.
 
 <br/>
 
-Uno Platform lets you write an application once in Xaml and C#, and deploy it to any target platform. 
+Uno Platform lets you write an application once in XAML and C#, and deploy it to any target platform. 
 
 <br/>
 

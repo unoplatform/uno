@@ -1,6 +1,6 @@
 # Migrating a UWP-only application codebase to an Uno Platform application
 
-This article describes how to migrate a C# and Xaml application targeting only UWP to one targeting multiple platforms using Uno Platform. The final application codebase will share 99% of the same code with the original, but the solution structure will be different.
+This article describes how to migrate a C# and XAML application targeting only UWP to one targeting multiple platforms using Uno Platform. The final application codebase will share 99% of the same code with the original, but the solution structure will be different.
 
 It assumes you're using Visual Studio for Windows, but the steps are similar if you're using VS Code or another IDE. The basic principle is to create an empty Uno Platform app with the same name as your UWP-only app, and to copy the contents of the old app into the shared project of the new app.
 
@@ -30,7 +30,7 @@ Note: these steps will **destructively modify** your existing UWP-only solution.
 
 3. Delete `App.xaml` and `MainPage.xaml` from the new Shared project - you will replace these with your existing files.
 
-4. Transfer all code files (C# and Xaml) and assets from your old UWP-only project to the new Shared project.  
+4. Transfer all code files (C# and XAML) and assets from your old UWP-only project to the new Shared project.  
 
 *Note: you can safely delete 'head' projects for platforms that you're sure you don't want to target.*
 

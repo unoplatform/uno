@@ -2,13 +2,13 @@
 
 Unit tests in `Uno.UI.Tests` run against a .NET Framework build of `Uno.UI`, which uses the 'real' Uno code for platform-independent components (eg the dependency-property system) and mocks platform-dependent aspects (eg actual rendering).
 
-Adding tests here is closest to the 'traditional' unit test experience: you can run tests from the Visual Studio test window pane, easily debug the code you're modifying, etc. This is the ideal place to test platform-independent parts of the API, like dependency property behaviours and Xaml-generated code. 
+Adding tests here is closest to the 'traditional' unit test experience: you can run tests from the Visual Studio test window pane, easily debug the code you're modifying, etc. This is the ideal place to test platform-independent parts of the API, like dependency property behaviours and XAML-generated code. 
 
 ## Running tests in Uno.UI.Tests
 
 1. Open and build the Uno.UI solution [for the `net461` target](building-uno-ui.md).
 2. Open Test Explorer from the TEST menu.
-3. Tests are listed under `Uno.UI.Tests`. You can run all tests or a subsection, with or without debugging. Tests run in a vanilla .NET Framework environment. (Note: You usually don't need to run `Uno.Xaml.Tests` tests locally, unless you're making changes to low-level Xaml parsing in `Uno.Xaml`. )
+3. Tests are listed under `Uno.UI.Tests`. You can run all tests or a subsection, with or without debugging. Tests run in a vanilla .NET Framework environment. (Note: You usually don't need to run `Uno.Xaml.Tests` tests locally, unless you're making changes to low-level XAML parsing in `Uno.Xaml`. )
 
 ## Adding a new test
 

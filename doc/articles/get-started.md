@@ -1,6 +1,6 @@
 # Get started with Uno Platform
 
-Welcome to Uno Platform! You'll be creating cross-platform applications with Xaml and C# in no time.
+Welcome to Uno Platform! You'll be creating cross-platform applications with XAML and C# in no time.
 
 To help you set up your development environment, we need to know what operating system you're developing on, and what's your preferred IDE.
 
@@ -12,7 +12,7 @@ To help you set up your development environment, we need to know what operating 
 
  ## Windows
 
-If you're developing on Windows, our recommended IDE is Visual Studio, for the richest Xaml development experience. But if you prefer to use Rider or Visual Studio Code, you can - you'll just get less hints when you're writing Xaml markup.
+If you're developing on Windows, our recommended IDE is Visual Studio, for the richest XAML development experience. But if you prefer to use Rider or Visual Studio Code, you can - you'll just get less hints when you're writing XAML markup.
 
  - [Get started with Visual Studio for Windows](get-started-vs.md)
  - [Get started with Visual Studio Code](get-started-vscode.md)

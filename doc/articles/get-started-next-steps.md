@@ -2,7 +2,7 @@
 
 Already [completed the tutorial](getting-started-tutorial-1.md)? Ready to build your own app or library, or just want to learn more? These resources will help you on your way.
 
-* The Uno Platform brings Microsoft's UWP/WinUI framework to Android, iOS, macOS, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the UWP framework](https://docs.microsoft.com/en-us/windows/uwp/develop/) is a great place to start, particularly if you've never used UWP/WinUI or Xaml before. Some additonal resources :
+* The Uno Platform brings Microsoft's UWP/WinUI framework to Android, iOS, macOS, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the UWP framework](https://docs.microsoft.com/en-us/windows/uwp/develop/) is a great place to start, particularly if you've never used UWP/WinUI or XAML before. Some additonal resources :
    - [Get started with Windows 10 apps](https://docs.microsoft.com/en-us/windows/uwp/get-started/)
    - [Universal Windows Platform documentation](https://docs.microsoft.com/en-us/windows/uwp/develop)
 

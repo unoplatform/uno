@@ -22,7 +22,7 @@ The current implementation uses the native UIKit Map for iOS and the Google Play
 5. (Android) Configure permissions in the manifest, following the instructions below.
 6. Add `MapControl` to your app (`<MapControl xmlns="using:Windows.UI.Xaml.Controls.Maps" />`).
 
-## Sample Xaml
+## Sample XAML
 
 Here's a complete sample: 
 

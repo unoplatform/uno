@@ -52,11 +52,11 @@ Example SDK reference:
 	</ItemGroup>
 ```
 
-## Adding Xaml files
+## Adding XAML files
 
-All Xaml files within the project folder are automatically included in the project, via the 'globbing' defined in the default cross-targeted library template.
+All XAML files within the project folder are automatically included in the project, via the 'globbing' defined in the default cross-targeted library template.
 
-In Visual Studio you can add new Xaml files via the normal 'Add Items...' UI. Note that this will also add explicit references to the file in the `.csproj`. The explicit references can be safely deleted, they're not necessary.
+In Visual Studio you can add new XAML files via the normal 'Add Items...' UI. Note that this will also add explicit references to the file in the `.csproj`. The explicit references can be safely deleted, they're not necessary.
 
 ## Defining conditional symbols
 
