@@ -19,7 +19,8 @@
     ],
     "activationEvents": [
         "onLanguage:xml",
-        "workspaceContains:*/**/*.Shared.shproj"
+        "workspaceContains:*/**/*.Shared.shproj",
+        "onView:unoDevCmdView"
     ],
     "main": "./out/extension.js",
     "contributes": {
