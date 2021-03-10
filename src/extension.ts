@@ -32,14 +32,6 @@ export function activate (context: vscode.ExtensionContext): void {
 
             // TODO: it would be nice to have some way to update it through CI
             // artifacts instead of distributing it in the repository
-            var cwd = path.join(context.extensionPath, "uno-remote-host");
-
-            var toUnoRemoteHost: vscode.TerminalOptions = { shellArgs: [] };
-            toUnoRemoteHost.name = "HotReload Server";
-            toUnoRemoteHost.cwd = cwd;
-            toUnoRemoteHost.shellPath = dotnetPath;
-            toUnoRemoteHost.shellArgs = ["Uno.UI.RemoteControl.Host.dll", "--httpPort=8090"];
-
             ExtensionUtils.createTerminal(context, "HotReload Server",
                 path.join(context.extensionPath, "uno-remote-host"), dotnetPath,
                 [
