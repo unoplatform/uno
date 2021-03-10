@@ -27,7 +27,6 @@ namespace Uno.UI.Runtime.Skia
 	{
 		private readonly CoreWindow _owner;
 		private ICoreWindowEvents _ownerEvents;
-		private static int _currentFrameId;
 
 		internal const Gdk.EventMask RequestedEvents =
 			Gdk.EventMask.EnterNotifyMask
@@ -73,78 +72,10 @@ namespace Uno.UI.Runtime.Skia
 			GtkHost.Window.ProximityInEvent += OnWindowProximityInEvent;
 			GtkHost.Window.ProximityOutEvent += OnWindowProximityOutEvent;
 
-			Console.WriteLine($"[INFO] Version: 2");
-
 			InitializeKeyboard();
 		}
 
 		partial void InitializeKeyboard();
-
-		private void OnWindowProximityOutEvent(object o, ProximityOutEventArgs args)
-		{
-			try
-			{
-				Console.Write("PEN_EXIT ");
-				if (AsPointerArgs(args.Event) is { } ptArgs)
-				{
-					_ownerEvents.RaisePointerExited(ptArgs);
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine($"TOUCH FAILED: {e}");
-			}
-		}
-
-		private void OnWindowProximityInEvent(object o, ProximityInEventArgs args)
-		{
-			try
-			{
-				if (AsPointerArgs(args.Event) is { } ptArgs)
-				{
-					_ownerEvents.RaisePointerEntered(ptArgs);
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine($"TOUCH FAILED: {e}");
-			}
-		}
-
-		private void OnWindowTouchEvent(object o, TouchEventArgs args)
-		{
-			try
-			{
-				// Note: We DO NOT used the args.Event as it causes an InvalidCastException as of 2021-03-09
-				if (args.Args.FirstOrDefault() is Gdk.Event evt
-					&& AsPointerArgs(evt) is { } ptArgs)
-				{
-					switch (evt.Type)
-					{
-						case EventType.TouchBegin:
-							_ownerEvents.RaisePointerEntered(ptArgs);
-							_ownerEvents.RaisePointerPressed(ptArgs);
-							break;
-
-						case EventType.TouchEnd:
-							_ownerEvents.RaisePointerReleased(ptArgs);
-							_ownerEvents.RaisePointerExited(ptArgs);
-							break;
-
-						case EventType.TouchCancel:
-							_ownerEvents.RaisePointerMoved(ptArgs);
-							break;
-					}
-
-					_ownerEvents.RaisePointerMoved(ptArgs);
-				}
-			}
-			catch (Exception e)
-			{
-				this.Log().Error("Failed to raise touch event (one of Enter/Pressed/Move/Release/Exited)", e);
-			}
-
-		}
 
 		private void OnWindowEnterEvent(object o, EnterNotifyEventArgs args)
 		{
@@ -188,7 +119,6 @@ namespace Uno.UI.Runtime.Skia
 			catch (Exception e)
 			{
 				this.Log().Error("Failed to raise PointerPressed", e);
-				Console.WriteLine($"[ERROR] PRESSED: {e}");
 			}
 		}
 
@@ -204,7 +134,6 @@ namespace Uno.UI.Runtime.Skia
 			catch (Exception e)
 			{
 				this.Log().Error("Failed to raise PointerReleased", e);
-				Console.WriteLine($"[ERROR] RELEASE: {e}");
 			}
 		}
 
@@ -238,6 +167,70 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
+		private void OnWindowTouchEvent(object o, TouchEventArgs args)
+		{
+			try
+			{
+				// Note: We DO NOT used the args.Event as it's causing an InvalidCastException as of 2021-03-09
+				if (args.Args.FirstOrDefault() is Gdk.Event evt
+					&& AsPointerArgs(evt) is { } ptArgs)
+				{
+					switch (evt.Type)
+					{
+						case EventType.TouchBegin:
+							_ownerEvents.RaisePointerEntered(ptArgs);
+							_ownerEvents.RaisePointerPressed(ptArgs);
+							break;
+
+						case EventType.TouchEnd:
+							_ownerEvents.RaisePointerReleased(ptArgs);
+							_ownerEvents.RaisePointerExited(ptArgs);
+							break;
+
+						case EventType.TouchCancel:
+							_ownerEvents.RaisePointerMoved(ptArgs);
+							break;
+					}
+
+					_ownerEvents.RaisePointerMoved(ptArgs);
+				}
+			}
+			catch (Exception e)
+			{
+				this.Log().Error("Failed to raise touch event (one of Enter/Pressed/Move/Release/Exited)", e);
+			}
+		}
+
+		private void OnWindowProximityOutEvent(object o, ProximityOutEventArgs args)
+		{
+			try
+			{
+				if (AsPointerArgs(args.Event) is { } ptArgs)
+				{
+					_ownerEvents.RaisePointerExited(ptArgs);
+				}
+			}
+			catch (Exception e)
+			{
+				this.Log().Error("Failed to raise proximity out event", e);
+			}
+		}
+
+		private void OnWindowProximityInEvent(object o, ProximityInEventArgs args)
+		{
+			try
+			{
+				if (AsPointerArgs(args.Event) is { } ptArgs)
+				{
+					_ownerEvents.RaisePointerEntered(ptArgs);
+				}
+			}
+			catch (Exception e)
+			{
+				this.Log().Error("Failed to raise proximity in event", e);
+			}
+		}
+
 		private static PointerEventArgs AsPointerArgs(Event evt)
 		{
 			var dev = EventHelper.GetSourceDevice(evt); // We use GetSourceDevice (and not GetDevice) in order to get the TouchScreen device
@@ -252,8 +245,6 @@ namespace Uno.UI.Runtime.Skia
 					&& type != EventType.TouchEnd
 					&& type != EventType.TouchCancel)
 				{
-					Console.WriteLine("--ignored--");
-
 					// Touch events are sent twice by the OnWindowTouchEvent and the ButtonPressed/Released and MotionEvent.
 					// As the pointerId (a.k.a sequence) is available only for touch events, we mute events coming from the mouse handlers.
 					return null;
