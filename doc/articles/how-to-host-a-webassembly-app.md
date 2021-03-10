@@ -1,4 +1,4 @@
-# How to host a WebAssembly App
+# Hosting a WebAssembly App
 
 - WASM Web Server Configuration
   - [Nginx](#nginx)

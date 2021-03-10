@@ -22,7 +22,7 @@ In your UWP project head, navigate to `Package.appxmaifest > Visual Assets > Spl
 3. Navigate to `Resources/drawable`
 
 4. Create a `splash.xml` drawable  
-``` xaml
+``` xml
 <?xml version=“1.0“ encoding=“utf-8“?>
 <layer-list xmlns:android=“http://schemas.android.com/apk/res/android“>
 <item>
@@ -65,7 +65,7 @@ android:gravity=“center“ />
 
 8. Add your image path to the `Image View`
 
-``` xaml
+``` xml
 <imageView … image=“Assets/SplashScreen“>
 ```
 

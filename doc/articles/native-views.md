@@ -49,3 +49,7 @@ Uno makes certain assumptions about native views when it displays them, which ma
  - check the documentation and ensure you're configuring the native control correctly.
  - try setting a fixed `Width` and `Height` on the outer Xaml container.
  - try setting the dimensions of the native view via code-behind. 
+
+## Adding JavaScript views in WebAssembly
+
+On WebAssembly, integrating native JavaScript views is done differently. [Read this guide](interop/wasm-javascript-1.md) to learn how.

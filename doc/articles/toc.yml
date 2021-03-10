@@ -290,6 +290,8 @@
               href: migrating-guidance.md
         - name: Creating a cross-targeted library
           href: cross-targeted-libraries.md
+        - name: Hosting a WebAssembly app
+          href: how-to-host-a-webassembly-app.md
         - name: Updating to WinUI 3.0
           href: updating-to-winui3.md
     - name: Debugging

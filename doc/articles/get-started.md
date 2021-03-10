@@ -32,3 +32,5 @@ If you're developing on macOS, you have a few options. You can use Visual Studio
  
  - [Get started with Visual Studio Code](get-started-vscode.md)
  - [Get started with Rider](get-started-rider.md)
+
+ There's [additional information here](get-started-with-linux.md) about developing from, and for, Linux with Uno Platform.

@@ -23,7 +23,7 @@ There are lots of ways to contribute to the Uno Platform and we appreciate all t
 
 #### Is [Control X] supported by Uno Platform?
 
-Consult [the list here](implemented-views.md) of supported WinUI controls.
+Consult [the list of supported WinUI controls](implemented-views.md).
 
 #### What do I need to develop Uno Platform applications?
 
@@ -36,6 +36,17 @@ You can develop Uno Platform applications on Windows, macOS, or Linux. Supported
 Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
 
 Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
+
+#### What is WinUI 3?
+
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/), scheduled for stable release in 2021.
+
+From [Microsoft](https://docs.microsoft.com/en-us/windows/apps/winui/):
+
+> WinUI is the path forward for all Windows apps—you can use it as the UI layer on your native UWP or Win32 app, or you can gradually modernize your desktop app, piece by piece, with XAML Islands.
+> All new XAML features will eventually ship as part of WinUI. The existing UWP XAML APIs that ship as part of the OS will no longer receive new feature updates. However, they will continue to receive security updates and critical fixes according to the Windows 10 support lifecycle.
+
+Read more about [Uno and WinUI 3](uwp-vs-winui3.md).
 
 #### How is Uno Platform different from Xamarin.Forms or Avalonia?
 Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms). 

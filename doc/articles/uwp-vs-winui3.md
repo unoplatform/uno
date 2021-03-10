@@ -1,6 +1,6 @@
 # WinUI 3 and Uno Platform
 
-WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/). Scheduled for release in 2021, it succeeds the UWP XAML framework.
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/). Scheduled for release in 2021, it succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform.
 
 Since WinUI 3 and UWP XAML are very similar in their API, Uno Platform offers compatibility with both. This article goes further into the differences and how they apply to Uno.
 

@@ -12,7 +12,14 @@ For the DocFX tool used to build the docs website, see [more info here](docfx.md
  * WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
  * Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
 
-## Step-by-step guides
+#### Resources
+
+Some useful resources on writing good technical documentation:
+
+ * [ReactiveUI docs style guide](https://www.reactiveui.net/contribute/content-style-guide/)
+ * [Divio's Documentation System](https://documentation.divio.com/)
+
+## Writing step-by-step guides
 
 Step-by-step guides that address a particular problem or use case that multiple developers are likely to encounter. 
 

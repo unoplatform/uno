@@ -2,7 +2,7 @@
 
 ## Supported user inputs
 
-User inputs are usually propagated to the using `RoutedEvent`, see. Uno's [routed events documentation](routed-events.md) to better understand their implementation on Uno.
+User inputs are usually propagated using `RoutedEvents`. See Uno's [routed events documentation](routed-events.md) to better understand their implementation on Uno.
 
 | Routed Event                  | Android | iOS     | Wasm    | MacOS | Skia WPF | Skia GtK | Tizen |     |
 | ----------------------------- | ------- | ------- | ------- | ----- | -------- | -------- | ----- | --- |
