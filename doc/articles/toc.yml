@@ -166,6 +166,10 @@
           href: controls\ComboBox.md
         - name: CommandBar
           href: controls\commandbar.md
+        - name: ContentDialog
+          href: controls\ContentDialog.md
+        - name: Flyout
+          href: controls\Flyout.md
         - name: ListView and GridView
           href: controls\ListViewBase.md
         - name: MapControl
@@ -176,10 +180,14 @@
           href: controls\MenuFlyout.md
         - name: Pivot
           href: controls\Pivot.md
+        - name: Popup
+          href: controls\Popup.md
         - name: ProgressRing
           href: features/progressring.md
         - name: TextBox
           href: controls\TextBox.md
+        - name: TimePicker
+          href: controls\TimePicker.md
         - name: ToggleSwitch
           href: controls\ToggleSwitch.md
     - name: WinRT features
