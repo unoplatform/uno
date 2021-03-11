@@ -15,6 +15,7 @@ export class UnoNewProjectManager {
         unoNewProjectManager.context = context;
 
         vscode.commands.registerCommand("createSkiaGtkProject", unoNewProjectManager.createSkiaGtkProject, unoNewProjectManager);
+        vscode.commands.registerCommand("createWasmProject", unoNewProjectManager.createWasmProject, unoNewProjectManager);
     }
 
     private async executeDotnetWithArgs (cwd: PathLike, args: string[]): Promise<boolean> {
@@ -118,14 +119,6 @@ export class UnoNewProjectManager {
             // add the localhost to the hot reload address
             unoCsprojManager.setHotReloadHostAddress(projectLocation);
 
-            // create the .vscode
-            prog?.report({
-                message: `Setting debug targets for ${projectName!}`
-            });
-            const unoOmnisharpManager = new UnoOmnisharpManager();
-            unoOmnisharpManager.context = this.context;
-            await unoOmnisharpManager.createSkiaGtkConfiguration(projectName!, projectLocation!);
-
             // first build to generate code behind
             prog?.report({
                 message: `Building ${projectName!} unoapp`
@@ -168,6 +161,34 @@ export class UnoNewProjectManager {
                     unoOmnisharpManager.context = this.context;
                     await unoOmnisharpManager.createSkiaGtkConfiguration(projectName!, projectLocation!);
                     ExtensionUtils.writeln(`.vscode settings for Skia.Gtk ${projectName!} App created`);
+                }
+
+                return success;
+            });
+    }
+
+    public async createWasmProject (): Promise<void> {
+        await this.createGenericProject("New Uno WASM app",
+            async (projectName: string | undefined, projectLocation: PathLike | undefined): Promise<boolean> => {
+                const success = await this.executeDotnetWithArgs(projectLocation!,
+                    [
+                        "new",
+                        "unoapp",
+                        "-skia-gtk=false",
+                        "-uwp=false",
+                        "-ios=false",
+                        "-android=false",
+                        "-macos=false",
+                        "-skia-wpf=false",
+                        "-st=false"
+                    ]
+                );
+
+                if (success) {
+                    const unoOmnisharpManager = new UnoOmnisharpManager();
+                    unoOmnisharpManager.context = this.context;
+                    await unoOmnisharpManager.createWasmConfiguration(projectName!, projectLocation!);
+                    ExtensionUtils.writeln(`.vscode settings for WASM ${projectName!} App created`);
                 }
 
                 return success;

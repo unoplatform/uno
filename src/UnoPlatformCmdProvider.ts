@@ -38,12 +38,12 @@ export class UnoPlatformCmdProvider implements vscode.TreeDataProvider<vscode.Tr
             ));
 
             cmds.push(new CmdOption(
-                "New Uno Skia GTK/WASM project",
+                "New Uno WASM project",
                 "cmd1",
                 vscode.TreeItemCollapsibleState.None,
                 "",
                 {
-                    command: "",
+                    command: "createWasmProject",
                     title: "",
                     arguments: []
                 },
@@ -51,7 +51,7 @@ export class UnoPlatformCmdProvider implements vscode.TreeDataProvider<vscode.Tr
             ));
 
             cmds.push(new CmdOption(
-                "Setup Uno Debug Configuration",
+                "New Uno Skia GTK/WASM project",
                 "cmd2",
                 vscode.TreeItemCollapsibleState.None,
                 "",
@@ -64,8 +64,21 @@ export class UnoPlatformCmdProvider implements vscode.TreeDataProvider<vscode.Tr
             ));
 
             cmds.push(new CmdOption(
-                "Disable Uno Roslyn Generators",
+                "Setup Uno Debug Configuration",
                 "cmd3",
+                vscode.TreeItemCollapsibleState.None,
+                "",
+                {
+                    command: "",
+                    title: "",
+                    arguments: []
+                },
+                "run.svg"
+            ));
+
+            cmds.push(new CmdOption(
+                "Disable Uno Roslyn Generators",
+                "cmd4",
                 vscode.TreeItemCollapsibleState.None,
                 "",
                 {
@@ -78,7 +91,7 @@ export class UnoPlatformCmdProvider implements vscode.TreeDataProvider<vscode.Tr
 
             cmds.push(new CmdOption(
                 "Enable Uno Roslyn Generators",
-                "cmd4",
+                "cmd5",
                 vscode.TreeItemCollapsibleState.None,
                 "",
                 {
@@ -91,7 +104,7 @@ export class UnoPlatformCmdProvider implements vscode.TreeDataProvider<vscode.Tr
 
             cmds.push(new CmdOption(
                 "Set Hot Reload Server Address",
-                "cmd5",
+                "cmd6",
                 vscode.TreeItemCollapsibleState.None,
                 "",
                 {
