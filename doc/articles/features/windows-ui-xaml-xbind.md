@@ -10,35 +10,35 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
 # Examples
 - Properties
   - Page or control property
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind MyProperty}" />
   ```
   - Member function
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind MyProperty.ToUpper()}" />
   ```
   - Static types field or properties OneTime binding
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind local:StaticType.PropertyIntValue}" />
   ```
   - OneWay local member function with multiple observable parameters
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind Multiply(slider1.Value, slider2.Value), Mode=OneWay}" />
   ```
   - OneWay static class function with  multiple observable parameters
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value), Mode=OneWay}" />
   ```
   - Literal boolean parameters (`x:True`, `x:False`)
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind BoolFunc(x:False)}" />
   ```
   - Null parameter (`x:Null`)
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind TestString(x:Null)}" />
   ```
   - Quote escaping
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind sys:String.Format('{0}, ^'{1}^'', InstanceProperty, StaticProperty)}" />
   ```
   - Literal numeric value
@@ -48,20 +48,20 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
 
 - Use of system functions (given `xmlns:sys="using:System"`):
   - Single parameter formatting:
-    ```xaml
+    ```xml
     <TextBlock Text="{x:Bind sys:String.Format('Formatted {0}', MyProperty), Mode=OneWay}" />
     ```
   - Multi parameters formatting:
-    ```xaml
+    ```xml
     <TextBlock Text="{x:Bind sys:String.Format(x:Null, 'slider1: {0}, slider2:{1}', slider1.Value, slider2.Value), Mode=OneWay}" />
     ```
   - TimeParsing:
-    ```xaml
+    ```xml
     <CalendarDatePicker Date="{x:Bind sys:DateTime.Parse(TextBlock1.Text)}" />
     ```
 
 - Use of `BindBack`
-  ```xaml
+  ```xml
   <TextBlock Text="{x:Bind sys:String.Format('{0}', MyInteger), BindBack=BindBackMyInteger, Mode=TwoWay}" />
   ```
   where this methods is available in the control:
@@ -73,7 +73,7 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   ```
 
 - Bind to events
-  ```xaml
+  ```xml
   <CheckBox Checked="{x:Bind OnCheckedRaised}" Unchecked="{x:Bind OnUncheckedRaised}" />
   ```
   where these methods are available in the code behind:
@@ -83,12 +83,12 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   ```
 
 - Type casts
-  ```xaml
+  ```xml
   <TextBox FontFamily="{x:Bind (FontFamily)MyComboBox.SelectedValue}" />
   ```
 
 - `x:Load` binding
-  ```xaml
+  ```xml
   <TextBox x:Load="{x:Bind IsMyControlVisible}" />
   ```
   See the [WinUI documentation](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-load-attribute) for more details.

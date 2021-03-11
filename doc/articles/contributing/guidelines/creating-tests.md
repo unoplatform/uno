@@ -21,7 +21,7 @@ These are the main types of tests in Uno:
  UI tests                    | https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.UITests
  .NET Framework unit tests   | https://github.com/unoplatform/uno/tree/master/src/Uno.UI.Tests
  Platform runtime unit tests | https://github.com/unoplatform/uno/tree/master/src/Uno.UI.RuntimeTests
- Xaml code generation tests  | https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/XamlGenerationTests
+ XAML code generation tests  | https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/XamlGenerationTests
  UI snapshot tests           | (https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared
 
  All these tests are run on each CI build, and all tests must pass before a PR can be merged.
@@ -61,11 +61,11 @@ These tests are useful for testing behavior which can run synchronously, or on t
 
 The platform runtime tests also have access to internal Uno.UI members if need be, but when possible they should be restricted to the public API, since this allows them to be run on UWP as just mentioned.
 
-### Xaml code generation tests (`XamlGenerationTests`)
+### XAML code generation tests (`XamlGenerationTests`)
 
-These specifically target [the parser](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator) which generates C# code from Xaml files. They are 'tests' in a simple sense that if the parser throws an error, or if it generates invalid C# code, they will fail the CI build.
+These specifically target [the parser](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator) which generates C# code from XAML files. They are 'tests' in a simple sense that if the parser throws an error, or if it generates invalid C# code, they will fail the CI build.
 
-If you want to actually test that generated Xaml produces correct behavior, which will be the case most of the time, you should use one of the other test types.
+If you want to actually test that generated XAML produces correct behavior, which will be the case most of the time, you should use one of the other test types.
 
 ### UI snapshot tests
 

@@ -6,9 +6,13 @@ using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno;
 
 namespace Windows.UI.Xaml.Controls
 {
+#if __SKIA__
+	[NotImplemented]
+#endif
 	public partial class FlipView : Selector
 	{
 		public FlipView()

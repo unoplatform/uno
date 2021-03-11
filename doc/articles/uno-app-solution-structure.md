@@ -14,7 +14,7 @@ Let's say we've created a new solution with the [Uno app template](https://marke
 
 > The main reason the solution contains a shared project and not a cross-targeted library is related to a missing Visual Studio feature. At present time (VS16.1.x), building a head that references such a cross-targeted library implies that all target frameworks are built, leading to a slow developer inner loop.
 
-Normally, your UI and business logic will go in the shared project. Bootstrapping code, packaging settings, and platform-specific code goes in the corresponding platform head. [String resources](using-uno-ui.md#localization) normally go in the shared project. [Image assets](features/working-with-assets.md) may go either in the shared project or under each head. [Font assets](using-uno-ui.md#custom-fonts) must be placed under each head.
+Normally, your UI and business logic will go in the shared project. Bootstrapping code, packaging settings, and platform-specific code goes in the corresponding platform head. [String resources](features/working-with-strings.md) normally go in the shared project. [Image assets](features/working-with-assets.md) may go either in the shared project or under each head. [Font assets](features/custom-fonts.md) must be placed under each head.
 
 ![Uno solution structure](Assets/solution-structure.png)
 

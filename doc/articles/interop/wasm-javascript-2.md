@@ -103,7 +103,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    ```
    This will define a control having 2 properties, one code `Code` and another one for `Language`.
 2. Change the `MainPage.xaml` file to the following content:
-   ``` xaml
+   ```xml
    <Page
        x:Class="PrismJsDemo.MainPage"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

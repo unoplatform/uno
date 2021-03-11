@@ -2,7 +2,7 @@
 
 ## Development Flow
 
-- Uno Platform's UWP Xaml
+- Uno Platform's UWP XAML
     - **Windows-first development**
     - **Faster compilation** for most of the development cycle, including UI code. iOS, Android, WebAssembly, macOS and Linux can be tested for platform-specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.

@@ -308,7 +308,7 @@ In the next few steps, the images will be copied to the Uno app.
 
 1. In the **Shared** project, right-click the **Assets** folder and **Add &gt; New Folder** and name the folder **Images**.
 
-1. Download the image assets via the following link: [Download icons.zip](assets/icons.zip)
+1. Download the image assets via the following link: [Download icons.zip](https://github.com/unoplatform/uno/raw/master/doc/articles/guides/silverlight-migration/assets/icons.zip)
 
     > [!IMPORTANT]
     > The app uses image assets from [Icons8.com](https://icons8.com) - the free use license can be reviewed here:

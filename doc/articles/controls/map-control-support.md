@@ -13,7 +13,7 @@ The current implementation uses the native UIKit Map for iOS and the Google Play
 1. Ensure your app is targeting Uno 3.3 or later.
 2. Install the [Uno.UI.Maps NuGet package](https://www.nuget.org/packages/Uno.UI.Maps/) in the Android and/or iOS head projects of your app.
 3. Add the `MapResources` resource dictionary to `Application.Resources` in your `App.xaml` file:
-	```xaml
+	```xml
 	<Application.Resources>
 		<MapResources xmlns="using:Uno.UI.Maps"/>
 	</Application.Resources>
@@ -22,11 +22,11 @@ The current implementation uses the native UIKit Map for iOS and the Google Play
 5. (Android) Configure permissions in the manifest, following the instructions below.
 6. Add `MapControl` to your app (`<MapControl xmlns="using:Windows.UI.Xaml.Controls.Maps" />`).
 
-## Sample Xaml
+## Sample XAML
 
 Here's a complete sample: 
 
-```xaml
+```xml
 <Page x:Class="MapControlSample.MainPage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

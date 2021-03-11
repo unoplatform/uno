@@ -1,7 +1,6 @@
 # Uno.UI - Performance
 
-Improving the performance of an Uno.UI based application relates a lot to what a 
-UWP application will benefit from.
+This article lists a number of performance tips to optimize your Uno Platform application. 
 
 Here's what to look for:
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
@@ -39,7 +38,7 @@ Here's what to look for:
 	- It is only supported for elements under the `DataTemplate` of a `ListViewItem`. The 
 	attribute is ignored for templates of `ContentControl` instances, or any other control.
     - When binding to Brushes with a solid color, prefer binding to the `Color` property like this if the brush type does not change:
-    ```xaml
+    ```xml
     <TextBlock Text="My Text">
         <TextBlock.Foreground>
             <SolidColorBrush Color="{x:Bind Color, Mode=OneWay, FallbackValue=Red}" />
@@ -48,7 +47,7 @@ Here's what to look for:
     ```
 
 
-## Performance Tracing
+## Advanced performance Tracing
 
 ### FrameworkTemplatePool
 The framework template pool manages the pooling of ControlTemplates and DataTemplates, and in most cases, the recycling of controls should be high.

@@ -1,4 +1,4 @@
-# Assets
+# Assets and image display
 
 In a standard Xamarin project, you must duplicate, rename, and manually add your assets to each target project (UWP, iOS, Android). 
 
@@ -142,3 +142,28 @@ On UWP, you must add the following code to your `App.xaml.cs` constructor:
 \Assets\Images\logo.custom-ios.png
 \Assets\Images\logo.custom-android.png
 ```
+
+## Android: setting a custom image handler
+
+On Android, to handle the loading of images from a remote url, the Image control has to be provided a 
+ImageSource.DefaultImageLoader such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
+
+This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:
+
+```csharp
+private void ConfigureUniversalImageLoader()
+{
+	// Create global configuration and initialize ImageLoader with this config
+	ImageLoaderConfiguration config = new ImageLoaderConfiguration
+		.Builder(Context)
+		.Build();
+
+	ImageLoader.Instance.Init(config);
+
+	ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
+}
+```
+
+## iOS: referencing bundle images
+
+On iOS, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.

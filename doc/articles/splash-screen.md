@@ -1,4 +1,4 @@
-# Splash Screens
+# How to add a Splash Screen
 
 This article covers how to add a splash screen to your application.
 
@@ -15,14 +15,14 @@ In your UWP project head, navigate to `Package.appxmaifest > Visual Assets > Spl
 1. In the Android project head, navigate to `Resources/values/Styles.xml`
 
 2. Add an `android:windowBackground` `item` to the `AppTheme` style.  
-```xaml
+```xml
 <item name=“android:windowBackground“>@drawable/splash</item>
 ```
 
 3. Navigate to `Resources/drawable`
 
 4. Create a `splash.xml` drawable  
-``` xaml
+``` xml
 <?xml version=“1.0“ encoding=“utf-8“?>
 <layer-list xmlns:android=“http://schemas.android.com/apk/res/android“>
 <item>
@@ -65,7 +65,7 @@ android:gravity=“center“ />
 
 8. Add your image path to the `Image View`
 
-``` xaml
+``` xml
 <imageView … image=“Assets/SplashScreen“>
 ```
 

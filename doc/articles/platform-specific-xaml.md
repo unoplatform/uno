@@ -26,7 +26,7 @@ For prefixes which will be excluded on Windows (e.g. `android`, `ios`), the actu
 
 Using the following XAML:
 
-```xaml
+```xml
 <Page x:Class="HelloWorld.MainPage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -67,7 +67,7 @@ Platform-specific XAML also allows you to exclude a parent element and all its c
 
 Consider the following XAML which is using the Windows Community Toolkit's [Blur](https://docs.microsoft.com/en-us/windows/communitytoolkit/animations/blur) animation. While this runs for UWP, it is not currently supported in the Uno Platform and needs to be conditionally disabled. It isn't possible to add something like `<win:interactivity:Interaction.Behaviors>` to disable the behavior itself. Instead, the entire `Grid` is disabled on any platforms except Windows and child elements will be disabled along with it.
 
-```xaml
+```xml
 <Page x:Class="HelloWorld.MainPage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -135,7 +135,7 @@ Where:
  * 'Droid' represents Android
 
 ### XAML prefixes in cross-targeted libraries
-For Uno 3.0 and above, Xaml prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm in a library, since both platforms use the .NET Standard 2.0 target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
+For Uno 3.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm in a library, since both platforms use the .NET Standard 2.0 target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
 
 The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm build. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm are similar, it is often not necessary to make the distinction. 
 
@@ -145,3 +145,55 @@ In cases where it is needed (fonts are one example) then the XAML files must be 
 |-----------------|-------------------------------------------------------------|------------------------|
 | `netstdref`     | `http://uno.ui/netstdref`                                   | yes                    |
 | `not_netstdref` | `http://uno.ui/not_netstdref`                               | yes                    |
+
+## XAML Conditional Methods
+
+You can use standard WinUI conditional XAML prefixes with Uno Platform, [as documented here](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/conditional-xaml).
+
+Currently the following conditional methods are supported:
+
+ * IsApiContractPresent(ContractName, VersionNumber)
+ * IsApiContractNotPresent(ContractName, VersionNumber)
+ * IsTypePresent(ControlType)
+ * IsTypeNotPresent(ControlType)
+
+### IsApiContractPresent
+
+The following `ContractName` values are currently supported:
+
+ * **"Windows.Foundation.UniversalApiContract"**: resolves to `true` if `VersionNumber` is 10 or below, and `false` otherwise.
+ * **"Uno.WinUI"**: resolves to `true` if the [`Uno.WinUI` NuGet package](updating-to-winui3.md) (ie the WinUI 3 API mapping) is in use, `false` if the `Uno.UI` NuGet package is in use.
+
+All other contract names will resolve to false.
+
+### IsTypePresent
+
+`IsTypePresent()` will resolve to true if the type is found **and** it isn't marked with the `[NotImplemented]` attribute. This is useful for conditionally enabling XAML in a more declarative way, instead of referring to specific platforms.
+
+#### Limitations in cross-targeted libraries
+
+`IsTypePresent()` is resolved at compile time. In a cross-targeted library, this means that for WebAssembly and Skia, it doesn't use the correct implementation status for those platforms, but instead uses the implementation status reported by the 'reference' Uno.UI .NET Standard 2.0 assembly. Therefore it may report an incorrect status for WebAssembly and/or Skia inside of a cross-targeted library.
+
+### Example
+
+The following example uses `IsTypePresent` to use WebView to display content on platforms where it's available, and a custom control to display the content on platforms where WebView isn't supported:
+
+```xml
+<Page x:Class="HelloWorld.MainPage"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:local="using:HelloWorld"
+	  xmlns:webviewpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.WebView)"
+	  xmlns:webviewnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.WebView)"
+	  xmlns:local_webviewnotpresent="using:HelloWorld?IsTypeNotPresent(Windows.UI.Xaml.Controls.WebView)"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d">
+
+	<Grid>
+		<webviewpresent:WebView Source="{Binding DisplayContent}" />
+		<local_webviewnotpresent:WebViewSubstitute ContentSource="{Binding DisplayContent}" />
+		<webviewnotpresent:TextBlock VerticalAlignment="Bottom" Text="Showing substitute for WebView">
+	</Grid>
+</Page>
+```
