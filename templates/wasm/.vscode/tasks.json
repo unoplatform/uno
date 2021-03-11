@@ -1,0 +1,83 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/${projectName}.Wasm/${projectName}.Wasm.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/${projectName}.Wasm/${projectName}.Wasm.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "run",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "run",
+                "-p",
+                "${workspaceFolder}/${projectName}.Wasm/${projectName}.Wasm.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": ""
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "Hosting environment: Production",
+                    "endsPattern": "Application started\\. Press Ctrl\\+C to shut down\\.",
+                }
+            }
+        },
+        {
+            "label": "terminateAll",
+            "command": "echo ${input:terminate}",
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}/${projectName}.Wasm"
+            },
+            "isBackground": true,
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/${projectName}.Wasm/${projectName}.Wasm.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "terminate",
+            "type": "command",
+            "command": "workbench.action.tasks.terminate",
+            "args": "terminateAll"
+        }
+    ]
+}
