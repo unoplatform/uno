@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter
+	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		private ScrollBarVisibility _horizotalScrollBarVisibility;
@@ -99,7 +99,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-auto", "scroll-y-disabled", "scroll-y-hidden", "scroll-y-visible" };
 
-		public ScrollBarVisibility VerticalScrollBarVisibility
+		ScrollBarVisibility IScrollContentPresenter.VerticalScrollBarVisibility { get => VerticalScrollBarVisibility; set => VerticalScrollBarVisibility = value; }
+		internal ScrollBarVisibility VerticalScrollBarVisibility
 		{
 			get { return _verticalScrollBarVisibility; }
 			set
@@ -113,7 +114,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-auto", "scroll-x-disabled", "scroll-x-hidden", "scroll-x-visible" };
 
-		public ScrollBarVisibility HorizontalScrollBarVisibility
+		ScrollBarVisibility IScrollContentPresenter.HorizontalScrollBarVisibility { get => HorizontalScrollBarVisibility; set => HorizontalScrollBarVisibility = value; }
+		internal ScrollBarVisibility HorizontalScrollBarVisibility
 		{
 			get { return _horizotalScrollBarVisibility; }
 			set

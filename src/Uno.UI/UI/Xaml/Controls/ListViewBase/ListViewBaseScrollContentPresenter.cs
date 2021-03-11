@@ -60,9 +60,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		View IScrollContentPresenter.Content
+		object IScrollContentPresenter.Content
 		{
-			get { return Content as View; }
+			get { return Content; }
 			set { Content = value; }
 		}
 

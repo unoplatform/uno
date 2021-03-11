@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
 
-#if !__SKIA__
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
 			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 			// Note 2: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
@@ -608,7 +608,7 @@ namespace Windows.UI.Xaml.Controls
 		internal Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode UpdatesMode { get; set; }
 
 		/// <summary>
-		/// If this flag is enabled, the ScrollViewer will report offsets less than 0 and greater than <see cref="ScrollableHeight"/> when 
+		/// If this flag is enabled, the ScrollViewer will report offsets less than 0 and greater than <see cref="ScrollableHeight"/> when
 		/// 'overscrolling' on iOS. By default this is false, matching Windows behaviour.
 		/// </summary>
 		[UnoOnly]
@@ -855,7 +855,7 @@ namespace Windows.UI.Xaml.Controls
 			_horizontalScrollbar = null;
 			_isHorizontalScrollBarMaterialized = false;
 
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__
 			if (scpTemplatePart is ScrollContentPresenter scp)
 			{
 				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
@@ -865,6 +865,11 @@ namespace Windows.UI.Xaml.Controls
 				_presenter = nativeSCP;
 			}
 #endif
+
+			if (scpTemplatePart is ScrollContentPresenter presenter)
+			{
+				presenter.ScrollOwner = this;
+			}
 
 			// We update the scrollability properties here in order to make sure to set the right scrollbar visibility
 			// on the _presenter as soon as possible
@@ -898,7 +903,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
 			base.OnContentChanged(oldValue, newValue);
@@ -940,7 +945,7 @@ namespace Windows.UI.Xaml.Controls
 				_presenter.Content = content as View;
 			}
 
-			// Propagate the ScrollViewer's own templated parent, instead of 
+			// Propagate the ScrollViewer's own templated parent, instead of
 			// the scrollviewer itself (through ScrollContentPresenter)
 			SynchronizeContentTemplatedParent(TemplatedParent);
 		}
@@ -985,9 +990,9 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
-#endregion
+		#endregion
 
-#region Managed scroll bars support
+		#region Managed scroll bars support
 		private bool _isTemplateApplied;
 		private ScrollBar? _verticalScrollbar;
 		private ScrollBar? _horizontalScrollbar;
@@ -1124,7 +1129,7 @@ namespace Windows.UI.Xaml.Controls
 				_ => true
 			};
 
-			ChangeViewScroll(
+			ChangeViewCore(
 				horizontalOffset: null,
 				verticalOffset: e.NewValue,
 				zoomFactor: null,
@@ -1145,14 +1150,14 @@ namespace Windows.UI.Xaml.Controls
 				_ => true
 			};
 
-			ChangeViewScroll(
+			ChangeViewCore(
 				horizontalOffset: e.NewValue,
 				verticalOffset: null,
 				zoomFactor: null,
 				disableAnimation: immediate,
 				shouldSnap: true);
 		}
-#endregion
+		#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
@@ -1173,8 +1178,8 @@ namespace Windows.UI.Xaml.Controls
 
 				if(!isIntermediate)
 				{
-					if (HorizontalSnapPointsType != SnapPointsType.None ||
-					    VerticalSnapPointsType != SnapPointsType.None)
+					if (HorizontalSnapPointsType != SnapPointsType.None
+						|| VerticalSnapPointsType != SnapPointsType.None)
 					{
 						if(_snapPointsTimer == null)
 						{
@@ -1209,7 +1214,7 @@ namespace Windows.UI.Xaml.Controls
 				return; // already on a snap point
 			}
 
-			ChangeViewScroll(
+			ChangeViewCore(
 				horizontalOffset: h,
 				verticalOffset: v,
 				zoomFactor: null,
@@ -1261,7 +1266,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdatePartial(isIntermediate);
 
-#if !__SKIA__
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Effective viewport support
 			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
 			InvalidateViewport();
@@ -1271,6 +1276,16 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void UpdatePartial(bool isIntermediate);
+
+		/// <summary>
+		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
+		/// </summary>
+		/// <param name="horizontalOffset">A value between 0 and ScrollableWidth that specifies the distance the content should be scrolled horizontally.</param>
+		/// <param name="verticalOffset">A value between 0 and ScrollableHeight that specifies the distance the content should be scrolled vertically.</param>
+		/// <param name="zoomFactor">A value between MinZoomFactor and MaxZoomFactor that specifies the required target ZoomFactor.</param>
+		/// <returns>true if the view is changed; otherwise, false.</returns>
+		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor)
+			=> ChangeView(horizontalOffset, verticalOffset, zoomFactor, false);
 
 		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
@@ -1294,25 +1309,24 @@ namespace Windows.UI.Xaml.Controls
 
 			var verticalOffsetChanged = verticalOffset != null && verticalOffset != VerticalOffset;
 			var horizontalOffsetChanged = horizontalOffset != null && horizontalOffset != HorizontalOffset;
-
 			var zoomFactorChanged = zoomFactor != null && zoomFactor != ZoomFactor;
-
-			bool scrolledSuccessfully = true;
 
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
-				scrolledSuccessfully = ChangeViewScroll(
+				return ChangeViewCore(
 					horizontalOffset,
 					verticalOffset,
 					zoomFactor,
 					disableAnimation,
 					shouldSnap: true);
 			}
-
-			return scrolledSuccessfully && (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged);
+			else
+			{
+				return false;
+			}
 		}
 
-		private bool ChangeViewScroll(
+		private bool ChangeViewCore(
 			double? horizontalOffset,
 			double? verticalOffset,
 			float? zoomFactor,
@@ -1329,19 +1343,10 @@ namespace Windows.UI.Xaml.Controls
 				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor);
 			}
 
-			return ChangeViewScrollNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
+			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
 		}
 
-		/// <summary>
-		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
-		/// </summary>
-		/// <param name="horizontalOffset">A value between 0 and ScrollableWidth that specifies the distance the content should be scrolled horizontally.</param>
-		/// <param name="verticalOffset">A value between 0 and ScrollableHeight that specifies the distance the content should be scrolled vertically.</param>
-		/// <param name="zoomFactor">A value between MinZoomFactor and MaxZoomFactor that specifies the required target ZoomFactor.</param>
-		/// <returns>true if the view is changed; otherwise, false.</returns>
-		public bool ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor) => ChangeView(horizontalOffset, verticalOffset, zoomFactor, false);
-
-#region Scroll indicators visual states (Managed scroll bars only)
+		#region Scroll indicators visual states (Managed scroll bars only)
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
 
@@ -1420,6 +1425,6 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
 			}
 		}
-#endregion
+		#endregion
 	}
 }

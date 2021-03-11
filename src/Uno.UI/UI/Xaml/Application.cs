@@ -52,7 +52,11 @@ namespace Windows.UI.Xaml
 		{
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
+
+			InitializePartialStatic();
 		}
+
+		static partial void InitializePartialStatic();
 
 		[Preserve]
 		public static class TraceProvider

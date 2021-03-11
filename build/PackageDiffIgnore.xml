@@ -3415,6 +3415,9 @@
 			<Member
 				fullName="Windows.UI.Xaml.Shapes.ArbitraryShapeBase"
 				reason="Not part of the WinUI API." />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.NativeScrollContentPresenter"
+				reason="MacOS only, not part of the WinUI API." />
 		</Types>
 		<Methods>
 			<Member
@@ -3529,6 +3532,21 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Automation.Peers.LoopingSelectorItemDataAutomationPeer..ctor()"
 				reason="Constructor not public in UWP" />
+			<Member
+				fullName="Windows.Foundation.Rect Windows.UI.Xaml.Controls.ScrollContentPresenter.MakeVisible(Windows.UI.Xaml.UIElement visual, Windows.Foundation.Rect rectangle)"
+				reason="False positive" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter.get_VerticalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_VerticalScrollBarVisibility(Windows.UI.Xaml.Controls.ScrollBarVisibility value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter.get_HorizontalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_HorizontalScrollBarVisibility(Windows.UI.Xaml.Controls.ScrollBarVisibility value)"
+				reason="Not part of the UWP API" />
 		</Methods>
 		<Fields>
 			<Member
@@ -3566,6 +3584,12 @@
 			<Member
 				fullName="Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode Windows.UI.Xaml.Controls.DatePicker::FlyoutPlacement()"
 				reason="Method not in UWP contract" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter::VerticalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter::HorizontalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
 		</Properties>
 	</IgnoreSet>
 	<!--

@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content } : _emptyList;
+		List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content as View } : _emptyList;
 
 		partial void OnContentChanged(View previousView, View newView)
 		{

@@ -21,6 +21,10 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core.Preview;
 using System.Threading.Tasks;
+using Windows.Devices.Input;
+using Windows.System;
+using Windows.UI.Input;
+using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.Controls
 {
@@ -76,6 +80,259 @@ namespace Uno.UI.Controls
 				});
 		}
 
+		/// <inheritdoc />
+		public override void SendEvent(NSEvent evt)
+		{
+			try
+			{
+				// The effective location in top/left coordinates.
+				var posInWindow = new Point(evt.LocationInWindow.X, VisibleFrame.Height - evt.LocationInWindow.Y);
+				if (posInWindow.Y < 0)
+				{
+					// We are in the titlebar, let send the event to native code ... so close button will continue to work
+					base.SendEvent(evt);
+					return;
+				}
+
+				switch (evt.Type)
+				{
+					case NSEventType.MouseEntered:
+						CoreWindowEvents?.RaisePointerEntered(ToPointerArgs(evt, posInWindow));
+						break;
+
+					case NSEventType.MouseExited:
+						CoreWindowEvents?.RaisePointerExited(ToPointerArgs(evt, posInWindow));
+						break;
+
+					case NSEventType.LeftMouseDown:
+					case NSEventType.OtherMouseDown:
+					case NSEventType.RightMouseDown:
+						CoreWindowEvents?.RaisePointerPressed(ToPointerArgs(evt, posInWindow));
+						break;
+
+					case NSEventType.LeftMouseUp:
+					case NSEventType.OtherMouseUp:
+					case NSEventType.RightMouseUp:
+						CoreWindowEvents?.RaisePointerReleased(ToPointerArgs(evt, posInWindow));
+						break;
+
+					case NSEventType.MouseMoved:
+					case NSEventType.LeftMouseDragged:
+					case NSEventType.OtherMouseDragged:
+					case NSEventType.RightMouseDragged:
+					case NSEventType.TabletPoint:
+					case NSEventType.TabletProximity:
+					case NSEventType.DirectTouch:
+						CoreWindowEvents?.RaisePointerMoved(ToPointerArgs(evt, posInWindow));
+						break;
+
+					case NSEventType.ScrollWheel:
+						CoreWindowEvents?.RaisePointerWheelChanged(ToPointerArgs(evt, posInWindow));
+						break;
+
+					default:
+						base.SendEvent(evt);
+						break;
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current?.RaiseRecoverableUnhandledException(e);
+			}
+		}
+
+		private Rect VisibleFrame => ContentRectFor(Frame);
+
+		#region Pointers
+		private const int TabletPointEventSubtype = 1;
+		private const int TabletProximityEventSubtype = 2;
+
+		private const int LeftMouseButtonMask = 1;
+		private const int RightMouseButtonMask = 2;
+
+		internal ICoreWindowEvents CoreWindowEvents { private get; set; }
+
+		private static PointerEventArgs ToPointerArgs(NSEvent nativeEvent, Point posInWindow)
+		{
+			var point = GetPointerPoint(nativeEvent, posInWindow);
+			var modifiers = GetVirtualKeyModifiers(nativeEvent);
+			var args = new PointerEventArgs(point, modifiers);
+
+			return args;
+		}
+
+		private static PointerPoint GetPointerPoint(NSEvent nativeEvent, Point posInWindow)
+		{
+			var frameId = ToFrameId(nativeEvent.Timestamp);
+			var timestamp = ToTimestamp(nativeEvent.Timestamp);
+			var pointerDeviceType = GetPointerDeviceType(nativeEvent);
+			var pointerDevice = PointerDevice.For(pointerDeviceType);
+			var pointerId = pointerDeviceType == PointerDeviceType.Pen
+				? (uint)nativeEvent.PointingDeviceID()
+				: (uint)0;
+			var isInContact = GetIsInContact(nativeEvent);
+			var properties = GetPointerProperties(nativeEvent, pointerDeviceType);
+
+			return new PointerPoint(frameId, timestamp, pointerDevice, pointerId, posInWindow, posInWindow, isInContact, properties);
+		}
+
+		private static PointerPointProperties GetPointerProperties(NSEvent nativeEvent, PointerDeviceType pointerType)
+		{
+			var properties = new PointerPointProperties()
+			{
+				IsInRange = true,
+				IsPrimary = true,
+				IsLeftButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & LeftMouseButtonMask) == LeftMouseButtonMask,
+				IsRightButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & RightMouseButtonMask) == RightMouseButtonMask,
+			};
+
+			if (pointerType == PointerDeviceType.Pen)
+			{
+				properties.XTilt = (float)nativeEvent.Tilt.X;
+				properties.YTilt = (float)nativeEvent.Tilt.Y;
+				properties.Pressure = (float)nativeEvent.Pressure;
+			}
+
+			if (nativeEvent.Type == NSEventType.ScrollWheel)
+			{
+				var y = (int)nativeEvent.ScrollingDeltaY;
+				if (y == 0)
+				{
+					// Note: if X and Y are != 0, we should raise 2 events!
+					properties.IsHorizontalMouseWheel = true;
+					properties.MouseWheelDelta = (int)nativeEvent.ScrollingDeltaX;
+				}
+				else
+				{
+					properties.MouseWheelDelta = -y;
+				}
+			}
+
+			return properties;
+		}
+
+		#region Misc static helpers
+		private static long? _bootTime;
+
+		private static bool GetIsInContact(NSEvent nativeEvent)
+			=> nativeEvent.Type == NSEventType.LeftMouseDown
+				|| nativeEvent.Type == NSEventType.LeftMouseDragged
+				|| nativeEvent.Type == NSEventType.RightMouseDown
+				|| nativeEvent.Type == NSEventType.RightMouseDragged
+				|| nativeEvent.Type == NSEventType.OtherMouseDown
+				|| nativeEvent.Type == NSEventType.OtherMouseDragged;
+
+		private static PointerDeviceType GetPointerDeviceType(NSEvent nativeEvent)
+		{
+			if (nativeEvent.Type == NSEventType.DirectTouch)
+			{
+				return PointerDeviceType.Touch;
+			}
+			if (IsTabletPointingEvent(nativeEvent))
+			{
+				return PointerDeviceType.Pen;
+			}
+			return PointerDeviceType.Mouse;
+		}
+
+		private static VirtualKeyModifiers GetVirtualKeyModifiers(NSEvent nativeEvent)
+		{
+			var modifiers = VirtualKeyModifiers.None;
+
+			if (nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.AlphaShiftKeyMask) ||
+				nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.ShiftKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Shift;
+			}
+
+			if (nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.AlternateKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Menu;
+			}
+
+			if (nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.CommandKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Windows;
+			}
+
+			if (nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.ControlKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Control;
+			}
+
+			return modifiers;
+		}
+
+		private static ulong ToTimestamp(double timestamp)
+		{
+			if (!_bootTime.HasValue)
+			{
+				_bootTime = DateTime.UtcNow.Ticks - (long)(TimeSpan.TicksPerSecond * new NSProcessInfo().SystemUptime);
+			}
+
+			return (ulong)_bootTime.Value + (ulong)(TimeSpan.TicksPerSecond * timestamp);
+		}
+
+		private static uint ToFrameId(double timestamp)
+		{
+			// The precision of the frameId is 10 frame per ms ... which should be enough
+			return (uint)(timestamp * 1000.0 * 10.0);
+		}
+
+		/// <summary>
+		/// Taken from <see cref="https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/src/AppKit/NSEvent.cs#L127" />
+		/// </summary>
+		/// <param name="nativeEvent">Native event</param>
+		/// <returns>Value indicating whether the event is recognized as a "mouse" event.</returns>
+		private static bool IsMouseEvent(NSEvent nativeEvent)
+		{
+			switch (nativeEvent.Type)
+			{
+				case NSEventType.LeftMouseDown:
+				case NSEventType.LeftMouseUp:
+				case NSEventType.RightMouseDown:
+				case NSEventType.RightMouseUp:
+				case NSEventType.MouseMoved:
+				case NSEventType.LeftMouseDragged:
+				case NSEventType.RightMouseDragged:
+				case NSEventType.MouseEntered:
+				case NSEventType.MouseExited:
+				case NSEventType.OtherMouseDown:
+				case NSEventType.OtherMouseUp:
+				case NSEventType.OtherMouseDragged:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>
+		/// Inspiration from <see cref="https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/src/AppKit/NSEvent.cs#L148"/>
+		/// with some modifications.
+		/// </summary>
+		/// <param name="nativeEvent">Native event</param>
+		/// <returns>Value indicating whether the event is in fact coming from a tablet device.</returns>
+		private static bool IsTabletPointingEvent(NSEvent nativeEvent)
+		{
+			//limitation - mouse entered event currently throws for Subtype
+			//(selector not working, although it should, according to docs)
+			if (IsMouseEvent(nativeEvent) &&
+				nativeEvent.Type != NSEventType.MouseEntered &&
+				nativeEvent.Type != NSEventType.MouseExited)
+			{
+				//Xamarin debugger proxy for NSEvent incorrectly says Subtype
+				//works only for Custom events, but that is not the case
+				return
+					nativeEvent.Subtype == TabletPointEventSubtype ||
+					nativeEvent.Subtype == TabletProximityEventSubtype;
+			}
+			return nativeEvent.Type == NSEventType.TabletPoint;
+		}
+
+		#endregion
+		#endregion
+
+		#region Drag and drop
 		/// <summary>
 		/// Method invoked when a drag operation enters the <see cref="NSWindow"/>.
 		/// </summary>
@@ -263,7 +520,9 @@ namespace Uno.UI.Controls
 			{
 				return false;
 			};
+		#endregion
 
+		#region Keyboard
 		public static void SetNeedsKeyboard(NSView view, bool needsKeyboard)
 		{
 			if (view != null)
@@ -286,6 +545,7 @@ namespace Uno.UI.Controls
 				|| view is NSTextField
 				|| GetNeedsKeyboard(view);
 		}
+		#endregion
 
 		public BringIntoViewMode? FocusedViewBringIntoViewOnKeyboardOpensMode { get; set; }
 
@@ -351,7 +611,7 @@ namespace Uno.UI.Controls
 				// Artificial delay is necessary due to the fact that setting cursor
 				// immediately after window becoming main does not have any effect.
 				await Task.Delay(100);
-				CoreWindow.GetForCurrentThread().RefreshCursor();
+				Windows.UI.Core.CoreWindow.GetForCurrentThread().RefreshCursor();
 			}
 
 			public override bool WindowShouldClose(NSObject sender)

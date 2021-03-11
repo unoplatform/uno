@@ -15,10 +15,10 @@ namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs, CoreWindow.IPointerEventArgs, IDragEventSource
 	{
-#if __IOS__ || __MACOS__ || __ANDROID__ || __WASM__
-		internal const bool PlatformSupportsNativeBubbling = true;
-#else
+#if UNO_HAS_MANAGED_POINTERS
 		internal const bool PlatformSupportsNativeBubbling = false;
+#else
+		internal const bool PlatformSupportsNativeBubbling = true;
 #endif
 
 		public PointerRoutedEventArgs()

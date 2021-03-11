@@ -47,6 +47,8 @@ namespace Windows.UI.Xaml
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow(_window);
 
+			_window.CoreWindowEvents = CoreWindow;
+
 			InitializeCommon();
 		}
 
@@ -100,6 +102,16 @@ namespace Windows.UI.Xaml
 
 			_rootBorder.Child?.RemoveFromSuperview();
 			_rootBorder.Child = _content = value;
+
+			// This is required to get the mouse move while not pressed!
+			var options = NSTrackingAreaOptions.MouseEnteredAndExited
+				| NSTrackingAreaOptions.MouseMoved
+				| NSTrackingAreaOptions.ActiveInKeyWindow
+				| NSTrackingAreaOptions.EnabledDuringMouseDrag // We want enter/leave events even if the button is pressed
+				| NSTrackingAreaOptions.InVisibleRect; // Automagicaly syncs the bounds rect
+			var trackingArea = new NSTrackingArea(Bounds, options, _main, null);
+
+			_main.AddTrackingArea(trackingArea);
 		}
 
 		private UIElement InternalGetContent() => _content;

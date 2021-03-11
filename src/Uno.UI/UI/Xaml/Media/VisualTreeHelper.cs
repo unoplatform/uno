@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml.Media
 			var children = view.ChildrenShadow.ToList();
 			children.ForEach(v => v.RemoveFromSuperview());
 
-			return children; 
+			return children;
 #elif UNO_REFERENCE_API
 			var children = GetChildren<_View>(view).ToList();
 			view.ClearChildren();
@@ -348,7 +348,7 @@ namespace Windows.UI.Xaml.Media
 				renderingBounds = parentToElement.Transform(renderingBounds);
 			}
 
-#if !__SKIA__
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
 			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 			if (element is ScrollViewer sv)
@@ -368,11 +368,13 @@ namespace Windows.UI.Xaml.Media
 			}
 			else
 #endif
+#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling which has already been included.
 			if (element.IsScrollPort)
 			{
 				posRelToElement.X += element.ScrollOffsets.X;
 				posRelToElement.Y += element.ScrollOffsets.Y;
 			}
+#endif
 
 			TRACE($"- layoutSlot: {layoutSlot.ToDebugString()}");
 			TRACE($"- renderBounds (relative to element): {renderingBounds.ToDebugString()}");
@@ -566,7 +568,7 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			/// <summary>
-			/// 
+			///
 			/// </summary>
 			/// <remarks>This method will pass through native element but will enumerate only UIElements</remarks>
 			/// <returns></returns>
@@ -585,7 +587,7 @@ namespace Windows.UI.Xaml.Media
 					}
 
 					yield return current;
-				} 
+				}
 			}
 
 			public override string ToString() => $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";

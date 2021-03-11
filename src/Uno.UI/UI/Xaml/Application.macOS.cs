@@ -16,6 +16,8 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Selector = ObjCRuntime.Selector;
 using Windows.System.Profile;
+using Windows.UI.Core;
+using Uno.Foundation.Extensibility;
 using Uno.Helpers;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -32,6 +34,11 @@ namespace Windows.UI.Xaml
 		private readonly Selector _modeSelector = new Selector("themeChanged:");
 
 		private NSUrl[] _launchUrls = null;
+
+		static partial void InitializePartialStatic()
+		{
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension());
+		}
 
 		public Application()
 		{

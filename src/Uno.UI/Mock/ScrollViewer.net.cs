@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateZoomedContentAlignment() { }
 
-		private bool ChangeViewScrollNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
+		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
 			HorizontalOffset = horizontalOffset ?? HorizontalOffset;
 			VerticalOffset = verticalOffset ?? VerticalOffset;
