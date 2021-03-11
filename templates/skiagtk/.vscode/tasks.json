@@ -1,0 +1,132 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "args": [
+                "build"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "buildWasm",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/${projectName}.Wasm/${projectName}.Wasm.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publishWasm",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/${projectName}.Wasm/${projectName}.Wasm.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "runWasm",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "run",
+                "-p",
+                "${workspaceFolder}/${projectName}.Wasm/${projectName}.Wasm.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": ""
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "Hosting environment: Production",
+                    "endsPattern": "Application started\\. Press Ctrl\\+C to shut down\\.",
+                }
+            }
+        },
+        {
+            "label": "terminateAll",
+            "command": "echo ${input:terminate}",
+            "type": "shell",
+            "problemMatcher": []
+        },
+        {
+            "label": "watchWasm",
+            "command": "dotnet",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}/${projectName}.Wasm"
+            },
+            "isBackground": true,
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/${projectName}.Wasm/${projectName}.Wasm.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "buildGtk",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/${projectName}.Skia.Gtk/${projectName}.Skia.Gtk.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publishGtk",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/${projectName}.Skia.Gtk/${projectName}.Skia.Gtk.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watchGtk",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/${projectName}.Skia.Gtk/${projectName}.Skia.Gtk.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "terminate",
+            "type": "command",
+            "command": "workbench.action.tasks.terminate",
+            "args": "terminateAll"
+        }
+    ]
+}
