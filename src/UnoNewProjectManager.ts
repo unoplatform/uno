@@ -16,6 +16,7 @@ export class UnoNewProjectManager {
 
         vscode.commands.registerCommand("createSkiaGtkProject", unoNewProjectManager.createSkiaGtkProject, unoNewProjectManager);
         vscode.commands.registerCommand("createWasmProject", unoNewProjectManager.createWasmProject, unoNewProjectManager);
+        vscode.commands.registerCommand("createSkiaGtkWasmProject", unoNewProjectManager.createSkiaGtkWasmProject, unoNewProjectManager);
     }
 
     private async executeDotnetWithArgs (cwd: PathLike, args: string[]): Promise<boolean> {
@@ -189,6 +190,33 @@ export class UnoNewProjectManager {
                     unoOmnisharpManager.context = this.context;
                     await unoOmnisharpManager.createWasmConfiguration(projectName!, projectLocation!);
                     ExtensionUtils.writeln(`.vscode settings for WASM ${projectName!} App created`);
+                }
+
+                return success;
+            });
+    }
+
+    public async createSkiaGtkWasmProject (): Promise<void> {
+        await this.createGenericProject("New Uno Skia Gtk/WASM app",
+            async (projectName: string | undefined, projectLocation: PathLike | undefined): Promise<boolean> => {
+                const success = await this.executeDotnetWithArgs(projectLocation!,
+                    [
+                        "new",
+                        "unoapp",
+                        "-uwp=false",
+                        "-ios=false",
+                        "-android=false",
+                        "-macos=false",
+                        "-skia-wpf=false",
+                        "-st=false"
+                    ]
+                );
+
+                if (success) {
+                    const unoOmnisharpManager = new UnoOmnisharpManager();
+                    unoOmnisharpManager.context = this.context;
+                    await unoOmnisharpManager.createSkiaGtkWasmConfiguration(projectName!, projectLocation!);
+                    ExtensionUtils.writeln(`.vscode settings for Skia Gtk/WASM ${projectName!} App created`);
                 }
 
                 return success;

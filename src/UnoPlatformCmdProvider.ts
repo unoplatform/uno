@@ -56,20 +56,7 @@ export class UnoPlatformCmdProvider implements vscode.TreeDataProvider<vscode.Tr
                 vscode.TreeItemCollapsibleState.None,
                 "",
                 {
-                    command: "",
-                    title: "",
-                    arguments: []
-                },
-                "run.svg"
-            ));
-
-            cmds.push(new CmdOption(
-                "Setup Uno Debug Configuration",
-                "cmd3",
-                vscode.TreeItemCollapsibleState.None,
-                "",
-                {
-                    command: "",
+                    command: "createSkiaGtkWasmProject",
                     title: "",
                     arguments: []
                 },

@@ -43,5 +43,7 @@ export class UnoOmnisharpManager {
         await this.createOmnisharpLaunchTasks("wasm", projectName, projectLocation);
     }
 
-    public createSkiaGtkWasmConfiguration (): void { }
+    public async createSkiaGtkWasmConfiguration (projectName: string, projectLocation: PathLike): Promise<void> {
+        await this.createOmnisharpLaunchTasks("skiagtk", projectName, projectLocation);
+    }
 }
