@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml
 
 				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 				// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-				originalSource ??= Window.Current.Content;
+				originalSource ??= Windows.UI.Xaml.Window.Current.Content;
 
 				if (originalSource is null)
 				{
