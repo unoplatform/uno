@@ -9,7 +9,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using System.IO;
+using Windows.Devices.Input;
+using Windows.System;
 using Windows.UI.Composition;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Media;
 
 namespace Windows.UI.Xaml.Controls
@@ -119,7 +122,14 @@ namespace Windows.UI.Xaml.Controls
 
 			_strategy.Initialize(this);
 
+			// Mouse wheel support
 			PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
+
+			// Touch scroll support
+			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+			ManipulationStarted += BeginTouchScroll;
+			ManipulationDelta += UpdateTouchScroll;
+			ManipulationCompleted += CompleteTouchScroll;
 
 			// On Skia and macOS (as UWP), the Scrolling is managed by the ScrollContentPresenter, not the ScrollViewer.
 			// Note: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
@@ -152,7 +162,8 @@ namespace Windows.UI.Xaml.Controls
 			double? horizontalOffset = null,
 			double? verticalOffset = null,
 			float? zoomFactor = null,
-			bool disableAnimation = true)
+			bool disableAnimation = true,
+			bool isIntermediate = false)
 		{
 			var success = true;
 
@@ -184,19 +195,19 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			Apply(disableAnimation: true);
+			Apply(disableAnimation, isIntermediate);
 
 			return success;
 		}
 
-		private void Apply(bool disableAnimation)
+		private void Apply(bool disableAnimation, bool isIntermediate)
 		{
 			if (Content is UIElement contentElt)
 			{
 				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, disableAnimation);
 			}
 
-			Scroller?.OnScrollInternal(HorizontalOffset, VerticalOffset, isIntermediate: false);
+			Scroller?.OnScrollInternal(HorizontalOffset, VerticalOffset, isIntermediate);
 
 			// Note: We do not capture the offset so if they are altered in the OnScrollInternal,
 			//		 we will apply only the final ScrollOffsets and only once.
@@ -224,7 +235,11 @@ namespace Windows.UI.Xaml.Controls
 				var canScrollHorizontally = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
 				var canScrollVertically = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
 
-				if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers.HasFlag(global::Windows.System.VirtualKeyModifiers.Shift))
+				if (e.KeyModifiers == VirtualKeyModifiers.Control)
+				{
+					// TODO: Handle zoom
+				}
+				else if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift)
 				{
 					if (canScrollHorizontally)
 					{
@@ -236,6 +251,31 @@ namespace Windows.UI.Xaml.Controls
 					SetVerticalOffset(VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, properties.MouseWheelDelta * ScrollViewerDefaultMouseWheelDelta));
 				}
 			}
+		}
+
+		private void BeginTouchScroll(object sender, ManipulationStartedRoutedEventArgs e)
+		{
+			if (e.PointerDeviceType != PointerDeviceType.Touch)
+			{
+				e.Complete();
+				return;
+			}
+		}
+
+		private void UpdateTouchScroll(object sender, ManipulationDeltaRoutedEventArgs e)
+			=> Set(
+				horizontalOffset: HorizontalOffset - e.Delta.Translation.X,
+				verticalOffset: VerticalOffset - e.Delta.Translation.Y,
+				isIntermediate: true);
+
+		private void CompleteTouchScroll(object sender, ManipulationCompletedRoutedEventArgs e)
+		{
+			if (e.PointerDeviceType != PointerDeviceType.Touch)
+			{
+				return;
+			}
+
+			Set(isIntermediate: false);
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
