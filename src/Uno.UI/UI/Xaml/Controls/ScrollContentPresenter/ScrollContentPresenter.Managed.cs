@@ -17,7 +17,7 @@ using Uno.UI.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, ICustomClippingElement, IScrollContentPresenter
+	public partial class ScrollContentPresenter : ContentPresenter, ICustomClippingElement
 	{
 		// Default physical amount to scroll with Up/Down/Left/Right key
 		const double ScrollViewerLineDelta = 16.0;
@@ -92,19 +92,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
-		public ScrollMode HorizontalScrollMode { get; set; }
+		public bool CanHorizontallyScroll { get; set; }
 
-		public ScrollMode VerticalScrollMode { get; set; }
-
-		public float MinimumZoomScale { get; set; }
-
-		public float MaximumZoomScale { get; set; }
-
-		ScrollBarVisibility IScrollContentPresenter.VerticalScrollBarVisibility { get => VerticalScrollBarVisibility; set => VerticalScrollBarVisibility = value; }
-		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
-
-		ScrollBarVisibility IScrollContentPresenter.HorizontalScrollBarVisibility { get => HorizontalScrollBarVisibility; set => HorizontalScrollBarVisibility = value; }
-		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+		public bool CanVerticallyScroll { get; set; }
 
 		public double HorizontalOffset { get; private set; }
 
@@ -126,7 +116,8 @@ namespace Windows.UI.Xaml.Controls
 			PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
 
 			// Touch scroll support
-			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
+			ManipulationStarting += PrepareTouchScroll;
 			ManipulationStarted += BeginTouchScroll;
 			ManipulationDelta += UpdateTouchScroll;
 			ManipulationCompleted += CompleteTouchScroll;
@@ -157,6 +148,10 @@ namespace Windows.UI.Xaml.Controls
 				_strategy.Update(newElt, HorizontalOffset, VerticalOffset, 1, disableAnimation: true);
 			}
 		}
+
+		internal void OnMinZoomFactorChanged(float newValue) { }
+
+		internal void OnMaxZoomFactorChanged(float newValue) { }
 
 		internal bool Set(
 			double? horizontalOffset = null,
@@ -232,12 +227,12 @@ namespace Windows.UI.Xaml.Controls
 
 			if (Content is UIElement)
 			{
-				var canScrollHorizontally = HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
-				var canScrollVertically = VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+				var canScrollHorizontally = CanHorizontallyScroll;
+				var canScrollVertically = CanVerticallyScroll;
 
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)
 				{
-					// TODO: Handle zoom
+					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
 				}
 				else if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift)
 				{
@@ -250,6 +245,19 @@ namespace Windows.UI.Xaml.Controls
 				{
 					SetVerticalOffset(VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, properties.MouseWheelDelta * ScrollViewerDefaultMouseWheelDelta));
 				}
+			}
+		}
+
+		private void PrepareTouchScroll(object sender, ManipulationStartingRoutedEventArgs e)
+		{
+			if (!CanVerticallyScroll || ExtentHeight <= 0)
+			{
+				e.Mode &= ~ManipulationModes.TranslateY;
+			}
+
+			if (!CanHorizontallyScroll || ExtentWidth <= 0)
+			{
+				e.Mode &= ~ManipulationModes.TranslateX;
 			}
 		}
 
