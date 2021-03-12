@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using AndroidX.Core.Graphics.Drawable;
+﻿using AndroidX.Core.Graphics.Drawable;
 using AndroidX.AppCompat.Widget;
 using System;
 using System.Collections.Generic;
@@ -51,17 +50,21 @@ namespace Uno.UI.Controls
 
 				// Foreground
 				var foreground = (element.Foreground as SolidColorBrush);
-				var foregroundColor = foreground?.Color;
 				var foregroundOpacity = foreground?.Opacity ?? 0;
-				if (native.NavigationIcon != null)
+
+				if (FeatureConfiguration.AppBarButton.EnableBitmapIconTint)
 				{
-					if (foreground != null)
+					var foregroundColor = foreground?.Color;
+					if (native.NavigationIcon != null)
 					{
-						DrawableCompat.SetTint(native.NavigationIcon, (Android.Graphics.Color)foregroundColor);
-					}
-					else
-					{
-						DrawableCompat.SetTintList(native.NavigationIcon, null);
+						if (foreground != null)
+						{
+							DrawableCompat.SetTint(native.NavigationIcon, (Android.Graphics.Color)foregroundColor);
+						}
+						else
+						{
+							DrawableCompat.SetTintList(native.NavigationIcon, null);
+						}
 					}
 				}
 
@@ -82,4 +85,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif
