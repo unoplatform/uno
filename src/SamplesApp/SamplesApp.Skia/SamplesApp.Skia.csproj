@@ -25,6 +25,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.6-develop" />
+		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.6-develop" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
@@ -46,6 +48,8 @@
 	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
 
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
+
+	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
 
 	<ItemGroup>
 		<Content Update="@(Content)" CopyToOutputDirectory="PreserveNewest" />

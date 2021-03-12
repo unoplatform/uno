@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 		private bool _themeSetExplicitly = false;
 		private ApplicationTheme? _requestedTheme;
 		private bool _systemThemeChangesObserved = false;
-		private string _requestedThemeForResources;
+		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 
 		static Application()
 		{
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml
 				};
 		}
 
-		internal string RequestedThemeForResources
+		internal SpecializedResourceDictionary.ResourceKey RequestedThemeForResources
 		{
 			get
 			{

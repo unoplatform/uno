@@ -91,7 +91,8 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
-		<PackageReference Include="xamarin.build.download" Version="0.4.11" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe"
+											Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">

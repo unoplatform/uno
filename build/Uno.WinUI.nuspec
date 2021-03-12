@@ -16,7 +16,7 @@
 
 	<dependencies>
 
-	  <!-- Android 9.0 -->
+	  <!-- Android 11.0 -->
 	  <group targetFramework="MonoAndroid11.0">
 		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
@@ -27,9 +27,10 @@
 		<dependency id="Uno.Core" version="2.2.0" />
 		<dependency id="Uno.Core.Build" version="2.2.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
+		<dependency id="System.Runtime.CompilerServices.Unsafe" version="5.0.0" />
 	  </group>
 
-	  <!-- Android 10.0 -->
+	  <!-- Android 11.0 -->
 	  <group targetFramework="MonoAndroid10.0">
 		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
@@ -39,6 +40,7 @@
 		<dependency id="Uno.Core" version="2.2.0" />
 		<dependency id="Uno.Core.Build" version="2.2.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
+		<dependency id="System.Runtime.CompilerServices.Unsafe" version="5.0.0" />
 	  </group>
 
 	  <!-- iOS -->
@@ -47,6 +49,7 @@
 		<dependency id="Uno.Core" version="2.2.0" />
 		<dependency id="Uno.Core.Build" version="2.2.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
+		<dependency id="System.Runtime.CompilerServices.Unsafe" version="5.0.0" />
 	  </group>
 
       <!-- macOS -->
@@ -55,6 +58,7 @@
         <dependency id="Uno.Core" version="2.2.0" />
         <dependency id="Uno.Core.Build" version="2.2.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
+		<dependency id="System.Runtime.CompilerServices.Unsafe" version="5.0.0" />
 	  </group>
 
       <!-- .NET Standard 2.0 -->
@@ -66,6 +70,7 @@
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
         <dependency id="System.Memory" version="4.5.2" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
+		<dependency id="System.Runtime.CompilerServices.Unsafe" version="5.0.0" />
 	  </group>
     </dependencies>
 
