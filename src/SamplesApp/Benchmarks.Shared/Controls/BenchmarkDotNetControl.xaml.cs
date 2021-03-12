@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Exporters.Csv;
+using BenchmarkDotNet.Exporters.Json;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.Storage.Provider;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -35,6 +41,15 @@ namespace Benchmarks.Shared.Controls
 		{
 			this.InitializeComponent();
 		}
+
+		public string ResultsAsBase64
+		{
+			get => (string)GetValue(ResultsAsBase64Property);
+			set => SetValue(ResultsAsBase64Property, value);
+		}
+
+		public static readonly DependencyProperty ResultsAsBase64Property =
+			DependencyProperty.Register("ResultsAsBase64", typeof(string), typeof(BenchmarkDotNetControl), new PropertyMetadata(""));
 
 		public string ClassFilter { get; set; } = "";
 
@@ -59,13 +74,18 @@ namespace Benchmarks.Shared.Controls
 				await SetStatus("Discovering benchmarks in " + BenchmarksBaseNamespace);
 				var types = EnumerateBenchmarks(config).ToArray();
 
+				int currentCount = 0;
 				foreach (var type in types)
 				{
+					runCount.Text = (++currentCount).ToString();
+
 					await SetStatus($"Running benchmarks for {type}");
 					var b = BenchmarkRunner.Run(type, config);
 				}
 
-				await SetStatus($"Done.");
+				await SetStatus($"Finished");
+
+				ArchiveTestResult(config);
 			}
 			catch (Exception e)
 			{
@@ -75,6 +95,48 @@ namespace Benchmarks.Shared.Controls
 			finally
 			{
 				BenchmarkUIHost.Root = null;
+			}
+		}
+
+		private void ArchiveTestResult(CoreConfig config)
+		{
+			var archiveName = BenchmarkResultArchiveName;
+
+			if (File.Exists(archiveName))
+			{
+				File.Delete(archiveName);
+			}
+
+			ZipFile.CreateFromDirectory(config.ArtifactsPath, archiveName, CompressionLevel.Optimal, false);
+
+			downloadResults.IsEnabled = true;
+
+			ResultsAsBase64 = Convert.ToBase64String(File.ReadAllBytes(BenchmarkResultArchiveName));
+		}
+
+		private static string BenchmarkResultArchiveName
+			=> Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "benchmarks-results.zip");
+
+		private async void OnDownloadResults()
+		{
+			FileSavePicker savePicker = new FileSavePicker();
+
+			savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+
+			// Dropdown of file types the user can save the file as
+			savePicker.FileTypeChoices.Add("Zip Archive", new List<string>() { ".zip" });
+
+			// Default file name if the user does not type one in or select a file to replace
+			savePicker.SuggestedFileName = "benchmarks-results";
+
+			var file = await savePicker.PickSaveFileAsync();
+			if (file != null)
+			{
+				CachedFileManager.DeferUpdates(file);
+
+				await FileIO.WriteBytesAsync(file, File.ReadAllBytes(BenchmarkResultArchiveName));
+
+				await CachedFileManager.CompleteUpdatesAsync(file);
 			}
 		}
 
@@ -98,19 +160,24 @@ namespace Benchmarks.Shared.Controls
 			{
 				Add(logger);
 
-#if __WASM__
 				Add(AsciiDocExporter.Default);
-#endif
+				Add(JsonExporter.Full);
+				Add(CsvExporter.Default);
+				Add(BenchmarkDotNet.Exporters.Xml.XmlExporter.Full);
 
 				Add(Job.InProcess
 					.WithLaunchCount(1)
 					.WithWarmupCount(1)
-					.WithIterationCount(5)
+					.WithIterationCount(1)
+#if __IOS__
+					// Fails on iOS with code generation used by EmitInvokeMultiple
+					.WithUnrollFactor(1)
+#endif
 					.With(InProcessToolchain.Synchronous)
 					.WithId("InProcess")
 				);
 
-				ArtifactsPath = Path.GetTempPath();
+				ArtifactsPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "benchmarks");
 			}
 		}
 
