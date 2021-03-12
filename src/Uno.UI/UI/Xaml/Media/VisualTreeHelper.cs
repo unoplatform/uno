@@ -454,19 +454,19 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		private static Branch SearchDownForStaleBranch(UIElement staleRoot, Predicate<UIElement> isStale)
-			=> new Branch(staleRoot, SearchDownForStaleLeaf(staleRoot, isStale));
+			=> new Branch(staleRoot, SearchDownForLeaf(staleRoot, isStale));
 
-		private static UIElement SearchDownForStaleLeaf(UIElement staleRoot, Predicate<UIElement> isStale)
+		internal static UIElement SearchDownForLeaf(UIElement root, Predicate<UIElement> predicate)
 		{
-			foreach (var child in staleRoot.GetChildren().OfType<UIElement>().Reverse())
+			foreach (var child in root.GetChildren().OfType<UIElement>().Reverse())
 			{
-				if (isStale(child))
+				if (predicate(child))
 				{
-					return SearchDownForStaleLeaf(child, isStale);
+					return SearchDownForLeaf(child, predicate);
 				}
 			}
 
-			return staleRoot;
+			return root;
 		}
 
 		#region Helpers

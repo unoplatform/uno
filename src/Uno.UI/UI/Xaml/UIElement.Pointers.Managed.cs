@@ -85,18 +85,57 @@ namespace Windows.UI.Xaml
 
 			private void CoreWindow_PointerEntered(CoreWindow sender, PointerEventArgs args)
 			{
+				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
+
+				// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+				originalSource ??= Windows.UI.Xaml.Window.Current.Content;
+
+				if (originalSource is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerEntered ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
+				}
+
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerEntered ({args.CurrentPoint.Position})");
+					this.Log().Trace($"CoreWindow_PointerEntered [{originalSource.GetDebugName()}");
 				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				originalSource.OnNativePointerEnter(routedArgs);
 			}
 
 			private void CoreWindow_PointerExited(CoreWindow sender, PointerEventArgs args)
 			{
+				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+				var originalSource = Windows.UI.Xaml.Window.Current.Content;
+				var overBranchLeaf = VisualTreeHelper.SearchDownForLeaf(originalSource, _isOver);
+
+				if (overBranchLeaf is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerExited ({args.CurrentPoint.Position}) **undispatched**");
+					}
+
+					return;
+				}
+
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerExited ({args.CurrentPoint.Position})");
+					this.Log().Trace($"CoreWindow_PointerPressed [{overBranchLeaf.GetDebugName()}");
 				}
+
+				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+
+				ClearPointerState(routedArgs, null, overBranchLeaf);
 			}
 
 			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
