@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
@@ -22,3 +23,4 @@ namespace Windows.UI.Xaml.Controls
 		Rect MakeVisible(UIElement visual, Rect rectangle);
 	}
 }
+#endif
