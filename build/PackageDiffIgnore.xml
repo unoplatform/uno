@@ -3551,28 +3551,28 @@
 				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_HorizontalScrollBarVisibility(Windows.UI.Xaml.Controls.ScrollBarVisibility value)"
 				reason="Not part of the UWP API" />
 			<Member
-				fullName="System.Single Windows.UI.Xaml.Controls.ScrollContentPresenter::get_MinimumZoomScale()"
+				fullName="System.Single Windows.UI.Xaml.Controls.ScrollContentPresenter.get_MinimumZoomScale()"
 				reason="Not part of the UWP API" />
 			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter::set_MinimumZoomScale(System.Single value)"
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_MinimumZoomScale(System.Single value)"
 				reason="Not part of the UWP API" />
 			<Member
-				fullName="System.Single Windows.UI.Xaml.Controls.ScrollContentPresenter::get_MaximumZoomScale()"
+				fullName="System.Single Windows.UI.Xaml.Controls.ScrollContentPresenter.get_MaximumZoomScale()"
 				reason="Not part of the UWP API" />
 			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter::set_MaximumZoomScale(System.Single value)"
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_MaximumZoomScale(System.Single value)"
 				reason="Not part of the UWP API" />
 			<Member
-				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ScrollContentPresenter::get_HorizontalScrollMode()"
+				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ScrollContentPresenter.get_HorizontalScrollMode()"
 				reason="Not part of the UWP API" />
 			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter::set_HorizontalScrollMode(Windows.UI.Xaml.Controls.ScrollMode value)"
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_HorizontalScrollMode(Windows.UI.Xaml.Controls.ScrollMode value)"
 				reason="Not part of the UWP API" />
 			<Member
-				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ScrollContentPresenter::get_VerticalScrollMode()"
+				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ScrollContentPresenter.get_VerticalScrollMode()"
 				reason="Not part of the UWP API" />
 			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter::set_VerticalScrollMode(Windows.UI.Xaml.Controls.ScrollMode value)"
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_VerticalScrollMode(Windows.UI.Xaml.Controls.ScrollMode value)"
 				reason="Not part of the UWP API" />
 		</Methods>
 		<Fields>
