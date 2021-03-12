@@ -15,14 +15,12 @@ namespace Windows.UI.Xaml.Input
 	partial class PointerRoutedEventArgs
 	{
 		private readonly PointerEventArgs _pointerEventArgs;
-		private readonly Point _absolutePosition;
 
 		internal PointerRoutedEventArgs(
 			PointerEventArgs pointerEventArgs,
 			UIElement source) : this()
 		{
 			_pointerEventArgs = pointerEventArgs;
-			_absolutePosition = pointerEventArgs.CurrentPoint.Position;
 
 			FrameId = pointerEventArgs.CurrentPoint.FrameId;
 			Pointer = GetPointer(pointerEventArgs);
@@ -32,14 +30,17 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var device = PointerDevice.For(PointerDeviceType.Mouse);
-			var position = relativeTo == null
-				? _absolutePosition
-				: relativeTo.TransformToVisual(null).Inverse.TransformPoint(_absolutePosition);
-			var timestamp = _pointerEventArgs.CurrentPoint.Timestamp;
-			var properties = _pointerEventArgs.CurrentPoint.Properties;
+			if (relativeTo is null)
+			{
+				return _pointerEventArgs.CurrentPoint;
+			}
+			else
+			{
+				var absolutePosition = _pointerEventArgs.CurrentPoint.Position;
+				var relativePosition = relativeTo.TransformToVisual(null).Inverse.TransformPoint(absolutePosition);
 
-			return new PointerPoint(FrameId, timestamp, device, 0, _absolutePosition, position, true, properties);
+				return _pointerEventArgs.CurrentPoint.At(relativePosition);
+			}
 		}
 
 		private Pointer GetPointer(PointerEventArgs args)
