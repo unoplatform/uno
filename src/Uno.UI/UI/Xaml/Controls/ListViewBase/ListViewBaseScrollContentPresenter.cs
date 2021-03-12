@@ -60,6 +60,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		public bool CanHorizontallyScroll
+		{
+			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
+		public bool CanVerticallyScroll
+		{
+			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
 		object IScrollContentPresenter.Content
 		{
 			get { return Content; }

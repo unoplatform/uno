@@ -14,6 +14,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter
 	{
+		public bool CanHorizontallyScroll { get; set; }
+
+		public bool CanVerticallyScroll { get; set; }
+
 		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 
 		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }

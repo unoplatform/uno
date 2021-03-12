@@ -15,6 +15,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 		ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+
+		bool CanHorizontallyScroll { get; set; }
+		bool CanVerticallyScroll { get; set; }
+
 		object Content { get; set; }
 
 		void OnMinZoomFactorChanged(float newValue);

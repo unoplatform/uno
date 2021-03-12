@@ -29,6 +29,18 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private View _content;
 
+		public bool CanHorizontallyScroll
+		{
+			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
+		public bool CanVerticallyScroll
+		{
+			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
 		public object Content
 		{
 			get { return _content; }
