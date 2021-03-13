@@ -100,6 +100,175 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		public async Task When_CreateFolder_Duplicate_Default()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var folderName = Guid.NewGuid().ToString();
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFolder = await rootFolder.CreateFolderAsync(folderName);
+				await Assert.ThrowsExceptionAsync<Exception>(
+					async () => await rootFolder.CreateFolderAsync(folderName));
+				Assert.AreEqual(folderName, createdFolder.Name);
+			}
+			finally
+			{
+				if (createdFolder != null)
+				{
+					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFolder_Duplicate_FailIfExists()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var folderName = Guid.NewGuid().ToString();
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFolder = await rootFolder.CreateFolderAsync(folderName);
+				await Assert.ThrowsExceptionAsync<Exception>(
+					async () => await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.FailIfExists));
+				Assert.AreEqual(folderName, createdFolder.Name);
+			}
+			finally
+			{
+				if (createdFolder != null)
+				{
+					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFolder_Duplicate_OpenIfExists()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var folderName = Guid.NewGuid().ToString();
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFolder = await rootFolder.CreateFolderAsync(folderName);
+				var duplicate = await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.OpenIfExists);
+				Assert.AreEqual(folderName, duplicate.Name);
+			}
+			finally
+			{
+				if (createdFolder != null)
+				{
+					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFolder_Duplicate_ReplaceExisting()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var folderName = Guid.NewGuid().ToString();
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFolder = await rootFolder.CreateFolderAsync(folderName);
+				await createdFolder.CreateFileAsync(GetRandomTextFileName());
+				var replaced = await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting);
+				Assert.AreEqual(folderName, replaced.Name);
+				var files = await replaced.GetFilesAsync();
+				Assert.AreEqual(0, files.Count);
+			}
+			finally
+			{
+				if (createdFolder != null)
+				{
+					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFolder_Duplicate_File_ReplaceExisting()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var folderName = Guid.NewGuid().ToString();
+			StorageFile? createdFile = null;
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(folderName);
+				await Assert.ThrowsExceptionAsync<Exception>(
+					async () => await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting));
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				if (createdFolder != null)
+				{
+					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFolder_Duplicate_GenerateUniqueName()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var folderName = Guid.NewGuid().ToString();
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFolder = await rootFolder.CreateFolderAsync(folderName);				
+				var uniqueFolder = await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.GenerateUniqueName);
+				Assert.AreEqual(folderName + " (2)", uniqueFolder.Name);
+			}
+			finally
+			{
+				if (createdFolder != null)
+				{
+					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFolder_Duplicate_File_GenerateUniqueName()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var folderName = Guid.NewGuid().ToString();
+			StorageFile? createdFile = null;
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(folderName);
+				createdFolder = await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.GenerateUniqueName);
+				Assert.AreEqual(folderName + " (2)", createdFolder.Name);
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				if (createdFolder != null)
+				{
+					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
 		public async Task When_GetFile_File_Does_Not_Exist()
 		{
 			var rootFolder = await GetRootFolderAsync();
