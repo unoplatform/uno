@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	{
 		protected abstract Task<StorageFolder> GetRootFolderAsync();
 
-		protected abstract Task CleanupRootFolderAsync();
+		protected virtual Task CleanupRootFolderAsync() => Task.CompletedTask;
 
 		[TestMethod]
 		public async Task When_CreateFolder_Name_Matches()
@@ -263,6 +263,176 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				if (createdFolder != null)
 				{
 					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_Duplicate_Default()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				await Assert.ThrowsExceptionAsync<Exception>(
+					async () => await rootFolder.CreateFileAsync(fileName));
+				Assert.AreEqual(fileName, createdFile.Name);
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_Duplicate_FailIfExists()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				await Assert.ThrowsExceptionAsync<Exception>(
+					async () => await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.FailIfExists));
+				Assert.AreEqual(fileName, createdFile.Name);
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_Duplicate_OpenIfExists()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				await FileIO.WriteBytesAsync(createdFile, new byte[14]);
+				var duplicate = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.OpenIfExists);
+				var info = await duplicate.GetBasicPropertiesAsync();
+				Assert.AreEqual(14, info.Size);
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_Duplicate_ReplaceExisting()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				await FileIO.WriteBytesAsync(createdFile, new byte[14]);
+				var duplicate = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+				var info = await duplicate.GetBasicPropertiesAsync();
+				Assert.AreEqual(0, info.Size);
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_Duplicate_Folder_ReplaceExisting()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFolder = await rootFolder.CreateFolderAsync(fileName);
+				await Assert.ThrowsExceptionAsync<Exception>(
+					async () => await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting));
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				if (createdFolder != null)
+				{
+					await createdFolder.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_Duplicate_GenerateUniqueName()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				var uniqueFolder = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
+				Assert.AreEqual(fileName + " (2)", uniqueFolder.Name);
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_Duplicate_File_GenerateUniqueName()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			StorageFolder? createdFolder = null;
+			try
+			{
+				createdFolder = await rootFolder.CreateFolderAsync(fileName);
+				createdFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
+				Assert.AreEqual(fileName + " (2)", createdFile.Name);
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
 				}
 				await CleanupRootFolderAsync();
 			}
@@ -983,6 +1153,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
+#if !WINDOWS_UWP // UWP is unable to handle going up a level for picked folders
 		[TestMethod]
 		public async Task When_GetParent()
 		{
@@ -1005,6 +1176,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				await CleanupRootFolderAsync();
 			}
 		}
+#endif
 
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 

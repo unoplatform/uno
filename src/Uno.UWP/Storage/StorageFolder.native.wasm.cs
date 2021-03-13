@@ -115,14 +115,6 @@ namespace Windows.Storage
 
 			public override async Task<StorageFolder> GetFolderAsync(string name, CancellationToken ct)
 			{
-				// Handling validation
-				// Source: https://docs.microsoft.com/en-us/uwp/api/windows.storage.storagefolder.getfolderasync?view=winrt-19041#exceptions
-
-				if (Uri.IsWellFormedUriString(name, UriKind.RelativeOrAbsolute))
-				{
-					throw new ArgumentException("The path cannot be in Uri format (for example, /Assets). Check the value of name.", nameof(name));
-				}
-
 				var folderInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFolderAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
 
 				if (folderInfoJson == null)

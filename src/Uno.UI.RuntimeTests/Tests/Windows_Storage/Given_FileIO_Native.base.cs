@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
     {
 		protected abstract Task<StorageFolder> GetRootFolderAsync();
 
-		protected abstract Task CleanupRootFolderAsync();
+		protected virtual Task CleanupRootFolderAsync() => Task.CompletedTask;
 
 		[TestMethod]
 		public async Task When_WriteTextAsyncNoEncoding()

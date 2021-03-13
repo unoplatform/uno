@@ -421,6 +421,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\NativeStorageRuntimeTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\DownloadFileSavePickerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4311,6 +4315,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Phone\Devices_Notifications_VibrationDevice.xaml.cs">
       <DependentUpon>Devices_Notifications_VibrationDevice.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\NativeStorageRuntimeTests.xaml.cs">
+      <DependentUpon>NativeStorageRuntimeTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\DownloadFileSavePickerTests.xaml.cs">
       <DependentUpon>DownloadFileSavePickerTests.xaml</DependentUpon>

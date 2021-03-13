@@ -11,7 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	{
 		protected abstract Task<StorageFolder> GetRootFolderAsync();
 
-		protected abstract Task CleanupRootFolderAsync();
+		protected virtual Task CleanupRootFolderAsync() => Task.CompletedTask;
 
 		[TestMethod]
 		public async Task When_CreateFile_Name_Matches()
@@ -80,7 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFile_ContentType_For_Extension_Upper()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var fileName = GetRandomTextFileName().Replace(".txt", ".TXT", StringComparison.InvariantCulture);
+			var fileName = GetRandomTextFileName().Replace(".txt", ".TXT");
 			StorageFile? createdFile = null;
 			try
 			{
@@ -201,6 +201,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
+#if !WINDOWS_UWP // UWP is unable to handle going up a level for picked folders
 		[TestMethod]
 		public async Task When_GetParent()
 		{
@@ -223,6 +224,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				await CleanupRootFolderAsync();
 			}
 		}
+#endif
 
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 

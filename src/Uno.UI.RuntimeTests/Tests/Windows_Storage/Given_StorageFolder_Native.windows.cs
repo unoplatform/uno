@@ -1,4 +1,7 @@
 ﻿#if WINDOWS_UWP
+
+#nullable enable
+
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
