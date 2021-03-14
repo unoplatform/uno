@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml
 
 		public Window()
 		{
-			var style = NSWindowStyle.Closable | NSWindowStyle.Resizable | NSWindowStyle.Titled;
+			var style = NSWindowStyle.Closable | NSWindowStyle.Resizable | NSWindowStyle.Titled | NSWindowStyle.Miniaturizable;
 			var rect = new CoreGraphics.CGRect(100, 100, 1024, 768);
 			_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
 
