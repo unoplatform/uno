@@ -36,8 +36,7 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe"
-											Version="5.0.0" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -113,10 +112,6 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\SpecializedResourceDictionary.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

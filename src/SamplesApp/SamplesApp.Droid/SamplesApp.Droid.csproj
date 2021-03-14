@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
@@ -43,7 +43,7 @@
     <AndroidSupportedAbis>armeabi-v7a;x86;arm64-v8a</AndroidSupportedAbis>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
-    <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,7 +55,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
-    <AndroidLinkMode>None</AndroidLinkMode>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
@@ -104,10 +104,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
-    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.1.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.0.1" />
     <PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.6-develop" />
     <PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.6-develop" />
-    <PackageReference Include="Xamarin.AndroidX.RecyclerView" />
+    <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.1.0.7" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.2.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
