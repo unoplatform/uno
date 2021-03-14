@@ -1,5 +1,4 @@
-﻿#if __MACOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.CompilerServices;
@@ -107,4 +106,3 @@ namespace Windows.UI.ViewManagement
 		private bool IsKeyWindowInitialized() => NSApplication.SharedApplication.KeyWindow != null;
     }
 }
-#endif
