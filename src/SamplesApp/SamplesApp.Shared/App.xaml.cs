@@ -342,7 +342,7 @@ namespace SamplesApp
 #if __WASM__
 				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 #endif
-
+				builder.AddConsole();
 #else
 #if __WASM__
 				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
