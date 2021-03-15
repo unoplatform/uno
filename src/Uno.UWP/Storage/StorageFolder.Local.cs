@@ -56,7 +56,7 @@ namespace Windows.Storage
 			}
 
 			public override StorageProvider Provider => StorageProviders.Local;
-			
+
 			public override string Name => _name;
 
 			protected override bool IsEqual(ImplementationBase impl) =>
@@ -155,9 +155,14 @@ namespace Windows.Storage
 
 				var filePath = IOPath.Combine(Path, name);
 
+				if (Directory.Exists(filePath))
+				{
+					throw new ArgumentException("The item with given name is a folder.", nameof(name));
+				}
+
 				if (!File.Exists(filePath))
 				{
-					throw new FileNotFoundException(filePath);
+					throw new FileNotFoundException("There is no file with this name.");
 				}
 
 				return StorageFile.GetFileFromPath(filePath);
@@ -220,11 +225,14 @@ namespace Windows.Storage
 
 				var itemPath = IOPath.Combine(Path, name);
 
-				var directoryExists = Directory.Exists(itemPath);
-
-				if (!directoryExists)
+				if (File.Exists(itemPath))
 				{
-					throw new FileNotFoundException(itemPath);
+					throw new ArgumentException("The item with given name is a file.", nameof(name));
+				}
+
+				if (!Directory.Exists(itemPath))
+				{
+					throw new FileNotFoundException("There is no file with this name.");
 				}
 
 				return await GetFolderFromPathAsync(itemPath);

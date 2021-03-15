@@ -177,13 +177,17 @@ namespace Windows.Storage
 			public override Task<StorageFile> GetFileAsync(string name, CancellationToken token)
 			{
 				using var _ = _nsUrl.BeginSecurityScopedAccess();
-				var itemPath = IOPath.Combine(Path, name);
 
-				var directoryExists = File.Exists(itemPath);
+				var filePath = IOPath.Combine(Path, name);
 
-				if (!directoryExists)
+				if (Directory.Exists(filePath))
 				{
-					throw new FileNotFoundException(itemPath);
+					throw new ArgumentException("The item with given name is a folder.", nameof(name));
+				}
+
+				if (!File.Exists(filePath))
+				{
+					throw new FileNotFoundException("There is no file with this name.");
 				}
 
 				return Task.FromResult(StorageFile.GetFromSecurityScopedUrl(_nsUrl.Append(name, false), Owner));
@@ -206,14 +210,19 @@ namespace Windows.Storage
 			public override Task<StorageFolder> GetFolderAsync(string name, CancellationToken token)
 			{
 				using var _ = _nsUrl.BeginSecurityScopedAccess();
+
 				var itemPath = IOPath.Combine(Path, name);
 
-				var directoryExists = Directory.Exists(itemPath);
-
-				if (!directoryExists)
+				if (File.Exists(itemPath))
 				{
-					throw new FileNotFoundException(itemPath);
+					throw new ArgumentException("The item with given name is a file.", nameof(name));
 				}
+
+				if (!Directory.Exists(itemPath))
+				{
+					throw new FileNotFoundException("There is no file with this name.");
+				}
+
 
 				return Task.FromResult(GetFromSecurityScopedUrl(_nsUrl.Append(name, true), Owner));
 			}

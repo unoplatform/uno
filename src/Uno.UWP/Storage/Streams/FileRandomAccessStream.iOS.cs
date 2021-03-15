@@ -1,6 +1,6 @@
 ﻿namespace Windows.Storage.Streams
 {
-	public class FileRandomAccessStream
+	public partial class FileRandomAccessStream
     {
         
     }

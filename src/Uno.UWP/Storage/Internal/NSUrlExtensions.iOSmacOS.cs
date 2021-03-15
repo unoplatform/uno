@@ -8,15 +8,22 @@ namespace Uno.Storage.Internal
     {
 		public static IDisposable BeginSecurityScopedAccess(this NSUrl nsUrl)
 		{
-			if (!nsUrl.StartAccessingSecurityScopedResource())
+			try
 			{
-				throw new UnauthorizedAccessException("Could not access security-scoped resource.");
-			}
+				var didStartAccessing = nsUrl.StartAccessingSecurityScopedResource();
 
-			return Disposable.Create(() =>
+				return Disposable.Create(() =>
+				{
+					if (didStartAccessing)
+					{
+						nsUrl.StopAccessingSecurityScopedResource();
+					}
+				});
+			}
+			catch (Exception ex)
 			{
-				nsUrl.StopAccessingSecurityScopedResource();
-			});
+				throw new UnauthorizedAccessException("Could not access file system item. " + ex);
+			}
 		}
     }
 }
