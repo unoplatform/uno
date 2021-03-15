@@ -27,8 +27,6 @@ namespace Windows.Storage
 
 		internal class SafFolder : ImplementationBase
 		{
-			private static readonly StorageProvider _provider = new StorageProvider("Android.StorageAccessFramework", "Android Storage Access Framework");
-
 			private readonly Android.Net.Uri _folderUri;
 			private readonly DocumentFile _directoryDocument;
 
@@ -44,16 +42,12 @@ namespace Windows.Storage
 				_folderUri = _directoryDocument.Uri;
 			}
 
-			public override StorageProvider Provider => _provider;
+			public override StorageProvider Provider => StorageProviders.AndroidSaf;
 
-			//TODO: Display name can be queried - https://developer.android.com/training/data-storage/shared/documents-files#examine-metadata
 			public override string Name => _directoryDocument?.Name ?? string.Empty;
 
-			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
-			{
-				var documentUriForTree = DocumentsContract.BuildDocumentUriUsingTree(_folderUri, DocumentsContract.GetTreeDocumentId(_folderUri));
-				return SafHelpers.GetBasicPropertiesAsync(_folderUri, false, ct);
-			}
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) =>
+				SafHelpers.GetBasicPropertiesAsync(_folderUri, _directoryDocument, false, ct);
 
 			public override async Task<StorageFile> CreateFileAsync(string desiredName, Windows.Storage.CreationCollisionOption options, CancellationToken cancellationToken)
 			{
@@ -106,7 +100,7 @@ namespace Windows.Storage
 
 					var extension = IOPath.GetExtension(actualName);
 					var mimeType = MimeTypeService.GetFromExtension(extension);
-					var file = _directoryDocument.CreateFile(mimeType, actualName);
+					var file = _directoryDocument.CreateFile("", actualName);
 					return StorageFile.GetFromSafDocument(file);
 				}, cancellationToken);
 			}
@@ -176,9 +170,14 @@ namespace Windows.Storage
 				return await Task.Run(() =>
 				{
 					var item = _directoryDocument.FindFile(name);
-					if (item == null || !item.IsFile)
+					if (item == null)
 					{
-						throw new FileNotFoundException("Not found");
+						throw new FileNotFoundException("There is no file with this name.");
+					}
+
+					if (!item.IsFile)
+					{
+						throw new ArgumentException("The item with given name is a folder.", nameof(name));
 					}
 
 					return StorageFile.GetFromSafDocument(item);
@@ -203,9 +202,14 @@ namespace Windows.Storage
 				return await Task.Run(() =>
 				{
 					var item = _directoryDocument.FindFile(name);
-					if (item == null || !item.IsDirectory)
+					if (item == null)
 					{
-						throw new FileNotFoundException("Not found");
+						throw new FileNotFoundException("There is no folder with this name.");
+					}
+
+					if (item.IsFile)
+					{
+						throw new ArgumentException("The item with given name is a file.", nameof(name));
 					}
 
 					return new StorageFolder(new SafFolder(item));

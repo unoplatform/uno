@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Provider;
 using Windows.Storage.FileProperties;
+using AndroidX.DocumentFile.Provider;
 
 namespace Uno.Storage.Internal
 {
@@ -20,7 +21,7 @@ namespace Uno.Storage.Internal
 		/// <param name="includeSize">A value indicating whether the size should be included (not useful for folders).</param>
 		/// <param name="token">Cancellation token.</param>
 		/// <returns>Basic properties.</returns>
-		public static async Task<BasicProperties> GetBasicPropertiesAsync(Android.Net.Uri safUri, bool includeSize, CancellationToken token)
+		public static async Task<BasicProperties> GetBasicPropertiesAsync(Android.Net.Uri safUri, DocumentFile documentFile, bool includeSize, CancellationToken token)
 		{
 			if (Application.Context.ContentResolver == null)
 			{
@@ -32,7 +33,11 @@ namespace Uno.Storage.Internal
 				var cursor = Application.Context.ContentResolver.Query(safUri, null, null, null, null, null);
 				if (cursor == null)
 				{
-					throw new UnauthorizedAccessException("Cannot access the folder.");
+					// Try to retrieve the info directly from DocumentFile.
+					var size = includeSize ? documentFile.Length() : 0L;
+					var lastModifiedTimestamp = documentFile.LastModified();
+					var lastModified = DateTimeOffset.FromUnixTimeMilliseconds(lastModifiedTimestamp);
+					return new BasicProperties((ulong)size, lastModified);
 				}
 
 				using (cursor)

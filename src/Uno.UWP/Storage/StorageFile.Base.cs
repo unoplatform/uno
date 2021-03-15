@@ -34,7 +34,7 @@ namespace Windows.Storage
 
 			public virtual string Name => global::System.IO.Path.GetFileName(Path);
 
-			public virtual string DisplayName => global::System.IO.Path.GetFileNameWithoutExtension(Path);
+			public virtual string DisplayName => global::System.IO.Path.GetFileNameWithoutExtension(Name);
 
 			public virtual string ContentType => MimeTypeService.GetFromExtension(FileType);
 

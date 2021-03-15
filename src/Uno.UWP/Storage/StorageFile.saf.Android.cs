@@ -24,8 +24,6 @@ namespace Windows.Storage
 
 		internal class SafFile : ImplementationBase
 		{
-			private static readonly StorageProvider _provider = new StorageProvider("Android.StorageAccessFramework", "Android Storage Access Framework");
-
 			private readonly Android.Net.Uri _fileUri;
 			private readonly DocumentFile _directoryDocument;
 
@@ -41,9 +39,8 @@ namespace Windows.Storage
 				_fileUri = _directoryDocument.Uri;
 			}
 
-			public override StorageProvider Provider => _provider;
+			public override StorageProvider Provider => StorageProviders.AndroidSaf;
 
-			//TODO: Display name can be queried - https://developer.android.com/training/data-storage/shared/documents-files#examine-metadata
 			public override string Name => _directoryDocument.Name;
 
 			public override DateTimeOffset DateCreated => throw new NotImplementedException();
@@ -57,7 +54,7 @@ namespace Windows.Storage
 			}
 
 			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) =>
-				SafHelpers.GetBasicPropertiesAsync(_fileUri, true, ct);
+				SafHelpers.GetBasicPropertiesAsync(_fileUri, _directoryDocument, true, ct);
 
 			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct)
 			{

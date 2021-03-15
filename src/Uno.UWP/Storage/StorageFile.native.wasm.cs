@@ -44,8 +44,6 @@ namespace Windows.Storage
 
 			public override string Name => _fileName;
 
-			public override string DisplayName => SystemPath.GetFileNameWithoutExtension(_fileName);
-
 			public override string FileType => SystemPath.GetExtension(_fileName);
 
 			public override DateTimeOffset DateCreated => throw NotSupported();

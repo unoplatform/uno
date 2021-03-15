@@ -120,6 +120,9 @@
   <data name="NavigationView_Settings_Content" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="StorageProviderAndroidSafDisplayName" xml:space="preserve">
+    <value>Android Storage Access Framework</value>
+  </data>
   <data name="StorageProviderLocalDisplayName" xml:space="preserve">
     <value>Tento počítač</value>
   </data>

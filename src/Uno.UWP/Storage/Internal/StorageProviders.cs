@@ -9,5 +9,9 @@ namespace Uno.Storage.Internal
 #if __WASM__
 		public static StorageProvider NativeWasm { get; } = new StorageProvider("jsfileaccessapi", "StorageProviderNativeWasmDisplayName");
 #endif
+
+#if __ANDROID__
+		public static StorageProvider AndroidSaf { get; } = new StorageProvider("androidsaf", "StorageProviderAndroidSafDisplayName");
+#endif
 	}
 }
