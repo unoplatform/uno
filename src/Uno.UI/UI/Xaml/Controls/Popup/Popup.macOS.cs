@@ -169,8 +169,8 @@ namespace Windows.UI.Xaml.Controls
 				PopupPanel.Layer.RemoveFromSuperLayer();
 				superlayer.AddSublayer(PopupPanel.Layer);
 			}
-			else
-			{
+			else if(PopupPanel.Superview != null)
+			{				
 				var superview = PopupPanel.Superview;
 				PopupPanel.RemoveFromSuperview();
 				superview.AddSubview(PopupPanel);
