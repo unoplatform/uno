@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Foundation;
@@ -6,20 +8,23 @@ using UIKit;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Uno.Storage.Internal;
+using System.IO;
 
 namespace Windows.Storage
 {
-    public partial class StorageFile
-    {
-		internal static StorageFile GetFromSecurityScopedUrl(NSUrl nsUrl) =>
-			new StorageFile(new SecurityScopedFile(nsUrl));
+	public partial class StorageFile
+	{
+		internal static StorageFile GetFromSecurityScopedUrl(NSUrl nsUrl, StorageFolder? parent) =>
+			new StorageFile(new SecurityScopedFile(nsUrl, parent));
 
 		internal class SecurityScopedFile : ImplementationBase
 		{
 			private readonly NSUrl _nsUrl;
+			private readonly StorageFolder? _parent;
 			private readonly UIDocument _document;
+			private DateTimeOffset? _dateCreated;
 
-			public SecurityScopedFile(NSUrl nsUrl)
+			public SecurityScopedFile(NSUrl nsUrl, StorageFolder? parent)
 			{
 				if (nsUrl is null)
 				{
@@ -27,13 +32,14 @@ namespace Windows.Storage
 				}
 
 				_nsUrl = nsUrl;
+				_parent = parent;
 				_document = new UIDocument(_nsUrl);
 				Path = _document.FileUrl?.Path ?? string.Empty;
 			}
 
-			public override StorageProvider Provider => new StorageProvider("iOSSecurityScopedUrl", "iOS Security Scoped URL");
+			public override StorageProvider Provider => StorageProviders.IosSecurityScoped;
 
-			public override DateTimeOffset DateCreated => throw new NotImplementedException();
+			public override DateTimeOffset DateCreated => _dateCreated ?? (_dateCreated = GetDateCreated()).Value;
 
 			public override async Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
 			{
@@ -42,31 +48,39 @@ namespace Windows.Storage
 				using var coordinator = new NSFileCoordinator();
 				await coordinator.CoordinateAsync(new[] { intent }, new NSOperationQueue(), () =>
 				{
-					using (_nsUrl.BeginSecurityScopedAccess())
-					{
-						NSError deleteError;
-						if (options == StorageDeleteOption.Default)
-						{
-							NSFileManager.DefaultManager.TrashItem(_nsUrl, out var _, out deleteError);
-						}
-						else
-						{
-							NSFileManager.DefaultManager.Remove(_nsUrl, out deleteError);
-						}
+					using var _ = _nsUrl.BeginSecurityScopedAccess();
+					NSError deleteError;
 
-						if (deleteError != null)
-						{
-							throw new UnauthorizedAccessException($"Can't delete file. {deleteError}");
-						}
+					NSFileManager.DefaultManager.Remove(_nsUrl, out deleteError);
+
+					if (deleteError != null)
+					{
+						throw new UnauthorizedAccessException($"Can't delete file. {deleteError}");
 					}
 				});
 			}
 
-			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) => throw new NotImplementedException();
-			public override Task<StorageFolder> GetParentAsync(CancellationToken ct) => throw new NotImplementedException();
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
+			{
+				using var _ = _nsUrl.BeginSecurityScopedAccess();
+				var fileInfo = new FileInfo(Path);
+				return Task.FromResult(new BasicProperties(0UL, fileInfo.LastWriteTimeUtc));
+			}
+
+			private DateTimeOffset GetDateCreated()
+			{
+				using var _ = _nsUrl.BeginSecurityScopedAccess();
+				return new FileInfo(Path).CreationTimeUtc;
+			}
+
+			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => Task.FromResult(_parent);
+
 			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw new NotImplementedException();
+
 			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
-			protected override bool IsEqual(ImplementationBase implementation) => throw new NotImplementedException();
+
+			protected override bool IsEqual(ImplementationBase implementation) =>
+				implementation is SecurityScopedFile file && file._nsUrl.FilePathUrl.Path == _nsUrl.FilePathUrl.Path;
 		}
 	}
 }

@@ -53,7 +53,9 @@ namespace Windows.Storage.Pickers
 				return FilePickerSelectedFilesArray.Empty;
 			}
 
-			var files = nsUrls.Select(nsUrl => StorageFile.GetFromSecurityScopedUrl(nsUrl)).ToArray();
+			var files = nsUrls
+				.Where(url => url != null)
+				.Select(nsUrl => StorageFile.GetFromSecurityScopedUrl(nsUrl!, null)).ToArray();
 			return new FilePickerSelectedFilesArray(files);
 		}
 
