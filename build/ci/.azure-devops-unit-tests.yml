@@ -28,6 +28,7 @@ jobs:
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
+
   steps:
   - checkout: self
     clean: true

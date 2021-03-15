@@ -23,11 +23,6 @@
 	<When Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'">
 	  <!-- C# 9.0 Generator -->
 
-	  <ItemGroup>
-		<Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Uno.UI.SourceGenerators.dll" Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj')"/>
-		<!-- generator is automatically included in nuget package, no need to add it here -->
-	  </ItemGroup>
-
 	 <PropertyGroup>
 	   <UnoUIUseRoslynSourceGeneratorsValue>$(UnoUIUseRoslynSourceGenerators)</UnoUIUseRoslynSourceGeneratorsValue>
 	 </PropertyGroup>
@@ -83,6 +78,17 @@
 	  </ItemGroup>
 	</Otherwise>
   </Choose>
+
+  <Target Name="OverrideUnoSolutionTarget"
+		  BeforeTargets="CoreCompile"
+		  Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj')">
+
+	<ItemGroup >
+	  <Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll" />
+	  <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"/>
+	  <!-- generator is automatically included in nuget package, no need to add it here -->
+	</ItemGroup>
+  </Target>
 
   <ItemGroup>
 

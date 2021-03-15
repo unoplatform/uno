@@ -16,24 +16,36 @@ namespace Uno.UI.SourceGenerators
 {
 	internal class DependenciesInitializer
 	{
+		private static object _gate = new object();
+
 		internal static void Init()
 		{
 #if NETSTANDARD2_0
-			// Kept until dependencies can be added automatically and this is not needed anymore
-			//
-			var baseAnalyzer = typeof(DependenciesInitializer).Assembly.Location;
-
-			if (baseAnalyzer != null)
+			lock (_gate)
 			{
-				var basePath = Path.GetDirectoryName(baseAnalyzer);
+				// Kept until dependencies can be added automatically and this is not needed anymore
+				//
+				var baseAnalyzer = typeof(DependenciesInitializer).Assembly.Location;
 
-				var files = Directory
-					.EnumerateFiles(basePath, "*.dll")
-					.Where(f => Path.GetFileName(f).StartsWith("Uno."));
-
-				foreach (var file in files)
+				if (baseAnalyzer != null)
 				{
-					Assembly.LoadFrom(file);
+					var basePath = Path.GetDirectoryName(baseAnalyzer);
+
+					var files = Directory
+						.EnumerateFiles(basePath, "*.dll")
+						.Where(f => Path.GetFileName(f).StartsWith("Uno."));
+
+					foreach (var file in files)
+					{
+						try
+						{
+							Assembly.LoadFrom(file);
+						}
+						catch (Exception e)
+						{
+							throw new Exception($"Failed to load {file}: {e}");
+						}
+					}
 				}
 			}
 #endif
