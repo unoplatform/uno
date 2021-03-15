@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Storage;
@@ -35,14 +36,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+#if WINDOWS_UWP
+		[Ignore("On UWP, DisplayName sometimes returns the name with, and sometimes without the extension.")]
+#endif
 		public async Task When_CreateFile_DisplayName_Matches()
 		{
 			var rootFolder = await GetRootFolderAsync();
 			var fileName = GetRandomTextFileName();
+			var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
 			StorageFile? createdFile = null;
 			try
 			{
 				createdFile = await rootFolder.CreateFileAsync(fileName);
+				Assert.AreEqual(fileNameWithoutExtension, createdFile.DisplayName);
+			}
+			finally
+			{
+				if (createdFile != null)
+				{
+					await createdFile.DeleteAsync();
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_CreateFile_Without_Extension()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = Path.GetFileNameWithoutExtension(GetRandomTextFileName());
+			StorageFile? createdFile = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				Assert.AreEqual(fileName, createdFile.Name);
 				Assert.AreEqual(fileName, createdFile.DisplayName);
 			}
 			finally
@@ -201,8 +228,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
-#if !WINDOWS_UWP // UWP is unable to handle going up a level for picked folders
 		[TestMethod]
+#if WINDOWS_UWP
+		[Ignore("UWP is unable to handle going up a level for picked folders")]
+#endif
 		public async Task When_GetParent()
 		{
 			var rootFolder = await GetRootFolderAsync();
@@ -224,7 +253,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				await CleanupRootFolderAsync();
 			}
 		}
-#endif
 
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 

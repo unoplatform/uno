@@ -270,7 +270,7 @@ namespace Uno.UI.Samples.Tests
 					runButton.IsEnabled = true;
 					stopButton.IsEnabled = false;
 				});
-			}		
+			}
 		}
 
 		private async Task RunTests(CancellationToken ct, string[] filters)
@@ -287,8 +287,10 @@ namespace Uno.UI.Samples.Tests
 
 				foreach (var type in testTypes.Where(t => t.Type != null))
 				{
+					var testClassNameContainsFilters = filters.Any(f => type.Type.FullName.Contains(f, StrComp));
 					var tests = type.Tests
 						.Where(t => (filters?.None() ?? true)
+									|| testClassNameContainsFilters
 									|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
 									|| filters.Any(f => t.Name.Contains(f, StrComp)))
 						.ToArray();

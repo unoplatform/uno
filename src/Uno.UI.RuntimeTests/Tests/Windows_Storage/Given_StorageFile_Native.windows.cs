@@ -1,4 +1,6 @@
 ﻿#if WINDOWS_UWP
+#nullable enable
+
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,7 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	[TestClass]
 	public class Given_StorageFile_Native : Given_StorageFile_Native_Base
 	{
-		private StorageFolder _rootFolder;
+		private StorageFolder? _rootFolder;
 
 		protected override async Task<StorageFolder> GetRootFolderAsync()
 		{
@@ -20,7 +22,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 		protected override async Task CleanupRootFolderAsync()
 		{
-			await _rootFolder.DeleteAsync();
+			if (_rootFolder != null)
+			{
+				await _rootFolder.DeleteAsync();
+			}
 		}
 	}
 }

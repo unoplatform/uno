@@ -14,10 +14,13 @@ namespace Uno.UI.Samples.Tests
 			MethodInfo? cleanup)
 		{
 			Type = type;
+			TestClassName = Type?.Name ?? "(null)";
 			Tests = tests;
 			Initialize = initialize;
 			Cleanup = cleanup;
 		}
+
+		public string TestClassName { get; }
 
 		public Type? Type { get; }
 
@@ -26,5 +29,7 @@ namespace Uno.UI.Samples.Tests
 		public MethodInfo? Initialize { get; }
 
 		public MethodInfo? Cleanup { get; }
+
+		public override string ToString() => TestClassName;
 	}
 }

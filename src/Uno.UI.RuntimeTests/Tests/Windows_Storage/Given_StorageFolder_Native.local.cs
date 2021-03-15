@@ -1,5 +1,4 @@
-﻿#if WINDOWS_UWP
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ using Windows.Storage;
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 {
 	[TestClass]
-	public class Given_FileIO_Native : Given_FileIO_Native_Base
+	public class Given_StorageFolder_Native_Local : Given_StorageFolder_Native_Base
 	{
 		private StorageFolder? _rootFolder;
 
@@ -29,4 +28,3 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 	}
 }
-#endif
