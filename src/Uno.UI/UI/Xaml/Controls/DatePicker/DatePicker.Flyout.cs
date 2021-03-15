@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
@@ -27,16 +28,31 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(UseNativeStyleProperty, value);
 		}
 
-#if __IOS__ || __ANDROID__
+
+		/// <summary>
+		/// FlyoutPresenterStyle is an Uno-only property to allow the styling of the DatePicker's FlyoutPresenter.
+		/// </summary>
+		[UnoOnly]
+		public Style FlyoutPresenterStyle
+		{
+			get => (Style)this.GetValue(FlyoutPresenterStyleProperty);
+			set => this.SetValue(FlyoutPresenterStyleProperty, value);
+		}
+
+		public static DependencyProperty FlyoutPresenterStyleProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FlyoutPresenterStyle),
+				typeof(Style),
+				typeof(DatePicker),
+				new FrameworkPropertyMetadata(
+					default(Style),
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
 
 		private Lazy<DatePickerFlyout> _lazyFlyout;
 
 		private DatePickerFlyout _flyout => _lazyFlyout.Value;
 
-#else
-		private readonly DatePickerFlyout _flyout = new DatePickerFlyout();
-
-#endif
 
 		private void InitPartial()
 		{
@@ -45,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var f = UseNativeStyle
 					? new NativeDatePickerFlyout()
-					: new DatePickerFlyout();
+					: CreateManagedDatePickerFlyout();
 
 				f.DatePicked += OnPicked;
 
@@ -54,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_lazyFlyout = new Lazy<DatePickerFlyout>(CreateFlyout);
 #else
-			_flyout.DatePicked += OnPicked;
+			_lazyFlyout = new Lazy<DatePickerFlyout>(CreateManagedDatePickerFlyout);
 #endif
 
 			void OnPicked(DatePickerFlyout snd, DatePickedEventArgs evt)
@@ -66,6 +82,14 @@ namespace Windows.UI.Xaml.Controls
 				{
 					DateChanged?.Invoke(this, new DatePickerValueChangedEventArgs(evt.NewDate, evt.OldDate));
 				}
+			}
+
+			DatePickerFlyout CreateManagedDatePickerFlyout()
+			{
+				var flyout = new DatePickerFlyout() { DatePickerFlyoutPresenterStyle = FlyoutPresenterStyle };
+				flyout.DatePicked += OnPicked;
+
+				return flyout;
 			}
 		}
 	}

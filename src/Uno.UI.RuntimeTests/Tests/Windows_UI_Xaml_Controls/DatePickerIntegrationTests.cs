@@ -501,8 +501,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				datePicker.SelectedDate = (calendar.GetDateTime());
 				datePicker.CalendarIdentifier = cid;
+				datePicker.SelectedDate = (calendar.GetDateTime());
 			});
 			TestServices.WindowHelper.WaitForIdle();
 

@@ -128,5 +128,20 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
+		public Style DatePickerFlyoutPresenterStyle
+		{
+			get { return (Style)this.GetValue(DatePickerFlyoutPresenterStyleProperty); }
+			set { this.SetValue(DatePickerFlyoutPresenterStyleProperty, value); }
+		}
+
+		public static DependencyProperty DatePickerFlyoutPresenterStyleProperty { get; } =
+			DependencyProperty.Register(
+				nameof(DatePickerFlyoutPresenterStyle),
+				typeof(Style),
+				typeof(DatePickerFlyout),
+				new FrameworkPropertyMetadata(
+					default(Style),
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext
+					));
 	}
 }
