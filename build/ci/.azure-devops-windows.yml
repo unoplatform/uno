@@ -35,6 +35,12 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - task: UseDotNet@2
+    displayName: 'Use .NET 6 SDK'
+    inputs:
+      version: 6.0.100-preview.2.21155.3
+      includePreviewVersions: true
+
   - template: templates/gitversion.yml
    
   - task: NuGetToolInstaller@0
