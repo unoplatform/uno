@@ -41,7 +41,7 @@ namespace Windows.Storage
 
 			public override StorageProvider Provider => StorageProviders.AndroidSaf;
 
-			public override string Name => _directoryDocument.Name;
+			public override string Name => _directoryDocument?.Name ?? string.Empty;
 
 			public override DateTimeOffset DateCreated => throw new NotImplementedException();
 
