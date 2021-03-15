@@ -75,11 +75,14 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
-		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.6-develop" />
+		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.6-develop" />
 		<PackageReference Include="Uno.Wasm.WebSockets" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe"
+											Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

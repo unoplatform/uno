@@ -12,7 +12,8 @@ namespace Windows.UI.Xaml.Data
 		/// <summary>
 		/// The resource key.
 		/// </summary>
-		public object ResourceKey { get; }
+		public SpecializedResourceDictionary.ResourceKey ResourceKey { get; }
+
 		/// <summary>
 		/// True if the original assignation used the ThemeResource extension, false if it used StaticResource. (This determines whether it
 		/// should be updated when the active theme changes.)
@@ -25,7 +26,7 @@ namespace Windows.UI.Xaml.Data
 
 		public ResourceBinding(object resourceKey, bool isThemeResourceExtension, object parseContext, DependencyPropertyValuePrecedences precedence)
 		{
-			ResourceKey = resourceKey;
+			ResourceKey = new SpecializedResourceDictionary.ResourceKey(resourceKey);
 			IsThemeResourceExtension = isThemeResourceExtension;
 			ParseContext = parseContext;
 			Precedence = precedence;

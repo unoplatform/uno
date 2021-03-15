@@ -5,12 +5,20 @@ using Uno.UI;
 using Uno.Extensions;
 using System.ComponentModel;
 using Uno.UI.Xaml;
+using System.Linq;
+using System.Diagnostics;
+using Windows.UI.Input.Spatial;
+
+using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Xaml
 {
 	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse, IDictionary<object, object>
 	{
-		private readonly Dictionary<object, object> _values = new Dictionary<object, object>();
+		private readonly SpecializedResourceDictionary _values = new SpecializedResourceDictionary();
+		private readonly List<ResourceDictionary> _mergedDictionaries = new List<ResourceDictionary>();
+		private ResourceDictionary _themeDictionaries;
 
 		/// <summary>
 		/// If true, there may be lazily-set values in the dictionary that need to be initialized.
@@ -38,10 +46,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public IList<ResourceDictionary> MergedDictionaries { get; } = new List<ResourceDictionary>();
-
-		private ResourceDictionary _themeDictionaries;
-		public IDictionary<object, object> ThemeDictionaries { get => _themeDictionaries = _themeDictionaries ?? new ResourceDictionary(); }
+		public IList<ResourceDictionary> MergedDictionaries => _mergedDictionaries;
+		public IDictionary<object, object> ThemeDictionaries => _themeDictionaries ??= new ResourceDictionary();
 
 		/// <summary>
 		/// Is this a ResourceDictionary created from system resources, ie within the Uno.UI assembly?
@@ -49,6 +55,16 @@ namespace Windows.UI.Xaml
 		internal bool IsSystemDictionary { get; set; }
 
 		internal object Lookup(object key)
+		{
+			if (!TryGetValue(key, out var value))
+			{
+				return null;
+			}
+
+			return value;
+		}
+
+		internal object Lookup(string key)
 		{
 			if (!TryGetValue(key, out var value))
 			{
@@ -66,45 +82,83 @@ namespace Windows.UI.Xaml
 		/// and can be removed as breaking change later.</remarks>
 		public bool Insert(object key, object value)
 		{
-			Set(key, value, throwIfPresent: false);
+			Set(new ResourceKey(key), value, throwIfPresent: false);
 			return true;
 		}
 
-		public bool Remove(object key) => _values.Remove(key);
+		public bool Remove(object key) => _values.Remove(new ResourceKey(key));
 
-		public bool Remove(KeyValuePair<object, object> key) => _values.Remove(key.Key);
+		public bool Remove(KeyValuePair<object, object> key) => _values.Remove(new ResourceKey(key.Key));
 
 		public void Clear() => _values.Clear();
 
-		public void Add(object key, object value) => Set(key, value, throwIfPresent: true);
+		public void Add(object key, object value) => Set(new ResourceKey(key), value, throwIfPresent: true);
 
 		public bool ContainsKey(object key) => ContainsKey(key, shouldCheckSystem: true);
-		public bool ContainsKey(object key, bool shouldCheckSystem) => _values.ContainsKey(key) || ContainsKeyMerged(key) || ContainsKeyTheme(key)
-			|| (shouldCheckSystem && !IsSystemDictionary && ResourceResolver.ContainsKeySystem(key));
 
-		public bool TryGetValue(object key, out object value) => TryGetValue(key, out value, shouldCheckSystem: true);
-		public bool TryGetValue(object key, out object value, bool shouldCheckSystem)
+		public bool ContainsKey(object key, bool shouldCheckSystem)
 		{
-			if (_values.TryGetValue(key, out value))
+			return ContainsKey(new ResourceKey(key), shouldCheckSystem);
+		}
+
+		internal bool ContainsKey(ResourceKey resourceKey, bool shouldCheckSystem)
+		{
+			return _values.ContainsKey(resourceKey)
+			|| ContainsKeyMerged(resourceKey)
+			|| ContainsKeyTheme(resourceKey, Themes.Active)
+			|| (shouldCheckSystem && !IsSystemDictionary && ResourceResolver.ContainsKeySystem(resourceKey));
+		}
+
+		public bool TryGetValue(object key, out object value)
+			=> TryGetValue(key, out value, shouldCheckSystem: true);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool TryGetValue(object key, out object value, bool shouldCheckSystem)
+			=> TryGetValue(new ResourceKey(key), out value, shouldCheckSystem);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool TryGetValue(string resourceKey, out object value, bool shouldCheckSystem)
+			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool TryGetValue(Type resourceKey, out object value, bool shouldCheckSystem)
+			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
+
+		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem) =>
+			TryGetValue(resourceKey, ResourceKey.Empty, out value, shouldCheckSystem);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private bool TryGetValue(in ResourceKey resourceKey, ResourceKey activeTheme, out object value, bool shouldCheckSystem)
+		{
+			if (_values.TryGetValue(resourceKey, out value))
 			{
-				TryMaterializeLazy(key, ref value);
-				TryResolveAlias(ref value);
+				if (value is SpecialValue)
+				{
+					TryMaterializeLazy(resourceKey, ref value);
+					TryResolveAlias(ref value);
+				}
+
 				return true;
 			}
 
-			if (GetFromMerged(key, out value))
+			if (activeTheme.IsEmpty)
+			{
+				activeTheme = Themes.Active;
+			}
+
+			if (GetFromMerged(resourceKey, out value))
 			{
 				return true;
 			}
 
-			if (GetFromTheme(key, out value))
+			if (GetFromTheme(resourceKey, activeTheme, out value))
 			{
 				return true;
 			}
 
 			if (shouldCheckSystem && !IsSystemDictionary) // We don't fall back on system resources from within a system-defined dictionary, to avoid an infinite recurse
 			{
-				return ResourceResolver.TrySystemResourceRetrieval(key, out value);
+				return ResourceResolver.TrySystemResourceRetrieval(resourceKey, out value);
 			}
 
 			return false;
@@ -119,17 +173,17 @@ namespace Windows.UI.Xaml
 
 				return value;
 			}
-			set => Set(key, value, throwIfPresent: false);
+			set => Set(new ResourceKey(key), value, throwIfPresent: false);
 		}
 
-		private void Set(object key, object value, bool throwIfPresent)
+		private void Set(in ResourceKey resourceKey, object value, bool throwIfPresent)
 		{
-			if (throwIfPresent && _values.ContainsKey(key))
+			if (throwIfPresent && _values.ContainsKey(resourceKey))
 			{
 				throw new ArgumentException("An entry with the same key already exists.");
 			}
 
-			if(value is WeakResourceInitializer lazyResourceInitializer)
+			if (value is WeakResourceInitializer lazyResourceInitializer)
 			{
 				value = lazyResourceInitializer.Initializer;
 			}
@@ -137,18 +191,18 @@ namespace Windows.UI.Xaml
 			if (value is ResourceInitializer resourceInitializer)
 			{
 				_hasUnmaterializedItems = true;
-				_values[key] = new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
+				_values[resourceKey] = new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
 			}
 			else
 			{
-				_values[key] = value;
+				_values[resourceKey] = value;
 			}
 		}
 
 		/// <summary>
 		/// If retrieved element is a <see cref="LazyInitializer"/> stub, materialize the actual object and replace the stub.
 		/// </summary>
-		private void TryMaterializeLazy(object key, ref object value)
+		private void TryMaterializeLazy(in ResourceKey key, ref object value)
 		{
 			if (value is LazyInitializer lazyInitializer)
 			{
@@ -188,12 +242,14 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private bool GetFromMerged(object key, out object value)
+		private bool GetFromMerged(in ResourceKey resourceKey, out object value)
 		{
 			// Check last dictionary first - //https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
-			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
+			var count = _mergedDictionaries.Count;
+
+			for (int i = count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].TryGetValue(key, out value, shouldCheckSystem: false))
+				if (_mergedDictionaries[i].TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -204,11 +260,11 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private bool ContainsKeyMerged(object key)
+		private bool ContainsKeyMerged(in ResourceKey resourceKey)
 		{
-			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
+			for (int i = _mergedDictionaries.Count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].ContainsKey(key, shouldCheckSystem: false))
+				if (_mergedDictionaries[i].ContainsKey(resourceKey, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -217,9 +273,21 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private ResourceDictionary GetThemeDictionary() => GetThemeDictionary(Themes.Active) ?? GetThemeDictionary(Themes.Default);
+		private ResourceDictionary _activeThemeDictionary;
+		private ResourceKey _activeTheme;
 
-		private ResourceDictionary GetThemeDictionary(string theme)
+		private ResourceDictionary GetActiveThemeDictionary(in ResourceKey activeTheme)
+		{
+			if (!activeTheme.Equals(_activeTheme))
+			{
+				_activeTheme = activeTheme;
+				_activeThemeDictionary = GetThemeDictionary(activeTheme) ?? GetThemeDictionary(Themes.Default);
+			}
+
+			return _activeThemeDictionary;
+		}
+
+		private ResourceDictionary GetThemeDictionary(in ResourceKey theme)
 		{
 			object dict = null;
 			if (_themeDictionaries?.TryGetValue(theme, out dict, shouldCheckSystem: false) ?? false)
@@ -230,23 +298,25 @@ namespace Windows.UI.Xaml
 			return null;
 		}
 
-		private bool GetFromTheme(object key, out object value)
+		private bool GetFromTheme(in ResourceKey resourceKey, in ResourceKey activeTheme, out object value)
 		{
-			var dict = GetThemeDictionary();
+			var dict = GetActiveThemeDictionary(activeTheme);
 
-			if (dict != null && dict.TryGetValue(key, out value, shouldCheckSystem: false))
+			if (dict != null && dict.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 			{
 				return true;
 			}
 
-			return GetFromThemeMerged(key, out value);
+			return GetFromThemeMerged(resourceKey, activeTheme, out value);
 		}
 
-		private bool GetFromThemeMerged(object key, out object value)
+		private bool GetFromThemeMerged(in ResourceKey resourceKey, in ResourceKey activeTheme, out object value)
 		{
-			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
+			var count = _mergedDictionaries.Count;
+
+			for (int i = count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].GetFromTheme(key, out value))
+				if (_mergedDictionaries[i].GetFromTheme(resourceKey, activeTheme, out value))
 				{
 					return true;
 				}
@@ -258,16 +328,18 @@ namespace Windows.UI.Xaml
 		}
 
 
-		private bool ContainsKeyTheme(object key)
+		private bool ContainsKeyTheme(in ResourceKey resourceKey, in ResourceKey activeTheme)
 		{
-			return GetThemeDictionary()?.ContainsKey(key, shouldCheckSystem: false) ?? ContainsKeyThemeMerged(key);
+			return GetActiveThemeDictionary(activeTheme)?.ContainsKey(resourceKey, shouldCheckSystem: false) ?? ContainsKeyThemeMerged(resourceKey, activeTheme);
 		}
 
-		private bool ContainsKeyThemeMerged(object key)
+		private bool ContainsKeyThemeMerged(in ResourceKey resourceKey, in ResourceKey activeTheme)
 		{
-			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
+			var count = _mergedDictionaries.Count;
+
+			for (int i = count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].ContainsKeyTheme(key))
+				if (_mergedDictionaries[i].ContainsKeyTheme(resourceKey, activeTheme))
 				{
 					return true;
 				}
@@ -282,25 +354,29 @@ namespace Windows.UI.Xaml
 		private void CopyFrom(ResourceDictionary source)
 		{
 			_values.Clear();
-			MergedDictionaries.Clear();
+			_mergedDictionaries.Clear();
 			_themeDictionaries?.Clear();
 
-			_values.AddRange(source);
-			MergedDictionaries.AddRange(source.MergedDictionaries);
+			_values.AddRange(source._values);
+			_mergedDictionaries.AddRange(source._mergedDictionaries);
 			if (source._themeDictionaries != null)
 			{
 				ThemeDictionaries.AddRange(source.ThemeDictionaries);
 			}
 		}
 
-		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
+		public global::System.Collections.Generic.ICollection<object> Keys
+			=> _values.Keys.Select(k => ConvertKey(k.Key)).ToList();
+
+		private static object ConvertKey(ResourceKey resourceKey)
+			=> resourceKey.IsType ? Type.GetType(resourceKey.Key) : (object)resourceKey.Key;
 
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);
 
-		public bool Contains(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.ContainsKey(item.Key);
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.ContainsKey(new ResourceKey(item.Key));
 
 		[Uno.NotImplemented]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<object, object>[] array, int arrayIndex)
@@ -345,11 +421,11 @@ namespace Windows.UI.Xaml
 				var aliased = kvp.Value;
 				if (TryResolveAlias(ref aliased))
 				{
-					yield return new KeyValuePair<object, object>(kvp.Key, aliased);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), aliased);
 				}
 				else
 				{
-					yield return kvp;
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), kvp.Value);
 				}
 			}
 		}
@@ -366,7 +442,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var unmaterialized = new List<KeyValuePair<object, object>>();
+			var unmaterialized = new List<KeyValuePair<ResourceKey, object>>();
 
 			foreach (var kvp in _values)
 			{
@@ -409,7 +485,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			foreach (var mergedDict in MergedDictionaries)
+			foreach (var mergedDict in _mergedDictionaries)
 			{
 				mergedDict.UpdateThemeBindings();
 			}
@@ -418,10 +494,12 @@ namespace Windows.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public delegate object ResourceInitializer();
 
+		private class SpecialValue { }
+
 		/// <summary>
 		/// Allows resources to be initialized on-demand using correct scope.
 		/// </summary>
-		private struct LazyInitializer
+		private class LazyInitializer : SpecialValue
 		{
 			public XamlScope CurrentScope { get; }
 			public ResourceInitializer Initializer { get; }
@@ -437,7 +515,7 @@ namespace Windows.UI.Xaml
 		/// Allows resources set by a StaticResource alias to be resolved with the correct theme at time of resolution (eg in response to the
 		/// app theme changing).
 		/// </summary>
-		private class StaticResourceAliasRedirect
+		private class StaticResourceAliasRedirect : SpecialValue
 		{
 			public StaticResourceAliasRedirect(string resourceKey, XamlParseContext parseContext)
 			{
@@ -453,8 +531,21 @@ namespace Windows.UI.Xaml
 
 		private static class Themes
 		{
-			public const string Default = "Default";
-			public static string Active => Application.Current?.RequestedThemeForResources ?? "Light";
+			public static SpecializedResourceDictionary.ResourceKey Light { get; } = "Light";
+			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
+			public static SpecializedResourceDictionary.ResourceKey Active
+			{
+				get
+				{
+					var res = Application.Current?.RequestedThemeForResources;
+					if (res?.Key != null)
+					{
+						return res.Value;
+					}
+
+					return Light;
+				}
+			}
 		}
 	}
 }

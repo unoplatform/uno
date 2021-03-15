@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetControl.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetTestsPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesCreationBenchmark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesReadBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesCreationRetrievalBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\UIElementPerf\LoadUnloadPerf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\DependencyPropertyBench\SimpleDPBenchmark.cs" />

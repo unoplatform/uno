@@ -63,7 +63,7 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static T ResolveResourceStatic<T>(object key, object context = null)
 		{
-			if (TryStaticRetrieval(key, context, out var value) && value is T tValue)
+			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value) && value is T tValue)
 			{
 				return tValue;
 			}
@@ -77,7 +77,7 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static bool ResolveResourceStatic(object key, out object value, object context = null)
-			=> TryStaticRetrieval(key, context, out value);
+			=> TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out value);
 
 #if false
 		// disabled because of https://github.com/mono/mono/issues/20195
@@ -114,7 +114,7 @@ namespace Uno.UI
 		/// Use <see cref="ResolveTopLevelResource{T}(object, T)"/> when user-defined Application-level values should be considered (most
 		/// of the time), use <see cref="GetSystemResource{T}(object)"/> if they shouldn't
 		/// </remarks>
-		internal static double ResolveTopLevelResourceDouble(object key, double fallbackValue = default)
+		internal static double ResolveTopLevelResourceDouble(SpecializedResourceDictionary.ResourceKey key, double fallbackValue = default)
 		{
 			if (TryTopLevelRetrieval(key, context: null, out var value) && value is double tValue)
 			{
@@ -136,7 +136,7 @@ namespace Uno.UI
 		/// Use <see cref="ResolveTopLevelResource{T}(object, T)"/> when user-defined Application-level values should be considered (most
 		/// of the time), use <see cref="GetSystemResource{T}(object)"/> if they shouldn't
 		/// </remarks>
-		internal static object ResolveTopLevelResource(object key, object fallbackValue = default)
+		internal static object ResolveTopLevelResource(SpecializedResourceDictionary.ResourceKey key, object fallbackValue = default)
 		{
 			if (TryTopLevelRetrieval(key, context: null, out var value) && value is object tValue)
 			{
@@ -159,7 +159,7 @@ namespace Uno.UI
 		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
 		{
 			// Set initial value based on statically-available top-level resources.
-			if (TryStaticRetrieval(resourceKey, context, out var value))
+			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(resourceKey), context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value));
 
@@ -176,7 +176,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
 		/// </summary>
-		private static bool TryStaticRetrieval(object resourceKey, object context, out object value)
+		private static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			foreach (var source in CurrentScope.Sources)
 			{
@@ -191,7 +191,7 @@ namespace Uno.UI
 			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value);
 			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
 			{
-				_log.LogWarning($"Couldn't statically resolve resource {resourceKey}");
+				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
 			}
 			return topLevel;
 		}
@@ -202,7 +202,7 @@ namespace Uno.UI
 		/// <param name="resourceKey">The resource key</param>
 		/// <param name="value">Out parameter to which the retrieved resource is assigned.</param>
 		/// <returns>True if the resource was found, false if not.</returns>
-		internal static bool TryTopLevelRetrieval(object resourceKey, object context, out object value)
+		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			value = null;
 			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false) ||
@@ -214,7 +214,7 @@ namespace Uno.UI
 		/// Tries to retrieve a resource from the same assembly as the retrieving context. Used when parsing third-party libraries
 		/// (ie not application XAML, and not Uno.UI XAML)
 		/// </summary>
-		private static bool TryAssemblyResourceRetrieval(object resourceKey, object context, out object value)
+		private static bool TryAssemblyResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			value = null;
 			if (!(context is XamlParseContext parseContext))
@@ -245,9 +245,9 @@ namespace Uno.UI
 		/// <summary>
 		/// Try to retrieve a resource value from system-level resources.
 		/// </summary>
-		internal static bool TrySystemResourceRetrieval(object resourceKey, out object value) => MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false);
+		internal static bool TrySystemResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value) => MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false);
 
-		internal static bool ContainsKeySystem(object resourceKey) => MasterDictionary.ContainsKey(resourceKey, shouldCheckSystem: false);
+		internal static bool ContainsKeySystem(in SpecializedResourceDictionary.ResourceKey resourceKey) => MasterDictionary.ContainsKey(resourceKey, shouldCheckSystem: false);
 
 		/// <summary>
 		/// Get a system-level resource with the given key.
