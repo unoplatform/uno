@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
 
-namespace Uno.Storage.Streams
+namespace Uno.Storage.Streams.Internal
 {
 	internal class NativeWriteStreamAdapter : Stream
 	{

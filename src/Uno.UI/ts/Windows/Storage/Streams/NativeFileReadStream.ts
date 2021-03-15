@@ -19,16 +19,30 @@
 		}
 
 		public static async readAsync(streamId: string, targetArrayPointer: number, offset: number, count: number, position: number): Promise<string> {
-			const instance = NativeFileReadStream._streamMap.get(streamId);
+			var streamReader: ReadableStreamDefaultReader;
+			try {
+				const instance = NativeFileReadStream._streamMap.get(streamId);
 
-			//TODO: Reuse buffer somehow (slice?)
-			var buffer = await instance._file.slice(position, position + count).arrayBuffer();
-			var byteBuffer = new Uint8Array(buffer);
-			for (var i = 0; i < count; i++) {
-				Module.HEAPU8[targetArrayPointer + offset + i] = byteBuffer[i];
+				var totalRead = 0;
+				var stream = await instance._file.slice(position, position + count).stream();
+				streamReader = stream.getReader();
+				var chunk = await streamReader.read();
+				while (!chunk.done && chunk.value) {
+					for (var i = 0; i < chunk.value.length; i++) {
+						Module.HEAPU8[targetArrayPointer + offset + totalRead + i] = chunk.value[i];
+					}
+					totalRead += chunk.value.length;
+
+					chunk = await streamReader.read();
+				}
+
+				return totalRead.toString();
 			}
-
-			return byteBuffer.length.toString();
+			finally {
+				if (streamReader) {
+					streamReader.releaseLock();
+				}
+			}
 		}
 
 		public static async closeAsync(streamId: string): Promise<string> {

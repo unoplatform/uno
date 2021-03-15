@@ -3330,6 +3330,24 @@ var Uno;
             }
             Pickers.NativeFilePickerAcceptType = NativeFilePickerAcceptType;
         })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Uno.Storage || (Uno.Storage = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var Storage;
+    (function (Storage) {
+        var Pickers;
+        (function (Pickers) {
+            class NativeFilePickerAcceptTypeItem {
+            }
+            Pickers.NativeFilePickerAcceptTypeItem = NativeFilePickerAcceptTypeItem;
+        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
+    })(Storage = Uno.Storage || (Uno.Storage = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var Storage;
+    (function (Storage) {
         var Streams;
         (function (Streams) {
             class NativeFileReadStream {
@@ -3345,14 +3363,27 @@ var Uno;
                     return fileSize.toString();
                 }
                 static async readAsync(streamId, targetArrayPointer, offset, count, position) {
-                    const instance = NativeFileReadStream._streamMap.get(streamId);
-                    //TODO: Reuse buffer somehow (slice?)
-                    var buffer = await instance._file.slice(position, position + count).arrayBuffer();
-                    var byteBuffer = new Uint8Array(buffer);
-                    for (var i = 0; i < count; i++) {
-                        Module.HEAPU8[targetArrayPointer + offset + i] = byteBuffer[i];
+                    var streamReader;
+                    try {
+                        const instance = NativeFileReadStream._streamMap.get(streamId);
+                        var totalRead = 0;
+                        var stream = await instance._file.slice(position, position + count).stream();
+                        streamReader = stream.getReader();
+                        var chunk = await streamReader.read();
+                        while (!chunk.done && chunk.value) {
+                            for (var i = 0; i < chunk.value.length; i++) {
+                                Module.HEAPU8[targetArrayPointer + offset + totalRead + i] = chunk.value[i];
+                            }
+                            totalRead += chunk.value.length;
+                            chunk = await streamReader.read();
+                        }
+                        return totalRead.toString();
                     }
-                    return byteBuffer.length.toString();
+                    finally {
+                        if (streamReader) {
+                            streamReader.releaseLock();
+                        }
+                    }
                 }
                 static async closeAsync(streamId) {
                     NativeFileReadStream._streamMap.delete(streamId);
@@ -3368,12 +3399,6 @@ var Uno;
 (function (Uno) {
     var Storage;
     (function (Storage) {
-        var Pickers;
-        (function (Pickers) {
-            class NativeFilePickerAcceptTypeItem {
-            }
-            Pickers.NativeFilePickerAcceptTypeItem = NativeFilePickerAcceptTypeItem;
-        })(Pickers = Storage.Pickers || (Storage.Pickers = {}));
         var Streams;
         (function (Streams) {
             class NativeFileWriteStream {
@@ -3390,14 +3415,16 @@ var Uno;
                 }
                 static async writeAsync(streamId, dataArrayPointer, offset, count, position) {
                     const instance = NativeFileWriteStream._streamMap.get(streamId);
-                    //TODO: Reuse buffer somehow (slice?)
+                    if (!instance._buffer || instance._buffer.length < count) {
+                        instance._buffer = new Uint8Array(count);
+                    }
                     var clampedArray = new Uint8Array(count);
                     for (var i = 0; i < count; i++) {
                         clampedArray[i] = Module.HEAPU8[dataArrayPointer + i + offset];
                     }
                     await instance._stream.write({
                         type: 'write',
-                        data: clampedArray.buffer,
+                        data: clampedArray.subarray(0, count).buffer,
                         position: position
                     });
                     return "";

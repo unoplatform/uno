@@ -4,6 +4,7 @@
 		private static _streamMap: Map<string, NativeFileWriteStream> = new Map<string, NativeFileWriteStream>();
 
 		private _stream: FileSystemWritableFileStream;
+		private _buffer: Uint8Array;
 
 		private constructor(stream: FileSystemWritableFileStream) {
 			this._stream = stream;
@@ -20,8 +21,11 @@
 
 		public static async writeAsync(streamId: string, dataArrayPointer: number, offset: number, count: number, position: number): Promise<string> {			
 			const instance = NativeFileWriteStream._streamMap.get(streamId);
-			
-			//TODO: Reuse buffer somehow (slice?)
+
+			if (!instance._buffer || instance._buffer.length < count) {
+				instance._buffer = new Uint8Array(count);
+			}
+
 			var clampedArray = new Uint8Array(count);
 			for (var i = 0; i < count; i++) {
 				clampedArray[i] = Module.HEAPU8[dataArrayPointer + i + offset];
@@ -29,7 +33,7 @@
 
 			await instance._stream.write({
 				type: 'write',
-				data: clampedArray.buffer,
+				data: clampedArray.subarray(0, count).buffer,
 				position: position
 			})
 			return "";

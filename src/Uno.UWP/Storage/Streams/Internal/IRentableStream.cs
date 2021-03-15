@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Uno.Storage.Streams.Internal
 {
 	internal interface IRentableStream
-    {
+	{
 		StreamAccessScope AccessScope { get; }
 
 		RentedStream Rent();

@@ -978,6 +978,18 @@ declare namespace Windows.Storage.Pickers {
         static pickSingleFolderAsync(): Promise<string>;
     }
 }
+declare namespace Uno.Storage.Pickers {
+    class NativeFilePickerAcceptType {
+        description: string;
+        accept: NativeFilePickerAcceptTypeItem[];
+    }
+}
+declare namespace Uno.Storage.Pickers {
+    class NativeFilePickerAcceptTypeItem {
+        mimeType: string;
+        extensions: string[];
+    }
+}
 declare namespace Uno.Storage.Streams {
     class NativeFileReadStream {
         private static _streamMap;
@@ -992,21 +1004,12 @@ declare namespace Uno.Storage.Streams {
     class NativeFileWriteStream {
         private static _streamMap;
         private _stream;
+        private _buffer;
         private constructor();
         static openAsync(streamId: string, fileId: string): Promise<string>;
         static writeAsync(streamId: string, dataArrayPointer: number, offset: number, count: number, position: number): Promise<string>;
         static closeAsync(streamId: string): Promise<string>;
         static truncateAsync(streamId: string, length: number): Promise<string>;
-declare namespace Uno.Storage.Pickers {
-    class NativeFilePickerAcceptType {
-        description: string;
-        accept: NativeFilePickerAcceptTypeItem[];
-    }
-}
-declare namespace Uno.Storage.Pickers {
-    class NativeFilePickerAcceptTypeItem {
-        mimeType: string;
-        extensions: string[];
     }
 }
 interface Navigator {
