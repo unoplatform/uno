@@ -65,7 +65,7 @@ namespace Windows.Storage
 			{
 				using var _ = _nsUrl.BeginSecurityScopedAccess();
 				var fileInfo = new FileInfo(Path);
-				return Task.FromResult(new BasicProperties(0UL, fileInfo.LastWriteTimeUtc));
+				return Task.FromResult(new BasicProperties((ulong)fileInfo.Length, fileInfo.LastWriteTimeUtc));
 			}
 
 			private DateTimeOffset GetDateCreated()
