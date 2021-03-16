@@ -116,17 +116,10 @@ namespace Windows.UI.Xaml
 
 			if (path != null)
 			{
-				if (!ThemeResourceName.IsNullOrEmpty())
+				if (!ThemeResourceName.IsNullOrEmpty() && ResourceResolver.ApplyVisualStateSetter(ThemeResourceName, ThemeResourceContext, path, precedence))
 				{
-					// TODO: We should be trying to resolve the leaf DP pointed to by path, and set a theme binding on it
-					if (ResourceResolver.ResolveResourceStatic(ThemeResourceName, out var value, context: ThemeResourceContext))
-					{
-						path.Value = value ?? Value;
-					}
-					else
-					{
-						path.Value = Value;
-					}
+					// Applied as theme binding, no need to do more
+					return;
 				}
 				else
 				{

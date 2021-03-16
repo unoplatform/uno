@@ -43,5 +43,13 @@ namespace Windows.UI.Xaml
 			var dict = _bindings.FindOrCreate(property, () => new Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>());
 			dict[resourceBinding.Precedence] = resourceBinding;
 		}
+
+		public void ClearBinding(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		{
+			if (_bindings.TryGetValue(property, out var bindingsByPrecedence))
+			{
+				bindingsByPrecedence.Remove(precedence);
+			}
+		}
 	}
 }

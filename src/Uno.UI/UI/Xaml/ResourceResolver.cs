@@ -174,6 +174,34 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Apply a <see cref="Setter"/> in a visual state whose value is theme-bound.
+		/// </summary>
+		/// <param name="resourceKey">Key to the resource</param>
+		/// <param name="context">Optional parameter that provides parse-time context</param>
+		/// <param name="bindingPath">The binding path defined by the Setter target</param>
+		/// <param name="precedence">Value precedence</param>
+		/// <returns>
+		/// True if the value was successfully applied and registered for theme updates, false if no theme resource was found or the target
+		/// property is not a <see cref="DependencyProperty"/>.
+		/// </returns>
+		internal static bool ApplyVisualStateSetter(object resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence)
+		{
+			if (TryStaticRetrieval(resourceKey, context, out var value))
+			{
+				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
+				if (property != null && bindingPath.DataContext is IDependencyObjectStoreProvider provider)
+				{
+					// Set current resource value
+					bindingPath.Value = value;
+					provider.Store.SetResourceBinding(property, resourceKey, isTheme: true, context, precedence, bindingPath);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
 		/// </summary>
 		private static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
