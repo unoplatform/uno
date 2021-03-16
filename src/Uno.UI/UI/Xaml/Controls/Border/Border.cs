@@ -161,24 +161,17 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Padding DependencyProperty
+		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		public Thickness Padding
 		{
-			get => (Thickness)this.GetValue(PaddingProperty);
-			set => this.SetValue(PaddingProperty, value);
+			get => GetPaddingValue();
+			set => SetPaddingValue(value);
 		}
 
-		public static DependencyProperty PaddingProperty { get ; } =
-			DependencyProperty.Register(
-				nameof(Padding),
-				typeof(Thickness),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					(s, e) => ((Border)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
-				)
-			);
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
@@ -186,30 +179,19 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
 
-
-
 		#endregion
 
 		#region BorderThickness DependencyProperty
+		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		public Thickness BorderThickness
 		{
-			get => (Thickness)this.GetValue(BorderThicknessProperty);
-			set => this.SetValue(BorderThicknessProperty, value);
+			get => GetBorderThicknessValue();
+			set => SetBorderThicknessValue(value);
 		}
-
-		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BorderThicknessProperty { get ; } =
-			DependencyProperty.Register(
-				nameof(BorderThickness),
-				typeof(Thickness),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					(s, e) => ((Border)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
-				)
-			);
 
 		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 		{
