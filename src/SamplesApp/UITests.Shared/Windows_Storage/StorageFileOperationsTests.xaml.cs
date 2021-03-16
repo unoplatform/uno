@@ -4,6 +4,7 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
@@ -30,6 +31,7 @@ namespace UITests.Windows_Storage
 	public class StorageFileOperationsTestsViewModel : ViewModelBase
 	{
 		public StorageFile _pickedFile = null;
+		private string _errorMessage;
 
 		public StorageFileOperationsTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -47,6 +49,12 @@ namespace UITests.Windows_Storage
 					RaisePropertyChanged(nameof(IsFilePicked));
 				}
 			}
+		}
+
+		public string ErrorMessage
+		{
+			get => _errorMessage;
+			set => Set(ref _errorMessage, value);
 		}
 
 		public bool IsFilePicked => PickedFile != null;
@@ -75,6 +83,36 @@ namespace UITests.Windows_Storage
 			};
 			contentDialog.PrimaryButtonText = "OK";
 			await contentDialog.ShowAsync();
+		}
+
+		public ICommand WriteHelloWorldCommand => GetOrCreateCommand(WriteHelloWorld);
+
+		private async void WriteHelloWorld() => await FileIO.WriteTextAsync(PickedFile, "Hello, world!", UnicodeEncoding.Utf8);
+
+		public ICommand AppendHelloWorldCommand => GetOrCreateCommand(AppendHelloWorld);
+
+		private async void AppendHelloWorld() => await FileIO.AppendTextAsync(PickedFile, "Hello, world!", UnicodeEncoding.Utf8);
+
+		public ICommand ReadTextCommand => GetOrCreateCommand(ReadText);
+
+		private async void ReadText()
+		{
+			ErrorMessage = string.Empty;
+			try
+			{
+				var text = await FileIO.ReadTextAsync(PickedFile);
+				var contentDialog = new ContentDialog
+				{
+					Title = "File text content",
+					Content = text
+				};
+				contentDialog.PrimaryButtonText = "OK";
+				await contentDialog.ShowAsync();
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = "Error reading text: " + ex;
+			}
 		}
 	}
 }
