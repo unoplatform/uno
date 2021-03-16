@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -17,25 +18,15 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Height DependencyProperty
 
+		private static GridLength GetHeightDefaultValue() => GridLengthHelper.OneStar;
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty HeightProperty { get; } = CreateHeightProperty();
+
 		public GridLength Height
 		{
-			get { return (GridLength)this.GetValue(HeightProperty); }
-			set { this.SetValue(HeightProperty, value); }
-		}
-
-		public static DependencyProperty HeightProperty { get ; } =
-			DependencyProperty.Register(
-				"Height",
-				typeof(GridLength),
-				typeof(RowDefinition),
-				new FrameworkPropertyMetadata(
-					GridLengthHelper.OneStar,
-					(s, e) => ((RowDefinition)s)?.OnHeightChanged(e)
-				)
-			);
-
-		private void OnHeightChanged(DependencyPropertyChangedEventArgs e)
-		{
+			get => GetHeightValue();
+			set => SetHeightValue(value);
 		}
 
 		#endregion
@@ -45,29 +36,24 @@ namespace Windows.UI.Xaml.Controls
 			return new RowDefinition { Height = GridLength.ParseGridLength(value).First() };
 		}
 
+		[GeneratedDependencyProperty(DefaultValue = 0d)]
+		public static DependencyProperty MinHeightProperty { get; } = CreateMinHeightProperty();
+
 		public double MinHeight
 		{
-			get => (double)this.GetValue(MinHeightProperty);
-			set => this.SetValue(MinHeightProperty, value);
+			get => GetMinHeightValue();
+			set => SetMinHeightValue(value);
 		}
 
+		private static GridLength GetMaxHeightDefaultValue() => GridLengthHelper.OneStar;
+
+		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity)]
+		public static DependencyProperty MaxHeightProperty { get; } = CreateMaxHeightProperty();
 		public double MaxHeight
 		{
-			get => (double)this.GetValue(MaxHeightProperty);
-			set => this.SetValue(MaxHeightProperty, value);
+			get => GetMaxHeightValue();
+			set => SetMaxHeightValue(value);
 		}
-		public static DependencyProperty MinHeightProperty { get; } =
-		DependencyProperty.Register(
-			"MinHeight", typeof(double),
-			typeof(RowDefinition),
-			new FrameworkPropertyMetadata(0d));
-
-		public static DependencyProperty MaxHeightProperty { get; } =
-		DependencyProperty.Register(
-			"MaxHeight", typeof(double),
-			typeof(RowDefinition),
-			new FrameworkPropertyMetadata(double.PositiveInfinity));
-
 
 		public double ActualHeight
 		{
