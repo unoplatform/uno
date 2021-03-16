@@ -215,10 +215,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public Brush BorderBrush
 		{
-			get { return (Brush)this.GetValue(BorderBrushProperty); }
+			get => GetBorderBrushValue();
 			set
 			{
-				this.SetValue(BorderBrushProperty, value);
+				SetBorderBrushValue(value);
 
 #if XAMARIN_ANDROID
 				_borderBrushStrongReference = value;
@@ -226,18 +226,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// Using a DependencyProperty as the backing store for BorderBrush.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BorderBrushProperty { get ; } =
-			DependencyProperty.Register(
-				"BorderBrush",
-				typeof(Brush),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					SolidColorBrushHelper.Transparent,
-					FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
-					propertyChangedCallback: (s, e) => ((Border)s).OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
-				)
-			);
+		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
