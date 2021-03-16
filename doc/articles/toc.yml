@@ -248,6 +248,8 @@
           href: features\windows-system-userprofile.md
         - name: Windows.Storage
           href: features\windows-storage.md
+        - name: Windows.Storage.Pickers
+          href: features\windows-storage-pickers.md
         - name: Windows.UI.ViewManagement
           href: features\windows-ui-viewmanagement.md
     - name: Uno features
