@@ -8,6 +8,7 @@ using UIKit;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Uno.Storage.Internal;
+using Uno.Storage.Streams.Internal;
 using System.IO;
 
 namespace Windows.Storage
@@ -75,7 +76,15 @@ namespace Windows.Storage
 
 			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => Task.FromResult(_parent);
 
-			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw new NotImplementedException();
+			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+				=> new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateSecurityScoped(_nsUrl, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
+
+			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			{
+				Func<Stream> streamBuilder = () => File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));
+				var streamWrapper = new SecurityScopeStreamWrapper(_nsUrl, streamBuilder);
+				return streamWrapper;
+			}
 
 			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
 
