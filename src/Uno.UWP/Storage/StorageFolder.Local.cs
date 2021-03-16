@@ -34,7 +34,7 @@ namespace Windows.Storage
 		{
 			private string _name;
 
-			public Local(string name, string path)
+			public Local(string? name, string path)
 				: base(path)
 			{
 				if (string.IsNullOrEmpty(name))
@@ -52,7 +52,7 @@ namespace Windows.Storage
 					}
 				}
 
-				_name = name;
+				_name = name ?? string.Empty;
 			}
 
 			public override StorageProvider Provider => StorageProviders.Local;
