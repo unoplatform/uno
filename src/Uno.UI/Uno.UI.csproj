@@ -34,6 +34,9 @@
 
 		<!-- Disable WPF targets -->
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+
+		<!-- Set for dependencies that use msbuild nuget packaging (not nuspecs) -->
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
