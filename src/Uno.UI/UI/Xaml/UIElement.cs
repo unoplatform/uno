@@ -793,16 +793,27 @@ namespace Windows.UI.Xaml
 
 #if DEBUG
 		/// <summary>
+		/// Debugging helper method to get a list of the set value at each precedence for a DependencyProperty.
+		/// </summary>
+		/// <param name="propertyName">The property to get values by precedence for.</param>
+		internal (object value, DependencyPropertyValuePrecedences precedence)[] GetValuesByPrecedence(string propertyName)
+		{
+
+			var dp = GetDPByName(propertyName);
+			if (dp == null)
+			{
+				return null;
+			}
+
+			return this.GetValueForEachPrecedences(dp);
+		}
+
+		/// <summary>
 		/// A helper method while debugging to get the theme resource, if any, assigned to <paramref name="propertyName"/>.
 		/// </summary>
 		internal string GetThemeSource(string propertyName)
 		{
-			if (!propertyName.EndsWith("Property"))
-			{
-				propertyName += "Property";
-			}
-			var propInfo = GetType().GetTypeInfo().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-			var dp = propInfo?.GetValue(null) as DependencyProperty;
+			var dp = GetDPByName(propertyName);
 			if (dp == null)
 			{
 				return "[No such property]";
@@ -822,6 +833,19 @@ namespace Windows.UI.Xaml
 			{
 				return "[None]";
 			}
+		}
+
+		private DependencyProperty GetDPByName(string propertyName) => GetDPByName(propertyName, this);
+
+		private static DependencyProperty GetDPByName(string propertyName, DependencyObject propertyOwner)
+		{
+			if (!propertyName.EndsWith("Property"))
+			{
+				propertyName += "Property";
+			}
+			var propInfo = propertyOwner.GetType().GetTypeInfo().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+			var dp = propInfo?.GetValue(null) as DependencyProperty;
+			return dp;
 		}
 
 		/// <summary>
@@ -884,6 +908,59 @@ namespace Windows.UI.Xaml
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Debugging helper method to get the parent element that this element is inheriting <paramref name="propertyName"/> from.
+		///
+		/// Eg, if you call textBlock.GetPropInheritanceParent("Foreground"), it will return the first parent which has a property called
+		/// "Foreground" (most likely the Control whose template contains the TextBlock).
+		/// </summary>
+		internal FrameworkElement GetPropInheritanceParent(string propertyName)
+		{
+			var dependencyProp = GetDPByName(propertyName);
+			if (!IsInherited(dependencyProp, GetType()))
+			{
+				return null;
+			}
+
+			return Uno.UI.Extensions.DependencyObjectExtensions.FindFirstParent<FrameworkElement>(this, fe => IsInherited(GetDPByName(propertyName, fe), fe.GetType()), includeCurrent: false);
+
+			bool IsInherited(DependencyProperty dp, Type type)
+			{
+				if (dp.Name == "DataContext")
+				{
+					return true;
+				}
+				var metadata = dp?.GetMetadata(type) as FrameworkPropertyMetadata;
+				return metadata?.Options.HasFlag(FrameworkPropertyMetadataOptions.Inherits) ?? false;
+			}
+		}
+
+		/// <summary>
+		/// Debugging helper method to get a condensed summary of visual states on controls in this element's hierarchy.
+		/// </summary>
+		internal string GetVisualStatesSummary()
+		{
+			var sb = new StringBuilder();
+			foreach (var ancestor in Uno.UI.Extensions.DependencyObjectExtensions.GetAllParents(this))
+			{
+				if (ancestor is Control control && control.GetTemplateRoot() is { } root)
+				{
+					var groups = VisualStateManager.GetVisualStateGroups(root);
+					if (groups != null)
+					{
+						sb.Append($"Parent: {control}, ");
+						sb.Append("States: [");
+						foreach (var group in groups)
+						{
+							sb.Append($"{group}: {group.CurrentState}, ");
+						}
+						sb.Append(" ]; ");
+					}
+				}
+			}
+			return sb.ToString();
 		}
 #endif
 	}
