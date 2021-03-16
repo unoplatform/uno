@@ -20,15 +20,14 @@ namespace Windows.Storage
 		internal sealed class NativeStorageFile : ImplementationBase
 		{
 			private const string JsType = "Uno.Storage.NativeStorageFile";
-			private static readonly StorageProvider _provider = new StorageProvider("JsFileAccessApi", "JS File Access API");
 
 			// Used to keep track of the File handle on the Typescript side.
 			private readonly Guid _id;
 			private readonly string _fileName;
 			private readonly StorageFolder? _parent;
 
-			public NativeStorageFile(NativeStorageItemInfo nativeStorageItem, StorageFolder? parent = null)
-				: base(Path.Combine(parent?.Path ?? string.Empty, nativeStorageItem.Name ?? string.Empty)
+			public NativeStorageFile(NativeStorageItemInfo nativeStorageItem, StorageFolder? parent)
+				: base(SystemPath.Combine(parent?.Path ?? string.Empty, nativeStorageItem.Name ?? string.Empty))
 			{
 				if (parent != null && !(parent.Implementation is StorageFolder.NativeStorageFolder))
 				{
@@ -36,7 +35,7 @@ namespace Windows.Storage
 				}
 
 				_id = nativeStorageItem.Id;
-				_fileName = nativeStorageItem.Name;
+				_fileName = nativeStorageItem.Name ?? string.Empty;
 				_parent = parent;
 			}
 

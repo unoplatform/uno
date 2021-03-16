@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
+using SystemPath = global::System.IO.Path;
 
 namespace Windows.Storage
 {
@@ -27,8 +28,8 @@ namespace Windows.Storage
 			private string _name;
 			private StorageFolder? _parent;
 
-			public NativeStorageFolder(NativeStorageItemInfo info, StorageFolder? parent = null)
-				: base(Path.Combine(parent?.Path ?? string.Empty, info.Name ?? string.Empty)
+			public NativeStorageFolder(NativeStorageItemInfo info, StorageFolder? parent)
+				: base(SystemPath.Combine(parent?.Path ?? string.Empty, info.Name ?? string.Empty))
 			{
 				if (info is null)
 				{
@@ -36,7 +37,7 @@ namespace Windows.Storage
 				}
 
 				_id = info.Id;
-				_name = info.Name;
+				_name = info.Name ?? string.Empty;
 				_parent = parent;
 			}
 
