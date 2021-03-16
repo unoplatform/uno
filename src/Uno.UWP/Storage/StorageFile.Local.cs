@@ -22,8 +22,6 @@ namespace Windows.Storage
 
 			public override StorageProvider Provider => StorageProviders.Local;
 
-			public override string Name => IOPath.GetFileName(Path);
-
 			public override DateTimeOffset DateCreated => File.GetCreationTime(Path);
 
 			protected override bool IsEqual(ImplementationBase impl)

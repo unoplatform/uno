@@ -28,7 +28,7 @@ namespace Windows.Storage
 			private readonly StorageFolder? _parent;
 
 			public NativeStorageFile(NativeStorageItemInfo nativeStorageItem, StorageFolder? parent = null)
-				: base(string.Empty)
+				: base(Path.Combine(parent?.Path ?? string.Empty, nativeStorageItem.Name ?? string.Empty)
 			{
 				if (parent != null && !(parent.Implementation is StorageFolder.NativeStorageFolder))
 				{

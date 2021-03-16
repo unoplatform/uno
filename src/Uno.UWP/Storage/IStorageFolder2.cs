@@ -3,7 +3,7 @@
 namespace Windows.Storage
 {
 	public partial interface IStorageFolder2
-    {
-		IAsyncOperation<IStorageItem> TryGetItemAsync( string name);
+	{
+		IAsyncOperation<IStorageItem> TryGetItemAsync(string name);
 	}
 }

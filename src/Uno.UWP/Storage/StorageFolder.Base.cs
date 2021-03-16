@@ -15,10 +15,6 @@ namespace Windows.Storage
 	{
 		internal abstract class ImplementationBase
 		{
-			protected ImplementationBase()
-			{
-			}
-
 			protected ImplementationBase(string path) => Path = path;
 
 			public void InitOwner(StorageFolder owner) => Owner = owner; // Lazy initialized to avoid delegate in StorageFolder ctor

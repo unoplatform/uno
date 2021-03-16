@@ -30,13 +30,17 @@ namespace Windows.Storage
 			private readonly Android.Net.Uri _folderUri;
 			private readonly DocumentFile _directoryDocument;
 
-			internal SafFolder(Android.Net.Uri uri)
+			internal SafFolder(Android.Net.Uri uri) : base(uri.Path ?? string.Empty)
 			{
 				_folderUri = uri ?? throw new ArgumentNullException(nameof(uri));
 				_directoryDocument = DocumentFile.FromTreeUri(Application.Context, uri);
+				if (string.IsNullOrEmpty(Path))
+				{
+					Path = _directoryDocument.Name;
+				}
 			}
 
-			internal SafFolder(DocumentFile directoryDocument)
+			internal SafFolder(DocumentFile directoryDocument) : base(directoryDocument.Uri.Path ?? directoryDocument.Name)
 			{
 				_directoryDocument = directoryDocument ?? throw new ArgumentNullException(nameof(directoryDocument));
 				_folderUri = _directoryDocument.Uri;

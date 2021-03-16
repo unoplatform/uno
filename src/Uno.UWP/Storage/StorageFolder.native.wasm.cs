@@ -28,7 +28,7 @@ namespace Windows.Storage
 			private StorageFolder? _parent;
 
 			public NativeStorageFolder(NativeStorageItemInfo info, StorageFolder? parent = null)
-				: base(string.Empty)
+				: base(Path.Combine(parent?.Path ?? string.Empty, info.Name ?? string.Empty)
 			{
 				if (info is null)
 				{
