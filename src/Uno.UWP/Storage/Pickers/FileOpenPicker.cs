@@ -47,7 +47,7 @@ namespace Windows.Storage.Pickers
 			set => _commitButtonText = value ?? throw new ArgumentNullException(nameof(value));
 		}
 
-#if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__
+#if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
 		public FileOpenPicker()
 		{
 			InitializePlatform();
