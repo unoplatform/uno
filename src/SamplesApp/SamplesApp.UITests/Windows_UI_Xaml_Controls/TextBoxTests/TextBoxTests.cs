@@ -155,9 +155,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			_app.TapCoordinates(deleteButton1.Rect.CenterX, deleteButton1.Rect.CenterY);
 
-			// Second tap is required on Wasm https://github.com/unoplatform/uno/issues/2138
-			_app.TapCoordinates(deleteButton1.Rect.CenterX, deleteButton1.Rect.CenterY);
-
 			_app.WaitForText(textBox1, "");
 
 			// Focus the first textbox
@@ -165,9 +162,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			var deleteButton2 = FindDeleteButton(textBox2Result);
 
-			_app.TapCoordinates(deleteButton2.Rect.CenterX, deleteButton2.Rect.CenterY);
-
-			// Second tap is required on Wasm https://github.com/unoplatform/uno/issues/2138
 			_app.TapCoordinates(deleteButton2.Rect.CenterX, deleteButton2.Rect.CenterY);
 
 			_app.WaitForText(textBox2, "");
