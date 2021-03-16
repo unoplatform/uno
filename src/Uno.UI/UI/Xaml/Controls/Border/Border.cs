@@ -161,24 +161,17 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Padding DependencyProperty
+		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		public Thickness Padding
 		{
-			get => (Thickness)this.GetValue(PaddingProperty);
-			set => this.SetValue(PaddingProperty, value);
+			get => GetPaddingValue();
+			set => SetPaddingValue(value);
 		}
 
-		public static DependencyProperty PaddingProperty { get ; } =
-			DependencyProperty.Register(
-				nameof(Padding),
-				typeof(Thickness),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					(s, e) => ((Border)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
-				)
-			);
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
@@ -186,30 +179,19 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
 
-
-
 		#endregion
 
 		#region BorderThickness DependencyProperty
+		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		public Thickness BorderThickness
 		{
-			get => (Thickness)this.GetValue(BorderThicknessProperty);
-			set => this.SetValue(BorderThicknessProperty, value);
+			get => GetBorderThicknessValue();
+			set => SetBorderThicknessValue(value);
 		}
-
-		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BorderThicknessProperty { get ; } =
-			DependencyProperty.Register(
-				nameof(BorderThickness),
-				typeof(Thickness),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					(s, e) => ((Border)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
-				)
-			);
 
 		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 		{
@@ -233,10 +215,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public Brush BorderBrush
 		{
-			get { return (Brush)this.GetValue(BorderBrushProperty); }
+			get => GetBorderBrushValue();
 			set
 			{
-				this.SetValue(BorderBrushProperty, value);
+				SetBorderBrushValue(value);
 
 #if XAMARIN_ANDROID
 				_borderBrushStrongReference = value;
@@ -244,18 +226,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// Using a DependencyProperty as the backing store for BorderBrush.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BorderBrushProperty { get ; } =
-			DependencyProperty.Register(
-				"BorderBrush",
-				typeof(Brush),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					SolidColorBrushHelper.Transparent,
-					FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
-					propertyChangedCallback: (s, e) => ((Border)s).OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
-				)
-			);
+		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
