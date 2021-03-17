@@ -1,5 +1,12 @@
 ﻿// MUX reference NavigationViewItem.cpp, commit 4fe1fd5
 
+#if __ANDROID__
+// For performance considerations, we prefer to delay pressed and over state in order to avoid
+// visual state updates when starting scroll start or while scrolling, especially with touch.
+// This has a great impact on Android where ScrollViewer does not capture pointer while scrolling.
+#define UNO_USE_DEFERRED_VISUAL_STATES
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -828,8 +835,10 @@ namespace Microsoft.UI.Xaml.Controls
 				m_capturedPointer = pointer;
 			}
 
+#if UNO_USE_DEFERRED_VISUAL_STATES
 			_uno_isDefferingPressedState = true;
 			DeferUpdateVisualStateForPointer();
+#endif
 
 			UpdateVisualState(true);
 		}
@@ -860,8 +869,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnPresenterPointerEntered(object sender, PointerRoutedEventArgs args)
 		{
+#if UNO_USE_DEFERRED_VISUAL_STATES
 			_uno_isDefferingOverState = args.Pointer.PointerDeviceType != PointerDeviceType.Mouse;
 			DeferUpdateVisualStateForPointer();
+#endif
 
 			ProcessPointerOver(args);
 		}
