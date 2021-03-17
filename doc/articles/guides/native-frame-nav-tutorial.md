@@ -9,7 +9,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
 
     Right click on the shared project -> `Add` -> `New Item...` -> `Blank Page`
     Repeat once
-3. Modify of the content of each page to:
+3. Modify the content of each page to:
    - `MainPage.xaml`, `BlankPage1.xaml`, `BlankPage2.xaml`:
         > note: Add `xmlns:toolkit="using:Uno.UI.Toolkit"` to the `<Page>` element.
         ```xml
@@ -41,7 +41,8 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
         ```
 5. (Optionally) Add an `AppBarButton` to the `CommandBar` for back navigation in the last two pages for Skia heads:
     - `BlankPage1.xaml`, `BlankPage2.xaml`:
-        > note: Here a platform conditional is used to show the `AppBarButton` on the Skia platforms only. For more information on this feature, check out: [platform specific xaml](doc\articles\platform-specific-xaml)
+        > [!NOTE]
+        > Here a platform conditional is used to show the `AppBarButton` on the Skia platforms only. For more information on this feature, check out: [platform specific XAML](../platform-specific-xaml.md)
         ```xml
         <Page ...
               xmlns:skia="http://uno.ui/skia"
@@ -117,4 +118,4 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
 
 ## Additional Resources
 - [Uno-specific documentation](../controls/CommandBar) on `CommandBar` and `AppBarButton`
-- [Native Frame navigation](../features/native-frame-nav)
+- [Native Frame navigation](../features/native-frame-nav.md)

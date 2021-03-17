@@ -156,6 +156,8 @@
           href: features\fluent-styles.md
         - name: Fonts
           href: features/custom-fonts.md
+        - name: Native frame navigation
+          href: features\native-frame-nav.md
         - name: Orientation
           href: features/orientation.md
         - name: Routed Events
@@ -270,8 +272,6 @@
               href: features\ElevatedView.md
             - name: Other features
               href: Uno.UI.Toolkit.md
-        - name: Native Frame Navigation
-          href: features\native-frame-nav.md
         - name: Uno Material
           href: features/uno-material.md
         - name: Fluent icon font
