@@ -32,9 +32,9 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		public BindingPath? SetterBindingPath { get; }
 
-		public ResourceBinding(object resourceKey, bool isThemeResourceExtension, object? parseContext, DependencyPropertyValuePrecedences precedence, BindingPath? setterBindingPath)
+		public ResourceBinding(SpecializedResourceDictionary.ResourceKey resourceKey, bool isThemeResourceExtension, object? parseContext, DependencyPropertyValuePrecedences precedence, BindingPath? setterBindingPath)
 		{
-			ResourceKey = new SpecializedResourceDictionary.ResourceKey(resourceKey);
+			ResourceKey = resourceKey;
 			IsThemeResourceExtension = isThemeResourceExtension;
 			ParseContext = parseContext;
 			Precedence = precedence;

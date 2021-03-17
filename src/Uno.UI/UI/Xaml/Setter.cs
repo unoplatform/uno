@@ -58,9 +58,9 @@ namespace Windows.UI.Xaml
 		public DependencyProperty? Property { get; set; }
 
 		/// <summary>
-		/// The name of the ThemeResource applied to the value, if any.
+		/// The name of the ThemeResource applied to the value, if any, as an optimized key.
 		/// </summary>
-		internal string? ThemeResourceName { get; set; }
+		internal SpecializedResourceDictionary.ResourceKey? ThemeResourceKey { get; set; }
 
 		internal XamlParseContext? ThemeResourceContext { get; set; }
 
@@ -94,9 +94,9 @@ namespace Windows.UI.Xaml
 		{
 			if (Property != null)
 			{
-				if (!ThemeResourceName.IsNullOrEmpty())
+				if (ThemeResourceKey.HasValue)
 				{
-					ResourceResolver.ApplyResource(o, Property, ThemeResourceName, isThemeResourceExtension: true, context: ThemeResourceContext);
+					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, isThemeResourceExtension: true, context: ThemeResourceContext);
 				}
 				else
 				{
@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml
 
 			if (path != null)
 			{
-				if (!ThemeResourceName.IsNullOrEmpty() && ResourceResolver.ApplyVisualStateSetter(ThemeResourceName, ThemeResourceContext, path, precedence))
+				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence))
 				{
 					// Applied as theme binding, no need to do more
 					return;

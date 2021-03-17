@@ -63,6 +63,12 @@ namespace Windows.UI.Xaml
 					IsType = true;
 					HashCode = (uint)(t.GetHashCode() ^ IsType.GetHashCode());
 				}
+				else if (key is ResourceKey resourceKey)
+				{
+					Key = resourceKey.Key;
+					IsType = resourceKey.IsType;
+					HashCode = resourceKey.HashCode;
+				}
 				else
 				{
 					Key = key.ToString();
