@@ -70,6 +70,11 @@ else
 		export TEST_FILTERS=" \
 			class = 'SamplesApp.UITests.Runtime.RuntimeTests'
 		"
+	elif [ "$UITEST_AUTOMATED_GROUP" == 'Benchmarks' ];
+	then
+		export TEST_FILTERS=" \
+			class = 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests'
+		"
 	fi
 fi
 
@@ -89,6 +94,7 @@ export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-origin
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll
+export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 
 ## Build the NUnit configuration file
 echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE

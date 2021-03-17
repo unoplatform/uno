@@ -67,7 +67,10 @@ then
 	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-Snap
 else
-	export TEST_FILTERS="namespace != 'SamplesApp.UITests.Snap'"
+	export TEST_FILTERS="\
+		namespace != 'SamplesApp.UITests.Snap' \
+		and class != 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
+	"
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL
 fi
 

@@ -179,7 +179,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia", "SamplesA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.Gtk", "SamplesApp\SamplesApp.Skia.Gtk\SamplesApp.Skia.Gtk.csproj", "{4A03CFBB-4D4E-4589-BD51-69B7251A2A0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Skia.WPF", "SamplesApp\SamplesApp.Skia.WPF\SamplesApp.Skia.WPF.csproj", "{27B81C58-B74E-4BC9-BD17-1811C82D0507}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.WPF", "SamplesApp\SamplesApp.Skia.WPF\SamplesApp.Skia.WPF.csproj", "{27B81C58-B74E-4BC9-BD17-1811C82D0507}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Toolkit.Skia", "Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj", "{F61C6C86-F6B4-44B3-9821-72E7EBD2A3E4}"
 EndProject
@@ -197,9 +197,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RemoteControl.Skia",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.WebAssembly.Compatibility", "Uno.UI.Runtime.WebAssembly.Compatibility\Uno.UI.Runtime.WebAssembly.Compatibility.csproj", "{61DBBCA6-BE61-459D-B3FE-DE373EB9283D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.Runtime.Skia.Tizen", "Uno.UI.Runtime.Skia.Tizen\Uno.UI.Runtime.Skia.Tizen.csproj", "{A7F8ED8A-673C-4D7A-909E-452C1AA28EC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia.Tizen", "Uno.UI.Runtime.Skia.Tizen\Uno.UI.Runtime.Skia.Tizen.csproj", "{A7F8ED8A-673C-4D7A-909E-452C1AA28EC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Skia.Tizen", "SamplesApp\SamplesApp.Skia.Tizen\SamplesApp.Skia.Tizen.csproj", "{68C6B05B-F82B-4B6D-AE18-86AFF411E65A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.Tizen", "SamplesApp\SamplesApp.Skia.Tizen\SamplesApp.Skia.Tizen.csproj", "{68C6B05B-F82B-4B6D-AE18-86AFF411E65A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.FluentTheme.Wasm", "Uno.UI.FluentTheme\Uno.UI.FluentTheme.Wasm.csproj", "{10807E33-4A73-4AA9-A8F2-B395CC555BD1}"
 EndProject
@@ -231,6 +231,7 @@ Global
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{beb0ab3a-16a7-49cf-ad5e-f4a53b985afe}*SharedItemsImports = 13
+		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{c8c4395c-602f-45ab-aed4-40a8a4ef0089}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{c8c4395c-602f-45ab-aed4-40a8a4ef0089}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{c8c4395c-602f-45ab-aed4-40a8a4ef0089}*SharedItemsImports = 5
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{c8c4395c-602f-45ab-aed4-40a8a4ef0089}*SharedItemsImports = 5

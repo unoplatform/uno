@@ -106,6 +106,19 @@ jobs:
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
+# Disabled for benchmkarks timeout
+# - template: .azure-devops-ios-tests-run.yml
+#   parameters:
+#     nugetPackages: $(NUGET_PACKAGES)
+#     JobName: 'iOS_Automated_Tests_Benchmarks'
+#     JobDisplayName: 'iOS Automated Benchmarks'
+#     JobTimeoutInMinutes: 40
+#     vmImage: ${{ parameters.vmImage }}
+#     UITEST_SNAPSHOTS_ONLY: false
+#     UITEST_AUTOMATED_GROUP: Benchmarks
+#     xCodeRoot: ${{ parameters.xCodeRootTest }}
+#     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
+
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
@@ -153,4 +166,3 @@ jobs:
     UITEST_SNAPSHOTS_GROUP: 03
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
-

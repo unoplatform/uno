@@ -149,11 +149,30 @@ jobs:
 
   strategy:
     matrix:
-      net5:
+      net5_default:
         SITE_SUFFIX: 'net5.0'
+        UITEST_AUTOMATED_GROUP: 'Default'
 
-      netstd2_0:
+      net5_runtimetests:
+        SITE_SUFFIX: 'net5.0'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+
+      # Disabled until benchmark freeze is fixed
+      #net5_benchmarks:
+      #  SITE_SUFFIX: 'net5.0'
+      #  UITEST_AUTOMATED_GROUP: 'Benchmarks'
+
+      netstd2_0_default:
         SITE_SUFFIX: 'netstandard2.0'
+        UITEST_AUTOMATED_GROUP: 'Default'
+
+      netstd2_0_runtimetests:
+        SITE_SUFFIX: 'netstandard2.0'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+
+      netstd2_0_benchmarks:
+        SITE_SUFFIX: 'netstandard2.0'
+        UITEST_AUTOMATED_GROUP: 'Benchmarks'
 
   pool:
     vmImage: ${{ parameters.vmImage }}

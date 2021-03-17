@@ -14,13 +14,34 @@ export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/chromedriver/lib/chromedriver
 export UNO_UITEST_CHROME_BINARY_PATH=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/puppeteer/.local-chromium/linux-800071/chrome-linux/chrome
-export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated-$SITE_SUFFIX
+export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP
 export UNO_UITEST_PLATFORM=Browser
+export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/wasm-automated
 export NUNIT_VERSION=3.11.1
-export TEST_FILTERS="namespace != 'SamplesApp.UITests.Snap'"
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-automated-$SITE_SUFFIX-chromium.txt
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-chromium.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
+
+if [ "$UITEST_AUTOMATED_GROUP" == 'Default' ];
+then
+	export TEST_FILTERS=" \
+		namespace != 'SamplesApp.UITests.Snap' \
+		and class != 'SamplesApp.UITests.Runtime.RuntimeTests' \
+		and class != 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
+	"
+
+elif [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
+then
+		export TEST_FILTERS=" \
+			class = 'SamplesApp.UITests.Runtime.RuntimeTests' \
+		"
+
+elif [ "$UITEST_AUTOMATED_GROUP" == 'Benchmarks' ];
+then
+		export TEST_FILTERS=" \
+			class = 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
+		"
+fi
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
