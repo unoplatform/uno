@@ -23,7 +23,7 @@ namespace Windows.Storage
 
 			public abstract StorageProvider Provider { get; }
 
-			public virtual string Name => global::System.IO.Path.GetDirectoryName(Path);
+			public virtual string Name => global::System.IO.Path.GetDirectoryName(Path) ?? string.Empty;
 
 			public virtual string DisplayName => Name;
 
