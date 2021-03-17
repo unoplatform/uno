@@ -44,7 +44,7 @@ namespace Windows.Storage.Pickers
 						.Select(url => StorageFile.GetFileFromPath(url.Path))
 						.ToArray();
 					return new FilePickerSelectedFilesArray(files);
-				}				
+				}
 			}
 			return FilePickerSelectedFilesArray.Empty;
 		}

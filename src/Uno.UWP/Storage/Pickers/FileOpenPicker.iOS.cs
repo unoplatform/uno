@@ -14,7 +14,7 @@ using Uno.Helpers.Theming;
 namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
-    {
+	{
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var files = await PickFilesAsync(false, token);
