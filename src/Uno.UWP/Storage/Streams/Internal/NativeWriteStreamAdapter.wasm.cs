@@ -134,5 +134,11 @@ namespace Uno.Storage.Streams.Internal
 				await pendingTask();
 			}
 		}
+
+		public async Task CloseAsync()
+		{
+			await ProcessPendingAsync();
+			await WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
+		}
 	}
 }

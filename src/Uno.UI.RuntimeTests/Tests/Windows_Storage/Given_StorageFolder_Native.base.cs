@@ -8,6 +8,16 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Storage;
 
+#if WINDOWS_UWP
+using NotFoundException = System.IO.FileNotFoundException;
+using UnmatchedItemTypeException = System.ArgumentException;
+using NotAuthorizedException = System.Exception;
+#else
+using NotFoundException = System.IO.FileNotFoundException;
+using UnmatchedItemTypeException = System.ArgumentException;
+using NotAuthorizedException = System.UnauthorizedAccessException;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 {
 	public abstract class Given_StorageFolder_Native_Base
@@ -20,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Name_Matches()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			try
 			{
@@ -29,10 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -41,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_DisplayName_Matches()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			try
 			{
@@ -50,10 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -72,10 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -84,7 +85,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_OfType()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			try
 			{
@@ -93,10 +94,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -105,7 +103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Provider_Matches()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			try
 			{
@@ -114,10 +112,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
+				await CleanupRootFolderAsync();
 			}
 		}
 
@@ -125,7 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Duplicate_Default()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			try
 			{
@@ -135,7 +131,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await rootFolder.CreateFolderAsync(folderName);
 					Assert.Fail("Expected exception, no exception thrown.");
 				}
-				catch (Exception)
+				catch (NotAuthorizedException)
 				{
 					// Empty handling - test should pass in this case.
 				}
@@ -143,10 +139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -155,7 +148,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Duplicate_FailIfExists()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			try
 			{
@@ -165,17 +158,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.FailIfExists);
 					Assert.Fail("Expected exception, no exception thrown.");
 				}
-				catch (Exception)
+				catch (NotAuthorizedException)
 				{
 					// Empty handling - test should pass in this case.
-				}				
+				}
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -184,7 +174,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Duplicate_OpenIfExists()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			try
 			{
@@ -194,10 +184,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -206,7 +193,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Duplicate_ReplaceExisting()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			try
 			{
@@ -219,10 +206,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -231,7 +215,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Duplicate_File_ReplaceExisting()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFile? createdFile = null;
 			try
 			{
@@ -241,17 +225,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting);
 					Assert.Fail("Expected exception, no exception thrown.");
 				}
-				catch (Exception)
+				catch (NotAuthorizedException)
 				{
 					// Empty handling - test should pass in this case.
 				}
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -260,7 +241,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Duplicate_GenerateUniqueName()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFolder? createdFolder = null;
 			StorageFolder? uniqueFolder = null;
 			try
@@ -271,14 +252,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
-				if (uniqueFolder != null)
-				{
-					await uniqueFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
+				await DeleteIfNotNullAsync(uniqueFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -287,7 +262,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_CreateFolder_Duplicate_File_GenerateUniqueName()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			var folderName = Guid.NewGuid().ToString();
+			var folderName = GetRandomFolderName();
 			StorageFile? createdFile = null;
 			StorageFolder? createdFolder = null;
 			try
@@ -298,14 +273,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -324,17 +293,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await rootFolder.CreateFileAsync(fileName);
 					Assert.Fail("Expected exception, no exception thrown.");
 				}
-				catch (Exception)
+				catch (NotAuthorizedException)
 				{
 					// Empty handling - test should pass in this case.
 				}
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -353,17 +319,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.FailIfExists);
 					Assert.Fail("Expected exception, no exception thrown.");
 				}
-				catch (Exception)
+				catch (NotAuthorizedException)
 				{
 					// Empty handling - test should pass in this case.
 				}
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -384,10 +347,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -408,10 +368,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -430,17 +387,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					Assert.Fail("Expected exception, no exception thrown.");
 				}
-				catch (Exception)
+				catch (NotAuthorizedException)
 				{
 					// Empty handling - test should pass in this case.
-				}				
+				}
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -461,14 +415,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
-				if (uniqueFile != null)
-				{
-					await uniqueFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
+				await DeleteIfNotNullAsync(uniqueFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -489,14 +437,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -524,14 +466,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			try
 			{
 				createdFolder = await rootFolder.CreateFolderAsync(fileName);
-				await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await rootFolder.GetFileAsync(fileName));
+				await Assert.ThrowsExceptionAsync<UnmatchedItemTypeException>(async () => await rootFolder.GetFileAsync(fileName));
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -545,14 +484,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			try
 			{
 				createdFile = await rootFolder.CreateFileAsync(folderName);
-				await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await rootFolder.GetFolderAsync(folderName));
+				await Assert.ThrowsExceptionAsync<UnmatchedItemTypeException>(async () => await rootFolder.GetFolderAsync(folderName));
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -571,10 +507,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -593,10 +526,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -629,10 +559,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -651,10 +578,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -704,10 +628,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -727,10 +648,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -786,10 +704,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -808,10 +723,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -834,10 +746,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -860,10 +769,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -890,10 +796,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -912,10 +815,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -938,10 +838,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -964,10 +861,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -994,10 +888,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1016,10 +907,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1042,10 +930,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1068,10 +953,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1098,10 +980,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1124,17 +1003,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				}
 				var files = await createdFolder.GetFilesAsync();
 				var retrievedFileNames = files.Select(f => f.Name).ToArray();
-				foreach (var fileName in createdFileNames)
-				{
-					CollectionAssert.Contains(retrievedFileNames, fileName);
-				}
+				CollectionAssert.AreEquivalent(createdFileNames, retrievedFileNames);
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1157,17 +1030,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				}
 				var folders = await createdFolder.GetFoldersAsync();
 				var retrievedFolderNames = folders.Select(f => f.Name).ToArray();
-				foreach (var folderName in createdFolderNames)
-				{
-					CollectionAssert.Contains(retrievedFolderNames, folderName);
-				}
+				CollectionAssert.AreEquivalent(createdFolderNames, retrievedFolderNames);
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1197,21 +1064,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				}
 				var items = await createdFolder.GetItemsAsync();
 				var retrievedItemNames = items.Select(f => f.Name).ToArray();
-				foreach (var folderName in createdFolderNames)
-				{
-					CollectionAssert.Contains(retrievedItemNames, folderName);
-				}
-				foreach (var fileName in createdFileNames)
-				{
-					CollectionAssert.Contains(retrievedItemNames, fileName);
-				}
+				CollectionAssert.IsSubsetOf(createdFolderNames, retrievedItemNames);
+				CollectionAssert.IsSubsetOf(createdFileNames, retrievedItemNames);
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1234,10 +1092,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -1245,5 +1100,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 
 		private string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";
+
+		private Task DeleteIfNotNullAsync(IStorageItem? item) => item != null ? item.DeleteAsync().AsTask() : Task.CompletedTask;
 	}
 }

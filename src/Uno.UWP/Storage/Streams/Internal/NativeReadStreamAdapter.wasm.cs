@@ -8,12 +8,11 @@ using Uno.Foundation;
 namespace Uno.Storage.Streams.Internal
 {
 	internal class NativeReadStreamAdapter : Stream
-    {
+	{
 		private const string JsType = "Uno.Storage.Streams.NativeFileReadStream";
 
 		private readonly Guid _streamId;
 
-		private int _rentCount = 0;
 		private long _length = 0;
 		private long _position = 0;
 
@@ -91,13 +90,7 @@ namespace Uno.Storage.Streams.Internal
 
 		protected override async void Dispose(bool disposing)
 		{
-			if (Interlocked.Decrement(ref _rentCount) == 0)
-			{
-				// Close and dispose.
-				await WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
-			}
+			WebAssemblyRuntime.InvokeJS($"{JsType}.close('{_streamId}')");
 		}
-
-		public void Rent() => Interlocked.Increment(ref _rentCount);
 	}
 }

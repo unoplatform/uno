@@ -30,8 +30,19 @@ namespace Windows.Storage.Pickers
 				CanChooseFiles = true,
 				CanChooseDirectories = false,
 				AllowsMultipleSelection = pickMultiple,
-				AllowedFileTypes = FileTypeFilter.ToArray()
+				AllowsOtherFileTypes = FileTypeFilter.Contains("*")
 			};
+
+			if (!openPanel.AllowsOtherFileTypes)
+			{
+				var fileTypes = GetFileTypes();
+				openPanel.AllowedFileTypes = fileTypes;
+			}
+
+			if (!string.IsNullOrEmpty(CommitButtonText))
+			{
+				openPanel.Prompt = CommitButtonText;
+			}
 
 			var result = openPanel.RunModal();
 
@@ -47,6 +58,11 @@ namespace Windows.Storage.Pickers
 				}
 			}
 			return FilePickerSelectedFilesArray.Empty;
+		}
+
+		private string[] GetFileTypes()
+		{
+			return FileTypeFilter.Except(new[] {"*"}).Select(ext => ext.TrimStart(new []{'.'})).ToArray();
 		}
 	}
 }

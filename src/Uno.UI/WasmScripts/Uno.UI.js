@@ -3385,9 +3385,8 @@ var Uno;
                         }
                     }
                 }
-                static async closeAsync(streamId) {
+                static close(streamId) {
                     NativeFileReadStream._streamMap.delete(streamId);
-                    return "";
                 }
             }
             NativeFileReadStream._streamMap = new Map();
@@ -3407,11 +3406,30 @@ var Uno;
                 }
                 static async openAsync(streamId, fileId) {
                     const handle = Storage.NativeStorageItem.getHandle(fileId);
-                    const writableStream = await handle.createWritable({ keepExistingData: true });
-                    const fileSize = (await handle.getFile()).size;
-                    const stream = new NativeFileWriteStream(writableStream);
-                    NativeFileWriteStream._streamMap.set(streamId, stream);
-                    return fileSize.toString();
+                    if (await NativeFileWriteStream.verifyPermissionAsync(handle)) {
+                        const writableStream = await handle.createWritable({ keepExistingData: true });
+                        const fileSize = (await handle.getFile()).size;
+                        const stream = new NativeFileWriteStream(writableStream);
+                        NativeFileWriteStream._streamMap.set(streamId, stream);
+                        return fileSize.toString();
+                    }
+                    else {
+                        return "PermissionNotGranted";
+                    }
+                }
+                static async verifyPermissionAsync(fileHandle) {
+                    const options = {};
+                    options.mode = "readwrite";
+                    // Check if permission was already granted. If so, return true.
+                    if ((await fileHandle.queryPermission(options)) === 'granted') {
+                        return true;
+                    }
+                    // Request permission. If the user grants permission, return true.
+                    if ((await fileHandle.requestPermission(options)) === 'granted') {
+                        return true;
+                    }
+                    // The user didn't grant permission, so return false.
+                    return false;
                 }
                 static async writeAsync(streamId, dataArrayPointer, offset, count, position) {
                     const instance = NativeFileWriteStream._streamMap.get(streamId);

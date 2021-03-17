@@ -119,7 +119,17 @@ namespace Windows.Storage
 
 				if (folderInfoJson == null)
 				{
-					throw new FileNotFoundException($"There is no folder with name '{name}'.");
+					var fileInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
+
+					if (fileInfoJson != null)
+					{
+						// File exists
+						throw new ArgumentException("The item with given name is a file.", nameof(name));
+					}
+					else
+					{
+						throw new FileNotFoundException($"There is no folder with name '{name}'.");
+					}
 				}
 
 				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson);
@@ -234,7 +244,17 @@ namespace Windows.Storage
 
 				if (fileInfoJson == null)
 				{
-					throw new FileNotFoundException($"There is no file with name '{name}'.");
+					var folderInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFolderAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
+
+					if (folderInfoJson != null)
+					{
+						// Folder exists
+						throw new ArgumentException("The item with given name is a folder.", nameof(name));
+					}
+					else
+					{
+						throw new FileNotFoundException($"There is no file with name '{name}'.");
+					}
 				}
 
 				// File exists

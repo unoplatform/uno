@@ -9,6 +9,7 @@ using System.Threading;
 using Uno.Extensions;
 using UwpUnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 using UwpBuffer = Windows.Storage.Streams.Buffer;
+using Uno.Storage.Internal;
 
 namespace Windows.Storage
 {
@@ -301,7 +302,11 @@ namespace Windows.Storage
 		private static async Task<Encoding> GetEncodingFromFileAsync(IStorageFile file)
 		{
 			// If the file has a local path, try to not create it
-			if (file.Path is {} path && !string.IsNullOrWhiteSpace(path) && !File.Exists(path))
+			if (file is StorageFile storageFile &&
+				storageFile.Provider == StorageProviders.Local &&
+				file.Path is { } path &&
+				!string.IsNullOrWhiteSpace(path) &&
+				!File.Exists(path))
 			{
 				return Encoding.UTF8;
 			}

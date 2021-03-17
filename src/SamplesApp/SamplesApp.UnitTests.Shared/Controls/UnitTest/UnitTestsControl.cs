@@ -72,7 +72,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				try
 				{
-					await RunTests(_cts.Token, filter?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+					await RunTests(_cts.Token, filter?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>());
 				}
 				finally
 				{
@@ -245,6 +245,10 @@ namespace Uno.UI.Samples.Tests
 				filter = null;
 			}
 
+			var filters = filter != null ?
+				filter.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) :
+				Array.Empty<string>();
+
 			testResults.Children.Clear();
 
 			try
@@ -253,6 +257,17 @@ namespace Uno.UI.Samples.Tests
 				try
 				{
 					var testTypeInfo = BuildType(testClassInstance.GetType());
+
+					var tests = FilterTests(testTypeInfo, filters);
+
+					if (tests.Length == 0)
+					{
+						return;
+					}
+
+					ReportTestClass(testTypeInfo.Type.GetTypeInfo());
+					_ = ReportMessage($"Running {tests.Length} test methods");
+
 					await ExecuteTestsForInstance(_cts.Token, testClassInstance, counters, testTypeInfo.Tests, testTypeInfo);
 				}
 				catch (Exception e)
@@ -287,13 +302,7 @@ namespace Uno.UI.Samples.Tests
 
 				foreach (var type in testTypes.Where(t => t.Type != null))
 				{
-					var testClassNameContainsFilters = filters.Any(f => type.Type.FullName.Contains(f, StrComp));
-					var tests = type.Tests
-						.Where(t => (filters?.None() ?? true)
-									|| testClassNameContainsFilters
-									|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
-									|| filters.Any(f => t.Name.Contains(f, StrComp)))
-						.ToArray();
+					var tests = FilterTests(type, filters);
 
 					if (tests.Length == 0)
 					{
@@ -318,6 +327,17 @@ namespace Uno.UI.Samples.Tests
 				ReportTestResult("Runtime exception", TestResult.Failed, counters, e);
 				ReportTestsResults(counters);
 			}
+		}
+
+		private MethodInfo[] FilterTests(UnitTestClassInfo testClassInfo, string[] filters)
+		{
+			var testClassNameContainsFilters = filters?.Any(f => testClassInfo.Type.FullName.Contains(f, StrComp)) ?? false;
+			return testClassInfo.Tests
+				.Where(t => (filters?.None() ?? true)
+							|| testClassNameContainsFilters
+							|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
+							|| filters.Any(f => t.Name.Contains(f, StrComp)))
+				.ToArray();
 		}
 
 		private async Task ExecuteTestsForInstance(
@@ -428,7 +448,12 @@ namespace Uno.UI.Samples.Tests
 							e = tie.InnerException;
 						}
 
-						if (expectedException == null || !expectedException.ExceptionType.IsInstanceOfType(e))
+						if (e is AssertInconclusiveException inconclusiveException)
+						{
+							counters.Ignored++;
+							ReportTestResult(fullTestName, TestResult.Ignored, counters, message: e.Message);
+						}
+						else if (expectedException == null || !expectedException.ExceptionType.IsInstanceOfType(e))
 						{
 							counters.Failed++;
 							ReportTestResult(fullTestName, TestResult.Failed, counters, e);

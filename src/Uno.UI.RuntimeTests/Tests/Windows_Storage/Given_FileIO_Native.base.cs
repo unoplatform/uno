@@ -5,7 +5,9 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
 using Windows.Storage;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
@@ -20,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_WriteTextAsyncNoEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
@@ -41,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_WriteLinesAsyncNoEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var lines = new[]
@@ -67,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_WriteTextAsyncWithEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var contents = "Hello world!\r\n__127538\t+ěčšřěřšěřt";
@@ -88,7 +90,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_WriteLinesAsyncWithEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var lines = new[]
@@ -114,7 +116,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_AppendTextAsyncNoEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var originalContent = "First line3527535205šěššýétžščžíé";
@@ -138,7 +140,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_AppendTextAsyncRecognizesEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var originalContent = "First line3527535205šěššýétžščžíé";
@@ -162,7 +164,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_AppendTextAsyncWithEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var originalContent = "First line3527535205šěššýétžščžíé";
@@ -186,7 +188,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_AppendLinesAsyncNoEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var firstLines = new[]
@@ -220,7 +222,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_AppendLinesAsyncRecognizesEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var firstLines = new[]
@@ -237,10 +239,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				};
 
 				targetFile = await rootFolder.CreateFileAsync(GetRandomTextFileName(), CreationCollisionOption.ReplaceExisting);
-				await FileIO.WriteLinesAsync(targetFile, firstLines, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
+				await FileIO.WriteLinesAsync(targetFile, firstLines, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);				
 				await FileIO.AppendLinesAsync(targetFile, appendedLines);
 
 				var realContents = await FileIO.ReadLinesAsync(targetFile, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
+
 				CollectionAssert.AreEqual(firstLines.Concat(appendedLines).ToArray(), realContents.ToArray());
 			}
 			finally
@@ -254,7 +257,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_AppendLinesAsyncWithEncoding()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			StorageFile targetFile = null;
+			StorageFile? targetFile = null;
 			try
 			{
 				var firstLines = new[]
@@ -337,12 +340,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 		private string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";
 
-		private async Task DeleteIfNotNullAsync(StorageFile? file)
-		{
-			if (file != null)
-			{
-				await file.DeleteAsync();
-			}
-		}
+		private Task DeleteIfNotNullAsync(IStorageItem? item) => item != null ? item.DeleteAsync().AsTask() : Task.CompletedTask;
 	}
 }

@@ -9,11 +9,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	{
 		protected override async Task<StorageFolder> GetRootFolderAsync()
 		{
-			return await StorageFolder.GetPrivateRootAsync();
-		}
-
-		protected override async Task CleanupRootFolderAsync()
-		{
+			var folder = await StorageFolder.GetPrivateRootAsync()!;
+			if (folder == null)
+			{
+				Assert.Inconclusive("File System Access API not available on this browser.");
+			}
+			return folder!;
 		}
 	}
 }

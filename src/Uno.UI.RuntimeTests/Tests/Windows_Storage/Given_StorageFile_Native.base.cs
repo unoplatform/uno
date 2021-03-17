@@ -27,10 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -52,10 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -74,10 +68,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -95,10 +86,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -116,10 +104,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -137,10 +122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -158,10 +140,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -179,10 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -209,21 +185,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		{
 			var rootFolder = await GetRootFolderAsync();
 			var fileName = GetRandomTextFileName();
-			var length = 14UL;
+			var length = 3UL;
 			StorageFile? createdFile = null;
 			try
 			{
 				createdFile = await rootFolder.CreateFileAsync(fileName);
-				await FileIO.WriteBytesAsync(createdFile, new byte[length]);
+				await FileIO.WriteBytesAsync(createdFile, new byte[] { 65, 66, 67 });
 				var basicProperties = await createdFile.GetBasicPropertiesAsync();
 				Assert.AreEqual(length, basicProperties.Size);
 			}
 			finally
 			{
-				if (createdFile != null)
-				{
-					await createdFile.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFile);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -246,10 +219,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 			finally
 			{
-				if (createdFolder != null)
-				{
-					await createdFolder.DeleteAsync();
-				}
+				await DeleteIfNotNullAsync(createdFolder);
 				await CleanupRootFolderAsync();
 			}
 		}
@@ -257,5 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 
 		private string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";
+
+		private Task DeleteIfNotNullAsync(IStorageItem? item) => item != null ? item.DeleteAsync().AsTask() : Task.CompletedTask;
 	}
 }
