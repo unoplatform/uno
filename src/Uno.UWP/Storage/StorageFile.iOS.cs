@@ -25,7 +25,7 @@ namespace Windows.Storage
 			private readonly UIDocument _document;
 			private DateTimeOffset? _dateCreated;
 
-			public SecurityScopedFile(NSUrl nsUrl, StorageFolder? parent)
+			public SecurityScopedFile(NSUrl nsUrl, StorageFolder? parent) : base(string.Empty)
 			{
 				if (nsUrl is null)
 				{

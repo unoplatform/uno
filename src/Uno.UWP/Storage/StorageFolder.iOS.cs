@@ -25,7 +25,7 @@ namespace Windows.Storage
 			private readonly StorageFolder? _parent;
 			private readonly UIDocument _document;
 
-			public SecurityScopedFolder(NSUrl nsUrl, StorageFolder? parent)
+			public SecurityScopedFolder(NSUrl nsUrl, StorageFolder? parent) : base(string.Empty)
 			{
 				if (nsUrl is null)
 				{
