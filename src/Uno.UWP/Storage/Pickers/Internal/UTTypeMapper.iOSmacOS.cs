@@ -51,6 +51,7 @@ namespace Uno.Storage.Pickers.Internal
 
 		/// <summary>
 		/// Gets a UTType from a list of known types.
+		/// Mainly from <see cref="https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types">Apple docs</see>.
 		/// </summary>
 		private static string GetBuiltInType(string? extension)
 			=> extension?.ToLowerInvariant() switch

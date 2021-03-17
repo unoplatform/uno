@@ -18,11 +18,6 @@ namespace Windows.Storage.Streams
 
 			private SecurityScoped(Stream stream, NSUrl url, FileAccess access, FileShare share) : base(stream)
 			{
-				if (stream is null)
-				{
-					throw new ArgumentNullException(nameof(stream));
-				}
-
 				_url = url;
 				_access = access;
 				_share = share;

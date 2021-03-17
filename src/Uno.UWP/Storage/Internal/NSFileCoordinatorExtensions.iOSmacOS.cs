@@ -19,11 +19,11 @@ namespace Uno.Storage.Internal
 					}
 
 					operation();
-					completionSource.SetResult(true);
+					completionSource.TrySetResult(true);
 				}
 				catch (Exception ex)
 				{
-					completionSource.SetException(ex);
+					completionSource.TrySetException(ex);
 				}
 			});
 

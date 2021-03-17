@@ -72,7 +72,7 @@ namespace Windows.Storage
 					switch (options)
 					{
 						case CreationCollisionOption.FailIfExists:
-							throw new Exception("Cannot create a file when that file already exists.");
+							throw new Exception($"There is already a file with the name '{desiredName}'.");
 						case CreationCollisionOption.OpenIfExists:
 							break;
 						case CreationCollisionOption.ReplaceExisting:
@@ -110,14 +110,14 @@ namespace Windows.Storage
 
 						if (File.Exists(path))
 						{
-							throw new UnauthorizedAccessException("There is already a file with the same name.");
+							throw new UnauthorizedAccessException($"There is already a file with the name '{folderName}'.");
 						}
 						break;
 
 					case CreationCollisionOption.FailIfExists:
 						if (Directory.Exists(path) || File.Exists(path))
 						{
-							throw new UnauthorizedAccessException("There is already an item with the same name.");
+							throw new UnauthorizedAccessException($"There is already an item with the name '{folderName}'.");
 						}
 						break;
 
@@ -129,7 +129,7 @@ namespace Windows.Storage
 
 						if (File.Exists(path))
 						{
-							throw new UnauthorizedAccessException("There is already a file with the same name.");
+							throw new UnauthorizedAccessException($"There is already a file with the same name '{folderName}'.");
 						}
 						break;
 
@@ -157,12 +157,12 @@ namespace Windows.Storage
 
 				if (Directory.Exists(filePath))
 				{
-					throw new ArgumentException("The item with given name is a folder.", nameof(name));
+					throw new ArgumentException($"The item with name '{name}' is a folder.", nameof(name));
 				}
 
 				if (!File.Exists(filePath))
 				{
-					throw new FileNotFoundException("There is no file with this name.");
+					throw new FileNotFoundException($"There is no file with name '{name}'.");
 				}
 
 				return StorageFile.GetFileFromPath(filePath);
@@ -227,12 +227,12 @@ namespace Windows.Storage
 
 				if (File.Exists(itemPath))
 				{
-					throw new ArgumentException("The item with given name is a file.", nameof(name));
+					throw new ArgumentException($"The item with name '{name}' is a file.", nameof(name));
 				}
 
 				if (!Directory.Exists(itemPath))
 				{
-					throw new FileNotFoundException("There is no file with this name.");
+					throw new FileNotFoundException($"There is no file with name '{name}'.");
 				}
 
 				return await GetFolderFromPathAsync(itemPath);
