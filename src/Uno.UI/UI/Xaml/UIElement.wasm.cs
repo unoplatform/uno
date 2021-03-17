@@ -255,6 +255,12 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(LayoutSlotWithMarginsAndAlignments), LayoutSlotWithMarginsAndAlignments);
 			}
 
+			if (Visibility == Visibility.Collapsed)
+			{
+				// cf. OnVisibilityChanged
+				rect.X = rect.Y = -100000;
+			}
+
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
 			OnViewportUpdated(clipRect ?? Rect.Empty);
 
@@ -415,7 +421,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				SetStyle("visibility", "hidden");
+				// Note: On wasm when we have an 'hidden' (or 'collapsed') element, its height is used to compute the native 'scrollHeight',
+				// driving the SV to flicker when we scroll while at the bottom of the viewport (if those hidden element would have increase the viewport if visible).
+				// To avoid that, we move the element way out of the visible bounds of the view.
+				SetStyle(("visibility", "hidden"), ("top", "-100000px"), ("left", "-100000px"));
 			}
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)

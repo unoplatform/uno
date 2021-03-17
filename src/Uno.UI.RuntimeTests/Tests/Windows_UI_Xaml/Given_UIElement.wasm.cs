@@ -58,6 +58,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual("p", SUT.HtmlTag);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_VisibilityCollapsed_Then_ScrollViewerIgnoresElement()
+		{
+			var item1 = new Border { Height = 128};
+			var item2 = new Border { Height = 4096, Visibility = Visibility.Collapsed };
+			var sv = new ScrollViewer {Content = new Grid {Children = {item1, item2}}};
+
+			TestServices.WindowHelper.WindowContent = sv;
+			await Render();
+			var sut = sv.FindFirstChild<ScrollContentPresenter>();
+
+			Assert.AreEqual(128.0, double.Parse(sut.GetProperty("scrollHeight")));
+
+			item2.Visibility = Visibility.Visible;
+			await Render();
+
+			Assert.AreEqual(4096.0, double.Parse(sut.GetProperty("scrollHeight")));
+
+			item2.Visibility = Visibility.Collapsed;
+			await Render();
+
+			Assert.AreEqual(128.0, double.Parse(sut.GetProperty("scrollHeight")));
+
+			async Task Render()
+			{
+				await TestServices.WindowHelper.WaitForIdle();
+				sv.InvalidateArrange();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+		}
 	}
 
 	public class MyLine : Line
