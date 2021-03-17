@@ -337,19 +337,12 @@ namespace SamplesApp
 #endif
 			var factory = LoggerFactory.Create(builder =>
 			{
-#if DEBUG
+#if __WASM__
+				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
+#else
+				builder.AddConsole();
+#endif
 
-#if __WASM__
-				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#endif
-				builder.AddConsole();
-#else
-#if __WASM__
-				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#else
-				builder.AddConsole();
-#endif
-#endif
 				builder.AddFilter("Uno", LogLevel.Warning);
 				builder.AddFilter("Windows", LogLevel.Warning);
 				builder.AddFilter("Microsoft", LogLevel.Warning);
