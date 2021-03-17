@@ -6,7 +6,7 @@ using Uno.Storage.Streams.Internal;
 namespace Windows.Storage.Streams
 {
 	public partial class FileRandomAccessStream
-    {
+	{
 		internal static FileRandomAccessStream CreateSecurityScoped(NSUrl url, FileAccess access, FileShare share) =>
 			new FileRandomAccessStream(SecurityScoped.Create(url, access, share));
 

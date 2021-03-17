@@ -31,7 +31,7 @@ namespace Windows.Storage
 			{
 				var directoryPath = IOPath.GetDirectoryName(Path);
 				return directoryPath != null ? new StorageFolder(directoryPath) : null;
-			} 
+			}
 
 			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 				=> BasicProperties.FromFilePath(Owner.Path);

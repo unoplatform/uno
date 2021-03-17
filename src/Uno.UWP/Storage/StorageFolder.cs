@@ -18,7 +18,7 @@ using Foundation;
 namespace Windows.Storage
 {
 	public partial class StorageFolder : IStorageFolder, IStorageItem, IStorageItem2
-	{		
+	{
 		private StorageFolder(ImplementationBase implementation)
 		{
 			Implementation = implementation;
@@ -92,7 +92,7 @@ namespace Windows.Storage
 
 		public IAsyncOperation<IReadOnlyList<StorageFile>> GetFilesAsync() =>
 			AsyncOperation.FromTask(ct => Implementation.GetFilesAsync(ct));
-		
+
 		public IAsyncOperation<IReadOnlyList<StorageFolder>> GetFoldersAsync() =>
 			AsyncOperation.FromTask(ct => Implementation.GetFoldersAsync(ct));
 

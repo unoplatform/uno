@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Contacts
 
 			using var picker = new CNContactPickerViewController
 			{
-				
+
 				Delegate = multiple ?
 					(ICNContactPickerDelegate)new MultipleContactPickerDelegate(completionSource) :
 					(ICNContactPickerDelegate)new SingleContactPickerDelegate(completionSource),
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Contacts
 			if (string.IsNullOrWhiteSpace(contact.DisplayName) && !string.IsNullOrWhiteSpace(cnContact.OrganizationName))
 			{
 				contact.DisplayNameOverride = cnContact.OrganizationName;
-			} 
+			}
 
 			foreach (var phoneNumber in cnContact.PhoneNumbers)
 			{

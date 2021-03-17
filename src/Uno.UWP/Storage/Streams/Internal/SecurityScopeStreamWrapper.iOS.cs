@@ -18,7 +18,7 @@ namespace Uno.Storage.Streams.Internal
 		{
 			_url = url;
 			_securityScope = _url.BeginSecurityScopedAccess();
-			_innerStream = streamBuilder();			
+			_innerStream = streamBuilder();
 		}
 
 		public override bool CanRead => _innerStream.CanRead;

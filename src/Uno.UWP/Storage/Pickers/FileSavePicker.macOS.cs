@@ -37,7 +37,7 @@ namespace Windows.Storage.Pickers
 		{
 			var specialFolder = SuggestedStartLocation switch
 			{
-				PickerLocationId.DocumentsLibrary =>  NSSearchPathDirectory.DocumentDirectory,
+				PickerLocationId.DocumentsLibrary => NSSearchPathDirectory.DocumentDirectory,
 				PickerLocationId.Desktop => NSSearchPathDirectory.DesktopDirectory,
 				PickerLocationId.MusicLibrary => NSSearchPathDirectory.MusicDirectory,
 				PickerLocationId.PicturesLibrary => NSSearchPathDirectory.PicturesDirectory,

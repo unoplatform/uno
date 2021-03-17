@@ -42,7 +42,7 @@ namespace Windows.Storage
 			}
 
 			public override StorageProvider Provider => StorageProviders.NativeWasm;
-			
+
 			public static async Task<StorageFolder?> GetPrivateRootAsync()
 			{
 				var itemInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getPrivateRootAsync()");
