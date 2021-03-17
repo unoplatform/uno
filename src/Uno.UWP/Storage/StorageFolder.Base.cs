@@ -25,7 +25,9 @@ namespace Windows.Storage
 
 			public virtual string Name { get; } = string.Empty;
 
-			public virtual string Path { get; protected set; }
+			public virtual string DisplayName => Name;
+
+			public virtual string Path { get; protected set; } = string.Empty;
 
 			public bool IsEqual(IStorageItem item) => item is StorageFolder sf && IsEqual(sf.Implementation);
 

@@ -89,36 +89,68 @@ namespace UITests.Windows_Storage
 
 		private async void PickFolder()
 		{
-			var picker = new FolderPicker()
+			ErrorMessage = string.Empty;
+			try
 			{
-				SuggestedStartLocation = PickerLocationId.ComputerFolder,
-				FileTypeFilter = { "*" }
-			};
-			PickedFolder = await picker.PickSingleFolderAsync();
+				var picker = new FolderPicker()
+				{
+					SuggestedStartLocation = PickerLocationId.ComputerFolder,
+					FileTypeFilter = { "*" }
+				};
+				PickedFolder = await picker.PickSingleFolderAsync();
+			}
+			catch(Exception ex)
+			{
+				ErrorMessage = "Can't pick folder: " + ex;
+			}
 		}
 
 		public ICommand ListItemsCommand => GetOrCreateCommand(ListItems);
 
 		private async void ListItems()
 		{
-			var items = await _pickedFolder.GetItemsAsync();
-			StorageItemList = new ObservableCollection<IStorageItem>(items);
+			ErrorMessage = string.Empty;
+			try
+			{
+				var items = await _pickedFolder.GetItemsAsync();
+				StorageItemList = new ObservableCollection<IStorageItem>(items);
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = "Can't list items: " + ex;
+			}
 		}
 
 		public ICommand ListFilesCommand => GetOrCreateCommand(ListFiles);
 
 		private async void ListFiles()
 		{
-			var files = await _pickedFolder.GetFilesAsync();
-			StorageItemList = new ObservableCollection<IStorageItem>(files);
+			ErrorMessage = string.Empty;
+			try
+			{
+				var files = await _pickedFolder.GetFilesAsync();
+				StorageItemList = new ObservableCollection<IStorageItem>(files);
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = "Can't list files: " + ex;
+			}
 		}
 
 		public ICommand ListFoldersCommand => GetOrCreateCommand(ListFolders);
 
 		private async void ListFolders()
 		{
-			var folders = await _pickedFolder.GetFoldersAsync();
-			StorageItemList = new ObservableCollection<IStorageItem>(folders);
+			ErrorMessage = string.Empty;
+			try
+			{
+				var folders = await _pickedFolder.GetFoldersAsync();
+				StorageItemList = new ObservableCollection<IStorageItem>(folders);
+			}
+			catch(Exception ex)
+			{
+				ErrorMessage = "Can't list folders: " + ex;
+			}
 		}
 
 		public ICommand GetBasicPropertiesCommand => GetOrCreateCommand(GetBasicProperties);

@@ -31,6 +31,8 @@ namespace Windows.Storage
 
 		public string Name => Implementation.Name;
 
+		public string DisplayName => Implementation.DisplayName;
+
 		internal ImplementationBase Implementation { get; }
 
 #if !__WASM__

@@ -21,7 +21,7 @@ namespace Windows.Storage
 	partial class StorageFolder
 	{
 		internal StorageFolder(string fullPath)
-			: this(new Local(IOPath.GetFileName(fullPath), fullPath))
+			: this(new Local(string.Empty, fullPath))
 		{
 		}
 
@@ -34,10 +34,25 @@ namespace Windows.Storage
 		{
 			private string _name;
 
-			public Local(string name, string path)
+			public Local(string? name, string path)
 				: base(path)
 			{
-				_name = name;
+				if (string.IsNullOrEmpty(name))
+				{
+					if (!path.EndsWith("/"))
+					{
+						// Intentionally use GetFileName here, as the directory name
+						// may be a "file-like name" e.g. myfolder.txt, in which case
+						// GetDirectoryName would actually return the parent.
+						name = IOPath.GetFileName(path);
+					}
+					else
+					{
+						name = IOPath.GetDirectoryName(path);
+					}
+				}
+
+				_name = name ?? string.Empty;
 			}
 
 			public override StorageProvider Provider => StorageProviders.Local;
