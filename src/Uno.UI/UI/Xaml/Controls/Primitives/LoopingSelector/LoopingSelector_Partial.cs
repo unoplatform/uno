@@ -393,7 +393,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (!_isWithinScrollChange && !_isWithinArrangeOverride)
 					{
-						Balance(true /* isOnSnapPoint */);
+						// --------------------
+						// 2021-03-17 / Uno 3.6
+						// --------------------
+						// Uno: There's a difference between Windows and Uno here.
+						// On Uno, the ViewChanging event is not raised from the ScrollViewer
+						// and the ViewChanged is called for every change in the scroll position.
+						// On Windows, the ViewChanged is called only with values on "snap point".
+						// So letting the isOnSnapPoint to true here is causing strange problems in Uno.
+
+						//Balance(true /* isOnSnapPoint */);
+						Balance(false);
 						if (_itemState == ItemState.ManipulationInProgress)
 						{
 							TransitionItemsState(ItemState.Expanded);
