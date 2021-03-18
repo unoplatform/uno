@@ -2,7 +2,6 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ output extension=".cs" #>
 
 using System;
 using System.Linq;
@@ -32,7 +31,7 @@ using View = AppKit.NSView;
 #elif XAMARIN_ANDROID
 using Color = Android.Resource.Color;
 using View = Android.Views.View;
-#elif NET461 || __WASM__
+#elif NET461 || UNO_REFERENCE_API
 using Color = System.Object;
 using View = Windows.UI.Xaml.FrameworkElement;
 #endif  
@@ -59,7 +58,7 @@ namespace <#= @namespace.Name #>
             set { this.SetValue(<#= dp.Name #>Property, value); }
         }
 
-        public static readonly DependencyProperty <#= dp.Name #>Property =
+        public static DependencyProperty <#= dp.Name #>Property { get ; } =
             DependencyProperty.Register(
                 "<#= dp.Name #>",
                 typeof(<#= dp.PropertyType #>),

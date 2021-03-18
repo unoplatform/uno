@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Web;
+using Windows.Foundation;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
+using Uno.Collections;
+using Uno.Disposables;
 using Uno.Extensions;
 
 namespace Uno.UI.UI.Xaml.Documents
@@ -41,7 +44,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 			else
 			{
-				var value = (FontStyle) localValue;
+				var value = (FontStyle)localValue;
 				switch (value)
 				{
 					case FontStyle.Normal:
@@ -77,17 +80,16 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 			else
 			{
-				var value = (FontFamily) localValue;
+				var value = (FontFamily)localValue;
 				if (value != null)
 				{
-					// TODO
 					var actualFontFamily = value.Source;
 					if (actualFontFamily == "XamlAutoFontFamily")
 					{
 						value = FontFamily.Default;
 					}
 
-					element.SetStyle("font-family", value.Source);
+					element.SetStyle("font-family", value.ParsedSource);
 				}
 			}
 		}
@@ -101,16 +103,24 @@ namespace Uno.UI.UI.Xaml.Documents
 			else
 			{
 				var value = (double)localValue;
-				element.SetStyle("font-size", $"{value.ToStringInvariant()}px");
+				element.SetStyle("font-size", value.ToStringInvariant() + "px");
 			}
 		}
 
 		internal static void SetMaxLines(this UIElement element, object localValue)
 		{
-			// Not available yet
+			if (localValue is UnsetValue)
+			{
+				element.ResetStyle("display", "-webkit-line-clamp", "webkit-box-orient");
+			}
+			else
+			{
+				var value = (int)localValue;
+				element.SetStyle(("display", "-webkit-box"), ("-webkit-line-clamp", value.ToStringInvariant()), ("-webkit-box-orient", "vertical"));
+			}
 		}
 
-		internal static void SetTextTrimming(this UIElement element, object localValue)
+		private static void SetTextTrimming(this UIElement element, object localValue)
 		{
 			switch (localValue)
 			{
@@ -133,19 +143,71 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 		}
 
+		private static WeakAttachedDictionary<UIElement, string> _imageBrushSubscription =
+			new WeakAttachedDictionary<UIElement, string>();
+
 		internal static void SetForeground(this UIElement element, object localValue)
 		{
+			var brushSubscription = _imageBrushSubscription.GetValue(element, "foreground", () => new SerialDisposable());
+
+			brushSubscription.Disposable = null;
+
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
-					element.SetStyle("color", scb.ColorWithOpacity.ToCssString());
+					element.SetStyle("color", scb.ColorWithOpacity.ToHexString());
+					break;
+				case GradientBrush gradient:
+					element.SetStyle(
+						("background", gradient.ToCssString(element.RenderSize)),
+						("color", "transparent"),
+						("background-clip", "text")
+					);
+					break;
+
+				case ImageBrush imageBrush:
+					brushSubscription.Disposable = imageBrush.Subscribe(img =>
+					{
+						switch (img.Kind)
+						{
+							case ImageDataKind.Empty:
+							case ImageDataKind.Error:
+								element.ResetStyle(
+									"background-color",
+									"background-image",
+									"background-size");
+								element.SetStyle(
+									("color", "transparent"),
+									("background-clip", "text"));
+								break;
+
+							case ImageDataKind.DataUri:
+							case ImageDataKind.Url:
+							default:
+								element.SetStyle(
+									("color", "transparent"),
+									("background-clip", "text"),
+									("background-color", ""),
+									("background-origin", "content-box"),
+									("background-position", imageBrush.ToCssPosition()),
+									("background-size", imageBrush.ToCssBackgroundSize()),
+									("background-image", "url(" + img.Value + ")")
+								);
+								break;
+						}
+					});
+					break;
+				case AcrylicBrush acrylic:
+					acrylic.Apply(element);
+					element.SetStyle("background-clip", "text");
 					break;
 
 				case UnsetValue uv:
 
 				// TODO: support other foreground types
 				default:
-					element.ResetStyle("color");
+					element.ResetStyle("color", "background", "background-clip");
+					AcrylicBrush.ResetStyle(element);
 					break;
 			}
 		}
@@ -158,8 +220,8 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 			else
 			{
-				var value = (int) localValue;
-				element.SetStyle("letter-spacing", $"{(value / 1000.0).ToStringInvariant()}em");
+				var value = (int)localValue;
+				element.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
 			}
 		}
 
@@ -171,14 +233,14 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 			else
 			{
-				var value = (double) localValue;
+				var value = (double)localValue;
 				if (Math.Abs(value) < 0.0001)
 				{
 					element.ResetStyle("line-height");
 				}
 				else
 				{
-					element.SetStyle("line-height", $"{value.ToStringInvariant()}px");
+					element.SetStyle("line-height", value.ToStringInvariant() + "px");
 				}
 			}
 		}
@@ -191,7 +253,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 			else
 			{
-				var value = (TextAlignment) localValue;
+				var value = (TextAlignment)localValue;
 				switch (value)
 				{
 					case TextAlignment.Left:
@@ -214,35 +276,37 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 		}
 
-		internal static void SetTextWrapping(this UIElement element, object localValue)
+		internal static void SetTextWrappingAndTrimming(this UIElement element, object textWrapping, object textTrimming)
 		{
-			if (localValue is UnsetValue)
+			if (textWrapping is UnsetValue)
 			{
 				element.ResetStyle("white-space", "word-break", "text-overflow");
 			}
 			else
 			{
-				var value = (TextWrapping) localValue;
+				var value = (TextWrapping)textWrapping;
 				switch (value)
 				{
 					case TextWrapping.NoWrap:
-						element.SetAttribute("wrap", "off");
 						element.SetStyle(
 							("white-space", "pre"),
-							("word-break", ""),
-							("text-overflow", ""));
+							("word-break", ""));
+
+						// Triming and wrapping are not yet supported by browsers. This spec would enable it:
+						// https://drafts.csswg.org/css-overflow-3/#propdef-block-ellipsis
+						//
+						// For now, trimming isonly supported when wrapping is disabled.
+						SetTextTrimming(element, textTrimming);
 						break;
 					case TextWrapping.Wrap:
-						element.SetAttribute("wrap", "soft");
 						element.SetStyle(
-							("white-space", ""),
+							("white-space", "pre-wrap"),
 							("word-break", "break-word"), // This is required to still wrap words that are longer than the ViewPort
 							("text-overflow", ""));
 						break;
 					case TextWrapping.WrapWholeWords:
-						element.SetAttribute("wrap", "soft");
 						element.SetStyle(
-							("white-space", ""),
+							("white-space", "pre-wrap"),
 							("word-break", "keep-all"), // This is required to still wrap words that are longer than the ViewPort
 							("text-overflow", ""));
 						break;

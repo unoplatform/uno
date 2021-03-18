@@ -22,8 +22,9 @@ using System.IO;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI.Common;
+using Microsoft.UI.Xaml.Controls;
 
-#if XAMARIN || NETSTANDARD2_0
+#if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
@@ -35,7 +36,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SampleControl.Presentation
 {
-	public partial class SampleChooserViewModel : INotifyPropertyChanged
+	public partial class SampleChooserViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		private bool _categoriesSelected = true;
 		private bool _favoritesSelected = false;
@@ -51,6 +52,7 @@ namespace SampleControl.Presentation
 		private bool _isFavoritedSample = false;
 		private bool _isAnyContentVisible = false;
 		private bool _contentAttachedToWindow;
+		private bool _useFluentStyles;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
 
@@ -66,10 +68,11 @@ namespace SampleControl.Presentation
 		private SampleChooserContent _selectedFavoriteSample;
 		private SampleChooserContent _selectedSearchSample;
 		private List<SampleChooserContent> _filteredSamples;
+		private XamlControlsResources _fluentResources;
 
 		private void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
 		}
 
 		//TABS
@@ -250,17 +253,18 @@ namespace SampleControl.Presentation
 				_currentSelectedSample = value;
 				RaisePropertyChanged();
 				(ReloadCurrentTestCommand as DelegateCommand).CanExecuteEnabled = true;
+				(ShowTestInformationCommand as DelegateCommand).CanExecuteEnabled = true;
 
 				var currentTextIndex = SelectedCategory?.SamplesContent.IndexOf(value);
 				// Set Previous
 				PreviousSample = currentTextIndex == null || currentTextIndex < 1
 					? null
-					: SelectedCategory.SamplesContent[(int)currentTextIndex - 1];
+					: SelectedCategory.SamplesContent.Skip((int)currentTextIndex - 1).FirstOrDefault();
 
 				// Set Next
 				NextSample = currentTextIndex == null || currentTextIndex < 0 || currentTextIndex == SelectedCategory.SamplesContent.Count - 1
 					? null
-					: SelectedCategory.SamplesContent[(int)currentTextIndex + 1];
+					: SelectedCategory.SamplesContent.Skip((int)currentTextIndex + 1).FirstOrDefault();
 			}
 		}
 
@@ -390,7 +394,25 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		public bool UseFluentStyles
+		{
+			get => _useFluentStyles;
+			set
+			{
+				_useFluentStyles = value;
+				if (_useFluentStyles)
+				{
+					_fluentResources = _fluentResources ?? new XamlControlsResources();
+					Application.Current.Resources.MergedDictionaries.Add(_fluentResources);
+				}
+				else
+				{
+					Application.Current.Resources.MergedDictionaries.Remove(_fluentResources);
+				}
+				RaisePropertyChanged();
+			}
+		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 	}
 }

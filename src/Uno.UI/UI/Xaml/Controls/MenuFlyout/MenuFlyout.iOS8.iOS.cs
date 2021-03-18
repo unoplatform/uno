@@ -30,12 +30,12 @@ namespace Windows.UI.Xaml.Controls
 					true == (item.GetValue(IsDestructiveProperty) as bool?) ? UIAlertActionStyle.Destructive : UIAlertActionStyle.Default,
 					_ =>
 					{
-						item.Command.ExecuteIfPossible(item.CommandParameter);
+						item.InvokeClick();
 						Hide();
 					}
 				))
 				.Concat(UIAlertAction.Create(
-					LocalizedCancelString,
+					GetValue(CancelTextIosOverrideProperty) as string ?? LocalizedCancelString,
 					UIAlertActionStyle.Cancel,
 					_ => this.Hide()
 				))

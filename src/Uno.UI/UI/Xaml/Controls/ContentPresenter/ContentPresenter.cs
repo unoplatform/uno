@@ -14,6 +14,7 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.Extensions.Logging;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -31,7 +32,7 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
-#elif __WASM__ || NET461
+#elif UNO_REFERENCE_API || NET461
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
@@ -39,7 +40,7 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement
+	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
@@ -53,6 +54,18 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
+		/// <summary>
+		/// Indicates if the content should inherit templated parent from the presenter, or its templated parent.
+		/// </summary>
+		/// <remarks>Clear this flag to let the control nested directly under this ContentPresenter to inherit the correct templated parent</remarks>
+		internal bool SynchronizeContentWithOuterTemplatedParent { get; set; } = true;
+
+		/// <summary>
+		/// Determines if the current ContentPresenter is hosting a native control.
+		/// </summary>
+		/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
+		internal bool IsNativeHost { get; set; }
+
 		protected override bool IsSimpleLayout => true;
 
 		#region Content DependencyProperty
@@ -63,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(object),
@@ -86,13 +99,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ContentTemplateProperty =
+		public static DependencyProperty ContentTemplateProperty { get ; } =
 			DependencyProperty.Register(
 				"ContentTemplate",
 				typeof(DataTemplate),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					(s, e) => ((ContentPresenter)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);
@@ -106,12 +120,12 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ContentTemplateSelectorProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentTemplateSelectorProperty =
+		public static DependencyProperty ContentTemplateSelectorProperty { get ; } =
 			DependencyProperty.Register(
 				"ContentTemplateSelector",
 				typeof(DataTemplateSelector),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((ContentPresenter)s)?.OnContentTemplateSelectorChanged(e.OldValue as DataTemplateSelector, e.NewValue as DataTemplateSelector)
 				)
@@ -126,8 +140,8 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentTransitionsProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentTransitionsProperty =
-			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentPresenter), new PropertyMetadata(null, OnContentTransitionsChanged));
+		public static DependencyProperty ContentTransitionsProperty { get ; } =
+			DependencyProperty.Register("ContentTransitions", typeof(TransitionCollection), typeof(ContentPresenter), new FrameworkPropertyMetadata(null, OnContentTransitionsChanged));
 
 		private static void OnContentTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -156,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ForegroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -178,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontWeightProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontWeightProperty =
+		public static DependencyProperty FontWeightProperty { get ; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -200,13 +214,13 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontSizeProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontSizeProperty =
+		public static DependencyProperty FontSizeProperty { get ; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
-					11.0,
+					14.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((ContentPresenter)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -222,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontFamilyProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontFamilyProperty =
+		public static DependencyProperty FontFamilyProperty { get ; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -243,7 +257,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontStyleProperty, value); }
 		}
 
-		public static readonly DependencyProperty FontStyleProperty =
+		public static DependencyProperty FontStyleProperty { get ; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -264,12 +278,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(TextWrappingProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextWrappingProperty =
+		public static DependencyProperty TextWrappingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnTextWrappingChanged()
 				)
@@ -292,12 +306,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(MaxLinesProperty, value); }
 		}
 
-		public static readonly DependencyProperty MaxLinesProperty =
+		public static DependencyProperty MaxLinesProperty { get ; } =
 			DependencyProperty.Register(
 				"MaxLines",
 				typeof(int),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: 0,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 				)
@@ -320,12 +334,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(TextTrimmingProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextTrimmingProperty =
+		public static DependencyProperty TextTrimmingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextTrimming",
 				typeof(TextTrimming),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: TextTrimming.None,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnTextTrimmingChanged()
 				)
@@ -352,12 +366,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(TextAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextAlignmentProperty =
+		public static DependencyProperty TextAlignmentProperty { get ; } =
 			DependencyProperty.Register(
 				"TextAlignment",
 				typeof(TextAlignment),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: TextAlignment.Left,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnTextAlignmentChanged()
 				)
@@ -380,12 +394,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(HorizontalContentAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty HorizontalContentAlignmentProperty =
+		public static DependencyProperty HorizontalContentAlignmentProperty { get ; } =
 			DependencyProperty.Register(
 				"HorizontalContentAlignment",
 				typeof(HorizontalAlignment),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					HorizontalAlignment.Stretch,
 					(s, e) => ((ContentPresenter)s)?.OnHorizontalContentAlignmentChanged((HorizontalAlignment)e.OldValue, (HorizontalAlignment)e.NewValue)
 				)
@@ -409,12 +423,12 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(VerticalContentAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty VerticalContentAlignmentProperty =
+		public static DependencyProperty VerticalContentAlignmentProperty { get ; } =
 			DependencyProperty.Register(
 				"VerticalContentAlignment",
 				typeof(VerticalAlignment),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					VerticalAlignment.Stretch,
 					(s, e) => ((ContentPresenter)s)?.OnVerticalContentAlignmentChanged((VerticalAlignment)e.OldValue, (VerticalAlignment)e.NewValue)
 				)
@@ -443,7 +457,7 @@ namespace Windows.UI.Xaml.Controls
 				"Padding",
 				typeof(Thickness),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
 					(s, e) => ((ContentPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -471,7 +485,7 @@ namespace Windows.UI.Xaml.Controls
 				"BorderThickness",
 				typeof(Thickness),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
 					(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -497,7 +511,7 @@ namespace Windows.UI.Xaml.Controls
 				"BorderBrush",
 				typeof(Brush),
 				typeof(ContentPresenter),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((ContentPresenter)s)?.OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)
@@ -512,27 +526,20 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region CornerRadius DependencyProperty
+		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty CornerRadiusProperty = CreateCornerRadiusProperty();
 
 		public CornerRadius CornerRadius
 		{
-			get { return (CornerRadius)GetValue(CornerRadiusProperty); }
-			set { SetValue(CornerRadiusProperty, value); }
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
-
-		public static DependencyProperty CornerRadiusProperty =
-			DependencyProperty.Register(
-				"CornerRadius",
-				typeof(CornerRadius),
-				typeof(ContentPresenter),
-				new PropertyMetadata(
-					CornerRadius.None,
-					(s, e) => ((ContentPresenter)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
-				)
-			);
 
 		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 		{
-			UpdateBorder();
+			UpdateCornerRadius(newValue);
 		}
 
 		#endregion
@@ -673,13 +680,44 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SynchronizeContentTemplatedParent()
 		{
-			if (_contentTemplateRoot is IFrameworkElement binder)
+			if (IsNativeHost)
 			{
-				var templatedParent = _contentTemplateRoot is ImplicitTextBlock
-					? this // ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
-					: (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
+				// In this case, the ContentPresenter is not used as part of the child of a
+				// templated control, and we must not take the outer templated parent, but rather
+				// the immediate template parent (as if the native view was not wrapped).
+				// Needs to be reevaluated with https://github.com/unoplatform/uno/issues/1621
+				if (_contentTemplateRoot is IFrameworkElement binder)
+				{
+					binder.TemplatedParent = this.TemplatedParent;
+				}
+			}
+			else
+			{
+				if (_contentTemplateRoot is IFrameworkElement binder)
+				{
+					binder.TemplatedParent = FindTemplatedParent();
 
-				binder.TemplatedParent = templatedParent;
+					DependencyObject FindTemplatedParent()
+					{
+						// ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
+						if (_contentTemplateRoot is ImplicitTextBlock) return this;
+
+						// Sometimes when content is a child view defined in the xaml, the direct TemplatedParent should be used,
+						// but only if the content hasnt been overwritten yet. If the content has been overwritten,
+						// either ImplicitTextBlock or the DataTemplate (requiring the outter TemplatedParent) would has been used.
+						if (!SynchronizeContentWithOuterTemplatedParent && _dataTemplateUsedLastUpdate == null)
+						{
+							return this.TemplatedParent;
+						}
+
+						return (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
+					}
+				}
+				else if (_contentTemplateRoot is DependencyObject dependencyObject)
+				{
+					// Propagate binding context correctly
+					dependencyObject.SetParent(this);
+				}
 			}
 		}
 
@@ -715,9 +753,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="previousValue"></param>
 		private void CleanupView(View previousValue)
 		{
+			if (!(previousValue is IFrameworkElement) && previousValue is DependencyObject dependencyObject)
+			{
+				dependencyObject.SetParent(null);
+			}
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -829,7 +871,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetImplicitContent()
 		{
-			if(!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
+			if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
 			{
 				return;
 			}
@@ -955,9 +997,16 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			base.OnBackgroundChanged(e);
+			// Don't call base, the UpdateBorder() method handles drawing the background.
+			// base.OnBackgroundChanged(e);
 
 			UpdateBorder();
+		}
+
+		internal override void UpdateThemeBindings()
+		{
+			base.UpdateThemeBindings();
+			SetDefaultForeground(ForegroundProperty);
 		}
 
 #if XAMARIN_ANDROID
@@ -989,7 +1038,7 @@ namespace Windows.UI.Xaml.Controls
 				var padding = Padding;
 				var borderThickness = BorderThickness;
 
-				var finalRect = new Foundation.Rect(
+				var finalRect = new Windows.Foundation.Rect(
 					padding.Left + borderThickness.Left,
 					padding.Top + borderThickness.Top,
 					finalSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
@@ -1019,5 +1068,7 @@ namespace Windows.UI.Xaml.Controls
 				measuredSize.Height + padding.Top + padding.Bottom + borderThickness.Top + borderThickness.Bottom
 			);
 		}
+
+		private protected override Thickness GetBorderThickness() => BorderThickness;
 	}
 }

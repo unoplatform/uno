@@ -1,10 +1,10 @@
-# Uno features
+# Uno Platform Features
 
-## Development flow
+## Development Flow
 
-- Uno's UWP Xaml
+- Uno Platform's UWP XAML
     - **Windows-first development**
-    - **Faster compilation** for most of the development cycle, including UI code. iOS and Android can be tested for platform-specific features.
+    - **Faster compilation** for most of the development cycle, including UI code. iOS, Android, WebAssembly, macOS and Linux can be tested for platform-specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.
     - Allows for **edit and continue** support from VS2017+
     - Allows for **UI and Non-UI code edit and continue** support
@@ -16,7 +16,7 @@
     - **XamlBehaviors library** support
 - MacOS Compilation
 
-## Features list
+## Features List
 
 ### Animations
 
@@ -40,12 +40,12 @@
 - Inheritance
 - Mode
 - Trigger
-- x:Bind *(without phases and expressions)*
+- x:Bind with support functions
 - Converters
 - Attached Properties binding
 - RelativeSource.Self
 
-### Design fidelity
+### Design Fidelity
 - Text Inlines Binding
 - Text Independent trimming and wrapping
 - Text Character Spacing
@@ -56,7 +56,7 @@
 - `FontIcon` support
 - Merged Dictionary support
 
-### Responsive design
+### Responsive Design
 
 - Layout constraints [Min/Max][Width/Height]
 - Binding SourceTriggers (TextBox immediate vs. focus lost interactions)
@@ -65,7 +65,7 @@
 ### Runtime Performance
 
 - CoreDispatcher Priority support (Large UIs performance)
-- `x:DeferLoadStrategy="Lazy"` and `x:Load="false"` support (responsive design performance)
+- `x:DeferLoadStrategy="Lazy"`, `x:Load="false"` and `x:Load="{x:Bind ...}" support (responsive design performance)
 - Image explicit size support (performance)
 - Event tracing (sub-millisecond [ETL performance profiling](Assets/diagnostics.PNG))
 - Internal logging
@@ -125,7 +125,7 @@
 - Native and Custom dialogs
 - Support for StateTriggers
 - ProgressBar
-- Pointer Events
+- [Pointer Events](features/routed-events.md)
 - [Routed Events](features/routed-events.md)
 - GeneralTransform.TransformBounds
 - Window.Services.Store (Store ID and links)
@@ -136,7 +136,7 @@
 - ScrollViewer Snap Points, Extent, Viewport Properties
 - ScrollViewer MakeVisible, BringIntoView
 - InputPane (Occlusion, Visibility, Events, ...)
-- Pointer Capture
+- [Pointer Capture](features/routed-events.md)
 - Slider
 - FlipView
 - Customizable Date and Time Pickers
@@ -152,8 +152,14 @@
 - BitmapIcon
 - MediaPlayer
 - ViewBox
+- PersonPicture
+- ScrollBar
 
-### Non-UI features
+## WinUI Specific Controls (Pre 3.0)
+- [NumberBox](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
+- [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
+
+### Non-UI Features
 
 - Windows.UI.Storage (StorageFile, StorageFolder, Settings)
 - Windows.UI.Application

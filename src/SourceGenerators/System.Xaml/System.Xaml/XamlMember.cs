@@ -279,6 +279,7 @@ namespace Uno.Xaml
 				underlying_getter == other.underlying_getter &&
 				underlying_setter == other.underlying_setter &&
 				Name == other.Name &&
+				DeclaringType == other.DeclaringType &&
 				PreferredXamlNamespace == other.PreferredXamlNamespace &&
 				directive_ns == other.directive_ns &&
 				is_attachable == other.is_attachable;

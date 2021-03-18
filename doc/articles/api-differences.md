@@ -1,67 +1,35 @@
-# Uno.UI and UWP API or Behavior differences
+# Differences between Uno.UI and UWP/WinUI
 
-For legacy, platform support or performance reasons, Uno has some notable API differences.
+Uno Platform strives to closely replicate the UWP/WinUI API on all platforms and ensure that existing WinUI code is 100% compatible with Uno. This article covers areas where Uno.UI's implementation differs, typically to better integrate with the native platform, or where the capabilities of .NET differ due to inherent limitations of the native platform.
 
-### DependencyObject is an interface.
-`DependencyObject` is an interface to allow for XAML controls to inherit directly from their native counterpart. The implementation of the methods is done through the `DependencyObjectGenerator` source generator, automatically.
+This article doesn't cover parts of the API which haven't been implemented yet. You can consult a [complete list of implemented and unimplemented controls here](implemented-views.md).
 
-This has some implications in generic constraints which require to a class, but can be worked around using the `IS_UNO` define.
+For a practical guide to addressing differences between Uno Platform and WinUI, [read this article](migrating-guidance.md).
 
-### Panel.Children is exposing native views as items
-This a legacy requirement which will be updated in the future. This is currently required by iOS/Android `Image` control, as well as iOS implementation of `TextBlock`.
+## API differences
 
-Historically, this has been a requirement for performance reasons related to view nesting in Android 4.4 and earlier, cause by a very short UI Thread stack size.
+### `FrameworkElement` inherits from native base view types (Android, iOS, macOS)
 
-For the time being, enumerating panel children can be done as follows, in a cross platform compatible way:
+As for WinUI, all visual elements in Uno.UI inherit from `FrameworkElement`, which inherits from `UIElement`. (At least, those that are publicly available.) On Windows, `UIElement` inherits from the `DependencyObject` class, which inherits from `System.Object`.
 
-```csharp
-foreach(var item in myPanel.Children)
-{
-    if(item is FrameworkElement fe)
-    {
-        // Process the item
-    }
-}
-```
+On Android, iOS, and macOS, `UIElement` instead inherits from the native base view type for each platform, as exposed to .NET by Xamarin Native. So, `ViewGroup` for Android, `UIView` for iOS, and `NSView` for macOS.
 
-This difference is particularly visible for custom panel implementations.
+This allows native views (not defined by Uno.UI or inheriting from `FrameworkElement`) to be directly integrated into the visual tree, [in XAML markup or C# code](native-views.md). 
 
-### ListView implementations
+### `DependencyObject` type is an interface (all non-Windows platforms)
 
-The implementations of the ListView for iOS and Android use the native controls for performance reasons, see the [ListViewBase implementation documentation][ListViewBase.md].
+This API difference follows directly from the previous one. In order to support native view inheritance, Uno.UI defines `DependencyObject` as an interface, rather than a class.
 
-## Styles & XAML Resources
+This is as transparent as possible to the application developer. For example, if a developer defines a class that inherits directly from `DependencyObject`, Uno.UI will automatically generate code that implements the `DependencyObject` interface methods. The only developer action required is to add the `partial` keyword to the class definition.
 
-The Xaml styles uno are currently supporting two levels: global and local a Xaml file. This means that any *named* style in a file containing only a `ResourceDictionary` is accessible everywhere without including that resource dictionary.
+## Runtime differences
 
-Overriding implicit styles is currently not supported.
+### iOS is AOT-only
 
-### Theme Resources & Theme Dictionaries
+.NET code [must be Ahead-Of-Time (AOT) compiled to run on iOS](https://docs.microsoft.com/en-us/xamarin/ios/internals/limitations), as a fundamental platform limitation. As a result, a few APIs that require runtime code generation (eg `System.Reflection.Emit`) do not work. This includes code that uses the `dynamic` keyword.
 
-_Theme resources_ are also considered as `StaticResource`. In the current Uno's implementation, there's
-no difference between a `{StaticResource xxx}` and a `{ThemeResource xxx}`: they will both resolve to
-the resource `xxx`.
+### WebAssembly is single-threaded
 
-`FrameworkElement.RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
-must be set at launch time. Documentation: [`Application.RequestedTheme`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.application.requestedtheme)
+Currently, WebAssembly code in the browser executes on a single thread. This limitation is expected to be lifted in the future, but for now, code that expects additional threads to be available may not function as expected.
 
-### Custom Themes
-
-On Windows, there are some _themes_ that can target, but there is no way to trigger them. The most
-known is the `HighContrast` theme.
-
-You can do something similar - an even create totally custom themes - by using the following helper:
-
-``` csharp
-  // Set current theme to Hich contrast
-  Uno.UI.RequestedCustomTheme = "HighContrast";
-```
-
-* Beware, all themes are **CASE SENSITIVE**.
-* Themed dictionaries will fall back to `Application.Current.RequestedTheme` when they are not
-  defining a resource for the custom theme.
-* You can put any string and create totally custom themes, but they won't be supported by UWP.
-
-Themes [are implemented](https://calculator.platform.uno?Theme=Pink) in the Uno port of the Windows 10 calculator. See [App.xaml.cs](https://github.com/unoplatform/calculator/blob/7772a593b541edd9809bc8946ee29d6a5b29e0ff/src/Calculator.Shared/App.xaml.cs#L79) and  [Styles.xaml](https://github.com/unoplatform/calculator/blob/7772a593b541edd9809bc8946ee29d6a5b29e0ff/src/Calculator.Shared/Styles.xaml).
-
-
+[This GitHub issue](https://github.com/unoplatform/uno/issues/2302) tracks support for multi-threading on WebAssembly in Uno Platform.

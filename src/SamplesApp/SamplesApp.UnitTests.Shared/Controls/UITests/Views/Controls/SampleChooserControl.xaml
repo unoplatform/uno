@@ -14,7 +14,6 @@
 	xmlns:not_ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:sections="using:Uno.UI.Samples.Entities"
 	mc:Ignorable="d ios xamarin"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
@@ -114,7 +113,7 @@
 			<DataTemplate x:Key="SampleTemplate">
 				<Border Style="{StaticResource TemplateContainerStyle}">
 					<u:StarStackPanel Orientation="Horizontal"
-									  Sizes="*,Auto">
+									  Sizes="*,Auto,Auto">
 						<TextBlock Text="{Binding ControlName}"
 								   Style="{StaticResource Typo02}"
 								   TextWrapping="NoWrap"
@@ -379,7 +378,7 @@
 											   Margin="{StaticResource NavIconMargin}" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="FAVORITES" />
+										   Text="FAVS" />
 							</Grid>
 						</RadioButton>
 
@@ -437,6 +436,8 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<!-- Back Button -->
@@ -455,9 +456,22 @@
 							   VerticalAlignment="Center"
 							   Grid.Column="1" />
 
+					<!-- Info Button -->
+					<Button Style="{StaticResource IconButtonStyle}"
+							Grid.Column="2"
+							Command="{Binding ShowTestInformationCommand}"
+							Content="i"
+							FontWeight="SemiBold"
+							FontSize="24"
+							VerticalAlignment="Center"
+							VerticalContentAlignment="Center"
+							HorizontalContentAlignment="Center"
+							Foreground="{StaticResource Color06Brush}"
+							Visibility="{Binding IsDebug}" />
+
 					<!-- Previous Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="2"
+					        Grid.Column="3"
 					        Command="{Binding LoadPreviousTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
 						<u:PathControl Style="{StaticResource Icon_Previous}"
@@ -468,7 +482,7 @@
 
 					<!-- Reload Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="3"
+					        Grid.Column="4"
 					        Command="{Binding ReloadCurrentTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
 						<u:PathControl Style="{StaticResource Icon_Reload}"
@@ -479,7 +493,7 @@
 
 					<!-- Next Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="4"
+					        Grid.Column="5"
 					        Command="{Binding LoadNextTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
 						<u:PathControl Style="{StaticResource Icon_Next}"
@@ -490,7 +504,7 @@
 
 					<!-- Favorite Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
-							Grid.Column="5"
+							Grid.Column="6"
 							Command="{Binding ToggleFavoriteCommand}"
 							CommandParameter="{Binding CurrentSelectedSample}">
 						<u:PathControl Style="{Binding CurrentSelectedSample.IsFavorite, Converter={StaticResource FavoritesPathConverter}, TargetNullValue={StaticResource Icon_Favorite_Empty}, FallbackValue={StaticResource Icon_Favorite_Empty}}"
@@ -502,7 +516,7 @@
 					<!-- Log Dump Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
-							Grid.Column="6"
+							Grid.Column="7"
 							Command="{Binding LogViewDumpCommand}"
 							Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
 						<u:PathControl Style="{StaticResource Icon_LogDump}"
@@ -510,6 +524,12 @@
 									   HorizontalContentAlignment="Center"
 									   Margin="0,4,10,0" />
 					</Button>
+
+					<!-- Fluent styles check box -->
+					<CheckBox Content="FL"
+							  Grid.Column="8"
+							  IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
+							  Style="{x:Null}"/>
 				</Grid>
 
 				<!-- Sample Content -->

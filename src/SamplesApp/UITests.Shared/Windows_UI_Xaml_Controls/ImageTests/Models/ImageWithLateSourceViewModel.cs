@@ -10,6 +10,9 @@ using Uno.UI.Common;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace Uno.UI.Samples.UITests.ImageTests.Models
 {
 	public class ImageWithLateSourceViewModel : ViewModelBase
@@ -18,6 +21,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 		{
 		}
 
+		private const string FinalSource = "http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg";
 		private string _sourceUri;
 
 		public string SourceUri
@@ -30,11 +34,13 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			}
 		}
 
+		public string SourceUriImmediate => FinalSource;
+
 		public ICommand SetSource => GetOrCreateCommand(OnSetSource);
 
 		private void OnSetSource()
 		{
-			const string source = "http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg";
+			const string source = FinalSource;
 			this.Log().Warn("Setting image source to " + source);
 
 			SourceUri = source;

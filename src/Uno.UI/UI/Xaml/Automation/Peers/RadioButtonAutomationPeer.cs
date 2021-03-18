@@ -39,19 +39,19 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[NotImplemented]
 		public  void AddToSelection()
 		{
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.AddToSelection()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.AddToSelection()");
 		}
 
 		[NotImplemented]
 		public void RemoveFromSelection()
 		{
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.RemoveFromSelection()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.RemoveFromSelection()");
 		}
 
 		[NotImplemented]
 		public void Select()
 		{
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.Select()");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.Select()");
 		}
 	}
 }

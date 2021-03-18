@@ -1,0 +1,24 @@
+<ContentControl
+    x:Class="BlankApp.Views.Shell"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BlankApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prismMvvm="using:Prism.Mvvm"
+    xmlns:prismRegions="using:Prism.Regions"
+    prismMvvm:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Margin="20">
+            <TextBlock Text="{Binding Title}" FontSize="30" />
+            <TextBlock Text="Welcome to Uno/WinUI and Prism!" FontSize="15" />
+        </StackPanel>
+        <ContentControl Grid.Row="1" prismRegions:RegionManager.RegionName="ContentRegion" />
+    </Grid>
+</ContentControl>

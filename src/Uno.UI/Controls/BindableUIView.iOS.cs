@@ -1,5 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -23,7 +22,7 @@ using MonoTouch.UIKit;
 
 namespace Uno.UI.Controls
 {
-	public partial class BindableUIView : UIView, INotifyPropertyChanged, DependencyObject, IShadowChildrenProvider
+	public partial class BindableUIView : UIView, DependencyObject, IShadowChildrenProvider
 	{
 		private MaterializableList<UIView> _shadowChildren = new MaterializableList<UIView>();
 
@@ -44,28 +43,40 @@ namespace Uno.UI.Controls
 
 		internal List<UIView>.Enumerator GetChildrenEnumerator() => _shadowChildren.Materialized.GetEnumerator();
 
-		public override void WillRemoveSubview(UIView uiview)
+		public override void AddSubview(UIView view)
 		{
-			base.WillRemoveSubview(uiview);
-
-			var position = _shadowChildren.IndexOf(uiview, ReferenceEqualityComparer<UIView>.Default);
-
-			if(position != -1)
-			{
-				_shadowChildren.RemoveAt(position);
-			}
+			// As iOS will invoke the MovedToWindow on the 'view' (which will invoke the Loaded event)
+			// ** before ** invoking the SubviewAdded on its parent (i.e. this element),
+			// we cannot rely only on the cloned collection made in that SubviewAdded callback.
+			// Instead we have to pre-update the _shadowChildren so handlers of the Loaded event will be able
+			// to properly walk the tree up and down (cf. EffectiveViewport).
+			_shadowChildren.Add(view);
+			base.AddSubview(view);
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public override void InsertSubview(UIView view, nint atIndex)
+		{
+			// cf. AddSubview comment!
+			_shadowChildren.Insert((int)atIndex, view);
+			base.InsertSubview(view, atIndex);
+		}
+
+		public override void WillRemoveSubview(UIView uiview)
+		{
+			// cf. AddSubview comment!
+			var index = _shadowChildren.IndexOf(uiview, ReferenceEqualityComparer<UIView>.Default);
+			if (index != -1)
+			{
+				_shadowChildren.RemoveAt(index);
+			}
+
+			base.WillRemoveSubview(uiview);
+		}
 
 		public BindableUIView()
 		{
 			Initialize();
-
-			if (FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				ClipsToBounds = true;
-			}
+			ClipsToBounds = false;
 		}
 
 		public BindableUIView(IntPtr handle)
@@ -76,6 +87,18 @@ namespace Uno.UI.Controls
 
 		public BindableUIView(RectangleF frame)
 			: base(frame)
+		{
+			Initialize();
+		}
+
+		public BindableUIView(NSCoder coder)
+			: base(coder)
+		{
+			Initialize();
+		}
+
+		public BindableUIView(NSObjectFlag t)
+			: base(t)
 		{
 			Initialize();
 		}
@@ -108,14 +131,6 @@ namespace Uno.UI.Controls
 			for (int i = reorderIndex; i < _shadowChildren.Count; i++)
 			{
 				BringSubviewToFront(_shadowChildren[i]);
-			}
-		}
-
-		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 	}

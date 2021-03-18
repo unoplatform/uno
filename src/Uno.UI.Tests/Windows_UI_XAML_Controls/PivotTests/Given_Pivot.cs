@@ -12,7 +12,13 @@ namespace Uno.UI.Tests.PivotTests
 {
 	[TestClass]
 	public class Given_Pivot
-    {
+	{
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_Empty()
 		{
@@ -26,7 +32,6 @@ namespace Uno.UI.Tests.PivotTests
 			SUT.Arrange(default(Rect));
 
 			Assert.AreEqual(default(Size), SUT.DesiredSize);
-			Assert.IsTrue(SUT.GetChildren().None());
 		}
 	}
 }

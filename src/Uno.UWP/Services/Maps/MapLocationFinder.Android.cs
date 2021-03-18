@@ -25,9 +25,11 @@ namespace Windows.Services.Maps
 
 			//Get the locale directly instead of using ApplicationLanguages.Language.ToLanguageTag() and converting to Locale.
 			//ToLanguageTag() causes a bug in Xamarin, fixed in Xamarin 4. NoSuchMethodError Java exception is thrown
-	        var locale = context.Resources.Configuration.Locale ?? Locale.Default;
+#pragma warning disable CS0618 // Type or member is obsolete
+			var locale = context.Resources.Configuration.Locale ?? Locale.Default;
+#pragma warning restore CS0618 // Type or member is obsolete
 
-            _geocoder = new Geocoder(context, locale);
+			_geocoder = new Geocoder(context, locale);
         }
 
         public static async Task<MapLocationFinderResult> FindLocationsAtAsync(CancellationToken ct, Geopoint queryPoint)

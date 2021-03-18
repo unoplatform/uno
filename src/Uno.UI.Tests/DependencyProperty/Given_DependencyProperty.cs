@@ -1,39 +1,24 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Uno.Logging;
-using Uno.Extensions;
-using Uno.Presentation.Resources;
-using Uno.UI.DataBinding;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
-using Uno.Disposables;
-using System.ComponentModel;
-using Uno.UI;
 using Windows.UI.Xaml;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
+using FluentAssertions.Execution;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
 	[TestClass]
 	public partial class Given_DependencyProperty
 	{
-		[AssemblyInitialize]
+		[ClassInitialize]
 		public static void Init(TestContext ctx)
 		{
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
 		}
 
 		[TestMethod]
@@ -1142,8 +1127,8 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.IsInstanceOfType(metadata2, typeof(FrameworkPropertyMetadata));
 			Assert.IsInstanceOfType(metadata3, typeof(FrameworkPropertyMetadata));
 
-			Assert.AreEqual(FrameworkPropertyMetadataOptions.Inherits, (metadata2 as FrameworkPropertyMetadata).Options);
-			Assert.AreEqual(FrameworkPropertyMetadataOptions.Inherits, (metadata3 as FrameworkPropertyMetadata).Options);
+			Assert.AreEqual(FrameworkPropertyMetadataOptions.Default | FrameworkPropertyMetadataOptions.Inherits, (metadata2 as FrameworkPropertyMetadata).Options);
+			Assert.AreEqual(FrameworkPropertyMetadataOptions.Default | FrameworkPropertyMetadataOptions.Inherits, (metadata3 as FrameworkPropertyMetadata).Options);
 		}
 
 		[TestMethod]
@@ -1220,74 +1205,74 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_SetValue_And_RegisterPropertyChangedCallback()
 		{
-            var SUT = new SimpleDependencyObject1();
+			var SUT = new SimpleDependencyObject1();
 
-            int invocations = 0;
+			int invocations = 0;
 
-            var registration1 = SUT.RegisterPropertyChangedCallback(
-                SimpleDependencyObject1.MyPropertyProperty,
-                (s, e) =>
-                {
-                    invocations++;
-                }
-            );
+			var registration1 = SUT.RegisterPropertyChangedCallback(
+				SimpleDependencyObject1.MyPropertyProperty,
+				(s, e) =>
+				{
+					invocations++;
+				}
+			);
 
-            SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "42");
+			SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "42");
 
-            var value = SUT.GetValue(SimpleDependencyObject1.MyPropertyProperty);
+			var value = SUT.GetValue(SimpleDependencyObject1.MyPropertyProperty);
 
-            Assert.AreEqual("42", value);
-            Assert.AreEqual(1, invocations);
-            Assert.AreEqual(1, SUT.ChangedCallbackCount);
+			Assert.AreEqual("42", value);
+			Assert.AreEqual(1, invocations);
+			Assert.AreEqual(1, SUT.ChangedCallbackCount);
 
-            SUT.UnregisterPropertyChangedCallback(SimpleDependencyObject1.MyPropertyProperty, registration1);
+			SUT.UnregisterPropertyChangedCallback(SimpleDependencyObject1.MyPropertyProperty, registration1);
 
-            SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "43");
+			SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "43");
 
-            Assert.AreEqual(1, invocations);
-            Assert.AreEqual(2, SUT.ChangedCallbackCount);
-        }
+			Assert.AreEqual(1, invocations);
+			Assert.AreEqual(2, SUT.ChangedCallbackCount);
+		}
 
-        [TestMethod]
-        public void When_SetValue_And_RegisterPropertyChangedCallback_Recurse()
-        {
-            var SUT = new SimpleDependencyObject1();
+		[TestMethod]
+		public void When_SetValue_And_RegisterPropertyChangedCallback_Recurse()
+		{
+			var SUT = new SimpleDependencyObject1();
 
-            int invocations = 0;
-            int invocations2 = 0;
-            long registration2 = 0;
+			int invocations = 0;
+			int invocations2 = 0;
+			long registration2 = 0;
 
-            var registration1 = SUT.RegisterPropertyChangedCallback(
-                SimpleDependencyObject1.MyPropertyProperty,
-                (s, e) => {
-                    invocations++;
+			var registration1 = SUT.RegisterPropertyChangedCallback(
+				SimpleDependencyObject1.MyPropertyProperty,
+				(s, e) => {
+					invocations++;
 
-                    registration2 = SUT.RegisterPropertyChangedCallback(
-                        SimpleDependencyObject1.MyPropertyProperty,
-                        (s2, e2) => {
-                            invocations2++;
-                        }
-                    );
-                }
-            );
+					registration2 = SUT.RegisterPropertyChangedCallback(
+						SimpleDependencyObject1.MyPropertyProperty,
+						(s2, e2) => {
+							invocations2++;
+						}
+					);
+				}
+			);
 
-            SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "42");
+			SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "42");
 
-            var value = SUT.GetValue(SimpleDependencyObject1.MyPropertyProperty);
+			var value = SUT.GetValue(SimpleDependencyObject1.MyPropertyProperty);
 
-            Assert.AreEqual("42", value);
-            Assert.AreEqual(1, invocations);
-            Assert.AreEqual(1, SUT.ChangedCallbackCount);
-            Assert.AreEqual(0, invocations2);
+			Assert.AreEqual("42", value);
+			Assert.AreEqual(1, invocations);
+			Assert.AreEqual(1, SUT.ChangedCallbackCount);
+			Assert.AreEqual(0, invocations2);
 
-            SUT.UnregisterPropertyChangedCallback(SimpleDependencyObject1.MyPropertyProperty, registration1);
+			SUT.UnregisterPropertyChangedCallback(SimpleDependencyObject1.MyPropertyProperty, registration1);
 
-            SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "43");
+			SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "43");
 
-            Assert.AreEqual(1, invocations);
-            Assert.AreEqual(1, invocations2);
-            Assert.AreEqual(2, SUT.ChangedCallbackCount);
-        }
+			Assert.AreEqual(1, invocations);
+			Assert.AreEqual(1, invocations2);
+			Assert.AreEqual(2, SUT.ChangedCallbackCount);
+		}
 
 		[TestMethod]
 		public void When_ManualRegister()
@@ -1353,13 +1338,14 @@ namespace Uno.UI.Tests.BinderTests
 			var o2 = new Windows.UI.Xaml.Controls.Border();
 			o2.SetBinding(
 				Windows.UI.Xaml.Controls.Border.TagProperty,
-				new Binding() {
+				new Binding()
+				{
 					Path = "Tag.MyNullable.Value",
 					CompiledSource = SUT
 				}
 			);
 
-			o2.ApplyCompiledBindings();
+			o2.ApplyXBind();
 
 			Assert.AreEqual(42, o2.Tag);
 		}
@@ -1368,9 +1354,9 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_DataContext_Changing()
 		{
 			var SUT = new NullablePropertyOwner();
-			var datacontext1 = new NullablePropertyOwner {MyNullable = 42};
-			var datacontext2 = new NullablePropertyOwner {MyNullable = 42};
-			var datacontext3 = new NullablePropertyOwner {MyNullable = 84};
+			var datacontext1 = new NullablePropertyOwner { MyNullable = 42 };
+			var datacontext2 = new NullablePropertyOwner { MyNullable = 42 };
+			var datacontext3 = new NullablePropertyOwner { MyNullable = 84 };
 
 			var changes = new List<DependencyPropertyChangedEventArgs>();
 
@@ -1378,7 +1364,8 @@ namespace Uno.UI.Tests.BinderTests
 
 			SUT.SetBinding(
 				NullablePropertyOwner.MyNullableProperty,
-				new Binding() {
+				new Binding()
+				{
 					Path = "MyNullable"
 				}
 			);
@@ -1398,7 +1385,7 @@ namespace Uno.UI.Tests.BinderTests
 			changes.Count.Should().Be(3);
 			changes.Last().NewValue.Should().Be(null);
 
-			var parent = new Border {Child = SUT};
+			var parent = new Border { Child = SUT };
 
 			parent.DataContext = datacontext1;
 			changes.Count.Should().Be(3);
@@ -1407,11 +1394,287 @@ namespace Uno.UI.Tests.BinderTests
 			changes.Count.Should().Be(4);
 			changes.Last().NewValue.Should().Be(42);
 		}
+
+		[TestMethod]
+		public void When_Set_Within_Style_Application()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var button = new Button();
+
+			using var r = button.RegisterDisposablePropertyChangedCallback(
+				Control.PaddingProperty,
+				(o, e) =>
+				{
+					e.BypassesPropagation.Should().BeFalse();
+					e.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ImplicitStyle);
+					button.Content = "Frogurt";
+				});
+
+			using var _ = new AssertionScope();
+
+			app.HostView.Children.Add(button); // Causes default style to be applied
+
+			button.ReadLocalValue(Button.ContentProperty).Should().Be("Frogurt");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property_PrecedenceInContext()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					sut.Tag = args.NewPrecedence;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+				});
+
+			using var _ = new AssertionScope();
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+			sut.Tag.Should().BeNull("After applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
+			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle, "After applying style");
+
+			registration2.Dispose();
+
+			sut.ClearValue(Border.StyleProperty);
+
+			sut.BorderThickness.Should().Be(Thickness.Empty, "After removing style");
+			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.DefaultValue, "After removing style");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_MultipleProperty()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { BorderThickness = new Thickness(100d) };
+
+			// Local value is 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "Before applying style");
+
+			sut.Style = style;
+
+			// Local value should stay 100d
+			sut.BorderThickness.Should().Be(new Thickness(100d), "After applying style");
+
+			sut.ClearValue(Border.BorderThicknessProperty);
+
+			// Local value is cleared, fallback to style value
+			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property_PrecedenceInContext_No_Local()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { /*Don't set local BorderThickness*/ };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					sut.Tag = args.NewPrecedence;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+				});
+
+			using var _ = new AssertionScope();
+
+			sut.Tag.Should().BeNull("Before applying style");
+
+			sut.Style = style;
+		}
+
+		[TestMethod]
+		public void When_Set_Style_Property_FromCallback_PrecedenceInContext_No_Local()
+		{
+			var style = new Style();
+			style.Setters.Add(new Setter(Border.BorderThicknessProperty, 10d));
+
+			var sut = new Border { /*Don't set local BorderThickness*/ };
+
+			using var registration1 = sut.RegisterDisposablePropertyChangedCallback(
+				FrameworkElement.TagProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local, "Tag property");
+					sut.Style = args.NewValue as Style;
+				});
+
+			using var registration2 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.BorderThicknessProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewValue.Should().Be(new Thickness(10d));
+					sut.Child = new Rectangle();
+				});
+
+			using var registration3 = sut.RegisterDisposablePropertyChangedCallback(
+				Border.ChildProperty,
+				(dependencyObject, args) =>
+				{
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local, "ChildProperty");
+					args.NewValue.Should().BeOfType<Rectangle>();
+				});
+
+			using var _ = new AssertionScope();
+
+			sut.Tag.Should().BeNull("Before applying style");
+
+			sut.Tag = style;
+		}
+
+		[TestMethod]
+		public void When_Set_With_Both_Style_And_LocalValue()
+		{
+			var style = new Style { TargetType = typeof(MyDependencyObject) };
+			style.Setters.Add(new Setter { Property = MyDependencyObject.PropAProperty, Value = "StyleValue" });
+			style.Setters.Add(new Setter { Property = MyDependencyObject.PropBProperty, Value = "StyleValueForB" });
+
+			var sut = new MyDependencyObject { PropA = "LocalValue" };
+
+			sut.PropA.Should().Be("LocalValue");
+			sut.PropB.Should().Be("LocalValue");
+
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be(null);
+
+			sut.Style = style;
+
+			// Here the call back of PropA should not be called, so PropB should be on the ExplicitStyle value
+			sut.PropA.Should().Be("LocalValue");
+			sut.PropB.Should().Be("StyleValueForB");
+
+#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValue")
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, "LocalValue");
+
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValueForB")
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
+#endif
+
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be("StyleValueForB");
+
+			sut.ClearValue(MyDependencyObject.PropAProperty);
+
+			sut.PropA.Should().Be("StyleValue");
+			sut.PropB.Should().Be("StyleValue");
+
+			sut.ClearValue(MyDependencyObject.PropAProperty);
+			sut.PropA.Should().Be("StyleValue");
+			sut.ClearValue(MyDependencyObject.PropBProperty);
+			sut.PropB.Should().Be("StyleValueForB");
+
+			sut.ClearValue(FrameworkElement.StyleProperty);
+
+			sut.PropA.Should().Be(null);
+			sut.PropB.Should().Be(null);
+
+#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
+
+			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
+				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, null); // because of the callback ;-)
+#endif
+		}
+
+		private class MyDependencyObject : FrameworkElement
+		{
+			internal static readonly DependencyProperty PropAProperty = DependencyProperty.Register(
+				"PropA", typeof(string), typeof(MyDependencyObject), new PropertyMetadata(default(string), OnPropAChanged));
+
+			private static void OnPropAChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+			{
+				(d as MyDependencyObject).PropB = e.NewValue as string; // should assign using a kind a "local" precedence
+			}
+
+			internal string PropA
+			{
+				get { return (string)GetValue(PropAProperty); }
+				set { SetValue(PropAProperty, value); }
+			}
+
+			public static readonly DependencyProperty PropBProperty = DependencyProperty.Register(
+				"PropB", typeof(string), typeof(MyDependencyObject), new PropertyMetadata(default(string)));
+
+			public string PropB
+			{
+				get { return (string)GetValue(PropBProperty); }
+				set { SetValue(PropBProperty, value); }
+			}
+		}
+
 	}
 
-    #region DependencyObjects
+	#region DependencyObjects
 
-    partial class MockDependencyObject : DependencyObject
+	partial class MockDependencyObject : DependencyObject
 	{
 
 	}
@@ -1421,27 +1684,27 @@ namespace Uno.UI.Tests.BinderTests
 
 	}
 
-    partial class SimpleDependencyObject1 : DependencyObject
-    {
-        public SimpleDependencyObject1() { }
+	partial class SimpleDependencyObject1 : DependencyObject
+	{
+		public SimpleDependencyObject1() { }
 
-        public static readonly DependencyProperty MyPropertyProperty =
-            DependencyProperty.Register("MyProperty", typeof(string), typeof(SimpleDependencyObject1),
-                new PropertyMetadata(
-                    "default1",
-                    (s, e) => {
-                        (s as SimpleDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue);
-                        (s as SimpleDependencyObject1).ChangedCallbackCount++;
-                    }
-                )
-            );
+		public static readonly DependencyProperty MyPropertyProperty =
+			DependencyProperty.Register("MyProperty", typeof(string), typeof(SimpleDependencyObject1),
+				new PropertyMetadata(
+					"default1",
+					(s, e) => {
+						(s as SimpleDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue);
+						(s as SimpleDependencyObject1).ChangedCallbackCount++;
+					}
+				)
+			);
 
-        public List<string> PropertyChangedCallbacks = new List<string>();
-        public int ChangedCallbackCount { get; set; } = 0;
-    }
+		public List<string> PropertyChangedCallbacks = new List<string>();
+		public int ChangedCallbackCount { get; set; } = 0;
+	}
 
 
-    partial class MyDependencyObject1 : DependencyObject
+	partial class MyDependencyObject1 : DependencyObject
 	{
 		public MyDependencyObject1() { }
 

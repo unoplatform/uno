@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Android.Provider;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
+using Uno;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -57,7 +58,7 @@ namespace Windows.UI.Xaml.Media
 
 		protected ImageSource(Bitmap image) : this()
 		{
-			ImageData = image;
+			_imageData = image;
 		}
 
 		protected ImageSource(BitmapDrawable image) : this()
@@ -75,15 +76,16 @@ namespace Windows.UI.Xaml.Media
 
 		public bool HasSource()
 		{
-			return Stream != null
+			return IsSourceReady
+				|| Stream != null
 				|| WebUri != null
 				|| FilePath.HasValueTrimmed()
-				|| ImageData != null
+				|| _imageData != null
 				|| BitmapDrawable != null
 				|| ResourceId != null;
 		}
 
-		internal Bitmap ImageData { get; private set; }
+		private Bitmap _imageData;
 		internal BitmapDrawable BitmapDrawable { get; private set; }
 
 		internal int? ResourceId
@@ -124,8 +126,52 @@ namespace Windows.UI.Xaml.Media
 			ImageLoader = ImageLoader ?? DefaultImageLoader;
 		}
 
+		/// <summary>
+		/// Indicates that this source has already been opened (So TryOpenSync will return true!)
+		/// </summary>
+		internal bool IsOpened => _imageData != null;
+
+		/// <summary>
+		/// Indicates that this ImageSource has enough information to be opened
+		/// </summary>
+		private protected virtual bool IsSourceReady => false;
+
+		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out Bitmap image)
+		{
+			image = default;
+			return false;
+		}
+
+		private protected virtual bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, out Task<Bitmap> asyncImage)
+		{
+			asyncImage = default;
+			return false;
+		}
+
+		internal bool TryOpenSync(out Bitmap image, int? targetWidth = null, int? targetHeight = null)
+		{
+			if (_imageData != null)
+			{
+				image = _imageData;
+				return true;
+			}
+
+			if (IsSourceReady && TryOpenSourceSync(targetWidth, targetHeight, out image))
+			{
+				return true;
+			}
+
+			image = default;
+			return false;
+		}
+
 		internal async Task<Bitmap> Open(CancellationToken ct, Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
 		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug(this.ToString() + $" Open(tw:{targetWidth}x{targetHeight})");
+			}
+
 			IsImageLoadedToUiDirectly = false;
 
 			BitmapFactory.Options options = new BitmapFactory.Options();
@@ -135,9 +181,19 @@ namespace Windows.UI.Xaml.Media
 				? (global::System.Drawing.Size?)new global::System.Drawing.Size(targetWidth.Value, targetHeight.Value)
 				: null;
 
+			if (IsSourceReady && TryOpenSourceSync(targetWidth, targetHeight, out var img))
+			{
+				return _imageData = img;
+			}
+
+			if (IsSourceReady && TryOpenSourceAsync(targetWidth, targetHeight, out var asyncImg))
+			{
+				return _imageData = await asyncImg;
+			}
+
 			if (ResourceId.HasValue)
 			{
-				return ImageData = await FetchResourceWithDownsampling(ct, ResourceId.Value, targetSize);
+				return _imageData = await FetchResourceWithDownsampling(ct, ResourceId.Value, targetSize);
 			}
 
 			if (Stream != null)
@@ -153,11 +209,11 @@ namespace Windows.UI.Xaml.Media
 					if (ValidateIfImageNeedsResize(options))
 					{
 						options.InJustDecodeBounds = false;
-						return ImageData = await BitmapFactory.DecodeStreamAsync(Stream, emptyPadding, options);
+						return _imageData = await BitmapFactory.DecodeStreamAsync(Stream, emptyPadding, options);
 					}
 				}
 
-				return ImageData = await BitmapFactory.DecodeStreamAsync(Stream);
+				return _imageData = await BitmapFactory.DecodeStreamAsync(Stream);
 			}
 
 			if (FilePath.HasValue())
@@ -166,9 +222,9 @@ namespace Windows.UI.Xaml.Media
 				if (ValidateIfImageNeedsResize(options))
 				{
 					options.InJustDecodeBounds = false;
-					return ImageData = await BitmapFactory.DecodeFileAsync(FilePath, options);
+					return _imageData = await BitmapFactory.DecodeFileAsync(FilePath, options);
 				}
-				return ImageData = await BitmapFactory.DecodeFileAsync(FilePath);
+				return _imageData = await BitmapFactory.DecodeFileAsync(FilePath);
 			}
 
 			if (WebUri != null)
@@ -180,7 +236,7 @@ namespace Windows.UI.Xaml.Media
 					{
 						var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(WebUri.OriginalString));
 
-						return ImageData = await BitmapFactory.DecodeStreamAsync(stream);
+						return _imageData = await BitmapFactory.DecodeStreamAsync(stream);
 					}
 
 					var filePath = await Download(ct, WebUri);
@@ -190,7 +246,7 @@ namespace Windows.UI.Xaml.Media
 						return null;
 					}
 
-					return ImageData = await BitmapFactory.DecodeFileAsync(filePath.LocalPath);
+					return _imageData = await BitmapFactory.DecodeFileAsync(filePath.LocalPath);
 				}
 				else
 				{
@@ -199,7 +255,7 @@ namespace Windows.UI.Xaml.Media
 						this.Log().DebugFormat("Using ImageLoader to get {0}", WebUri);
 					}
 
-					ImageData = await ImageLoader(ct, WebUri.OriginalString, targetImage, targetSize);
+					_imageData = await ImageLoader(ct, WebUri.OriginalString, targetImage, targetSize);
 
 					if (
 						!ct.IsCancellationRequested
@@ -209,10 +265,10 @@ namespace Windows.UI.Xaml.Media
 					{
 						IsImageLoadedToUiDirectly = true;
 
-						targetImage.SetImageBitmap(ImageData);
+						targetImage.SetImageBitmap(_imageData);
 					}
 
-					return ImageData;
+					return _imageData;
 				}
 			}
 
@@ -360,24 +416,24 @@ namespace Windows.UI.Xaml.Media
 
 		internal void UnloadImageData()
 		{
-			if (ImageData != null)
+			if (_imageData != null)
 			{
-				if (ImageData.Handle != IntPtr.Zero)
+				if (_imageData.Handle != IntPtr.Zero)
 				{
-					ImageData.Recycle();
+					_imageData.Recycle();
 				}
 				else if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn($"Attempting to dispose {nameof(ImageData)} when the native bitmap has already been collected.");
+					this.Log().Warn($"Attempting to dispose {nameof(_imageData)} when the native bitmap has already been collected.");
 				}
-				ImageData.Dispose();
-				ImageData = null;
+				_imageData.Dispose();
+				_imageData = null;
 			}
 		}
 
 		public override string ToString()
 		{
-			var source = Stream ?? WebUri ?? FilePath ?? ImageData ?? (object)BitmapDrawable ?? ResourceString ?? "[No source]";
+			var source = Stream ?? WebUri ?? FilePath ?? _imageData ?? (object)BitmapDrawable ?? ResourceString ?? "[No source]";
 			return "ImageSource: {0}".InvariantCultureFormat(source);
 		}
 

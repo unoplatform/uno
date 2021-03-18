@@ -7,17 +7,24 @@ namespace Windows.Storage.FileProperties
 {
 	public sealed partial class BasicProperties
 	{
-		private readonly FileInfo _fileInfo;
-
-		internal BasicProperties(StorageFile file)
+		internal BasicProperties(ulong size, DateTimeOffset dateModified)
 		{
-			_fileInfo = new FileInfo(file.Path);
+			Size = size;
+			DateModified = dateModified;
 		}
 
-		public ulong Size
+		internal static BasicProperties FromFilePath(string filePath)
 		{
-			get { return (ulong)_fileInfo.Length; }
+			var fileInfo = new FileInfo(filePath);
+			return new BasicProperties((ulong)fileInfo.Length, File.GetLastWriteTime(fileInfo.FullName));
 		}
+
+		internal static BasicProperties FromDirectoryPath(string directoryPath) =>
+			new BasicProperties(0UL, Directory.GetLastWriteTime(directoryPath));
+
+		public ulong Size { get; }
+
+		public DateTimeOffset DateModified { get; }
 	}
 
 }

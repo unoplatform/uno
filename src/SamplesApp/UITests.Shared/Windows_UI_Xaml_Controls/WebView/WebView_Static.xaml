@@ -6,11 +6,12 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:u="using:Uno.UI.Samples.Controls"
-	mc:Ignorable="d"
+	xmlns:xamarin="http://uno.ui/xamarin"
+	mc:Ignorable="d xamarin"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-	<Grid>
+	<xamarin:Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
@@ -22,5 +23,5 @@
 		<Button Grid.Row="1"
 						Content="Next URL"
 						Command="{Binding [GoToNextWebSource]}" />
-	</Grid>
+	</xamarin:Grid>
 </UserControl>

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,65 +13,59 @@ namespace Windows.Globalization
 		#region Static id parsing helpers
 		private static _Calendar GetCalendar(string calendar)
 		{
-			switch (calendar)
+			return calendar switch
 			{
-				case CalendarIdentifiers.JulianValue: return new global::System.Globalization.JulianCalendar();
-				case CalendarIdentifiers.GregorianValue: return new global::System.Globalization.GregorianCalendar();
-				case CalendarIdentifiers.HebrewValue: return new global::System.Globalization.HebrewCalendar();
-				case CalendarIdentifiers.HijriValue: return new global::System.Globalization.HijriCalendar();
-				case CalendarIdentifiers.JapaneseValue: return new global::System.Globalization.JapaneseCalendar();
-				case CalendarIdentifiers.KoreanValue: return new global::System.Globalization.KoreanCalendar();
-				case CalendarIdentifiers.TaiwanValue: return new global::System.Globalization.TaiwanCalendar();
-				case CalendarIdentifiers.ThaiValue: return new global::System.Globalization.ThaiBuddhistCalendar();
-				case CalendarIdentifiers.UmAlQuraValue: return new global::System.Globalization.UmAlQuraCalendar();
-				case CalendarIdentifiers.PersianValue: return new global::System.Globalization.PersianCalendar();
-				case CalendarIdentifiers.ChineseLunarValue: return new global::System.Globalization.ChineseLunisolarCalendar();
-
+				CalendarIdentifiers.JulianValue => new global::System.Globalization.JulianCalendar(),
+				CalendarIdentifiers.GregorianValue => new global::System.Globalization.GregorianCalendar(),
+				CalendarIdentifiers.HebrewValue => new global::System.Globalization.HebrewCalendar(),
+				CalendarIdentifiers.HijriValue => new global::System.Globalization.HijriCalendar(),
+				CalendarIdentifiers.JapaneseValue => new global::System.Globalization.JapaneseCalendar(),
+				CalendarIdentifiers.KoreanValue => new global::System.Globalization.KoreanCalendar(),
+				CalendarIdentifiers.TaiwanValue => new global::System.Globalization.TaiwanCalendar(),
+				CalendarIdentifiers.ThaiValue => new global::System.Globalization.ThaiBuddhistCalendar(),
+				CalendarIdentifiers.UmAlQuraValue => new global::System.Globalization.UmAlQuraCalendar(),
+				CalendarIdentifiers.PersianValue => new global::System.Globalization.PersianCalendar(),
+				CalendarIdentifiers.ChineseLunarValue => new global::System.Globalization.ChineseLunisolarCalendar(),
 				// Not supported by UWP as of 2019-05-23
 				// https://docs.microsoft.com/en-us/uwp/api/windows.globalization.calendaridentifiers
 				// case CalendarIdentifiers.VietnameseLunarValue: return new global::System.Globalization.VietnameseLunarCalendar();
 				// case CalendarIdentifiers.TaiwanLunarValue: return new global::System.Globalization.TaiwanLunarCalendar();
 				// case CalendarIdentifiers.KoreanLunarValue: return new global::System.Globalization.KoreanLunarCalendar();
 				// case CalendarIdentifiers.JapaneseLunarValue: return new global::System.Globalization.JapaneseLunarCalendar();
-
-				default: throw new ArgumentException(nameof(calendar));
-			}
+				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
+			};
 		}
 
 		private static string GetCalendarSystem(_Calendar calendar)
 		{
-			switch (calendar)
+			return calendar switch
 			{
-				case global::System.Globalization.JulianCalendar _: return CalendarIdentifiers.Julian;
-				case global::System.Globalization.GregorianCalendar _: return CalendarIdentifiers.Gregorian;
-				case global::System.Globalization.HebrewCalendar _: return CalendarIdentifiers.Hebrew;
-				case global::System.Globalization.HijriCalendar _: return CalendarIdentifiers.Hijri;
-				case global::System.Globalization.JapaneseCalendar _: return CalendarIdentifiers.Japanese;
-				case global::System.Globalization.KoreanCalendar _: return CalendarIdentifiers.Korean;
-				case global::System.Globalization.TaiwanCalendar _: return CalendarIdentifiers.Taiwan;
-				case global::System.Globalization.ThaiBuddhistCalendar _: return CalendarIdentifiers.Thai;
-				case global::System.Globalization.UmAlQuraCalendar _: return CalendarIdentifiers.UmAlQura;
-				case global::System.Globalization.PersianCalendar _: return CalendarIdentifiers.Persian;
-				case global::System.Globalization.ChineseLunisolarCalendar _: return CalendarIdentifiers.ChineseLunar;
-
+				global::System.Globalization.JulianCalendar _ => CalendarIdentifiers.Julian,
+				global::System.Globalization.GregorianCalendar _ => CalendarIdentifiers.Gregorian,
+				global::System.Globalization.HebrewCalendar _ => CalendarIdentifiers.Hebrew,
+				global::System.Globalization.HijriCalendar _ => CalendarIdentifiers.Hijri,
+				global::System.Globalization.JapaneseCalendar _ => CalendarIdentifiers.Japanese,
+				global::System.Globalization.KoreanCalendar _ => CalendarIdentifiers.Korean,
+				global::System.Globalization.TaiwanCalendar _ => CalendarIdentifiers.Taiwan,
+				global::System.Globalization.ThaiBuddhistCalendar _ => CalendarIdentifiers.Thai,
+				global::System.Globalization.UmAlQuraCalendar _ => CalendarIdentifiers.UmAlQura,
+				global::System.Globalization.PersianCalendar _ => CalendarIdentifiers.Persian,
+				global::System.Globalization.ChineseLunisolarCalendar _ => CalendarIdentifiers.ChineseLunar,
 				// Not supported by UWP as of 2019-05-23
 				// https://docs.microsoft.com/en-us/uwp/api/windows.globalization.calendaridentifiers
 				// case CalendarIdentifiers.VietnameseLunar: return new global::System.Globalization.VietnameseLunarCalendar();
 				// case CalendarIdentifiers.TaiwanLunar: return new global::System.Globalization.TaiwanLunarCalendar();
 				// case CalendarIdentifiers.KoreanLunar: return new global::System.Globalization.KoreanLunarCalendar();
 				// case CalendarIdentifiers.JapaneseLunar: return new global::System.Globalization.JapaneseLunarCalendar();
-
-				default: throw new ArgumentException(nameof(calendar));
-			}
+				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
+			};
 		}
 
-		private static string GetDefaultClock()
-		{
+		private static string GetDefaultClock() =>
 			// Windows.System.UserProfile.GlobalizationPreferences.Clocks.FirstOrDefault();
-			return new DateTime(1983, 9, 9, 13, 0, 0).ToString("g", CultureInfo.CurrentCulture).Contains("PM")
+			new DateTime(1983, 9, 9, 13, 0, 0).ToString("g", CultureInfo.CurrentCulture).Contains("PM")
 				? ClockIdentifiers.TwelveHour
 				: ClockIdentifiers.TwentyFourHour;
-		}
 
 		private static string GetClock(string clock)
 		{
@@ -86,6 +81,7 @@ namespace Windows.Globalization
 		#endregion
 
 		private IReadOnlyList<string> _languages;
+		private readonly CultureInfo _resolvedCulture;
 		private _Calendar _calendar;
 		private TimeZoneInfo _timeZone;
 		private string _clock;
@@ -93,7 +89,8 @@ namespace Windows.Globalization
 
 		public Calendar()
 		{
-			_languages = new string[1] { CultureInfo.CurrentCulture.IetfLanguageTag };
+			_languages = ApplicationLanguages.Languages;
+			_resolvedCulture = CultureInfo.CurrentCulture;
 			_calendar = CultureInfo.CurrentCulture.Calendar;
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetDefaultClock();
@@ -104,6 +101,7 @@ namespace Windows.Globalization
 		{
 			_languages = languages.ToList();
 			_calendar = CultureInfo.CurrentCulture.Calendar;
+			_resolvedCulture = CultureInfo.CurrentCulture;
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetDefaultClock();
 			_time = DateTimeOffset.Now;
@@ -112,6 +110,7 @@ namespace Windows.Globalization
 		public Calendar(IEnumerable<string> languages, string calendar, string clock)
 		{
 			_languages = languages.ToList();
+			_resolvedCulture = CultureInfo.CurrentCulture;
 			_calendar = GetCalendar(calendar);
 			_timeZone = TimeZoneInfo.Local;
 			_clock = GetClock(clock);
@@ -119,7 +118,7 @@ namespace Windows.Globalization
 		}
 
 		[NotImplemented]
-		public Calendar(IEnumerable<string> languages, string calendar, string clock, string timeZoneId)
+		public Calendar(IEnumerable<string> languages, string calendar, string clock, string timeZoneId) : this()
 		{
 			// timeZoneId are expected to follow the Olson code which is not easily accessible
 
@@ -135,6 +134,7 @@ namespace Windows.Globalization
 		private Calendar(IReadOnlyList<string> languages, _Calendar calendar, TimeZoneInfo timeZone, string clock, DateTimeOffset time)
 		{
 			_languages = languages;
+			_resolvedCulture = CultureInfo.CurrentCulture;
 			_calendar = calendar;
 			_timeZone = timeZone;
 			_clock = clock;
@@ -162,8 +162,7 @@ namespace Windows.Globalization
 
 		public IReadOnlyList<string> Languages => _languages;
 
-		[NotImplemented] public string ResolvedLanguage => throw new global::System.NotImplementedException("The member string Calendar.ResolvedLanguage is not implemented in Uno.");
-
+		public string ResolvedLanguage => _languages[0];
 
 		public string GetCalendarSystem()
 			=> GetCalendarSystem(_calendar);
@@ -215,7 +214,20 @@ namespace Windows.Globalization
 
 		public int Hour
 		{
-			get => _calendar.GetHour(_time.DateTime);
+			get
+			{
+				var hour = _calendar.GetHour(_time.DateTime);
+
+				if(hour < 12 || _clock == ClockIdentifiers.TwentyFourHour)
+				{
+					return hour;
+				}
+				else
+				{
+					return hour - 12;
+				}
+			}
+
 			set => AddHours(value - Hour);
 		}
 
@@ -248,6 +260,9 @@ namespace Windows.Globalization
 						AddHours(-12);
 						break;
 
+					case 2 when _clock == ClockIdentifiers.TwelveHour:
+						break;
+
 					case 2 when _clock == ClockIdentifiers.TwentyFourHour && _time.Hour < 12:
 						AddHours(12);
 						break;
@@ -274,10 +289,18 @@ namespace Windows.Globalization
 			=> _time = DateTime.Now;
 
 		public void SetToMin()
-			=> _time = DateTimeOffset.MinValue;
+		{
+			var calendarMinSupportedDateTime = _calendar.MinSupportedDateTime;
+			var dateTimeOffset = calendarMinSupportedDateTime.ToLocalTime();
+			_time = dateTimeOffset;
+		}
 
 		public void SetToMax()
-			=> _time = DateTimeOffset.MaxValue;
+		{
+			var calendarMaxSupportedDateTime = _calendar.MaxSupportedDateTime;
+			var dateTimeOffset = calendarMaxSupportedDateTime.ToLocalTime();
+			_time = dateTimeOffset;
+		}
 
 		public DateTimeOffset GetDateTime()
 			=> _time;
@@ -322,11 +345,11 @@ namespace Windows.Globalization
 			=> _time.CompareTo(other);
 		#endregion
 
-		#region Read _calendar properties !! not implemenated !!
-		[NotImplemented] public bool IsDaylightSavingTime => throw new global::System.NotImplementedException("The member bool Calendar.IsDaylightSavingTime is not implemented in Uno.");
+		public bool IsDaylightSavingTime
+			=> TimeZoneInfo.Local.IsDaylightSavingTime(_time);
 
 		public int NumberOfEras => _calendar.Eras.Length;
-		[NotImplemented] public int NumberOfYearsInThisEra => throw new global::System.NotImplementedException("The member int Calendar.NumberOfYearsInThisEra is not implemented in Uno.");
+		public int NumberOfYearsInThisEra => LastYearInThisEra - FirstYearInThisEra;
 		public int NumberOfMonthsInThisYear => _calendar.GetMonthsInYear(Year, Era);
 		public int NumberOfDaysInThisMonth => _calendar.GetDaysInMonth(Year, Month, Era);
 		public int NumberOfPeriodsInThisDay => _clock == ClockIdentifiers.TwentyFourHour ? 1 : 2;
@@ -335,7 +358,7 @@ namespace Windows.Globalization
 		public int NumberOfSecondsInThisMinute => 60;
 
 		public int FirstEra => _calendar.Eras.First();
-		[NotImplemented] public int FirstYearInThisEra => throw new global::System.NotImplementedException("The member int Calendar.FirstYearInThisEra is not implemented in Uno.");
+		public int FirstYearInThisEra => _calendar.MinSupportedDateTime.Year;
 		public int FirstMonthInThisYear => 1;
 		public int FirstDayInThisMonth => 1;
 		public int FirstPeriodInThisDay => 1;
@@ -344,189 +367,115 @@ namespace Windows.Globalization
 		public int FirstSecondInThisMinute => 0;
 
 		public int LastEra => _calendar.Eras.Last();
-		[NotImplemented] public int LastYearInThisEra => throw new global::System.NotImplementedException("The member int Calendar.LastYearInThisEra is not implemented in Uno.");
+		public int LastYearInThisEra => _calendar.MaxSupportedDateTime.Year;
 		public int LastMonthInThisYear => _calendar.GetMonthsInYear(Year);
 		public int LastDayInThisMonth => _calendar.GetDaysInMonth(Year, Month, Era);
 		public int LastPeriodInThisDay => _clock == ClockIdentifiers.TwentyFourHour ? 1 : 2;
 		public int LastHourInThisPeriod => _clock == ClockIdentifiers.TwentyFourHour ? 23 : 11;
 		public int LastMinuteInThisHour => 59;
 		public int LastSecondInThisMinute => 59;
-		#endregion
 
-		#region String formatting (***AsString()) !! not implemenated !!
 		[NotImplemented]
 		public string EraAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.EraAsString() is not implemented in Uno.");
-		}
+			=> throw new global::System.NotImplementedException("The member string Calendar.EraAsString() is not implemented in Uno.");
 
 		[NotImplemented]
 		public string EraAsString(int idealLength)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.EraAsString(int idealLength) is not implemented in Uno.");
-		}
+			=> throw new global::System.NotImplementedException("The member string Calendar.EraAsString(int idealLength) is not implemented in Uno.");
 
-		[NotImplemented]
 		public string YearAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.YearAsString() is not implemented in Uno.");
-		}
+			=> _time.Year.ToString(_resolvedCulture);
 
-		[NotImplemented]
 		public string YearAsTruncatedString(int remainingDigits)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.YearAsTruncatedString(int remainingDigits) is not implemented in Uno.");
-		}
+			=> _time.ToString("yy", _resolvedCulture);
 
-		[NotImplemented]
 		public string YearAsPaddedString(int minDigits)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.YearAsPaddedString(int minDigits) is not implemented in Uno.");
-		}
+			=> _time.Year.ToString(new string('0', minDigits), _resolvedCulture);
 
-		[NotImplemented]
 		public string MonthAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.MonthAsString(int idealLength) is not implemented in Uno.");
-		}
+			=> _time.ToString("MMM", _resolvedCulture);
 
-		[NotImplemented]
 		public string MonthAsString(int idealLength)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.MonthAsString(int idealLength) is not implemented in Uno.");
-		}
+			=> _time.ToString("MMM", _resolvedCulture);
 
-		[NotImplemented]
 		public string MonthAsSoloString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.MonthAsSoloString() is not implemented in Uno.");
-		}
-
-		[NotImplemented]
+			=> _time.ToString("MMM", _resolvedCulture);
 		public string MonthAsSoloString(int idealLength)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.MonthAsSoloString(int idealLength) is not implemented in Uno.");
-		}
+			=> _time.ToString("MMM", _resolvedCulture);
 
-		[NotImplemented]
 		public string MonthAsNumericString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.MonthAsNumericString() is not implemented in Uno.");
-		}
+			=> _time.Month.ToString(_resolvedCulture);
 
-		[NotImplemented]
 		public string MonthAsPaddedNumericString(int minDigits)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.MonthAsPaddedNumericString(int minDigits) is not implemented in Uno.");
-		}
+			=> _time.Month.ToString(new string('0', minDigits), _resolvedCulture);
 
-		[NotImplemented]
 		public string DayAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.DayAsString() is not implemented in Uno.");
-		}
+			=> _time.Day.ToString(_resolvedCulture);
 
-		[NotImplemented]
 		public string DayAsPaddedString(int minDigits)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.DayAsPaddedString(int minDigits) is not implemented in Uno.");
-		}
+			=> _time.Day.ToString(new string('0', minDigits), _resolvedCulture);
 
-		[NotImplemented]
 		public string DayOfWeekAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.DayOfWeekAsString() is not implemented in Uno.");
-		}
+			=> _time.ToString("dddd", _resolvedCulture);
 
-		[NotImplemented]
 		public string DayOfWeekAsString(int idealLength)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.DayOfWeekAsString(int idealLength) is not implemented in Uno.");
-		}
+			=> _time.ToString("dddd", _resolvedCulture);
 
-		[NotImplemented]
 		public string DayOfWeekAsSoloString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.DayOfWeekAsSoloString() is not implemented in Uno.");
-		}
+			=> _time.ToString("dddd", _resolvedCulture);
 
-		[NotImplemented]
 		public string DayOfWeekAsSoloString(int idealLength)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.DayOfWeekAsSoloString(int idealLength) is not implemented in Uno.");
-		}
+			=> _time.ToString("dddd", _resolvedCulture);
 
-		[NotImplemented]
 		public string PeriodAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.PeriodAsString() is not implemented in Uno.");
-		}
+			=> _time.ToString("tt", _resolvedCulture);
 
-		[NotImplemented]
 		public string PeriodAsString(int idealLength)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.PeriodAsString(int idealLength) is not implemented in Uno.");
-		}
+			=> _time.ToString("tt", _resolvedCulture);
 
-		[NotImplemented]
-		public string HourAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.HourAsString() is not implemented in Uno.");
-		}
+		public string HourAsString() =>
+			_time
+				.ToString(_clock == ClockIdentifiers.TwentyFourHour ? "HH" : "hh", _resolvedCulture)
+				.TrimStart(new[] { '0' });
 
-		[NotImplemented]
-		public string HourAsPaddedString(int minDigits)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.HourAsPaddedString(int minDigits) is not implemented in Uno.");
-		}
+		public string HourAsPaddedString(int minDigits) =>
+			_clock == ClockIdentifiers.TwentyFourHour
+				? _time.ToString(minDigits < 2 ? "H" : "HH", _resolvedCulture)
+				: _time.ToString(minDigits < 2 ? "h" : "hh", _resolvedCulture);
 
-		[NotImplemented]
 		public string MinuteAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.MinuteAsString() is not implemented in Uno.");
-		}
+			=> _time.Minute.ToString(_resolvedCulture);
 
-		[NotImplemented]
 		public string MinuteAsPaddedString(int minDigits)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.MinuteAsPaddedString(int minDigits) is not implemented in Uno.");
-		}
+			=> _time.Minute.ToString(new string('0', minDigits), _resolvedCulture);
 
-		[NotImplemented]
 		public string SecondAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.SecondAsString() is not implemented in Uno.");
-		}
+			=> _time.Second.ToString(_resolvedCulture);
 
-		[NotImplemented]
 		public string SecondAsPaddedString(int minDigits)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.SecondAsPaddedString(int minDigits) is not implemented in Uno.");
-		}
+			=> _time.Second.ToString(new string('0', minDigits), _resolvedCulture);
 
-		[NotImplemented]
 		public string NanosecondAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.NanosecondAsString() is not implemented in Uno.");
-		}
+			=> (_time.Millisecond * 1000).ToString(_resolvedCulture);
 
-		[NotImplemented]
 		public string NanosecondAsPaddedString(int minDigits)
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.NanosecondAsPaddedString(int minDigits) is not implemented in Uno.");
-		}
+			=> (_time.Millisecond * 1000).ToString(new string('0', minDigits), _resolvedCulture);
 
-		[NotImplemented]
 		public string TimeZoneAsString()
-		{
-			throw new global::System.NotImplementedException("The member string Calendar.TimeZoneAsString() is not implemented in Uno.");
-		}
+			=> _time.ToString("z", _resolvedCulture);
 
-		[NotImplemented]
 		public string TimeZoneAsString(int idealLength)
+			=> _time.ToString("zz", _resolvedCulture);
+
+		public static implicit operator DateTimeOffset(Calendar c)
 		{
-			throw new global::System.NotImplementedException("The member string Calendar.TimeZoneAsString(int idealLength) is not implemented in Uno.");
+			return c.GetDateTime();
 		}
-		#endregion
+		public static implicit operator Calendar(DateTimeOffset dto)
+		{
+			var calendar = new Calendar();
+			calendar.SetDateTime(dto);
+			return calendar;
+		}
 	}
 }

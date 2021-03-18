@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.Converters;
 using Uno.Client;
 using System.Threading.Tasks;
-using Microsoft.Practices.ServiceLocation;
 using Uno.Diagnostics.Eventing;
 using Uno.UI.Controls;
 using Windows.UI.Core;
@@ -204,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 				// does not eagerly get all the items of the ItemsSource.
 				UpdateLastMaterializedItem(indexPath);
 
-				var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
+				var index = Owner?.XamlParent?.GetIndexFromIndexPath(Uno.UI.IndexPath.FromNSIndexPath(indexPath)) ?? -1;
 
 				var identifier = GetReusableCellIdentifier(indexPath);
 
@@ -229,11 +228,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						FrameworkElement.InitializePhaseBinding(selectorItem);
-                        
-                        // Ensure the item has a parent, since it's added to the native collection view
-                        // which does not automatically sets the parent DependencyObject.
-                        selectorItem.SetParent(Owner?.XamlParent);
-                    }
+
+						// Ensure the item has a parent, since it's added to the native collection view
+						// which does not automatically sets the parent DependencyObject.
+						selectorItem.SetParentOverride(Owner?.XamlParent?.InternalItemsPanelRoot);
+					}
 					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
@@ -280,7 +279,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public override void WillDisplayCell(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
 		{
-			var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
+			var index = Owner?.XamlParent?.GetIndexFromIndexPath(Uno.UI.IndexPath.FromNSIndexPath(indexPath)) ?? -1;
 			var container = cell as ListViewBaseInternalContainer;
 			var selectorItem = container?.Content as SelectorItem;
 			//Update IsSelected and multi-select state immediately before display, in case either was modified after cell was prefetched but before it became visible
@@ -485,24 +484,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal CGSize GetHeaderSize()
+		internal CGSize GetHeaderSize(Size availableSize)
 		{
-			return Owner.HeaderTemplate != null ? GetTemplateSize(Owner.HeaderTemplate, NativeListViewBase.ListViewHeaderElementKindNS) : CGSize.Empty;
+			return Owner.HeaderTemplate != null ? GetTemplateSize(Owner.HeaderTemplate, NativeListViewBase.ListViewHeaderElementKindNS, availableSize) : CGSize.Empty;
 		}
 
-		internal CGSize GetFooterSize()
+		internal CGSize GetFooterSize(Size availableSize)
 		{
-			return Owner.FooterTemplate != null ? GetTemplateSize(Owner.FooterTemplate, NativeListViewBase.ListViewFooterElementKindNS) : CGSize.Empty;
+			return Owner.FooterTemplate != null ? GetTemplateSize(Owner.FooterTemplate, NativeListViewBase.ListViewFooterElementKindNS, availableSize) : CGSize.Empty;
 		}
 
-		internal CGSize GetSectionHeaderSize(int section)
+		internal CGSize GetSectionHeaderSize(int section, Size availableSize)
 		{
 			var template = GetTemplateForGroupHeader(section);
-			return template.SelectOrDefault(ht => GetTemplateSize(ht, NativeListViewBase.ListViewSectionHeaderElementKindNS), CGSize.Empty);
+			return template.SelectOrDefault(ht => GetTemplateSize(ht, NativeListViewBase.ListViewSectionHeaderElementKindNS, availableSize), CGSize.Empty);
 		}
 
 
-		public virtual CGSize GetItemSize(UICollectionView collectionView, NSIndexPath indexPath)
+		internal CGSize GetItemSize(UICollectionView collectionView, NSIndexPath indexPath, Size availableSize)
 		{
 			DataTemplate itemTemplate = GetTemplateForItem(indexPath);
 
@@ -514,7 +513,7 @@ namespace Windows.UI.Xaml.Controls
 				_templateCells.Clear();
 			}
 
-			var size = GetTemplateSize(itemTemplate, NativeListViewBase.ListViewItemElementKindNS);
+			var size = GetTemplateSize(itemTemplate, NativeListViewBase.ListViewItemElementKindNS, availableSize);
 
 			if (size == CGSize.Empty)
 			{
@@ -564,9 +563,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="dataTemplate">A data template</param>
 		/// <returns>The actual size of the template</returns>
-		private CGSize GetTemplateSize(DataTemplate dataTemplate, NSString elementKind)
+		private CGSize GetTemplateSize(DataTemplate dataTemplate, NSString elementKind, Size availableSize)
 		{
-			//TODO: this should take an available breadth
 			CGSize size;
 
 			// Cache the sizes to avoid creating new templates every time.
@@ -591,8 +589,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					container.Style = style;
 				}
-
-				container.ContentTemplate = dataTemplate;
+				
+				if (!container.IsContainerFromTemplateRoot)
+				{
+					container.ContentTemplate = dataTemplate;
+				}
 				try
 				{
 					// Attach templated container to visual tree while measuring. This works around the bug that default Style is not 
@@ -600,7 +601,7 @@ namespace Windows.UI.Xaml.Controls
 					Owner.XamlParent.AddSubview(BlockLayout);
 					BlockLayout.AddSubview(container);
 					// Measure with PositiveInfinity rather than MaxValue, since some views handle this better.
-					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.PositiveInfinity, double.PositiveInfinity));
+					size = Owner.NativeLayout.Layouter.MeasureChild(container, availableSize);
 
 					if ((size.Height > nfloat.MaxValue / 2 || size.Width > nfloat.MaxValue / 2) &&
 						this.Log().IsEnabled(LogLevel.Warning)
@@ -695,7 +696,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				GC.ReRegisterForFinalize(this);
 
-				Core.CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
+				CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
 			}
 			else
 			{
@@ -716,7 +717,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				return /* Cache the content ?*/ContentView.Subviews.FirstOrDefault() as ContentControl;
+				return /* Cache the content ?*/ContentView?.Subviews.FirstOrDefault() as ContentControl;
 			}
 			set
 			{
@@ -745,6 +746,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				base.Frame = value;
 				UpdateContentViewFrame();
+				UpdateContentLayoutSlots(value);
 			}
 		}
 
@@ -761,6 +763,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				base.Bounds = value;
 				UpdateContentViewFrame();
+				UpdateContentLayoutSlots(Frame);
 			}
 		}
 
@@ -773,6 +776,20 @@ namespace Windows.UI.Xaml.Controls
 			if (ContentView != null)
 			{
 				ContentView.Frame = Bounds;
+			}
+		}
+
+		/// <summary>
+		/// Fakely propagate the applied Frame of this internal container as the LayoutSlot of the publicly visible container.
+		/// This is required for the UIElement.TransformToVisual to work properly.
+		/// </summary>
+		private void UpdateContentLayoutSlots(Rect frame)
+		{
+			var content = Content;
+			if (content != null)
+			{
+				LayoutInformation.SetLayoutSlot(content, frame);
+				content.LayoutSlotWithMarginsAndAlignments = frame;
 			}
 		}
 
@@ -792,7 +809,7 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			if(Content == null)
+			if (Content == null)
 			{
 				this.Log().Error("Empty ListViewBaseInternalContainer content.");
 				return null;
@@ -840,13 +857,13 @@ namespace Windows.UI.Xaml.Controls
 						// cachedAttributes may be null if we have modified the collection with DeleteItems
 						var frame = cachedAttributes?.Frame ?? layoutAttributes.Frame;
 						SetExtent(ref frame, _measuredContentSize.Value);
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Adjusting layout attributes for item at {layoutAttributes.IndexPath}({layoutAttributes.RepresentedElementKind}), Content={Content?.Content}. Previous frame={layoutAttributes.Frame}, new frame={frame}.");
-						}
 						var sizesAreDifferent = frame.Size != layoutAttributes.Frame.Size;
 						if (sizesAreDifferent)
 						{
+							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							{
+								this.Log().Debug($"Adjusting layout attributes for item at {layoutAttributes.IndexPath}({layoutAttributes.RepresentedElementKind}), Content={Content?.Content}. Previous frame={layoutAttributes.Frame}, new frame={frame}.");
+							}
 							Owner.NativeLayout.HasDynamicElementSizes = true;
 							this.Frame = frame;
 							SetNeedsLayout();
@@ -913,6 +930,11 @@ namespace Windows.UI.Xaml.Controls
 			if (Content != null)
 			{
 				Layouter.ArrangeChild(Content, new Rect(0, 0, (float)size.Width, (float)size.Height));
+
+				// The item has to be arranged relative to this internal container (at 0,0),
+				// but doing this the LayoutSlot[WithMargins] has been updated, 
+				// so we fakely re-inject the relative position of the item in its parent.
+				UpdateContentLayoutSlots(Frame);
 			}
 		}
 

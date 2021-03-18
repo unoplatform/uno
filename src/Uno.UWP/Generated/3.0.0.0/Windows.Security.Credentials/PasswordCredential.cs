@@ -2,55 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Credentials
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PasswordCredential 
 	{
-		#if false
-		[global::Uno.NotImplemented]
-		public  string UserName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PasswordCredential.UserName is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredential", "string PasswordCredential.UserName");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  string Resource
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PasswordCredential.Resource is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredential", "string PasswordCredential.Resource");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  string Password
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PasswordCredential.Password is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredential", "string PasswordCredential.Password");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		// Skipping already declared property UserName
+		// Skipping already declared property Resource
+		// Skipping already declared property Password
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Collections.IPropertySet Properties
 		{
 			get
@@ -59,21 +20,9 @@ namespace Windows.Security.Credentials
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public PasswordCredential( string resource,  string userName,  string password) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredential", "PasswordCredential.PasswordCredential(string resource, string userName, string password)");
-		}
-		#endif
+		// Skipping already declared method Windows.Security.Credentials.PasswordCredential.PasswordCredential(string, string, string)
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.PasswordCredential(string, string, string)
-		#if false
-		[global::Uno.NotImplemented]
-		public PasswordCredential() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredential", "PasswordCredential.PasswordCredential()");
-		}
-		#endif
+		// Skipping already declared method Windows.Security.Credentials.PasswordCredential.PasswordCredential()
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.PasswordCredential()
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Resource.get
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Resource.set
@@ -81,13 +30,7 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.UserName.set
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Password.get
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Password.set
-		#if false
-		[global::Uno.NotImplemented]
-		public  void RetrievePassword()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredential", "void PasswordCredential.RetrievePassword()");
-		}
-		#endif
+		// Skipping already declared method Windows.Security.Credentials.PasswordCredential.RetrievePassword()
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Properties.get
 	}
 }

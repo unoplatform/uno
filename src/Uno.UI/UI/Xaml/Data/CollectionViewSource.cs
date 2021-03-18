@@ -21,8 +21,8 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		// Using a DependencyProperty as the backing store for IsSourceGrouped.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsSourceGroupedProperty =
-			DependencyProperty.Register(nameof(IsSourceGrouped), typeof(bool), typeof(CollectionViewSource), new PropertyMetadata(false, (o, e) => ((CollectionViewSource)o).UpdateView()));
+		public static DependencyProperty IsSourceGroupedProperty { get ; } =
+			DependencyProperty.Register(nameof(IsSourceGrouped), typeof(bool), typeof(CollectionViewSource), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		public object Source
 		{
@@ -31,8 +31,8 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SourceProperty =
-			DependencyProperty.Register(nameof(Source), typeof(object), typeof(CollectionViewSource), new PropertyMetadata(null, (o, e) => ((CollectionViewSource)o).UpdateView()));
+		public static DependencyProperty SourceProperty { get ; } =
+			DependencyProperty.Register(nameof(Source), typeof(object), typeof(CollectionViewSource), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		private void UpdateView()
 		{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Data
 				name: nameof(ItemsPath),
 				propertyType: typeof(PropertyPath),
 				ownerType: typeof(CollectionViewSource),
-				typeMetadata: new PropertyMetadata(null, (o, e) => ((CollectionViewSource)o).UpdateView())
+				typeMetadata: new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView())
 			);
 	}
 }

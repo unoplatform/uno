@@ -9,7 +9,7 @@ namespace Uno.UI
 	/// </summary>
 	public partial struct IndexPath
 	{
-		internal static IndexPath FromNSIndexPath(Foundation.NSIndexPath indexPath)
+		internal static IndexPath FromNSIndexPath(global::Foundation.NSIndexPath indexPath)
 		{
 			return new IndexPath(indexPath.Row, indexPath.Section);
 		}

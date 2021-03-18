@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,11 +14,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
+#if __WASM__
+	[SampleControlInfo("CommandBar", "Flyout", ignoreInSnapshotTests: true)]
+#else
 	[SampleControlInfo("CommandBar", "Flyout")]
+#endif
     public sealed partial class CommandBar_Flyout : UserControl
     {
         public CommandBar_Flyout()

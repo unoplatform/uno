@@ -2,55 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ColorAnimation : global::Windows.UI.Xaml.Media.Animation.Timeline
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? To
-		{
-			get
-			{
-				return (global::Windows.UI.Color?)this.GetValue(ToProperty);
-			}
-			set
-			{
-				this.SetValue(ToProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? From
-		{
-			get
-			{
-				return (global::Windows.UI.Color?)this.GetValue(FromProperty);
-			}
-			set
-			{
-				this.SetValue(FromProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool EnableDependentAnimation
-		{
-			get
-			{
-				return (bool)this.GetValue(EnableDependentAnimationProperty);
-			}
-			set
-			{
-				this.SetValue(EnableDependentAnimationProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		// Skipping already declared property To
+		// Skipping already declared property From
+		// Skipping already declared property EnableDependentAnimation
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase EasingFunction
 		{
 			get
@@ -63,67 +24,20 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? By
-		{
-			get
-			{
-				return (global::Windows.UI.Color?)this.GetValue(ByProperty);
-			}
-			set
-			{
-				this.SetValue(ByProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ByProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"By", typeof(global::Windows.UI.Color?), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ColorAnimation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Color?)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		// Skipping already declared property By
+		// Skipping already declared property ByProperty
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"EasingFunction", typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
+			nameof(EasingFunction), typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.ColorAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"EnableDependentAnimation", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ColorAnimation), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty FromProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"From", typeof(global::Windows.UI.Color?), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ColorAnimation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Color?)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ToProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"To", typeof(global::Windows.UI.Color?), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ColorAnimation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Color?)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public ColorAnimation() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.ColorAnimation", "ColorAnimation.ColorAnimation()");
-		}
-		#endif
+		// Skipping already declared property EnableDependentAnimationProperty
+		// Skipping already declared property FromProperty
+		// Skipping already declared property ToProperty
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.ColorAnimation.ColorAnimation()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorAnimation.ColorAnimation()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorAnimation.From.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorAnimation.From.set

@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 {
-	[SampleControlInfo("ImageBrushTestControl", "ImageBrush_SameWithDelay")]
+	[SampleControlInfo(category: "ImageBrushTestControl")]
 	public sealed partial class ImageBrush_SameWithDelay : UserControl
 	{
 		BrushContext _ctx = new BrushContext();
@@ -39,7 +39,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 		}
 	}
 
-	public class BrushContext : INotifyPropertyChanged
+	public class BrushContext : System.ComponentModel.INotifyPropertyChanged
 	{
 		private string _imageSource;
 		private string _imageSource2;
@@ -50,7 +50,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 			set
 			{
 				_imageSource = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ImgSource)));
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(ImgSource)));
 			}
 		}
 
@@ -60,10 +60,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 			set
 			{
 				_imageSource2 = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ImgSource2)));
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(ImgSource2)));
 			}
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 	}
 }

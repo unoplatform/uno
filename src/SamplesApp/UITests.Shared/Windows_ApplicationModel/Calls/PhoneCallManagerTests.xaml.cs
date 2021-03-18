@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
-	[SampleControlInfo("Windows.ApplicationModel", "PhoneCallManager", ignoreInAutomatedTests: true, description: "PhoneCallManager APIs implementation.")]
+	[SampleControlInfo("Windows.ApplicationModel", "PhoneCallManager", ignoreInSnapshotTests: true, description: "PhoneCallManager APIs implementation.")]
 
 	public sealed partial class PhoneCallManagerTests : UserControl
 	{

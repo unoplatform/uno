@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
 	[SampleControlInfo("ContentDialog", "ContentDialog_Simple")]
@@ -52,6 +54,19 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 		private async void OnMyButtonClick5(object sender, object args)
 		{
 			var result = await new ContentDialog_Simple_Dialog() { DefaultButton = ContentDialogButton.Primary }.ShowAsync();
+			dialogResult.Text = result.ToString();
+		}
+
+		ContentDialog_Simple_Dialog _dialog6;
+
+		private async void OnMyButtonClick6(object sender, object args)
+		{
+			if (_dialog6 == null)
+			{
+				_dialog6 = new ContentDialog_Simple_Dialog { };
+			}
+
+			var result = await _dialog6.ShowAsync();
 			dialogResult.Text = result.ToString();
 		}
 

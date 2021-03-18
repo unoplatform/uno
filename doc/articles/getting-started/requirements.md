@@ -1,28 +1,33 @@
-# Uno Platform requirements
+# Supported platforms
 
-The platform requirements for the Uno Platform are as follows:
+Uno Platform applications run on [Android](#android), [iOS](#ios), [web](#webassembly), [macOS](#macos), [Linux](#linux), Tizen, and [Windows](#windows). 
+
+See below for minimum supported versions for each platform.
 
 ## Android
 
-- The minimum supported version by the Uno Platform is Android "Lollipop" 5.0 (API 21) from 2014. Android v4.4 and lower is known to work but is unsupported.
-- Android has [several API settings](https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/android-api-levels) that determine your applications compatibility. As a rule of thumb, always [use the latest Android SDK Tools and Android API platform](https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-sdk?tabs=windows) during development as you can target older Android versions while using the latest SDK.
+Uno Platform apps run on devices running Android 5 and above. 
+
+At compile time, Uno typically supports two versions of the Android SDK, the latest and the immediately previous. At present, this is Android 11 and Android 10. It's generally recommended to use the latest version of the SDK. (Note that this **does not** affect the runtime version - apps compiled with Android 11 will run happily on devices running Android 5.)
 
 ## iOS
 
-The minimum supported version by the Uno Platform is iOS 8 from 2014.
-
-## Universal Windows Platform (UWP)
-
-When developing for the Universal Windows Platform (UWP) there are no special requirements. The Uno Platform is a Universal Windows Platform (UWP) Bridge that allows UWP based code to run on iOS, Android, and WebAssembly. Uno provides the full API definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
+Uno Platform apps run on iOS 8 and above.
 
 ## WebAssembly
 
-WebAssembly is supported in Chrome, Edge, Edge Dev, Opera, Firefox and Safari. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
+Uno Platform runs in browsers that support WebAssembly, including Chrome, Edge, Edge Dev, Opera, Firefox and Safari. Desktop and mobile browser versions are supported. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
 
-## Visual Studio
+## macOS
 
-Visual Studio 2019 is recommended (Visual Studio 2017 version 15.8 minimum) for Windows or Mac with the following components installed:
+Uno Platform applications run on all macOS versions supported by Xamarin.Mac - currently macOS 10.13 and above.
 
-- Universal Windows Platform (if using Visual Studio for Windows)
-- Xamarin (for Android and iOS development)
-- ASP.NET/web component, along with .NET Core 2.2 (for WebAssembly development)
+## Linux
+
+Uno Platform applications run on Linux distributions and versions where .NET 5 is supported, [listed here](https://docs.microsoft.com/en-ca/dotnet/core/install/linux).
+
+## Windows
+
+Applications built with UWP run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041), but lower versions can be targeted.
+
+Applications built with Uno.UI's Skia.WPF support run on Windows 7 and above. 

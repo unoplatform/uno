@@ -10,7 +10,8 @@ namespace Windows.Foundation.Collections
 	{
 		private readonly List<T> _list = new List<T>();
 
-		public T this[int index]
+		object IObservableVector.this[int index] => this[index];
+		public virtual T this[int index]
 		{
 			get { return _list[index]; }
 			set
@@ -33,14 +34,15 @@ namespace Windows.Foundation.Collections
 		public event VectorChangedEventHandler<T> VectorChanged;
 		public event VectorChangedEventHandler UntypedVectorChanged;
 
-		public void Add(T item)
+		void IObservableVector.Add(object item) => Add((T)item);
+		public virtual void Add(T item)
 		{
 			_list.Add(item);
 
 			RaiseVectorChanged(CollectionChange.ItemInserted, _list.Count - 1);
 		}
 
-		public void Clear()
+		public virtual void Clear()
 		{
 			_list.Clear();
 
@@ -51,11 +53,13 @@ namespace Windows.Foundation.Collections
 
 		public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
 
-		public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
+		public virtual IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
+		int IObservableVector.IndexOf(object item) => item is T t ? IndexOf(t) : -1;
 		public int IndexOf(T item) => _list.IndexOf(item);
 
-		public void Insert(int index, T item)
+		void IObservableVector.Insert(int index, object item) => Insert(index, (T)item);
+		public virtual void Insert(int index, T item)
 		{
 			_list.Insert(index, item);
 
@@ -70,8 +74,6 @@ namespace Windows.Foundation.Collections
 			{
 				RemoveAt(index);
 
-				RaiseVectorChanged(CollectionChange.ItemRemoved, index);
-
 				return true;
 			}
 			else
@@ -80,14 +82,14 @@ namespace Windows.Foundation.Collections
 			}
 		}
 
-		public void RemoveAt(int index)
+		public virtual void RemoveAt(int index)
 		{
 			_list.RemoveAt(index);
 
 			RaiseVectorChanged(CollectionChange.ItemRemoved, index);
 		}
 
-		IEnumerator IEnumerable.GetEnumerator() => _list.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
 		private void RaiseVectorChanged(CollectionChange change, int index)
 		{

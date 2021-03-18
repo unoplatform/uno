@@ -1,0 +1,17 @@
+parameters:
+  nugetPackages: '$(Pipeline.Workspace)/.nuget/packages'
+
+steps:
+
+  - script: |
+      md "${{ parameters.nugetPackages }}"
+      compact /c "/s:${{ parameters.nugetPackages }}"
+
+    condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))
+
+  - task: Cache@2
+    condition: eq(variables['enable_package_cache'], 'true')
+    inputs:
+      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
+      path: ${{ parameters.nugetPackages }}
+    displayName: Cache NuGet packages

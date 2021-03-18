@@ -2,6 +2,12 @@
 {
 	public partial class TimePickerSelector : ContentControl
 	{
-		public TimePickerSelector() { }
+		public TimePickerSelector() {
+			DefaultStyleKey = typeof(TimePickerSelector);
+
+			InitPartial();
+		}
+
+		partial void InitPartial();
 	}
 }

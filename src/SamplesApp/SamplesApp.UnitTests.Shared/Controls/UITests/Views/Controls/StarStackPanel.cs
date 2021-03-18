@@ -4,24 +4,15 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Uno.UI.Samples.Helper;
 
-#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !__WASM__ && !__MACOS__
+#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !UNO_REFERENCE_API && !__MACOS__
 using System.Windows;
 using System.Windows.Controls;
 #else
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-#endif
-#if __ANDROID__ || __IOS__ || __WASM__ || __MACOS__
-using DependencyObject = System.Object;
-#endif
-#if __ANDROID__
-using UIElement = Android.Views.View;
-#elif __IOS__
-using UIElement = UIKit.UIView;
-#elif __MACOS__
-using UIElement = AppKit.NSView;
 #endif
 
 namespace Uno.UI.Samples.Controls
@@ -106,15 +97,15 @@ namespace Uno.UI.Samples.Controls
 		{
 			var sizeHint = GetChildSizeHint(child);
 
-			if (sizeHint.IsStar)
+			if (GridLengthHelper2.GetIsStar(sizeHint))
 			{
 				starTotal += sizeHint.Value;
 			}
-			else if (sizeHint.IsAuto)
+			else if (GridLengthHelper2.GetIsAuto(sizeHint))
 			{
 				MesureChildAuto(child, orientation, availableSize, ref totalSize);
 			}
-			else if (sizeHint.IsAbsolute)
+			else if (GridLengthHelper2.GetIsAbsolute(sizeHint))
 			{
 				MesureChildAbsolute(child, orientation, availableSize, sizeHint, ref totalSize);
 			}
@@ -178,7 +169,7 @@ namespace Uno.UI.Samples.Controls
 				foreach (UIElement child in children)
 				{
 					var sizeHint = GetChildSizeHint(child);
-					if (sizeHint.IsStar)
+					if (GridLengthHelper2.GetIsStar(sizeHint))
 					{
 						MesureChildStar(child, orientation, availableSize, sizeHint, starTotal, ref totalSize);
 					}
@@ -298,15 +289,15 @@ namespace Uno.UI.Samples.Controls
 			var sizeHint = GetChildSizeHint(child);
 			var size = new Size();
 
-			if (sizeHint.IsStar)
+			if (GridLengthHelper2.GetIsStar(sizeHint))
 			{
 				starTotal += sizeHint.Value;
 			}
-			else if (sizeHint.IsAuto)
+			else if (GridLengthHelper2.GetIsAuto(sizeHint))
 			{
 				ComputeChildAutoSize(child, orientation, ref finalSize, ref totalLength, ref size);
 			}
-			else if (sizeHint.IsAbsolute)
+			else if (GridLengthHelper2.GetIsAbsolute(sizeHint))
 			{
 				ComputeChildAbsoluteSize(orientation, ref finalSize, ref totalLength, ref sizeHint, ref size);
 			}
@@ -409,7 +400,7 @@ namespace Uno.UI.Samples.Controls
 		{
 			var size = record.Size;
 
-			if (record.SizeHint.IsStar)
+			if (GridLengthHelper2.GetIsStar(record.SizeHint))
 			{
 				var portion = record.SizeHint.Value * starRatio;
 
@@ -471,7 +462,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(OrientationProperty, value); }
 		}
 
-		public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register
+		public static DependencyProperty OrientationProperty { get ; } = DependencyProperty.Register
 		(
 			"Orientation",
 			typeof(Orientation),
@@ -491,7 +482,7 @@ namespace Uno.UI.Samples.Controls
 			obj.SetValue(PriorityProperty, value);
 		}
 
-		public static readonly DependencyProperty PriorityProperty = DependencyProperty.RegisterAttached
+		public static DependencyProperty PriorityProperty { get ; } = DependencyProperty.RegisterAttached
 		(
 			"Priority",
 			typeof(int),
@@ -501,7 +492,7 @@ namespace Uno.UI.Samples.Controls
 		#endregion
 
 		#region Sizes DependencyProperty
-		public static readonly DependencyProperty SizesProperty = DependencyProperty.Register(
+		public static DependencyProperty SizesProperty { get ; } = DependencyProperty.Register(
 			"Sizes", typeof(string), typeof(StarStackPanel), new PropertyMetadata(null, HandleSizesChanged));
 
 		public string Sizes
@@ -550,7 +541,7 @@ namespace Uno.UI.Samples.Controls
 			{
 				if (string.IsNullOrEmpty(part))
 				{
-					result.Add(new GridLength(0, GridUnitType.Auto));
+					result.Add(GridLengthHelper2.FromValueAndType(0, GridUnitType.Auto));
 					continue;
 				}
 
@@ -563,7 +554,7 @@ namespace Uno.UI.Samples.Controls
 				var autoGroup = match.Groups["auto"];
 				if (autoGroup.Success)
 				{
-					result.Add(new GridLength(0, GridUnitType.Auto));
+					result.Add(GridLengthHelper2.FromValueAndType(0, GridUnitType.Auto));
 					continue;
 				}
 
@@ -574,14 +565,14 @@ namespace Uno.UI.Samples.Controls
 						!string.IsNullOrWhiteSpace(starsGroup.Value)
 							? double.Parse(starsGroup.Value, CultureInfo.InvariantCulture)
 							: 1;
-					result.Add(new GridLength(value, GridUnitType.Star));
+					result.Add(GridLengthHelper2.FromValueAndType(value, GridUnitType.Star));
 					continue;
 				}
 
 				var starGroup = match.Groups["star"];
 				if (starGroup.Success)
 				{
-					result.Add(new GridLength(1, GridUnitType.Star));
+					result.Add(GridLengthHelper2.FromValueAndType(1, GridUnitType.Star));
 					continue;
 				}
 
@@ -589,7 +580,7 @@ namespace Uno.UI.Samples.Controls
 				if (absGroup.Success)
 				{
 					var value = double.Parse(absGroup.Value, CultureInfo.InvariantCulture);
-					result.Add(new GridLength(value, GridUnitType.Pixel));
+					result.Add(GridLengthHelper2.FromValueAndType(value, GridUnitType.Pixel));
 					continue;
 				}
 
@@ -605,7 +596,7 @@ namespace Uno.UI.Samples.Controls
 
 		#region InterElementSpacing DependencyProperty
 
-		public static readonly DependencyProperty InterElementSpacingProperty = DependencyProperty.Register(
+		public static DependencyProperty InterElementSpacingProperty { get ; } = DependencyProperty.Register(
 			"InterElementSpacing", typeof(double), typeof(StarStackPanel), new PropertyMetadata((double)0.0, InvalidateLayoutOnChanged));
 
 		public double InterElementSpacing
@@ -626,12 +617,12 @@ namespace Uno.UI.Samples.Controls
 			obj.SetValue(SizeProperty, value);
 		}
 
-		public static readonly DependencyProperty SizeProperty = DependencyProperty.RegisterAttached
+		public static DependencyProperty SizeProperty { get ; } = DependencyProperty.RegisterAttached
 		(
 			"Size",
 			typeof(GridLength),
 			typeof(StarStackPanel),
-			new PropertyMetadata(GridLength.Auto, HandleSizePropertyChanged)
+			new PropertyMetadata(GridLengthHelper2.Auto, HandleSizePropertyChanged)
 		);
 
 		private static void HandleSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -643,7 +634,7 @@ namespace Uno.UI.Samples.Controls
 		}
 		#endregion
 
-#if !__ANDROID__ && !__IOS__ && !__WASM__ //In Uno, Padding is (incorrectly) defined on Panel
+#if !__ANDROID__ && !__IOS__ && !UNO_REFERENCE_API //In Uno, Padding is (incorrectly) defined on Panel
 		#region Padding DependencyProperty
 
 		public Thickness Padding
@@ -653,7 +644,7 @@ namespace Uno.UI.Samples.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get ; } =
 			DependencyProperty.Register("Padding", typeof(Thickness), typeof(StarStackPanel), new PropertyMetadata(default(Thickness), InvalidateLayoutOnChanged));
 
 		#endregion

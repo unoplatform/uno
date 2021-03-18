@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 	//     Represents a 4 × 4 matrix that is used for transformations in a three-dimensional
 	//     (3-D) space.
 	[SecurityCritical]
-	public struct Matrix3D : IFormattable
+	public partial struct Matrix3D : IFormattable
 	{
 		public Matrix3D(double m11, double m12, double m13, double m14, double m21, double m22, double m23, double m24, double m31, double m32, double m33, double m34, double offsetX, double offsetY, double offsetZ, double m44) { throw new NotImplementedException(); }
 

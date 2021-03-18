@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	internal sealed class ImmediateAnimator : IValueAnimator, IDisposable
+	internal sealed class ImmediateAnimator<T> : IValueAnimator, IDisposable where T : struct
 	{
-		private float _from;
-		private float _to;
+		private T _from;
+		private T _to;
 		private long _duration;
 
-		public ImmediateAnimator(float from, float to)
+		public ImmediateAnimator(T from, T to)
 		{
 			_to = to;
 			_from = from;
@@ -67,6 +67,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		public event EventHandler AnimationPause;
 
 		public event EventHandler AnimationCancel;
+
+#pragma warning disable 67
+		public event EventHandler AnimationFailed;
+#pragma warning restore 67
 
 		public event EventHandler Update;
 

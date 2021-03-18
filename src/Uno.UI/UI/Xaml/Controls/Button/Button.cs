@@ -12,6 +12,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		static Button()
 		{
+			StaticInitializeVisualStates();
+
 			HorizontalContentAlignmentProperty.OverrideMetadata(
 				typeof(Button),
 				new FrameworkPropertyMetadata(HorizontalAlignment.Center)
@@ -28,6 +30,8 @@ namespace Windows.UI.Xaml.Controls
 			InitializeVisualStates();
 
 			Click += (s, e) => { Flyout?.ShowAt(this); };
+
+			DefaultStyleKey = typeof(Button);
 		}
 
 		#region Flyout Dependency Property
@@ -37,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FlyoutProperty, value); }
 		}
 
-		public static readonly DependencyProperty FlyoutProperty =
+		public static DependencyProperty FlyoutProperty { get ; } =
 			DependencyProperty.Register(
 				"Flyout",
 				typeof(FlyoutBase),
@@ -49,9 +53,14 @@ namespace Windows.UI.Xaml.Controls
 			);
 		#endregion
 
-		protected override AutomationPeer OnCreateAutomationPeer()
+		private protected override void OnUnloaded()
 		{
-			return new ButtonAutomationPeer(this);
+			base.OnUnloaded();
+
+			Flyout?.Close();
 		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new ButtonAutomationPeer(this);
 	}
 }

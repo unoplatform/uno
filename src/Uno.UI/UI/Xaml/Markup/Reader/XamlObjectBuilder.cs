@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
+using Uno.UI;
 using Uno.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -49,7 +50,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private object LoadObject(XamlObjectDefinition control)
 		{
-			if(
+			if (
 				control.Type.Name == "NullExtension"
 				&& control.Type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
 			)
@@ -59,7 +60,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 			var type = TypeResolver.FindType(control.Type);
 
-			if(type == null)
+			if (type == null)
 			{
 				throw new InvalidOperationException($"Unable to find type {control.Type}");
 			}
@@ -93,6 +94,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 
 				return rd;
+			}
+			else if (type.IsPrimitive && control.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault()?.Value is string primitiveValue)
+			{
+				return Convert.ChangeType(primitiveValue, type, CultureInfo.InvariantCulture);
+			}
+			else if (type == typeof(string) && control.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault()?.Value is string stringValue)
+			{
+				return stringValue;
 			}
 			else
 			{
@@ -197,7 +206,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			// && FindEventType(member.Member) == null
 			)
 			{
-				if(instance is TextBlock textBlock)
+				if (instance is TextBlock textBlock)
 				{
 					ProcessTextBlock(control, textBlock, member);
 				}
@@ -258,7 +267,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						{
 							ProcessMemberMarkupExtension(instance, member);
 						}
-						else if(instance is DependencyObject dependencyObject)
+						else if (instance is DependencyObject dependencyObject)
 						{
 							ProcessMemberElements(dependencyObject, member, dependencyProperty);
 						}
@@ -294,7 +303,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (member.Value != null)
 			{
 				span.Inlines.Add(
-					new Run {
+					new Run
+					{
 						Text = member.Value.ToString()
 					}
 				);
@@ -416,7 +426,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 				else
 				{
-					throw new InvalidOperationException("Invalid collection");
+					throw new InvalidOperationException($"Unsupported collection type {propertyInfo.PropertyType} on {propertyInfo}");
 				}
 			}
 			else
@@ -430,11 +440,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member)
 		{
-			if(IsBindingMarkupNode(member))
+			if (IsBindingMarkupNode(member))
 			{
 				ProcessBindingMarkupNode(instance, member);
 			}
-			else if(IsStaticResourceMarkupNode(member))
+			else if (IsStaticResourceMarkupNode(member))
 			{
 				ProcessStaticResourceMarkupNode(instance, member);
 			}
@@ -444,12 +454,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			var resourceNode = member.Objects.FirstOrDefault();
 
-			if(resourceNode != null)
+			if (resourceNode != null)
 			{
 				string keyName = resourceNode.Members.FirstOrDefault()?.Value?.ToString();
 				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
 
-				if(keyName != null && dependencyProperty != null)
+				if (keyName != null && dependencyProperty != null)
 				{
 					void ResolveResource()
 					{
@@ -480,18 +490,16 @@ namespace Windows.UI.Xaml.Markup.Reader
 					.Flatten(i => (i.Parent as FrameworkElement))
 					.Select(fe =>
 					{
-						if (fe.Resources.TryGetValue(keyName, out var resource))
+						if (fe.Resources.TryGetValue(keyName, out var resource, shouldCheckSystem: false))
 						{
 							return resource;
 						}
 						return null;
 					})
+					.Concat(ResourceResolver.ResolveTopLevelResource(keyName))
 					.Trim()
 					.FirstOrDefault();
 
-			staticResource = staticResource ?? ResourceDictionary.DefaultResolver?.Invoke(
-				keyName
-			);
 			return staticResource;
 		}
 
@@ -777,9 +785,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void ResolveElementNames(FrameworkElement root)
 		{
-			foreach(var (elementName, bindingSubject) in _elementNames)
+			foreach (var (elementName, bindingSubject) in _elementNames)
 			{
-				if(root.FindName(elementName) is DependencyObject element)
+				if (root.FindName(elementName) is DependencyObject element)
 				{
 					bindingSubject.ElementInstance = element;
 				}

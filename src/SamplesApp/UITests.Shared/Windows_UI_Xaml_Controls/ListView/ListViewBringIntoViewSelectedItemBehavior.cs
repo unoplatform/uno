@@ -24,7 +24,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			obj.SetValue(IsEnabledProperty, value);
 		}
 
-		public static readonly DependencyProperty IsEnabledProperty =
+		public static DependencyProperty IsEnabledProperty { get ; } =
 			DependencyProperty.RegisterAttached("IsEnabled", typeof(bool), typeof(ListViewBringIntoViewSelectedItemBehavior), new PropertyMetadata(false, OnIsEnabledChanged));
 
 		private static void OnIsEnabledChanged(object d, DependencyPropertyChangedEventArgs e)

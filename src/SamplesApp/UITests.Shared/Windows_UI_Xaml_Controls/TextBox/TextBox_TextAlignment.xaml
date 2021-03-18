@@ -16,19 +16,24 @@
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 				<StackPanel>
-					<TextBox TextAlignment="Left"
+					<TextBox x:Name="LeftAlignedTextBox"
+							 TextAlignment="Left"
 							 Text="Left" />
 
-					<TextBox TextAlignment="Center"
+					<TextBox x:Name="CenterAlignedTextBox"
+							 TextAlignment="Center"
 							 Text="Center" />
 
-					<TextBox TextAlignment="Right"
+					<TextBox x:Name="RightAlignedTextBox"
+							 TextAlignment="Right"
 							 Text="Right" />
 
-					<TextBox TextAlignment="Justify"
+					<TextBox x:Name="JustifyAlignedTextBox"
+							 TextAlignment="Justify"
 							 Text="Justify" />
 
-					<TextBox TextAlignment="DetectFromContent"
+					<TextBox x:Name="DetectFromContentAlignedTextBox"
+							 TextAlignment="DetectFromContent"
 							 Text="Detected from content" />
 				</StackPanel>
 			</DataTemplate>

@@ -2,18 +2,41 @@
 
 	<PropertyGroup>
 		<TargetFramework>net47</TargetFramework>
-		<LangVersion>7.3</LangVersion>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="FluentAssertions" Version="5.9.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
+	<ItemGroup> 
+		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
 		<PackageReference Include="NUnit" />
-		<PackageReference Include="NUnit3TestAdapter"/>
+		<PackageReference Include="NUnit3TestAdapter" /> 
+		<PackageReference Include="Xamarin.UITest" Version="3.0.13" />
 		<PackageReference Include="Uno.UITest" />
 		<PackageReference Include="Uno.UITest.Selenium" />
 		<PackageReference Include="Uno.UITest.Xamarin" />
 		<PackageReference Include="Uno.UITest.Helpers" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+	</ItemGroup> 
+	  
+	<ItemGroup>
+		<SourceGenerator Include="..\SamplesApp.UITests.Generator\Bin\$(Configuration)\net47\Uno.Samples.UITest.Generator.dll" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include="..\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\*.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

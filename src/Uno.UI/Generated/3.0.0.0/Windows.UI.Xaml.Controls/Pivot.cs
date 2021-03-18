@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Pivot 
@@ -11,8 +11,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Title
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property SelectedIndex
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsLocked
 		{
 			get
@@ -30,8 +30,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property RightHeader
 		// Skipping already declared property LeftHeaderTemplate
 		// Skipping already declared property LeftHeader
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsHeaderItemsCarouselEnabled
 		{
 			get
@@ -44,8 +44,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement HeaderFocusVisualPlacement
 		{
 			get
@@ -62,8 +62,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property IsLockedProperty
 		// Skipping already declared property SelectedIndexProperty
 		// Skipping already declared property SelectedItemProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty SlideInAnimationGroupProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"SlideInAnimationGroup", typeof(global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup), 
@@ -76,19 +76,19 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property LeftHeaderTemplateProperty
 		// Skipping already declared property RightHeaderProperty
 		// Skipping already declared property RightHeaderTemplateProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderFocusVisualPlacementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderFocusVisualPlacement", typeof(global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement), 
+			nameof(HeaderFocusVisualPlacement), typeof(global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsHeaderItemsCarouselEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsHeaderItemsCarouselEnabled", typeof(bool), 
+			nameof(IsHeaderItemsCarouselEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -141,15 +141,15 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.SelectedItemProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.IsLockedProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.SlideInAnimationGroupProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup GetSlideInAnimationGroup( global::Windows.UI.Xaml.FrameworkElement element)
 		{
 			return (global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup)element.GetValue(SlideInAnimationGroupProperty);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetSlideInAnimationGroup( global::Windows.UI.Xaml.FrameworkElement element,  global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup value)
 		{
 			element.SetValue(SlideInAnimationGroupProperty, value);

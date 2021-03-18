@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media
 {
-	public sealed class RenderingEventArgs
+	public sealed partial class RenderingEventArgs
 	{
 		internal RenderingEventArgs(TimeSpan renderingTime)
 		{

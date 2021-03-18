@@ -11,7 +11,7 @@
     <Grid>
 		<StackPanel Margin="20" VerticalAlignment="Top" Orientation="Horizontal">
 			<SymbolIcon Symbol="Play" Margin="20" />
-			<TextBlock Text="Page 1" FontSize="30" VerticalAlignment="Center" />
+			<TextBlock x:Name="Page1NavViewContent" Text="Page 1" FontSize="30" VerticalAlignment="Center" />
 		</StackPanel>
     </Grid>
 </Page>

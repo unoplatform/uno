@@ -1,75 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml
 {
 	[TestFixture]
 	public class UIElementTests : SampleControlUITestBase
 	{
-		[Test]
-		[AutoRetry]
-		public void When_TransformToVisual()
-		{
-			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_Transform");
-
-			_app.WaitForText("IsLoadedText", "Loaded");
-
-			var windowWidthText = _app.GetText("WindowWidth");
-			var windowHeightText = _app.GetText("WindowHeight");
-
-			var transform1XText = _app.GetText("Border1TransformNullX");
-			var transform1YText = _app.GetText("Border1TransformNullY");
-
-			const int borderWidth = 50;
-			const int borderHeight = 50;
-
-			var windowWidth = int.Parse(windowWidthText);
-			var windowHeight = int.Parse(windowHeightText);
-			var transformX = int.Parse(transform1XText);
-			var transformY = int.Parse(transform1YText);
-
-			Assert.Greater(windowWidth, 100);
-			Assert.Greater(windowHeight, 100);
-
-			Assert.AreEqual(windowWidth - borderWidth, transformX);
-			Assert.AreEqual(windowHeight - borderHeight, transformY);
-		}
+		// TODO: convert this to RuntimeTests https://github.com/unoplatform/uno/issues/2114#issuecomment-555209397
 		[Test]
 		[AutoRetry]
 		public void When_TransformToVisual_Transform()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_Transform");
+			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_Transform", skipInitialScreenshot: false);
 
-			_app.WaitForText("IsLoadedText", "Loaded");
+			_app.WaitForText("TestsStatus", "SUCCESS");
+		}
 
-			var windowWidthText = _app.GetText("WindowWidth");
-			var windowHeightText = _app.GetText("WindowHeight");
+		// TODO: convert this to RuntimeTests https://github.com/unoplatform/uno/issues/2114#issuecomment-555209397
+		[Test]
+		[AutoRetry]
+		public void When_TransformToVisual_ScrollViewer()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_ScrollViewer", skipInitialScreenshot: false);
 
-			var transform2XText = _app.GetText("Border2TransformNullX");
-			var transform2YText = _app.GetText("Border2TransformNullY");
+			_app.WaitForText("TestsStatus", "SUCCESS");
+		}
 
-			const int borderWidth = 50;
-			const int borderHeight = 50;
-			const int translateX = 50;
-			const int translateY = 50;
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)] // Tests display of Android native view
+		public void When_Native_View()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.UIElement_Native_Child");
 
-			var windowWidth = int.Parse(windowWidthText);
-			var windowHeight = int.Parse(windowHeightText);
-			var transformX = int.Parse(transform2XText);
-			var transformY = int.Parse(transform2YText);
+			_app.WaitForElement("SpacerBorder");
+			var spacerRect = _app.GetRect("SpacerBorder");
 
-			Assert.Greater(windowWidth, 100);
-			Assert.Greater(windowHeight, 100);
+			using var scrn = TakeScreenshot("Ready");
 
-			Assert.AreEqual(windowWidth - borderWidth - translateX, transformX);
-			Assert.AreEqual(windowHeight - borderHeight - translateY, transformY);
-
-			_app.Screenshot(nameof(When_TransformToVisual_Transform));
+			ImageAssert.HasColorAt(scrn, spacerRect.X, spacerRect.Y, Color.Red);
 		}
 	}
 }

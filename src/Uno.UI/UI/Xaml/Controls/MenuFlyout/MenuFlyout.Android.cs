@@ -17,30 +17,45 @@ namespace Windows.UI.Xaml.Controls
 
 		internal protected override void Open()
 		{
-			_menu = new PopupMenu(ContextHelper.Current, GetActualTarget());
+			if (UseNativePopup)
+			{
+				_menu = new PopupMenu(ContextHelper.Current, GetActualTarget());
 
-			_menu.MenuItemClick += OnMenuItemClick;
-			_menu.DismissEvent += OnDismiss;
+				_menu.MenuItemClick += OnMenuItemClick;
+				_menu.DismissEvent += OnDismiss;
 
-			Items
-				.OfType<MenuFlyoutItem>()
-				.Where(item => item.Visibility == Visibility.Visible)
-				.ForEach((index, item) =>
-				{
+				Items
+					.OfType<MenuFlyoutItem>()
+					.Where(item => item.Visibility == Visibility.Visible)
+					.ForEach((index, item) =>
+					{
 					// Using index as ID
 					_menu.Menu.Add(0, index, index, item.Text);
-				});
+					});
 
-			_menu.Show();
+				_menu.Show();
+			}
+			else
+			{
+				base.Open();
+			}
 		}
 
 		internal protected override void Close()
 		{
-			_menu?.Dismiss();
-			if (_menu != null)
+			if (UseNativePopup)
 			{
-				_menu.MenuItemClick -= OnMenuItemClick;
-				_menu.DismissEvent -= OnDismiss;
+
+				_menu?.Dismiss();
+				if (_menu != null)
+				{
+					_menu.MenuItemClick -= OnMenuItemClick;
+					_menu.DismissEvent -= OnDismiss;
+				}
+			}
+			else
+			{
+				base.Close();
 			}
 		}
 
@@ -54,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			var items = Items.OfType<MenuFlyoutItem>().Where(i => i.Visibility == Visibility.Visible).ToArray();
 			var item = items[e.Item.ItemId];
 
-			item.Command.ExecuteIfPossible(item.CommandParameter);
+			item.InvokeClick(); 
 		}
 
 		private View GetActualTarget()

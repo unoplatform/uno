@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {
-	public partial class BindableSwitchCompat : Android.Support.V7.Widget.SwitchCompat, DependencyObject
+	public partial class BindableSwitchCompat : AndroidX.AppCompat.Widget.SwitchCompat, DependencyObject
 	{
 		public BindableSwitchCompat()
 			: base(ContextHelper.Current)
@@ -26,8 +26,8 @@ namespace Uno.UI.Controls
 			// TextOn and TextOff properties must be set to an empty string or the following error will happen because the properties are null.
 			// E / AndroidRuntime(6313): java.lang.NullPointerException: Attempt to invoke interface method 'int java.lang.CharSequence.length()' on a null object reference
 			// E / AndroidRuntime(6313): 	at android.text.StaticLayout.< init > (StaticLayout.java:49)
-			// E / AndroidRuntime(6313): 	at android.support.v7.widget.SwitchCompat.makeLayout(SwitchCompat.java:606)
-			// E / AndroidRuntime(6313): 	at android.support.v7.widget.SwitchCompat.onMeasure(SwitchCompat.java:526)
+			// E / AndroidRuntime(6313): 	at AndroidX.AppCompat.widget.SwitchCompat.makeLayout(SwitchCompat.java:606)
+			// E / AndroidRuntime(6313): 	at AndroidX.AppCompat.widget.SwitchCompat.onMeasure(SwitchCompat.java:526)
 			// E / AndroidRuntime(6313): 	at android.view.View.measure(View.java:17547)
 
 			TextOn = "";
@@ -45,8 +45,8 @@ namespace Uno.UI.Controls
 			set { this.SetValue(TextColorProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextColorProperty =
-			DependencyProperty.Register("TextColor", typeof(Brush), typeof(BindableSwitchCompat), new PropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTextColorChanged((Brush)e.NewValue)));
+		public static DependencyProperty TextColorProperty { get ; } =
+			DependencyProperty.Register("TextColor", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTextColorChanged((Brush)e.NewValue)));
 
 		private void OnTextColorChanged(Brush newValue)
 		{
@@ -69,20 +69,26 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ThumbTintProperty, value); }
 		}
 
-		public static readonly DependencyProperty ThumbTintProperty =
-			DependencyProperty.Register("ThumbTint", typeof(Brush), typeof(BindableSwitchCompat), new PropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnThumbTintChanged((Brush)e.NewValue)));
+		public static DependencyProperty ThumbTintProperty { get ; } =
+			DependencyProperty.Register("ThumbTint", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnThumbTintChanged((Brush)e.NewValue)));
 
 		private void OnThumbTintChanged(Brush newValue)
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-				ThumbDrawable?.SetColorFilter(asColorBrush.Color, PorterDuff.Mode.SrcIn);
+#if __ANDROID_28__
+#pragma warning disable 618 // SetColorFilter is deprecated
+				ThumbDrawable?.SetColorFilter(asColorBrush.ColorWithOpacity, PorterDuff.Mode.SrcIn);
+#pragma warning restore 618 // SetColorFilter is deprecated
+#else
+				ThumbDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.ColorWithOpacity, BlendMode.SrcIn));
+#endif
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region TrackTint DependencyProperty
+#region TrackTint DependencyProperty
 
 		/// <summary> 
 		/// The color used to tint the appearance of the track.
@@ -93,18 +99,24 @@ namespace Uno.UI.Controls
 			set { this.SetValue(TrackTintProperty, value); }
 		}
 
-		public static readonly DependencyProperty TrackTintProperty =
-			DependencyProperty.Register("TrackTint", typeof(Brush), typeof(BindableSwitchCompat), new PropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTrackTintChanged((Brush)e.NewValue)));
+		public static DependencyProperty TrackTintProperty { get ; } =
+			DependencyProperty.Register("TrackTint", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTrackTintChanged((Brush)e.NewValue)));
 
 		private void OnTrackTintChanged(Brush newValue)
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-				TrackDrawable?.SetColorFilter(asColorBrush.Color, PorterDuff.Mode.SrcIn);
+#if __ANDROID_28__
+#pragma warning disable 618 // SetColorFilter is deprecated
+				TrackDrawable?.SetColorFilter(asColorBrush.ColorWithOpacity, PorterDuff.Mode.SrcIn);
+#pragma warning restore 618 // SetColorFilter is deprecated
+#else
+				TrackDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.ColorWithOpacity, BlendMode.SrcIn));
+#endif
 			}
 		}
 
-		#endregion
+#endregion
 
 		private void OnCheckedChange(object sender, CheckedChangeEventArgs e)
 		{

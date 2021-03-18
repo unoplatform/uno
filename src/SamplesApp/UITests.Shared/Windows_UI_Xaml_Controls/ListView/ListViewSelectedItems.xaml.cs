@@ -15,15 +15,15 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		public ListViewSelectedItems()
 		{
 			this.InitializeComponent();
-			SampleItems = Enumerable.Range(0, 15).Concat(Enumerable.Range(0, 5)).ToArray();
-			var sampleItemsExtended = SampleItems.Concat(Enumerable.Range(15, 5)).ToArray();
+			SampleItems = Enumerable.Range(0, 15).Concat(Enumerable.Range(0, 5)).Select(v => new MySelectableItem(v)).ToArray();
+			var sampleItemsExtended = SampleItems.Concat(Enumerable.Range(15, 5).Select(v => new MySelectableItem(v))).ToArray();
 
 			SelectorListView.ItemsSource = sampleItemsExtended;
 			SetSelectedItemListView.ItemsSource = sampleItemsExtended;
 			SelectedItemsListView.ItemsSource = SampleItems;
 		}
 
-		public int[] SampleItems { get; }
+		public MySelectableItem[] SampleItems { get; }
 
 		private void SelectorListView_ItemClick(object sender, ItemClickEventArgs e)
 		{
@@ -68,6 +68,21 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		private void SetSelectedItemNull(object sender, RoutedEventArgs e)
 		{
 			SelectedItemsListView.SelectedItem = null;
+		}
+	}
+
+	public class MySelectableItem
+	{
+		public MySelectableItem(int name)
+		{
+			Name = name.ToString();
+		}
+
+		public string Name { get; set; }
+
+		public override string ToString()
+		{
+			return Name;
 		}
 	}
 }

@@ -3,7 +3,7 @@ using Uno.UI.Samples.Controls;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Uno.UI.Sample.Views.Helper;
+using Uno.UI.Extensions;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
@@ -20,7 +20,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-#if !XAMARIN_IOS && !NETSTANDARD2_0
+#if !XAMARIN_IOS && !UNO_REFERENCE_API
 			var sv = MyListView.FindFirstChild<ScrollViewer>();
 			sv.ViewChanged += (o, e2) =>
 			{

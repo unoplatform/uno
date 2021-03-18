@@ -13,6 +13,9 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Samples.UITests.Helpers;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	[Bindable]
@@ -22,6 +25,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private object[] _randomItems = new object[0];
 		private string _newInput = "1,1,2,2,3,3";
 		private List<string> _sampleItemsGenerated = new List<string> { "1", "1", "2", "2", "3", "3" };
+		private List<string> _singleItemList = new List<string> { "1" };
 		private double _variableWidth = 500d;
 		private string _selectedItem = "3";
 
@@ -276,6 +280,14 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		public double[] WidthChoices { get; } = Enumerable.Range(1, 5).Select(i => i * 100d).ToArray();
 
 		public Color[] SampleColors { get; } = CreateColorSeries();
+
+		public List<string> SingleItemList => _singleItemList;
+
+		public string HorizontalScrollDescription => "Test that horizontal scrolling works well despite imperfect gestures. \r\n"
+				+ "Begin by making a first horizontal scrolling gesture to the right. \r\n"
+				+ "Then make subsequent gestures that begin with a perfectly horizontal gesture, but then wobbles vertically. \r\n"
+				+ "This shouldn't break the horizontal scrolling once it has started. \r\n"
+				+ "Like so:  \r\n";
 
 		private static Color[] CreateColorSeries()
 		{

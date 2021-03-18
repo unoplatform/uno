@@ -22,6 +22,12 @@
 						<!-- Glyph -->
 						<TextBlock Text="Glyph Star" />
 						<FontIcon Glyph="&#xE082;" />
+
+						<TextBlock Text="Button with ms-appx: font-family" />
+						<Button Content="&#xE082;"
+								HorizontalAlignment="Center"
+								FontFamily="ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols" />
+
 						<TextBlock Text="Glyph World" />
 						<FontIcon Glyph="&#xE909;" />
 						<TextBlock Text="Glyph Settings" />

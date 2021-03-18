@@ -1,4 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Uno.UI;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Documents
 {
@@ -6,10 +11,17 @@ namespace Windows.UI.Xaml.Documents
 	{
 		public Hyperlink() : base("a")
 		{
-			SetAttribute("target", "_blank");
+			UpdateNavigationProperties(null, _defaultNavigationTarget);
+			
+			PointerPressed += TextBlock.OnPointerPressed;
+			PointerReleased += TextBlock.OnPointerReleased;
+			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
+			ResourceResolver.ApplyResource(this, Hyperlink.ForegroundProperty, "SystemControlHyperlinkTextBrush", isThemeResourceExtension: true);
+
 		}
 
 		#region NavigationTarget DependencyProperty
+		private const NavigationTarget _defaultNavigationTarget = NavigationTarget.NewDocument;
 
 		public NavigationTarget NavigationTarget
 		{
@@ -17,33 +29,82 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(NavigationTargetProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for NavigationTarget.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty NavigationTargetProperty =
-			DependencyProperty.Register("NavigationTarget", typeof(NavigationTarget), typeof(Hyperlink), new PropertyMetadata(NavigationTarget.NewDocument, (s, e) => ((Hyperlink)s)?.OnNavigationTargetChanged(e)));
-
+		public static DependencyProperty NavigationTargetProperty { get ; } = DependencyProperty.Register(
+			"NavigationTarget",
+			typeof(NavigationTarget),
+			typeof(Hyperlink),
+			new FrameworkPropertyMetadata(_defaultNavigationTarget, (s, e) => ((Hyperlink)s).OnNavigationTargetChanged(e)));
 
 		private void OnNavigationTargetChanged(DependencyPropertyChangedEventArgs e)
+			=> UpdateNavigationProperties(NavigateUri, (NavigationTarget)e.NewValue);
+		#endregion
+
+		partial void OnNavigateUriChangedPartial(Uri newNavigateUri)
+			=> UpdateNavigationProperties(newNavigateUri, NavigationTarget);
+
+		private void UpdateNavigationProperties(Uri navigateUri, NavigationTarget target)
 		{
-			var newTarget = (NavigationTarget) e.NewValue;
-			if (newTarget == NavigationTarget.NewDocument)
+			var uri = navigateUri?.OriginalString;
+			if (string.IsNullOrWhiteSpace(uri))
 			{
-				SetAttribute("target", "_blank");
+				SetAttribute(
+					("target", ""),
+					("href", "#") // Required to get the native hover visual state
+				);
+			}
+			else if (target == NavigationTarget.NewDocument)
+			{
+				SetAttribute(
+					("target", "_blank"),
+					("href", uri)
+				);
 			}
 			else
 			{
-				SetAttribute("target", "");
+				SetAttribute(
+					("target", ""),
+					("href", uri)
+				);
 			}
-		}
-
-		#endregion
-
-		partial void OnNavigateUriChangedPartial()
-		{
-			SetAttribute("href", NavigateUri?.OriginalString ?? "");
 			UpdateHitTest();
 		}
 
-		internal override bool IsViewHit() => NavigateUri != null || base.IsViewHit();
+		internal override bool IsViewHit()
+			=> NavigateUri != null || base.IsViewHit();
+
+		public new event global::Windows.UI.Xaml.RoutedEventHandler GotFocus
+		{
+			add => base.GotFocus += value;
+			remove => base.GotFocus -= value;
+		}
+
+		public new event global::Windows.UI.Xaml.RoutedEventHandler LostFocus
+		{
+			add => base.LostFocus += value;
+			remove => base.LostFocus -= value;
+		}
+
+#if HAS_UNO_WINUI
+		// The properties below have moved to UIElement in WinUI, but Hyperlink does not inherit from UIElement and does in Wasm.
+		// This makes the properties move down incorrectly.
+		// This section places those properties at the same location as the reference implementation.
+
+		public new bool IsTabStop
+		{
+			get => base.IsTabStop;
+			set => base.IsTabStop = value;
+		}
+
+		public static new DependencyProperty IsTabStopProperty { get; } = UIElement.IsTabStopProperty;
+
+		public new FocusState FocusState
+		{
+			get => base.FocusState;
+			set => base.FocusState = value;
+		}
+
+		public static new DependencyProperty FocusStateProperty { get; } = UIElement.FocusStateProperty;
+#endif
 	}
 
 	public enum NavigationTarget

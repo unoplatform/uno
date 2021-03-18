@@ -11,37 +11,55 @@ using Uno.UI.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UIKit;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class MenuFlyout
 	{
+		private static DependencyProperty CancelTextIosOverrideProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutExtensions", "CancelTextIosOverride");
 
 #pragma warning disable CS0618 // Type or member is obsolete
 		private string LocalizedCancelString => NSBundle.FromIdentifier("com.apple.UIKit").LocalizedString("Cancel", null);
 #pragma warning restore CS0618 // Type or member is obsolete
 
 		internal protected override void Open()
-		{			
-			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+		{
+			if (UseNativePopup)
 			{
-				ShowAlert(Target);
+
+				if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+				{
+					ShowAlert(Target);
+				}
+				else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+				{
+					ShowActionSheet(Target);
+				}
 			}
-			else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+			else
 			{
-				ShowActionSheet(Target);
+				base.Open();
 			}
 		}
 
 		internal protected override void Close()
 		{
-			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+			if (UseNativePopup)
 			{
-				HideAlert();
+
+				if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+				{
+					HideAlert();
+				}
+				else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+				{
+					HideActionSheet();
+				}
 			}
-			else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+			else
 			{
-				HideActionSheet();
+				base.Close();
 			}
 		}
 	}

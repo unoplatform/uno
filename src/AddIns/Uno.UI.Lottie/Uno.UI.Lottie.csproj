@@ -1,28 +1,37 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>xamarinmac20;MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>xamarinmac20;MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0</TargetFrameworksCI>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
-	
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="WasmScripts\**\*.js" />
-		<UpToDateCheckInput Remove="WasmScripts\uno-lottie.js" />
-		<UpToDateCheckInput Include="ts\**\*" />
+	  <None Remove="buildTransitive\Uno.UI.Lottie.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="3.4.5" />
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.4.5" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.4" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.32.0-dev.288" />
+	  <Content Include="buildTransitive\Uno.UI.Lottie.targets">
+	    <PackagePath>build</PackagePath>
+	    <Pack>true</Pack>
+	  </Content>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="System.Json" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -32,21 +41,14 @@
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="2.5.2.1" PrivateAssets="none" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid10.0' ">
+		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="3.0.4" PrivateAssets="none" />
+		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="2.5.2.1" PrivateAssets="none" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20'">
+		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.11" PrivateAssets="none" />
 	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
-		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.9" PrivateAssets="none" />
-	</ItemGroup>
-
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
@@ -54,17 +56,19 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)*.*" />
+			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 

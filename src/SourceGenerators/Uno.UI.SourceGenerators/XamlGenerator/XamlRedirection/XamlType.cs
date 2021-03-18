@@ -1,5 +1,4 @@
-﻿extern alias __ms;
-extern alias __uno;
+﻿extern alias __uno;
 
 using System;
 using System.Collections.Generic;
@@ -14,13 +13,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		private XamlSchemaContext xamlSchemaContext;
 		private bool _isUnknown;
 
-		private __ms::System.Xaml.XamlType _msDeclaringType;
 		private __uno::Uno.Xaml.XamlType _unoDeclaringType;
 
-		public static XamlType FromType(__ms::System.Xaml.XamlType declaringType) => declaringType != null ? new XamlType(declaringType) : null;
 		public static XamlType FromType(__uno::Uno.Xaml.XamlType declaringType) => declaringType != null ? new XamlType(declaringType) : null;
 
-		private XamlType(__ms::System.Xaml.XamlType declaringType) => this._msDeclaringType = declaringType;
 		private XamlType(__uno::Uno.Xaml.XamlType declaringType) => this._unoDeclaringType = declaringType;
 
 		public XamlType(string unknownTypeNamespace, string unknownTypeName, List<XamlType> list, XamlSchemaContext xamlSchemaContext)
@@ -33,18 +29,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		}
 
 		public string Name
-			=> _isUnknown ? unknownTypeName : XamlConfig.IsUnoXaml ? _unoDeclaringType.Name : _msDeclaringType.Name;
+			=> _isUnknown ? unknownTypeName : _unoDeclaringType.Name;
 
 		public string PreferredXamlNamespace
-			=> _isUnknown ? unknownTypeNamespace : XamlConfig.IsUnoXaml ? _unoDeclaringType.PreferredXamlNamespace : _msDeclaringType.PreferredXamlNamespace;
+			=> _isUnknown ? unknownTypeNamespace : _unoDeclaringType.PreferredXamlNamespace;
 
-		public override string ToString() => XamlConfig.IsUnoXaml ? _unoDeclaringType.ToString() : _msDeclaringType.ToString();
+		public override string ToString() => _unoDeclaringType.ToString();
 
 		public bool Equals(XamlType other) => _isUnknown
 			? false
-			: XamlConfig.IsUnoXaml
-				? _unoDeclaringType.Equals(other?._unoDeclaringType)
-				: _msDeclaringType.Equals(other?._msDeclaringType);
+			: _unoDeclaringType.Equals(other?._unoDeclaringType);
 
 		public override bool Equals(object other)
 			=> other is XamlType otherType ? Equals(otherType) : false;
@@ -52,9 +46,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		public override int GetHashCode()
 			=> _isUnknown
 			? unknownTypeName.GetHashCode()
-			: XamlConfig.IsUnoXaml
-				? _unoDeclaringType.GetHashCode()
-				: _msDeclaringType.GetHashCode();
+			: _unoDeclaringType.Name.GetHashCode();
 
 	}
 }

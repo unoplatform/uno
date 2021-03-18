@@ -12,6 +12,7 @@ using Windows.UI.Core;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -36,6 +37,9 @@ namespace Windows.UI.Xaml.Controls
 			Delegate = _delegate = new MultilineTextBoxDelegate(_textBox);
 			BackgroundColor = UIColor.Clear;
 			TextContainer.LineFragmentPadding = 0;
+
+			// Reset the default margin of 8px at the top
+			TextContainerInset = new UIEdgeInsets();
 		}
 
 		public override string Text
@@ -161,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ForegroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),

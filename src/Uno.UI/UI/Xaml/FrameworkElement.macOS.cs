@@ -14,11 +14,11 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		private bool _inLayoutSubviews;
-		private CGSize? _lastAvailableSize;
-		private CGSize _lastMeasure;
-
-		partial void Initialize();
+		/// <summary>
+		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
+		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
+		/// </summary>
+		internal bool ShouldInterceptInvalidate { get; set; }
 
 		public override bool NeedsLayout
 		{
@@ -29,92 +29,70 @@ namespace Windows.UI.Xaml
 					base.NeedsLayout = value;
 				}
 
-				RequiresMeasure = true;
-				RequiresArrange = true;
-
-				SetSuperviewNeedsLayout();
+				if (ShouldInterceptInvalidate)
+				{
+					return;
+				}
 			}
 		}
 
-		public FrameworkElement()
+		protected internal override void OnInvalidateMeasure()
 		{
-			Initialize();
+			base.OnInvalidateMeasure();
+
+			// Note that the reliance on NSView.NeedsLayout to invalidate the measure / arrange phases for
+			// self and parents.NeedsLayout is set to true when NSView.Frame is different from iOS, causing
+			// a chain of multiple unneeded updates for the element and its parents. OnInvalidateMeasure
+			// sets NeedsLayout to true and propagates to the parent but NeedsLayout by itself does not.
+
+			if (!IsMeasureDirty)
+			{
+				IsArrangeDirty = true;
+				IsMeasureDirty = true;
+
+				if (Parent is FrameworkElement fe)
+				{
+					if (!fe.IsMeasureDirty)
+					{
+						fe.InvalidateMeasure();
+					}
+				}
+				else if (Parent is IFrameworkElement ife)
+				{
+					ife.InvalidateMeasure();
+				}
+			}
 		}
 
 		public override void Layout()
 		{
 			try
 			{
-				try
+				_inLayoutSubviews = true;
+
+				if (IsMeasureDirty)
 				{
-					_inLayoutSubviews = true;
-
-					if (RequiresMeasure)
-					{
-						XamlMeasure(Bounds.Size);
-					}
-
-					OnBeforeArrange();
-
-					var size = SizeFromUISize(Bounds.Size);
-					_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
-
-					OnAfterArrange();
+					XamlMeasure(Bounds.Size);
 				}
-				finally
-				{
-					_inLayoutSubviews = false;
-					RequiresArrange = false;
-				}
+
+				OnBeforeArrange();
+
+				var size = SizeFromUISize(Bounds.Size);
+
+				_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
+
+				OnAfterArrange();
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				this.Log().Error($"Layout failed in {GetType()}", e);
 			}
-		}
-		/// <summary>
-		/// Called before Arrange is called, this method will be deprecated
-		/// once OnMeasure/OnArrange will be implemented completely
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		protected virtual void OnBeforeArrange()
-		{
-
-		}
-
-		/// <summary>
-		/// Called after Arrange is called, this method will be deprecated
-		/// once OnMeasure/OnArrange will be implemented completely
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		protected virtual void OnAfterArrange()
-		{
-
-		}
-
-		private CGSize? XamlMeasure(CGSize availableSize)
-		{
-			// If set layout has not been called, we can 
-			// return a previously cached result for the same available size.
-			if (
-				!RequiresMeasure
-				&& _lastAvailableSize.HasValue
-				&& availableSize == _lastAvailableSize
-			)
+			finally
 			{
-				return _lastMeasure;
+				_inLayoutSubviews = false;
+				IsMeasureDirty = false;
+				IsArrangeDirty = false;
 			}
-
-			_lastAvailableSize = availableSize;
-			RequiresMeasure = false;
-
-			var result = _layouter.Measure(SizeFromUISize(availableSize));
-
-			result = IFrameworkElementHelper
-				.SizeThatFits(this, result)
-				.ToFoundationSize();
-
-			return result.LogicalToPhysicalPixels();
 		}
 
 		public CGSize SizeThatFits(CGSize size)
@@ -125,7 +103,7 @@ namespace Windows.UI.Xaml
 
 				var xamlMeasure = XamlMeasure(size);
 
-				if(xamlMeasure != null)
+				if (xamlMeasure != null)
 				{
 					return _lastMeasure = xamlMeasure.Value;
 				}
@@ -138,28 +116,6 @@ namespace Windows.UI.Xaml
 			{
 				_inLayoutSubviews = false;
 			}
-		}
-
-		protected Size SizeFromUISize(CGSize size)
-		{
-			var width = nfloat.IsNaN(size.Width) ? float.PositiveInfinity : size.Width;
-			var height = nfloat.IsNaN(size.Height) ? float.PositiveInfinity : size.Height;
-
-			return new Size(width, height).PhysicalToLogicalPixels();
-		}
-
-		private bool IsTopLevelXamlView()
-		{
-			NSView parent = this;
-			while (parent != null)
-			{
-				parent = parent.Superview;
-				if (parent is IFrameworkElement)
-				{
-					return false;
-				}
-			}
-			return true;
 		}
 	}
 }

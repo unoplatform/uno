@@ -5,6 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Media;
+using Android.Views;
+using Windows.UI.Xaml;
+
+// Keep this formatting (with the space) for the WinUI upgrade tooling.
+using Microsoft .UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -13,44 +18,39 @@ namespace Windows.UI.Xaml.Controls
 	/// See https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.progressring
 	/// </summary>
 
-	public partial class ProgressRing : BindableProgressBar
+	public partial class ProgressRing
 	{
-		public ProgressRing()
-		{
-			// This is required to have multiple ProgressBar with different colors. 
-			// Without this, changing one drawable would change all drawables (because they all have the same constant state).
-			// http://stackoverflow.com/questions/7979440/android-cloning-a-drawable-in-order-to-make-a-statelistdrawable-with-filters
-			IndeterminateDrawable.Mutate();
-		}
 
-		private static void OnForegroundChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void ApplyForeground()
 		{
-			var progressRing = dependencyObject as ProgressRing;
 			//We only support SolidColorBrush for now
-			var foregroundColor = progressRing.SelectOrDefault(r => r.Foreground as SolidColorBrush);
-
-			if (progressRing != null && foregroundColor != null)
+			if (_native != null && Foreground is SolidColorBrush foregroundColor)
 			{
-				progressRing.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
+#if __ANDROID_28__
+#pragma warning disable 618 // SetColorFilter is deprecated
+				_native.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
+#pragma warning restore 618 // SetColorFilter is deprecated
+#else
+				_native.IndeterminateDrawable?.SetColorFilter(new BlendModeColorFilter(foregroundColor.Color, BlendMode.SrcIn));
+#endif
 			}
 		}
 
-		private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		partial void OnIsActiveChangedPartial(bool isActive)
 		{
-			var progressRing = dependencyObject as ProgressRing;
-			var isActive = args.NewValue as bool?;
-
-			if (progressRing != null && isActive != null)
+			if (_native == null)
 			{
-				if (isActive.Value)
-				{
-					progressRing.Visibility = Visibility.Visible;
-					progressRing.Invalidate();
-				}
-				else
-				{
-					progressRing.Visibility = Visibility.Collapsed;
-				}
+				return;
+			}
+
+			if (isActive)
+			{
+				_native.Visibility = ViewStates.Visible;
+				_native.Invalidate();
+			}
+			else
+			{
+				_native.Visibility = ViewStates.Gone;
 			}
 		}
 	}

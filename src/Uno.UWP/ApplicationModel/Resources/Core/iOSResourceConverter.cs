@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+
+#if HAS_UNO
 using Uno.Extensions;
 using Uno.Logging;
+#endif
 
 namespace Windows.ApplicationModel.Resources.Core
 {
@@ -26,9 +29,14 @@ namespace Windows.ApplicationModel.Resources.Core
 
 				return Path.Combine(language, directory, $"{fileNameWithoutExtension}{scale}{extension}");
 			}
+#if HAS_UNO
 			catch (Exception ex)
 			{
 				ex.Log().Info($"Couldn't convert {resourceCandidate.ValueAsString} to an iOS resource path.", ex);
+#else
+			catch (Exception)
+			{
+#endif
 				return null;
 			}
 		}

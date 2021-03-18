@@ -1,4 +1,4 @@
-﻿#if !NET461 && !__WASM__
+﻿#if !NET461 && !UNO_REFERENCE_API
 using Uno.Extensions;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Automation.Peers;
@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
+using Windows.UI;
+using Windows.UI.Core;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -21,7 +23,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Image : DependencyObject
+	public partial class Image : FrameworkElement
 	{
 		/// <summary>
 		/// Setting this flag instructs the image control not to dispose pending image fetches when it is removed from the visual tree. 
@@ -40,13 +42,12 @@ namespace Windows.UI.Xaml.Controls
 		//Set after image source fetch has successfully resolved
 		private ImageSource _successfullyOpenedImage;
 
-		private int? _targetWidth;
-		private int? _targetHeight;
 		private bool? _hasFiniteBounds;
+		private Size _layoutSize;
 
-		private ILayouter _layouter;
+		private NativeImage _native;
 
-		public static class TraceProvider
+		public static new class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{15E13473-560E-4601-86FF-C9E1EDB73701}");
 
@@ -56,14 +57,6 @@ namespace Windows.UI.Xaml.Controls
 			public const int Image_SetUriStop = 4;
 			public const int Image_SetImageStart = 5;
 			public const int Image_SetImageStop = 6;
-		}
-
-		void Initialize()
-		{
-			InitializeBinder();
-			IFrameworkElementHelper.Initialize(this);
-
-			_layouter = new ImageLayouter(this);
 		}
 
 		public event RoutedEventHandler ImageOpened;
@@ -81,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug(this.ToString() + " Image failed to open");
 			}
 
-			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs("Image failed to download"));
+			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download"));
 		}
 
 		protected virtual void OnImageOpened(ImageSource imageSource)
@@ -91,11 +84,11 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug(this.ToString() + " Image opened successfully");
 			}
 
-			ImageOpened?.Invoke(this, RoutedEventArgs.Empty);
+			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			_successfullyOpenedImage = imageSource;
 		}
 
-		#region Stretch
+#region Stretch
 		public Stretch Stretch
 		{
 			get { return (Stretch)this.GetValue(StretchProperty); }
@@ -103,14 +96,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Stretch.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty StretchProperty =
-			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(Image), new PropertyMetadata(Stretch.Uniform, (s, e) =>
+		public static DependencyProperty StretchProperty { get ; } =
+			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(Image), new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) =>
 			((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
-		#endregion
+#endregion
 
-		#region Source
+#region Source
 		public ImageSource Source
 		{
 			get { return (ImageSource)this.GetValue(SourceProperty); }
@@ -118,12 +111,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SourceProperty =
+		public static DependencyProperty SourceProperty { get ; } =
 			DependencyProperty.Register(
 				"Source",
 				typeof(ImageSource),
 				typeof(Image),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((Image)s).OnSourceChanged((ImageSource)e.OldValue, (ImageSource)e.NewValue))
 				);
@@ -159,15 +152,20 @@ namespace Windows.UI.Xaml.Controls
 			TryOpenImage();
 		}
 
-		#endregion
+#endregion
 
-		partial void OnLoadedPartial()
+		internal override bool IsViewHit() => Source?.HasSource() ?? false;
+
+		private protected override void OnLoaded()
 		{
+			base.OnLoaded();
 			TryOpenImage();
 		}
 
-		partial void OnUnloadedPartial()
+		private protected override void OnUnloaded()
 		{
+			base.OnUnloaded();
+
 			//If PreserveStateOnUnload is set, don't cancel pending image downloads/fetches. See comment on PreserveStateOnUnload.
 			if (PreserveStateOnUnload)
 			{
@@ -194,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 		/// ie because we know that the image's dimensions have not changed after setting the source.
 		/// </summary>
 		/// <returns>True if we know that the image's dimensions have not changed.</returns>
-		private bool ShouldDowngradeLayoutRequest()
+		internal bool ShouldDowngradeLayoutRequest()
 		{
 			return CanDowngradeLayoutRequest && !double.IsNaN(Width) && !double.IsNaN(Height);
 		}
@@ -204,7 +202,7 @@ namespace Windows.UI.Xaml.Controls
 			var cd = new CancellationDisposable();
 
 			Dispatcher.RunAsync(
-				Core.CoreDispatcherPriority.Normal,
+				CoreDispatcherPriority.Normal,
 				() => handler(cd.Token)
 			).AsTask(cd.Token);
 
@@ -242,187 +240,219 @@ namespace Windows.UI.Xaml.Controls
 			return double.IsNaN(Height) ? (double.IsInfinity(stretchedHeight) ? fallbackIfInfinite : stretchedHeight) : Height;
 		}
 
-		private void SetTargetImageSize(Size targetSize)
-		{
-			var physicalSize = targetSize.LogicalToPhysicalPixels();
-			_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
-			_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
-		}
+		partial void SetTargetImageSize(Size targetSize);
+		partial void UpdateArrangeSize(Size arrangeSize);
 
 		public override string ToString()
 		{
 			return base.ToString() + ";Source={0}".InvariantCultureFormat(Source?.ToString() ?? "[null]");
 		}
 
-#if __ANDROID__ || __IOS__
-		private AutomationPeer OnCreateAutomationPeerOverride()
+		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ImageAutomationPeer(this);
+		}
+		
+		protected override Size MeasureOverride(Size availableSize)
+		{
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug(ToString() + $" measuring with availableSize={availableSize}");
+			}
+
+			SetTargetImageSize(availableSize);
+
+			var size = InnerMeasureOverride(availableSize);
+
+			return size;
 		}
 
-		private string GetAccessibilityInnerTextOverride()
+		private Size InnerMeasureOverride(Size availableSize)
 		{
-			return null;
+			var sourceSize = SourceImageSize;
+
+			if (sourceSize == default)
+			{
+				// Setting _hasFiniteBounds here is important if the Source hasn't been set or fetched yet
+				_hasFiniteBounds = HasKnownWidth(availableSize.Width) && HasKnownHeight(availableSize.Height);
+				return default;
+			}
+
+			if (Stretch == Stretch.None)
+			{
+				// On Stretch=None, we simply use the image size
+				// without considering the availableSize.
+
+				var size = _layoutSize = this.ApplySizeConstraints(sourceSize);
+				_hasFiniteBounds = double.IsFinite(size.Width) && double.IsFinite(size.Height);
+				return size;
+			}
+
+			// Get real available size after applying local constrains
+			var constrainedAvailableSize = this.ApplySizeConstraints(availableSize);
+			_layoutSize = constrainedAvailableSize;
+
+			var isWidthDefined = double.IsFinite(constrainedAvailableSize.Width);
+			var isHeightDefined = double.IsFinite(constrainedAvailableSize.Height);
+
+			var aspectRatio = sourceSize.AspectRatio();
+
+			if (isWidthDefined && isHeightDefined)
+			{
+				// If both available width & available height are known here
+				_hasFiniteBounds = true;
+
+				if (Stretch != Stretch.Uniform) // Fill or UniformToFill
+				{
+					// Fill & UniformToFill will both take all the available size
+					return constrainedAvailableSize;
+				}
+
+				// Apply the Stretch=Uniform logic...
+
+				var containerSize = this.MeasureSource(availableSize, sourceSize);
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug(ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={containerSize}");
+				}
+
+				return containerSize;
+			}
+
+			_hasFiniteBounds = false;
+
+			if (!isWidthDefined && !isHeightDefined)
+			{
+				// If both width & height are unspecified, we simply apply the constrains on image
+				// size and use that as measurement for the layout.
+				return this.ApplySizeConstraints(sourceSize);
+			}
+
+			// If one dimension is known and the other isn't, we need to consider uniformity based on the dimension we know.
+			// Example: Horizontal=Stretch, Vertical=Top, Stretch=Uniform, SourceWidth=200, SourceHeight=100 (AspectRatio=2)
+			//			This Image is Inside a StackPanel (infinite height and width=300).
+			//			When being measured, the height can be calculated using the aspect ratio of the source image and the available width.
+			//			That means the Measure should return 
+			//						height = (KnownWidth=300) / (AspectRatio=2) = 150
+			//			...and not	height = (SourceHeight=100) = 100
+			if (isWidthDefined)
+			{
+				var knownWidth = GetKnownWidth(constrainedAvailableSize.Width, sourceSize.Width);
+				var desiredSize = new Size();
+				switch (Stretch)
+				{
+					case Stretch.Uniform:
+						// If sourceSize is empty, aspect ratio is undefined so we return 0.
+						// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
+						// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
+						desiredSize.Width = knownWidth;
+						desiredSize.Height = sourceSize == default(Size) ? 0 : Math.Ceiling((knownWidth / aspectRatio) * 2) / 2;
+						break;
+					case Stretch.None:
+						desiredSize.Width = sourceSize.Width;
+						desiredSize.Height = sourceSize.Height;
+						break;
+					case Stretch.Fill:
+					case Stretch.UniformToFill:
+						desiredSize.Width = knownWidth;
+						desiredSize.Height = double.IsInfinity(constrainedAvailableSize.Height) ? sourceSize.Height : constrainedAvailableSize.Height;
+						break;
+				}
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug(ToString() + $" measuring with knownWidth={knownWidth} with availableSize={constrainedAvailableSize}, returning desiredSize={desiredSize}");
+				}
+
+				return desiredSize;
+			}
+			if (isHeightDefined)
+			{
+				var knownHeight = GetKnownHeight(constrainedAvailableSize.Height, sourceSize.Height);
+				var desiredSize = new Size();
+				switch (Stretch)
+				{
+					case Stretch.Uniform:
+						//If sourceSize is empty, aspect ratio is undefined so we return 0
+						// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
+						// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
+						desiredSize.Width = sourceSize == default(Size) ? 0 : Math.Ceiling(knownHeight * aspectRatio * 2) / 2;
+						desiredSize.Height = knownHeight;
+						break;
+					case Stretch.None:
+						desiredSize.Width = sourceSize.Width;
+						desiredSize.Height = sourceSize.Height;
+						break;
+					case Stretch.Fill:
+					case Stretch.UniformToFill:
+						desiredSize.Width = double.IsInfinity(constrainedAvailableSize.Width) ? sourceSize.Width : constrainedAvailableSize.Width;
+						desiredSize.Height = knownHeight;
+						break;
+				}
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug(ToString() + $" measuring with knownHeight={knownHeight} with availableSize={constrainedAvailableSize}, returning desiredSize={desiredSize}");
+				}
+
+				return desiredSize;
+			}
+
+			throw new InvalidOperationException("Should never reach here.");
 		}
-#else
-		protected AutomationPeer OnCreateAutomationPeer()
+
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			return new ImageAutomationPeer(this);
-		}
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug(ToString() + $" arranging with finalSize={finalSize}");
+			}
+
+			//If we are given a non-zero size to draw into, set the target dimensions to load the image with accordingly
+			UpdateArrangeSize(finalSize);
+			SetTargetImageSize(finalSize);
+
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				if (_openedImage != null)
+				{
+					var renderedSize = finalSize.LogicalToPhysicalPixels();
+					var loadedSize = SourceImageSize.LogicalToPhysicalPixels();
+
+					if (((renderedSize.Width + 512) < loadedSize.Width ||
+						(renderedSize.Height + 512) < loadedSize.Height) && !Source.UseTargetSize)
+					{
+						this.Log().Warn("The image was opened with a size of {0} and is displayed using a size of only {1}. Try optimizing the image size by using a smaller source or not using Stretch.Uniform or using fixed Width and Height."
+							.InvariantCultureFormat(loadedSize, renderedSize));
+					}
+				}
+			}
+
+#if __ANDROID__
+			// Images on UWP are always clipped to the control's boundaries.
+			var physicalSize = finalSize.LogicalToPhysicalPixels();
+			ClipBounds = new Android.Graphics.Rect(0, 0, (int)physicalSize.Width, (int)physicalSize.Height);
+
+			_lastLayoutSize = finalSize;
+
+			// Try opening the image in the case where UseTargetSize has been set, as now
+			// we have both _targetWidth and _targetWidth that have been set.
+			try
+			{
+				_isInLayout = true;
+				TryOpenImage();
+			}
+			finally
+			{
+				_isInLayout = false;
+			}
 #endif
 
-		private partial class ImageLayouter : Layouter
-		{
-			private Image ImageControl => Panel as Image;
-
-			public ImageLayouter(Image image) : base(image)
-			{
-			}
-			protected override string Name => Panel.Name;
-
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				Size sourceSize = ImageControl.SourceImageSize;
-
-				var hasKnownWidth = ImageControl.HasKnownWidth(availableSize.Width);
-				var hasKnownHeight = ImageControl.HasKnownHeight(availableSize.Height);
-
-				ImageControl._hasFiniteBounds = hasKnownWidth && hasKnownHeight;
-
-				// If one dimension is known and the other isn't, we need to consider uniformity based on the dimension we know.
-				// Example: Horizontal=Stretch, Vertical=Top, Stretch=Uniform, SourceWidth=200, SourceHeight=100 (AspectRatio=2)
-				//			This Image is Inside a StackPanel (infinite height and width=300).
-				//			When being measured, the height can be calculated using the aspect ratio of the source image and the available width.
-				//			That means the Measure should return 
-				//						height = (KnownWidth=300) / (AspectRatio=2) = 150
-				//			...and not	height = (SourceHeight=100) = 100
-				if (hasKnownWidth ^ hasKnownHeight)
-				{
-					var aspectRatio = sourceSize.Width / sourceSize.Height;
-					var desiredSize = new Size();
-					if (hasKnownWidth)
-					{
-						var knownWidth = ImageControl.GetKnownWidth(availableSize.Width, sourceSize.Width);
-						desiredSize.Width = knownWidth;
-						switch (ImageControl.Stretch)
-						{
-							case Stretch.Uniform:
-								// If sourceSize is empty, aspect ratio is undefined so we return 0.
-								// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
-								// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
-								desiredSize.Height = sourceSize == default(Size) ? 0 : Math.Ceiling((knownWidth / aspectRatio) * 2) / 2;
-								break;
-							case Stretch.None:
-								desiredSize.Height = sourceSize.Height;
-								break;
-							case Stretch.Fill:
-							case Stretch.UniformToFill:
-								desiredSize.Height = double.IsInfinity(availableSize.Height) ? sourceSize.Height : availableSize.Height;
-								break;
-						}
-
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug(Panel.ToString() + $" measuring with knownWidth={knownWidth} with availableSize={availableSize}, returning desiredSize={desiredSize}");
-						}
-
-						return desiredSize;
-					}
-					else if (hasKnownHeight)
-					{
-						var knownHeight = ImageControl.GetKnownHeight(availableSize.Height, sourceSize.Height);
-						desiredSize.Height = knownHeight;
-						switch (ImageControl.Stretch)
-						{
-							case Stretch.Uniform:
-								//If sourceSize is empty, aspect ratio is undefined so we return 0
-								// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
-								// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
-								desiredSize.Width = sourceSize == default(Size) ? 0 : Math.Ceiling(knownHeight * aspectRatio * 2) / 2;
-								break;
-							case Stretch.None:
-								desiredSize.Width = sourceSize.Width;
-								break;
-							case Stretch.Fill:
-							case Stretch.UniformToFill:
-								desiredSize.Width = double.IsInfinity(availableSize.Width) ? sourceSize.Width : availableSize.Width;
-								break;
-						}
-
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug(Panel.ToString() + $" measuring with knownHeight={knownHeight} with availableSize={availableSize}, returning desiredSize={desiredSize}");
-						}
-
-						return desiredSize;
-					}
-				}
-
-				if (sourceSize.Width > availableSize.Width || sourceSize.Height > availableSize.Height || (hasKnownWidth && hasKnownHeight))
-				{
-					var knownWidth = ImageControl.GetKnownWidth(availableSize.Width, sourceSize.Width);
-					var knownHeight = ImageControl.GetKnownHeight(availableSize.Height, sourceSize.Height);
-					var knownSize = new Size(knownWidth, knownHeight);
-
-					switch (ImageControl.Stretch)
-					{
-						case Stretch.Uniform:
-							var desiredSize = new Size();
-							var aspectRatio = sourceSize.Width / sourceSize.Height;
-							// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
-							// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
-							desiredSize.Width = Math.Min(knownWidth, Math.Ceiling(knownHeight * aspectRatio * 2) / 2);
-							desiredSize.Height = Math.Min(knownHeight, Math.Ceiling(knownWidth / aspectRatio * 2) / 2);
-
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-							{
-								this.Log().Debug(Panel.ToString() + $" measuring with knownSize={knownSize} and Stretch.Uniform with availableSize={availableSize}, returning desiredSize={desiredSize}");
-							}
-
-							return desiredSize;
-							//TODO: #11103 - For futur needs, for an Image with no specified size, need to implement Stretching: UniformToFill, Fill, None
-							//case Stretch.UniformToFill:
-							//case Stretch.Fill:
-							//case Stretch.None:
-							//return sourceSize;
-					}
-				}
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug(Panel.ToString() + $" measuring with availableSize={availableSize}, returning sourceSize={sourceSize}");
-				}
-
-				return sourceSize;
-			}
-			protected override Size ArrangeOverride(Size finalSize)
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug(Panel.ToString() + $" arranging with finalSize={finalSize}");
-				}
-
-				//If we are given a non-zero size to draw into, set the target dimensions to load the image with accordingly
-				ImageControl.SetTargetImageSize(finalSize);
-
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					if (ImageControl._openedImage != null)
-					{
-						var renderedSize = finalSize.LogicalToPhysicalPixels();
-						var loadedSize = ImageControl.SourceImageSize.LogicalToPhysicalPixels();
-
-						if (((renderedSize.Width + 512) < loadedSize.Width ||
-							(renderedSize.Height + 512) < loadedSize.Height) && ImageControl.Source.UseTargetSize)
-						{
-							this.Log().Warn("The image was opened with a size of {0} and is displayed using a size of only {1}. Try optimizing the image size by using a smaller source or not using Stretch.Uniform or using fixed Width and Height."
-								.InvariantCultureFormat(loadedSize, renderedSize));
-						}
-					}
-				}
-
-				return finalSize;
-			}
+			// 
+			base.ArrangeOverride(finalSize);
+			return finalSize;
 		}
 	}
 }

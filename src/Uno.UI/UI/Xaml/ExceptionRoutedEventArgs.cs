@@ -2,7 +2,8 @@
 {
 	public partial class ExceptionRoutedEventArgs : RoutedEventArgs
 	{
-		public ExceptionRoutedEventArgs(string errorMessage)
+		internal ExceptionRoutedEventArgs(object originalSource, string errorMessage)
+			: base(originalSource)
 		{
 			ErrorMessage = errorMessage;
 		}

@@ -1,0 +1,23 @@
+# Configuration for welcome - https://github.com/behaviorbot/welcome
+
+## Configuration for new-issue-welcome - https://github.com/behaviorbot/new-issue-welcome
+
+# Comment to be posted to on first time issues
+#newIssueWelcomeComment: >
+#  Thanks for opening your first issue here! Be sure to follow the issue template!
+
+## Configuration for new-pr-welcome - https://github.com/behaviorbot/new-pr-welcome
+
+# Comment to be posted to on PRs from first time contributors in your repository
+#newPRWelcomeComment: >
+#  Thanks for opening this pull request! Please check out our contributing guidelines.
+
+## Configuration for first-pr-merge - https://github.com/behaviorbot/first-pr-merge
+
+# Comment to be posted to on pull requests merged by a first time user
+firstPRMergeComment: >
+  Congrats on your first pull-request! We ❤ the people who are involved in this project, and we’d love to pay it forward by [sending you some swag](https://forms.office.com/Pages/ResponsePage.aspx?id=Ye9TbdG2UEGuC0O5DnXgzcxnnVo6zspHjmNPgM3UO41UNFpFU01TV1UxU0FWRTNMNFJUTlBLMjhIWi4u). If you have any feedback (or ideas how to improve Uno as a open-source project) please [open a feedback issue](https://github.com/unoplatform/uno/issues/new?labels=kind%2Ffeedback%2C+triage%2Funtriaged&template=feedback.md).
+  <br>
+  ![giphy](https://user-images.githubusercontent.com/127353/66220548-37ae4d00-e69b-11e9-8a16-f08f87b3b27c.gif)
+  <br>
+  Merci beaucoup 👋

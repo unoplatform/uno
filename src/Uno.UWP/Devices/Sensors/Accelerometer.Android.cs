@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 
 		private ReadingChangedListener _readingChangedListener;
 		private ShakeListener _shakeListener;
-		private uint _reportInterval = 0;
+		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		private Accelerometer(Sensor accelerometer)
 		{

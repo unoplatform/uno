@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿#nullable enable
+using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Uno.UI.Extensions;
@@ -17,7 +18,7 @@ using CoreGraphics;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollViewer : ContentControl
+	public partial class ScrollViewer : ContentControl, ICustomClippingElement
 	{
 		/// <summary>
 		/// On iOS 10-, we set a flag on the view controller such that the CommandBar doesn't automatically affect ScrollViewer content 
@@ -26,17 +27,17 @@ namespace Windows.UI.Xaml.Controls
 		internal static bool UseContentInsetAdjustmentBehavior => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 
 		/// <summary>
-		/// The <see cref="UIScrollView"/> which will actually scroll. Mostly this will be identical to <see cref="_sv"/>, but if we're inside a
+		/// The <see cref="UIScrollView"/> which will actually scroll. Mostly this will be identical to <see cref="_presenter"/>, but if we're inside a
 		/// multi-line TextBox we set it to <see cref="MultilineTextBoxView"/>.
 		/// </summary>
-		private IUIScrollView _scrollableContainer;
+		private IUIScrollView? _scrollableContainer;
 
 		partial void OnApplyTemplatePartial()
 		{
 			SetScrollableContainer();
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			SetScrollableContainer();
 			base.OnLoaded();
@@ -44,11 +45,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetScrollableContainer()
 		{
-			_scrollableContainer = _sv;
+			_scrollableContainer = _presenter;
 
 			if (this.FindFirstParent<TextBox>() != null)
 			{
-				var multiline = this.FindFirstChild<MultilineTextBoxView>();
+				var multiline = ((UIView)this).FindFirstChild<MultilineTextBoxView>();
 				if (multiline != null)
 				{
 					_scrollableContainer = multiline;
@@ -56,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
 			if (_scrollableContainer != null)
 			{
@@ -65,7 +66,18 @@ namespace Windows.UI.Xaml.Controls
 					.Clamp(CGPoint.Empty, _scrollableContainer.UpperScrollLimit);
 
 				_scrollableContainer.SetContentOffset(newOffset, !disableAnimation);
+
+				if(zoomFactor is { } zoom)
+				{
+					ChangeViewZoom(zoom, disableAnimation);
+				}
+
+				// Return true if successfully scrolled to asked offsets
+				return (horizontalOffset == null || horizontalOffset == newOffset.X) &&
+				       (verticalOffset == null || verticalOffset == newOffset.Y);
 			}
+
+			return false;
 		}
 
 		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
@@ -75,17 +87,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				case ZoomMode.Disabled:
 				default:
-					_sv?.OnMinZoomFactorChanged(1f);
-					_sv?.OnMaxZoomFactorChanged(1f);
+					_presenter?.OnMinZoomFactorChanged(1f);
+					_presenter?.OnMaxZoomFactorChanged(1f);
 					break;
 				case ZoomMode.Enabled:
-					_sv?.OnMinZoomFactorChanged(MinZoomFactor);
-					_sv?.OnMaxZoomFactorChanged(MaxZoomFactor);
+					_presenter?.OnMinZoomFactorChanged(MinZoomFactor);
+					_presenter?.OnMaxZoomFactorChanged(MaxZoomFactor);
 					break;
 			}
 		}
 
-		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation)
+		private void ChangeViewZoom(float zoomFactor, bool disableAnimation)
 		{
 			_scrollableContainer?.SetZoomScale(zoomFactor, animated: !disableAnimation);
 		}
@@ -147,7 +159,10 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				_sv.ContentInset = new UIEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
+				if (_presenter != null)
+				{
+					_presenter.ContentInset = new UIEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
+				}
 			}
 		}
 
@@ -156,5 +171,8 @@ namespace Windows.UI.Xaml.Controls
 			base.WillMoveToSuperview(newsuper);
 			UpdateSizeChangedSubscription(isCleanupRequired: newsuper == null);
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
 	}
 }

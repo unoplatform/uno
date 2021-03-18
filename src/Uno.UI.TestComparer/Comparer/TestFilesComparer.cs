@@ -20,9 +20,9 @@ namespace Uno.UI.TestComparer.Comparer
 			_platform = platform;
 		}
 
-		internal CompareResult Compare()
+		internal CompareResult Compare(string[] artifacts)
 		{
-			var testResult = new CompareResult();
+			var testResult = new CompareResult(_platform);
 
 			string path = _basePath;
 			var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
@@ -32,30 +32,34 @@ namespace Uno.UI.TestComparer.Comparer
 			Directory.CreateDirectory(path);
 			Directory.CreateDirectory(diffPath);
 
-			var q1 = from directory in Directory.EnumerateDirectories(_artifactsBasePath)
-					 let info = new DirectoryInfo(directory)
-					 orderby info.CreationTime descending
-					 select directory;
+			if (artifacts == null)
+			{
+				var q1 = from directory in Directory.EnumerateDirectories(_artifactsBasePath)
+						 let info = new DirectoryInfo(directory)
+						 orderby info.FullName descending
+						 select directory;
 
-			q1 = q1.ToArray();
+				var orderedDirectories = from directory in q1
+										 orderby directory
+										 select directory;
 
-			var orderedDirectories = from directory in q1
-									 orderby directory
-									 select directory;
+				artifacts = orderedDirectories.ToArray();
+			}
 
-			var q = from directory in orderedDirectories.Select((v, i) => new { Index = i, Path = v })
+			var q = from directory in artifacts.Select((v, i) => new { Index = i, Path = v })
 					let files = from sample in EnumerateFiles(Path.Combine(directory.Path, _artifactsInnerBasePath, _platform), "*.png").AsParallel()
+								where CanBeUsedForCompare(sample)
 								select new { File = sample, Id = BuildSha1(sample) }
 					select new
 					{
 						Path = directory.Path,
 						Index = directory.Index,
-						Files = files.ToArray(),
+						Files = files.AsParallel().ToArray(),
 					};
 
 			var allFolders = LogForeach(q, i => Console.WriteLine($"Processed {i.Path}")).ToArray();
 
-			testResult.Folders.AddRange(allFolders.Select((p, index) => (index, p.Path)));
+			testResult.Folders.AddRange(allFolders.Select((p, index) => (index, p.Path)).AsParallel());
 
 			var allFiles = allFolders
 				.SelectMany(folder => folder
@@ -144,27 +148,60 @@ namespace Uno.UI.TestComparer.Comparer
                             var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
                             if (hasChangedFromPrevious && previousFolderInfo != null)
                             {
-                                var currentImage = DecodeImage(folderInfo.Path);
-                                var previousImage = DecodeImage(previousFolderInfo.Path);
+								var currentImage = DecodeImage(folderInfo.Path);
+								var previousImage = DecodeImage(previousFolderInfo.Path);
 
-                                var diff = DiffImages(currentImage.pixels, previousImage.pixels);
+								if (currentImage.pixels.Length == previousImage.pixels.Length)
+								{
+									var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
 
-                                var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-                                WriteImage(diffFilePath, diff, currentImage.frame);
+									var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
+									WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
 
-                                compareResultFileRun.DiffResultImage = diffFilePath;
+									compareResultFileRun.DiffResultImage = diffFilePath;
+								}
+
+								changedList.Add(testFile);
                             }
+
+							GC.Collect(2, GCCollectionMode.Forced);
+							GC.WaitForPendingFinalizers();
                         }
                     }
-
-                    changedList.Add(testFile);
                 }
             }
 
-			testResult.UnchangedTests = allFiles.Length - changedList.Count;
+			testResult.UnchangedTests = allFiles.Length - changedList.Distinct().Count();
 			testResult.TotalTests = allFiles.Length;
 
 			return testResult;
+		}
+
+		private bool CanBeUsedForCompare(string sample)
+		{
+			if(ReadScreenshotMetadata(sample) is IDictionary<string, string> options)
+			{
+				if(options.TryGetValue("IgnoreInSnapshotCompare", out var ignore) && ignore.ToLower() == "true")
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private static IDictionary<string, string> ReadScreenshotMetadata(string sample)
+		{
+			var metadataFile = Path.Combine(Path.GetDirectoryName(sample), Path.GetFileNameWithoutExtension(sample) + ".metadata");
+
+			if (File.Exists(metadataFile))
+			{
+				var lines = File.ReadAllLines(metadataFile);
+
+				return lines.Select(l => l.Split('=')).ToDictionary(p => p[0], p => p[1]);
+			}
+
+			return null;
 		}
 
 		private Dictionary<string, int> _fileHashesTable = new Dictionary<string, int>();
@@ -177,7 +214,7 @@ namespace Uno.UI.TestComparer.Comparer
 		{
 			using (var sha1 = SHA1.Create())
 			{
-				using (var file = File.OpenRead(sample))
+				using (var file = File.OpenRead(@"\\?\" + sample))
 				{
 					var data = sha1.ComputeHash(file);
 
@@ -220,7 +257,7 @@ namespace Uno.UI.TestComparer.Comparer
 			}
 		}
 
-		private void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo)
+		private void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo, int stride)
 		{
 			using (var stream = new FileStream(diffPath, FileMode.Create))
 			{
@@ -229,14 +266,14 @@ namespace Uno.UI.TestComparer.Comparer
 				encoder.Interlace = PngInterlaceOption.On;
 
 				var frame = BitmapSource.Create(
-					pixelWidth: (int)frameInfo.Width,
-					pixelHeight: (int)frameInfo.Height,
+					pixelWidth: (int)frameInfo.PixelWidth,
+					pixelHeight: (int)frameInfo.PixelHeight,
 					dpiX: frameInfo.DpiX,
 					dpiY: frameInfo.DpiY,
 					pixelFormat: frameInfo.Format,
 					palette: frameInfo.Palette,
 					pixels: diff,
-					stride: (int)(frameInfo.Width * 4)
+					stride: stride
 				);
 
 				encoder.Frames.Add(BitmapFrame.Create(frame));
@@ -244,33 +281,41 @@ namespace Uno.UI.TestComparer.Comparer
 			}
 		}
 
-		private byte[] DiffImages(byte[] currentImage, byte[] previousImage)
+		private byte[] DiffImages(byte[] currentImage, byte[] previousImage, int pixelSize)
 		{
-			var result = new byte[currentImage.Length];
-
-			for (int i = 0; i < result.Length; i++)
+			for (int i = 0; i < currentImage.Length; i++)
 			{
-				result[i] = (byte)(currentImage[i] ^ previousImage[i]);
+				currentImage[i] = (byte)(currentImage[i] ^ previousImage[i]);
 			}
 
-			// Force result to be opaque
-			for (int i = 0; i < result.Length; i += 4)
+			if (pixelSize == 4)
 			{
-				result[i+3] = 0xFF;
+				// Force result to be opaque
+				for (int i = 0; i < currentImage.Length; i += 4)
+				{
+					currentImage[i + 3] = 0xFF;
+				}
 			}
 
-			return result;
+			return currentImage;
 		}
 
-		private (BitmapFrame frame, byte[] pixels) DecodeImage(string path1)
+		private (BitmapFrame frame, byte[] pixels, int stride) DecodeImage(string path1)
 		{
-			Stream imageStreamSource = new FileStream(path1, FileMode.Open, FileAccess.Read, FileShare.Read);
-			var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+			using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
+			{
+				var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
 
-			byte[] image = new byte[(int)(decoder.Frames[0].Width * decoder.Frames[0].Height * 4)];
-			decoder.Frames[0].CopyPixels(image, (int)(decoder.Frames[0].Width * 4), 0);
+				var f = decoder.Frames[0];
+				var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
+				var sourceStride = f.PixelWidth * sourceBytesPerPixels;
+				sourceStride += (4 - sourceStride % 4);
 
-			return (decoder.Frames[0], image);
+				var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
+				decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
+
+				return (decoder.Frames[0], image, sourceStride);
+			}
 		}
 
 		private static IEnumerable<T> LogForeach<T>(IEnumerable<T> q, Action<T> action)

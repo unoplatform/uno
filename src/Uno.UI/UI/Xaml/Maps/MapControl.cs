@@ -1,16 +1,44 @@
+#if !HAS_UNO_WINUI
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Uno;
+using Uno.Extensions;
 using Windows.Devices.Geolocation;
 
 namespace Windows.UI.Xaml.Controls.Maps
 {
+#if !__IOS__ && !__ANDROID__
+	[NotImplemented]
+#endif
 	public partial class MapControl : Controls.Control, IUnoMapControl
 	{
 		public MapControl()
 		{
 			Children = new DependencyObjectCollection(this);
+
+			Layers = new List<MapLayer>();
+
+			DefaultStyleKey = typeof(MapControl);
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+#if __IOS__ || __ANDROID__
+			if (Template == null && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"No template available for MapControl, the control will not display. Check that Uno MapControl support is configured correctly (see https://platform.uno/docs/articles/controls/map-control-support.html ).");
+			}
+#else
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"MapControl is not supported on this target platform.");
+			}
+#endif
 		}
 
 		public MapStyle Style
@@ -725,3 +753,4 @@ namespace Windows.UI.Xaml.Controls.Maps
 			=> ZoomLevelChanged?.Invoke(this, p);
 	}
 }
+#endif

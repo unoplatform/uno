@@ -10,23 +10,29 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Source")]
 	public partial class AnimatedVisualPlayer : FrameworkElement
 	{
-		public static readonly DependencyProperty AutoPlayProperty = DependencyProperty.Register(
-			"AutoPlay", typeof(bool), typeof(AnimatedVisualPlayer), new PropertyMetadata(true, UpdateSourceOnChanged));
+		public static DependencyProperty AutoPlayProperty { get ; } = DependencyProperty.Register(
+			"AutoPlay", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(true, UpdateSourceOnChanged));
 
-		public static readonly DependencyProperty IsPlayingProperty = DependencyProperty.Register(
-			"IsPlaying", typeof(bool), typeof(AnimatedVisualPlayer), new PropertyMetadata(false, UpdateSourceOnChanged));
+		public static DependencyProperty IsAnimatedVisualLoadedProperty { get ; } = DependencyProperty.Register(
+			"IsAnimatedVisualLoaded", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(false, UpdateSourceOnChanged));
 
-		public static readonly DependencyProperty PlaybackRateProperty = DependencyProperty.Register(
-			"PlaybackRate", typeof(double), typeof(AnimatedVisualPlayer), new PropertyMetadata(1.0, UpdateSourceOnChanged));
+		public static DependencyProperty IsPlayingProperty { get ; } = DependencyProperty.Register(
+			"IsPlaying", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(false, UpdateSourceOnChanged));
 
-		public static readonly DependencyProperty FallbackContentProperty = DependencyProperty.Register(
-			"FallbackContent", typeof(DataTemplate), typeof(AnimatedVisualPlayer), new PropertyMetadata(null, UpdateSourceOnChanged));
+		public static DependencyProperty PlaybackRateProperty { get ; } = DependencyProperty.Register(
+			"PlaybackRate", typeof(double), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(1.0, UpdateSourceOnChanged));
 
-		public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
-			"Source", typeof(IAnimatedVisualSource), typeof(AnimatedVisualPlayer), new PropertyMetadata(null, UpdateSourceOnChanged));
+		public static DependencyProperty FallbackContentProperty { get; } = DependencyProperty.Register(
+			"FallbackContent", typeof(DataTemplate), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, UpdateSourceOnChanged));
 
-		public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(
-			"Stretch", typeof(Stretch), typeof(AnimatedVisualPlayer), new PropertyMetadata(Stretch.Uniform, UpdateSourceOnChanged));
+		public static DependencyProperty SourceProperty { get ; } = DependencyProperty.Register(
+			"Source", typeof(IAnimatedVisualSource), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, UpdateSourceOnChanged));
+
+		public static DependencyProperty StretchProperty { get ; } = DependencyProperty.Register(
+			"Stretch", typeof(Stretch), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, UpdateSourceOnChanged));
+
+		public static DependencyProperty DurationProperty { get ; } = DependencyProperty.Register(
+			"Duration", typeof(TimeSpan), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(default(TimeSpan), UpdateSourceOnChanged));
 
 		public bool AutoPlay
 		{
@@ -34,10 +40,16 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(AutoPlayProperty, value);
 		}
 
+		public bool IsAnimatedVisualLoaded
+		{
+			get => (bool)GetValue(IsAnimatedVisualLoadedProperty);
+			internal set => SetValue(IsAnimatedVisualLoadedProperty, value);
+		}
+
 		public bool IsPlaying
 		{
-			get => (bool)GetValue(AutoPlayProperty);
-			set => SetValue(AutoPlayProperty, value);
+			get => (bool)GetValue(IsPlayingProperty);
+			internal set => SetValue(IsPlayingProperty, value);
 		}
 
 		public DataTemplate FallbackContent
@@ -64,42 +76,35 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(StretchProperty, value);
 		}
 
+		public TimeSpan Duration
+		{
+			get => (TimeSpan)GetValue(DurationProperty);
+			internal set => SetValue(DurationProperty, value);
+		}
+
 		private static void UpdateSourceOnChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
 		{
-			var player = (source as AnimatedVisualPlayer);
-
-			if (player.IsLoaded)
+			if (source is AnimatedVisualPlayer {IsLoaded: true} player)
 			{
-				player?.Source?.Update(player);
+				if (player.Source != null)
+				{
+					player.Source.Update(player);
+					player.InvalidateMeasure();
+				}
 			}
 		}
 
-		public void Pause()
-		{
-			Source?.Pause();
-		}
+		public void Pause() => Source?.Pause();
 
-		public async Task PlayAsync(double fromProgress, double toProgress, bool looped)
-		{
-			Source?.Play(looped);
-		}
+		public async Task PlayAsync(double fromProgress, double toProgress, bool looped) => Source?.Play(fromProgress, toProgress, looped);
 
-		public void Resume()
-		{
-			Source?.Resume();
-		}
+		public void Resume() => Source?.Resume();
 
-		public void SetProgress(double progress)
-		{
-			Source?.SetProgress(progress);
-		}
+		public void SetProgress(double progress) => Source?.SetProgress(progress);
 
-		public void Stop()
-		{
-			Source?.Stop();
-		}
+		public void Stop() => Source?.Stop();
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			Source?.Update(this);
 			Source?.Load();
@@ -107,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			Source?.Unload();
 
@@ -116,8 +121,14 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			return Source == null
-				? base.MeasureOverride(availableSize)
-				: Source.Measure(availableSize);
-		}}
+			if (Source?.Measure(availableSize) != null)
+			{
+				return Source.Measure(availableSize);
+			}
+			else
+			{
+				return base.MeasureOverride(availableSize);
+			}
+		}
+	}
 }

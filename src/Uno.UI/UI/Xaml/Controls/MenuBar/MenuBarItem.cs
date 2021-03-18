@@ -279,12 +279,12 @@ namespace Windows.UI.Xaml.Controls
 			m_passThroughElement = element;
 		}
 
-		bool IsFlyoutOpen()
+		public bool IsFlyoutOpen()
 		{
 			return m_isFlyoutOpen;
 		}
 
-		void Invoke()
+		public void Invoke()
 		{
 			if (IsFlyoutOpen())
 			{

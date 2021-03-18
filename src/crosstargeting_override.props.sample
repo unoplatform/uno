@@ -16,12 +16,14 @@
     <!--
     	This property controls the platform built by Visual Studio.
 		
-      	Available build targets:
-								uap10.0.17763 (Windows)
-								xamarinios10 (iOS)
-								MonoAndroid90 (Android 9.0)
-								netstandard2.0 (WebAssembly)
-								net461 (Tests)
+      	Available build targets and corresponding solution filters:
+								uap10.0.17763 (Windows) - Uno.UI-Windows-only.slnf
+								xamarinios10 (iOS) - Uno.UI-iOS-only.slnf
+								MonoAndroid11.0 (Android 11.0) - Uno.UI-Android-only.slnf
+								netstandard2.0 (WebAssembly, Skia) - Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf
+								net5.0 (WebAssembly, Skia) - Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf
+								xamarinmac20 (macOS) - Uno.UI-macOS-only.slnf (Visual Studio for Windows), Uno.UI-vs4mac-macOS-only.sln (Visual Studio for Mac)
+								net461 (Uno.UI.Tests) - Uno.UI-UnitTests-only.slnf
 
         Only one target can be built, and the corresponding solution filter must
         be loaded in Visual Studio (see next to Uno.UI.sln).

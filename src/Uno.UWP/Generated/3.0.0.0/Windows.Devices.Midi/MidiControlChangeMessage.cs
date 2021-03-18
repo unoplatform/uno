@@ -2,78 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MidiControlChangeMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  byte Channel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte MidiControlChangeMessage.Channel is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  byte ControlValue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte MidiControlChangeMessage.ControlValue is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  byte Controller
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte MidiControlChangeMessage.Controller is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Storage.Streams.IBuffer RawData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer MidiControlChangeMessage.RawData is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MidiControlChangeMessage.Timestamp is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Midi.MidiMessageType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MidiMessageType MidiControlChangeMessage.Type is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public MidiControlChangeMessage( byte channel,  byte controller,  byte controlValue) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiControlChangeMessage", "MidiControlChangeMessage.MidiControlChangeMessage(byte channel, byte controller, byte controlValue)");
-		}
-		#endif
+		// Skipping already declared property Channel
+		// Skipping already declared property ControlValue
+		// Skipping already declared property Controller
+		// Skipping already declared property RawData
+		// Skipping already declared property Timestamp
+		// Skipping already declared property Type
+		// Skipping already declared method Windows.Devices.Midi.MidiControlChangeMessage.MidiControlChangeMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.MidiControlChangeMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.Controller.get

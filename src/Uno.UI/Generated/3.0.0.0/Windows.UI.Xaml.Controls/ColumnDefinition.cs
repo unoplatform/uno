@@ -2,12 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ColumnDefinition : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Width
+		// Skipping already declared property MinWidth
+		// Skipping already declared property MaxWidth
+		// Skipping already declared property ActualWidth
+		// Skipping already declared property MaxWidthProperty
+		// Skipping already declared property MinWidthProperty
 		// Skipping already declared property WidthProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.ColumnDefinition.ColumnDefinition()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ColumnDefinition.ColumnDefinition()

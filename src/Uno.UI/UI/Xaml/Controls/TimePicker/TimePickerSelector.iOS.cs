@@ -1,11 +1,10 @@
-﻿#if XAMARIN_IOS
-
 using Foundation;
 using System;
 using System.Linq;
 using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
 
@@ -17,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		private NSDate _initialTime;
 		private NSDate _newDate;
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -37,8 +36,13 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 			_picker.Mode = UIDatePickerMode.Time;
 
+			UpdatePickerStyle();
+			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
+			SetPickerClockIdentifier(ClockIdentifier);
+			SaveInitialTime();
 			_picker.ValueChanged += OnValueChanged;
-			
+			_picker.EditingDidBegin += OnEditingDidBegin;
+
 			var parent = _picker.FindFirstParent<FrameworkElement>();
 
 			//Removing the date picker and adding it is what enables the lines to appear. Seems to be a side effect of adding it as a view. 
@@ -48,7 +52,13 @@ namespace Windows.UI.Xaml.Controls
 				parent.AddSubview(_picker);
 			}
 		}
-		
+
+		private void OnEditingDidBegin(object sender, EventArgs e)
+		{
+			//We don't want the keyboard to be shown. https://github.com/unoplatform/uno/issues/4611
+			_picker?.ResignFirstResponder();
+		}
+
 		private void OnValueChanged(object sender, EventArgs e)
 		{
 			_newDate = _picker.Date;
@@ -56,10 +66,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Initialize()
 		{
+			UpdatePickerStyle();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
-			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
-			SaveInitialTime();
 		}
 
 		private void SetPickerMinuteIncrement(int minuteIncrement)
@@ -70,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void SaveInitialTime() => _initialTime = _picker.Date;
+		private void SaveInitialTime() => _initialTime = _picker?.Date;
 
 		internal void SaveTime()
 		{
@@ -78,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if ((_newDate != null) && _newDate != _initialTime)
 				{
-					var time = _newDate.ToTimeSpan(_picker.TimeZone.GetSecondsFromGMT);
+					var time = _newDate.ToTimeSpanOfDay(_picker.TimeZone.GetSecondsFromGMT);
 
 					if (Time.Hours != time.Hours || Time.Minutes != time.Minutes)
 					{
@@ -137,12 +146,26 @@ namespace Windows.UI.Xaml.Controls
 			return new NSLocale(localeID);
 		}
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			_picker.ValueChanged -= OnValueChanged;
 
 			base.OnUnloaded();
 		}
+
+		private void UpdatePickerStyle()
+		{
+			if (_picker == null)
+			{
+				return;
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
+			{
+				_picker.PreferredDatePickerStyle = FeatureConfiguration.TimePicker.UseLegacyStyle
+																			? UIDatePickerStyle.Wheels
+																			: UIDatePickerStyle.Inline;
+			}
+		}
 	}
 }
-#endif

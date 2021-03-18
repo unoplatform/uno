@@ -1,6 +1,10 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using Uno.Extensions;
+using Uno.UI;
+using Uno.UI.DataBinding;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -16,29 +20,46 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
+	/// <summary>
+	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
+	/// </summary>
+	public delegate View? FrameworkTemplateBuilder(object? owner);
+	
 	public partial class FrameworkTemplate : DependencyObject
 	{
-
-		private readonly Func<View> _viewFactory;
+		private readonly FrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
+		private readonly ManagedWeakReference? _ownerRef;
 
-		protected FrameworkTemplate() { }
+		/// <summary>
+		/// The scope at the time of the template's creation, which will be used when its contents are materialized.
+		/// </summary>
+		private readonly XamlScope _xamlScope;
 
-		public FrameworkTemplate(Func<View> factory)
+		protected FrameworkTemplate()
+			=> throw new NotSupportedException("Use the factory constructors");
+
+		public FrameworkTemplate(Func<View?>? factory)
+			: this(null, _ => factory?.Invoke())
+		{
+		}
+
+		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
 		{
 			InitializeBinder();
 
 			_viewFactory = factory;
+			_ownerRef = WeakReferencePool.RentWeakReference(this, owner);
 
 			// Compute the hash for this template once, it will be used a lot
 			// in the ControlPool's internal dictionary.
-			_hashCode = (factory.Target?.GetHashCode() ?? 0) ^ factory.Method.GetHashCode();
+			_hashCode = (factory?.Target?.GetHashCode() ?? 0) ^ (factory?.Method.GetHashCode() ?? 0);
+
+			_xamlScope = ResourceResolver.CurrentScope;
 		}
 
-		public static implicit operator Func<View>(FrameworkTemplate obj)
-		{
-			return obj?._viewFactory;
-		}
+		public static implicit operator Func<View?>(FrameworkTemplate? obj)
+			=> () => obj?._viewFactory?.Invoke(null);
 
 		/// <summary>
 		/// Loads a potentially cached template from the current template, see remarks for more details.
@@ -49,18 +70,41 @@ namespace Windows.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal View LoadContentCached()
-		{
-			return FrameworkTemplatePool.Instance.DequeueTemplate(this);
-		}
+		internal View LoadContentCached() => FrameworkTemplatePool.Instance.DequeueTemplate(this);
+
+		/// <summary>
+		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.
+		/// </summary>
+		/// <remarks>
+		/// This is only used in specialized contexts. Normally the template reuse will be automatically handled by the pool.
+		/// </remarks>
+		internal void ReleaseTemplateRoot(View templateRoot) => FrameworkTemplatePool.Instance.ReleaseTemplateRoot(templateRoot, this);
 
 		/// <summary>
 		/// Creates a new instance of the current template.
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
-		public View LoadContent()
+		public View? LoadContent()
 		{
-			return _viewFactory();
+			View? view = null;
+#if !HAS_EXPENSIVE_TRYFINALLY
+			try
+#endif
+			{
+				ResourceResolver.PushNewScope(_xamlScope);
+				if (_viewFactory != null)
+				{
+					view = _viewFactory(_ownerRef?.Target);
+				}
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				ResourceResolver.PopScope();
+			}
+			return view;
+
 		}
 
 		public override bool Equals(object obj)
@@ -103,8 +147,8 @@ namespace Windows.UI.Xaml
 				// method group, which are *not* cached by the C# compiler (required by 
 				// the C# spec as of version 6.0)
 				|| (
-					ReferenceEquals(left._viewFactory.Target, right._viewFactory.Target)
-					&& left._viewFactory.Method == right._viewFactory.Method
+					ReferenceEquals(left._viewFactory?.Target, right._viewFactory?.Target)
+					&& left._viewFactory?.Method == right._viewFactory?.Method
 					);
 
 			public int GetHashCode(FrameworkTemplate obj) => obj._hashCode;

@@ -2,85 +2,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DispatcherQueueTimer 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsRepeating
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DispatcherQueueTimer.IsRepeating is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DispatcherQueueTimer", "bool DispatcherQueueTimer.IsRepeating");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan Interval
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan DispatcherQueueTimer.Interval is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DispatcherQueueTimer", "TimeSpan DispatcherQueueTimer.Interval");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsRunning
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DispatcherQueueTimer.IsRunning is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property IsRepeating
+		// Skipping already declared property Interval
+		// Skipping already declared property IsRunning
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.Interval.get
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.Interval.set
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.IsRunning.get
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.IsRepeating.get
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.IsRepeating.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void Start()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DispatcherQueueTimer", "void DispatcherQueueTimer.Start()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void Stop()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DispatcherQueueTimer", "void DispatcherQueueTimer.Stop()");
-		}
-		#endif
+		// Skipping already declared method Windows.System.DispatcherQueueTimer.Start()
+		// Skipping already declared method Windows.System.DispatcherQueueTimer.Stop()
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.Tick.add
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.Tick.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.DispatcherQueueTimer, object> Tick
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DispatcherQueueTimer", "event TypedEventHandler<DispatcherQueueTimer, object> DispatcherQueueTimer.Tick");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DispatcherQueueTimer", "event TypedEventHandler<DispatcherQueueTimer, object> DispatcherQueueTimer.Tick");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.System.DispatcherQueueTimer.Tick
 	}
 }

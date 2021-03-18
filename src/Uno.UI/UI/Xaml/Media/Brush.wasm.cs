@@ -1,22 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Uno.Extensions;
 using Uno.Disposables;
-using System.Drawing;
 
 namespace Windows.UI.Xaml.Media
 {
 	public abstract partial class Brush
 	{
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Color> colorSetter)
+		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Windows.UI.Color> colorSetter, Action imageBrushCallback = null)
 		{
-			return Disposable.Empty; // ??
+			if (b is SolidColorBrush colorBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+				colorSetter(colorBrush.ColorWithOpacity);
+
+				colorBrush.RegisterDisposablePropertyChangedCallback(
+						SolidColorBrush.ColorProperty,
+						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
+					)
+					.DisposeWith(disposables);
+
+				colorBrush.RegisterDisposablePropertyChangedCallback(
+						SolidColorBrush.OpacityProperty,
+						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
+					)
+					.DisposeWith(disposables);
+
+				return disposables;
+			}
+
+			if (b is GradientBrush gb)
+			{
+				var disposables = new CompositeDisposable(2);
+
+				colorSetter(gb.FallbackColorWithOpacity);
+
+				gb.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.FallbackColorProperty,
+						(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+					)
+					.DisposeWith(disposables);
+
+				gb.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.OpacityProperty,
+						(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+					)
+					.DisposeWith(disposables);
+
+				return disposables;
+			}
+
+			if (b is AcrylicBrush ab)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException(
+					"AcrylicBrush is ** not ** supported by the AssignAndObserveBrush. "
+					+ "(Instead you have to use the AcrylicBrush.Subscribe().)"));
+				return Disposable.Empty;
+			}
+
+			if (b is ImageBrush)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException(
+					"ImageBrush is ** not ** supported by the AssignAndObserveBrush. "
+					+ "(Instead you have to use the ImageBrush.Subscribe().)"));
+				return Disposable.Empty;
+			}
+
+			colorSetter(SolidColorBrushHelper.Transparent.Color);
+			return Disposable.Empty;
 		}
 
-		protected Color GetColorWithOpacity(Color referenceColor)
-		{
-			return Color.FromArgb((byte)(Opacity * referenceColor.A), referenceColor.R, referenceColor.G, referenceColor.B);
-		}
+		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
+		internal bool SupportsAssignAndObserveBrush => !(this is ImageBrush || this is AcrylicBrush);
 	}
+
 }

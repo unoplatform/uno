@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppBarToggleButton : global::Windows.UI.Xaml.Controls.ICommandBarElement,global::Windows.UI.Xaml.Controls.ICommandBarElement2
@@ -10,8 +10,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Label
 		// Skipping already declared property Icon
 		// Skipping already declared property LabelPosition
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string KeyboardAcceleratorTextOverride
 		{
 			get
@@ -24,6 +24,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property TemplateSettings
 		// Skipping already declared property IsCompact
 		// Skipping already declared property DynamicOverflowOrder
 		// Skipping already declared property IsInOverflow
@@ -33,11 +34,11 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property DynamicOverflowOrderProperty
 		// Skipping already declared property IsInOverflowProperty
 		// Skipping already declared property LabelPositionProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyboardAcceleratorTextOverride", typeof(string), 
+			nameof(KeyboardAcceleratorTextOverride), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

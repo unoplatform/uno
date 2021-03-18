@@ -2,39 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ScrollEventType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SmallDecrement,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SmallIncrement,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		LargeDecrement,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		LargeIncrement,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ThumbPosition,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ThumbTrack,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		First,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Last,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		EndScroll,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.SmallDecrement
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.SmallIncrement
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.LargeDecrement
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.LargeIncrement
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.ThumbPosition
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.ThumbTrack
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.First
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.Last
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.EndScroll
 	}
 	#endif
 }

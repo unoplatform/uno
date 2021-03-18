@@ -10,7 +10,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
-    public partial class BindableRadioButton : Android.Support.V7.Widget.AppCompatRadioButton, DependencyObject, INotifyPropertyChanged
+    public partial class BindableRadioButton : AndroidX.AppCompat.Widget.AppCompatRadioButton, DependencyObject, INotifyPropertyChanged
     {
 		public event PropertyChangedEventHandler PropertyChanged;
 

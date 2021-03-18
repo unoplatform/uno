@@ -37,5 +37,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FrameworkElementTests
 
 			_app.WaitForDependencyPropertyValue(result, "Text", "Loaded: 1");
 		}
+
+
+		[Test]
+		[AutoRetry]
+		public void FrameworkElement_NativeLayout()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml.FrameworkElementTests.FrameworkElement_NativeLayout");
+
+			var button1 = _app.Marked("button1");
+			var button2 = _app.Marked("button2");
+
+			var button1Result = _app.Query(button1).First();
+			var button2Result = _app.Query(button2).First();
+
+			button1Result.Rect.Width.Should().Be(button2Result.Rect.Width);
+			button1Result.Rect.Height.Should().Be(button2Result.Rect.Height);
+		}
 	}
 }

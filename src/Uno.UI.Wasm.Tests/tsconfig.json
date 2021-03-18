@@ -1,19 +1,21 @@
 ﻿{
-	"compilerOptions": {
-			"module": "none",
-			"declaration": true,
-			"diagnostics": true,
-			"noImplicitAny": true,
-			"outFile": "WasmScripts/UnitTests.js",
-			//"inlineSourceMap": true,
-			"locale": "en-US",
-			"target": "es2015"
-	},
+  "compilerOptions": {
+	"module": "none",
+	"declaration": true,
+	"diagnostics": true,
+	"noImplicitAny": true,
+	"outFile": "WasmScripts/UnitTests.js",
+	//"inlineSourceMap": true,
+	"locale": "en-US",
+	"target": "ES2017",
+	// We need ES2018 types to have support for async iteration (used in File System APIs)
+	"lib": [ "ES2018", "DOM", "DOM.Iterable" ]
+  },
   "include": [
-    "ts/**/*",
-    "tsbindings/**/*",
-    "../Uno.UI.Wasm/WasmScripts/Uno.UI.d.ts",
-    "../Uno.UI.Wasm/ts/types/**/*"
+	"ts/**/*",
+	"tsbindings/**/*",
+	"../Uno.UI/WasmScripts/Uno.UI.d.ts",
+	"../Uno.UI/ts/types/**/*"
   ]
 }
 

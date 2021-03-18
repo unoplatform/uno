@@ -270,12 +270,16 @@ namespace Windows.UI.Xaml.Markup.Reader
                 var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
                 var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 
-                if (
-                    type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
-                    && type.Name == "Bind"
-                   )
+                if (type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
                 {
-                    return _findType(XamlConstants.Namespaces.Data + ".Binding");
+					if (type.Name == "Bind")
+					{
+						return _findType(XamlConstants.Namespaces.Data + ".Binding");
+					}
+					else if (_findType("System." + type.Name) is Type systemType)
+					{
+						return systemType;
+					}
                 }
 
                 var fullName = isKnownNamespace ? ns.Prefix + ":" + type.Name : type.Name;

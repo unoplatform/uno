@@ -18,57 +18,17 @@ using CoreAnimation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public abstract partial class Layouter
+	abstract partial class Layouter
 	{
 		public IEnumerable<View> GetChildren()
 		{
 			return (Panel as NSView).GetChildren();
 		}
 
-		/// <summary>
-		/// Provides the desired size of the element, from the last measure phase.
-		/// </summary>
-		/// <param name="view">The element to get the measured with</param>
-		/// <returns>The measured size</returns>
-		Size ILayouter.GetDesiredSize(View view)
-		{
-			return DesiredChildSize(view);
-		}
-
-		protected Size DesiredChildSize(View view)
-		{
-			var uiElement = view as UIElement;
-
-			if (uiElement != null)
-			{
-				return uiElement.DesiredSize;
-			}
-			else
-			{
-				return _layoutProperties.GetValue(view, "desiredSize", () => default(Size));
-			}
-		}
-
-		partial void SetDesiredChildSize(View view, Size desiredSize)
-		{
-			var uiElement = view as UIElement;
-
-			if (uiElement != null)
-			{
-				uiElement.DesiredSize = desiredSize;
-			}
-			else
-			{
-				_layoutProperties.SetValue(view, "desiredSize", desiredSize);
-			}
-		}
-
-		private static UnsafeWeakAttachedDictionary<View, string> _layoutProperties = new UnsafeWeakAttachedDictionary<View, string>();
-
 		protected Size MeasureChildOverride(View view, Size slotSize)
 		{
 			var ret = view
-				.Measure(slotSize.LogicalToPhysicalPixels())
+				.SizeThatFits(slotSize.LogicalToPhysicalPixels())
 				.PhysicalToLogicalPixels()
 				.ToFoundationSize();
 
@@ -139,9 +99,9 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			if (view.Layer.Transform.IsIdentity)
+			if (view.Layer?.Transform.IsIdentity ?? true)
 			{
-				// Transform is identity anyway
+				// Transform is identity anyway, or Layer is null
 				return null;
 			}
 

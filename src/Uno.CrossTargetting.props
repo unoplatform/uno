@@ -16,9 +16,13 @@
 	<Copyright>nventive</Copyright>
 	<Author>nventive</Author>
 
-	<LangVersion>7.3</LangVersion>
 	<WarningsAsErrors>all</WarningsAsErrors>
 
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
+	<NoWarn>$(NoWarn),1998,0105,4014,VSX1000,NU1701</NoWarn>
   </PropertyGroup>
 
   <!---->
@@ -31,24 +35,58 @@
 		This target is the equivalent to this property group, until this
 		is fixed: https://github.com/NuGet/Home/issues/6662
 		<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
-			<NoWarn>$(NoWarn);67</NoWarn>
+			<NoWarn>$(NoWarn);67;0649</NoWarn>
 		</PropertyGroup>
 		-->
 
-	<CreateProperty Value="$(NoWarn);67">
+	<CreateProperty Value="$(NoWarn);67;0649">
 	  <Output
 			  TaskParameter="Value"
 			  PropertyName="NoWarn" />
 	</CreateProperty>
   </Target>
 
+  <!--
+  List of known constants:
+  - __SKIA__: Used when building for the Skia backend
+  - __WASM__: Used when building for the WebAssembly backend
+  - UNO_REFERENCE_API: Used when the netstandard 2.0 Reference API is used.
+  - HAS_EXPENSIVE_TRYFINALLY: Used on WebAssembly until exceptions are supported by the WebAssembly specification
+  - __NETSTD_REFERENCE__: Used when building the reference assemblies for the netstandard 2.0 target
+  - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
+										UIElements. On iOS, this means additional weak references
+										backed fields to handle opaque native reference pinning and avoid
+										memory leaks.
+  - UNO_HAS_ENHANCED_HIT_TEST_PROPERTY: Used to mark if the ENUM hit test property is present or not
+  - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
+									  uses render transforms instead of native scroll feature (if any)
+  - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-	<DefineConstants>$(DefineConstants);__WASM__;HAS_EXPENSIVE_TRYFINALLY</DefineConstants>
+  - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
+  -->
+
+  <PropertyGroup Condition="$(_IsNetStd)">
+	  <DefineConstants>$(DefineConstants);__NETSTD__</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
+	<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
+	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
+	<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsXamarinIOS)">
-	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED</DefineConstants>
+	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(IsXamarinMac)">
+	<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsMonoAndroid)">
@@ -60,7 +98,11 @@
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.17763' ">
+	<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
 	<TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
 	<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
@@ -79,10 +121,6 @@
 	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
-	<PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="5.4.2" />
-  </ItemGroup>
-
   <Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
   <Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
@@ -92,12 +130,14 @@
   <Target Name="_UnoOverrideNuget"
 		AfterTargets="AfterBuild"
 		DependsOnTargets="BuiltProjectOutputGroup"
-		Condition="'$(UnoNugetOverrideVersion)'!=''">
+		Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
 
 	<PropertyGroup>
 	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-	  <_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-	  <_TargetNugetRefFolder>$(USERPROFILE)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
+      <_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+	  <_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+	  <_TargetNugetRefFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
 	</PropertyGroup>
 	<ItemGroup>
 	  <_OutputFiles Include="$(TargetDir)\*.*" />
@@ -105,6 +145,10 @@
 	</ItemGroup>
 	<MakeDir Directories="$(_TargetNugetFolder)" />
 
+    <!-- Add override file to notify a developer that the used package is modified -->
+    <WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride"
+             Lines="$([System.DateTime]::Now.ToString('yyyyMMddTHHmmss')) from $(MSBuildThisFileDirectory)"
+             Overwrite="True" />
 	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
 
 	<Copy SourceFiles="@(_OutputFiles)"
@@ -113,4 +157,26 @@
 		  DestinationFiles="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
+
+  <Target Name="CommonOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!='' and '$(UseCommonOverridePackage)'!=''">
+	<PropertyGroup>
+	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+      <_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+	  <CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
+	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+	</ItemGroup>
+
+	<MakeDir Directories="$(_TargetNugetFolder)" />
+
+	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+	<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
 </Project>

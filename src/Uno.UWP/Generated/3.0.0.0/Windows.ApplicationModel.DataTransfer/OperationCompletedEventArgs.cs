@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	[global::Uno.NotImplemented]
+	#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 	#endif
 	public  partial class OperationCompletedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackageOperation Operation
 		{
 			get
@@ -17,8 +17,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public  string AcceptedFormatId
 		{
 			get

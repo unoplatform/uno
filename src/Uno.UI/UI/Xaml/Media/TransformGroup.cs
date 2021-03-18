@@ -6,6 +6,19 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using Windows.UI.Xaml.Markup;
+using Uno.Extensions;
+using Uno.Logging;
+#if __ANDROID__
+using _View = Android.Views.View;
+#elif __IOS__
+using _View = UIKit.UIView;
+#elif __MACOS__
+using _View = AppKit.NSView;
+#elif __WASM__
+using _View = Windows.UI.Xaml.UIElement;
+#else
+using _View = System.Object;
+#endif
 
 namespace Windows.UI.Xaml.Media
 {
@@ -20,8 +33,8 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// Backing dependency property for the <see cref="Children"/>
 		/// </summary>
-		public static readonly DependencyProperty ChildrenProperty =
-			DependencyProperty.Register("Children", typeof(TransformCollection), typeof(TransformGroup), new PropertyMetadata(OnChildrenChanged));
+		public static DependencyProperty ChildrenProperty { get ; } =
+			DependencyProperty.Register("Children", typeof(TransformCollection), typeof(TransformGroup), new FrameworkPropertyMetadata(OnChildrenChanged));
 
 		public TransformCollection Children
 		{
@@ -89,10 +102,22 @@ namespace Windows.UI.Xaml.Media
 			NotifyChanged();
 		}
 
-		private void OnChildAdded(Transform transform) => transform.Changed += OnChildTransformChanged;
-		private void OnChildRemoved(Transform transform) => transform.Changed -= OnChildTransformChanged;
+		private void OnChildAdded(Transform transform)
+		{
+			transform.View = View; // Animation support
+			transform.Changed += OnChildTransformChanged;
+		}
 
-		private void OnChildTransformChanged(object sender, EventArgs e) => NotifyChanged();
+		private void OnChildRemoved(Transform transform)
+		{
+			transform.View = null; // Animation support
+			transform.Changed -= OnChildTransformChanged;
+		}
+
+		private void OnChildTransformChanged(object sender, EventArgs e)
+			=> NotifyChanged();
+
+		public Matrix Value => new Matrix(MatrixCore);
 
 		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
 		{
@@ -102,15 +127,42 @@ namespace Windows.UI.Xaml.Media
 				foreach (var child in Children)
 				{
 					matrix *= child.ToMatrix(absoluteOrigin);
-					absoluteOrigin = new Point(
-						(absoluteOrigin.X * matrix.M11) + (absoluteOrigin.Y * matrix.M21) + matrix.M31,
-						(absoluteOrigin.X * matrix.M12) + (absoluteOrigin.Y * matrix.M22) + matrix.M32);
 				}
 			}
 
 			return matrix;
 		}
-	}
 
+		#region Support of Animation of TransformGroup
+		/*
+		 * Animation are not running on the TransformGroup itself but on child transforms.
+		 * We are only delegating the required properties for animation to children transforms here.
+		 * All those can be safely removed once animation will not assume that a given Transform
+		 * can be used only for a single element at a time!
+		 */
+#if __IOS__
+		internal override bool IsAnimating => Children.Any(child => child.IsAnimating);
+#elif __ANDROID__
+		internal override bool IsAnimating
+		{
+			get => Children.Any(child => child.IsAnimating);
+			set => this.Log().Error("Nothing is animatable on a TransformGroup.");
+		}
+#endif
+
+		internal override _View View
+		{
+			get => base.View;
+			set
+			{
+				base.View = value;
+				foreach (var child in Children)
+				{
+					child.View = value;
+				}
+			}
+		}
+		#endregion
+	}
 }
 

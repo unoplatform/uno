@@ -2,21 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ScrollingIndicatorMode 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TouchIndicator,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		MouseIndicator,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollingIndicatorMode.None
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollingIndicatorMode.TouchIndicator
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollingIndicatorMode.MouseIndicator
 	}
 	#endif
 }

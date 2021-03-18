@@ -23,6 +23,8 @@ using Uno.UI.Common;
 using System.Windows.Input;
 using Windows.UI.Core;
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	public class ContentControlTestViewModel : ViewModelBase

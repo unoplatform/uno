@@ -27,16 +27,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SliderTests
 				y: sliderRect.CenterY + (sliderRect.Height * 0.3f));
 
 			var tbSliderValue = _app.Marked("mySlider2Value");
-			getSliderValue(tbSliderValue).Should().BeLessThan(50, "Below 50% Value");
+			GetSliderValue(tbSliderValue).Should().BeLessThan(50, "Below 50% Value");
 
 			_app.TapCoordinates(
 				x: sliderRect.CenterX,
 				y: sliderRect.CenterY - (sliderRect.Height * 0.3f));
 
-			getSliderValue(tbSliderValue).Should().BeGreaterThan(50, "Above 50% Value");
+			GetSliderValue(tbSliderValue).Should().BeGreaterThan(50, "Above 50% Value");
 		}
 
-		private int getSliderValue(QueryEx mark)
+		private int GetSliderValue(QueryEx mark)
 		{
 			_app.Wait(0.15f); // give time to app to execute the action
 			var valueString = mark.GetDependencyPropertyValue("Text") as string;

@@ -2,51 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum NodeType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Invalid,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ElementNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		AttributeNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TextNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		DataSectionNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		EntityReferenceNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		EntityNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ProcessingInstructionNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		CommentNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		DocumentNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		DocumentTypeNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		DocumentFragmentNode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		NotationNode,
-		#endif
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.Invalid
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.ElementNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.AttributeNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.TextNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.DataSectionNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.EntityReferenceNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.EntityNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.ProcessingInstructionNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.CommentNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.DocumentNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.DocumentTypeNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.DocumentFragmentNode
+		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.NotationNode
 	}
 	#endif
 }

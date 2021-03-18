@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,6 +14,7 @@ using Android.App;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
 using Android.Views;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
@@ -21,21 +24,20 @@ using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Controls.Maps.Presenter
+namespace Windows.UI.Xaml.Controls.Maps.Presenters
 {
 	public sealed partial class MapPresenter : Control
 	{
-		private Grid _mapGrid, _layerGrid;
+		private Grid? _mapGrid, _layerGrid;
 
 		private MapReadyCallback _callback;
 		private GoogleMapView _internalMapView;
-		private GoogleMap _map;
-		private Thickness _padding;
+		private GoogleMap? _map;
 		private MapLifeCycleCallBacks _callbacks;
 		private Android.App.Application _application;
-		private MapControl _owner;
+		private MapControl? _owner;
 
-		public MapPresenter()
+		partial void InitializePartial()
 		{
 			_internalMapView = new GoogleMapView(ContextHelper.Current, new GoogleMapOptions());
 
@@ -45,16 +47,14 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenter
 
 			_internalMapView.OnCreate(null); // This otherwise the map does not appear
 
+			Loaded += (s, e) => OnControlLoaded();
+			Unloaded += (s, e) => OnControlUnloaded();
 		}
 
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
-
-			_owner = TemplatedParent as MapControl;
-
-			_owner.RegisterPropertyChangedCallback(MapControl.CenterProperty, (s, e) => OnCenterChanged());
-			_owner.RegisterPropertyChangedCallback(MapControl.ZoomLevelProperty, (s, e) => OnCenterChanged());
+			UpdateOwnerSubscriptions();
 
 			_mapGrid = GetTemplateChild("MapGrid") as Grid;
 			_layerGrid = GetTemplateChild("LayerGrid") as Grid;
@@ -69,45 +69,55 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenter
 				throw new InvalidOperationException("Unable to find [LayerGrid] template part");
 			}
 
-			_map.MyLocationEnabled = false;
 			_mapGrid.Children.Add(_internalMapView);
+		}
+
+		private IDisposable UpdateOwnerSubscriptions(MapControl owner)
+		{
+			OnCenterChanged();
+			var disposables = new CompositeDisposable();
+			owner.RegisterDisposablePropertyChangedCallback(MapControl.CenterProperty, (s, e) => OnCenterChanged()).DisposeWith(disposables);
+			owner.RegisterDisposablePropertyChangedCallback(MapControl.ZoomLevelProperty, (s, e) => OnCenterChanged()).DisposeWith(disposables);
+			return disposables;
 		}
 
 		private void OnMapReady(GoogleMap map)
 		{
 			_map = map;
-
-			_padding = Thickness.Empty;
+			_map.MyLocationEnabled = false;
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug("GoogleMap instance is ready");
 			}
+
+			OnCenterChanged();
 		}
 
 		private void OnCenterChanged()
 		{
-			var builder = new CameraPosition.Builder(_map.CameraPosition)
-				.Target(_owner.Center.ToLatLng());
+			if (_map != null && _owner != null)
+			{
+				var builder = new CameraPosition.Builder(_map.CameraPosition)
+						.Target(_owner.Center.ToLatLng());
 
-			builder.Zoom((float)_owner.ZoomLevel);
+				builder.Zoom((float)_owner.ZoomLevel);
 
-			var cameraUpdate = CameraUpdateFactory.NewCameraPosition(builder.Build());
-			_map.AnimateCamera(cameraUpdate);
+				var cameraUpdate = CameraUpdateFactory.NewCameraPosition(builder.Build());
+				_map.AnimateCamera(cameraUpdate);
+			}
 		}
 
-		protected override void OnLoaded()
+		private void OnControlLoaded()
 		{
 			_internalMapView.OnResume(); // This otherwise the map stay empty
 
 			HandleActivityLifeCycle();
 
 			_internalMapView.TouchOccurred += MapTouchOccurred;
-
-			base.OnLoaded();
 		}
 
-		protected override void OnUnloaded()
+		private void OnControlUnloaded()
 		{
 			// These line is required for the control to 
 			// stop actively monitoring the user's location.
@@ -119,8 +129,6 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenter
 			{
 				_internalMapView.TouchOccurred -= MapTouchOccurred;
 			}
-
-			base.OnUnloaded();
 		}
 
 		private void MapTouchOccurred(object sender, MotionEvent e)
@@ -252,7 +260,8 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenter
 					latitude: l.Latitude,
 					longitude: l.Longitude,
 					point: new Geopoint(
-						new BasicGeoposition {
+						new BasicGeoposition
+						{
 							Latitude = l.Latitude,
 							Longitude = l.Longitude
 						}

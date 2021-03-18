@@ -9,6 +9,8 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using Windows.UI.Text;
+using Uno.UI;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -117,13 +119,11 @@ namespace Windows.UI.Xaml.Controls
 				_measureInvalidated = false;
 
 				UpdateTypography();
-				
-				var horizontalPadding = Padding.Left + Padding.Right;
-				var verticalPadding = Padding.Top + Padding.Bottom;
+
+				var padding = Padding;
 
 				// available size considering padding
-				size.Width -= horizontalPadding;
-				size.Height -= verticalPadding;
+				size = size.Subtract(padding);
 
 				var result = LayoutTypography(size);
 
@@ -135,8 +135,7 @@ namespace Windows.UI.Xaml.Controls
 					result = (Text ?? NSString.Empty).StringSize(font, size);
 				}
 
-				result.Width += horizontalPadding;
-				result.Height += verticalPadding;
+				result = result.Add(padding);
 
 				return _previousDesiredSize = new CGSize(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 			}
@@ -144,17 +143,14 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size size)
 		{
-			var horizontalPadding = Padding.Left + Padding.Right;
-			var verticalPadding = Padding.Top + Padding.Bottom;
+			var padding = Padding;
 
 			// final size considering padding
-			size.Width -= horizontalPadding;
-			size.Height -= verticalPadding;
+			size = size.Subtract(padding);
 
 			var result = LayoutTypography(size);
 
-			result.Width += horizontalPadding;
-			result.Height += verticalPadding;
+			result = result.Add(padding);
 
 			return new CGSize(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 		}
@@ -210,7 +206,7 @@ namespace Windows.UI.Xaml.Controls
 			var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
 
 			attributes.Font = font;
-			attributes.ForegroundColor = (Foreground as SolidColorBrush)?.ColorWithOpacity;
+			attributes.ForegroundColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent);
 
 			if (TextDecorations != TextDecorations.None)
 			{
@@ -312,11 +308,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (UseLayoutManager)
 			{
+				if (_textContainer == null)
+				{
+					return default(Size);
+				}
+
 				_textContainer.Size = size;
 				return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
 			}
 			else
 			{
+				if (_attributedString == null)
+				{
+					return default(Size);
+				}
+
 				return _attributedString.GetBoundingRect(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size;
 			}
 		}

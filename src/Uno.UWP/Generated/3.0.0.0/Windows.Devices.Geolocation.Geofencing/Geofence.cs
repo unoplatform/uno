@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation.Geofencing
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Geofence 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan Duration
 		{
 			get
@@ -17,8 +17,8 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan DwellTime
 		{
 			get
@@ -27,8 +27,8 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Geolocation.IGeoshape Geoshape
 		{
 			get
@@ -37,8 +37,8 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Id
 		{
 			get
@@ -47,8 +47,8 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates MonitoredStates
 		{
 			get
@@ -57,8 +57,8 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool SingleUse
 		{
 			get
@@ -67,8 +67,8 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.DateTimeOffset StartTime
 		{
 			get
@@ -77,32 +77,32 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Geofence( string id,  global::Windows.Devices.Geolocation.IGeoshape geoshape) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.Geofence", "Geofence.Geofence(string id, IGeoshape geoshape)");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Geofence( string id,  global::Windows.Devices.Geolocation.IGeoshape geoshape,  global::Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates monitoredStates,  bool singleUse) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.Geofence", "Geofence.Geofence(string id, IGeoshape geoshape, MonitoredGeofenceStates monitoredStates, bool singleUse)");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape, Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates, bool)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Geofence( string id,  global::Windows.Devices.Geolocation.IGeoshape geoshape,  global::Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates monitoredStates,  bool singleUse,  global::System.TimeSpan dwellTime) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.Geofence", "Geofence.Geofence(string id, IGeoshape geoshape, MonitoredGeofenceStates monitoredStates, bool singleUse, TimeSpan dwellTime)");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape, Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates, bool, System.TimeSpan)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Geofence( string id,  global::Windows.Devices.Geolocation.IGeoshape geoshape,  global::Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates monitoredStates,  bool singleUse,  global::System.TimeSpan dwellTime,  global::System.DateTimeOffset startTime,  global::System.TimeSpan duration) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.Geofence", "Geofence.Geofence(string id, IGeoshape geoshape, MonitoredGeofenceStates monitoredStates, bool singleUse, TimeSpan dwellTime, DateTimeOffset startTime, TimeSpan duration)");

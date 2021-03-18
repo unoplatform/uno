@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Android.Views;
 
 namespace Windows.UI.Xaml.Media
@@ -40,7 +41,17 @@ namespace Windows.UI.Xaml.Media
 
 		private static void OnFrame()
 		{
-			_handlers.ForEach(h => h(null, null));
+			var handlers = _handlers.ToList();
+			foreach (var handler in handlers)
+			{
+				handler(null, null);
+			}
+
+			// If _callback is null it means that all handlers has been removed, no need to requeue callback
+			if (_callback is {})
+			{
+				Choreographer.Instance.PostFrameCallback(_callback);
+			}
 		}
 	}
 }

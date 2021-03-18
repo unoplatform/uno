@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CompositionShapeCollection : global::Windows.UI.Composition.CompositionObject,global::System.Collections.Generic.IList<global::Windows.UI.Composition.CompositionShape>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.CompositionShape>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Size
 		{
 			get
@@ -31,130 +31,11 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.ReplaceAll(Windows.UI.Composition.CompositionShape[])
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.First()
 		// Processing: System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public int IndexOf( global::Windows.UI.Composition.CompositionShape item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public void Insert( int index,  global::Windows.UI.Composition.CompositionShape item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public void RemoveAt( int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public global::Windows.UI.Composition.CompositionShape this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionShape>
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public void Add( global::Windows.UI.Composition.CompositionShape item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public bool Contains( global::Windows.UI.Composition.CompositionShape item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public void CopyTo( global::Windows.UI.Composition.CompositionShape[] array,  int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public bool Remove( global::Windows.UI.Composition.CompositionShape item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionShape>.Count
+		// Skipping already implement System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionShape>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionShape>
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionShape>
-		[global::Uno.NotImplemented]
-		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.CompositionShape> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 	}
 }

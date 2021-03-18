@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Windows.Foundation;
 using System.Linq;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
 using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
+using Windows.Networking.NetworkOperators;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -41,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isInitialHeaderExtentOffsetApplied;
 		private bool _isInitialPaddingExtentOffsetApplied;
 		//The previous item to the old first visible item, used when a lightweight layout rebuild is called
-		private IndexPath? _dynamicSeedIndex;
+		private Uno.UI.IndexPath? _dynamicSeedIndex;
 		//Start position of the old first group, used when a lightweight layout rebuild is called
 		private int? _dynamicSeedStart;
 		// Previous extent of header, used when a lightweight layout rebuild is called
@@ -134,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// "Lay out all relevant child views from the given adapter." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#onLayoutChildren(android.support.v7.widget.RecyclerView.Recycler, android.support.v7.widget.RecyclerView.State)
+		/// "Lay out all relevant child views from the given adapter." https://developer.android.com/reference/AndroidX.RecyclerView.Widget/RecyclerView.LayoutManager.html#onLayoutChildren(AndroidX.RecyclerView.Widget.RecyclerView.Recycler, AndroidX.RecyclerView.Widget.RecyclerView.State)
 		/// </summary>
 		public override void OnLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
@@ -199,17 +200,40 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool CanScrollVertically()
 		{
-			return ScrollOrientation == Orientation.Vertical && ChildCount > 0;
+			try
+			{
+				return ScrollOrientation == Orientation.Vertical && ChildCount > 0;
+			}
+			catch (Exception e)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return false;
+			}
 		}
 
 		public override bool CanScrollHorizontally()
 		{
-			return ScrollOrientation == Orientation.Horizontal && ChildCount > 0;
+			try
+			{
+				return ScrollOrientation == Orientation.Horizontal && ChildCount > 0;
+			}
+			catch (Exception e)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return false;
+			}
 		}
 
 		public override void ScrollToPosition(int position)
 		{
-			ScrollToPosition(position, ScrollIntoViewAlignment.Default);
+			try
+			{
+				ScrollToPosition(position, ScrollIntoViewAlignment.Default);
+			}
+			catch (Exception e)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+			}
 		}
 
 		internal void ScrollToPosition(int position, ScrollIntoViewAlignment alignment)
@@ -408,53 +432,115 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// "Offset all child views attached to the parent RecyclerView by dx pixels along the horizontal axis." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#offsetChildrenHorizontal(int)
+		/// "Offset all child views attached to the parent RecyclerView by dx pixels along the horizontal axis." https://developer.android.com/reference/AndroidX.RecyclerView.Widget/RecyclerView.LayoutManager.html#offsetChildrenHorizontal(int)
 		/// </summary>
 		public override void OffsetChildrenHorizontal(int dx)
 		{
-			base.OffsetChildrenHorizontal(dx);
-			Debug.Assert(ScrollOrientation == Orientation.Horizontal);
-			ApplyOffset(dx);
+			try
+			{
+				base.OffsetChildrenHorizontal(dx);
+				Debug.Assert(ScrollOrientation == Orientation.Horizontal);
+				ApplyOffset(dx);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+			}
 		}
 
 		/// <summary>
-		/// "Offset all child views attached to the parent RecyclerView by dy pixels along the vertical axis." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#offsetChildrenVertical(int)
+		/// "Offset all child views attached to the parent RecyclerView by dy pixels along the vertical axis." https://developer.android.com/reference/AndroidX.RecyclerView.Widget/RecyclerView.LayoutManager.html#offsetChildrenVertical(int)
 		/// </summary>
 		public override void OffsetChildrenVertical(int dy)
 		{
-			base.OffsetChildrenVertical(dy);
-			Debug.Assert(ScrollOrientation == Orientation.Vertical);
-			ApplyOffset(dy);
+			try
+			{
+				base.OffsetChildrenVertical(dy);
+				Debug.Assert(ScrollOrientation == Orientation.Vertical);
+				ApplyOffset(dy);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+			}
 		}
 
 		public override int ComputeHorizontalScrollExtent(RecyclerView.State state)
 		{
-			return ComputeScrollExtent(state);
+			try
+			{
+				return ComputeScrollExtent(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeHorizontalScrollOffset(RecyclerView.State state)
 		{
-			return ComputeScrollOffset(state);
+			try
+			{
+				return ComputeScrollOffset(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeHorizontalScrollRange(RecyclerView.State state)
 		{
-			return ComputeScrollRange(state);
+			try
+			{
+				return ComputeScrollRange(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeVerticalScrollExtent(RecyclerView.State state)
 		{
-			return ComputeScrollExtent(state);
+			try
+			{
+				return ComputeScrollExtent(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeVerticalScrollOffset(RecyclerView.State state)
 		{
-			return ComputeScrollOffset(state);
+			try
+			{
+				return ComputeScrollOffset(state);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override int ComputeVerticalScrollRange(RecyclerView.State state)
 		{
-			return ComputeScrollRange(state);
+			try
+			{
+				return ComputeScrollRange(state);
+			}
+			catch(Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				return 1;
+			}
 		}
 
 		public override bool OnRequestChildFocus(RecyclerView parent, RecyclerView.State state, View child, View focused)
@@ -764,7 +850,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			var size = _layouter.MeasureChild(child, slotSize);
 
-			size = ApplyChildStretch(size, slotSize, viewType);
+			if (ShouldApplyChildStretch)
+			{
+				size = ApplyChildStretch(size, slotSize, viewType);
+			}
 
 			if (!child.IsInLayout)
 			{
@@ -1184,7 +1273,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem
+			Uno.UI.IndexPath nextVisibleItem
 		)
 		{
 			var leadingGroup = GetLeadingGroup(fillDirection);
@@ -1223,7 +1312,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem
+			Uno.UI.IndexPath nextVisibleItem
 		)
 		{
 			var group = GetLeadingGroup(fillDirection);
@@ -1257,7 +1346,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem,
+			Uno.UI.IndexPath nextVisibleItem,
 			bool isNewGroup
 		);
 
@@ -1445,7 +1534,7 @@ namespace Windows.UI.Xaml.Controls
 			var headerViewCount = HeaderViewCount;
 
 			if (HeaderViewCount > 0 &&
-				(!adjustedFirstItem.HasValue || adjustedFirstItem == IndexPath.Zero)
+				(!adjustedFirstItem.HasValue || adjustedFirstItem == Uno.UI.IndexPath.Zero)
 			)
 			{
 				// If the header is visible, ensure to reapply its size in case it changes. 
@@ -1493,7 +1582,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get 'seed' index for recreating the visual state of the list after <see cref="ScrapLayout(RecyclerView.Recycler, int)"/>;
 		/// </summary>
-		protected virtual IndexPath? GetDynamicSeedIndex(IndexPath? firstVisibleItem, int availableBreadth)
+		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
 		{
 			if (ContentOffset == 0)
 			{
@@ -1516,7 +1605,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Update the first visible item in case the group it occupies has changed due to INotifyCollectionChanged operations.
 		/// </summary>
-		private IndexPath? GetAdjustedFirstItem(IndexPath? firstItem)
+		private Uno.UI.IndexPath? GetAdjustedFirstItem(Uno.UI.IndexPath? firstItem)
 		{
 			if (_pendingGroupOperations.Count == 0)
 			{
@@ -1562,7 +1651,7 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			return IndexPath.FromRowSection(row, section);
+			return Uno.UI.IndexPath.FromRowSection(row, section);
 		}
 
 		/// <summary>
@@ -1585,7 +1674,8 @@ namespace Windows.UI.Xaml.Controls
 				var headerIndex = GetHeaderViewIndex();
 				_previousHeaderExtent = GetChildExtentWithMargins(headerIndex);
 				// Rebind to apply changes, RecyclerView alone will recycle the view without rebinding.
-				recycler.BindViewToPosition(GetChildAt(headerIndex), headerIndex);
+				// Here we use position: 0 because the header is always at index 0 from the collection's perspective.
+				recycler.BindViewToPosition(GetChildAt(headerIndex), position: 0);
 				base.RemoveAndRecycleViewAt(headerIndex, recycler);
 				HeaderViewCount = 0;
 			}
@@ -1594,7 +1684,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var footerIndex = GetFooterViewIndex();
 				// Rebind to apply changes, RecyclerView alone will recycle the view without rebinding.
-				recycler.BindViewToPosition(GetChildAt(footerIndex), footerIndex);
+				// Here we use position: 1 or 0 because the footer is always the first or second item (depending on the header's presence) from the collection's perspective.
+				recycler.BindViewToPosition(GetChildAt(footerIndex), XamlParent.ShouldShowHeader ? 1 : 0);
 				base.RemoveAndRecycleViewAt(footerIndex, recycler);
 				FooterViewCount = 0;
 			}
@@ -1994,7 +2085,7 @@ namespace Windows.UI.Xaml.Controls
 			return containingGroup?.GetLeadingLine(fillDirection);
 		}
 
-		private IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection)
+		private Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection)
 		{
 			return GetNextUnmaterializedItem(fillDirection, GetLeadingMaterializedItem(fillDirection));
 		}
@@ -2032,7 +2123,7 @@ namespace Windows.UI.Xaml.Controls
 			return ChildCount - 1;
 		}
 
-		private IndexPath? GetLeadingMaterializedItem(GeneratorDirection fillDirection)
+		private Uno.UI.IndexPath? GetLeadingMaterializedItem(GeneratorDirection fillDirection)
 		{
 			var group = GetLeadingNonEmptyGroup(fillDirection);
 			return group?.GetLeadingMaterializedItem(fillDirection);
@@ -2111,7 +2202,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Flatten item index to pass it to the native recycler.
 		/// </summary>
-		protected int GetFlatItemIndex(IndexPath indexPath)
+		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath)
 		{
 			return XamlParent.GetDisplayIndexFromIndexPath(indexPath);
 		}
@@ -2141,9 +2232,9 @@ namespace Windows.UI.Xaml.Controls
 			return GetFlatItemIndex(GetFirstVisibleIndexPath());
 		}
 
-		private IndexPath GetFirstVisibleIndexPath()
+		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
-			return GetTrailingNonEmptyGroup(GeneratorDirection.Forward)?.GetTrailingMaterializedItem(GeneratorDirection.Forward) ?? IndexPath.FromRowSection(-1, 0);
+			return GetTrailingNonEmptyGroup(GeneratorDirection.Forward)?.GetTrailingMaterializedItem(GeneratorDirection.Forward) ?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
 		internal int GetLastVisibleDisplayPosition()
@@ -2151,9 +2242,9 @@ namespace Windows.UI.Xaml.Controls
 			return GetFlatItemIndex(GetLastVisibleIndexPath());
 		}
 
-		private IndexPath GetLastVisibleIndexPath()
+		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
-			return GetLeadingNonEmptyGroup(GeneratorDirection.Forward)?.GetLeadingMaterializedItem(GeneratorDirection.Forward) ?? IndexPath.FromRowSection(-1, 0);
+			return GetLeadingNonEmptyGroup(GeneratorDirection.Forward)?.GetLeadingMaterializedItem(GeneratorDirection.Forward) ?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
 		/// <summary>
@@ -2163,5 +2254,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return message + $" - {name}, line {lineNumber}";
 		}
+
+		Uno.UI.IndexPath? GetReorderingIndex() => null;
 	}
 }

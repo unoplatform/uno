@@ -1,20 +1,35 @@
+#nullable enable
+
 using System;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
+using Uno.Helpers;
+
 namespace Windows.ApplicationModel
 {
-	public sealed partial class SuspendingOperation
+	public sealed partial class SuspendingOperation : ISuspendingOperation
 	{
-		public SuspendingOperation(DateTimeOffset offset)
+		private DeferralManager<SuspendingDeferral>? _deferralManager;
+		private readonly Action? _deferralDone;
+
+		internal SuspendingOperation(DateTimeOffset offset, Action? deferralDone = null)
 		{
+			Deadline = offset;
+			_deferralDone = deferralDone;
 		}
 
-		[global::Uno.NotImplemented]
-		public DateTimeOffset Deadline 
-			=> DateTimeOffset.Now;
+		internal bool IsDeferred => _deferralManager != null;
 
-		[global::Uno.NotImplemented]
-		public global::Windows.ApplicationModel.SuspendingDeferral GetDeferral()
-			=> new SuspendingDeferral();
+		internal void EventRaiseCompleted() => _deferralManager?.EventRaiseCompleted();
+
+		public DateTimeOffset Deadline { get; }
+
+		public SuspendingDeferral GetDeferral()
+		{
+			if (_deferralManager == null)
+			{
+				_deferralManager = new DeferralManager<SuspendingDeferral>(h => new SuspendingDeferral(h));
+				_deferralManager.Completed += (s, e) => _deferralDone?.Invoke();
+			}
+			return _deferralManager.GetDeferral();
+		}		
 	}
 }

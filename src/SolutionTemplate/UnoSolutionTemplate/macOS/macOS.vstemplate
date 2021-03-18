@@ -1,0 +1,54 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+  <TemplateData>
+	<Name>UnoQuickStart.macOS</Name>
+	<Description>
+	</Description>
+	<ProjectType>CSharp</ProjectType>
+	<ProjectSubType>
+	</ProjectSubType>
+	<SortOrder>1000</SortOrder>
+	<CreateNewFolder>true</CreateNewFolder>
+	<DefaultName>UnoQuickStart.macOS</DefaultName>
+	<ProvideDefaultName>true</ProvideDefaultName>
+	<LocationField>Enabled</LocationField>
+	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+	<Icon>__TemplateIcon.png</Icon>
+	<PreviewImage>__PreviewImage.png</PreviewImage>
+	<CreateInPlace>true</CreateInPlace>
+  </TemplateData>
+  <TemplateContent>
+	<Project TargetFileName="$ext_safeprojectname$.macOS.csproj" File="UnoQuickStart.macOS.csproj" ReplaceParameters="true">
+	  <ProjectItem ReplaceParameters="true" TargetFileName="Entitlements.plist">Entitlements.plist</ProjectItem>
+	  <ProjectItem ReplaceParameters="true" TargetFileName="Info.plist">Info.plist</ProjectItem>
+	  <ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem>
+	  <Folder Name="Properties" TargetFolderName="Properties">
+		<ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+	  </Folder>
+	  <Folder Name="Assets.xcassets" TargetFolderName="Assets.xcassets">
+		<ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
+		<Folder Name="AppIcon.appiconset" TargetFolderName="AppIcon.appiconset">
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-128.png">AppIcon-128.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-128@2x.png">AppIcon-128@2x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-16.png">AppIcon-16.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-16@2x.png">AppIcon-16@2x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-256.png">AppIcon-256.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-256@2x.png">AppIcon-256@2x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-32.png">AppIcon-32.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-32@2x.png">AppIcon-32@2x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-512.png">AppIcon-512.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-512@2x.png">AppIcon-512@2x.png</ProjectItem>
+		</Folder>
+		<Folder Name="unologo.imageset" TargetFolderName="unologo.imageset">
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="unoplatform.jpg">unoplatform.jpg</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
+		</Folder>
+	  </Folder>
+	  <Folder Name="Resources" TargetFolderName="Resources">
+		<Folder Name="Fonts" TargetFolderName="Fonts">
+		  <ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
+		</Folder>
+	  </Folder>
+	</Project>
+  </TemplateContent>
+</VSTemplate>

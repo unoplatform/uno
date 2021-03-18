@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="5.0">
+	<id>Uno.WinUI.Lottie</id>
+	<version>0.0.1</version>
+	<title>Uno.WinUI.Lottie</title>
+	<authors>nventive</authors>
+	<owners>nventive</owners>
+	<requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<projectUrl>https://platform.uno/</projectUrl>
+	<license type="expression">Apache-2.0</license>
+	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
+	<description>
+	  Support for Lottie on Uno.WinUI.
+
+	  This is the Uno-compatible version of the package Microsoft.Toolkit.Uwp.UI.Lottie.
+
+	  Original documentation: https://docs.microsoft.com/windows/communitytoolkit/animations/lottie
+	</description>
+	<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
+	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+
+	<dependencies>
+
+	  <group targetFramework="netstandard2.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+        <dependency id="System.Json" version="4.7.1" />
+	  </group>
+	  <group targetFramework="xamarinios10">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+        <dependency id="System.Json" version="4.7.1" />
+	  </group>
+	  <group targetFramework="xamarinmac20">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+        <dependency id="System.Json" version="4.7.1" />
+	  </group>
+	  <group targetFramework="MonoAndroid11.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
+	  </group>
+	  <group targetFramework="MonoAndroid10.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
+	  </group>
+
+	</dependencies>
+
+	<references>
+	  <!-- .NET Standard 2.0 -->
+	  <group targetFramework="netstandard2.0">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <group targetFramework="xamarinios10">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <group targetFramework="xamarinmac20">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <group targetFramework="MonoAndroid11.0">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <group targetFramework="MonoAndroid10.0">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <!-- For UAP (UWP), the reference to Microsoft.Toolkit.Uwp.UI.Lottie will be added manually -->
+	</references>
+  </metadata>
+  <files>
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\netstandard2.0\Uno.UI.Lottie.dll" target="lib\netstandard2.0" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinios10\Uno.UI.Lottie.dll" target="lib\xamarinios10" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinmac20\Uno.UI.Lottie.dll" target="lib\xamarinmac20" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid11.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid10.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid10.0" />
+
+	<!-- Build targets -->
+	<file src="..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
+
+	<!-- netstandard2.0 WebAssembly -->
+	<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\webassembly" />
+
+	<!-- netstandard2.0 Skia -->
+	<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\netstandard2.0\Uno.UI.Lottie.*" target="uno-runtime\skia" />
+
+  </files>
+</package>

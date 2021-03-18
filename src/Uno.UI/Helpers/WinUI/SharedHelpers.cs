@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 //
@@ -6,31 +6,36 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.System.Threading;
-using Windows.UI.Text;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+
+#if HAS_UNO_WINUI
+using ITextSelection = Microsoft.UI.Text.ITextSelection;
+#else
+using ITextSelection = Windows.UI.Text.ITextSelection;
+#endif
 
 namespace Uno.UI.Helpers.WinUI
 {
 	internal class SharedHelpers
 	{
-#pragma warning disable CS0414 
-        private static bool s_isOnXboxInitialized = false;
+#pragma warning disable CS0414
+		private static bool s_isOnXboxInitialized = false;
 		private static bool s_isOnXbox = false;
 #pragma warning restore CS0414
 
-        private static bool s_isMouseModeEnabledInitialized = false;
+		private static bool s_isMouseModeEnabledInitialized = false;
 		private static bool s_isMouseModeEnabled = false;
 
 		public static bool IsSystemDll() => false;
@@ -59,6 +64,18 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isInDesignModeV1.Value;
 		}
 
+		internal static void RaiseAutomationPropertyChangedEvent<T>(UIElement element, T oldValue, T newValue)
+		{
+			AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(element);
+			if (peer != null)
+			{
+				peer.RaisePropertyChangedEvent(
+					ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
+					oldValue,
+					newValue);
+			}
+		}
+
 		static bool? s_isInDesignModeV2;
 		public static bool IsInDesignModeV2()
 		{
@@ -67,6 +84,18 @@ namespace Uno.UI.Helpers.WinUI
 				s_isInDesignModeV2 = IsRS3OrHigher() && Windows.ApplicationModel.DesignMode.DesignMode2Enabled;
 			}
 			return s_isInDesignModeV2.Value;
+		}
+
+		public static bool ShouldUseDynamicScrollbars()
+		{
+			if (s_dynamicScrollbarsDirty)
+			{
+				UISettings uiSettings = new UISettings();
+				s_dynamicScrollbars = uiSettings.AutoHideScrollBars;
+				s_dynamicScrollbarsDirty = false;
+			}
+
+			return s_dynamicScrollbars;
 		}
 
 		// logical helpers
@@ -119,7 +148,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsXamlCompositionBrushBaseAvailable()
 		{
-			if(s_IsXamlCompositionBrushBaseAvailable_isAvailable == null)
+			if (s_IsXamlCompositionBrushBaseAvailable_isAvailable == null)
 			{
 				s_IsXamlCompositionBrushBaseAvailable_isAvailable = IsRS3OrHigher() || ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.XamlCompositionBrushBase");
 			}
@@ -308,20 +337,36 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		static bool? s_isThemeShadowAvailable;
-		bool IsThemeShadowAvailable()
+		static public bool IsThemeShadowAvailable()
 		{
 			if (s_isThemeShadowAvailable == null)
 			{
+				//TODO: Uno specific - had to change condition, as VanadiumOrHigher is available, but Theme Shadow is not implemented in Uno
 				s_isThemeShadowAvailable =
-					IsSystemDll() ||
-					IsVanadiumOrHigher() ||
+					(IsSystemDll() ||
+					IsVanadiumOrHigher()) &&
 					ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
 			}
 			return s_isThemeShadowAvailable.Value;
 		}
 
+		static bool? s_IsIsLoadedAvailable;
+		static public bool IsIsLoadedAvailable()
+		{
+			if (s_IsIsLoadedAvailable == null)
+			{
+				s_IsIsLoadedAvailable =
+					IsSystemDll() ||
+					IsRS5OrHigher() ||
+					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.FrameworkElement", "IsLoaded");
+			}
+			return s_IsIsLoadedAvailable.Value;
+		}
+
 		static bool isAPIContractVxAvailableInitialized = false;
 		static bool isAPIContractVxAvailable = false;
+		private static bool s_dynamicScrollbarsDirty = true;
+		private static bool s_dynamicScrollbars;
 
 		public static bool IsAPIContractVxAvailable(ushort apiVersion)
 		{
@@ -399,7 +444,7 @@ namespace Uno.UI.Helpers.WinUI
 				// Calling GetForCurrentView on threads without a CoreWindow throws an error. This comes up in places like LogonUI.
 				// In this circumstance, we'll just always expand down, since we can't get bounds information.
 			}
-    
+
 			return dipsRect;
 		}
 
@@ -422,7 +467,7 @@ namespace Uno.UI.Helpers.WinUI
 				// Calling GetForCurrentView on threads without a CoreWindow throws an error. This comes up in places like LogonUI.
 				// In this circumstance, we'll just always expand down, since we can't get bounds information.
 			}
-    
+
 			return physicalRect;
 		}
 
@@ -496,27 +541,27 @@ namespace Uno.UI.Helpers.WinUI
 		//	return stream;
 		//}
 
-		//void QueueCallbackForCompositionRendering(Action callback)
-		//{
-		//	try
-		//	{
-		//		auto renderingEventToken = std.make_shared<event_token>();
-		//		*renderingEventToken = Xaml.Media.CompositionTarget.Rendering([renderingEventToken, callback](auto&, auto&) {
-
-		//			// Detach event or Rendering will keep calling us back.
-		//			Xaml.Media.CompositionTarget.Rendering(*renderingEventToken);
-
-		//			callback();
-		//		});
-		//	}
-		//	catch (hresult_error &e)
-		//	{
-		//		// DirectUI.CompositionTarget.add_Rendering can fail with RPC_E_WRONG_THREAD if called while the Xaml Core is being shutdown,
-		//		// and there is evidence from Watson that such calls are made in real apps (see Bug 13554197).
-		//		// Since the core is being shutdown, we no longer care about whatever work we wanted to defer to CT.Rendering, so ignore this error.
-		//		if (e.to_abi() != RPC_E_WRONG_THREAD) { throw; }
-		//	}
-		//}
+		public static void QueueCallbackForCompositionRendering(Action callback)
+		{
+			try
+			{
+				void OnRender(object sender, object e)
+				{
+					// Detach event or Rendering will keep calling us back.
+					CompositionTarget.Rendering -= OnRender;
+					callback();
+				}
+				CompositionTarget.Rendering += OnRender;
+			}
+			catch (Exception)
+			{
+				// DirectUI.CompositionTarget.add_Rendering can fail with RPC_E_WRONG_THREAD if called while the Xaml Core is being shutdown,
+				// and there is evidence from Watson that such calls are made in real apps (see Bug 13554197).
+				// Since the core is being shutdown, we no longer care about whatever work we wanted to defer to CT.Rendering, so ignore this error.
+				//if (e.to_abi() != RPC_E_WRONG_THREAD) { throw; }
+				throw;
+			}
+		}
 
 		// Rect helpers
 
@@ -594,9 +639,9 @@ namespace Uno.UI.Helpers.WinUI
 			return false;
 		}
 
-		public static IconElement MakeIconElementFrom(IconSource iconSource)
+		public static IconElement MakeIconElementFrom(Microsoft.UI.Xaml.Controls.IconSource iconSource)
 		{
-			if (iconSource is FontIconSource fontIconSource)
+			if (iconSource is Microsoft.UI.Xaml.Controls.FontIconSource fontIconSource)
 			{
 				FontIcon fontIcon = new FontIcon();
 
@@ -615,16 +660,16 @@ namespace Uno.UI.Helpers.WinUI
 
 				return fontIcon;
 			}
-			else if (iconSource is SymbolIconSource symbolIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.SymbolIconSource symbolIconSource)
 			{
 				SymbolIcon symbolIcon = new SymbolIcon();
 				symbolIcon.Symbol = symbolIconSource.Symbol;
 
 				return symbolIcon;
 			}
-			else if (iconSource is BitmapIconSource bitmapIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.BitmapIconSource bitmapIconSource)
 			{
-				BitmapIcon bitmapIcon = new BitmapIcon ();
+				BitmapIcon bitmapIcon = new BitmapIcon();
 
 				if (bitmapIconSource.UriSource != null)
 				{
@@ -638,7 +683,7 @@ namespace Uno.UI.Helpers.WinUI
 
 				return bitmapIcon;
 			}
-			else if (iconSource is PathIconSource pathIconSource)
+			else if (iconSource is Microsoft.UI.Xaml.Controls.PathIconSource pathIconSource)
 			{
 				PathIcon pathIcon = new PathIcon();
 
@@ -654,12 +699,34 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		public static void SetBinding(
+			string pathString,
+			DependencyObject target,
+			DependencyProperty targetProperty)
+		{
+			Binding binding = new Binding();
+			RelativeSource relativeSource = new RelativeSource();
+			relativeSource.Mode = RelativeSourceMode.TemplatedParent;
+			binding.RelativeSource = relativeSource;
+
+			binding.Path = new PropertyPath(pathString);
+
+			BindingOperations.SetBinding(target, targetProperty, binding);
+		}
+
+		// Be cautious: this function may introduce memory leak because Source holds strong reference to target too
+		// There’s an intermediary object – the BindingExpression when BindingOperations::SetBinding
+		// For example, if source is NavigationView and target is content control,
+		// and there is strong reference: NavigationView -> ContentControl
+		// BindingExpression.Source also make a strong reference to NavigationView
+		// and it introduces the cycle: ContentControl -> BindingExpression -> NavigationView -> ContentControl
+		// Prefer to use RelativeSource version of SetBinding if possible.
+		public static void SetBinding(
 			object source,
 			string pathString,
 			DependencyObject target,
 			DependencyProperty targetProperty,
-			IValueConverter converter,
-			BindingMode mode)
+			IValueConverter converter = null,
+			BindingMode mode = BindingMode.OneWay)
 		{
 			Binding binding = new Binding();
 
@@ -684,93 +751,184 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			switch (c)
 			{
-			case 'A':
-			case 'a':
-				return VirtualKey.A;
-			case 'B':
-			case 'b':
-				return VirtualKey.B;
-			case 'C':
-			case 'c':
-				return VirtualKey.C;
-			case 'D':
-			case 'd':
-				return VirtualKey.D;
-			case 'E':
-			case 'e':
-				return VirtualKey.E;
-			case 'F':
-			case 'f':
-				return VirtualKey.F;
-			case 'G':
-			case 'g':
-				return VirtualKey.G;
-			case 'H':
-			case 'h':
-				return VirtualKey.H;
-			case 'I':
-			case 'i':
-				return VirtualKey.I;
-			case 'J':
-			case 'j':
-				return VirtualKey.J;
-			case 'K':
-			case 'k':
-				return VirtualKey.K;
-			case 'L':
-			case 'l':
-				return VirtualKey.L;
-			case 'M':
-			case 'm':
-				return VirtualKey.M;
-			case 'N':
-			case 'n':
-				return VirtualKey.N;
-			case 'O':
-			case 'o':
-				return VirtualKey.O;
-			case 'P':
-			case 'p':
-				return VirtualKey.P;
-			case 'Q':
-			case 'q':
-				return VirtualKey.Q;
-			case 'R':
-			case 'r':
-				return VirtualKey.R;
-			case 'S':
-			case 's':
-				return VirtualKey.S;
-			case 'T':
-			case 't':
-				return VirtualKey.T;
-			case 'U':
-			case 'u':
-				return VirtualKey.U;
-			case 'V':
-			case 'v':
-				return VirtualKey.V;
-			case 'W':
-			case 'w':
-				return VirtualKey.W;
-			case 'X':
-			case 'x':
-				return VirtualKey.X;
-			case 'Y':
-			case 'y':
-				return VirtualKey.Y;
-			case 'Z':
-			case 'z':
-				return VirtualKey.Z;
-			default:
-				return VirtualKey.None;
+				case 'A':
+				case 'a':
+					return VirtualKey.A;
+				case 'B':
+				case 'b':
+					return VirtualKey.B;
+				case 'C':
+				case 'c':
+					return VirtualKey.C;
+				case 'D':
+				case 'd':
+					return VirtualKey.D;
+				case 'E':
+				case 'e':
+					return VirtualKey.E;
+				case 'F':
+				case 'f':
+					return VirtualKey.F;
+				case 'G':
+				case 'g':
+					return VirtualKey.G;
+				case 'H':
+				case 'h':
+					return VirtualKey.H;
+				case 'I':
+				case 'i':
+					return VirtualKey.I;
+				case 'J':
+				case 'j':
+					return VirtualKey.J;
+				case 'K':
+				case 'k':
+					return VirtualKey.K;
+				case 'L':
+				case 'l':
+					return VirtualKey.L;
+				case 'M':
+				case 'm':
+					return VirtualKey.M;
+				case 'N':
+				case 'n':
+					return VirtualKey.N;
+				case 'O':
+				case 'o':
+					return VirtualKey.O;
+				case 'P':
+				case 'p':
+					return VirtualKey.P;
+				case 'Q':
+				case 'q':
+					return VirtualKey.Q;
+				case 'R':
+				case 'r':
+					return VirtualKey.R;
+				case 'S':
+				case 's':
+					return VirtualKey.S;
+				case 'T':
+				case 't':
+					return VirtualKey.T;
+				case 'U':
+				case 'u':
+					return VirtualKey.U;
+				case 'V':
+				case 'v':
+					return VirtualKey.V;
+				case 'W':
+				case 'w':
+					return VirtualKey.W;
+				case 'X':
+				case 'x':
+					return VirtualKey.X;
+				case 'Y':
+				case 'y':
+					return VirtualKey.Y;
+				case 'Z':
+				case 'z':
+					return VirtualKey.Z;
+				default:
+					return VirtualKey.None;
 			}
+		}
+
+		public static object FindResource(string resource, ResourceDictionary resources, object defaultValue)
+		{
+			var boxedResource = resource;
+			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : defaultValue;
+		}
+
+		public static object FindInApplicationResources(string resource, object defaultValue)
+		{
+			return FindResource(resource, Application.Current.Resources, defaultValue);
+		}
+
+		public static FrameworkElement FindInVisualTreeByName(FrameworkElement parent, string name)
+		{
+			return FindInVisualTree(
+				parent,
+				element => element.Name == name);
+		}
+
+		public static T FindInVisualTreeByType<T>(FrameworkElement parent)
+			where T : class
+		{
+			var element = FindInVisualTree(
+				parent,
+				element => element is T);
+			return element as T;
+		}
+
+		public static FrameworkElement FindInVisualTree(FrameworkElement parent, Func<FrameworkElement, bool> isMatch)
+		{
+			// Uno Specific - generalized to work with DependencyObject - needed for NativeScrollContentPresenter
+			FrameworkElement FindInVisualTreeInner(DependencyObject parent, Func<FrameworkElement, bool> isMatch)
+			{
+				int numChildren = VisualTreeHelper.GetChildrenCount(parent);
+
+				FrameworkElement foundElement = parent as FrameworkElement;
+				if (foundElement != null && isMatch(foundElement))
+				{
+					return foundElement;
+				}
+
+				for (int i = 0; i < numChildren; i++)
+				{
+					var dp = VisualTreeHelper.GetChild(parent, i);
+					if (dp != null)
+					{
+						foundElement = FindInVisualTreeInner(dp, isMatch);
+						if (foundElement != null)
+						{
+							return foundElement;
+						}
+					}
+				}
+
+				return null;
+			}
+
+			return FindInVisualTreeInner(parent, isMatch);
+		}
+
+		public static bool IsTrue(bool? nullableBool)
+		{
+			if (nullableBool != null)
+			{
+				return nullableBool.Value;
+			}
+			return false;
+		}
+
+		// Sometimes we want to get a string representation from an arbitrary object. E.g. for constructing a UIA Name
+		// from an automation peer. There is no guarantee that an arbitrary object is convertable to a string, so
+		// this function may return an empty string.
+		public static string TryGetStringRepresentationFromObject(object obj)
+		{
+			string returnHString = "";
+
+			if (obj != null)
+			{
+				var stringable = obj as IStringable;
+				if (stringable != null)
+				{
+					returnHString = stringable.ToString();
+				}
+				if (string.IsNullOrEmpty(returnHString))
+				{
+					returnHString = obj?.ToString() ?? returnHString;
+				}
+			}
+
+			return returnHString;
 		}
 
 		//
 		// Header file
 		//
-		
+
 		public static AncestorType GetAncestorOfType<AncestorType>(DependencyObject firstGuess) where AncestorType : class
 		{
 			var obj = firstGuess;
@@ -790,7 +948,5 @@ namespace Uno.UI.Helpers.WinUI
 				return null;
 			}
 		}
-
-
 	}
 }

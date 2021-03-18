@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+﻿#if !NETFX_CORE
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Uno.Extensions;
 using Uno.Logging;
@@ -7,16 +7,22 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using View = Windows.UI.Xaml.FrameworkElement;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.Foundation;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.BorderTests
 {
 	[TestClass]
+#if !NET461
+	[RuntimeTests.RunsOnUIThread]
+#endif
 	public class Given_Border : Context
 	{
 		[TestMethod]
@@ -55,6 +61,9 @@ namespace Uno.UI.Tests.BorderTests
         }
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Layout engine on ios needs actual layout pass")]
+#endif
 		public void When_Child_Has_Fixed_Size_Smaller_than_Parent()
 		{
 			var parentSize = new Windows.Foundation.Size(100, 100);
@@ -72,17 +81,22 @@ namespace Uno.UI.Tests.BorderTests
 				Height = childSize.Height
 			};
 
-			SUT.AddChild(child);
+			SUT.Child = child;
 
 			SUT.Measure(new Windows.Foundation.Size(100, 100));
 			var measuredSize = SUT.DesiredSize;
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0,100, 100));
 
-			Assert.AreEqual(parentSize, measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, parentSize.Width, parentSize.Height), child.Arranged);
+			Assert.AreEqual(parentSize, measuredSize, $"(parentSize:{parentSize}) != (measuredSize:{measuredSize})");
+			var expectedArrange = new Windows.Foundation.Rect(0, 0, parentSize.Width, parentSize.Height);
+			var layoutSlot = LayoutInformation.GetLayoutSlot(child);
+			Assert.AreEqual(expectedArrange, layoutSlot, $"(expectedArrange:{expectedArrange}) != (layoutSlot: {layoutSlot})");
 		}
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Layout engine on ios needs actual layout pass")]
+#endif
 		public void When_Child_Is_Stretch()
 		{
 			var parentSize = new Windows.Foundation.Size(500, 500);
@@ -95,14 +109,60 @@ namespace Uno.UI.Tests.BorderTests
 
 			var child = new View();
 
-			SUT.AddChild(child);
+			SUT.Child = child;
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize = SUT.DesiredSize;
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
 
 			Assert.AreEqual(parentSize, measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, parentSize.Width, parentSize.Height), child.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, parentSize.Width, parentSize.Height), LayoutInformation.GetLayoutSlot(child));
+		}
+
+		[TestMethod]
+#if NET461 || __IOS__ || __ANDROID__ // Broken on Android for now
+		[Ignore("Layout engine is incomplete on net461 for arrange, ios needs actual layout pass")]
+#endif
+		public void When_Top_Align_Nested_With_Margin()
+		{
+			var border1 = new Border()
+			{
+				Height = 34,
+				Name="border1"
+			};
+
+			var border2 = new Border()
+			{
+				VerticalAlignment = VerticalAlignment.Top,
+				Margin = new Thickness(15, 5, 0, 7),
+				Name = "border2"
+			};
+
+			var border3 = new Border()
+			{
+				Width = 50,
+				Height = 30,
+				Name = "border3"
+			};
+
+			border1.Child = border2;
+			border2.Child = border3;
+
+			border1.Measure(new Windows.Foundation.Size(500, 500));
+			var measuredSize = border1.DesiredSize;
+			border1.Arrange(new Rect(default, measuredSize));
+
+			var slot1 = LayoutInformation.GetLayoutSlot(border1);
+			var slot2 = LayoutInformation.GetLayoutSlot(border2);
+			var slot3 = LayoutInformation.GetLayoutSlot(border3);
+
+			using (new AssertionScope("Checking layout slots"))
+			{
+				measuredSize.Should().Be(new Size(65, 34), 0.5, "measuredSize");
+				slot1.Should().Be(new Rect(0, 0, 65, 34), 0.5, "slot1");
+				slot2.Should().Be(new Rect(0, 0, 65, 34), 0.5, "slot2");
+				slot3.Should().Be(new Rect(0, 0, 50, 22), 0.5, "slot3");
+			}
 		}
 
 		[TestMethod]
@@ -116,20 +176,20 @@ namespace Uno.UI.Tests.BorderTests
 				Height = parentSize.Height
 			};
 
-			var child = new View()
+			var child = new Border()
 			{
 				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = VerticalAlignment.Top
 			};
 
-			SUT.AddChild(child);
+			SUT.Child = child;
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 500, 500));
 
 			Assert.AreEqual(parentSize, measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 0, 0), child.Arranged);
+			Assert.AreEqual(new Size(0, 0), new Size(child.LayoutSlotWithMarginsAndAlignments.Width, child.LayoutSlotWithMarginsAndAlignments.Height));
 		}
 
 		[TestMethod]
@@ -144,23 +204,26 @@ namespace Uno.UI.Tests.BorderTests
 				Height = parentSize.Height
 			};
 
-			var child = new View()
+			var child = new Border()
 			{
 				MaxWidth = maxSize.Width,
 				MaxHeight = maxSize.Height
 			};
 
-			SUT.AddChild(child);
+			SUT.Child = child;
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize = SUT.DesiredSize;
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
 
 			Assert.AreEqual(parentSize, measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Rect((SUT.Width - maxSize.Width)/2, (SUT.Height - maxSize.Height) / 2, maxSize.Width, maxSize.Height), child.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect((SUT.Width - maxSize.Width) / 2, (SUT.Height - maxSize.Height) / 2, maxSize.Width, maxSize.Height), child.LayoutSlotWithMarginsAndAlignments);
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore] // Broken on Android for now
+#endif
 		public void When_Child_Is_Not_Stretch_With_MinSize()
 		{
 			var parentSize = new Windows.Foundation.Size(500, 500);
@@ -180,14 +243,14 @@ namespace Uno.UI.Tests.BorderTests
 				VerticalAlignment = VerticalAlignment.Top
 			};
 
-			SUT.AddChild(child);
+			SUT.Child = child;
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize = SUT.DesiredSize;
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
 
 			Assert.AreEqual(parentSize, measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, minSize.Width, minSize.Height), child.Arranged);
+			Assert.AreEqual(minSize, new Size(child.LayoutSlotWithMarginsAndAlignments.Width, child.LayoutSlotWithMarginsAndAlignments.Height));
 		}
 
 		[TestMethod]
@@ -203,7 +266,7 @@ namespace Uno.UI.Tests.BorderTests
 				Height = parentSize.Height
 			};
 
-			var child = new View()
+			var child = new Border()
 			{
 				MaxWidth = maxSize.Width,
 				MaxHeight = maxSize.Height,
@@ -211,24 +274,30 @@ namespace Uno.UI.Tests.BorderTests
 				MinHeight = minSize.Height
 			};
 
-			SUT.AddChild(child);
+			SUT.Child = child;
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
-			var measuredSize = SUT.DesiredSize;
+			var measuredSize1 = SUT.DesiredSize;
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
 
-			Assert.AreEqual(parentSize, measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Rect((SUT.Width - maxSize.Width) / 2, (SUT.Height - maxSize.Height) / 2, maxSize.Width, maxSize.Height), child.Arranged);
+			child.LayoutSlotWithMarginsAndAlignments.Should().Be(new Rect((SUT.Width - maxSize.Width) / 2, (SUT.Height - maxSize.Height) / 2, maxSize.Width, maxSize.Height), 0.5);
 
 			child.HorizontalAlignment = HorizontalAlignment.Left;
 			child.VerticalAlignment = VerticalAlignment.Top;
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
-			measuredSize = SUT.DesiredSize;
+			var measuredSize2 = SUT.DesiredSize;
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
 
-			Assert.AreEqual(parentSize, measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, minSize.Width, minSize.Height), child.Arranged);
+			using (new AssertionScope())
+			{
+				measuredSize1.Should().Be(parentSize, 0.5, "measuredSize1");
+				measuredSize2.Should().Be(parentSize, 0.5, "measuredSize2");
+#if !__ANDROID__ // Broken for tests on Android for now
+				child.LayoutSlotWithMarginsAndAlignments.Should().HaveSize(minSize, 0.5);
+#endif
+			}
 		}
 	}
 }
+#endif

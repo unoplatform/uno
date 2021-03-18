@@ -7,6 +7,7 @@
 
 using System;
 using Uno.Disposables;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Uno.UI.DataBinding;
 using Uno.Extensions;
@@ -23,6 +24,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Automation;
+using Uno.UI.Xaml;
 
 <# 
 	foreach(var mixin in _mixins) { 
@@ -30,9 +32,11 @@ using Windows.UI.Xaml.Automation;
 
 namespace <#= mixin.NamespaceName #>
 {
-    public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider
+	partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider, IFrameworkElementInternal
 	{		
 		string IXUidProvider.Uid { get; set; }
+
+		bool IFrameworkElementInternal.HasLayouter => <#= mixin.HasLayouter #>;
 
 #if !<#= mixin.IsFrameworkElement #>
 		/// <summary>
@@ -77,8 +81,6 @@ namespace <#= mixin.NamespaceName #>
 							((IDependencyObjectStoreProvider)this).Store.Parent = superView;
 						}
 
-						ApplyClipping(superView);
-
 						OnLoading();
 						OnLoaded();
 					}
@@ -98,14 +100,6 @@ namespace <#= mixin.NamespaceName #>
 				// will not unbind properly from their respective parents.
 
 				this.Log().Error($"Failed to process MoveToWindow for {GetType()}", e);
-			}
-		}
-
-		private void ApplyClipping(UIView superView)
-		{
-			if (!FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				UIElement.UpdateMask(this, superView);
 			}
 		}
 #endif
@@ -153,7 +147,7 @@ namespace <#= mixin.NamespaceName #>
 			}
 		}
 
-        public event TypedEventHandler<DependencyObject, object> Loading;
+		public event TypedEventHandler<DependencyObject, object> Loading;
 
 		public event RoutedEventHandler Loaded;
 
@@ -208,225 +202,154 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		partial void AdjustArrangePartial(ref Size size);
-        public virtual Size AdjustArrange(Size size)		
+		public virtual Size AdjustArrange(Size size)		
 		{
 			AdjustArrangePartial(ref size);
 
 			return size;
 		}
 
-		public IFrameworkElement FindName (string name)
+		public object FindName (string name)
 		{
-			return IFrameworkElementHelper.FindName (this, Subviews, name);			
+			return IFrameworkElementHelper.FindName (this, Subviews, name);
 		}
 
 		#region Name Dependency Property
 
-		public static readonly DependencyProperty NameProperty =
-			DependencyProperty.Register(
-				"Name",
-				typeof(string),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata("",
-					(s, e) => (s as <#= mixin.ClassName #>).OnNameChanged((string)e.OldValue, (string)e.NewValue)
-				)
-		);
-
 		private void OnNameChanged(string oldValue, string newValue) {
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				AccessibilityIdentifier = newValue;
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		public static DependencyProperty NameProperty { get ; } = CreateNameProperty();
+
 		public virtual string Name
 		{
-			get { return (string)this.GetValue(NameProperty); }
-			set { this.SetValue(NameProperty, value); }
+            get => GetNameValue();
+            set => SetNameValue(value);
 		}
 		#endregion
 
 		#region Margin Dependency Property
-
-		public static readonly DependencyProperty MarginProperty =
-			DependencyProperty.Register(
-				"Margin",
-				typeof(Thickness),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(Thickness.Empty, OnGenericPropertyUpdated)
-		);
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty MarginProperty { get ; } = CreateMarginProperty();
 
 		public virtual Thickness Margin
 		{
-			get { return (Thickness)this.GetValue(MarginProperty); }
-			set { this.SetValue(MarginProperty, value); }
+            get => GetMarginValue();
+            set => SetMarginValue(value);
 		}
+		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
 
 		#region HorizontalAlignment Dependency Property
 
-		public static readonly DependencyProperty HorizontalAlignmentProperty =
-			DependencyProperty.Register(
-				"HorizontalAlignment",
-				typeof(HorizontalAlignment),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(HorizontalAlignment.Stretch, OnGenericPropertyUpdated)
-			);
+		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty HorizontalAlignmentProperty { get ; } = CreateHorizontalAlignmentProperty();
 
-		public <#= mixin.IsUIControl #> HorizontalAlignment HorizontalAlignment
+		public 
+#if <#= mixin.IsUIControl #>
+		new
+#endif		
+		HorizontalAlignment HorizontalAlignment
 		{
-			get { return (HorizontalAlignment)this.GetValue(HorizontalAlignmentProperty); }
-			set { this.SetValue(HorizontalAlignmentProperty, value); }
+            get => GetHorizontalAlignmentValue();
+            set => SetHorizontalAlignmentValue(value);
 		}
 		#endregion
 
-		#region HorizontalAlignment Dependency Property
+		#region VerticalAlignment Dependency Property
 
-		public static readonly DependencyProperty VerticalAlignmentProperty =
-			DependencyProperty.Register(
-				"VerticalAlignment",
-				typeof(VerticalAlignment),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(VerticalAlignment.Stretch, OnGenericPropertyUpdated)
-			);
+		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty VerticalAlignmentProperty { get ; } = CreateVerticalAlignmentProperty();
 
-		public <#= mixin.IsUIControl #> VerticalAlignment VerticalAlignment
+		public 
+#if <#= mixin.IsUIControl #>
+		new
+#endif
+		VerticalAlignment VerticalAlignment
 		{
-			get { return (VerticalAlignment)this.GetValue(VerticalAlignmentProperty); }
-			set { this.SetValue(VerticalAlignmentProperty, value); }
+            get => GetVerticalAlignmentValue();
+            set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
 
 		#region Width Dependency Property
-
-		public static readonly DependencyProperty WidthProperty =
-			DependencyProperty.Register(
-				"Width",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.NaN,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = double.NaN, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty WidthProperty { get ; } = CreateWidthProperty();
 
 		public double Width
 		{
-			get { return (double)this.GetValue(WidthProperty); }
-			set { this.SetValue(WidthProperty, value); }
+            get => GetWidthValue();
+            set => SetWidthValue(value);
 		}
 		#endregion
 
 		#region Height Dependency Property
-
-		public static readonly DependencyProperty HeightProperty =
-			DependencyProperty.Register(
-				"Height",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.NaN,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = double.NaN, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty HeightProperty { get ; } = CreateHeightProperty();
 
 		public double Height
 		{
-			get { return (double)this.GetValue(HeightProperty); }
-			set { this.SetValue(HeightProperty, value); }
+            get => GetHeightValue();
+            set => SetHeightValue(value);
 		}
 		#endregion
 
 		#region MinWidth Dependency Property
-
-		public static readonly DependencyProperty MinWidthProperty =
-			DependencyProperty.Register(
-				"MinWidth",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 0.0, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty MinWidthProperty { get ; } = CreateMinWidthProperty();
 
 		public double MinWidth
 		{
-			get { return (double)this.GetValue(MinWidthProperty); }
-			set { this.SetValue(MinWidthProperty, value); }
+            get => GetMinWidthValue();
+            set => SetMinWidthValue(value);
 		}
 		#endregion
 
 		#region MinHeight Dependency Property
-
-		public static readonly DependencyProperty MinHeightProperty =
-			DependencyProperty.Register(
-				"MinHeight",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 0.0, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty MinHeightProperty { get ; } = CreateMinHeightProperty();
 
 		public double MinHeight
 		{
-			get { return (double)this.GetValue(MinHeightProperty); }
-			set { this.SetValue(MinHeightProperty, value); }
+            get => GetMinHeightValue();
+            set => SetMinHeightValue(value);
 		}
 		#endregion
 
 		#region MaxWidth Dependency Property
-
-		public static readonly DependencyProperty MaxWidthProperty =
-			DependencyProperty.Register(
-				"MaxWidth",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.PositiveInfinity,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty MaxWidthProperty { get ; } = CreateMaxWidthProperty();
 
 		public double MaxWidth
 		{
-			get { return (double)this.GetValue(MaxWidthProperty); }
-			set { this.SetValue(MaxWidthProperty, value); }
+            get => GetMaxWidthValue();
+            set => SetMaxWidthValue(value);
 		}
 		#endregion
 
 		#region MaxHeight Dependency Property
-
-		public static readonly DependencyProperty MaxHeightProperty =
-			DependencyProperty.Register(
-				"MaxHeight",
-				typeof(double),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					defaultValue: double.PositiveInfinity,
-					propertyChangedCallback: OnGenericPropertyUpdated, 
-					options: FrameworkPropertyMetadataOptions.AutoConvert
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options=FrameworkPropertyMetadataOptions.AutoConvert, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		public static DependencyProperty MaxHeightProperty { get ; } = CreateMaxHeightProperty();
 
 		public double MaxHeight
 		{
-			get { return (double)this.GetValue(MaxHeightProperty); }
-			set { this.SetValue(MaxHeightProperty, value); }
+            get => GetMaxHeightValue();
+            set => SetMaxHeightValue(value);
 		}
 		#endregion
 
+		public double ActualWidth => GetActualWidth();
+		public double ActualHeight => GetActualHeight();
 
-		public virtual double ActualWidth { get { return _actualSize.Width; } }
-
-		public virtual double ActualHeight { get { return _actualSize.Height; } }
+#if !<#= mixin.IsFrameworkElement #>
+		private protected virtual double GetActualWidth() => _actualSize.Width;
+		private protected virtual double GetActualHeight() => _actualSize.Height;
+#endif
 
 		private Size _actualSize;
 		public override CGRect Frame
@@ -439,6 +362,7 @@ namespace <#= mixin.NamespaceName #>
 
 #if <#= mixin.IsFrameworkElement #>
 				RenderSize = _actualSize;
+				AssignedActualSize = _actualSize;
 #endif
 
 				CGAffineTransform? oldTransform = null;
@@ -455,7 +379,7 @@ namespace <#= mixin.NamespaceName #>
 				
 				if (previousSize != _actualSize)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(previousSize, _actualSize));
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
 
 					if (_renderTransform != null)
 					{
@@ -474,7 +398,7 @@ namespace <#= mixin.NamespaceName #>
 						// If this FrameworkElement has a native parent, then it probably wasn't measured prior to having its Frame changed.
 						// Set RequiresMeasure flag so that this branch of the visual tree will be measured before being arranged, this is
 						// required for some views (eg Image) to display correctly.
-						RequiresMeasure = true;
+						IsMeasureDirty = true;
 					}
 #endif
 				}
@@ -508,29 +432,43 @@ namespace <#= mixin.NamespaceName #>
 
 		#region Style DependencyProperty
 
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)]
+		public static DependencyProperty StyleProperty { get; } = CreateStyleProperty();
+
 		public Style Style
 		{
-			get { return (Style)GetValue(StyleProperty); }
-			set { SetValue(StyleProperty, value); }
+			get => GetStyleValue();
+			set => SetStyleValue(value);
 		}
-
-		public static readonly DependencyProperty StyleProperty =
-			DependencyProperty.Register(
-				"Style", 
-				typeof(Style),
-				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata(
-					null,
-					(s, e) => ((<#= mixin.ClassName #>)s)?.OnStyleChanged((Style)e.OldValue, (Style)e.NewValue)
-				)
-			);
 
 		protected virtual void OnStyleChanged(Style oldValue, Style newValue)
 		{
-			newValue?.ApplyTo(this);
+			OnStyleChanged(oldValue, newValue, DependencyPropertyValuePrecedences.ExplicitStyle);
+		}
+
+		private void OnStyleChanged(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
+		{
+			if (oldStyle == newStyle)
+			{
+				// Nothing to do
+				return;
+			}
+
+			oldStyle?.ClearInvalidProperties(this, newStyle, precedence);
+
+			newStyle?.ApplyTo(this, precedence);
 		}
 
 		#endregion
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool IsParsing { get; set; }
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void CreationComplete()
+		{
+			IsParsing = false;
+		}
 #endif
 
 		internal void SuspendRendering()
@@ -606,28 +544,30 @@ namespace <#= mixin.NamespaceName #>
 		/// </summary>
 		public bool IsLoaded { get; private set; }
 
+		private protected virtual void OnPostLoading() {}
+
 		internal virtual void OnLoading()
 		{
 			OnLoadingPartial();
 			Loading?.Invoke(this, null);
-			ApplyCompiledBindings();
+			OnPostLoading();
 		}
 
 		partial void OnLoadingPartial();
 
-		protected virtual void OnLoaded()
+		private protected virtual void OnLoaded()
 		{
 			IsLoaded = true;
 
 			SetNeedsLayout();
 			OnLoadedPartial();
 
-			Loaded?.Invoke(this, RoutedEventArgs.Empty);
+			Loaded?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		partial void OnLoadedPartial();
 
-		protected virtual void OnUnloaded()
+		private protected virtual void OnUnloaded()
 		{
 			IsLoaded = false;
 
@@ -635,7 +575,7 @@ namespace <#= mixin.NamespaceName #>
 
 			if (Unloaded != null)
 			{
-				Unloaded(this, RoutedEventArgs.Empty);
+				Unloaded(this, new RoutedEventArgs(this));
 			}
 		}
 
@@ -643,27 +583,28 @@ namespace <#= mixin.NamespaceName #>
 
 		#region IsEnabled Dependency Property
 
+		[GeneratedDependencyProperty(
+			DefaultValue = true,
+			Options = FrameworkPropertyMetadataOptions.Inherits,
+			ChangedCallback = true
+#if <#= mixin.IsFrameworkElement #>
+			, CoerceCallback = true
+#endif
+		)]
+		public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
+
 		public bool IsEnabled
 		{
-			get { return (bool)this.GetValue(IsEnabledProperty); }
-			set { this.SetValue(IsEnabledProperty, value); }
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
 		}
 
-		public static readonly DependencyProperty IsEnabledProperty =
-			DependencyProperty.Register(
-				"IsEnabled", 
-				typeof(bool), 
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					true,
-					FrameworkPropertyMetadataOptions.Inherits,
-					(s, e) => {
-						((<#= mixin.ClassName #>)s).OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
-						((<#= mixin.ClassName #>)s).IsEnabledChanged?.Invoke(s, e);
-					}
-				)
-			);
-		
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
+			IsEnabledChanged?.Invoke(this, e);
+		}
+
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{
 			UserInteractionEnabled = newValue;
@@ -683,18 +624,18 @@ namespace <#= mixin.NamespaceName #>
 			set { this.SetValue(OpacityProperty, value); }
 		}
 
-		public static readonly DependencyProperty OpacityProperty =
+		public static DependencyProperty OpacityProperty { get ; } =
 			DependencyProperty.Register("Opacity", typeof(double), typeof(<#= mixin.ClassName #>), new PropertyMetadata(1.0, (s, a) => ((<#= mixin.ClassName #>)s).OnOpacityChanged(a)));
 
-        private void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
-        {
+		private void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
+		{
 			// Don't update the internal value if the value is being animated.
 			// The value is being animated by the platform itself.
 			if (!(args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation))
 			{
 				Alpha = IsRenderingSuspended ? 0 : (nfloat)Opacity;
 			}
-        }
+		}
 		#endregion
 		
 		#region Visibility Dependency Property
@@ -708,7 +649,7 @@ namespace <#= mixin.NamespaceName #>
 			set { this.SetValue(VisibilityProperty, value); }
 		}
 
-		public static readonly DependencyProperty VisibilityProperty =
+		public static DependencyProperty VisibilityProperty { get ; } =
 			DependencyProperty.Register(
 				"Visibility",
 				typeof(Visibility), 
@@ -778,7 +719,7 @@ namespace <#= mixin.NamespaceName #>
 			set { this.SetValue(IsHitTestVisibleProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsHitTestVisibleProperty =
+		public static DependencyProperty IsHitTestVisibleProperty { get ; } =
 			DependencyProperty.Register("IsHitTestVisible", typeof(bool), typeof(<#= mixin.ClassName #>), new PropertyMetadata(true, (s, e) => (s as <#= mixin.ClassName #>).OnIsHitTestVisibleChanged(e)));
 
 		private void OnIsHitTestVisibleChanged(DependencyPropertyChangedEventArgs e)
@@ -786,8 +727,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		#endregion
-#endif
-
+	
 		#region Tag Dependency Property
 
 		public new object Tag
@@ -796,7 +736,7 @@ namespace <#= mixin.NamespaceName #>
 			set { this.SetValue(TagProperty, value); }
 		}
 
-		public static readonly DependencyProperty TagProperty =
+		public static DependencyProperty TagProperty { get ; } =
 			DependencyProperty.Register("Tag", typeof(object), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, (s, e) => (s as <#= mixin.ClassName #>).OnTagChanged(e)));
 
 		private void OnTagChanged(DependencyPropertyChangedEventArgs e)
@@ -804,21 +744,22 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		#endregion
-	
+#endif
+
 		#region Transitions Dependency Property
 
-        public TransitionCollection Transitions
-        {
-            get { return (TransitionCollection)this.GetValue(TransitionsProperty); }
-            set { this.SetValue(TransitionsProperty, value); }
-        }
-
-        public static readonly DependencyProperty TransitionsProperty =
-            DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
-			
-	    private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		public TransitionCollection Transitions
 		{
-            var frameworkElement = dependencyObject as IFrameworkElement;
+			get { return (TransitionCollection)this.GetValue(TransitionsProperty); }
+			set { this.SetValue(TransitionsProperty, value); }
+		}
+
+		public static DependencyProperty TransitionsProperty { get ; } =
+			DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
+			
+		private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var frameworkElement = dependencyObject as IFrameworkElement;
 
 			if (frameworkElement != null)
 			{
@@ -826,7 +767,7 @@ namespace <#= mixin.NamespaceName #>
 
 				if (oldValue != null)				
 				{
-				    foreach (var item in oldValue)
+					foreach (var item in oldValue)
 					{
 						item.DetachFromElement(frameworkElement);
 					}					
@@ -836,7 +777,7 @@ namespace <#= mixin.NamespaceName #>
 
 				if (newValue != null)				
 				{
-				    foreach (var item in newValue)
+					foreach (var item in newValue)
 					{
 						item.AttachToElement(frameworkElement);
 					}					
@@ -860,7 +801,7 @@ namespace <#= mixin.NamespaceName #>
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
-		public static readonly DependencyProperty RenderTransformProperty =
+		public static DependencyProperty RenderTransformProperty { get ; } =
 			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnRenderTransformChanged));
 
 		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -897,7 +838,7 @@ namespace <#= mixin.NamespaceName #>
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransformOrigin"/>
 		/// </summary>
-		public static readonly DependencyProperty RenderTransformOriginProperty =
+		public static DependencyProperty RenderTransformOriginProperty { get ; } =
 			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(<#= mixin.ClassName #>), new PropertyMetadata(default(Point), OnRenderTransformOriginChanged));
 
 		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -913,23 +854,14 @@ namespace <#= mixin.NamespaceName #>
 		
 		#region Background Dependency Property
 
+		[GeneratedDependencyProperty(DefaultValue = null, Options=FrameworkPropertyMetadataOptions.ValueInheritsDataContext, ChangedCallback = true)]
+		public static DependencyProperty BackgroundProperty { get ; } = CreateBackgroundProperty();
+
 		public <#= mixin.IsNewBackground #> Brush Background
 		{
-			get { return (Brush)this.GetValue(BackgroundProperty); }
-			set { this.SetValue(BackgroundProperty, value); }
+			get => GetBackgroundValue();
+			set => SetBackgroundValue(value);
 		}
-
-		public static readonly DependencyProperty BackgroundProperty =
-			DependencyProperty.Register(
-				"Background", 
-				typeof(Brush),
-				typeof(<#= mixin.ClassName #>), 
-				new FrameworkPropertyMetadata(
-					null,
-					propertyChangedCallback: (s, e) => ((<#= mixin.ClassName #>)s).OnBackgroundChanged(e),
-					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext
-				)
-			);
 
 		
 		SerialDisposable _brushColorChanged = new SerialDisposable();
@@ -939,26 +871,40 @@ namespace <#= mixin.NamespaceName #>
 		{
 			if (e.NewValue != null)
 			{
-				var brush = e.NewValue as SolidColorBrush;
-
-				if(brush != null)
+				if(e.NewValue is SolidColorBrush scb)
 				{
-					BackgroundColor = brush.ColorWithOpacity;
+					BackgroundColor = scb.ColorWithOpacity;
 
-					_brushColorChanged.Disposable = brush.RegisterDisposablePropertyChangedCallback(
+					_brushColorChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
 						(s, colorArg) => BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
-					_brushOpacityChanged.Disposable = brush.RegisterDisposablePropertyChangedCallback(
+					_brushOpacityChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.OpacityProperty,
 						(s, colorArg) => BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
 				}
+				else if (e.NewValue is GradientBrush gb)
+				{
+					BackgroundColor = gb.FallbackColorWithOpacity;
+
+					_brushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.FallbackColorProperty,
+						(s, colorArg) => BackgroundColor = (s as GradientBrush).FallbackColorWithOpacity
+					);
+					_brushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.OpacityProperty,
+						(s, colorArg) => BackgroundColor = (s as GradientBrush).FallbackColorWithOpacity
+					);
+				}
 				else
 				{
-					this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
 					_brushColorChanged.Disposable = null;
 					_brushOpacityChanged.Disposable = null;
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+					{
+						this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
+					}
 					BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 				}
 			}
@@ -1013,15 +959,16 @@ namespace <#= mixin.NamespaceName #>
 		}
 #endif
 		
-		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
-			OnGenericPropertyUpdatedPartial(dependencyObject, args);
-			((UIView)dependencyObject).SetNeedsLayout();
+			OnGenericPropertyUpdatedPartial(args);
+			SetNeedsLayout();
 		}
 
-		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
+		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 		
-		public Uri BaseUri => new Uri("ms-appx:///");
+		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
+		public Uri BaseUri { get; internal set; } = _defaultUri;
 
 		
 		/// <summary>
@@ -1039,10 +986,20 @@ namespace <#= mixin.NamespaceName #>
 				return null;
 			}
 
-			Console.WriteLine($"GetDependencyPropertyValue({dependencyPropertyName}) = {dpValue}");
-
 			// If all else fails, just return the string representation of the DP's value
 			return new global::Foundation.NSString(dpValue.ToString());
+		}
+
+				
+		/// <summary>
+		/// Sets the specified dependency property value using the format "name|value"
+		/// </summary>
+		/// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
+		/// <returns>The currenty set value at the Local precedence</returns>
+		[global::Foundation.Export("setDependencyPropertyValue:")]
+		public global::Foundation.NSString SetDependencyPropertyValue(global::Foundation.NSString dependencyPropertyNameAndValue)
+		{
+				return new global::Foundation.NSString(UIElement.SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue) ?? "");
 		}
 		
 		#region AutomationPeer
@@ -1121,33 +1078,36 @@ namespace <#= mixin.NamespaceName #>
 #>
 
 <#+
-    public void AddClass(
+	public void AddClass(
 		string namespaceName, 
 		string className, 
 		bool defineSetNeedsLayout = true,
 		bool defineLayoutSubviews = true,
 		bool isUIControl = false,
+		bool isUIElement = false,
 		bool hasAttachedToWindow = true,
 		bool overridesAttachedToWindow = false,
 		bool isNewBackground = false,
-		bool hasAutomationPeer = false
+		bool hasAutomationPeer = false,
+		bool hasLayouter = false
 	)
 	{
-        _mixins.Add(
+		_mixins.Add(
 			new MixinParams { 
 				NamespaceName = namespaceName, 
 				ClassName = className,
 				DefineSetNeedsLayout = defineSetNeedsLayout ? "true" : "false",
 				DefineLayoutSubviews = defineLayoutSubviews ? "true" : "false",
-				IsUIControl = isUIControl  ? "new" : "",
+				IsUIControl = isUIControl ? "true" : "false",
 				HasAttachedToWindow = hasAttachedToWindow ? "true" : "false",
 				OverridesAttachedToWindow = overridesAttachedToWindow ? "true" : "false",
 				IsNewBackground = isNewBackground ? "new" : "",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
+				HasLayouter = hasLayouter ? "true" : "false"
 			}
 		);
-    }
+	}
 
 	private class MixinParams
 	{
@@ -1161,6 +1121,7 @@ namespace <#= mixin.NamespaceName #>
 		public string IsNewBackground;
 		public string IsFrameworkElement;
 		public string HasAutomationPeer;
+		public string HasLayouter;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();

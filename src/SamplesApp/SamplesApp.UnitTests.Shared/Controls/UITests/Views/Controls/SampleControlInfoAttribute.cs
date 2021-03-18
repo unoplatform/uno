@@ -1,36 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Uno.UI.Samples.Controls
 {
 
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-	public sealed class SampleControlInfoAttribute : Attribute
+	public sealed class SampleControlInfoAttribute : SampleAttribute
 	{
-		readonly string _controlName;
-		readonly string _category;
-		readonly Type _viewModelType;
-		readonly bool _ignoreInAutomatedTests;
-		readonly string _description;
-
-		public SampleControlInfoAttribute(string category, string controlName, Type viewModelType = null, bool ignoreInAutomatedTests = false, string description = null)
+		public SampleControlInfoAttribute(
+			string category = null,
+			string controlName = null,
+			Type viewModelType = null,
+			bool ignoreInSnapshotTests = false,
+			string description = null,
+			bool isManualTest = false
+		)
+			: base(category)
 		{
-			this._controlName = controlName;
-			this._category = category;
-			this._viewModelType = viewModelType;
-			this._ignoreInAutomatedTests = ignoreInAutomatedTests;
-			this._description = description;
-        }
-		
-		public string ControlName => _controlName;
+			Name = controlName;
+			ViewModelType = viewModelType;
+			IgnoreInSnapshotTests = ignoreInSnapshotTests;
+			IsManualTest = isManualTest;
+			Description = description;
+		}
 
-		public string Category => _category;
+	}
 
-		public Type ViewModelType => _viewModelType;
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+	public class SampleAttribute : Attribute
+	{
+		/// <summary>
+		/// Marks a class as a sample test control that can be browsed by the SampleChooserControl
+		/// and which can be used by automated tests.
+		/// </summary>
+		public SampleAttribute()
+		{
+		}
 
-		public bool IgnoreInAutomatedTests => _ignoreInAutomatedTests;
+		/// <summary>
+		/// Marks a class as a sample test control that can be browsed by the SampleChooserControl
+		/// and which can be used by automated tests.
+		/// </summary>
+		/// <param name="categories">An optional list of categories to which this sample is related to</param>
+		public SampleAttribute(params string[] categories)
+		{
+			Categories = categories;
+		}
 
-		public string Description => _description;
+		/// <summary>
+		/// Marks a class as a sample test control that can be browsed by the SampleChooserControl
+		/// and which can be used by automated tests.
+		/// </summary>
+		/// <param name="categories">An optional list of categories to which this sample is related to</param>
+		public SampleAttribute(params Type[] categories)
+		{
+			Categories = categories.Select(type => type.Name).ToArray();
+		}
+
+		/// <summary>
+		/// An optional list of categories to which this sample is related to
+		/// </summary>
+		public string[] Categories { get; }
+
+		/// <summary>
+		/// An optional name for this sample. Default will be the name of the class.
+		/// </summary>
+		public string Name { get; set; }
+
+		/// <summary>
+		/// Determines if this sample should be included or not in the automated screenshot comparison.
+		/// If this flag is not set, the sample will be included.
+		/// </summary>
+		public bool IgnoreInSnapshotTests { get; set; }
+
+		/// <summary>
+		/// Determines if this test should be manually tested (e.g. animations, external/untestable dependencies)
+		/// </summary>
+		public bool IsManualTest { get; set; }
+
+		/// <summary>
+		/// An optional ViewModel type that will be instantiated and set as DataContext of the sample control
+		/// </summary>
+		public Type ViewModelType { get; set; }
+
+		/// <summary>
+		/// An optional description of the sample. A good practice is to explain the expected result of the sample.
+		/// </summary>
+		public string Description { get; set; }
 	}
 }

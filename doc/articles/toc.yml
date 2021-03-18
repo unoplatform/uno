@@ -1,113 +1,410 @@
-- name: About
+- name: Getting started
   items:
-    - name: What is the Uno Platform?
-      href: intro.md
-    - name: Philosophy of Uno
-      href: concepts/overview/philosophy-of-uno.md
-    - name: API differences
-      href: api-differences.md
-    - name: Features list
-      href: supported-features.md
-    - name: FAQ
-      href: faq.md
-- name: Using Uno
-  items:
-    - name: Getting started
+    - name: Overview
       href: get-started.md
-    - name: Requirements
-      href: getting-started/requirements.md
+    - name: Getting Started on Visual Studio
+      href: get-started-vs.md
+    - name: Getting Started on Visual Studio for Mac
+      href: get-started-vsmac.md
+    - name: Getting Started on Visual Studio Code
+      href: get-started-vscode.md
+    - name: Getting Started on Rider
+      href: get-started-rider.md
+    - name: dotnet new templates for Uno Platform
+      href: get-started-dotnet-new.md
+    - name: Additional setup for Linux
+      href: get-started-with-linux.md
     - name: Creating an app - Tutorial
-      href: getting-started-tutorial-1.md
-    - name: Developing with Uno.UI
-      href: using-uno-ui.md
-    - name: Platform-specific C# code in Uno
-      href: platform-specific-csharp.md
-    - name: Platform-specific XAML markup in Uno
-      href: platform-specific-xaml.md
-    - name: Feature flags
-      href: feature-flags.md
-    - name: Uno.UI.Toolkit
-      href: Uno.UI.Toolkit.md
-    - name: Uno app solution structure
-      href: uno-app-solution-structure.md
-    - name: Performance tips
-      href: Uno-UI-Performance.md
-    - name: Debugging C# on WASM
-      href: debugging-wasm.md
-    - name: Build telemetry
-      href: uno-toolchain-telemetry.md
-    - name: Migrate existing code
-      href: howto-migrate-existing-code.md
-- name: Using Uno - features and controls
+      items:
+        - name: Getting Started Tutorial 1
+          href: getting-started-tutorial-1.md
+        - name: Getting Started Tutorial 2
+          href: getting-started-tutorial-2.md
+    - name: Next steps
+      href: get-started-next-steps.md
+    - name: Common issues
+      href: get-started-wizard.md
+- name: How-tos and tutorials
   items:
-  - name: Accessibility
-    href: features/working-with-accessibility.md
-  - name: Assets
-    href: features/working-with-assets.md
-  - name: Animations
-    href: features/working-with-animations.md
-  - name: Routed Events
-    href: features/routed-events.md
-  - name: Shapes & Brushes
-    href: features/shapes-and-brushes.md
-  - name: Speech Recognition
-    href: features/SpeechRecognition.md
-  - name: PowerManager
-    href: features/windows-system-power.md
-  - name: PasswordVault
-    href: features\PasswordVault.md
-  - name: Windows.ApplicationModel.Calls
-    href: features\windows-applicationmodel-calls.md
-  - name: Windows.Devices.Sensors
-    href: features\windows-devices-sensors.md
-  - name: Windows.Phone.Devices.Notification
-    href: features\windows-phone-devices-notification-vibrationdevice.md
-  - name: Windows.UI.StartScreen
-    href: features\windows-ui-startscreen.md
-  - name: CommandBar
-    href: controls\commandbar.md
-  - name: ListView and GridView
-    href: controls\ListViewBase.md
-  - name: MapControl
-    href: controls\map-control-support.md
-  - name: MediaPlayerElement
-    href: controls\MediaPlayerElement.md
-  - name: Pivot
-    href: controls\Pivot.md
-  - name: ToggleSwitch
-    href: controls\ToggleSwitch.md
-  - name: VisibleBoundsPadding behavior
-    href: features\VisibleBoundsPadding.md
-- name: Using Uno - implemented views
+    - name: Overview
+      href: tutorials-intro.md
+    - name: How to use Windows Community Toolkit
+      href: uno-community-toolkit.md
+    - name: How to add a splash screen
+      href: splash-screen.md
+    - name: How to consume a webservice
+      href: howto-consume-webservices.md
+    - name: How to integrate SignalR
+      href: signalr.md
+    - name: How to use MSAL for Azure Authentication
+      href: interop/MSAL.md
+    - name: Tutorial - Silverlight migration
+      items:
+        - name: Overview
+          href: silverlight-migration-landing.md
+        - name: Silverlight to Uno Migration
+          href: guides\silverlight-migration\00-overview.md
+        - name: Create the Uno solution for UWP and WASM
+          href: guides\silverlight-migration\01-create-uno-solution.md
+        - name: Considering navigation
+          href: guides\silverlight-migration\02-considering-navigation.md
+        - name: Reviewing the app startup
+          href: guides\silverlight-migration\03-review-app-startup.md
+        - name: Migrating the home page XAML and styles
+          href: guides\silverlight-migration\04-migrate-home-page-xaml-and-styles.md
+        - name: Switching to string resources
+          href: guides\silverlight-migration\05-string-resources.md
+        - name: Dialogs and errors
+          href: guides\silverlight-migration\07-dialogs.md
+        - name: Data access services
+          href: guides\silverlight-migration\08-data-access-overview.md
+        - name: Client Authentication
+          href: guides\silverlight-migration\09-client-auth-service.md
+        - name: Implementing a singleton token service
+          href: guides\silverlight-migration\10-implementing-singleton-token-service.md
+        - name: Implementing an identity service client
+          href: guides\silverlight-migration\11-implementing-identity-service-client.md
+        - name: Migrating the authentication UI
+          href: guides\silverlight-migration\12-migrate-auth-ui.md
+        - name: Integrating authentication and navigation
+          href: guides\silverlight-migration\13-integrating-auth-and-navigation.md
+        - name: Implement the time entry service
+          href: guides\silverlight-migration\14-implement-timeentry-services.md
+        - name: Migrating the time entry UI
+          href: guides\silverlight-migration\15-migrate-timeentry-ui.md
+        - name: Wrap-up
+          href: guides\silverlight-migration\20-wrap-up.md
+        - name: The TimeEntry Sample apps
+          href: guides\silverlight-migration\98-timeentry-samples.md
+        - name: Useful resources
+          href: guides\silverlight-migration\99-useful-resources.md
+    - name: Tutorial - Embed a JavaScript component
+      items:
+        - name: Part 1
+          href: interop/wasm-javascript-1.md
+        - name: Part 2
+          href: interop/wasm-javascript-2.md
+        - name: Part 3
+          href: interop/wasm-javascript-3.md
+- name: Development
+  items:
+    - name: Overview
+      href: using-uno-ui.md
+    - name: About
+      items:
+        - name: Overview
+          href: what-is-uno.md
+        - name: Supported platforms
+          href: getting-started/requirements.md
+        - name: Features list
+          href: supported-features.md
+        - name: How Uno works
+          href: how-uno-works.md
+        - name: Differences from WinUI
+          href: api-differences.md
+        - name: Philosophy of Uno
+          href: concepts/overview/philosophy-of-uno.md
+        - name: Uno and WinUI 3
+          href: uwp-vs-winui3.md
+        - name: .NET version support
+          href: net-version-support.md
+        - name: FAQ
+          href: faq.md
+    - name: WinUI links
+      items:
+        - name: Overview
+          href: winui-doc-links.md
+        - name: Tutorials
+          href: winui-doc-links-tutorials.md
+        - name: Development
+          href: winui-doc-links-development.md
+        - name: Design
+          href: winui-doc-links-design.md
+    - name: Uno basics
+      items:
+        - name: Platform-specific C# code
+          href: platform-specific-csharp.md
+        - name: Platform-specific XAML markup
+          href: platform-specific-xaml.md
+        - name: Feature flags
+          href: feature-flags.md
+        - name: Uno app solution structure
+          href: uno-app-solution-structure.md
+        - name: Best practices
+          href: best-practices-uno.md
+    - name: WinUI features
+      items:
+        - name: Accessibility
+          href: features/working-with-accessibility.md
+        - name: Animations
+          href: features/working-with-animations.md
+        - name: Assets and image display
+          href: features/working-with-assets.md
+        - name: Fluent styles
+          href: features\fluent-styles.md
+        - name: Fonts
+          href: features/custom-fonts.md
+        - name: Orientation
+          href: features/orientation.md
+        - name: Routed Events
+          href: features/routed-events.md
+        - name: Shapes & Brushes
+          href: features/shapes-and-brushes.md
+        - name: String resources and localization
+          href: features\working-with-strings.md
+        - name: Themes
+          href: features/working-with-themes.md
+        - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
+          href: features/pointers-keyboard-and-other-user-inputs.md
+        - name: WinUI 2 controls
+          href: features/using-winui2.md
+        - name: x:Bind
+          href: features\windows-ui-xaml-xbind.md
+    - name: WinUI controls
+      items:
+        - name: ComboBox
+          href: controls\ComboBox.md
+        - name: CommandBar
+          href: controls\commandbar.md
+        - name: ContentDialog
+          href: controls\ContentDialog.md
+        - name: Flyout
+          href: controls\Flyout.md
+        - name: ListView and GridView
+          href: controls\ListViewBase.md
+        - name: MapControl
+          href: controls\map-control-support.md
+        - name: MediaPlayerElement
+          href: controls\MediaPlayerElement.md
+        - name: MenuFlyout
+          href: controls\MenuFlyout.md
+        - name: Pivot
+          href: controls\Pivot.md
+        - name: Popup
+          href: controls\Popup.md
+        - name: ProgressRing
+          href: features/progressring.md
+        - name: TextBox
+          href: controls\TextBox.md
+        - name: TimePicker
+          href: controls\TimePicker.md
+        - name: ToggleSwitch
+          href: controls\ToggleSwitch.md
+    - name: WinRT features
+      items:
+        - name: PasswordVault
+          href: features\PasswordVault.md
+        - name: PowerManager
+          href: features/windows-system-power.md
+        - name: Speech Recognition
+          href: features/SpeechRecognition.md
+        - name: Windows.ApplicationModel
+          href: features\windows-applicationmodel.md
+        - name: Windows.ApplicationModel.Calls
+          href: features\windows-applicationmodel-calls.md
+        - name: Windows.ApplicationModel.Chat
+          href: features\windows-applicationmodel-chat.md
+        - name: Windows.ApplicationModel.Contacts
+          href: features\windows-applicationmodel-contacts.md
+        - name: Windows.ApplicationModel.DataTransfer
+          href: features\windows-applicationmodel-datatransfer.md
+        - name: Windows.ApplicationModel.Email
+          href: features\windows-applicationmodel-email.md
+        - name: Windows.Devices.Enumeration
+          href: features\windows-devices-enumeration.md
+        - name: Windows.Devices.Haptics
+          href: features\windows-devices-haptics.md
+        - name: Windows.Devices.Lights
+          href: features\windows-devices-lights.md
+        - name: Windows.Devices.Midi
+          href: features\windows-devices-midi.md
+        - name: Windows.Devices.Sensors
+          href: features\windows-devices-sensors.md
+        - name: Windows.Networking
+          href: features\windows-networking.md
+        - name: Windows.Phone.Devices.Notification
+          href: features\windows-phone-devices-notification-vibrationdevice.md
+        - name: Windows.UI.Core.Preview
+          href: features\windows-ui-core-preview.md
+        - name: Windows.UI.StartScreen
+          href: features\windows-ui-startscreen.md
+        - name: Windows.UI.Notifications
+          href: features\windows-ui-notifications.md
+        - name: Windows.UI.Xaml.Application
+          href: features\windows-ui-xaml-application.md
+        - name: Windows.Devices.Geolocation
+          href: features\windows-devices-geolocation.md
+        - name: Windows.System
+          href: features\windows-system.md
+        - name: Windows.System.Display
+          href: features\windows-system-display.md
+        - name: Windows.System.Profile
+          href: features\windows-system-profile.md
+        - name: Windows.System.UserProfile
+          href: features\windows-system-userprofile.md
+        - name: Windows.Storage
+          href: features\windows-storage.md
+        - name: Windows.UI.ViewManagement
+          href: features\windows-ui-viewmanagement.md
+    - name: Uno features
+      items:
+        - name: Uno.UI.Toolkit
+          items:
+            - name: VisibleBoundsPadding
+              href: features\VisibleBoundsPadding.md
+            - name: ElevatedView
+              href: features\ElevatedView.md
+            - name: Other features
+              href: Uno.UI.Toolkit.md
+        - name: Uno Material
+          href: features/uno-material.md
+        - name: Fluent icon font
+          href: uno-fluent-assets.md
+        - name: Lottie animations
+          href: features/Lottie.md
+    - name: Core functionality
+      items:
+        - name: Logging
+          href: logging.md
+        - name: AppManifest (WebAssembly)
+          href: wasm-appmanifest.md
+        - name: IL Linker for WebAssembly
+          href: features/using-il-linker-webassembly.md
+        - name: Build telemetry
+          href: uno-toolchain-telemetry.md
+        - name: Adding native views
+          href: native-views.md
+        - name: Native control styles
+          href: native-styles.md
+        - name: URI Protocol activation
+          href: features\protocol-activation.md
+        - name: Activities in Android
+          href: android-activities.md
+    - name: Common tasks
+      items:
+        - name: Upgrading from previous releases
+          href: migrating-from-previous-releases.md
+        - name: Migrating UWP-only code
+          items:
+            - name: Overview
+              href: howto-migrate-existing-code.md
+            - name: Checklist
+              href: migrating-before-you-start.md
+            - name: Applications
+              href: migrating-apps.md
+            - name: Class libraries
+              href: migrating-libraries.md
+            - name: General guidance
+              href: migrating-guidance.md
+        - name: Creating a cross-targeted library
+          href: cross-targeted-libraries.md
+        - name: Hosting a WebAssembly app
+          href: how-to-host-a-webassembly-app.md
+        - name: Updating to WinUI 3.0
+          href: updating-to-winui3.md
+    - name: Debugging
+      items:
+        - name: Troubleshooting build errors
+          href: uno-builds-troubleshooting.md
+        - name: 'Debugging C# on WASM'
+          href: debugging-wasm.md
+        - name: XAML Hot Reload
+          href: features\working-with-xaml-hot-reload.md
+    - name: Supported 3rd-party libraries
+      href: supported-libraries.md
+    - name: Performance
+      href: Uno-UI-Performance.md
+    - name: Advanced topics
+      items:
+        - name: (Wasm) Handling custom HTML events
+          href: wasm-custom-events.md
+        - name: Using Uno Platform Controls in Xamarin.Forms
+          href: howto-use-uno-in-xamarin-forms.md
+- name: Reference
   href: implemented/toc.yml
   topicHref: implemented-views.md
-- name: Using Uno - advanced topics
-  items:
-    - name: (Wasm) Handling custom HTML events
-      href: wasm-custom-events.md
-    - name: Using Uno Platform Controls in Xamarin.Forms
-      href: howto-use-uno-in-xamarin-forms.md
 - name: Contributing to Uno
   items:
-    - name: Guidelines for breaking changes
-      href: contributing\guidelines\breaking-changes.md
-    - name: Guidelines for issue triage
-      href: contributing\guidelines\issue-triage.md
-    - name: Guidelines for pull-requests
-      href: contributing\guidelines\pull-requests.md
-    - name: Building and debugging Uno.UI
+    - name: Overview
+      href: uno-development\contributing-intro.md
+    - name: Code of Conduct
+      href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
+    - name: Ways to contribute
+      href: uno-development\ways-to-contribute.md
+    - name: How Uno works
+      items:
+        - name: Overview
+          href: uno-development\uno-internals-overview.md
+        - name: Android
+          href: uno-development\uno-internals-android.md
+        - name: Layouting in Android
+          href: uno-development\Uno-UI-Layouting-Android.md
+        - name: iOS
+          href: uno-development\uno-internals-ios.md
+        - name: Layouting in iOS
+          href: uno-development\Uno-UI-Layouting-iOS.md
+        - name: WASM
+          href: uno-development\uno-internals-wasm.md
+        - name: macOS
+          href: uno-development\uno-internals-macos.md
+        - name: DependencyProperty backing generator
+          href: uno-development\Internal-DependencyProperty-Generator.md
+        - name: x:Bind in Uno Platform
+          href: uno-development\Uno-UI-xBind-architecture.md
+    - name: Building Uno.UI
+      href: uno-development\building-uno-ui.md
+    - name: Debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
-    - name: Working with the samples applications
-      href: uno-development\working-with-the-samples-apps.md
+    - name: Building Uno.UI for macOS using Visual Studio for Mac
+      href: uno-development\building-uno-macos.md
+    - name: Using GitPod
+      href: features\working-with-gitpod.md
     - name: Inspecting the visual tree
       href: uno-development\debugging-inspect-visual-tree.md
-    - name: The WeakEventHelper class
-      href: uno-development\Internal-WeakEventHelper.md
-    - name: Layouting in Android
-      href: uno-development\Uno-UI-Layouting-Android.md
-    - name: Layouting in iOS
-      href: uno-development\Uno-UI-Layouting-iOS.md
-    - name: Debugging Uno.UI Java code with Android studio
-      href: uno-development\Uno-UI-Debugging-Android-Studio.md
-    - name: The Uno.UI WebAssembly WPF Host
-      href: uno-development\working-with-uno-wpf-host.md
+    - name: Guidelines for code style
+      href: contributing\guidelines\code-style.md
+    - name: Using the SamplesApp
+      href: uno-development\working-with-the-samples-apps.md
+    - name: Guidelines for creating tests
+      items:
+        - name: Overview
+          href: contributing\guidelines\creating-tests.md
+        - name: Mocked unit tests (Uno.UI.Tests)
+          href: uno-development\creating-mocked-tests.md
+        - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
+          href: uno-development\creating-runtime-tests.md
+        - name: UI tests with Uno.UITest
+          href: uno-development\creating-ui-tests.md
+    - name: Conventional Commits format
+      href: uno-development\git-conventional-commits.md
+    - name: Guidelines for pull-requests
+      href: contributing\guidelines\pull-requests.md
+    - name: Guidelines for breaking changes
+      href: contributing\guidelines\breaking-changes.md
+    - name: Guidelines for updating dependencies
+      href: contributing\guidelines\updating-dependencies.md
+    - name: Guidelines for issue triage
+      href: contributing\guidelines\issue-triage.md
+    - name: Adding documentation
+      href: uno-development\doc-on-docs.md
+    - name: DocFX
+      href: uno-development\docfx.md
+    - name: Uno.UI release procedure
+      href: uno-development\release-procedure.md
+    - name: Build Artifacts
+      href: contributing\build-artifacts.md
+    - name: Advanced topics
+      items:
+        - name: Adding functionality with API extensions
+          href: uno-development\api-extensions.md
+        - name: The WeakEventHelper class
+          href: uno-development\Internal-WeakEventHelper.md
+        - name: Debugging Uno.UI Java code with Android studio
+          href: uno-development\Uno-UI-Debugging-Android-Studio.md
+        - name: Converting the source tree to WinUI
+          href: uno-development\winui-conversion.md
+        - name: Troubleshooting Memory Issues
+          href: uno-development\troubleshooting-memory-issues.md
+        - name: Troubleshooting Source Generation
+          href: uno-development\troubleshooting-source-generation.md
+      

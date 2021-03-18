@@ -7,7 +7,7 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
-
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using Android.Views;
 using Android.Graphics;
@@ -52,59 +52,59 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			void Add(View view)
 		{
-			Child = view;
+			Child = VisualTreeHelper.TryAdaptNative(view);
 		}
 
 		protected override bool IsSimpleLayout => true;
 
+		private protected override Thickness GetBorderThickness() => BorderThickness;
+
+
 		#region Child DependencyProperty
 
-		public virtual View Child
+		public virtual UIElement Child
 		{
-			get => (View)this.GetValue(ChildProperty);
+			get => (UIElement)this.GetValue(ChildProperty);
 			set => this.SetValue(ChildProperty, value);
 		}
 
-		public static readonly DependencyProperty ChildProperty =
+		public static DependencyProperty ChildProperty { get ; } =
 			DependencyProperty.Register(
 				"Child",
-				typeof(View),//TODO Should be UIElement
+				typeof(UIElement),
 				typeof(Border),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
-					(s, e) => ((Border)s)?.OnChildChanged((View)e.OldValue, (View)e.NewValue)
+					// Since this is a view, inheritance is handled through the visual tree, rather than via the property. We explicitly
+					// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
+					// a different inheritance hierarchy, as is done for some controls with native styles.
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
 				)
 			);
 
-		protected void OnChildChanged(View oldValue, View newValue)
+		protected void OnChildChanged(UIElement oldValue, UIElement newValue)
 		{
 			ReAttachChildTransitions(oldValue, newValue);
 
 			OnChildChangedPartial(oldValue, newValue);
 		}
 
-		partial void OnChildChangedPartial(View previousValue, View newValue);
+		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue);
 
 		#endregion
 
 		#region CornerRadius
+		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
+
 		public CornerRadius CornerRadius
 		{
-			get => (CornerRadius)this.GetValue(CornerRadiusProperty);
-			set => this.SetValue(CornerRadiusProperty, value);
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
-
-		public static readonly DependencyProperty CornerRadiusProperty =
-			DependencyProperty.Register(
-				nameof(CornerRadius),
-				typeof(CornerRadius),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					CornerRadius.None,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					(s, e) => ((Border)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
-				)
-			);
 
 		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 		{
@@ -126,10 +126,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ChildTransitionsProperty =
-			DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new PropertyMetadata(null));
+		public static DependencyProperty ChildTransitionsProperty { get ; } =
+			DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new FrameworkPropertyMetadata(null));
 
-		private void ReAttachChildTransitions(View originalChild, View child)
+		private void ReAttachChildTransitions(UIElement originalChild, UIElement child)
 		{
 			if (this.ChildTransitions == null)
 			{
@@ -161,24 +161,17 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Padding DependencyProperty
+		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		public Thickness Padding
 		{
-			get => (Thickness)this.GetValue(PaddingProperty);
-			set => this.SetValue(PaddingProperty, value);
+			get => GetPaddingValue();
+			set => SetPaddingValue(value);
 		}
 
-		public static readonly DependencyProperty PaddingProperty =
-			DependencyProperty.Register(
-				nameof(Padding),
-				typeof(Thickness),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					(s, e) => ((Border)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
-				)
-			);
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
@@ -186,30 +179,19 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
 
-
-
 		#endregion
 
 		#region BorderThickness DependencyProperty
+		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		public Thickness BorderThickness
 		{
-			get => (Thickness)this.GetValue(BorderThicknessProperty);
-			set => this.SetValue(BorderThicknessProperty, value);
+			get => GetBorderThicknessValue();
+			set => SetBorderThicknessValue(value);
 		}
-
-		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BorderThicknessProperty =
-			DependencyProperty.Register(
-				nameof(BorderThickness),
-				typeof(Thickness),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					(s, e) => ((Border)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
-				)
-			);
 
 		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 		{
@@ -233,10 +215,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public Brush BorderBrush
 		{
-			get { return (Brush)this.GetValue(BorderBrushProperty); }
+			get => GetBorderBrushValue();
 			set
 			{
-				this.SetValue(BorderBrushProperty, value);
+				SetBorderBrushValue(value);
 
 #if XAMARIN_ANDROID
 				_borderBrushStrongReference = value;
@@ -244,24 +226,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// Using a DependencyProperty as the backing store for BorderBrush.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BorderBrushProperty =
-			DependencyProperty.Register(
-				"BorderBrush",
-				typeof(Brush),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					SolidColorBrushHelper.Transparent,
-					FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
-					propertyChangedCallback: (s, e) => ((Border)s).OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
-				)
-			);
+		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
+
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
-			var colorBrush = newValue as SolidColorBrush;
-
-			if (colorBrush != null)
+			if (newValue is SolidColorBrush colorBrush)
 			{
 				_borderBrushColorChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
 					SolidColorBrush.ColorProperty,
@@ -271,6 +243,26 @@ namespace Windows.UI.Xaml.Controls
 					SolidColorBrush.OpacityProperty,
 					(s, _) => OnBorderBrushChangedPartial()
 				);
+			}
+			else if (newValue is GradientBrush gb)
+			{
+				_borderBrushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.FallbackColorProperty,
+					(s, colorArg) => OnBorderBrushChangedPartial()
+				);
+				_borderBrushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.OpacityProperty,
+					(s, _) => OnBorderBrushChangedPartial()
+				);
+			}
+			else if (newValue is AcrylicBrush ab)
+			{
+				_borderBrushColorChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.FallbackColorProperty,
+					(s, colorArg) => OnBorderBrushChangedPartial());
+				_borderBrushOpacityChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.OpacityProperty,
+					(s, arg) => OnBorderBrushChangedPartial());
 			}
 			else
 			{

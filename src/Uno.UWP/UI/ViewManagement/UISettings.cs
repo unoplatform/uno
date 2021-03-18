@@ -1,25 +1,72 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using System.Collections.Concurrent;
 using Uno;
+using Uno.Helpers.Theming;
+using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Windows.UI.ViewManagement
 {
-	[NotImplemented]
-	public  partial class UISettings 
-	{
-		[NotImplemented]
-		public bool AnimationsEnabled
+	/// <summary>
+	/// Contains a set of common app user interface settings and operations.
+	/// </summary>
+	/// <remarks>Events on this class are fired as long as the instance is alive.
+	/// To ensure the class does not get garbage collected, keep a strong reference to it.</remarks>
+	public partial class UISettings 
+	{		
+		private static readonly ConcurrentDictionary<WeakReference<UISettings>, object> _instances = new ConcurrentDictionary<WeakReference<UISettings>, object>();
+		private readonly WeakReference<UISettings> _weakReference;
+
+		public UISettings()
+		{			
+			_weakReference = new WeakReference<UISettings>(this);
+			_instances.TryAdd(_weakReference, null);
+		}
+
+		~UISettings()
 		{
-			get
+			_instances.TryRemove(_weakReference, out var _);
+		}
+
+		internal static void OnColorValuesChanged()
+		{			
+			foreach (var instance in _instances)
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "AnimationsEnabled");
-#if __WASM__
-				// Animations are marked as not supported for wasm until implemented properly.
-				return false;
-#else
-				return true;
-#endif
+				var weakReference = instance.Key;
+				if (weakReference.TryGetTarget(out var uiSettings))
+				{
+					uiSettings.ColorValuesChanged?.Invoke(uiSettings, null);
+				}
 			}
+		}
+
+		public event TypedEventHandler<UISettings, object> ColorValuesChanged;
+
+#if !__ANDROID__
+		public bool AnimationsEnabled => true;
+#endif
+
+		public Color GetColorValue(UIColorType desiredColor)
+		{
+			var systemTheme = SystemThemeHelper.SystemTheme;
+			return desiredColor switch
+			{
+				UIColorType.Background =>
+					systemTheme == SystemTheme.Light ? Colors.White : Colors.Black,
+				UIColorType.Foreground =>
+					systemTheme == SystemTheme.Light ? Colors.Black : Colors.White,
+				// The accent color values match SystemResources.xaml in Uno.UI
+				// as we can't access Application resources from here directly.
+				UIColorType.Accent => Color.FromArgb(255, 51, 153, 255),
+				UIColorType.AccentDark1 => Color.FromArgb(255, 0, 90, 158),
+				UIColorType.AccentDark2 => Color.FromArgb(255, 0, 66, 117),
+				UIColorType.AccentDark3 => Color.FromArgb(255, 0, 38, 66),
+				UIColorType.AccentLight1 => Color.FromArgb(255, 66, 156, 227),
+				UIColorType.AccentLight2 => Color.FromArgb(255, 118, 185, 237),
+				UIColorType.AccentLight3 => Color.FromArgb(255, 166, 216, 255),
+				_ => Colors.Transparent
+			};
 		}
 
 		[NotImplemented]
@@ -152,31 +199,19 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public UISettings()
-		{
-
-		}
+		[NotImplemented]
+		public bool AutoHideScrollBars { get; set; } = true;
 
 		[NotImplemented]
 		public global::Windows.UI.Color UIElementColor(global::Windows.UI.ViewManagement.UIElementType desiredElement)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "UIElementColor");
 			return Colors.Black;
-		}
-
-		[NotImplemented]
-		public global::Windows.UI.Color GetColorValue(global::Windows.UI.ViewManagement.UIColorType desiredColor)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "GetColorValue");
-			return Colors.Black;
-		}
+		}		
 
 #pragma warning disable 67
 		[global::Uno.NotImplemented]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> TextScaleFactorChanged;
-
-		[global::Uno.NotImplemented]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> ColorValuesChanged;
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> TextScaleFactorChanged;		
 
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> AdvancedEffectsEnabledChanged;

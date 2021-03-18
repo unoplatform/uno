@@ -5,7 +5,13 @@
 // This file is a C# translation of the NavigationViewHeader.cpp file from WinUI controls.
 //
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
+#else
 using Windows.UI.Xaml.Hosting;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -39,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 				UpdateIsClosedCompact();
 			}
 
-			UpdateVisualState(false /*useTransitions*/);
+			UpdateLocalVisualState(false /*useTransitions*/);
 		}
 
 		protected override void OnApplyTemplate()
@@ -65,11 +71,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Check if the pane is closed and if the splitview is in either compact mode.
 				m_isClosedCompact = !splitView.IsPaneOpen && (splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay || splitView.DisplayMode == SplitViewDisplayMode.CompactInline);
-				UpdateVisualState(true /*useTransitions*/);
+				UpdateLocalVisualState(true /*useTransitions*/);
 			}
 		}
 
-		void UpdateVisualState(bool useTransitions)
+		void UpdateLocalVisualState(bool useTransitions)
 		{
 			VisualStateManager.GoToState(this, m_isClosedCompact ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);
 		}

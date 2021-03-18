@@ -1,38 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-
-using Foundation;
-using CoreAnimation;
 using CoreGraphics;
+using Windows.UI.Xaml.Media;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Ellipse : ArbitraryShapeBase
-    {
-		public Ellipse()
+	public partial class Ellipse : Shape
+	{
+		static Ellipse()
 		{
+			StretchProperty.OverrideMetadata(typeof(Ellipse), new FrameworkPropertyMetadata(defaultValue: Media.Stretch.Fill));
 		}
 
-		protected override CGPath GetPath()
+		public Ellipse()
 		{
-			var bounds = Bounds;
+#if __IOS__
+			ClipsToBounds = true;
+#endif
+		}
 
-			var width = double.IsNaN(Width) ? bounds.Width : Width;
-			var height = double.IsNaN(Height) ? bounds.Height : Height;
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> base.MeasureRelativeShape(availableSize);
 
-			var area = new CGRect(
-				x: 0, 
-				y: 0,
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
 
-				//In ios we need to inflate the bounds because the stroke thickness is not taken into account when
-				//forming the ellipse from rect.
-				width: width - (nfloat)this.ActualStrokeThickness, 
-				height: height - (nfloat)this.ActualStrokeThickness
-			);
+			Render(renderingArea.Width > 0 && renderingArea.Height > 0
+				? CGPath.EllipseFromRect(renderingArea)
+				: null);
 
-			return CGPath.EllipseFromRect(area);
+			return shapeSize;
 		}
 	}
 }

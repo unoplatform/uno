@@ -1,0 +1,154 @@
+parameters:
+  vmMacOSImage: ''
+  vmWindowsImage: ''
+  xCodeRoot: ''
+  XamarinSDKVersion: ''
+
+jobs:
+
+- job: Android_Build_For_Tests
+  displayName: 'Android UI Tests (Build)'
+
+  pool:
+    vmImage: ${{ parameters.vmMacOSImage }}
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/dotnet-install.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - task: MSBuild@1
+    inputs:
+      solution: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/bin/Release/
+      Contents: 'uno.platform.unosampleapp-Signed.apk'
+      TargetFolder: $(build.artifactstagingdirectory)/android
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-android-build
+      ArtifactType: Container
+
+- job: Android_Tests
+  displayName: 'Android UI Tests (Run)'
+  dependsOn:
+  - Android_Build_For_Tests
+  - SamplesApp_UITests_Build
+
+  timeoutInMinutes: 90
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+  pool:
+    vmImage: ${{ parameters.vmMacOSImage }}
+
+  strategy:
+    matrix:
+      # Most tests pass, will be enabled in a later PR
+      #Android_5.0:
+      #  ANDROID_SIMULATOR_APILEVEL: 21
+      #  UITEST_TEST_MODE_NAME: Automated
+      Android_9.0:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Automated
+      Android_9.0_Snapshots:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Snapshots
+        UITEST_SNAPSHOTS_ONLY: true
+
+      # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
+      # Android_10.0:
+      #   ANDROID_SIMULATOR_APILEVEL: 29
+      #   UITEST_TEST_MODE_NAME: Automated
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: uitests-android-build
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+  - bash: |
+      $(build.sourcesdirectory)/build/android-uitest-run.sh
+
+    displayName: Run Android Tests
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
+      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
+ 
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME) Test Run'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
+      ArtifactType: Container

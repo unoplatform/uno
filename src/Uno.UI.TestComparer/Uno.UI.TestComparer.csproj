@@ -2,22 +2,25 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>net472</TargetFramework>
 	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	</PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
 
 	<ItemGroup>
 	  <None Remove="Properties\launchSettings.json" />
-	</ItemGroup>
+	</ItemGroup>	
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AppCenter" Version="2.1.1" />
-		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.150.0-preview" />
-		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.150.0-preview" />
-		<PackageReference Include="NUnit" Version="3.12.0" />
-		<PackageReference Include="NUnit.Engine" Version="3.10.0" />
-		<PackageReference Include="Refit" Version="4.3.0" />
-		<PackageReference Include="Mono.Options" Version="5.3.0.1" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.AppCenter" Version="4.1.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
+		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
+		<PackageReference Include="NUnit" Version="3.13.1" />
+		<PackageReference Include="NUnit.Engine" Version="3.11.1" />
+		<PackageReference Include="Refit" Version="6.0.24" />
+		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
+		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,14 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {
-	internal partial class CommandBarNavigationItemRenderer : Renderer<CommandBar, UINavigationItem>
+	internal partial class CommandBarNavigationItemRenderer : Renderer<CommandBar, UINavigationItem?>
 	{
 		private static DependencyProperty NavigationCommandProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "NavigationCommand");
 		private static DependencyProperty BackButtonTitleProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonTitle");
 
-		private TitleView _titleView;
+		private TitleView? _titleView;
 
-		private SerialDisposable _visibilitySubscriptions;
+		private readonly SerialDisposable _visibilitySubscriptions = new SerialDisposable();
 
 		public CommandBarNavigationItemRenderer(CommandBar element) : base(element) { }
 
@@ -30,24 +31,34 @@ namespace Uno.UI.Controls
 
 		protected override IEnumerable<IDisposable> Initialize()
 		{
-			_visibilitySubscriptions = new SerialDisposable();
-			yield return _visibilitySubscriptions;
+			var element = Element;
 
 			// Content
 			_titleView = new TitleView();
-			_titleView.SetParent(Element);
+			_titleView.SetParent(element);
 			_titleView.RegisterParentChangedCallback(this, OnTitleViewParentChanged);
-			yield return Disposable.Create(() => _titleView = null);
 
 			// Commands
-			VectorChangedEventHandler<ICommandBarElement> OnVectorChanged = (s, e) => RegisterCommandVisibilityAndInvalidate();
-			Element.PrimaryCommands.VectorChanged += OnVectorChanged;
-			Element.SecondaryCommands.VectorChanged += OnVectorChanged;
-			yield return Disposable.Create(() => Element.PrimaryCommands.VectorChanged -= OnVectorChanged);
-			yield return Disposable.Create(() => Element.SecondaryCommands.VectorChanged -= OnVectorChanged);
+			void OnVectorChanged(IObservableVector<ICommandBarElement> s, IVectorChangedEventArgs e)
+			{
+				RegisterCommandVisibilityAndInvalidate();
+			}
+
+			element.PrimaryCommands.VectorChanged += OnVectorChanged;
+			element.SecondaryCommands.VectorChanged += OnVectorChanged;
+
+			void Unregister()
+			{
+				_visibilitySubscriptions.Disposable = null;
+				_titleView = null;
+				element.PrimaryCommands.VectorChanged -= OnVectorChanged;
+				element.SecondaryCommands.VectorChanged -= OnVectorChanged;
+			}
+
+			yield return Disposable.Create(Unregister);
 
 			// Properties
-			yield return Element.RegisterDisposableNestedPropertyChangedCallback(
+			yield return element.RegisterDisposableNestedPropertyChangedCallback(
 				(s, e) => RegisterCommandVisibilityAndInvalidate(),
 				new[] { CommandBar.PrimaryCommandsProperty },
 				new[] { CommandBar.ContentProperty },
@@ -61,55 +72,65 @@ namespace Uno.UI.Controls
 
 		protected override void Render()
 		{
+			var native = Native;
+			var element = Element;
+
+			if (native == null)
+			{
+				throw new InvalidOperationException("Native should not be null.");
+			}
+
 			// Content
-			Native.Title = Element.Content as string;
-			Native.TitleView = Element.Content is UIView
-				? _titleView
-				: null;
-			_titleView.Child = Element.Content as UIView;
+			var content = element.Content;
+
+			native.Title = content as string;
+			native.TitleView = content is UIElement ? _titleView : null;
+			if (_titleView != null)
+			{
+				_titleView.Child = content as UIElement;
+			}
 
 			// PrimaryCommands
-			Native.RightBarButtonItems = Element
+			native.RightBarButtonItems = element
 				.PrimaryCommands
 				.OfType<AppBarButton>()
 				.Where(btn => btn.Visibility == Visibility.Visible && (((btn.Content as FrameworkElement)?.Visibility ?? Visibility.Visible) == Visibility.Visible))
-				.Do(appBarButton => appBarButton.SetParent(Element)) // This ensures that Behaviors expecting this button to be in the logical tree work. 
+				.Do(appBarButton => appBarButton.SetParent(element)) // This ensures that Behaviors expecting this button to be in the logical tree work.
 				.Select(appBarButton => appBarButton.GetRenderer(() => new AppBarButtonRenderer(appBarButton)).Native)
 				.Reverse()
 				.ToArray();
 
 			// CommandBarExtensions.NavigationCommand
-			var navigationCommand = Element.GetValue(NavigationCommandProperty) as AppBarButton;
+			var navigationCommand = element.GetValue(NavigationCommandProperty) as AppBarButton;
 			if (navigationCommand?.Visibility == Visibility.Visible)
 			{
-				navigationCommand.SetParent(Element); // This ensures that Behaviors expecting this button to be in the logical tree work. 
-				Native.LeftBarButtonItem = navigationCommand.GetRenderer(() => new AppBarButtonRenderer(navigationCommand)).Native;
+				navigationCommand.SetParent(element); // This ensures that Behaviors expecting this button to be in the logical tree work.
+				native.LeftBarButtonItem = navigationCommand.GetRenderer(() => new AppBarButtonRenderer(navigationCommand)).Native;
 			}
 			else
 			{
-				Native.LeftBarButtonItem = null;
+				native.LeftBarButtonItem = null;
 			}
 
-			// CommandBarExtensions.BackButtonText	
-			var backButtonText = Element.GetValue(BackButtonTitleProperty) as string;
-			if (backButtonText != null)
+			// CommandBarExtensions.BackButtonText
+			if (element.GetValue(BackButtonTitleProperty) is string backButtonText)
 			{
-				Native.BackBarButtonItem = new UIBarButtonItem(backButtonText, UIBarButtonItemStyle.Plain, null);
+				native.BackBarButtonItem = new UIBarButtonItem(backButtonText, UIBarButtonItemStyle.Plain, null);
 			}
 			else
 			{
-				Native.BackBarButtonItem = null;
+				native.BackBarButtonItem = null;
 			}
 		}
 
-		private void OnTitleViewParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		private void OnTitleViewParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs args)
 		{
 			// Even though we set the CommandBar as the parent of the TitleView,
 			// it will change to the native control when the view is added.
 			// This control is the visual parent but is not a DependencyObject and will not propagate the DataContext.
 			// In order to ensure the DataContext is propagated properly, we restore the CommandBar
 			// parent that can propagate the DataContext.
-			if (args.NewParent != Element && args.NewParent != null)
+			if (!ReferenceEquals(args.NewParent, Element) && args.NewParent != null)
 			{
 				_titleView.SetParent(Element);
 			}
@@ -136,7 +157,9 @@ namespace Uno.UI.Controls
 	{
 		private bool _blockReentrantMeasure;
 		private Size _childSize;
-		public TitleView()
+		private Size? _lastAvailableSize;
+
+		internal TitleView()
 		{
 			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
 			{
@@ -154,18 +177,33 @@ namespace Uno.UI.Controls
 			}
 		}
 
+		protected override void OnBeforeArrange()
+		{
+			//This is to ensure that the layouter gets the correct **finalRect**
+			LayoutSlotWithMarginsAndAlignments = RectFromUIRect(Frame);
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (_blockReentrantMeasure)
 			{
-				// In some cases setting the Frame below can prompt iOS to call SizeThatFits with 0 height, which would screw up the desired 
+				// In some cases setting the Frame below can prompt iOS to call SizeThatFits with 0 height, which would screw up the desired
 				// size of children if we're within LayoutSubviews(). In this case simply return the existing measure.
+				return _childSize;
+			}
+
+			//for the same reason expressed above we need to check if iOS sent a wrong availableSize which can be validated
+			// by checking the availableSize.Height
+			if (availableSize.Height == 0 && _lastAvailableSize?.Height != 0)
+			{
 				return _childSize;
 			}
 
 			try
 			{
 				_blockReentrantMeasure = true;
+
+				_lastAvailableSize = availableSize;
 
 				// By default, iOS will horizontally center the TitleView inside the UINavigationBar,
 				// ignoring the size of the left and right buttons.
@@ -186,11 +224,17 @@ namespace Uno.UI.Controls
 						&& !_childSize.Height.IsNaN()
 						&& _childSize.Height != 0
 						&& _childSize.Width != 0
-						&& (Frame.Width != _childSize.Width
-						|| Frame.Height != _childSize.Height))
+						&& ( (Frame.Width != _childSize.Width && _childSize.Width < Frame.Width)
+						|| (Frame.Height != _childSize.Height && _childSize.Height < Frame.Height)))
 					{
 						// Set the frame size to the child size so that the OS centers properly.
-						Frame = new CGRect(Frame.X, Frame.Y, _childSize.Width, _childSize.Height);
+						// but only when the Frame is bigger than the Child preventing cases where
+						// the Child Size is bigger making the Frame to overflow the Available Size.
+
+						var width = _childSize.Width < Frame.Width ? _childSize.Width : Frame.Width;
+						var height = _childSize.Height < Frame.Height ? _childSize.Height : Frame.Height;
+
+						Frame = new CGRect(Frame.X, Frame.Y, width, height);
 					}
 				}
 
@@ -207,7 +251,10 @@ namespace Uno.UI.Controls
 			get { return base.Frame; }
 			set
 			{
-				if (!UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
+				if (!UIDevice.CurrentDevice.CheckSystemVersion(11, 0)
+					// iOS likes to mix things up by calling SizeThatFits with zero Height for no apparent reason (eg when navigating back to a page). When
+					// this happens, we need to remeasure with the correct size to ensure children are laid out correctly.
+					|| (_lastAvailableSize?.Height == 0 && value.Height != 0))
 				{
 					// This allows text trimming when there are more AppBarButtons
 					var availableSize = value.Size;

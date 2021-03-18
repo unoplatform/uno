@@ -1,63 +1,63 @@
-﻿#if XAMARIN_ANDROID
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
 using Android.Views;
 using System;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public class UIElementCollection : BatchCollection<View>, IList<View>, IEnumerable<View>
-    {
-        private readonly BindableView _owner;	
+	public partial class UIElementCollection : IList<UIElement>, IEnumerable<UIElement>
+	{
+		private readonly BindableView _owner;
 
-        public UIElementCollection(BindableView owner) : base(owner)
-        { 
-            _owner = owner;
-        }
+		public UIElementCollection(BindableView owner)
+		{
+			_owner = owner;
+		}
 
-		protected override int IndexOfCore(View item)
+		private int IndexOfCore(UIElement item)
 		{
 			return _owner.GetChildren().IndexOf(item);
 		}
 
-		protected override void InsertCore(int index, View item)
+		private void InsertCore(int index, UIElement item)
 		{
 			_owner.AddView(item, index);
 		}
 
-		protected override View RemoveAtCore(int index)
+		private UIElement RemoveAtCore(int index)
 		{
 			var view = _owner.GetChildAt(index);
 			_owner.RemoveViewAt(index);
 
-			return view;
+			return view as UIElement;
 		}
 
-		protected override View GetAtIndexCore(int index)
+		private UIElement GetAtIndexCore(int index)
 		{
-			return _owner.GetChildAt(index);
+			return _owner.GetChildAt(index) as UIElement;
 		}
 
-		protected override View SetAtIndexCore(int index, View value)
+		private UIElement SetAtIndexCore(int index, UIElement value)
 		{
 			var view = _owner.GetChildAt(index);
 
 			_owner.RemoveViewAt(index);
 			_owner.AddView(value, index);
 
-			return view;
+			return view as UIElement;
 		}
 
-		protected override void AddCore(View item)
+		private void AddCore(UIElement item)
 		{
 			_owner.AddView(item);
 		}
 
-		protected override IEnumerable<View> ClearCore()
+		private IEnumerable<View> ClearCore()
 		{
 			var views = _owner.GetChildren().ToArray();
 			_owner.RemoveAllViews();
@@ -65,17 +65,17 @@ namespace Windows.UI.Xaml.Controls
 			return views;
 		}
 
-		protected override bool ContainsCore(View item)
+		private bool ContainsCore(UIElement item)
 		{
 			return _owner.GetChildren().Contains(item);
 		}
 
-		protected override void CopyToCore(View[] array, int arrayIndex)
+		private void CopyToCore(UIElement[] array, int arrayIndex)
 		{
 			_owner.GetChildren().ToArray().CopyTo(array, arrayIndex);
 		}
 
-		protected override bool RemoveCore(View item)
+		private bool RemoveCore(UIElement item)
 		{
 			if (item != null)
 			{
@@ -88,23 +88,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override int CountCore()
+		private int CountCore()
 		{
 			return _owner.ChildCount;
 		}
 
-		protected override void MoveCore(uint oldIndex, uint newIndex)
+		private void MoveCore(uint oldIndex, uint newIndex)
 		{
 			_owner.MoveViewTo((int)oldIndex, (int)newIndex);
 		}
-
-		protected override List<View>.Enumerator GetEnumeratorCore() 
-			=> _owner.GetChildrenEnumerator();
-
-		// This method is a explicit replace of GetEnumerator in BatchCollection<T> to
-		// enable allocation-less enumeration. It is present at this level to avoid
-		// a binary breaking change.
-		public new List<View>.Enumerator GetEnumerator() => GetEnumeratorCore();
 	}
 }
-#endif

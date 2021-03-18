@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	internal sealed class DispatcherFloatAnimator : CPUBoundFloatAnimator
+	internal sealed class DispatcherFloatAnimator : CPUBoundAnimator<float>
 	{
 		public const int DefaultFrameRate = 30;
 
@@ -23,5 +23,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		protected override void SetStartFrameDelay(long delayMs) => _timer.Interval = TimeSpan.FromMilliseconds(delayMs);
 		protected override void SetAnimationFramesInterval() =>_timer.Interval = TimeSpan.FromSeconds(1d / _frameRate);
+
+		protected override float GetUpdatedValue(long frame, float from, float to) => (float)_easing.Ease(frame, from, to, Duration);
 	}
 }

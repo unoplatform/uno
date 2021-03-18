@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>,global::System.Collections.Generic.IList<object>,global::System.Collections.Generic.IEnumerable<object>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ItemCollection.Size is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Size
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.VectorChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.VectorChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.GetAt(uint)

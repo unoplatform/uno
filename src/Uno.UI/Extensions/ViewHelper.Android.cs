@@ -10,6 +10,9 @@ using System.Runtime.CompilerServices;
 using Android.Views;
 using System.Threading;
 using System.Numerics;
+using Android.Graphics;
+using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
 
 namespace Uno.UI
 {
@@ -75,16 +78,11 @@ namespace Uno.UI
 		{
 			using (Android.Util.DisplayMetrics displayMetrics = Android.App.Application.Context.Resources.DisplayMetrics)
 			{
+				AdjustScaledDensity(displayMetrics);
+
 				// WARNING: The Density value is not completely based on the DPI of the device.
 				// On two 8" devices, the Density may not be consistent.
 				_cachedDensity = displayMetrics.Density;
-				if (FeatureConfiguration.Font.IgnoreTextScaleFactor)
-				{
-					// To disable text scaling, we put the Density value in ScaledDensity so that the ratio between them is 1.
-					// This ensures it's disabled for everything using ScaledDensity (e.g. TextBlock, TextBox, AppBarButton, etc.)
-					// https://developer.xamarin.com/api/property/Android.Util.DisplayMetrics.ScaledDensity/
-					displayMetrics.ScaledDensity = displayMetrics.Density;
-				}
 				_cachedScaledDensity = displayMetrics.ScaledDensity;
 				_cachedScaledXDpi = displayMetrics.Xdpi;
 
@@ -104,6 +102,8 @@ namespace Uno.UI
 		{
 			using (Android.Util.DisplayMetrics displayMetrics = Android.App.Application.Context.Resources.DisplayMetrics)
 			{
+				AdjustScaledDensity(displayMetrics);
+
 				_cachedScaledDensity = displayMetrics.ScaledDensity;
 			}
 		}
@@ -288,6 +288,19 @@ namespace Uno.UI
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static RectF PhysicalToLogicalPixels(this RectF size)
+		{
+			var fScale = (float)Scale;
+
+			return new RectF(
+				size.Left / fScale,
+				size.Top / fScale,
+				size.Right / fScale,
+				size.Bottom / fScale
+			);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Rect LogicalToPhysicalPixels(this Rect size)
 		{
 			return new Rect(
@@ -295,6 +308,17 @@ namespace Uno.UI
 				LogicalToPhysicalPixels(size.Y),
 				LogicalToPhysicalPixels(size.Width),
 				LogicalToPhysicalPixels(size.Height)
+			);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static RectF LogicalToPhysicalPixels(this RectF size)
+		{
+			return new RectF(
+				LogicalToPhysicalPixels(size.Left),
+				LogicalToPhysicalPixels(size.Top),
+				LogicalToPhysicalPixels(size.Right),
+				LogicalToPhysicalPixels(size.Bottom)
 			);
 		}
 
@@ -426,6 +450,17 @@ namespace Uno.UI
 			}
 
 			return 0;
+		}
+
+		private static void AdjustScaledDensity(Android.Util.DisplayMetrics displayMetrics)
+		{
+			if (FeatureConfiguration.Font.IgnoreTextScaleFactor)
+			{
+				// To disable text scaling, we put the Density value in ScaledDensity so that the ratio between them is 1.
+				// This ensures it's disabled for everything using ScaledDensity (e.g. TextBlock, TextBox, AppBarButton, etc.)
+				// https://developer.xamarin.com/api/property/Android.Util.DisplayMetrics.ScaledDensity/
+				displayMetrics.ScaledDensity = displayMetrics.Density;
+			}
 		}
 	}
 }

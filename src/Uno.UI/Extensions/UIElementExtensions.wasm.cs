@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 
 namespace Uno.UI.Extensions
 {
-	public static class UIElementExtensions
+	public static partial class UIElementExtensions
 	{
 
 		/// <summary>
@@ -18,16 +13,17 @@ namespace Uno.UI.Extensions
 			var current = view as FrameworkElement;
 			while (current != null)
 			{
-				var parent = current.Parent as FrameworkElement;
-				if (parent == null)
+				if (current.Parent is FrameworkElement parent)
 				{
-					return current;
+					current = parent;
 				}
-				current = parent;
+				else
+				{
+					break;
+				}
 			}
 
-			return null;
+			return current;
 		}
-
 	}
 }

@@ -101,6 +101,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			_applyDisposable?.Dispose();
 		}
+
+		public override string ToString() => _source.ToString();
 	}
 
 }

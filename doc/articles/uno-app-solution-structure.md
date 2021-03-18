@@ -14,7 +14,7 @@ Let's say we've created a new solution with the [Uno app template](https://marke
 
 > The main reason the solution contains a shared project and not a cross-targeted library is related to a missing Visual Studio feature. At present time (VS16.1.x), building a head that references such a cross-targeted library implies that all target frameworks are built, leading to a slow developer inner loop.
 
-Normally, your UI and business logic will go in the shared project. Bootstrapping code, packaging settings, and platform-specific code goes in the corresponding platform head. [String resources](using-uno-ui.md#localization) normally go in the shared project. [Image assets](features/working-with-assets.md) may go either in the shared project or under each head. [Font assets](using-uno-ui.md#custom-fonts) must be placed under each head.
+Normally, your UI and business logic will go in the shared project. Bootstrapping code, packaging settings, and platform-specific code goes in the corresponding platform head. [String resources](features/working-with-strings.md) normally go in the shared project. [Image assets](features/working-with-assets.md) may go either in the shared project or under each head. [Font assets](features/custom-fonts.md) must be placed under each head.
 
 ![Uno solution structure](Assets/solution-structure.png)
 
@@ -24,6 +24,10 @@ Clearly understanding how shared projects work is important to using Uno effecti
 
 It's important to be aware that the code in a shared-project file is compiled separately for each platform head. This gives a great deal of flexibility, but it also means that shared code may work for one platform, but not another.
 
+## Handling dependencies
+
+Since a shared project is just a list of files, it can't depend on other projects, NuGet packages, or system assemblies. Instead those dependencies must be added to the projects that are referencing the shared project.
+
 For example, we decide we need to use the `Json.NET` library in our app. We install the NuGet package in our `HelloWorld.Droid` head, and add a class to our `HelloWorld.Shared` project:
 
 ```csharp
@@ -32,7 +36,7 @@ using Newtonsoft.Json;
 ...
 ```
 
-We run our app on Android and it works fine. But now the UWP head fails to compile, because we forgot to install the NuGet package there. The solution in this case is to install the NuGet package in all the heads we're targeting.
+We run our app on Android and it works fine. But now the UWP head fails to compile because we forgot to install the NuGet package there. The solution in this case is to install the NuGet package in all the heads we're targeting.
 
 ## Further information
 

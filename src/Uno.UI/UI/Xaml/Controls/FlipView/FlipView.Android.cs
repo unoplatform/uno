@@ -6,6 +6,7 @@ using Uno.UI.Controls;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
+using AndroidX.ViewPager.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -50,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 			PagedView.SetCurrentItem(newValue, smoothScroll: animateChange);
 		}
 
-		private class FlipViewPageChangeListener : Android.Support.V4.View.ViewPager.SimpleOnPageChangeListener
+		private class FlipViewPageChangeListener : ViewPager.SimpleOnPageChangeListener
 		{
 			private WeakReference<FlipView> _ownerReference;
 			/// <summary>

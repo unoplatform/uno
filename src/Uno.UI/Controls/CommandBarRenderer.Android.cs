@@ -1,6 +1,5 @@
-﻿#if __ANDROID__
+﻿#nullable enable
 using Android.Graphics.Drawables;
-using Android.Support.V7.Widget;
 using Android.Views;
 using System;
 using System.Collections.Generic;
@@ -14,14 +13,15 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Android.Support.V4.Graphics.Drawable;
-using Android.Support.V7.App;
 using Android.App;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Android.Views.InputMethods;
 using Android.Content;
+using AndroidX.AppCompat.Widget;
+using AndroidX.Core.Graphics.Drawable;
+using Java.IO;
 
 namespace Uno.UI.Controls
 {
@@ -33,14 +33,15 @@ namespace Uno.UI.Controls
 		private static DependencyProperty BackButtonForegroundProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonForeground");
 		private static DependencyProperty BackButtonIconProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonIcon");
 
-		private static string _actionBarUpDescription;
-		private static string ActionBarUpDescription
+		private static string? _actionBarUpDescription;
+		private static string? ActionBarUpDescription
 		{
 			get
 			{
 				if (_actionBarUpDescription == null)
 				{
-					if (ContextHelper.Current is Activity activity && activity.Resources.GetIdentifier("action_bar_up_description", "string", "android") is int resourceId)
+					if (ContextHelper.Current is Activity activity
+					    && activity.Resources?.GetIdentifier("action_bar_up_description", "string", "android") is { } resourceId)
 					{
 						_actionBarUpDescription = activity.Resources.GetString(resourceId);
 					}
@@ -58,17 +59,18 @@ namespace Uno.UI.Controls
 		}
 
 		private Android.Graphics.Color? _originalTitleTextColor;
-		private Android.Graphics.Drawables.Drawable _originalBackground;
-		private Border _contentContainer;
+		private Android.Graphics.Drawables.Drawable? _originalBackground;
+		private Border? _contentContainer;
 
 		public CommandBarRenderer(CommandBar element) : base(element) { }
 
-		protected override Toolbar CreateNativeInstance() => new Toolbar(UI.ContextHelper.Current);
+		protected override Toolbar CreateNativeInstance() => new Toolbar(ContextHelper.Current);
 
 		protected override IEnumerable<IDisposable> Initialize()
 		{
-			_originalBackground = Native.Background;
-			_originalTitleTextColor = Native.GetTitleTextColor();
+			var native = Native;
+			_originalBackground = native.Background;
+			_originalTitleTextColor = native.GetTitleTextColor();
 
 			// Content
 			// This allows custom Content to be properly laid out inside the native Toolbar.
@@ -79,29 +81,38 @@ namespace Uno.UI.Controls
 				// According to Google's Material Design Guidelines, the Toolbar must have a minimum height of 48.
 				// https://material.io/guidelines/layout/structure.html
 				Height = 48,
+				Name = "CommandBarRendererContentHolder",
+
+				// Set the alignment so that the measured sized
+				// returned is size of the child, not the available
+				// size provided to the ToolBar view.
+				VerticalAlignment = VerticalAlignment.Top,
+				HorizontalAlignment = HorizontalAlignment.Left,
 			};
-			_contentContainer.SetParent(Element);
-			Native.AddView(_contentContainer);
-			yield return Disposable.Create(() => Native.RemoveView(_contentContainer));
-			yield return _contentContainer.RegisterParentChangedCallback(this, OnContentContainerParentChanged);
+
+			var element = Element;
+			_contentContainer.SetParent(element);
+			native.AddView(_contentContainer);
+			yield return Disposable.Create(() => native.RemoveView(_contentContainer));
+			yield return _contentContainer.RegisterParentChangedCallback(this, OnContentContainerParentChanged!);
 
 			// Commands.Click
-			Native.MenuItemClick += Native_MenuItemClick;
-			yield return Disposable.Create(() => Native.MenuItemClick -= Native_MenuItemClick);
+			native.MenuItemClick += Native_MenuItemClick;
+			yield return Disposable.Create(() => native.MenuItemClick -= Native_MenuItemClick);
 
 			// NavigationCommand.Click
-			Native.NavigationClick += Native_NavigationClick;
-			yield return Disposable.Create(() => Native.NavigationClick -= Native_NavigationClick);
+			native.NavigationClick += Native_NavigationClick;
+			yield return Disposable.Create(() => native.NavigationClick -= Native_NavigationClick);
 
 			// Commands
 			VectorChangedEventHandler<ICommandBarElement> OnVectorChanged = (s, e) => Invalidate();
-			Element.PrimaryCommands.VectorChanged += OnVectorChanged;
-			Element.SecondaryCommands.VectorChanged += OnVectorChanged;
-			yield return Disposable.Create(() => Element.PrimaryCommands.VectorChanged -= OnVectorChanged);
-			yield return Disposable.Create(() => Element.SecondaryCommands.VectorChanged -= OnVectorChanged);
+			element.PrimaryCommands.VectorChanged += OnVectorChanged;
+			element.SecondaryCommands.VectorChanged += OnVectorChanged;
+			yield return Disposable.Create(() => element.PrimaryCommands.VectorChanged -= OnVectorChanged);
+			yield return Disposable.Create(() => element.SecondaryCommands.VectorChanged -= OnVectorChanged);
 
 			// Properties
-			yield return Element.RegisterDisposableNestedPropertyChangedCallback(
+			yield return element.RegisterDisposableNestedPropertyChangedCallback(
 				(s, e) => Invalidate(),
 				new[] { CommandBar.PrimaryCommandsProperty },
 				new[] { CommandBar.SecondaryCommandsProperty },
@@ -114,6 +125,9 @@ namespace Uno.UI.Controls
 				new[] { CommandBar.BackgroundProperty, SolidColorBrush.OpacityProperty },
 				new[] { CommandBar.VisibilityProperty },
 				new[] { CommandBar.PaddingProperty },
+				new[] { CommandBar.OpacityProperty },
+				new[] { CommandBar.HorizontalContentAlignmentProperty },
+				new[] { CommandBar.VerticalContentAlignmentProperty },
 				new[] { CommandBar.OpacityProperty },
 				new[] { SubtitleProperty },
 				new[] { NavigationCommandProperty },
@@ -138,81 +152,93 @@ namespace Uno.UI.Controls
 
 		protected override void Render()
 		{
+			if (_contentContainer == null)
+			{
+				throw new InvalidOperationException();
+			}
+			var native = Native;
+			var element = Element;
+
 			// Content
-			Native.Title = Element.Content as string;
-			_contentContainer.Child = Element.Content as View;
-			_contentContainer.Visibility = Element.Content is View
+			var content = element.Content;
+			native.Title = content as string;
+			_contentContainer.Child = content as UIElement;
+			_contentContainer.VerticalAlignment = element.VerticalContentAlignment;
+			_contentContainer.HorizontalAlignment = element.HorizontalContentAlignment;
+			_contentContainer.Visibility = content is UIElement
 				? Visibility.Visible
 				: Visibility.Collapsed;
 
 			// CommandBarExtensions.Subtitle
-			Native.Subtitle = Element.GetValue(SubtitleProperty) as string;
+			native.Subtitle = element.GetValue(SubtitleProperty) as string;
 
 			// Background
-			var backgroundColor = (Element.Background as SolidColorBrush)?.ColorWithOpacity;
+			var backgroundColor = (element.Background as SolidColorBrush)?.ColorWithOpacity;
 			if (backgroundColor != null)
 			{
-				Native.SetBackgroundColor((Android.Graphics.Color)backgroundColor);
+				native.SetBackgroundColor((Android.Graphics.Color)backgroundColor);
 			}
 			else
 			{
-				Native.Background = _originalBackground ?? new ColorDrawable(Color.FromArgb(255, 250, 250, 250));
+				native.Background = _originalBackground ?? new ColorDrawable(Color.FromArgb(255, 250, 250, 250));
 			}
 
 			// Foreground
-			var foregroundColor = (Element.Foreground as SolidColorBrush)?.ColorWithOpacity;
+			var foregroundColor = (element.Foreground as SolidColorBrush)?.ColorWithOpacity;
 			if (foregroundColor != null)
 			{
-				Native.SetTitleTextColor((Android.Graphics.Color)foregroundColor);
+				native.SetTitleTextColor((Android.Graphics.Color)foregroundColor);
 			}
-			else
+			else if (_originalTitleTextColor != null)
 			{
-				Native.SetTitleTextColor(_originalTitleTextColor.Value);
+				native.SetTitleTextColor(_originalTitleTextColor.Value);
 			}
 
 			// PrimaryCommands & SecondaryCommands
-			var currentMenuItemIds = GetMenuItems(Native.Menu).Select(i => i.ItemId);
-			var intendedMenuItemIds = Element.PrimaryCommands
-				.Concat(Element.SecondaryCommands)
+			var currentMenuItemIds = GetMenuItems(native.Menu)
+				.Select(i => i!.ItemId);
+			var intendedMenuItemIds = element.PrimaryCommands
+				.Concat(element.SecondaryCommands)
 				.OfType<AppBarButton>()
 				.Select(i => i.GetHashCode());
 
 			if (!currentMenuItemIds.SequenceEqual(intendedMenuItemIds))
 			{
-				Native.Menu.Clear();
-				foreach (var command in Element.PrimaryCommands.Concat(Element.SecondaryCommands).OfType<AppBarButton>())
+				native.Menu.Clear();
+				foreach (var command in element.PrimaryCommands.Concat(element.SecondaryCommands).OfType<AppBarButton>())
 				{
-					var menuItem = Native.Menu.Add(0, command.GetHashCode(), Menu.None, null);
+#pragma warning disable 618
+					var menuItem = native.Menu.Add(0, command.GetHashCode(), Menu.None, null);
+#pragma warning restore 618
 
 					var renderer = command.GetRenderer(() => new AppBarButtonRenderer(command));
 					renderer.Native = menuItem;
 
 					// This ensures that Behaviors expecting this button to be in the logical tree work. 
-					command.SetParent(Element);
+					command.SetParent(element);
 				}
 			}
 
 			// CommandBarExtensions.NavigationCommand
-			var navigationCommand = Element.GetValue(NavigationCommandProperty) as AppBarButton;
-			if (navigationCommand != null)
+			if (element.GetValue(NavigationCommandProperty) is AppBarButton navigationCommand)
 			{
 				var renderer = navigationCommand.GetRenderer(() => new NavigationAppBarButtonRenderer(navigationCommand));
-				renderer.Native = Native;
+				renderer.Native = native;
 
 				// This ensures that Behaviors expecting this button to be in the logical tree work. 
-				navigationCommand.SetParent(Element);
+				navigationCommand.SetParent(element);
 			}
 			// CommandBarExtensions.BackButtonVisibility
-			else if ((Visibility)Element.GetValue(BackButtonVisibilityProperty) == Visibility.Visible)
+			else if ((Visibility)element.GetValue(BackButtonVisibilityProperty) == Visibility.Visible)
 			{
 				// CommandBarExtensions.BackButtonIcon
-				if (Element.GetValue(BackButtonIconProperty) is BitmapIcon bitmapIcon)
+				if (element.GetValue(BackButtonIconProperty) is BitmapIcon bitmapIcon)
 				{
-					Native.NavigationIcon = DrawableHelper.FromUri(bitmapIcon.UriSource);
+					native.NavigationIcon = DrawableHelper.FromUri(bitmapIcon.UriSource);
 				}
 				else
 				{
-					Native.NavigationIcon = new Android.Support.V7.Graphics.Drawable.DrawerArrowDrawable(ContextHelper.Current)
+					native.NavigationIcon = new AndroidX.AppCompat.Graphics.Drawable.DrawerArrowDrawable(ContextHelper.Current)
 					{
 						// 0 = menu icon
 						// 1 = back icon
@@ -221,12 +247,12 @@ namespace Uno.UI.Controls
 				}
 
 				// CommandBarExtensions.BackButtonForeground
-				var backButtonForeground = (Element.GetValue(BackButtonForegroundProperty) as SolidColorBrush)?.ColorWithOpacity;
+				var backButtonForeground = (element.GetValue(BackButtonForegroundProperty) as SolidColorBrush)?.ColorWithOpacity;
 				if (backButtonForeground != null)
 				{
-					switch (Native.NavigationIcon)
+					switch (native.NavigationIcon)
 					{
-						case Android.Support.V7.Graphics.Drawable.DrawerArrowDrawable drawerArrowDrawable:
+						case AndroidX.AppCompat.Graphics.Drawable.DrawerArrowDrawable drawerArrowDrawable:
 							drawerArrowDrawable.Color = (Android.Graphics.Color)backButtonForeground;
 							break;
 						case Drawable drawable:
@@ -235,17 +261,17 @@ namespace Uno.UI.Controls
 					}
 				}
 
-				Native.NavigationContentDescription = ActionBarUpDescription;
+				native.NavigationContentDescription = ActionBarUpDescription;
 			}
 			else
 			{
-				Native.NavigationIcon = null;
-				Native.NavigationContentDescription = null;
+				native.NavigationIcon = null;
+				native.NavigationContentDescription = null;
 			}
 
 			// Padding
-			var physicalPadding = Element.Padding.LogicalToPhysicalPixels();
-			Native.SetPadding(
+			var physicalPadding = element.Padding.LogicalToPhysicalPixels();
+			native.SetPadding(
 				(int)physicalPadding.Left,
 				(int)physicalPadding.Top,
 				(int)physicalPadding.Right,
@@ -253,10 +279,10 @@ namespace Uno.UI.Controls
 			);
 
 			// Opacity
-			Native.Alpha = (float)Element.Opacity;
+			native.Alpha = (float)element.Opacity;
 		}
 
-		private IEnumerable<IMenuItem> GetMenuItems(IMenu menu)
+		private IEnumerable<IMenuItem?> GetMenuItems(Android.Views.IMenu menu)
 		{
 			for (int i = 0; i < menu.Size(); i++)
 			{
@@ -294,12 +320,11 @@ namespace Uno.UI.Controls
 
 		private void CloseKeyboard()
 		{
-			if ((ContextHelper.Current as Activity)?.CurrentFocus is View focused)
+			if ((ContextHelper.Current as Activity)?.CurrentFocus is { } focused)
 			{
-				var imm = (InputMethodManager)ContextHelper.Current.GetSystemService(Context.InputMethodService);
-				imm.HideSoftInputFromWindow(focused.WindowToken, HideSoftInputFlags.None);
+				var imm = ContextHelper.Current.GetSystemService(Context.InputMethodService) as InputMethodManager;
+				imm?.HideSoftInputFromWindow(focused.WindowToken, HideSoftInputFlags.None);
 			}
 		}
 	}
 }
-#endif

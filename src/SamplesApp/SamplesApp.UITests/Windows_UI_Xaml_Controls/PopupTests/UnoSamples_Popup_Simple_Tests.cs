@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 {
@@ -30,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 
-			toggleButton.Tap();
+			toggleButton.FastTap();
 
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
 
@@ -38,7 +40,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.WaitForElement(popupContent);
 
-			popupContent.Tap();
+			popupContent.FastTap();
 
 			_app.Wait(0.25f);
 
@@ -70,50 +72,64 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Run("Uno.UI.Samples.Content.UITests.Popup.Popup_Simple");
 
 			_app.WaitForElement(_app.Marked("sampleContent"));
-
-			_app.Wait(0.15f);
-
 			var toggleButton = _app.Marked("TogglePopup2");
+			var popupContent = _app.Marked("popupContent2");
 
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 
-			toggleButton.Tap();
-
+			// 1. Open the popup
+			toggleButton.FastTap();
+			_app.Wait(0.25f);
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
-
-			var popupContent = _app.Marked("popupContent2");
-
 			_app.WaitForElement(popupContent);
+			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup opened");
 
-			popupContent.Tap();
-
+			// 2. Tap on content should keep the popup opened
+			popupContent.FastTap();
 			_app.Wait(0.25f);
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
+			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap on content");
 
-			_app.WaitForElement(popupContent); // should remain opened
-
+			// 2. Tap out of the popup should keep the pop opened
 			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;
-
 			_app.TapCoordinates(10, screenRect.Bottom - 10); // click elsewhere on the page
-
 			_app.Wait(0.25f);
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
+			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap out of popup");
 
-			_app.WaitForElement(popupContent); // should remain opened
+			// 3. Close the popup (to make sure to not pollute other tests)
+			toggleButton.FastTap(); // should dismiss here
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
+			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup closed"); // We add a screen shot in order to make sure that the check of the bool IsChecked is valid!
+		}
 
-			_app.Wait(0.25f);
+		[Test]
+		[AutoRetry]
+		public void PopupWithOverlay()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Popup.Popup_Overlay_On");
 
-			toggleButton.Tap(); // should dismiss here
+			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
+			var rect = _app.GetPhysicalRect("LocatorRectangle");
+			ImageAssert.HasColorAt(before, rect.CenterX, rect.CenterY, Color.Blue);
 
-			for (var i = 0; i < 5; i++)
-			{
-				if (_app.Marked("popupContent2").FirstResult() == null)
-				{
-					return; // dismissed!
-				}
+			_app.FastTap("PopupCheckBox");
 
-				_app.Wait(i * 0.15f);
-			}
+			_app.WaitForElement("PopupChild");
 
-			Assert.Fail("Popup not dismissed."); // this feature is known to fail on Android
+			using var during = TakeScreenshot("During", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
+
+			ImageAssert.DoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
+
+			// Dismiss popup
+			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;
+			_app.TapCoordinates(10, screenRect.Bottom - 10);
+
+			_app.WaitForNoElement("PopupChild");
+
+			using var after = TakeScreenshot("After");
+
+			ImageAssert.HasColorAt(after, rect.CenterX, rect.CenterY, Color.Blue);
 		}
 	}
 }

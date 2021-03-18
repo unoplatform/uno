@@ -1,36 +1,20 @@
-#if false
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum DayOfWeek 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Sunday,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Monday,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Tuesday,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Wednesday,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Thursday,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Friday,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Saturday,
-		#endif
+		// Skipping already declared field Windows.Globalization.DayOfWeek.Sunday
+		// Skipping already declared field Windows.Globalization.DayOfWeek.Monday
+		// Skipping already declared field Windows.Globalization.DayOfWeek.Tuesday
+		// Skipping already declared field Windows.Globalization.DayOfWeek.Wednesday
+		// Skipping already declared field Windows.Globalization.DayOfWeek.Thursday
+		// Skipping already declared field Windows.Globalization.DayOfWeek.Friday
+		// Skipping already declared field Windows.Globalization.DayOfWeek.Saturday
 	}
 	#endif
 }
-#endif

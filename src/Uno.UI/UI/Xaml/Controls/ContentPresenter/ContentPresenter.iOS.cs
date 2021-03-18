@@ -60,6 +60,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
+		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
+
 		private void UpdateBorder()
 		{
 			if (IsLoaded)
@@ -79,5 +81,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateBorder();
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
+
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

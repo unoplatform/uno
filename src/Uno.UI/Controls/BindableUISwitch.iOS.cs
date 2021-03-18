@@ -65,8 +65,8 @@ namespace Uno.UI.Views.Controls
 			set { this.SetValue(ThumbTintColorBrushProperty, value); }
 		}
 
-		public static readonly DependencyProperty ThumbTintColorBrushProperty =
-			DependencyProperty.Register("ThumbTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnThumbTintColorBrushChanged((Brush)e.NewValue)));
+		public static DependencyProperty ThumbTintColorBrushProperty { get ; } =
+			DependencyProperty.Register("ThumbTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new FrameworkPropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnThumbTintColorBrushChanged((Brush)e.NewValue)));
 
 		private void OnThumbTintColorBrushChanged(Brush newValue)
 		{
@@ -108,8 +108,8 @@ namespace Uno.UI.Views.Controls
 			set { this.SetValue(OnTintColorBrushProperty, value); }
 		}
 
-		public static readonly DependencyProperty OnTintColorBrushProperty =
-			DependencyProperty.Register("OnTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnOnTintColorBrushChanged((Brush)e.NewValue)));
+		public static DependencyProperty OnTintColorBrushProperty { get ; } =
+			DependencyProperty.Register("OnTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new FrameworkPropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnOnTintColorBrushChanged((Brush)e.NewValue)));
 
 		private void OnOnTintColorBrushChanged(Brush newValue)
 		{
@@ -151,8 +151,8 @@ namespace Uno.UI.Views.Controls
 			set { this.SetValue(TintColorBrushProperty, value); }
 		}
 
-		public static readonly DependencyProperty TintColorBrushProperty =
-			DependencyProperty.Register("TintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnTintColorBrushChanged((Brush)e.NewValue)));
+		public static DependencyProperty TintColorBrushProperty { get ; } =
+			DependencyProperty.Register("TintColorBrush", typeof(Brush), typeof(BindableUISwitch), new FrameworkPropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnTintColorBrushChanged((Brush)e.NewValue)));
 
 		private void OnTintColorBrushChanged(Brush newValue)
 		{
@@ -172,8 +172,8 @@ namespace Uno.UI.Views.Controls
 			set { SetValue(IsOnProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsOnProperty =
-			DependencyProperty.Register("IsOn", typeof(bool), typeof(BindableUISwitch), new PropertyMetadata(default(bool), (s, e) => ((BindableUISwitch)s)?.OnIsOnChanged(e)));
+		public static DependencyProperty IsOnProperty { get ; } =
+			DependencyProperty.Register("IsOn", typeof(bool), typeof(BindableUISwitch), new FrameworkPropertyMetadata(default(bool), (s, e) => ((BindableUISwitch)s)?.OnIsOnChanged(e)));
 
 
 		private void OnIsOnChanged(DependencyPropertyChangedEventArgs e)

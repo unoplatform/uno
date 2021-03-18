@@ -1,91 +1,94 @@
-# Working with the Samples Applications
+# Using the SamplesApp
 
-The Uno solution provides a set of sample applications that provide a way to test features, as
-well as provide a way to write UI Tests.
+The SamplesApp in Uno.UI is an Uno application containing a large number of UI and non-UI samples. It serves a few purposes:
 
-Those applications are structured in a way that samples can created out of normal `UserControl` instances, marked with the `SampleControlInfoAttribute` so the sample application can discover them.
+ * Allow for manually testing new features and investigating bugs,
+ * Provide UI for [automated UI tests](creating-ui-tests.md),
+ * Allow automated comparison of static snapshots between Uno versions,
+ * Document the functionality supported by Uno.
 
-Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
+This article details how to run SamplesApp and how to add a new sample.
 
-## Creating UI Tests
+For instructions on working with automated UI tests, [go here](creating-ui-tests.md). 
 
-The goal of these UI Tests is to :
+## Running SamplesApp
 
-* Demonstrate the use of controls
-* Compare the behavior of controls between platforms
-* Provide regression testing through the sample browser
+The SamplesApp from latest master branch for WebAssembly is available online: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
 
-To create a UI Test for the sample applications:
-- Create or reuse a folder named from the namespace of the control or class your want to test, replacing "`.`" by "`_`"
-- Create a new `UserControl` from the Visual Studio templates in the `UITests.Shared` project
-- Add `[Uno.UI.Samples.Controls.SampleControlInfo("Replace_with_control_or_class_name", "MyTestName", description: "MyDescription")]` on the code-behind class.
-- Run the samples application, and the sample should appear in the samples browser
+To run the SamplesApp locally:
 
-The Uno.UI process validates does two types of validations:
-- Screenshot based validation (with results comparison, see below)
-- Automated UI Testing for WebAssembly and Android using the `SamplesApp.UITests` and the [`Uno.UITest`](https://www.nuget.org/packages?q=uno.uitest) package.
+1. Ensure [your environment is configured](../get-started-vs.md) for the platform you want to run on.
+2. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
+3. Select `SamplesApp.[Platform]` as the startup app. (Eg, `SamplesApp.iOS` if you're running on iOS.)
+4. If you're testing on a mobile platform, use a tablet if possible, as the app is optimised for a tablet layout.
+5. Run SamplesApp.
 
-At this time, only WebAssembly and Android are used to run UI Tests, iOS is coming soon.
+If everything builds successfully, the app will run. The app is a collection of samples, grouped into categories. You can navigate to a sample using the menu on the left. 
 
-## Selectively ignore tests per platform
+![SamplesApp main view](assets/SamplesApp.png)
 
-It may be that some UI Tests are platform specific, or that some tests may not work on a particular platform.
+## Sample organization 
 
-In order to do so, the `ActivePlatformsAttribute` allows to specify which platform are active for a given test.
+Samples are located in the [`UITests.Shared` project](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared). UI-related samples are generally grouped by control, or by functional area for samples that aren't specific to a particular control (eg `VisualStateTests`). Non-UI samples are generally grouped by namespace of the tested feature. 
 
-This attribute is used as follows:
+Note that there's no 'master list' of samples. Instead, individual samples are tagged with `SampleAttribute` (or `SampleControlInfoAttribute`, for older samples), and the SamplesApp automatically picks up all samples using the attribute. 
+
+### SampleAttribute
+
+`SampleAttribute` accepts one or more optional categories, as well as an optional `Name` and `Description`, and a `ViewModelType` property which can be used to set a `Type` which will be instantiated and used as the `DataContext` of the sample control. If a category and/or a name aren't explicitly set, then the sample name and category will be automatically determined from the class name and the last part of the namespace.
+
+**Examples:**
+
+In the first example, no parameters are supplied to the `Sample` attribute. The sample will be included under the name `ToolTip_Long_Text`, in the `ToolTip` category.
+
+```csharp
+namespace UITests.Windows_UI_Xaml_Controls.ToolTip
+{
+	[Sample]
+	public sealed partial class ToolTip_Long_Text : UserControl
 ```
-[ActivePlatforms(Platform.iOS, Platform.Browser)]	// Run on iOS and Browser.
+
+In the second example, the category and name are manually specified, and a view-model type is specified to use as the `DataContext` of the sample.
+
+```csharp
+namespace UITests.Windows_Devices.Haptics
+{
+	[Sample("Windows.Devices", Name = "Haptics.VibrationDevice", ViewModelType = typeof(VibrationDeviceTestsViewModel))]
+	public sealed partial class VibrationDeviceTests : Page
 ```
 
-This attribute can be placed at the test or class level.
+## Adding a new sample
 
-## Setup for Automated UI Tests on WebAssembly
-- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
-- Deploy and run the `SamplesApp.Wasm` application once.
+To add a new sample to the SamplesApp:
 
-## Setup for Automated UI Tests on Android
-- Setup an android simulator or device, start it
-- Deploy and run the `SamplesApp.Droid` application on that device
+1. Locate the folder corresponding to the control or class you want to create a sample for in the `UITests.Shared` project. The folder structure is typically `Namespace_In_Snake_Case/ControlNameTests`. 
+2. Create a new `UserControl` from the Visual Studio templates, with a meaningful name.
+3. Add your sample UI to the `UserControl`.
+4. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the class in the code-behind partial file.
+5. Double-check that the category name matches other samples for the control.
+6. Run the `SamplesApp` to check that your sample appears in the browser and works as expected.
 
-## Running UI Tests
-- Open the [`Constants.cs](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
-- Select a test in the `SamplesApp.UITests` project and run a specific test.
+## Adding a manual test sample
 
-## Troubleshooting tests running during the CI
-The build artifacts contain the tests output, as well as the device logs (in the case of Android).
+Some tests cannot be validated automatically, and need to be flagged with the `IsManualTest` property on `SampleAttribute`. These tests will be filtered in the Samples App to be validated by a human.
 
-# Requirements for UI tests
+The content of those tests must describe a scenario to follow, what to expect, and which exceptional conditions may need to be validated. If the result is visual, an image or video resource file may be needed as well.
 
-- Each sample should demonstrate one and only one feature of a control so
-that it can be run and have a stable screenshot taken. This screenshot is then
-using for bitmap comparison during regression testing, or used by the an automated UI Testing tool.
-- Avoid the sample for having to scroll to view content, unless you are creating a UI Tests script as well.
-- If the sample has multiple states, a Xamarin UI Test script must also be added.
+## Sample snapshots on the CI
 
-# Creating Non-UI Tests
+Each CI build of Uno.UI records screenshots of each sample in the SamplesApp. A diff tool details screenshots that have changed from the previous master build, allowing unexpected changes in the visual output to be caught. 
 
-In the context of non-UI tests, a special sample control is available in the samples app (Unit Tests Runner). This control looks for tests in the `Uno.UI.RuntimeTests` project.
-
-Those tests use the MSTests format, and can be run as part of the running application to test for features that depend on the current platform.
-
-To create a Non-UI Test:
-- Create or reuse a folder named from the namespace of the class your want to test, replacing "`.`" by "`_`"
-- Name your class `Given_Your_Class_Name`
-- Create your test methods using `When_Your_Scenario`
-- An optional ViewModel type may be provided as an attribute so the browser automatically sets an instance as the DataContext of the sample
-
-> More information about the GivenWhenThen pattern: <https://martinfowler.com/bliki/GivenWhenThen.html>
-
-# Running the WebAssembly UI Tests Snapshots
+### Running the snapshot taker locally on WebAssembly
 The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.
 
 To run the tests:
+- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
 - Build the `SamplesApp.Wasm.UITests.njsproj` project
 - Press `F5`, node will start and run the tests sequentially
 - The screen shots are placed in a folder named `out`
 
 Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
+
 
 ## Validating the WebAssembly UI Tests results
 
@@ -93,14 +96,14 @@ In the CI build, an artifact named `wasm-uitests` is generated and contains an H
 for screenshots taken for the past builds. Download this artifact and open the html file to determine if any screenshots
 have changed.
 
-## Troubleshooting the tests
-It is possible to enable the chromium head using the configuration parameters in the [app.ts](src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
+### Troubleshooting the tests
+It is possible to enable the chromium head using the configuration parameters in the [app.ts](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 
-# Creating performance benchmarks
+## Creating performance benchmarks with BenchmarkDotNet
 
-Performance is measured using BenchmarkDotNet, in the suite located in the `SamplesApp.Benchmarks` shared project.
+Performance is measured using [BenchmarkDotNet](https://benchmarkdotnet.org/), in the suite located in the `SamplesApp.Benchmarks` shared project.
 
-A few points to consider when adding tests:
+A few points to consider when adding benchmarks:
 - Make a folder using the namespace separated by `_`
-- Don't make classes that contain a very important number of benchmarks. Those tests are run synchronously under
+- Avoid putting a large number of benchmarks in a single class. Those tests are run synchronously under
 WebAssembly, and this will allow for progress reporting to be visible.

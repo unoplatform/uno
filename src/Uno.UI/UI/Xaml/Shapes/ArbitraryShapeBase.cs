@@ -1,10 +1,14 @@
-﻿using Windows.UI.Xaml.Media;
+﻿#if !__IOS__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
+#define LEGACY_SHAPE_MEASURE
+#endif
+
+#if LEGACY_SHAPE_MEASURE
+using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
-using System.Text;
-using Windows.Foundation;
+using Windows.Foundation;	
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -15,10 +19,10 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected static double LimitWithUserSize(double availableSize, double userSize, double naNFallbackValue)
 		{
-			bool hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
+			var hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
 			var hasAvailableSize = !double.IsNaN(availableSize);
 
-#if __WASM__
+#if UNO_REFERENCE_API
 			// The measuring algorithms for shapes in Wasm and iOS/Android/macOS are not using the
 			// infinity the same way.
 			// Those implementation will need to be merged.
@@ -39,7 +43,7 @@ namespace Windows.UI.Xaml.Shapes
 			return naNFallbackValue;
 		}
 
-#if !__WASM__
+#if !UNO_REFERENCE_API
 		protected internal override void OnInvalidateMeasure()
 		{
 			base.OnInvalidateMeasure();
@@ -51,24 +55,61 @@ namespace Windows.UI.Xaml.Shapes
 		/// Refreshes the current shape, considering its drawinf parameters.
 		/// </summary>
 		/// <param name="forceRefresh">Forces a refresh by ignoring the shape parameters.</param>
-		protected internal override void RefreshShape(bool forceRefresh = false)
+		protected override void RefreshShape(bool forceRefresh = false)
 		{
 			if (IsLoaded)
 			{
 				var newLayerState = GetShapeParameters().ToArray();
 
-				var hasChanged = !(_layerState?.SequenceEqual(newLayerState) ?? false);
-
-				if (hasChanged || forceRefresh)
+				if (forceRefresh || !(_layerState?.SequenceEqual(newLayerState) ?? false))
 				{
 					// Remove the previous layer
 					_layer.Disposable = null;
 
 					_layerState = newLayerState;
-
 					_layer.Disposable = BuildDrawableLayer();
 				}
 			}
+		}
+
+		private protected Rect GetBounds()
+		{
+			var width = Width;
+			var height = Height;
+
+			if (double.IsNaN(width))
+			{
+				var minWidth = MinWidth;
+				if (minWidth > 0.0)
+				{
+					width = minWidth;
+				}
+			}
+			if (double.IsNaN(height))
+			{
+				var minHeight = MinHeight;
+				if (minHeight > 0.0)
+				{
+					height = minHeight;
+				}
+			}
+
+			if (double.IsNaN(width))
+			{
+				if (double.IsNaN(height))
+				{
+					return new Rect(0.0, 0.0, 0.0, 0.0);
+				}
+
+				return new Rect(0.0, 0.0, height, height);
+			}
+
+			if (double.IsNaN(height))
+			{
+				return new Rect(0.0, 0.0, width, width);
+			}
+
+			return new Rect(0.0, 0.0, width, height);
 		}
 
 		/// <summary>
@@ -93,3 +134,4 @@ namespace Windows.UI.Xaml.Shapes
 		protected bool ShouldPreserveOrigin => this is Path && Stretch == Stretch.None;
 	}
 }
+#endif

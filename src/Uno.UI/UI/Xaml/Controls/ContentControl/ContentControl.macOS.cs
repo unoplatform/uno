@@ -11,21 +11,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentControl
 	{
-		public ContentControl()
-		{
-		}
 
 		public override void ViewDidMoveToSuperview()
 		{
 			base.ViewDidMoveToSuperview();
-
-			if (FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
-			{
-				if (Superview != null)
-				{
-					SetUpdateTemplate();
-				}
-			}
 		}
 
 		partial void RegisterContentTemplateRoot()

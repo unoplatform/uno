@@ -2,21 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IXmlNodeSerializer 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		string InnerText
-		{
-			get;
-			set;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		string GetXml();
-		#endif
+		// Skipping already declared property InnerText
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNodeSerializer.GetXml()
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNodeSerializer.InnerText.get
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNodeSerializer.InnerText.set
 	}

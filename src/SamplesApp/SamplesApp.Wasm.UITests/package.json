@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "puppeteer": "^1.13.0",
-    "chromedriver": "^74.0.0"
+    "chromedriver": "^76.0.0"
   }
 }

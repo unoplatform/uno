@@ -1,52 +1,42 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
-    <AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+		<WarningsAsErrors>true</WarningsAsErrors>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 	
-	<ItemGroup>
-		<Reference Include="System" />
-		<Reference Include="System.Core" />
-		<Reference Include="System.Drawing" />
-		<Reference Include="System.Xaml">
-			<Aliases>__ms</Aliases>
-		</Reference>
-		<Reference Include="System.Xml.Linq" />
-		<Reference Include="System.Data.DataSetExtensions" />
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="System.Data" />
-		<Reference Include="System.Net.Http" />
-		<Reference Include="System.Xml" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.10.0" />
+	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>2.3.1</Version>
+			<Version>3.3.1</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.Common">
-			<Version>2.3.1</Version>
+			<Version>3.3.1</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>2.3.1</Version>
+			<Version>3.3.1</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>2.3.1</Version>
+			<Version>3.3.1</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-			<Version>2.3.1</Version>
+			<Version>3.3.1</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
-			<Version>2.1.0</Version>
+			<Version>3.1.6</Version>
 		</PackageReference>
 		<PackageReference Include="Mono.Cecil">
 			<Version>0.10.1</Version>
@@ -55,6 +45,21 @@
 		<PackageReference Include="Uno.SourceGeneration" />
 	</ItemGroup>
 	
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
+			<Version>3.1.6</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
+		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis">
+			<Version>3.8.0</Version>
+		</PackageReference>
+		<PackageReference Include="Mono.Cecil">
+			<Version>0.10.1</Version>
+		</PackageReference>
+		<PackageReference Include="Uno.Core" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<Compile Include="..\..\Uno.Foundation\Point.cs">
 			<Link>XamlGenerator\XamlPathParser\Point.cs</Link>
@@ -77,6 +82,9 @@
 		<Compile Include="..\..\Uno.UI\UI\Xaml\Media\SweepDirection.cs">
 			<Link>XamlGenerator\XamlPathParser\SweepDirection.cs</Link>
 		</Compile>
+		<Compile Include="..\..\Uno.Foundation\Metadata\ApiInformation.shared.cs">
+			<Link>XamlGenerator\ApiInformation.shared.cs</Link>
+		</Compile>
 		<Compile Include="..\..\Uno.UI\UI\Xaml\GridLength.cs">
 			<Link>Helpers\GridLength.cs</Link>
 		</Compile>
@@ -86,12 +94,15 @@
 		<Compile Include="..\..\Uno.UI\UI\Xaml\GridUnitType.cs">
 			<Link>Helpers\GridUnitType.cs</Link>
 		</Compile>
+		<Compile Include="..\..\Uno.UI\UI\Xaml\XamlFilePathHelper.shared.cs">
+			<Link>Helpers\XamlFilePathHelper.shared.cs</Link>
+		</Compile>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<None Include="Content\Uno.UI.SourceGenerators.props" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\System.Xaml\Uno.Xaml.csproj">
 			<Project>{1627740a-19d2-4d21-a0b2-66667038daf6}</Project>
@@ -99,17 +110,24 @@
 			<Aliases>__uno</Aliases>
 		</ProjectReference>
 	</ItemGroup>
-	
+
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+
+			<_TargetNugetFolder Condition="'$(TargetFramework)'=='net461'">$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\uno-sourcegen</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(TargetFramework)'=='netstandard2.0'">$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)*.*" />
+			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<Target Name="GetTargetPath" />
+	<Target Name="GetCopyToPublishDirectoryItems" />
 </Project>

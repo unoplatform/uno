@@ -10,7 +10,8 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using System;
-using Android.Support.V7.Widget;
+using AndroidX.RecyclerView.Widget;
+using AndroidX.AppCompat.Widget;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
 using Android.Views;
@@ -40,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void AddItems(int firstItem, int count, int section)
 		{
-			var unoIndex = IndexPath.FromRowSection(firstItem, section);
+			var unoIndex = Uno.UI.IndexPath.FromRowSection(firstItem, section);
 			var recyclerViewIndex = GetDisplayIndexFromIndexPath(unoIndex);
 			NativePanel?.CurrentAdapter?.NotifyItemRangeInserted(recyclerViewIndex, count);
 			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
@@ -48,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RemoveItems(int firstItem, int count, int section)
 		{
-			var unoIndex = IndexPath.FromRowSection(firstItem, section);
+			var unoIndex = Uno.UI.IndexPath.FromRowSection(firstItem, section);
 			var recyclerViewIndex = GetDisplayIndexFromIndexPath(unoIndex);
 			NativePanel?.CurrentAdapter?.NotifyItemRangeRemoved(recyclerViewIndex, count);
 			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
@@ -56,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void NativeReplaceItems(int firstItem, int count, int section)
 		{
-			var unoIndex = IndexPath.FromRowSection(firstItem, section);
+			var unoIndex = Uno.UI.IndexPath.FromRowSection(firstItem, section);
 			var recyclerViewIndex = GetDisplayIndexFromIndexPath(unoIndex);
 			NativePanel?.CurrentAdapter?.NotifyItemRangeChanged(recyclerViewIndex, count);
 			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
@@ -73,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 			var count = GetGroupCount(groupIndex);
 			if (count > 0)
 			{
-				adapter.NotifyItemRangeInserted(GetDisplayIndexFromIndexPath(IndexPath.FromRowSection(0, groupIndex)), count);
+				adapter.NotifyItemRangeInserted(GetDisplayIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(0, groupIndex)), count);
 				NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 			}
 		}
@@ -88,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (count > 0)
 			{
-				adapter.NotifyItemRangeRemoved(GetDisplayIndexFromIndexPath(IndexPath.FromRowSection(0, groupIndex)), count);
+				adapter.NotifyItemRangeRemoved(GetDisplayIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(0, groupIndex)), count);
 				NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 			}
 		}
@@ -118,8 +119,10 @@ namespace Windows.UI.Xaml.Controls
 			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 		}
 
-		private void Refresh()
+		private protected override void Refresh()
 		{
+			base.Refresh();
+
 			NativePanel?.Refresh();
 		}
 
@@ -233,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 			return ConvertIndexToDisplayPosition(displayItemCount);
 		}
 
-		internal override int GetDisplayIndexFromIndexPath(IndexPath indexPath)
+		internal override int GetDisplayIndexFromIndexPath(Uno.UI.IndexPath indexPath)
 		{
 			var displayIndex = base.GetDisplayIndexFromIndexPath(indexPath);
 			return ConvertIndexToDisplayPosition(displayIndex);

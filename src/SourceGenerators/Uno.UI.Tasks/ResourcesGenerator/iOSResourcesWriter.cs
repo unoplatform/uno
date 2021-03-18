@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Uno.Extensions;
 
 namespace Uno.UI.Tasks.ResourcesGenerator
 {
@@ -14,7 +13,10 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			using (var streamWriter = new StreamWriter(path, false, Encoding.UTF8))
 			{
-				comment.Maybe(c => streamWriter.WriteLine($"/* {c} */"));
+				if (comment != null)
+				{
+					streamWriter.WriteLine($"/* {comment} */");
+				}
 
 				resources
 					.Select(resource => $"\"{resource.Key}\" = \"{Sanitize(resource.Value)}\";")

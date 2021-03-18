@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.UI.Extensions;
@@ -18,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -96,6 +96,10 @@ namespace Windows.UI.Xaml.Controls
 		/// The most recent available size given by measure.
 		/// </summary>
 		private CGSize _lastAvailableSize;
+		/// <summary>
+		/// The available size when layout was most recently recreated.
+		/// </summary>
+		private CGSize _lastArrangeSize;
 		private bool _invalidatingHeadersOnBoundsChange;
 		private bool _invalidatingOnCollectionChanged;
 		private UnusedSpaceState _unusedSpaceState;
@@ -408,11 +412,6 @@ namespace Windows.UI.Xaml.Controls
 					}
 					_lastReportedSize = PrepareLayoutInternal(createLayoutInfo, _dirtyState == DirtyState.CollectionChanged, availableSize);
 
-					if (_dirtyState == DirtyState.NeedsRelayout && GetExtent(_lastReportedSize) < GetExtent(_lastAvailableSize))
-					{
-						SetHasUnusedSpace();
-					}
-
 					if (createLayoutInfo)
 					{
 						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -424,6 +423,7 @@ namespace Windows.UI.Xaml.Controls
 						if (_dirtyState == DirtyState.NeedsRelayout)
 						{
 							_hasDynamicItemSizes = false;
+							_lastArrangeSize = availableSize;
 						}
 						_pendingCollectionChanges.Clear();
 						_dirtyState = DirtyState.None;
@@ -441,6 +441,11 @@ namespace Windows.UI.Xaml.Controls
 					_dirtyState = DirtyState.None;
 				}
 
+				if (GetExtent(_lastReportedSize) < GetExtent(_lastAvailableSize))
+				{
+					SetHasUnusedSpace();
+				}
+
 				return _lastReportedSize;
 			}
 		}
@@ -450,10 +455,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var oldBreadth = GetBreadth(oldAvailableSize);
 			var newBreadth = GetBreadth(newAvailableSize);
+			var oldArrangeBreadth = GetBreadth(_lastArrangeSize);
 
 			// Recalculate layout only when the breadth changes. Extent changes don't affect the desired extent reported by layouting (since 
 			// items always get measured with infinite extent).
 			return NMath.Abs(oldBreadth - newBreadth) > epsilon
+				// If the new measure size happens to have been used for the most recent arrange, we don't need to relayout
+				&& NMath.Abs(oldArrangeBreadth - newBreadth) > epsilon
+				// ShouldApplyChildStretch is currently set false only for TabView - we avoid triggering a layout on size change in this case
+				// because it gives the items messed-up frame offsets.
+				&& ShouldApplyChildStretch
 				// Skip recalculating layout for 0 size.
 				&& !newAvailableSize.IsEmpty;
 		}
@@ -467,6 +478,10 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The total collection size</returns>
 		private CGSize PrepareLayoutInternal(bool createLayoutInfo, bool isCollectionChanged, CGSize size)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"PrepareLayoutInternal() - recalculating layout, createLayoutInfo={createLayoutInfo}, dirtyState={_dirtyState}, size={size} ");
+			}
 			Dictionary<NSIndexPath, CGSize?> oldItemSizes = null;
 			Dictionary<int, CGSize?> oldGroupHeaderSizes = null;
 
@@ -534,7 +549,7 @@ namespace Windows.UI.Xaml.Controls
 			if (xamlParent.ShouldShowHeader)
 			{
 				//1. Layout header at start
-				frame.Size = oldHeaderSize ?? GetHeaderSize();
+				frame.Size = oldHeaderSize ?? GetHeaderSize(size);
 				//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
 				SetBreadth(ref frame, availableBreadth);
 				if (createLayoutInfo)
@@ -562,7 +577,7 @@ namespace Windows.UI.Xaml.Controls
 					availableGroupBreadth -= (nfloat)GroupPaddingBreadthEnd;
 
 					//a. Layout group header, if present
-					frame.Size = oldGroupHeaderSizes?.UnoGetValueOrDefault(section) ?? GetSectionHeaderSize(section);
+					frame.Size = oldGroupHeaderSizes?.UnoGetValueOrDefault(section) ?? GetSectionHeaderSize(section, size);
 					if (RelativeGroupHeaderPlacement != RelativeHeaderPlacement.Adjacent)
 					{
 						//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
@@ -590,7 +605,7 @@ namespace Windows.UI.Xaml.Controls
 				//Ensure container for group exists even if group contains no items, to simplify subsequent logic
 				if (createLayoutInfo)
 				{
-					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>(); 
+					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>();
 				}
 				//b. Layout items in group
 				var itemsBreadth = LayoutItemsInGroup(section, availableGroupBreadth, ref frame, createLayoutInfo, oldItemSizes);
@@ -622,7 +637,7 @@ namespace Windows.UI.Xaml.Controls
 			if (xamlParent.ShouldShowFooter)
 			{
 				//3. Layout footer 
-				frame.Size = oldFooterSize ?? GetFooterSize();
+				frame.Size = oldFooterSize ?? GetFooterSize(size);
 				//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
 				SetBreadth(ref frame, availableBreadth);
 				if (createLayoutInfo)
@@ -686,7 +701,7 @@ namespace Windows.UI.Xaml.Controls
 					var kind = layout.RepresentedElementKind ?? NativeListViewBase.ListViewItemElementKind;
 					var indexPath = OffsetIndexForPendingChanges(layout.IndexPath, kind);
 					return GetExtentEnd(layout.Frame) > scrollOffset &&
-					// Exclude items that are being removed or replaced. (These items are set to row or section of int.MaxValue == 2, but 
+					// Exclude items that are being removed or replaced. (These items are set to row or section of int.MaxValue / 2, but 
 					// subsequent insertions/deletions mean they might no longer be exactly equal.)
 					indexPath.Row < int.MaxValue / 4 &&
 					indexPath.Section < int.MaxValue / 4;
@@ -866,24 +881,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected CGSize GetItemSizeForIndexPath(NSIndexPath indexPath)
+		private protected CGSize GetItemSizeForIndexPath(NSIndexPath indexPath, nfloat availableBreadth)
 		{
-			return Source.GetTarget()?.GetItemSize(CollectionView, indexPath) ?? CGSize.Empty;
+			return Source.GetTarget()?.GetItemSize(CollectionView, indexPath, GetAvailableChildSize(availableBreadth)) ?? CGSize.Empty;
 		}
 
-		private CGSize GetHeaderSize()
+		private CGSize GetHeaderSize(CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetHeaderSize() ?? CGSize.Empty;
+			return Source.GetTarget()?.GetHeaderSize(GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
-		private CGSize GetFooterSize()
+		private CGSize GetFooterSize(CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetFooterSize() ?? CGSize.Empty;
+			return Source.GetTarget()?.GetFooterSize(GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
-		private CGSize GetSectionHeaderSize(int section)
+		private CGSize GetSectionHeaderSize(int section, CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetSectionHeaderSize(section) ?? CGSize.Empty;
+			return Source.GetTarget()?.GetSectionHeaderSize(section, GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
 		/// <summary>
@@ -967,6 +982,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_invalidatingOnCollectionChanged = true;
 			_pendingCollectionChanges.Enqueue(change);
+
+			if (change.Action == NotifyCollectionChangedAction.Add && DidLeaveUnusedSpace())
+			{
+				// If we're adding an item and the previous layout didn't use all available space, we probably need more space.
+				PropagateUnusedSpaceRelayout();
+			}
 		}
 
 		/// <summary>
@@ -1122,15 +1143,23 @@ namespace Windows.UI.Xaml.Controls
 			var lastReported = GetExtent(_lastReportedSize);
 			if (DidLeaveUnusedSpace() && DynamicContentExtent > lastReported)
 			{
-				SetWillConsumeUnusedSpace();
-
 				SetExtent(ref _lastReportedSize, DynamicContentExtent);
 
-				var nativePanel = CollectionView as NativeListViewBase;
-				nativePanel.SetNeedsLayout();
-				// NativeListViewBase swallows layout requests by design
-				nativePanel.SetSuperviewNeedsLayout();
+				PropagateUnusedSpaceRelayout();
 			}
+		}
+
+		/// <summary>
+		/// We left space 'on the table' in a previous measure+arrange and now we need more, propagate a layout request.
+		/// </summary>
+		private void PropagateUnusedSpaceRelayout()
+		{
+			SetWillConsumeUnusedSpace();
+
+			var nativePanel = CollectionView as NativeListViewBase;
+			nativePanel.SetNeedsLayout();
+			// NativeListViewBase swallows layout requests by design
+			nativePanel.SetSuperviewNeedsLayout();
 		}
 
 		/// <summary>
@@ -1373,22 +1402,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private IndexPath GetFirstVisibleIndexPath()
+		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
 			return CollectionView.IndexPathsForVisibleItems
 				.OrderBy(p => p.ToIndexPath())
 				.FirstOrDefault()?
 				.ToIndexPath()
-					?? IndexPath.FromRowSection(-1, 0);
+					?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
-		private IndexPath GetLastVisibleIndexPath()
+		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
 			return CollectionView.IndexPathsForVisibleItems
 				.OrderByDescending(p => p.ToIndexPath())
 				.FirstOrDefault()?
 				.ToIndexPath()
-					?? IndexPath.FromRowSection(-1, 0);
+					?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
 		protected CGRect AdjustExtentOffset(CGRect frame, nfloat adjustment)
@@ -1490,7 +1519,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private nfloat GetBreadthEnd(CGRect frame)
+		protected nfloat GetBreadthEnd(CGRect frame)
 		{
 			if (ScrollOrientation == Orientation.Vertical)
 			{
@@ -1605,10 +1634,32 @@ namespace Windows.UI.Xaml.Controls
 			return _inlineHeaderFrames[section];
 		}
 
+		/// <summary>
+		/// Get size available to children, given an available breadth.
+		/// </summary>
+		private Size GetAvailableChildSize(nfloat availableBreadth)
+		{
+			return ScrollOrientation == Orientation.Vertical ?
+				new Size(availableBreadth, double.PositiveInfinity) :
+				new Size(double.PositiveInfinity, availableBreadth);
+		}
+
+		/// <summary>
+		/// Get size available to children, given an available size for the viewport.
+		/// </summary>
+		private Size GetAvailableChildSize(CGSize availableViewportSize)
+		{
+			return ScrollOrientation == Orientation.Vertical ?
+				new Size(availableViewportSize.Width, double.PositiveInfinity) :
+				new Size(double.PositiveInfinity, availableViewportSize.Height);
+		}
+
 #if DEBUG
 		UICollectionViewLayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
 
 		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
 #endif
+
+		Uno.UI.IndexPath? GetReorderingIndex() => null;
 	}
 }

@@ -14,7 +14,8 @@ using System.Diagnostics.CodeAnalysis;
 using Uno.Logging;
 using Windows.UI.Core;
 using Uno.UI.Controls;
-
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
@@ -102,10 +103,16 @@ namespace AppKit
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this _View view)
+		public static T FindFirstParent<T>(this _View view) where T : class
+			=> FindFirstParent<T>(view, includeCurrent: false);
+
+		public static T FindFirstParent<T>(this _View view, bool includeCurrent)
 			where T : class
 		{
-			view = view?.Superview;
+			if (!includeCurrent)
+			{
+				view = view?.Superview;
+			}
 			while (view != null)
 			{
 				var typed = view as T;
@@ -187,8 +194,20 @@ namespace AppKit
 			InvalidateMeasure(view);
 		}
 
+		/// <summary>
+		/// Enumerate subviews matching given selector up to a given depth.
+		/// </summary>
+		/// <param name="view">View to enumerate.</param>
+		/// <param name="selector">View selector.</param>
+		/// <param name="maxDepth">Maximum depth.</param>
+		/// <returns>Views in default order.</returns>
 		public static IEnumerable<_View> FindSubviews(this _View view, Func<_View, bool> selector, int maxDepth = 20)
 		{
+			if (view == null)
+			{
+				throw new ArgumentNullException(nameof(view));
+			}
+
 			foreach (var sub in view.Subviews)
 			{
 				if (selector(sub))
@@ -198,6 +217,37 @@ namespace AppKit
 				else if (maxDepth > 0)
 				{
 					foreach (var subResult in sub.FindSubviews(selector, maxDepth - 1))
+					{
+						yield return subResult;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerate subviews matching given selector up to a given depth in reverse order.
+		/// </summary>
+		/// <param name="view">View to enumerate.</param>
+		/// <param name="selector">View selector.</param>
+		/// <param name="maxDepth">Maximum depth.</param>
+		/// <returns>Views in reverse order.</returns>
+		public static IEnumerable<_View> FindSubviewsReverse(this _View view, Func<_View, bool> selector, int maxDepth = 20)
+		{
+			if (view == null)
+			{
+				throw new ArgumentNullException(nameof(view));
+			}
+
+			for (int i = view.Subviews.Length - 1; i >= 0; i--)
+			{
+				var sub = view.Subviews[i];
+				if (selector(sub))
+				{
+					yield return sub;
+				}
+				else if (maxDepth > 0)
+				{
+					foreach (var subResult in sub.FindSubviewsReverse(selector, maxDepth - 1))
 					{
 						yield return subResult;
 					}
@@ -308,7 +358,7 @@ namespace AppKit
 		/// <param name="view">View</param>
 		/// <returns>First responder view</returns>
 		public static _View FindFirstResponder(this _View view) =>
-			Uno.Extensions.UIViewExtensions.FindFirstResponder(view);		
+			Uno.Extensions.UIViewExtensions.FindFirstResponder(view);
 
 		/// <summary>
 		/// Finds the nearest view controller for this _View.
@@ -483,22 +533,6 @@ namespace AppKit
 		}
 
 		/// <summary>
-		/// Gets an identifier that can be used for logging
-		/// </summary>
-		public static string GetDebugIdentifier(this _View element)
-		{
-			if (element == null)
-			{
-				return "--NULL--";
-			}
-
-			var name = (element as IFrameworkElement)?.Name;
-			return name.HasValue()
-				? element.GetType().Name + "_" + name + "_" + element.GetHashCode()
-				: element.GetType().Name + "_" + element.GetHashCode();
-		}
-
-		/// <summary>
 		/// Enumerates the children for the specified instance, either using _View.Subviews or using IShadowChildrenProvider.
 		/// </summary>
 		/// <param name="view"></param>
@@ -542,7 +576,7 @@ namespace AppKit
 
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Returns the root of the view's local visual tree.
 		/// </summary>
@@ -581,15 +615,31 @@ namespace AppKit
 				var name = (innerView as IFrameworkElement)?.Name;
 				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
 
+				var uiElement = innerView as UIElement;
+				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
+				var fe = innerView as IFrameworkElement;
+
 				return sb
 						.Append(spacing)
 						.Append(innerView == viewOfInterest ? "*>" : ">")
 						.Append(innerView.ToString() + namePart)
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
-
+						.Append($" ds:{desiredSize}")
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
+						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+						.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
+						.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
+						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
+						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
+						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
+						.Append(fe != null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
+						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
+						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
+						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
+						.Append(uiElement?.GetElementSpecificDetails())
+						.Append(uiElement?.RenderTransform.GetTransformDetails())
 						.AppendLine();
 			}
 		}
@@ -624,6 +674,6 @@ namespace AppKit
 #elif __MACOS__
 			view.NeedsDisplay = true;
 #endif
-		} 
+		}
 	}
 }

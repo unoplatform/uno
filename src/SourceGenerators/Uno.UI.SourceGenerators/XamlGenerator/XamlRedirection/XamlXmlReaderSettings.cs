@@ -1,5 +1,4 @@
-﻿extern alias __ms;
-extern alias __uno;
+﻿extern alias __uno;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
@@ -7,33 +6,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 	{
 		public XamlXmlReaderSettings()
 		{
-			if (XamlConfig.IsUnoXaml)
-			{
-				UnoInner = new __uno::Uno.Xaml.XamlXmlReaderSettings();
-			}
-			else
-			{
-				MsInner = new __ms::System.Xaml.XamlXmlReaderSettings();
-			}
+			UnoInner = new __uno::Uno.Xaml.XamlXmlReaderSettings();
 		}
 
 		public bool ProvideLineInfo
 		{
-			get => XamlConfig.IsUnoXaml ? UnoInner.ProvideLineInfo : MsInner.ProvideLineInfo;
+			get => UnoInner.ProvideLineInfo;
 			set
 			{
-				if (XamlConfig.IsUnoXaml)
-				{
-					UnoInner.ProvideLineInfo = value;
-				}
-				else
-				{
-					MsInner.ProvideLineInfo = value;
-				}
+				UnoInner.ProvideLineInfo = value;
 			}
 		}
 
 		public __uno::Uno.Xaml.XamlXmlReaderSettings UnoInner { get; internal set; }
-		public __ms::System.Xaml.XamlXmlReaderSettings MsInner { get; internal set; }
 	}
 }

@@ -19,56 +19,43 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("ImageBrushTestControl", "ImageBrush_StreamSource")]
+	[Sample]
 	public sealed partial class ImageBrush_StreamSource : UserControl
 	{
-		private readonly ImageBrush_StreamSource_Data _context;
+		public static DependencyProperty MySourceProperty { get; } =
+			DependencyProperty.Register("MySource", typeof(ImageSource), typeof(ImageBrush_StreamSource), new PropertyMetadata(null));
+
+		public ImageSource MySource
+		{
+			get => (ImageSource)GetValue(MySourceProperty);
+			set => SetValue(MySourceProperty, value);
+		}
 
 		public ImageBrush_StreamSource()
 		{
 			this.InitializeComponent();
 
-			DataContext = _context = new ImageBrush_StreamSource_Data();
-
 			this.RunWhileLoaded(async ct =>
 			{
-				var data = await new HttpClient().GetByteArrayAsync("http://www.google.com/logos/2006/worldcup06_pt.gif");
+#if __WASM__
+				using var httpClient = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
+#else
+				using var httpClient = new HttpClient();
+#endif
+				const string imageUrl = "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.jpg";
+				var data = await httpClient.GetByteArrayAsync(imageUrl);
 
-				var bitmapImage = new BitmapImage();
+				BitmapImage bitmapImage;
+				MySource = bitmapImage = new BitmapImage();
 
 #if NETFX_CORE
-				var stream = new MemoryStream(data).AsRandomAccessStream();
+				using var stream = new MemoryStream(data).AsRandomAccessStream();
 #else
-				var stream = new MemoryStream(data);
+				using var stream = new MemoryStream(data);
 #endif
-				using (stream)  //Test that SetSourceAsync does not depend on the lifetime of this stream
-				{
-					await bitmapImage.SetSourceAsync(stream);
-					_context.MySource = bitmapImage;
-				}
+				await bitmapImage.SetSourceAsync(stream);
+				MySource = bitmapImage;
 			});
 		}
-	}
-
-	public partial class ImageBrush_StreamSource_Data : DependencyObject
-	{
-		public ImageBrush_StreamSource_Data()
-		{
-		}
-
-#region MySource DependencyProperty
-
-		public ImageSource MySource
-		{
-			get { return (ImageSource)this.GetValue(MySourceProperty); }
-			set { this.SetValue(MySourceProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for MySource.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MySourceProperty =
-			DependencyProperty.Register("MySource", typeof(ImageSource), typeof(ImageBrush_StreamSource_Data), new PropertyMetadata(null));
-
-#endregion
-
 	}
 }

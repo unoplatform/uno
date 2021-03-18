@@ -2,14 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
-	public  partial class BitmapIconSource : global::Windows.UI.Xaml.Controls.IconSource
+#endif
+	public partial class BitmapIconSource : global::Windows.UI.Xaml.Controls.IconSource
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Uri UriSource
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::System.Uri UriSource
 		{
 			get
 			{
@@ -20,10 +20,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(UriSourceProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool ShowAsMonochrome
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool ShowAsMonochrome
 		{
 			get
 			{
@@ -34,30 +34,30 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(ShowAsMonochromeProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ShowAsMonochromeProperty { get; } = 
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty ShowAsMonochromeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ShowAsMonochrome", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.BitmapIconSource), 
+			nameof(ShowAsMonochrome), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.BitmapIconSource),
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty UriSourceProperty { get; } = 
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty UriSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"UriSource", typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Controls.BitmapIconSource), 
+			nameof(UriSource), typeof(global::System.Uri),
+			typeof(global::Windows.UI.Xaml.Controls.BitmapIconSource),
 			new FrameworkPropertyMetadata(default(global::System.Uri)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public BitmapIconSource() 
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public BitmapIconSource()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.BitmapIconSource", "BitmapIconSource.BitmapIconSource()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.BitmapIconSource.BitmapIconSource()
 		// Forced skipping of method Windows.UI.Xaml.Controls.BitmapIconSource.UriSource.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.BitmapIconSource.UriSource.set

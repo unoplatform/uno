@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
-	[SampleControlInfo("CommandBar", "Content", typeof(CommandBarViewModel))]
+	[SampleControlInfo("CommandBar", "Content", typeof(CommandBarViewModel), ignoreInSnapshotTests: true)]
     public sealed partial class CommandBar_Content : UserControl
     {
         public CommandBar_Content()

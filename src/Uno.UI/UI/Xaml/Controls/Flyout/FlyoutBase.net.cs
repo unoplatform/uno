@@ -7,6 +7,7 @@ using Uno.UI.Extensions;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -21,9 +22,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			};
 		}
 
-		partial void SetPopupPositionPartial(UIElement placementTarget)
+		partial void SetPopupPositionPartial(UIElement placementTarget, Point? position)
 		{
 			_popup.Anchor = placementTarget;
 		}
+
+		internal PopupPanel GetPopupPanel() => _popup.PopupPanel;
 	}
 }

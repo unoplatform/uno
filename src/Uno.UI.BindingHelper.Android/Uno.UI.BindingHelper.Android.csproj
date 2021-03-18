@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid80;MonoAndroid90;net461;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
+		<TargetFrameworks>MonoAndroid10.0;MonoAndroid11.0;net461;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1701;1702;1705;109</NoWarn>
 
@@ -9,8 +9,8 @@
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-
-		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid80' or '$(TargetFramework)' == 'MonoAndroid90'">true</IsBindingProject>
+		
+		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid10.0'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
 
@@ -24,25 +24,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
+		<PackageReference Include="Xamarin.Build.Download" Version="0.10.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>26.1.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>26.1.0.1</Version>
-		</PackageReference>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
+		<PackageReference Include="Xamarin.AndroidX.Fragment" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>28.0.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>28.0.0.1</Version>
-		</PackageReference>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -59,15 +54,20 @@
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<Target Name="_CompileUnoJavaCreateOutputs"
-					BeforeTargets="Build"
-					AfterTargets="Restore">
+	<!--
+		The dependency on _CleanJavaGenerated is required to avoid partial assembly
+		rebuild that create "missing UnoViewGroup" errors. This situation can happen
+		when modifying an external msbuild props/targets file, such as Directory.Build.props
+		then building the project. Cleaning the generated files ensures that the whole
+		binding assembly is generated properly.
+	-->
+	<Target Name="_CompileUnoJavaCreateOutputs" BeforeTargets="Build" AfterTargets="Restore" DependsOnTargets="_CleanJavaGenerated">
 		<!--
 		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up,
 		but in the obj folder so we don't have rebuild and git ignore issues.
 		-->
 		<ItemGroup>
-			<EmbeddedJar Include="$(IntermediateOutputPath)\unojars\uno.ui-$(TargetFramework).jar" />
+			<EmbeddedJar Include="$(IntermediateOutputPath)unojars\uno.ui-$(TargetFramework).jar" />
 		</ItemGroup>
 	</Target>
 
@@ -80,8 +80,8 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
-	<!-- Workaround for https://github.com/nventive/Uno/issues/986 -->
-	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml">
+	<!-- Workaround for https://github.com/unoplatform/uno/issues/986 -->
+	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml" Condition="'$(MSBuildVersion)' &lt; '16.8' and !$([MSBuild]::IsOsPlatform(OSX))">
 
 		<!--
 		This is required to ensure the first pass of the BindingsGenerator task is
@@ -94,21 +94,16 @@
 	</Target>
 
 	<ItemGroup>
-		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
-		<_CompileUnoJavaBeforeTargets Include="GenerateBindings"/>
-		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports"/>
-		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
+		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
+		<_CompileUnoJavaBeforeTargets Include="GenerateBindings" />
+		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports" />
+		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
 
-		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports"/> <!-- This target generates the \lp\**\classes.jar -->
+		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports" /> <!-- This target generates the \lp\**\classes.jar -->
 	</ItemGroup>
 
-	<Target Name="_CompileUnoJava"
-					Condition="'$(DesignTimeBuild)' != 'true'"
-					BeforeTargets="@(_CompileUnoJavaBeforeTargets)"
-					AfterTargets="@(_CompileUnoJavaAfterTargets)"
-					Inputs="@(_JavaFile)"
-					Outputs="@(EmbeddedJar)"
-					DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">
+	<Target Name="_CompileUnoJava" Condition="'$(DesignTimeBuild)' != 'true'" BeforeTargets="@(_CompileUnoJavaBeforeTargets)" AfterTargets="@(_CompileUnoJavaAfterTargets)" Inputs="@(_JavaFile)" Outputs="@(EmbeddedJar)" DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">
+
 
 		<ItemGroup>
 			<_AndroidJar Include="%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\MonoAndroid\$(TargetFrameworkVersion)\mono.android.jar" />
@@ -130,7 +125,7 @@
 			<_flattenAndroidJar Condition="!$(_isWindows)">@(_AndroidJar, ':')</_flattenAndroidJar>
 			<_flattenAndroidJar Condition="$(_isWindows)">@(_AndroidJar)</_flattenAndroidJar>
 
-			<_CompileCommand>&quot;$(_JavaCBinPath)&quot; -g -source $(_javaVersion) -d .\$(IntermediateOutputPath)\unoclasses -target $(_javaVersion) -J-Dfile.encoding=UTF8 -classpath "$(_flattenAndroidJar)" -bootclasspath "$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar" -encoding UTF-8 .\Uno\UI\*.java</_CompileCommand>
+			<_CompileCommand>"$(_JavaCBinPath)" -g -source $(_javaVersion) -d .\$(IntermediateOutputPath)\unoclasses -target $(_javaVersion) -J-Dfile.encoding=UTF8 -classpath "$(_flattenAndroidJar)" -bootclasspath "$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar" -encoding UTF-8 .\Uno\UI\*.java</_CompileCommand>
 		</PropertyGroup>
 
 		<Error Text="The Android SDK for API level $(_AndroidApiLevel) is not installed. Install it through the Android SDK manager." Condition="!Exists('$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar')" />

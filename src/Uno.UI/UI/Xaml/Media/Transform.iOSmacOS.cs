@@ -20,31 +20,32 @@ namespace Windows.UI.Xaml.Media
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
 
-		internal bool IsAnimating { get; private set; }
+		private int _runningAnimations;
+
+		internal virtual bool IsAnimating => _runningAnimations > 0;
 
 		internal void StartAnimation()
 		{
-			// While animating, we disable other properties of the transform
-			View.Layer.Transform = CoreAnimation.CATransform3D.Identity;
-
 			// Set the animation flag which means 'Transform' should no longer be altered and notify change so the RenderTransformAdapter
 			// will update the 'AnchorPoint' using current 'RenderOrigin' and current size.
-			IsAnimating = true;
-			NotifyChanged(); 
+			if (++_runningAnimations == 1)
+			{
+				// We don't use the NotifyChanged() since it will filters out changes when IsAnimating
+				// Note: we also bypass the MatrixCore update which is actually irrelevant until animation completes.
+				Changed?.Invoke(this, EventArgs.Empty);
+			}
 		}
 
 		internal void EndAnimation()
 		{
-			// First update the result matrix (as updates was ignored due to 'Animations' DP precedence)
-			MatrixCore = ToMatrix(new Point(0, 0));
+			if (--_runningAnimations == 0)
+			{
+				// Notify a change so the result matrix will be updated (as updates were ignored due to 'Animations' DP precedence),
+				// and the NativeRenderTransformAdapter will then apply this final matrix.
+				NotifyChanged();
 
-			// Then remove animation flag and notify change so the RenderTransformAdapter
-			// will restore the 'AnchorPoint' to the 'RenderOrigin' and set the updated 'Transform'.
-			IsAnimating = false;
-			NotifyChanged();
-			View.InvalidateArrange();
+			}
 		}
 	}
 }
-
 

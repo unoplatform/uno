@@ -36,7 +36,7 @@ namespace Windows.UI
 					alpha = components[3];
 					break;
 				default:
-					throw new Exception("Unsupported colorspace component length: " + components.Length);
+					throw new InvalidOperationException("Unsupported colorspace component length: " + components.Length);
 			}
 
 			return FromArgb((byte)(alpha * 255 + .5), (byte)(red * 255 + .5), (byte)(green * 255 + .5), (byte)(blue * 255 + .5));

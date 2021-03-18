@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
 using Windows.Foundation;
-using System.Linq;
-using System.Text;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -25,7 +21,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public interface ILayouter
+	internal interface ILayouter
 	{
 		/// <summary>
 		/// Measures the current layout

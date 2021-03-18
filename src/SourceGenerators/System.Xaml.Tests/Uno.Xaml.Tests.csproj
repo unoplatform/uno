@@ -7,8 +7,9 @@
     <DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="NUnit" Version="3.11.0" />
-		<PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+		<PackageReference Include="NUnit" Version="3.13.1" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -23,6 +24,12 @@
 	<ItemGroup>
 	  <None Remove="Test\XmlFiles\AttachedPropertyWithNamespace.xaml" />
 	  <None Remove="Test\XmlFiles\EmptyAttachedPropertyNode.xaml" />
+	  <None Remove="Test\XmlFiles\xBindFunctionEscapedString.xaml" />
+	  <None Remove="Test\XmlFiles\xBindFunctionSingleParamWithoutPath.xaml" />
+	  <None Remove="Test\XmlFiles\xBindFunctionSingleParamWithPath.xaml" />
+	  <None Remove="Test\XmlFiles\xBindFunctionStringDoubleParams.xaml" />
+	  <None Remove="Test\XmlFiles\xBindFunctionTwoParamsWithPath.xaml" />
+	  <None Remove="Test\XmlFiles\xBindFunctionTwoParamWithoutPath.xaml" />
 	</ItemGroup>
 		
 	<ItemGroup>
@@ -34,6 +41,29 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Update="Test\XmlFiles\xBindFunctionEscapedString.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="Test\XmlFiles\xBindFunctionStringDoubleParams.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="Test\XmlFiles\xBindFunctionTwoParamWithoutPath.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="Test\XmlFiles\xBindFunctionSingleParamWithoutPath.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="Test\XmlFiles\xBindFunctionTwoParamsWithPath.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="Test\XmlFiles\xBindFunctionSingleParamWithPath.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
 	  <Content Update="Test\XmlFiles\EmptyAttachedPropertyNode.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Content>

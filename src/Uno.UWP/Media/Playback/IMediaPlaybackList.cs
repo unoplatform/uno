@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__ || __MACOS__
 
 namespace Windows.Media.Playback
 {

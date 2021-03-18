@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
@@ -42,7 +42,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
@@ -68,26 +68,31 @@
     <Reference Include="System.Memory" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-    <PackageReference Include="Uno.Core" Version="1.29.0-dev.93" />
+	  <PackageReference Include="Microsoft.Graph">
+		  <Version>3.12.0</Version>
+	  </PackageReference>
+	  <PackageReference Include="Microsoft.Identity.Client">
+		  <Version>4.15.0</Version>
+	  </PackageReference>
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+    <PackageReference Include="Uno.CodeGen">
+      <Version>1.32.0</Version>
+    </PackageReference>
+    <PackageReference Include="Uno.Core" Version="2.2.0" />
 		<PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.1</Version>
+      <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
-      <Project>{f9277925-fc11-4a97-8ca1-b4a33e726f55}</Project>
-      <Name>Uno.UI.Lottie</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
       <Name>Uno.Foundation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
-      <Project>{2eaf39e3-2ac9-457a-a5b2-47d6548799b3}</Project>
+      <Project>{F1FD5845-49E1-42B1-BF18-6493D1848330}</Project>
       <Name>Uno.UI.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj">
@@ -98,8 +103,29 @@
       <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
       <Name>Uno</Name>
     </ProjectReference>
-  </ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
+		  <Project>{028F3EE0-D51B-469A-A72C-C272585DCD40}</Project>
+		  <Name>Uno.UI.RuntimeTests</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
+      <Project>{21A31391-B907-457F-A522-689D44E6D6E4}</Project>
+      <Name>Uno.UI.Lottie</Name>
+    </ProjectReference>
+	  <ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.csproj">
+		  <Project>{2569663D-293A-4A1D-BB84-AA8C7B4B7F92}</Project>
+		  <Name>Uno.UI.MSAL</Name>
+	  </ProjectReference>
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
+		  <Project>{C9824734-5116-425C-B490-C838D44105EC}</Project>
+		  <Name>Uno.UI.RemoteControl</Name>
+		</ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
+      <Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
+      <Name>Uno.UI.FluentTheme</Name>
+    </ProjectReference>
+	</ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+  <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" Condition="Exists('..\UITests.Shared\UITests.Shared.projitems')" />
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <ItemGroup>
@@ -115,9 +141,13 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512%402x.png" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\unologo.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\unologo.imageset\unoplatform.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Resources\Fonts\" />
+    <Folder Include="Assets.xcassets\unologo.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -127,10 +157,14 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
-	
-		<Target Name="VS16Mac_RemoveSystemMemory"
-					BeforeTargets="ResolveAssemblyReferences">
+
+		<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences">
 		<!--
 				VS4Mac seems to process System.Memory differently, and removes
 				the System.Memory local reference if the package is transitively referenced.
@@ -138,21 +172,15 @@
 				is properly adding the local System.Memory to the Reference item group.
 		-->
 		<ItemGroup>
-			<_ReferenceToRemove
-        Include="@(Reference)"
-        Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
 			<Reference Remove="@(_ReferenceToRemove)" />
-			<Reference Include="System.Memory"/>
+			<Reference Include="System.Memory" />
 		</ItemGroup>
 	</Target>
 
-	<Target
-    Name="VS16_RemoveSystemMemory"
-    BeforeTargets="FindReferenceAssembliesForReferences">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences">
 		<ItemGroup>
-			<_ReferencePathToRemove
-        Include="@(ReferencePath)"
-        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>

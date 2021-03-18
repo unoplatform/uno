@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
-using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using Uno.Extensions;
 
 namespace Windows.Foundation
 {
-	[DebuggerDisplay("[Rect {rect.X}-{rect.Y}-{rect.Width}-{rect.Height}]")]
+	[DebuggerDisplay("[Rect {Size}@{Location}]")]
 	public partial struct Rect
 	{
 		private const string _negativeErrorMessage = "Non-negative number required.";
@@ -18,6 +19,14 @@ namespace Windows.Foundation
 			Y = double.PositiveInfinity,
 			Width = double.NegativeInfinity,
 			Height = double.NegativeInfinity
+		};
+
+		internal static Rect Infinite { get; } = new Rect
+		{
+			X = double.NegativeInfinity,
+			Y = double.NegativeInfinity,
+			Width = double.PositiveInfinity,
+			Height = double.PositiveInfinity
 		};
 
 		public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
@@ -88,14 +97,24 @@ namespace Windows.Foundation
 		public double Right => X + Width;
 		public double Bottom => Y + Height;
 
-		public bool IsEmpty => Empty.Equals(this);	
+		public bool IsEmpty => Empty.Equals(this);
 
 		public static implicit operator Rect(string text)
 		{
+			if (text == null)
+			{
+				return default;
+			}
+
 			var parts = text
-				.Split(new[] { ',' })
-				.Select(double.Parse)
-				.ToArray();
+				.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
+
+			if(parts.Length != 4)
+			{
+				throw new ArgumentException(
+					"Cannot create a Rect from " + text + ": needs 4 parts separated by a comma or a space.");
+			}
 
 			return new Rect
 			(
@@ -106,10 +125,23 @@ namespace Windows.Foundation
 			);
 		}
 
-		public static implicit operator string(Rect rect) =>
-			$"{rect.X},{rect.Y},{rect.Width},{rect.Height}";
+		public static implicit operator string(Rect rect)
+		{
+			var sb = new StringBuilder();
+			sb.Append(rect.X.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Y.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Width.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Height.ToStringInvariant());
+			return sb.ToString();
+		}
 
 		public override string ToString() => (string)this;
+
+		internal string ToDebugString()
+			=> IsEmpty ? "--empty--" : FormattableString.Invariant($"{Size.ToDebugString()}@{Location.ToDebugString()}");
 
 		/// <summary>
 		/// Provides the size of this rectangle.
@@ -150,30 +182,37 @@ namespace Windows.Foundation
 				throw new InvalidOperationException("Can't inflate empty rectangle");
 			}
 
-			this.X -= width;
-			this.Y -= height;
-			this.Width += width;
-			this.Width += width;
-			this.Height += height;
-			this.Height += height;
+			X -= width;
+			Y -= height;
+			Width += width;
+			Width += width;
+			Height += height;
+			Height += height;
 
-			if (this.Width < 0.0 || this.Height < 0.0)
+			if (Width < 0.0 || Height < 0.0)
 			{
 				this = Rect.Empty;
 			}
 		}
 
-		public bool Contains(Point point) =>
-			point.X >= X
-			&& point.X <= X + Width
-			&& point.Y >= Y
-			&& point.Y <= Y + Height;
+		public bool Contains(Point point)
+			// We include points on the edge as "contained".
+			// We do "point.X - Width <= X" instead of "point.X <= X + Width"
+			// so that this check works when Width is PositiveInfinity
+			// and X is NegativeInfinity.
+			=> point.X >= X
+				&& point.X - Width <= X
+				&& point.Y >= Y
+				&& point.Y - Height <= Y;
 
 		/// <summary>
 		/// Finds the intersection of the rectangle represented by the current Windows.Foundation.Rect
 		/// and the rectangle represented by the specified Windows.Foundation.Rect, and stores
 		/// the result as the current Windows.Foundation.Rect.
 		/// </summary>
+		/// <remarks>
+		/// Use .IntersectWith() extensions if you want a version without side-effects.
+		/// </remarks>
 		/// <param name="rect">The rectangle to intersect with the current rectangle.</param>
 		public void Intersect(Rect rect)
 		{
@@ -206,19 +245,19 @@ namespace Windows.Foundation
 			this = new Rect(left, top, right - left, bottom - top);
 		}
 
-		public bool Equals(Rect value) 
+		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode();
+
+		public bool Equals(Rect value)
 			=> value.X == X
 				&& value.Y == Y
 				&& value.Width == Width
 				&& value.Height == Height;
 
-		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode();
+		public override bool Equals(object? obj)
+			=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 
 		public static bool operator ==(Rect left, Rect right) => left.Equals(right);
 
 		public static bool operator !=(Rect left, Rect right) => !left.Equals(right);
-
-		public override bool Equals(object obj) 
-			=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 	}
 }

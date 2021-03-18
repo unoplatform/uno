@@ -27,19 +27,18 @@ namespace Windows.UI.Xaml
 		}
 
 		#region VisualStateGroups Attached Property
-		public static IList<VisualStateGroup> GetVisualStateGroups(IFrameworkElement obj)
+		internal static IList<VisualStateGroup> GetVisualStateGroups(IFrameworkElement obj)
 			=> (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
-
 		public static IList<VisualStateGroup> GetVisualStateGroups(FrameworkElement obj)
 			=> (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
 
-		public static void SetVisualStateGroups(IFrameworkElement obj, IList<VisualStateGroup> value)
+		public static void SetVisualStateGroups(FrameworkElement obj, IList<VisualStateGroup> value)
 		{
 			obj.SetValue(VisualStateGroupsProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for VisualStateGroups.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty VisualStateGroupsProperty =
+		public static DependencyProperty VisualStateGroupsProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"VisualStateGroups",
 				typeof(IList<VisualStateGroup>),
@@ -93,8 +92,8 @@ namespace Windows.UI.Xaml
 			obj.SetValue(VisualStateManagerProperty, value);
 		}
 
-		internal static readonly DependencyProperty VisualStateManagerProperty =
-			DependencyProperty.RegisterAttached("VisualStateManager", typeof(VisualStateManager), typeof(VisualStateManager), new PropertyMetadata(null));
+		internal static DependencyProperty VisualStateManagerProperty { get ; } =
+			DependencyProperty.RegisterAttached("VisualStateManager", typeof(VisualStateManager), typeof(VisualStateManager), new FrameworkPropertyMetadata(null));
 
 		#endregion
 
@@ -162,7 +161,11 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			return vsm.GoToStateCore(control, templateRoot, stateName, group, state, useTransitions);
+			var output = vsm.GoToStateCore(control, templateRoot, stateName, group, state, useTransitions);
+#if __WASM__
+			TryAssignDOMVisualStates(groups, templateRoot);
+#endif
+			return output;
 		}
 
 		private static (VisualStateGroup, VisualState) GetValidGroupAndState(string stateName, IList<VisualStateGroup> groups)
@@ -181,7 +184,8 @@ namespace Windows.UI.Xaml
 			return (null, null);
 		}
 
-		protected virtual bool GoToStateCore(Control control, IFrameworkElement templateRoot, string stateName, VisualStateGroup group, VisualState state, bool useTransitions)
+		protected virtual bool GoToStateCore(Control control, FrameworkElement templateRoot, string stateName, VisualStateGroup group, VisualState state, bool useTransitions) => GoToStateCore(control, (IFrameworkElement) templateRoot, stateName, group, state, useTransitions);
+		private bool GoToStateCore(Control control, IFrameworkElement templateRoot, string stateName, VisualStateGroup group, VisualState state, bool useTransitions)
 		{
 #if IS_UNO
 			if (_trace.IsEnabled)

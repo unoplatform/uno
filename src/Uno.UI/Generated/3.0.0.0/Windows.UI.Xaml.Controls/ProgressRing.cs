@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || NET461 || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ProgressRing 
 	{
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public  bool IsActive
 		{
 			get
@@ -21,8 +21,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.UI.Xaml.Controls.Primitives.ProgressRingTemplateSettings TemplateSettings
 		{
 			get
@@ -31,21 +31,15 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
+		#if false || false || NET461 || false || false || false || false
+		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsActiveProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsActive", typeof(bool), 
+			nameof(IsActive), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ProgressRing), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
-		public ProgressRing() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ProgressRing", "ProgressRing.ProgressRing()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ProgressRing.ProgressRing()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ProgressRing.ProgressRing()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ProgressRing.IsActive.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ProgressRing.IsActive.set

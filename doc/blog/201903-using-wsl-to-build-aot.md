@@ -59,7 +59,7 @@ For each shell you're opening afterwards, you'll have to do the following:
     ```bash
     source ~/emsdk/emsdk_env.sh
     ```
-- Create an Cross-platform Application using the [Uno Platform VSIX](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin), follow the [getting started guide](https://github.com/nventive/Uno/blob/master/doc/articles/get-started.md
+- Create an Cross-platform Application using the [Uno Platform VSIX](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin), follow the [getting started guide](https://github.com/unoplatform/uno/blob/master/doc/articles/get-started.md
 ) for more details.
 - Make sure that the following property is added in the Wasm csproj :
     ```xml
@@ -80,7 +80,7 @@ For each shell you're opening afterwards, you'll have to do the following:
   ```
   The application will be available at http://localhost:8000
 
-You'll notice that the `mono.wasm` is roughly between 20MB and 30MB, depending on the [linker settings you've set](https://github.com/nventive/Uno.Wasm.Bootstrap#linker-configuration), and using packages like Json.NET can significantly increase the binary size.
+You'll notice that the `mono.wasm` is roughly between 20MB and 30MB, depending on the [linker settings you've set](https://github.com/unoplatform/uno.Wasm.Bootstrap#linker-configuration), and using packages like Json.NET can significantly increase the binary size.
 
 You'll also probably notice that the build time can get pretty long, and the most time consuming step is Emscripten. This is known by the Mono team and will certainly be worked on in the future.
 

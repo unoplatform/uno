@@ -1,0 +1,14 @@
+name: "Pull Request Labeler"
+
+on:
+  schedule:
+  - cron: "*/30 * * * *"
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/labeler@v2
+      if: github.repository == 'unoplatform/uno' 
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"

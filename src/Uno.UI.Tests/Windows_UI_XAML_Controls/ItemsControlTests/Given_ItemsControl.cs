@@ -41,6 +41,8 @@ namespace Uno.UI.Tests.ItemsControlTests
 				}
 			};
 
+			SUT.ApplyTemplate();
+
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
@@ -182,8 +184,64 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(7, count);
 
 			source.Remove(1);
-			Assert.AreEqual(13, count);
+			Assert.AreEqual(7, count);
 		}
+
+		[TestMethod]
+		public void When_ContainerStyleSet()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var source = new ObservableVector<int>() { 1, 2, 3 };
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+
+			SUT.ApplyTemplate();
+
+			Assert.AreEqual(0, count);
+
+			SUT.ItemsSource = source;
+			Assert.AreEqual(3, count);
+
+			source.Add(4);
+			Assert.AreEqual(7, count);
+
+			source.Remove(1);
+			Assert.AreEqual(7, count);
+		}
+
+		private Style BuildBasicContainerStyle() =>
+			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
+			{
+				Setters =  {
+					new Setter<ListViewItem>("Template", t =>
+						t.Template = Funcs.Create(() =>
+							new Grid
+							{
+								Children = {
+									new ContentPresenter()
+										.Apply(p => {
+											p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
+											p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
+										})
+								}
+							}
+						)
+					)
+				}
+			};
+
 	}
 
 	public class MyItemsControl : ItemsControl

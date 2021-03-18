@@ -20,8 +20,8 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_ApplicationModel.Chat
 {
-	[SampleControlInfo("Windows.ApplicationModel", "ChatMessageManager", ignoreInAutomatedTests: true, description: "Test the ChatMessageManager.ShowComposeSmsMessageAsync API.")]
-	public sealed partial class ComposeSms : UserControl, INotifyPropertyChanged
+	[SampleControlInfo("Windows.ApplicationModel", "ChatMessageManager", ignoreInSnapshotTests: true, description: "Test the ChatMessageManager.ShowComposeSmsMessageAsync API.")]
+	public sealed partial class ComposeSms : UserControl, System.ComponentModel.INotifyPropertyChanged
 	{
 		private string _phoneNumber;
 		private string _body;
@@ -53,7 +53,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Chat
 			}
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 		public void AddNumber_Click(object sender, RoutedEventArgs e)
 		{
@@ -81,7 +81,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Chat
 
 		public void OnPropertyChanged([CallerMemberName]string propertyName = null)
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

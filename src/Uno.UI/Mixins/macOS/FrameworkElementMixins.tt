@@ -2,17 +2,10 @@
 <#@output extension="g.cs" #>
 #if __MACOS__
 <# 
-	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true);
-	AddClass("Windows.UI.Xaml.Controls", "Image", overridesAttachedToWindow: false, hasAutomationPeer: true);
+	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true, hasAutomationPeer: true);
 
-	// TODO
-	// AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: false);
-	// AddClass("Windows.UI.Xaml.Controls", "Picker", hasAttachedToWindow: true);
-	// AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
-	// AddClass("Windows.UI.Xaml.Controls", "ProgressRing", hasAttachedToWindow: false, overridesAttachedToWindow: true);
-	// AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
-	// AddClass("Windows.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true);
-	// AddClass("Windows.UI.Xaml.Controls", "MultilineTextBoxView", isUIControl: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: false);
+	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false);
+    AddClass("Windows.UI.Xaml.Controls", "SecureTextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false);
 #>
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.macOS.tt"#>
 #endif

@@ -9,6 +9,9 @@ using UITests.Shared.Helpers;
 using Uno.UI.Common;
 using Uno.UI.Samples.UITests.Helpers;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace UITests.Shared.Windows_UI_StartScreen
 {
 	public class JumpListTestsViewModel : ViewModelBase

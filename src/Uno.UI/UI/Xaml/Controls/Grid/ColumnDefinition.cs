@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial class ColumnDefinition : DependencyObject
 	{
 		public ColumnDefinition()
@@ -15,25 +18,15 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Width DependencyProperty
 
+		private static GridLength GetWidthDefaultValue() => GridLengthHelper.OneStar;
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty WidthProperty { get; } = CreateWidthProperty();
+
 		public GridLength Width
 		{
-			get { return (GridLength)this.GetValue(WidthProperty); }
-			set { this.SetValue(WidthProperty, value); }
-		}
-
-		public static readonly DependencyProperty WidthProperty =
-			DependencyProperty.Register(
-				"Width",
-				typeof(GridLength),
-				typeof(ColumnDefinition),
-				new PropertyMetadata(
-					GridLengthHelper.OneStar,
-					(s, e) => ((ColumnDefinition)s)?.OnWidthChanged(e)
-				)
-			);
-
-		private void OnWidthChanged(DependencyPropertyChangedEventArgs e)
-		{
+			get => GetWidthValue();
+			set => SetWidthValue(value);
 		}
 
 		#endregion
@@ -42,30 +35,26 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return new ColumnDefinition { Width = GridLength.ParseGridLength(value).First() };
 		}
-		
+
+		[GeneratedDependencyProperty(DefaultValue = 0d)]
+		public static DependencyProperty MinWidthProperty { get; } = CreateMinWidthProperty();
+
 		public double MinWidth
 		{
-			get => (double)this.GetValue(MinWidthProperty);
-			set => this.SetValue(MinWidthProperty, value);
+			get => GetMinWidthValue();
+			set => SetMinWidthValue(value);
 		}
+
+		private static GridLength GetMaxWidthDefaultValue() => GridLengthHelper.OneStar;
+
+		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity)]
+		public static DependencyProperty MaxWidthProperty { get; } = CreateMaxWidthProperty();
 
 		public double MaxWidth
 		{
-			get => (double)this.GetValue(MaxWidthProperty);
-			set => this.SetValue(MaxWidthProperty, value);
+			get => GetMaxWidthValue();
+			set => SetMaxWidthValue(value);
 		}
-
-		public static DependencyProperty MinWidthProperty { get; } =
-		DependencyProperty.Register(
-			"MinWidth", typeof(double),
-			typeof(ColumnDefinition),
-			new FrameworkPropertyMetadata(0d));
-
-		public static DependencyProperty MaxWidthProperty { get; } =
-		DependencyProperty.Register(
-			"MaxWidth", typeof(double),
-			typeof(ColumnDefinition),
-			new FrameworkPropertyMetadata(double.PositiveInfinity));
 
 		public double ActualWidth
 		{
@@ -76,5 +65,7 @@ namespace Windows.UI.Xaml.Controls
 				return result;
 			}
 		}
+
+		private string DebugDisplay => $"ColumnDefinition(Width={Width.ToDisplayString()};MinWidth={MinWidth};MaxWidth={MaxWidth};ActualWidth={ActualWidth}";
 	}
 }

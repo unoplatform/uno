@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Uno.Extensions;
 
 namespace Windows.ApplicationModel.Resources.Core
 {
@@ -35,7 +34,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			var qualifiers = relativePath
 				.Split(Path.DirectorySeparatorChar, '_', '.')
 				.Select(ResourceQualifier.Parse)
-				.Trim()
+				.Where(p => p != null)
 				.ToArray();
 
 			return new ResourceCandidate(qualifiers, fullPath, logicalPath);
@@ -47,16 +46,14 @@ namespace Windows.ApplicationModel.Resources.Core
 				.GetDirectoryName(path)
 				.Split(new[] { Path.DirectorySeparatorChar })
 				.Where(x => ResourceQualifier.Parse(x) == null)
-				.ToArray()
-				.Apply(Path.Combine);
+				.ToArray();
 
 			var fileNameWithoutQualifiers = Path
 				.GetFileName(path)
 				.Split(new[] { '.' })
-				.Where(x => ResourceQualifier.Parse(x) == null)
-				.Apply(x => string.Join(".", x));
+				.Where(x => ResourceQualifier.Parse(x) == null);
 
-			return Path.Combine(directoryNameWithoutQualifiers, fileNameWithoutQualifiers);
+			return Path.Combine(Path.Combine(directoryNameWithoutQualifiers), string.Join(".", fileNameWithoutQualifiers));
 		}
 	}
 }

@@ -2,12 +2,15 @@
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:local="using:XamlGenerationTests.Shared.MarkupExtensions"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ext="clr-namespace:XamlGenerationTests.Shared.MarkupExtensions"
 			 mc:Ignorable="d">
 
 	<UserControl.Resources>
 		<ext:InverseBoolMarkup x:Key="Inverse" />
+
+		<ext:TestObject x:Name="TestObject" />
 
 		<x:String x:Key="ResourceTest">Resource String</x:String>
 
@@ -52,6 +55,24 @@
 
 			<!-- Make sure markup extension works in an attached property using a binding and converter -->
 			<TextBlock ext:MarkupExtensionTestBehavior.CustomText="{Binding IsRightTapEnabled, ElementName=RootGrid, Converter={ext:InverseBoolMarkup}}" />
+
+			<!-- Make sure a markup extension can return different types -->
+			<TextBlock Text="{ext:NoReturnTypeMarkupExt UseValue=UseValue1, Value1='I am Value 1', Value2=444}"
+					   Tag="{ext:NoReturnTypeMarkupExt UseValue=UseValue2, Value1='I am Value 1', Value2=333}" />
+
+			<!-- Make sure custom objects can be returned from a markup extension without a return type specified -->
+			<TextBlock DataContext="{ext:NoReturnTypeMarkupExt UseValue=UseValue1, Value1={StaticResource TestObject}}" />
+
+			<!--XAML markup extension without Suffix Extension-->
+			<TextBlock Text="{ext:TestMarkupSuffix}"/>
+
+			<!--XAML markup extension without Suffix Extension work on binding-->
+			<TextBlock Text="{Binding IsRightTapEnabled,  Converter={ext:TestMarkupSuffix}}"/>
+
+			<!-- XAML markup extension without Suffix Extension work on bindin an attached property using a binding and converter -->
+			<TextBlock ext:MarkupExtensionTestBehavior.CustomText="{Binding IsRightTapEnabled, ElementName=RootGrid, Converter={ext:TestMarkupSuffix}}" />
+
+
 		</StackPanel>
 	</Grid>
 </UserControl>

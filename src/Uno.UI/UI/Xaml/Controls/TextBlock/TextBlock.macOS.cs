@@ -9,6 +9,7 @@ using Foundation;
 using CoreGraphics;
 using Windows.UI.Text;
 using AppKit;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -36,7 +37,9 @@ namespace Windows.UI.Xaml.Controls
 		/// To enable these scenarios, we must use a (more expensive) NSLayoutManager for layouting and rendering.
 		/// </remarks>
 		private bool UseLayoutManager =>
-			true;
+			HasHyperlink ||
+			CanWrap && CanTrim ||
+			CanWrap && MaxLines != 0;
 
 		private bool CanWrap => TextWrapping != TextWrapping.NoWrap && MaxLines != 1;
 
@@ -53,7 +56,18 @@ namespace Windows.UI.Xaml.Controls
 		public override void DrawRect(CGRect rect)
 		{
 			_drawRect = GetDrawRect(rect);
-			_layoutManager?.DrawGlyphsForGlyphRange(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
+			if(UseLayoutManager)
+			{
+				// DrawGlyphsForGlyphRange is the method we want to use here since DrawBackgroundForGlyphRange is intended for something different.
+				// While DrawBackgroundForGlyphRange will draw the background mark for specified Glyphs DrawGlyphsForGlyphRange will draw the actual Glyphs.
+
+				// Note: This part of the code is called only under very specific situations. For most of the scenarios DrawString is used to draw the text.
+				_layoutManager?.DrawGlyphsForGlyphRange(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
+			}
+			else
+			{
+				_attributedString?.DrawString(_drawRect, NSStringDrawingOptions.UsesLineFragmentOrigin);
+			}
 		}
 
 		private CGRect GetDrawRect(CGRect rect)
@@ -105,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 				_measureInvalidated = false;
 
 				UpdateTypography();
-				
+
 				var horizontalPadding = Padding.Left + Padding.Right;
 				var verticalPadding = Padding.Top + Padding.Bottom;
 
@@ -119,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// This measures the height correctly, even if the Text is null or empty
 					// This matches Windows where empty TextBlocks still have a height (especially useful when measuring ListView items with no DataContext)
-					var font = NSFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
+					var font = NSFontHelper.TryGetFont((float)FontSize*2, FontWeight, FontStyle, FontFamily);
 
 					var str = new NSAttributedString(Text, font);
 
@@ -202,7 +216,7 @@ namespace Windows.UI.Xaml.Controls
 			var font = NSFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
 
 			attributes.Font = font;
-			attributes.ForegroundColor = (Foreground as SolidColorBrush)?.ColorWithOpacity;
+			attributes.ForegroundColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
 
 			if (TextDecorations != TextDecorations.None)
 			{
@@ -237,13 +251,13 @@ namespace Windows.UI.Xaml.Controls
 
 			if (LineHeight != 0 && font != null)
 			{
-				// iOS puts text at the bottom of the line box, whereas Windows puts it at the top. 
-				// Empirically this offset gives similar positioning to Windows. 
+				// iOS puts text at the bottom of the line box, whereas Windows puts it at the top.
+				// Empirically this offset gives similar positioning to Windows.
 				// Note: Descender is typically a negative value.
 				var verticalOffset = LineHeight - font.XHeight /* MACOS TODO XHeight ? */ + font.Descender;
 
-				// Because we're trying to move the text up (toward the top of the line box), 
-				// we only set BaselineOffset to a positive value. 
+				// Because we're trying to move the text up (toward the top of the line box),
+				// we only set BaselineOffset to a positive value.
 				// A negative value indicates that the the text is already bottom-aligned.
 				attributes.BaselineOffset = Math.Max(0, (float)verticalOffset);
 			}
@@ -324,26 +338,41 @@ namespace Windows.UI.Xaml.Controls
 				_textContainer.LineFragmentPadding = 0;
 				_textContainer.LineBreakMode = GetLineBreakMode();
 				_textContainer.MaximumNumberOfLines = (nuint)GetLines();
-				
+
 				// Configure layoutManager
 				_layoutManager = new NSLayoutManager();
 				_layoutManager.AddTextContainer(_textContainer);
 
 				// Configure textStorage
 				_textStorage = new NSTextStorage();
-				_textStorage.AddLayoutManager(_layoutManager);
 				_textStorage.SetString(_attributedString);
+				_textStorage.AddLayoutManager(_layoutManager);
 			}
 		}
 
 		private Size LayoutTypography(Size size)
 		{
-			_textContainer.Size = size;
+			if (UseLayoutManager)
+			{
+				if (_textContainer == null)
+				{
+					return default(Size);
+				}
 
-            // Required for GetUsedRectForTextContainer to return a value.
-            _layoutManager.GetGlyphRange(_textContainer);
+				_textContainer.Size = size;
+				// Required for GetUsedRectForTextContainer to return a value.
+				_layoutManager.GetGlyphRange(_textContainer);
+				return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
+			}
+			else
+			{
+				if (_attributedString == null)
+				{
+					return default(Size);
+				}
 
-			return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
+				return _attributedString.BoundingRectWithSize(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size;
+			}
 		}
 
 		private int GetCharacterIndexAtPoint(Point point)

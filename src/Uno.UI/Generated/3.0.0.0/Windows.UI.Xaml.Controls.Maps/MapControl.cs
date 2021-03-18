@@ -2,23 +2,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapControl : global::Windows.UI.Xaml.Controls.Control
 	{
+		// Skipping already declared property ZoomLevel
 		// Skipping already declared property WatermarkMode
-		// Skipping already declared property Style
-		// Skipping already declared property MapServiceToken
 		// Skipping already declared property TransformOrigin
 		// Skipping already declared property TrafficFlowVisible
-		// Skipping already declared property LandmarksVisible
+		// Skipping already declared property Style
+		// Skipping already declared property PedestrianFeaturesVisible
+		// Skipping already declared property MapServiceToken
+		// Skipping already declared property Center
 		// Skipping already declared property Heading
 		// Skipping already declared property DesiredPitch
 		// Skipping already declared property ColorScheme
-		// Skipping already declared property PedestrianFeaturesVisible
-		// Skipping already declared property ZoomLevel
-		// Skipping already declared property Center
+		// Skipping already declared property LandmarksVisible
 		// Skipping already declared property Children
 		// Skipping already declared property LoadingStatus
 		// Skipping already declared property MapElements
@@ -27,14 +27,14 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property Pitch
 		// Skipping already declared property Routes
 		// Skipping already declared property TileSources
+		// Skipping already declared property RotateInteractionMode
 		// Skipping already declared property ZoomInteractionMode
 		// Skipping already declared property TransitFeaturesVisible
 		// Skipping already declared property TiltInteractionMode
 		// Skipping already declared property Scene
-		// Skipping already declared property RotateInteractionMode
+		// Skipping already declared property BusinessLandmarksVisible
 		// Skipping already declared property PanInteractionMode
 		// Skipping already declared property CustomExperience
-		// Skipping already declared property BusinessLandmarksVisible
 		// Skipping already declared property ActualCamera
 		// Skipping already declared property Is3DSupported
 		// Skipping already declared property IsStreetsideSupported
@@ -46,7 +46,51 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property MapProjection
 		// Skipping already declared property Layers
 		// Skipping already declared property Region
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool CanTiltDown
+		{
+			get
+			{
+				return (bool)this.GetValue(CanTiltDownProperty);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool CanTiltUp
+		{
+			get
+			{
+				return (bool)this.GetValue(CanTiltUpProperty);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool CanZoomIn
+		{
+			get
+			{
+				return (bool)this.GetValue(CanZoomInProperty);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool CanZoomOut
+		{
+			get
+			{
+				return (bool)this.GetValue(CanZoomOutProperty);
+			}
+		}
+		#endif
+		// Skipping already declared property CenterProperty
+		// Skipping already declared property ZoomLevelProperty
+		// Skipping already declared property ChildrenProperty
 		// Skipping already declared property ColorSchemeProperty
+		// Skipping already declared property DesiredPitchProperty
 		// Skipping already declared property HeadingProperty
 		// Skipping already declared property LandmarksVisibleProperty
 		// Skipping already declared property LoadingStatusProperty
@@ -62,10 +106,6 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property TrafficFlowVisibleProperty
 		// Skipping already declared property TransformOriginProperty
 		// Skipping already declared property WatermarkModeProperty
-		// Skipping already declared property CenterProperty
-		// Skipping already declared property ChildrenProperty
-		// Skipping already declared property ZoomLevelProperty
-		// Skipping already declared property DesiredPitchProperty
 		// Skipping already declared property BusinessLandmarksVisibleProperty
 		// Skipping already declared property Is3DSupportedProperty
 		// Skipping already declared property IsStreetsideSupportedProperty
@@ -82,6 +122,38 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property ViewPaddingProperty
 		// Skipping already declared property LayersProperty
 		// Skipping already declared property RegionProperty
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty CanTiltUpProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(CanTiltUp), typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty CanZoomInProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(CanZoomIn), typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty CanZoomOutProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(CanZoomOut), typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty CanTiltDownProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(CanTiltDown), typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.MapControl()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.MapControl()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.Center.get
@@ -219,6 +291,14 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TryGetLocationFromOffset(Windows.Foundation.Point, Windows.Devices.Geolocation.AltitudeReferenceSystem, out Windows.Devices.Geolocation.Geopoint)
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.Region.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.Region.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.CanTiltDown.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.CanTiltUp.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.CanZoomIn.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.CanZoomOut.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.CanTiltDownProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.CanTiltUpProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.CanZoomInProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.CanZoomOutProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.RegionProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.LayersProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.MapProjectionProperty.get

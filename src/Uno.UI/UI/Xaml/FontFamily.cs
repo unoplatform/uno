@@ -10,6 +10,8 @@ namespace Windows.UI.Xaml.Media
 		{
 			Source = familyName;
 
+			Init(familyName);
+
 			// This instance is immutable, we can cache the hash code.
 			_hashCode = Source.GetHashCode();
 		}
@@ -52,5 +54,7 @@ namespace Windows.UI.Xaml.Media
 
 			return ReferenceEquals(a, null) || !a.Equals(b);
 		}
+
+		partial void Init(string fontName);
 	}
 }

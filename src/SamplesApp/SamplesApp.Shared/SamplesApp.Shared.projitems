@@ -41,14 +41,22 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\FluentIcon_Medium.scale-400.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\home.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\play.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\lockscreenlogo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ScrollGesture.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\splashscreen.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square150x150logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storelogo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\wide310x150logo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\nodpi-validationresource.jpeg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BackArrow.scale-300.png" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
@@ -63,8 +71,5 @@
     <Compile Update="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml.cs">
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Assets\Icons\" />
   </ItemGroup>
 </Project>

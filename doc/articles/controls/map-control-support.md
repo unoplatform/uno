@@ -1,17 +1,30 @@
 # MapControl
 
-The `MapControl` is a control which allows you to display maps in your app.
+The `MapControl` is a control that allows you to display maps in your app. Currently Uno supports `MapControl` on iOS and Android.
 
 ## Architecture
 
-To be able to support multiple map providers, the map control is rendering its content in a `MapPresenter` control in the `Uno.UI.Maps` Nuget package. This separation is also required to avoid
-pulling dependencies in an application that does not need Maps.
+Although `MapControl` is defined in `Uno.UI`, to function it requires an additional package to be installed, `Uno.UI.Maps`, which supplies the actual implementation. This is done to avoid imposing an unnecessary dependency on applications that don't use maps, and also to allow alternative map providers (eg, Google Maps on iOS) to be easily supported in the future.
 
-The current implementation is using the native UIKit map for iOS, and the Google Play Services map control.
+The current implementation uses the native UIKit Map for iOS and the Google Play Services Map control for Android.
 
-## Sample Xaml
+## How to use MapControl in an Uno Platform app
 
-See a more complete sample here: 
+1. Ensure your app is targeting Uno 3.3 or later.
+2. Install the [Uno.UI.Maps NuGet package](https://www.nuget.org/packages/Uno.UI.Maps/) in the Android and/or iOS head projects of your app.
+3. Add the `MapResources` resource dictionary to `Application.Resources` in your `App.xaml` file:
+	```xml
+	<Application.Resources>
+		<MapResources xmlns="using:Uno.UI.Maps"/>
+	</Application.Resources>
+	```
+4. (Windows and Android) Obtain an API key for your app, following the instructions below.
+5. (Android) Configure permissions in the manifest, following the instructions below.
+6. Add `MapControl` to your app (`<MapControl xmlns="using:Windows.UI.Xaml.Controls.Maps" />`).
+
+## Sample XAML
+
+Here's a complete sample: 
 
 ```xml
 <Page x:Class="MapControlSample.MainPage"
@@ -40,8 +53,10 @@ See a more complete sample here:
 			         ZoomLevel="{Binding ElementName=zoomSlider, Path=Value, Mode=TwoWay}" />
 	</Grid>
 </Page>
-
 ```
+
+The above code will display Page with a Map Control and a slider that will be used to change the ZoomLevel.
+
 
 ## Platform support
 
@@ -57,65 +72,70 @@ See a more complete sample here:
 
 ## Usage
 
-### 1. Configure your application.
+## Get API key for the map component
 
-- For **Android**,
-    1.  Add the following to AndroidManifest.xml
-    ```xml
-    <uses-library android:name="com.google.android.maps" />
-    ```
-    2.  Generate the API key and/or inform your client how to generate it.
-		1.  Go to https://console.developers.google.com
-		2.  Login with a Google account
-		3.  Go to the Credentials section to the top left
-		4.  Click on "Create credentials", then "API key"
-		5.  Go to the Dashboard section in the left-hand side menu
-		6.  Click on the relevant service - for instance, "Google Maps Android API" and click on Enable
-	
-    3.  Add the API key to `AssemblyInfo.cs`, this should vary depending on the platform and environment, therefore should be retrieved from ClientConstants:
-    ```csharp
-	[assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = ClientConstants.Maps.GoogleMapApiKey)]
-    ```
-	
-    4.  Add the relevant permissions, if you wish to access the location of the user (either coarse or fine location):
-	 ```csharp
-	//[assembly: UsesPermission(Android.Manifest.Permission.AccessCoarseLocation)]
-	[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
+To use the map component, you will need an API key for Windows and Android. Here are the steps to retrieve it.
 
-	[assembly: UsesPermission("com.myapp.permission.MAPS_RECEIVE")]
-	[assembly: Permission(Name = "com.myapp.permission.MAPS_RECEIVE", ProtectionLevel = Android.Content.PM.Protection.Signature)]
-	```
+### Windows
 
-
-# Get API key for map component
-
-In order to use the map component, you will need an API key for Windows and Android.  Here are the steps to retrieve it.
-
-## Windows
-
-_For the detailed procedure for Windows, please follow this link: https://msdn.microsoft.com/en-us/library/windows/apps/xaml/mt219694.aspx _
+For the detailed procedure for Windows, please follow this link: https://msdn.microsoft.com/en-us/library/windows/apps/xaml/mt219694.aspx 
 
 + Go to https://www.bingmapsportal.com
 + Login to your account or register if you don't have one
 + Go to MyAccount -> Keys
++ Click on create a new key
 + Enter the following information:
 	- Application name
 	- Application URL (optional)
 	- Key type
 	- Application type
-+ Enter the characters you see in the box
 + Hit *Create* and get the key
 
-The key should be added as the value for the parameter _MapServiceToken_ for the MapControl object.
+The key will be set as the value for the parameter _MapServiceToken_ for the MapControl object.
 
-## Android
+### Android
 
-_For the detailed procedure on Android, please follow this link: https://developers.google.com/maps/documentation/android-api/signup#release-cert _
++ Create a project in the Google Developers Console.
 
-+ Retrieve the application's SHA-1 fingerprint
-+ Create a project in the Google Developers Console
-+ Go to Credentials -> Add credentials -> API key -> Android key
-+ In the dialog box, enter the SHA-1 fingerprint and the app package name
-+ Hit *Create* and get the key
++  Enable Map Service. In case this is your first time using the Google Maps API you will need to enable it before using it.
 
-The API key should be the value for the property _com.google.android.maps.v2.API_KEY_ in the AndroidManifest.xml file.
+        1. Go to https://console.developers.google.com
+        2. Login with a Google account
+        3. Click on "Enable APIs and Services"
+        4. Select "Maps SDK for Android" and click on Enable
+    
++  Generate an API key.
+
+        1.  If you are coming from step-2 just navigate back until you are again in the dashboard, otherwise, go to  https://console.developers.google.com and login with a Google account.
+        2.  Go to the Credentials section on the left-hand side menu
+        3.  Click on "Create Credentials", then "API key"
+        4.  Copy the key generated as this will be the one we will use later in the application
+
+**Note:** For apps in production we suggest restricting the keys to be used only by your Android app. This is possible by using the SHA-1 fingerprint of your app.
+
+_For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Android application, please follow this link: https://developers.google.com/maps/documentation/android-api/signup#release-cert_
+
+## Configure your application.
+
+- For **Android**
+    1.  Add the following to AndroidManifest.xml:
+    ```xml
+    <uses-library android:name="com.google.android.maps" />
+    ```
+                        
+    2.  Add the API key to `AssemblyInfo.cs`.
+    
+    ```csharp
+	[assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = "YOUR_API_KEY")]
+    ```
+    Replace the text YOUR_API_KEY with the key generated in previous step.
+    
+    Note: Since this key might vary depending on the platform and environment we suggest using a constant class where the key could be retrieved from.
+	
+    3.  Add the relevant permissions to `AssemblyInfo.cs`. For example, if you wish to access the user location
+    
+	 ```csharp
+	[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
+	[assembly: UsesPermission("com.myapp.permission.MAPS_RECEIVE")]
+	[assembly: Permission(Name = "com.myapp.permission.MAPS_RECEIVE", ProtectionLevel = Android.Content.PM.Protection.Signature)]
+	```

@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Globalization;
@@ -10,6 +11,7 @@ using CoreGraphics;
 
 namespace Windows.Foundation
 {
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial struct Point
 	{
 		public Point(double x, double y)
@@ -27,6 +29,9 @@ namespace Windows.Foundation
 		{
 			return "[{0}, {1}]".InvariantCultureFormat(X, Y);
 		}
+
+		internal string ToDebugString()
+			=> FormattableString.Invariant($"{X:F2},{Y:F2}");
 
 		public static bool operator ==(Point left, Point right)
 		{
@@ -48,21 +53,30 @@ namespace Windows.Foundation
 			return new Point(p1.X - p2.X, p1.Y - p2.Y);
 		}
 
-        public static implicit operator Point(string point)
-        {
-            var parts = point
-                .Split(new[] { ',' })
-                .Select(value => double.Parse(value, CultureInfo.InvariantCulture))
-                .ToArray();
+		public static implicit operator Point(string point)
+		{
+			if (string.IsNullOrEmpty(point))
+			{
+				// Marker to enable null-comparison if the string comparer
+				// has been called with null.
+				return new Point(double.NaN, double.NaN);
+			}
+			else
+			{
+				var parts = point
+					.Split(new[] { ',' })
+					.Select(value => double.Parse(value, CultureInfo.InvariantCulture))
+					.ToArray();
 
-            return new Point(parts[0], parts[1]);
-        }
+				return new Point(parts[0], parts[1]);
+			}
+		}
 
-        public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
+		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
 
 		public override bool Equals(object obj)
 		{
-			if(obj is Point)
+			if (obj is Point)
 			{
 				var point = (Point)obj;
 
@@ -71,5 +85,7 @@ namespace Windows.Foundation
 
 			return false;
 		}
+
+		private string DebugDisplay => $"{X:f1},{Y:f1}";
 	}
 }

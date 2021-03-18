@@ -1,4 +1,4 @@
-﻿#if __ANDROID__
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace Uno.UI.Controls
 {
 	public partial class NativeCommandBarPresenter : ContentPresenter
 	{
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			
@@ -24,4 +24,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif

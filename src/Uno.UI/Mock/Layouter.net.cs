@@ -9,6 +9,8 @@ using Uno.Extensions;
 using Uno;
 using Uno.Logging;
 using View = Windows.UI.Xaml.UIElement;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -24,18 +26,14 @@ namespace Windows.UI.Xaml.Controls
 		protected void ArrangeChildOverride(View view, Rect frame)
 		{
 			view.Arranged = frame;
+			view.LayoutSlotWithMarginsAndAlignments = frame;
+
+			LayoutInformation.SetLayoutSlot(view, frame);
 		}
 
 		protected Size DesiredChildSize(View view)
 		{
 			return view.DesiredSize;
-		}
-
-		Size ILayouter.GetDesiredSize(View view) => DesiredChildSize(view);
-
-		partial void SetDesiredChildSize(View view, Size size)
-		{
-			view.DesiredSize = size;
 		}
 	}
 }

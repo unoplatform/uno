@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			_actionSheet = new UIActionSheet(
 				title: null,
 				del: null,
-				cancelTitle: LocalizedCancelString,
+				cancelTitle: GetValue(CancelTextIosOverrideProperty) as string ?? LocalizedCancelString,
 				destroy: null,
 				other: availableItems.OfType<MenuFlyoutItem>().Select(item => item.Text).ToArray()
 			);
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (item != null)
 					{
-						item.Command.ExecuteIfPossible(item.CommandParameter);
+						item.InvokeClick();
 						Hide();
 					}
 				};

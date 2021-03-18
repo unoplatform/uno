@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__
+#if !HAS_UNO_WINUI && (__ANDROID__ || __IOS__ || __MACOS__)
 
 using System;
 using Windows.Media.Playback;
@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaTransportControls
 	{
-		#region IsFullWindowButtonVisible Property
+#region IsFullWindowButtonVisible Property
 
 		public bool IsFullWindowButtonVisible
 		{
@@ -22,9 +22,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsPlaybackRateEnabled Property
+#region IsPlaybackRateEnabled Property
 
 		public bool IsPlaybackRateEnabled
 		{
@@ -39,9 +39,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsFastRewindEnabled Property
+#region IsFastRewindEnabled Property
 
 		public bool IsFastRewindEnabled
 		{
@@ -56,9 +56,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsFastRewindButtonVisible Property
+#region IsFastRewindButtonVisible Property
 
 		public bool IsFastRewindButtonVisible
 		{
@@ -73,9 +73,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsFullWindowEnabled Property
+#region IsFullWindowEnabled Property
 
 		public bool IsFullWindowEnabled
 		{
@@ -90,9 +90,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsFastForwardEnabled Property
+#region IsFastForwardEnabled Property
 
 		public bool IsFastForwardEnabled
 		{
@@ -107,9 +107,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsCompact Property
+#region IsCompact Property
 
 		public bool IsCompact
 		{
@@ -124,9 +124,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(false, OnIsCompactChanged));
 
-		#endregion
+#endregion
 
-		#region IsSeekEnabled Property
+#region IsSeekEnabled Property
 
 		public bool IsSeekEnabled
 		{
@@ -141,9 +141,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true, OnIsSeekEnabledChanged));
 
-		#endregion
+#endregion
 
-		#region IsStopEnabled Property
+#region IsStopEnabled Property
 
 		public bool IsStopEnabled
 		{
@@ -158,9 +158,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsFastForwardButtonVisible Property
+#region IsFastForwardButtonVisible Property
 
 		public bool IsFastForwardButtonVisible
 		{
@@ -175,9 +175,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsStopButtonVisible Property
+#region IsStopButtonVisible Property
 
 		public bool IsStopButtonVisible
 		{
@@ -192,9 +192,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsVolumeButtonVisible Property
+#region IsVolumeButtonVisible Property
 
 		public bool IsVolumeButtonVisible
 		{
@@ -209,9 +209,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsSeekBarVisible Property
+#region IsSeekBarVisible Property
 
 		public bool IsSeekBarVisible
 		{
@@ -226,9 +226,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true, OnIsSeekBarVisibleChanged));
 
-		#endregion
+#endregion
 
-		#region IsPlaybackRateButtonVisible Property
+#region IsPlaybackRateButtonVisible Property
 
 		public bool IsPlaybackRateButtonVisible
 		{
@@ -243,9 +243,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsZoomEnabled Property
+#region IsZoomEnabled Property
 
 		public bool IsZoomEnabled
 		{
@@ -260,9 +260,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsZoomButtonVisible Property
+#region IsZoomButtonVisible Property
 
 		public bool IsZoomButtonVisible
 		{
@@ -277,9 +277,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsVolumeEnabled Property
+#region IsVolumeEnabled Property
 
 		public bool IsVolumeEnabled
 		{
@@ -294,9 +294,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsSkipBackwardButtonVisible Property
+#region IsSkipBackwardButtonVisible Property
 
 		public bool IsSkipBackwardButtonVisible
 		{
@@ -311,9 +311,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsNextTrackButtonVisible Property
+#region IsNextTrackButtonVisible Property
 
 		public bool IsNextTrackButtonVisible
 		{
@@ -328,13 +328,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region FastPlayFallbackBehaviour Property
+#region FastPlayFallbackBehaviour Property
 
-		public bool FastPlayFallbackBehaviour
+		public Media.FastPlayFallbackBehaviour FastPlayFallbackBehaviour
 		{
-			get { return (bool)GetValue(FastPlayFallbackBehaviourProperty); }
+			get { return (Media.FastPlayFallbackBehaviour)GetValue(FastPlayFallbackBehaviourProperty); }
 			set { SetValue(FastPlayFallbackBehaviourProperty, value); }
 		}
 
@@ -345,9 +345,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(default(Media.FastPlayFallbackBehaviour)));
 
-		#endregion
+#endregion
 
-		#region IsSkipForwardEnabled Property
+#region IsSkipForwardEnabled Property
 
 		public bool IsSkipForwardEnabled
 		{
@@ -362,9 +362,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsPreviousTrackButtonVisible Property
+#region IsPreviousTrackButtonVisible Property
 
 		public bool IsPreviousTrackButtonVisible
 		{
@@ -379,9 +379,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsSkipForwardButtonVisible Property
+#region IsSkipForwardButtonVisible Property
 
 		public bool IsSkipForwardButtonVisible
 		{
@@ -396,9 +396,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsSkipBackwardEnabled Property
+#region IsSkipBackwardEnabled Property
 
 		public bool IsSkipBackwardEnabled
 		{
@@ -413,9 +413,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region ShowAndHideAutomatically Property
+#region ShowAndHideAutomatically Property
 
 		public bool ShowAndHideAutomatically
 		{
@@ -430,9 +430,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true, OnShowAndHideAutomaticallyChanged));
 
-		#endregion
+#endregion
 
-		#region IsRepeatButtonVisible Property
+#region IsRepeatButtonVisible Property
 
 		public bool IsRepeatButtonVisible
 		{
@@ -447,9 +447,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsRepeatEnabled Property
+#region IsRepeatEnabled Property
 
 		public bool IsRepeatEnabled
 		{
@@ -464,9 +464,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsCompactOverlayEnabled Property
+#region IsCompactOverlayEnabled Property
 
 		public bool IsCompactOverlayEnabled
 		{
@@ -481,9 +481,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 
-		#region IsCompactOverlayButtonVisible Property
+#region IsCompactOverlayButtonVisible Property
 
 		public bool IsCompactOverlayButtonVisible
 		{
@@ -498,7 +498,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
-		#endregion
+#endregion
 	}
 }
 #endif

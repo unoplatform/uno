@@ -33,12 +33,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var itemsInGroup = CollectionView.NumberOfItemsInSection(group);
 			if (itemsInGroup == 0)
-		{
+			{
 				_sectionEnd[group] = GetExtentEnd(frame);
 				return 0;
-		}
+			}
 
-			var itemSize = ResolveItemSize(group);
+			var itemSize = ResolveItemSize(group, availableBreadth);
 			var itemBreadth = GetBreadth(itemSize);
 			var itemsDisplayablePerLine = Math.Max((int)(availableBreadth / itemBreadth), 1);
 			var itemsPerLine = MaximumRowsOrColumns > 0 ? Math.Min(itemsDisplayablePerLine, MaximumRowsOrColumns) : itemsDisplayablePerLine;
@@ -50,35 +50,35 @@ namespace Windows.UI.Xaml.Controls
 
 			int item = -1;
 			for (int line = 0; line < numberOfLines; line++)
-		{
-				for (int column = 0; column < itemsPerLine; column++)
 			{
+				for (int column = 0; column < itemsPerLine; column++)
+				{
 					item++;
 					if (item == itemsInGroup)
-			{
-					break;
-			}
-			if (createLayoutInfo)
-			{
+					{
+						break;
+					}
+					if (createLayoutInfo)
+					{
 						CreateItemLayoutInfo(item, group, frame);
-			}
+					}
 					IncrementBreadth(ref frame);
-		}
+				}
 
 				_sectionEnd[group] = GetExtentEnd(frame);
 				IncrementExtent(ref frame);
 				SetBreadthStart(ref frame, groupBreadthStart);
-				}
+			}
 
 			return itemBreadth * Math.Min(itemsPerLine, itemsInGroup);
-					}
+		}
 
-		private CGSize ResolveItemSize(int currentGroup)
-					{
+		private CGSize ResolveItemSize(int currentGroup, nfloat availableBreadth)
+		{
 			if ((double.IsNaN(ItemWidth) || double.IsNaN(ItemHeight)) && _implicitItemSize == null)
-				{
+			{
 				//TODO: this should measure the databound item, currently it only measures the empty template
-				_implicitItemSize = GetItemSizeForIndexPath(GetNSIndexPathFromRowSection(0, currentGroup));
+				_implicitItemSize = GetItemSizeForIndexPath(GetNSIndexPathFromRowSection(0, currentGroup), availableBreadth);
 			}
 
 			return new CGSize(

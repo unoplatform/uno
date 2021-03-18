@@ -1,34 +1,78 @@
 ﻿using Uno.UI;
 using Uno.UI.Controls;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AndroidX.Core.View;
 using Windows.Foundation;
-using Android.Support.V4.View;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Android.Graphics;
 using Android.Views;
+using Matrix = Windows.UI.Xaml.Media.Matrix;
+using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
+using Java.Interop;
+using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableView
 	{
-		private readonly Lazy<GestureHandler> _gestures;
-
-		public UIElement()
-		: base(ContextHelper.Current)
+		/// <summary>
+		/// Returns true if this element has children and they are all native (non-UIElements), false if it has no children or if at
+		/// least one is a UIElement.
+		/// </summary>
+		private bool AreChildrenNativeViewsOnly
 		{
-			_gestures = new Lazy<GestureHandler>(() => GestureHandler.Create(this));
+			get
+			{
+				var shadow = (this as IShadowChildrenProvider).ChildrenShadow;
+				if (shadow.Count == 0)
+				{
+					return false;
+				}
 
-			InitializeCapture();
+				foreach (var child in shadow)
+				{
+					if (child is UIElement)
+					{
+						return false;
+					}
+				}
 
-			MotionEventSplittingEnabled = false;
+				return true;
+			}
 		}
 
-		partial void InitializeCapture();
-
-		partial void EnsureClip(Rect rect)
+		public UIElement()
+			: base(ContextHelper.Current)
 		{
+			Initialize();
+			InitializePointers();
+		}
+
+
+		/// <summary>
+		/// Determines if InvalidateMeasure has been called
+		/// </summary>
+		internal bool IsMeasureDirty => IsLayoutRequested;
+
+		/// <summary>
+		/// Determines if InvalidateArrange has been called
+		/// </summary>
+		internal bool IsArrangeDirty => IsLayoutRequested;
+
+		partial void ApplyNativeClip(Rect rect)
+		{
+			// Non-UIElements typically expect to be clipped, and display incorrectly otherwise
+			// This won't work when UIElements and non-UIElements are mixed in the same Panel,
+			// but it should cover most cases in practice, and anyway should be superceded when
+			// IFrameworkElement will be removed.
+			SetClipChildren(FeatureConfiguration.UIElement.AlwaysClipNativeChildren ? AreChildrenNativeViewsOnly : false);
+
 			if (rect.IsEmpty)
 			{
 				ViewCompat.SetClipBounds(this, null);
@@ -36,6 +80,22 @@ namespace Windows.UI.Xaml
 			}
 
 			ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+
+			SetClipChildren(NeedsClipToSlot);
+		}
+
+		/// <summary>
+		/// This method is called from the OnDraw of elements supporting rounded corners:
+		/// Border, Rectangle, Panel...
+		/// </summary>
+		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
+		{
+			if (cornerRadius != CornerRadius.None)
+			{
+				var rect = new RectF(canvas.ClipBounds);
+				var clipPath = cornerRadius.GetOutlinePath(rect);
+				canvas.ClipPath(clipPath);
+			}
 		}
 
 		private bool _renderTransformRegisteredParentChanged;
@@ -51,11 +111,10 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public GeneralTransform TransformToVisual(UIElement visual)
-		{
-			return TransformToVisual(this, visual);
-		}
-
+		/// <summary>
+		/// WARNING: This provides an approximation for Android.View only.
+		/// Prefer to use the GetTransform between 2 UIElement when possible.
+		/// </summary>
 		internal static GeneralTransform TransformToVisual(View element, View visual)
 		{
 			var thisRect = new int[2];
@@ -88,26 +147,85 @@ namespace Windows.UI.Xaml
 			};
 		}
 
-		protected override void ClearCaptures()
+		/// <summary>
+		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
+		///	applied by a 'ViewGroup' between this element and its parent UIElement.
+		/// </summary>
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
-			_pointCaptures.Clear();
-		}
+			var parent = this.GetParent();
+			switch (parent) 
+			{
+				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
 
-		protected override bool IsPointerCaptured => _pointCaptures.Any();
+				case UIElement elt:
+					parentElement = elt;
+					return true;
 
-		private bool HasHandler(RoutedEvent routedEvent)
-		{
-			return _eventHandlerStore.TryGetValue(routedEvent, out var handlers) && handlers.Any();
-		}
+				case null:
+					parentElement = null;
+					return false;
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
-		{
-			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
-		}
+				case NativeListViewBase lv:
+					// We are a container of a ListView, there is known issue with the LayoutingSlot.
+					// Instead of following the standard transform computation, we shortcut few levels of the visual tree
+					// and directly detect the real slot of this item in the parent ScrollViewer using native API.
+					// The limitation with this is that if there is any RenderTransform in the bypassed layers which also
+					// not only changes the TrX/Y, they are going to be ignored.
+					// cf. https://github.com/unoplatform/uno/issues/2754
 
-		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler)
-		{
-			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
+					// 1. Undo what was done by the shared code
+					offsetX -= LayoutSlotWithMarginsAndAlignments.X;
+					offsetY -= LayoutSlotWithMarginsAndAlignments.Y;
+
+					// 2.Natively compute the offset of this current item relative to this ScrollViewer and adjust offsets
+					var sv = lv.FindFirstParent<ScrollViewer>();
+					var offset = GetPosition(this, relativeTo: sv);
+					offsetX += offset.X;
+					offsetY += offset.Y;
+
+					// We return the parent of the ScrollViewer, so we bypass the <Horizontal|Vertical>Offset (and the Scale) handling in shared code.
+					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref offsetX, ref offsetY);
+
+				case View view: // Android.View and Android.IViewParent
+					var windowToFirstParent = new int[2];
+					view.GetLocationInWindow(windowToFirstParent);
+
+					do
+					{
+						parent = parent.GetParent();
+
+						switch (parent)
+						{
+							case UIElement eltParent:
+								// We found a UIElement in the parent hierarchy, we compute the X/Y offset between the
+								// first parent 'view' and this 'elt', and return it.
+
+								var windowToEltParent = new int[2];
+								eltParent.GetLocationInWindow(windowToEltParent);
+
+								parentElement = eltParent;
+								offsetX += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0] - windowToEltParent[0]);
+								offsetY += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1] - windowToEltParent[1]);
+								return true;
+
+							case null:
+								// We reached the top of the window without any UIElement in the hierarchy,
+								// so we adjust offsets using the X/Y position of the original 'view' in the window.
+
+								parentElement = null;
+								offsetX += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0]);
+								offsetY += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1]);
+								return false;
+						}
+					} while (true);
+
+				default:
+					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Found a parent which is NOT a View."));
+
+					parentElement = null;
+					return false;
+			}
 		}
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -135,30 +253,66 @@ namespace Windows.UI.Xaml
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
 		}
 
-		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
+		internal static Point GetPosition(View view, View relativeTo = null)
 		{
-			base.SetNativeHitTestVisible(newValue);
+			if (view == relativeTo)
+			{
+				return default;
+			}
+
+			var windowToThis = new int[2];
+			view.GetLocationInWindow(windowToThis);
+
+			var location = new Point(windowToThis[0], windowToThis[1]);
+
+			if (relativeTo != null)
+			{
+				var windowToRelative = new int[2];
+				relativeTo.GetLocationInWindow(windowToRelative);
+
+				location.X -= windowToRelative[0];
+				location.Y -= windowToRelative[1];
+			}
+
+			return location.PhysicalToLogicalPixels();
 		}
 
-		// This section is using the UnoViewGroup overrides for performance reasons
-		// where most of the work is performed on the java side.
-
-		protected override bool NativeHitCheck() 
-			=> IsViewHit();
-
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
+		internal Point GetPosition(Point position, UIElement relativeTo)
 		{
+			if (relativeTo == this)
+			{
+				return position;
+			}
+
 			var currentViewLocation = new int[2];
 			GetLocationInWindow(currentViewLocation);
 
+			if (relativeTo == null)
+			{
+				return new Point(
+					position.X + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[0]),
+					position.Y + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[1])
+				);
+			}
+
 			var relativeToLocation = new int[2];
-			GetLocationInWindow(relativeToLocation);
+			relativeTo.GetLocationInWindow(relativeToLocation);
 
 			return new Point(
-				currentViewLocation[0] - relativeToLocation[0],
-				currentViewLocation[1] - relativeToLocation[1]
+				position.X + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[0] - relativeToLocation[0]),
+				position.Y + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[1] - relativeToLocation[1])
 			);
 		}
+
+
+		/// <summary>
+		/// Sets the specified dependency property value using the format "name|value"
+		/// </summary>
+		/// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
+		/// <returns>The currenty set value at the Local precedence</returns>
+		[Java.Interop.Export(nameof(SetDependencyPropertyValue))]
+		public string SetDependencyPropertyValue(string dependencyPropertyNameAndValue)
+			=> SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue);
 
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
@@ -223,6 +377,8 @@ namespace Windows.UI.Xaml
 			return new Java.Lang.String(dpValue.ToString());
 		}
 
+		internal Rect? ArrangeLogicalSize { get; set; } // Used to keep "double" precision of arrange phase
+
 #if DEBUG
 		public static Predicate<View> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";
 
@@ -275,6 +431,53 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		public FrameworkElement[] FindViewsByName(string name) => FindViewsByName(name, searchDescendantsOnly: false);
+
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		/// <param name="searchDescendantsOnly">If true, only look in descendants of the current view; otherwise search the entire visual tree.</param>
+		public FrameworkElement[] FindViewsByName(string name, bool searchDescendantsOnly)
+		{
+
+			View topLevel = this;
+
+			if (!searchDescendantsOnly)
+			{
+				while (topLevel.Parent is View newTopLevel)
+				{
+					topLevel = newTopLevel;
+				}
+			}
+
+			return GetMatchesInChildren(topLevel).ToArray();
+
+			IEnumerable<FrameworkElement> GetMatchesInChildren(View parentView)
+			{
+				if (!(parentView is ViewGroup parent))
+				{
+					yield break;
+				}
+
+				foreach (var child in parent.GetChildren())
+				{
+					if (child is FrameworkElement fe && fe.Name == name)
+					{
+						yield return fe;
+					}
+
+					foreach (var match in GetMatchesInChildren(child))
+					{
+						yield return match;
+					}
+				}
+			}
+		}
+
 		// Typed properties for easier inspection
 
 		public Controls.ContentControl ContentControlOfInterest => ViewOfInterest as Controls.ContentControl;
@@ -283,8 +486,8 @@ namespace Windows.UI.Xaml
 
 		public FrameworkElement FrameworkElementOfInterest => ViewOfInterest as FrameworkElement;
 
-		public string ShowDescendants() => ViewExtensions.ShowDescendants(this);
-		public string ShowLocalVisualTree(int fromHeight) => ViewExtensions.ShowLocalVisualTree(this, fromHeight);
+		public string ShowDescendants() => Uno.UI.ViewExtensions.ShowDescendants(this);
+		public string ShowLocalVisualTree(int fromHeight) => Uno.UI.ViewExtensions.ShowLocalVisualTree(this, fromHeight);
 #endif
 	}
 }

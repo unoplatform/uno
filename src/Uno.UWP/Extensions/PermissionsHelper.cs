@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Android;
+using Android.App;
 using Android.Content.PM;
-using Android.Support.V4.App;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
@@ -26,6 +26,20 @@ namespace Windows.Extensions
 		{
 			_tryGetPermission = getter;
 			_checkPermission = checkPermission;
+		}
+
+		/// <summary>
+		/// Checks if the given Android permission is declared in manifest file.
+		/// </summary>
+		/// <param name="permission">Permission.</param>
+		/// <returns></returns>
+		public static bool IsDeclaredInManifest(string permission)
+		{
+			var context = Application.Context;
+			var packageInfo = context.PackageManager.GetPackageInfo(context.PackageName, PackageInfoFlags.Permissions);
+			var requestedPermissions = packageInfo?.RequestedPermissions;
+
+			return requestedPermissions?.Any(r => r.Equals(permission, StringComparison.OrdinalIgnoreCase)) ?? false;
 		}
 
 		/// <summary>

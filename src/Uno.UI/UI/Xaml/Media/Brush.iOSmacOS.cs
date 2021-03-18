@@ -19,51 +19,100 @@ namespace Windows.UI.Xaml.Media
 	// iOS partial for SolidColorBrush
 	public partial class Brush
 	{
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<CGColor> colorSetter)
+		internal static IDisposable AssignAndObserveBrush(Brush b, Action<CGColor> colorSetter, Action imageBrushCallback = null)
 		{
-			var disposables = new CompositeDisposable();
-
-			if (b != null)
+			if (b is SolidColorBrush colorBrush)
 			{
-				var colorBrush = b as SolidColorBrush;
-				var imageBrush = b as ImageBrush;
+				var disposables = new CompositeDisposable(2);
+				colorSetter(colorBrush.ColorWithOpacity);
 
-				if (colorBrush != null)
-				{
-					colorSetter(colorBrush.ColorWithOpacity);
-
-					colorBrush.RegisterDisposablePropertyChangedCallback(
+				colorBrush.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
 						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
 					)
 					.DisposeWith(disposables);
 
-					colorBrush.RegisterDisposablePropertyChangedCallback(
-						SolidColorBrush.OpacityProperty,
+				colorBrush.RegisterDisposablePropertyChangedCallback(
+						OpacityProperty,
 						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
 					)
 					.DisposeWith(disposables);
-				}
-				else if (imageBrush != null)
-				{
-					Action<_Image> action = _ => colorSetter(SolidColorBrushHelper.Transparent.Color);
 
-					imageBrush.ImageChanged += action;
+				return disposables;
+			}
 
-					disposables.Add(() => imageBrush.ImageChanged -= action);
-				}
-				else
-				{
-					colorSetter(SolidColorBrushHelper.Transparent.Color);
-				}
+			else if (b is GradientBrush gradientBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+				colorSetter(gradientBrush.FallbackColorWithOpacity);
+
+				gradientBrush.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.FallbackColorProperty,
+					(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+				).DisposeWith(disposables);
+
+				gradientBrush.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.OpacityProperty,
+					(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+				).DisposeWith(disposables);
+
+				return disposables;
+			}
+			else if (b is ImageBrush imageBrush)
+			{
+				var disposables = new CompositeDisposable(5);
+				void ImageChanged(_Image _) => colorSetter(SolidColorBrushHelper.Transparent.Color);
+
+				imageBrush.ImageChanged += ImageChanged;
+
+				Disposable.Create(() => imageBrush.ImageChanged -= ImageChanged)
+					.DisposeWith(disposables);
+
+				imageBrush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.StretchProperty,
+					(_, __) => imageBrushCallback?.Invoke()
+				).DisposeWith(disposables);
+
+				imageBrush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.AlignmentXProperty,
+					(_, __) => imageBrushCallback?.Invoke()
+				).DisposeWith(disposables);
+
+				imageBrush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.AlignmentYProperty,
+					(_, __) => imageBrushCallback?.Invoke()
+				).DisposeWith(disposables);
+
+				imageBrush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.RelativeTransformProperty,
+					(_, __) => imageBrushCallback?.Invoke()
+				).DisposeWith(disposables);
+
+				return disposables;
+			}
+			else if (b is AcrylicBrush acrylicBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+				colorSetter(acrylicBrush.FallbackColorWithOpacity);
+
+				acrylicBrush.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.FallbackColorProperty,
+					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
+				acrylicBrush.RegisterDisposablePropertyChangedCallback(
+					AcrylicBrush.OpacityProperty,
+					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
+					.DisposeWith(disposables);
+
+				return disposables;
 			}
 			else
 			{
 				colorSetter(SolidColorBrushHelper.Transparent.Color);
 			}
 
-			return disposables;
+			return Disposable.Empty;
 		}
-
 	}
 }

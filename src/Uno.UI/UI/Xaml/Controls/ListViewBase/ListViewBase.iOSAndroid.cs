@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
+using Uno.UI.Controls;
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
 #elif XAMARIN_IOS
@@ -14,7 +16,22 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
-		internal NativeListViewBase NativePanel { get { return InternalItemsPanelRoot as NativeListViewBase; } }
+		/// <summary>
+		/// The native ListView type which is providing the implementation. This will be null if a panel other than <see cref="ItemsStackPanel"/>
+		/// or <see cref="ItemsWrapGrid"/> is being used.
+		/// </summary>
+		internal NativeListViewBase NativePanel => InternalItemsPanelRoot as NativeListViewBase;
+
+		/// <summary>
+		/// The managed implementation of ItemsStackPanel, if it is set as ItemsPanel (normally only in a debugging scenario).
+		/// </summary>
+		private ManagedItemsStackPanel ManagedVirtualizingPanel => ItemsPanelRoot as ManagedItemsStackPanel;
+
+		private protected override bool ShouldItemsControlManageChildren => ItemsPanelRoot == InternalItemsPanelRoot && ManagedVirtualizingPanel == null;
+
+		// TODO: This is a temporary workaround for TabView items stretching vertically
+		// Can be removed when #1133 is fixed.
+		internal bool ShouldApplyChildStretch { get; set; } = true;
 
 		/// <summary>
 		/// The number of currently visible items, ie a 'page' from the point of view of incremental data loading.
@@ -46,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 				// Propagate the DataContext manually, since ItemsPanelRoot isn't really part of the visual tree
 				ItemsPanelRoot.SetValue(DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Inheritance);
 
-				if (ScrollViewer?.Style?.Precedence == DependencyPropertyValuePrecedences.ImplicitStyle)
+				if (ScrollViewer?.Style == null)
 				{
 					throw new InvalidOperationException($"Performance hit: {this} is using a ScrollViewer in its template with a default style, which would break virtualization. A Style containing {nameof(ListViewBaseScrollContentPresenter)} must be used.");
 				}
@@ -59,10 +76,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				if (ScrollViewer?.Style == Uno.UI.GlobalStaticResources.ListViewBaseScrollViewerStyle)
+				if (ScrollViewer?.Style != null && ScrollViewer.Style == ResourceResolver.GetSystemResource<Style>("ListViewBaseScrollViewerStyle")) //TODO: this, too, properly
 				{
-					// We're not using NativeListViewBase so we need a 'real' ScrollViewer
-					ScrollViewer.Style = Uno.UI.GlobalStaticResources.DefaultScrollViewerStyle;
+					// We're not using NativeListViewBase so we need a 'real' ScrollViewer, remove the internal custom style
+					ScrollViewer.Style = null;
 				}
 			}
 		}
@@ -74,6 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			if (virtualizingPanel != null)
 			{
 				var layouter = virtualizingPanel.GetLayouter();
+				layouter.ShouldApplyChildStretch = ShouldApplyChildStretch;
 				PrepareNativeLayout(layouter);
 
 				var panel = new NativeListViewBase();

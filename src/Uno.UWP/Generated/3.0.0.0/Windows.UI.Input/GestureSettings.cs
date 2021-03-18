@@ -2,66 +2,30 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum GestureSettings 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Tap,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		DoubleTap,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Hold,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		HoldWithMouse,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		RightTap,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Drag,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationTranslateX,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationTranslateY,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationTranslateRailsX,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationTranslateRailsY,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationRotate,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationScale,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationTranslateInertia,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationRotateInertia,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationScaleInertia,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		CrossSlide,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ManipulationMultipleFingerPanning,
-		#endif
+		// Skipping already declared field Windows.UI.Input.GestureSettings.None
+		// Skipping already declared field Windows.UI.Input.GestureSettings.Tap
+		// Skipping already declared field Windows.UI.Input.GestureSettings.DoubleTap
+		// Skipping already declared field Windows.UI.Input.GestureSettings.Hold
+		// Skipping already declared field Windows.UI.Input.GestureSettings.HoldWithMouse
+		// Skipping already declared field Windows.UI.Input.GestureSettings.RightTap
+		// Skipping already declared field Windows.UI.Input.GestureSettings.Drag
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateX
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateY
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateRailsX
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateRailsY
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationRotate
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationScale
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationTranslateInertia
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationRotateInertia
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationScaleInertia
+		// Skipping already declared field Windows.UI.Input.GestureSettings.CrossSlide
+		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationMultipleFingerPanning
 	}
 	#endif
 }

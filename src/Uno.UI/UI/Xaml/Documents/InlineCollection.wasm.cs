@@ -6,11 +6,11 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Documents
 {
-	partial class InlineCollection
+	partial class InlineCollection : IList<Inline>, IEnumerable<Inline>
 	{
 		private readonly UIElementCollection _collection;
 
-		public InlineCollection(UIElement containerElement)
+		internal InlineCollection(UIElement containerElement)
 		{
 			_collection = new UIElementCollection(containerElement);
 		}

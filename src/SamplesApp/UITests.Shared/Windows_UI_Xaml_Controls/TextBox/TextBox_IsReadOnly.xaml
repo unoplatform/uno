@@ -1,26 +1,11 @@
 <UserControl
 	x:Class="Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:ios="http://uno.ui/ios"
-	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:android="http://uno.ui/android"
-	mc:Ignorable="d ios android"
-	d:DesignHeight="2000"
-	d:DesignWidth="400">
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="auto" />
-		</Grid.RowDefinitions>
-		<TextBox Grid.Row="0"
-				 Text="This is the starting text..."
-				 x:Name="txt" />
-		<Button Grid.Row="1"
-				Click="OnClick"
-				Content="Toggle IsReadOnly" />
-	</Grid>
+	<StackPanel>
+		<TextBox Text="This text should initially be READONLY and ENABLED..." x:Name="txt" IsReadOnly="True" IsEnabled="True" />
+		<ToggleButton IsChecked="{Binding IsReadOnly, ElementName=txt, Mode=TwoWay}" x:Name="tglReadonly">IsReadOnly</ToggleButton>
+		<ToggleButton IsChecked="{Binding IsEnabled, ElementName=txt, Mode=TwoWay}" x:Name="tglEnabled">IsEnabled</ToggleButton>
+	</StackPanel>
 </UserControl>

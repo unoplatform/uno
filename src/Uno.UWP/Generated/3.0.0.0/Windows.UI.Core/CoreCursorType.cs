@@ -2,60 +2,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum CoreCursorType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Arrow,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Cross,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Custom,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Hand,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Help,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		IBeam,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SizeAll,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SizeNortheastSouthwest,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SizeNorthSouth,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SizeNorthwestSoutheast,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		SizeWestEast,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		UniversalNo,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		UpArrow,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Wait,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Pin,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Person,
-		#endif
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.Arrow
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.Cross
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.Custom
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.Hand
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.Help
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.IBeam
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.SizeAll
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.SizeNortheastSouthwest
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.SizeNorthSouth
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.SizeNorthwestSoutheast
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.SizeWestEast
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.UniversalNo
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.UpArrow
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.Wait
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.Pin
+		// Skipping already declared field Windows.UI.Core.CoreCursorType.Person
 	}
 	#endif
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;

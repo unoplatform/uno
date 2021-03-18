@@ -59,6 +59,18 @@ namespace Windows.UI.Xaml
 			for (int i = 0; i < bindings.Length; i++)
 			{
 				bindings[i].ApplyCompiledSource();
+			}
+		}
+
+		/// <summary>
+		/// Applies the <see cref="Binding"/> instances which contain an ElementName property
+		/// </summary>
+		internal void ApplyElementNameBindings()
+		{
+			var bindings = _bindings.Data;
+
+			for (int i = 0; i < bindings.Length; i++)
+			{
 				bindings[i].ApplyElementName();
 			}
 		}
@@ -164,11 +176,6 @@ namespace Windows.UI.Xaml
 					binding.DataContext = dataContext;
 				}
 			}
-		}
-
-
-		internal void Dispose()
-		{
 		}
 
 		/// <summary>

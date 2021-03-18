@@ -1,0 +1,211 @@
+﻿html,
+body {
+  /**
+      Disable root scrolling (bouncing effect on touch devices)
+    */
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.uno-root-element {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.uno-uielement {
+  position: absolute;
+  display: inline;
+  outline: none;
+  pointer-events: auto;
+  /*
+    Padding & margin are required for measure/arrange to behave well:
+    margin & padding are calculated through Xaml elements.
+  */
+  margin: 0 !important;
+  padding: 0;
+
+  line-height: normal;
+  -webkit-box-sizing: border-box !important;
+  -moz-box-sizing: border-box !important;
+  box-sizing: border-box !important;
+  /*
+    Force all element to have a transform, to allow correct measure of text and images.
+    See WindowManager.ts on measureViewInternal() for more details.
+  */
+  transform: translate(0, 0);
+}
+
+.uno-uielement .noclip {
+  /* Used when we need to force the element to be unclipped.
+      --> Used by the toolkit for elevation
+  */
+  clip: auto !important;
+}
+
+svg.uno-uielement {
+  /*
+    The SVG elements are not intended to be a touch target (they are only a holder collection of child shapes),
+    instead it's their child SvgElement that should be the target of the pointer.
+    This also ensure that we are HitTestVisible only for shapes that has a fill.
+  */
+  pointer-events: none;
+
+  stroke-width: 1px; /* default value of Shape.StrokeThickness */
+}
+
+.uno-frameworkelement.uno-unarranged {
+  -ms-opacity: 0;
+  opacity: 0;
+  position: fixed;
+}
+
+svg.uno-frameworkelement.uno-unarranged,
+iframe.uno-frameworkelement.uno-unarranged,
+img.uno-frameworkelement.uno-unarranged,
+video.uno-frameworkelement.uno-unarranged,
+embed.uno-frameworkelement.uno-unarranged {
+  /*
+    "Replaced element" (like iFrame, img, video, ... cf. https://developer.mozilla.org/en-US/docs/Web/CSS/Replaced_element)
+    have a default size of 300x150px (as described here https://www.w3.org/TR/css-sizing-3/#intrinsic-sizes)
+    > For boxes without an intrinsic aspect ratio:
+    >     [../..]
+    >     Otherwise, use 300px for the width and/or 150px for the height as needed.
+
+    SVG element that does not have a measurable viewport are also requested to follow the same logic
+    https://www.w3.org/TR/SVGMobile12/coords.html#InitialViewport
+    >  If the parent document is styled with CSS, then the negotiation process must follow the CSS rules for replaced elements.
+
+    Here we make sure that any unarranged "replaced element" have a fixed with / height to 0,
+    so they won't be taken in consideration by scroll viewers (overflow) which are computing their extent in native.
+
+    A common visual effect of this, is that a non virtualized GridView with items smaller than 150px height
+    is vertically scrollable when it should not! (There is a Rectangle in their template, which rendered using an SVG element).
+
+    Note: this is required has have set a "transform: translate(0, 0);" on all ".uno-uielement",
+          which has a side effect to establish a "containing block" (cf. WindowManager.ts on measureViewInternal()).
+  */
+  width: 0;
+  height: 0;
+}
+
+.uno-textblock:not(.selectionEnabled) {
+  -webkit-touch-callout: none; /* Safari */
+  -webkit-user-select: none; /* iOSSafari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.uno-textblock {
+  text-rendering: optimizeLegibility; /* iOS Safari */
+
+  /* Following are required for gradient brush as Foreground on text. Should not affect normal rendering. */
+  -ms-background-clip: text !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+.uno-buttonbase {
+  cursor: pointer;
+}
+
+.uno-textboxview {
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+.uno-textelement {
+  position: relative;
+}
+
+.uno-htmlimage {  
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.uno-scrollcontentpresenter {
+  -webkit-overflow-scrolling: touch;
+}
+
+  .uno-scrollcontentpresenter.scroll-x-auto {
+    overflow-x: auto;
+  }
+
+  .uno-scrollcontentpresenter.scroll-y-auto {
+    overflow-y: auto;
+  }
+
+  .uno-scrollcontentpresenter.scroll-x-disabled {
+    overflow-x: hidden;
+  }
+
+  .uno-scrollcontentpresenter.scroll-x-hidden {
+    overflow-x: auto;
+    scrollbar-height: none;
+  }
+
+  .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
+    height: 0;
+  }
+
+  .uno-scrollcontentpresenter.scroll-y-disabled {
+    overflow-y: hidden;
+  }
+
+  .uno-scrollcontentpresenter.scroll-y-hidden {
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .uno-scrollcontentpresenter.scroll-y-hidden::-webkit-scrollbar {
+    width: 0;
+  }
+
+  .uno-scrollcontentpresenter.scroll-x-visible {
+    overflow-x: scroll;
+  }
+
+  .uno-scrollcontentpresenter.scroll-y-visible {
+    overflow-y: scroll;
+  }
+
+.uno-splash {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 620px;
+  width: calc(100vw - 10px);
+  height: auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 620px 300px;
+}
+
+/* Bootstrapper logo override */
+.uno-loader .logo {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: 620px !important;
+  width: calc(100vw - 10px) !important;
+  height: auto !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 620px 300px !important;
+}
+
+textarea {
+  resize: none;
+  overflow: hidden; /* Scrolling is handled by the parent ScrollViewer */
+}

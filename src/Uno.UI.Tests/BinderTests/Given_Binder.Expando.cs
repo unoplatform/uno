@@ -16,15 +16,6 @@ namespace Uno.UI.Tests.BinderTests
 	[TestClass]
 	public partial class Given_Binder_Expando
 	{
-		[TestInitialize]
-		public void Init()
-		{
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
-		}
-
 		[TestMethod]
 		public void When_ReadValue()
 		{
@@ -144,7 +135,7 @@ namespace Uno.UI.Tests.BinderTests
 			}
 
 			public static readonly DependencyProperty MyPropertyProperty =
-				DependencyProperty.Register("MyProperty", typeof(string), typeof(MyControl), new PropertyMetadata(null));
+				DependencyProperty.Register("MyProperty", typeof(string), typeof(MyControl), new FrameworkPropertyMetadata(null));
 		}
 	}
 }

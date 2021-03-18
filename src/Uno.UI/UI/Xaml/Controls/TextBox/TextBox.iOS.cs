@@ -29,13 +29,6 @@ namespace Windows.UI.Xaml.Controls
 			OnKeyboardAppearanceChanged(KeyboardAppearance);
 		}
 
-		public override CGSize SizeThatFits(CGSize size)
-		{
-			size = base.SizeThatFits(size);
-			size = IFrameworkElementHelper.SizeThatFits(this, size);
-			return size;
-		}
-
 		partial void OnFocusStateChangedPartial(FocusState focusState)
 		{
 			if (_textBoxView != null)
@@ -55,10 +48,6 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
-		}
-
-		partial void OnForegroundColorChangedPartial(Brush newValue)
-		{
 		}
 
 		public override bool BecomeFirstResponder()
@@ -125,9 +114,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool OnKey(char key)
 		{
-			var keyRoutedEventArgs = new KeyRoutedEventArgs()
+			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey())
 			{
-				Key = key.ToVirtualKey(),
 				CanBubbleNatively = true
 			};
 
@@ -279,7 +267,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ReturnKeyTypeProperty, value); }
 		}
 
-		public static readonly DependencyProperty ReturnKeyTypeProperty =
+		public static DependencyProperty ReturnKeyTypeProperty { get ; } =
 			DependencyProperty.Register(
 				"ReturnKeyType",
 				typeof(UIReturnKeyType),
@@ -316,12 +304,12 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(KeyboardAppearanceProperty, value); }
 		}
 
-		public static readonly DependencyProperty KeyboardAppearanceProperty =
+		public static DependencyProperty KeyboardAppearanceProperty { get ; } =
 			DependencyProperty.Register(
 				"KeyboardAppearance",
 				typeof(UIKeyboardAppearance),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					UIKeyboardAppearance.Default,
 					(s, e) => ((TextBox)s)?.OnKeyboardAppearanceChanged((UIKeyboardAppearance)e.NewValue)
 				)

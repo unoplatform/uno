@@ -2,28 +2,38 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Windows.Foundation;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
+using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class LinearGradientBrush
 	{
-		internal CAGradientLayer GetLayer(CGSize size)
+		internal override CALayer GetLayer(CGSize size)
 		{
-			var gradientLayer = new CAGradientLayer();
-			gradientLayer.Colors = GradientStops.Select(gs => (CGColor)gs.Color).ToArray();
-			gradientLayer.Locations = GradientStops.Select(gs => new NSNumber(gs.Offset)).ToArray();
+			var gradientLayer = new CAGradientLayer
+			{
+				Colors = GradientStops.SelectToArray(gs => (CGColor)gs.Color),
+				Locations = GradientStops.SelectToArray(gs => new NSNumber(gs.Offset))
+			};
 			var transform = RelativeTransform;
 
-#if __IOS__
-			gradientLayer.StartPoint = transform?.TransformPoint(StartPoint) ?? StartPoint;
-			gradientLayer.EndPoint = transform?.TransformPoint(EndPoint) ?? EndPoint;
+			var startPoint = transform?.TransformPoint(StartPoint) ?? StartPoint;
+			var endPoint = transform?.TransformPoint(EndPoint) ?? EndPoint;
+
+			if (MappingMode == BrushMappingMode.Absolute)
+			{
+				startPoint = new Point(startPoint.X / size.Width, startPoint.Y / size.Height);
+				endPoint = new Point(endPoint.X / size.Width, endPoint.Y / size.Height);
+			}
+
+			gradientLayer.StartPoint = startPoint;
+			gradientLayer.EndPoint = endPoint;
+
 			return gradientLayer;
-#elif __MACOS__
-			throw new NotImplementedException();
-#endif
 		}
 	}
 }

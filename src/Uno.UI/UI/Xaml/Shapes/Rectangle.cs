@@ -1,37 +1,63 @@
-﻿using System;
+﻿#if !__IOS__ && !__MACOS__ && !__NETSTD_REFERENCE__ && !__SKIA__ && !__ANDROID__
+#define LEGACY_SHAPE_MEASURE
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Windows.UI.Xaml.Shapes
 {
-    public partial class Rectangle : Shape
-    {
+	public partial class Rectangle : Shape
+	{
+
+		#region RadiusY (DP)
+		public static DependencyProperty RadiusYProperty { get ; } = DependencyProperty.Register(
+			"RadiusY",
+			typeof(double),
+			typeof(Rectangle),
+			new FrameworkPropertyMetadata(
+				defaultValue: 0.0,
+#if LEGACY_SHAPE_MEASURE
+				propertyChangedCallback: (s, e) => ((Rectangle)s).OnRadiusYChangedPartial()
+#else
+				options: FrameworkPropertyMetadataOptions.AffectsArrange
+#endif
+			)
+		);
+
 		public double RadiusY
 		{
-			get { return (double)this.GetValue(RadiusYProperty); }
-			set { this.SetValue(RadiusYProperty, value); }
+			get => (double)this.GetValue(RadiusYProperty);
+			set => this.SetValue(RadiusYProperty, value);
 		}
+		#endregion
 
-		// Using a DependencyProperty as the backing store for RadiusY.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty RadiusYProperty =
-			DependencyProperty.Register("RadiusY", typeof(double), typeof(Rectangle), new PropertyMetadata(0.0, (s,e)=>
-			 ((Rectangle)s).OnRadiusYChangedPartial()));
-
+		#region RadiusX (DP)
+		public static DependencyProperty RadiusXProperty { get ; } = DependencyProperty.Register(
+			"RadiusX",
+			typeof(double),
+			typeof(Rectangle),
+			new FrameworkPropertyMetadata(
+				defaultValue: 0.0,
+#if LEGACY_SHAPE_MEASURE
+				propertyChangedCallback: (s, e) => ((Rectangle)s).OnRadiusXChangedPartial()
+#else
+				options: FrameworkPropertyMetadataOptions.AffectsArrange
+#endif
+			)
+		);
 
 		public double RadiusX
 		{
-			get { return (double)this.GetValue(RadiusXProperty); }
-			set { this.SetValue(RadiusXProperty, value); }
+			get => (double)this.GetValue(RadiusXProperty);
+			set => this.SetValue(RadiusXProperty, value);
 		}
+		#endregion
 
-		// Using a DependencyProperty as the backing store for RadiusX.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty RadiusXProperty =
-			DependencyProperty.Register("RadiusX", typeof(double), typeof(Rectangle), new PropertyMetadata(0.0, (s, e) =>
-			 ((Rectangle)s).OnRadiusXChangedPartial()));
-
+#if LEGACY_SHAPE_MEASURE
 		partial void OnRadiusXChangedPartial();
 		partial void OnRadiusYChangedPartial();
-
-
+#endif
 	}
 }

@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__
+#if !HAS_UNO_WINUI && (__IOS__ || __ANDROID__ || __MACOS__)
 using System;
 using Uno.Extensions;
 using Windows.Media.Playback;
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _isTransportControlsBound;
 
-		#region Source Property
+#region Source Property
 
 		public IMediaPlaybackSource Source
 		{
@@ -59,9 +59,9 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-		#endregion
+#endregion
 
-		#region PosterSource Property
+#region PosterSource Property
 
 		public ImageSource PosterSource
 		{
@@ -87,9 +87,9 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-		#endregion
+#endregion
 
-		#region AutoPlay Property
+#region AutoPlay Property
 
 		public bool AutoPlay
 		{
@@ -115,9 +115,9 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-		#endregion
+#endregion
 
-		#region IsFullWindow Property
+#region IsFullWindow Property
 
 		public bool IsFullWindow
 		{
@@ -143,35 +143,46 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ToogleFullScreen(bool showFullscreen)
 		{
-			if (showFullscreen)
+			try
 			{
-				ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+				_mediaPlayerPresenter.IsTogglingFullscreen = true;
+
+				if (showFullscreen)
+				{
+					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 
 #if __ANDROID__
 				this.RemoveView(_layoutRoot);
-#elif __IOS__
+#elif __IOS__ || __MACOS__
 				_layoutRoot.RemoveFromSuperview();
 #endif
 
-				Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
-			}
-			else
-			{
-				ApplicationView.GetForCurrentView().ExitFullScreenMode();
+					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+				}
+				else
+				{
+					ApplicationView.GetForCurrentView().ExitFullScreenMode();
 
-				Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
 
 #if __ANDROID__
 				this.AddView(_layoutRoot);
 #elif __IOS__
 				this.Add(_layoutRoot);
+#elif __MACOS__
+				this.AddSubview(_layoutRoot);
 #endif
+				}
+			}
+			finally
+			{
+				_mediaPlayerPresenter.IsTogglingFullscreen = false;
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region MediaPlayer Property
+#region MediaPlayer Property
 
 		public Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
@@ -224,9 +235,9 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-		#endregion
+#endregion
 
-		#region AreTransportControlsEnabled Property
+#region AreTransportControlsEnabled Property
 
 		public bool AreTransportControlsEnabled
 		{
@@ -241,9 +252,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaPlayerElement),
 				new FrameworkPropertyMetadata(false));
 
-		#endregion
+#endregion
 
-		#region Stretch Property
+#region Stretch Property
 
 		public Stretch Stretch
 		{
@@ -258,7 +269,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaPlayerElement),
 				new FrameworkPropertyMetadata(Stretch.Uniform));
 
-		#endregion
+#endregion
 
 		private MediaTransportControls _transportControls;
 		public MediaTransportControls TransportControls
@@ -277,9 +288,11 @@ namespace Windows.UI.Xaml.Controls
 		public MediaPlayerElement() : base()
 		{
 			TransportControls = new MediaTransportControls();
+
+			DefaultStyleKey = typeof(MediaPlayerElement);
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 

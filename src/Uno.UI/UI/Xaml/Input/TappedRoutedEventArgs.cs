@@ -3,39 +3,43 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Devices.Input;
+using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class TappedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
+		private readonly UIElement _originalSource;
 		private readonly Point _position;
 
-		public TappedRoutedEventArgs() 
-			: this(new Point())
+		public TappedRoutedEventArgs() { }
+		
+		internal TappedRoutedEventArgs(UIElement originalSource, TappedEventArgs args)
+			: base(originalSource)
 		{
-		}
-
-		internal TappedRoutedEventArgs(Point position)
-		{
-			_position = position;
+			_originalSource = originalSource;
+			_position = args.Position;
+			PointerDeviceType = args.PointerDeviceType;
 		}
 
 		public bool Handled { get; set; }
 
-		public Point GetPosition() => _position;
+		public PointerDeviceType PointerDeviceType { get; }
 
-		public PointerDeviceType PointerDeviceType { get; internal set; }
-
-		public global::Windows.Foundation.Point GetPosition(global::Windows.UI.Xaml.UIElement relativeTo)
+		public Point GetPosition(UIElement relativeTo)
 		{
-			if(relativeTo == null)
+			if (_originalSource == null)
+			{
+				return default; // Required for the default public ctor ...
+			}
+			else if (relativeTo == _originalSource)
 			{
 				return _position;
 			}
 			else
 			{
-				return relativeTo.GetPosition(_position, relativeTo);
+				return _originalSource.GetPosition(_position, relativeTo);
 			}
 		}
 	}

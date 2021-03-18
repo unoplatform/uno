@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 
@@ -20,25 +22,31 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPanelTemplate : FrameworkTemplate
 	{
-		public ItemsPanelTemplate(Func<View> factory)
+		public ItemsPanelTemplate() : this(null) { }
+
+		public ItemsPanelTemplate(Func<View?>? factory)
 			: base (factory)
 		{
 		}
 
-		public static implicit operator ItemsPanelTemplate(Func<View> obj)
+		/// <summary>
+		/// Build an ItemsPanelTemplate with an optional <paramref name="owner"/> to be provided during the call of <paramref name="factory"/>
+		/// </summary>
+		/// <param name="owner">The owner of the ItemsPanelTemplate</param>
+		/// <param name="factory">The factory to be called to build the template content</param>
+		public ItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory)
+			: base(owner, factory)
 		{
-			return new ItemsPanelTemplate(obj);
 		}
 
-		public static implicit operator Func<View>(ItemsPanelTemplate obj)
-		{
-			return () => (View)obj.LoadContent();
-		}
+		public static implicit operator ItemsPanelTemplate(Func<View?>? obj)
+			=> new ItemsPanelTemplate(obj);
 
-		public new View LoadContent()
-		{
-			return (View)base.LoadContent();
-		}
+		public static implicit operator Func<View?>(ItemsPanelTemplate? obj)
+			=> () => (View?)obj?.LoadContent();
+
+		public new View? LoadContent()
+			=> (View?)base.LoadContent();
 	}
 }
 

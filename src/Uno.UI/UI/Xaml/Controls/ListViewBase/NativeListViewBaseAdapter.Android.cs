@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Client;
 using Uno.Extensions;
@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Windows.UI.Core;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -31,6 +32,11 @@ namespace Windows.UI.Xaml.Controls
 		private const int MaxRecycledViewsPerViewType = 10;
 
 		private readonly HashSet<int> _groupHeaderItemTypes = new HashSet<int>();
+
+		/// <summary>
+		/// Known templates cached for each view type.
+		/// </summary>
+		private readonly Dictionary<int, DataTemplate> _itemTemplatesByViewType = new Dictionary<int, DataTemplate>();
 
 		private ManagedWeakReference _ownerWeakReference;
 
@@ -86,9 +92,12 @@ namespace Windows.UI.Xaml.Controls
 
 				container.DataContext = item;
 				container.ContentTemplate = dataTemplate;
-				container.Binding("Content", "");
+				if (container.GetBindingExpression(ContentControl.ContentProperty) == null)
+				{
+					container.SetBinding(ContentControl.ContentProperty, new Binding());
+				}
 			}
-			else if(viewType == IsOwnContainerType)
+			else if (viewType == IsOwnContainerType)
 			{
 				holder.ItemView = parent?.GetContainerForIndex(index) as View;
 			}
@@ -139,9 +148,14 @@ namespace Windows.UI.Xaml.Controls
 				return XamlParent?.GetGroupHeaderContainer(null);
 			}
 
-			return XamlParent?.GetContainerForIndex(-1) as ContentControl;
+			//return XamlParent?.GetContainerForIndex(-1) as ContentControl;
+			var template = _itemTemplatesByViewType.UnoGetValueOrDefault(viewType);
+			// 
+			return XamlParent?.GetContainerForTemplate(template) as ContentControl;
 		}
 
+		// Get the 'view type' for the element at the given position. Elements with the same 'view type' have the same reuse
+		// characteristics - eg, they can share containers via recycling, or in some cases they should not be recycled at all.
 		public override int GetItemViewType(int position)
 		{
 			if (XamlParent?.GetIsHeader(position) ?? false)
@@ -155,24 +169,16 @@ namespace Windows.UI.Xaml.Controls
 
 			var item = XamlParent?.GetElementFromDisplayPosition(position);
 			var isGroupHeader = XamlParent?.GetIsGroupHeader(position) ?? false;
+			var isItemsItsOwnContainer = XamlParent?.IsItemItsOwnContainer(item) ?? false;
 			var template = GetDataTemplateFromItem(XamlParent, item, null, isGroupHeader);
 
-			int viewType;
-			if (template != null)
+			var viewType = (isItemsItsOwnContainer, isGroupHeader, template) switch
 			{
-				viewType = template.GetHashCode();
-			}
-			else
-			{
-				if (XamlParent?.IsItemItsOwnContainer(item) ?? false)
-				{
-					viewType = IsOwnContainerType;
-				}
-				else
-				{
-					viewType = isGroupHeader ? NoTemplateGroupHeaderType : NoTemplateItemType;
-				}
-			}
+				(true, _, _) => IsOwnContainerType, // IsOwnContainer takes precedence
+				(false, _, DataTemplate _) => GetViewTypeAndRegister(template), // Use template for identifier if possible
+				(false, true, null) => NoTemplateGroupHeaderType, // Constant viewTypes when template is null
+				(false, false, null) => NoTemplateItemType,
+			};
 
 			if (isGroupHeader)
 			{
@@ -180,6 +186,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return viewType;
+
+			int GetViewTypeAndRegister(DataTemplate dataTemplate)
+			{
+				var id = dataTemplate.GetHashCode();
+				_itemTemplatesByViewType[id] = dataTemplate;
+				return id;
+			}
 		}
 
 		private static DataTemplate GetDataTemplateFromItem(ListViewBase parent, object item, int? itemViewType, bool isGroupHeader)
@@ -214,6 +227,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void Refresh()
 		{
 			_groupHeaderItemTypes.Clear();
+			_itemTemplatesByViewType.Clear();
 			NotifyDataSetChanged();
 		}
 	}

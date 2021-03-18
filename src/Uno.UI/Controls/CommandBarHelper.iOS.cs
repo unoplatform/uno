@@ -1,4 +1,4 @@
-﻿#if __IOS__
+#nullable enable
 using System;
 using System.Linq;
 using Windows.UI.Xaml;
@@ -9,12 +9,12 @@ namespace Uno.UI.Controls
 {
 	public static class CommandBarHelper
 	{
-		internal static void SetNavigationBar(CommandBar commandBar, UIKit.UINavigationBar navigationBar)
+		internal static void SetNavigationBar(CommandBar commandBar, UIKit.UINavigationBar? navigationBar)
 		{
 			commandBar.GetRenderer(() => new CommandBarRenderer(commandBar)).Native = navigationBar;
 		}
 
-		internal static void SetNavigationItem(CommandBar commandBar, UIKit.UINavigationItem navigationItem)
+		internal static void SetNavigationItem(CommandBar commandBar, UIKit.UINavigationItem? navigationItem)
 		{
 			commandBar.GetRenderer(() => new CommandBarNavigationItemRenderer(commandBar)).Native = navigationItem;
 		}
@@ -29,10 +29,14 @@ namespace Uno.UI.Controls
 			if (topCommandBar == null)
 			{
 				// The default CommandBar style contains information that might be relevant to all pages, including those without a CommandBar.
-				// For example the Uno.UI.Toolkit.CommandBarExtensions.BackButtonTitle attached property is often set globally to "" through 
+				// For example the Uno.UI.Toolkit.CommandBarExtensions.BackButtonTitle attached property is often set globally to "" through
 				// a default CommandBar style in order to remove the back button text throughout an entire application.
 				// In order to leverage this information, we create a new CommandBar instance that only exists to "render" the NavigationItem.
-				topCommandBar = new CommandBar();
+				// Since Uno 3.0 objects which are not part of the Visualtree does not get the Global Styles applied. Hence the fact we are manually applying it here.
+				topCommandBar = new CommandBar
+				{
+					Style = Application.Current.Resources[typeof(CommandBar)] as Style
+				};
 			}
 
 			// Hook CommandBar to NavigationItem
@@ -45,8 +49,7 @@ namespace Uno.UI.Controls
 		/// <param name="pageController">The controller of the page</param>
 		public static void PageDestroyed(UIViewController pageController)
 		{
-			var topCommandBar = pageController.FindTopCommandBar();
-			if (topCommandBar != null)
+			if (pageController.FindTopCommandBar() is { } topCommandBar)
 			{
 				SetNavigationItem(topCommandBar, null);
 			}
@@ -94,19 +97,26 @@ namespace Uno.UI.Controls
 		/// <param name="pageController">The controller of the page</param>
 		public static void PageDidDisappear(UIViewController pageController)
 		{
-			var topCommandBar = pageController.FindTopCommandBar();
-			if (topCommandBar != null)
+			if (pageController.FindTopCommandBar() is { } topCommandBar)
 			{
 				// Set the native navigation bar to null so it does not render when the page is not visible
 				SetNavigationBar(topCommandBar, null);
 			}
 		}
 
-		private static CommandBar FindTopCommandBar(this UIViewController controller)
+		public static void PageWillDisappear(UIViewController pageController)
+		{
+			if (pageController.FindTopCommandBar() is { } topCommandBar)
+			{
+				// Set the native navigation bar to null so it does not render when the page is not visible
+				SetNavigationBar(topCommandBar, null);
+			}
+		}
+
+		private static CommandBar? FindTopCommandBar(this UIViewController controller)
 		{
 			return (controller.View as Page)?.TopAppBar as CommandBar
-				?? controller.View.FindFirstChild<CommandBar>();
+				?? controller.View.FindFirstChild<CommandBar?>();
 		}
 	}
 }
-#endif

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.AppCompat.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
@@ -65,8 +65,6 @@ namespace Windows.UI.Xaml.Controls
 
 			InitializeSnapHelper();
 
-			MotionEventSplittingEnabled = false;
-
 			_shouldRecalibrateFlingVelocity = (int)Android.OS.Build.VERSION.SdkInt >= 28; // Android.OS.BuildVersionCodes.P
 
 			// // This is required for animations not to be cut off by transformed ancestor views. (#1333)
@@ -87,6 +85,11 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				InitializeScrollbars(null);
+
+				if(FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay != null)
+				{
+					ScrollBarDefaultDelayBeforeFade = (int)FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay.Value.TotalMilliseconds;
+				}
 			}
 		}
 

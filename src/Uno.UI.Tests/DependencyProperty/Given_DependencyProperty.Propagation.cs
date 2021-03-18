@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Logging;
@@ -30,11 +30,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		[TestInitialize]
 		public void Init()
 		{
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
-
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SubObject).TypeHandle);
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MyObject).TypeHandle);
 		}
@@ -497,7 +492,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 		// Using a DependencyProperty as the backing store for SelfTest.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty SelfTestProperty =
-			DependencyProperty.Register("SelfTest", typeof(DependencyObject), typeof(MyObject), new PropertyMetadata(null));
+			DependencyProperty.Register("SelfTest", typeof(DependencyObject), typeof(MyObject), new FrameworkPropertyMetadata(null));
 
 
 
@@ -511,7 +506,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 		// Using a DependencyProperty as the backing store for SubObject.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty SubObjectProperty =
-			DependencyProperty.Register("SubObject", typeof(SubObject), typeof(MyObject), new PropertyMetadata(null, (s, e) => ((MyObject)s)?.OnSubObjectChanged(e)));
+			DependencyProperty.Register("SubObject", typeof(SubObject), typeof(MyObject), new FrameworkPropertyMetadata(null, (s, e) => ((MyObject)s)?.OnSubObjectChanged(e)));
 
 
 		private void OnSubObjectChanged(DependencyPropertyChangedEventArgs e)
@@ -535,7 +530,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(SubObject), new PropertyMetadata(0, OnPropertyChanged));
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(SubObject), new FrameworkPropertyMetadata(0, OnPropertyChanged));
 
 		private static void OnPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -557,7 +552,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 		// Using a DependencyProperty as the backing store for MyStringProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyStringPropertyProperty =
-			DependencyProperty.Register("MyStringProperty", typeof(string), typeof(SubObject), new PropertyMetadata("", OnStringPropertyChanged));
+			DependencyProperty.Register("MyStringProperty", typeof(string), typeof(SubObject), new FrameworkPropertyMetadata("", OnStringPropertyChanged));
 
 		private static void OnStringPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -586,7 +581,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				name: "SameTypeObject",
 				propertyType: typeof(MyObjectWithExplicitDefaultValue),
 				ownerType: typeof(MyObjectWithExplicitDefaultValue),
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: null, 
 					propertyChangedCallback: (s, e) => ((MyObjectWithExplicitDefaultValue)s)?.OnSameTypeObjectChanged(e)
 				)
@@ -646,9 +641,9 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		public int D => 44;
 	}
 
-	public class PropagationContext2 : INotifyPropertyChanged
+	public class PropagationContext2 : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 	}
 
 	public class OppositeConverter : IValueConverter

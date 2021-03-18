@@ -1,93 +1,80 @@
-﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Uno.Extensions;
-using Uno.Logging;
 using Windows.Foundation;
+using Uno.Logging;
+using Uno.Extensions;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-#if __ANDROID__
-using Android.Content;
-using Android.Content.PM;
-#endif
-#if __IOS__
-using UIKit;
-using AppleUrl = global::Foundation.NSUrl;
-#endif
+using Windows.UI.Core;
 
 namespace Windows.System
 {
 	public static partial class Launcher
 	{
-		public static async Task<bool> LaunchUriAsync(Uri uri)
+		private const string MicrosoftUriPrefix = "ms-";
+
+		private static bool IsSpecialUri(Uri uri) => uri.Scheme.StartsWith(MicrosoftUriPrefix, StringComparison.InvariantCultureIgnoreCase);
+
+
+		public static Task<bool> LaunchUriAsync(Uri uri)
 		{
-			try
+#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__ || __SKIA__
+
+			if (uri == null)
 			{
-#if __IOS__
-				return UIKit.UIApplication.SharedApplication.OpenUrl(
-					new AppleUrl(uri.OriginalString));
-#elif __ANDROID__
-				var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
-				var intent = new Intent(Intent.ActionView, androidUri);
-
-				if ( Uno.UI.ContextHelper.Current == null)
-				{
-					throw new InvalidOperationException(
-						"LaunchUriAsync was called too early in application lifetime. " +
-						"App context needs to be initialized");
-				}
-				((Android.App.Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);
-
-				return true;
-#elif __WASM__
-				var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
-				var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-				return result == "True";
-#else
-				throw new NotImplementedException();
-#endif
+				// this exception might not be in line with UWP which seems to throw AccessViolationException... for some reason.
+				throw new ArgumentNullException(nameof(uri));
 			}
-			catch (Exception exception)
+
+#if !__WASM__
+			if (!CoreDispatcher.Main.HasThreadAccess)
 			{
 				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(Launcher).Log().Error($"Failed to {nameof(LaunchUriAsync)}.", exception);
+					typeof(Launcher).Log().Error($"{nameof(LaunchUriAsync)} must be called on the UI thread");
 				}
-
-				return false;
+				// LaunchUriAsync throws the following exception if used on UI thread on UWP
+				throw new InvalidOperationException($"{nameof(LaunchUriAsync)} must be called on the UI thread");
 			}
+#endif
+
+			return LaunchUriPlatformAsync(uri);
+#else
+			if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(Launcher).Log().Error($"{nameof(LaunchUriAsync)} is not implemented on this platform.");
+			}
+
+			return Task.FromResult(false);
+#endif
 		}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)
 		{
-#if __IOS__
-			var canOpenUri = UIApplication.SharedApplication.CanOpenUrl(
-				new AppleUrl(uri.OriginalString));
-#elif __ANDROID__
-			var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
-			var intent = new Intent(Intent.ActionView, androidUri);
-
-			if (Uno.UI.ContextHelper.Current == null)
+			if (uri == null)
 			{
-				throw new InvalidOperationException(
-					"LaunchUriAsync was called too early in application lifetime. " +
-					"App context needs to be initialized");
+				// counterintuitively, UWP throws plain Exception with HRESULT when passed in Uri is null
+				throw new ArgumentNullException(nameof(uri));
 			}
 
-			var manager = Uno.UI.ContextHelper.Current.PackageManager;
-			var supportedResolvedInfos = manager.QueryIntentActivities(
-				intent,
-				PackageInfoFlags.MatchDefaultOnly);
-			var canOpenUri = supportedResolvedInfos.Any();
+			// this method may run on the background thread on UWP
+#if !__WASM__
+			if (CoreDispatcher.Main.HasThreadAccess)
+#else
+			if(true)
 #endif
-			var supportStatus = canOpenUri ?
-				LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported;
-
-			return Task.FromResult(supportStatus).AsAsyncOperation();			
+			{
+				return QueryUriSupportPlatformAsync(uri, launchQuerySupportType).AsAsyncOperation();
+			}
+			else
+			{
+				return CoreDispatcher.Main.RunWithResultAsync(
+					priority: CoreDispatcherPriority.Normal,
+					task: async () => await QueryUriSupportPlatformAsync(uri, launchQuerySupportType)
+				).AsAsyncOperation();
+			}
 		}
 #endif
 	}

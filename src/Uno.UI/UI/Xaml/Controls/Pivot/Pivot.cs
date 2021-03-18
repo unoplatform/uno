@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -29,6 +30,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public Pivot()
 		{
+			DefaultStyleKey = typeof(Pivot);
 			Loaded += (s, e) => RegisterHeaderEvents();
 			Unloaded += (s, e) => UnregisterHeaderEvents();
 			Items.VectorChanged += OnItemsVectorChanged;
@@ -55,6 +57,13 @@ namespace Windows.UI.Xaml.Controls
 			_isTemplateApplied = true;
 
 			UpdateProperties();
+
+#if __WASM__ || __SKIA__
+			//TODO: Workaround for https://github.com/unoplatform/uno/issues/5144
+			//OnApplyTemplate() is comming too late when using bindings
+			SetNeedsUpdateItems();
+#endif
+
 			SynchronizeItems();
 		}
 
@@ -128,12 +137,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_isUWPTemplate)
 			{
-				_staticHeader.Visibility = Items.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
+				_staticHeader.Visibility = HasItems ? Visibility.Visible : Visibility.Collapsed;
 
 				UnregisterHeaderEvents();
 				_staticHeader.Children.Clear();
 
-				foreach (var item in Items)
+				var items = GetItems();
+				foreach (var item in items)
 				{
 					var headerItem = new PivotHeaderItem()
 					{
@@ -159,10 +169,13 @@ namespace Windows.UI.Xaml.Controls
 						}
 					);
 
+					// Materialize template to ensure visual states are set correctly.
+					headerItem.EnsureTemplate();
+
 					_staticHeader.Children.Add(headerItem);
 				}
 
-				if (SelectedIndex == -1 && Items.Count != 0)
+				if (SelectedIndex == -1 && HasItems)
 				{
 					SelectedIndex = 0;
 				}
@@ -202,18 +215,26 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnItemsSourceChanged(e);
+
+			SynchronizeItems();
+		}		
+
 		private void SynchronizeSelectedItem()
 		{
-			if (SelectedIndex != -1 && Items.Count != 0)
+			if (SelectedIndex != -1 && HasItems)
 			{
-				var selectedIndex = Math.Max(Math.Min(SelectedIndex, Items.Count - 1), 0);
+				var selectedIndex = Math.Max(Math.Min(SelectedIndex, NumberOfItems - 1), 0);
 
 				var selectedHeader = _staticHeader.Children[selectedIndex] as PivotHeaderItem;
-				var selectedPivotitem = Items[selectedIndex];
+				var items = GetItems();
+				var selectedPivotitem = items.ElementAt(selectedIndex);
 
 				SelectedItem = selectedPivotitem;
-
-				for (int i = 0; i < Items.Count; i++)
+				
+				for (int i = 0; i < NumberOfItems; i++)
 				{
 					if (ContainerFromIndex(i) is ContentControl itemContainer)
 					{
@@ -250,6 +271,23 @@ namespace Windows.UI.Xaml.Controls
 					pivot.UpdateProperties();
 				}
 			}
+		}
+
+		private void OnSelectedItemPropertyChanged(object oldValue, object newValue)
+		{
+			var removedItems = oldValue == null ? new object[0] : new [] { oldValue };
+			var addedItems = newValue == null ? new object[0] : new [] { newValue };
+
+			OnSelectedItemChangedPartial(oldValue, newValue);
+
+			InvokeSelectionChanged(removedItems, addedItems);			
+		}
+
+		partial void OnSelectedItemChangedPartial(object oldSelectedItem, object selectedItem);
+
+		protected void InvokeSelectionChanged(object[] removedItems, object[] addedItems)
+		{
+			SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removedItems, addedItems));
 		}
 	}
 }

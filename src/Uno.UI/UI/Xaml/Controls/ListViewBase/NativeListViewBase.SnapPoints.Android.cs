@@ -3,11 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
+using static AndroidX.RecyclerView.Widget.RecyclerView;
 
 namespace Windows.UI.Xaml.Controls
 {

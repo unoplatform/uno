@@ -1,16 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno;
-using Uno.Extensions;
-using Uno.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using System.Threading.Tasks;
+using Windows.Foundation;
+using FluentAssertions;
+
 using View = Windows.UI.Xaml.FrameworkElement;
 
 
@@ -24,150 +17,226 @@ namespace Uno.UI.Tests.GridTests
 		{
 			var SUT = new Grid() { Name = "test" };
 
-			var c1 = SUT.AddChild(
-				new View
+			var c1 = new View
 				{
 					Name = "Child01",
-					RequestedDesiredSize = new Windows.Foundation.Size(10, 10),
 					Margin = new Thickness(5)
 				}
-				.GridPosition(0, 0)
-			);
+				.GridPosition(0, 0);
 
-			SUT.Measure(new Windows.Foundation.Size(20, 20));
-			var measuredSize = SUT.DesiredSize;
-			Assert.AreEqual(new Windows.Foundation.Size(20, 20), measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Size(10, 10), c1.RequestedDesiredSize);
+			SUT.AddChild(c1);
 
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,20, 20));
+			SUT.Measure(new Size(20, 20));
 
-			Assert.AreEqual(new Windows.Foundation.Rect(5, 5, 10, 10), c1.Arranged);
+			SUT.DesiredSize.Should().Be(new Size(10, 10));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 10));
+			c1.DesiredSize.Should().Be(new Size(10, 10));
+			c1.UnclippedDesiredSize.Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
 
-			Assert.AreEqual(1, SUT.GetChildren().Count());
+			SUT.Arrange(new Rect(0, 0,20, 20));
+
+			SUT.Arranged.Should().Be((Rect)"0,0,20,20");
+			SUT.ClippedFrame.Should().Be((Rect)"0,0,20,20");
+			c1.Arranged.Should().Be((Rect)"5,5,10,10");
+			c1.ClippedFrame.Should().Be((Rect)"0,0,10,10");
+
+			SUT.GetChildren().Should().HaveCount(1);
 		}
 
 		[TestMethod]
 		public void When_One_Child_With_Margin_1234()
 		{
-			var SUT = new Grid() { Name = "test" };
-			
+			var SUT = new Grid
+			{
+				Name = "test",
+				Padding = new Thickness(2)
+			};
 
-			var c1 = SUT.AddChild(
-				new View
+			var c1 = new View
 				{
 					Name = "Child01",
-					RequestedDesiredSize = new Windows.Foundation.Size(10, 10),
 					Margin = new Thickness(1, 2, 3, 4)
 				}
-				.GridPosition(0, 0)
-			);
+				.GridPosition(0, 0);
 
-			SUT.Measure(new Windows.Foundation.Size(20, 20));
-			var measuredSize = SUT.DesiredSize;
-			Assert.AreEqual(new Windows.Foundation.Size(14, 16), measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Size(10, 10), c1.RequestedDesiredSize);
+			SUT.AddChild(c1);
 
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,20, 20));
+			SUT.Measure(new Size(20, 20));
 
-			Assert.AreEqual(new Windows.Foundation.Rect(1, 2, 16, 14), c1.Arranged);
+			SUT.DesiredSize.Should().Be(new Size(8, 10));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(8, 10));
+			c1.DesiredSize.Should().Be(new Size(4, 6));
+			c1.UnclippedDesiredSize.Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
 
-			Assert.AreEqual(1, SUT.GetChildren().Count());
+			SUT.Arrange(new Rect(0, 0,20, 20));
+
+			SUT.Arranged.Should().Be((Rect)"0,0,20,20");
+			SUT.ClippedFrame.Should().Be((Rect)"0,0,20,20");
+			c1.Arranged.Should().Be((Rect)"3,4,12,10");
+			c1.ClippedFrame.Should().Be((Rect)"0,0,12,10");
+
+			SUT.GetChildren().Should().HaveCount(1);
 		}
 
 		[TestMethod]
-		public void When_One_Child_With_Margin_Botton_And_Center()
+		public void When_One_Child_With_Margin_1234_Size8()
 		{
-			var SUT = new Grid() { Name = "test" };
-			
+			var SUT = new Grid
+			{
+				Name = "test",
+				Padding = new Thickness(2)
+			};
 
-			var c1 = SUT.AddChild(
-				new View
+			var c1 = new View
 				{
 					Name = "Child01",
-					RequestedDesiredSize = new Windows.Foundation.Size(10, 10),
+					Margin = new Thickness(1, 2, 3, 4)
+				}
+				.GridPosition(0, 0);
+
+			SUT.AddChild(c1);
+
+			SUT.Measure(new Size(8, 8));
+
+			SUT.DesiredSize.Should().Be(new Size(8, 8));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(8, 8));
+			c1.DesiredSize.Should().Be(new Size(4, 6));
+			c1.UnclippedDesiredSize.Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
+
+			SUT.Arrange(new Rect(0, 0, 8, 8));
+
+			SUT.Arranged.Should().Be((Rect)"0,0,8,8");
+			SUT.ClippedFrame.Should().Be((Rect)"0,0,8,8");
+			c1.Arranged.Should().Be((Rect)"3,4,0,0");
+			c1.ClippedFrame.Should().Be((Rect)"0,0,0,0");
+
+			SUT.GetChildren().Should().HaveCount(1);
+		}
+
+		[TestMethod]
+		public void When_One_Child_With_Margin_Center_And_Center()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+
+			var c1 = new View
+				{
+					Name = "Child01",
 					Margin = new Thickness(0, 0, 0, 30),
 					HorizontalAlignment = HorizontalAlignment.Center,
 					VerticalAlignment = VerticalAlignment.Center,
 					Height = 10,
 					Width = 10,
 				}
-				.GridPosition(0, 0)
-			);
+				.GridPosition(0, 0);
 
-			SUT.Measure(new Windows.Foundation.Size(20, 20));
-			var measuredSize = SUT.DesiredSize;
-			Assert.AreEqual(new Windows.Foundation.Size(10, 20), measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Size(10, 10), c1.RequestedDesiredSize);
+			SUT.AddChild(c1);
 
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,50, 50));
+			SUT.Measure(new Size(20, 20));
 
-			Assert.AreEqual(new Windows.Foundation.Rect(20, 5, 10, 10), c1.Arranged);
+			// As it seems strange, c1.DesiredSize should be 10x30 because:
 
-			Assert.AreEqual(1, SUT.GetChildren().Count());
+			// - unclippedDesiredSize is 10x10
+			// - availableSize is 10x0 [after removing margin]
+			// - clipped desizedSize is 10x0  [unclippedDesiredSize.AtMost(availableSize)]
+			// - marginSizes is 0x30
+			// - result desized size will be 10x0 + 0x30, resulting to 10x30
+
+			SUT.DesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
+			c1.DesiredSize.Should().Be(new Size(10, 30));
+			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
+
+			SUT.Arrange(new Rect(0, 0,50, 50));
+
+			c1.Arranged.Should().Be((Rect)"20,5,10,10");
+			c1.ClippedFrame.Should().Be((Rect)"0,0,10,10");
+
+			SUT.GetChildren().Should().HaveCount(1);
 		}
 
 		[TestMethod]
-		public void When_One_Child_With_Margin_Botton_And_Bottom()
+		public void When_One_Child_With_Margin_Center_And_Bottom()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
 
-			var c1 = SUT.AddChild(
-				new View
+
+			var c1 = new View
 				{
 					Name = "Child01",
-					RequestedDesiredSize = new Windows.Foundation.Size(10, 10),
 					Margin = new Thickness(0, 0, 0, 30),
 					HorizontalAlignment = HorizontalAlignment.Center,
 					VerticalAlignment = VerticalAlignment.Bottom,
 					Height = 10,
 					Width = 10,
 				}
-				.GridPosition(0, 0)
-			);
+				.GridPosition(0, 0);
 
-			SUT.Measure(new Windows.Foundation.Size(20, 20));
-			var measuredSize = SUT.DesiredSize;
-			Assert.AreEqual(new Windows.Foundation.Size(10, 20), measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Size(10, 10), c1.RequestedDesiredSize);
+			SUT.AddChild(c1);
 
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,50, 50));
+			SUT.Measure(new Size(20, 20));
 
-			Assert.AreEqual(new Windows.Foundation.Rect(20, 10, 10, 10), c1.Arranged);
+			// As it seems strange, c1.DesiredSize should be 10x30 because:
 
-			Assert.AreEqual(1, SUT.GetChildren().Count());
+			// - unclippedDesiredSize is 10x10
+			// - availableSize is 10x0 [after removing margin]
+			// - clipped desizedSize is 10x0  [unclippedDesiredSize.AtMost(availableSize)]
+			// - marginSizes is 0x30
+			// - result desized size will be 10x0 + 0x30, resulting to 10x30
+
+			SUT.DesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
+			c1.DesiredSize.Should().Be(new Size(10, 30));
+			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
+
+			SUT.Arrange(new Rect(0, 0,50, 50));
+
+			SUT.Arranged.Should().Be((Rect)"0,0,50,50");
+			SUT.ClippedFrame.Should().Be((Rect)"0,0,50,50");
+			c1.Arranged.Should().Be((Rect)"20,10,10,10");
+			c1.ClippedFrame.Should().Be((Rect)"0,0,10,10");
+
+			SUT.GetChildren().Should().HaveCount(1);
 		}
 
 		[TestMethod]
-		public void When_One_Child_With_Margin_Botton_And_Top()
+		public void When_One_Child_With_Margin_Center_And_Top()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
 
-			var c1 = SUT.AddChild(
-				new View
+
+			var c1 = new View
 				{
 					Name = "Child01",
-					RequestedDesiredSize = new Windows.Foundation.Size(10, 10),
 					Margin = new Thickness(0, 0, 0, 30),
 					HorizontalAlignment = HorizontalAlignment.Center,
 					VerticalAlignment = VerticalAlignment.Top,
 					Height = 10,
 					Width = 10,
 				}
-				.GridPosition(0, 0)
-			);
+				.GridPosition(0, 0);
 
-			SUT.Measure(new Windows.Foundation.Size(20, 20));
-			var measuredSize = SUT.DesiredSize;
-			Assert.AreEqual(new Windows.Foundation.Size(10, 20), measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Size(10, 10), c1.RequestedDesiredSize);
+			SUT.AddChild(c1);
 
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,50, 50));
+			SUT.Measure(new Size(20, 20));
 
-			Assert.AreEqual(new Windows.Foundation.Rect(20, 0, 10, 10), c1.Arranged);
+			// As it seems strange, c1.DesiredSize should be 10x30 because:
 
-			Assert.AreEqual(1, SUT.GetChildren().Count());
+			// - unclippedDesiredSize is 10x10
+			// - availableSize is 10x0 [after removing margin]
+			// - clipped desizedSize is 10x0  [unclippedDesiredSize.AtMost(availableSize)]
+			// - marginSizes is 0x30
+			// - result desized size will be 10x0 + 0x30, resulting to 10x30
+
+			SUT.DesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
+			c1.DesiredSize.Should().Be(new Size(10, 30));
+			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
+
+			SUT.Arrange(new Rect(0, 0,50, 50));
+			c1.Arranged.Should().Be((Rect)"20,0,10,10");
+
+			SUT.GetChildren().Should().HaveCount(1);
 		}
 
 
@@ -181,30 +250,28 @@ namespace Uno.UI.Tests.GridTests
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "auto" });
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
 
-			var c1 = SUT.AddChild(
-				new View
+			var c1 = new View
 				{
 					Name = "Child01",
-					RequestedDesiredSize = new Windows.Foundation.Size(50, 50),
 					Margin = new Thickness(0, 0, 50, 0),
 					HorizontalAlignment = HorizontalAlignment.Stretch,
 					VerticalAlignment = VerticalAlignment.Stretch,
 					Height = 50,
 					Width = 50,
 				}
-				.GridPosition(0, 1)
-			);
+				.GridPosition(0, 1);
+			SUT.AddChild(c1);
 			 
-			SUT.Measure(new Windows.Foundation.Size(300, 300));
-			var measuredSize = SUT.DesiredSize;
-			Assert.AreEqual(new Windows.Foundation.Size(100, 50), measuredSize);
-			Assert.AreEqual(new Windows.Foundation.Size(50, 50), c1.RequestedDesiredSize);
+			SUT.Measure(new Size(300, 300));
+			SUT.DesiredSize.Should().Be(new Size(100, 50));
+			c1.DesiredSize.Should().Be(new Size(100, 50));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(100, 50));
 
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,300, 300));
+			SUT.Arrange(new Rect(0, 0,300, 300));
 
-			Assert.AreEqual(new Windows.Foundation.Rect(100, 125, 50, 50), c1.Arranged);
-
-			Assert.AreEqual(1, SUT.GetChildren().Count());
+			c1.Arranged.Should().Be(new Rect(100, 125, 50, 50));
+			c1.ClippedFrame.Should().Be(new Rect(0, 0, 50, 50));
+			SUT.GetChildren().Should().HaveCount(1);
 		}
 	}
 }

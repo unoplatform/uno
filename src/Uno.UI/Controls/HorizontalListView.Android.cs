@@ -36,6 +36,7 @@ using Android.Widget;
 using Android.Content;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 
 namespace Uno.UI.Controls
 {
@@ -317,6 +318,10 @@ namespace Uno.UI.Controls
                 top = top + (_height - childHeight) / 2;
             }
 
+			if (child is Windows.UI.Xaml.UIElement elt)
+			{
+				elt.LayoutSlotWithMarginsAndAlignments = new Windows.Foundation.Rect(left, top, right, top + childHeight).PhysicalToLogicalPixels();
+			}
             child.Layout(left, top, right, top + childHeight);
         }
 
@@ -395,7 +400,8 @@ namespace Uno.UI.Controls
 
 			    if (_rightViewIndex == Adapter.Count - 1)
 			    {
-				    _maxX = CurrentX + (rightEdge - PaddingLeft) - (Width - PaddingLeft - PaddingRight);
+				    var paddingLeft = PaddingLeft;
+				    _maxX = CurrentX + (rightEdge - paddingLeft) - (Width - paddingLeft - PaddingRight);
 			    }
 
 			    if (_maxX < 0)
@@ -464,7 +470,11 @@ namespace Uno.UI.Controls
 	            var right = left + child.MeasuredWidth;
 	            var bottom = top + child.MeasuredHeight;
 
-                child.Layout(left, top, right, bottom);
+				if (child is Windows.UI.Xaml.UIElement elt)
+				{
+					elt.LayoutSlotWithMarginsAndAlignments = new Windows.Foundation.Rect(left, top, right, bottom).PhysicalToLogicalPixels();
+				}
+				child.Layout(left, top, right, bottom);
                 leftOffset += child.MeasuredWidth + child.PaddingRight;
             }
         }
@@ -565,7 +575,7 @@ namespace Uno.UI.Controls
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Usage",
             "CA2215:DisposeMethodsShouldCallBaseClassDispose",
-            Justification = "Wanted behavior­. base.Dispose must be called after the private fields otherwise we can't dispose them")]
+            Justification = "Wanted behavior. base.Dispose must be called after the private fields otherwise we can't dispose them")]
         protected override void Dispose(bool disposing)
         {
             try

@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Logging;
@@ -19,6 +19,7 @@ using Uno.UI;
 using Windows.UI.Xaml;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
+using System.Collections;
 
 namespace Uno.UI.Tests.BinderTests_DataContext
 {
@@ -186,6 +187,22 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 		}
 
 		[TestMethod]
+		public void When_ValueInheritDataContext_And_IList_Non_Enumerable()
+		{
+			var SUT = new MyBasicListType();
+			var sub1 = new MyObject();
+			var templatedParent = new Grid();
+
+			SUT.MyList = new NonEnumerableList<MyObject>() { sub1 };
+
+			SUT.DataContext = 42;
+			SUT.TemplatedParent = templatedParent;
+
+			Assert.AreEqual(42, sub1.DataContext);
+			Assert.AreEqual(templatedParent, sub1.TemplatedParent);
+		}
+
+		[TestMethod]
 		public void When_DataContext_Inherited_And_Parent_Changed()
 		{
 			var SUT = new Border();
@@ -198,6 +215,69 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			SUT.SetParent(parent2);
 			Assert.AreEqual(42, SUT.DataContext);
 
+		}
+
+		[TestMethod]
+		public void When_DataContext_Inherited_And_Child_Removed()
+		{
+			var SUT = new MyControl();
+
+			var independentChild = new MyControl();
+			var parent = new Grid
+			{
+				Children = { independentChild, SUT },
+				DataContext = 42
+			};
+
+			// Here we use the "FrameworkProperty" which is expected to inherit the DataContext by default
+			SUT.InnerFramework = independentChild;
+
+			int parentCtxChanged = 0, childCtxChanged = 0, SUTCtxChanged = 0;
+			parent.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => parentCtxChanged++);
+			independentChild.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => childCtxChanged++);
+			SUT.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => SUTCtxChanged++);
+
+			Assert.AreEqual(42, SUT.DataContext);
+
+			// And here the issue: when we remove the SUT from the parent,
+			// it will propagate to the independentChild the DataContext change ...
+			// which is acceptable (but not really expected neither) as the DP is a FrameworkProperty on which we want to propagate the DataContext
+			parent.Children.Remove(SUT);
+
+			Assert.AreEqual(null, SUT.DataContext);
+			Assert.AreEqual(0, parentCtxChanged);
+			Assert.AreEqual(1, SUTCtxChanged);
+			Assert.AreEqual(0, childCtxChanged);
+		}
+
+		[TestMethod]
+		public void When_DataContext_NotInherited_And_Child_Removed()
+		{
+			var SUT = new MyControl();
+
+			var independentChild = new MyControl();
+			var parent = new Grid
+			{
+				Children = { independentChild, SUT },
+				DataContext = 42
+			};
+
+			// Here we use the standard (a.k.a. Application) DP which is NOT expected to propagate the DataContext
+			SUT.InnerStandard = independentChild;
+
+			int parentCtxChanged = 0, childCtxChanged = 0, SUTCtxChanged = 0;
+			parent.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => parentCtxChanged++);
+			independentChild.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => childCtxChanged++);
+			SUT.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => SUTCtxChanged++);
+
+			Assert.AreEqual(42, SUT.DataContext);
+
+			parent.Children.Remove(SUT);
+
+			Assert.AreEqual(null, SUT.DataContext);
+			Assert.AreEqual(0, parentCtxChanged);
+			Assert.AreEqual(1, SUTCtxChanged);
+			Assert.AreEqual(0, childCtxChanged);
 		}
 	}
 
@@ -264,6 +344,64 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 		}
 
 		#endregion
+	}
 
+	public partial class MyControl : Control
+	{
+		// Just a standard DP defined by a project / third party component
+		public static readonly DependencyProperty InnerStandardProperty = DependencyProperty.Register(
+			"InnerStandard", typeof(MyControl), typeof(MyControl), new PropertyMetadata(default(MyControl)));
+
+		public MyControl InnerStandard
+		{
+			get { return (MyControl)GetValue(InnerStandardProperty); }
+			set { SetValue(InnerStandardProperty, value); }
+		}
+
+		public static readonly DependencyProperty InnerFrameworkProperty = DependencyProperty.Register(
+			"InnerFramework", typeof(MyControl), typeof(MyControl), new FrameworkPropertyMetadata(default(MyControl)));
+
+		public MyControl InnerFramework
+		{
+			get { return (MyControl)GetValue(InnerFrameworkProperty); }
+			set { SetValue(InnerFrameworkProperty, value); }
+		}
+	}
+
+	class NonEnumerableList<T> : IList<T>, IList
+	{
+		private List<T> _internal = new List<T>();
+
+		public T this[int index] { get => _internal[index]; set => _internal[index] = value; }
+
+		object IList.this[int index] { get => _internal[index]; set => _internal[index] = (T)value; }
+
+		public int Count => _internal.Count;
+
+		public bool IsReadOnly => false;
+
+		public bool IsFixedSize => false;
+
+		public object SyncRoot { get; } = new object();
+
+		public bool IsSynchronized => false;
+
+		public void Add(T item) => _internal.Add(item);
+
+		public int Add(object value) => throw new NotImplementedException();
+		public void Clear() => _internal.Clear();
+		public bool Contains(T item) => _internal.Contains(item);
+		public bool Contains(object value) => throw new NotImplementedException();
+		public void CopyTo(T[] array, int arrayIndex) => _internal.CopyTo(array, arrayIndex);
+		public void CopyTo(Array array, int index) => throw new NotImplementedException();
+		public IEnumerator<T> GetEnumerator() => throw new NotSupportedException();
+		public int IndexOf(T item) => _internal.IndexOf(item);
+		public int IndexOf(object value) => throw new NotImplementedException();
+		public void Insert(int index, T item) => _internal.Insert(index, item);
+		public void Insert(int index, object value) => throw new NotImplementedException();
+		public bool Remove(T item) => _internal.Remove(item);
+		public void Remove(object value) => throw new NotImplementedException();
+		public void RemoveAt(int index) => _internal.RemoveAt(index);
+		IEnumerator IEnumerable.GetEnumerator() => throw new NotSupportedException();
 	}
 }

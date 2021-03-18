@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-		<ProjectGuid>$guid1$</ProjectGuid>
+		<ProjectGuid>$guid4$</ProjectGuid>
 		<ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>$ext_safeprojectname$</RootNamespace>
@@ -112,10 +112,11 @@
 		<Reference Include="Xamarin.iOS" />
 	</ItemGroup>
 	<ItemGroup>
-		<BundleResource Include="Resources\Fonts\winjs-symbols.ttf" />
+		<BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.46.196-dev.2440" />
+		<PackageReference Include="Uno.UI" Version="2.2.0" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 	</ItemGroup>
@@ -144,6 +145,6 @@
 		<Folder Include="Media\AppIcons" Visible="false" />
 		<Folder Include="Media\LaunchImages" Visible="false" />
 	</ItemGroup>
-	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
+	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

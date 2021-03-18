@@ -21,13 +21,10 @@ namespace Uno.UI.Controls
 	/// </summary>
 	public partial class BindableView :
 		UnoViewGroup,
-		INotifyPropertyChanged,
 		DependencyObject,
 		IShadowChildrenProvider
 	{
 		private readonly MaterializableList<View> _childrenShadow = new MaterializableList<View>();
-
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		static BindableView()
 		{
@@ -286,20 +283,13 @@ namespace Uno.UI.Controls
 		/// </summary>
 		public int LayoutId { get; private set; }
 
-		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
 
 		/// <summary>
 		/// Resets the dependency object parent for non BindableView views, but that implement IDependencyObject provider.
 		/// </summary>
 		/// <remarks>
 		/// This is required on Android because native <see cref="View"/> instances
-		/// can't be notificed if their parent changes. <see cref="UnoViewGroup"/> provides this behavior
+		/// can't be notified if their parent changes. <see cref="UnoViewGroup"/> provides this behavior
 		/// by intercepting add/remove children and calls <see cref="OnRemovedFromParent"/>.
 		/// <see cref="FrameworkTemplatePool"/> relies on knowing that the <see cref="DependencyObject.Parent"/> of a
 		/// pooled instances has been reset so for non <see cref="BindableView"/> instances we reset it manually.

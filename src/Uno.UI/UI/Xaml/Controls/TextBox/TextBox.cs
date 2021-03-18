@@ -1,4 +1,4 @@
-﻿#if NET461 || __WASM__ || __MACOS__
+﻿#if NET461 || UNO_REFERENCE_API || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -19,6 +19,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.Extensions.Logging;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -28,13 +30,12 @@ namespace Windows.UI.Xaml.Controls
 		public const string ContentElementPartName = "ContentElement";
 		public const string PlaceHolderPartName = "PlaceholderTextContentPresenter";
 		public const string DeleteButtonPartName = "DeleteButton";
+		public const string ButtonVisibleStateName = "ButtonVisible";
+		public const string ButtonCollapsedStateName = "ButtonCollapsed";
 	}
 
 	public partial class TextBox : Control, IFrameworkTemplatePoolAware
 	{
-		private const string ButtonVisibleStateName = "ButtonVisible";
-		private const string ButtonCollapsedStateName = "ButtonCollapsed";
-
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
@@ -42,7 +43,8 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
-		private bool _isPassword;
+		protected private bool _isButtonEnabled = true;
+		protected private bool CanShowButton => Text.HasValue() && FocusState != FocusState.Unfocused && !IsReadOnly && !AcceptsReturn && TextWrapping == TextWrapping.NoWrap;
 
 		public event TextChangedEventHandler TextChanged;
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
@@ -61,23 +63,22 @@ namespace Windows.UI.Xaml.Controls
 		/// Set when <see cref="RaiseTextChanged"/> has been dispatched but not yet called.
 		/// </summary>
 		private bool _isTextChangedPending;
+		/// <summary>
+		/// True if Text has changed while the TextBox has had focus, false otherwise
+		///
+		/// This flag is checked to avoid pushing a value to a two-way binding if no edits have occurred, per UWP's behavior.
+		/// </summary>
+		private bool _hasTextChangedThisFocusSession;
 
 		public TextBox()
 		{
-			_isPassword = false;
 			InitializeVisualStates();
 			this.RegisterParentChangedCallback(this, OnParentChanged);
+
+			DefaultStyleKey = typeof(TextBox);
 		}
 
-		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
-		{
-			UpdateFontPartial();
-		}
-
-		protected TextBox(bool isPassword)
-		{
-			_isPassword = isPassword;
-		}
+		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args) => UpdateFontPartial();
 
 		private void InitializeProperties()
 		{
@@ -86,6 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			OnInputScopeChanged(CreateInitialValueChangerEventArgs(InputScopeProperty, null, InputScope));
 			OnMaxLengthChanged(CreateInitialValueChangerEventArgs(MaxLengthProperty, null, MaxLength));
 			OnAcceptsReturnChanged(CreateInitialValueChangerEventArgs(AcceptsReturnProperty, null, AcceptsReturn));
+			OnIsReadonlyChanged(CreateInitialValueChangerEventArgs(IsReadOnlyProperty, null, IsReadOnly));
 			OnIsEnabledChanged(false, IsEnabled);
 			OnForegroundColorChanged(null, Foreground);
 			UpdateFontPartial();
@@ -94,13 +96,16 @@ namespace Windows.UI.Xaml.Controls
 			OnIsSpellCheckEnabledChanged(CreateInitialValueChangerEventArgs(IsSpellCheckEnabledProperty, IsSpellCheckEnabledProperty.GetMetadata(GetType()).DefaultValue, IsSpellCheckEnabled));
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, TextAlignmentProperty.GetMetadata(GetType()).DefaultValue, TextAlignment));
 			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
-			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState);
+			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
+			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
+			OnTextCharacterCasingChanged(CreateInitialValueChangerEventArgs(CharacterCasingProperty, CharacterCasingProperty.GetMetadata(GetType()).DefaultValue, CharacterCasing));
 
 			var buttonRef = _deleteButton?.GetTarget();
 
 			if (buttonRef != null)
 			{
-				buttonRef.Command = new DelegateCommand(DeleteText);
+				var thisRef = (this as IWeakReferenceProvider).WeakReference;
+				buttonRef.Command = new DelegateCommand(() => (thisRef.Target as TextBox)?.DeleteText());
 			}
 
 			InitializePropertiesPartial();
@@ -119,15 +124,12 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
-#if __IOS__
+#if __IOS__ || __MACOS__
 				// We disable scrolling because the inner ITextBoxView provides its own scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-#elif __WASM__
-				// We disable horizontal scrolling because the inner single-line TextBoxView provides its own horizontal scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 #endif
 			}
 
@@ -137,23 +139,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateTextBoxView();
-
 			InitializeProperties();
 		}
 
 		partial void InitializePropertiesPartial();
 
-		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue)
-		{
-			return new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
-		}
+		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue) => new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
 
 		#region Text DependencyProperty
 
 		public string Text
 		{
-			get { return (string)this.GetValue(TextProperty); }
-			set {
+			get => (string)this.GetValue(TextProperty);
+			set
+			{
 				if (value == null)
 				{
 					throw new ArgumentNullException();
@@ -163,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static readonly DependencyProperty TextProperty =
+		public static DependencyProperty TextProperty { get ; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -182,6 +181,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnTextChanged(DependencyPropertyChangedEventArgs e)
 		{
+			_hasTextChangedThisFocusSession = true;
+
 			if (!_isInvokingTextChanged)
 			{
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
@@ -224,7 +225,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 				{
 					_isInvokingTextChanged = true;
-					TextChanged?.Invoke(this, new TextChangedEventArgs());
+					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
 				finally
@@ -296,10 +297,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial();
 
-		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
-		{
-			OnForegroundColorChangedPartial(newValue);
-		}
+		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue) => OnForegroundColorChangedPartial(newValue);
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
@@ -307,16 +305,16 @@ namespace Windows.UI.Xaml.Controls
 
 		public string PlaceholderText
 		{
-			get { return (string)this.GetValue(PlaceholderTextProperty); }
-			set { this.SetValue(PlaceholderTextProperty, value); }
+			get => (string)this.GetValue(PlaceholderTextProperty);
+			set => this.SetValue(PlaceholderTextProperty, value);
 		}
 
-		public static readonly DependencyProperty PlaceholderTextProperty =
+		public static DependencyProperty PlaceholderTextProperty { get ; } =
 			DependencyProperty.Register(
 				"PlaceholderText",
 				typeof(string),
 				typeof(TextBox),
-				new PropertyMetadata(defaultValue: string.Empty)
+				new FrameworkPropertyMetadata(defaultValue: string.Empty)
 			);
 
 		#endregion
@@ -325,16 +323,16 @@ namespace Windows.UI.Xaml.Controls
 
 		public InputScope InputScope
 		{
-			get { return (InputScope)this.GetValue(InputScopeProperty); }
-			set { this.SetValue(InputScopeProperty, value); }
+			get => (InputScope)this.GetValue(InputScopeProperty);
+			set => this.SetValue(InputScopeProperty, value);
 		}
 
-		public static readonly DependencyProperty InputScopeProperty =
+		public static DependencyProperty InputScopeProperty { get ; } =
 			DependencyProperty.Register(
 				"InputScope",
 				typeof(InputScope),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: new InputScope()
 					{
 						Names =
@@ -349,10 +347,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected void OnInputScopeChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnInputScopeChangedPartial(e);
-		}
+		protected void OnInputScopeChanged(DependencyPropertyChangedEventArgs e) => OnInputScopeChangedPartial(e);
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		#endregion
@@ -361,25 +356,22 @@ namespace Windows.UI.Xaml.Controls
 
 		public int MaxLength
 		{
-			get { return (int)this.GetValue(MaxLengthProperty); }
-			set { this.SetValue(MaxLengthProperty, value); }
+			get => (int)this.GetValue(MaxLengthProperty);
+			set => this.SetValue(MaxLengthProperty, value);
 		}
 
-		public static readonly DependencyProperty MaxLengthProperty =
+		public static DependencyProperty MaxLengthProperty { get ; } =
 			DependencyProperty.Register(
 				"MaxLength",
 				typeof(int),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: 0,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnMaxLengthChanged(e)
 				)
 			);
 
-		private void OnMaxLengthChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnMaxLengthChangedPartial(e);
-		}
+		private void OnMaxLengthChanged(DependencyPropertyChangedEventArgs e) => OnMaxLengthChangedPartial(e);
 
 		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -389,16 +381,16 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool AcceptsReturn
 		{
-			get { return (bool)this.GetValue(AcceptsReturnProperty); }
-			set { this.SetValue(AcceptsReturnProperty, value); }
+			get => (bool)this.GetValue(AcceptsReturnProperty);
+			set => this.SetValue(AcceptsReturnProperty, value);
 		}
 
-		public static readonly DependencyProperty AcceptsReturnProperty =
+		public static DependencyProperty AcceptsReturnProperty { get ; } =
 			DependencyProperty.Register(
 				"AcceptsReturn",
 				typeof(bool),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: false,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnAcceptsReturnChanged(e)
 				)
@@ -417,16 +409,16 @@ namespace Windows.UI.Xaml.Controls
 		#region TextWrapping DependencyProperty
 		public TextWrapping TextWrapping
 		{
-			get { return (TextWrapping)this.GetValue(TextWrappingProperty); }
-			set { this.SetValue(TextWrappingProperty, value); }
+			get => (TextWrapping)this.GetValue(TextWrappingProperty);
+			set => this.SetValue(TextWrappingProperty, value);
 		}
 
-		public static readonly DependencyProperty TextWrappingProperty =
+		public static DependencyProperty TextWrappingProperty { get ; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged(e))
 				);
@@ -441,20 +433,49 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public CharacterCasing CharacterCasing
+		{
+			get => (CharacterCasing)this.GetValue(CharacterCasingProperty);
+			set => this.SetValue(CharacterCasingProperty, value);
+		}
+
+#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public static DependencyProperty CharacterCasingProperty { get; } =
+			DependencyProperty.Register(
+				nameof(CharacterCasing),
+				typeof(CharacterCasing),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+						defaultValue: CharacterCasing.Normal,
+						propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextCharacterCasingChanged(e))
+				);
+
+		private void OnTextCharacterCasingChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnTextCharacterCasingChangedPartial(e);
+		}
+
+		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e);
+
 		#region IsReadOnly DependencyProperty
 
 		public bool IsReadOnly
 		{
-			get { return (bool)GetValue(IsReadOnlyProperty); }
-			set { SetValue(IsReadOnlyProperty, value); }
+			get => (bool)GetValue(IsReadOnlyProperty);
+			set => SetValue(IsReadOnlyProperty, value);
 		}
 
-		public static readonly DependencyProperty IsReadOnlyProperty =
+		public static DependencyProperty IsReadOnlyProperty { get ; } =
 			DependencyProperty.Register(
 				"IsReadOnly",
 				typeof(bool),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					false,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsReadonlyChanged(e)
 				)
@@ -474,29 +495,32 @@ namespace Windows.UI.Xaml.Controls
 
 		public object Header
 		{
-			get { return (object)GetValue(HeaderProperty); }
-			set { SetValue(HeaderProperty, value); }
+			get => (object)GetValue(HeaderProperty);
+			set => SetValue(HeaderProperty, value);
 		}
-		public static readonly DependencyProperty HeaderProperty =
+
+		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register("Header",
 				typeof(object),
 				typeof(TextBox),
-				new PropertyMetadata(defaultValue: null,
+				new FrameworkPropertyMetadata(defaultValue: null,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
 
 		public DataTemplate HeaderTemplate
 		{
-			get { return (DataTemplate)GetValue(HeaderTemplateProperty); }
-			set { SetValue(HeaderTemplateProperty, value); }
+			get => (DataTemplate)GetValue(HeaderTemplateProperty);
+			set => SetValue(HeaderTemplateProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderTemplateProperty =
+		public static DependencyProperty HeaderTemplateProperty { get ; } =
 			DependencyProperty.Register("HeaderTemplate",
 				typeof(DataTemplate),
 				typeof(TextBox),
-				new PropertyMetadata(defaultValue: null,
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -517,25 +541,22 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsSpellCheckEnabled
 		{
-			get { return (bool)this.GetValue(IsSpellCheckEnabledProperty); }
-			set { this.SetValue(IsSpellCheckEnabledProperty, value); }
+			get => (bool)this.GetValue(IsSpellCheckEnabledProperty);
+			set => this.SetValue(IsSpellCheckEnabledProperty, value);
 		}
 
-		public static readonly DependencyProperty IsSpellCheckEnabledProperty =
+		public static DependencyProperty IsSpellCheckEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsSpellCheckEnabled",
 				typeof(bool),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsSpellCheckEnabledChanged(e)
 				)
 			);
 
-		protected virtual void OnIsSpellCheckEnabledChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnIsSpellCheckEnabledChangedPartial(e);
-		}
+		protected virtual void OnIsSpellCheckEnabledChanged(DependencyPropertyChangedEventArgs e) => OnIsSpellCheckEnabledChangedPartial(e);
 
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -546,26 +567,23 @@ namespace Windows.UI.Xaml.Controls
 		[Uno.NotImplemented]
 		public bool IsTextPredictionEnabled
 		{
-			get { return (bool)this.GetValue(IsTextPredictionEnabledProperty); }
-			set { this.SetValue(IsTextPredictionEnabledProperty, value); }
+			get => (bool)this.GetValue(IsTextPredictionEnabledProperty);
+			set => this.SetValue(IsTextPredictionEnabledProperty, value);
 		}
 
 		[Uno.NotImplemented]
-		public static readonly DependencyProperty IsTextPredictionEnabledProperty =
+		public static DependencyProperty IsTextPredictionEnabledProperty { get ; } =
 			DependencyProperty.Register(
 				"IsTextPredictionEnabled",
 				typeof(bool),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsTextPredictionEnabledChanged(e)
 				)
 			);
 
-		protected virtual void OnIsTextPredictionEnabledChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnIsTextPredictionEnabledChangedPartial(e);
-		}
+		protected virtual void OnIsTextPredictionEnabledChanged(DependencyPropertyChangedEventArgs e) => OnIsTextPredictionEnabledChangedPartial(e);
 
 		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -583,34 +601,43 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TextAlignmentProperty, value); }
 		}
 
-		public static readonly DependencyProperty TextAlignmentProperty =
-			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new PropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
+		public static DependencyProperty TextAlignmentProperty { get ; } =
+			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
 
 
-		protected virtual void OnTextAlignmentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnTextAlignmentChangedPartial(e);
-		}
+		protected virtual void OnTextAlignmentChanged(DependencyPropertyChangedEventArgs e) => OnTextAlignmentChangedPartial(e);
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		#endregion
 
-		protected override void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
+		internal override void UpdateFocusState(FocusState focusState)
 		{
-			base.OnFocusStateChanged(oldValue, newValue);
+			var oldValue = FocusState;
+			base.UpdateFocusState(focusState);
+			OnFocusStateChanged(oldValue, focusState, initial: false);
+		}
+
+		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
+		{
 			OnFocusStateChangedPartial(newValue);
 
-			if (newValue == FocusState.Unfocused)
+			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
 				// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
 				var bindingExpression = GetBindingExpression(TextProperty);
 				bindingExpression?.UpdateSource(Text);
 			}
 
-			UpdateCommonStates();
 			UpdateButtonStates();
+
+			if (oldValue == FocusState.Unfocused || newValue == FocusState.Unfocused)
+			{
+				_hasTextChangedThisFocusSession = false;
+			}
 		}
+		partial void OnFocusStateChangedPartial(FocusState focusState);
+
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
@@ -639,10 +666,15 @@ namespace Windows.UI.Xaml.Controls
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
 			switch (args.Key)
 			{
-				case VirtualKey.Left:
-				case VirtualKey.Right:
 				case VirtualKey.Up:
 				case VirtualKey.Down:
+					if (AcceptsReturn)
+					{
+						args.Handled = true;
+					}
+					break;
+				case VirtualKey.Left:
+				case VirtualKey.Right:
 				case VirtualKey.Home:
 				case VirtualKey.End:
 					args.Handled = true;
@@ -650,40 +682,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateCommonStates()
+		protected virtual void UpdateButtonStates()
 		{
-			var commonState = "Normal";
-
-			if (FocusState != FocusState.Unfocused)
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				commonState = "Focused";
+				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
-			if (!IsEnabled)
-			{
-				commonState = "Disabled";
-			}
-
-			VisualStateManager.GoToState(this, commonState, true);
-		}
-
-		partial void OnFocusStateChangedPartial(FocusState focusState);
-
-		private void UpdateButtonStates()
-		{
-			if (Text.HasValue()
-				&& FocusState != FocusState.Unfocused
-				&& !IsReadOnly
-				&& !AcceptsReturn
-				&& TextWrapping == TextWrapping.NoWrap
-			// TODO (https://github.com/nventive/Uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
+			if (CanShowButton && _isButtonEnabled
+			// TODO (https://github.com/unoplatform/uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
 			)
 			{
-				VisualStateManager.GoToState(this, ButtonVisibleStateName, true);
+				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, ButtonCollapsedStateName, true);
+				VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
 			}
 		}
 
@@ -719,24 +733,31 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextClearedPartial();
 
-		internal void OnSelectionChanged()
+		internal void OnSelectionChanged() => SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
+
+		public void OnTemplateRecycled() => DeleteText();
+
+		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);
+
+		public override string GetAccessibilityInnerText() => Text;
+
+		protected override void OnVerticalContentAlignmentChanged(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment)
 		{
-			SelectionChanged?.Invoke(this, new RoutedEventArgs());
+			base.OnVerticalContentAlignmentChanged(oldVerticalContentAlignment, newVerticalContentAlignment);
+
+			if (_contentElement != null)
+			{
+				_contentElement.VerticalContentAlignment = newVerticalContentAlignment;
+			}
+
+			if (_placeHolder != null)
+			{
+				_placeHolder.VerticalAlignment = newVerticalContentAlignment;
+			}
+
+			OnVerticalContentAlignmentChangedPartial(oldVerticalContentAlignment, newVerticalContentAlignment);
 		}
 
-		public void OnTemplateRecycled()
-		{
-			DeleteText();
-		}
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new TextBoxAutomationPeer(this);
-		}
-
-		public override string GetAccessibilityInnerText()
-		{
-			return Text;
-		}
+		partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
 	}
 }

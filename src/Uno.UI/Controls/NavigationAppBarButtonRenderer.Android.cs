@@ -1,6 +1,5 @@
-﻿#if __ANDROID__
-using Android.Support.V4.Graphics.Drawable;
-using Android.Support.V7.Widget;
+﻿using AndroidX.Core.Graphics.Drawable;
+using AndroidX.AppCompat.Widget;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,48 +34,54 @@ namespace Uno.UI.Controls
 
 		protected override void Render()
 		{
+			var native = Native;
+			var element = Element;
+
 			// Visibility
-			if (Element.Visibility == Visibility.Visible)
+			if (element.Visibility == Visibility.Visible)
 			{
 				// Icon
-				var iconUri = (Element.Icon as BitmapIcon)?.UriSource;
+				var iconUri = (element.Icon as BitmapIcon)?.UriSource;
 
 				if (iconUri != null)
 				{
-					Native.NavigationIcon = DrawableHelper.FromUri(iconUri);
+					native.NavigationIcon = DrawableHelper.FromUri(iconUri);
 				}
 
 				// Foreground
-				var foreground = (Element.Foreground as SolidColorBrush);
-				var foregroundColor = foreground?.Color;
+				var foreground = (element.Foreground as SolidColorBrush);
 				var foregroundOpacity = foreground?.Opacity ?? 0;
-				if (Native.NavigationIcon != null)
+
+				if (FeatureConfiguration.AppBarButton.EnableBitmapIconTint)
 				{
-					if (foreground != null)
+					var foregroundColor = foreground?.Color;
+					if (native.NavigationIcon != null)
 					{
-						DrawableCompat.SetTint(Native.NavigationIcon, (Android.Graphics.Color)foregroundColor);
-					}
-					else
-					{
-						DrawableCompat.SetTintList(Native.NavigationIcon, null);
+						if (foreground != null)
+						{
+							DrawableCompat.SetTint(native.NavigationIcon, (Android.Graphics.Color)foregroundColor);
+						}
+						else
+						{
+							DrawableCompat.SetTintList(native.NavigationIcon, null);
+						}
 					}
 				}
 
 				// Label
-				Native.NavigationContentDescription = Element.Label;
+				native.NavigationContentDescription = element.Label;
 
 				// Opacity
-				var opacity = Element.Opacity;
+				var opacity = element.Opacity;
 				var finalOpacity = foregroundOpacity * opacity;
 				var alpha = (int)(finalOpacity * 255);
-				Native.NavigationIcon?.SetAlpha(alpha);
+				native.NavigationIcon?.SetAlpha(alpha);
 			}
 			else
 			{
-				Native.NavigationIcon = null;
-				Native.NavigationContentDescription = null;
+				native.NavigationIcon = null;
+				native.NavigationContentDescription = null;
 			}
 		}
 	}
 }
-#endif

@@ -8,7 +8,7 @@ using Windows.UI;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("GridTestsControl", "Grid_DataBound_RowColumn")]
+	[SampleControlInfo("GridTestsControl", "Grid_DataBound_RowColumn", ignoreInSnapshotTests: true)]
 	public sealed partial class Grid_DataBound_RowColumn : UserControl
 	{
 		public Grid_DataBound_RowColumn()
@@ -64,7 +64,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for CurrentColumn.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CurrentColumnProperty =
+		public static DependencyProperty CurrentColumnProperty { get ; } =
 			DependencyProperty.Register("CurrentColumn", typeof(int), typeof(Grid_DataBound_RowColumn_Data), new PropertyMetadata(0));
 
 		public int CurrentRow
@@ -74,7 +74,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for CurrentColumn.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CurrentRowProperty =
+		public static DependencyProperty CurrentRowProperty { get ; } =
 			DependencyProperty.Register("CurrentRow", typeof(int), typeof(Grid_DataBound_RowColumn_Data), new PropertyMetadata(0));
 
 	}

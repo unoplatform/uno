@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ExpandCollapsePatternIdentifiers 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty ExpandCollapseStateProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ExpandCollapseStateProperty
 		// Forced skipping of method Windows.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty.get
 	}
 }

@@ -1,39 +1,62 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: Mainline
-next-version: 2.0.0
-continuous-delivery-fallback-tag: ""
-tag-prefix: 'version-tags-are-disabled'
+
+# Don't use next-version with Mainline (changed since 5.3), otherwise the stable
+# branch will not count on commits, only on tags.
+# See https://github.com/GitTools/GitVersion/issues/2461#issuecomment-733658087
+# next-version: 3.0
 
 branches:
   master:
+    mode: ContinuousDeployment
     regex: master
     tag: dev
-    increment: patch
+    increment: Minor
+    is-source-branch-for: ['beta', 'stable']
+
+  pull-request:
+    regex: ^(pull|pull\-requests|pr)[/-]
+    mode: ContinuousDeployment
+    tag: 'PullRequest'
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
+    increment: Inherit
+
   beta:
-    regex: release/beta/
+    mode: ContinuousDeployment
+    regex: ^release/beta/.*
     tag: beta
     increment: none
     source-branches: ['master']
+
   stable:
-    regex: release/stable/
+    regex: ^release/stable/.*
     tag: ''
-    increment: none
-    source-branches: ['master']
+    increment: Patch
+    source-branches: ['master','beta']
+    is-mainline: true
+
   dev:
-    regex: dev/.*?/(.*?)
+    mode: ContinuousDeployment
+    regex: ^dev/.*?/(.*?)
     tag: dev.{BranchName}
+    source-branches: ['master', 'stable', 'projects', 'feature']
     increment: none
-    source-branches: ['master']
+
   projects:
-    regex: projects/(.*?)
-    tag: proj.{BranchName}
-    increment: none
+    tag: proj-{BranchName}
+    regex: ^projects/(.*?)
     source-branches: ['master']
+    increment: none
+
   feature:
-    regex: feature/(.*?)
-    tag: feature.{BranchName}    
-    increment: none
+    tag: feature.{BranchName}
+    regex: ^feature/(.*?)
     source-branches: ['master']
+    increment: none
+
+  release:
+    # disable default release branch
+    regex: ignore
 
 ignore:
   sha: []

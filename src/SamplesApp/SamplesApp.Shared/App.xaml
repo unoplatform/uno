@@ -1,45 +1,160 @@
-﻿<Application
-	x:Class="SamplesApp.App"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	RequestedTheme="Light">
-
+﻿<Application x:Class="SamplesApp.App"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:xamarin="http://nventive.com/xamarin"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ios="http://nventive.com/ios"
+			 xmlns:toolkit="using:Uno.UI.Toolkit"
+			 mc:Ignorable="ios"
+			 RequestedTheme="Light">
 	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.ThemeDictionaries>
+				<ResourceDictionary x:Key="HighContrast">
+					<SolidColorBrush x:Key="GlobalThemeResource_Test01"
+									 Color="Red" />
+				</ResourceDictionary>
+				<ResourceDictionary x:Key="Default">
+					<SolidColorBrush x:Key="GlobalThemeResource_Test01"
+									 Color="Gray" />
+				</ResourceDictionary>
+				<ResourceDictionary x:Key="Dark">
+					<SolidColorBrush x:Key="GlobalThemeResource_Test01"
+									 Color="Blue" />
+				</ResourceDictionary>
+				<ResourceDictionary x:Key="Light">
+					<SolidColorBrush x:Key="GlobalThemeResource_Test01"
+									 Color="Yellow" />
+				</ResourceDictionary>
+			</ResourceDictionary.ThemeDictionaries>
 
-		<!-- ReSharper disable once InconsistentNaming -->
-		<SolidColorBrush x:Key="Pink_From_App_Xaml_Resources" Color="#FF54BA" />
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Windows_UI_Xaml_Controls\ListView\MeasureDetectorControl\MeasureDetectorControl.xaml" />
+				<MapResources xmlns="using:Uno.UI.Maps"/>
+			</ResourceDictionary.MergedDictionaries>
 
-		<Style x:Key="Style_Bold_From_App_Xaml_Resources" TargetType="TextBlock">
-			<Setter Property="FontWeight" Value="ExtraBold" />
-		</Style>
+			<SolidColorBrush x:Key="GlobalStaticResource_Test01"
+							 Color="Purple" />
 
-		<Style x:Key="Style_Pink_From_App_Xaml_Resources" TargetType="TextBlock" BasedOn="{StaticResource Style_Bold_From_App_Xaml_Resources}">
-			<Setter Property="Foreground" Value="{StaticResource Pink_From_App_Xaml_Resources}" />
-		</Style>
+			<!--  ReSharper disable once InconsistentNaming  -->
+			<SolidColorBrush x:Key="Pink_From_App_Xaml_Resources"
+							 Color="#FF54BA" />
 
-		<Style x:Key="CustomTextBox" TargetType="TextBox" >
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="TextBox">
-						<Grid>
-							<Grid.Resources>
-								<Style x:Key="TestStyle" TargetType="Button">
-									<Setter Property="Template">
-										<Setter.Value>
-											<ControlTemplate TargetType="Button">
-												<Grid>
-													<TextBlock Text="Sample" />
-												</Grid>
-											</ControlTemplate>
-										</Setter.Value>
-									</Setter>
-								</Style>
-							</Grid.Resources>
-						</Grid>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+			<Style x:Key="Style_Bold_From_App_Xaml_Resources"
+				   TargetType="TextBlock">
+				<Setter Property="FontWeight"
+						Value="ExtraBold" />
+			</Style>
+
+			<Style x:Key="Style_Pink_From_App_Xaml_Resources"
+				   BasedOn="{StaticResource Style_Bold_From_App_Xaml_Resources}"
+				   TargetType="TextBlock">
+				<Setter Property="Foreground"
+						Value="{StaticResource Pink_From_App_Xaml_Resources}" />
+			</Style>
+
+			<Style x:Key="CustomTextBox"
+				   TargetType="TextBox">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="TextBox">
+							<Grid>
+								<Grid.Resources>
+									<Style x:Key="TestStyle"
+										   TargetType="Button">
+										<Setter Property="Template">
+											<Setter.Value>
+												<ControlTemplate TargetType="Button">
+													<Grid>
+														<TextBlock Text="Sample" />
+													</Grid>
+												</ControlTemplate>
+											</Setter.Value>
+										</Setter>
+									</Style>
+								</Grid.Resources>
+							</Grid>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<!--  WinUI Styles  -->
+			<Style x:Key="StandardGroupHeader"
+				   TargetType="TextBlock">
+				<Setter Property="FontSize"
+						Value="22" />
+				<Setter Property="Margin"
+						Value="0,0,0,8" />
+				<Setter Property="AutomationProperties.HeadingLevel"
+						Value="Level2" />
+			</Style>
+
+			<Style x:Key="StandardGroupingStackPanel"
+				   TargetType="StackPanel">
+				<Setter Property="BorderBrush"
+						Value="{ThemeResource SystemChromeGrayColor}" />
+				<Setter Property="BorderThickness"
+						Value="1" />
+				<Setter Property="Padding"
+						Value="8" />
+			</Style>
+
+			<!--Used by ContentDialog samples-->
+			<Style x:Key="RedBorderContentDialogStyle"
+				   TargetType="ContentDialog">
+				<Setter Property="BorderBrush"
+						Value="Red" />
+			</Style>
+			<Style x:Key="ContentDialogCloseButtonStyle"
+				   TargetType="Button">
+				<Setter Property="Foreground"
+						Value="DarkBlue" />
+				<Setter Property="Background"
+						Value="LightBlue" />
+			</Style>
+
+			<Style x:Key="DefaultCommandBarStyle"
+					TargetType="CommandBar">
+
+				 <!--Remove the back button title (and only leave the back arrow)--> 
+				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonTitle)"
+							Value="" />
+			</Style>
+
+			<Style x:Key="CustomIconCommandBarStyle"
+					TargetType="CommandBar">
+
+				 <!--Remove the back button title (and only leave the back arrow)--> 
+				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonTitle)"
+							Value="" />
+
+				<ios:Setter Property="(toolkit:CommandBarExtensions.BackButtonIcon)">
+					<ios:Setter.Value>
+						<BitmapIcon Foreground="Transparent"
+									ShowAsMonochrome="False"
+									Height="41"
+									Width="41"
+									UriSource="ms-appx:///Assets/BackArrow.png" />
+					</ios:Setter.Value>
+				</ios:Setter>
+			</Style>
+
+			<!--
+				These value should be the same Image as the ones used
+				for the CustomIconCommandBarStyle.BackButtonIcon
+			-->
+			<Style x:Key="ImageForCommandBarIcon"
+					TargetType="Image">
+				<ios:Setter Property="Source"
+							Value="ms-appx:///Assets/BackArrow.png" />
+				<ios:Setter Property="Height"
+							Value="41" />
+				<ios:Setter Property="Width"
+							Value="41" />
+			</Style>
+
+		</ResourceDictionary>
 
 	</Application.Resources>
 </Application>

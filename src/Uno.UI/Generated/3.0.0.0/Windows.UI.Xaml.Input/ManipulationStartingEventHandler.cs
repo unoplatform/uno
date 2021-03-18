@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	public delegate void ManipulationStartingEventHandler(object @sender, global::Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs @e);
-	#endif
+	// Skipping already declared delegate Windows.UI.Xaml.Input.ManipulationStartingEventHandler
 }

@@ -29,16 +29,8 @@ namespace Windows.UI.Xaml.Media
 	{
 		protected static PropertyChangedCallback NotifyChangedCallback { get; } = (snd, args) =>
 		{
-			// Don't update the internal value if the value is being animated.
-			// The value is being animated by the platform itself.
-
-			if (snd is Transform transform
-#if __ANDROID__ || __IOS__ || __MACOS__ // On WASM currently we supports only CPU bound animations, so we have to let the transform be updated on each frame
-				&& !transform.IsAnimating
-#endif
-				)
+			if (snd is Transform transform)
 			{
-				transform.MatrixCore = transform.ToMatrix(new Point(0, 0));
 				transform.NotifyChanged();
 			}
 		};
@@ -49,7 +41,20 @@ namespace Windows.UI.Xaml.Media
 		internal event EventHandler Changed;
 
 		protected void NotifyChanged()
-			=> Changed?.Invoke(this, EventArgs.Empty);
+		{
+#if __ANDROID__ || __IOS__ || __MACOS__ // On WASM currently we supports only CPU bound animations, so we have to let the transform be updated on each frame
+			if (IsAnimating)
+			{
+				// Don't update the internal value if the value is being animated.
+				// The value is expected to be animated by the platform itself.
+
+				return;
+			}
+#endif
+
+			MatrixCore = ToMatrix(new Point(0, 0));
+			Changed?.Invoke(this, EventArgs.Empty);
+		}
 
 		/// <summary>
 		/// The matrix used by this transformation
@@ -76,7 +81,7 @@ namespace Windows.UI.Xaml.Media
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal _View View { get; set; }
+		internal virtual _View View { get; set; }
 
 		#region GeneralTransform overrides
 		/// <inheritdoc />
@@ -92,11 +97,10 @@ namespace Windows.UI.Xaml.Media
 				else
 				{
 					// The Inverse transform is not expected to reflect future changes on this transform
-					// It means that it's  acceptable to capture the current 'Matrix'
-					Matrix3x2.Invert(matrix, out var inverse);
+					// It means that it's acceptable to capture the current 'Matrix'
 					return new MatrixTransform
 					{
-						Matrix = new Matrix(inverse)
+						Matrix = new Matrix(matrix.Inverse())
 					};
 				}
 			}

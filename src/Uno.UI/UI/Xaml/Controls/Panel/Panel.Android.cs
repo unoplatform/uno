@@ -20,7 +20,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
+		private readonly SerialDisposable _backgroundBrushChanged = new SerialDisposable();
+		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Panel()
@@ -71,6 +72,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder(changed);
 		}
 
+		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		{
+			AdjustCornerRadius(canvas, CornerRadius);
+		}
+
 		protected virtual void OnChildrenChanged()
 		{
 			UpdateBorder();
@@ -83,6 +89,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
+			_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder(), UpdateBorder);
 			UpdateBorder();
 		}
 
@@ -99,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, just update the filling color.
-			_brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, _ => UpdateBorder(), UpdateBorder);
+			_backgroundBrushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, _ => UpdateBorder(), UpdateBorder);
 			UpdateBorder();
 		}
 
@@ -128,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		/// }
 		/// </summary>
 		/// <param name="view"></param>
-		public void Add(View view)
+		public void Add(UIElement view)
 		{
 			Children.Add(view);
 		}
@@ -137,5 +144,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return this.GetChildren().GetEnumerator();
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

@@ -24,7 +24,7 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 			{
 				To = 0,
 				BeginTime = TimeSpan.FromSeconds(3),
-				Duration = new Duration(TimeSpan.FromSeconds(3))
+				Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(3))
 			};
 			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.Y));
 			Storyboard.SetTarget(animation, _transform);

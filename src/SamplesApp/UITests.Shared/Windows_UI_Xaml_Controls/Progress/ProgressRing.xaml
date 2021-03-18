@@ -1,30 +1,16 @@
 ﻿<Page x:Class="SamplesApp.Samples.Progress.ProgressRing"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:ControlTests"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:xamarin="http://nventive.com/xamarin"
-      xmlns:ios="http://nventive.com/ios"
-      xmlns:android="http://nventive.com/android"
-      xmlns:native_ios="using:UIKit"
-      xmlns:native_android="using:Android.Widget"
-      xmlns:controls="using:Uno.UI.Samples.Controls"
-      mc:Ignorable="xamarin android ios native_ios native_android">
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="">
 
-	<controls:SampleControl SampleDescription="Progress Rings in 4 colors">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ScrollViewer>
-					<StackPanel>
-						<StackPanel Orientation="Horizontal" Spacing="16">
-							<ProgressRing Foreground="Red" IsActive="True" />
-							<ProgressRing Foreground="Blue" IsActive="True" />
-							<ProgressRing Foreground="Green" IsActive="True" />
-							<ProgressRing Foreground="Orange" IsActive="True" />
-						</StackPanel>
-					</StackPanel>
-				</ScrollViewer>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel Spacing="10">
+		<ToggleButton x:Name="btn" IsChecked="True">IS ACTIVE</ToggleButton>
+		<StackPanel Orientation="Horizontal" Spacing="16">
+			<ProgressRing Foreground="Red" IsActive="{Binding IsChecked, ElementName=btn}" />
+			<ProgressRing Foreground="Blue" IsActive="{Binding IsChecked, ElementName=btn}" Height="33" Width="33"/>
+			<ProgressRing Foreground="Green" IsActive="{Binding IsChecked, ElementName=btn}" Height="66" Width="66"/>
+			<ProgressRing Foreground="Orange" IsActive="{Binding IsChecked, ElementName=btn}" Height="99" Width="99" />
+		</StackPanel>
+	</StackPanel>
 </Page>

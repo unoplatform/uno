@@ -1,4 +1,4 @@
-﻿#if __IOS__
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,23 +17,22 @@ namespace Uno.UI.Controls
 {
 	internal class AppBarButtonRenderer : Renderer<AppBarButton, UIBarButtonItem>
 	{
-		private AppBarButtonWrapper _appBarButtonWrapper;
+		private AppBarButtonWrapper? _appBarButtonWrapper;
 
 		public AppBarButtonRenderer(AppBarButton element) : base(element)
 		{
 			element.RegisterParentChangedCallback(this, OnElementParentChanged);
 		}
 
-		private void OnElementParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		private void OnElementParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs args)
 		{
-			if (args.NewParent == _appBarButtonWrapper)
+			if (ReferenceEquals(args.NewParent, _appBarButtonWrapper))
 			{
 				// if the new Parent is the wrapper, restore it to
 				// its original value.
 				Element?.SetParent(args.PreviousParent);
 			}
 		}
-
 
 		private bool HasContent => Element?.Content is FrameworkElement;
 
@@ -74,15 +73,22 @@ namespace Uno.UI.Controls
 
 		protected override void Render()
 		{
-			// Icon & Content
-			if (Element.Icon != null)
+			if (_appBarButtonWrapper == null)
 			{
-				switch (Element.Icon)
+				return; // not initialized
+			}
+			// Icon & Content
+			var native = Native;
+			var element = Element;
+
+			if (element.Icon != null)
+			{
+				switch (element.Icon)
 				{
 					case BitmapIcon bitmap:
-						Native.Image = UIImageHelper.FromUri(bitmap.UriSource);
-						Native.CustomView = null;
-						Native.Title = null;
+						native.Image = UIImageHelper.FromUri(bitmap.UriSource);
+						native.CustomView = null;
+						native.Title = null;
 						break;
 
 					case FontIcon font: // not supported
@@ -90,72 +96,70 @@ namespace Uno.UI.Controls
 					case SymbolIcon symbol: // not supported
 					default:
 						this.Log().WarnIfEnabled(() => $"{GetType().Name ?? "FontIcon, PathIcon and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
-						Native.Image = null;
-						Native.CustomView = null;
+						native.Image = null;
+						native.CustomView = null;
 						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set. 
 						// We default to an empty string to ensure it is added.
-						Native.Title = string.Empty;
+						native.Title = string.Empty;
 						break;
 				}
 			}
 			else
 			{
-				switch (Element.Content)
+				switch (element.Content)
 				{
 					case string text:
-						Native.Image = null;
-						Native.CustomView = null;
-						Native.Title = text;
+						native.Image = null;
+						native.CustomView = null;
+						native.Title = text;
 						break;
 
 					case FrameworkElement fe:
-						var currentParent = Element.GetParent();
-						_appBarButtonWrapper.Child = Element;
+						var currentParent = element.GetParent();
+						_appBarButtonWrapper.Child = element;
 
 						//Restore the original parent if any, as we
 						// want the DataContext to flow properly from the
 						// CommandBar.
-						Element.SetParent(currentParent);
+						element.SetParent(currentParent);
 
-						Native.Image = null;
-						Native.CustomView = fe.Visibility == Visibility.Visible ? _appBarButtonWrapper : null;
+						native.Image = null;
+						native.CustomView = fe.Visibility == Visibility.Visible ? _appBarButtonWrapper : null;
 						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set.
 						// We default to an empty string to ensure it is added, in order to support late-bound Content.
-						Native.Title = string.Empty;
+						native.Title = string.Empty;
 						break;
 
 					default:
-						Native.Image = null;
-						Native.CustomView = null;
+						native.Image = null;
+						native.CustomView = null;
 						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set. 
 						// We default to an empty string to ensure it is added.
-						Native.Title = string.Empty;
+						native.Title = string.Empty;
 						break;
 				}
 			}
 
 			// Label
-			Native.AccessibilityHint = Element.Label;
-			Native.AccessibilityLabel = Element.Label;
+			native.AccessibilityHint = element.Label;
+			native.AccessibilityLabel = element.Label;
 
 			// Foreground
-			if (Element.Foreground is SolidColorBrush foreground)
+			if (Brush.TryGetColorWithOpacity(element.Foreground, out var foreground))
 			{
-				var color = (UIColor)foreground.Color as UIColor;
-				var alpha = (nfloat)(foreground.Opacity * Element.Opacity);
-				Native.TintColor = color.ColorWithAlpha(alpha);
+				var color = (UIColor)foreground;
+				native.TintColor = color.ColorWithAlpha((nfloat)element.Opacity);
 			}
 			else
 			{
-				Native.TintColor = default(UIColor); // TODO .Clear;
+				native.TintColor = default(UIColor); // TODO .Clear;
 			}
 
 			// IsEnabled
-			Native.Enabled = Element.IsEnabled;
+			native.Enabled = element.IsEnabled;
 
 			// Background
-			var backgroundColor = (Element.Background as SolidColorBrush)?.ColorWithOpacity;
-			if (backgroundColor != null)
+			if (Brush.TryGetColorWithOpacity(element.Background, out var backgroundColor))
 			{
 				if (HasContent)
 				{
@@ -164,14 +168,13 @@ namespace Uno.UI.Controls
 				}
 				else
 				{
-					var isTransparent = backgroundColor.Value.A == 0;
-					var backgroundImage = isTransparent
+					var backgroundImage = backgroundColor.IsTransparent
 						? new UIImage() // Clears the background
 						: ((UIColor)backgroundColor).ToUIImage(); // Applies the solid color;
 
 					// We're using SetBackgroundImage instead of SetBackgroundColor 
 					// because it extends all the way up under the status bar.
-					Native.SetBackgroundImage(backgroundImage, UIControlState.Normal, UIBarMetrics.Default);
+					native.SetBackgroundImage(backgroundImage, UIControlState.Normal, UIBarMetrics.Default);
 				}
 			}
 		}
@@ -212,4 +215,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif

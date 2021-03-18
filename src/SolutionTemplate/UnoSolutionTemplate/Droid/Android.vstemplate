@@ -1,44 +1,45 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
-    <Name>UnoQuickStart.Android</Name>
-    <Description>
-    </Description>
-    <ProjectType>CSharp</ProjectType>
-    <ProjectSubType>
-    </ProjectSubType>
-    <SortOrder>1000</SortOrder>
-    <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>UnoQuickStart.Android</DefaultName>
-    <ProvideDefaultName>true</ProvideDefaultName>
-    <LocationField>Enabled</LocationField>
-    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
-    <Icon>__TemplateIcon.png</Icon>
-    <PreviewImage>__PreviewImage.png</PreviewImage>
+	<Name>UnoQuickStart.Android</Name>
+	<Description>
+	</Description>
+	<ProjectType>CSharp</ProjectType>
+	<ProjectSubType>
+	</ProjectSubType>
+	<SortOrder>1000</SortOrder>
+	<CreateNewFolder>true</CreateNewFolder>
+	<DefaultName>UnoQuickStart.Android</DefaultName>
+	<ProvideDefaultName>true</ProvideDefaultName>
+	<LocationField>Enabled</LocationField>
+	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+	<Icon>__TemplateIcon.png</Icon>
+	<PreviewImage>__PreviewImage.png</PreviewImage>
+	<CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
-    <Project TargetFileName="$ext_safeprojectname$.Droid.csproj" File="UnoQuickStart.Droid.csproj" ReplaceParameters="true">
-			<ProjectItem ReplaceParameters="true" TargetFileName="MainActivity.cs">MainActivity.cs</ProjectItem>
-			<ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem>
-			<Folder Name="Assets" TargetFolderName="Assets">
-        <ProjectItem ReplaceParameters="true" TargetFileName="AboutAssets.txt">AboutAssets.txt</ProjectItem>
+	<Project TargetFileName="$ext_safeprojectname$.Droid.csproj" File="UnoQuickStart.Droid.csproj" ReplaceParameters="true">
+	  <ProjectItem ReplaceParameters="true" TargetFileName="MainActivity.cs">MainActivity.cs</ProjectItem>
+	  <ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem>
+	  <Folder Name="Assets" TargetFolderName="Assets">
+		<ProjectItem ReplaceParameters="true" TargetFileName="AboutAssets.txt">AboutAssets.txt</ProjectItem>
 		<Folder Name="Fonts" TargetFolderName="Fonts">
-		  <ProjectItem ReplaceParameters="false" TargetFileName="winjs-symbols.ttf">winjs-symbols.ttf</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
 		</Folder>
-      </Folder>
-      <Folder Name="Properties" TargetFolderName="Properties">
-        <ProjectItem ReplaceParameters="true" TargetFileName="AndroidManifest.xml">AndroidManifest.xml</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
-      </Folder>
-      <Folder Name="Resources" TargetFolderName="Resources">
-        <ProjectItem ReplaceParameters="true" TargetFileName="AboutResources.txt">AboutResources.txt</ProjectItem>
-        <Folder Name="drawable" TargetFolderName="drawable">
-          <ProjectItem ReplaceParameters="false" TargetFileName="Icon.png">Icon.png</ProjectItem>
-        </Folder>
-        <Folder Name="values" TargetFolderName="values">
-					<ProjectItem ReplaceParameters="true" TargetFileName="Strings.xml">Strings.xml</ProjectItem>
-					<ProjectItem ReplaceParameters="true" TargetFileName="Styles.xml">Styles.xml</ProjectItem>
-				</Folder>
-      </Folder>
-    </Project>
+	  </Folder>
+	  <Folder Name="Properties" TargetFolderName="Properties">
+		<ProjectItem ReplaceParameters="true" TargetFileName="AndroidManifest.xml">AndroidManifest.xml</ProjectItem>
+		<ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+	  </Folder>
+	  <Folder Name="Resources" TargetFolderName="Resources">
+		<ProjectItem ReplaceParameters="true" TargetFileName="AboutResources.txt">AboutResources.txt</ProjectItem>
+		<Folder Name="drawable" TargetFolderName="drawable">
+		  <ProjectItem ReplaceParameters="false" TargetFileName="Icon.png">Icon.png</ProjectItem>
+		</Folder>
+		<Folder Name="values" TargetFolderName="values">
+		  <ProjectItem ReplaceParameters="true" TargetFileName="Strings.xml">Strings.xml</ProjectItem>
+		  <ProjectItem ReplaceParameters="true" TargetFileName="Styles.xml">Styles.xml</ProjectItem>
+		</Folder>
+	  </Folder>
+	</Project>
   </TemplateContent>
 </VSTemplate>

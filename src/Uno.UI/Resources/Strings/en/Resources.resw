@@ -120,4 +120,16 @@
   <data name="NavigationView_Settings_Content" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="StorageProviderAndroidSafDisplayName" xml:space="preserve">
+    <value>Android Storage Access Framework</value>
+  </data>
+  <data name="StorageProviderIosSecurityScopedDisplayName" xml:space="preserve">
+    <value>iOS Security Scoped</value>
+  </data>
+  <data name="StorageProviderLocalDisplayName" xml:space="preserve">
+    <value>This PC</value>
+  </data>
+  <data name="StorageProviderNativeWasmDisplayName" xml:space="preserve">
+    <value>JS File Access API</value>
+  </data>
 </root>

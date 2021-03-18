@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.DataBinding;
 
@@ -156,6 +157,109 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("Initial2", vm.Value);
 		}
 
+		[TestMethod]
+		public void When_Parse_SimpleProperty()
+		{
+			var sut = new BindingPath("hello_world", null);
+
+			var result = sut.GetPathItems().ToArray();
+
+			result.Length.Should().Be(1);
+			result[0].PropertyName.Should().Be("hello_world");
+		}
+
+		[TestMethod]
+		public void When_Parse_SimpleProperties()
+		{
+			var sut = new BindingPath("hello.world.bonjour.le.monde", null);
+
+			var result = sut.GetPathItems().ToArray();
+
+			result.Length.Should().Be(5);
+			result[0].PropertyName.Should().Be("hello");
+			result[1].PropertyName.Should().Be("world");
+			result[2].PropertyName.Should().Be("bonjour");
+			result[3].PropertyName.Should().Be("le");
+			result[4].PropertyName.Should().Be("monde");
+		}
+
+		[TestMethod]
+		public void When_Parse_AttachedProperty()
+		{
+			var sut = new BindingPath("(Grid.Column)", null);
+
+			var result = sut.GetPathItems().ToArray();
+
+			result.Length.Should().Be(1);
+			result[0].PropertyName.Should().Be("Grid.Column");
+		}
+
+		[TestMethod]
+		public void When_Parse_AttachedProperties()
+		{
+			var sut = new BindingPath("(hello.world).(bonjour:le.monde)", null);
+
+			var result = sut.GetPathItems().ToArray();
+
+			result.Length.Should().Be(2);
+			result[0].PropertyName.Should().Be("hello.world");
+			result[1].PropertyName.Should().Be("bonjour:le.monde");
+		}
+
+		[TestMethod]
+		public void When_Parse_Indexer()
+		{
+			var sut = new BindingPath("[hello_world]", null);
+
+			var result = sut.GetPathItems().ToArray();
+
+			result.Length.Should().Be(1);
+			result[0].PropertyName.Should().Be("[hello_world]");
+		}
+
+		[TestMethod]
+		public void When_Parse_Indexers()
+		{
+			var sut = new BindingPath("[hello][world][bonjour][le][monde]", null);
+
+			var result = sut.GetPathItems().ToArray();
+
+			result.Length.Should().Be(5);
+			result[0].PropertyName.Should().Be("[hello]");
+			result[1].PropertyName.Should().Be("[world]");
+			result[2].PropertyName.Should().Be("[bonjour]");
+			result[3].PropertyName.Should().Be("[le]");
+			result[4].PropertyName.Should().Be("[monde]");
+		}
+
+		[TestMethod]
+		public void When_Parse_ComplexPath()
+		{
+			var sut = new BindingPath("hello[world](bonjour:le.monde).value", null);
+
+			var result = sut.GetPathItems().ToArray();
+
+			result.Length.Should().Be(4);
+			result[0].PropertyName.Should().Be("hello");
+			result[1].PropertyName.Should().Be("[world]");
+			result[2].PropertyName.Should().Be("bonjour:le.monde");
+			result[3].PropertyName.Should().Be("value");
+		}
+
+		[TestMethod]
+		public void When_Parse_TrimItemPath()
+		{
+			var sut = new BindingPath(" hello [world ]( bonjour:le.monde ).value ", null);
+
+			var result = sut.GetPathItems().ToArray();
+
+			result.Length.Should().Be(4);
+			result[0].PropertyName.Should().Be("hello");
+			result[1].PropertyName.Should().Be("[world ]");
+			result[2].PropertyName.Should().Be("bonjour:le.monde");
+			result[3].PropertyName.Should().Be("value");
+		}
+
 		private static (MyTarget target, BindingPath binding) Arrange(DependencyPropertyValuePrecedences? precedence = null)
 		{
 			var target = new MyTarget();
@@ -184,7 +288,7 @@ namespace Uno.UI.Tests.BinderTests
 			public const string FallbackValue = "__fallback__";
 
 			public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-				"Value", typeof(string), typeof(MyTarget), new PropertyMetadata(DefaultValue));
+				"Value", typeof(string), typeof(MyTarget), new FrameworkPropertyMetadata(DefaultValue));
 
 			public string Value
 			{

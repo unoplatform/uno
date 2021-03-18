@@ -24,7 +24,7 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 			set { SetValue(MainTitleProperty, value); }
 		}
 		
-		public static readonly DependencyProperty MainTitleProperty =
+		public static DependencyProperty MainTitleProperty { get ; } =
 			DependencyProperty.Register("MainTitle", typeof(string), typeof(CommandBarTitle), new PropertyMetadata(string.Empty));
 		
 		public string SubTitle1
@@ -33,7 +33,7 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 			set { SetValue(SubTitle1Property, value); }
 		}
 		
-		public static readonly DependencyProperty SubTitle1Property =
+		public static DependencyProperty SubTitle1Property { get ; } =
 			DependencyProperty.Register("SubTitle1", typeof(string), typeof(CommandBarTitle), new PropertyMetadata(string.Empty));
 
 		public string SubTitle2
@@ -42,7 +42,7 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 			set { SetValue(SubTitle2Property, value); }
 		}
 
-		public static readonly DependencyProperty SubTitle2Property =
+		public static DependencyProperty SubTitle2Property { get ; } =
 			DependencyProperty.Register("SubTitle2", typeof(string), typeof(CommandBarTitle), new PropertyMetadata(string.Empty));
 	}
 }

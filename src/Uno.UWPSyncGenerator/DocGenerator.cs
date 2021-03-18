@@ -15,7 +15,7 @@ namespace Uno.UWPSyncGenerator
 	/// </summary>
 	class DocGenerator : Generator
 	{
-		private const string DocPath = @"..\..\..\..\..\doc\articles";
+		private const string DocPath = @"..\..\..\..\doc\articles";
 		private const string ImplementedViewsFileName = "implemented-views.md";
 		private const string ImplementedPath = @"./implemented/";
 
@@ -32,7 +32,18 @@ namespace Uno.UWPSyncGenerator
 			_sb.AppendLine();
 
 			_views = new List<PlatformSymbols<INamedTypeSymbol>>();
-			base.Build(basePath, baseName, sourceAssembly);
+
+			try
+			{
+				base.Build(basePath, baseName, sourceAssembly);
+			}
+			catch (Exception e)
+			{
+				_sb.AppendComment($"Generation error: {e.Message}");
+#if !DEBUG
+				throw; 
+#endif
+			}
 
 			_viewsGrouped = GroupByNamespace(_views);
 			_kosherFrameworkViews = new HashSet<(string name, string namespaceString)>(_views.Select(ps => (ps.UAPSymbol.Name, ps.UAPSymbol.ContainingNamespace.ToDisplayString())));
@@ -43,7 +54,7 @@ namespace Uno.UWPSyncGenerator
 
 				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
-				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/nventive/Uno/issues")}.");
+				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/unoplatform/uno/issues")}.");
 
 				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS)"))
 				{
@@ -68,7 +79,7 @@ namespace Uno.UWPSyncGenerator
 				}
 				using (_sb.Section("Not yet implemented"))
 				{
-					_sb.AppendParagraph($"If there's a specific control you'd like to see implemented, {Hyperlink("create an issue!", "https://github.com/nventive/Uno/issues")}");
+					_sb.AppendParagraph($"If there's a specific control you'd like to see implemented, {Hyperlink("create an issue!", "https://github.com/unoplatform/uno/issues")}");
 
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.None, false);
 				}
@@ -204,6 +215,15 @@ namespace Uno.UWPSyncGenerator
 					}
 				}
 
+#if DEBUG
+				if (_views.None())
+				{
+					// Dummy TOC entry so that docfx doesn't fail
+					tocSB.AppendLineInvariant($"- name: Implemented views failed");
+					tocSB.AppendLineInvariant($"  href: doesntexist.md");
+				}
+#endif
+
 				using (var fileWriter = new StreamWriter(Path.Combine(DocPath, ImplementedPath, "toc.yml")))
 				{
 					fileWriter.Write(tocSB.ToString());
@@ -256,7 +276,7 @@ namespace Uno.UWPSyncGenerator
 				return false;
 			}
 
-			if (type == UIElementSymbol)
+			if (SymbolEqualityComparer.Default.Equals(type, UIElementSymbol))
 			{
 				return true;
 			}
@@ -366,11 +386,13 @@ namespace Uno.UWPSyncGenerator
 		private static readonly Dictionary<string, string[]> CustomDocMapping = new Dictionary<string, string[]>
 		{
 			["controls/ListViewBase.md"] = new[] { "ListView", "GridView", "ListViewBase", "ItemsStackPanel", "ItemsWrapGrid" },
+			["controls/ComboBox.md"] = new[] { "ComboBox" },
 			["controls/map-control-support.md"] = new[] { "MapControl" },
 			["controls/MediaPlayerElement.md"] = new[] { "MediaPlayerElement", "MediaPlayerPresenter" },
 			["controls/Pivot.md"] = new[] { "Pivot", "PivotHeaderItem", "PivotHeaderPanel" },
 			["controls/ToggleSwitch.md"] = new[] { "ToggleSwitch" },
 			["controls/commandbar.md"] = new[] { "CommandBar" },
+			["controls/MenuFlyout.md"] = new[] { "MenuFlyout" },
 			["features/shapes-and-brushes.md"] = new[] { "Ellipse", "Line", "Path", "Polygon", "Polyline", "Rectangle", "ArbitraryShapeBase" },
 		};
 	}

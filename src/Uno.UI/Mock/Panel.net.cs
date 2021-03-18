@@ -14,21 +14,24 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class Panel : FrameworkElement
-    {
+	public partial class Panel : FrameworkElement
+	{
 
 		public Panel()
-        {
-            Initialize();
-        }
+		{
+			Initialize();
+		}
 
-        partial void Initialize();
-        private void OnChildrenChanged()
-        {
-            throw new NotImplementedException();
-        }
+		partial void Initialize();
+
+		protected virtual void OnChildrenChanged()
+		{
+		}
 
 		public override IEnumerable<View> GetChildren()
 			=> Children.OfType<View>().ToArray<View>();
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Media;
 namespace Uno.UI.Toolkit
 {
 #if __IOS__
-	[Foundation.PreserveAttribute(AllMembers = true)]
+	[global::Foundation.PreserveAttribute(AllMembers = true)]
 #elif __ANDROID__
 	[Android.Runtime.PreserveAttribute(AllMembers = true)]
 #endif
@@ -113,7 +113,11 @@ namespace Uno.UI.Toolkit
 				"BackButtonForeground",
 				typeof(Brush),
 				typeof(CommandBarExtensions),
+#if XAMARIN
+				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueInheritsDataContext)
+#else
 				new PropertyMetadata(null)
+#endif
 			);
 
 		public static void SetBackButtonForeground(this CommandBar commandBar, Brush backButtonForeground)

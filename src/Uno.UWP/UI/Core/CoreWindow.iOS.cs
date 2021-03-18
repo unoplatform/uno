@@ -12,7 +12,7 @@ namespace Windows.UI.Core
 	{
         private readonly UIWindow _window;
 
-        public CoreWindow(UIWindow window)
+        public CoreWindow(UIWindow window) : this()
         {
             _window = window;
         }

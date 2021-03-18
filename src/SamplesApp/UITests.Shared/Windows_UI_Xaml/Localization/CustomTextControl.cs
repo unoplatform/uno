@@ -20,8 +20,8 @@ namespace UITests.Shared.Windows_UI_Xaml.Localization
 		}
 
 		// Using a DependencyProperty as the backing store for CustomText.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CustomTextProperty =
-			DependencyProperty.Register("CustomText", typeof(string), typeof(CustomTextControl), new PropertyMetadata(null, (o, __) => ((CustomTextControl)o).OnPropertyChanged()));
+		public static DependencyProperty CustomTextProperty { get ; } =
+			DependencyProperty.Register("CustomText", typeof(string), typeof(CustomTextControl), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (o, __) => ((CustomTextControl)o).OnPropertyChanged()));
 
 		public object CustomTextObj
 		{
@@ -30,8 +30,8 @@ namespace UITests.Shared.Windows_UI_Xaml.Localization
 		}
 
 		// Using a DependencyProperty as the backing store for CustomTextObj.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CustomTextObjProperty =
-			DependencyProperty.Register("CustomTextObj", typeof(object), typeof(CustomTextControl), new PropertyMetadata(null, (o, __) => ((CustomTextControl)o).OnPropertyChanged()));
+		public static DependencyProperty CustomTextObjProperty { get ; } =
+			DependencyProperty.Register("CustomTextObj", typeof(object), typeof(CustomTextControl), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (o, __) => ((CustomTextControl)o).OnPropertyChanged()));
 
 		public string CustomTextPlain
 		{

@@ -8,7 +8,12 @@ using System.Linq;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Build.Execution;
+
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+using ISourceGenerator = Uno.SourceGeneration.SourceGenerator;
+using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
+#endif
 
 namespace Uno.Roslyn
 {
@@ -16,30 +21,33 @@ namespace Uno.Roslyn
 	{
 		private const string AdditionalTypesFileName = "additionalTypes.cs";
 
-		private Project _project;
 		private readonly INamedTypeSymbol _nullableSymbol;
 		private string[] _additionalTypes;
 		private readonly Dictionary<string, INamedTypeSymbol> _legacyTypes;
 		private readonly Func<string, ITypeSymbol[]> _findTypesByName;
 		private readonly Func<string, ITypeSymbol> _findTypeByFullName;
-		private readonly Func<INamedTypeSymbol, IEnumerable<INamedTypeSymbol>> _getAllDerivingTypes;
+		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllDerivingTypes;
+		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllTypesAttributedWith;
 		private readonly Dictionary<string, INamedTypeSymbol> _additionalTypesMap;
-
+		private readonly IReadOnlyDictionary<string, INamedTypeSymbol[]> _namedSymbolsLookup;
 		public Compilation Compilation { get; }
 
+		public string AssemblyName => Compilation.AssemblyName;
 
-		public RoslynMetadataHelper(string configuration, Compilation sourceCompilation, ProjectInstance projectInstance, Project roslynProject, string[] additionalTypes = null, Dictionary<string, string> legacyTypes = null)
+		public RoslynMetadataHelper(string configuration, GeneratorExecutionContext context, Dictionary<string, string> legacyTypes = null)
 		{
-			Compilation = GenerateAdditionalTypes(sourceCompilation);
+			Compilation = context.Compilation;
 			_additionalTypesMap = GenerateAdditionalTypesMap();
 
 			_findTypesByName = Funcs.Create<string, ITypeSymbol[]>(SourceFindTypesByName).AsLockedMemoized();
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol>(SourceFindTypeByFullName).AsLockedMemoized();
-			_additionalTypes = additionalTypes ?? new string[0];
+			_additionalTypes = new string[0];
 			_legacyTypes = BuildLegacyTypes(legacyTypes);
-			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, IEnumerable<INamedTypeSymbol>>(GetAllDerivingTypes).AsLockedMemoized();
-			 _project = roslynProject;
+			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(GetAllDerivingTypes).AsLockedMemoized();
+			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
 			_nullableSymbol = Compilation.GetTypeByMetadataName("System.Nullable`1");
+
+			_namedSymbolsLookup = Compilation.GetSymbolNameLookup();
 		}
 
 		private Dictionary<string, INamedTypeSymbol> GenerateAdditionalTypesMap()
@@ -87,31 +95,6 @@ namespace Uno.Roslyn
 			?.ToDictionary(t => t.Key, t => t.Metadata)
 			?? new Dictionary<string, INamedTypeSymbol>();
 
-		private Compilation GenerateAdditionalTypes(Compilation sourceCompilation)
-		{
-			if (_additionalTypes?.Any() ?? false)
-			{
-				var sb = new StringBuilder();
-				sb.AppendLine("class __test__ {");
-
-				int index = 0;
-				foreach (var type in _additionalTypes)
-				{
-					sb.AppendLine($"{type} __{index++};");
-				}
-
-				sb.AppendLine("}");
-
-				_project = _project.AddDocument(AdditionalTypesFileName, sb.ToString()).Project;
-
-				return _project.GetCompilationAsync().Result;
-			}
-			else
-			{
-				return sourceCompilation;
-			}
-		}
-
 		public ITypeSymbol[] FindTypesByName(string name)
 		{
 			if (name.HasValue())
@@ -131,16 +114,19 @@ namespace Uno.Roslyn
 				// This validation ensure that the project has been loaded.
 				Compilation.Validation().NotNull("Compilation");
 
-				var results = SymbolFinder
-					.FindDeclarationsAsync(_project, name, ignoreCase: false, filter: SymbolFilter.Type)
-					.Result;
+				var results = Compilation.GetSymbolsWithName(name, SymbolFilter.Type).OfType<INamedTypeSymbol>();
+
+				if(_namedSymbolsLookup.TryGetValue(name, out var metadataResults))
+				{
+					results = results.Concat(metadataResults);
+				}
 
 				return results
 					.OfType<INamedTypeSymbol>()
 					.Where(r => r.Kind != SymbolKind.ErrorType && r.TypeArguments.Length == 0)
 					// Apply legacy
-					.Where(r => legacyType == null || r.OriginalDefinition.Name != name || r.OriginalDefinition == legacyType)
-					.ToArray();
+					.Where(r => legacyType == null || r.OriginalDefinition.Name != name || SymbolEqualityComparer.Default.Equals(r.OriginalDefinition, legacyType))
+					.ToArray() ?? new ITypeSymbol[0];
 			}
 
 			return Array.Empty<ITypeSymbol>();
@@ -243,34 +229,15 @@ namespace Uno.Roslyn
 		public IArrayTypeSymbol GetArray(ITypeSymbol type) => Compilation.CreateArrayTypeSymbol(type);
 
 		public IEnumerable<INamedTypeSymbol> GetAllTypesDerivingFrom(INamedTypeSymbol baseType)
-		{
-			return _getAllDerivingTypes(baseType);
-		}
+			=> _getAllDerivingTypes(baseType);
 
-		private IEnumerable<INamedTypeSymbol> GetAllDerivingTypes(INamedTypeSymbol baseType)
-		{
-			return GetTypesDerivingFrom(Compilation.GlobalNamespace);
+		private INamedTypeSymbol[] GetAllDerivingTypes(INamedTypeSymbol baseType)
+			=> Compilation.GlobalNamespace.GetNamespaceTypes().Where(t => t.Is(baseType)).ToArray();
 
-			IEnumerable<INamedTypeSymbol> GetTypesDerivingFrom(INamespaceSymbol ns)
-			{
-				foreach (var member in ns.GetMembers())
-				{
-					if (member is INamespaceSymbol nsInner)
-					{
-						foreach (var t in GetTypesDerivingFrom(nsInner))
-						{
-							yield return t;
-						}
-					}
-					else if (member is INamedTypeSymbol type)
-					{
-						if (((INamedTypeSymbol)member).Is(baseType))
-						{
-							yield return type;
-						}
-					}
-				}
-			}
-		}
+		public INamedTypeSymbol[] GetAllTypesAttributedWith(INamedTypeSymbol attributeClass)
+			=> _getAllTypesAttributedWith(attributeClass);
+
+		private INamedTypeSymbol[] SourceGetAllTypesAttributedWith(INamedTypeSymbol attributeClass)
+			=> Compilation.GlobalNamespace.GetNamespaceTypes().Where(t => t.FindAttribute(attributeClass) is { }).ToArray();
 	}
 }

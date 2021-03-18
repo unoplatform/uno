@@ -166,6 +166,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
+#pragma warning disable 67
+		public event EventHandler AnimationFailed;
+#pragma warning restore 67
+
 		/// <inheritdoc />
 		public object AnimatedValue => _adaptee.AnimatedValue;
 
@@ -219,7 +223,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if __ANDROID_19__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
-				_adaptee.Pause();
+				_adaptee.Resume();
 			}
 			else
 #endif

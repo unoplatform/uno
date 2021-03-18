@@ -1,7 +1,7 @@
 ---
 name: Documentation Request
 about: Request an enhancement to the Uno documentation
-labels: kind/consumer-experience, kind/documentation, triage/untriaged
+labels: kind/consumer-experience, kind/documentation, triage/untriaged, difficulty/tbd
 ---
 
 <!-- Please only use this template for submitting documentation requests -->
@@ -24,6 +24,11 @@ labels: kind/consumer-experience, kind/documentation, triage/untriaged
 - [ ] iOS
 - [ ] Android
 - [ ] WebAssembly
+- [ ] macOS
+- [ ] Skia
+  - [ ] WPF
+  - [ ] GTK (Linux)
+  - [ ] Tizen
 - [ ] Windows
 
 ## Anything else we need to know?

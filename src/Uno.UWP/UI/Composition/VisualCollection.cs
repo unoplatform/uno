@@ -1,5 +1,3 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,7 +5,19 @@ namespace Windows.UI.Composition
 {
 	public partial class VisualCollection : CompositionObject, IEnumerable<Visual>
 	{
+		private readonly Visual _owner;
+
 		private List<Visual> _visuals = new List<Visual>();
+
+		internal VisualCollection(Compositor compositor, Visual owner) : base(compositor)
+		{
+			_owner = owner;
+		}
+
+		internal VisualCollection(Visual owner)
+		{
+			_owner = owner;
+		}
 
 		public int Count => _visuals.Count;
 

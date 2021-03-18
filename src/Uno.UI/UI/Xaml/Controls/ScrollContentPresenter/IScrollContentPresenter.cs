@@ -1,23 +1,8 @@
-﻿using System;
+﻿#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-#if XAMARIN_ANDROID
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-#else
-using View = System.Object;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -30,9 +15,11 @@ namespace Windows.UI.Xaml.Controls
 	{
 		ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 		ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
-		ScrollMode HorizontalScrollMode { get; set; }
-		ScrollMode VerticalScrollMode { get; set; }
-		View Content { get; set; }
+
+		bool CanHorizontallyScroll { get; set; }
+		bool CanVerticallyScroll { get; set; }
+
+		object Content { get; set; }
 
 		void OnMinZoomFactorChanged(float newValue);
 		void OnMaxZoomFactorChanged(float newValue);
@@ -40,3 +27,4 @@ namespace Windows.UI.Xaml.Controls
 		Rect MakeVisible(UIElement visual, Rect rectangle);
 	}
 }
+#endif

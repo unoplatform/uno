@@ -1,10 +1,9 @@
-﻿#if NETFX_CORE || XAMARIN || __WASM__
+﻿#if XAMARIN || __WASM__
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Practices.ServiceLocation;
 using Uno.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -21,7 +20,7 @@ namespace Uno.UI.Samples.Behaviors
 		/// <summary>
 		/// Register attached source string
 		/// </summary>
-		public static readonly DependencyProperty SourceStringProperty =
+		public static DependencyProperty SourceStringProperty { get ; } =
 			DependencyProperty.RegisterAttached("SourceString", typeof(string), typeof(WebViewBehavior), new PropertyMetadata(string.Empty, OnSourceStringChanged));
 
 		/// <summary>

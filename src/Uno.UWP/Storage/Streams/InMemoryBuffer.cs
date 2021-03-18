@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Windows.Storage.Streams
+﻿namespace Windows.Storage.Streams
 {
-	public class InMemoryBuffer : IBuffer
+	/// <summary>
+	/// This class is no longer needed and can be removed
+	/// as part of breaking changes batch (all its occurences can be replaced by
+	/// Buffer class, which has equivalent functionality.
+	/// </summary>
+	public class InMemoryBuffer : Buffer, IBuffer
 	{
 		internal InMemoryBuffer(int capacity)
-		{
-			Data = new byte[capacity];
+			: base((uint)capacity)
+		{			
 		}
 
-		internal byte[] Data { get; }
-
-		public uint Capacity => (uint)Data.Length;
-
-		public uint Length
+		internal InMemoryBuffer(byte[] data)
+			: base(data)
 		{
-			get => (uint)Data.Length;
-			set => throw new NotSupportedException();
 		}
 	}
 }

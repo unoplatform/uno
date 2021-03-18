@@ -1,5 +1,5 @@
 ﻿using Android.Graphics;
-using Android.Support.V4.View;
+using AndroidX.ViewPager.Widget;
 using Android.Util;
 using Android.Views;
 using Android.Widget;

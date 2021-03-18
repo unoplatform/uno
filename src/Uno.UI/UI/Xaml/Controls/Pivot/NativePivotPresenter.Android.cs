@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Graphics;
-using Android.Support.V4.App;
-using Android.Support.V4.View;
+using AndroidX.ViewPager.Widget;
+using AndroidX.Fragment.App;
 using Android.Util;
 using Android.Views;
 using Uno.Extensions;

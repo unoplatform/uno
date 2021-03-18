@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -8,8 +9,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			availableSize.Width -= GetHorizontalOffset();
-			availableSize.Height -= GetVerticalOffset();
+			var borderAndPaddingSize = BorderAndPaddingSize;
+			availableSize = availableSize.Subtract(borderAndPaddingSize);
 
 			var desiredSize = default(Size);
 			var slotSize = availableSize;
@@ -29,16 +30,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
 			}
 
-			desiredSize.Width += GetHorizontalOffset();
-			desiredSize.Height += GetVerticalOffset();
-
-			return desiredSize;
+			return desiredSize.Add(borderAndPaddingSize);
 		}
 
 		protected override Size ArrangeOverride(Size arrangeSize)
 		{
-			arrangeSize.Width -= GetHorizontalOffset();
-			arrangeSize.Height -= GetVerticalOffset();
+			var borderAndPaddingSize = BorderAndPaddingSize;
+			arrangeSize = arrangeSize.Subtract(borderAndPaddingSize);
 
 			var childRectangle = new Windows.Foundation.Rect(BorderThickness.Left + Padding.Left, BorderThickness.Top + Padding.Top, arrangeSize.Width, arrangeSize.Height);
 
@@ -62,10 +60,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				ArrangeElement(view, childRectangle);
 			}
 
-			arrangeSize.Width += GetHorizontalOffset();
-			arrangeSize.Height += GetVerticalOffset();
-
-			return arrangeSize;
+			return arrangeSize.Add(borderAndPaddingSize);
 		}
 	}
 }

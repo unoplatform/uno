@@ -12,6 +12,11 @@ namespace Uno.Devices.Sensors.Helpers
 {
 	internal static class SensorHelpers
 	{
+		public const uint UiReportingInterval = 60;
+
+		public static DateTimeOffset SystemBootDateTimeOffset =>
+			DateTimeOffset.Now.AddMilliseconds(-SystemClock.ElapsedRealtime());
+
 		public static DateTimeOffset TimestampToDateTimeOffset(long timestamp)
 		{
 			return DateTimeOffset.Now

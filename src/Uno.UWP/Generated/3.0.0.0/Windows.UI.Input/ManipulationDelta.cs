@@ -2,23 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial struct ManipulationDelta 
 	{
 		// Forced skipping of method Windows.UI.Input.ManipulationDelta.ManipulationDelta()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		public  global::Windows.Foundation.Point Translation;
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		public  float Scale;
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		public  float Rotation;
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		public  float Expansion;
-		#endif
+		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Translation
+		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Scale
+		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Rotation
+		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Expansion
 	}
 }

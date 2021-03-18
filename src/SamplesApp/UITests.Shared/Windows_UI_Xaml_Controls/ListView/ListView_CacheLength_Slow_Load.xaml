@@ -13,6 +13,13 @@
 	mc:Ignorable="d ios android"
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="DelayedImagePresenter/DelayedImagePresenter.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</UserControl.Resources>
 
 				<ListView Height="300"
 					  Width="230"

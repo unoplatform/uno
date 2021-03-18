@@ -10,6 +10,8 @@ using System.Linq;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI;
+using Uno.UI.Extensions;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -36,40 +38,33 @@ namespace Uno.UI.DataBinding
 		/// This is a fast path conversion that avoids going through the TypeConverter
 		/// infrastructure for known system types.
 		/// </remarks>
-		private static bool FastConvert(Type outputType, object input, ref object output)
+		private static bool FastConvert(Type outputType, object input, out object output)
 		{
-			var stringInput = input as string;
+			output = null;
 
 			if (
-				stringInput != null
+				input is string stringInput
 				&& FastStringConvert(outputType, stringInput, ref output)
 			)
 			{
 				return true;
 			}
 
-			if (FastNumberConvert(outputType, stringInput, ref output))
+			if (FastNumberConvert(outputType, input, ref output))
 			{
 				return true;
 			}
 
-			if (input is Enum)
+			return input switch
 			{
-				if (FastEnumConvert(outputType, input, ref output))
-				{
-					return true;
-				}
-			}
-
-			if (input is bool boolInput)
-			{
-				if (FastBooleanConvert(outputType, boolInput, ref output))
-				{
-					return true;
-				}
-			}
-
-			return false;
+				Enum _ => FastEnumConvert(outputType, input, ref output),
+				bool boolInput => FastBooleanConvert(outputType, boolInput, ref output),
+				Windows.UI.Color color => FastColorConvert(outputType, color, ref output),
+				SolidColorBrush solidColorBrush => FastSolidColorBrushConvert(outputType, solidColorBrush, ref output),
+				ColorOffset colorOffsetInput => FastColorOffsetConvert(outputType, colorOffsetInput, ref output),
+				Thickness thicknessInput => FastThicknessConvert(outputType, thicknessInput, ref output),
+				_ => false
+			};
 		}
 
 		private static bool FastBooleanConvert(Type outputType, bool boolInput, ref object output)
@@ -94,24 +89,94 @@ namespace Uno.UI.DataBinding
 			return false;
 		}
 
-		private static bool FastNumberConvert(Type outputType, object input, ref object output)
+		private static bool FastColorOffsetConvert(Type outputType, ColorOffset input, ref object output)
 		{
-			if (
-				input is double
-				&& outputType == typeof(float)
-			)
+			if (outputType == typeof(Windows.UI.Color))
 			{
-				output = (float)(double)input;
+				output = (Windows.UI.Color)input;
 				return true;
 			}
 
-			if (
-				input is int
-				&& outputType == typeof(float)
-			)
+			return false;
+		}
+
+		private static bool FastColorConvert(Type outputType, Windows.UI.Color color, ref object output)
+		{
+			if (outputType == typeof(SolidColorBrush))
 			{
-				output = (float)(int)input;
+				output = new SolidColorBrush(color);
 				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastSolidColorBrushConvert(Type outputType, SolidColorBrush solidColorBrush,
+			ref object output)
+		{
+			if (outputType == typeof(Windows.UI.Color) || outputType == typeof(Windows.UI.Color?))
+			{
+				output = solidColorBrush.Color;
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastThicknessConvert(Type outputType, Thickness thickness, ref object output)
+		{
+			if (outputType == typeof(double))
+			{
+				if (thickness.IsUniform())
+				{
+					output = thickness.Left;
+					return true;
+				}
+
+				// TODO: test what Windows does in non-uniform case
+			}
+
+			return false;
+		}
+
+		private static bool FastNumberConvert(Type outputType, object input, ref object output)
+		{
+			if (input is double doubleInput)
+			{
+				if(outputType == typeof(float))
+				{
+					output = (float)doubleInput;
+					return true;
+				}
+				if (outputType == typeof(TimeSpan))
+				{
+					output = TimeSpan.FromSeconds(doubleInput);
+					return true;
+				}
+				if (outputType == typeof(GridLength))
+				{
+					output = GridLengthHelper.FromPixels(doubleInput);
+					return true;
+				}
+			}
+
+			if (input is int intInput)
+			{
+				if (outputType == typeof(float))
+				{
+					output = (float)intInput;
+					return true;
+				}
+				if (outputType == typeof(TimeSpan))
+				{
+					output = TimeSpan.FromSeconds(intInput);
+					return true;
+				}
+				if (outputType == typeof(GridLength))
+				{
+					output = GridLengthHelper.FromPixels(intInput);
+					return true;
+				}
 			}
 
 			return false;
@@ -134,22 +199,17 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
-			if (FastStringToSingleConvert(outputType, input, ref output))
-			{
-				return true;
-			}
-
-			if (FastStringToColorConvert(outputType, input, ref output))
-			{
-				return true;
-			}
-
 			if (FastStringToBrushConvert(outputType, input, ref output))
 			{
 				return true;
 			}
 
 			if (FastStringToDoubleConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToSingleConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -165,6 +225,11 @@ namespace Uno.UI.DataBinding
 			}
 
 			if (FastStringToOrientationConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToColorConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -185,6 +250,11 @@ namespace Uno.UI.DataBinding
 			}
 
 			if (FastStringToFontFamilyConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToIntegerConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -563,12 +633,59 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToDoubleConvert(Type outputType, string input, ref object output)
 		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
 			if (outputType == typeof(double))
 			{
-				double result;
-				if (double.TryParse((string)input, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+				if (input == "") // empty string is NaN when bound in XAML
 				{
-					output = result;
+					output = double.NaN;
+					return true;
+				}
+
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-double.
+					// Often use in VisualStateManager to set double values (like opacity) to zero or one...
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (double)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0d;
+					return true;
+				}
+
+				trimmed = trimmed.ToLowerInvariant();
+
+				if (trimmed == "nan" || trimmed == "auto")
+				{
+					output = double.NaN;
+					return true;
+				}
+
+				if (trimmed == "-infinity")
+				{
+					output = double.NegativeInfinity;
+					return true;
+				}
+
+				if (trimmed == "infinity")
+				{
+					output = double.PositiveInfinity;
+					return true;
+				}
+
+				if (double.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var d))
+				{
+					output = d;
 					return true;
 				}
 			}
@@ -578,12 +695,93 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToSingleConvert(Type outputType, string input, ref object output)
 		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
 			if (outputType == typeof(float))
 			{
-				float floatResult;
-				if (float.TryParse((string)input, NumberStyles.Any, CultureInfo.InvariantCulture, out floatResult))
+				if (input == "") // empty string is NaN when bound in XAML
 				{
-					output = floatResult;
+					output = float.NaN;
+					return true;
+				}
+
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (float)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0f;
+					return true;
+				}
+
+				trimmed = trimmed.ToLowerInvariant();
+
+				if (trimmed == "nan") // "Auto" is for sizes, which are only of type double
+				{
+					output = float.NaN;
+					return true;
+				}
+
+				if (trimmed == "-infinity")
+				{
+					output = float.NegativeInfinity;
+					return true;
+				}
+
+				if (trimmed == "infinity")
+				{
+					output = float.PositiveInfinity;
+					return true;
+				}
+
+				if (float.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var f))
+				{
+					output = f;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToIntegerConvert(Type outputType, string input, ref object output)
+		{
+			const NumberStyles numberStyles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
+			if (outputType == typeof(int))
+			{
+				if (input.Length == 1)
+				{
+					// Fast path for one digit string-to-float
+					var c = input[0];
+					if (c >= '0' && c <= '9')
+					{
+						output = (int)(c - '0');
+						return true;
+					}
+				}
+
+				var trimmed = input.Trim();
+
+				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				{
+					output = 0;
+					return true;
+				}
+
+				if (int.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var i))
+				{
+					output = i;
 					return true;
 				}
 			}

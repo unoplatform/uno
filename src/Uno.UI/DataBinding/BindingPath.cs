@@ -2,6 +2,7 @@
 using Uno.UI.DataBinding;
 using Uno.Extensions;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ using System.Text;
 using Uno.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.DataBinding
 {
@@ -67,24 +69,9 @@ namespace Uno.UI.DataBinding
 		/// <param name="allowPrivateMembers">Allows for the binding engine to include private properties in the lookup</param>
 		internal BindingPath(string path, object fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 		{
-			_path = (path ?? "").Trim();
+			_path = path ?? "";
 
-			var items = _path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-
-			var parsedItems = ParseDependencyPropertyAccess(items);
-
-			BindingItem bindingItem = null;
-
-			foreach (var item in parsedItems.Reverse())
-			{
-				bindingItem = new BindingItem(bindingItem, item, fallbackValue, precedence, allowPrivateMembers);
-				_chain = bindingItem;
-
-				if (_value == null)
-				{
-					_value = bindingItem;
-				}
-			}
+			Parse(_path, fallbackValue, precedence, allowPrivateMembers, ref _chain, ref _value);
 
 			if (_value != null)
 			{
@@ -105,29 +92,23 @@ namespace Uno.UI.DataBinding
 			return _chain.Flatten(i => i.Next);
 		}
 
-		private IEnumerable<string> ParseDependencyPropertyAccess(string[] items)
+		/// <summary>
+		/// Checks the property path for members which may be shared resources (<see cref="Brush"/>es and <see cref="Transform"/>s) and creates a
+		/// copy of them if need be (ie if not already copied). Intended to be used prior to animating the targeted property.
+		/// </summary>
+		internal void CloneShareableObjectsInPath()
 		{
-			var output = new List<string>();
-
-			for (int i = 0; i < items.Length; i++)
+			foreach (BindingItem item in GetPathItems())
 			{
-				var item = items[i];
-
-				if (item.Length != 0 && item[0] == '(')
+				if (item.PropertyType == typeof(Brush) || item.PropertyType == typeof(GeneralTransform))
 				{
-					var sb = new StringBuilder();
-					sb.Append(item);
-
-					while (!item.EndsWith(")"))
+					if (item.Value is IShareableDependencyObject shareable && !shareable.IsClone && item.DataContext is DependencyObject owner)
 					{
-						sb.Append("." + (item = items[++i]));
-					}
+						var clone = shareable.Clone();
 
-					yield return sb.ToString().Trim(new[] { '(', ')' });
-				}
-				else
-				{
-					yield return item;
+						item.Value = clone;
+						break;
+					}
 				}
 			}
 		}
@@ -225,24 +206,14 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		public Type ValueType
-		{
-			get
-			{
-				return _value.PropertyType;
-			}
-		}
+		public Type ValueType => _value.PropertyType;
+
+		internal object DataItem => _value.DataContext;
 
 		public object DataContext
 		{
-			get
-			{
-				return _dataContextWeakStorage?.Target;
-			}
-			set
-			{
-				SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
-			}
+			get => _dataContextWeakStorage?.Target;
+			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
 		}
 
 		internal void SetWeakDataContext(ManagedWeakReference weakDataContext)
@@ -301,13 +272,105 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		#region Miscs helpers
 		/// <summary>
-		/// Subscibes for updates to the INotifyPropertyChanged interface.
+		/// Parse the given string path in parts and create the linked list of binding items in head and tail
+		/// </summary>
+		private static void Parse(
+			string path,
+			object fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers,
+			ref BindingItem head, ref BindingItem tail)
+		{
+			var propertyLength = 0;
+			bool isInAttachedProperty = false, isInItemIndex = false;
+			for (var i = path.Length - 1; i >= 0; i--)
+			{
+				var c = path[i];
+				switch (c)
+				{
+					case ')':
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						isInAttachedProperty = true;
+						propertyLength = 0;
+						break;
+
+					case '(' when isInAttachedProperty:
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						isInAttachedProperty = false;
+						propertyLength = 0;
+						break;
+
+					case ']':
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						isInItemIndex = true;
+						propertyLength = 1; // We include the brackets for itemIndex properties
+						break;
+
+					case '[' when isInItemIndex:
+						// Note: We use 'start = i' and '++propertyLength' here for 'TryPrependItem' as we include the brackets for itemIndex properties
+						TryPrependItem(path, i, ++propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						isInItemIndex = false;
+						propertyLength = 0;
+						break;
+
+					case '.' when !isInAttachedProperty:
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						propertyLength = 0;
+						break;
+
+					default:
+						if (propertyLength > 0 || !char.IsWhiteSpace(c)) // i.e. TrimEnd
+						{
+							propertyLength++;
+						}
+						break;
+				}
+			}
+
+			TryPrependItem(path, 0, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+		}
+
+		/// <summary>
+		/// Prepends an item in the binding linked list if the string defined between by start and length is valid.
+		/// </summary>
+		private static void TryPrependItem(
+			string path, int start, int length,
+			object fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers,
+			ref BindingItem head, ref BindingItem tail)
+		{
+			if (length <= 0)
+			{
+				return;
+			}
+
+			// Trim start (trim end is achieved in the main Parse loop)
+			var c = path[start];
+			while (char.IsWhiteSpace(c) && length > 0)
+			{
+				start++;
+				length--;
+				c = path[start];
+			}
+
+			if (length <= 0)
+			{
+				return;
+			}
+
+			var itemPath = path.Substring(start, length);
+			var item = new BindingItem(head, itemPath, fallbackValue, precedence, allowPrivateMembers);
+
+			head = item;
+			tail ??= item;
+		}
+
+		/// <summary>
+		/// Subscribes for updates to the INotifyPropertyChanged interface.
 		/// </summary>
 		private static IDisposable SubscribeToNotifyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
 		{
 			// Attach to the Notify property changed events
-			var notify = dataContextReference.Target as INotifyPropertyChanged;
+			var notify = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
 
 			if (notify != null)
 			{
@@ -318,16 +381,19 @@ namespace Uno.UI.DataBinding
 
 				var newValueActionWeak = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(null, newValueAction);
 
-				PropertyChangedEventHandler handler = (s, args) =>
+				System.ComponentModel.PropertyChangedEventHandler handler = (s, args) =>
 				{
-					if (args.PropertyName == propertyName)
+					if (args.PropertyName == propertyName || string.IsNullOrEmpty(args.PropertyName))
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							typeof(BindingPath).Log().Debug("Property changed for {0} on [{1}]".InvariantCultureFormat(propertyName, dataContextReference.Target?.GetType()));
+							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
 						}
 
-						(newValueActionWeak.Target as Action)?.Invoke();
+						if (!newValueActionWeak.IsDisposed)
+						{
+							(newValueActionWeak.Target as Action)?.Invoke();
+						}
 					}
 				};
 
@@ -338,7 +404,7 @@ namespace Uno.UI.DataBinding
 					// This weak reference ensure that the closure will not link
 					// the caller and the callee, in the same way "newValueActionWeak"
 					// does not link the callee to the caller.
-					var that = dataContextReference.Target as INotifyPropertyChanged;
+					var that = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
 
 					if (that != null)
 					{
@@ -351,6 +417,7 @@ namespace Uno.UI.DataBinding
 
 			return null;
 		}
+		#endregion
 
 		private sealed class BindingItem : IBindingItem, IDisposable
 		{
@@ -391,8 +458,18 @@ namespace Uno.UI.DataBinding
 				get => _dataContextWeakStorage?.Target;
 				set
 				{
-					if (!_disposed && DependencyObjectStore.AreDifferent(DataContext, value))
+					if (!_disposed)
 					{
+						// Historically, Uno was processing property changes using INPC. Since the inclusion of DependencyObject
+						// values changes are now filtered by DependencyProperty updates, making equality updates at this location
+						// detrimental to the use of INPC events processing.
+						// In case of an INPC, the bindings engine must reevaluate the path completely from the raising point, regardless
+						// of the reference being changed.
+						if(FeatureConfiguration.Binding.IgnoreINPCSameReferences && !DependencyObjectStore.AreDifferent(DataContext, value))
+						{
+							return;
+						}
+
 						var weakDataContext = WeakReferencePool.RentWeakReference(this, value);
 						SetWeakDataContext(weakDataContext);
 					}
@@ -455,7 +532,7 @@ namespace Uno.UI.DataBinding
 				{
 					if (DataContext != null)
 					{
-						return BindingPropertyHelper.GetPropertyType(_dataContextType, PropertyName);
+						return BindingPropertyHelper.GetPropertyType(_dataContextType, PropertyName, _allowPrivateMembers);
 					}
 					else
 					{

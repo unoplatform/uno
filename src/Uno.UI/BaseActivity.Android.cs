@@ -27,7 +27,7 @@ namespace Uno.UI
 			| Android.Content.PM.ConfigChanges.ScreenSize
 	)]
 #pragma warning disable 618
-	public partial class BaseActivity : Android.Support.V7.App.AppCompatActivity, DependencyObject
+	public partial class BaseActivity : AndroidX.AppCompat.App.AppCompatActivity, DependencyObject
 #pragma warning restore 618
 
 	{
@@ -44,11 +44,6 @@ namespace Uno.UI
 		public const string CreatedTotalBindableActivityCounter = "BindableActivity.CreatedTotal";
 		public const string ActiveBindableActivityCounter = "BindableActivity.ActiveCount";
 		public const string DisposedTotalBindableActivityCounter = "BindableActivity.DisposedCount";
-
-		static BaseActivity()
-		{
-			Windows.UI.Xaml.GenericStyles.Initialize();
-		}
 
 		/// <summary>
 		/// Occurs when an instance of BaseActivity is created or destroyed

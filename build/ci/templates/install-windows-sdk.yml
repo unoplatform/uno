@@ -1,0 +1,6 @@
+parameters:
+  sdkVersion: '19041'
+
+steps:
+  - powershell: .\build\Install-WindowsSdkISO.ps1 ${{parameters.sdkVersion}}
+    displayName: Insider SDK

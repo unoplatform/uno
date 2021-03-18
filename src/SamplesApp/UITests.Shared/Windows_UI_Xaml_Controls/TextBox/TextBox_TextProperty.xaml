@@ -24,12 +24,14 @@
 				   TextWrapping="Wrap"
 				   FontWeight="Bold"
 				   Margin="0,10,0,0"/>
-		<TextBlock Text="{Binding Text, ElementName=TextBox1}" />
+		<TextBlock x:Name="TextChangedTextBlock"
+				   Text="{Binding Text, ElementName=TextBox1}" />
 		<TextBlock Text="TextBox1 value (ViewModel binding, updated when focus is lost)"
 				   TextWrapping="Wrap"
 				   FontWeight="Bold"
 				   Margin="0,10,0,0"/>
-		<TextBlock Text="{Binding [MyInput]}" />
+		<TextBlock x:Name="LostFocusTextBlock"
+				   Text="{Binding [MyInput]}" />
 
 	</StackPanel>
 </UserControl>

@@ -1,6 +1,8 @@
 ﻿using Windows.Foundation;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;
+using Uno.UI;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -13,28 +15,33 @@ namespace Windows.UI.Xaml.Shapes
 			SvgChildren.Add(_ellipse);
 
 			InitCommonShapeProperties();
+
+			RegisterPropertyChangedCallback(StrokeProperty, OnStrokeChanged);
 		}
+
+		private void OnStrokeChanged(DependencyObject sender, DependencyProperty dp) => InvalidateArrange();
 
 		protected override SvgElement GetMainSvgElement()
 		{
 			return _ellipse;
 		}
 
-		protected override Size MeasureOverride(Size availableSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var width = double.IsNaN(Width) ? LimitWithUserSize(availableSize.Width, Width, 100.0d) : Width;
-			var height = double.IsNaN(Height) ? LimitWithUserSize(availableSize.Height, Height, 100.0d) : Height;
+			var size = this.ApplySizeConstraints(finalSize);
 
-			var cx = width / 2;
-			var cy = height / 2;
+			var cx = size.Width / 2;
+			var cy = size.Height / 2;
+
+			var halfStrokeThickness = ActualStrokeThickness / 2;
 
 			_ellipse.SetAttribute(
 				("cx", cx.ToStringInvariant()),
 				("cy", cy.ToStringInvariant()),
-				("rx", (cx - ActualStrokeThickness).ToStringInvariant()),
-				("ry", (cy - ActualStrokeThickness).ToStringInvariant()));
+				("rx", (cx - halfStrokeThickness).ToStringInvariant()),
+				("ry", (cy - halfStrokeThickness).ToStringInvariant()));
 
-			return base.MeasureOverride(availableSize);
+			return base.ArrangeOverride(finalSize);
 		}
 	}
 }

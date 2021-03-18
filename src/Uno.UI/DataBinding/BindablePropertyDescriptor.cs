@@ -54,7 +54,7 @@ namespace Uno.UI.DataBinding
 				}
 				else
 				{
-					return new BindablePropertyDescriptor(bindableType, bindableProperty); ;
+					return new BindablePropertyDescriptor(bindableType, bindableProperty);
 				}
 			}
 

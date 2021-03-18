@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Windows.System;
+using Windows.UI.Input;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Documents
 {
-	public partial class Hyperlink : Span
+	public sealed partial class Hyperlink : Span
 	{
 		#region Static
-
 		private static Brush _defaultForeground;
 		private static Brush DefaultForeground
 		{
@@ -19,7 +22,7 @@ namespace Windows.UI.Xaml.Documents
 			{
 				if (_defaultForeground == null)
 				{
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __MACOS__ || __ANDROID__
 					_defaultForeground = GetDefaultForeground();
 #else
 					_defaultForeground = null;
@@ -58,16 +61,10 @@ namespace Windows.UI.Xaml.Documents
 				new FrameworkPropertyMetadata(
 					defaultValue: default(Uri),
 					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((Hyperlink)s).OnNavigateUriChanged()
+					propertyChangedCallback: (s, e) => ((Hyperlink)s).OnNavigateUriChangedPartial((Uri)e.NewValue)
 				)
 			);
-
-		protected virtual void OnNavigateUriChanged()
-		{
-			OnNavigateUriChangedPartial();
-		}
-
-		partial void OnNavigateUriChangedPartial();
+		partial void OnNavigateUriChangedPartial(Uri newNavigateUri);
 
 		#endregion
 
@@ -91,63 +88,61 @@ namespace Windows.UI.Xaml.Documents
 				)
 			);
 
-		internal protected virtual void OnUnderlineStyleChanged()
+		private void OnUnderlineStyleChanged()
 		{
 			TextDecorations = UnderlineStyle == UnderlineStyle.Single
-				? Text.TextDecorations.Underline
-				: Text.TextDecorations.None;
+				? Windows.UI.Text.TextDecorations.Underline
+				: Windows.UI.Text.TextDecorations.None;
 		}
 
 		#endregion
 
-		protected override void OnStyleChanged()
-		{
-			if (Style == null)
-			{
-				base.Style = Style.DefaultStyleForType(typeof(Hyperlink));
-				base.Style.ApplyTo(this);
-			}
-		}
-
 		#region Click
-
-		internal bool IsPressed { get; private set; }
-
-		internal void OnPointerPressed(PointerRoutedEventArgs e)
+		private Pointer _pressedPointer;
+		internal void SetPointerPressed(Pointer pointer)
 		{
-			if (!IsPressed)
-			{
-				this.SetValue(ForegroundProperty, GetPressedForeground(), DependencyPropertyValuePrecedences.Animations);
-				e.Handled = true;
-				IsPressed = true;
-			}
+			_pressedPointer = pointer;
+			this.SetValue(ForegroundProperty, GetPressedForeground(), DependencyPropertyValuePrecedences.Animations);
 		}
 
-		internal void OnPointerReleased(PointerRoutedEventArgs e)
+		internal bool ReleasePointerPressed(Pointer pointer)
 		{
-			if (IsPressed)
+			if (_pressedPointer?.Equals(pointer) ?? false)
 			{
-				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
 				OnClick();
-				e.Handled = true;
-				IsPressed = false;
-			}
 
-		}
-
-		internal void OnPointerCanceled(PointerRoutedEventArgs e)
-		{
-			if (IsPressed)
-			{
+				_pressedPointer = null;
 				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
-				e.Handled = true;
-				IsPressed = false;
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 
-		private void OnClick()
+		internal bool AbortPointerPressed(Pointer pointer)
 		{
-			Click?.Invoke(this, new HyperlinkClickEventArgs() { OriginalSource = this });
+			if (_pressedPointer?.Equals(pointer) ?? false)
+			{
+				_pressedPointer = null;
+				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		internal void AbortAllPointerPressed()
+		{
+			this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+		}
+
+		internal void OnClick()
+		{
+			Click?.Invoke(this, new HyperlinkClickEventArgs { OriginalSource = this });
 
 #if !__WASM__  // handled natively in WASM/Html
 			if (NavigateUri != null)
@@ -160,14 +155,13 @@ namespace Windows.UI.Xaml.Documents
 		private Brush GetPressedForeground()
 		{
 #if XAMARIN
-			var normalColor = (Foreground as SolidColorBrush).ColorWithOpacity;
+			var normalColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
 			var pressedColor = Color.FromArgb((byte)(normalColor.A / 2), normalColor.R, normalColor.G, normalColor.B);
 			return new SolidColorBrush(pressedColor);
 #else
 			return null;
 #endif
 		}
-
-#endregion
+		#endregion
 	}
 }

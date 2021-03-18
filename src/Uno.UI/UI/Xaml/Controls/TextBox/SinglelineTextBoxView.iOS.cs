@@ -1,4 +1,4 @@
-﻿using CoreGraphics;
+using CoreGraphics;
 using Uno.UI.DataBinding;
 using Uno.UI.Views.Controls;
 using System;
@@ -8,6 +8,7 @@ using UIKit;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -146,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ForegroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),

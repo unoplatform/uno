@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.Converters;
 using Uno.Client;
 using System.Threading.Tasks;
-using Microsoft.Practices.ServiceLocation;
 using Uno.Diagnostics.Eventing;
 using Uno.UI.Controls;
 using Windows.UI.Core;
@@ -303,7 +302,7 @@ namespace Uno.UI.Controls.Legacy
 			{
 				if (value)
 				{
-					selectorItem.IsPressed = true;
+					selectorItem.LegacySetPressed(true);
 				}
 				else
 				{
@@ -313,7 +312,7 @@ namespace Uno.UI.Controls.Legacy
 							async () =>
 							{
 								await Task.Delay(MinTimeBetweenPressStates);
-								selectorItem.IsPressed = false;
+								selectorItem.LegacySetPressed(false);
 							}
 						);
 				}

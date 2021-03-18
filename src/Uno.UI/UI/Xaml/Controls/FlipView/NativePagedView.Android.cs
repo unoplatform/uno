@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Android.Support.V4.View;
+using AndroidX.ViewPager.Widget;
 using Android.Views;
 using Windows.Foundation;
 using Uno.Extensions;
@@ -26,8 +26,6 @@ namespace Windows.UI.Xaml.Controls
 			InitializeBinder();
 			LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
 			_layouter = new NativePagedViewLayouter(this);
-
-			MotionEventSplittingEnabled = false;
 		}
 
 		//TODO generated code - but note call of base.OnMeasure

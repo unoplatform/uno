@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Logging;
@@ -107,7 +107,7 @@ namespace Uno.UI.Tests.BinderTests_Weak
 
 		// Using a DependencyProperty as the backing store for MyValue.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyValueProperty =
-			DependencyProperty.Register("MyValue", typeof(int), typeof(MyNativeObject), new PropertyMetadata(0));
+			DependencyProperty.Register("MyValue", typeof(int), typeof(MyNativeObject), new FrameworkPropertyMetadata(0));
 
 
 

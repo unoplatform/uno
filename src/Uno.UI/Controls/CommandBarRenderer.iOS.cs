@@ -1,4 +1,3 @@
-﻿#if __IOS__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,12 +59,10 @@ namespace Uno.UI.Controls
 
 		protected override void Render()
 		{
-			// Visibility
-			Native.Hidden = Element.Visibility == Visibility.Collapsed;
+			ApplyVisibility();
 
 			// Foreground
-			var foregroundColor = (Element.Foreground as SolidColorBrush)?.ColorWithOpacity;
-			if (foregroundColor != null)
+			if (Brush.TryGetColorWithOpacity(Element.Foreground, out var foregroundColor))
 			{
 				Native.TitleTextAttributes = new UIStringAttributes
 				{
@@ -78,24 +75,24 @@ namespace Uno.UI.Controls
 			}
 
 			// Background
-			var backgroundColor = (Element.Background as SolidColorBrush)?.ColorWithOpacity;
+			var backgroundColor = Brush.GetColorWithOpacity(Element.Background);
 			switch (backgroundColor)
 			{
-				case Color opaqueColor when opaqueColor.A == byte.MaxValue:
+				case { } opaqueColor when opaqueColor.A == byte.MaxValue:
 					// Prefer BarTintColor because it supports smooth transitions
 					Native.BarTintColor = opaqueColor;
 					Native.Translucent = false; //Make fully opaque for consistency with SetBackgroundImage
 					Native.SetBackgroundImage(null, UIBarMetrics.Default);
 					Native.ShadowImage = null;
 					break;
-				case Color semiTransparentColor when semiTransparentColor.A > 0:
+				case { } semiTransparentColor when semiTransparentColor.A > 0:
 					Native.BarTintColor = null;
 					// Use SetBackgroundImage as hack to support semi-transparent background
 					Native.SetBackgroundImage(((UIColor)semiTransparentColor).ToUIImage(), UIBarMetrics.Default);
 					Native.Translucent = true;
 					Native.ShadowImage = null;
 					break;
-				case Color transparent when transparent.A == 0:
+				case { } transparent when transparent.A == 0:
 					Native.BarTintColor = null;
 					Native.SetBackgroundImage(new UIImage(), UIBarMetrics.Default);
 					// We make sure a transparent bar doesn't cast a shadow.
@@ -111,21 +108,30 @@ namespace Uno.UI.Controls
 			}
 
 			// CommandBarExtensions.BackButtonForeground
-			var backButtonForeground = (Element.GetValue(BackButtonForegroundProperty) as SolidColorBrush)?.ColorWithOpacity;
+			var backButtonForeground = Brush.GetColorWithOpacity(Element.GetValue(BackButtonForegroundProperty) as Brush);
 			Native.TintColor = backButtonForeground;
 
 			// CommandBarExtensions.BackButtonIcon
 			var backButtonIcon = Element.GetValue(BackButtonIconProperty) is BitmapIcon bitmapIcon
-				? UIImageHelper.FromUri(bitmapIcon.UriSource)
+				? UIImageHelper.FromUri(bitmapIcon.UriSource)?.ImageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
 				: null;
+
 			Native.BackIndicatorImage = backButtonIcon;
 			Native.BackIndicatorTransitionMaskImage = backButtonIcon;
+		}
 
-			if (Element.Presenter != null)
+		private void ApplyVisibility()
+		{
+			var newHidden = Element.Visibility == Visibility.Collapsed;
+			var hasChanged = Native.Hidden != newHidden;
+			Native.Hidden = newHidden;
+			if (hasChanged)
 			{
-				Element.Presenter.Height = Native.Hidden ? 0 : Native.Frame.Size.Height;
+				// Re-layout UINavigationBar when visibility changes, this is important eg in the case that status bar was shown/hidden
+				// while CommandBar was collapsed
+				Native.SetNeedsLayout();
+				Native.Superview?.SetNeedsLayout();
 			}
 		}
 	}
 }
-#endif

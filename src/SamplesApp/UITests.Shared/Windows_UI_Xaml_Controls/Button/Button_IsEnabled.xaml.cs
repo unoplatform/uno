@@ -5,9 +5,12 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Button", "Button_IsEnabled", typeof(ButtonTestsViewModel))]
+	[SampleControlInfo("Button", "Button_IsEnabled", typeof(ButtonTestsViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class Button_IsEnabled : UserControl
 	{
 		public Button_IsEnabled()
@@ -57,7 +60,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 					if (_isEnabled != value)
 					{
 						_isEnabled = value;
-						CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+						CanExecuteChanged?.Invoke(this, null);
 					}
 				}
 			}

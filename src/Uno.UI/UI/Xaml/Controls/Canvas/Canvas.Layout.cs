@@ -7,62 +7,65 @@ using Uno.Extensions;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 
+#if __ANDROID__
+using _View = Android.Views.View;
+#elif __IOS__
+using _View = UIKit.UIView;
+#elif __MACOS__
+using _View = AppKit.NSView;
+#elif UNO_REFERENCE_API || NET461
+using _View = Windows.UI.Xaml.UIElement;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class Canvas
-    {
+	public partial class Canvas : ICustomClippingElement
+	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			double maxWidth = 0, maxHeight = 0;
-
-			foreach (var child in Children.Where(c => c is DependencyObject))
+			MeasureOverridePartial();
+			// A canvas does not have dimensions and will always return zero even with a children collection.
+			foreach (var child in Children)
 			{
-				var childX = GetLeft(child as DependencyObject);
-				var childY = GetTop(child as DependencyObject);
-
-				var measuredSize = MeasureElement(child, new Size(double.PositiveInfinity, double.PositiveInfinity));
-
-				maxHeight = Math.Max(maxHeight, measuredSize.Height + childY);
-				maxWidth = Math.Max(maxWidth, measuredSize.Width + childX);
+				if (child is _View)
+				{
+					MeasureElement(child, new Size(double.PositiveInfinity, double.PositiveInfinity));
+				}
 			}
-
-			return new Size(maxWidth, maxHeight);
+			return new Size(0, 0);
 		}
+
+		partial void MeasureOverridePartial();
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			foreach (var child in Children.Where(c => c is DependencyObject))
+			foreach (var child in Children)
 			{
-				var desiredSize = GetElementDesiredSize(child);
-
-				var childRect = new Rect
+				if (child is _View childView)
 				{
-					X = GetLeft(child as DependencyObject),
-					Y = GetTop(child as DependencyObject),
-					Width = desiredSize.Width,
-					Height = desiredSize.Height,
-				};
+					var childAsDO = child as DependencyObject;
+					var desiredSize = GetElementDesiredSize(childView);
+
+					var childRect = new Rect
+					{
+						X = GetLeft(childAsDO),
+						Y = GetTop(childAsDO),
+						Width = desiredSize.Width,
+						Height = desiredSize.Height,
+					};
 
 #if __IOS__
-				child.Layer.ZPosition = (nfloat)GetZIndex(child as DependencyObject);
-#elif __ANDROID__
-				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
-				{
-					child.SetZ((float)GetZIndex(child as DependencyObject));
-				}
-				else
-				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().Warn("Canvas.ZIndex is not support on Android 4.4 and less. Canvas will arrange its Children in the order they were added.");
-					}
-				}
+					child.Layer.ZPosition = (nfloat)GetZIndex(childAsDO);
 #endif
 
-				ArrangeElement(child, childRect);
+					ArrangeElement(child, childRect);
+				}
 			}
 
 			return finalSize;
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

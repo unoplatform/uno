@@ -13,24 +13,35 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// Represents the stack of values used by the Dependency Property Value Precedence system
 	/// </summary>
-	internal class DependencyPropertyDetails : IEnumerable<object>, IEnumerable
+	internal class DependencyPropertyDetails : IEnumerable<object>, IEnumerable, IDisposable
 	{
 		private DependencyPropertyValuePrecedences _highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
 		private BindingExpression _lastBindings;
-		private readonly static ArrayPool<object> _pool = ArrayPool<object>.Create(100, 100);
+		private static readonly ArrayPool<object> _pool = ArrayPool<object>.Create(100, 100);
 		private readonly object[] _stack;
 		private readonly bool _hasWeakStorage;
 		private readonly List<BindingExpression> _bindings = new List<BindingExpression>();
 
 		private const int MaxIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
+		private const int _stackLength = MaxIndex + 1;
+		private static readonly object[] _unsetStack;
+		static DependencyPropertyDetails()
+		{
+			_unsetStack = new object[_stackLength];
+			for (var i = 0; i < _stackLength; i++)
+			{
+				_unsetStack[i] = DependencyProperty.UnsetValue;
+			}
+		}
 
         private DependencyPropertyDetails()
 		{
-			_stack = _pool.Rent(MaxIndex + 1);
+			_stack = _pool.Rent(_stackLength);
 		}
 
-		~DependencyPropertyDetails()
+		public void Dispose()
 		{
+			CallbackManager.Dispose();
 			_pool.Return(_stack, clearArray: true);
 		}
 
@@ -49,10 +60,7 @@ namespace Windows.UI.Xaml
             Property = property;
 			_hasWeakStorage = property.HasWeakStorage;
 
-			for (int i = 0; i < MaxIndex; i++)
-			{
-				_stack[i] = DependencyProperty.UnsetValue;
-			}
+			Array.Copy(_unsetStack, _stack, _stackLength);
 
 			var defaultValue = Property.GetMetadata(dependencyObjectType).DefaultValue;
 
@@ -205,5 +213,10 @@ namespace Windows.UI.Xaml
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			return $"DependencyPropertyDetails({Property.Name})";
+		}
 	}
 }

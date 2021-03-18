@@ -1,68 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Uno;
 using Windows.Devices.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class Pointer : IEquatable<Pointer>
+	public sealed partial class Pointer : IEquatable<Pointer>
 	{
+		private static int _unknownId;
+		internal static long CreateUniqueIdForUnknownPointer()
+			=> (long)1 << 63 | (long)Interlocked.Increment(ref _unknownId);
 
-#if XAMARIN_ANDROID
-		internal Pointer(Android.Views.MotionEvent.PointerProperties properties)
+		public Pointer(uint id, PointerDeviceType type, bool isInContact, bool isInRange)
 		{
-			PointerId = (uint)properties.Id;
-			PointerDeviceType = GetPointerType(properties.ToolType);
+			PointerId = id;
+			PointerDeviceType = type;
+			IsInContact = isInContact;
+			IsInRange = isInRange;
+
+			UniqueId = (long)PointerDeviceType << 32 | PointerId;
 		}
 
-		private static PointerDeviceType GetPointerType(Android.Views.MotionEventToolType nativeType)
-		{
-			switch (nativeType)
-			{
-				case Android.Views.MotionEventToolType.Eraser:
-				case Android.Views.MotionEventToolType.Stylus:
-					return PointerDeviceType.Pen;
-				case Android.Views.MotionEventToolType.Finger:
-					return PointerDeviceType.Touch;
-				case Android.Views.MotionEventToolType.Mouse:
-					return PointerDeviceType.Mouse;
-				case Android.Views.MotionEventToolType.Unknown: // used by Xamarin.UITest
-				default:
-					return default(PointerDeviceType);
-			}
-		}
-#elif __IOS__
-		internal Pointer(UIKit.UIEvent uiEvent)
-		{
-			switch (uiEvent.Type)
-			{
-				case UIKit.UIEventType.Touches:
-				case UIKit.UIEventType.Motion:
-					PointerDeviceType = PointerDeviceType.Touch;
-					break;
 
-				case UIKit.UIEventType.Presses:
-				case UIKit.UIEventType.RemoteControl:
-					PointerDeviceType = PointerDeviceType.Pen;
-					break;
-			}
-		}
-#elif __MACOS__
-		internal Pointer(AppKit.NSEvent uiEvent)
-		{
-			switch (uiEvent.Type)
-			{
-				case AppKit.NSEventType.DirectTouch:
-					PointerDeviceType = PointerDeviceType.Touch;
-					break;
-
-				case AppKit.NSEventType.MouseMoved:
-					PointerDeviceType = PointerDeviceType.Mouse;
-					break;
-			}
-		}
-#elif __WASM__
+#if __WASM__
 		internal Pointer(uint id, PointerDeviceType type)
 		{
 			PointerId = id;
@@ -70,20 +32,18 @@ namespace Windows.UI.Xaml.Input
 		}
 #endif
 
-		[NotImplemented]
-		public bool IsInContact => true;
+		/// <summary>
+		/// A unique identifier which contains <see cref="PointerDeviceType"/> and <see cref="PointerId"/>.
+		/// </summary>
+		internal long UniqueId { get; }
 
-		[NotImplemented]
-		public bool IsInRange => true;
+		public uint PointerId { get; }
 
-		public PointerDeviceType PointerDeviceType { get; private set; }
+		public PointerDeviceType PointerDeviceType { get;}
 
-#if __WASM__ || XAMARIN_ANDROID
-		public uint PointerId { get; private set; }
-#else
-		[NotImplemented]
-		public uint PointerId => 1;
-#endif
+		public bool IsInContact { get; }
+
+		public bool IsInRange { get; }
 
 		public override string ToString()
 		{
@@ -94,15 +54,17 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return PointerDeviceType == other.PointerDeviceType && PointerId == other.PointerId;
+
+			return UniqueId == other.UniqueId;
 		}
 
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != this.GetType()) return false;
-			return Equals((Pointer) obj);
+			if (!(obj is Pointer other)) return false;
+
+			return UniqueId == other.UniqueId;
 		}
 
 		public override int GetHashCode()

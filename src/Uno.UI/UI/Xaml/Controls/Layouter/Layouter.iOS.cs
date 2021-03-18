@@ -1,5 +1,4 @@
-﻿#if XAMARIN_IOS
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +9,6 @@ using Uno.Logging;
 using Uno.Collections;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
-
 using View = UIKit.UIView;
 using UIKit;
 using CoreGraphics;
@@ -18,52 +16,12 @@ using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public abstract partial class Layouter
+	abstract partial class Layouter
 	{
 		public IEnumerable<View> GetChildren()
 		{
 			return (Panel as UIView).GetChildren();
 		}
-
-		/// <summary>
-		/// Provides the desired size of the element, from the last measure phase.
-		/// </summary>
-		/// <param name="view">The element to get the measured with</param>
-		/// <returns>The measured size</returns>
-		Size ILayouter.GetDesiredSize(View view)
-		{
-			return DesiredChildSize(view);
-		}
-
-		protected Size DesiredChildSize(View view)
-		{
-			var uiElement = view as UIElement;
-
-			if (uiElement != null)
-			{
-				return uiElement.DesiredSize;
-			}
-			else
-			{
-				return _layoutProperties.GetValue(view, "desiredSize", () => default(Size));
-			}
-		}
-
-		partial void SetDesiredChildSize(View view, Size desiredSize)
-		{
-			var uiElement = view as UIElement;
-
-			if (uiElement != null)
-			{
-				uiElement.DesiredSize = desiredSize;
-			}
-			else
-			{
-				_layoutProperties.SetValue(view, "desiredSize", desiredSize);
-			}
-		}
-
-		private static UnsafeWeakAttachedDictionary<View, string> _layoutProperties = new UnsafeWeakAttachedDictionary<View, string>();
 
 		protected Size MeasureChildOverride(View view, Size slotSize)
 		{
@@ -79,12 +37,21 @@ namespace Windows.UI.Xaml.Controls
 				ret.ToString();
 			}
 
+			if (!(view is FrameworkElement) && view is IFrameworkElement ife)
+			{
+				if(!(view is Image)) // Except for Image
+				{
+					// If the child is not a FrameworkElement, part of the "Measure"
+					// phase must be done by the parent element's layouter.
+					// Here, it means adding the margin to the measured size.
+					ret = ret.Add(ife.Margin);
+				}
+			}
 
+			var w = nfloat.IsNaN((nfloat)ret.Width) ? double.PositiveInfinity : Math.Min(slotSize.Width, ret.Width);
+			var h = nfloat.IsNaN((nfloat)ret.Height) ? double.PositiveInfinity : Math.Min(slotSize.Height, ret.Height);
 
-			ret.Width = nfloat.IsNaN((nfloat)ret.Width) ? double.PositiveInfinity : Math.Min(slotSize.Width, ret.Width);
-			ret.Height = nfloat.IsNaN((nfloat)ret.Height) ? double.PositiveInfinity : Math.Min(slotSize.Height, ret.Height);
-
-			return ret;
+			return new Size(w, h);
 		}
 
 		protected void ArrangeChildOverride(View view, Rect frame)
@@ -98,8 +65,6 @@ namespace Windows.UI.Xaml.Controls
 				using (SettingFrame(view))
 				{
 					view.Frame = nativeFrame;
-
-					UpdateClip(view);
 				}
 			}
 		}
@@ -109,19 +74,6 @@ namespace Windows.UI.Xaml.Controls
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				LogArrange(view, (Rect)frame);
-			}
-		}
-
-		private static void UpdateClip(View view)
-		{
-			if (!FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				UIElement.UpdateMask(view, view.Superview);
-
-				foreach (var child in view.GetChildren())
-				{
-					UIElement.UpdateMask(child, view);
-				}
 			}
 		}
 
@@ -156,4 +108,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

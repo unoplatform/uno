@@ -1,5 +1,5 @@
 ﻿#if __ANDROID__
-using Android.Support.V4.Graphics.Drawable;
+using AndroidX.Core.Graphics.Drawable;
 using Android.Views;
 using System;
 using System.Collections.Generic;
@@ -70,26 +70,29 @@ namespace Uno.UI.Controls
 			// CommandBar::PrimaryCommands -> !IsInOverflow -> AsAction.Never -> displayed directly on command bar
 			// CommandBar::SecondaryCommands -> IsInOverflow -> AsAction.Awalys -> (displayed as flyout menu items under [...])
 
+			var native = Native;
+			var element = Element;
+
 			// IsInOverflow
-			var showAsAction = Element.IsInOverflow
+			var showAsAction = element.IsInOverflow
 				? ShowAsAction.Never
 				: ShowAsAction.Always;
-			Native.SetShowAsAction(showAsAction);
+			native.SetShowAsAction(showAsAction);
 
 			// (Icon ?? Content) and Label
-			if (Element.IsInOverflow)
+			if (element.IsInOverflow)
 			{
-				Native.SetActionView(null);
-				Native.SetIcon(null);
-				Native.SetTitle(Element.Label);
+				native.SetActionView(null);
+				native.SetIcon(null);
+				native.SetTitle(element.Label);
 			}
-			else if (Element.Icon != null)
+			else if (element.Icon != null)
 			{
-				switch (Element.Icon)
+				switch (element.Icon)
 				{
 					case BitmapIcon bitmap:
 						var drawable = DrawableHelper.FromUri(bitmap.UriSource);
-						Native.SetIcon(drawable);
+						native.SetIcon(drawable);
 						break;
 
 					case FontIcon font: // not supported
@@ -97,85 +100,85 @@ namespace Uno.UI.Controls
 					case SymbolIcon symbol: // not supported
 					default:
 						this.Log().WarnIfEnabled(() => $"{GetType().Name ?? "FontIcon, PathIcon and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
-						Native.SetIcon(null);
+						native.SetIcon(null);
 						break;
 				}
-				Native.SetActionView(null);
-				Native.SetTitle(null);
+				native.SetActionView(null);
+				native.SetTitle(null);
 			}
 			else
 			{
-				switch (Element.Content)
+				switch (element.Content)
 				{
 					case string text:
-						Native.SetIcon(null);
-						Native.SetActionView(null);
-						Native.SetTitle(text);
+						native.SetIcon(null);
+						native.SetActionView(null);
+						native.SetTitle(text);
 						break;
 
 					case FrameworkElement fe:
-						var currentParent = Element.GetParent();
-						_appBarButtonWrapper.Child = Element;
+						var currentParent = element.GetParent();
+						_appBarButtonWrapper.Child = element;
 
 						//Restore the original parent if any, as we
 						// want the DataContext to flow properly from the
 						// CommandBar.
-						Element.SetParent(currentParent);
+						element.SetParent(currentParent);
 
-						Native.SetIcon(null);
-						Native.SetActionView(fe.Visibility == Visibility.Visible ? _appBarButtonWrapper : null);
-						Native.SetTitle(null);
+						native.SetIcon(null);
+						native.SetActionView(fe.Visibility == Visibility.Visible ? _appBarButtonWrapper : null);
+						native.SetTitle(null);
 						break;
 
 					default:
-						Native.SetIcon(null);
-						Native.SetActionView(null);
-						Native.SetTitle(null);
+						native.SetIcon(null);
+						native.SetActionView(null);
+						native.SetTitle(null);
 						break;
 				}
 			}
 
 			// IsEnabled
-			Native.SetEnabled(Element.IsEnabled);
+			native.SetEnabled(element.IsEnabled);
 			// According to the Material Design guidelines, the opacity inactive icons should be:
 			// - Light background: 38%
 			// - Dark background: 50%
 			// Source: https://material.io/guidelines/style/icons.html
 			// For lack of a reliable way to identify whether the background is light or dark, 
 			// we'll go with 50% opacity until this no longer satisfies projects requirements.
-			var isEnabledOpacity = (Element.IsEnabled ? 1.0 : 0.5);
+			var isEnabledOpacity = (element.IsEnabled ? 1.0 : 0.5);
 
 			// Visibility
-			Native.SetVisible(Element.Visibility == Visibility.Visible);
+			native.SetVisible(element.Visibility == Visibility.Visible);
 
 			// Foreground
-			var foreground = Element.Foreground as SolidColorBrush;
+			var foreground = element.Foreground as SolidColorBrush;
 			var foregroundColor = foreground?.Color;
 			var foregroundOpacity = foreground?.Opacity ?? 0;
-			if (Native.Icon != null)
+			if (native.Icon != null)
 			{
 				if (foreground != null)
 				{
-					DrawableCompat.SetTint(Native.Icon, (Android.Graphics.Color)foregroundColor);
+					DrawableCompat.SetTint(native.Icon, (Android.Graphics.Color)foregroundColor);
 				}
 				else
 				{
-					DrawableCompat.SetTintList(Native.Icon, null);
+					DrawableCompat.SetTintList(native.Icon, null);
 				}
 			}
 
 			// Background
-			var backgroundColor = (Element.Background as SolidColorBrush)?.ColorWithOpacity;
+			var backgroundColor = (element.Background as SolidColorBrush)?.ColorWithOpacity;
 			if (backgroundColor != null)
 			{
 				_appBarButtonWrapper.SetBackgroundColor((Android.Graphics.Color)backgroundColor);
 			}
 
 			// Opacity
-			var opacity = Element.Opacity;
+			var opacity = element.Opacity;
 			var finalOpacity = isEnabledOpacity * foregroundOpacity * opacity;
 			var alpha = (int)(finalOpacity * 255);
-			Native.Icon?.SetAlpha(alpha);
+			native.Icon?.SetAlpha(alpha);
 		}
 	}
 

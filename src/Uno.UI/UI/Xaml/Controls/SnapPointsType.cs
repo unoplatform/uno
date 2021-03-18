@@ -8,7 +8,6 @@ namespace Windows.UI.Xaml.Controls
 		None,
 		[NotImplemented]
 		Optional,
-		[NotImplemented]
 		Mandatory,
 		[NotImplemented]
 		OptionalSingle,

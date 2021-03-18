@@ -1,6 +1,7 @@
 ﻿#if __ANDROID__
 using Android.Graphics.Drawables;
-using Android.Support.V4.Content;
+using AndroidX.Core.Content;
+using AndroidX.Core.Graphics.Drawable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,10 +34,11 @@ namespace Uno.Helpers
 		/// <returns>Resource's id</returns>
 		public static int? FindResourceId(string imageName)
 		{
-			var key = System.IO.Path.GetFileNameWithoutExtension(imageName);
+			var key = AndroidResourceNameEncoder.Encode(System.IO.Path.GetFileNameWithoutExtension(imageName));
 			if (_drawablesLookup == null)
 			{
-				throw new Exception("Drawable resources were not initialized.");
+				throw new InvalidOperationException("Drawable resources were not initialized. "
+					+ "On Android, local assets are only available after App.InitializeComponent() has been called.");
 			}
 			var id = _drawablesLookup.UnoGetValueOrDefault(key, 0);
 			if (id == 0)
@@ -67,7 +69,7 @@ namespace Uno.Helpers
 			if (drawable != null)
 			{
 				// Makes the drawable compatible with DrawableCompat pre-Lollipop.
-				drawable = Android.Support.V4.Graphics.Drawable.DrawableCompat.Wrap(drawable);
+				drawable = DrawableCompat.Wrap(drawable);
 				drawable = drawable.Mutate();
 			}
 

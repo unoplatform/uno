@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false || false
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum FlyoutPlacementMode 
@@ -13,33 +13,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Left
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Right
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TopEdgeAlignedLeft,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TopEdgeAlignedRight,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		BottomEdgeAlignedLeft,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		BottomEdgeAlignedRight,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		LeftEdgeAlignedTop,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		LeftEdgeAlignedBottom,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		RightEdgeAlignedTop,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		RightEdgeAlignedBottom,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Auto,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.TopEdgeAlignedLeft
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.TopEdgeAlignedRight
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.BottomEdgeAlignedLeft
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.BottomEdgeAlignedRight
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.LeftEdgeAlignedTop
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.LeftEdgeAlignedBottom
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedTop
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Auto
 	}
 	#endif
 }

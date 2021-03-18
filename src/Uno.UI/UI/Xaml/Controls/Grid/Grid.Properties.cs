@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
+using Uno.UI.Xaml;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -27,86 +28,92 @@ namespace Windows.UI.Xaml.Controls
 	public partial class Grid
 	{
 		#region Row Property
-		public static readonly DependencyProperty RowProperty =
-			DependencyProperty.RegisterAttached(
-				"Row",
-				typeof(int),
-				typeof(Grid),
-				new PropertyMetadata(0, OnGenericPropertyChanged)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
+		public static DependencyProperty RowProperty { get ; } = CreateRowProperty();
 
-		public static int GetRow(View view)
-		{
-			return (int)DependencyObjectExtensions.GetValue(view, RowProperty);
-		}
+		public static int GetRow(View view) => GetRowValue(view);
 
-		public static void SetRow(View view, int row)
-		{
-			DependencyObjectExtensions.SetValue(view, RowProperty, row);
-		}
+		public static void SetRow(View view, int row) => SetRowValue(view, row);
 		#endregion
 
 		#region Column Property
-		public static readonly DependencyProperty ColumnProperty =
-			DependencyProperty.RegisterAttached(
-				"Column",
-				typeof(int),
-				typeof(Grid),
-				new PropertyMetadata(0, OnGenericPropertyChanged)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
+		public static DependencyProperty ColumnProperty { get ; } = CreateColumnProperty();
 
-		public static int GetColumn(View view)
-		{
-			return (int)DependencyObjectExtensions.GetValue(view, ColumnProperty);
-		}
+		public static int GetColumn(View view) => GetColumnValue(view);
 
-		public static void SetColumn(View view, int column)
-		{
-			DependencyObjectExtensions.SetValue(view, ColumnProperty, column);
-		}
+		public static void SetColumn(View view, int column) => SetColumnValue(view, column);
 		#endregion
 
 		#region RowSpan Property
+		[GeneratedDependencyProperty(DefaultValue = 1, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
+		public static DependencyProperty RowSpanProperty { get ; } = CreateRowSpanProperty();
 
-		public static readonly DependencyProperty RowSpanProperty =
-			DependencyProperty.RegisterAttached(
-				"RowSpan",
-				typeof(int),
-				typeof(Grid),
-				new PropertyMetadata(1, OnGenericPropertyChanged)
-			);
-
-		public static int GetRowSpan(View view)
-		{
-			return (int)DependencyObjectExtensions.GetValue(view, RowSpanProperty);
-		}
+		public static int GetRowSpan(View view) => GetRowSpanValue(view);
 
 		public static void SetRowSpan(View view, int rowSpan)
 		{
-			DependencyObjectExtensions.SetValue(view, RowSpanProperty, rowSpan);
+			if (rowSpan <= 0)
+			{
+				throw new ArgumentException("The value must be above zero", nameof(rowSpan));
+			}
+
+			SetRowSpanValue(view, rowSpan);
 		}
 		#endregion
 
 		#region ColumnSpan Property
+		[GeneratedDependencyProperty(DefaultValue = 1, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
+		public static DependencyProperty ColumnSpanProperty { get ; } = CreateColumnSpanProperty();
 
-		public static readonly DependencyProperty ColumnSpanProperty =
-			DependencyProperty.RegisterAttached(
-				"ColumnSpan",
-				typeof(int),
-				typeof(Grid),
-				new PropertyMetadata(1, OnGenericPropertyChanged)
-			);
-
-		public static int GetColumnSpan(View view)
-		{
-			return (int)DependencyObjectExtensions.GetValue(view, ColumnSpanProperty);
-		}
+		public static int GetColumnSpan(View view) => GetColumnSpanValue(view);
 
 		public static void SetColumnSpan(View view, int columnSpan)
 		{
-			DependencyObjectExtensions.SetValue(view, ColumnSpanProperty, columnSpan);
+			if(columnSpan <= 0)
+			{
+				throw new ArgumentException("The value must be above zero", nameof(columnSpan));
+			}
+
+			SetColumnSpanValue(view, columnSpan);
 		}
 		#endregion
+
+		public double RowSpacing
+		{
+			get
+			{
+				return (double)this.GetValue(RowSpacingProperty);
+			}
+			set
+			{
+				this.SetValue(RowSpacingProperty, value);
+			}
+		}
+
+		public static DependencyProperty RowSpacingProperty { get; } =
+		DependencyProperty.Register(
+			"RowSpacing", typeof(double),
+			typeof(Grid),
+			new FrameworkPropertyMetadata(default(double), OnGenericPropertyChanged));
+
+		public double ColumnSpacing
+		{
+			get
+			{
+				return (double)this.GetValue(ColumnSpacingProperty);
+			}
+			set
+			{
+				this.SetValue(ColumnSpacingProperty, value);
+			}
+		}
+
+		public static DependencyProperty ColumnSpacingProperty { get; } =
+		DependencyProperty.Register(
+			"ColumnSpacing", typeof(double),
+			typeof(Grid),
+			new FrameworkPropertyMetadata(default(double), OnGenericPropertyChanged));
 
 		private static void OnGenericPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

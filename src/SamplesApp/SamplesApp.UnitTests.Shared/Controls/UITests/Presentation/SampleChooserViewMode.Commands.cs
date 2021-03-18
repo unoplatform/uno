@@ -24,7 +24,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Uno.UI.Common;
 
-#if XAMARIN || NETSTANDARD2_0
+#if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
@@ -34,9 +34,11 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 #endif
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace SampleControl.Presentation
 {
-	public partial class SampleChooserViewModel : INotifyPropertyChanged
+	public partial class SampleChooserViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		private void InitializeCommands()
 		{
@@ -50,6 +52,7 @@ namespace SampleControl.Presentation
 			LoadPreviousTestCommand = new DelegateCommand(() => LoadPreviousTest(CancellationToken.None)) { CanExecuteEnabled = false };
 			ReloadCurrentTestCommand = new DelegateCommand(() => ReloadCurrentTest(CancellationToken.None)) { CanExecuteEnabled = false };
 			LoadNextTestCommand = new DelegateCommand(() => LoadNextTest(CancellationToken.None)) { CanExecuteEnabled = false };
+			ShowTestInformationCommand = new DelegateCommand(() => ShowTestInformation(CancellationToken.None)) { CanExecuteEnabled = false };
 
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 		}
@@ -62,5 +65,6 @@ namespace SampleControl.Presentation
 		public ICommand LoadPreviousTestCommand { get; private set; }
 		public ICommand ReloadCurrentTestCommand { get; private set; }
 		public ICommand LoadNextTestCommand { get; private set; }
+		public ICommand ShowTestInformationCommand { get; private set; }
 	}
 }

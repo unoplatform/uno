@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Logging;
-using Uno.UI.Sample.Views.Helper;
+using Uno.UI.Extensions;
 using System;
 
 #if NETFX_CORE
@@ -40,7 +40,7 @@ namespace Uno.UI.Samples.Behaviors
 		/// - It must be a child of the SplitView.
 		/// - It must derive from ButtonBase or be an item of a ListViewBase.
 		/// </summary>
-		public static readonly DependencyProperty OpenOnClickProperty =
+		public static DependencyProperty OpenOnClickProperty { get ; } =
 			DependencyProperty.RegisterAttached("OpenOnClick", typeof(bool), typeof(SplitViewBehavior), new PropertyMetadata(default(bool), OnOpenOnClickChanged));
 
 		private static void OnOpenOnClickChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -68,7 +68,7 @@ namespace Uno.UI.Samples.Behaviors
 		/// - It must be a child of the SplitView.
 		/// - It must derive from ButtonBase or be an item of a ListViewBase.
 		/// </summary>
-		public static readonly DependencyProperty CloseOnClickProperty =
+		public static DependencyProperty CloseOnClickProperty { get ; } =
 			DependencyProperty.RegisterAttached("CloseOnClick", typeof(bool), typeof(SplitViewBehavior), new PropertyMetadata(default(bool), OnCloseOnClickChanged));
 
 		private static void OnCloseOnClickChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)

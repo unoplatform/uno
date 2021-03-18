@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public Page()
 		{
-
+			InitializeBorder();
 		}
 
 		protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
@@ -19,13 +19,14 @@ namespace Windows.UI.Xaml.Controls
 		protected internal virtual void OnNavigatingFrom(NavigatingCancelEventArgs e) { }
 
 		#region TopAppBar
-
+		[Uno.NotImplemented]
 		public AppBar TopAppBar
 		{
 			get => (AppBar)this.GetValue(TopAppBarProperty);
 			set => this.SetValue(TopAppBarProperty, value);
 		}
-		
+
+		[Uno.NotImplemented]
 		public static DependencyProperty TopAppBarProperty { get; } =
 			DependencyProperty.Register(
 				"TopAppBar",
@@ -36,17 +37,17 @@ namespace Windows.UI.Xaml.Controls
 					FrameworkPropertyMetadataOptions.ValueInheritsDataContext
 				)
 			);
-
 		#endregion
 
 		#region BottomAppBar
-
+		[Uno.NotImplemented]
 		public AppBar BottomAppBar
 		{
 			get => (AppBar)this.GetValue(BottomAppBarProperty);
 			set => this.SetValue(BottomAppBarProperty, value);
 		}
 
+		[Uno.NotImplemented]
 		public static DependencyProperty BottomAppBarProperty { get; } =
 			DependencyProperty.Register(
 				"BottomAppBar",
@@ -57,7 +58,6 @@ namespace Windows.UI.Xaml.Controls
 					FrameworkPropertyMetadataOptions.ValueInheritsDataContext
 				)
 			);
-
 		#endregion
 
 		#region Frame
@@ -83,8 +83,13 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		#endregion
+#endregion
 
 		public NavigationCacheMode NavigationCacheMode { get; set; }
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			UpdateBorder();
+		}
 	}
 }

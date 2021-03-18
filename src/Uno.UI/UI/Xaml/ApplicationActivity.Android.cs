@@ -13,10 +13,11 @@ using Uno.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors;
+using Windows.Storage.Pickers;
 
 namespace Windows.UI.Xaml
 {
-	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
+	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
 
@@ -53,7 +54,7 @@ namespace Windows.UI.Xaml
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
-			Devices.Sensors.SimpleOrientationSensor.GetDefault().OrientationChanged += OnSensorOrientationChanged;
+			SimpleOrientationSensor.GetDefault().OrientationChanged += OnSensorOrientationChanged;
 		}
 
 		private void OnSensorOrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs args)
@@ -100,7 +101,10 @@ namespace Windows.UI.Xaml
 
 		public void ExitFullscreen()
 		{
+#pragma warning disable 618
 			Window.DecorView.SystemUiVisibility = StatusBarVisibility.Visible;
+#pragma warning restore 618
+
 			Window.AddFlags(WindowManagerFlags.ForceNotFullscreen);
 			Window.ClearFlags(WindowManagerFlags.Fullscreen);
 		}
@@ -114,7 +118,7 @@ namespace Windows.UI.Xaml
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
-			
+
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.LayoutChanged += OnLayoutChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
@@ -190,6 +194,7 @@ namespace Windows.UI.Xaml
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
+			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
 		}
 
 		public override void OnBackPressed()
@@ -205,6 +210,24 @@ namespace Windows.UI.Xaml
 		{
 			base.OnNewIntent(intent);
 			this.Intent = intent;
+			// In case this activity is in SingleTask mode, we try to handle
+			// the intent (for protocol activation scenarios).
+			(Application as NativeApplication)?.TryHandleIntent(intent);
+		}
+
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+		{
+			base.OnActivityResult(requestCode, resultCode, data);
+
+			switch (requestCode)
+			{
+				case FolderPicker.RequestCode:
+					FolderPicker.TryHandleIntent(data, resultCode);
+					break;
+				case FileOpenPicker.RequestCode:
+					FileOpenPicker.TryHandleIntent(data, resultCode);
+					break;
+			}
 		}
 
 		/// <summary>

@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="UnoSolutionTemplate.b8e0806a-a194-4442-8634-474e089e479e" Version="1.43.0.657" Language="en-US" Publisher="nventive" />
         <DisplayName>Uno Platform Solution Templates</DisplayName>
-        <Description xml:space="preserve">A solution template for Uno Platform enabled projects.</Description>
-        <MoreInfo>https://github.com/nventive/Uno</MoreInfo>
-        <GettingStartedGuide>https://github.com/nventive/Uno/blob/master/doc/index.md</GettingStartedGuide>
+        <Description xml:space="preserve">Solution templates for Uno Platform enabled projects</Description>
+        <MoreInfo>https://github.com/unoplatform/uno</MoreInfo>
+        <GettingStartedGuide>https://github.com/unoplatform/uno/blob/master/doc/index.md</GettingStartedGuide>
         <Icon>logo.png</Icon>
     </Metadata>
     <Installation>
@@ -19,6 +19,8 @@
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="UnoSolutionTemplate.Wizard" Path="|UnoSolutionTemplate.Wizard|" AssemblyName="|UnoSolutionTemplate.Wizard;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="UnoLibraryTemplate" d:TargetPath="|UnoLibraryTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="UnoItemTemplate" d:TargetPath="|UnoItemTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
     </Assets>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.8.27729.1,17.0)" DisplayName="Visual Studio core editor" />

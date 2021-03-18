@@ -1,85 +1,69 @@
-#if NET461 || __WASM__
-using System;
+#if __IOS__
+using UIKit;
+using _View = UIKit.UIView;
+#elif __MACOS__
+using AppKit;
+using _View = AppKit.NSView;
+#elif __ANDROID__
+using _View = Android.Views.ViewGroup;
+#else
+using _View = Windows.UI.Xaml.UIElement;
+#endif
+
 using System.Collections.Generic;
 using System.Linq;
-using Uno.Disposables;
-using System.Text;
-
 using Uno.Extensions;
-using Uno.Logging;
 using Windows.UI.Xaml;
-using Uno.UI.Extensions;
-using System.Drawing;
-using Windows.UI.Core;
-using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
-using _ViewGroup = Windows.UI.Xaml.UIElement;
-using _View = Windows.UI.Xaml.UIElement;
-
-namespace Uno.UI
+namespace Uno.UI.Extensions
 {
 	public static partial class ViewExtensions
 	{
 		/// <summary>
-		/// Enumerates all the children for a specified view group.
+		/// Get all ancestor views of <paramref name="view"/>, in order from its immediate parent to the root of the visual tree.
 		/// </summary>
-		/// <param name="view">The view group to get the children from</param>
-		/// <param name="selector">The selector function</param>
-		/// <param name="maxDepth">The depth to stop looking for children.</param>
-		/// <returns>A lazy enumerable of views</returns>
-		public static IEnumerable<_View> EnumerateAllChildren(this _ViewGroup view, Func<_View, bool> selector, int maxDepth = 20)
+		public static IEnumerable<_View> GetVisualAncestry(this _View view)
 		{
-			var children = view.GetChildren().OfType<UIElement>();
-
-			foreach (var sub in children)
+			var ancestor = view.GetVisualTreeParent();
+			while (ancestor != null)
 			{
-				if (selector(sub))
-				{
-					yield return sub;
-				}
-				else if (maxDepth > 0)
-				{
-					var childGroup = sub as _ViewGroup;
-
-					if (childGroup != null)
-					{
-						foreach (var subResult in childGroup.EnumerateAllChildren(selector, maxDepth - 1))
-						{
-							yield return subResult;
-						}
-					}
-				}
+				yield return ancestor;
+				ancestor = ancestor.GetVisualTreeParent();
 			}
 		}
 
-		/// <summary>
-		/// Enumerates all the children for a specified view group.
-		/// </summary>
-		/// <param name="view">The view group to get the children from</param>
-		/// <param name="maxDepth">The depth to stop looking for children.</param>
-		/// <returns>A lazy enumerable of views</returns>
-		public static IEnumerable<_View> EnumerateAllChildren(this _ViewGroup view, int maxDepth = 20)
+		internal static string GetElementSpecificDetails(this UIElement element)
 		{
-			var children = view.GetChildren().OfType<UIElement>();
-
-			foreach (var sub in children)
+			return element switch
 			{
-				yield return sub;
+				TextBlock textBlock => $" Text=\"{textBlock.Text}\" Foreground={textBlock.Foreground}",
+				ScrollViewer scrollViewer => $" Extent={scrollViewer.ExtentWidth}x{scrollViewer.ExtentHeight} Offset={scrollViewer.ScrollOffsets}",
+				Viewbox viewbox => $" Stretch={viewbox.Stretch}",
+				_ => ""
+			};
+		}
 
-				if (maxDepth > 0)
-				{
-					var childGroup = sub as _ViewGroup;
-
-					if (childGroup != null)
-					{
-						foreach (var subResult in childGroup.EnumerateAllChildren(maxDepth - 1))
-						{
-							yield return subResult;
-						}
-					}
-				}
+		internal static string GetTransformDetails(this Transform transform)
+		{
+			string GetMatrix(MatrixTransform matrix)
+			{
+				var m = matrix.Matrix.Inner;
+				return $" Matrix=[{m.M11}, {m.M21}, {m.M31}, {m.M12}, {m.M22}, {m.M32}]";
 			}
+
+			return transform switch
+			{
+				ScaleTransform scale => scale.ScaleX == 1d && scale.ScaleY == 1d ? " UNSCALED" : $" ScaleX/Y={scale.ScaleX}/{scale.ScaleY}",
+				TranslateTransform translate => $" TranslateX/Y={translate.X}/{translate.Y}",
+				TransformGroup group => " TransfrmGrp[" + group.Children.Select(GetTransformDetails).JoinBy(", ") + "]",
+				RotateTransform rotate => $" Rotate={rotate.Angle}",
+				MatrixTransform matrix => GetMatrix(matrix),
+				CompositeTransform composite => $" ScaleX/Y={composite.ScaleX}/{composite.ScaleY} TranslateX/Y={composite.TranslateX}/{composite.TranslateY}",
+				SkewTransform skew => $" SkewX={skew.AngleX}  SkewY={skew.AngleY}",
+				_ => ""
+			};
 		}
 	}
 }
-#endif

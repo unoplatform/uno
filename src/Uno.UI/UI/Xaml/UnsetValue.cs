@@ -5,6 +5,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// This class is used for DependencyProperty.UnsetValue.
 	/// </summary>
+	[Windows.UI.Xaml.Data.Bindable]
 	internal class UnsetValue : IEquatable<UnsetValue>
 	{
 		private UnsetValue()

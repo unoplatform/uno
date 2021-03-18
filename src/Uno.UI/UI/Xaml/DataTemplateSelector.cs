@@ -13,22 +13,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		public DataTemplate SelectTemplate (object item)
+		public DataTemplate SelectTemplate(object item)
 		{
 			return SelectTemplateCore(item);
 		}
 
-		public DataTemplate SelectTemplate (object item, DependencyObject container)
+		public DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
 			return SelectTemplateCore(item, container);
 		}
 
-		protected virtual DataTemplate SelectTemplateCore (object item)
+		protected virtual DataTemplate SelectTemplateCore(object item)
 		{
 			return null;
 		}
 
-		protected virtual DataTemplate SelectTemplateCore (object item, DependencyObject container)
+		protected virtual DataTemplate SelectTemplateCore(object item, DependencyObject container)
 		{
 			return null;
 		}

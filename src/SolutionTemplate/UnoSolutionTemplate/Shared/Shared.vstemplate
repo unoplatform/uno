@@ -21,13 +21,7 @@
 	<Project TargetFileName="$ext_safeprojectname$.Shared.shproj" File="UnoQuickStart.Shared.shproj" ReplaceParameters="true">
 
 	  <Folder Name="Assets" TargetFolderName="Assets">
-		<ProjectItem TargetFileName="lockscreenlogo.scale-200.png" ReplaceParameters="false">lockscreenlogo.scale-200.png</ProjectItem>
-		<ProjectItem TargetFileName="splashscreen.scale-200.png" ReplaceParameters="false">splashscreen.scale-200.png</ProjectItem>
-		<ProjectItem TargetFileName="square150x150logo.scale-200.png" ReplaceParameters="false">square150x150logo.scale-200.png</ProjectItem>
-		<ProjectItem TargetFileName="square44x44logo.scale-200.png" ReplaceParameters="false">square44x44logo.scale-200.png</ProjectItem>
-		<ProjectItem TargetFileName="square44x44logo.targetsize-24_altform-unplated.png" ReplaceParameters="false">square44x44logo.targetsize-24_altform-unplated.png</ProjectItem>
-		<ProjectItem TargetFileName="storelogo.png" ReplaceParameters="false">storelogo.png</ProjectItem>
-		<ProjectItem TargetFileName="wide310x150logo.scale-200.png" ReplaceParameters="false">wide310x150logo.scale-200.png</ProjectItem>
+		<ProjectItem TargetFileName="SharedAssets.md" ReplaceParameters="false">SharedAssets.md</ProjectItem>
 	  </Folder>
 	  <Folder Name="Strings" TargetFolderName="Strings">
 		<Folder Name="en" TargetFolderName="en">

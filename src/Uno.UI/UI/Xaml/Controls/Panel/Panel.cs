@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
 using System.Linq;
+using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
-
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -20,9 +22,9 @@ using View = MonoTouch.UIKit.UIView;
 namespace Windows.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
-	public partial class Panel : FrameworkElement
+	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
 	{
-#if NET461 || __WASM__
+#if NET461 || UNO_REFERENCE_API
 		private new UIElementCollection _children;
 #else
 		private UIElementCollection _children;
@@ -33,14 +35,12 @@ namespace Windows.UI.Xaml.Controls
 		partial void Initialize()
 		{
 			_children = new UIElementCollection(this);
-
-			IFrameworkElementHelper.Initialize(this);
 		}
 
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 			=> OnChildrenChanged();
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnLoadedPartial();
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnUnloadedPartial();
 
-		protected virtual void OnChildAdded(IFrameworkElement element)
+		private protected virtual void OnChildAdded(IFrameworkElement element)
 		{
 			UpdateTransitions(element);
 		}
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public UIElementCollection Children => _children;
 
-#region ChildrenTransitions Dependency Property
+		#region ChildrenTransitions Dependency Property
 
 		public TransitionCollection ChildrenTransitions
 		{
@@ -88,8 +88,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ChildrenTransitionsProperty =
-			DependencyProperty.Register("ChildrenTransitions", typeof(TransitionCollection), typeof(Panel), new PropertyMetadata(null, OnChildrenTransitionsChanged));
+		public static DependencyProperty ChildrenTransitionsProperty { get ; } =
+			DependencyProperty.Register("ChildrenTransitions", typeof(TransitionCollection), typeof(Panel), new FrameworkPropertyMetadata(null, OnChildrenTransitionsChanged));
 
 		private static void OnChildrenTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -106,18 +106,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
-#region Padding DependencyProperty
+		#region Padding DependencyProperty
 
-		internal double GetVerticalOffset()
+		internal Size BorderAndPaddingSize
 		{
-			return BorderThickness.Top + Padding.Top + BorderThickness.Bottom + Padding.Bottom;
-        }
-
-		internal double GetHorizontalOffset()
-		{
-			return BorderThickness.Left + Padding.Left + BorderThickness.Right + Padding.Right;
+			get
+			{
+				var border = BorderThickness;
+				var padding = Padding;
+				var width = border.Left + border.Right + padding.Left + padding.Right;
+				var height = border.Top + border.Bottom + padding.Top + padding.Bottom;
+				return new Size(width, height);
+			}
 		}
 
 		public Thickness Padding
@@ -126,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PaddingProperty, value); }
 		}
 
-		public static readonly DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get ; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -140,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 
 #endregion
 
-#region BorderThickness DependencyProperty
+		#region BorderThickness DependencyProperty
 
 		public Thickness BorderThickness
 		{
@@ -148,7 +150,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(BorderThicknessProperty, value); }
 		}
 
-		public static readonly DependencyProperty BorderThicknessProperty =
+		public static DependencyProperty BorderThicknessProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -160,9 +162,9 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-#endregion
+		#endregion
 
-#region BorderBrush Dependency Property
+		#region BorderBrush Dependency Property
 
 #if XAMARIN_ANDROID
 		private Brush _borderBrushStrongReference;
@@ -181,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static readonly DependencyProperty BorderBrushProperty =
+		public static DependencyProperty BorderBrushProperty { get ; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -192,33 +194,24 @@ namespace Windows.UI.Xaml.Controls
 					propertyChangedCallback: (s, e) => ((Panel)s).OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)
 			);
-#endregion
+		#endregion
 
-#region CornerRadius DependencyProperty
+		#region CornerRadius DependencyProperty
+		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		public CornerRadius CornerRadius
 		{
-			get { return (CornerRadius)this.GetValue(CornerRadiusProperty); }
-			set { this.SetValue(CornerRadiusProperty, value); }
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
+		#endregion
 
-		// Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CornerRadiusProperty =
-			DependencyProperty.Register(
-				"CornerRadius",
-				typeof(CornerRadius),
-				typeof(Panel),
-				new PropertyMetadata(
-					CornerRadius.None,
-					(s, e) => ((Panel)s)?.OnCornerRadiusChanged((CornerRadius)e.OldValue, (CornerRadius)e.NewValue)
-				)
-			);
-
-#endregion
-
-#region IsItemsHost DependencyProperty
-		public static readonly DependencyProperty IsItemsHostProperty = DependencyProperty.Register(
-			"IsItemsHost", typeof(bool), typeof(Panel), new PropertyMetadata(default(bool)));
+		#region IsItemsHost DependencyProperty
+		public static DependencyProperty IsItemsHostProperty { get ; } = DependencyProperty.Register(
+			"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(default(bool)));
 
 		public bool IsItemsHost
 		{
@@ -269,5 +262,7 @@ namespace Windows.UI.Xaml.Controls
 			OnBorderBrushChangedPartial(oldValue, newValue);
 		}
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
-    }
+
+		private protected override Thickness GetBorderThickness() => BorderThickness;
+	}
 }

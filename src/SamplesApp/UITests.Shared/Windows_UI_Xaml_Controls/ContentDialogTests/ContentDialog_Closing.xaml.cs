@@ -58,14 +58,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			var defer1Button = new _Button { Name = "Complete1Button", Content = "Complete 1" };
 			defer1Button.Click += (o, e) =>
 			{
-				deferral1.Complete();
 				ResultTextBlock.Text = "First complete called";
+				deferral1.Complete();
 			};
 			var defer2Button = new _Button { Name = "Complete2Button", Content = "Complete 2" };
 			defer2Button.Click += (o, e) =>
 			{
-				deferral2.Complete();
 				ResultTextBlock.Text = "Second complete called";
+				deferral2.Complete();
 			};
 			var panel = new StackPanel
 			{
@@ -111,5 +111,26 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dummy = dialog.ShowAsync();
 		}
 
+		private void PrimaryDialogCancelClosing_Click(object sender, RoutedEventArgs args)
+		{
+			DidCloseTextBlock.Text = "Not closed";
+			var dialog = new ContentDialog { CloseButtonText = "Close", PrimaryButtonText = "Primo" };
+			dialog.Closing += (o, e) =>
+			  {
+				  ResultTextBlock.Text = e.Result.ToString();
+
+				  if (e.Result == ContentDialogResult.Primary)
+				  {
+					  e.Cancel = true;
+				  }
+			  };
+
+			dialog.Closed += (o, e) =>
+			{
+				DidCloseTextBlock.Text = "Closed";
+			};
+
+			var dummy = dialog.ShowAsync();
+		}
 	}
 }

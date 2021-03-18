@@ -1,0 +1,245 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: Wasm_UITests_Build
+  displayName: 'WebAssembly UI Tests (Build)'
+  container: nv-bionic-wasm
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/gitversion.yml
+  - template: templates/dotnet-install.yml
+
+  - task: CacheBeta@0
+    condition: eq(variables['enable_package_cache'], 'true')
+    inputs:
+      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
+      path: $(NUGET_PACKAGES)
+    displayName: Cache NuGet packages
+    
+  - template: templates/optimize-roslyn-mono.yml
+  - template: templates/dotnet-install.yml
+
+  - bash: |
+      sudo cert-sync /etc/ssl/certs/ca-certificates.crt
+
+    displayName: 'Update the SSL trusted certificates'
+    
+  - bash: |
+      msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoTargetFrameworkOverride=netstandard2.0 /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-netstd20-$(GitVersion.FullSemVer).binlog
+
+    displayName: 'Build sample app (netstandard2.0)'
+    
+  - bash: |
+      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net5-$(GitVersion.FullSemVer).binlog
+
+    displayName: 'Build sample app (net5.0)'
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Site (netstandard2.0)'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/netstandard2.0/dist
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/site-netstandard2.0
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Site (net5.0)'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net5.0/dist
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/site-net5.0
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: wasm-uitest-binaries
+      ArtifactType: Container
+
+
+- job: Wasm_UITests_Snap
+  displayName: 'WebAssembly UI Tests (Snapshots Run)'
+  dependsOn:
+  - Wasm_UITests_Build
+  - SamplesApp_UITests_Build
+
+  container: nv-bionic-wasm
+
+  pool:
+    vmImage: 'ubuntu-20.04'
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+    SITE_SUFFIX: 'netstandard2.0'
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/dotnet-install.yml
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+  - template: templates/optimize-roslyn-mono.yml
+
+  - bash: |
+      set -euo pipefail
+      IFS=$'\n\t'
+      cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-netstandard2.0
+      python server.py &
+      cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
+      npm install
+      node app
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      SITE_SUFFIX: "$(SITE_SUFFIX)"
+
+    displayName: 'Running UI Tests'
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Tests results'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/screenshots/wasm
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+
+- job: Wasm_UITests_Automated
+  displayName: 'WebAssembly UI Tests (Automated Run)'
+  dependsOn:
+  - Wasm_UITests_Build
+  - SamplesApp_UITests_Build
+  container: nv-bionic-wasm
+
+  strategy:
+    matrix:
+      net5_default:
+        SITE_SUFFIX: 'net5.0'
+        UITEST_AUTOMATED_GROUP: 'Default'
+
+      net5_runtimetests:
+        SITE_SUFFIX: 'net5.0'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+
+      # Disabled until benchmark freeze is fixed
+      #net5_benchmarks:
+      #  SITE_SUFFIX: 'net5.0'
+      #  UITEST_AUTOMATED_GROUP: 'Benchmarks'
+
+      netstd2_0_default:
+        SITE_SUFFIX: 'netstandard2.0'
+        UITEST_AUTOMATED_GROUP: 'Default'
+
+      netstd2_0_runtimetests:
+        SITE_SUFFIX: 'netstandard2.0'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+
+      netstd2_0_benchmarks:
+        SITE_SUFFIX: 'netstandard2.0'
+        UITEST_AUTOMATED_GROUP: 'Benchmarks'
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/dotnet-install.yml
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download iOS SamplesApp UnitTests'
+    inputs:
+        artifactName: samplesapp-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - bash: |
+      chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+      $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      SITE_SUFFIX: "$(SITE_SUFFIX)"
+
+    displayName: 'Running UI Tests'
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+      testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
+      searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
+      ArtifactType: Container

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NUnit.Framework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -17,7 +18,7 @@ namespace SamplesApp.UITests.Toolkit
 	{
 
 		[Test]
-		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1635
+		[AutoRetry]
 		public void Elevation_Validation()
 		{
 			Run("UITests.Shared.Toolkit.Elevation");
@@ -27,15 +28,15 @@ namespace SamplesApp.UITests.Toolkit
 			var turnElevation_ON_Button = _app.Marked("TurnElevation_ON_Button");
 			
 			// Take ScreenShot with no elevation
-			var screenshot_NoElevation = _app.Screenshot("Elevation - No Elevation");
+			using var screenshot_NoElevation = TakeScreenshot("Elevation - No Elevation");
 
 			turnElevation_ON_Button.Tap();
 
 			// Take ScreenShot of with elevation
-			var screenshot_WithElevation = _app.Screenshot("Elevation - With Elevation");
+			using var screenshot_WithElevation = TakeScreenshot("Elevation - With Elevation");
 
-			Bitmap img1 = new Bitmap(screenshot_NoElevation.ToString());
-			Bitmap img2 = new Bitmap(screenshot_WithElevation.ToString());
+			using var img1 = screenshot_NoElevation.GetBitmap();
+			using var img2 = screenshot_WithElevation.GetBitmap();
 
 			float diffPercentage = 0;
 			float diff = 0;
@@ -60,10 +61,8 @@ namespace SamplesApp.UITests.Toolkit
 				}
 
 				diffPercentage = 100 * (diff / 255) / (img1.Width * img1.Height * 3);
-				if (diffPercentage < 0.5)
-				{
-					Assert.Fail("Images are the same");
-				}
+
+				diffPercentage.Should().BeGreaterThan(0.01f, "Before/After are too similar");
 			}
 		}
 	}

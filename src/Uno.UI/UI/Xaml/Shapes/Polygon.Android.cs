@@ -1,34 +1,39 @@
 ﻿using Uno.Media;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.UI;
-using Uno.Extensions;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Polygon : ArbitraryShapeBase
+	public partial class Polygon : Shape
 	{
-		protected override Android.Graphics.Path GetPath()
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureAbsoluteShape(availableSize, GetPath());
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeAbsoluteShape(finalSize, GetPath());
+
+		private Android.Graphics.Path GetPath()
 		{
 			var coords = Points;
 
-			if (coords != null)
+			if (coords == null || coords.Count <= 1)
 			{
-				var streamGeometry = GeometryHelper.Build(c =>
-				{
-					c.BeginFigure(new Point((double)coords[0].X, (double)coords[0].Y), true, false);
-					for (int i = 1; i < coords.Count; i++)
-					{
-						c.LineTo(new Point((double)coords[i].X, (double)coords[i].Y), true, false);
-					}
-				});
-
-				return streamGeometry.ToPath();
+				return null;
 			}
 
-			return null;
+			var output = new Android.Graphics.Path();
+			var startingPoint = coords[0];
+
+			output.MoveTo((float)startingPoint.X, (float)startingPoint.Y);
+			for (var i = 1; i < coords.Count; i++)
+			{
+				output.LineTo((float)coords[i].X, (float)coords[i].Y);
+			}
+			output.LineTo((float)startingPoint.X, (float)startingPoint.Y);
+
+			return output;
+
 		}
 	}
 }

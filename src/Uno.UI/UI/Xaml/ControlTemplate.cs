@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -20,17 +22,27 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ControlTemplate : FrameworkTemplate
 	{
-		public ControlTemplate (Func<View> factory)
-			: base (factory)
+		public ControlTemplate() : this(null) { }
+
+		public ControlTemplate(Func<View?>? factory)
+			: base(factory)
 		{
 		}
 
-		public static implicit operator ControlTemplate (Func<View> obj)
+		/// <summary>
+		/// Build a ControlTemplate with an optional <paramref name="owner"/> to be provided during the call of <paramref name="factory"/>
+		/// </summary>
+		/// <param name="owner">The owner of the ControlTemplate</param>
+		/// <param name="factory">The factory to be called to build the template content</param>
+		public ControlTemplate(object? owner, FrameworkTemplateBuilder? factory)
+			: base(owner, factory)
 		{
-			return new ControlTemplate (obj);
 		}
 
-		public Type TargetType { 
+		public static implicit operator ControlTemplate(Func<View>? obj)
+			=> new ControlTemplate(obj);
+
+		public Type? TargetType { 
 			get;
 			set;
 		}

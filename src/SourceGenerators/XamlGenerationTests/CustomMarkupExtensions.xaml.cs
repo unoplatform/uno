@@ -103,6 +103,50 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 		}
 	}
 
+	public class TestMarkupSuffixExtension : MarkupExtension
+	{
+		protected override object ProvideValue()
+		{
+			return null;
+		}
+	}
+
+	public class ComplexObject
+	{
+		public string StringProp { get; set; }
+		public int IntProp { get; set; }
+	}
+
+	public class NoReturnTypeMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
+	{
+		public Values UseValue { get; set; }
+
+		public object Value1 { get; set; }
+
+		public object Value2 { get; set; }
+
+		protected override object ProvideValue()
+		{
+			switch (UseValue)
+			{
+				case Values.UseValue1:
+					return Value1;
+
+				case Values.UseValue2:
+					return Value2;
+
+				default:
+					return Value1;
+			}
+		}
+	}
+
+	public enum Values
+	{
+		UseValue1,
+		UseValue2
+	}
+
 	public static class MarkupExtensionTestBehavior
 	{
 		public static string GetCustomText(TextBlock obj) => (string)obj.GetValue(CustomTextProperty);

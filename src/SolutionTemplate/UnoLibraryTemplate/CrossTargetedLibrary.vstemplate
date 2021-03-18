@@ -14,6 +14,16 @@
 	<CreateInPlace>true</CreateInPlace>
 	<Icon>__TemplateIcon.png</Icon>
 	<PreviewImage>__PreviewImage.png</PreviewImage>
+	<LanguageTag>csharp</LanguageTag>
+	<PlatformTag>iOS</PlatformTag>
+	<PlatformTag>android</PlatformTag>
+	<PlatformTag>Windows</PlatformTag>
+	<PlatformTag>macOS</PlatformTag>
+	<PlatformTag>web</PlatformTag>
+	<ProjectTypeTag>mobile</ProjectTypeTag>
+	<ProjectTypeTag>UWP</ProjectTypeTag>
+	<ProjectTypeTag>WebAssembly</ProjectTypeTag>
+	<ProjectTypeTag>Uno Platform</ProjectTypeTag>
   </TemplateData>
   <TemplateContent>
 	<Project TargetFileName="$ext_safeprojectname$.csproj" File="CrossTargetedLibrary.csproj" ReplaceParameters="true">

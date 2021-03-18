@@ -6,6 +6,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListView : ListViewBase, IListView
 	{
+		public ListView()
+		{
+			DefaultStyleKey = typeof(ListView);
+		}
+
 		protected override bool IsItemItsOwnContainerOverride(object item)
 		{
 			return item is ListViewItem;

@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 		private Android.Widget.TimePicker _picker;
 		private TimeSpan _initialTime;
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 

@@ -56,6 +56,8 @@ namespace Windows.UI.Xaml.Data
 			set => _explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
 		}
 
+		private BindingPath[] _updateSources = null;
+
 		public string TargetName => TargetPropertyDetails.Property.Name;
 
 		public object DataContext
@@ -78,6 +80,8 @@ namespace Windows.UI.Xaml.Data
 			}
 		}
 
+		public object DataItem => _bindingPath.DataItem;
+
 		internal BindingExpression(
 			ManagedWeakReference viewReference,
 			DependencyPropertyDetails targetPropertyDetails,
@@ -91,6 +95,13 @@ namespace Windows.UI.Xaml.Data
 			// especially when Binding source is a StaticRessource which is never collected !
 			// Note: Bindings should still be disposed in order to also remove reference on the Source.
 			_view = viewReference;
+
+			if(_view?.Target is AttachedDependencyObject ado)
+			{
+				// This case is used to process x:Bind compiled bindings, where the POCO is wrapped around an
+				// AttachedDependencyObject instance to make it bindable.
+				_view = ado.OwnerWeakReference;
+			}
 
 			_targetOwnerType = targetPropertyDetails.Property.OwnerType;
 			TargetPropertyDetails = targetPropertyDetails;
@@ -108,6 +119,16 @@ namespace Windows.UI.Xaml.Data
 			{
 				_isCompiledSource = true;
 				ExplicitSource = ParentBinding.CompiledSource;
+			}
+
+			if (ParentBinding.XBindPropertyPaths != null)
+			{
+				_updateSources = ParentBinding
+					.XBindPropertyPaths
+					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
+					{
+					})
+					.ToArray();
 			}
 
 			if (ParentBinding.ElementName != null)
@@ -141,11 +162,21 @@ namespace Windows.UI.Xaml.Data
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
 		/// </summary>
+		/// <remarks>
+		/// This method is not part of UWP contract
+		/// </remarks>
 		/// <param name="value">The expected current value of the target</param>
 		public void UpdateSource(object value)
 		{
 			if (_IsCurrentlyPushing || _IsCurrentlyPushingTwoWay)
 			{
+				return;
+			}
+
+			if (ParentBinding.Mode != BindingMode.TwoWay)
+			{
+				// Calling this method does nothing if the Mode value of the binding is not TwoWay.
+				// [Microsoft documentation https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.data.bindingexpression.updatesource#remarks]
 				return;
 			}
 
@@ -166,7 +197,24 @@ namespace Windows.UI.Xaml.Data
 					);
 				}
 
-				_bindingPath.Value = value;
+				if (ParentBinding.XBindBack != null)
+				{
+					try
+					{
+						ParentBinding.XBindBack(DataContext, value);
+					}
+					catch (Exception exception)
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						{
+							this.Log().Error($"Failed to set the source value for x:Bind path [{ParentBinding.Path}]", exception);
+						}
+					}
+				}
+				else
+				{
+					_bindingPath.Value = value;
+				}
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
 			finally
@@ -299,13 +347,6 @@ namespace Windows.UI.Xaml.Data
 					this.Log().DebugFormat("Applying explicit source {0} on {1}", ExplicitSource?.GetType(), _view.Target?.GetType());
 				}
 
-				var resourceName = ExplicitSource as string;
-
-				if (resourceName.HasValue())
-				{
-					_dataContext = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, ResourceHelper.FindResource(resourceName));
-				}
-
 				ApplyBinding();
 			}
 		}
@@ -412,15 +453,51 @@ namespace Windows.UI.Xaml.Data
 				// registration may receive the new datacontext value.
 				_subscription.Disposable = null;
 
-				_bindingPath.ValueChangedListener = this;
+				if (_updateSources != null)
+				{
+					foreach (var bindingPath in _updateSources)
+					{
+						bindingPath.ValueChangedListener = this;
 
-				_bindingPath.SetWeakDataContext(weakDataContext);
+						if (ParentBinding.CompiledSource != null)
+						{
+							bindingPath.DataContext = ParentBinding.CompiledSource;
+						}
+						else
+						{
+							bindingPath.SetWeakDataContext(weakDataContext);
+						}
+					}
 
-				_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+					_subscription.Disposable = Actions.ToDisposable(() =>
+					{
+						foreach (var bindingPath in _updateSources)
+						{
+							bindingPath.ValueChangedListener = null;
+						}
+					});
+
+				}
+				else
+				{
+					_bindingPath.ValueChangedListener = this;
+					_bindingPath.SetWeakDataContext(weakDataContext);
+					_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+				}
 			}
 			else
 			{
-				_bindingPath.DataContext = null;
+				if (_updateSources != null)
+				{
+					foreach (var source in _updateSources)
+					{
+						source.DataContext = null;
+					}
+				}
+				else
+				{
+					_bindingPath.DataContext = null;
+				}
 
 				if (ParentBinding.FallbackValue != null)
 				{
@@ -437,7 +514,31 @@ namespace Windows.UI.Xaml.Data
 
 		void IValueChangedListener.OnValueChanged(object o)
 		{
-			SetTargetValueSafe(o);
+			if (ParentBinding.XBindSelector != null)
+			{
+				try
+				{
+					var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
+
+					if (canSetTarget)
+					{
+						SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+					}
+				}
+				catch (Exception e)
+				{
+					ApplyFallbackValue();
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+					{
+						this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+					}
+				}
+			}
+			else
+			{
+				SetTargetValueSafe(o);
+			}
 		}
 
 		private void SetTargetValueSafe(object v)
@@ -474,7 +575,12 @@ namespace Windows.UI.Xaml.Data
 					_IsCurrentlyPushing = true;
 					// Get the source value and place it in the target property
 					var convertedValue = ConvertValue(v);
-					if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
+
+					if (convertedValue == DependencyProperty.UnsetValue)
+					{
+						ApplyFallbackValue();
+					}
+					else if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
 					{
 						SetTargetValue(ConvertValue(ParentBinding.TargetNullValue));
 					}
@@ -486,7 +592,10 @@ namespace Windows.UI.Xaml.Data
 			}
 			catch (Exception e)
 			{
-				this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+				}
 
 				ApplyFallbackValue();
 			}

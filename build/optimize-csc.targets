@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+	</PropertyGroup>
+
+    <Target Name="OptimizeRoslyn" Condition="$([MSBuild]::IsOSUnixLike())">
+      <ItemGroup>
+        <_RoslynAot Include="$(RoslynTargetsPath)/*.dll" />
+      </ItemGroup>
+
+      <Exec Command="bash -c 'sudo chmod -R 777 $(RoslynTargetsPath)'" />
+      <Exec Command="mono --aot &quot;%(_RoslynAot.Identity)&quot;" ContinueOnError="true" />
+    </Target>
+
+</Project>

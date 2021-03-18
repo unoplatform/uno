@@ -19,12 +19,14 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Uno.Logging;
 using Uno.Disposables;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class WebView : Control
+	public partial class WebView : Control, ICustomClippingElement
 	{
 		private Android.Webkit.WebView _webView;
+		private bool _wasLoadedFromString;
 
 		protected override void OnApplyTemplate()
 		{
@@ -70,6 +72,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			_wasLoadedFromString = false;
 			if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
 			{
 				var path = $"file:///android_asset/{uri.PathAndQuery}";
@@ -119,6 +122,7 @@ namespace Windows.UI.Xaml.Controls
 					element => element.Value.JoinBy(", ")
 				);
 
+			_wasLoadedFromString = false;
 			_webView.LoadUrl(uri.AbsoluteUri, headers);
 		}
 
@@ -129,7 +133,9 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_webView.LoadData(text, "text/html; charset=utf-8", "utf-8");
+			_wasLoadedFromString = true;
+			//Note : _webView.LoadData does not work properly on Android 10 even when we encode to base64.
+			_webView.LoadDataWithBaseURL(null, text, "text/html; charset=utf-8", "utf-8", null);
 		}
 
 		//This should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
@@ -147,6 +153,10 @@ namespace Windows.UI.Xaml.Controls
 
 			return await tcs.Task;
 		}
+
+		public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
+			AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
+			
 
 		#region Navigation History
 
@@ -248,11 +258,15 @@ namespace Windows.UI.Xaml.Controls
 			public InternalClient(WebView webView)
 			{
 				_webView = webView;
-				//SetLayerType disables hardware acceleration for a single view.
-				//This is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
-				//http://developer.android.com/guide/topics/graphics/hardware-accel.html
-				//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
-				_webView.SetLayerType(LayerType.Software, null);
+
+				if (FeatureConfiguration.WebView.ForceSoftwareRendering)
+				{
+					//SetLayerType disables hardware acceleration for a single view.
+					//This is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
+					//http://developer.android.com/guide/topics/graphics/hardware-accel.html
+					//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
+					_webView.SetLayerType(LayerType.Software, null);
+				}
 			}
 
 #pragma warning disable CS0672 // Member overrides obsolete member
@@ -293,15 +307,20 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning restore 0672, 618
 
 			public override void OnPageFinished(Android.Webkit.WebView view, string url)
-			{
+			{				
+				_webView.DocumentTitle = view.Title;
+
 				_webView.OnNavigationHistoryChanged();
 
 				var args = new WebViewNavigationCompletedEventArgs()
 				{
 					IsSuccess = _webViewSuccess,
-					Uri = new Uri(url),
 					WebErrorStatus = _webErrorStatus
 				};
+				if (!_webView._wasLoadedFromString && !string.IsNullOrEmpty(url))
+				{
+					args.Uri = new Uri(url);
+				}
 
 				_webView.NavigationCompleted?.Invoke(_webView, args);
 				base.OnPageFinished(view, url);
@@ -435,5 +454,10 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+		// Force clipping, otherwise native WebView may exceed its bounds in some circumstances (eg when Xaml WebView is animated)
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 	}
 }

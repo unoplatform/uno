@@ -1,21 +1,25 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using System.Numerics;
 using System.Linq;
 using static System.Math;
+using Uno.Extensions;
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using UIKit;
 using Path = UIKit.UIBezierPath;
 #elif __MACOS__
 using AppKit;
 using Path = AppKit.NSBezierPath;
-#elif XAMARIN_ANDROID
+using CoreGraphics;
+#elif __ANDROID__
 using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;
 using Uno.UI;
+#elif __SKIA__
+using Path = Windows.UI.Composition.SkiaGeometrySource2D;
 #else
 using Path = System.Object;
 #endif
@@ -35,11 +39,12 @@ namespace Uno.Media
 
 		public override void BeginFigure(Point startPoint, bool isFilled, bool isClosed)
 		{
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
+#if __IOS__ || __MACOS__
 			bezierPath.MoveTo(startPoint);
-#elif XAMARIN_ANDROID
-			var physicalStartPoint = LogicalToPhysicalNoRounding(startPoint);
-			bezierPath.MoveTo((float)physicalStartPoint.X, (float)physicalStartPoint.Y);
+#elif __ANDROID__
+			bezierPath.MoveTo((float)startPoint.X, (float)startPoint.Y);
+#elif __SKIA__
+			bezierPath.Geometry.MoveTo(new SkiaSharp.SKPoint((float)startPoint.X, (float)startPoint.Y));
 #endif
 
 			_points.Add(startPoint);
@@ -47,11 +52,14 @@ namespace Uno.Media
 
 		public override void LineTo(Point point, bool isStroked, bool isSmoothJoin)
 		{
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
+#if __IOS__
 			bezierPath.AddLineTo(point);
-#elif XAMARIN_ANDROID
-			var physicalPoint = LogicalToPhysicalNoRounding(point);
-			bezierPath.LineTo((float)physicalPoint.X, (float)physicalPoint.Y);
+#elif __MACOS__
+			bezierPath.LineTo(point);
+#elif __ANDROID__
+			bezierPath.LineTo((float)point.X, (float)point.Y);
+#elif __SKIA__
+			bezierPath.Geometry.LineTo((float)point.X, (float)point.Y);
 #endif
 
 			_points.Add(point);
@@ -59,26 +67,35 @@ namespace Uno.Media
 
 		public override void BezierTo(Point point1, Point point2, Point point3, bool isStroked, bool isSmoothJoin)
 		{
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
+#if __IOS__
 			bezierPath.AddCurveToPoint(point3, point1, point2);
-#elif XAMARIN_ANDROID
-			var physicalPoint1 = LogicalToPhysicalNoRounding(point1);
-			var physicalPoint2 = LogicalToPhysicalNoRounding(point2);
-			var physicalPoint3 = LogicalToPhysicalNoRounding(point3);
-			bezierPath.CubicTo((float)physicalPoint1.X, (float)physicalPoint1.Y, (float)physicalPoint2.X, (float)physicalPoint2.Y, (float)physicalPoint3.X, (float)physicalPoint3.Y);
+#elif __MACOS__
+			bezierPath.CurveTo(point3, point1, point2);
+#elif __ANDROID__
+			bezierPath.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
+#elif __SKIA__
+			bezierPath.Geometry.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
 #endif
-
 			_points.Add(point3);
 		}
 
 		public override void QuadraticBezierTo(Point point1, Point point2, bool isStroked, bool isSmoothJoin)
 		{
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
+#if __IOS__
 			bezierPath.AddQuadCurveToPoint(point2, point1);
-#elif XAMARIN_ANDROID
-			var physicalPoint1 = LogicalToPhysicalNoRounding(point1);
-			var physicalPoint2 = LogicalToPhysicalNoRounding(point2);
-			bezierPath.QuadTo((float)physicalPoint1.X, (float)physicalPoint1.Y, (float)physicalPoint2.X, (float)physicalPoint2.Y);
+#elif __MACOS__
+			// Convert a Quadratic Curve to cubic curve to draw it.
+			// https://stackoverflow.com/a/52569210/1771254
+			var startPoint = bezierPath.CurrentPoint;
+			var endPoint = point1;
+
+			var controlPoint1 = new CGPoint(startPoint.X + ((point2.X - startPoint.X) * 2.0 / 3.0),  startPoint.Y + (point2.Y - startPoint.Y) * 2.0 / 3.0);
+			var controlPoint2 = new CGPoint(endPoint.X + ((point2.X - endPoint.X) * 2.0 / 3.0), endPoint.Y + (point2.Y - endPoint.Y) * 2.0 / 3.0);
+			bezierPath.CurveTo(point1, controlPoint1, controlPoint2);
+#elif __ANDROID__
+			bezierPath.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
+#elif __SKIA__
+			bezierPath.Geometry.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
 #endif
 
 			_points.Add(point2);
@@ -100,7 +117,7 @@ namespace Uno.Media
 			var endAngle = Atan2(endPoint.Y - center.Y, endPoint.X - center.X);
 			var circle = new Rect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
 
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
+#if __IOS__
 			bezierPath.AddArc(
 				center, 
 				(nfloat)radius, 
@@ -108,7 +125,23 @@ namespace Uno.Media
 				(nfloat)endAngle, 
 				sweepDirection == SweepDirection.Clockwise
 			);
-#elif XAMARIN_ANDROID
+
+#elif __MACOS__
+//Ugly workaround. check if all vars are defined
+			if (!double.IsNaN(radius) && !double.IsNaN(startAngle) && !double.IsNaN(endAngle)) {
+
+				//Convert to degrees in a 0 =< x =< 360 deg range
+				startAngle = MathEx.ToDegreeNormalized(startAngle);
+				endAngle = MathEx.ToDegreeNormalized(endAngle);
+				bezierPath.AppendPathWithArc(center,
+										 (nfloat)radius,
+										 (nfloat)startAngle,
+										 (nfloat)endAngle);
+
+				//Move to startPoint. To prevent segment being drawn to the startPoint from the end of the arc
+				bezierPath.MoveTo(startPoint);
+			}
+#elif __ANDROID__
 			var sweepAngle = endAngle - startAngle;
 
 			// Convert to degrees
@@ -126,9 +159,32 @@ namespace Uno.Media
 			}
 
 			bezierPath.ArcTo(
-				circle.LogicalToPhysicalPixels().ToRectF(),
+				circle.ToRectF(),
 				(float)startAngle,
 				(float)sweepAngle
+			);
+#elif __SKIA__
+			var sweepAngle = endAngle - startAngle;
+
+			// Convert to degrees
+			startAngle = startAngle * (180 / PI);
+			sweepAngle = sweepAngle * (180 / PI);
+
+			// Invert y-axis
+			startAngle = (startAngle + 360) % 360;
+			sweepAngle = (sweepAngle + 360) % 360;
+
+			// Apply direction
+			if (sweepDirection == SweepDirection.Counterclockwise)
+			{
+				sweepAngle -= 360;
+			}
+
+			bezierPath.Geometry.ArcTo(
+				new SkiaSharp.SKRect((float)circle.Left, (float)circle.Top, (float)circle.Right, (float)circle.Bottom),
+				(float)startAngle,
+				(float)sweepAngle,
+				false
 			);
 #endif
 
@@ -185,21 +241,14 @@ namespace Uno.Media
 			{
 				if (closed)
 				{
-#if XAMARIN_IOS || XAMARIN_IOS_UNIFIED
+#if __IOS__
 					bezierPath.ClosePath();
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 					bezierPath.Close();
 #endif
 				}
 			}
 		}
-
-#if XAMARIN_ANDROID
-		private static Point LogicalToPhysicalNoRounding(Point point)
-		{
-			return new Point(point.X * ViewHelper.Scale, point.Y * ViewHelper.Scale);
-		}
-#endif
 
 		public override void Dispose()
 		{

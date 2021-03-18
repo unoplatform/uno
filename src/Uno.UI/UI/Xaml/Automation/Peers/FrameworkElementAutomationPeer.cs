@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Uno;
 using Uno.UI;
 using System.Linq;
@@ -20,21 +21,16 @@ namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
-		public IFrameworkElement Owner { get; } // TODO: UIElement
+		public UIElement Owner { get; } 
 
 		public FrameworkElementAutomationPeer() { }
 
 		public FrameworkElementAutomationPeer(object element)
 		{
-			Owner = element as IFrameworkElement; // TODO: UIElement
+			Owner = element as UIElement;
 		}
 
-		public FrameworkElementAutomationPeer(IFrameworkElement element)
-		{
-			Owner = element;
-		}
-
-		public FrameworkElementAutomationPeer(FrameworkElement owner) : base()
+		public FrameworkElementAutomationPeer(FrameworkElement owner)
 		{
 			Owner = owner;
 		}
@@ -60,7 +56,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return null;
 		}
 
-		public static AutomationPeer CreatePeerForIFrameworkElement(IFrameworkElement element)
+		private static AutomationPeer CreatePeerForIFrameworkElement(IFrameworkElement element)
 		{
 			if (element == null)
 			{
@@ -70,7 +66,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return element.GetAutomationPeer();
 		}
 
-		public static AutomationPeer FromIFrameworkElement(IFrameworkElement element)
+		private static AutomationPeer FromIFrameworkElement(IFrameworkElement element)
 		{
 			if (element == null)
 			{
@@ -117,14 +113,20 @@ namespace Windows.UI.Xaml.Automation.Peers
 				return simpleAccessibilityName;
 			}
 
-			if (Owner.GetAccessibilityInnerText() is string innerText && !string.IsNullOrEmpty(innerText))
+			if ((Owner as FrameworkElement)?.GetAccessibilityInnerText() is string innerText && !string.IsNullOrEmpty(innerText))
 			{
 				return innerText;
 			}
 
 			return base.GetNameCore();
 		}
-		
+
+		/// <inheritdoc />
+		protected override IList<AutomationPeer> GetChildrenCore()
+		{
+			return Owner.GetChildren().OfType<UIElement>().Select(CreatePeerForElement).ToList();
+		}
+
 		private string GetSimpleAccessibilityName()
 		{
 			if (FeatureConfiguration.AutomationPeer.UseSimpleAccessibility
@@ -175,5 +177,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				control.Focus(FocusState.Programmatic);
 			};
 		}
+
+		protected override AutomationLandmarkType GetLandmarkTypeCore() => AutomationProperties.GetLandmarkType(Owner);
 	}
 }

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleDisplayName</key>
+	<string>Uno SamplesApp</string>
 	<key>CFBundleName</key>
 	<string>SamplesApp.macOS</string>
 	<key>CFBundleIdentifier</key>
@@ -26,5 +28,25 @@
 	<string>NSApplication</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>ATSApplicationFontsPath</key>
+	<string>Fonts/uno-fluentui-assets.ttf</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Uno Samples Test scheme</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>uno-samples-test</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionMinimumTLSVersion</key>
+		<string>TLSv1.2</string>
+	</dict>
 </dict>
 </plist>

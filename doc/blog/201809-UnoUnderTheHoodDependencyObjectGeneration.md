@@ -43,7 +43,7 @@ What if you have code like this in your app?
 ````
  
 
-We're inheriting from `DependencyObject` and defining a `DependencyProperty` using the standard syntax, which uses the `DependencyObject.GetValue` and `DependencyObject.SetValue` methods. On UWP these are defined in the base class, but if `DependencyObject` is an interface then there _is_ no base class. In fact if it's just an interface then the code won't compile, because the interface hasn't been implemented. 
+We're inheriting from `DependencyObject` and defining a `DependencyProperty` using the standard syntax, which uses the `DependencyObject.GetValue` and `DependencyObject.SetValue` methods. On UWP these are defined in the base class, but if `DependencyObject` is an interface then there _is_ no base class. In fact, if it's just an interface, then the code won't compile, because the interface hasn't been implemented. 
 
 Luckily `DependencyObject` isn't _just_ an interface in Uno, and the code above will compile as-is on Android and iOS, just as it does on UWP. Code generation makes it happen. Here's some programmer art to illustrate the point. The detailed explanation is below.
 
@@ -91,12 +91,12 @@ namespace <#= mixin.NamespaceName #>
 �
 ````
  
-That's from the [template](https://github.com/nventive/Uno/blob/be4f4e938a861d5802c228efc314c1f3ea314027/src/Uno.UI/UI/Xaml/IFrameworkElementImplementation.iOS.tt#L30-L46) which adds `IFrameworkElement` functionality in Uno. It implements properties like `Width`/`Height`, `Opacity`, `Style`, etc. At compile time, the template runs and creates a [partial class](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) with those members for `ScrollContentPresenter` and several other classes (including `FrameworkElement` itself).  
+That's from the [template](https://github.com/unoplatform/uno/blob/be4f4e938a861d5802c228efc314c1f3ea314027/src/Uno.UI/UI/Xaml/IFrameworkElementImplementation.iOS.tt#L30-L46) which adds `IFrameworkElement` functionality in Uno. It implements properties like `Width`/`Height`, `Opacity`, `Style`, etc. At compile time, the template runs and creates a [partial class](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) with those members for `ScrollContentPresenter` and several other classes (including `FrameworkElement` itself).  
  
 The T4 approach is well-tested and works well in this scenario. It has a couple of limitations though: 
  
 1. It requires manual set-up: each class that wants to use the mixin has to be explicitly registered. 
-2. It requires manual flags to make sure that the generated code doesn't 'step on' the authored code, eg by generating a `Foo()` method when the authored code already defines `Foo()`.  
+2. It requires manual flags to make sure that the generated code doesn't 'step on' the authored code, e.g. by generating a `Foo()` method when the authored code already defines `Foo()`.  
 3. It doesn't support external code. You can't use the mixin above in your app (short of copy-pasting the templates into the app). 
  
 For that reason, in order to have a mixin to implement `DependencyObject`'s features, we went with something a little more complex and a little more magical. 
@@ -104,13 +104,13 @@ For that reason, in order to have a mixin to implement `DependencyObject`'s feat
 ## DependencyObjectGenerator - Making the magic happen 
 The release of [Roslyn](https://github.com/dotnet/roslyn), aka the '.NET Compiler Platform', was a boon to code generation. With Roslyn, Microsoft open-sourced the C# compiler, but they also exposed a powerful API for code analysis. With Roslyn it's easy to access all the syntactic and semantic information that the compiler possesses.  
  
-To leverage this power for code generation, we created the [Uno.SourceGeneration](https://github.com/nventive/Uno.SourceGeneration) package. Like the Uno Platform, it's free and open source. It creates a build task and allows you to easily add generated code based on Roslyn's analysis of your solution. This might be partial class definitions which augment existing types, or it might be entirely new classes. 
+To leverage this power for code generation, we created the [Uno.SourceGeneration](https://github.com/unoplatform/uno.SourceGeneration) package. Like the Uno Platform, it's free and open source. It creates a build task and allows you to easily add generated code based on Roslyn's analysis of your solution. This might be partial class definitions which augment existing types, or it might be entirely new classes. 
  
-In Uno, this used by the [DependencyObjectGenerator](https://github.com/nventive/Uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) class. This generator looks for every class in the solution that implements the `DependencyObject` interface, like our `MyBindableObject` example above. For each such class, it automatically generates the methods and properties of `DependencyObject`. 
+In Uno, this used by the [DependencyObjectGenerator](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) class. This generator looks for every class in the solution that implements the `DependencyObject` interface, like our `MyBindableObject` example above. For each such class, it automatically generates the methods and properties of `DependencyObject`. 
 
 Since the generator has a full set of semantic information from Roslyn, it can do this in a smart way. For instance, if it detects that the class is a view type, it adds methods to update binding information when the view is loaded or unloaded. 
 
-Here's a [small snippet](https://github.com/nventive/Uno/blob/74ba91756c446107e7394e0423527de273154f5d/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs#L218-L250) of code from `DependencyObjectGenerator`:
+Here's a [small snippet](https://github.com/unoplatform/uno/blob/74ba91756c446107e7394e0423527de273154f5d/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs#L218-L250) of code from `DependencyObjectGenerator`:
 
 ```` csharp
 			private void WriteAndroidAttachedToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)

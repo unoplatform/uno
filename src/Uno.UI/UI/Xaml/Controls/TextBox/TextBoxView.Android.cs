@@ -18,10 +18,12 @@ using Android.OS;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
+using AndroidX.Core.Content;
+using AndroidX.Core.Graphics;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBoxView : EditText, DependencyObject
+	internal partial class TextBoxView : EditText, DependencyObject
 	{
 		private bool _isRunningTextChanged;
 		private bool _isInitialized = false;
@@ -159,21 +161,42 @@ namespace Windows.UI.Xaml.Controls
 
 					var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
 					var editor = _editorField.Get(editText);
+
+#if __ANDROID_28__
+#pragma warning disable 618 // SetColorFilter is deprecated
 					if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 					{
 						var drawables = new Drawable[2];
-						drawables[0] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawables[1] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
 						drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
 						drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
 						_cursorDrawableField.Set(editor, drawables);
 					}
 					else
 					{
-						var drawable = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
 						drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
 						_cursorDrawableField.Set(editor, drawable);
 					}
+#pragma warning restore 618 // SetColorFilter is deprecated
+#else
+					if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
+					{
+						var drawables = new Drawable[2];
+						drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawables[0].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
+						drawables[1].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
+						_cursorDrawableField.Set(editor, drawables);
+					}
+					else
+					{
+						var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawable.SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
+						_cursorDrawableField.Set(editor, drawable);
+					}
+#endif
 				}
 				catch (Exception)
 				{
@@ -218,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ForegroundProperty, value); }
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),

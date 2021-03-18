@@ -12,11 +12,35 @@
 		<StackPanel>
 			<AutoSuggestBox x:Name="box1"
 							HorizontalAlignment="Left"
+							TextMemberPath="SuggestionText"
 							TextChanged="AutoSuggestBox_TextChanged"
 							SuggestionChosen="AutoSuggestBox_SuggestionChosen"
+							QuerySubmitted="AutoSuggestBox_QuerySubmitted"
 							Width="300"
-							AutomationProperties.Name="Basic AutoSuggestBox" />
-			<TextBlock x:Name="result" />
+							
+							AutomationProperties.Name="Basic AutoSuggestBox">
+				<AutoSuggestBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding SuggestionText}" />
+					</DataTemplate>
+				</AutoSuggestBox.ItemTemplate>
+			</AutoSuggestBox>
+			<TextBlock x:Name="IWantToSeeStuffUnderTheSuggestions" xml:space="preserve">
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			</TextBlock>
+			<TextBlock x:Name="suggest" />
+			<TextBlock x:Name="query" />
+			<TextBlock x:Name="textChanged" />
 			<CheckBox x:Name="ShouldClearTextBox"
 					  Content="Should clear"
 					  IsChecked="True" />

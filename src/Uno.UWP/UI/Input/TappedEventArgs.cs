@@ -9,13 +9,23 @@ namespace Windows.UI.Input
 		{
 			PointerDeviceType = type;
 			Position = position;
-			TapCount = TapCount;
+			TapCount = tapCount;
 		}
 
 		public PointerDeviceType PointerDeviceType { get; }
 
-		public global::Windows.Foundation.Point Position { get; }
+		public Point Position { get; }
 
 		public uint TapCount { get; }
+
+		[global::Uno.NotImplemented]
+		public uint ContactCount
+		{
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.TappedEventArgs", "uint TappedEventArgs.ContactCount");
+				return 0;
+			}
+		}
 	}
 }

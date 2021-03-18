@@ -1,18 +1,32 @@
-﻿<#@template language="C#"#>
+﻿<#@template language="C#" hostspecific="True" #>
 <#@output extension="g.cs" #>
-#if XAMARIN_ANDROID
-<# 
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+
+<#@include file="..\..\UI\Xaml\IFrameworkElement.Partials.tt"#>
+<#
+	GenerateDefaultPartialClasses(
+		"Windows.UI.Xaml.Controls.NativeListViewBase",
+		"Windows.UI.Xaml.Controls.NativePagedView",
+		"Windows.UI.Xaml.Controls.NativeScrollContentPresenter",
+		"Windows.UI.Xaml.Controls.TextBoxView"
+	);
+#>
+
+#if __ANDROID__
+<#
+	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
 	AddClass("Uno.UI.Controls.Legacy", "GridView");
-	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListView");
-	AddClass("Windows.UI.Xaml.Controls", "Image", hasNewMaxWidthHeight: true, hasAutomationPeer: true);
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView");
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView");
-	AddClass("Windows.UI.Xaml.Controls", "ProgressRing");
-	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter");
-	AddClass("Windows.UI.Xaml.Controls", "NativePagedView");
-	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase");
-#>
+#> 
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.Android.tt"#>
 #endif

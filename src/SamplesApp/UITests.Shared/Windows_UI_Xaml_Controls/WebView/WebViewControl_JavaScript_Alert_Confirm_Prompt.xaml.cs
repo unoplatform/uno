@@ -7,6 +7,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 	[SampleControlInfo("WebView", "Javascript_AlertConfirmPrompt")]
 	public sealed partial class WebViewControlJavaScriptAlertConfirmPrompt : UserControl
 	{
+#if HAS_UNO
 		public WebViewControlJavaScriptAlertConfirmPrompt()
 		{
 			InitializeComponent();
@@ -57,5 +58,6 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 </html>";
 			MyWebView.NavigateToString(sampleHTML);
 		}
+#endif
 	}
 }

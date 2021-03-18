@@ -40,7 +40,7 @@
 	</array>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Fonts/winjs-symbols.ttf</string>
+		<string>Fonts/uno-fluentui-assets.ttf</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
@@ -49,5 +49,24 @@
 		<key>NSExceptionMinimumTLSVersion</key>
 		<string>TLSv1.2</string>
 	</dict>
+	<key>NSMotionUsageDescription</key>
+	<string>This is a step counter, and we&apos;d like to track motion. </string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TODO NSLocationWhenInUseUsageDescription</string>
+	<key>NSLocationUsageDescription</key>
+	<string>TODO NSLocationUsageDescription</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+	  <dict>
+        <key>CFBundleURLName</key>
+        <string>Uno Samples Test scheme</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		  <string>uno-samples-test</string>
+		</array>
+	  </dict>
+	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

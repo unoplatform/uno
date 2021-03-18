@@ -2,57 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false || false || NET461 || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class KeyRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool KeyRoutedEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.KeyRoutedEventArgs", "bool KeyRoutedEventArgs.Handled");
-			}
-		}
-		#endif
-		#if false || false || NET461 || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.System.VirtualKey Key
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VirtualKey KeyRoutedEventArgs.Key is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CorePhysicalKeyStatus KeyStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus KeyRoutedEventArgs.KeyStatus is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.System.VirtualKey OriginalKey
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VirtualKey KeyRoutedEventArgs.OriginalKey is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		// Skipping already declared property Handled
+		// Skipping already declared property Key
+		// Skipping already declared property OriginalKey
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string DeviceId
 		{
 			get

@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Gets the first sub-view of this control or null if there is none
 		/// </summary>
-		public IFrameworkElement GetTemplateRoot()
+		internal IFrameworkElement GetTemplateRoot()
 		{
 			return Subviews.FirstOrDefault() as IFrameworkElement;
 		}
@@ -58,28 +58,7 @@ namespace Windows.UI.Xaml.Controls
 				throw new Exception("A Xaml control may not contain more than one child.");
 			}
 
-			if (FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				// This is no longer needed when using normal clipping.
-				// Assigning the frame overrides the standard Uno layouter, which 
-				// prevents the clipping to be set to the proper size.
-
-				child.Frame = Bounds;
-#if __IOS__
-				child.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-#elif __MACOS__
-				child.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
-#endif
-			}
-
 			AddSubview(child);
-		}
-
-		protected virtual bool RequestFocus(FocusState state)
-		{
-			FocusState = state;
-
-			return true;
 		}
 	}
 }

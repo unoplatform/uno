@@ -4,6 +4,11 @@
 # Remove everything beginning with a dot
 .*/
 !.github/
+!.devcontainer/
+
+# operating system junk files
+thumbs.db
+.DS_Store
 
 # Umbrella
 umbrella_installlog.txt
@@ -246,5 +251,6 @@ msbuild.binlog
 
 /src/SourceGenerators/System.Xaml/obj-net_4_x-win32
 /src/SamplesApp/SamplesApp.Wasm.UITests/out
-.DS_Store
 /src/Uno.UI.TestComparer/Properties/launchSettings.json
+
+src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts

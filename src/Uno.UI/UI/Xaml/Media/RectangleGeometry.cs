@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.Text;
 using Windows.Foundation;
 #if XAMARIN_IOS
 using UIKit;
@@ -18,15 +14,15 @@ namespace Windows.UI.Xaml.Media
 
 		public Rect Rect
 		{
-			get { return (Rect)this.GetValue(RectProperty); }
-			set { this.SetValue(RectProperty, value); }
+			get => (Rect)this.GetValue(RectProperty);
+			set => this.SetValue(RectProperty, value);
 		}
 
-		public static readonly DependencyProperty RectProperty =
+		public static DependencyProperty RectProperty { get ; } =
 			DependencyProperty.Register(
 				"Rect",
 				typeof(Rect), typeof(RectangleGeometry),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((RectangleGeometry)s)?.OnRectChanged(e)
 				)

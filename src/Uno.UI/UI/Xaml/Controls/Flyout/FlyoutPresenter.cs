@@ -1,4 +1,8 @@
-﻿using Windows.UI.Xaml.Input;
+﻿using Uno.UI;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -6,12 +10,23 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public FlyoutPresenter()
 		{
+			DefaultStyleKey = typeof(FlyoutPresenter);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
-			// All pointer-related should be "eaten" to prevent closing
-			// the flyout when a tap is done in its content
+			if (this.GetTemplateRoot() is FrameworkElement root && this.Parent is FlyoutBasePopupPanel panel)
+			{
+				// allow flyout to be closed by clicking outside its content
+				var rootCoords = args.GetCurrentPoint(root).Position;
+
+				if (0 > rootCoords.X || rootCoords.X > root.ActualWidth ||
+					0 > rootCoords.Y || rootCoords.Y > root.ActualHeight)
+				{
+					panel.Flyout.Hide();
+				}
+			}
+
 			args.Handled = true;
 		}
 

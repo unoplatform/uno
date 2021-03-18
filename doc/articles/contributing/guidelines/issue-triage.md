@@ -24,7 +24,7 @@ These guidelines serves as a primary document for triaging incoming issues to Un
 
 ## Security
 
-Security related matters should be disclosed in private [as per the our policy on GitHub](https://github.com/unoplatform/uno/security/policy). If a security matter is raised as an issue, please capture the relevant information, [delete the GitHub issue](https://help.github.com/en/articles/deleting-an-issue) and follow up via email. This [tool can be used to find](https://emailaddress.github.io/) (almost) any GitHub user's email address.
+Security related matters should be disclosed in private [as per our policy on GitHub](https://github.com/unoplatform/uno/security/policy). If a security matter is raised as an issue, please capture the relevant information, [delete the GitHub issue](https://help.github.com/en/articles/deleting-an-issue) and follow up via email. This [tool can be used to find](https://emailaddress.github.io/) (almost) any GitHub user's email address.
 
 ## Support requests
 
@@ -36,7 +36,7 @@ Community support requests should be directed to:
 
 * Our [documentation](https://platform.uno/docs/) and [troubleshooting guide](https://platform.uno/docs/troubleshooting-guide).
 * [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform).
-* The [Uno gitter room](https://gitter.im/uno-platform/Lobby)
+* The [Discord Channel #uno-platform](https://discord.gg/eBHZSKG)
 * On [Twitter using the #unoplatform](https://twitter.com/search?q=%23unoplatform) hashtag.
 
 Organizations that want a deeper level of support beyond community support, should be directed to [contact unoplatform](https://platform.uno/contact/) to discuss obtaining professional support.

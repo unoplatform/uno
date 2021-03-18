@@ -1,0 +1,132 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+
+	<PropertyGroup>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworks>
+		<TargetFrameworksCI>xamarinmac20;MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworksCI>
+		<NoWarn>$(NoWarn);NU1701;NU5100;NU5118;NU5128</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<Deterministic>true</Deterministic>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Authors>nventive</Authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</Description>
+		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.MSAL</PackageId>
+
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="buildTransitive\Uno.UI.MSAL.targets" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="buildTransitive/*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.17763'">
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\..\Common.targets" />
+	<Import Project="..\..\Uno.CrossTargetting.props" />
+	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
+
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)**" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
+
+	<Target Name="IncludeRuntimeAssets" BeforeTargets="BeforeCompile">
+
+		<!--
+		This inclusion is based on https://github.com/NuGet/NuGet.Client/blob/c05f9afa9c2fcee7fbe10754521b3f6424bee128/src/NuGet.Core/NuGet.Build.Tasks.Pack/NuGet.Build.Tasks.Pack.targets#L422.
+		This is required because this project is cross-targeted.
+		-->
+		<ItemGroup>
+			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Wasm\$(Configuration)\netstandard2.0\Uno.UI.MSAL.dll">
+				<Pack>true</Pack>
+				<PackagePath>uno-runtime/webassembly</PackagePath>
+			</TfmSpecificPackageFile>
+			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Wasm\$(Configuration)\netstandard2.0\Uno.UI.MSAL.pdb">
+				<Pack>true</Pack>
+				<PackagePath>uno-runtime/webassembly</PackagePath>
+			</TfmSpecificPackageFile>
+			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Skia\$(Configuration)\netstandard2.0\Uno.UI.MSAL.dll">
+				<Pack>true</Pack>
+				<PackagePath>uno-runtime/skia</PackagePath>
+			</TfmSpecificPackageFile>
+			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Skia\$(Configuration)\netstandard2.0\Uno.UI.MSAL.pdb">
+				<Pack>true</Pack>
+				<PackagePath>uno-runtime/skia</PackagePath>
+			</TfmSpecificPackageFile>
+		</ItemGroup>
+
+		<RemoveDuplicates Inputs="@(TfmSpecificPackageFile)">
+				<Output
+						TaskParameter="Filtered"
+						ItemName="FilteredTfmSpecificPackageFile"/>
+		</RemoveDuplicates>
+
+		<ItemGroup>
+			<TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)" />
+			<TfmSpecificPackageFile Include="@(FilteredTfmSpecificPackageFile)" />
+		</ItemGroup>
+
+	</Target>
+
+	<!-- Run on windows only to get the nuget package built properly (Mono 6.10 crashes with this on OSX) -->
+	<ItemGroup Condition="'$(CI_Build)'=='true' and $([MSBuild]::IsOsPlatform('Windows'))">
+		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<!-- Workaround for missing target running on .NET 5 -->
+	<Target Name="GetTargetPath" />
+
+</Project>

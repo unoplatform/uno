@@ -178,12 +178,12 @@ namespace Uno.UI.Controls.Legacy
 		public GroupStyle GroupStyle { get; set; }
 
 		#region Dependency Properties
-		public static readonly DependencyProperty ItemsSourceProperty =
+		public static DependencyProperty ItemsSourceProperty { get ; } =
 			DependencyProperty.Register(
 				"ItemsSource",
 				typeof(object),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((ListViewBase)s).OnItemsSourceChanged(e)
 				)
@@ -195,12 +195,12 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty SelectedItemProperty =
+		public static DependencyProperty SelectedItemProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectedItem",
 				typeof(object),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => (s as ListViewBase).OnSelectedItemChanged(e.OldValue, e.NewValue)
 				)
@@ -213,12 +213,12 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedItems.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SelectedItemsProperty =
+		public static DependencyProperty SelectedItemsProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectedItems",
 				typeof(IList<object>),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					new List<object>(),
 					(s, e) => ((ListViewBase)s)?.OnSelectedItemsChanged(e.OldValue as IList<object>, e.NewValue as IList<object>)
 				)
@@ -230,12 +230,12 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(SelectedItemsProperty, value); }
 		}
 
-		public static readonly DependencyProperty SelectionModeProperty =
+		public static DependencyProperty SelectionModeProperty { get ; } =
 			DependencyProperty.Register(
 				"SelectionMode",
 				typeof(ListViewSelectionMode),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: ListViewSelectionMode.Single,
 					propertyChangedCallback: (s, e) => ((ListViewBase)s).OnSelectionModeChanged((ListViewSelectionMode)e.NewValue)
 				)
@@ -247,12 +247,12 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(SelectionModeProperty, value); }
 		}
 
-		public static readonly DependencyProperty HeaderProperty =
+		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register(
 				"Header",
 				typeof(object),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((ListViewBase)s).OnHeaderChanged(e)
 				)
@@ -264,12 +264,12 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(HeaderProperty, value); }
 		}
 
-		public static readonly DependencyProperty FooterProperty =
+		public static DependencyProperty FooterProperty { get ; } =
 			DependencyProperty.Register(
 				"Footer",
 				typeof(object),
 				typeof(ListViewBase),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((ListViewBase)s).OnFooterChanged(e)
 				)
@@ -292,8 +292,8 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(UnselectOnClickProperty, value); }
 		}
 
-		public static readonly DependencyProperty UnselectOnClickProperty =
-			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(ListViewBase), new PropertyMetadata(default(bool)));
+		public static DependencyProperty UnselectOnClickProperty { get ; } =
+			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(ListViewBase), new FrameworkPropertyMetadata(default(bool)));
 		private ListViewBaseLayoutTemplate _layoutTemplate;
 		#endregion
 		#endregion
@@ -308,8 +308,6 @@ namespace Uno.UI.Controls.Legacy
 		{
 			BackgroundColor = UIColor.Clear;
 			IFrameworkElementHelper.Initialize(this);
-
-			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
 		}
 
 		#region Overrides
@@ -509,7 +507,7 @@ namespace Uno.UI.Controls.Legacy
 
 		private void OnSelectedItemsChanged(IList<object> oldValue, IList<object> newValue)
 		{
-			OnSelectionChanged(new SelectionChangedEventArgs(oldValue, newValue));
+			OnSelectionChanged(new SelectionChangedEventArgs(this, oldValue, newValue));
 			var newSafe = newValue.Safe();
 			var oldSafe = oldValue.Safe();
 			var newAndChanged = newSafe.Except(oldSafe);
@@ -574,11 +572,6 @@ namespace Uno.UI.Controls.Legacy
 		private void ResetSelection()
 		{
 			SelectedItem = null;
-		}
-
-		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
-		{
-			this.UpdateItemTemplateSelectorForDisplayMemberPath(newDisplayMemberPath);
 		}
 
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs args)

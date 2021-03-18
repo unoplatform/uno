@@ -10,6 +10,8 @@ namespace Windows.UI.Xaml
 	/// <summary>Defines the radius of a rectangle's corners. </summary>
 	public class CornerRadiusConverter : TypeConverter
 	{
+		private static readonly char[] _valueSeparator = new char[] { ',', ' ', '\t', '\r', '\n' };
+
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			var canConvert =
@@ -31,7 +33,7 @@ namespace Windows.UI.Xaml
 			if (value is string stringValue)
 			{
 				var values = stringValue
-					.Split(new[] { ',' })
+					.Split(_valueSeparator, StringSplitOptions.RemoveEmptyEntries)
 					.Select(s => double.Parse(s, CultureInfo.InvariantCulture))
 					.ToArray();
 

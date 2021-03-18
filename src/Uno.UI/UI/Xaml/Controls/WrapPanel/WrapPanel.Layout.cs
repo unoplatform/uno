@@ -227,9 +227,9 @@ namespace Windows.UI.Xaml.Controls
 					elementSize.Direct;
 
 				// Arrange the element
-				Foundation.Rect bounds = isHorizontal ?
-					new Foundation.Rect(directOffset, indirectOffset, directGrowth, indirectGrowth) :
-					new Foundation.Rect(indirectOffset, directOffset, indirectGrowth, directGrowth);
+				Windows.Foundation.Rect bounds = isHorizontal ?
+					new Windows.Foundation.Rect(directOffset, indirectOffset, directGrowth, indirectGrowth) :
+					new Windows.Foundation.Rect(indirectOffset, directOffset, indirectGrowth, directGrowth);
 
 				ArrangeElement(element, bounds);
 

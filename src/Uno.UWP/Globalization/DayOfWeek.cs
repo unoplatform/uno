@@ -1,8 +1,6 @@
-using System;
-
 namespace Windows.Globalization
 {
-	public   enum DayOfWeek 
+	public enum DayOfWeek
 	{
 		Sunday = 0,
 		Monday = 1,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,10 +33,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly SerialDisposable _eventSubscriptions = new SerialDisposable();
 
-		private Button _moreButton;
-		private Popup _overflowPopup;
-		private ItemsControl _primaryItemsControl;
-		private ItemsControl _secondaryItemsControl;
+		private Button? _moreButton;
+		private Popup? _overflowPopup;
+		private ItemsControl? _primaryItemsControl;
+		private ItemsControl? _secondaryItemsControl;
 
 		private double _contentHeight;
 
@@ -44,15 +45,38 @@ namespace Windows.UI.Xaml.Controls
 			PrimaryCommands = new ObservableVector<ICommandBarElement>();
 			SecondaryCommands = new ObservableVector<ICommandBarElement>();
 
+			PrimaryCommands.VectorChanged += (s, e) => UpdateCommands();
+			SecondaryCommands.VectorChanged += (s, e) => UpdateCommands();
+
 			CommandBarTemplateSettings = new CommandBarTemplateSettings(this);
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
 			SizeChanged += (s, e) => _contentHeight = e.NewSize.Height;
+
+			this.RegisterPropertyChangedCallback(IsEnabledProperty, (s, e) => UpdateCommonState());
+			this.RegisterPropertyChangedCallback(ClosedDisplayModeProperty, (s, e) => UpdateDisplayModeState());
+			this.RegisterPropertyChangedCallback(IsOpenProperty, (s, e) =>
+			{
+				// TODO: Consider the content of _secondaryItemsControl when IsDynamicOverflowEnabled is supported.
+				var hasSecondaryItems = SecondaryCommands.Any();
+				if (hasSecondaryItems)
+				{
+					if (_overflowPopup is {} popup)
+					{
+						popup.IsOpen = true;
+					}
+				}
+
+				UpdateDisplayModeState();
+				UpdateButtonsIsCompact();
+			});
+
+			DefaultStyleKey = typeof(CommandBar);
 		}
 
 #if __ANDROID__ || __IOS__
-		internal NativeCommandBarPresenter Presenter { get; set; }
+		internal NativeCommandBarPresenter? Presenter { get; set; }
 #endif
 
 		protected override void OnApplyTemplate()
@@ -69,28 +93,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			RegisterEvents();
 
-			PrimaryCommands.VectorChanged += (s, e) => UpdateCommands();
-			SecondaryCommands.VectorChanged += (s, e) => UpdateCommands();
-
 			UpdateCommands();
-
-			this.RegisterPropertyChangedCallback(IsEnabledProperty, (s, e) => UpdateCommonState());
-			this.RegisterPropertyChangedCallback(ClosedDisplayModeProperty, (s, e) => UpdateDisplayModeState());
-			this.RegisterPropertyChangedCallback(IsOpenProperty, (s, e) =>
-			{
-				// TODO: Consider the content of _secondaryItemsControl when IsDynamicOverflowEnabled is supported.
-				var hasSecondaryItems = SecondaryCommands.Any();
-				if (hasSecondaryItems)
-				{
-					if (_overflowPopup != null)
-					{
-						_overflowPopup.IsOpen = true;
-					}
-				}
-
-				UpdateDisplayModeState();
-				UpdateButtonsIsCompact();
-			});
 
 			UpdateTemplateSettings();
 			UpdateCommonState();
@@ -109,20 +112,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UnregisterEvents();
 
-			var disposables = new CompositeDisposable();
+			var disposables = new CompositeDisposable(2);
 
-			if (_moreButton != null)
+			if (_moreButton is {} moreButton)
 			{
-				_moreButton.Click += OnMoreButtonClicked;
+				moreButton.Click += OnMoreButtonClicked;
 
-				disposables.Add(() => _moreButton.Click -= OnMoreButtonClicked);
+				disposables.Add(() => moreButton.Click -= OnMoreButtonClicked);
 			}
 
-			if (_overflowPopup != null)
+			if (_overflowPopup is {} overflowPopup)
 			{
-				_overflowPopup.Closed += OnOverflowPopupClosed;
+				overflowPopup.Closed += OnOverflowPopupClosed;
 
-				disposables.Add(() => _overflowPopup.Closed -= OnOverflowPopupClosed);
+				disposables.Add(() => overflowPopup.Closed -= OnOverflowPopupClosed);
 			}
 
 			_eventSubscriptions.Disposable = disposables;
@@ -146,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 			};
 		}
 
-		public event TypedEventHandler<CommandBar, DynamicOverflowItemsChangingEventArgs> DynamicOverflowItemsChanging;
+		public event TypedEventHandler<CommandBar, DynamicOverflowItemsChangingEventArgs?>? DynamicOverflowItemsChanging;
 
 		#region PrimaryCommands
 
@@ -204,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 				"CommandBarOverflowPresenterStyle",
 				typeof(Style),
 				typeof(CommandBar),
-				new FrameworkPropertyMetadata(default(Style))
+				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)
 			);
 
 		#endregion
@@ -297,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateDisplayModeState()
 		{
-			string GetDisplayMode()
+			string? GetDisplayMode()
 			{
 				switch (ClosedDisplayMode)
 				{

@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Samples.UnitTests
 {
-	[SampleControlInfo("Unit Tests", "Unit Tests Runner")]
+	[SampleControlInfo("Unit Tests", "Unit Tests Runner", ignoreInSnapshotTests: true)]
 	public sealed partial class UnitTestsPage : Page
 	{
 		public UnitTestsPage()
@@ -16,7 +16,7 @@ namespace SamplesApp.Samples.UnitTests
 			Assembly.Load("Uno.UI.RuntimeTests");
 
 #if __WASM__
-			Assembly.Load("Uno.UI.Wasm.Tests");
+			var t = typeof(SamplesApp.UnitTests.TSBindings.TSBindingsTests);
 #endif
 		}
 	}

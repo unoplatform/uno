@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Logging;
@@ -20,6 +20,7 @@ using Windows.UI.Xaml;
 using Uno.UI.Converters;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.ManualPropagation
 {
@@ -365,52 +366,6 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			Assert.IsNotNull(brushDataContextValue);
 			Assert.AreEqual(Windows.UI.Colors.Lime, brush.Color);
 		}
-
-		[TestMethod]
-		public void When_DependencyObjectCollection_And_XBind()
-		{
-			var SUT = new Border();
-
-			var root = new
-			{
-				MyElement = new Border() { Tag = true }
-			};
-
-			var group = new VisualStateGroup();
-			var state = new VisualState();
-
-			var compositeTrigger = new CompositeTrigger();
-
-			var stateTrigger = new StateTrigger();
-			stateTrigger.SetBinding(
-				StateTrigger.IsActiveProperty,
-				new Binding {
-					Path = "MyElement.Tag",
-					CompiledSource = root
-				}
-			);
-
-			Assert.AreEqual(false, stateTrigger.IsActive);
-
-			var triggers = new DependencyObjectCollection();
-			triggers.Add(stateTrigger);
-			compositeTrigger.TriggerCollection = triggers;
-
-			state.StateTriggers.Add(compositeTrigger);
-
-			group.States.Add(state);
-
-			VisualStateManager.SetVisualStateGroups(SUT, new List<VisualStateGroup>() { group });
-
-			SUT.ForceLoaded();
-			SUT.ApplyCompiledBindings();
-
-			Assert.AreEqual(true, stateTrigger.IsActive);
-
-			compositeTrigger.TriggerCollection = null;
-
-			Assert.IsNull(triggers.GetParent());
-		}
 	}
 
 	public partial class CompositeTrigger : StateTriggerBase
@@ -514,7 +469,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(SubObject), new PropertyMetadata(0, OnPropertyChanged));
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(SubObject), new FrameworkPropertyMetadata(0, OnPropertyChanged));
 
 		private static void OnPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -534,7 +489,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 		// Using a DependencyProperty as the backing store for MyStringProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyStringPropertyProperty =
-			DependencyProperty.Register("MyStringProperty", typeof(string), typeof(SubObject), new PropertyMetadata("", OnStringPropertyChanged));
+			DependencyProperty.Register("MyStringProperty", typeof(string), typeof(SubObject), new FrameworkPropertyMetadata("", OnStringPropertyChanged));
 
 		private static void OnStringPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

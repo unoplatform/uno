@@ -2,48 +2,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ManipulationModes 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TranslateX,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TranslateY,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TranslateRailsX,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TranslateRailsY,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Rotate,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Scale,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		TranslateInertia,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		RotateInertia,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		ScaleInertia,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		All,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		System,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.None
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.TranslateX
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.TranslateY
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.TranslateRailsX
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.TranslateRailsY
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.Rotate
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.Scale
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.TranslateInertia
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.RotateInertia
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.ScaleInertia
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.All
+		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.System
 	}
 	#endif
 }

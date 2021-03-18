@@ -19,14 +19,5 @@ namespace Windows.UI.Xaml.Documents
 #endif
 
 		public InlineCollection Inlines { get; set; }
-
-		protected override void OnStyleChanged()
-		{
-			if (Style == null)
-			{
-				base.Style = Style.DefaultStyleForType(typeof(Span));
-				base.Style.ApplyTo(this);
-			}
-		}
 	}
 }

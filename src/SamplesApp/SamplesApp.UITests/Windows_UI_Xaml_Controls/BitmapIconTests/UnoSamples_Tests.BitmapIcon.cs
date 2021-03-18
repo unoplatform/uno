@@ -27,7 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 
 			TakeScreenshot("Initial");
 
-			_app.Tap(colorChange);
+			_app.FastTap(colorChange);
 
 			var color1 = icon1.GetDependencyPropertyValue<string>("Foreground");
 			var color2 = icon2.GetDependencyPropertyValue<string>("Foreground");

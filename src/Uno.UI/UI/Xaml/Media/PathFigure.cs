@@ -1,3 +1,4 @@
+using Windows.Foundation;
 using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Media
@@ -13,19 +14,19 @@ namespace Windows.UI.Xaml.Media
 
 		#region StartPoint
 
-		public Foundation.Point StartPoint
+		public Point StartPoint
 		{
-			get => (Foundation.Point)this.GetValue(StartPointProperty);
+			get => (Point)this.GetValue(StartPointProperty);
 			set => this.SetValue(StartPointProperty, value);
 		}
 
 		public static DependencyProperty StartPointProperty { get; } =
 			DependencyProperty.Register(
 				"StartPoint", 
-				typeof(Foundation.Point),
+				typeof(Point),
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(
-					defaultValue: new Foundation.Point(),
+					defaultValue: new Point(),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

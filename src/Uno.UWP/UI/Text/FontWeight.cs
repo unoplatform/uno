@@ -6,12 +6,12 @@ namespace Windows.UI.Text
 {
 	public partial struct FontWeight
 	{
-		public FontWeight(int weight)
+		public FontWeight(ushort weight)
 		{
 			Weight = weight;
 		}
 
-		public int Weight { get; }
+		public ushort Weight { get; set; }
 
 		public override int GetHashCode() => Weight.GetHashCode();
 

@@ -1,12 +1,10 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
@@ -20,7 +18,8 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<T4Bin>..\T4Generator\bin\$(Configuration)\T4Generator.exe</T4Bin>
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
+
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 
@@ -31,128 +30,57 @@
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 
 		<!-- Generate automation IDs in debug builds, use by UI tests. -->
-    <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
-  </PropertyGroup>
+		<IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+
+		<!-- Disable WPF targets -->
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+
+		<!-- Set for dependencies that use msbuild nuget packaging (not nuspecs) -->
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
+	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;" />
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Remove="Mixins\**\*.cs" />
-
-		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>BaseActivity.Callbacks.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\Android\VisualStatesMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\DependencyPropertyMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>DependencyPropertyMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\macOS\FrameworkElementMixins.g.cs">
-			<DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</Compile>
-		<Compile Include="Mixins\macOS\VisualStatesMixins.g.cs">
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</Compile>
-		<Compile Include="Mixins\iOS\FrameworkElementMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\iOS\VisualStatesMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\net461\VisualStatesMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		</Compile>
-		<Compile Include="Mixins\Wasm\VisualStatesMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		</Compile>
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;Themes\WinUI\Resources\**\*.xaml;" Visible="False" />
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+		<UpToDateCheckInput Include="**\*.tt" Exclude="bin\**\*.tt;obj\**\*.tt;" Visible="False" />
 	</ItemGroup>
 
 	<Choose>
 		<When Condition="'$(TargetFramework)'=='net461'">
 			<ItemGroup>
-				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
-				<Page Remove="@(Page)" />
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 			</ItemGroup>
-			<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
-				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+		</When>
+		<When Condition="'$(TargetFramework)'=='netstandard2.0'">
+			<ItemGroup>
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
+
+				<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
+				<Page Remove="@(Page)" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
 			<ItemGroup>
-				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 
 				<!-- remove files included by msbuild extras -->
 				<Page Remove="@(Page)" />
-				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
+		<None Include="Mixins\Wasm\VisualStatesMixins.g.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</None>
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Resources\Values\Attrs.xml" />
 		<None Include="Resources\Values\Styles.xml" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Mixins\Android\BaseActivity.Callbacks.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\Android\FrameworkElementMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\Android\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\DependencyPropertyMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>DependencyPropertyMixins.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\iOS\FrameworkElementMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Include="Mixins\iOS\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
 		<None Include="Resources\ResourceRegistry.cs" />
 		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />
@@ -160,38 +88,26 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
-		<PackageReference Include="System.Memory" />
+		<PackageReference Include="Uno.Core" Version="2.2.0" />
+		<PackageReference Include="Uno.Core.Build" Version="2.0.0" />
+		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="26.1.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="26.1.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" />
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -202,7 +118,7 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid80' or '$(TargetFramework)' == 'MonoAndroid90'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid10.0'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 	</ItemGroup>
@@ -215,85 +131,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<MixinInput Include=".\Mixins\Android\BaseActivity.Callbacks.tt" />
-		<MixinInput Include=".\Mixins\Android\FrameworkElementMixins.tt" />
-		<MixinInput Include=".\Mixins\Android\VisualStatesMixins.tt" />
-		<MixinInput Include=".\Mixins\DependencyPropertyMixins.tt" />
-		<MixinInput Include=".\UI\Xaml\DependencyPropertiesImplementation.tt" />
-		<MixinInput Include=".\UI\Xaml\Controls\VisualStatesImplementation.tt" />
-		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.Android.tt" />
-		<MixinInput Include=".\Mixins\iOS\FrameworkElementMixins.tt" />
-		<MixinInput Include=".\Mixins\iOS\VisualStatesMixins.tt" />
-		<MixinInput Include=".\Mixins\macOS\FrameworkElementMixins.tt" />
-		<MixinInput Include=".\Mixins\macOS\VisualStatesMixins.tt" />
-		<MixinInput Include=".\Mixins\Wasm\VisualStatesMixins.tt" />
-		<MixinInput Include=".\Mixins\net461\VisualStatesMixins.tt" />
-		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.iOS.tt" />
-		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.macOS.tt" />
-
-		<MixinOutput Include=".\Mixins\Android\BaseActivity.Callbacks.g.cs" />
-		<MixinOutput Include=".\Mixins\Android\FrameworkElementMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\Android\VisualStatesMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\DependencyPropertyMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\iOS\FrameworkElementMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\iOS\VisualStatesMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\macOS\FrameworkElementMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\macOS\VisualStatesMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\Wasm\VisualStatesMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\net461\VisualStatesMixins.g.cs" />
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
 	</ItemGroup>
-
-	<!--
-	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
-	project dependency induced builds.
-	-->
-	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" Condition="'$(DesignTimeBuild)' != 'true'">
-
-		<ItemGroup>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\Android\BaseActivity.Callbacks.tt;OutputPath=.\Mixins\Android;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\Android\FrameworkElementMixins.tt;OutputPath=.\Mixins\Android;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\Android\VisualStatesMixins.tt;OutputPath=.\Mixins\Android;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\DependencyPropertyMixins.tt;OutputPath=.\Mixins;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\iOS\FrameworkElementMixins.tt;OutputPath=.\Mixins\iOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\iOS\VisualStatesMixins.tt;OutputPath=.\Mixins\iOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\macOS\FrameworkElementMixins.tt;OutputPath=.\Mixins\macOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\macOS\VisualStatesMixins.tt;OutputPath=.\Mixins\macOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\Wasm\VisualStatesMixins.tt;OutputPath=.\Mixins\Wasm;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\net461\VisualStatesMixins.tt;OutputPath=.\Mixins\net461;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\DependencyPropertyMixins.tt;OutputPath=.\Mixins;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-			</MixinDefinition>
-		</ItemGroup>
-
-		<Message Text="Generating mixins" Importance="high" />
-
-		<!-- This allows for the mixins to generate in parallel -->
-		<MSBuild BuildInParallel="true" Projects="@(MixinDefinition)" StopOnFirstFailure="True" Targets="_InnerGenerateMixins" />
-	</Target>
-
-	<Target Name="_InnerGenerateMixins">
-		<Exec Command="&quot;$(T4Bin)&quot; $(InputFile) $(OutputPath)" />
-	</Target>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<!-- Remove the reference added automatically by msbuild extras -->
@@ -304,7 +144,6 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup>
 
@@ -315,18 +154,11 @@
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Mixins\Wasm\" />
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PRIResource Include="**\*.resw" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
-			<LogicalName>$(AssemblyName).xml</LogicalName>
-		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
@@ -340,29 +172,21 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-		<ProjectReference Include="..\T4Generator\T4Generator.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
-		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
-	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
-	  <None Update="Mixins\macOS\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
-	  <None Update="Mixins\net461\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
-	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
+		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
+		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+		<Compile Include="Mixins\Android\VisualStatesMixins.g.cs" />
+		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
+		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="Mixins\Wasm\VisualStatesMixins.tt">
+			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
 	</ItemGroup>
 
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
@@ -392,4 +216,7 @@
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
+
+	<Import Project="MixinGeneration.targets" />
+
 </Project>

@@ -41,6 +41,8 @@ namespace Windows.UI.Xaml
 
 		public double Bottom { get ; set; }
 
+		internal Thickness GetInverse() => new Thickness(-Left, -Top, -Right, -Bottom);
+
 		public bool Equals (Thickness other)
 		{
 			return  Math.Abs (Left - other.Left) < double.Epsilon

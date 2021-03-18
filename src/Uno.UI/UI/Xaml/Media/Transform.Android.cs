@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal bool IsAnimating
+		internal virtual bool IsAnimating
 		{
 			get => _isAnimating;
 			set
@@ -28,8 +28,18 @@ namespace Windows.UI.Xaml.Media
 				{
 					_isAnimating = value;
 
-					MatrixCore = ToMatrix(new Point(0, 0));
-					NotifyChanged();
+					if (_isAnimating)
+					{
+						// We don't use the NotifyChanged() since it filters out change notifications when IsAnimating.
+						// Note: we also bypass the MatrixCore update which is actually irrelevant until animation completes.
+						Changed?.Invoke(this, EventArgs.Empty);
+					}
+					else
+					{
+						// Notify a change so the result matrix will be updated (as updates were ignored due to 'Animations' DP precedence),
+						// and the NativeRenderTransformAdapter will then apply this final matrix.
+						NotifyChanged();
+					}
 				}
 			}
 		}

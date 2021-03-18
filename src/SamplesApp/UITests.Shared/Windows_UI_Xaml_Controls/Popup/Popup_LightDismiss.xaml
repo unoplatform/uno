@@ -18,22 +18,22 @@
 
 		<Popup x:Name="popup1" IsLightDismissEnabled="True" HorizontalOffset="100">
 			<Border Background="Red" Width="75" Height="50">
-				<TextBlock>First Popup</TextBlock>
+				<TextBlock x:Name="FirstPopupTextBlock">First Popup</TextBlock>
 			</Border>
 		</Popup>
 		<Popup x:Name="popup2" IsLightDismissEnabled="True" HorizontalOffset="200">
 			<Border Background="Yellow" Width="75" Height="50">
-				<TextBlock>Second Popup</TextBlock>
+				<TextBlock x:Name="SecondPopupTextBlock">Second Popup</TextBlock>
 			</Border>
 		</Popup>
 		<Popup x:Name="popup3" IsLightDismissEnabled="True" HorizontalOffset="100" VerticalOffset="100">
 			<Border Background="Blue" Width="75" Height="50">
-				<TextBlock>Third Popup</TextBlock>
+				<TextBlock x:Name="ThirdPopupTextBlock">Third Popup</TextBlock>
 			</Border>
 		</Popup>
 		<Popup x:Name="popup4" IsLightDismissEnabled="True" HorizontalOffset="200" VerticalOffset="100">
 			<Border Background="Green" Width="75" Height="50">
-				<TextBlock>Fourth Popup</TextBlock>
+				<TextBlock x:Name="FourthPopupTextBlock">Fourth Popup</TextBlock>
 			</Border>
 		</Popup>
 

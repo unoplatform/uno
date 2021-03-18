@@ -14,27 +14,26 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<StackPanel>
-		
+	<StackPanel>		
 		<StackPanel Orientation="Horizontal"
 					Margin="10">
-			<TextBox Text="1" Width="75"/>
-			<TextBox Text="2" Width="75"/>
-			<TextBox Text="3" Width="75"/>
+			<TextBox x:Name="FirstTextBox" Text="1" Width="75"/>
+			<TextBox x:Name="SecondTextBox" Text="2" Width="75"/>
+			<TextBox x:Name="ThirdTextBox" Text="3" Width="75"/>
 		</StackPanel>
 		
 		<StackPanel Orientation="Horizontal"
 					Margin="10">
-			<TextBox Text="4" Width="75"/>
-			<TextBox Text="5" Width="75"/>
-			<TextBox Text="6" Width="75"/>
+			<TextBox x:Name="FourthTextBox" Text="4" Width="75"/>
+			<TextBox x:Name="FifthTextBox" Text="5" Width="75"/>
+			<TextBox x:Name="SixthTextBox" Text="6" Width="75"/>
 		</StackPanel>
 		
 		<StackPanel Orientation="Horizontal"
 					Margin="10">
-			<TextBox Text="7" Width="75"/>
-			<TextBox Text="8" Width="75"/>
-			<TextBox Text="9" Width="75"/>
+			<TextBox x:Name="SeventhTextBox" Text="7" Width="75"/>
+			<TextBox x:Name="EighthTextBox" Text="8" Width="75"/>
+			<TextBox x:Name="NinthTextBox" Text="9" Width="75"/>
 		</StackPanel>
 
 		<StackPanel Orientation="Horizontal">
@@ -59,7 +58,6 @@
 			<Button x:Name="NoneButton"
 					Content="None"
 					IsTabStop="False"/>
-		</StackPanel>
-		
+		</StackPanel>		
 	</StackPanel>
 </UserControl>

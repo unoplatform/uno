@@ -8,7 +8,7 @@ namespace $ext_safeprojectname$.Droid
 {
 	[Activity(
 			MainLauncher = true,
-			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize,
+			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity

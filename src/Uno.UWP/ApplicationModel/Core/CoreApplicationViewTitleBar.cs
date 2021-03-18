@@ -1,10 +1,19 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using System;
+
 namespace Windows.ApplicationModel.Core
 {
+#if !__ANDROID__
 	[global::Uno.NotImplemented]
-	public  partial class CoreApplicationViewTitleBar 
+#endif
+	public  partial class CoreApplicationViewTitleBar
 	{
+#pragma warning disable 67
+		internal event Action ExtendViewIntoTitleBarChanged;
+#pragma warning restore 67
+
+#if !__ANDROID__
 		[global::Uno.NotImplemented]
 		public  bool ExtendViewIntoTitleBar
 		{
@@ -18,6 +27,7 @@ namespace Windows.ApplicationModel.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationViewTitleBar", "bool CoreApplicationViewTitleBar.ExtendViewIntoTitleBar");
 			}
 		}
+#endif
 
 		[global::Uno.NotImplemented]
 		public  double Height

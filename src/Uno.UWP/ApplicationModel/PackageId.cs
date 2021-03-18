@@ -1,107 +1,47 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using System.Reflection;
+using Uno.Extensions;
+using ProcessorArchitecture = Windows.System.ProcessorArchitecture;
+
 namespace Windows.ApplicationModel
 {
-	public  partial class PackageId 
+	public partial class PackageId
 	{
-		[global::Uno.NotImplemented]
-		public global::Windows.System.ProcessorArchitecture Architecture
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Architecture");
-				return System.ProcessorArchitecture.Unknown;
-			}
-		}
+		internal PackageId() => InitializePlatform();
 
-		[global::Uno.NotImplemented]
-		public string FamilyName
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "FamilyName");
-				return "Unknown";
-			}
-		}
+		partial void InitializePlatform();
 
-		[global::Uno.NotImplemented]
-		public string FullName
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "FullName");
-				return "Unknown";
-			}
-		}
+		[Uno.NotImplemented]
+		public ProcessorArchitecture Architecture => ProcessorArchitecture.Unknown;
 
-		[global::Uno.NotImplemented]
-		public string Name
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Name");
-				return "Unknown";
-			}
-		}
+#if !__ANDROID__ && !__IOS__ && !__MACOS__ && !__SKIA__
+		[global::Uno.NotImplemented("__WASM__")]
+		public string FamilyName => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string Publisher
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Publisher");
-				return "Unknown";
-			}
-		}
+		[global::Uno.NotImplemented("__WASM__")]
+		public string FullName => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string PublisherId
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "PublisherId");
-				return "Unknown";
-			}
-		}
+		[global::Uno.NotImplemented("__WASM__")]
+		public string Name => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string ResourceId
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "ResourceId");
-				return "Unknown";
-			}
-		}
+		[global::Uno.NotImplemented("__WASM__")]
+		public PackageVersion Version => new PackageVersion(Assembly.GetExecutingAssembly().GetVersionNumber());
+#endif
 
-		[global::Uno.NotImplemented]
-		public global::Windows.ApplicationModel.PackageVersion Version
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Version");
-				return new PackageVersion();
-			}
-		}
+		[Uno.NotImplemented]
+		public string Publisher => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string Author
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Author");
-				return "Unknown";
-			}
-		}
+		[Uno.NotImplemented]
+		public string PublisherId => "Unknown";
 
-		[global::Uno.NotImplemented]
-		public string ProductId
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "ProductId");
-				return "Unknown";
-			}
-		}
+		[Uno.NotImplemented]
+		public string ResourceId => "Unknown";
+
+		[Uno.NotImplemented]
+		public string Author => "Unknown";
+
+		[Uno.NotImplemented]
+		public string ProductId => "Unknown";
 	}
 }

@@ -65,6 +65,6 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible (false)]
 
-#if !MOBILE && !NETSTANDARD2_0
+#if !MOBILE && !NETSTANDARD2_0 && !NET5_0
 [assembly: TypeForwardedTo (typeof (System.Windows.Markup.ValueSerializerAttribute))]
 #endif

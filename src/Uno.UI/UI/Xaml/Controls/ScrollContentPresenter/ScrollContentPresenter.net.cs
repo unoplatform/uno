@@ -12,18 +12,19 @@ using System.Drawing;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter
+	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
-		public ScrollMode HorizontalScrollMode { get; set; }
+		public bool CanHorizontallyScroll { get; set; }
+		public bool CanVerticallyScroll { get; set; }
 
-		public ScrollMode VerticalScrollMode { get; set; }
+		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue) { }
 
-		public float MinimumZoomScale { get; set; }
+		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue) { }
 
-		public float MaximumZoomScale { get; set; }
+		ScrollBarVisibility IScrollContentPresenter.VerticalScrollBarVisibility { get => VerticalScrollBarVisibility; set => VerticalScrollBarVisibility = value; }
+		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 
-		public ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
-
-		public ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+		ScrollBarVisibility IScrollContentPresenter.HorizontalScrollBarVisibility { get => HorizontalScrollBarVisibility; set => HorizontalScrollBarVisibility = value; }
+		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 	}
 }

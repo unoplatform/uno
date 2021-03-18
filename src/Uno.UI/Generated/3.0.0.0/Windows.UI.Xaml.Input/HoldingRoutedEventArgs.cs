@@ -2,63 +2,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HoldingRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HoldingRoutedEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.HoldingRoutedEventArgs", "bool HoldingRoutedEventArgs.Handled");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Input.HoldingState HoldingState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HoldingState HoldingRoutedEventArgs.HoldingState is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Input.PointerDeviceType PointerDeviceType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointerDeviceType HoldingRoutedEventArgs.PointerDeviceType is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public HoldingRoutedEventArgs() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.HoldingRoutedEventArgs", "HoldingRoutedEventArgs.HoldingRoutedEventArgs()");
-		}
-		#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property HoldingState
+		// Skipping already declared property PointerDeviceType
+		// Skipping already declared method Windows.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingRoutedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingRoutedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.HoldingRoutedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingState.get
 		// Forced skipping of method Windows.UI.Xaml.Input.HoldingRoutedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Xaml.Input.HoldingRoutedEventArgs.Handled.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Point GetPosition( global::Windows.UI.Xaml.UIElement relativeTo)
-		{
-			throw new global::System.NotImplementedException("The member Point HoldingRoutedEventArgs.GetPosition(UIElement relativeTo) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Input.HoldingRoutedEventArgs.GetPosition(Windows.UI.Xaml.UIElement)
 	}
 }

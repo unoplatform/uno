@@ -16,6 +16,11 @@ using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Xaml.Controls
 {
+	/// <summary>
+	/// This class is mainly used for native looking ComboBox templates on iPhone.
+	/// This class will automatically prepend a null item to its Items when there's no selection.
+	/// Once a selection is made, that null item is removed. That means that this control cannot deselect (just like a ComboBox).
+	/// </summary>
 	public partial class Picker : UIPickerView, ISelector, IFrameworkElement, DependencyObject
 	{
 		public event SelectionChangedEventHandler SelectionChanged;
@@ -53,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Changes from IOS 9 doc.
 				// See following
-				// https://jira.appcelerator.org/browse/TIMOB-19203 
+				// https://jira.appcelerator.org/browse/TIMOB-19203
 				// https://developer.apple.com/library/prerelease/ios/releasenotes/General/RN-iOSSDK-9.0/
 				size = base.SizeThatFits(size);
 			}
@@ -62,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			return size;
 		}
 
-		public object[] Items { get; private set; } = new object[] { null }; // ensure there's always a null present to allow deselection
+		public object[] Items { get; private set; } = new object[] { null }; // Ensure there's always a null present to allow the empty selection at the beginning.
 
 		partial void OnItemsSourceChangedPartialNative(object oldItemsSource, object newItemsSource)
 		{
@@ -111,6 +116,11 @@ namespace Windows.UI.Xaml.Controls
 					SelectedItem = firstItem;
 					return;
 				}
+
+				if (Items.Length > 0) // If we have no Items, we don't need to call UIPickerView.Select(). Skipping the call avoids a native crash under certain narrow circumstances. (https://github.com/unoplatform/private/issues/115)
+				{
+					Select(row, component: 0, animated: true);
+				}
 			}
 			else if (newSelectedItem != null && Items[0] == null)
 			{
@@ -118,23 +128,26 @@ namespace Windows.UI.Xaml.Controls
 				Items = Items
 					.Skip(1)
 					.ToObjectArray();
-			}
 
-			Select(row, component: 0, animated: true);
+				// Now that Items changed, we must reload the UIPickerView's components.
+				ReloadAllComponents();
+
+				// Because we removed the first item, we decrement the row by 1.
+				--row;
+
+				// We select the row without the animation, because the previous state has a different items source in wich the items have different indexes.
+				Select(row, component: 0, animated: false);
+			}
 
 			SelectionChanged?.Invoke(
 				this,
 				// TODO: Add multi-selection support
 				new SelectionChangedEventArgs(
+					this,
 					new[] { oldSelectedItem },
 					new[] { newSelectedItem }
 				)
 			);
-		}
-		
-		partial void OnDisplayMemberPathChangedPartial(string oldDisplayMemberPath, string newDisplayMemberPath)
-		{
-			this.UpdateItemTemplateSelectorForDisplayMemberPath(newDisplayMemberPath);
 		}
 	}
 }

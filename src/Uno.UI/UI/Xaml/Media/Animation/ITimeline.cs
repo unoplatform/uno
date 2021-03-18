@@ -20,5 +20,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		void SkipToFill();
 		void Deactivate();
 		event EventHandler<object> Completed;
+		event EventHandler<object> Failed;
 	}
 }

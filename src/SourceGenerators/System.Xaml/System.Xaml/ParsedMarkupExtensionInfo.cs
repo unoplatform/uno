@@ -41,7 +41,7 @@ namespace Uno.Xaml
 		/// - TargetNullValue='B'
 		/// - FallbackValue='C,D,E,F'
 		/// </summary>
-		private static Regex BindingMembersRegex = new Regex("[^'\",]+'[^']+'|[^'\",]+\"[^\"]+\"|[^,]+");
+		private static Regex BindingMembersRegex = new Regex("[^'\",]+'[^^']+'|[^'\",]+\"[^\"]+\"|[^,]+");
 
 		Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
 		public Dictionary<XamlMember, object> Arguments
@@ -81,7 +81,7 @@ namespace Uno.Xaml
 				throw Error("Failed to parse type name '{0}'", name);
 			}
 
-			var xt = sctx.GetXamlType(xtn) ?? new XamlType(nsResolver.GetNamespace(""), name, null, sctx);
+			var xt = sctx.GetXamlType(xtn) ?? new XamlType(xtn.Namespace, xtn.Name, null, sctx);
 			ret.Type = xt;
 
 			if (idx < 0)
@@ -100,6 +100,7 @@ namespace Uno.Xaml
 			}
 			
 			List<string> posPrms = null;
+			XamlMember lastMember = null;
 			foreach (var vpair in vpairs)
 			{
 				idx = vpair.IndexOf('=');
@@ -107,13 +108,30 @@ namespace Uno.Xaml
 				// FIXME: unescape string (e.g. comma)
 				if (idx < 0)
 				{
-					if (posPrms == null)
+					if (vpair.ElementAtOrDefault(0) == ')')
 					{
-						posPrms = new List<string>();
-						ret.Arguments.Add(XamlLanguage.PositionalParameters, posPrms);
+						if (lastMember != null)
+						{
+							if (ret.Arguments[lastMember] is string s)
+							{
+								ret.Arguments[lastMember] = s + ')';
+							}
+						}
+						else
+						{
+							posPrms[posPrms.Count - 1] += ')';
+						}
 					}
+					else
+					{
+						if (posPrms == null)
+						{
+							posPrms = new List<string>();
+							ret.Arguments.Add(XamlLanguage.PositionalParameters, posPrms);
+						}
 
-					posPrms.Add(UnescapeValue(vpair.Trim()));
+						posPrms.Add(UnescapeValue(vpair.Trim()));
+					}
 				}
 				else
 				{
@@ -129,6 +147,7 @@ namespace Uno.Xaml
 						? (object)Parse(valueString, nsResolver, sctx) : UnescapeValue(valueString);
 
 					ret.Arguments.Add(xm, value);
+					lastMember = xm;
 				}
 			}
 			return ret;

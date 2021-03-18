@@ -16,6 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled on iOS: https://github.com/unoplatform/uno/issues/1955
 		public void Button_IsOpacity_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_Opacity_Automated");
@@ -30,31 +31,31 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			Assert.AreEqual("1", valueOfOpacity.GetDependencyPropertyValue("Text")?.ToString());
 
 			// When user click on Button ClickingButtonToChangeOpacity for the first time
-			buttonToIncrementNumber.Tap();
+			buttonToIncrementNumber.FastTap();
 			
 			// Assert after clicking once while clickingButton enabled
 			Assert.AreEqual("1", totalClicks.GetDependencyPropertyValue("Text")?.ToString());
 
-			valueOfOpacity.Tap();
+			valueOfOpacity.FastTap();
 			_app.ClearText(valueOfOpacity);
 			_app.EnterText("0.5");
 
-			applyOpacityButton.Tap();
+			applyOpacityButton.FastTap();
 
 			// When user click on Button ClickingButtonToChangeOpacity for the seconde time
-			buttonToIncrementNumber.Tap();
+			buttonToIncrementNumber.FastTap();
 
 			// Assert after clicking once while clickingButton add
 			Assert.AreEqual("2", totalClicks.GetDependencyPropertyValue("Text")?.ToString());
 
-			valueOfOpacity.Tap();
+			valueOfOpacity.FastTap();
 			_app.ClearText(valueOfOpacity);
 			_app.EnterText("0");
 
-			applyOpacityButton.Tap();
+			applyOpacityButton.FastTap();
 
 			// When user click on Button ClickingButtonToChangeOpacity for the third time
-			buttonToIncrementNumber.Tap();
+			buttonToIncrementNumber.FastTap();
 
 			// Assert after clicking once while clickingButton add again
 			Assert.AreEqual("3", totalClicks.GetDependencyPropertyValue("Text")?.ToString());

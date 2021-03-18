@@ -1,4 +1,6 @@
-﻿using Uno.Diagnostics.Eventing;
+﻿#nullable enable
+
+using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Uno.Logging;
-using Windows.UI.Composition;
 
 namespace Windows.UI.Core
 {
@@ -75,14 +76,15 @@ namespace Windows.UI.Core
 		private readonly object _gate = new object();
 
 		private int _globalCount;
+		private CoreDispatcherPriority _currentPriority;
 
 		internal bool ShouldRaiseRenderEvents => Rendering != null;
 		/// <summary>
 		/// Backs the CompositionTarget.Rendering event for WebAssembly.
 		/// </summary>
-		internal event EventHandler<object> Rendering;
+		internal event EventHandler<object>? Rendering;
 		internal int RenderEventThrottle;
-		internal Func<TimeSpan, object> RenderingEventArgsGenerator { get; set; }
+		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
 
 		private readonly DateTimeOffset _startTime;
 
@@ -118,6 +120,16 @@ namespace Windows.UI.Core
 		}
 
 		/// <summary>
+		/// Gets the priority of the current task.
+		/// </summary>
+		/// <remarks>Sets has no effect on Uno</remarks>
+		public CoreDispatcherPriority CurrentPriority
+		{
+			get => _currentPriority;
+			[Uno.NotImplemented] set { } // Drop the set done by external code
+		}
+
+		/// <summary>
 		/// Determines if there are no elements in queues other than the idle one.
 		/// </summary>
 		private bool IsQueueIdle => GetQueue(CoreDispatcherPriority.Low).Count +
@@ -134,7 +146,8 @@ namespace Windows.UI.Core
 		/// <returns>An async operation for the scheduled handler.</returns>
 		public UIAsyncOperation RunAsync(CoreDispatcherPriority priority, DispatchedHandler handler)
 		{
-			return EnqueueOperation(priority, handler);
+			EnqueueOperation(priority, handler, out var operation);
+			return operation;
 		}
 
 		/// <summary>
@@ -146,13 +159,26 @@ namespace Windows.UI.Core
 		/// <remarks>Can only be invoked on the UI thread</remarks>
 		internal UIAsyncOperation RunAsync(CoreDispatcherPriority priority, CancellableDispatchedHandler handler)
 		{
-			CoreDispatcher.CheckThreadAccess();
+			UIAsyncOperation? operation = null;
 
-			UIAsyncOperation operation = null;
+			void nonCancellableHandler()
+			{
+				if (operation != null)
+				{
+					handler(operation.Token);
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Error("Invalid operation");
+					}
+				}
+			}
 
-			DispatchedHandler nonCancellableHandler = () => handler(operation.Token);
+			EnqueueOperation(priority, nonCancellableHandler, out operation);
 
-			return operation = EnqueueOperation(priority, nonCancellableHandler);
+			return operation;
 		}
 
 		/// <summary>
@@ -162,15 +188,18 @@ namespace Windows.UI.Core
 		/// <returns>An async operation for the scheduled handler.</returns>
 		public UIAsyncOperation RunIdleAsync(IdleDispatchedHandler handler)
 		{
-			return EnqueueOperation(
-				CoreDispatcherPriority.Idle, () =>
-				handler(_idleDispatchedHandlerArgs)
+			EnqueueOperation(
+				CoreDispatcherPriority.Idle,
+				() => handler(_idleDispatchedHandlerArgs),
+				out var operation
 			);
+
+			return operation;
 		}
 
-		private UIAsyncOperation EnqueueOperation(CoreDispatcherPriority priority, DispatchedHandler handler)
+		private void EnqueueOperation(CoreDispatcherPriority priority, DispatchedHandler handler, out UIAsyncOperation operation)
 		{
-			EventActivity scheduleActivity = null;
+			EventActivity? scheduleActivity = null;
 			if (_trace.IsEnabled)
 			{
 				scheduleActivity = _trace.WriteEventActivity(
@@ -178,12 +207,12 @@ namespace Windows.UI.Core
 					EventOpcode.Send,
 					new[] {
 						((int)priority).ToString(),
-						handler.Method.DeclaringType.FullName + "." + handler.Method.DeclaringType.Name
+						handler.Method.DeclaringType?.FullName + "." + handler.Method.DeclaringType?.Name
 					}
 				);
 			}
 
-			var operation = new UIAsyncOperation(handler, scheduleActivity);
+			operation = new UIAsyncOperation(handler, scheduleActivity);
 
 			if (priority < CoreDispatcherPriority.Idle || priority > CoreDispatcherPriority.High)
 			{
@@ -204,8 +233,6 @@ namespace Windows.UI.Core
 			{
 				EnqueueNative();
 			}
-
-			return operation;
 		}
 
 		private Queue<UIAsyncOperation> GetQueue(CoreDispatcherPriority priority)
@@ -230,10 +257,12 @@ namespace Windows.UI.Core
 
 		private void DispatchItems()
 		{
-			UIAsyncOperation operation = null;
-			var operationPriority = CoreDispatcherPriority.Normal;
+			UIAsyncOperation? operation = null;
 
-			Rendering?.Invoke(null, RenderingEventArgsGenerator(DateTimeOffset.UtcNow - _startTime));
+			if (Rendering != null && RenderingEventArgsGenerator != null)
+			{
+				Rendering.Invoke(null, RenderingEventArgsGenerator.Invoke(DateTimeOffset.UtcNow - _startTime));
+			}
 
 			var didEnqueue = false;
 			for (var i = 3; i >= 0; i--)
@@ -245,7 +274,7 @@ namespace Windows.UI.Core
 					if (queue.Count > 0)
 					{
 						operation = queue.Dequeue();
-						operationPriority = (CoreDispatcherPriority)(i - 2);
+						_currentPriority = (CoreDispatcherPriority)(i - 2);
 
 						if (DecrementGlobalCount() > 0)
 						{
@@ -261,7 +290,7 @@ namespace Windows.UI.Core
 			{
 				if (!operation.IsCancelled)
 				{
-					IDisposable runActivity = null;
+					IDisposable? runActivity = null;
 
 					try
 					{
@@ -271,17 +300,15 @@ namespace Windows.UI.Core
 								TraceProvider.CoreDispatcher_InvokeStart,
 								TraceProvider.CoreDispatcher_InvokeStop,
 								relatedActivity: operation.ScheduleEventActivity,
-								payload: new[] { ((int)operationPriority).ToString(), operation.GetDiagnosticsName() }
+								payload: new[] { ((int)CurrentPriority).ToString(), operation.GetDiagnosticsName() }
 							);
 						}
 
 						using (runActivity)
+						using (GetSyncContext(CurrentPriority).Apply())
 						{
-							using (GetSyncContext(operationPriority).Apply())
-							{
-								operation.Action();
-								operation.Complete();
-							}
+							operation.Action();
+							operation.Complete();
 						}
 					}
 					catch (Exception ex)
@@ -309,6 +336,10 @@ namespace Windows.UI.Core
 					this.Log().Error("Dispatch queue is empty");
 				}
 			}
+
+			// Restore the priority to the default for task that are coming from the native events
+			// (i.e. not dispatch by this running loop)
+			_currentPriority = CoreDispatcherPriority.Normal;
 
 			if (!didEnqueue && ShouldRaiseRenderEvents)
 			{

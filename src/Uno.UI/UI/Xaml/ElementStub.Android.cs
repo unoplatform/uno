@@ -10,39 +10,33 @@ namespace Windows.UI.Xaml
 {
 	public partial class ElementStub : FrameworkElement
 	{
-		public ElementStub()
+		private View SwapViews(View oldView, Func<View> newViewProvider)
 		{
-			Visibility = Visibility.Collapsed;
-		}
-
-		private View MaterializeContent()
-		{
-			var parentViewGroup = (this as View).Parent as ViewGroup;
-			var currentPosition = parentViewGroup?.GetChildren().IndexOf(this);
+			var parentViewGroup = oldView?.Parent as ViewGroup;
+			var currentPosition = parentViewGroup?.GetChildren().IndexOf(oldView);
 
 			if (currentPosition != null && currentPosition.Value != -1)
 			{
+				var newView = newViewProvider();
 				parentViewGroup.RemoveViewAt(currentPosition.Value);
 
-				var UnoViewGroup = parentViewGroup as UnoViewGroup;
+				var unoViewGroup = parentViewGroup as UnoViewGroup;
 
-				var newContent = ContentBuilder();
-
-				if (UnoViewGroup != null)
+				if (unoViewGroup != null)
 				{
-					var newContentAsFrameworkElement = newContent as IFrameworkElement;
+					var newContentAsFrameworkElement = newView as IFrameworkElement;
 					if (newContentAsFrameworkElement != null)
 					{
-						newContentAsFrameworkElement.TemplatedParent = (UnoViewGroup as IFrameworkElement)?.TemplatedParent;
+						newContentAsFrameworkElement.TemplatedParent = (unoViewGroup as IFrameworkElement)?.TemplatedParent;
 					}
-					UnoViewGroup.AddView(newContent, currentPosition.Value);
+					unoViewGroup.AddView(newView, currentPosition.Value);
 				}
 				else
 				{
-					parentViewGroup.AddView(newContent, currentPosition.Value);
+					parentViewGroup.AddView(newView, currentPosition.Value);
 				}
 
-				return newContent;
+				return newView;
 			}
 
 			return null;

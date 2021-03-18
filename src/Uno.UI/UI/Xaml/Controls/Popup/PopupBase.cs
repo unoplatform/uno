@@ -7,18 +7,13 @@ using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 #if XAMARIN_IOS
 using CoreGraphics;
 using UIKit;
-using View = UIKit.UIView;
 #elif __MACOS__
 using CoreGraphics;
 using AppKit;
-using View = AppKit.NSView;
-#elif XAMARIN_ANDROID
-using View = Android.Views.View;
-#elif NET461 || __WASM__
-using View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -36,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal IDynamicPopupLayouter CustomLayouter { get; set; }
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			IsOpen = false;
 			base.OnUnloaded();
@@ -45,19 +40,15 @@ namespace Windows.UI.Xaml.Controls
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			// As the Child is NOT part of the visual tree, it does not have to be measured,
-			// and the result size of this Popup is always 0,0
-
-			return new Size();
+			// As the Child is NOT part of the visual tree, it does not have to be measured
+			return new Size(Width, Height).FiniteOrDefault(default);
 		}
 
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			// As the Child is NOT part of the visual tree, it does not have to be arranged,
-			// and the result size of this Popup is always 0,0
-
-			return new Size();
+			// As the Child is NOT part of the visual tree, it does not have to be arranged
+			return finalSize;
 		}
 
 		partial void OnIsOpenChangedPartial(bool oldIsOpen, bool newIsOpen)
@@ -74,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnChildChangedPartial(View oldChild, View newChild)
+		partial void OnChildChangedPartial(UIElement oldChild, UIElement newChild)
 		{
 			if (oldChild is IDependencyObjectStoreProvider provider && !_childHasOwnDataContext)
 			{
@@ -122,7 +113,8 @@ namespace Windows.UI.Xaml.Controls
 			_childHasOwnDataContext = false;
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
-				if (provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
+				var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
+				if (dataContextProperty != null && dataContextProperty != DependencyProperty.UnsetValue)
 				{
 					// Child already has locally set DataContext, we shouldn't overwrite it.
 					_childHasOwnDataContext = true;
@@ -161,7 +153,8 @@ namespace Windows.UI.Xaml.Controls
 			/// <param name="finalSize">The final size available to render the view. This is expected to be the screen size.</param>
 			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to be AtMost the finalSize.</param>
 			/// <param name="desiredSize">The size at which the content expect to be rendered. This is the result of the last <see cref="Measure"/>.</param>
-			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize);
+			/// <param name="upperLeftOffset">Coordinate system adjustment, applied to the resulting frame computed from the popup content</param>
+			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize, Point? upperLeftOffset = null);
 		}
 
 		partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)

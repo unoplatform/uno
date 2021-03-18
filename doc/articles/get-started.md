@@ -1,64 +1,36 @@
-# Getting Started with the Uno Platform
+# Get started with Uno Platform
 
-## Prerequisites
-* [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with:
-    * **Universal Windows Platform** workload installed
+Welcome to Uno Platform! You'll be creating cross-platform applications with XAML and C# in no time.
 
-    ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
+To help you set up your development environment, we need to know what operating system you're developing on, and what's your preferred IDE.
 
-	* **Mobile development with .NET (Xamarin)** workload installed
+**I am developing with...**
 
-    ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
+ - [Windows](#windows)
+ - [macOS](#macos)
+ - [Linux](#linux)
 
-    *
-        * the iOS Remote Simulator installed (for iOS development)
-	    * A working Mac with Visual Studio for Mac, XCode 8.2 or later installed (for iOS development)
-	    * Google's Android x86 emulators or a physical Android device (for Android development)
+ ## Windows
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 (for WASM development)
+If you're developing on Windows, our recommended IDE is Visual Studio, for the richest XAML development experience. But if you prefer to use Rider or Visual Studio Code, you can - you'll just get less hints when you're writing XAML markup.
 
-    ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
+ - [Get started with Visual Studio for Windows](get-started-vs.md)
+ - [Get started with Visual Studio Code](get-started-vscode.md)
+ - [Get started with Rider](get-started-rider.md)
 
-## Create an application from the solution template
+ ## macOS
 
-To easily create a multi-platform application:
-* Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
-* Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**:
+If you're developing on macOS, you have a few options. You can use Visual Studio for Mac, Rider, or Visual Studio for Code.
 
-![new project](Assets/quick-start/vsix-new-project.png)
-* Update to the latest nuget package named `Uno.UI`, make sure to check the `pre-release` box.
-* To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
-* To debug the Android head, select the `Debug|AnyCPU` configuration
-* To debug the UWP head, select the `Debug|x86` configuration
-* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu. Note that **F5** will *not* work because Visual Studio debugging isn't supported. See [here](debugging-wasm.md) for debugging instructions through Chrome.
+ - [Get started with Visual Studio for Mac](get-started-vsmac.md)
+ - [Get started with Visual Studio Code](get-started-vscode.md)
+ - [Get started with Rider](get-started-rider.md)
 
-### Enabling XAML Intellisense
+ ## Linux
 
-[Intellisense](https://docs.microsoft.com/en-us/visualstudio/ide/using-intellisense) is supported in XAML when the UWP head is active:
-![xaml-intellisense](Assets/quick-start/xaml-intellisense.png)
+ If you're developing on Linux we've got you covered - you can use either Rider or Visual Studio Code to build Uno Platform applications.
+ 
+ - [Get started with Visual Studio Code](get-started-vscode.md)
+ - [Get started with Rider](get-started-rider.md)
 
-If XAML Intellisense isn't working on a freshly-created project, try the following steps:
-1. Build the UWP head.
-2. Close all XAML documents.
-3. Close and reopen Visual Studio.
-4. Reopen XAML documents.
-
-### Creating an app with Uno - tutorial
-
-See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-step guide to creating a working app with Uno.
-
-![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
-
-## Next steps
-
-* For code samples, check out the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository.
-
-* The Uno Platform promotes a 'UWP-first' development approach. Microsoft's [documentation](https://docs.microsoft.com/en-us/windows/uwp/develop/) on the UWP framework is an essential resource.
-
-* For Uno-specific information, consult the docs here, including a list of [supported features](supported-features.md) and [general development tips](using-uno-ui.md).
-
-* If you're not sure how to do something with Uno, and you think others could benefit from the knowledge, you can post the question on [StackOverflow](https://stackoverflow.com/questions/ask?tags=uno-platform) using the 'uno-platform' tag. Remember to check if the question [already exists](https://stackoverflow.com/questions/tagged/uno-platform) and follow StackOverflow's [question guidelines](https://stackoverflow.com/help/how-to-ask). You'll also need to sign up to StackOverflow if you're not already.
-
-* If you think you've encountered a bug (eg, something works on UWP but not on another platform), [create an issue on GitHub](https://github.com/nventive/Uno/issues) if there's no existing issue. We hate bugs, but we love bug reports!
-
-* If you have any questions for the Uno Platform team directly, visit our [Gitter channel](https://gitter.im/uno-platform/Lobby).
+ There's [additional information here](get-started-with-linux.md) about developing from, and for, Linux with Uno Platform.

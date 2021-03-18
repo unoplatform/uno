@@ -19,6 +19,19 @@ namespace Windows.UI.Xaml.Controls
 		private const int MaxMeasureCache = 50;
 
 		private static TextBlockMeasureCache _cache = new TextBlockMeasureCache();
+		private bool _fontStyleChanged;
+		private bool _fontWeightChanged;
+		private bool _textChanged;
+		private bool _fontFamilyChanged;
+		private bool _fontSizeChanged;
+		private bool _maxLinesChanged;
+		private bool _textTrimmingChanged;
+		private bool _textAlignmentChanged;
+		private bool _lineHeightChanged;
+		private bool _characterSpacingChanged;
+		private bool _textDecorationsChanged;
+		private bool _textWrappingChanged;
+		private bool _paddingChangedChanged;
 
 		public TextBlock() : base("p")
 		{
@@ -26,19 +39,68 @@ namespace Windows.UI.Xaml.Controls
 			OnFontWeightChangedPartial();
 			OnTextChangedPartial();
 			OnFontFamilyChangedPartial();
+			OnFontSizeChangedPartial();
 			OnCharacterSpacingChangedPartial();
 			OnLineHeightChangedPartial();
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
+			OnIsTextSelectionEnabledChangedPartial();
+			InitializeDefaultValues();
+
 		}
 
-		partial void InvalidateTextBlockPartial()
+		/// <summary>
+		/// Set default properties to vertical top.
+		/// In wasm, this behavior is closer to the default textblock property than stretch.
+		/// </summary>
+		private void InitializeDefaultValues()
 		{
+			this.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, DependencyPropertyValuePrecedences.DefaultValue);
+		}
 
+		private void ConditionalUpdate(ref bool condition, Action action)
+		{
+			if (condition)
+			{
+				condition = false;
+				action();
+			}
+		}
+
+		private void SynchronizeHtmlParagraphAttributes()
+		{
+			ConditionalUpdate(ref _fontStyleChanged, () => this.SetFontStyle(FontStyle));
+			ConditionalUpdate(ref _fontWeightChanged, () => this.SetFontWeight(FontWeight));
+			ConditionalUpdate(ref _fontFamilyChanged, () => this.SetFontFamily(FontFamily));
+			ConditionalUpdate(ref _fontSizeChanged, () => this.SetFontSize(FontSize));
+			ConditionalUpdate(ref _maxLinesChanged, () => this.SetMaxLines(MaxLines));
+			ConditionalUpdate(ref _textAlignmentChanged, () => this.SetTextAlignment(TextAlignment));
+			ConditionalUpdate(ref _lineHeightChanged, () => this.SetLineHeight(LineHeight));
+			ConditionalUpdate(ref _characterSpacingChanged, () => this.SetCharacterSpacing(CharacterSpacing));
+			ConditionalUpdate(ref _textDecorationsChanged, () => this.SetTextDecorations(TextDecorations));
+			ConditionalUpdate(ref _paddingChangedChanged, () => this.SetTextPadding(Padding));
+
+			if(_textTrimmingChanged || _textWrappingChanged)
+			{
+				_textTrimmingChanged = _textWrappingChanged = false;
+				this.SetTextWrappingAndTrimming(textTrimming: TextTrimming, textWrapping: TextWrapping);
+			}
+
+			if (_textChanged)
+			{
+				_textChanged = false;
+
+				if (UseInlinesFastPath)
+				{
+					this.SetText(Text);
+				}
+			}
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			SynchronizeHtmlParagraphAttributes();
+
 			if (UseInlinesFastPath)
 			{
 				if (_cache.FindMeasuredSize(this, availableSize) is Size desiredSize)
@@ -64,94 +126,79 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private int GetCharacterIndexAtPoint(Point point)
+		/// <summary>
+		/// When the control is constrained, it should only take it's desired size or
+		/// it will show all of it's content.
+		/// </summary>
+		/// <param name="finalSize"></param>
+		/// <returns></returns>
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			throw new NotSupportedException();
+			Size arrangeSize;
+			if (IsLayoutConstrainedByMaxLines)
+			{
+				arrangeSize = DesiredSize;
+
+				if (HorizontalAlignment == HorizontalAlignment.Stretch)
+				{
+					arrangeSize.Width = finalSize.Width;
+				}
+			}
+			else
+			{
+				arrangeSize = finalSize;
+			}
+
+			return base.ArrangeOverride(arrangeSize);
 		}
 
-		partial void OnFontStyleChangedPartial()
-		{
-			this.SetFontStyle(FontStyle);
-		}
+		private int GetCharacterIndexAtPoint(Point point) => throw new NotSupportedException();
 
-		partial void OnFontWeightChangedPartial()
+		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;
+
+		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
+
+		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
-			this.SetFontWeight(FontWeight);
+			if (IsTextSelectionEnabled)
+			{
+				SetCssClasses("selectionEnabled");
+			}
+			else
+			{
+				UnsetCssClasses("selectionEnabled");
+			}
 		}
 
 		partial void OnTextChangedPartial()
 		{
-			if (UseInlinesFastPath)
-			{
-				this.SetText(Text);
-			}
+			_textChanged = true;
 
 			UpdateHitTest();
 		}
 
-		partial void ClearTextPartial()
-		{
-			SetHtmlContent(""); // Remove any child element
-		}
+		partial void ClearTextPartial() => SetHtmlContent("");
 
-		partial void OnFontFamilyChangedPartial()
-		{
-			this.SetFontFamily(FontFamily);
-		}
+		partial void OnFontFamilyChangedPartial() => _fontFamilyChanged = true;
 
-		partial void OnFontSizeChangedPartial()
-		{
-			this.SetFontSize(FontSize);
-		}
+		partial void OnFontSizeChangedPartial() => _fontSizeChanged = true;
 
-		partial void OnMaxLinesChangedPartial()
-		{
-			this.SetMaxLines(MaxLines);
-		}
+		partial void OnMaxLinesChangedPartial() => _maxLinesChanged = true;
 
-		partial void OnTextTrimmingChangedPartial()
-		{
-			this.SetTextTrimming(TextTrimming);
-		}
+		partial void OnTextTrimmingChangedPartial() => _textTrimmingChanged = true;
 
-		partial void OnForegroundChangedPartial()
-		{
-			this.SetForeground(Foreground);
-		}
+		partial void OnForegroundChangedPartial() => this.SetForeground(Foreground);
 
-		partial void OnTextAlignmentChangedPartial()
-		{
-			this.SetTextAlignment(TextAlignment);
-		}
+		partial void OnTextAlignmentChangedPartial() => _textAlignmentChanged = true;
 
-		partial void OnLineHeightChangedPartial()
-		{
-			this.SetLineHeight(LineHeight);
-		}
+		partial void OnLineHeightChangedPartial() => _lineHeightChanged = true;
 
-		partial void OnCharacterSpacingChangedPartial()
-		{
-			this.SetCharacterSpacing(CharacterSpacing);
-		}
+		partial void OnCharacterSpacingChangedPartial() => _characterSpacingChanged = true;
 
-		partial void OnTextDecorationsChangedPartial()
-		{
-			this.SetTextDecorations(TextDecorations);
-		}
+		partial void OnTextDecorationsChangedPartial() => _textDecorationsChanged = true;
 
-		partial void OnTextWrappingChangedPartial()
-		{
-			this.SetTextWrapping(TextWrapping);
-		}
+		partial void OnTextWrappingChangedPartial() => _textWrappingChanged = true;
 
-		partial void OnPaddingChangedPartial()
-		{
-			this.SetTextPadding(Padding);
-		}
-
-		internal override bool IsViewHit()
-		{
-			return Text != null || base.IsViewHit();
-		}
+		partial void OnPaddingChangedPartial() => _paddingChangedChanged = true;
 	}
 }

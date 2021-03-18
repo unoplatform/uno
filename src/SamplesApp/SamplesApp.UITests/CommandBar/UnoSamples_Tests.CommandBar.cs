@@ -20,22 +20,40 @@ namespace SamplesApp.UITests.CommandBar
 		{
 			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_LongTitle");
 
-			_app.WaitForElement(_app.Marked("TextBlockWidthTest"));
+			var isLandscape = GetIsCurrentRotationLandscape("ThePage");
 
-			// Initial state
-			_app.Screenshot("CommandBar - LongTitle - 1 - Initial State");
+			try
+			{
 
-			// Set orientation Landscape
-			_app.SetOrientationLandscape();
-			_app.Screenshot("CommandBar - LongTitle - 2 - Orientation Landscape");
+				_app.WaitForElement(_app.Marked("TextBlockWidthTest"));
 
-			// Set orientation Portrait
-			_app.SetOrientationPortrait();
-			_app.Screenshot("CommandBar - LongTitle - 3 - Orientation Portrait");
+				// Initial state
+				TakeScreenshot("CommandBar - LongTitle - 1 - Initial State");
 
-			// Set orientation Landscape (Again)
-			_app.SetOrientationLandscape();
-			_app.Screenshot("CommandBar - LongTitle - 4 - Orientation Landscape");
+				// Set orientation Landscape
+				_app.SetOrientationLandscape();
+				TakeScreenshot("CommandBar - LongTitle - 2 - Orientation Landscape");
+
+				// Set orientation Portrait
+				_app.SetOrientationPortrait();
+				TakeScreenshot("CommandBar - LongTitle - 3 - Orientation Portrait");
+
+				// Set orientation Landscape (Again)
+				_app.SetOrientationLandscape();
+				TakeScreenshot("CommandBar - LongTitle - 4 - Orientation Landscape");
+			}
+			finally
+			{
+				// Reset orientation to original value
+				if (isLandscape)
+				{
+					_app.SetOrientationLandscape();
+				}
+				else
+				{
+					_app.SetOrientationPortrait();
+				}
+			}
 		}
 	}
 }

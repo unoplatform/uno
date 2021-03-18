@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml
 				Bounds = newBounds;
 
 				DispatchInvalidateMeasure();
-				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 
 				// Note that UWP raises the ApplicationView.VisibleBoundsChanged event
 				// *after* Window.SizeChanged.
@@ -146,6 +146,7 @@ namespace Windows.UI.Xaml
 				_popupRoot = new PopupRoot();
 				_window = new Grid()
 				{
+					IsVisualTreeRoot = true,
 					Children =
 					{
 						_rootScrollViewer,
@@ -159,14 +160,14 @@ namespace Windows.UI.Xaml
 			{
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
 				{
-					_window.ManagedOnLoading();
+					UIElement.LoadingRootElement(_window);
 				}
 
 				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent({_window.HtmlId});");
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
 				{
-					_window.ManagedOnLoaded();
+					UIElement.RootElementLoaded(_window);
 				}
 			}
 			else
@@ -175,15 +176,14 @@ namespace Windows.UI.Xaml
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && _window.IsLoaded)
 				{
-					_window.ManagedOnUnloaded();
+					UIElement.RootElementUnloaded(_window);
 				}
 			}
 		}
 
-		private UIElement InternalGetContent()
-		{
-			return _content;
-		}
+		private UIElement InternalGetContent() => _content;
+
+		private UIElement InternalGetRootElement() => _window!;
 
 		private static Window InternalGetCurrentWindow()
 		{

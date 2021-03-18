@@ -9,11 +9,12 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Markup;
 using System.Threading;
 using Windows.UI.Core;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
-	public sealed partial class Storyboard : Timeline, ITimeline
+	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, IThemeChangeAware
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -32,6 +33,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private int _replayCount = 1;
 		private int _runningChildren = 0;
 		private bool _hasFillingChildren = false;
+		private Dictionary<ITimeline, IDisposable> _childrenSubscriptions = new Dictionary<ITimeline, IDisposable>();
 
 		public Storyboard()
 		{
@@ -46,8 +48,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTargetName(Timeline timeline, string value) => timeline.SetValue(TargetNameProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TargetNameProperty =
-			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new PropertyMetadata(null));
+		public static DependencyProperty TargetNameProperty { get ; } =
+			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null));
 		#endregion
 
 		#region TargetProperty Attached Property
@@ -56,8 +58,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTargetProperty(Timeline timeline, string value) => timeline.SetValue(TargetPropertyProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetProperty.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TargetPropertyProperty =
-			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new PropertyMetadata(null));
+		public static DependencyProperty TargetPropertyProperty { get ; } =
+			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null));
 		#endregion
 
 		public static void SetTarget(Timeline timeline, DependencyObject target) => timeline.Target = target;
@@ -67,6 +69,19 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// evaluation of the target element.
 		/// </summary>
 		public static void SetTarget(Timeline timeline, ElementNameSubject target) => timeline.SetElementNameTarget(target);
+
+		/// <summary>
+		/// Disposes event subscriptions for an <see cref="ITimeline"/>
+		/// </summary>
+		/// <param name="child"></param>
+		private void DisposeChildRegistrations(ITimeline child)
+		{
+			if(_childrenSubscriptions.TryGetValue(child, out var disposable))
+			{
+				disposable.Dispose();
+				_childrenSubscriptions.Remove(child);
+			}
+		}
 
 		/// <summary>
 		/// Replay this animation.
@@ -106,8 +121,20 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				foreach (ITimeline child in Children)
 				{
+					DisposeChildRegistrations(child);
+
 					_runningChildren++;
 					child.Completed += Child_Completed;
+					child.Failed += Child_Failed;
+
+					_childrenSubscriptions.Add(
+						child,
+						Disposable.Create(() => {
+							child.Completed -= Child_Completed;
+							child.Failed -= Child_Failed;
+						})
+					);
+
 					child.Begin();
 				}
 			}
@@ -142,7 +169,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				foreach (ITimeline child in Children)
 				{
 					child.Stop();
-					child.Completed -= Child_Completed;
+					DisposeChildRegistrations(child);
 				}
 			}
 			_runningChildren = 0;
@@ -236,7 +263,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				foreach (ITimeline child in Children)
 				{
 					child.Deactivate();
-					child.Completed -= Child_Completed;
+					DisposeChildRegistrations(child);
 				}
 
 				_runningChildren = 0;
@@ -260,6 +287,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					((ITimeline)child).Stop();
 				}
 			}
+			State = TimelineState.Stopped;
 		}
 
 		public ClockState GetCurrentState()
@@ -282,6 +310,21 @@ namespace Windows.UI.Xaml.Media.Animation
 			throw new NotImplementedException();
 		}
 
+		private void Child_Failed(object sender, object e)
+		{
+			if (!(sender is Timeline child))
+			{
+				return;
+			}
+
+			DisposeChildRegistrations(child);
+
+			Interlocked.Decrement(ref _runningChildren);
+
+			// OnFailed is not called here because it relates to an individual
+			// child, where completed relates to all children being completed.
+		}
+
 		private void Child_Completed(object sender, object e)
 		{
 			if (!(sender is Timeline child))
@@ -289,7 +332,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				return;
 			}
 
-			child.Completed -= Child_Completed;
+			DisposeChildRegistrations(child);
 
 			Interlocked.Decrement(ref _runningChildren);
 			_hasFillingChildren |= (child.FillBehavior != FillBehavior.Stop);
@@ -320,6 +363,17 @@ namespace Windows.UI.Xaml.Media.Animation
 				{
 					child.Dispose();
 				}
+			}
+		}
+
+		IEnumerable<DependencyObject> IAdditionalChildrenProvider.GetAdditionalChildObjects() => Children;
+
+		void IThemeChangeAware.OnThemeChanged()
+		{
+			if (State == TimelineState.Filling)
+			{
+				// If we're filling, reapply the fill to reapply values that may have changed with the app theme
+				SkipToFill();
 			}
 		}
 	}

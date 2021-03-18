@@ -1,4 +1,4 @@
-﻿#if !NET461 && !__MACOS__
+﻿#if !NET461
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,11 +11,11 @@ namespace Windows.UI.Xaml.Controls
 	{
 		VirtualizingPanelLayout _layout;
 
-#if __WASM__
+#if UNO_REFERENCE_API
 		[NotImplemented]
 #endif
 		public int FirstVisibleIndex => _layout?.FirstVisibleIndex ?? -1;
-#if __WASM__
+#if UNO_REFERENCE_API
 		[NotImplemented]
 #endif
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
 			}
 
-#if __WASM__
+#if UNO_REFERENCE_API || __MACOS__
 			CreateLayoutIfNeeded();
 			_layout.Initialize(this);
 #endif

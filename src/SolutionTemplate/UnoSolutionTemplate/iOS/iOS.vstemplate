@@ -1,52 +1,53 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
-	<Name>UnoQuickStart.iOS</Name>
-	<Description>
-	</Description>
-	<ProjectType>CSharp</ProjectType>
-	<ProjectSubType>
-	</ProjectSubType>
-	<SortOrder>1000</SortOrder>
-	<CreateNewFolder>true</CreateNewFolder>
-	<DefaultName>UnoQuickStart.iOS</DefaultName>
-	<ProvideDefaultName>true</ProvideDefaultName>
-	<LocationField>Enabled</LocationField>
-	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
-	<Icon>__TemplateIcon.png</Icon>
-	<PreviewImage>__PreviewImage.png</PreviewImage>
+    <Name>UnoQuickStart.iOS</Name>
+    <Description>
+    </Description>
+    <ProjectType>CSharp</ProjectType>
+    <ProjectSubType>
+    </ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>UnoQuickStart.iOS</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <Icon>__TemplateIcon.png</Icon>
+    <PreviewImage>__PreviewImage.png</PreviewImage>
+    <CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
-	<Project TargetFileName="$ext_safeprojectname$.iOS.csproj" File="UnoQuickStart.iOS.csproj" ReplaceParameters="true">
-	  <ProjectItem ReplaceParameters="true" TargetFileName="Entitlements.plist">Entitlements.plist</ProjectItem>
-	  <ProjectItem ReplaceParameters="true" TargetFileName="Info.plist">Info.plist</ProjectItem>
-	  <ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem> 
-	  <ProjectItem ReplaceParameters="true" TargetFileName="LaunchScreen.storyboard">LaunchScreen.storyboard</ProjectItem>
-	  <Folder Name="Properties" TargetFolderName="Properties">
-		<ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
-	  </Folder>
-	  <Folder Name="Media.xcassets" TargetFolderName="Media.xcassets">
-		<Folder Name="AppIcons.appiconset" TargetFolderName="AppIcons.appiconset">
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="ios-marketing-1024x1024@1x.png">ios-marketing-1024x1024@1x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPad-76x76@2x.png">iPad-76x76@2x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPad-84x84@2x.png">iPad-84x84@2x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-20x20@2x.png">iPhone-20x20@2x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-20x20@3x.png">iPhone-20x20@3x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-40x40@3x.png">iPhone-40x40@3x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-60x60@2x.png">iPhone-60x60@2x.png</ProjectItem>
-		</Folder>
-		<Folder Name="LaunchImages.launchimage" TargetFolderName="LaunchImages.launchimage">
-		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
-		</Folder>
-	  </Folder>
-	  <Folder Name="Resources" TargetFolderName="Resources">
-		<ProjectItem ReplaceParameters="false" TargetFileName="Default-568h@2x.png">Default-568h@2x.png</ProjectItem>
-		<ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@2x.png">SplashScreen@2x.png</ProjectItem>
-		<ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@3x.png">SplashScreen@3x.png</ProjectItem>
-		<Folder Name="Fonts" TargetFolderName="Fonts">
-		  <ProjectItem ReplaceParameters="false" TargetFileName="winjs-symbols.ttf">winjs-symbols.ttf</ProjectItem>
-		</Folder>
-	  </Folder>
-	</Project>
+    <Project TargetFileName="$ext_safeprojectname$.iOS.csproj" File="UnoQuickStart.iOS.csproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" TargetFileName="Entitlements.plist">Entitlements.plist</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="Info.plist">Info.plist</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="LaunchScreen.storyboard">LaunchScreen.storyboard</ProjectItem>
+      <Folder Name="Properties" TargetFolderName="Properties">
+        <ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      </Folder>
+      <Folder Name="Media.xcassets" TargetFolderName="Media.xcassets">
+        <Folder Name="AppIcons.appiconset" TargetFolderName="AppIcons.appiconset">
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="ios-marketing-1024x1024@1x.png">ios-marketing-1024x1024@1x.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPad-76x76@2x.png">iPad-76x76@2x.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPad-84x84@2x.png">iPad-84x84@2x.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-20x20@2x.png">iPhone-20x20@2x.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-20x20@3x.png">iPhone-20x20@3x.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-40x40@3x.png">iPhone-40x40@3x.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-60x60@2x.png">iPhone-60x60@2x.png</ProjectItem>
+        </Folder>
+        <Folder Name="LaunchImages.launchimage" TargetFolderName="LaunchImages.launchimage">
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
+        </Folder>
+      </Folder>
+      <Folder Name="Resources" TargetFolderName="Resources">
+        <ProjectItem ReplaceParameters="false" TargetFileName="Default-568h@2x.png">Default-568h@2x.png</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@2x.png">SplashScreen@2x.png</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@3x.png">SplashScreen@3x.png</ProjectItem>
+        <Folder Name="Fonts" TargetFolderName="Fonts">
+          <ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
+        </Folder>
+      </Folder>
+    </Project>
   </TemplateContent>
 </VSTemplate>

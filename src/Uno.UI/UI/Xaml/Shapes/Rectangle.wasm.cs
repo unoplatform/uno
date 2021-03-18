@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;
 using System;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -24,33 +25,24 @@ namespace Windows.UI.Xaml.Shapes
 			return _rectangle;
 		}
 
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			_rectangle.Width = Width - ActualStrokeThickness;
-			_rectangle.Height = Height - ActualStrokeThickness;
-
-			return base.MeasureOverride(availableSize);
-		}
-
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			var strokeThickness = ActualStrokeThickness;
+
 			var childRect = new Rect(
-				ActualStrokeThickness / 2,
-				ActualStrokeThickness / 2,
-				finalSize.Width - ActualStrokeThickness,
-				finalSize.Height - ActualStrokeThickness
-			);
+					strokeThickness / 2,
+					strokeThickness / 2,
+					finalSize.Width - strokeThickness,
+					finalSize.Height - strokeThickness
+				)
+				.AtLeast(new Size(0, 0));
 
 			_rectangle.Arrange(childRect);
-			_rectangle.SetAttribute(
-				("x", childRect.X.ToStringInvariant()),
-				("y", childRect.Y.ToStringInvariant()),
-				("width", childRect.Width.ToStringInvariant()),
-				("height", childRect.Height.ToStringInvariant())
-			);
+
+			Uno.UI.Xaml.WindowManagerInterop.SetSvgElementRect(_rectangle.HtmlId, childRect);
 
 			_rectangle.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
-			
+
 			return finalSize;
 		}
 

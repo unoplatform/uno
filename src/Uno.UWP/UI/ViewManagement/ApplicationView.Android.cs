@@ -1,4 +1,6 @@
 ﻿#if __ANDROID__
+using System;
+using System.Runtime.CompilerServices;
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
@@ -11,20 +13,44 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
-		internal void SetVisibleBounds(Rect newVisibleBounds)
+		public bool IsScreenCaptureEnabled
 		{
-			if (newVisibleBounds != VisibleBounds)
+			get
 			{
-				VisibleBounds = newVisibleBounds;
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				var activity = GetCurrentActivity();
+				return !activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.Secure);
+			}
+			set
+			{
+				var activity = GetCurrentActivity();
+				if (value)
 				{
-					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
+					activity.Window.ClearFlags(WindowManagerFlags.Secure);
 				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
+				else
+				{
+					activity.Window.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
+				}
 			}
 		}
+
+		public string Title
+		{
+			get
+			{
+				var activity = GetCurrentActivity();
+				return activity.Title;
+			}
+			set
+			{
+				var activity = GetCurrentActivity();
+				activity.Title = value;
+			}
+		}
+
+		private Rect _trueVisibleBounds;
+
+		internal void SetTrueVisibleBounds(Rect trueVisibleBounds) => _trueVisibleBounds = trueVisibleBounds;
 
 		public bool TryEnterFullScreenMode()
 		{
@@ -41,6 +67,7 @@ namespace Windows.UI.ViewManagement
 
 		private void UpdateFullScreenMode(bool isFullscreen)
 		{
+#pragma warning disable 618
 			var activity = ContextHelper.Current as Activity;
 			var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
 
@@ -60,6 +87,18 @@ namespace Windows.UI.ViewManagement
 			}
 
 			activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+#pragma warning restore 618
+		}
+
+
+		private Activity GetCurrentActivity([CallerMemberName]string propertyName = null)
+		{
+			if (!(ContextHelper.Current is Activity activity))
+			{
+				throw new InvalidOperationException($"{propertyName} API must be called when Activity is created");
+			}
+
+			return activity;
 		}
 	}
 }

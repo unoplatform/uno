@@ -1,3 +1,4 @@
+using Windows.UI.Xaml;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
@@ -11,5 +12,16 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 		{
 			InitializeComponent();
 		}
+
+		private void BtnSingle_OnClick(object sender, RoutedEventArgs e)
+		{
+			(DataContext as TextBoxViewModel).MyInput = "Single Line";
+		}
+
+		private void BtnDouble_OnClick(object sender, RoutedEventArgs e)
+		{
+			(DataContext as TextBoxViewModel).MyInput = "Double\nLine";
+		}
+
 	}
 }

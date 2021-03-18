@@ -9,6 +9,8 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Uno.Client;
+using CoreGraphics;
+
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
@@ -19,13 +21,13 @@ using MonoTouch.UIKit;
 
 namespace Uno.UI.Controls
 {
-	public partial class BindableSearchBar : UISearchBar, DependencyObject, INotifyPropertyChanged
+	public partial class BindableSearchBar : UISearchBar, DependencyObject, System.ComponentModel.INotifyPropertyChanged
 	{
 		private const string _defaultTextChangedMinDelayLiteral = "0:0:0.250";
 		private static readonly TimeSpan _defaultTextChangedMinDelay = TimeSpan.FromMilliseconds(250);
 		private const bool _defaultIsAutoLostFocusEnabled = true;
 
-		private readonly SerialDisposable _textChangedSubscription;
+		private readonly SerialDisposable _textChangedSubscription = new SerialDisposable();
 
 		private ICommand _submitCommand;
 		private TimeSpan _textUpdateMinDelay = _defaultTextChangedMinDelay;
@@ -33,8 +35,37 @@ namespace Uno.UI.Controls
 
 		public BindableSearchBar()
 		{
+			Initialize();
+		}
+
+		public BindableSearchBar(CGRect frame)
+			: base(frame)
+		{
+			Initialize();
+		}
+
+		public BindableSearchBar(NSCoder coder)
+			: base(coder)
+		{
+			Initialize();
+		}
+
+		public BindableSearchBar(NSObjectFlag t)
+			: base(t)
+		{
+			Initialize();
+		}
+
+		public BindableSearchBar(IntPtr handle)
+			: base(handle)
+		{
+			Initialize();
+		}
+
+
+		private void Initialize()
+		{
 			InitializeBinder();
-			_textChangedSubscription = new SerialDisposable();
 
 			UpdateTextChangedSubscription();
 			SearchButtonClicked += SubmitQuery;
@@ -171,14 +202,14 @@ namespace Uno.UI.Controls
 		}
 
 		#region INotifyPropertyChanged
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 		protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			var handler = PropertyChanged;
 			if (handler != null)
 			{
-				handler(this, new PropertyChangedEventArgs(propertyName));
+				handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
 			}
 		}
 		#endregion

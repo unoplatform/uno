@@ -1,0 +1,130 @@
+parameters:
+  poolName: ''
+
+jobs:
+- job: VS_Latest
+  displayName: 'NuGet Packages'
+  timeoutInMinutes: 90
+
+  pool: ${{ parameters.poolName }}
+
+  strategy:
+    matrix:
+      UWP:
+        UNO_UWP_BUILD: true
+
+      WinUI:
+        UNO_UWP_BUILD: false
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    # Disable .NET 5 build on CI for package generation
+    # Build validation is performed on other jobs
+    UnoUIDisableNetCoreBuild: true
+
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/gitversion.yml
+   
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: 4.9.1
+      checkLatest: false
+
+  # Required to run the api comparison tool
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 2.2.x'
+    inputs:
+      packageType: runtime
+      version: 2.2.x
+
+  # Required for the Wasm uitests project
+  - task: NodeTool@0
+
+  - template: templates/install-windows-sdk.yml
+
+  - powershell: |
+        cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
+        dotnet run "$(build.sourcesdirectory)"
+
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+    displayName: Convert source tree to WinUI 3 structure
+
+  - task: MSBuild@1
+    inputs:
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /m "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - task: CopyFiles@2
+    condition: always()
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/Build
+      Contents: '*.nupkg'
+      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PowerShell@2
+    displayName: Authenticode Sign Packages
+    inputs:
+      filePath: build/Sign-Package.ps1
+    env:
+      SignClientUser: $(SignClientUser)
+      SignClientSecret: $(SignClientSecret)
+      SignPackageName: "Uno Platform"
+      SignPackageDescription: "The Uno Platform"
+      ArtifactDirectory: $(build.artifactstagingdirectory)\vslatest
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Skia Artifacts
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
+      ArtifactName: uno-skia-artifacts
+      ArtifactType: Container
+  
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Tizen Artifacts
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Tizen\bin\Release\tizen50
+      ArtifactName: uno-tizen-artifacts
+      ArtifactType: Container
+
+  # Publish PR packages to local feed to enable canary testing from PR artifacts
+  # Temporarily disabled for quota considerations
+  #- task: NuGetCommand@2
+  #  condition: and(eq(variables['System.PullRequest.IsFork'], 'False'), eq(variables['Build.Reason'], 'PullRequest'))
+  #  inputs:
+  #    command: 'push'
+  #    packagesToPush: '$(build.artifactstagingdirectory)/vslatest/**/*.nupkg'
+  #    nuGetFeedType: 'internal'
+  #    publishVstsFeed: '1dd81cbd-cb35-41de-a570-b0df3571a196/a70dae92-4e3d-4540-bf93-9b22ec98d19d'
+  #    allowPackageConflicts: true

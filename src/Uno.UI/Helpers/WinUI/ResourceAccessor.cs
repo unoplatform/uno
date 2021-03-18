@@ -13,11 +13,12 @@ using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Helpers.WinUI
 {
-	internal class ResourceAccessor
+	internal partial class ResourceAccessor
 	{
 		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
 		private const string c_resourceLoc = "Microsoft.UI.Xaml/Resources";
@@ -61,18 +62,25 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static LoadedImageSurface GetImageSurface(string assetName, Size imageSize)
 		{
-			Uri getImageUri() {
+			Uri getImageUri()
+			{
 				if (SharedHelpers.IsInFrameworkPackage())
 				{
 					return new Uri("ms-resource://" + MUXCONTROLS_PACKAGE_NAME + "/Files/Microsoft.UI.Xaml/Assets/" + assetName + ".png");
 				}
 				else
 				{
-					return new Uri("ms-resource:///Files/Microsoft.UI.Xaml/Assets/"+assetName  + ".png");
+					return new Uri("ms-resource:///Files/Microsoft.UI.Xaml/Assets/" + assetName + ".png");
 				}
 			}
 
 			return LoadedImageSurface.StartLoadFromUri(getImageUri(), imageSize);
+		}
+
+		public static object ResourceLookup(Control control, object key)
+		{
+			return control.Resources.HasKey(key) ? control.Resources.Lookup(key) : Application.Current.Resources.Lookup(key);
+			//WinUI uses TryLookup for Application Resources, but Lookup seems to have the same semantics
 		}
 	}
 }

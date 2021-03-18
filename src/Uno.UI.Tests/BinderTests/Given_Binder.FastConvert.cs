@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Logging;
@@ -40,11 +40,11 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		public void when_String_To_FontWeight()
+		public void When_String_To_FontWeight()
 		{
 			var allWeights = typeof(FontWeights).GetFields(BindingFlags.Static | BindingFlags.Public);
 
-			foreach(var weight in allWeights)
+			foreach (var weight in allWeights)
 			{
 				object expected = weight.GetValue(null);
 
@@ -54,6 +54,13 @@ namespace Uno.UI.Tests.BinderTests
 				object actualLower = BindingPropertyHelper.Convert(() => typeof(FontWeight), weight.Name.ToLowerInvariant());
 				Assert.AreEqual(expected, actualLower);
 			}
+		}
+
+		[TestMethod]
+		public void When_Double_To_GridLength()
+		{
+
+			Assert.AreEqual(new GridLength(42.0, GridUnitType.Pixel), Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(GridLength), 42.0));
 		}
 
 		private static void ValidateEnumType(Type enumType)

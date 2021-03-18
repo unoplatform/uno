@@ -1,4 +1,4 @@
-require(["Uno.UI"], () => {
+require([`${config.uno_app_base}/Uno.UI`], () => {
     MonoSupport.jsCallDispatcher.registerScope("TSBindingsUnitTests", new TSBindingsTests());
 });
 class TSBindingsTests {
@@ -86,8 +86,8 @@ class TSBindingsTests {
 class GenericReturn {
     marshal(pData) {
         {
-            var stringLength = lengthBytesUTF8(this.Value);
-            var pString = Module._malloc(stringLength + 1);
+            const stringLength = lengthBytesUTF8(this.Value);
+            const pString = Module._malloc(stringLength + 1);
             stringToUTF8(this.Value, pString, stringLength + 1);
             Module.setValue(pData + 0, pString, "*");
         }
@@ -96,16 +96,16 @@ class GenericReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class When_ArrayOfIntParams {
     static unmarshal(pData) {
-        let ret = new When_ArrayOfIntParams();
+        const ret = new When_ArrayOfIntParams();
         {
             ret.MyArray_Length = Number(Module.getValue(pData + 0, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 4, "*");
+            const pArray = Module.getValue(pData + 4, "*");
             if (pArray !== 0) {
                 ret.MyArray = new Array();
                 for (var i = 0; i < ret.MyArray_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     ret.MyArray.push(Number(value));
                 }
             }
@@ -141,16 +141,16 @@ class When_ArrayOfStringParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class When_ArrayOfStringsParams {
     static unmarshal(pData) {
-        let ret = new When_ArrayOfStringsParams();
+        const ret = new When_ArrayOfStringsParams();
         {
             ret.MyArray_Length = Number(Module.getValue(pData + 0, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 4, "*");
+            const pArray = Module.getValue(pData + 4, "*");
             if (pArray !== 0) {
                 ret.MyArray = new Array();
                 for (var i = 0; i < ret.MyArray_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.MyArray.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -169,7 +169,7 @@ class When_ArrayOfStringsParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class When_IntPtrParams {
     static unmarshal(pData) {
-        let ret = new When_IntPtrParams();
+        const ret = new When_IntPtrParams();
         {
             ret.Id = Number(Module.getValue(pData + 0, "*"));
         }
@@ -179,9 +179,9 @@ class When_IntPtrParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class When_SingleStringParams {
     static unmarshal(pData) {
-        let ret = new When_SingleStringParams();
+        const ret = new When_SingleStringParams();
         {
-            var ptr = Module.getValue(pData + 0, "*");
+            const ptr = Module.getValue(pData + 0, "*");
             if (ptr !== 0) {
                 ret.MyString = String(Module.UTF8ToString(ptr));
             }

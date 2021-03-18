@@ -31,13 +31,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Assert initial state
 			Assert.AreEqual("0", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
 
-			clickingButton.Tap();
+			clickingButton.FastTap();
 
 			// Assert after clicking once while clickingButton enabled
 			Assert.AreEqual("1", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
 
-			toggleClickingButtonIsEnable.Tap();
-			clickingButton.Tap();
+			toggleClickingButtonIsEnable.FastTap();
+			clickingButton.FastTap();
 
 			// Assert after clicking once while clickingButton disabled
 			Assert.AreEqual("1", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
@@ -58,19 +58,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Assert initial state
 			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myCheckBox.Tap();
+			myCheckBox.FastTap();
 
 			// Assert after clicking once while myCheckBox enabled
 			Assert.AreEqual("True", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myCheckBoxDisabler.Tap();
-			myCheckBox.Tap();
+			myCheckBoxDisabler.FastTap();
+			myCheckBox.FastTap();
 
 			// Assert after clicking once while myCheckBox disabled
 			Assert.AreEqual("True", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myCheckBoxDisabler.Tap();
-			myCheckBox.Tap();
+			myCheckBoxDisabler.FastTap();
+			myCheckBox.FastTap();
 
 			// Assert after clicking once while myCheckBox enabled
 			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
@@ -91,19 +91,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Assert initial state
 			Assert.AreEqual("False", toggleButtonIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myToggleButton.Tap();
+			myToggleButton.FastTap();
 
 			// Assert after clicking once while myToggleButton enabled
 			Assert.AreEqual("True", toggleButtonIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myToggleButtonDisabler.Tap();
-			myToggleButton.Tap();
+			myToggleButtonDisabler.FastTap();
+			myToggleButton.FastTap();
 
 			// Assert after clicking once while myToggleButton disabled
 			Assert.AreEqual("True", toggleButtonIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myToggleButtonDisabler.Tap();
-			myToggleButton.Tap();
+			myToggleButtonDisabler.FastTap();
+			myToggleButton.FastTap();
 
 			// Assert after clicking once while myToggleButton enabled
 			Assert.AreEqual("False", toggleButtonIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
@@ -124,12 +124,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			Assert.AreEqual("ToggleSwitch_1 is OFF", toggleSwitch_1_IsOn.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("ToggleSwitch_2 is OFF", toggleSwitch_2_IsOn.GetDependencyPropertyValue("Text")?.ToString());
 
-			myToggleSwitch_1.Tap();
+			myToggleSwitch_1.FastTap();
 
 			// Assert after clicking once while radio buttons are enabled
 			Assert.AreEqual("ToggleSwitch_1 is ON", toggleSwitch_1_IsOn.GetDependencyPropertyValue("Text")?.ToString());
 
-			myToggleSwitch_2.Tap();
+			myToggleSwitch_2.FastTap();
 
 			// Assert after clicking once while radio buttons are disabled
 			Assert.AreEqual("ToggleSwitch_2 is OFF", toggleSwitch_2_IsOn.GetDependencyPropertyValue("Text")?.ToString());
@@ -150,13 +150,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Assert initial state
 			Assert.AreEqual("0", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
 
-			clickingButton.Tap();
+			clickingButton.FastTap();
 
 			// Assert after clicking once while clickingButton enabled
 			Assert.AreEqual("1", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
 
-			toggleClickingButtonIsEnable.Tap();
-			clickingButton.Tap();
+			toggleClickingButtonIsEnable.FastTap();
+			clickingButton.FastTap();
 
 			// Assert after clicking once while clickingButton disabled
 			Assert.AreEqual("1", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
@@ -178,24 +178,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Assert initial state
 			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myCheckBoxDisabler.Tap();
+			myCheckBoxDisabler.FastTap();
 
 			// Assert after disabling the check box
 			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
 			//Enable state preservation
 
-			myCheckBoxDisabler.Tap();
+			myCheckBoxDisabler.FastTap();
 
 			// Assert initial state
 			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myCheckBox.Tap();
+			myCheckBox.FastTap();
 
 			// Assert after clicking once while myCheckBox enabled
 			Assert.AreEqual("True", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
-			myCheckBoxDisabler.Tap();
+			myCheckBoxDisabler.FastTap();
 
 			// Assert after disabling the check box
 			Assert.AreEqual("True", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
@@ -203,8 +203,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Uno.UITest.Helpers.Queries.Platform.iOS, Uno.UITest.Helpers.Queries.Platform.Browser)] // Android is disabled https://github.com/unoplatform/uno/issues/1632
-
 		public void CheckBox_DoubleTapValidation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.CheckBox_IsEnabled_Automated");
@@ -248,13 +246,43 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 			Check(false, "Assert after fist double click while myCheckBox is not checked");
 
-			myCheckBox.Tap();
+			myCheckBox.FastTap();
 			Check(true, "Assert after single tap myCheckBox should be checked");
 
 			myCheckBox.DoubleTap();
 
 			// Assert after double click while myCheckBox is enabled
 			Check(true, "Assert after another double click while myCheckBox should stay checked");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Button_NestedButtons_Validation()
+		{
+			Run("nVentive.Umbrella.Views.UI.Samples.Content.UITests.ButtonTestsControl.Nested_Buttons");
+
+			var outer = _app.Marked("Outer");
+			var inner = _app.Marked("Inner");
+			var validateCommandTextBlock = _app.Marked("ValidateCommandTextBlock");
+
+			// Initial validation
+			Assert.AreEqual("", validateCommandTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+
+			// Click on outer button and validate
+			_app.TapCoordinates(outer.FirstResult().Rect.X + 30, outer.FirstResult().Rect.Y + 30);
+			string command1 = validateCommandTextBlock.GetDependencyPropertyValue("Text")?.ToString();
+			if (command1 != null && !command1.Contains("OuterCommand"))
+			{
+				Assert.Fail("Outer button is not clicked");
+			}
+
+			// Click on inner button and validate
+			_app.TapCoordinates(inner.FirstResult().Rect.X + 30, inner.FirstResult().Rect.Y + 30);
+			string command2 = validateCommandTextBlock.GetDependencyPropertyValue("Text")?.ToString();
+			if (command2 != null && !command2.Contains("InnerCommand"))
+			{
+				Assert.Fail("Inner button is not clicked");
+			}
 		}
 	}
 }

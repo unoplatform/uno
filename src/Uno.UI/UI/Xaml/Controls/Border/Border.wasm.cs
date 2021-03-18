@@ -33,10 +33,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush, CornerRadius);
+			SetBorder(BorderThickness, BorderBrush);
 		}
 			
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			UpdateBorder();
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
-			UpdateBorder();
+			SetCornerRadius(newValue);
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
@@ -70,5 +70,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsViewHit()
 			=> Background != null || base.IsViewHit();
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

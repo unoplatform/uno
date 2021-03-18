@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI
 {
@@ -17,24 +18,11 @@ namespace Uno.UI
 
 			var cornerRadius = GetCornerRadius(view);
 
-			var radii = new[]
-			{
-				cornerRadius.TopLeft,
-				cornerRadius.TopLeft,
-				cornerRadius.TopRight,
-				cornerRadius.TopRight,
-				cornerRadius.BottomRight,
-				cornerRadius.BottomRight,
-				cornerRadius.BottomLeft,
-				cornerRadius.BottomLeft,
-			}
-				.Select(radius => (float)ViewHelper.LogicalToPhysicalPixels(radius))
-				.ToArray();
+			var path = cornerRadius.GetOutlinePath(rect);
 
-			var path = new Path();
-			path.AddRoundRect(rect, radii, Path.Direction.Cw);
-
+#pragma warning disable 618
 			outline.SetConvexPath(path);
+#pragma warning restore 618
 		}
 
 		private static CornerRadius GetCornerRadius(View view)
@@ -45,6 +33,8 @@ namespace Uno.UI
 					return border.CornerRadius;
 				case Panel panel:
 					return panel.CornerRadius;
+				case Control ctl:
+					return ctl.CornerRadius;
 				default:
 					return CornerRadius.None;
 			}

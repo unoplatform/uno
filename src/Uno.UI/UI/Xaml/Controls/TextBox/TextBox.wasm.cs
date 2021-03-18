@@ -1,18 +1,7 @@
 ﻿using Uno.Extensions;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using Uno.UI;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
-using System.Threading.Tasks;
-using Windows.UI.Text;
-using Uno.Logging;
 using Uno.UI.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -21,15 +10,8 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxView _textBoxView;
 		
 		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
-		protected override bool RequestFocus(FocusState state) => FocusTextView();
 		partial void OnTextClearedPartial() => FocusTextView();
-		protected virtual bool FocusTextView() => FocusManager.Focus(_textBoxView);
-
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-
-		}
-
+		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
 
 		private void UpdateTextBoxView()
 		{
@@ -64,7 +46,15 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePropertiesPartial()
 		{
-			ApplyEnabled();
+			if (_header != null)
+			{
+				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
+			}
+		}
+
+		private void OnHeaderClick(object sender, object args)
+		{
+			FocusTextView();
 		}
 
 		protected void SetIsPassword(bool isPassword)
@@ -82,15 +72,20 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial()
 		{
-			_textBoxView?.SetFontSize(FontSize);
-			_textBoxView?.SetFontStyle(FontStyle);
-			_textBoxView?.SetFontWeight(FontWeight);
-			_textBoxView?.SetFontFamily(FontFamily);
+			if(_textBoxView == null)
+			{
+				return;
+			}
+
+			_textBoxView.SetFontSize(FontSize);
+			_textBoxView.SetFontStyle(FontStyle);
+			_textBoxView.SetFontWeight(FontWeight);
+			_textBoxView.SetFontFamily(FontFamily);
 		}
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			_textBoxView?.SetTextWrapping(TextWrapping);
+			_textBoxView?.SetTextWrappingAndTrimming(textWrapping: TextWrapping, textTrimming: null);
 		}
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
@@ -107,10 +102,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnIsEnabledChanged(oldValue, newValue);
 
-			ApplyEnabled();
+			ApplyEnabled(newValue);
 		}
 
-		private void ApplyEnabled() => _textBoxView?.SetEnabled(IsEnabled);
+		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.NewValue is bool isReadonly)
+			{
+				ApplyIsReadonly(isReadonly);
+			}
+		}
+
+		private void ApplyEnabled(bool? isEnabled = null) => _textBoxView?.SetEnabled(isEnabled ?? IsEnabled);
+
+		private void ApplyIsReadonly(bool? isReadOnly = null) => _textBoxView?.SetIsReadOnly(isReadOnly ?? IsReadOnly);
 
 		public int SelectionStart
 		{

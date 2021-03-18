@@ -17,6 +17,9 @@ using Android.Runtime;
 using Uno.Logging;
 using AndroidMediaPlayer = Android.Media.MediaPlayer;
 using System.Collections.Generic;
+using Uno;
+using Uno.Helpers;
+using System.Linq;
 
 namespace Windows.Media.Playback
 {
@@ -46,7 +49,6 @@ namespace Windows.Media.Playback
 		private int _playlistIndex;
 
 		const string MsAppXScheme = "ms-appx";
-		const string MsAppDataScheme = "ms-appdata";
 
 		public virtual IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
 
@@ -73,6 +75,13 @@ namespace Windows.Media.Playback
 					_isPlayRequested = false;
 					_isPlayerPrepared = false;
 					_player.Release();
+
+					// Clear the surface view so we don't see
+					// the previous video rendering.
+					if (RenderSurface is VideoSurface surfaceView && _hasValidHolder)
+					{
+						surfaceView.Clear();
+					}
 				}
 				finally
 				{
@@ -112,6 +121,9 @@ namespace Windows.Media.Playback
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
 
+			// Reset player
+			TryDisposePlayer();
+
 			if (Source == null)
 			{
 				return;
@@ -119,26 +131,26 @@ namespace Windows.Media.Playback
 
 			try
 			{
-				// Reset player
-				TryDisposePlayer();
 				InitializePlayer();
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
 
-				if (Source is MediaPlaybackList)
+				Uri uri;
+				switch (Source)
 				{
-					_playlistItems = new List<Uri>();
-
-					var playlist = Source as MediaPlaybackList;
-					foreach (var mediaItem in playlist.Items)
-					{
-						_playlistItems.Add(mediaItem.Source.Uri);
-					}
+					case MediaPlaybackList playlist when playlist.Items.Count > 0:
+						SetPlaylistItems(playlist);
+						uri = _playlistItems[0];
+						break;
+					case MediaPlaybackItem item:
+						uri = item.Source.Uri;
+						break;
+					case MediaSource source:
+						uri = source.Uri;
+						break;
+					default:
+						throw new InvalidOperationException("Unsupported media source type");
 				}
-
-				var uri = _playlistItems?.Count > 0
-					? _playlistItems[0]
-					: ((MediaSource)Source).Uri;
 
 				SetVideoSource(uri);
 
@@ -152,6 +164,13 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		private void SetPlaylistItems(MediaPlaybackList playlist)
+		{
+			_playlistItems = playlist.Items
+				.Select(i => i.Source.Uri)
+				.ToList();
+		}
+
 		private void SetVideoSource(Uri uri)
 		{
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
@@ -159,14 +178,18 @@ namespace Windows.Media.Playback
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
 
-			var isResource = uri.Scheme.Equals(MsAppXScheme, StringComparison.OrdinalIgnoreCase)
-							|| uri.Scheme.Equals(MsAppDataScheme, StringComparison.OrdinalIgnoreCase);
-
-			if (isResource)
+			if (uri.IsLocalResource())
 			{
 				var filename = global::System.IO.Path.GetFileName(uri.LocalPath);
 				var afd = Application.Context.Assets.OpenFd(filename);
 				_player.SetDataSource(afd.FileDescriptor, afd.StartOffset, afd.Length);
+				return;
+			}
+
+			if (uri.IsAppData())
+			{
+				var filePath = AppDataUriEvaluator.ToPath(uri);
+				_player.SetDataSource(filePath);
 				return;
 			}
 
@@ -227,7 +250,10 @@ namespace Windows.Media.Playback
 
 		private void StartPlayingHandler()
 		{
+#pragma warning disable 618
 			var handler = new Handler();
+#pragma warning restore 618
+
 			var runnable = new Runnable(() => { handler.Post(OnPlaying); });
 			if (!_executorService.IsShutdown)
 			{
@@ -348,7 +374,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				return TimeSpan.FromMilliseconds(_player.CurrentPosition);
+				return TimeSpan.FromMilliseconds(_player?.CurrentPosition ?? 0);
 			}
 			set
 			{
@@ -452,8 +478,8 @@ namespace Windows.Media.Playback
 
 		public void SurfaceCreated(ISurfaceHolder holder)
 		{
-			_player.SetDisplay(holder);
-			_player.SetScreenOnWhilePlaying(true);
+			_player?.SetDisplay(holder);
+			_player?.SetScreenOnWhilePlaying(true);
 			_hasValidHolder = true;
 
 			UpdateVideoStretch(_currentStretch);
@@ -461,7 +487,7 @@ namespace Windows.Media.Playback
 
 		public void SurfaceDestroyed(ISurfaceHolder holder)
 		{
-			_player.SetDisplay(null);
+			_player?.SetDisplay(null);
 			_hasValidHolder = false;
 		}
 

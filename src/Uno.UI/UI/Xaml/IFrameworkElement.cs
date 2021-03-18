@@ -57,14 +57,14 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	public partial interface IFrameworkElement : IUIElement, IDataContextProvider
+	internal partial interface IFrameworkElement : IDataContextProvider, DependencyObject, IDependencyObjectParse
 	{
 		event RoutedEventHandler Loaded;
 		event RoutedEventHandler Unloaded;
 		event EventHandler<object> LayoutUpdated;
 		event SizeChangedEventHandler SizeChanged;
 
-		IFrameworkElement FindName(string name);
+		object FindName(string name);
 
 		DependencyObject Parent { get; }
 
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
 		/// </summary>
-		Foundation.Rect AppliedFrame { get; }
+		Rect AppliedFrame { get; }
 
 		void SetSubviewsNeedLayout();
 #endif
@@ -141,38 +141,21 @@ namespace Windows.UI.Xaml
 		string GetAccessibilityInnerText();
 	}
 
-	public static class IFrameworkElementHelper
+	internal static class IFrameworkElementHelper
 	{
 		/// <summary>
 		/// Initializes the standard properties for this framework element.
 		/// </summary>
 		public static void Initialize(IFrameworkElement e)
 		{
-#if NET461
-			// These properties have moved to dependency properties
-			// on Uno.UI, tests still depend on it.
-			e.HorizontalAlignment = HorizontalAlignment.Stretch;
-			e.VerticalAlignment = VerticalAlignment.Stretch;
-			e.Width = e.Height = double.NaN;
-			e.MinWidth = e.MinHeight = 0;
-			e.MaxWidth = e.MaxHeight = double.PositiveInfinity;
-#endif
-			if (FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
-			{
-				e.Style = Xaml.Style.DefaultStyleForType(e.GetType());
-			}
-
-			if (
-				!FeatureConfiguration.UIElement.UseLegacyClipping
-				&& e is UIElement uiElement
-			)
-			{
 #if __IOS__
+			if (e is UIElement uiElement)
+			{
 				uiElement.ClipsToBounds = false;
 				uiElement.Layer.MasksToBounds = false;
 				uiElement.Layer.MaskedCorners = (CoreAnimation.CACornerMask)0;
-#endif
 			}
+#endif
 
 #if __ANDROID__
 			if (e is View view)
@@ -185,6 +168,11 @@ namespace Windows.UI.Xaml
 				view.ImportantForAccessibility = Android.Views.ImportantForAccessibility.Yes;
 			}
 #endif
+
+			if (e is IFrameworkElement_EffectiveViewport evp)
+			{
+				evp.InitializeEffectiveViewport();
+			}
 		}
 
 		/// <summary>
@@ -194,7 +182,7 @@ namespace Windows.UI.Xaml
 		/// <param name="name">The name of the template part</param>
 		public static DependencyObject GetTemplateChild(this IFrameworkElement e, string name)
 		{
-			return e.FindName(name);
+			return e.FindName(name) as IFrameworkElement;
 		}
 
 		public static void InvalidateMeasure(this IFrameworkElement e)
@@ -257,43 +245,44 @@ namespace Windows.UI.Xaml
 
 			foreach (var frameworkElement in frameworkElements)
 			{
-				var subviewResult = frameworkElement.FindName(name);
+				var subviewResult = frameworkElement.FindName(name) as IFrameworkElement;
 				if (subviewResult != null)
 				{
 					return subviewResult.ConvertFromStubToElement(e, name);
 				}
 			}
 
+			if(e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+			{
+				return FindInFlyout(name, contextFlyout);
+			}
+
+			if (e is Button button && button.Flyout is Controls.Primitives.FlyoutBase buttonFlyout)
+			{
+				return FindInFlyout(name, buttonFlyout);
+			}
+
 			return null;
 		}
 
+		private static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
+			=> flyoutBase switch
+			{
+				MenuFlyout f => f.Items.Select(i => i.FindName(name) as IFrameworkElement).Trim().FirstOrDefault(),
+				Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
+			};
+
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
-#if XAMARIN_IOS
+#if XAMARIN_IOS || __MACOS__
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-#elif __MACOS__
-			if(element is NSControl nsControl)
-			{
-				return nsControl.SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-			}
-			else if (element is FrameworkElement fe)
-			{
-				fe.Measure(new Size(availableSize.Width, availableSize.Height));
-				var desiredSize = fe.DesiredSize;
-				return new CGSize(desiredSize.Width, desiredSize.Height);
-			}
-			else
-			{
-				throw new NotSupportedException($"Unsupported measure for {element}");
-			}
-
 #elif XAMARIN_ANDROID
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
 
 			var view = ((View)element);
 			view.Measure(widthSpec, heightSpec);
-			
+
 			return Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view)
 				.PhysicalToLogicalPixels();
 #else
@@ -302,21 +291,28 @@ namespace Windows.UI.Xaml
 		}
 
 #if __MACOS__
-		public static CGSize Measure(this View element, _Size availableSize)
+		public static CGSize SizeThatFits(this View element, _Size availableSize)
 		{
-			if (element is NSControl nsControl)
+			switch (element)
 			{
-				return nsControl.SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-			}
-			else if (element is FrameworkElement fe)
-			{
-				fe.Measure(new Size(availableSize.Width, availableSize.Height));
-				var desiredSize = fe.DesiredSize;
-				return new CGSize(desiredSize.Width, desiredSize.Height);
-			}
-			else
-			{
-				throw new NotSupportedException($"Unsupported measure for {element}");
+				case NSControl nsControl:
+					return nsControl.SizeThatFits(availableSize);
+
+				case FrameworkElement fe:
+					{
+						fe.XamlMeasure(availableSize);
+						var desiredSize = fe.DesiredSize;
+						return new CGSize(desiredSize.Width, desiredSize.Height);
+					}
+
+				case IHasSizeThatFits scp:
+					return scp.SizeThatFits(availableSize);
+
+				case View nsview:
+					return nsview.FittingSize;
+
+				default:
+					throw new NotSupportedException($"Unsupported measure for {element}");
 			}
 		}
 
@@ -332,17 +328,19 @@ namespace Windows.UI.Xaml
 				return new CGSize(0, 0);
 			}
 
-			var width = e.Width
-				.NumberOrDefault(size.Width)
-				.NumberOrDefault(nfloat.PositiveInfinity)
-				.LocalMin(e.MaxWidth.NumberOrDefault(nfloat.PositiveInfinity))
-				.LocalMax(e.MinWidth.NumberOrDefault(nfloat.NegativeInfinity));
+			var (min, max) = e.GetMinMax();
 
-			var height = e.Height
-				.NumberOrDefault(size.Height)
+			var width = size
+				.Width
 				.NumberOrDefault(nfloat.PositiveInfinity)
-				.LocalMin(e.MaxHeight.NumberOrDefault(nfloat.PositiveInfinity))
-				.LocalMax(e.MinHeight.NumberOrDefault(nfloat.NegativeInfinity));
+				.LocalMin((nfloat)max.Width)
+				.LocalMax((nfloat)min.Width);
+
+			var height = size
+				.Height
+				.NumberOrDefault(nfloat.PositiveInfinity)
+				.LocalMin((nfloat)max.Height)
+				.LocalMax((nfloat)min.Height);
 
 			return new CGSize(width, height);
 		}
@@ -351,10 +349,10 @@ namespace Windows.UI.Xaml
 		/// Gets the min value being left or right.
 		/// </summary>
 		/// <remarks>
-		/// This method kept here for readbility 
+		/// This method kept here for readbility
 		/// of <see cref="SizeThatFits(IFrameworkElement, CGSize)"/> the keep its
 		/// fluent aspect.
-		/// It also does not use the generic extension that may create an very 
+		/// It also does not use the generic extension that may create an very
 		/// short lived <see cref="IConvertible"/> instance.
 		/// </remarks>
 		private static nfloat LocalMin(this nfloat left, nfloat right)
@@ -366,10 +364,10 @@ namespace Windows.UI.Xaml
 		/// Gets the max value being left or right.
 		/// </summary>
 		/// <remarks>
-		/// This method kept here for readbility 
+		/// This method kept here for readability
 		/// of <see cref="SizeThatFits(IFrameworkElement, CGSize)"/> the keep its
 		/// fluent aspect.
-		/// It also does not use the generic extension that may create an very 
+		/// It also does not use the generic extension that may create an very
 		/// short lived <see cref="IConvertible"/> instance.
 		/// </remarks>
 		private static nfloat LocalMax(this nfloat left, nfloat right)
@@ -383,7 +381,7 @@ namespace Windows.UI.Xaml
 			if (elementStub != null)
 			{
 				elementStub.Materialize();
-				element = originalRootElement.FindName(name);
+				element = originalRootElement.FindName(name) as IFrameworkElement;
 			}
 			return element;
 		}

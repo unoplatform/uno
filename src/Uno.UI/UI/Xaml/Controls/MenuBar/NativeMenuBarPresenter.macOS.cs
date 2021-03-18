@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public class NativeMenuBarPresenter : FrameworkElement
+	public partial class NativeMenuBarPresenter : FrameworkElement
 	{
 		private MenuBar _menuBar;
 

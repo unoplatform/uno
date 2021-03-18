@@ -108,12 +108,12 @@ namespace Uno.UI.Controls.Legacy
 
         #region SelectionMode Dependency Property
 
-        public static readonly DependencyProperty SelectionModeProperty =
+        public static DependencyProperty SelectionModeProperty { get ; } =
             DependencyProperty.Register(
                 "SelectionMode",
                 typeof(ListViewSelectionMode),
                 typeof(HorizontalListView),
-                new PropertyMetadata(defaultValue: ListViewSelectionMode.None, propertyChangedCallback: OnSelectionModeChanged)
+                new FrameworkPropertyMetadata(defaultValue: ListViewSelectionMode.None, propertyChangedCallback: OnSelectionModeChanged)
             );
         public ListViewSelectionMode SelectionMode
         {
@@ -131,12 +131,12 @@ namespace Uno.UI.Controls.Legacy
         }
 
         // Using a DependencyProperty as the backing store for SelectedItems.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedItemsProperty =
+        public static DependencyProperty SelectedItemsProperty { get ; } =
             DependencyProperty.Register(
                 "SelectedItems",
                 typeof(object[]),
                 typeof(HorizontalListView),
-                new PropertyMetadata(
+                new FrameworkPropertyMetadata(
                     defaultValue: new object[0],
                     propertyChangedCallback: OnSelectedItemsChanged
                 )
@@ -145,12 +145,12 @@ namespace Uno.UI.Controls.Legacy
 
         #region SelectedItem Dependency Property
 
-        public static readonly DependencyProperty SelectedItemProperty =
+        public static DependencyProperty SelectedItemProperty { get ; } =
             DependencyProperty.Register(
                 "SelectedItem",
                 typeof(object),
                 typeof(HorizontalListView),
-                new PropertyMetadata(
+                new FrameworkPropertyMetadata(
                     defaultValue: null,
                     propertyChangedCallback: (s, e) => (s as HorizontalListView).OnSelectedItemChanged(e.OldValue, e.NewValue)
                 )
@@ -165,12 +165,12 @@ namespace Uno.UI.Controls.Legacy
 
         #region ItemContainerStyle Dependency Property
 
-        public static readonly DependencyProperty ItemContainerStyleProperty =
+        public static DependencyProperty ItemContainerStyleProperty { get ; } =
             DependencyProperty.Register(
                 "ItemContainerStyle",
                 typeof(Style),
                 typeof(HorizontalListView),
-                new PropertyMetadata(defaultValue: null, propertyChangedCallback: OnItemContainerStyleChanged)
+                new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, propertyChangedCallback: OnItemContainerStyleChanged)
             );
 
         public Style ItemContainerStyle
@@ -189,8 +189,8 @@ namespace Uno.UI.Controls.Legacy
             set { SetValue(IsItemClickEnabledProperty, value); }
         }
 
-        public static readonly DependencyProperty IsItemClickEnabledProperty =
-            DependencyProperty.Register("IsItemClickEnabled", typeof(bool), typeof(HorizontalListView), new PropertyMetadata(false));
+        public static DependencyProperty IsItemClickEnabledProperty { get ; } =
+            DependencyProperty.Register("IsItemClickEnabled", typeof(bool), typeof(HorizontalListView), new FrameworkPropertyMetadata(false));
         #endregion
 
         public event SelectionChangedEventHandler SelectionChanged;
@@ -261,7 +261,7 @@ namespace Uno.UI.Controls.Legacy
                 }
             }
 
-            SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(oldSelection, newSelection));
+            SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, oldSelection, newSelection));
         }
 
         protected override void SetupItemClickListeners()

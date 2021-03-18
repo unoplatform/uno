@@ -2,7 +2,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Fragment = Android.Support.V4.App.Fragment; 
+using Fragment = AndroidX.Fragment.App.Fragment;
 
 
 namespace Uno.UI

@@ -37,25 +37,9 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Gets the first sub-view of this control or null if there is none
 		/// </summary>
-		public IFrameworkElement GetTemplateRoot()
+		internal IFrameworkElement GetTemplateRoot()
 		{
 			return this.GetChildren()?.FirstOrDefault() as IFrameworkElement;
-		}
-
-		protected virtual bool RequestFocus(FocusState state)
-		{
-			FocusState = state;
-
-			return true;
-		}
-
-		partial void OnFocusStateChangedPartial(FocusState oldValue, FocusState newValue)
-		{
-			//if (newValue == FocusState.Pointer && Focusable)
-			//{
-			//	//Set native focus to this view
-			//	RequestFocus();
-			//}
 		}
 	}
 }

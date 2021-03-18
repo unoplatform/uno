@@ -1,8 +1,20 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-		<TargetFrameworks>MonoAndroid90;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid11.0;xamarinios10</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10</TargetFrameworksCI>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
+	
+	<PropertyGroup>
+    <Authors>nventive</Authors>
+    <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+    <PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+    <Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
+    <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+		
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Maps</PackageId>
+  </PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
@@ -17,36 +29,30 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)">
-			<TreatAsPackageReference>false</TreatAsPackageReference>
-		</ProjectReference>
+		<ProjectReference Include="..\Uno.UWP\Uno.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks"/>
-		<PackageReference Include="Uno.Core"/>
-		<PackageReference Include="Uno.Core.Build"/>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="60.1142.1" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="60.1142.1" />
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1" PrivateAssets="none" />
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="117.0.0" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="117.0.0" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1600.0" />
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1" PrivateAssets="none" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1610.0" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
@@ -54,10 +60,12 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)*.*" />
+			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 
@@ -77,6 +85,12 @@
 	  <Page Update="themes\Generic.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+		<!-- Maps are not yet supported by WinUI 3.0 -->
+		<Page Remove="**\*.xaml" />
+		<Compile Remove="**\*.cs" />
 	</ItemGroup>
 
 </Project>

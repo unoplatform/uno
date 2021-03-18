@@ -54,13 +54,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
 		{
-			NeedsLayout = true;
+			InvalidateMeasure();
 			UpdateBackground();
 		}
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{
-			NeedsLayout = true;
+			InvalidateMeasure();
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnChildrenChanged()
 		{
-			NeedsLayout = true;
+			InvalidateMeasure();
 		}
 
 		protected override void OnAfterArrange()
@@ -160,5 +160,8 @@ namespace Windows.UI.Xaml.Controls
 			// All touches that are on this view (and not its subviews) are ignored
 			return HitTestOutsideFrame ? this.HitTestOutsideFrame(point) : base.HitTest(point);
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

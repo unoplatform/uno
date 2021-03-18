@@ -1,27 +1,29 @@
-# Accessibility
+# Accessibility (a11y)
 
 Windows uses the UI Automation framework to provide accessibility information to screen readers.
 
-> Microsoft UI Automation is an accessibility framework for Windows. It provides programmatic access to most UI elements on the desktop. It enables assistive technology products, such as screen readers, to provide information about the UI to end users and to manipulate the UI by means other than standard input. UI Automation also allows automated test scripts to interact with the UI. <br/> [UI Automation Overview](https://docs.microsoft.com/en-us/windows/desktop/WinAuto/uiauto-uiautomationoverview)
+> Microsoft UI Automation is an accessibility framework for Windows. It provides programmatic access to most UI elements on the desktop. It enables assistive technology products, such as screen readers, to provide information about the UI to end users and to manipulate the UI by means other than standard input. UI Automation also allows automated test scripts to interact with the UI.\
+[UI Automation Overview](https://docs.microsoft.com/en-us/windows/desktop/WinAuto/uiauto-uiautomationoverview)
 
-Uno.UI implements a subset of UWP's UI Automation APIs, to make your applications work with each platform's built-in screen reader:
+Uno.UI implements a subset of UWP's UI Automation APIs, to make your applications work with each platform's built-in screen reader or accessibility support:
 
-| Windows  | Android  | iOS       |
-|----------|----------|-----------|
-| Narrator | TalkBack | VoiceOver |
+| Windows  | Android  | iOS       | macOS     | WebAssembly                  |
+|----------|----------|-----------|-----------|------------------------------|
+| Narrator | TalkBack | VoiceOver | VoiceOver | OS or Web Browser Integrated |
 
 Read [this guide](https://docs.microsoft.com/en-us/windows/uwp/design/accessibility/basic-accessibility-information) to learn how to use the `AutomationProperties` supported by Uno.UI:
 
+- `AutomationProperties.AutomationId`
 - `AutomationProperties.Name`
 - `AutomationProperties.LabeledBy`
 - `AutomationProperties.AccessibilityView`
 
 ## SimpleAccessibility mode
 
-While we were trying to replicate UWP's behavior on iOS and Android, we realized that iOS doesn't allow nested accessible elements to be focused. 
+While we were trying to replicate UWP's behavior on iOS and Android, we realized that iOS doesn't allow nested accessible elements to be focused.
 For example, if you select a list item, the screen reader will automatically read the accessible name of all inner elements one after the other, but won't let you focus them individually (unlike Windows and Android).
 
-While this behavior comes with its own set of limitations (e.g., you can't nest buttons), it greatly simplifies the implementation of accessibility. 
+While this behavior comes with its own set of limitations (e.g., you can't nest buttons), it greatly simplifies the implementation of accessibility.
 By comparison, on UWP, the user would need to navigate through every inner element of every list item, unless the developer manually disables focus for each inner element and aggregate their accessible names into a single string to use as the accessible name of the list item.
 
 Instead of trying to replicate UWP's behavior on iOS (which *might* be doable using the `UIAccessibilityContainer` interface, although we haven't tried it yet), we decided to go along with the iOS behavior and bring it to Android as well. We called this mode SimpleAccessibility.
@@ -30,22 +32,38 @@ Here's how to enable it:
 
 ```csharp
 // App's constructor (App.xaml.cs)
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__ || __MACOS__ || __WASM__
 FeatureConfiguration.AutomationPeer.UseSimpleAccessibility = true;
 #endif
 ```
 
 We highly recommend using this mode, as iOS still won't let you focus nested accessible elements even if you don't (see known issues).
 
-##Disabling accessibility text scaling
+## Disabling accessibility text scaling
 
-You have the option to disable accessibility text scaling of iOS and Android devices but Apple [recommends to keep text sizes dynamic](https://developer.apple.com/videos/play/wwdc2017/245) 
+You have the option to disable accessibility text scaling of iOS and Android devices but Apple [recommends to keep text sizes dynamic](https://developer.apple.com/videos/play/wwdc2017/245)
 
 Here's how to disable it
+
 ```csharp
-// App's constructor (App.xaml.cs) 
-Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true; 
+// App's constructor (App.xaml.cs)
+Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true;
 ```
+
+## AutomationId
+
+The `AutomationProperties.AutomationId` attached property can be used by UI Testing frameworks to find visual elements.
+
+To avoid performance issues, this property only has an effect when either the `IsUiAutomationMappingEnabled` msbuild property, or `Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled` is set to true.
+
+Setting this property does the following:
+
+- On **Android**, it sets the [`View.ContentDescription`](https://developer.android.com/reference/android/view/View.html#setContentDescription(java.lang.CharSequence)) property
+- On **iOS**, it sets the [`UIView.AccessibilityIdentifier`](https://developer.apple.com/documentation/uikit/uiaccessibilityidentification/1623132-accessibilityidentifier) property
+- On **macOS**, it sets the [`NSView.AccessibilityIdentifier`](https://developer.apple.com/documentation/appkit/nsaccessibility/1535023-accessibilityidentifier) property
+- On **WebAssembly**, it sets [`aria-label`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) and the `xamlautomationid` property on the HTML element. The [`role`](https://www.w3.org/WAI/PF/HTML/wiki/RoleAttribute) HTML Attribute is also set based on the XAML view type whose `AutomationProperties.AutomationId` was set.
+
+This property is generally used alongside [Uno.UITest](https://github.com/unoplatform/Uno.UITest) to create UI Tests, and is particularly useful to select items using databound identifiers.
 
 ## Known issues
 
@@ -82,10 +100,22 @@ Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true;
   - `TextBox`
   - `ToggleButton`
   - `ToggleSwitch`
+
 - Only the following `AutomationProperties` are supported:
   - `AccessibilityView`
   - `LabeledBy`
   - `Name`
+
+- [WASM] Only the following elements support accessibility:
+  - `Button`
+  - `CheckBox`
+  - `Image`
+  - `RadioButton`
+  - `TextBlock`
+  - `TextBox`
+  - `Slider`
+
+- [WASM] `PasswordBox` is not currently supported due to external limitations.
 
 ## Tips
 
@@ -118,3 +148,10 @@ Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true;
 3. Tap on **TalkBack**.
 4. Tap the **switch** to enable it.
 5. Tap the **OK** button to close the dialog.
+
+### VoiceOver (macOS)
+
+1. Launch the **System Preferences** from the macOS logo.
+2. Tap on **Accessibility**.
+3. Tap on **VoiceOver** under the Vision category at the top.
+4. Tap the **Enable VoiceOver switch** to enable it.

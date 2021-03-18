@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Uno.UI.Sample.Views.Helper;
+using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
@@ -48,7 +48,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 		{
 			IEnumerable<string> GetElements()
 			{
-				foreach (var o in element.GetParentHierarchy())
+				foreach (var o in element.GetAllParents())
 				{
 					var e = o as FrameworkElement;
 					yield return $"{o.GetType().Name}[{e?.Name}]-{o}";

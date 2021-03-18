@@ -1,4 +1,4 @@
-﻿#if NET461 || __MACOS__
+﻿#if NET461
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +11,8 @@ namespace Windows.UI.Xaml.Controls
 		public abstract Orientation ScrollOrientation { get; }
 
 		public Orientation Orientation { get; set; }
+
+		Uno.UI.IndexPath? GetReorderingIndex() => null;
 	}
 }
 #endif

@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
 using System.ComponentModel;
 using System.Globalization;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class BrushConverter : TypeConverter
 	{
-		public BrushConverter()
-		{
-
-		}
-
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			var canConvert =

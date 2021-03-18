@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Uno.Buffers;
 
@@ -12,30 +13,40 @@ namespace Windows.UI.Xaml
     /// This class is built are the fact that creating arrays is costly, 
     /// so the list of handlers is kept alive for as long as possible.
     /// </remarks>
-    internal class DependencyPropertyCallbackManager
+    internal class DependencyPropertyCallbackManager : IDisposable
     {
         private readonly LinkedList<PropertyChangedCallback> _callbacks = new LinkedList<PropertyChangedCallback>();
         private readonly static ArrayPool<PropertyChangedCallback> _pool = ArrayPool<PropertyChangedCallback>.Create(100, 100);
         private PropertyChangedCallback[] _callbacksShadow;
         private int _id;
+		private bool _disposed;
 
         public DependencyPropertyCallbackManager()
         {
-            // Suppress the finalizer for this object, re-register when the shadow cache is created.
-            GC.SuppressFinalize(this);
         }
 
-        ~DependencyPropertyCallbackManager()
-        {
-            ReturnShadowToPool();
-        }
+		public void Dispose()
+		{
+			if (_disposed)
+			{
+#if DEBUG
+				// Dispose here may not be invoked multiple times. If this is the case,
+				// this means that the Dispose method from DependencyObjectStore is invoked
+				// multiple times from different threads and is not synchronized properly.
+				Debug.Fail("Dispose may not be invoked multiple times.");
+#endif
+				return;
+			}
+			_disposed = true;
+			ReturnShadowToPool();
+		}
 
-        /// <summary>
-        /// Registers a callback to be called by <see cref="RaisePropertyChanged(DependencyObject, DependencyPropertyChangedEventArgs)"/>
-        /// </summary>
-        /// <param name="callback">A property changed callback</param>
-        /// <returns>A disposable to remove the callback from the manager</returns>
-        public IDisposable RegisterCallback(PropertyChangedCallback callback)
+		/// <summary>
+		/// Registers a callback to be called by <see cref="RaisePropertyChanged(DependencyObject, DependencyPropertyChangedEventArgs)"/>
+		/// </summary>
+		/// <param name="callback">A property changed callback</param>
+		/// <returns>A disposable to remove the callback from the manager</returns>
+		public IDisposable RegisterCallback(PropertyChangedCallback callback)
         {
             // When a new callback is added, clear the cache if it has been created.
             ReturnShadowToPool();

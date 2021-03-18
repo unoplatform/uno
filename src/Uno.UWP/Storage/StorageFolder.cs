@@ -2,220 +2,106 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Windows.Foundation;
+using Windows.Storage.FileProperties;
+using IOPath = global::System.IO.Path;
 
 #if __IOS__
 using UIKit;
 using Foundation;
 #endif
 
-
 namespace Windows.Storage
 {
-    public partial class StorageFolder : StorageItem, IStorageFolder
-    {
-        public string Path { get; private set; }
-        public string Name { get; private set; }
+	public partial class StorageFolder : IStorageFolder, IStorageItem, IStorageItem2
+	{
+		private StorageFolder(ImplementationBase implementation)
+		{
+			Implementation = implementation;
+			Implementation.InitOwner(this);
+		}
 
-        internal StorageFolder(string fullPath)
-        {
-            Path = fullPath;
-            Name = global::System.IO.Path.GetFileName(fullPath);
-        }
+		public StorageProvider Provider => Implementation.Provider;
 
-        internal StorageFolder(string name, string path)
-        {
-            Path = path;
-            Name = name;
-        }
+		public string Path => Implementation.Path;
 
-        public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderFromPathAsync(string path) =>
-            AsyncOperation.FromTask(async ct =>
-            {
-                if (Directory.Exists(path))
-                {
-                    return new StorageFolder(path);
-                }
-                else
-                {
-                    throw new DirectoryNotFoundException($"The folder {path} does not exist");
-                }
-            }
-        );
+		public string Name => Implementation.Name;
 
-        public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName) => CreateFolderAsync(folderName, CreationCollisionOption.FailIfExists);
+		public string DisplayName => Implementation.DisplayName;
 
-        public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName, CreationCollisionOption option) =>
-            AsyncOperation.FromTask(async ct =>
-            {
+		internal ImplementationBase Implementation { get; }
 
-                var path = global::System.IO.Path.Combine(Path, folderName);
-                DirectoryInfo di;
-                switch (option)
-                {
-                    case CreationCollisionOption.ReplaceExisting:
-                        if (Directory.Exists(path))
-                        {
-                            Directory.Delete(path, true);
-                        }
+#if !__WASM__
+		private static async Task TryInitializeStorage() { }
+#endif
 
-                        di = Directory.CreateDirectory(path);
-                        return new StorageFolder(di.Name, path);
+		public bool IsOfType(StorageItemTypes type) =>
+			type == StorageItemTypes.Folder;
 
-                    case CreationCollisionOption.FailIfExists:
-                        if (Directory.Exists(path))
-                        {
-                            throw new UnauthorizedAccessException();
-                        }
+		public static IAsyncOperation<StorageFolder> GetFolderFromPathAsync(string path) =>
+			AsyncOperation.FromTask(async ct =>
+			{
+				await TryInitializeStorage();
 
-                        di = Directory.CreateDirectory(path);
-                        return new StorageFolder(di.Name, path);
+				if (Directory.Exists(path))
+				{
+					return new StorageFolder(path);
+				}
+				else
+				{
+					throw new DirectoryNotFoundException($"The folder {path} does not exist");
+				}
+			}
+		);
 
-                    case CreationCollisionOption.OpenIfExists:
-                        if (Directory.Exists(path))
-                        {
-                            return new StorageFolder(folderName, path);
-                        }
+		public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName) =>
+			CreateFolderAsync(folderName, CreationCollisionOption.FailIfExists);
 
-                        di = Directory.CreateDirectory(path);
-                        return new StorageFolder(di.Name, path);
+		public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName, CreationCollisionOption option) =>
+			AsyncOperation.FromTask(token => Implementation.CreateFolderAsync(folderName, option, token));
 
-                    case CreationCollisionOption.GenerateUniqueName:
-                        if (Directory.Exists(path))
-                        {
-                            di = Directory.CreateDirectory(path += Guid.NewGuid().ToStringInvariant());
-                            return new StorageFolder(di.Name, path);
-                        }
-                        else
-                        {
-                            di = Directory.CreateDirectory(path);
-                            return new StorageFolder(di.Name, path);
-                        }
-                }
+		public IAsyncOperation<StorageFile> GetFileAsync(string path) =>
+			AsyncOperation.FromTask(ct => Implementation.GetFileAsync(path, ct));
 
-                return null;
-            });
+		public IAsyncOperation<IStorageItem> GetItemAsync(string name) =>
+			AsyncOperation.FromTask(ct => Implementation.GetItemAsync(name, ct));
 
-        /// <summary>
-        /// WARNING This method should not be used because it doesn't match the StorageFile API
-        /// </summary>
-        public IAsyncOperation<StorageFile> SafeGetFileAsync(string path) =>
-            AsyncOperation.FromTask(async ct =>
-            {
-                return await StorageFile.GetFileFromPathAsync(global::System.IO.Path.Combine(Path, path));
-            });
+		public IAsyncOperation<StorageFolder> GetFolderAsync(string name) =>
+			AsyncOperation.FromTask(ct => Implementation.GetFolderAsync(name, ct));
 
-        public IAsyncOperation<StorageFile> GetFileAsync(string path) =>
-            AsyncOperation.FromTask(async ct =>
-            {
-                var filePath = global::System.IO.Path.Combine(Path, path);
+		public IAsyncOperation<IStorageItem> TryGetItemAsync(string path) =>
+			AsyncOperation.FromTask(ct => Implementation.TryGetItemAsync(path, ct));
 
-                if (!File.Exists(filePath))
-                {
-                    throw new FileNotFoundException(filePath);
-                }
+		public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName) =>
+			CreateFileAsync(desiredName, CreationCollisionOption.FailIfExists);
 
-                return await StorageFile.GetFileFromPathAsync(filePath);
-            });
+		public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName, CreationCollisionOption options) =>
+			AsyncOperation.FromTask(ct => Implementation.CreateFileAsync(desiredName, options, ct));
 
-        public IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync(string name) =>
-            AsyncOperation.FromTask(async ct =>
-            {
-                var itemPath = global::System.IO.Path.Combine(Path, name);
+		public IAsyncAction DeleteAsync() => DeleteAsync(StorageDeleteOption.Default);
 
-                var fileExists = File.Exists(itemPath);
-                var directoryExists = Directory.Exists(itemPath);
+		public IAsyncAction DeleteAsync(StorageDeleteOption option) =>
+			AsyncAction.FromTask(ct => Implementation.DeleteAsync(option, ct));
 
-                if (!fileExists && !directoryExists)
-                {
-                    throw new FileNotFoundException(itemPath);
-                }
+		public IAsyncOperation<IReadOnlyList<IStorageItem>> GetItemsAsync() =>
+			AsyncOperation.FromTask(ct => Implementation.GetItemsAsync(ct));
 
-                if (fileExists)
-                {
-                    return (IStorageItem)await StorageFile.GetFileFromPathAsync(itemPath);
-                }
-                else
-                {
-                    return (IStorageItem)await StorageFolder.GetFolderFromPathAsync(itemPath);
-                }
-            });
+		public IAsyncOperation<IReadOnlyList<StorageFile>> GetFilesAsync() =>
+			AsyncOperation.FromTask(ct => Implementation.GetFilesAsync(ct));
 
-        public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync(string name) =>
-            AsyncOperation.FromTask(async ct =>
-            {
-                var itemPath = global::System.IO.Path.Combine(Path, name);
+		public IAsyncOperation<IReadOnlyList<StorageFolder>> GetFoldersAsync() =>
+			AsyncOperation.FromTask(ct => Implementation.GetFoldersAsync(ct));
 
-                var directoryExists = Directory.Exists(itemPath);
+		public IAsyncOperation<BasicProperties> GetBasicPropertiesAsync() =>
+			AsyncOperation.FromTask(ct => Implementation.GetBasicPropertiesAsync(ct));
 
-                if (!directoryExists)
-                {
-                    throw new FileNotFoundException(itemPath);
-                }
+		public IAsyncOperation<StorageFolder> GetParentAsync() =>
+			AsyncOperation.FromTask(ct => Implementation.GetParentAsync(ct));
 
-                return await StorageFolder.GetFolderFromPathAsync(itemPath);
-            });
-
-        public IAsyncOperation<IStorageItem> TryGetItemAsync(string path) =>
-                AsyncOperation.FromTask(async ct =>
-                {
-                    var filePath = global::System.IO.Path.Combine(Path, path);
-
-                    var result = File.Exists(filePath)
-                        ? await StorageFile.GetFileFromPathAsync(filePath)
-                        : default(StorageFile);
-
-                    return (IStorageItem)result;
-                });
-
-        public IAsyncOperation<StorageFile> CreateFileAsync(string path, CreationCollisionOption option) =>
-            AsyncOperation.FromTask(async ct =>
-            {
-                if (File.Exists(global::System.IO.Path.Combine(Path, path)))
-                {
-                    switch (option)
-                    {
-                        case CreationCollisionOption.OpenIfExists:
-                        case CreationCollisionOption.ReplaceExisting:
-                            break;
-                        case CreationCollisionOption.GenerateUniqueName:
-
-                            var pathExtension = global::System.IO.Path.GetExtension(path);
-                            if (!string.IsNullOrEmpty(pathExtension))
-                            {
-                                path = path.Replace(pathExtension, "_" + Guid.NewGuid().ToStringInvariant().Replace("-", "") + pathExtension);
-                            }
-                            else
-                            {
-                                path = path + "_" + Guid.NewGuid();
-                            }
-
-                            var stream = File.Create(global::System.IO.Path.Combine(Path, path));
-                            stream.Close();
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException("option");
-                    }
-                }
-                else
-                {
-                    var stream = File.Create(global::System.IO.Path.Combine(Path, path));
-                    stream.Close();
-                }
-
-                return await StorageFile.GetFileFromPathAsync(global::System.IO.Path.Combine(Path, path));
-            });
-
-        public IAsyncAction DeleteAsync() =>
-            AsyncAction.FromTask(async ct =>
-            {
-                Directory.Delete(this.Path, true);
-            });
-    }
+		public bool IsEqual(IStorageItem item) => Implementation.IsEqual(item);
+	}
 }

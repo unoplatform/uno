@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
-using UIKit;
+
+#if __IOS__
+using _EdgeInsets = UIKit.UIEdgeInsets;
+#elif __MACOS__
+using _EdgeInsets = AppKit.NSEdgeInsets;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
 	internal partial interface IScrollContentPresenter : IUIScrollView
 	{
-		UIEdgeInsets ContentInset { get; set; }
+		_EdgeInsets ContentInset { get; set; }
 	}
 }

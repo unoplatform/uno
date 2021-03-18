@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Windows.Foundation;
+using Uno.Extensions;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Media
@@ -31,8 +32,8 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterYProperty, value);
 		}
 
-		public static readonly DependencyProperty CenterYProperty =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+		public static DependencyProperty CenterYProperty { get ; } =
+			DependencyProperty.Register("CenterY", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double CenterX
 		{
@@ -40,8 +41,8 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterXProperty, value);
 		}
 
-		public static readonly DependencyProperty CenterXProperty =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+		public static DependencyProperty CenterXProperty { get ; } =
+			DependencyProperty.Register("CenterX", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double AngleX
 		{
@@ -49,8 +50,8 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(AngleXProperty, value);
 		}
 
-		public static readonly DependencyProperty AngleXProperty =
-			DependencyProperty.Register("AngleX", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+		public static DependencyProperty AngleXProperty { get ; } =
+			DependencyProperty.Register("AngleX", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 
 		public double AngleY
@@ -59,7 +60,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(AngleYProperty, value);
 		}
 
-		public static readonly DependencyProperty AngleYProperty =
-			DependencyProperty.Register("AngleY", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+		public static DependencyProperty AngleYProperty { get ; } =
+			DependencyProperty.Register("AngleY", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 	}
 }

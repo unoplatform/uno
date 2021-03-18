@@ -27,7 +27,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 				target = RightRectangle;
 			}
 
-			if (target.Fill == _red)
+			if (target.Fill?.Equals(_red) ?? false)
 			{
 				target.Fill = _blue;
 			}

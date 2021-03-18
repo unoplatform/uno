@@ -1,15 +1,31 @@
+#nullable enable
+
 using System;
-using Uno;
+using System.Diagnostics;
 using Windows.Foundation;
-using Windows.Foundation.Metadata;
+
 namespace Windows.ApplicationModel
 {
-	public sealed partial class SuspendingDeferral 
+	public sealed partial class SuspendingDeferral : ISuspendingDeferral
 	{
-		[NotImplemented]
+		private readonly Action? _deferralDone;
+		private readonly DeferralCompletedHandler? _handler;
+
+		/// <summary>
+		/// This can be removed with other breaking changes
+		/// </summary>
+		/// <param name="deferralDone"></param>
+		[DebuggerHidden]
+		public SuspendingDeferral(Action? deferralDone)	=>
+			_deferralDone = deferralDone;
+
+		internal SuspendingDeferral(DeferralCompletedHandler handler) =>
+			_handler = handler;
+
 		public void Complete()
 		{
-			ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.SuspendingDeferral", "Complete");
+			_deferralDone?.Invoke();
+			_handler?.Invoke();
 		}
 	}
 }

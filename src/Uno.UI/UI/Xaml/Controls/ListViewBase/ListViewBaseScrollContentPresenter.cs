@@ -1,4 +1,4 @@
-﻿#if !NET461 && !__WASM__ && !__MACOS__
+﻿#if !NET461 && !UNO_REFERENCE_API && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -44,8 +44,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollMode HorizontalScrollMode { get; set; }
-
 		public ScrollBarVisibility VerticalScrollBarVisibility
 		{
 			get
@@ -62,11 +60,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollMode VerticalScrollMode { get; set; }
-
-		View IScrollContentPresenter.Content
+		public bool CanHorizontallyScroll
 		{
-			get { return Content as View; }
+			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
+		public bool CanVerticallyScroll
+		{
+			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
+		object IScrollContentPresenter.Content
+		{
+			get { return Content; }
 			set { Content = value; }
 		}
 

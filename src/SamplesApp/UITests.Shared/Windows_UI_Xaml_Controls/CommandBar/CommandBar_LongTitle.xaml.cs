@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,8 +21,11 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	/// 
+#if __WASM__
+	[SampleControlInfo("CommandBar", "Long Title", ignoreInSnapshotTests: true)]
+#else
 	[SampleControlInfo("CommandBar", "Long Title")]
+#endif
 	public sealed partial class CommandBar_LongTitle : Page
 	{
 		public CommandBar_LongTitle()

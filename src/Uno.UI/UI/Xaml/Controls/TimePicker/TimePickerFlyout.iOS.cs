@@ -1,4 +1,4 @@
-﻿#if XAMARIN_IOS
+﻿#nullable enable
 
 using CoreGraphics;
 using UIKit;
@@ -15,13 +15,34 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _onLoad = new SerialDisposable();
 		private readonly SerialDisposable _onUnloaded = new SerialDisposable();
-		internal protected TimePickerSelector _timeSelector;
-		internal protected FrameworkElement _headerUntapZone;
+		internal protected TimePickerSelector? _timeSelector;
+		internal protected FrameworkElement? _headerUntapZone;
+		private TimePickerFlyoutPresenter? _timePickerPresenter;
 		private bool _isInitialized;
 
 		public TimePickerFlyout()
 		{
 		}
+
+		#region TimePickerFlyoutPresenterStyle DependencyProperty
+
+		public Style TimePickerFlyoutPresenterStyle
+		{
+			get { return (Style)this.GetValue(TimePickerFlyoutPresenterStyleProperty); }
+			set { this.SetValue(TimePickerFlyoutPresenterStyleProperty, value); }
+		}
+
+		public static DependencyProperty TimePickerFlyoutPresenterStyleProperty { get; } =
+			DependencyProperty.Register(
+				"TimePickerFlyoutPresenterStyle",
+				typeof(Style),
+				typeof(TimePickerFlyout),
+				new FrameworkPropertyMetadata(
+					default(Style),
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext
+					));
+
+		#endregion
 
 		protected override void InitializePopupPanel()
 		{
@@ -58,7 +79,8 @@ namespace Windows.UI.Xaml.Controls
 				BorderThickness = Thickness.Empty,
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				HorizontalContentAlignment = HorizontalAlignment.Stretch,
-				Time = Time
+				Time = Time,
+				ClockIdentifier = ClockIdentifier,
 			};
 
 			Content = _timeSelector;
@@ -69,26 +91,25 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content DependencyProperty
-		internal IUIElement Content
+		internal IFrameworkElement Content
 		{
 
-			get { return (IUIElement)this.GetValue(ContentProperty); }
+			get { return (IFrameworkElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		internal static readonly DependencyProperty ContentProperty =
+		internal static DependencyProperty ContentProperty { get ; } =
 			DependencyProperty.Register(
 				"Content",
-				typeof(IUIElement),
+				typeof(IFrameworkElement),
 				typeof(TimePickerFlyout),
-				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
-		private TimePickerFlyoutPresenter _timePickerPresenter;
+				new FrameworkPropertyMetadata(default(IFrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var flyout = dependencyObject as TimePickerFlyout;
 
-			if (flyout._timePickerPresenter != null)
+			if (flyout?._timePickerPresenter != null)
 			{
 				if (args.NewValue is IDependencyObjectStoreProvider binder)
 				{
@@ -102,14 +123,21 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Control CreatePresenter()
 		{
-			_timePickerPresenter = new TimePickerFlyoutPresenter() { Content = Content };
+			_timePickerPresenter = new TimePickerFlyoutPresenter()
+			{
+				Content = Content,
+				Style = TimePickerFlyoutPresenterStyle
+			};
 
 			void onLoad(object sender, RoutedEventArgs e)
 			{
 				_headerUntapZone = _timePickerPresenter?.FindName("HeaderUntapableZone") as FrameworkElement;
 
-				AttachAcceptCommand(_timePickerPresenter);
-				AttachDismissCommand(_timePickerPresenter);
+				if (_timePickerPresenter != null)
+				{
+					AttachAcceptCommand(_timePickerPresenter);
+					AttachDismissCommand(_timePickerPresenter);
+				}
 
 				_onLoad.Disposable = null;
 			}
@@ -129,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 				_timePickerPresenter.Unloaded += onUnload;
 			}
 
-			return _timePickerPresenter;
+			return _timePickerPresenter!;
 		}
 
 		private void OnTap(object sender, Input.PointerRoutedEventArgs e) => e.Handled = true;
@@ -138,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializeContent();
 
-			_timeSelector.Initialize();
+			_timeSelector?.Initialize();
 
 			//Gobbling pressed tap on the flyout header background so that it doesn't close the flyout popup. 
 			if (_headerUntapZone != null)
@@ -156,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 				_headerUntapZone.PointerPressed -= OnTap;
 			}
 
-			_timeSelector.Cancel();
+			_timeSelector?.Cancel();
 
 			base.Close();
 		}
@@ -185,7 +213,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Accept()
 		{
-			_timeSelector.SaveTime();
+			_timeSelector?.SaveTime();
 			Hide(false);
 		}
 
@@ -195,4 +223,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

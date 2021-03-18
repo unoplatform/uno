@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
+using Windows.UI.Xaml.Controls;
+using Windows.UI;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -14,33 +17,25 @@ namespace Windows.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-		public static implicit operator Brush(Color uiColor)
-		{
-			Color color = uiColor;
+		public static implicit operator Brush(Color uiColor) => SolidColorBrushHelper.FromARGB(uiColor.A, uiColor.R, uiColor.G, uiColor.B);
 
-			return SolidColorBrushHelper.FromARGB(color.A, color.R, color.G, color.B);
-		}
-
-		public static implicit operator Brush(string colorCode)
-		{
-			return SolidColorBrushHelper.Parse(colorCode);
-		}
+		public static implicit operator Brush(string colorCode) => SolidColorBrushHelper.Parse(colorCode);
 
 		#region Opacity Dependency Property
 
 		public double Opacity
 		{
-			get { return (double)this.GetValue(OpacityProperty); }
-			set { this.SetValue(OpacityProperty, value); }
+			get => (double)GetValue(OpacityProperty);
+			set => SetValue(OpacityProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty OpacityProperty =
+		public static DependencyProperty OpacityProperty { get ; } =
 			DependencyProperty.Register(
 				"Opacity", 
 				typeof(double), 
 				typeof(Brush),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					defaultValue: 1d,
 					propertyChangedCallback: (s, e) => ((Brush)s).OnOpacityChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -52,19 +47,72 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
-		public Transform RelativeTransform
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
+
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public Windows.UI.Xaml.Media.Transform Transform
 		{
-			get { return (Transform)this.GetValue(RelativeTransformProperty); }
-			set { this.SetValue(RelativeTransformProperty, value); }
+			get => GetTransformValue();
+			set => SetTransformValue(value);
 		}
 
-		public static readonly DependencyProperty RelativeTransformProperty =
-			DependencyProperty.Register("RelativeTransform", typeof(Transform), typeof(Brush), new PropertyMetadata(null,
+		public Transform RelativeTransform
+		{
+			get => (Transform)GetValue(RelativeTransformProperty);
+			set => SetValue(RelativeTransformProperty, value);
+		}
 
-                    propertyChangedCallback: (s, e) => ((Brush)s).OnRelativeTransformChanged((Transform)e.OldValue, (Transform)e.NewValue)));
+		public static DependencyProperty RelativeTransformProperty { get ; } =
+			DependencyProperty.Register(
+				"RelativeTransform",
+				typeof(Transform),
+				typeof(Brush),
+				new FrameworkPropertyMetadata(
+					null,
 
-        protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
-        {
-        }
-    }
+					propertyChangedCallback: (s, e) =>
+						((Brush)s).OnRelativeTransformChanged((Transform)e.OldValue, (Transform)e.NewValue)));
+
+		protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
+		{
+		}
+
+		private protected Color GetColorWithOpacity(Color referenceColor)
+		{
+			return Color.FromArgb((byte)(Opacity * referenceColor.A), referenceColor.R, referenceColor.G, referenceColor.B);
+		}
+
+		[Pure]
+		internal static Color? GetColorWithOpacity(Brush brush, Color? defaultColor = null)
+		{
+			return TryGetColorWithOpacity(brush, out var c) ? c : defaultColor;
+		}
+
+		[Pure]
+		internal static bool TryGetColorWithOpacity(Brush brush, out Color color)
+		{
+			switch (brush)
+			{
+				case SolidColorBrush scb:
+					color = scb.ColorWithOpacity;
+					return true;
+				case GradientBrush gb:
+					color = gb.FallbackColorWithOpacity;
+					return true;
+				case XamlCompositionBrushBase ab:
+					color = ab.FallbackColorWithOpacity;
+					return true;
+				default:
+					color = default;
+					return false;
+			}
+		}
+
+#if !__WASM__
+		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
+		internal bool SupportsAssignAndObserveBrush => true;
+#endif
+	}
 }

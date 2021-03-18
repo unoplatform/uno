@@ -17,7 +17,7 @@
     d:DesignWidth="400">
 
 	<Grid>
-		<!-- Assign a collection in the ConetntProperty of the control + set a property on the collection and add an item -->
+		<!-- Assign a collection in the ContentProperty of the control + set a property on the collection and add an item -->
 		<local:CollectionsTest_Control>
 			<local:CollectionsTest_Collection
 				MyProperty="421">

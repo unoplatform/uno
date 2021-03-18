@@ -80,8 +80,8 @@
 			Sample:
 		</TextBlock>
 
-		<TextBox Style="{StaticResource FocusedTextboxStyle}" Foreground="Blue" Text="Sample Text!" />
-		<TextBox Style="{StaticResource FocusedTextboxStyle}" Foreground="Blue" AcceptsReturn="True" Text="Multiline Sample Text!" />
+		<TextBox x:Name="tb1" Style="{StaticResource FocusedTextboxStyle}" Foreground="Blue" Text="Sample Text!" />
+		<TextBox x:Name="tb2" Style="{StaticResource FocusedTextboxStyle}" Foreground="Blue" AcceptsReturn="True" Text="Multiline Sample Text!" />
 	</StackPanel>
 
 </UserControl>

@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ManipulationStartingRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Input.ManipulationPivot Pivot
 		{
 			get
@@ -21,55 +21,10 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Input.ManipulationModes Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ManipulationModes ManipulationStartingRoutedEventArgs.Mode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "ManipulationModes ManipulationStartingRoutedEventArgs.Mode");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ManipulationStartingRoutedEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "bool ManipulationStartingRoutedEventArgs.Handled");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.UIElement Container
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIElement ManipulationStartingRoutedEventArgs.Container is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "UIElement ManipulationStartingRoutedEventArgs.Container");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public ManipulationStartingRoutedEventArgs() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "ManipulationStartingRoutedEventArgs.ManipulationStartingRoutedEventArgs()");
-		}
-		#endif
+		// Skipping already declared property Mode
+		// Skipping already declared property Handled
+		// Skipping already declared property Container
+		// Skipping already declared method Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.ManipulationStartingRoutedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.ManipulationStartingRoutedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.get
 		// Forced skipping of method Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.set

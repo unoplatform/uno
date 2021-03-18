@@ -20,7 +20,8 @@ namespace Windows.UI.Xaml.Controls
 		private ContentPresenter _headerContentPresenter;
 		private Thumb _horizontalThumb, _verticalThumb;
 		private FrameworkElement _horizontalTemplate, _verticalTemplate;
-		private bool _duringDrag;
+		private bool _isDragging; // between DragStart and DragCompleted
+		private bool _isInDragDelta; // is reacting to a DragDelta
 		private Rectangle _horizontalDecreaseRect;
 		private Rectangle _horizontalTrackRect;
 		private Rectangle _verticalDecreaseRect;
@@ -35,8 +36,8 @@ namespace Windows.UI.Xaml.Controls
 
 		static Slider()
 		{
-			MaximumProperty.OverrideMetadata(typeof(Slider), new PropertyMetadata(100d));
-			SmallChangeProperty.OverrideMetadata(typeof(Slider), new PropertyMetadata(1d));
+			MaximumProperty.OverrideMetadata(typeof(Slider), new FrameworkPropertyMetadata(100d));
+			SmallChangeProperty.OverrideMetadata(typeof(Slider), new FrameworkPropertyMetadata(1d));
 		}
 
 		public Slider()
@@ -44,6 +45,8 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN
 			RegisterLoadActions(SubscribeSliderContainerPressed, () => _sliderContainerSubscription.Disposable = null);
 #endif
+
+			DefaultStyleKey = typeof(Slider);
 		}
 
 		protected override void OnApplyTemplate()
@@ -54,18 +57,16 @@ namespace Windows.UI.Xaml.Controls
 			_eventSubscriptions.Disposable = null;
 
 			_headerContentPresenter = GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
+			if (_headerContentPresenter != null)
+			{
+				UpdateHeaderVisibility();
+			}
+
 			_horizontalThumb = GetTemplateChild("HorizontalThumb") as Thumb;
 			_verticalThumb = GetTemplateChild("VerticalThumb") as Thumb;
 
-			if (_horizontalThumb != null)
-			{
-				_horizontalThumb.ShouldCapturePointer = false;
-			}
-
-			if (_verticalThumb != null)
-			{
-				_verticalThumb.ShouldCapturePointer = false;
-			}
+			_horizontalThumb?.DisablePointersTracking();
+			_verticalThumb?.DisablePointersTracking();
 
 			_verticalTemplate = GetTemplateChild("VerticalTemplate") as FrameworkElement;
 			_verticalTrackRect = GetTemplateChild("VerticalTrackRect") as Rectangle;
@@ -90,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonState(useTransitions: false);
 		}
 
-		protected override void OnLoaded()
+		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
@@ -114,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool HasXamlTemplate => _horizontalThumb != null || _verticalThumb != null;
 
-		protected override void OnUnloaded()
+		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
@@ -161,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ApplyValueToSlide();
 
-			IsPointerPressed = false;
+			_isDragging = false;
 			UpdateCommonState();
 		}
 
@@ -169,13 +170,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				_duringDrag = true;
+				_isInDragDelta = true;
 
 				if (Orientation == Orientation.Horizontal)
 				{
 					var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
 
-					_horizontalDecreaseRect.Width = Math.Min(Math.Max(0, _horizontalInitial + (float)e.HorizontalChange), maxWidth);
+					_horizontalDecreaseRect.Width = Math.Min(Math.Max(0, _horizontalInitial + (float)e.TotalHorizontalChange), maxWidth);
 
 					ApplySlideToValue(_horizontalDecreaseRect.Width / maxWidth);
 				}
@@ -183,14 +184,14 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var maxHeight = ActualHeight - _horizontalThumb.ActualHeight;
 
-					_verticalDecreaseRect.Height = Math.Min(Math.Max(0, _verticalInitial - (float)e.VerticalChange), (float)maxHeight);
+					_verticalDecreaseRect.Height = Math.Min(Math.Max(0, _verticalInitial - (float)e.TotalVerticalChange), (float)maxHeight);
 
 					ApplySlideToValue(_verticalDecreaseRect.Height / maxHeight);
 				}
 			}
 			finally
 			{
-				_duringDrag = false;
+				_isInDragDelta = false;
 			}
 		}
 
@@ -198,10 +199,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (HasXamlTemplate)
 			{
-				// Disable parent scrolling on Android
-#if XAMARIN_ANDROID
-				this.RequestDisallowInterceptTouchEvent(true);
-#endif
 				if (Orientation == Orientation.Horizontal)
 				{
 					_horizontalInitial = GetSanitizedDimension(_horizontalDecreaseRect.Width);
@@ -211,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 					_verticalInitial = GetSanitizedDimension(_verticalDecreaseRect.Height);
 				}
 
-				IsPointerPressed = true;
+				_isDragging = true;
 				UpdateCommonState();
 			}
 		}
@@ -222,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(this, "Disabled", useTransitions);
 			}
-			else if (IsPointerPressed)
+			else if (_isDragging)
 			{
 				VisualStateManager.GoToState(this, "Pressed", useTransitions);
 			}
@@ -284,20 +281,44 @@ namespace Windows.UI.Xaml.Controls
 			// The _decreaseRect's height/width is updated, which in turn pushes or pulls the Thumb to its correct position
 			if (Orientation == Orientation.Horizontal)
 			{
-                if (_horizontalThumb != null && _horizontalDecreaseRect != null)
-                {
-                    var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
-                    _horizontalDecreaseRect.Width = (float)((Value - Minimum) / (Maximum - Minimum)) * maxWidth;
-                }
+				if (_horizontalThumb != null && _horizontalDecreaseRect != null)
+				{
+					var maxWidth = ActualWidth - GetHorizontalThumbWidth();
+					_horizontalDecreaseRect.Width = (float)((Value - Minimum) / (Maximum - Minimum)) * maxWidth;
+				}
 			}
 			else
 			{
-                if (_verticalThumb != null && _verticalDecreaseRect != null)
-                {
-                    var maxHeight = ActualHeight - _verticalThumb.ActualHeight;
-                    _verticalDecreaseRect.Height = (float)((Value - Minimum) / (Maximum - Minimum)) * maxHeight;
-                }
+				if (_verticalThumb != null && _verticalDecreaseRect != null)
+				{
+					var maxHeight = ActualHeight - GetVerticalThumbHeight();
+					_verticalDecreaseRect.Height = (float)((Value - Minimum) / (Maximum - Minimum)) * maxHeight;
+				}
 			}
+		}
+
+		private double GetHorizontalThumbWidth()
+		{
+			// In some cases, because of the timing of SizeChanged, this may be called before the thumb has been measured. If so, we rely on the fact
+			// that the dimensions are hard-coded by the UWP and Fluent styles.
+			if (_horizontalThumb.ActualWidth == 0 && !double.IsNaN(_horizontalThumb.Width))
+			{
+				return _horizontalThumb.Width;
+			}
+
+			return _horizontalThumb.ActualWidth;
+		}
+
+		private double GetVerticalThumbHeight()
+		{
+			// In some cases, because of the timing of SizeChanged, this may be called before the thumb has been measured. If so, we rely on the fact
+			// that the dimensions are hard-coded by the UWP and Fluent styles.
+			if (_verticalThumb.ActualHeight == 0 && !double.IsNaN(_verticalThumb.Height))
+			{
+				return _verticalThumb.Height;
+			}
+
+			return _verticalThumb.ActualHeight;
 		}
 
 		/// <summary>
@@ -318,7 +339,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnValueChanged(oldValue, newValue);
 
-			if (!_duringDrag && HasXamlTemplate)
+			if (!_isInDragDelta && HasXamlTemplate)
 			{
 				ApplyValueToSlide();
 			}
@@ -326,82 +347,63 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SubscribeSliderContainerPressed()
 		{
-			if (_sliderContainer != null && IsTrackerEnabled)
+			// This allows the user to start sliding by clicking anywhere on the slider
+			// In that case, the Thumb won't  be able to capture the pointer and instead we will replicate
+			// its behavior and "push" to it the drag events (on which we are already subscribed).
+
+			var container = _sliderContainer;
+			if (container != null && IsTrackerEnabled)
 			{
 				_sliderContainerSubscription.Disposable = null;
 
-				_sliderContainer.PointerPressed += OnSliderContainerPressed;
-				_sliderContainer.PointerMoved += OnSliderContainerMoved;
-				_sliderContainer.PointerReleased += OnSliderContainerReleased;
-				_sliderContainer.PointerCanceled += OnSliderContainerCanceled;
+				container.PointerPressed += OnSliderContainerPressed;
+				container.PointerMoved += OnSliderContainerMoved;
+				container.PointerCaptureLost += OnSliderContainerCaptureLost;
 
 				_sliderContainerSubscription.Disposable = Disposable.Create(() =>
 				{
-					_sliderContainer.PointerPressed -= OnSliderContainerPressed;
-					_sliderContainer.PointerMoved -= OnSliderContainerMoved;
-					_sliderContainer.PointerReleased -= OnSliderContainerReleased;
-					_sliderContainer.PointerCanceled -= OnSliderContainerCanceled;
+					container.PointerPressed -= OnSliderContainerPressed;
+					container.PointerMoved -= OnSliderContainerMoved;
+					container.PointerCaptureLost -= OnSliderContainerCaptureLost;
 				});
 			}
 		}
 
-		private void OnSliderContainerPressed(object sender, PointerRoutedEventArgs e)
+		private void OnSliderContainerPressed(object sender, PointerRoutedEventArgs args)
 		{
-			var container = sender as FrameworkElement;
-			var point = e.GetCurrentPoint(container).Position;
-
-			var newOffset = Orientation == Orientation.Horizontal ?
-				point.X / container.ActualWidth :
-				1 - (point.Y / container.ActualHeight);
-
-			ApplySlideToValue(newOffset);
-
-			Thumb?.StartDrag(point);
-
-			// This captures downstream events outside the slider's bounds.
-			container.CapturePointer(e.Pointer);
-
-			// This is currently obligatory on Android to be able to receive downstream touch events (eg PointerMoved etc).
-			e.Handled = true;
-		}
-
-		private void OnSliderContainerCanceled(object sender, PointerRoutedEventArgs e)
-		{
-			OnDragCompleted(sender, null);
-
-			var container = sender as FrameworkElement;
-			container.ReleasePointerCapture(e.Pointer);
-		}
-
-		private void OnSliderContainerReleased(object sender, PointerRoutedEventArgs e)
-		{
-			var container = sender as FrameworkElement;
-			var point = e.GetCurrentPoint(container).Position;
-
-			ApplyValueToSlide();
-
-			Thumb?.CompleteDrag(point);
-
-			container.ReleasePointerCapture(e.Pointer);
-
-			e.Handled = true;
-		}
-
-		private void OnSliderContainerMoved(object sender, PointerRoutedEventArgs e)
-		{
-			var container = sender as FrameworkElement;
-#if __WASM__
-			if (!container.IsPointerCaptured)
+			if (sender is FrameworkElement container && container.CapturePointer(args.Pointer))
 			{
-				return;
+				var point = args.GetCurrentPoint(container).Position;
+				var newOffset = Orientation == Orientation.Horizontal
+					? point.X / container.ActualWidth
+					: 1 - (point.Y / container.ActualHeight);
+
+				ApplySlideToValue(newOffset);
+				Thumb?.StartDrag(args);
 			}
-#endif
+		}
 
-			var point = e.GetCurrentPoint(container).Position;
+		private void OnSliderContainerMoved(object sender, PointerRoutedEventArgs args)
+		{
+			if (sender is FrameworkElement container && container.IsCaptured(args.Pointer))
+			{
+				Thumb?.DeltaDrag(args);
+			}
+		}
 
-			Thumb?.DeltaDrag(point);
+		private void OnSliderContainerCaptureLost(object sender, PointerRoutedEventArgs args)
+		{
+			ApplyValueToSlide();
+			Thumb?.CompleteDrag(args);
+		}
 
-			e.Handled = true;
+		private void UpdateHeaderVisibility()
+		{
+			if (_headerContentPresenter != null)
+			{
+				_headerContentPresenter.Visibility =
+					Header != null ? Visibility.Visible : Visibility.Collapsed;
+			}
 		}
 
 		#region IsTrackerEnabled DependencyProperty
@@ -423,8 +425,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for IsTrackerEnabled.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsTrackerEnabledProperty =
-			DependencyProperty.Register("IsTrackerEnabled", typeof(bool), typeof(Slider), new PropertyMetadata(true));
+		public static DependencyProperty IsTrackerEnabledProperty { get ; } =
+			DependencyProperty.Register("IsTrackerEnabled", typeof(bool), typeof(Slider), new FrameworkPropertyMetadata(true));
 		#endregion
 
 		#region StepFrequency DependencyProperty
@@ -435,8 +437,8 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(StepFrequencyProperty, value); }
 		}
 
-		public static readonly DependencyProperty StepFrequencyProperty =
-			DependencyProperty.Register("StepFrequency", typeof(double), typeof(Slider), new PropertyMetadata(1.0, (s, e) => ((Slider)s)?.OnStepFrequencyChanged(e)));
+		public static DependencyProperty StepFrequencyProperty { get ; } =
+			DependencyProperty.Register("StepFrequency", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(1.0, (s, e) => ((Slider)s)?.OnStepFrequencyChanged(e)));
 
 		private void OnStepFrequencyChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -454,8 +456,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Orientation.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty OrientationProperty =
-			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(Slider), new PropertyMetadata(Orientation.Horizontal, (s, e) => ((Slider)s)?.OnOrientationChanged(e)));
+		public static DependencyProperty OrientationProperty { get ; } =
+			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(Slider), new FrameworkPropertyMetadata(Orientation.Horizontal, (s, e) => ((Slider)s)?.OnOrientationChanged(e)));
 
 
 		private void OnOrientationChanged(DependencyPropertyChangedEventArgs e)
@@ -504,8 +506,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for SnapsTo.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SnapsToProperty =
-			DependencyProperty.Register("SnapsTo", typeof(SliderSnapsTo), typeof(Slider), new PropertyMetadata(SliderSnapsTo.StepValues, (s, e) => ((Slider)s)?.OnSnapsToChanged(e)));
+		public static DependencyProperty SnapsToProperty { get ; } =
+			DependencyProperty.Register("SnapsTo", typeof(SliderSnapsTo), typeof(Slider), new FrameworkPropertyMetadata(SliderSnapsTo.StepValues, (s, e) => ((Slider)s)?.OnSnapsToChanged(e)));
 
 
 		private void OnSnapsToChanged(DependencyPropertyChangedEventArgs e)
@@ -524,8 +526,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for IsThumbToolTipEnabled.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsThumbToolTipEnabledProperty =
-			DependencyProperty.Register("IsThumbToolTipEnabled", typeof(bool), typeof(Slider), new PropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsThumbToolTipEnabledChanged(e)));
+		public static DependencyProperty IsThumbToolTipEnabledProperty { get ; } =
+			DependencyProperty.Register("IsThumbToolTipEnabled", typeof(bool), typeof(Slider), new FrameworkPropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsThumbToolTipEnabledChanged(e)));
 
 
 		private void OnIsThumbToolTipEnabledChanged(DependencyPropertyChangedEventArgs e)
@@ -544,8 +546,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for IsDirectionReversed.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsDirectionReversedProperty =
-			DependencyProperty.Register("IsDirectionReversed", typeof(bool), typeof(Slider), new PropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsDirectionReversedChanged(e)));
+		public static DependencyProperty IsDirectionReversedProperty { get ; } =
+			DependencyProperty.Register("IsDirectionReversed", typeof(bool), typeof(Slider), new FrameworkPropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsDirectionReversedChanged(e)));
 
 
 		private void OnIsDirectionReversedChanged(DependencyPropertyChangedEventArgs e)
@@ -564,8 +566,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for IntermediateValue.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IntermediateValueProperty =
-			DependencyProperty.Register("IntermediateValue", typeof(double), typeof(Slider), new PropertyMetadata(.5, (s, e) => ((Slider)s)?.OnIntermediateValueChanged(e)));
+		public static DependencyProperty IntermediateValueProperty { get ; } =
+			DependencyProperty.Register("IntermediateValue", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(.5, (s, e) => ((Slider)s)?.OnIntermediateValueChanged(e)));
 
 
 		private void OnIntermediateValueChanged(DependencyPropertyChangedEventArgs e)
@@ -584,8 +586,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for TickPlacement.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TickPlacementProperty =
-			DependencyProperty.Register("TickPlacement", typeof(TickPlacement), typeof(Slider), new PropertyMetadata(TickPlacement.None, (s, e) => ((Slider)s)?.OnTickPlacementChanged(e)));
+		public static DependencyProperty TickPlacementProperty { get ; } =
+			DependencyProperty.Register("TickPlacement", typeof(TickPlacement), typeof(Slider), new FrameworkPropertyMetadata(TickPlacement.None, (s, e) => ((Slider)s)?.OnTickPlacementChanged(e)));
 
 
 		private void OnTickPlacementChanged(DependencyPropertyChangedEventArgs e)
@@ -604,8 +606,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for TickFrequency.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TickFrequencyProperty =
-			DependencyProperty.Register("TickFrequency", typeof(double), typeof(Slider), new PropertyMetadata(0.0, (s, e) => ((Slider)s)?.OnTickFrequencyChanged(e)));
+		public static DependencyProperty TickFrequencyProperty { get ; } =
+			DependencyProperty.Register("TickFrequency", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(0.0, (s, e) => ((Slider)s)?.OnTickFrequencyChanged(e)));
 
 
 		private void OnTickFrequencyChanged(DependencyPropertyChangedEventArgs e)
@@ -624,8 +626,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ThumbToolTipValueConverter.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ThumbToolTipValueConverterProperty =
-			DependencyProperty.Register("ThumbToolTipValueConverter", typeof(IValueConverter), typeof(Slider), new PropertyMetadata(null, (s, e) => ((Slider)s)?.OnThumbToolTipValueConverterChanged(e)));
+		public static DependencyProperty ThumbToolTipValueConverterProperty { get ; } =
+			DependencyProperty.Register("ThumbToolTipValueConverter", typeof(IValueConverter), typeof(Slider), new FrameworkPropertyMetadata(null, (s, e) => ((Slider)s)?.OnThumbToolTipValueConverterChanged(e)));
 
 
 		private void OnThumbToolTipValueConverterChanged(DependencyPropertyChangedEventArgs e)
@@ -644,8 +646,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for HeaderTemplate.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty HeaderTemplateProperty =
-			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(Slider), new PropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderTemplateChanged(e)));
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(Slider), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Slider)s)?.OnHeaderTemplateChanged(e)));
 
 
 		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs e)
@@ -664,16 +666,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Header.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty HeaderProperty =
-			DependencyProperty.Register("Header", typeof(object), typeof(Slider), new PropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderChanged(e)));
+		public static DependencyProperty HeaderProperty { get ; } =
+			DependencyProperty.Register("Header", typeof(object), typeof(Slider), new FrameworkPropertyMetadata(null, (s, e) => ((Slider)s)?.OnHeaderChanged(e)));
 
-		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e)
-		{
-			if (_headerContentPresenter != null)
-			{
-				_headerContentPresenter.Visibility = e.NewValue != null ? Visibility.Visible : Visibility.Collapsed;
-			}
-		}
+		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e) =>
+			UpdateHeaderVisibility();
 
 		#endregion
 	}

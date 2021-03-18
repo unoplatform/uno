@@ -5,88 +5,103 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Foundation;
+using Microsoft.Extensions.Logging;
+using Uno;
 
 namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{
-		private static readonly RoutedEventHandler OnControlFocused
-			= (control, args) => ProcessControlFocus(control, args);
+		/// <summary>
+		/// True during a call to native focusView().
+		/// </summary>
+		private static bool _isCallingFocusNative;
 
-		/// <remarks>
-		/// This method is extracted to allow for the mono-wasm to set breakpoints.
-		/// </remarks>
-		private static void ProcessControlFocus(object control, RoutedEventArgs args)
+		internal static void ProcessControlFocused(Control control)
 		{
-			if (
-				// Only act if the origin of the event is the control itself
-				ReferenceEquals(control, args.OriginalSource)
-
-				// Don't change the focus if the control already has the focus
-				&& !ReferenceEquals(control, _focusedElement))
+			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
-				(_focusedElement as Control)?.SetFocused(false);
-
-				// Then set the new control as focused
-				((Control)control).SetFocused(true);
+				_log.Value.LogDebug($"{nameof(ProcessControlFocused)}() focusedElement={GetFocusedElement()}, control={control}");
 			}
+
+			UpdateFocus(control, FocusNavigationDirection.None, FocusState.Pointer);
 		}
 
-		private static readonly RoutedEventHandler OnElementFocused
-			= (element, args) => ProcessElementFocused(element, args);
-
-		/// <remarks>
-		/// This method is extracted to allow for the mono-wasm to set breakpoints.
-		/// </remarks>
-		private static void ProcessElementFocused(object element, RoutedEventArgs args)
+		internal static void ProcessElementFocused(UIElement element)
 		{
-			if (
-				// Only act if the origin of the event is the element itself
-				ReferenceEquals(element, args.OriginalSource)
-
-				// Don't change the focus if the element already has the focus
-				&& !ReferenceEquals(element, _focusedElement))
+			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
-				(_focusedElement as Control)?.SetFocused(false);
-
-				// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
-				var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
-				if (ownerControl == null)
-				{
-					_focusedElement = element;
-				}
-				else
-				{
-					if (ownerControl.SetFocused(true))
-					{
-						_fallbackFocusedElement = element;
-					}
-				}
+				_log.Value.LogDebug($"{nameof(ProcessElementFocused)}() focusedElement={GetFocusedElement()}, element={element}");
 			}
+
+			// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
+			var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
+			UpdateFocus(ownerControl, FocusNavigationDirection.None, FocusState.Pointer);
 		}
 
-		internal static void Track(UIElement element)
+		internal static bool FocusNative(UIElement element)
 		{
-			var handler = element is Control
-				? OnControlFocused
-				: OnElementFocused;
+			if (_log.Value.IsEnabled(LogLevel.Debug))
+			{
+				_log.Value.LogDebug($"{nameof(FocusNative)}(element: {element})");
+			}
 
-			element.GotFocus += handler;
-		}
-
-		internal static bool Focus(UIElement element)
-		{
 			if (element == null)
 			{
 				return false;
 			}
 
+			if (element is TextBox textBox)
+			{
+				return textBox.FocusTextView();
+			}
+
+			_isCallingFocusNative = true;
 			var command = $"Uno.UI.WindowManager.current.focusView({element.HtmlId});";
 			WebAssemblyRuntime.InvokeJS(command);
+			_isCallingFocusNative = false;
 
 			return true;
+		}
+
+		[Preserve]
+		public static void ReceiveFocusNative(int handle)
+		{
+			if (_isCallingFocusNative)
+			{
+				// We triggered this callback by calling focusView() ourselves, ignore it so we don't overwrite the FocusState
+				return;
+			}
+			var focused = GetFocusElementFromHandle(handle);
+			if (_log.Value.IsEnabled(LogLevel.Debug))
+			{
+				_log.Value.LogDebug($"{nameof(ReceiveFocusNative)}({focused?.ToString() ?? "[null]"})");
+			}
+
+			if (focused is Control control)
+			{
+				ProcessControlFocused(control);
+			}
+			else if (focused != null)
+			{
+				ProcessElementFocused(focused);
+			}
+			else
+			{
+				// This might occur if a non-Uno element receives focus
+				UpdateFocus(null, FocusNavigationDirection.None, FocusState.Pointer);
+			}
+		}
+
+		private static UIElement GetFocusElementFromHandle(int handle)
+		{
+
+			if (handle == -1)
+			{
+				// 
+				return null;
+			}
+			return UIElement.GetElementFromHandle(handle);
 		}
 
 		private static bool InnerTryMoveFocus(FocusNavigationDirection focusNavigationDirection)
@@ -95,6 +110,16 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		private static UIElement InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
+		{
+			return null;
+		}
+
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		{
+			return null;
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
 		{
 			return null;
 		}

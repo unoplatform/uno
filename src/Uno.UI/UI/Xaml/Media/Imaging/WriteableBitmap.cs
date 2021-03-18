@@ -1,18 +1,24 @@
 using System;
-using Windows.Foundation;
 using Windows.Storage.Streams;
+using UwpBuffer = Windows.Storage.Streams.Buffer;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	public partial class WriteableBitmap : global::Windows.UI.Xaml.Media.Imaging.BitmapSource
+	public partial class WriteableBitmap : BitmapSource
 	{
 		internal event EventHandler Invalidated;
 
-		public global::Windows.Storage.Streams.IBuffer PixelBuffer { get; private set; }
+		private readonly UwpBuffer _buffer;
+
+		public IBuffer PixelBuffer => _buffer;
 
 		public WriteableBitmap(int pixelWidth, int pixelHeight) : base()
 		{
-			PixelBuffer = new InMemoryBuffer(pixelWidth * pixelHeight * 4);
+			var pixelsBufferSize = (uint)(pixelWidth * pixelHeight * 4);
+			_buffer = new UwpBuffer(pixelsBufferSize)
+			{
+				Length = pixelsBufferSize
+			};
 
 			PixelWidth = pixelWidth;
 			PixelHeight = pixelHeight;
@@ -20,6 +26,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public void Invalidate()
 		{
+#if __WASM__ || __SKIA__
+			InvalidateSource();
+#endif
 			Invalidated?.Invoke(this, EventArgs.Empty);
 		}
 	}

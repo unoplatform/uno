@@ -1,0 +1,83 @@
+﻿{
+  "$schema": "http://json.schemastore.org/vs-2017.3.host",
+  "name": {
+    "text": "Cross-Platform App (WinUI)",
+  },
+  "description": {
+    "text": "A project template for creating rich Cross Platform app using WinUI 3",
+  },
+  "order": 610,
+  "icon": "uno-logo.png",
+  "learnMoreLink": "https://github.com/unoplatform/uno",
+  "uiFilters": [
+    "oneaspnet"
+  ],
+  "additionalWizardParameters": {
+    "$isMultiProjectTemplate$": "true"
+  },
+  "symbolInfo": [
+    {
+      "id": "windowsPublisherName",
+      "name": {
+        "text": "Provides the value to use for the Windows head publisher"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "WebAssembly",
+      "name": {
+        "text": "Enables the WebAssembly platform support project"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "UWP",
+      "name": {
+        "text": "Add support for UWP"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "iOS",
+      "name": {
+        "text": "Add support for iOS"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "Android",
+      "name": {
+        "text": "Add support for Android"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "macOS",
+      "name": {
+        "text": "Add support for macOS"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "skia-wpf",
+      "name": {
+        "text": "Enables the Skia/WPF platform support project"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "skia-gtk",
+      "name": {
+        "text": "Enables the Skia/GTK platform support project"
+      },
+      "isVisible": "true"
+    },
+    {
+      "id": "vscodeWasm",
+      "name": {
+        "text": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+      },
+      "isVisible": "false"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Data;
 
-namespace UITests.Shared.ValueConverters
+namespace UITests.ValueConverters
 {
 	public class BoolNegationValueConverter : IValueConverter
 	{

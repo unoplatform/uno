@@ -14,8 +14,8 @@ namespace Windows.UI.Xaml
 {
 	public static class DependencyObjectExtensions
 	{
-		private static ConditionalWeakTable<object, DependencyObject> _objectData
-			= new ConditionalWeakTable<object, DependencyObject>();
+		private static ConditionalWeakTable<object, AttachedDependencyObject> _objectData
+			= new ConditionalWeakTable<object, AttachedDependencyObject>();
 
 		private static DependencyObjectStore GetStore(object instance)
 		{
@@ -33,8 +33,16 @@ namespace Windows.UI.Xaml
 		/// <returns>A new DependencyObject if none exists, otherwise the existing one.</returns>
 		internal static DependencyObjectStore GetAttachedStore(object instance)
 		{
-			return ((IDependencyObjectStoreProvider)_objectData.GetValue(instance, i => new AttachedDependencyObject(i))).Store;
+			return ((IDependencyObjectStoreProvider)GetAttachedDependencyObject(instance)).Store;
 		}
+
+		/// <summary>
+		/// Provides a DependencyObject proxy for a non-dependency object for DataBinding and x:Bind purposes
+		/// </summary>
+		/// <param name="instance"></param>
+		/// <returns></returns>
+		internal static AttachedDependencyObject GetAttachedDependencyObject(object instance)
+			=> _objectData.GetValue(instance, i => new AttachedDependencyObject(i));
 
 		/// <summary>
 		/// Gets the Unique ID of the specified dependency object.
@@ -55,6 +63,35 @@ namespace Windows.UI.Xaml
 		{
 			return GetStore(dependencyObject).Parent;
 		}
+
+		/// <summary>
+		/// Gets the parent dependency object, if any.
+		/// </summary>
+		/// <param name="dependencyObject"></param>
+		/// <returns></returns>
+		internal static object GetParent(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.Parent;
+
+		/// <summary>
+		/// Enables the use of hard references for internal variables to improve the performance
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static void StoreTryEnableHardReferences(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.TryEnableHardReferences();
+
+		/// <summary>
+		/// Disables the use of hard references for internal variables to improve the performance
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static void StoreDisableHardReferences(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.DisableHardReferences();
+
+		/// <summary>
+		/// Gets the implicit style for the current object
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
+		internal static Style StoreGetImplicitStyle(this IDependencyObjectStoreProvider provider)
+			=> provider.Store.GetImplicitStyle();
 
 		internal static IEnumerable<object> GetParents(this object dependencyObject)
 		{
@@ -154,6 +191,23 @@ namespace Windows.UI.Xaml
 		internal static (object value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(this DependencyObject instance, DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
 			return GetStore(instance).GetValueUnderPrecedence(property, precedence);
+		}
+
+		/// <summary>
+		/// The the value for all precedences.
+		/// </summary>
+		/// <remarks>
+		/// This should only be used for diagnostics and testing purposes.
+		/// </remarks>
+		internal static (object value, DependencyPropertyValuePrecedences precedence)[] GetValueForEachPrecedences(
+			this DependencyObject instance, DependencyProperty property)
+		{
+			var propertyDetails = GetStore(instance).GetPropertyDetails(property).ToList();
+
+			return Enum.GetValues(typeof(DependencyPropertyValuePrecedences))
+				.Cast<DependencyPropertyValuePrecedences>()
+				.Select(precedence => (propertyDetails[(int)precedence], precedence))
+				.ToArray();
 		}
 
 		/// <summary>
@@ -273,7 +327,7 @@ namespace Windows.UI.Xaml
 					}
 
 					var childDisposable = new SerialDisposable();
-					
+
 					childDisposable.Disposable = (instance.GetValue(property) as DependencyObject)?.RegisterDisposableNestedPropertyChangedCallback(callback, subProperties);
 
 					var disposable = instance.RegisterDisposablePropertyChangedCallback(property, (s, e) =>
@@ -300,15 +354,6 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Register for compiled bindings updates propagation
-		/// </summary>
-		/// <param name="instance">The instance for which to observe compiled bindings updates</param>
-		/// <param name="handler">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal static IDisposable RegisterCompiledBindingsUpdateCallback(this object instance, Action handler) 
-			=> GetStore(instance).RegisterCompiledBindingsUpdateCallback(handler);
-
-		/// <summary>
 		/// Registers to parent changes.
 		/// </summary>
 		/// <param name="instance">The target dependency object</param>
@@ -333,6 +378,14 @@ namespace Windows.UI.Xaml
 				.GetCurrentHighestValuePrecedence(property) != DependencyPropertyValuePrecedences.DefaultValue;
 		}
 
+		/// <summary>
+		/// True if a value is set on the property with <see cref="DependencyPropertyValuePrecedences.Local"/> precedence or higher, false otherwise.
+		/// </summary>
+		/// <param name="dependencyObject">The instance on which the property is attached</param>
+		/// <param name="property">The dependency property to test</param>
+		internal static bool IsDependencyPropertyLocallySet(this DependencyObject dependencyObject, DependencyProperty property) =>
+			GetStore(dependencyObject).GetCurrentHighestValuePrecedence(property) <= DependencyPropertyValuePrecedences.Local;
+
 		internal static DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(this DependencyObject dependencyObject, DependencyProperty property)
 		{
 			return GetStore(dependencyObject).GetCurrentHighestValuePrecedence(property);
@@ -354,6 +407,11 @@ namespace Windows.UI.Xaml
 		{
 			var uielement = d as UIElement ?? d.GetParents().OfType<UIElement>().FirstOrDefault();
 			uielement?.InvalidateRender();
+		}
+
+		internal static void RegisterDefaultValueProvider(this DependencyObject dependencyObject, DependencyObjectStore.DefaultValueProvider provider)
+		{
+			GetStore(dependencyObject).RegisterDefaultValueProvider(provider);
 		}
 	}
 }

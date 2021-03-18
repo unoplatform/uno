@@ -15,15 +15,6 @@ namespace Uno.UI.Tests.BinderTests
 	[TestClass]
 	public partial class Given_Binder_TestNullValue
 	{
-		[TestInitialize]
-		public void Init()
-		{
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
-		}
-
 		[TestMethod]
 		public void When_Converted_Value_NotNull()
 		{
@@ -136,9 +127,9 @@ namespace Uno.UI.Tests.BinderTests
 			}
 		}
 
-		public class ViewModel : INotifyPropertyChanged
+		public class ViewModel : System.ComponentModel.INotifyPropertyChanged
 		{
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public string NullValue => null;
 
@@ -159,7 +150,7 @@ namespace Uno.UI.Tests.BinderTests
 			}
 
 			public static readonly DependencyProperty MyPropertyProperty =
-				DependencyProperty.Register("MyProperty", typeof(string), typeof(MyControl), new PropertyMetadata(null));
+				DependencyProperty.Register("MyProperty", typeof(string), typeof(MyControl), new FrameworkPropertyMetadata(null));
 		}
 	}
 }

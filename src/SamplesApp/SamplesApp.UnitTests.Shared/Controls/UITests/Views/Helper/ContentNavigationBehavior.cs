@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
-#elif HAS_UNO || NETSTANDARD2_0
+#elif HAS_UNO || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 #else
@@ -27,7 +27,7 @@ namespace Uno.UI.Samples.Helper
 			obj.SetValue(IsAttachedProperty, value);
 		}
 
-		public static readonly DependencyProperty IsAttachedProperty =
+		public static DependencyProperty IsAttachedProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"IsAttached",
 				typeof(bool),
@@ -44,7 +44,7 @@ namespace Uno.UI.Samples.Helper
 			obj.SetValue(CanNavigateBackProperty, value);
 		}
 
-		public static readonly DependencyProperty CanNavigateBackProperty =
+		public static DependencyProperty CanNavigateBackProperty { get ; } =
 			DependencyProperty.RegisterAttached(
 				"CanNavigateBack",
 				typeof(bool),

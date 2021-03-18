@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Uno.Buffers
 {
-    internal sealed partial class DefaultArrayPool<T> : ArrayPool<T>
+    internal sealed partial class ArrayPool<T>
     {
         /// <summary>Provides a thread-safe bucket containing buffers that can be Rent'd and Return'd.</summary>
         private sealed class Bucket
@@ -47,7 +47,10 @@ namespace Uno.Buffers
                 // lock to minimize contention with other threads.  The try/finally is
                 // necessary to properly handle thread aborts on platforms which have them.
                 bool lockTaken = false, allocateBuffer = false;
-                try
+
+#if !HAS_EXPENSIVE_TRYFINALLY
+				try
+#endif
                 {
                     _lock.Enter(ref lockTaken);
 
@@ -58,9 +61,11 @@ namespace Uno.Buffers
                         allocateBuffer = buffer == null;
                     }
                 }
+#if !HAS_EXPENSIVE_TRYFINALLY
                 finally
-                {
-                    if (lockTaken) _lock.Exit(false);
+#endif
+				{
+					if (lockTaken) _lock.Exit(false);
                 }
 
                 // While we were holding the lock, we grabbed whatever was at the next available index, if
@@ -92,8 +97,10 @@ namespace Uno.Buffers
                 // The try/finally is necessary to properly handle thread aborts on platforms
                 // which have them.
                 bool lockTaken = false;
+#if !HAS_EXPENSIVE_TRYFINALLY
                 try
-                {
+#endif
+				{
                     _lock.Enter(ref lockTaken);
 
                     if (_index != 0)
@@ -101,7 +108,9 @@ namespace Uno.Buffers
                         _buffers[--_index] = array;
                     }
                 }
+#if !HAS_EXPENSIVE_TRYFINALLY
                 finally
+#endif
                 {
                     if (lockTaken) _lock.Exit(false);
                 }

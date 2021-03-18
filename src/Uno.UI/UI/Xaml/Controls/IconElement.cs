@@ -25,6 +25,8 @@ using View = MonoTouch.UIKit.UIView;
 using ViewGroup = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
+#elif __MACOS__
+using View = AppKit.NSView;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif
@@ -58,7 +60,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static readonly DependencyProperty ForegroundProperty =
+		public static DependencyProperty ForegroundProperty { get ; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -72,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnForegroundChanged(DependencyPropertyChangedEventArgs e) { }
 
-		protected void AddIconElementView(View child)
+		internal void AddIconElementView(View child)
 		{
 			RegisterSubView(child);
         }

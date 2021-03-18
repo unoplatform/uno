@@ -1,5 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using Uno.Logging;
 using System;
 using System.Collections.Generic;

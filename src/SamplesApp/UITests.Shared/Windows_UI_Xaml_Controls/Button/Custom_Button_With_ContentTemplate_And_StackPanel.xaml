@@ -1,4 +1,4 @@
-<UserControl
+<Page
 	x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.Custom_Button_With_ContentTemplate_And_StackPanel" 
 	xmlns:controls="using:Uno.UI.Samples.Controls"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -119,4 +119,4 @@
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>
-</UserControl>
+</Page>

@@ -9,33 +9,53 @@ namespace Uno.UI.Samples.Content.UITests.Flyout
 	[SampleControlInfo("Flyout", "Flyout_Target")]
 	public sealed partial class Flyout_Target : UserControl
 	{
-		private Windows.UI.Xaml.Controls.Flyout _flyout;
-
 		public Flyout_Target()
 		{
 			this.InitializeComponent();
 
-			_flyout = new Windows.UI.Xaml.Controls.Flyout()
+		}
+
+		private void OnClick(object s, RoutedEventArgs e)
+		{
+			result.Text = "";
+
+			var flyout = new Windows.UI.Xaml.Controls.Flyout()
 			{
 				Content = new Border
 				{
+					Name = "innerContent",
 					Height = 100,
 					Width = 100,
 					Background = new SolidColorBrush(Colors.Red)
 				}
 			};
+
+			var target = s as FrameworkElement;
+			flyout.ShowAt(target);
+
+			var success = flyout.Target == target;
+
+			result.Text = success ? "success" : "failed";
 		}
 
-		private void OnClick(object s, RoutedEventArgs e)
+		private void OnClickFull(object s, RoutedEventArgs e)
 		{
+			result.Text = "";
 			var target = s as FrameworkElement;
-			_flyout.ShowAt(target);
-			var success = _flyout.Target == target;
-			var t = new Windows.UI.Popups.MessageDialog(
-				success
-					? "Flyout.Target updated correctly."
-					: "Flyout.Target updated incorrectly.")
-				.ShowAsync();
+
+			var flyout = new Windows.UI.Xaml.Controls.Flyout()
+			{
+				Content = new Border
+				{
+					Name = "innerContent",
+					Height = 100,
+					Width = 100,
+					Background = new SolidColorBrush(Colors.Red)
+				},
+				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full
+			};
+
+			flyout.ShowAt(target);
 		}
 	}
 }

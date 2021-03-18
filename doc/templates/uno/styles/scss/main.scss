@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:500,600,700,800,400italic,700italic,400');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css");
 
 $blue: #159bff;
 $purple: #7a67f8;
 $turquoise: #66e4a8;
-$dgray: #242424; 
+$dgray: #242424;
 
 body {
     font-family: 'Open Sans', sans-serif;
@@ -45,6 +46,16 @@ h3 {
     font-size: 30px;
     font-weight: 600;
     text-transform: none;
+}
+
+@media screen {
+    pre {
+        overflow: auto;
+
+        > code {
+            white-space: pre;
+        }
+    }
 }
 
 .body-content .article {
@@ -96,6 +107,11 @@ h3 {
 }
 
 .navbar-header {
+
+    @media screen and(min-width: 980px) {
+        align-self: center;
+    }
+
     .navbar-toggle {
         border: none;
         height: 18px;
@@ -122,12 +138,13 @@ h3 {
                 background: $purple;
             }
         }
-        @media (max-width: 767px) {
-            margin-top: 12px;
+        @media (max-width: 979px) {
+            margin-top: 10px;
+            display: block;
         }
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 979px) {
         display: inline-block;
         vertical-align: middle;
         width: 100%;
@@ -136,9 +153,7 @@ h3 {
 }
 
 .navbar:first-child {
-    padding: 0 25px;
-    min-height: 75px;
-    line-height: 75px;
+    padding: 10px 15px;
     vertical-align: middle;
     background: #ffffff;
     position: fixed;
@@ -147,18 +162,23 @@ h3 {
     width: 100%;
     z-index: 9999;
 
-    @media screen and(min-width: 768px) {
-        line-height: auto;
-        display: flex;
-        align-items: center;
+    @media screen and(min-width: 980px) {
         height: 75px;
+        line-height: normal;
+        display: flex;
+        align-items: flex-start;
+        padding: 0 30px;
     }
-    
+
 
     #logo {
-        width: 43px;
+        width: 36px;
         margin-top: 0;
         vertical-align: middle;
+
+        @media screen and(min-width: 980px) {
+            width: 43px;
+        }
     }
 
     .navbar-brand {
@@ -173,44 +193,96 @@ h3 {
     z-index: 999;
 }
 
+
+
 #navbar {
     margin: 0;
     margin-left: auto;
-    padding: 15px 0;
+    padding: 15px 0 0;
 
+    & > .navbar-nav {
+        display: block;
+
+        &.hidden {
+            display: none;
+        }
+    }
+
+    .menu,
     .level1 {
+        align-items: center;
+
         li {
             padding: 0;
-            display: inline-block;
+            display: inline-flex;
+            vertical-align: top;
             float: none;
+
+            &.has-children {
+                position: relative;
+
+                & > a::after {
+                    display: inline-block;
+                    content: "\f107";
+                    font-family: 'FontAwesome';
+                    font-style: normal;
+                    font-size: 11.2px;
+                    font-weight: 400;
+                    margin: 0 0 0 8px
+                }
+
+                ul {
+                    text-align: left;
+                }
+
+                @media screen and(min-width: 980px) {
+                    ul {
+                        visibility: hidden;
+                        display: block;
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        z-index: 778;
+                        padding: 15px;
+                        box-shadow: 0px 8px 28px 0px rgba(0,0,0,.08);
+                        background-color: #fff;
+
+                        a {
+                            text-transform: none;
+                        }
+                    }
+                }
+
+                &:hover {
+
+                    ul {
+                        visibility: visible;
+                    }
+                }
+            }
         }
 
         a {
             padding: 0 16px;
             font-weight: 600;
-            height: 43px;
-            line-height: 43px;
+            height: 28px;
+            line-height: 28px;
             font-size: 14px;
             text-transform: uppercase;
             color: #3a3a3a;
             border-bottom: 2px solid transparent;
             transition: color 0.2s ease-in-out,
             background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-
-            @media (min-width: 768px) and (max-width: 820px) {
-                font-size: 12px;
-            }
         }
 
-        
-
         a:hover,
-        .active a {
+        .docs a {
             background: none;
             border-color: $purple;
         }
 
-        a[title='Get Started'] {
+        .get-started-btn a,
+        a[title="Get Started"] {
             background-color: rgb(122, 103, 248);
             border: 0;
             border-radius: 8px;
@@ -238,23 +310,19 @@ h3 {
             transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
             width: auto;
 
-            @media (max-width: 1010px) {
-                display: none;
-            }
-
             &:hover {
                 background: darken($purple, 5);
             }
         }
     }
 
-    @media screen and (min-width: 768px) {
+    @media screen and (min-width: 980px) {
         display: inline-flex;
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 979px) {
         position: fixed;
-        top: 75px;
+        top: 57px;
         left: 0;
         background: #ffffff;
         width: 100%;
@@ -264,35 +332,85 @@ h3 {
         text-align: left;
         box-shadow: none;
 
+        &.collapse {
+            display: none!important;
+        }
+        &.collapse.in {
+            display: block!important;
+        }
+
+        .menu,
         .level1 {
             display: block;
             margin: 0;
-            padding-bottom: 10px;
+            padding: 0 0 10px 0;
 
             li {
                 display: block;
                 padding: 0;
+
+                &.has-children {
+                    position: relative;
+
+                    & > a::after {
+                        font-size: 16px;
+                        font-weight: 700;
+                        float: right;
+                    }
+
+                    ul {
+                        max-height: 0;
+                        overflow: hidden;
+                        visibility: visible;
+                        position: relative;
+                        padding: 0;
+                        transition: all .5s ease;
+
+                        a {
+                            padding-left: 40px;
+
+                            &::before {
+                                content: "-";
+                                margin-right: 5px;
+                            }
+                        }
+                    }
+
+                    &.open {
+
+                        & > a::after {
+                            display: inline-block;
+                            content: "\f106";
+                        }
+
+                        ul {
+                            max-height: 500px;
+                        }
+                    }
+                }
+            }
+
+            .get-started-btn {
+                padding: 10px 25px;
+
+                a {
+                    margin: 0;
+                }
+            }
+
+            a[title="Get Started"] {
+                margin: 10px 25px;
             }
 
             a {
                 display: block;
                 padding: 10px 25px;
-                font-size: 120%;
                 border: none;
                 text-transform: none;
                 height: auto;
-                line-height: 1.8;
-                font-weight: 500;
-                font-size: 18px;
-
-                &:hover {
-                    background: $purple;
-                    color: #fff;
-                }
-            }
-
-            a[title='Get Started'] {
-                display: none;
+                line-height: 1.4;
+                font-size: 16px;
+                font-weight: 700;
             }
         }
     }
@@ -331,7 +449,7 @@ h3 {
     }
 
     .button {
-        display: inline-block; 
+        display: inline-block;
 
         a {
             display: inline-block;
@@ -345,7 +463,7 @@ h3 {
         }
 
         &.white a {
-            background: #fff; 
+            background: #fff;
             color: $dgray;
 
             &:hover {
@@ -378,8 +496,8 @@ h3 {
             @media screen and (min-width: 768px) {
                 font-size: 44px;
             }
-            
-            text-transform: none; 
+
+            text-transform: none;
             font-weight: 600;
             width: auto;
             max-width: 100%;
@@ -406,13 +524,13 @@ h3 {
         flex-wrap: wrap;
         padding: 40px 15px;
         @media screen and (min-width: 768px){
-            padding: 80px 15px; 
+            padding: 80px 15px;
         }
-        
-        background-color: #f4f2f3; 
+
+        background-color: #f4f2f3;
 
         .headerbox {
-            margin: 40px auto; 
+            margin: 40px auto;
 
         }
 
