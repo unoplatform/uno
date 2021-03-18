@@ -33,6 +33,14 @@ A basic example:
 dotnet new unoapp-winui -o MyApp
 ```
 
+Once the application is created, make sure that the following code is present in the `App.xaml` file:
+
+```xaml
+<Application.Resources> 
+    <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" /> 
+</Application.Resources>
+```
+
 ## Uno Platform Blank library
 
 This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to built separately, but cannot be differentiated.
