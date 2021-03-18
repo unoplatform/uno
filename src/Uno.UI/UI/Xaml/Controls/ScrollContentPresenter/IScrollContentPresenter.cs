@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
@@ -14,6 +15,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 		ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+
+		bool CanHorizontallyScroll { get; set; }
+		bool CanVerticallyScroll { get; set; }
+
 		object Content { get; set; }
 
 		void OnMinZoomFactorChanged(float newValue);
@@ -22,3 +27,4 @@ namespace Windows.UI.Xaml.Controls
 		Rect MakeVisible(UIElement visual, Rect rectangle);
 	}
 }
+#endif

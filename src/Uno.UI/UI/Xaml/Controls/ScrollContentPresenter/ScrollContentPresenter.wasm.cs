@@ -93,10 +93,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public float MinimumZoomScale { get; private set; }
-
-		public float MaximumZoomScale { get; private set; }
-
 		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-auto", "scroll-y-disabled", "scroll-y-hidden", "scroll-y-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.VerticalScrollBarVisibility { get => VerticalScrollBarVisibility; set => VerticalScrollBarVisibility = value; }
@@ -126,6 +122,18 @@ namespace Windows.UI.Xaml.Controls
 					SetClasses(HorizontalVisibilityClasses, (int)value);
 				}
 			}
+		}
+
+		public bool CanHorizontallyScroll
+		{
+			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
+		public bool CanVerticallyScroll
+		{
+			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
 		}
 
 		private protected override void OnLoaded()
@@ -186,5 +194,9 @@ namespace Windows.UI.Xaml.Controls
 				isIntermediate
 			);
 		}
+
+		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue) { }
+
+		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue) { }
 	}
 }

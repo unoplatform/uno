@@ -49,11 +49,22 @@ namespace Windows.UI.Xaml.Controls
 		private NativeScrollContentPresenter Native => Content as NativeScrollContentPresenter;
 		public ScrollBarVisibility HorizontalScrollBarVisibility => Native?.HorizontalScrollBarVisibility ?? default;
 		public ScrollBarVisibility VerticalScrollBarVisibility => Native?.VerticalScrollBarVisibility ?? default;
+		public bool CanHorizontallyScroll
+		{
+			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
+
+		public bool CanVerticallyScroll
+		{
+			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			set { }
+		}
 #endif
 
 		bool ILayoutConstraints.IsWidthConstrained(View requester)
 		{
-			if (requester != null && HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
+			if (requester != null && CanHorizontallyScroll)
 			{
 				return false;
 			}
@@ -63,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 		bool ILayoutConstraints.IsHeightConstrained(View requester)
 		{
-			if (requester != null && VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
+			if (requester != null && CanVerticallyScroll)
 			{
 				return false;
 			}
@@ -127,11 +138,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var slotSize = size;
 
-				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
+				if (CanVerticallyScroll)
 				{
 					slotSize.Height = double.PositiveInfinity;
 				}
-				if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
+				if (CanHorizontallyScroll)
 				{
 					slotSize.Width = double.PositiveInfinity;
 				}
@@ -166,12 +177,6 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsViewHit()
 			=> true;
-
-		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue)
-			=> MinimumZoomScale = newValue;
-
-		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue)
-			=> MaximumZoomScale = newValue;
 #endif
 	}
 }

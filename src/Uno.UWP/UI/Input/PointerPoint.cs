@@ -29,6 +29,17 @@ namespace Windows.UI.Input
 			Properties = properties;
 		}
 
+		internal PointerPoint At(Point position)
+			=> new PointerPoint(
+				FrameId,
+				Timestamp,
+				PointerDevice,
+				PointerId,
+				RawPosition,
+				position: position,
+				IsInContact,
+				Properties);
+
 		public uint FrameId { get; }
 
 		public ulong Timestamp { get; }
