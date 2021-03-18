@@ -83,9 +83,7 @@ namespace Windows.UI.Xaml
 			{
 				propertyName += "Property";
 			}
-			var propInfo = propertyOwner.GetType().GetTypeInfo().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-			var dp = propInfo?.GetValue(null) as DependencyProperty;
-			return dp;
+			return DependencyProperty.GetProperty(propertyOwner.GetType(), propertyName);
 		}
 
 		/// <summary>
