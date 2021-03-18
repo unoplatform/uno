@@ -27,12 +27,12 @@ namespace Uno.UI.Toolkit
 	{
 		#region Elevation
 
-		public static void SetElevation(this UIElement element, double elevation)
+		public static void SetElevation(UIElement element, double elevation)
 		{
 			element.SetValue(ElevationProperty, elevation);
 		}
 
-		public static double GetElevation(this UIElement element)
+		public static double GetElevation(UIElement element)
 		{
 			return (double)element.GetValue(ElevationProperty);
 		}
