@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class FileSavePicker
@@ -140,7 +140,7 @@ namespace Windows.Storage.Pickers
 		}
 #endif
 
-#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public FileSavePicker()
 		{
@@ -173,7 +173,7 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedFileName.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedFileName.set
 
-#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSaveFileAsync()
 		{

@@ -110,7 +110,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Entitlements.plist" />
     <BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
     <None Include="Resources\LaunchScreen.xib" />
   </ItemGroup>
@@ -147,6 +147,9 @@
     </PackageReference>
     <PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
     <PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0">
+      <ExcludeAssets>all</ExcludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">

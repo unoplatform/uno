@@ -151,8 +151,7 @@ namespace Windows.Storage
 		public IAsyncAction MoveAndReplaceAsync(IStorageFile fileToReplace)
 			=> AsyncAction.FromTask(ct => Implementation.MoveAndReplaceAsync(ct, fileToReplace));
 
-		public IAsyncAction DeleteAsync()
-			=> AsyncAction.FromTask(ct => Implementation.DeleteAsync(ct, StorageDeleteOption.Default));
+		public IAsyncAction DeleteAsync() => DeleteAsync(StorageDeleteOption.Default);
 
 		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
 		public IAsyncAction DeleteAsync(StorageDeleteOption option)

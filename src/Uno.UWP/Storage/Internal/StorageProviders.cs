@@ -13,5 +13,9 @@ namespace Uno.Storage.Internal
 #if __ANDROID__
 		public static StorageProvider AndroidSaf { get; } = new StorageProvider("androidsaf", "StorageProviderAndroidSafDisplayName");
 #endif
+
+#if __IOS__
+		public static StorageProvider IosSecurityScoped { get; } = new StorageProvider("iossecurityscoped", "StorageProviderIosSecurityScopedDisplayName");
+#endif
 	}
 }

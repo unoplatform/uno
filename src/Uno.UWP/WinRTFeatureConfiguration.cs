@@ -59,7 +59,7 @@ namespace Uno
 			public static bool RequestSystemExclusiveAccess { get; set; }
 #endif
 		}
-		
+
 		public static class NetworkInformation
 		{
 			public static string ReachabilityHostname { get; set; } = "www.example.com";
@@ -71,6 +71,11 @@ namespace Uno
 			/// Allows definition of custom file type MIME mappings.
 			/// </summary>
 			public static Dictionary<string, string> FileTypeToMimeMapping { get; } = new Dictionary<string, string>();
+
+			/// <summary>
+			/// Allows definition of custom file type UTType mappings.
+			/// </summary>
+			public static Dictionary<string, string> FileTypeToUTTypeMapping { get; } = new Dictionary<string, string>();
 		}
 
 		public static class Storage

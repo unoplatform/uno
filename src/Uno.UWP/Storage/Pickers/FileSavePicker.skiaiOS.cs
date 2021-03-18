@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if __IOS__ || __SKIA__
+#nullable enable
 
 using System;
 using System.Threading;
@@ -18,10 +19,11 @@ namespace Windows.Storage.Pickers
 		{
 			if (_fileSavePickerExtension == null)
 			{
-				throw new NotSupportedException("FileOpenPicker is not supported on this target.");
+				throw new NotSupportedException("FileSavePicker extension is not registered.");
 			}
 
 			return await _fileSavePickerExtension.PickSaveFileAsync(token);
 		}
 	}
 }
+#endif

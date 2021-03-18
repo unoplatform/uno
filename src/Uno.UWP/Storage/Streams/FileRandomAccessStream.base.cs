@@ -12,7 +12,7 @@ namespace Windows.Storage.Streams
 
 			protected ImplementationBase(Stream stream)
 			{
-				_stream = stream;
+				_stream = stream ?? throw new ArgumentNullException(nameof(stream));
 			}
 
 			public Stream FindStream() => _stream;

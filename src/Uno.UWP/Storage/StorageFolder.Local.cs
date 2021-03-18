@@ -32,7 +32,7 @@ namespace Windows.Storage
 
 		private sealed class Local : ImplementationBase
 		{
-			private string _name;
+			private readonly string _name;
 
 			public Local(string? name, string path)
 				: base(path)
@@ -72,7 +72,7 @@ namespace Windows.Storage
 					switch (options)
 					{
 						case CreationCollisionOption.FailIfExists:
-							throw new Exception("Cannot create a file when that file already exists.");
+							throw new Exception($"There is already a file with the name '{desiredName}'.");
 						case CreationCollisionOption.OpenIfExists:
 							break;
 						case CreationCollisionOption.ReplaceExisting:
@@ -110,14 +110,14 @@ namespace Windows.Storage
 
 						if (File.Exists(path))
 						{
-							throw new UnauthorizedAccessException("There is already a file with the same name.");
+							throw new UnauthorizedAccessException($"There is already a file with the name '{folderName}'.");
 						}
 						break;
 
 					case CreationCollisionOption.FailIfExists:
 						if (Directory.Exists(path) || File.Exists(path))
 						{
-							throw new UnauthorizedAccessException("There is already an item with the same name.");
+							throw new UnauthorizedAccessException($"There is already an item with the name '{folderName}'.");
 						}
 						break;
 
@@ -129,7 +129,7 @@ namespace Windows.Storage
 
 						if (File.Exists(path))
 						{
-							throw new UnauthorizedAccessException("There is already a file with the same name.");
+							throw new UnauthorizedAccessException($"There is already a file with the same name '{folderName}'.");
 						}
 						break;
 
@@ -155,9 +155,14 @@ namespace Windows.Storage
 
 				var filePath = IOPath.Combine(Path, name);
 
+				if (Directory.Exists(filePath))
+				{
+					throw new ArgumentException($"The item with name '{name}' is a folder.", nameof(name));
+				}
+
 				if (!File.Exists(filePath))
 				{
-					throw new FileNotFoundException(filePath);
+					throw new FileNotFoundException($"There is no file with name '{name}'.");
 				}
 
 				return StorageFile.GetFileFromPath(filePath);
@@ -220,11 +225,14 @@ namespace Windows.Storage
 
 				var itemPath = IOPath.Combine(Path, name);
 
-				var directoryExists = Directory.Exists(itemPath);
-
-				if (!directoryExists)
+				if (File.Exists(itemPath))
 				{
-					throw new FileNotFoundException(itemPath);
+					throw new ArgumentException($"The item with name '{name}' is a file.", nameof(name));
+				}
+
+				if (!Directory.Exists(itemPath))
+				{
+					throw new FileNotFoundException($"There is no file with name '{name}'.");
 				}
 
 				return await GetFolderFromPathAsync(itemPath);
@@ -270,7 +278,7 @@ namespace Windows.Storage
 				return items.AsReadOnly();
 			}
 
-			public override async Task DeleteAsync(CancellationToken ct)
+			public override async Task DeleteAsync(StorageDeleteOption options, CancellationToken ct)
 			{
 				await TryInitializeStorage();
 

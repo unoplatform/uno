@@ -29,16 +29,7 @@ namespace Windows.Storage
 		#endif
 		// Skipping already declared property Name
 		// Skipping already declared property Path
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StorageFolder.DisplayName is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property DisplayName		
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string DisplayType
@@ -122,7 +113,7 @@ namespace Windows.Storage
 		}
 		#endif
 		// Skipping already declared method Windows.Storage.StorageFolder.DeleteAsync()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DeleteAsync( global::Windows.Storage.StorageDeleteOption option)
 		{

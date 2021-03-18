@@ -18,7 +18,7 @@ using Foundation;
 namespace Windows.Storage
 {
 	public partial class StorageFolder : IStorageFolder, IStorageItem, IStorageItem2
-	{		
+	{
 		private StorageFolder(ImplementationBase implementation)
 		{
 			Implementation = implementation;
@@ -82,15 +82,17 @@ namespace Windows.Storage
 		public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName, CreationCollisionOption options) =>
 			AsyncOperation.FromTask(ct => Implementation.CreateFileAsync(desiredName, options, ct));
 
-		public IAsyncAction DeleteAsync() =>
-			AsyncAction.FromTask(ct => Implementation.DeleteAsync(ct));
+		public IAsyncAction DeleteAsync() => DeleteAsync(StorageDeleteOption.Default);
+
+		public IAsyncAction DeleteAsync(StorageDeleteOption option) =>
+			AsyncAction.FromTask(ct => Implementation.DeleteAsync(option, ct));
 
 		public IAsyncOperation<IReadOnlyList<IStorageItem>> GetItemsAsync() =>
 			AsyncOperation.FromTask(ct => Implementation.GetItemsAsync(ct));
 
 		public IAsyncOperation<IReadOnlyList<StorageFile>> GetFilesAsync() =>
 			AsyncOperation.FromTask(ct => Implementation.GetFilesAsync(ct));
-		
+
 		public IAsyncOperation<IReadOnlyList<StorageFolder>> GetFoldersAsync() =>
 			AsyncOperation.FromTask(ct => Implementation.GetFoldersAsync(ct));
 

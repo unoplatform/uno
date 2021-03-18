@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Contacts;
 using ContactsUI;
 using UIKit;
+using Uno.Helpers.Theming;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.ApplicationModel.Contacts
 {
@@ -29,11 +31,14 @@ namespace Windows.ApplicationModel.Contacts
 
 			using var picker = new CNContactPickerViewController
 			{
-				
+
 				Delegate = multiple ?
 					(ICNContactPickerDelegate)new MultipleContactPickerDelegate(completionSource) :
 					(ICNContactPickerDelegate)new SingleContactPickerDelegate(completionSource),
 			};
+
+			picker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
+				UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
 
 			await controller.PresentViewControllerAsync(picker, true);
 
@@ -62,7 +67,7 @@ namespace Windows.ApplicationModel.Contacts
 			if (string.IsNullOrWhiteSpace(contact.DisplayName) && !string.IsNullOrWhiteSpace(cnContact.OrganizationName))
 			{
 				contact.DisplayNameOverride = cnContact.OrganizationName;
-			} 
+			}
 
 			foreach (var phoneNumber in cnContact.PhoneNumbers)
 			{
