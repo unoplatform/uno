@@ -189,7 +189,7 @@
 						if(Path.GetExtension(file).ToLower() == ".cs")
 						{
 							// Disable conditionals for all imported files
-							s += "//-:cnd:noEmit\r\n";
+							s = "//-:cnd:noEmit\r\n" + s;
 						}
 
 						s = s
