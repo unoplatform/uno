@@ -1,4 +1,6 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿Set-PSDebug -Trace 1
+
+$ErrorActionPreference = 'Stop'
 
 function Assert-ExitCodeIsZero()
 {
