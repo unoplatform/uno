@@ -32,10 +32,10 @@
 
 	  <!-- Android 10.0 -->
 	  <group targetFramework="MonoAndroid10.0">
-		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0.7" />
-		<dependency id="Xamarin.AndroidX.AppCompat" version="1.2.0.7" />
-		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0.8" />
-		<dependency id="Xamarin.AndroidX.Activity" version="1.2.0.1" />
+		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
+		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
+		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
+		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
 		<dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
 		<dependency id="Uno.Core" version="2.3.0-dev.3" />
 		<dependency id="Uno.Core.Build" version="2.3.0-dev.3" />
