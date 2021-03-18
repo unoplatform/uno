@@ -81,8 +81,6 @@
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe"
-											Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
