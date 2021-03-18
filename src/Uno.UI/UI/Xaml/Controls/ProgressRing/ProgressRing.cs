@@ -66,11 +66,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
-		public ProgressRingTemplateSettings TemplateSettings
+		public Primitives.ProgressRingTemplateSettings TemplateSettings
 		{
 			get
 			{
-				var result = new ProgressRingTemplateSettings()
+				var result = new Primitives.ProgressRingTemplateSettings()
 				{
 					EllipseDiameter = 3,
 					MaxSideLength = 100
