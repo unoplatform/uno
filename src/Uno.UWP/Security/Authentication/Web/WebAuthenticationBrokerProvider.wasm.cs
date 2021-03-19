@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
-using Uno.Extensions;
 using Uno.Foundation;
 
 namespace Uno.AuthenticationBroker
