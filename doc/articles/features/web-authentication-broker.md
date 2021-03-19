@@ -4,17 +4,17 @@
 
 ## WebAssembly
 
-* The _redirect uri_ **MUST** be with the origin (protocol + hostname + port) of the application. It is not possible to use a custom scheme uri.
+* The _redirect URI_ **MUST** be with the origin (protocol + hostname + port) of the application. It is not possible to use a custom scheme URI.
 * When using the `<iframe>` mode (see _advanced usages_ below), the server must allow for using CSP (Content Security Policy).
-* Default _redirect uri_ is `<origin>/authentication-callback`. For example: `http://localhost:5000/authentication-callback`.
+* Default _redirect URI_ is `<origin>/authentication-callback`. For example `http://localhost:5000/authentication-callback`.
 * It is not possible for applications to clear cookies for the authentication server when this one is from another origin. The only way clear cookies is to deploy the app and the authentication server on the same site (sharing the same origin).
-* You can change the size and the initial title of the opened window by setting corresponding settings in `WinRTFeatureConfiguration.WebAuthenticationBroker` .
+* You can change the size and the initial title of the open window by setting corresponding settings in `WinRTFeatureConfiguration.WebAuthenticationBroker` .
 
 ## iOS & MacOS
 
-* The _redirect uri_ **MUST** use a custom scheme uri and this one must be registered in the `Info.plist` of the application.
-* Default _redirect uri_ will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
-* The default _redirect uri_ will be automatic if there's only one custom scheme defined in the application.  If there are more that one schemes, the _default redirect uri_ must be set in the  `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` configuration.
+* The _redirect URI_ **MUST** use a custom scheme URI and this one must be registered in the `Info.plist` of the application.
+* Default _redirect URI_ will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
+* The default _redirect URI_ will be automatic if there's only one custom scheme defined in the application.  If there are more that one scheme, the _default redirect URI_ must be set in the  `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` configuration.
 
 ## Advanced Usages
 
@@ -91,4 +91,4 @@ On WebAssembly, it is possible to use an in-application `<iframe>` instead of op
 NOTES:
 
 * The IFrame control should be present in the visual tree or the user won't see it.
-* If you want to use a _silent_ `<iframe>`, you don't need to create a control, you can simply use the `WebAuthenticationOptions.SilentMode` as first parameter to `WebAuthenticationBroker.AuthenticateAsync()`.
+* If you want to use a _silent_ `<iframe>`, you don't need to create a control, you can simply use the `WebAuthenticationOptions.SilentMode` as the first parameter to `WebAuthenticationBroker.AuthenticateAsync()`.
