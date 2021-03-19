@@ -1,58 +1,60 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Windows.Foundation;
+
 #pragma once
 
 namespace Windows.UI.Xaml.Controls
 {
 	internal partial class SwipeTestHooks
 	{
+		//class SwipeTestHooks : 
 
-		class SwipeTestHooks : 
+		//public implementation.SwipeTestHooksT<SwipeTestHooks>
+		//{
 
-		public winrt.implementation.SwipeTestHooksT<SwipeTestHooks>
-		{
+		//public:
 
-		public:
-
-		static com_ptr<SwipeTestHooks> GetGlobalTestHooks()
+		public static SwipeTestHooks GetGlobalTestHooks()
 		{
 			return s_testHooks;
 		}
 
-		static com_ptr<SwipeTestHooks> EnsureGlobalTestHooks();
+		//static com_ptr<SwipeTestHooks> EnsureGlobalTestHooks();
 
-		static winrt.SwipeControl GetLastInteractedWithSwipeControl();
+		//static SwipeControl GetLastInteractedWithSwipeControl();
 
-		static bool GetIsOpen(winrt.SwipeControl& swipeControl);
+		//static bool GetIsOpen(SwipeControl& swipeControl);
 
-		static bool GetIsIdle(winrt.SwipeControl& swipeControl);
+		//static bool GetIsIdle(SwipeControl& swipeControl);
 
-		static void NotifyLastInteractedWithSwipeControlChanged();
+		//static void NotifyLastInteractedWithSwipeControlChanged();
 
-		static winrt.event_token LastInteractedWithSwipeControlChanged(winrt.TypedEventHandler<winrt.DependencyObject, winrt.DependencyObject> & value);
+		//static event_token LastInteractedWithSwipeControlChanged(TypedEventHandler<DependencyObject, DependencyObject> & value);
 
-		static void LastInteractedWithSwipeControlChanged(winrt.event_token & token);
+		//static void LastInteractedWithSwipeControlChanged(event_token & token);
 
-		static void NotifyOpenedStatusChanged(winrt.SwipeControl& sender);
+		//static void NotifyOpenedStatusChanged(SwipeControl& sender);
 
-		static winrt.event_token OpenedStatusChanged(winrt.TypedEventHandler<winrt.SwipeControl, winrt.DependencyObject> & value);
+		//static event_token OpenedStatusChanged(TypedEventHandler<SwipeControl, DependencyObject> & value);
 
-		static void OpenedStatusChanged(winrt.event_token & token);
+		//static void OpenedStatusChanged(event_token & token);
 
-		static void NotifyIdleStatusChanged(winrt.SwipeControl& sender);
+		//static void NotifyIdleStatusChanged(SwipeControl& sender);
 
-		static winrt.event_token IdleStatusChanged(winrt.TypedEventHandler<winrt.SwipeControl, winrt.DependencyObject> & value);
+		//static event_token IdleStatusChanged(TypedEventHandler<SwipeControl, DependencyObject> & value);
 
-		static void IdleStatusChanged(winrt.event_token & token);
+		//static void IdleStatusChanged(event_token & token);
 
-		private:
+		//private:
 
-		static com_ptr<SwipeTestHooks> s_testHooks;
-		winrt.event<winrt.TypedEventHandler<winrt.DependencyObject, winrt.DependencyObject>> m_lastInteractedWithSwipeControlChangedEventSource;
+		private static SwipeTestHooks s_testHooks;
 
-		winrt.event<winrt.TypedEventHandler<winrt.SwipeControl, winrt.DependencyObject>> m_openedStatusChangedEventSource;
+		private event TypedEventHandler<DependencyObject, DependencyObject> m_lastInteractedWithSwipeControlChangedEventSource;
 
-		winrt.event<winrt.TypedEventHandler<winrt.SwipeControl, winrt.DependencyObject>> m_idleStatusChangedEventSource;
-	};
-}}
+		private event TypedEventHandler<SwipeControl, DependencyObject> m_openedStatusChangedEventSource;
+
+		private event TypedEventHandler<SwipeControl, DependencyObject> m_idleStatusChangedEventSource;
+	}
+}

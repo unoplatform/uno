@@ -1,125 +1,126 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+
 namespace Windows.UI.Xaml.Controls
 {
 	internal partial class SwipeTestHooks
 	{
-		com_ptr<SwipeTestHooks> SwipeTestHooks.s_testHooks { };
+		//com_ptr<SwipeTestHooks> SwipeTestHooks.s_testHooks { };
 
-		com_ptr<SwipeTestHooks> EnsureGlobalTestHooks()
+		public static SwipeTestHooks EnsureGlobalTestHooks()
 		{
-			static bool s_initialized =
-
-			[]
-			()
-
-			{
-				s_testHooks = winrt.new SwipeTestHooks();
-				return true;
-			}
-			();
-			return s_testHooks;
+			return s_testHooks ?? new SwipeTestHooks();
 		}
 
-		winrt.SwipeControl GetLastInteractedWithSwipeControl()
+		public  SwipeControl GetLastInteractedWithSwipeControl()
 		{
 			return SwipeControl.GetLastInteractedWithSwipeControl();
 		}
 
-		bool GetIsOpen(winrt.SwipeControl& swipeControl)
+		public  bool GetIsOpen(SwipeControl swipeControl)
 		{
-			if (swipeControl)
+			if (swipeControl is { })
 			{
-				return winrt.get_self<SwipeControl>(swipeControl).GetIsOpen();
+				return ((SwipeControl)swipeControl).GetIsOpen();
 			}
 			else
 			{
-				if (var lastInteractedWithSwipeControl = SwipeControl.GetLastInteractedWithSwipeControl())
+				var lastInteractedWithSwipeControl = SwipeControl.GetLastInteractedWithSwipeControl();
+				if (lastInteractedWithSwipeControl is {})
 				{
-					return winrt.get_self<SwipeControl>(lastInteractedWithSwipeControl).GetIsOpen();
+					return ((SwipeControl)lastInteractedWithSwipeControl).GetIsOpen();
 				}
 				return false;
 			}
 		}
 
-		bool GetIsIdle(winrt.SwipeControl& swipeControl)
+		public  bool GetIsIdle(SwipeControl swipeControl)
 		{
-			if (swipeControl)
+			if (swipeControl is {})
 			{
-				return winrt.get_self<SwipeControl>(swipeControl).GetIsIdle();
+				return ((SwipeControl)swipeControl).GetIsIdle();
 			}
 			else
 			{
-				if (var lastInteractedWithSwipeControl = SwipeControl.GetLastInteractedWithSwipeControl())
+				var lastInteractedWithSwipeControl = SwipeControl.GetLastInteractedWithSwipeControl();
+				if (lastInteractedWithSwipeControl is { })
 				{
-					return winrt.get_self<SwipeControl>(lastInteractedWithSwipeControl).GetIsIdle();
+					return ((SwipeControl)lastInteractedWithSwipeControl).GetIsIdle();
 				}
 				return false;
 			}
 		}
 
-		void NotifyLastInteractedWithSwipeControlChanged()
+		public  void NotifyLastInteractedWithSwipeControlChanged()
 		{
 			var hooks = EnsureGlobalTestHooks();
-			if (hooks.m_lastInteractedWithSwipeControlChangedEventSource)
+			if (hooks.m_lastInteractedWithSwipeControlChangedEventSource is {})
 			{
 				hooks.m_lastInteractedWithSwipeControlChangedEventSource(null, null);
 			}
 		}
 
-		winrt.event_token LastInteractedWithSwipeControlChanged(winrt.TypedEventHandler<winrt.DependencyObject, winrt.DependencyObject> & value)
+		public event TypedEventHandler<DependencyObject, DependencyObject> LastInteractedWithSwipeControlChanged
 		{
-			var hooks = EnsureGlobalTestHooks();
-			return hooks.m_lastInteractedWithSwipeControlChangedEventSource.add(value);
+			add
+			{
+				var hooks = EnsureGlobalTestHooks();
+				hooks.m_lastInteractedWithSwipeControlChangedEventSource += value;
+			}
+			remove
+			{
+				var hooks = EnsureGlobalTestHooks();
+				hooks.m_lastInteractedWithSwipeControlChangedEventSource -= value;
+			}
 		}
 
-		void LastInteractedWithSwipeControlChanged(winrt.event_token & token)
+		public  void NotifyOpenedStatusChanged(SwipeControl sender)
 		{
 			var hooks = EnsureGlobalTestHooks();
-			hooks.m_lastInteractedWithSwipeControlChangedEventSource.remove(token);
-		}
-
-		void NotifyOpenedStatusChanged(winrt.SwipeControl& sender)
-		{
-			var hooks = EnsureGlobalTestHooks();
-			if (hooks.m_openedStatusChangedEventSource)
+			if (hooks.m_openedStatusChangedEventSource is {})
 			{
 				hooks.m_openedStatusChangedEventSource(sender, null);
 			}
 		}
 
-		winrt.event_token OpenedStatusChanged(winrt.TypedEventHandler<winrt.SwipeControl, winrt.DependencyObject> & value)
+		public event TypedEventHandler<SwipeControl, DependencyObject> OpenedStatusChanged
 		{
-			var hooks = EnsureGlobalTestHooks();
-			return hooks.m_openedStatusChangedEventSource.add(value);
+			add
+			{
+				var hooks = EnsureGlobalTestHooks();
+				hooks.m_openedStatusChangedEventSource += value;
+			}
+			remove
+			{
+				var hooks = EnsureGlobalTestHooks();
+				hooks.m_openedStatusChangedEventSource-= value;
+			}
 		}
 
-		void OpenedStatusChanged(winrt.event_token & token)
+		public void NotifyIdleStatusChanged(SwipeControl sender)
 		{
 			var hooks = EnsureGlobalTestHooks();
-			hooks.m_openedStatusChangedEventSource.remove(token);
-		}
-
-		void NotifyIdleStatusChanged(winrt.SwipeControl& sender)
-		{
-			var hooks = EnsureGlobalTestHooks();
-			if (hooks.m_idleStatusChangedEventSource)
+			if (hooks.m_idleStatusChangedEventSource is {})
 			{
 				hooks.m_idleStatusChangedEventSource(sender, null);
 			}
 		}
 
-		winrt.event_token IdleStatusChanged(winrt.TypedEventHandler<winrt.SwipeControl, winrt.DependencyObject> & value)
+		public event TypedEventHandler<SwipeControl, DependencyObject> IdleStatusChanged
 		{
-			var hooks = EnsureGlobalTestHooks();
-			return hooks.m_idleStatusChangedEventSource.add(value);
-		}
-
-		void IdleStatusChanged(winrt.event_token & token)
-		{
-			var hooks = EnsureGlobalTestHooks();
-			hooks.m_idleStatusChangedEventSource.remove(token);
+			add
+			{
+				var hooks = EnsureGlobalTestHooks();
+				hooks.m_idleStatusChangedEventSource += value;
+			}
+			remove
+			{
+				var hooks = EnsureGlobalTestHooks();
+				hooks.m_idleStatusChangedEventSource -= value;
+			}
 		}
 	}
 }
