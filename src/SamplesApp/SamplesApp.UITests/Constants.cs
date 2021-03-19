@@ -7,7 +7,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests
 {
-	public class Constants
+	public partial class Constants
 	{
 		public const string WebAssemblyDefaultUri = "http://localhost:55838/";
 		public const string iOSAppName = "uno.platform.uitestsample";

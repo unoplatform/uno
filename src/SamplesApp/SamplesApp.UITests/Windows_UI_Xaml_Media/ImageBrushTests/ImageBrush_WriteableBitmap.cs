@@ -10,7 +10,7 @@ using SamplesApp.UITests.TestFramework;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
 	[TestFixture]
-	public class ImageBrush_WriteableBitmap : SampleControlUITestBase
+	public partial class ImageBrush_WriteableBitmap : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

@@ -12,7 +12,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
 	[TestFixture]
-	public class Enability_Tests : SampleControlUITestBase
+	public partial class Enability_Tests : SampleControlUITestBase
 	{
 		private const string _sample = "UITests.Windows_UI_Input.PointersTests.Enability";
 

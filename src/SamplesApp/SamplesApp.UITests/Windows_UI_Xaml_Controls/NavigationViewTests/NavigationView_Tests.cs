@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 {
-	public class NavigationView_Tests : SampleControlUITestBase
+	public partial class NavigationView_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry()]

@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GradientBrushTests
 {
 	[TestFixture]
-	public class LinearGradientBrush_Tests : SampleControlUITestBase
+	public partial class LinearGradientBrush_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

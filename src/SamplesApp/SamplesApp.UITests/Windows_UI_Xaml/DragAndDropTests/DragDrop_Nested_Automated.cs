@@ -14,7 +14,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 {
-	public class DragDrop_Nested_Automated : SampleControlUITestBase
+	public partial class DragDrop_Nested_Automated : SampleControlUITestBase
 	{
 		private static readonly Regex _logEntry = new Regex(@"^\s*\[(?<element>\w+)\] (?<event>[A-Z]+) (\<(?<data>[\w\|]*)\>|(?<result>\w+))\s*$");
 

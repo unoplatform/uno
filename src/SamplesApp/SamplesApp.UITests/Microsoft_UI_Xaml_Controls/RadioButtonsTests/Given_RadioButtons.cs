@@ -16,7 +16,7 @@ using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	public class Given_RadioButtons : SampleControlUITestBase
+	public partial class Given_RadioButtons : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

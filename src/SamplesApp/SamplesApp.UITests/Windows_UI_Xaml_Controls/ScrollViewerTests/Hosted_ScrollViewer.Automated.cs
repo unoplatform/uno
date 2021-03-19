@@ -8,7 +8,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
 	[TestFixture]
-	public class Hosted_ScrollViewer : SampleControlUITestBase
+	public partial class Hosted_ScrollViewer : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

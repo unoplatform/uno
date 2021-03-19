@@ -8,7 +8,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FrameworkElementTests
 {
-	public class UnoSamples_Test_FrameworkElement : SampleControlUITestBase
+	public partial class UnoSamples_Test_FrameworkElement : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

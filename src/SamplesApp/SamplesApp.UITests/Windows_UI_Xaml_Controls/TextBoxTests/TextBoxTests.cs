@@ -14,7 +14,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 {
 	[TestFixture]
-	public class TextBoxTests : SampleControlUITestBase
+	public partial class TextBoxTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

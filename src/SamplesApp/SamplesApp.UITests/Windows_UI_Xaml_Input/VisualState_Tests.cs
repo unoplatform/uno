@@ -13,7 +13,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	public class VisualState_Tests : SampleControlUITestBase
+	public partial class VisualState_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

@@ -21,7 +21,7 @@ using Uno.UITest.Helpers.Queries;
 namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {
 	[Ignore("Tests are not stabilized yet")]
-	public class Given_InfoBar : SampleControlUITestBase
+	public partial class Given_InfoBar : SampleControlUITestBase
 	{
 		// Tests which are not yet available
 		// LayoutTest, CloseTest

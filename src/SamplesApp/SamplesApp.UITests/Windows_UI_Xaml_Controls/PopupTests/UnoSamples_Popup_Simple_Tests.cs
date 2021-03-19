@@ -12,7 +12,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 {
-	public class UnoSamples_Popup_Simple_Tests : SampleControlUITestBase
+	public partial class UnoSamples_Popup_Simple_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry()]

@@ -12,7 +12,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SplitViewTests
 {
 	[TestFixture]
-    public class SplitViewTests : SampleControlUITestBase
+    public partial class SplitViewTests : SampleControlUITestBase
     {
         [Test]
 		[AutoRetry]

@@ -10,7 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 {
-	public class Border_Tests : SampleControlUITestBase
+	public partial class Border_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

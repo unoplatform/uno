@@ -6,7 +6,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.ProgressRingTests
 {
-	public class Given_DeterminateProgressRings : SampleControlUITestBase
+	public partial class Given_DeterminateProgressRings : SampleControlUITestBase
 	{
 		private const string red = "#FF0000";
 		private const string green = "#008000";

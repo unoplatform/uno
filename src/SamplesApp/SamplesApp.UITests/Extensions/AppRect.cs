@@ -2,7 +2,7 @@ using Uno.UITest;
 
 namespace SamplesApp.UITests
 {
-	public class AppRect : IAppRect
+	public partial class AppRect : IAppRect
 	{
 		public AppRect(float x, float y, float width, float height)
 		{

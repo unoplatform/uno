@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml.VisualStateManagerTests
 {
 	[TestFixture]
-	public class VisualStateManagerTest : SampleControlUITestBase
+	public partial class VisualStateManagerTest : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

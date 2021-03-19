@@ -15,7 +15,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 {
 	[Ignore("Temporary ignore to fix higher priority issue")]
-	public class DragDrop_Basics_Automated : SampleControlUITestBase
+	public partial class DragDrop_Basics_Automated : SampleControlUITestBase
 	{
 		private static readonly Regex _logEntry = new Regex(@"^\s*\[(?<element>\w+)\] (?<event>[A-Z]+) (\<(?<data>[\w\|]*)\>|(?<result>\w+))\s*$");
 

@@ -12,7 +12,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
-	public class Basics_Shapes_Tests : SampleControlUITestBase
+	public partial class Basics_Shapes_Tests : SampleControlUITestBase
 	{
 		private const int TestTimeout = 7 * 60 * 1000;
 

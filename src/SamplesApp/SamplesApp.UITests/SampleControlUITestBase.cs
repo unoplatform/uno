@@ -13,7 +13,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests
 {
-	public class SampleControlUITestBase
+	public partial class SampleControlUITestBase
 	{
 		protected IApp _app;
 		private static int _totalTestFixtureCount;

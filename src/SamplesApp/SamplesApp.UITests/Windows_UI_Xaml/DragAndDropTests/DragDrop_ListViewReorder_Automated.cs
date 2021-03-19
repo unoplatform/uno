@@ -12,7 +12,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 {
-	public class DragDrop_ListViewReorder_Automated : SampleControlUITestBase
+	public partial class DragDrop_ListViewReorder_Automated : SampleControlUITestBase
 	{
 		private static readonly string[] _items = new[] {"#FF0018", "#FFA52C", "#FFFF41", "#008018", "#0000F9", "#86007D"};
 		private const int _itemHeight = 100;

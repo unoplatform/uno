@@ -12,7 +12,7 @@ using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 {
-	public class AutomationId_Tests : SampleControlUITestBase
+	public partial class AutomationId_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
