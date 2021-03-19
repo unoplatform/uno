@@ -88,8 +88,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" Version="2.2.0" />
-		<PackageReference Include="Uno.Core.Build" Version="2.0.0" />
+		<PackageReference Include="Uno.Core" Version="2.3.0" />
+		<PackageReference Include="Uno.Core.Build" Version="2.3.0" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
