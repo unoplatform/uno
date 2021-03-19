@@ -62,7 +62,7 @@ jobs:
   - Android_Build_For_Tests
   - SamplesApp_UITests_Build
 
-  timeoutInMinutes: 90
+  timeoutInMinutes: 120
   variables:
     CI_Build: true
     SourceLinkEnabled: false
