@@ -1,8 +1,10 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Security.Authentication.Web;
 
-namespace Windows.Security.Authentication.Web
+namespace Uno.AuthenticationBroker
 {
 	public interface IWebAuthenticationBrokerProvider
 	{
