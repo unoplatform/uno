@@ -25,14 +25,14 @@ namespace UITests.Windows_Storage.Pickers
 		private void DownloadFileSavePickerTests_Unloaded(object sender, RoutedEventArgs e)
 		{
 #if __WASM__
-			WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = true;
+			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApiWithFallback;
 #endif
 		}
 
 		private void DownloadFileSavePickerTests_Loaded(object sender, RoutedEventArgs e)
 		{
 #if __WASM__
-			WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = false;
+			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.DownloadUpload;
 #endif
 		}
 
