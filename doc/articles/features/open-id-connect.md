@@ -11,7 +11,7 @@ This article will document the usage of `IdentityModel.OidcClient` into a Uno ap
 
 * **Not all platforms yet**: The `WebAuthenticationBroker` is not yet supported on all platforms yet. For Uno 3.6 it is implemented only on WebAssembly, iOS and MacOS.
 * **Return URI on WebAssembly**: Because of browser security restrictions, on WebAssembly, the return url must be on the same origin than the application. On other platforms the best approach is to use a custom protocol scheme (like `my-application:`). For most applications, you may simply use the automatic discovery of return urls, which will use the [`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()` method](https://docs.microsoft.com/en-us/uwp/api/windows.security.authentication.web.webauthenticationbroker.getcurrentapplicationcallbackuri).
-* **Browser Anti-Popup Protection**: On WebAssembly, a foreign/public web site is usually used to authenticate the user. Doing this without losing the application context requires the opening of a new browser window. To ensure the window will open on all browsers without being denied, this one **must be opened using the handling of a user interaction**. For this reason the IdentityModel.OidcClient's _automatic mode_ can't be used because it's doing async processing (fetching the discovery endpoint) before opening the authentication browser.
+* **Browser Anti-Popup Protection**: On WebAssembly, a foreign or public web site is usually used to authenticate the user. Doing this without losing the application context requires to open a new browser window. To ensure the window will open on all browsers without being denied, it **must be opened using the handling of a user interaction**. For this reason the IdentityModel.OidcClient's _automatic mode_ cannot be used because it is doing async processing (fetching the discovery endpoint) before opening the authentication browser.
 
 ## Demo Endpoint
 
@@ -24,7 +24,7 @@ This code uses the _IdentityServer_ demonstration endpoint with the following pa
 | Secret    | `secret`                                  |
 | Scopes    | `openid profile email api offline_access` |
 
->  Note: this endpoint allows any return uris. It's acceptable for demo purposes, but production application will usually requires to register your return addresses.
+>  Note: this endpoint allows any return URIs. It is acceptable for demo purposes, but a production application will usually require to register return addresses.
 
 ## Step 0 - Install Uno + Create an Application
 
@@ -56,17 +56,17 @@ Add the `oidc-auth:` custom scheme in you `Info.plist` file.
 </array>
 ```
 
-Alternatively, you can use the editor integrated in Visual Studio to set it, in the _advanced_ tab:
+Alternatively, you can use integrated editor in Visual Studio to set it, in the **advanced** tab:
 
 ![Return Url in iOS](../Assets/features/authenticationbroker/return-url-editor.png)
 
 **UWP**
 
-There's nothing special for UWP. Any return url will work.  You can force it to `oidc-auth:` if you want, but you won't have any special registration to do to support it.
+There's nothing special for UWP as any return url will work.  You can force it to `oidc-auth:` as needed, but there is no special registration needed to support it.
 
 **WebAssembly**
 
-There's nothing special for UWP. The default _return uri_ of the platform (`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`) will work with this sample and will default to `<origin>/authentication-callback`. It should be something like `http://localhost:5000/authentication-callback` when running locally using Kestrel.
+There's nothing special for WebAssembly. The default _return URI_ of the platform (`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`) will work with this sample and will default to `<origin>/authentication-callback`. It should be something like `http://localhost:5000/authentication-callback` when running locally using Kestrel.
 
 ## Step 4 - Prepare the UI
 
@@ -75,9 +75,8 @@ Add the following button in your application:
 ``` xml
 <StackPanel Orientation="Horizontal" Spacing="5">
 	<Button Click="SignIn_Clicked" x:Name="btnSignin" IsEnabled="False">Sign In</Button>
-    <Button Click="SignOut_Clicked" x:Name="btnSignout" IsEnabled="False">Sign Out</Button>
+	<Button Click="SignOut_Clicked" x:Name="btnSignout" IsEnabled="False">Sign Out</Button>
 </StackPanel>
-```
 
 ## Step 5 - Prepare the requesting code
 
@@ -113,7 +112,7 @@ private async void PrepareClient()
 		Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode
 	};
 
-    // Create the client. In production application, this is often created and stored
+    // Create the client. In a production application, this is often created and stored
     // directly in the Application class.
 	_oidcClient = new OidcClient(options);
 
@@ -142,7 +141,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
     var startUri = new Uri(_loginState.StartUrl);
 
 	// Important: there should be NO await before calling .AuthenticateAsync() - at least
-	// on WebAssembly, in order to prevent trigering the popup blocker mechanisms.
+	// on WebAssembly, in order to avoid triggering the popup blocker mechanisms.
     var userResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, startUri);
  
 	if(userResult.ResponseStatus != WebAuthenticationStatus.Success)
@@ -162,7 +161,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
         return;
     }
 
- 	// That's completed. Here you have to token, ready to do something
+ 	// The authentication completed. The token is available below, ready to be used for API calls
  	var token = authenticationResult.AccessToken;
  	var refreshToken = authenticationResult.RefreshToken;
 
@@ -171,8 +170,8 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
 
 private async void SignOut_Clicked(object sender, RoutedEventArgs e)
 {
-	// Important: there should be NO await before calling .AuthenticateAsync() - at least
-	// on WebAssembly, in order to prevent trigering the popup blocker mechanisms.
+	// Important: there should be no await before calling .AuthenticateAsync() - at least
+	// on WebAssembly, in order to prevent triggering the popup blocker mechanisms.
 	await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, _logoutUrl);
 }
 ```
@@ -190,9 +189,10 @@ On WebAssembly, it's important to configure the linker to prevent the removal of
   <assembly fullname="My.Oidc.Client.App.Wasm" />
   <assembly fullname="Uno.UI" />
 
-  <!-- ADD THE FOLLOWING 2 LINES -->
+  <!-- Begin Required for OIDC Connect -->
   <assembly fullname="IdentityModel" />
   <assembly fullname="System.IdentityModel.Tokens.Jwt" />
+  <!-- End Required for OIDC Connect -->
 
   <assembly fullname="System.Net.Http" />
 

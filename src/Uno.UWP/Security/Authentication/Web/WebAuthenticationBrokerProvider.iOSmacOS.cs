@@ -82,7 +82,7 @@ namespace Uno.AuthenticationBroker
 #endif
 
 				w?.Dispose();
-				w = null;
+				was = null;
 			}
 
 			await using var x = ct.Register(Cancel);

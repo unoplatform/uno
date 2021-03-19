@@ -79,7 +79,7 @@
 						timerSubscription = null;
 					}
 					if (!finished) {
-						err("Incompleted");
+						err("Incomplete");
 					}
 				};
 
@@ -140,7 +140,7 @@
 						title,
 						"width=" + popUpWidth + ", height=" + popUpHeight + ", top=" + top + ", left=" + left);
 					if (!win) {
-						completeWithError("Cant open window");
+						completeWithError("Can't open window");
 						return;
 					}
 					if (win.focus) {
@@ -191,7 +191,7 @@
 						}
 
 					} catch (e) {
-						// normal! DOMException / crossed origin until reached correct redirect page
+						// Expected! DOMException / crossed origin until reached correct redirect page
 					}
 				},
 				100);
