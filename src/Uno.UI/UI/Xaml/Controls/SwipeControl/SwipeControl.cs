@@ -1,9 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+namespace Windows.UI.Xaml.Controls
+{
+	public partial class SwipeControl
+	{
 
-// Change to 'true' to turn on debugging outputs in Output window
-bool SwipeControlTrace.s_IsDebugOutputEnabled{ false };
+		// Change to 'true' to turn on debugging outputs in Output window
+		bool SwipeControlTrace.s_IsDebugOutputEnabled{ false };
 bool SwipeControlTrace.s_IsVerboseDebugOutputEnabled{ false };
 
 static  double c_epsilon = 0.0001;
@@ -1713,3 +1717,5 @@ wstring_view DirectionToInset( CreatedContent& createdContent)
         return "";
     }
 }
+}
+	}

@@ -3,8 +3,11 @@
 
 #pragma once
 
-
-class SwipeItems :
+namespace Windows.UI.Xaml.Controls
+{
+	internal partial class SwipeItems
+	{
+		class SwipeItems :
     public ReferenceTracker<SwipeItems, winrt.implementation.SwipeItemsT, winrt.IObservableVector<winrt.SwipeItem>>,
     public SwipeItemsProperties
 {
@@ -42,3 +45,6 @@ private:
 
     event_source<winrt.VectorChangedEventHandler<winrt.SwipeItem>> m_vectorChangedEventSource{ this };
 };
+
+	}
+}

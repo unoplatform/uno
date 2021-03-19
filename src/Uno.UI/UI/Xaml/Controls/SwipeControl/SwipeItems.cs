@@ -2,129 +2,140 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 
-SwipeItems()
+namespace Windows.UI.Xaml.Controls
 {
-    // create the Collection
-    var collection = winrt.new Vector<winrt.SwipeItem, MakeVectorParam<VectorFlag.DependencyObjectBase>()>();
+	public partial class SwipeItems
+	{
+		public void SwipeItems()
+		{
+			// create the Collection
+			var collection = new Vector<SwipeItem, MakeVectorParam<VectorFlag.DependencyObjectBase>() > ();
 
-    put_Items(collection);
-}
+			put_Items(collection);
+		}
 
-void OnPropertyChanged( winrt.DependencyPropertyChangedEventArgs& args)
-{
-    if (args.Property() == s_ModeProperty)
-    {
-        if (winrt.unbox_value<winrt.SwipeMode>(args.NewValue()) == winrt.SwipeMode.Execute && m_items.get().Size() > 1)
-        {
-            throw winrt.hresult_invalid_argument("Execute items should only have one item.");
-        }
-    }
-}
+		void OnPropertyChanged(DependencyPropertyChangedEventArgs& args)
+		{
+			if (args.Property() == s_ModeProperty)
+			{
+				if (unbox_value<SwipeMode>(args.NewValue()) == SwipeMode.Execute && m_items.get().Size() > 1)
+				{
+					throw hresult_invalid_argument("Execute items should only have one item.");
+				}
+			}
+		}
 
-void SwipeItems.put_Items(
-     winrt.Collections.IVector<winrt.SwipeItem>& value)
-{
-    if (Mode() == winrt.SwipeMode.Execute && value.Size() > 1)
-    {
-        throw winrt.hresult_invalid_argument("Execute items should only have one item.");
-    }
+		void SwipeItems.put_Items(
+			Collections.IVector<SwipeItem>& value)
+		{
+			if (Mode() == SwipeMode.Execute && value.Size() > 1)
+			{
+				throw hresult_invalid_argument("Execute items should only have one item.");
+			}
 
-    m_items.set(value);
-    m_vectorChangedEventSource(this, null);
-}
+			m_items.set(value);
+			m_vectorChangedEventSource(this, null);
+		}
 
-winrt.SwipeItem GetAt(uint index)
-{
-    if (index >= m_items.get().Size())
-    {
-        throw winrt.hresult_out_of_bounds();
-    }
-    return m_items.get().GetAt(index);
-}
+		SwipeItem GetAt(uint index)
+		{
+			if (index >= m_items.get().Size())
+			{
+				throw hresult_out_of_bounds();
+			}
 
-uint Size()
-{
-    return m_items.get().Size();
-}
+			return m_items.get().GetAt(index);
+		}
 
-bool IndexOf(winrt.SwipeItem & value, uint32_t& index)
-{
-    if (index >= m_items.get().Size())
-    {
-        throw winrt.hresult_out_of_bounds();
-    }
-    return m_items.get().IndexOf(value, index);
-}
+		uint Size()
+		{
+			return m_items.get().Size();
+		}
 
-void SetAt(uint index, winrt.SwipeItem & value)
-{
-    if (index >= m_items.get().Size())
-    {
-        throw winrt.hresult_out_of_bounds();
-    }
-    m_items.get().SetAt(index, value);
-    m_vectorChangedEventSource(this, null);
-}
+		bool IndexOf(SwipeItem & value, uint32_t& index)
+		{
+			if (index >= m_items.get().Size())
+			{
+				throw hresult_out_of_bounds();
+			}
 
-void InsertAt(uint index, winrt.SwipeItem & value)
-{
-    if (Mode() == winrt.SwipeMode.Execute && m_items.get().Size() > 0)
-    {
-        throw winrt.hresult_invalid_argument("Execute items should only have one item.");
-    }
-    if (index > m_items.get().Size())
-    {
-        throw winrt.hresult_out_of_bounds();
-    }
+			return m_items.get().IndexOf(value, index);
+		}
 
-    m_items.get().InsertAt(index, value);
-    m_vectorChangedEventSource(this, null);
-}
+		void SetAt(uint index, SwipeItem & value)
+		{
+			if (index >= m_items.get().Size())
+			{
+				throw hresult_out_of_bounds();
+			}
 
-void RemoveAt(uint index)
-{
-    if (index >= m_items.get().Size())
-    {
-        throw winrt.hresult_out_of_bounds();
-    }
-    m_items.get().RemoveAt(index);
-    m_vectorChangedEventSource(this, null);
-}
+			m_items.get().SetAt(index, value);
+			m_vectorChangedEventSource(this, null);
+		}
 
-void Append(winrt.SwipeItem & value)
-{
-    if (Mode() == winrt.SwipeMode.Execute && m_items.get().Size() > 0)
-    {
-        throw winrt.hresult_invalid_argument("Execute items should only have one item.");
-    }
-    
-    m_items.get().Append(value);
-    m_vectorChangedEventSource(this, null);
-}
+		void InsertAt(uint index, SwipeItem & value)
+		{
+			if (Mode() == SwipeMode.Execute && m_items.get().Size() > 0)
+			{
+				throw hresult_invalid_argument("Execute items should only have one item.");
+			}
 
-void RemoveAtEnd()
-{
-    m_items.get().RemoveAtEnd();
-    m_vectorChangedEventSource(this, null);
-}
+			if (index > m_items.get().Size())
+			{
+				throw hresult_out_of_bounds();
+			}
 
-void Clear()
-{
-    m_items.get().Clear();
-    m_vectorChangedEventSource(this, null);
-}
+			m_items.get().InsertAt(index, value);
+			m_vectorChangedEventSource(this, null);
+		}
 
-winrt.IVectorView<winrt.SwipeItem> GetView()
-{
-    return m_items.get().GetView();
-}
+		void RemoveAt(uint index)
+		{
+			if (index >= m_items.get().Size())
+			{
+				throw hresult_out_of_bounds();
+			}
 
-winrt.event_token VectorChanged(winrt.VectorChangedEventHandler<winrt.SwipeItem> & handler)
-{
-    return m_vectorChangedEventSource.add(handler);
-}
+			m_items.get().RemoveAt(index);
+			m_vectorChangedEventSource(this, null);
+		}
 
-void VectorChanged(winrt.event_token  token)
-{
-    m_vectorChangedEventSource.remove(token);
+		void Append(SwipeItem & value)
+		{
+			if (Mode() == SwipeMode.Execute && m_items.get().Size() > 0)
+			{
+				throw hresult_invalid_argument("Execute items should only have one item.");
+			}
+
+			m_items.get().Append(value);
+			m_vectorChangedEventSource(this, null);
+		}
+
+		void RemoveAtEnd()
+		{
+			m_items.get().RemoveAtEnd();
+			m_vectorChangedEventSource(this, null);
+		}
+
+		void Clear()
+		{
+			m_items.get().Clear();
+			m_vectorChangedEventSource(this, null);
+		}
+
+		IVectorView<SwipeItem> GetView()
+		{
+			return m_items.get().GetView();
+		}
+
+		event_token VectorChanged(VectorChangedEventHandler<SwipeItem> & handler)
+		{
+			return m_vectorChangedEventSource.add(handler);
+		}
+
+		void VectorChanged(event_token token)
+		{
+			m_vectorChangedEventSource.remove(token);
+		}
+	}
 }

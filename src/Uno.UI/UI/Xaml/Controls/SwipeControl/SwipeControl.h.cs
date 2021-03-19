@@ -3,9 +3,12 @@
 
 #pragma once
 
+namespace Windows.UI.Xaml.Controls
+{
+	public partial class SwipeControl
+	{
 
-
-enum class CreatedContent { Left, Top, Bottom, Right, None };
+		enum class CreatedContent { Left, Top, Bottom, Right, None };
 
 class SwipeControl :
     public ReferenceTracker<SwipeControl, winrt.implementation.SwipeControlT, winrt.cloaked<winrt.IInteractionTrackerOwner>>,
@@ -266,3 +269,4 @@ private:
     static  wstring_view s_executeSwipeItemPreThresholdForegroundResourceName{ "SwipeItemPreThresholdExecuteForeground"sv };
     static  wstring_view s_executeSwipeItemPostThresholdForegroundResourceName{ "SwipeItemPostThresholdExecuteForeground"sv };
 };
+}}
