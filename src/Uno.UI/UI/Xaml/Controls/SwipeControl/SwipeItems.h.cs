@@ -1,50 +1,51 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Windows.Foundation.Collections;
+
 #pragma once
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class SwipeItems
+	public partial class SwipeItems
 	{
-		class SwipeItems :
-    public ReferenceTracker<SwipeItems, winrt.implementation.SwipeItemsT, winrt.IObservableVector<winrt.SwipeItem>>,
-    public SwipeItemsProperties
-{
-public:
-    SwipeItems();
+		//public:
+		//SwipeItems();
 
-#pragma region IVector
-    winrt.SwipeItem GetAt(uint index);
-    uint Size();
-    winrt.IVectorView<winrt.SwipeItem> GetView();
-    bool IndexOf(winrt.SwipeItem & value, uint32_t& index);
-    void SetAt(uint index, winrt.SwipeItem & value);
-    void InsertAt(uint index, winrt.SwipeItem & value);
-    void RemoveAt(uint index);
-    void Append(winrt.SwipeItem & value);
-    void RemoveAtEnd();
-    void Clear();
+		#region IVector
+		//winrt.SwipeItem GetAt(uint index);
+		//uint Size();
+		//winrt.IVectorView<winrt.SwipeItem> GetView();
+		//bool IndexOf(winrt.SwipeItem & value, uint32_t& index);
+		//void SetAt(uint index, winrt.SwipeItem & value);
+		//void InsertAt(uint index, winrt.SwipeItem & value);
+		//void RemoveAt(uint index);
+		//void Append(winrt.SwipeItem & value);
+		//void RemoveAtEnd();
+		//void Clear();
 
-    // TODO:
-    winrt.IIterator<winrt.SwipeItem> First() { throw winrt.hresult_not_implemented(); }
-    uint GetMany(uint startIndex, winrt.array_view<winrt.SwipeItem> items) { throw winrt.hresult_not_implemented(); }
-    void ReplaceAll(winrt.array_view<winrt.SwipeItem > items) { throw winrt.hresult_not_implemented(); }
-#pragma endregion
+		// TODO:
+		public SwipeItem First() { throw new NotImplementedException(); }
 
-#pragma region IObservableVector
-    winrt.event_token VectorChanged(winrt.VectorChangedEventHandler<winrt.SwipeItem> & handler);
-    void VectorChanged(winrt.event_token  token);
-#pragma endregion
+		public uint GetMany(uint startIndex, SwipeItem[] items) { throw new NotImplementedException(); }
 
-    void OnPropertyChanged( winrt.DependencyPropertyChangedEventArgs& args);
+		public void ReplaceAll(SwipeItem[] items) { throw new NotImplementedException(); }
+		#endregion
 
-private:
-    void put_Items( winrt.Collections.IVector<winrt.SwipeItem>& value);
-    tracker_ref<winrt.Collections.IVector<winrt.SwipeItem>> m_items{ this };
+		#region IObservableVector
+		//winrt.event_token VectorChanged(winrt.VectorChangedEventHandler<winrt.SwipeItem> & handler);
+		//void VectorChanged(winrt.event_token  token);
+		#endregion
 
-    event_source<winrt.VectorChangedEventHandler<winrt.SwipeItem>> m_vectorChangedEventSource{ this };
-};
+		//void OnPropertyChanged( winrt.DependencyPropertyChangedEventArgs& args);
 
+		//private:
+		//void put_Items( winrt.Collections.IVector<winrt.SwipeItem>& value);
+		private ObservableCollection<SwipeItem> m_items;
+
+		private event VectorChangedEventHandler<SwipeItem> m_vectorChangedEventSource;
 	}
 }

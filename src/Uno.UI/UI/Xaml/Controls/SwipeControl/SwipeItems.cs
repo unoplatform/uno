@@ -1,141 +1,146 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Windows.Foundation.Collections;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class SwipeItems
+	public partial class SwipeItems : DependencyObject, IEnumerable<SwipeItem>, IList<SwipeItem>, IObservableVector<SwipeItem>
 	{
 		public void SwipeItems()
 		{
 			// create the Collection
-			var collection = new Vector<SwipeItem, MakeVectorParam<VectorFlag.DependencyObjectBase>() > ();
+			var collection = new ObservableCollection<SwipeItem>();
 
-			put_Items(collection);
+			Items = collection;
 		}
 
-		void OnPropertyChanged(DependencyPropertyChangedEventArgs& args)
+		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.Property() == s_ModeProperty)
+			if (args.Property == ModeProperty)
 			{
-				if (unbox_value<SwipeMode>(args.NewValue()) == SwipeMode.Execute && m_items.get().Size() > 1)
+				if (((SwipeMode)args.NewValue) == SwipeMode.Execute && m_items.Count > 1)
 				{
-					throw hresult_invalid_argument("Execute items should only have one item.");
+					throw new ArgumentException("Execute items should only have one item.");
 				}
 			}
 		}
 
-		void SwipeItems.put_Items(
-			Collections.IVector<SwipeItem>& value)
+		private ObservableCollection<SwipeItem> Items
 		{
-			if (Mode() == SwipeMode.Execute && value.Size() > 1)
+			set
 			{
-				throw hresult_invalid_argument("Execute items should only have one item.");
+				if (Mode == SwipeMode.Execute && value.Count > 1)
+				{
+					throw new ArgumentException("Execute items should only have one item.");
+				}
+
+				m_items = value;
+				m_vectorChangedEventSource?.Invoke(this, null);
+			}
+		}
+
+		public SwipeItem GetAt(uint index)
+		{
+			if (index >= m_items.Count)
+			{
+				throw new IndexOutOfRangeException();
 			}
 
-			m_items.set(value);
-			m_vectorChangedEventSource(this, null);
+			return m_items[(int) index];
 		}
 
-		SwipeItem GetAt(uint index)
+		public uint Size => (uint)m_items.Count;
+
+		public bool IndexOf(SwipeItem value, out uint index)
 		{
-			if (index >= m_items.get().Size())
+			var i = m_items.IndexOf(value);
+			if (i < 0)
 			{
-				throw hresult_out_of_bounds();
+				index = 0;
+				return false;
+			}
+			else
+			{
+				index = (uint)i;
+				return true;
+			}
+		}
+
+		public void SetAt(uint index, SwipeItem value)
+		{
+			if (index >= m_items.Count)
+			{
+				throw new IndexOutOfRangeException();
 			}
 
-			return m_items.get().GetAt(index);
+			m_items[(int)index] = value;
+			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		uint Size()
+		public void InsertAt(uint index, SwipeItem value)
 		{
-			return m_items.get().Size();
-		}
-
-		bool IndexOf(SwipeItem & value, uint32_t& index)
-		{
-			if (index >= m_items.get().Size())
+			if (Mode == SwipeMode.Execute && m_items.Count > 0)
 			{
-				throw hresult_out_of_bounds();
+				throw new ArgumentException("Execute items should only have one item.");
 			}
 
-			return m_items.get().IndexOf(value, index);
-		}
-
-		void SetAt(uint index, SwipeItem & value)
-		{
-			if (index >= m_items.get().Size())
+			if (index > m_items.Count)
 			{
-				throw hresult_out_of_bounds();
+				throw new IndexOutOfRangeException();
 			}
 
-			m_items.get().SetAt(index, value);
-			m_vectorChangedEventSource(this, null);
+			m_items.Insert((int)index, value);
+			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		void InsertAt(uint index, SwipeItem & value)
+		public void RemoveAt(uint index)
 		{
-			if (Mode() == SwipeMode.Execute && m_items.get().Size() > 0)
+			if (index >= m_items.Count)
 			{
-				throw hresult_invalid_argument("Execute items should only have one item.");
+				throw new IndexOutOfRangeException();
 			}
 
-			if (index > m_items.get().Size())
+			m_items.RemoveAt((int)index);
+			m_vectorChangedEventSource?.Invoke(this, null);
+		}
+
+		public void Append(SwipeItem value)
+		{
+			if (Mode == SwipeMode.Execute && m_items.Count > 0)
 			{
-				throw hresult_out_of_bounds();
+				throw new ArgumentException("Execute items should only have one item.");
 			}
 
-			m_items.get().InsertAt(index, value);
-			m_vectorChangedEventSource(this, null);
+			m_items.Add(value);
+			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		void RemoveAt(uint index)
+		public void RemoveAtEnd()
 		{
-			if (index >= m_items.get().Size())
-			{
-				throw hresult_out_of_bounds();
-			}
-
-			m_items.get().RemoveAt(index);
-			m_vectorChangedEventSource(this, null);
+			m_items.RemoveAt(m_items.Count -1);
+			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		void Append(SwipeItem & value)
+		public void Clear()
 		{
-			if (Mode() == SwipeMode.Execute && m_items.get().Size() > 0)
-			{
-				throw hresult_invalid_argument("Execute items should only have one item.");
-			}
-
-			m_items.get().Append(value);
-			m_vectorChangedEventSource(this, null);
+			m_items.Clear();
+			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		void RemoveAtEnd()
-		{
-			m_items.get().RemoveAtEnd();
-			m_vectorChangedEventSource(this, null);
-		}
+		// TODO Uno
+		//public IVectorView<SwipeItem> GetView()
+		//{
+		//	return m_items.GetView();
+		//}
 
-		void Clear()
+		public event VectorChangedEventHandler<SwipeItem> VectorChanged
 		{
-			m_items.get().Clear();
-			m_vectorChangedEventSource(this, null);
-		}
-
-		IVectorView<SwipeItem> GetView()
-		{
-			return m_items.get().GetView();
-		}
-
-		event_token VectorChanged(VectorChangedEventHandler<SwipeItem> & handler)
-		{
-			return m_vectorChangedEventSource.add(handler);
-		}
-
-		void VectorChanged(event_token token)
-		{
-			m_vectorChangedEventSource.remove(token);
+			add => m_vectorChangedEventSource += value;
+			remove => m_vectorChangedEventSource -= value;
 		}
 	}
 }

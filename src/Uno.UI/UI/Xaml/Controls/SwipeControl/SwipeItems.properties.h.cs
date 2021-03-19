@@ -5,27 +5,27 @@
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class SwipeItems
+	public partial class SwipeItems
 	{
-		public:
+		//public:
 
-		SwipeItemsProperties();
+		//SwipeItemsProperties();
 
-		void Mode(winrt.SwipeMode & value);
+		//void Mode(winrt.SwipeMode & value);
 
-		winrt.SwipeMode Mode();
+		//winrt.SwipeMode Mode();
 
-		static winrt.DependencyProperty ModeProperty() { return s_ModeProperty; }
+		//static winrt.DependencyProperty ModeProperty() { return s_ModeProperty; }
 
-		static GlobalDependencyProperty s_ModeProperty;
+		//static GlobalDependencyProperty s_ModeProperty;
 
-		static void EnsureProperties();
+		//static void EnsureProperties();
 
-		static void ClearProperties();
+		//static void ClearProperties();
 
-		static void OnModePropertyChanged(
-			winrt.DependencyObject & sender,
+		//static void OnModePropertyChanged(
+		//	winrt.DependencyObject & sender,
 
-		winrt.DependencyPropertyChangedEventArgs & args);
+		//winrt.DependencyPropertyChangedEventArgs & args);
 	}
 }
