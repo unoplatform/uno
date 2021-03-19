@@ -4,135 +4,132 @@
 
 // IconSource is implemented in WUX in the OS repo, so we don't need to
 // include IconSource.h on that side.
+using System;
+using System.Windows.Input;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class SwipeItem
+	public partial class SwipeItem : DependencyObject
 	{
 		static double s_swipeItemWidth = 68.0;
 		static double s_swipeItemHeight = 60.0;
 
-		SwipeItem()
+		public SwipeItem()
 		{
-			__RP_Marker_ClassById(RuntimeProfiler.ProfId_SwipeItem);
 		}
 
-#pragma endregion
-
-
-		void InvokeSwipe(winrt.SwipeControl& swipeControl)
+		internal void InvokeSwipe(SwipeControl swipeControl)
 		{
-			var eventArgs = winrt.new SwipeItemInvokedEventArgs();
-			eventArgs.SwipeControl(swipeControl);
-			m_invokedEventSource(this, eventArgs);
+			var eventArgs = new SwipeItemInvokedEventArgs(swipeControl);
 
-			if (s_CommandProperty)
+			m_invokedEventSource?.Invoke(this, eventArgs);
+
+			if (CommandProperty is {})
 			{
-				var command = Command().as<winrt.ICommand > ();
-				var param = CommandParameter();
+				var command = Command as ICommand;
+				var param = CommandParameter;
 
-				if (command && command.CanExecute(param))
+				if (command is {} && command.CanExecute(param))
 				{
 					command.Execute(param);
 				}
 			}
 
 			// It stays open when onInvoked is expand.
-			if (BehaviorOnInvoked() == winrt.SwipeBehaviorOnInvoked.Close ||
-				BehaviorOnInvoked() == winrt.SwipeBehaviorOnInvoked.Auto)
+			if (BehaviorOnInvoked == SwipeBehaviorOnInvoked.Close ||
+				BehaviorOnInvoked == SwipeBehaviorOnInvoked.Auto)
 			{
 				swipeControl.Close();
 			}
 		}
 
-		void OnPropertyChanged(winrt.DependencyPropertyChangedEventArgs& args)
+		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.Property() == winrt.CommandProperty())
+			if (args.Property == CommandProperty)
 			{
-				OnCommandChanged(args.OldValue(). as<winrt.ICommand > (), args.NewValue().as<winrt.ICommand > ());
+				OnCommandChanged(args.OldValue as ICommand, args.NewValue as ICommand);
 			}
 		}
 
-		void OnCommandChanged(winrt.ICommand& /oldCommand/, winrt.ICommand& newCommand)
+		private void OnCommandChanged(ICommand oldCommand, ICommand newCommand)
 		{
-			if (var newUICommand = newCommand.try_as<winrt.XamlUICommand>())
+			if (newCommand is XamlUICommand newUICommand)
 			{
-				CommandingHelpers.BindToLabelPropertyIfUnset(newUICommand, this, winrt.TextProperty());
-				CommandingHelpers.BindToIconSourcePropertyIfUnset(newUICommand, this, winrt.IconSourceProperty());
+				CommandingHelpers.BindToLabelPropertyIfUnset(newUICommand, this, TextProperty);
+				CommandingHelpers.BindToIconSourcePropertyIfUnset(newUICommand, this, IconSourceProperty);
 			}
 		}
 
-		void GenerateControl(winrt.AppBarButton& appBarButton, winrt.Style& swipeItemStyle)
+		void GenerateControl(AppBarButton appBarButton, Style swipeItemStyle)
 		{
 			appBarButton.Style(swipeItemStyle);
-			if (Background())
+			if (Background is {})
 			{
-				appBarButton.Background(Background());
+				appBarButton.Background = Background;
 			}
 
-			if (Foreground())
+			if (Foreground is {})
 			{
-				appBarButton.Foreground(Foreground());
+				appBarButton.Foreground = Foreground;
 			}
 
-			if (IconSource())
+			if (IconSource is {})
 			{
-				appBarButton.Icon(IconSource().CreateIconElement());
+				appBarButton.Icon = IconSource.CreateIconElement();
 			}
 
-			appBarButton.Label(Text());
+			appBarButton.Label = Text;
 			AttachEventHandlers(appBarButton);
 		}
 
 
-		void AttachEventHandlers(winrt.AppBarButton& appBarButton)
+		private void AttachEventHandlers(AppBarButton appBarButton)
 		{
-			var weakThis = get_weak();
-			appBarButton.Tapped({
-				[weakThis]
-				(auto
-
-				&sender, auto & args) {
-					if (var temp = weakThis.get()) temp.OnItemTapped(sender, args);
+			var weakThis = new WeakReference<SwipeItem>(this);
+			appBarButton.Tapped += (sender, args) =>
+			{
+				if (weakThis.TryGetTarget(out var temp))
+				{
+					temp.OnItemTapped(sender, args);
 				}
-			});
-			appBarButton.PointerPressed({
-				[weakThis]
-				(auto
-
-				&sender, auto & args) {
-					if (var temp = weakThis.get()) temp.OnPointerPressed(sender, args);
+			};
+			appBarButton.PointerPressed += (sender, args) =>
+			{
+				if (weakThis.TryGetTarget(out var temp))
+				{
+					temp.OnPointerPressed(sender, args);
 				}
-			});
+			};
 		}
 
-		void OnItemTapped(
-			winrt.DependencyObject& sender,
-
-		winrt.TappedRoutedEventArgs& args)
+		private void OnItemTapped(
+			object sender,
+			TappedRoutedEventArgs args)
 		{
-			var current = winrt.VisualTreeHelper.GetParent(sender.try_as<winrt.DependencyObject>());
-			while (current)
+			var current = VisualTreeHelper.GetParent(sender as DependencyObject);
+			while (current is {})
 			{
-				var control = current.try_as<winrt.SwipeControl>();
-				if (control)
+				var control = current as SwipeControl;
+				if (control is {})
 				{
 					InvokeSwipe(control);
-					args.Handled(true);
+					args.Handled = true;
 				}
 
-				current = winrt.VisualTreeHelper.GetParent(current);
+				current = VisualTreeHelper.GetParent(current);
 			}
 		}
 
-		void OnPointerPressed(
-			winrt.DependencyObject& /sender/,
-
-		winrt.PointerRoutedEventArgs& args)
+		private void OnPointerPressed(
+			object sender,
+			PointerRoutedEventArgs args)
 		{
-			if (args.Pointer().PointerDeviceType() == winrt.Devices.Input.PointerDeviceType.Touch)
+			if (args.Pointer.PointerDeviceType == Devices.Input.PointerDeviceType.Touch)
 			{
 				// if we press an item, we want to handle it and not let the parent SwipeControl receive the input
-				args.Handled(true);
+				args.Handled = true;
 			}
 		}
 	}

@@ -5,38 +5,38 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeItem
 	{
-		class SwipeItem : 
+		//class SwipeItem : 
 
-		public ReferenceTracker<SwipeItem, winrt.implementation.SwipeItemT>,
+		//public ReferenceTracker<SwipeItem, winrt.implementation.SwipeItemT>,
 
-		public SwipeItemProperties
-		{
+		//public SwipeItemProperties
+		//{
 
-		public:
+		//public:
 
-		SwipeItem();
+		//SwipeItem();
 
-		// Property changed handler.
-		void OnPropertyChanged(winrt.DependencyPropertyChangedEventArgs& args);
+		//// Property changed handler.
+		//void OnPropertyChanged(winrt.DependencyPropertyChangedEventArgs& args);
 
-		void GenerateControl(winrt.AppBarButton& appBarButton, winrt.Style& swipeItemStyle);
+		//void GenerateControl(winrt.AppBarButton& appBarButton, winrt.Style& swipeItemStyle);
 
-		void InvokeSwipe(winrt.SwipeControl& content);
+		//void InvokeSwipe(winrt.SwipeControl& content);
 
-		private:
+		//private:
 
-		void OnItemTapped(
-			winrt.DependencyObject& sender,
+		//void OnItemTapped(
+		//	winrt.DependencyObject& sender,
 
-		winrt.TappedRoutedEventArgs& args);
+		//winrt.TappedRoutedEventArgs& args);
 
-		void OnPointerPressed(
-			winrt.DependencyObject& sender,
+		//void OnPointerPressed(
+		//	winrt.DependencyObject& sender,
 
-		winrt.PointerRoutedEventArgs& args);
+		//winrt.PointerRoutedEventArgs& args);
 
-		void OnCommandChanged(winrt.ICommand& oldCommand, winrt.ICommand& newCommand);
+		//void OnCommandChanged(winrt.ICommand& oldCommand, winrt.ICommand& newCommand);
 
-		void AttachEventHandlers(winrt.AppBarButton& appBarButton);
+		//void AttachEventHandlers(winrt.AppBarButton& appBarButton);
 	}
 }
