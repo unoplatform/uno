@@ -34,7 +34,7 @@ namespace Uno.AuthenticationBroker
 		{
 			var tcs = new TaskCompletionSource<WebAuthenticationResult>();
 
-			void AuthSessionCallback(NSUrl callbackUrl, NSError error)
+			void AuthSessionCallback(NSUrl? callbackUrl, NSError? error)
 			{
 				if (error != null)
 				{
@@ -59,13 +59,13 @@ namespace Uno.AuthenticationBroker
 				else
 				{
 					tcs.SetResult(new WebAuthenticationResult(
-						callbackUrl.AbsoluteString,
+						callbackUrl?.AbsoluteString,
 						0,
 						WebAuthenticationStatus.Success));
 				}
 			}
 
-			IDisposable was = default;
+			IDisposable? was = default;
 
 			void Cancel()
 			{
