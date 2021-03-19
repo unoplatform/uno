@@ -2790,7 +2790,7 @@ var Windows;
                                     return;
                                 }
                                 const url = win.document.URL;
-                                if (url.indexOf(urlRedirect) !== -1) {
+                                if (url.indexOf(urlRedirect) === 0) {
                                     callback(true, false, url);
                                 }
                             }

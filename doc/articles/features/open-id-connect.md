@@ -5,7 +5,7 @@ OpenID Connect is a layer over OAuth 2.0, allowing a simpler integration into ap
 This article will document the usage of `IdentityModel.OidcClient` into a Uno application using the [`WebAuthenticationBroker`](web-authentication-broker.md). You can find [the IdentityModel.OidcClient documentation here](https://identitymodel.readthedocs.io/en/latest/native/overview.html).
 
 > The code of this article can be found in the Uno Samples at the following address:
-> https://github.com/unoplatform/Uno.Samples/tree/master/UI/WebAuthenticationBroker
+> https://github.com/unoplatform/Uno.Samples/tree/master/UI/Authentication.OidcDemo
 
 ## Limitations
 
@@ -22,7 +22,7 @@ This code uses the _IdentityServer_ demonstration endpoint with the following pa
 | Authority | `https://demo.itentityserver.io`          |
 | ClientId  | `interactive.confidential`                |
 | Secret    | `secret`                                  |
-| Scope     | `openid profile email api offline_access` |
+| Scopes    | `openid profile email api offline_access` |
 
 >  Note: this endpoint allows any return uris. It's acceptable for demo purposes, but production application will usually requires to register your return addresses.
 
@@ -94,17 +94,23 @@ public MainPage()
 
 private OidcClient _oidcClient;
 private AuthorizeState _loginState;
-private string _logoutUrl;
+private Uri _logoutUrl;
 
 private async void PrepareClient()
 {
-    // Create options for endpoint discovery
-	var options = new OidcClientOptions()
+	var redirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().OriginalString;
+
+	// Create options for endpoint discovery
+	var options = new OidcClientOptions
 	{
 		Authority = "https://demo.identityserver.io",
 		ClientId = "interactive.confidential",
 		ClientSecret = "secret",
-		Scope = "openid profile email api offline_access"
+		Scope = "openid profile email api offline_access",
+		RedirectUri = redirectUri,
+		PostLogoutRedirectUri = redirectUri,
+		ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
+		Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode
 	};
 
     // Create the client. In production application, this is often created and stored
@@ -121,7 +127,7 @@ private async void PrepareClient()
     btnSignin.IsEnabled = true;
 
     // Same for logout url.
-    _logoutUrl = new Uri(await _oidcClient.PrepareLogoutAsync());
+    _logoutUrl = new Uri(await _oidcClient.PrepareLogoutAsync(new LogoutRequest()));
     btnSignout.IsEnabled = true;
 }
 ```
@@ -133,7 +139,7 @@ Add following button handlers:
 ``` csharp
 private async void SignIn_Clicked(object sender, RoutedEventArgs e)
 {
-    var startUri = new Uri(_loginState.RedirectUri);
+    var startUri = new Uri(_loginState.StartUrl);
 
 	// Important: there should be NO await before calling .AuthenticateAsync() - at least
 	// on WebAssembly, in order to prevent trigering the popup blocker mechanisms.
@@ -147,7 +153,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
 
     // User authentication process completed successfully.
     // Now we need to get authorization tokens from the response
-    var authenticationResult = await _oidcClient.ProcessResponseAsync(e.Response, state);
+    var authenticationResult = await _oidcClient.ProcessResponseAsync(userResult.ResponseData, _loginState);
  	
  	if(authenticationResult.IsError)
     {
@@ -171,3 +177,30 @@ private async void SignOut_Clicked(object sender, RoutedEventArgs e)
 }
 ```
 
+## Step 7 - Finalize & Compile
+
+**IMPORTANT FOR WEBASSEMBLY**
+
+On WebAssembly, it's important to configure the linker to prevent the removal of some important part of the _OIDC Connect_ client library:
+
+`LinkerConfig.xml`:
+
+``` xml
+<linker>
+  <assembly fullname="My.Oidc.Client.App.Wasm" />
+  <assembly fullname="Uno.UI" />
+
+  <!-- ADD THE FOLLOWING 2 LINES -->
+  <assembly fullname="IdentityModel" />
+  <assembly fullname="System.IdentityModel.Tokens.Jwt" />
+
+  <assembly fullname="System.Net.Http" />
+
+  <assembly fullname="System.Core">
+	<!-- This is required by JSon.NET and any expression.Compile caller -->
+	<type fullname="System.Linq.Expressions*" />
+  </assembly>
+</linker>
+```
+
+Now compile & Run!
