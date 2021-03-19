@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 {
-	[Sample("Authentication", IsManualTest = true, IgnoreInSnapshotTests = true)]
+	[Sample("Authentication", IsManualTest = true)]
 	public sealed partial class AuthenticationBroker_Demo : Page
 	{
 		public AuthenticationBroker_Demo()

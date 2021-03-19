@@ -1,15 +1,17 @@
+#nullable enable
+
 namespace Windows.Security.Authentication.Web
 {
 	public partial class WebAuthenticationResult
 	{
-		public WebAuthenticationResult(string responseData, uint responseErrorDetail, WebAuthenticationStatus responseStatus)
+		public WebAuthenticationResult(string? responseData, uint responseErrorDetail, WebAuthenticationStatus responseStatus)
 		{
 			ResponseData = responseData;
 			ResponseErrorDetail = responseErrorDetail;
 			ResponseStatus = responseStatus;
 		}
 
-		public string ResponseData
+		public string? ResponseData
 		{
 			get;
 		}
