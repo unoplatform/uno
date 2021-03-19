@@ -96,8 +96,16 @@ namespace Windows.Storage.Pickers
 				{
 					temporaryFolder.MakePersistent();
 				}
+
+				if (string.IsNullOrEmpty(SuggestedFileName))
+				{
+					SuggestedFileName = Guid.NewGuid().ToString();
+				}
+
+				var extension = FileTypeChoices.Count > 0 ? FileTypeChoices.First().Value[0] : "";
+
 				// The mime type is chosen by the extension, and we cannot reliably send multiple mime type in the browser
-				var fileName = SuggestedFileName + FileTypeChoices.First().Value[0];
+				var fileName = SuggestedFileName + extension;
 				SuggestedSaveFile = await temporaryFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 			}
 			return SuggestedSaveFile;
