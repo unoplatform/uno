@@ -117,8 +117,8 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.UI" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Uno.Extensions.Logging.OSLog " Version="1.0.0-dev.3" />
 	</ItemGroup>
 	<ItemGroup>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Contents.json">
