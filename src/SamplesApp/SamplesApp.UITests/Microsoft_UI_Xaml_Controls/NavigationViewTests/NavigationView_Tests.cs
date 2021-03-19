@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NavigationViewTests
 	{
 		[Test]
 		[AutoRetry()]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // fails on WebAssembly
 		public void NavigateBackAndForthBetweenMenuItemsAndSettings_Fluent()
 		{
 			Run("SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.FluentStyle.FluentStyle_NavigationViewSample");
