@@ -62,24 +62,35 @@ $ANDROID_HOME/platform-tools/adb devices
 
 echo "Emulator started"
 
-if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
+if [ "$UITEST_TEST_MODE_NAME" == 'Snapshots' ];
 then
 	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-Snap
-else
+
+elif [ "$UITEST_TEST_MODE_NAME" == 'Automated' ];
+then
 	export TEST_FILTERS="\
 		namespace != 'SamplesApp.UITests.Snap' \
 		and class != 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
-	"
+		and class != 'SamplesApp.UITests.Runtime.RuntimeTests' \
+		and cat == 'testBucket:$UNO_UITEST_BUCKET_ID'
+	";
+
+	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL
+elif [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
+then
+	export TEST_FILTERS="\
+		class == 'SamplesApp.UITests.Runtime.RuntimeTests' \
+	";
+
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL
 fi
-
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/uitests-android-build/android/uno.platform.unosampleapp-Signed.apk
 
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME.txt
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 
 cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
