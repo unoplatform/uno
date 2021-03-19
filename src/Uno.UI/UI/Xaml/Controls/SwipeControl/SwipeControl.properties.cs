@@ -8,153 +8,190 @@ namespace Windows.UI.Xaml.Controls
 	public partial class SwipeControl
 	{
 
-		GlobalDependencyProperty SwipeControlProperties.s_BottomItemsProperty{ null };
-GlobalDependencyProperty SwipeControlProperties.s_LeftItemsProperty{ null };
-GlobalDependencyProperty SwipeControlProperties.s_RightItemsProperty{ null };
-GlobalDependencyProperty SwipeControlProperties.s_TopItemsProperty{ null };
+		//GlobalDependencyProperty s_BottomItemsProperty{ null };
+		//GlobalDependencyProperty s_LeftItemsProperty{ null };
+		//GlobalDependencyProperty s_RightItemsProperty{ null };
+		//GlobalDependencyProperty s_TopItemsProperty{ null };
 
-SwipeControlProperties.SwipeControlProperties()
-{
-    EnsureProperties();
-}
+		//SwipeControlProperties()
+		//{
+		//    EnsureProperties();
+		//}
 
-void SwipeControlProperties.EnsureProperties()
-{
-    if (!s_BottomItemsProperty)
-    {
-        s_BottomItemsProperty =
-            InitializeDependencyProperty(
-                "BottomItems",
-                winrt.name_of<winrt.SwipeItems>(),
-                winrt.name_of<winrt.SwipeControl>(),
-                false /* isAttached */,
-                ValueHelper<winrt.SwipeItems>.BoxedDefaultValue(),
-                winrt.PropertyChangedCallback(&OnBottomItemsPropertyChanged));
-    }
-    if (!s_LeftItemsProperty)
-    {
-        s_LeftItemsProperty =
-            InitializeDependencyProperty(
-                "LeftItems",
-                winrt.name_of<winrt.SwipeItems>(),
-                winrt.name_of<winrt.SwipeControl>(),
-                false /* isAttached */,
-                ValueHelper<winrt.SwipeItems>.BoxedDefaultValue(),
-                winrt.PropertyChangedCallback(&OnLeftItemsPropertyChanged));
-    }
-    if (!s_RightItemsProperty)
-    {
-        s_RightItemsProperty =
-            InitializeDependencyProperty(
-                "RightItems",
-                winrt.name_of<winrt.SwipeItems>(),
-                winrt.name_of<winrt.SwipeControl>(),
-                false /* isAttached */,
-                ValueHelper<winrt.SwipeItems>.BoxedDefaultValue(),
-                winrt.PropertyChangedCallback(&OnRightItemsPropertyChanged));
-    }
-    if (!s_TopItemsProperty)
-    {
-        s_TopItemsProperty =
-            InitializeDependencyProperty(
-                "TopItems",
-                winrt.name_of<winrt.SwipeItems>(),
-                winrt.name_of<winrt.SwipeControl>(),
-                false /* isAttached */,
-                ValueHelper<winrt.SwipeItems>.BoxedDefaultValue(),
-                winrt.PropertyChangedCallback(&OnTopItemsPropertyChanged));
-    }
-}
+		//void EnsureProperties()
+		//{
+		//    if (!s_BottomItemsProperty)
+		//    {
+		//        s_BottomItemsProperty =
+		//            InitializeDependencyProperty(
+		//                "BottomItems",
+		//                name_of<SwipeItems>(),
+		//                name_of<SwipeControl>(),
+		//                false /* isAttached */,
+		//                ValueHelper<SwipeItems>.BoxedDefaultValue(),
+		//                PropertyChangedCallback(&OnBottomItemsPropertyChanged));
+		//    }
+		//    if (!s_LeftItemsProperty)
+		//    {
+		//        s_LeftItemsProperty =
+		//            InitializeDependencyProperty(
+		//                "LeftItems",
+		//                name_of<SwipeItems>(),
+		//                name_of<SwipeControl>(),
+		//                false /* isAttached */,
+		//                ValueHelper<SwipeItems>.BoxedDefaultValue(),
+		//                PropertyChangedCallback(&OnLeftItemsPropertyChanged));
+		//    }
+		//    if (!s_RightItemsProperty)
+		//    {
+		//        s_RightItemsProperty =
+		//            InitializeDependencyProperty(
+		//                "RightItems",
+		//                name_of<SwipeItems>(),
+		//                name_of<SwipeControl>(),
+		//                false /* isAttached */,
+		//                ValueHelper<SwipeItems>.BoxedDefaultValue(),
+		//                PropertyChangedCallback(&OnRightItemsPropertyChanged));
+		//    }
+		//    if (!s_TopItemsProperty)
+		//    {
+		//        s_TopItemsProperty =
+		//            InitializeDependencyProperty(
+		//                "TopItems",
+		//                name_of<SwipeItems>(),
+		//                name_of<SwipeControl>(),
+		//                false /* isAttached */,
+		//                ValueHelper<SwipeItems>.BoxedDefaultValue(),
+		//                PropertyChangedCallback(&OnTopItemsPropertyChanged));
+		//    }
+		//}
 
-void SwipeControlProperties.ClearProperties()
-{
-    s_BottomItemsProperty = null;
-    s_LeftItemsProperty = null;
-    s_RightItemsProperty = null;
-    s_TopItemsProperty = null;
-}
+		//void ClearProperties()
+		//{
+		//    s_BottomItemsProperty = null;
+		//    s_LeftItemsProperty = null;
+		//    s_RightItemsProperty = null;
+		//    s_TopItemsProperty = null;
+		//}
 
-void SwipeControlProperties.OnBottomItemsPropertyChanged(
-    winrt.DependencyObject & sender,
-    winrt.DependencyPropertyChangedEventArgs & args)
-{
-    var owner = sender.as<winrt.SwipeControl>();
-    winrt.get_self<SwipeControl>(owner).OnPropertyChanged(args);
-}
+		private static void OnBottomItemsPropertyChanged(
+		    DependencyObject sender,
+		    DependencyPropertyChangedEventArgs args)
+		{
+		    var owner = (SwipeControl)sender;
+		    owner.OnPropertyChanged(args);
+		}
 
-void SwipeControlProperties.OnLeftItemsPropertyChanged(
-    winrt.DependencyObject & sender,
-    winrt.DependencyPropertyChangedEventArgs & args)
-{
-    var owner = sender.as<winrt.SwipeControl>();
-    winrt.get_self<SwipeControl>(owner).OnPropertyChanged(args);
-}
+		private static void OnLeftItemsPropertyChanged(
+		    DependencyObject sender,
+		    DependencyPropertyChangedEventArgs args)
+		{
+		    var owner = (SwipeControl)sender;
+		    owner.OnPropertyChanged(args);
+		}
 
-void SwipeControlProperties.OnRightItemsPropertyChanged(
-    winrt.DependencyObject & sender,
-    winrt.DependencyPropertyChangedEventArgs & args)
-{
-    var owner = sender.as<winrt.SwipeControl>();
-    winrt.get_self<SwipeControl>(owner).OnPropertyChanged(args);
-}
+		private static void OnRightItemsPropertyChanged(
+		    DependencyObject sender,
+		    DependencyPropertyChangedEventArgs args)
+		{
+		    var owner = (SwipeControl)sender;
+		    owner.OnPropertyChanged(args);
+		}
 
-void SwipeControlProperties.OnTopItemsPropertyChanged(
-    winrt.DependencyObject & sender,
-    winrt.DependencyPropertyChangedEventArgs & args)
-{
-    var owner = sender.as<winrt.SwipeControl>();
-    winrt.get_self<SwipeControl>(owner).OnPropertyChanged(args);
-}
+		private static void OnTopItemsPropertyChanged(
+		    DependencyObject sender,
+		    DependencyPropertyChangedEventArgs args)
+		{
+		    var owner = (SwipeControl)sender;
+		    owner.OnPropertyChanged(args);
+		}
 
-void SwipeControlProperties.BottomItems(winrt.SwipeItems & value)
-{
-    [[gsl.suppress(con)]]
-    {
-    (SwipeControl)(this).SetValue(s_BottomItemsProperty, ValueHelper<winrt.SwipeItems>.BoxValueIfNecessary(value));
-    }
-}
 
-winrt.SwipeItems SwipeControlProperties.BottomItems()
-{
-    return ValueHelper<winrt.SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_BottomItemsProperty));
-}
+		public static readonly DependencyProperty BottomItemsProperty = DependencyProperty.Register(
+			"BottomItems", typeof(SwipeItems), typeof(SwipeControl), new PropertyMetadata(default(SwipeItems), OnBottomItemsPropertyChanged));
 
-void SwipeControlProperties.LeftItems(winrt.SwipeItems & value)
-{
-    [[gsl.suppress(con)]]
-    {
-    (SwipeControl)(this).SetValue(s_LeftItemsProperty, ValueHelper<winrt.SwipeItems>.BoxValueIfNecessary(value));
-    }
-}
+		public SwipeItems BottomItems
+		{
+			get { return (SwipeItems)GetValue(BottomItemsProperty); }
+			set { SetValue(BottomItemsProperty, value); }
+		}
+		//void BottomItems(SwipeItems & value)
+		//{
+		//    [[gsl.suppress(con)]]
+		//    {
+		//    (SwipeControl)(this).SetValue(s_BottomItemsProperty, ValueHelper<SwipeItems>.BoxValueIfNecessary(value));
+		//    }
+		//}
 
-winrt.SwipeItems SwipeControlProperties.LeftItems()
-{
-    return ValueHelper<winrt.SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_LeftItemsProperty));
-}
+		//SwipeItems BottomItems()
+		//{
+		//    return ValueHelper<SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_BottomItemsProperty));
+		//}
 
-void SwipeControlProperties.RightItems(winrt.SwipeItems & value)
-{
-    [[gsl.suppress(con)]]
-    {
-    (SwipeControl)(this).SetValue(s_RightItemsProperty, ValueHelper<winrt.SwipeItems>.BoxValueIfNecessary(value));
-    }
-}
 
-winrt.SwipeItems SwipeControlProperties.RightItems()
-{
-    return ValueHelper<winrt.SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_RightItemsProperty));
-}
+		public static readonly DependencyProperty LeftItemsProperty = DependencyProperty.Register(
+			"LeftItems", typeof(SwipeItems), typeof(SwipeControl), new PropertyMetadata(default(SwipeItems), OnLeftItemsPropertyChanged));
 
-void SwipeControlProperties.TopItems(winrt.SwipeItems & value)
-{
-    [[gsl.suppress(con)]]
-    {
-    (SwipeControl)(this).SetValue(s_TopItemsProperty, ValueHelper<winrt.SwipeItems>.BoxValueIfNecessary(value));
-    }
-}
+		public SwipeItems LeftItems
+		{
+			get { return (SwipeItems)GetValue(LeftItemsProperty); }
+			set { SetValue(LeftItemsProperty, value); }
+		}
 
-winrt.SwipeItems SwipeControlProperties.TopItems()
-{
-    return ValueHelper<winrt.SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_TopItemsProperty));
-}
+		//void LeftItems(SwipeItems & value)
+		//{
+		//    [[gsl.suppress(con)]]
+		//    {
+		//    (SwipeControl)(this).SetValue(s_LeftItemsProperty, ValueHelper<SwipeItems>.BoxValueIfNecessary(value));
+		//    }
+		//}
+
+		//SwipeItems LeftItems()
+		//{
+		//    return ValueHelper<SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_LeftItemsProperty));
+		//}
+
+		public static readonly DependencyProperty RightItemsProperty = DependencyProperty.Register(
+			"RightItems", typeof(SwipeItems), typeof(SwipeControl), new PropertyMetadata(default(SwipeItems), OnRightItemsPropertyChanged));
+
+		public SwipeItems RightItems
+		{
+			get { return (SwipeItems)GetValue(RightItemsProperty); }
+			set { SetValue(RightItemsProperty, value); }
+		}
+
+		//void RightItems(SwipeItems & value)
+		//{
+		//    [[gsl.suppress(con)]]
+		//    {
+		//    (SwipeControl)(this).SetValue(s_RightItemsProperty, ValueHelper<SwipeItems>.BoxValueIfNecessary(value));
+		//    }
+		//}
+
+		//SwipeItems RightItems()
+		//{
+		//    return ValueHelper<SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_RightItemsProperty));
+		//}
+
+		public static readonly DependencyProperty TopItemsProperty = DependencyProperty.Register(
+			"TopItems", typeof(SwipeItems), typeof(SwipeControl), new PropertyMetadata(default(SwipeItems), OnTopItemsPropertyChanged));
+
+		public SwipeItems TopItems
+		{
+			get { return (SwipeItems)GetValue(TopItemsProperty); }
+			set { SetValue(TopItemsProperty, value); }
+		}
+
+		//void TopItems(SwipeItems & value)
+		//{
+		//    [[gsl.suppress(con)]]
+		//    {
+		//    (SwipeControl)(this).SetValue(s_TopItemsProperty, ValueHelper<SwipeItems>.BoxValueIfNecessary(value));
+		//    }
+		//}
+
+		//SwipeItems TopItems()
+		//{
+		//    return ValueHelper<SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_TopItemsProperty));
+		//}
 }}

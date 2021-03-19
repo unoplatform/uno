@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeItems : DependencyObject, IEnumerable<SwipeItem>, IList<SwipeItem>, IObservableVector<SwipeItem>
 	{
-		public void SwipeItems()
+		public SwipeItems()
 		{
 			// create the Collection
 			var collection = new ObservableCollection<SwipeItem>();

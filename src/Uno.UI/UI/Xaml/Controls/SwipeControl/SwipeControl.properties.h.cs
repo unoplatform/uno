@@ -8,61 +8,61 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeControl
 	{
-		public:
+		//public:
 
-		SwipeControlProperties();
+		//SwipeControlProperties();
 
-		void BottomItems(winrt.SwipeItems & value);
+		//void BottomItems(winrt.SwipeItems & value);
 
-		winrt.SwipeItems BottomItems();
+		//winrt.SwipeItems BottomItems();
 
-		void LeftItems(winrt.SwipeItems & value);
+		//void LeftItems(winrt.SwipeItems & value);
 
-		winrt.SwipeItems LeftItems();
+		//winrt.SwipeItems LeftItems();
 
-		void RightItems(winrt.SwipeItems & value);
+		//void RightItems(winrt.SwipeItems & value);
 
-		winrt.SwipeItems RightItems();
+		//winrt.SwipeItems RightItems();
 
-		void TopItems(winrt.SwipeItems & value);
+		//void TopItems(winrt.SwipeItems & value);
 
-		winrt.SwipeItems TopItems();
+		//winrt.SwipeItems TopItems();
 
-		static winrt.DependencyProperty BottomItemsProperty() { return s_BottomItemsProperty; }
+		//static winrt.DependencyProperty BottomItemsProperty() { return s_BottomItemsProperty; }
 
-		static winrt.DependencyProperty LeftItemsProperty() { return s_LeftItemsProperty; }
+		//static winrt.DependencyProperty LeftItemsProperty() { return s_LeftItemsProperty; }
 
-		static winrt.DependencyProperty RightItemsProperty() { return s_RightItemsProperty; }
+		//static winrt.DependencyProperty RightItemsProperty() { return s_RightItemsProperty; }
 
-		static winrt.DependencyProperty TopItemsProperty() { return s_TopItemsProperty; }
+		//static winrt.DependencyProperty TopItemsProperty() { return s_TopItemsProperty; }
 
-		static GlobalDependencyProperty s_BottomItemsProperty;
-		static GlobalDependencyProperty s_LeftItemsProperty;
-		static GlobalDependencyProperty s_RightItemsProperty;
-		static GlobalDependencyProperty s_TopItemsProperty;
+		//static GlobalDependencyProperty s_BottomItemsProperty;
+		//static GlobalDependencyProperty s_LeftItemsProperty;
+		//static GlobalDependencyProperty s_RightItemsProperty;
+		//static GlobalDependencyProperty s_TopItemsProperty;
 
-		static void EnsureProperties();
+		//static void EnsureProperties();
 
-		static void ClearProperties();
+		//static void ClearProperties();
 
-		static void OnBottomItemsPropertyChanged(
-			winrt.DependencyObject & sender,
+		//static void OnBottomItemsPropertyChanged(
+		//	winrt.DependencyObject & sender,
 
-		winrt.DependencyPropertyChangedEventArgs & args);
+		//winrt.DependencyPropertyChangedEventArgs & args);
 
-		static void OnLeftItemsPropertyChanged(
-			winrt.DependencyObject & sender,
+		//static void OnLeftItemsPropertyChanged(
+		//	winrt.DependencyObject & sender,
 
-		winrt.DependencyPropertyChangedEventArgs & args);
+		//winrt.DependencyPropertyChangedEventArgs & args);
 
-		static void OnRightItemsPropertyChanged(
-			winrt.DependencyObject & sender,
+		//static void OnRightItemsPropertyChanged(
+		//	winrt.DependencyObject & sender,
 
-		winrt.DependencyPropertyChangedEventArgs & args);
+		//winrt.DependencyPropertyChangedEventArgs & args);
 
-		static void OnTopItemsPropertyChanged(
-			winrt.DependencyObject & sender,
+		//static void OnTopItemsPropertyChanged(
+		//	winrt.DependencyObject & sender,
 
-		winrt.DependencyPropertyChangedEventArgs & args);
-	};
+		//winrt.DependencyPropertyChangedEventArgs & args);
+	}
 }

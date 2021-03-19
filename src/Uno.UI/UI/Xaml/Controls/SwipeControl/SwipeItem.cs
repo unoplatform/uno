@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class SwipeItem : DependencyObject
+	public partial class SwipeItem : FrameworkElement
 	{
 		static double s_swipeItemWidth = 68.0;
 		static double s_swipeItemHeight = 60.0;
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void GenerateControl(AppBarButton appBarButton, Style swipeItemStyle)
+		internal void GenerateControl(AppBarButton appBarButton, Style swipeItemStyle)
 		{
 			appBarButton.Style(swipeItemStyle);
 			if (Background is {})
@@ -77,7 +77,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (IconSource is {})
 			{
-				appBarButton.Icon = IconSource.CreateIconElement();
+				// TODO Uno
+				//appBarButton.Icon = IconSource.CreateIconElement();
 			}
 
 			appBarButton.Label = Text;
