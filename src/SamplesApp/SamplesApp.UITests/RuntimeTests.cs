@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,10 +18,10 @@ namespace SamplesApp.UITests.Runtime
 	{
 		private const string PendingTestsText = "Pending...";
 		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
+		private const string TestResultsOutputFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH";
 
 		[Test]
 		[AutoRetry(tryCount: 1)]
-		[Timeout(900000)] // Adjust this timeout based on average test run duration
 		public async Task RunRuntimeTests()
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
@@ -34,6 +35,7 @@ namespace SamplesApp.UITests.Runtime
 			var failedTests = new QueryEx(q => AllQuery(q).Marked("failedTests"));
 			var runningState = new QueryEx(q => AllQuery(q).Marked("runningState"));
 			var runTestCount = new QueryEx(q => AllQuery(q).Marked("runTestCount"));
+			var unitTestsControl = new QueryEx(q => AllQuery(q).Marked("UnitTestsRootControl"));
 
 			bool IsTestExecutionDone()
 				=> runningState.GetDependencyPropertyValue("Text")?.ToString().Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false;
@@ -67,6 +69,8 @@ namespace SamplesApp.UITests.Runtime
 				Assert.Fail("A test run timed out");
 			}
 
+			TestContext.AddTestAttachment(ArchiveResults(unitTestsControl), "runtimetests-results.zip");
+
 			var count = failedTestsCount.GetDependencyPropertyValue("Text").ToString();
 
 			if (count != "0")
@@ -84,5 +88,35 @@ namespace SamplesApp.UITests.Runtime
 
 			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
 		}
+
+
+		private static string ArchiveResults(QueryEx unitTestsControl)
+		{
+			var document = unitTestsControl.GetDependencyPropertyValue<string>("NUnitTestResultsDocument");
+
+			var file = Path.GetTempFileName();
+			File.WriteAllText(file, document, Encoding.Unicode);
+
+			if (Environment.GetEnvironmentVariable(TestResultsOutputFilePath) is { } path)
+			{
+				File.Copy(file, path);
+			}
+			else
+			{
+				Console.WriteLine($"The environment variable {TestResultsOutputFilePath} is not defined, skipping file system extraction");
+			}
+
+			var finalFile = Path.Combine(Path.GetDirectoryName(file), "test-results.xml");
+
+			if (File.Exists(finalFile))
+			{
+				File.Delete(finalFile);
+			}
+
+			File.Move(file, finalFile);
+
+			return finalFile;
+		}
+
 	}
 }

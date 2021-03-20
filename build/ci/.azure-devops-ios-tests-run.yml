@@ -88,6 +88,14 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       failTaskOnFailedTests: true
 
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
+      testRunTitle: 'iOS Runtime Tests Run'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
+
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
