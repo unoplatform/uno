@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,7 +42,7 @@ namespace Uno.UI.Samples.Tests
 			Passed,
 			Failed,
 			Error,
-			Ignored,
+			Skipped,
 		}
 
 		public UnitTestsControl()
@@ -290,7 +291,7 @@ namespace Uno.UI.Samples.Tests
 
 				testCaseNode.SetAttribute("name", run.TestName);
 				testCaseNode.SetAttribute("fullname", run.TestName);
-				testCaseNode.SetAttribute("duration", run.Duration.ToString());
+				testCaseNode.SetAttribute("duration", run.Duration.TotalSeconds.ToString(CultureInfo.InvariantCulture));
 				testCaseNode.SetAttribute("time", "0");
 
 				testCaseNode.SetAttribute("result", run.TestResult.ToString());
@@ -323,7 +324,7 @@ namespace Uno.UI.Samples.Tests
 				case TestResult.Failed:
 					return "❌ (F)";
 
-				case TestResult.Ignored:
+				case TestResult.Skipped:
 					return "🚫 (I)";
 
 				case TestResult.Passed:
@@ -340,7 +341,7 @@ namespace Uno.UI.Samples.Tests
 				default:
 					return Colors.Red;
 
-				case TestResult.Ignored:
+				case TestResult.Skipped:
 					return Colors.Orange;
 
 				case TestResult.Passed:
@@ -467,7 +468,7 @@ namespace Uno.UI.Samples.Tests
 				if (IsIgnored(testMethod, out var ignoreMessage))
 				{
 					_currentRun.Ignored++;
-					ReportTestResult(testName, TimeSpan.Zero, TestResult.Ignored, message: ignoreMessage);
+					ReportTestResult(testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
 					continue;
 				}
 
@@ -572,7 +573,7 @@ namespace Uno.UI.Samples.Tests
 						if (e is AssertInconclusiveException inconclusiveException)
 						{
 							_currentRun.Ignored++;
-							ReportTestResult(fullTestName, sw.Elapsed, TestResult.Ignored, message: e.Message);
+							ReportTestResult(fullTestName, sw.Elapsed, TestResult.Skipped, message: e.Message);
 						}
 						else if (expectedException == null || !expectedException.ExceptionType.IsInstanceOfType(e))
 						{
