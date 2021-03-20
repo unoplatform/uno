@@ -363,7 +363,18 @@ namespace Uno.UI.Controls
 					this.Log().Debug("Resetting all ViewControllers based on Frame's state.");
 				}
 
-				NavigationController.SetViewControllers(viewControllers, animated: true);
+				// TODO: iOS 14 introduced a bug where calling this method is getting unpleasant results (https://developer.apple.com/forums/thread/656524). (https://developer.apple.com/forums/thread/656524)
+				// A workaround for this is removing the animation as this seems to be related to the root cause.
+				// Note: This change should not affect consumer navigation since this is only used when resetting the stack.
+				if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0)) 
+				{
+					NavigationController.SetViewControllers(viewControllers, animated: false);
+				}
+				else
+				{
+					NavigationController.SetViewControllers(viewControllers, animated: true);
+				}
+				
 			}
 		}
 
