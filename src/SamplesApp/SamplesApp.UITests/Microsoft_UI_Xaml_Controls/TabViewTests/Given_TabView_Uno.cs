@@ -6,7 +6,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
-	public class Given_TabView_Uno : SampleControlUITestBase
+	public partial class Given_TabView_Uno : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

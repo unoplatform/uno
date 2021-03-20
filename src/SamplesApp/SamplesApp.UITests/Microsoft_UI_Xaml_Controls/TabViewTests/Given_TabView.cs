@@ -8,7 +8,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
 	[Ignore("Tests are not yet stabilized")]
-	public class Given_TabView : SampleControlUITestBase
+	public partial class Given_TabView : SampleControlUITestBase
 	{
 		// Missing tests
 		// - KeyboardTest (requires keyboard support)

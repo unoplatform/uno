@@ -12,7 +12,7 @@ namespace SamplesApp.UITests.TestFramework
 	/// maximum number of times.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-	public class AutoRetryAttribute : RetryAttribute
+	public partial class AutoRetryAttribute : RetryAttribute
 	{
 
 		/// <summary>

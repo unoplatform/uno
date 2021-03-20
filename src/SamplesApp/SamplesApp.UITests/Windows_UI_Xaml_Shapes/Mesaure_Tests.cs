@@ -9,7 +9,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
-	public class Mesaure_Tests : SampleControlUITestBase
+	public partial class Mesaure_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

@@ -6,7 +6,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 {
-	public class Given_SplitButton : SampleControlUITestBase
+	public partial class Given_SplitButton : SampleControlUITestBase
 	{
 		// TODO: Additional tests can be ported when #3165 is fixed
 

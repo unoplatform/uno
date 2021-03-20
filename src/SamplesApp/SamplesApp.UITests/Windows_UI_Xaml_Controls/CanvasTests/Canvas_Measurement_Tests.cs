@@ -14,7 +14,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 {
-	public class Canvas_Measurement_Tests : SampleControlUITestBase
+	public partial class Canvas_Measurement_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

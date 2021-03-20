@@ -5,7 +5,7 @@ using System.IO;
 
 namespace SamplesApp.UITests
 {
-	public class ScreenshotInfo : IDisposable
+	public partial class ScreenshotInfo : IDisposable
 	{
 		private Bitmap? _bitmap;
 		public FileInfo File { get; }

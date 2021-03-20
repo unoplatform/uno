@@ -10,7 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests
 {
-	public class UnoSamples_WUXProgressRing_Tests : SampleControlUITestBase
+	public partial class UnoSamples_WUXProgressRing_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry()]

@@ -14,7 +14,7 @@ using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
 	[ActivePlatforms(Platform.iOS)]
-	public class Given_TreeView : SampleControlUITestBase
+	public partial class Given_TreeView : SampleControlUITestBase
 	{
 		// Many UI tests were skipped as required UI test features are not supported in Uno
 		// (Keyboard navigation, Drag and Drop, Gamepad, Automation interaction)

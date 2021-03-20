@@ -11,10 +11,15 @@ jobs:
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
+    ## This variable is used in combination with the CategoryBuckerGenerator
+    ## and the UNO_UITEST_BUCKET_ID property. For example, a bucket count
+    ## of 3 implies that UNO_UITEST_BUCKET_ID will be [1;2;3] in the jobs
+    ## matrix.
+    UNO_UITEST_BUCKET_COUNT: 3
+
   steps:
   - checkout: self
     clean: true
-
 
   - task: MSBuild@1
     displayName: 'Build UI Tests'

@@ -5,7 +5,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SliderTests
 {
-	public class Given_Slider : SampleControlUITestBase
+	public partial class Given_Slider : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

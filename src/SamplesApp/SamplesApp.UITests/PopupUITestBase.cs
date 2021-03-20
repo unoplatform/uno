@@ -5,7 +5,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests
 {
-	public class PopupUITestBase : SampleControlUITestBase
+	public partial class PopupUITestBase : SampleControlUITestBase
 	{
 		[SetUp]
 		public void AndroidFullScreenSetup()

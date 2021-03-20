@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_ApplicationModel_Resources
 {
 	[TestFixture]
-	public class ResourceLoader_Simple : SampleControlUITestBase
+	public partial class ResourceLoader_Simple : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

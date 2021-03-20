@@ -15,7 +15,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	public class Tapped_Tests : SampleControlUITestBase
+	public partial class Tapped_Tests : SampleControlUITestBase
 	{
 		private const string _xamlTestPage = "UITests.Shared.Windows_UI_Input.GestureRecognizerTests.TappedTest";
 

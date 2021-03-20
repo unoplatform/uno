@@ -15,7 +15,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 {
 	[TestFixture]
-	public class UnoSamplesTests_ScrollBar : SampleControlUITestBase
+	public partial class UnoSamplesTests_ScrollBar : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

@@ -11,7 +11,7 @@ using StringQuery = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppTypedSelect
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 {
-	public class DragCoordinates_Tests : SampleControlUITestBase
+	public partial class DragCoordinates_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

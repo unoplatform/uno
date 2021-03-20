@@ -11,7 +11,7 @@ using SamplesApp.UITests.TestFramework;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
 	[TestFixture]
-	public class ScrollViewer_Pointer_Tests : SampleControlUITestBase
+	public partial class ScrollViewer_Pointer_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

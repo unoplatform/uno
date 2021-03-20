@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml
 {
 	[TestFixture]
-	public class UIElementTests : SampleControlUITestBase
+	public partial class UIElementTests : SampleControlUITestBase
 	{
 		// TODO: convert this to RuntimeTests https://github.com/unoplatform/uno/issues/2114#issuecomment-555209397
 		[Test]

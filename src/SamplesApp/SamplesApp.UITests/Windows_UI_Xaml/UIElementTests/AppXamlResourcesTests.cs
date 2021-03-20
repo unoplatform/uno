@@ -10,7 +10,7 @@ using Uno.UITest.Helpers;
 namespace SamplesApp.UITests.Windows_UI_Xaml
 {
 	[TestFixture]
-	public class AppXamlResourcesTests : SampleControlUITestBase
+	public partial class AppXamlResourcesTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

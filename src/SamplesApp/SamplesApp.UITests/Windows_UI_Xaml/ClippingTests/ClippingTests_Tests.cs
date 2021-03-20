@@ -8,7 +8,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 {
 	[TestFixture]
-	public class ClippingTests_Tests : SampleControlUITestBase
+	public partial class ClippingTests_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
