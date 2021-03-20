@@ -828,6 +828,14 @@ declare namespace Windows.Phone.Devices.Notification {
         static vibrate(duration: number): boolean;
     }
 }
+declare namespace Windows.Security.Authentication.Web {
+    class WebAuthenticationBroker {
+        static getReturnUrl(): string;
+        static authenticateUsingIframe(iframeId: string, urlNavigate: string, urlRedirect: string, timeout: number): Promise<string>;
+        static authenticateUsingWindow(urlNavigate: string, urlRedirect: string, title: string, popUpWidth: number, popUpHeight: number, timeout: number): Promise<string>;
+        private static startMonitoringRedirect;
+    }
+}
 declare namespace Windows.Storage {
     class ApplicationDataContainer {
         private static buildStorageKey;

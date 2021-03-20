@@ -3574,6 +3574,12 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_VerticalScrollMode(Windows.UI.Xaml.Controls.ScrollMode value)"
 				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.Security.Authentication.Web.WebAuthenticationBroker..ctor()"
+				reason="Not part of the UWP API - and it's a static class" />
+			<Member
+				fullName="System.Void Windows.Security.Authentication.Web.WebAuthenticationResult..ctor()"
+				reason="Not part of the UWP API" />
 		</Methods>
 		<Fields>
 			<Member

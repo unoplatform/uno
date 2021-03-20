@@ -38,6 +38,8 @@
       href: signalr.md
     - name: How to use MSAL for Azure Authentication
       href: interop/MSAL.md
+    - name: OpenID Connect
+      href: features/open-id-connect.md
     - name: Tutorial - Silverlight migration
       items:
         - name: Overview
@@ -198,6 +200,8 @@
           href: features/windows-system-power.md
         - name: Speech Recognition
           href: features/SpeechRecognition.md
+        - name: Web Authentication Broker
+          href: features/web-authentication-broker.md
         - name: Windows.ApplicationModel
           href: features\windows-applicationmodel.md
         - name: Windows.ApplicationModel.Calls

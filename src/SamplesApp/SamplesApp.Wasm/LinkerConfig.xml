@@ -12,6 +12,10 @@
 	<type fullname="System.Linq.Expressions*" />
   </assembly>
 
+  <!-- For Oidc-Client library -->
+  <assembly fullname="IdentityModel" />
+  <assembly fullname="System.IdentityModel.Tokens.Jwt" />
+  
   <assembly fullname="BenchmarkDotNet">
     <type fullname="BenchmarkDotNet.Toolchains.InProcess.InProcessRunner*" />
   </assembly>
