@@ -33,8 +33,12 @@ then
     mv $ANDROID_HOME/platform-tools/platform-tools/* $ANDROID_HOME/platform-tools
 fi
 
+AVD_NAME=xamarin_android_emulator
+
 # Create emulator
-echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" --sdcard 128M --force
+echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n "$AVD_NAME" --abi "x86" -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" --sdcard 128M --force
+
+echo "hw.cpu.ncore=2" >> ~/.android/avd/$AVD_NAME.avd/config.ini
 
 echo $ANDROID_HOME/emulator/emulator -list-avds
 
@@ -43,19 +47,22 @@ $ANDROID_HOME/emulator/emulator -accel-check
 
 echo "Starting emulator"
 
+# kickstart ADB
+$ANDROID_HOME/platform-tools/adb devices
+
 # Start emulator in background
-nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x800 -memory 2048 -no-audio -no-snapshot -netfast -qemu > /dev/null 2>&1 &
+nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-audio -no-snapshot -no-window -qemu > /dev/null 2>&1 &
 
 export IsUiAutomationMappingEnabled=true
 
 # Wait for the emulator to finish booting
-$BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
 # Restart the emulator to avoid running first-time tasks
 $ANDROID_HOME/platform-tools/adb reboot
 
 # Wait for the emulator to finish booting
-$BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
 # list active devices
 $ANDROID_HOME/platform-tools/adb devices
@@ -73,10 +80,11 @@ then
 		namespace != 'SamplesApp.UITests.Snap' \
 		and class != 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
 		and class != 'SamplesApp.UITests.Runtime.RuntimeTests' \
-		and cat == 'testBucket:$UNO_UITEST_BUCKET_ID'
+		and cat =~ 'testBucket:$UNO_UITEST_BUCKET_ID'
 	";
 
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL
+
 elif [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
 then
 	export TEST_FILTERS="\
