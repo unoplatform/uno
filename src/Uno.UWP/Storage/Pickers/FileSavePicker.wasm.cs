@@ -20,13 +20,22 @@ namespace Windows.Storage.Pickers
 
 		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
-			if (WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers && IsNativePickerSupported())
+			var fileSystemAccessApiEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
+				.HasFlag(WasmPickerConfiguration.FileSystemAccessApi);
+			if (fileSystemAccessApiEnabled && IsNativePickerSupported())
 			{
 				return await NativePickerPickSaveFileAsync(token);
 			}
 
-			// Fallback to download-based picker.
-			return await DownloadPickerPickSaveFileAsync(token);
+			var downloadUploadEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
+				.HasFlag(WasmPickerConfiguration.DownloadUpload);
+			if (downloadUploadEnabled)
+			{
+				// Fallback to download-based picker.
+				return await DownloadPickerPickSaveFileAsync(token);
+			}
+
+			throw new NotSupportedException("Could not handle the request using any picker implementation.");
 		}
 
 		private bool IsNativePickerSupported()
@@ -87,8 +96,16 @@ namespace Windows.Storage.Pickers
 				{
 					temporaryFolder.MakePersistent();
 				}
+
+				if (string.IsNullOrEmpty(SuggestedFileName))
+				{
+					SuggestedFileName = Guid.NewGuid().ToString();
+				}
+
+				var extension = FileTypeChoices.Count > 0 ? FileTypeChoices.First().Value[0] : "";
+
 				// The mime type is chosen by the extension, and we cannot reliably send multiple mime type in the browser
-				var fileName = SuggestedFileName + FileTypeChoices.First().Value[0];
+				var fileName = SuggestedFileName + extension;
 				SuggestedSaveFile = await temporaryFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 			}
 			return SuggestedSaveFile;

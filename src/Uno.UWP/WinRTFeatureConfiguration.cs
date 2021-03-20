@@ -82,6 +82,7 @@ namespace Uno
 		{
 			public static class Pickers
 			{
+#if __WASM__
 				/// <summary>
 				/// Gets or sets a value indicating whether the file pickers based on
 				/// JS File System Access API are used. When set to false, or if the user's
@@ -89,8 +90,19 @@ namespace Uno
 				/// and FileSavePicker will default to "upload" and "download"
 				/// based pickers.
 				/// </summary>
-				public static bool AllowWasmNativePickers { get; set; } = true;
+				public static WasmPickerConfiguration WasmConfiguration { get; set; } = WasmPickerConfiguration.FileSystemAccessApiWithFallback;
+#endif
 			}
 		}
 	}
+
+#if __WASM__
+	[Flags]
+	public enum WasmPickerConfiguration
+	{
+		FileSystemAccessApi = 1,
+		DownloadUpload = 2,
+		FileSystemAccessApiWithFallback = FileSystemAccessApi | DownloadUpload,
+	}
+#endif
 }

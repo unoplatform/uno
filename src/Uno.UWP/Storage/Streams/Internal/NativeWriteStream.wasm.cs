@@ -72,6 +72,7 @@ namespace Uno.Storage.Streams.Internal
 			_cacheStream.Seek(0, SeekOrigin.Begin);
 			await _cacheStream.CopyToAsync(targetStream);
 			await targetStream.FlushAsync();
+			await targetStream.CloseAsync();
 		}
 
 		public override void Flush()

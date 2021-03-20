@@ -31,12 +31,22 @@ namespace Windows.Storage.Pickers
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
-			if (WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers && IsNativePickerSupported())
+			var fileSystemAccessApiEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
+				.HasFlag(WasmPickerConfiguration.FileSystemAccessApi);
+			if (fileSystemAccessApiEnabled && IsNativePickerSupported())
 			{
 				return await NativePickerPickFilesAsync(multiple, token);
 			}
 
-			return await UploadPickerPickSaveFileAsync(multiple, token);
+			var downloadUploadEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
+				.HasFlag(WasmPickerConfiguration.DownloadUpload);
+			if (downloadUploadEnabled)
+			{
+				// Fallback to download-based picker.
+				return await UploadPickerPickFilesAsync(multiple, token);
+			}
+
+			throw new NotSupportedException("Could not handle the request using any picker implementation.");
 		}
 
 		private bool IsNativePickerSupported()
@@ -109,7 +119,7 @@ namespace Windows.Storage.Pickers
 			return acceptTypes.ToArray();
 		}
 
-		private async Task<FilePickerSelectedFilesArray> UploadPickerPickSaveFileAsync(bool multiple, CancellationToken token)
+		private async Task<FilePickerSelectedFilesArray> UploadPickerPickFilesAsync(bool multiple, CancellationToken token)
 		{
 			var multipleParameter = multiple ? "true" : "false";
 			var acceptParameter = WebAssemblyRuntime.EscapeJs(BuildAcceptString());

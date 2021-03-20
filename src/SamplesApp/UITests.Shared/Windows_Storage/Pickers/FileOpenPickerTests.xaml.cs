@@ -1,15 +1,15 @@
 ﻿using System;
-using Windows.UI.Xaml.Controls;
-using Uno.UI.Samples.Controls;
-using Windows.Storage.Pickers;
-using Uno.UI.Samples.UITests.Helpers;
-using Windows.UI.Core;
-using Windows.Storage;
-using System.Linq;
 using System.Collections.ObjectModel;
-using Uno.Extensions;
-using Uno.Disposables;
+using System.Linq;
 using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.UITests.Helpers;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_Storage.Pickers
 {
@@ -28,7 +28,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			ViewModel = args.NewValue as FileOpenPickerTestsViewModel;
 		}
 
-		public FileOpenPickerTestsViewModel ViewModel { get; private set; }		
+		public FileOpenPickerTestsViewModel ViewModel { get; private set; }
 	}
 
 	public class FileOpenPickerTestsViewModel : ViewModelBase
@@ -41,12 +41,13 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		public FileOpenPickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			Disposables.Add(Disposable.Create(()=>
-			{
 #if __WASM__
-				WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = true;
-#endif
+			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApi;
+			Disposables.Add(Disposable.Create(() =>
+			{
+				WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApiWithFallback;
 			}));
+#endif
 		}
 
 		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues(typeof(PickerLocationId)).OfType<PickerLocationId>().ToArray();
@@ -86,12 +87,16 @@ namespace UITests.Shared.Windows_Storage.Pickers
 #if __WASM__
 		public bool UseNativePicker
 		{
-			get => WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers;
+			get => WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration == WasmPickerConfiguration.FileSystemAccessApi;
 			set
 			{
-				if (WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers != value)
+				var usesNativePicker = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration == WasmPickerConfiguration.FileSystemAccessApi;
+				if (usesNativePicker != value)
 				{
-					WinRTFeatureConfiguration.Storage.Pickers.AllowWasmNativePickers = value;
+					WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = value ?
+						WasmPickerConfiguration.FileSystemAccessApi :
+						WasmPickerConfiguration.DownloadUpload;
+
 					RaisePropertyChanged();
 				}
 			}

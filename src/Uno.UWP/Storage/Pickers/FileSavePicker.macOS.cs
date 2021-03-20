@@ -19,6 +19,10 @@ namespace Windows.Storage.Pickers
 			var savePicker = new NSSavePanel();
 			savePicker.DirectoryUrl = new NSUrl(GetStartPath(), true);
 			savePicker.AllowedFileTypes = GetFileTypes();
+			if (!string.IsNullOrEmpty(CommitButtonText))
+			{
+				savePicker.Prompt = CommitButtonText;
+			}
 			if (SuggestedFileName != null)
 			{
 				savePicker.NameFieldStringValue = SuggestedFileName;

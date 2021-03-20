@@ -997,7 +997,7 @@ declare namespace Uno.Storage.Streams {
         private constructor();
         static openAsync(streamId: string, fileId: string): Promise<string>;
         static readAsync(streamId: string, targetArrayPointer: number, offset: number, count: number, position: number): Promise<string>;
-        static closeAsync(streamId: string): Promise<string>;
+        static close(streamId: string): void;
     }
 }
 declare namespace Uno.Storage.Streams {
@@ -1007,6 +1007,7 @@ declare namespace Uno.Storage.Streams {
         private _buffer;
         private constructor();
         static openAsync(streamId: string, fileId: string): Promise<string>;
+        private static verifyPermissionAsync;
         static writeAsync(streamId: string, dataArrayPointer: number, offset: number, count: number, position: number): Promise<string>;
         static closeAsync(streamId: string): Promise<string>;
         static truncateAsync(streamId: string, length: number): Promise<string>;

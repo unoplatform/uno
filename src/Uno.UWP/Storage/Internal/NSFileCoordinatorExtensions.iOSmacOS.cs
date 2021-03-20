@@ -18,7 +18,7 @@ namespace Uno.Storage.Internal
 						throw new UnauthorizedAccessException($"Could not coordinate file system operation. {error}");
 					}
 
-					operation();
+					operation?.Invoke();
 					completionSource.TrySetResult(true);
 				}
 				catch (Exception ex)

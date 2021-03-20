@@ -45,9 +45,8 @@
 			}
 		}
 
-		public static async closeAsync(streamId: string): Promise<string> {
+		public static close(streamId: string) {
 			NativeFileReadStream._streamMap.delete(streamId);
-			return "";
 		}
 	}
 }

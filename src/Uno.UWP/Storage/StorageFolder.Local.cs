@@ -65,31 +65,50 @@ namespace Windows.Storage
 			public override async Task<StorageFile> CreateFileAsync(string desiredName, CreationCollisionOption options, CancellationToken cancellationToken)
 			{
 				await TryInitializeStorage();
+
+				var path = IOPath.Combine(Path, desiredName);
 				var actualName = desiredName;
 
-				if (File.Exists(IOPath.Combine(Path, desiredName)))
+				switch (options)
 				{
-					switch (options)
-					{
-						case CreationCollisionOption.FailIfExists:
-							throw new Exception($"There is already a file with the name '{desiredName}'.");
-						case CreationCollisionOption.OpenIfExists:
-							break;
-						case CreationCollisionOption.ReplaceExisting:
-							File.Create(IOPath.Combine(Path, desiredName)).Close();
-							break;
-						case CreationCollisionOption.GenerateUniqueName:
-							actualName = await FindAvailableNumberedFileNameAsync(desiredName);
-							var path = IOPath.Combine(Path, actualName);
-							File.Create(path).Close();
-							break;
-						default:
-							throw new ArgumentOutOfRangeException(nameof(options));
-					}
+					case CreationCollisionOption.FailIfExists:
+						if (Directory.Exists(path) || File.Exists(path))
+						{
+							throw new UnauthorizedAccessException("There is already an item with the same name.");
+						}
+						break;
+
+					case CreationCollisionOption.GenerateUniqueName:
+						actualName = await FindAvailableNumberedFileNameAsync(desiredName);
+						break;
+
+					case CreationCollisionOption.OpenIfExists:
+						if (Directory.Exists(path))
+						{
+							throw new UnauthorizedAccessException("There is already a folder with the same name.");
+						}
+						break;
+
+					case CreationCollisionOption.ReplaceExisting:
+						if (Directory.Exists(path))
+						{
+							throw new UnauthorizedAccessException("There is already a folder with the same name.");
+						}
+
+						if (File.Exists(path))
+						{
+							File.Delete(path);
+						}
+						break;
+
+					default:
+						throw new ArgumentOutOfRangeException(nameof(options));
 				}
-				else
+
+				var actualPath = IOPath.Combine(Path, actualName);
+				if (!File.Exists(actualPath))
 				{
-					File.Create(IOPath.Combine(Path, desiredName)).Close();
+					File.Create(actualPath).Close();
 				}
 
 				return await StorageFile.GetFileFromPathAsync(IOPath.Combine(Path, actualName));
