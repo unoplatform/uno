@@ -16,7 +16,12 @@ namespace MUXControlsTestApp.Utilities
 				return;
 			}
 #endif
-			TestServices.WindowHelper.WaitForIdle().Wait(TestUtilities.DefaultWaitMs);
+#if !NETFX_CORE
+			if (!CoreDispatcher.Main.HasThreadAccess)
+#endif
+			{
+				TestServices.WindowHelper.WaitForIdle().Wait(TestUtilities.DefaultWaitMs);
+			}
 		}
 	}
 }

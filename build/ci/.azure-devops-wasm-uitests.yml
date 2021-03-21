@@ -230,6 +230,14 @@ jobs:
       failTaskOnFailedTests: true
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
+      testRunTitle: 'WebAssembly Runtime Tests Run $(SITE_SUFFIX)'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
+
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
