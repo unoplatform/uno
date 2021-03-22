@@ -102,6 +102,17 @@ export class UnoNewProjectManager {
                 return;
             }
 
+            // check template
+            prog?.report({
+                message: `Checking Uno Template`
+            });
+            const templateSuccess = await this.installUnoTemplate(projectLocation);
+            if (!templateSuccess) {
+                ExtensionUtils.writeln(`Aborting creation, errors during dotnet new --install Uno.ProjectTemplates.Dotnet`);
+                res();
+                return;
+            }
+
             // creation is specific
             prog?.report({
                 message: `Creating ${projectName}`
@@ -142,6 +153,15 @@ export class UnoNewProjectManager {
             // reload the workspace
             await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(projectLocation.toString()), false);
         });
+    }
+
+    private async installUnoTemplate (projectLocation: PathLike | undefined): Promise<boolean> {
+        return await this.executeDotnetWithArgs(projectLocation!,
+            [
+                "new",
+                "--install",
+                "Uno.ProjectTemplates.Dotnet::3.6.0-dev.578"
+            ]);
     }
 
     public async createSkiaGtkProject (): Promise<void> {
