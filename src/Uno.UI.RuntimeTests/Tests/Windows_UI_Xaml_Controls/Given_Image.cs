@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.Foundation;
@@ -53,17 +55,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await TestServices.WindowHelper.WaitForIdle();
 
-				if(Math.Round(desiredContainer.Width) != 0 || Math.Round(desiredContainer.Height) != 0)
+				if(Math.Round(desiredContainer.Width) != 0 && Math.Round(desiredContainer.Height) != 0)
 				{
 					break;
 				}
+
+				desiredContainer = innerGrid.DesiredSize;
 			}
 			while (sw.Elapsed < TimeSpan.FromSeconds(5));
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(30, Math.Round(desiredContainer.Width));
-			Assert.AreEqual(30, Math.Round(desiredContainer.Height));
+			using var _ = new AssertionScope();
+
+			Math.Round(desiredContainer.Width).Should().Be(30, "desiredContainer.Width");
+			Math.Round(desiredContainer.Height).Should().Be(30, "desiredContainer.Width");
 
 			TestServices.WindowHelper.WindowContent = null;
 		}
