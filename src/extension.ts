@@ -66,7 +66,7 @@ export function activate (context: vscode.ExtensionContext): void {
 
             // register the commands
             ExtensionUtils.writeln("Registering commands");
-            UnoCsprojManager.Register();
+            UnoCsprojManager.Register(context);
             UnoNewProjectManager.Register(context);
 
             // ok now create the activity bar view content
