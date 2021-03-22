@@ -23,6 +23,9 @@
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
     </Assets>
     <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.8.27729.1,17.0)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.1.28811.260,17.0)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Workload.NetCrossPlat" Version="[16.3.29230.54,17.0)" DisplayName="Mobile development with .NET" />
+        <Prerequisite Id="Microsoft.VisualStudio.Workload.Universal" Version="[16.3.29102.218,17.0)" DisplayName="Universal Windows Platform development" />
+        <Prerequisite Id="Microsoft.VisualStudio.Workload.NetWeb" Version="[16.3.29311.71,17.0)" DisplayName="ASP.NET and web development" />
     </Prerequisites>
 </PackageManifest>
