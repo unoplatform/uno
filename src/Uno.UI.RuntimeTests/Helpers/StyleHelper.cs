@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using Uno.Disposables;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -59,6 +60,29 @@ namespace Uno.UI.RuntimeTests.Helpers
 			appResources.MergedDictionaries.Add(resources);
 
 			return Disposable.Create(() => appResources.MergedDictionaries.Remove(resources));
+		}
+
+
+
+		/// <summary>
+		/// Ensure Fluent styles are available for the course of a single test.
+		/// </summary>
+		public static IDisposable UseFluentStyles()
+		{
+#if NETFX_CORE // Disabled on UWP for now because 17763 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
+			return null;
+#else
+			var resources = Application.Current.Resources;
+			if (resources is Microsoft.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft.UI.Xaml.Controls.XamlControlsResources>().Any())
+			{
+				return null;
+			}
+
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			resources.MergedDictionaries.Insert(0, xcr);
+
+			return new DisposableAction(() => resources.MergedDictionaries.Remove(xcr));
+#endif
 		}
 	}
 }
