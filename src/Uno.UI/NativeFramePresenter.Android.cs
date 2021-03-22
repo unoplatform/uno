@@ -144,10 +144,32 @@ namespace Uno.UI.Controls
 						await oldPage.AnimateAsync(GetExitAnimation());
 						oldPage.ClearAnimation();
 					}
+
 					if (oldPage != null)
 					{
 						_pageStack.Children.Remove(oldPage);
 					}
+
+					if (!FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+					{
+						for (var pageIndex = _pageStack.Children.Count-1; pageIndex >= 0; pageIndex--)
+						{
+							var page = _pageStack.Children[pageIndex];
+							if (page == newPage)
+							{
+								break;
+							}
+
+							_pageStack.Children.Remove(page);
+						}
+
+						//In case we cleared the whole stack. This should never happen
+						if (_pageStack.Children.Count == 0)
+						{
+							_pageStack.Children.Insert(0, newPage);
+						}
+					}
+
 					break;
 			}
 
