@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+// Imported in uno on 2021/03/21 from commit 307bd99682cccaa128483036b764c0b7c862d666
+// https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeControl_TestUI/SwipeControlPage2.xaml.cs
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,17 +21,17 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI;
 
-using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
-using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
-using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
-using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
-using SwipeBehaviorOnInvoked = Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked;
-using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
-using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
+//using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
+//using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
+//using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
+//using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
+//using SwipeBehaviorOnInvoked = Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked;
+//using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
+//using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
 
 namespace MUXControlsTestApp
 {
-    public sealed partial class SwipeControlPage2 : TestPage
+    public sealed partial class SwipeControlPage2 : Page //: TestPage
     {
         SwipeItem pastSender;
         public SwipeControlPage2()

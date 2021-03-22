@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+// Imported in uno on 2021/03/21 from commit 307bd99682cccaa128483036b764c0b7c862d666
+// https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeControl_TestUI/SwipeControlPage.xaml.cs
+
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -15,18 +18,18 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using SwipeControl_TestUI;
 
-using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
-using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
-using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
-using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
-using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
-using SwipeTestHooks = Microsoft.UI.Private.Controls.SwipeTestHooks;
-using MUXControlsTestHooks = Microsoft.UI.Private.Controls.MUXControlsTestHooks;
-using MUXControlsTestHooksLoggingMessageEventArgs = Microsoft.UI.Private.Controls.MUXControlsTestHooksLoggingMessageEventArgs;
+//using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
+//using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
+//using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+//using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
+//using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
+//using SwipeTestHooks = Microsoft.UI.Private.Controls.SwipeTestHooks;
+//using MUXControlsTestHooks = Microsoft.UI.Private.Controls.MUXControlsTestHooks;
+//using MUXControlsTestHooksLoggingMessageEventArgs = Microsoft.UI.Private.Controls.MUXControlsTestHooksLoggingMessageEventArgs;
 
 namespace MUXControlsTestApp
 {
-    public sealed partial class SwipeControlPage : TestPage
+    public sealed partial class SwipeControlPage : Page //: TestPage
     {
         object asyncEventReportingLock = new object();
         List<string> lstAsyncEventMessage = new List<string>();
@@ -44,7 +47,7 @@ namespace MUXControlsTestApp
 
             this.InitializeComponent();
             Container.SizeChanged += ContainerSizeChangedHandler;
-            SwipeTestHooks.LastInteractedWithSwipeControlChanged += SwipeTestHooks_LastInteractedWithSwipeControlChanged;
+			SwipeTestHooks.LastInteractedWithSwipeControlChanged += SwipeTestHooks_LastInteractedWithSwipeControlChanged;
             MaterialHelperTestApiSetup();
 
             if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.XamlUICommand"))
@@ -66,8 +69,9 @@ namespace MUXControlsTestApp
 
             if (chkLogSwipeControlMessages.IsChecked == true)
             {
-                MUXControlsTestHooks.SetLoggingLevelForType("SwipeControl", isLoggingInfoLevel: true, isLoggingVerboseLevel: true);
-                MUXControlsTestHooks.LoggingMessage += MUXControlsTestHooks_LoggingMessage;
+				// TODO UNO
+                //MUXControlsTestHooks.SetLoggingLevelForType("SwipeControl", isLoggingInfoLevel: true, isLoggingVerboseLevel: true);
+                //MUXControlsTestHooks.LoggingMessage += MUXControlsTestHooks_LoggingMessage;
             }
         }
 

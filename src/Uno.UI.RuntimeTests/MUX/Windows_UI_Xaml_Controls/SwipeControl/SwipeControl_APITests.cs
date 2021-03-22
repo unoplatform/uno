@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+// Imported in uno on 2021/03/21 from commit 307bd99682cccaa128483036b764c0b7c862d666
+// https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeControl_APITests/SwipeControlTests.cs
+
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Threading;
@@ -19,16 +22,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
-using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
-using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
-using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
-using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
+//using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
+//using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
+//using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
+//using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+//using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
     [TestClass]
-    public class SwipeControlTests : ApiTestBase
+    public class SwipeControlTests : MUXApiTestBase
     {
         [TestMethod]
         public void SwipeItemTest()
