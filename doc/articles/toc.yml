@@ -42,6 +42,8 @@
           href: signalr.md
         - name: How to use MSAL for Azure Authentication
           href: interop/MSAL.md
+        - name: How to authenticate with OpenID Connect
+          href: guides\open-id-connect.md
     - name: Tutorials
       items:
         - name: Silverlight migration
