@@ -152,7 +152,7 @@
   -->
   <Import Project="..\..\Common.targets" />
   <ItemGroup>
-    <PackageReference Include="EnvDTE100" version="10.0.3" />
+    <PackageReference Include="EnvDTE100" version="16.9.31023.347" />
     <PackageReference Include="Microsoft.Build">
       <Version>15.9.20</Version>
     </PackageReference>
