@@ -1,14 +1,16 @@
-- name: Getting started
+- name: Overview
+  topicHref: intro.md
+- name: Get started
   items:
     - name: Overview
       href: get-started.md
-    - name: Getting Started on Visual Studio
+    - name: Get Started on Visual Studio
       href: get-started-vs.md
-    - name: Getting Started on Visual Studio for Mac
-      href: get-started-vsmac.md
-    - name: Getting Started on Visual Studio Code
+    - name: Get Started on VS Code
       href: get-started-vscode.md
-    - name: Getting Started on Rider
+    - name: Get Started on Visual Studio for Mac
+      href: get-started-vsmac.md
+    - name: Get Started on Rider
       href: get-started-rider.md
     - name: dotnet new templates for Uno Platform
       href: get-started-dotnet-new.md
@@ -28,66 +30,70 @@
   items:
     - name: Overview
       href: tutorials-intro.md
-    - name: How to use Windows Community Toolkit
-      href: uno-community-toolkit.md
-    - name: How to add a splash screen
-      href: splash-screen.md
-    - name: How to consume a webservice
-      href: howto-consume-webservices.md
-    - name: How to integrate SignalR
-      href: signalr.md
-    - name: How to use MSAL for Azure Authentication
-      href: interop/MSAL.md
-    - name: OpenID Connect
-      href: features/open-id-connect.md
-    - name: Tutorial - Silverlight migration
+    - name: How-tos
       items:
-        - name: Overview
-          href: silverlight-migration-landing.md
-        - name: Silverlight to Uno Migration
-          href: guides\silverlight-migration\00-overview.md
-        - name: Create the Uno solution for UWP and WASM
-          href: guides\silverlight-migration\01-create-uno-solution.md
-        - name: Considering navigation
-          href: guides\silverlight-migration\02-considering-navigation.md
-        - name: Reviewing the app startup
-          href: guides\silverlight-migration\03-review-app-startup.md
-        - name: Migrating the home page XAML and styles
-          href: guides\silverlight-migration\04-migrate-home-page-xaml-and-styles.md
-        - name: Switching to string resources
-          href: guides\silverlight-migration\05-string-resources.md
-        - name: Dialogs and errors
-          href: guides\silverlight-migration\07-dialogs.md
-        - name: Data access services
-          href: guides\silverlight-migration\08-data-access-overview.md
-        - name: Client Authentication
-          href: guides\silverlight-migration\09-client-auth-service.md
-        - name: Implementing a singleton token service
-          href: guides\silverlight-migration\10-implementing-singleton-token-service.md
-        - name: Implementing an identity service client
-          href: guides\silverlight-migration\11-implementing-identity-service-client.md
-        - name: Migrating the authentication UI
-          href: guides\silverlight-migration\12-migrate-auth-ui.md
-        - name: Integrating authentication and navigation
-          href: guides\silverlight-migration\13-integrating-auth-and-navigation.md
-        - name: Implement the time entry service
-          href: guides\silverlight-migration\14-implement-timeentry-services.md
-        - name: Migrating the time entry UI
-          href: guides\silverlight-migration\15-migrate-timeentry-ui.md
-        - name: Wrap-up
-          href: guides\silverlight-migration\20-wrap-up.md
-        - name: The TimeEntry Sample apps
-          href: guides\silverlight-migration\98-timeentry-samples.md
-        - name: Useful resources
-          href: guides\silverlight-migration\99-useful-resources.md
-    - name: Tutorial - Embed a JavaScript component
+        - name: How to use Windows Community Toolkit
+          href: uno-community-toolkit.md
+        - name: How to add a splash screen
+          href: splash-screen.md
+        - name: How to consume a web API
+          href: howto-consume-webservices.md
+        - name: How to integrate SignalR
+          href: signalr.md
+        - name: How to use MSAL for Azure Authentication
+          href: interop/MSAL.md
+    - name: Tutorials
       items:
-        - name: Part 1
-          href: interop/wasm-javascript-1.md
-        - name: Part 2
-          href: interop/wasm-javascript-2.md
-        - name: Part 3
-          href: interop/wasm-javascript-3.md
+        - name: Silverlight migration
+          topicHref: silverlight-migration-landing.md 
+          items:
+            - name: Overview
+              href: silverlight-migration-landing.md
+            - name: Silverlight to Uno Migration
+              href: guides\silverlight-migration\00-overview.md
+            - name: Create the Uno solution for UWP and WASM
+              href: guides\silverlight-migration\01-create-uno-solution.md
+            - name: Considering navigation
+              href: guides\silverlight-migration\02-considering-navigation.md
+            - name: Reviewing the app startup
+              href: guides\silverlight-migration\03-review-app-startup.md
+            - name: Migrating the home page XAML and styles
+              href: guides\silverlight-migration\04-migrate-home-page-xaml-and-styles.md
+            - name: Switching to string resources
+              href: guides\silverlight-migration\05-string-resources.md
+            - name: Dialogs and errors
+              href: guides\silverlight-migration\07-dialogs.md
+            - name: Data access services
+              href: guides\silverlight-migration\08-data-access-overview.md
+            - name: Client Authentication
+              href: guides\silverlight-migration\09-client-auth-service.md
+            - name: Implementing a singleton token service
+              href: guides\silverlight-migration\10-implementing-singleton-token-service.md
+            - name: Implementing an identity service client
+              href: guides\silverlight-migration\11-implementing-identity-service-client.md
+            - name: Migrating the authentication UI
+              href: guides\silverlight-migration\12-migrate-auth-ui.md
+            - name: Integrating authentication and navigation
+              href: guides\silverlight-migration\13-integrating-auth-and-navigation.md
+            - name: Implement the time entry service
+              href: guides\silverlight-migration\14-implement-timeentry-services.md
+            - name: Migrating the time entry UI
+              href: guides\silverlight-migration\15-migrate-timeentry-ui.md
+            - name: Wrap-up
+              href: guides\silverlight-migration\20-wrap-up.md
+            - name: The TimeEntry Sample apps
+              href: guides\silverlight-migration\98-timeentry-samples.md
+            - name: Useful resources
+              href: guides\silverlight-migration\99-useful-resources.md
+        - name: Embed a JavaScript component
+          topicHref: interop/wasm-javascript-1.md
+          items:
+            - name: Part 1
+              href: interop/wasm-javascript-1.md
+            - name: Part 2
+              href: interop/wasm-javascript-2.md
+            - name: Part 3
+              href: interop/wasm-javascript-3.md
 - name: Development
   items:
     - name: Overview
@@ -411,4 +417,3 @@
           href: uno-development\troubleshooting-memory-issues.md
         - name: Troubleshooting Source Generation
           href: uno-development\troubleshooting-source-generation.md
-      

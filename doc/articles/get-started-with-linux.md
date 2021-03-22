@@ -1,4 +1,4 @@
-# Getting started with Uno Platform support for Linux
+# Additional setup for Linux
 
 The Uno Platform for Linux current comes with a rendering backend using Skia, and a Shell support with Gtk3.
 

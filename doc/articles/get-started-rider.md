@@ -1,4 +1,4 @@
-# Getting Started on JetBrains Rider
+# Get Started on JetBrains Rider
 
 ## Prerequisites
 * [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
