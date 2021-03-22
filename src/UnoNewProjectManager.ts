@@ -88,31 +88,34 @@ export class UnoNewProjectManager {
             if (projectName === undefined) {
                 ExtensionUtils.writeln(`Aborting creation, name cannot be undefined`);
                 res();
+                return;
             }
 
             // choose folder location
             prog?.report({
                 message: "Choosing unoapp location"
             });
-            const projectLocation = await this.prepareProjectLocation(projectName!);
+            const projectLocation = await this.prepareProjectLocation(projectName);
             if (projectLocation === undefined) {
                 ExtensionUtils.writeln(`Aborting creation, project location cannot be undefined`);
                 res();
+                return;
             }
 
             // creation is specific
             prog?.report({
-                message: `Creating ${projectName!}`
+                message: `Creating ${projectName}`
             });
             const createSuccess = await specific(projectName, projectLocation);
             if (!createSuccess) {
                 ExtensionUtils.writeln(`Aborting creation, errors during dotnet new`);
                 res();
+                return;
             }
 
             // csproj automations
             prog?.report({
-                message: `Configuring ${projectName!}`
+                message: `Configuring ${projectName}`
             });
             const unoCsprojManager = new UnoCsprojManager();
             // fix roslyn generators
@@ -122,9 +125,9 @@ export class UnoNewProjectManager {
 
             // first build to generate code behind
             prog?.report({
-                message: `Building ${projectName!} unoapp`
+                message: `Building ${projectName} unoapp`
             });
-            const buildSuccess = await this.executeDotnetWithArgs(projectLocation!,
+            const buildSuccess = await this.executeDotnetWithArgs(projectLocation,
                 [
                     "build"
                 ]
@@ -133,10 +136,11 @@ export class UnoNewProjectManager {
                 // TODO: in this case maybe we need a cleanup 🤷‍♂️
                 ExtensionUtils.writeln(`Aborting creation, errors during dotnet build`);
                 res();
+                return;
             }
 
             // reload the workspace
-            await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(projectLocation!.toString()), false);
+            await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(projectLocation.toString()), false);
         });
     }
 
