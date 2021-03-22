@@ -122,8 +122,21 @@ namespace Uno.UI.Controls
 
 			if (_frame.Content is Page startPage)
 			{
-				var viewController = new PageViewController(startPage);
-				NavigationController.PushViewController(viewController, false);
+				// When the frame already has content, we add a NavigationRequest in the PageViewController's AssociatedRequests.
+				// Not doing this results in log errors from WillShowViewController and DidShowViewController (the ones about AssociatedRequests being empty).
+				// Then, we push the PageViewController without animations (because the page is already present in the Frame). 
+
+				var pageViewController = new PageViewController(startPage);
+				var navigationEventArgs = new NavigationEventArgs(
+					_frame.CurrentEntry.Instance,
+					NavigationMode.New,
+					_frame.CurrentEntry.NavigationTransitionInfo,
+					_frame.CurrentEntry.Parameter,
+					_frame.CurrentEntry.SourcePageType,
+					null
+				);
+				pageViewController.AssociatedRequests.Add(new NavigationRequest(_frame, navigationEventArgs));
+				NavigationController.PushViewController(pageViewController, false);
 			}
 
 			_controllerDelegate = new ControllerDelegate(this);
