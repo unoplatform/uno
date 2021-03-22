@@ -21,7 +21,9 @@ Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code an
     - You can remove `__WASM__` in `DefineConstants`
 - The symbols font has been updated, and the name needs to be updated. For more information, see [this article](uno-fluent-assets.md).
 
-### Uno 3.6 optional upgrade for Microsoft.Extension.Logging
+### Uno 3.6 
+
+#### Optional upgrade for Microsoft.Extension.Logging
 
 Uno Platform 3.6 templates provide an updated version of the loggers to allow the use of updated `Microsoft.Extension.Logging.*` logging packages. It is not required for applications to upgrade to these newer loggers, yet those provide additional features particularly for iOS and WebAssembly.
 
