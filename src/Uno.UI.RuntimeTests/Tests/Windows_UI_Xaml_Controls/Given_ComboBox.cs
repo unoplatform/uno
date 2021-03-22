@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -135,7 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !__ANDROID__ && !__IOS__ // This does not hold on Android or iOS, possibly because ComboBox is not virtualized
 					Assert.AreEqual(0, CounterGrid.CreationCount);
-					Assert.AreEqual(0, CounterGrid2.CreationCount); 
+					Assert.AreEqual(0, CounterGrid2.CreationCount);
 #endif
 
 					SUT.IsDropDownOpen = true;
@@ -238,6 +240,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				SUT.IsDropDownOpen = false;
 				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Fluent_And_Theme_Changed()
+		{
+			using (StyleHelper.UseFluentStyles())
+			{
+				var comboBox = new MyComboBox
+				{
+					ItemsSource = new[] { 1, 2, 3 },
+					PlaceholderText = "Select..."
+				};
+
+				WindowHelper.WindowContent = comboBox;
+				await WindowHelper.WaitForLoaded(comboBox);
+
+				Assert.AreEqual(Colors.Black, (comboBox.PlaceholderTextBlock.Foreground as SolidColorBrush)?.Color);
+
+				using (ThemeHelper.UseDarkTheme())
+				{
+					Assert.AreEqual(Colors.White, (comboBox.PlaceholderTextBlock.Foreground as SolidColorBrush)?.Color);
+				}
+
+				Assert.AreEqual(Colors.Black, (comboBox.PlaceholderTextBlock.Foreground as SolidColorBrush)?.Color);
 			}
 		}
 	}
