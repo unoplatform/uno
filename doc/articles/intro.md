@@ -62,4 +62,6 @@ Uno Platform lets you write an application once in XAML and C#, and deploy it to
 
 [About Uno Platform](what-is-uno.md): learn more about what Uno Platform is, what it does, and how it works.
 
+[FAQ](faq.md): Frequently Asked Questions about the Uno Platform.
+
 <!-- TODO: top questions -->

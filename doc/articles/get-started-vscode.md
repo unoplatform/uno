@@ -1,4 +1,4 @@
-# Getting Started on VS Code
+# Get Started on VS Code
 
 This guide will walk you through the set-up process for building WebAssembly apps with Uno under Windows, Linux, or macOS.
 

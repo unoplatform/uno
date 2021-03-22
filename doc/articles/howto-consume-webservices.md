@@ -1,4 +1,4 @@
-# How to consume a webservice
+# How to consume a web API
 
 This how-to will walk you through the process of creating a multi-platform application that leverages web services. Specifically you will be:
 

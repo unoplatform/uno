@@ -1,4 +1,4 @@
-# Getting Started on Visual Studio For Mac
+# Get Started on Visual Studio For Mac
 
 While it is easier to create apps using Uno Platform on Windows, you can also create all but UWP/WinUI apps on your Mac.
 
