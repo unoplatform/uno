@@ -18,6 +18,8 @@ fi
 echo ""
 echo "[Waiting for launcher to start]"
 LAUNCHER_READY=
+START_TIME=$SECONDS
+MAX_START_TIME=300
 while [[ -z ${LAUNCHER_READY} ]]; do
 
     if [ $ANDROID_SIMULATOR_APILEVEL -ge 29 ];
@@ -25,6 +27,13 @@ while [[ -z ${LAUNCHER_READY} ]]; do
     UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window 2>/dev/null | grep -E 'mCurrentFocus|mFocusedApp'`
     else
     UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window windows 2>/dev/null | grep -i mCurrentFocus`
+    fi
+
+    ELAPSED_TIME=$(( SECONDS - START_TIME ))
+    if [ ${ELAPSED_TIME} -gt ${MAX_START_TIME} ];
+    then
+        echo "(FAIL) Emulator failed to start properly after $MAX_START_TIME"
+        exit 1
     fi
 
     echo "(DEBUG) Current focus: ${UI_FOCUS}"
