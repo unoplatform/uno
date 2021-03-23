@@ -1,11 +1,11 @@
 {
     "name": "uno-platform",
     "icon": "media/uno-logo-alpha.png",
-    "displayName": "VS Code Uno Platform Extension",
+    "displayName": "Uno Platform",
     "preview": true,
     "publisher": "microhobby",
-    "description": "Create Uno Platform Projects with Hot Reload and XAML Preview",
-    "version": "0.3.42",
+    "description": "Uno Platform Projects with Hot Reload and XAML Preview",
+    "version": "0.4.42",
     "repository": {
         "url": "https://github.com/microhobby/vs-code-uno-platform"
     },
