@@ -10,6 +10,15 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
+#if NETFX_CORE
+using Uno.UI.Extensions;
+#elif __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#else
+using Uno.UI;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -248,7 +257,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			using (StyleHelper.UseFluentStyles())
 			{
-				var comboBox = new MyComboBox
+				var comboBox = new ComboBox
 				{
 					ItemsSource = new[] { 1, 2, 3 },
 					PlaceholderText = "Select..."
@@ -257,14 +266,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = comboBox;
 				await WindowHelper.WaitForLoaded(comboBox);
 
-				Assert.AreEqual(Colors.Black, (comboBox.PlaceholderTextBlock.Foreground as SolidColorBrush)?.Color);
+				var placeholderTextBlock = comboBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextBlock");
+
+				Assert.IsNotNull(placeholderTextBlock);
+
+				Assert.AreEqual(Colors.Black, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 
 				using (ThemeHelper.UseDarkTheme())
 				{
-					Assert.AreEqual(Colors.White, (comboBox.PlaceholderTextBlock.Foreground as SolidColorBrush)?.Color);
+					Assert.AreEqual(Colors.White, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 				}
 
-				Assert.AreEqual(Colors.Black, (comboBox.PlaceholderTextBlock.Foreground as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.Black, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 			}
 		}
 	}

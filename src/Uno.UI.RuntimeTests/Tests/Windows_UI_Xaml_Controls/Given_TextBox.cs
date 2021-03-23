@@ -9,10 +9,20 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
+#if NETFX_CORE
+using Uno.UI.Extensions;
+#elif __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#else
+using Uno.UI;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_TextBox
 	{
 #if __ANDROID__
@@ -33,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			using (StyleHelper.UseFluentStyles())
 			{
-				var textBox = new MyTextBox
+				var textBox = new TextBox
 				{
 					PlaceholderText = "Enter..."
 				};
@@ -41,14 +51,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = textBox;
 				await WindowHelper.WaitForLoaded(textBox);
 
-				Assert.AreEqual(Colors.Black, (textBox.PlaceholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+				var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
+				Assert.IsNotNull(placeholderTextContentPresenter);
+
+				var lightThemeForeground = TestsColorHelper.ToColor("#99000000");
+				var darkThemeForeground = TestsColorHelper.ToColor("#99FFFFFF");
+
+				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 
 				using (ThemeHelper.UseDarkTheme())
 				{
-					Assert.AreEqual(Colors.White, (textBox.PlaceholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+					Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 				}
 
-				Assert.AreEqual(Colors.Black, (textBox.PlaceholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 			}
 		}
 	}
