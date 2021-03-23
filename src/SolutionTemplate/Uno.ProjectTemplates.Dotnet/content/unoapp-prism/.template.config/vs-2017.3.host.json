@@ -4,9 +4,9 @@
     "text": "Cross-Platform App (Prism)"
   },
   "description": {
-    "text": "Solution template for creating a Prism Library enabled Cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly."
+    "text": "Solution template for creating a Prism Library enabled Cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS and WebAssembly."
   },
-  "order": 610,
+  "order": 611,
   "icon": "uno-logo.png",
   "learnMoreLink": "https://github.com/unoplatform/uno",
   "uiFilters": [
