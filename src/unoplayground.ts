@@ -14,16 +14,13 @@ function reactContent (panel: vscode.WebviewPanel,
     const editor = vscode.window.activeTextEditor;
     const doc = editor?.document;
 
-    // we need some time for the first load of content
-    setTimeout(() => {
-        if (doc?.languageId === "Xaml" && doc.fileName.includes(".xaml")) {
-            void panel.webview.postMessage(doc?.getText());
-        } else {
-            // at the moment we don't have a XAML document in focus
-            // we will use the document reference from the moment of the click
-            void panel.webview.postMessage(docFromClick?.getText());
-        }
-    }, 1500);
+    if (doc?.languageId === "xml" && doc.fileName.includes(".xaml")) {
+        void panel.webview.postMessage(doc?.getText());
+    } else {
+        // at the moment we don't have a XAML document in focus
+        // we will use the document reference from the moment of the click
+        void panel.webview.postMessage(docFromClick?.getText());
+    }
 }
 
 /**
@@ -137,7 +134,7 @@ export function createXAMLPreview (): vscode.Webview {
                 }
 
                 // iframe -> oncmd
-                if (event.data.cmd) {
+                if (event.data && event.data.cmd) {
                     vscode.postMessage(event.data);
                 }
 
@@ -203,63 +200,32 @@ export function createXAMLPreview (): vscode.Webview {
                 clearErrorsFromDoc(diagns);
                 xamlSent = doc?.getText();
 
-                void panel.webview.postMessage(xamlSent);
-
                 prevTimeout = setTimeout(() => {
                     xamlSentPrev = xamlSent;
-                }, 1000);
+                    void panel.webview.postMessage(xamlSent);
+                }, 500);
             }
         }
     });
 
     // generate the xaml symbols on the save of a xaml file
     // TODO: we need to best think about the auto build on save
-    /* var ondidsave = vscode.workspace.onDidSaveTextDocument(() => {
+    var ondidsave = vscode.workspace.onDidSaveTextDocument(() => {
         const editor = vscode.window.activeTextEditor;
         const doc = editor?.document;
 
         // ok, so lets rebuild to generate the xaml.cs
         if (doc?.languageId === "xml" && doc.fileName.includes(".xaml")) {
-            ExtensionUtils.showProgress("Uno", "Generating XAML Symbols ...",
-                async (res): Promise<void> => {
-                    // remove the old ones
-                    var objPath = path.join(
-                        vscode.workspace.workspaceFolders![0].uri.fsPath, "./obj/Debug/net5.0/generated"
-                    );
-
-                    try {
-                        fs.rmdirSync(objPath, { recursive: true });
-                    } catch (ex) {
-                        console.log(ex);
-                    }
-
-                    // generete new ones
-                    void vscode.commands
-                        .executeCommand("workbench.action.tasks.runTask", "clean");
-
-                    // wait for the end
-                    var ondidtaskend = vscode.tasks.onDidEndTask((data) => {
-                        if (data.execution.task.name === "clean") {
-                            void vscode.commands
-                                .executeCommand("workbench.action.tasks.runTask", "xaml");
-                        } else if (data.execution.task.name === "xaml") {
-                            ondidtaskend.dispose();
-
-                            // and now we need to refresh the omnisharp index
-                            void vscode.commands.executeCommand("o.restart").then(() => {
-                                res();
-                            });
-                        }
-                    });
-                });
+            void vscode.commands
+                .executeCommand("workbench.action.tasks.runTask", "build");
         }
-    }); */
+    });
 
     // do not forget to dispose everything on the dispose of panel
     panel.onDidDispose(() => {
         ondidrm.dispose();
         ondidchange.dispose();
-        // ondidsave.dispose();
+        ondidsave.dispose();
         if (diagns != null) {
             diagns.dispose();
         }
