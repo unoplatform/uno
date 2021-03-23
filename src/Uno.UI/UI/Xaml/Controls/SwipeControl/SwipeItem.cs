@@ -16,8 +16,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeItem : FrameworkElement
 	{
-		static double s_swipeItemWidth = 68.0;
-		static double s_swipeItemHeight = 60.0;
+		//static double s_swipeItemWidth = 68.0;
+		//static double s_swipeItemHeight = 60.0;
 
 		public SwipeItem()
 		{

@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.Foundation.Collections;
 
-#pragma once
-
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeItems

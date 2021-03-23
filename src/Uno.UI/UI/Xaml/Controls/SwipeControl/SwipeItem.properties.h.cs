@@ -8,7 +8,6 @@
 
 using Windows.Foundation;
 
-#pragma once
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeItem

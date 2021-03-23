@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -90,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 							break;
 					}
 
-					m_interactionTracker.TryUpdatePosition(initialPosition);
+					//m_interactionTracker.TryUpdatePosition(initialPosition);
 				}
 
 				Vector3 addedVelocity = default;
@@ -115,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 						break;
 				}
 
-				m_interactionTracker.TryUpdatePositionWithAdditionalVelocity(addedVelocity);
+				//m_interactionTracker.TryUpdatePositionWithAdditionalVelocity(addedVelocity);
 			}
 		}
 #endregion
@@ -443,10 +444,10 @@ namespace Windows.UI.Xaml.Controls
 				observableVector.VectorChanged += OnLeftItemsChanged;
 			}
 
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.Properties.InsertBoolean(s_hasLeftContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.Properties.InsertBoolean(s_hasLeftContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
+			//}
 
 			if (m_createdContent == CreatedContent.Left)
 			{
@@ -471,10 +472,10 @@ namespace Windows.UI.Xaml.Controls
 				observableVector.VectorChanged += OnRightItemsChanged;
 			}
 
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.Properties.InsertBoolean(s_hasRightContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.Properties.InsertBoolean(s_hasRightContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
+			//}
 
 			if (m_createdContent == CreatedContent.Right)
 			{
@@ -499,10 +500,10 @@ namespace Windows.UI.Xaml.Controls
 				observableVector.VectorChanged += OnTopItemsChanged;
 			}
 
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.Properties.InsertBoolean(s_hasTopContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.Properties.InsertBoolean(s_hasTopContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
+			//}
 
 			if (m_createdContent == CreatedContent.Top)
 			{
@@ -527,10 +528,10 @@ namespace Windows.UI.Xaml.Controls
 				observableVector.VectorChanged += OnBottomItemsChanged;
 			}
 
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.Properties.InsertBoolean(s_hasBottomContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.Properties.InsertBoolean(s_hasBottomContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
+			//}
 
 			if (m_createdContent == CreatedContent.Bottom)
 			{
@@ -633,16 +634,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSwipeContentStackPanelSizeChanged(object sender, SizeChangedEventArgs args)
 		{
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.MinPosition = new Vector3(
-					(float)-args.NewSize.Width, (float)-args.NewSize.Height, 0.0f
-				);
-				m_interactionTracker.MaxPosition = new Vector3(
-					(float)args.NewSize.Width, (float)args.NewSize.Height, 0.0f
-				);
-				ConfigurePositionInertiaRestingValues();
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.MinPosition = new Vector3(
+			//		(float)-args.NewSize.Width, (float)-args.NewSize.Height, 0.0f
+			//	);
+			//	m_interactionTracker.MaxPosition = new Vector3(
+			//		(float)args.NewSize.Width, (float)args.NewSize.Height, 0.0f
+			//	);
+			//	ConfigurePositionInertiaRestingValues();
+			//}
 		}
 
 		private void OnPointerPressedEvent(
@@ -651,7 +652,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (args.Pointer.PointerDeviceType == Devices.Input.PointerDeviceType.Touch && m_visualInteractionSource is {})
+			if (args.Pointer.PointerDeviceType == Devices.Input.PointerDeviceType.Touch /*&& m_visualInteractionSource is {}*/)
 			{
 				if (m_currentItems is {} &&
 					m_currentItems.Mode == SwipeMode.Execute &&
@@ -666,9 +667,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				//try
-				{
-					m_visualInteractionSource.TryRedirectForManipulation(args.GetCurrentPoint(this));
-				}
+				//{
+				//	m_visualInteractionSource.TryRedirectForManipulation(args.GetCurrentPoint(this));
+				//}
 				//catch (Exception e)
 				//{
 				//	// Swallowing Access Denied error because of InteractionTracker bug 17434718 which has been
@@ -765,10 +766,10 @@ namespace Windows.UI.Xaml.Controls
 			m_xamlRootChangedRevoker?.Dispose();
 
 			m_acceleratorKeyActivatedRevoker?.Dispose();
-			m_coreWindowPointerPressedRevoker?.Dispose();
-			m_coreWindowKeyDownRevoker?.Dispose();
-			m_windowMinimizeRevoker?.Dispose();
-			m_windowSizeChangedRevoker?.Dispose();
+			//m_coreWindowPointerPressedRevoker?.Dispose();
+			//m_coreWindowKeyDownRevoker?.Dispose();
+			//m_windowMinimizeRevoker?.Dispose();
+			//m_windowSizeChangedRevoker?.Dispose();
 		}
 
 		private void DismissSwipeOnAcceleratorKeyActivator(Windows.UI.Core.CoreDispatcher sender, AcceleratorKeyEventArgs args)
@@ -1082,9 +1083,9 @@ namespace Windows.UI.Xaml.Controls
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
 			bool wasIdle = m_isIdle;
-			m_interactionTracker.TryUpdatePosition(new Vector3(
-				0.0f, 0.0f, 0.0f
-			));
+			//m_interactionTracker.TryUpdatePosition(new Vector3(
+			//	0.0f, 0.0f, 0.0f
+			//));
 			if (wasIdle)
 			{
 				IdleStateEntered(null, null);
@@ -1235,34 +1236,34 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
-			{
-				m_swipeContentStackPanel.StopAnimation(m_executeExpressionAnimation);
-				m_swipeContentStackPanel.Translation = new Vector3(
-					0.0f, 0.0f, 0.0f
-				);
-			}
-			else if (m_swipeContentVisual is { })
-			{
-				m_swipeContentVisual.StopAnimation(GetAnimationTarget(m_swipeContentStackPanel));
-				m_swipeContentVisual.Properties.InsertVector3(GetAnimationTarget(m_swipeContentStackPanel), new Vector3(
-					0.0f, 0.0f, 0.0f
-				));
-			}
+			//if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
+			//{
+			//	m_swipeContentStackPanel.StopAnimation(m_executeExpressionAnimation);
+			//	m_swipeContentStackPanel.Translation = new Vector3(
+			//		0.0f, 0.0f, 0.0f
+			//	);
+			//}
+			//else if (m_swipeContentVisual is { })
+			//{
+			//	m_swipeContentVisual.StopAnimation(GetAnimationTarget(m_swipeContentStackPanel));
+			//	m_swipeContentVisual.Properties.InsertVector3(GetAnimationTarget(m_swipeContentStackPanel), new Vector3(
+			//		0.0f, 0.0f, 0.0f
+			//	));
+			//}
 
 			if (m_currentItems.Mode == SwipeMode.Execute)
 			{
-				global::System.Diagnostics.Debug.Assert((m_createdContent != CreatedContent.None));
-				m_executeExpressionAnimation.SetBooleanParameter(s_isNearContentPropertyName, m_createdContent == CreatedContent.Left || m_createdContent == CreatedContent.Top);
-				if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
-				{
-					m_swipeContentStackPanel.StartAnimation(m_executeExpressionAnimation);
-				}
+				//global::System.Diagnostics.Debug.Assert((m_createdContent != CreatedContent.None));
+				//m_executeExpressionAnimation.SetBooleanParameter(s_isNearContentPropertyName, m_createdContent == CreatedContent.Left || m_createdContent == CreatedContent.Top);
+				//if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
+				//{
+				//	m_swipeContentStackPanel.StartAnimation(m_executeExpressionAnimation);
+				//}
 
-				if (m_swipeContentVisual is {})
-				{
-					m_swipeContentVisual.StartAnimation(GetAnimationTarget(m_swipeContentStackPanel), m_executeExpressionAnimation);
-				}
+				//if (m_swipeContentVisual is {})
+				//{
+				//	m_swipeContentVisual.StartAnimation(GetAnimationTarget(m_swipeContentStackPanel), m_executeExpressionAnimation);
+				//}
 			}
 		}
 
@@ -1270,32 +1271,32 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (m_insetClip is null)
-			{
-				m_insetClip = m_compositor.CreateInsetClip();
-				m_swipeContentRootVisual.Clip = m_insetClip;
-			}
-			else
-			{
-				m_insetClip.StopAnimation(s_leftInsetTargetName);
-				m_insetClip.StopAnimation(s_rightInsetTargetName);
-				m_insetClip.StopAnimation(s_topInsetTargetName);
-				m_insetClip.StopAnimation(s_bottomInsetTargetName);
-				m_insetClip.LeftInset = 0.0f;
-				m_insetClip.RightInset = 0.0f;
-				m_insetClip.TopInset = 0.0f;
-				m_insetClip.BottomInset = 0.0f;
-			}
+			//if (m_insetClip is null)
+			//{
+			//	m_insetClip = m_compositor.CreateInsetClip();
+			//	m_swipeContentRootVisual.Clip = m_insetClip;
+			//}
+			//else
+			//{
+			//	m_insetClip.StopAnimation(s_leftInsetTargetName);
+			//	m_insetClip.StopAnimation(s_rightInsetTargetName);
+			//	m_insetClip.StopAnimation(s_topInsetTargetName);
+			//	m_insetClip.StopAnimation(s_bottomInsetTargetName);
+			//	m_insetClip.LeftInset = 0.0f;
+			//	m_insetClip.RightInset = 0.0f;
+			//	m_insetClip.TopInset = 0.0f;
+			//	m_insetClip.BottomInset = 0.0f;
+			//}
 
-			m_clipExpressionAnimation.SetBooleanParameter(s_isNearContentPropertyName, m_createdContent == CreatedContent.Left || m_createdContent == CreatedContent.Top);
+			//m_clipExpressionAnimation.SetBooleanParameter(s_isNearContentPropertyName, m_createdContent == CreatedContent.Left || m_createdContent == CreatedContent.Top);
 
-			if (m_createdContent == CreatedContent.None)
-			{
-				//If we have no created content then we don't need to start the clip animation yet.
-				return;
-			}
+			//if (m_createdContent == CreatedContent.None)
+			//{
+			//	//If we have no created content then we don't need to start the clip animation yet.
+			//	return;
+			//}
 
-			m_insetClip.StartAnimation(DirectionToInset(m_createdContent), m_clipExpressionAnimation);
+			//m_insetClip.StartAnimation(DirectionToInset(m_createdContent), m_clipExpressionAnimation);
 		}
 
 		private void UpdateColors()
@@ -1505,10 +1506,10 @@ namespace Windows.UI.Xaml.Controls
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
 			ThrowIfHasVerticalAndHorizontalContent();
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.Properties.InsertBoolean(s_hasLeftContentPropertyName, sender.Count > 0);
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.Properties.InsertBoolean(s_hasLeftContentPropertyName, sender.Count > 0);
+			//}
 
 			if (m_createdContent == CreatedContent.Left)
 			{
@@ -1522,10 +1523,10 @@ namespace Windows.UI.Xaml.Controls
 
 			ThrowIfHasVerticalAndHorizontalContent();
 
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.Properties.InsertBoolean(s_hasRightContentPropertyName, sender.Count > 0);
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.Properties.InsertBoolean(s_hasRightContentPropertyName, sender.Count > 0);
+			//}
 
 			if (m_createdContent == CreatedContent.Right)
 			{
@@ -1538,10 +1539,10 @@ namespace Windows.UI.Xaml.Controls
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
 			ThrowIfHasVerticalAndHorizontalContent();
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.Properties.InsertBoolean(s_hasTopContentPropertyName, sender.Count > 0);
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.Properties.InsertBoolean(s_hasTopContentPropertyName, sender.Count > 0);
+			//}
 
 			if (m_createdContent == CreatedContent.Top)
 			{
@@ -1554,10 +1555,10 @@ namespace Windows.UI.Xaml.Controls
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
 			ThrowIfHasVerticalAndHorizontalContent();
-			if (m_interactionTracker is {})
-			{
-				m_interactionTracker.Properties.InsertBoolean(s_hasBottomContentPropertyName, sender.Count > 0);
-			}
+			//if (m_interactionTracker is {})
+			//{
+			//	m_interactionTracker.Properties.InsertBoolean(s_hasBottomContentPropertyName, sender.Count > 0);
+			//}
 
 			if (m_createdContent == CreatedContent.Bottom)
 			{
@@ -1569,65 +1570,65 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (IsTranslationFacadeAvailableForSwipeControl(m_content))
-			{
-				m_swipeAnimation.Target = GetAnimationTarget(m_content);
-				m_content.StartAnimation(m_swipeAnimation);
-			}
-			else
-			{
-				var mainContentVisual = ElementCompositionPreview.GetElementVisual(m_content);
-				if (mainContentVisual is {} && m_mainContentVisual != mainContentVisual)
-				{
-					m_mainContentVisual = mainContentVisual;
+			//if (IsTranslationFacadeAvailableForSwipeControl(m_content))
+			//{
+			//	m_swipeAnimation.Target = GetAnimationTarget(m_content);
+			//	m_content.StartAnimation(m_swipeAnimation);
+			//}
+			//else
+			//{
+			//	var mainContentVisual = ElementCompositionPreview.GetElementVisual(m_content);
+			//	if (mainContentVisual is {} && m_mainContentVisual != mainContentVisual)
+			//	{
+			//		m_mainContentVisual = mainContentVisual;
 
-					if (DownlevelHelper.SetIsTranslationEnabledExists())
-					{
-						ElementCompositionPreview.SetIsTranslationEnabled(m_content, true);
-						mainContentVisual.Properties.InsertVector3(s_translationPropertyName, new Vector3(
-							0.0f, 0.0f, 0.0f
-						));
-					}
+			//		if (DownlevelHelper.SetIsTranslationEnabledExists())
+			//		{
+			//			ElementCompositionPreview.SetIsTranslationEnabled(m_content, true);
+			//			mainContentVisual.Properties.InsertVector3(s_translationPropertyName, new Vector3(
+			//				0.0f, 0.0f, 0.0f
+			//			));
+			//		}
 
-					mainContentVisual.StartAnimation(GetAnimationTarget(m_content), m_swipeAnimation);
+			//		mainContentVisual.StartAnimation(GetAnimationTarget(m_content), m_swipeAnimation);
 
-					m_executeExpressionAnimation.SetReferenceParameter(s_foregroundVisualPropertyName, mainContentVisual);
-				}
-			}
+			//		m_executeExpressionAnimation.SetReferenceParameter(s_foregroundVisualPropertyName, mainContentVisual);
+			//	}
+			//}
 
-			if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
-			{
-				m_swipeAnimation.Target = GetAnimationTarget(m_swipeContentStackPanel);
-			}
-			else
-			{
-				var swipeContentVisual = ElementCompositionPreview.GetElementVisual(m_swipeContentStackPanel);
-				if (swipeContentVisual is {} && m_swipeContentVisual != swipeContentVisual)
-				{
-					m_swipeContentVisual = swipeContentVisual;
+			//if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
+			//{
+			//	m_swipeAnimation.Target = GetAnimationTarget(m_swipeContentStackPanel);
+			//}
+			//else
+			//{
+			//	var swipeContentVisual = ElementCompositionPreview.GetElementVisual(m_swipeContentStackPanel);
+			//	if (swipeContentVisual is {} && m_swipeContentVisual != swipeContentVisual)
+			//	{
+			//		m_swipeContentVisual = swipeContentVisual;
 
-					if (DownlevelHelper.SetIsTranslationEnabledExists())
-					{
-						ElementCompositionPreview.SetIsTranslationEnabled(m_swipeContentStackPanel, true);
-						swipeContentVisual.Properties.InsertVector3(s_translationPropertyName, new Vector3(
-							0.0f, 0.0f, 0.0f
-						));
-					}
+			//		if (DownlevelHelper.SetIsTranslationEnabledExists())
+			//		{
+			//			ElementCompositionPreview.SetIsTranslationEnabled(m_swipeContentStackPanel, true);
+			//			swipeContentVisual.Properties.InsertVector3(s_translationPropertyName, new Vector3(
+			//				0.0f, 0.0f, 0.0f
+			//			));
+			//		}
 
-					ConfigurePositionInertiaRestingValues();
-				}
-			}
+			//		ConfigurePositionInertiaRestingValues();
+			//	}
+			//}
 
-			var swipeContentRootVisual = ElementCompositionPreview.GetElementVisual(m_swipeContentRoot);
-			if (swipeContentRootVisual is {} && m_swipeContentRootVisual != swipeContentRootVisual)
-			{
-				m_swipeContentRootVisual = swipeContentRootVisual;
-				m_clipExpressionAnimation.SetReferenceParameter(s_swipeRootVisualPropertyName, swipeContentRootVisual);
-				if (m_insetClip is {})
-				{
-					swipeContentRootVisual.Clip = m_insetClip;
-				}
-			}
+			//var swipeContentRootVisual = ElementCompositionPreview.GetElementVisual(m_swipeContentRoot);
+			//if (swipeContentRootVisual is {} && m_swipeContentRootVisual != swipeContentRootVisual)
+			//{
+			//	m_swipeContentRootVisual = swipeContentRootVisual;
+			//	m_clipExpressionAnimation.SetReferenceParameter(s_swipeRootVisualPropertyName, swipeContentRootVisual);
+			//	if (m_insetClip is {})
+			//	{
+			//		swipeContentRootVisual.Clip = m_insetClip;
+			//	}
+			//}
 		}
 
 		private void UpdateIsOpen(bool isOpen)
@@ -1644,17 +1645,17 @@ namespace Windows.UI.Xaml.Controls
 					{
 						case CreatedContent.Right:
 						case CreatedContent.Bottom:
-							m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, true);
-							m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
+							//m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, true);
+							//m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
 							break;
 						case CreatedContent.Left:
 						case CreatedContent.Top:
-							m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
-							m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, true);
+							//m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
+							//m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, true);
 							break;
 						case CreatedContent.None:
-							m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
-							m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
+							//m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
+							//m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
 							break;
 						default:
 							global::System.Diagnostics.Debug.Assert(false);
@@ -1680,8 +1681,8 @@ namespace Windows.UI.Xaml.Controls
 					m_isOpen = false;
 					m_lastActionWasClosing = true;
 					DetachDismissingHandlers();
-					m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
-					m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
+					//m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
+					//m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
 
 					var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
 					if (globalTestHooks is { })

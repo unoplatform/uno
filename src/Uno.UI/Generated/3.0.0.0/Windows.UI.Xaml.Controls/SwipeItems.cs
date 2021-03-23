@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeMode)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || false || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__MACOS__")]
 		public SwipeItems() : base()
 		{

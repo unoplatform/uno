@@ -9,8 +9,6 @@ using Windows.UI.Composition;
 using Windows.UI.Composition.Interactions;
 using Windows.UI.Xaml.Input;
 
-#pragma once
-
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeControl
@@ -153,20 +151,20 @@ namespace Windows.UI.Xaml.Controls
 		private Grid m_swipeContentRoot;
 		private StackPanel m_swipeContentStackPanel;
 
-		private InteractionTracker m_interactionTracker;
-		private VisualInteractionSource m_visualInteractionSource;
-		private Compositor m_compositor;
+		//private InteractionTracker m_interactionTracker;
+		//private VisualInteractionSource m_visualInteractionSource;
+		//private Compositor m_compositor;
 
-		private Visual m_mainContentVisual;
-		private Visual m_swipeContentRootVisual;
-		private Visual m_swipeContentVisual;
-		private InsetClip m_insetClip;
+		//private Visual m_mainContentVisual;
+		//private Visual m_swipeContentRootVisual;
+		//private Visual m_swipeContentVisual;
+		//private InsetClip m_insetClip;
 
-		private ExpressionAnimation m_swipeAnimation;
-		private ExpressionAnimation m_executeExpressionAnimation;
-		private ExpressionAnimation m_clipExpressionAnimation;
-		private ExpressionAnimation m_maxPositionExpressionAnimation;
-		private ExpressionAnimation m_minPositionExpressionAnimation;
+		//private ExpressionAnimation m_swipeAnimation;
+		//private ExpressionAnimation m_executeExpressionAnimation;
+		//private ExpressionAnimation m_clipExpressionAnimation;
+		//private ExpressionAnimation m_maxPositionExpressionAnimation;
+		//private ExpressionAnimation m_minPositionExpressionAnimation;
 
 		private Style m_swipeItemStyle;
 
@@ -180,7 +178,7 @@ namespace Windows.UI.Xaml.Controls
 		//private IDisposable m_topItemsChangedToken;
 		//private IDisposable m_bottomItemsChangedToken;
 		//private IDisposable m_onSizeChangedToken;
-		private IDisposable m_onSwipeContentStackPanelSizeChangedToken;
+		//private IDisposable m_onSwipeContentStackPanelSizeChangedToken;
 		//private IDisposable m_inputEaterTappedToken;
 		private PointerEventHandler m_onPointerPressedEventHandler;
 
@@ -191,10 +189,10 @@ namespace Windows.UI.Xaml.Controls
 
 
 		// Used on platforms where we don't have XamlRoot.
-		private IDisposable m_coreWindowPointerPressedRevoker;
-		private IDisposable m_coreWindowKeyDownRevoker;
-		private IDisposable m_windowMinimizeRevoker;
-		private IDisposable m_windowSizeChangedRevoker;
+		//private IDisposable m_coreWindowPointerPressedRevoker;
+		//private IDisposable m_coreWindowKeyDownRevoker;
+		//private IDisposable m_windowMinimizeRevoker;
+		//private IDisposable m_windowSizeChangedRevoker;
 
 		private IDisposable m_acceleratorKeyActivatedRevoker;
 
@@ -210,8 +208,8 @@ namespace Windows.UI.Xaml.Controls
 
 		//Near content = left or top
 		//Far content = right or bottom
-		private bool m_blockNearContent = false;
-		private bool m_blockFarContent = false;
+		//private bool m_blockNearContent = false;
+		//private bool m_blockFarContent = false;
 		private bool m_isHorizontal = true;
 		private CreatedContent m_createdContent = CreatedContent.None;
 
