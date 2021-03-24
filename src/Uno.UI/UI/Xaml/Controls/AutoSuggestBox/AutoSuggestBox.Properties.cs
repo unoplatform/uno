@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"QueryIcon", typeof(global::Windows.UI.Xaml.Controls.IconElement),
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement), propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.UpdateQueryButton()));
 
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen;
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxTextChangedEventArgs> TextChanged;
