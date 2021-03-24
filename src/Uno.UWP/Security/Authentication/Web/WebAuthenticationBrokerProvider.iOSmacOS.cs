@@ -90,7 +90,7 @@ namespace Uno.AuthenticationBroker
 			var startUrl = new NSUrl(requestUri.OriginalString);
 			var callbackUrl = callbackUri.OriginalString;
 
-			var schemes = GetCustomSchemes().ToArray();
+			var schemes = GetApplicationCustomSchemes().ToArray();
 			if (!schemes.Any(s => callbackUrl.StartsWith(s)))
 			{
 				var message = schemes.Length == 0
