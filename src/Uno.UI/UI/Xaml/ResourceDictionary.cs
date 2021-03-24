@@ -361,7 +361,8 @@ namespace Windows.UI.Xaml
 			_mergedDictionaries.AddRange(source._mergedDictionaries);
 			if (source._themeDictionaries != null)
 			{
-				ThemeDictionaries.AddRange(source.ThemeDictionaries);
+				_themeDictionaries ??= new ResourceDictionary();
+				_themeDictionaries.CopyFrom(source._themeDictionaries);
 			}
 		}
 

@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Represents a key for the source dictionary
 		/// </summary>
+		[DebuggerDisplay("Key={Key}")]
 		public readonly struct ResourceKey
 		{
 			public readonly string Key;
