@@ -588,7 +588,11 @@ namespace Windows.UI.Xaml.Controls
 
 			SizeChanged -= OnSizeChanged;
 
-			m_swipeContentStackPanel.SizeChanged -= OnSwipeContentStackPanelSizeChanged;
+			// Uno workaround: Add null check because m_swipeContentStackPanel is set later.
+			if (m_swipeContentStackPanel != null)
+			{
+				m_swipeContentStackPanel.SizeChanged -= OnSwipeContentStackPanelSizeChanged;
+			}
 
 			if (m_onPointerPressedEventHandler is {})
 			{

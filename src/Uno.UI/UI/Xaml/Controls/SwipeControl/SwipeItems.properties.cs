@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeItems
 	{
-		public static DependencyProperty ModeProperty { get; }= DependencyProperty.Register(
+		public static DependencyProperty ModeProperty { get; } = DependencyProperty.Register(
 			"Mode", typeof(SwipeMode), typeof(SwipeItems), new PropertyMetadata(default(SwipeMode), OnModePropertyChanged));
 
 		public SwipeMode Mode

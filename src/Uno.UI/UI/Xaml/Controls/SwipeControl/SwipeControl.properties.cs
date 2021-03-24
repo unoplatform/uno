@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 
-		public static readonly DependencyProperty BottomItemsProperty = DependencyProperty.Register(
+		public static DependencyProperty BottomItemsProperty { get; } = DependencyProperty.Register(
 			"BottomItems", typeof(SwipeItems), typeof(SwipeControl), new PropertyMetadata(default(SwipeItems), OnBottomItemsPropertyChanged));
 
 		public SwipeItems BottomItems
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 
-		public static readonly DependencyProperty LeftItemsProperty = DependencyProperty.Register(
+		public static DependencyProperty LeftItemsProperty { get; } = DependencyProperty.Register(
 			"LeftItems", typeof(SwipeItems), typeof(SwipeControl), new PropertyMetadata(default(SwipeItems), OnLeftItemsPropertyChanged));
 
 		public SwipeItems LeftItems
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 		//    return ValueHelper<SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_LeftItemsProperty));
 		//}
 
-		public static readonly DependencyProperty RightItemsProperty = DependencyProperty.Register(
+		public static DependencyProperty RightItemsProperty { get; } = DependencyProperty.Register(
 			"RightItems", typeof(SwipeItems), typeof(SwipeControl), new PropertyMetadata(default(SwipeItems), OnRightItemsPropertyChanged));
 
 		public SwipeItems RightItems
@@ -176,7 +176,7 @@ namespace Windows.UI.Xaml.Controls
 		//    return ValueHelper<SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_RightItemsProperty));
 		//}
 
-		public static readonly DependencyProperty TopItemsProperty = DependencyProperty.Register(
+		public static DependencyProperty TopItemsProperty { get; } = DependencyProperty.Register(
 			"TopItems", typeof(SwipeItems), typeof(SwipeControl), new PropertyMetadata(default(SwipeItems), OnTopItemsPropertyChanged));
 
 		public SwipeItems TopItems
