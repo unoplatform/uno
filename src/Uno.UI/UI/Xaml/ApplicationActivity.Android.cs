@@ -14,6 +14,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors;
 using Windows.Storage.Pickers;
+using Uno.AuthenticationBroker;
 
 namespace Windows.UI.Xaml
 {
@@ -164,6 +165,8 @@ namespace Windows.UI.Xaml
 			base.OnResume();
 
 			RaiseConfigurationChanges();
+
+			WebAuthenticationBrokerProvider.OnMainActivityResumed();
 		}
 
 		protected override void OnPause()

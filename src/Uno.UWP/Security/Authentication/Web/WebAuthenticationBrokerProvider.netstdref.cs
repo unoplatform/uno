@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -8,12 +9,12 @@ namespace Uno.AuthenticationBroker
 {
 	partial class WebAuthenticationBrokerProvider
 	{
-		private static IEnumerable<string> GetCustomSchemes()
+		protected virtual IEnumerable<string> GetApplicationCustomSchemes()
 		{
 			throw new NotImplementedException();
 		}
 
-		public async Task<WebAuthenticationResult> AuthenticateAsync(
+		public virtual async Task<WebAuthenticationResult> AuthenticateAsyncCore(
 			WebAuthenticationOptions options,
 			Uri requestUri,
 			Uri callbackUri,
