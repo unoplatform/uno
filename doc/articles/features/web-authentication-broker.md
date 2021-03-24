@@ -12,7 +12,7 @@
 
 ## Usage on iOS & MacOS
 
-* The *redirect URI* **MUST** use a custom scheme URI and this one must be registered in the `Info.plist` of the application.
+* The *redirect URI* **MUST** use a custom scheme URI and this scheme must be registered in the `Info.plist` of the application.
 * Default *redirect URI* will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
 * The default *redirect URI* will be automatic if there's only one custom scheme defined in the application. If there are more than one scheme, the first one will be used. You may want to set the right one using the `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` property.
 
@@ -32,7 +32,7 @@
   	DataScheme = "myapplication")]
   public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBase
   {
-      // Note: the name of this class it not important
+      // Note: the name of this class is not important
   }
   ```
 

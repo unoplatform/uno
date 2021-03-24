@@ -8,9 +8,9 @@ This article will document the usage of `IdentityModel.OidcClient` into a Uno ap
 
 ## Limitations
 
-- **Platforms**: The `WebAuthenticationBroker` is not yet supported on all platforms yet. For Uno 3.6 it is implemented only on WebAssembly, Android, iOS and MacOS.
+- **Platforms**: The `WebAuthenticationBroker` is not supported on all platforms yet. For Uno 3.6 it is implemented only on WebAssembly, Android, iOS and MacOS.
 - **Return URI on WebAssembly**: Because of browser security restrictions, on WebAssembly, the return URL must be on the same origin as the application. On other platforms the best approach is to use a custom protocol scheme (like `my-application:`). For most applications, you may simply use the automatic discovery of return URLs, which will use the [`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()` method](https://docs.microsoft.com/en-us/uwp/api/windows.security.authentication.web.webauthenticationbroker.getcurrentapplicationcallbackuri).
-- **Browser Anti-Popup Protection**: On WebAssembly, a foreign/public web site is usually used to authenticate the user. Doing this without losing the application context requires the opening of a new browser window. To ensure the window will open on all browsers without being denied, this one **must be opened using the handling of a user interaction**. For this reason the IdentityModel.OidcClient's *automatic mode* can't be used because it's doing async processing (fetching the discovery endpoint) before opening the authentication browser.
+- **Browser Anti-Popup Protection**: On WebAssembly, a foreign/public web site is usually used to authenticate the user. Doing this without losing the application context requires the opening of a new browser window. To ensure the window will open on all browsers without being denied, this new window **must be opened using the handling of a user interaction**. For this reason the IdentityModel.OidcClient's *automatic mode* can't be used because it's doing async processing (fetching the discovery endpoint) before opening the authentication browser.
 
 ## Demo Endpoint
 
