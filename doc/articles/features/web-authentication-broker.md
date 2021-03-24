@@ -12,27 +12,27 @@
 
 ## Usage on iOS & MacOS
 
-* The *redirect URI* **MUST** use a custom scheme URI and  this one must be registered in the `Info.plist` of the  application.
-* Default *redirect URI* will be `<scheme>:/authentication-callback`. Ex:  `my-app-auth:/authentication-callback`
-* The default *redirect URI* will be automatic if there's only one custom scheme defined in the application. If there are more than one scheme, the first one will be used. You may want to set the right one using the `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri`  property.
+* The *redirect URI* **MUST** use a custom scheme URI and this one must be registered in the `Info.plist` of the application.
+* Default *redirect URI* will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
+* The default *redirect URI* will be automatic if there's only one custom scheme defined in the application. If there are more than one scheme, the first one will be used. You may want to set the right one using the `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` property.
 
 ## Usage on Android
 
-* The *redirect URI* **MUST** use a custom scheme URI. This one will launch a special *Activity* declared in your application.
+* The *redirect URI* **MUST** use a custom scheme URI. This one will launch a special *Activity* declared in the application.
 
-* You **MUST** declare an activity deriving from `WebAuthenticationBrokerActivityBase` in the Android head of your application:
+* You **MUST** declare an activity inheriting from `WebAuthenticationBrokerActivityBase` in the Android head:
 
   ``` csharp
-  // Android: add this class near the MainActivity of your head project
+  // Android: add this class near the MainActivity, in the head project
   [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
   [IntentFilter(
   	new[] {Android.Content.Intent.ActionView},
   	Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
-      // Change the following DataScheme for one specific to your application...
+      // To be changed for a scheme specific to the application
   	DataScheme = "myapplication")]
   public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBase
   {
-      // You can change the name of this class if you wish, it really not something important.
+      // Note: the name of this class it not important
   }
   ```
 
@@ -40,7 +40,7 @@
 
 * Default _redirect URI_ will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
 
-* The default implementation of the `WebAuthenticationBroker` on Android will launch the system browser and the result will come back through the custom scheme of the _Return Uri_. You may want something more elaborated, like the _AndroidX Chrome Custom Tabs_. Check in the _Advanced_ section below for instructions to use it in your application.
+* The default implementation of the `WebAuthenticationBroker` on Android will launch the system browser and the result will come back through the custom scheme of the _Return Uri_. The _AndroidX Chrome Custom Tabs_ may also be used. _Advanced_ section below contains instructions about this.
 
 ## Advanced Usages
 
@@ -51,7 +51,7 @@ For special needs, it is possible to create a custom implementation of the Web A
 ``` csharp
 [assembly: ApiExtension(typeof(MyNameSpace.MyBrokerImplementation), typeof(Uno.AuthenticationBroker.IWebAuthenticationBrokerProvider))]
 
-public class MyBrokerImplementation : IWebAuthenticationBrokerProvider
+public class MyBrokerImplementation : Uno.AuthenticationBroker.IWebAuthenticationBrokerProvider
 {
 	Uri GetCurrentApplicationCallbackUri() => [TODO]
 
@@ -66,16 +66,16 @@ This implementation can also published as a NuGet package and it will be discove
 
 ### Android: Custom Implementation for AndroidX Chrome Custom Tabs
 
-1. Add reference to following NuGet packages:
+1. Add references to following NuGet packages:
 
    * `Xamarin.Android.Support.CustomTabs`
    * `Xamarin.AndroidX.Lifecycle.LiveData`
    * `Xamarin.AndroidX.Browser`
 
-2. Directly in the Android head project, create a class deriving from `WebAuthenticationBrokerProvider`:
+2. Directly in the Android head project, create a class inheriting from `WebAuthenticationBrokerProvider`:
 
    ``` csharp
-   public class ChromeCustomTabsProvider : WebAuthenticationBrokerProvider
+   public class ChromeCustomTabsProvider : Uno.AuthenticationBroker.WebAuthenticationBrokerProvider
    {   
    }
    ```
@@ -83,7 +83,7 @@ This implementation can also published as a NuGet package and it will be discove
 3. Override the `LaunchBrowserCore` virtual method:
 
    ``` csharp
-   public class ChromeCustomTabsProvider : WebAuthenticationBrokerProvider
+   public class ChromeCustomTabsProvider : Uno.AuthenticationBroker.WebAuthenticationBrokerProvider
    {   
        protected override async Task LaunchBrowserCore(
                    WebAuthenticationOptions options,
@@ -111,7 +111,7 @@ This implementation can also published as a NuGet package and it will be discove
        // ---- Add the following lines ----
        // Register a custom implementation of WebAuthenticationBroker
        // by using the AndroidX Chrome Custom Tabs on Android.
-       ApiExtensibility.Register(
+       Uno.Foundation.Extensibility.ApiExtensibility.Register(
    		typeof(IWebAuthenticationBrokerProvider),
    		_ => new ChromeCustomTabsProvider());
        // ---------------------------------

@@ -1,16 +1,16 @@
 # Authentication using OpenID Connect
 
-OpenID Connect is a layer over OAuth 2.0,  allowing a simpler integration into applications, especially when the OpenID  Connect Discovery is used.
+OpenID Connect is a layer over OAuth 2.0, allowing a simpler integration into applications, especially when the OpenID  Connect Discovery is used.
 
-This article will document the usage of  `IdentityModel.OidcClient` into a Uno application using the [`WebAuthenticationBroker`](about:web-authentication-broker.md). You can find [the  IdentityModel.OidcClient documentation here](https://identitymodel.readthedocs.io/en/latest/native/overview.html).
+This article will document the usage of `IdentityModel.OidcClient` into a Uno application using the [`WebAuthenticationBroker`](about:web-authentication-broker.md). You can find [the IdentityModel.OidcClient documentation here](https://identitymodel.readthedocs.io/en/latest/native/overview.html).
 
-> The code of this article can be found in the Uno Samples at  the following address: https://github.com/unoplatform/Uno.Samples/tree/master/UI/Authentication.OidcDemo
+> The code of this article can be found in the Uno Samples at the following address: https://github.com/unoplatform/Uno.Samples/tree/master/UI/Authentication.OidcDemo
 
 ## Limitations
 
-- **Not all platforms  yet**: The `WebAuthenticationBroker` is not yet  supported on all platforms yet. For Uno 3.6 it is implemented only on  WebAssembly, Android, iOS and MacOS.
-- **Return URI on  WebAssembly**: Because of browser security  restrictions, on WebAssembly, the return URL must be on the same origin as the  application. On other platforms the best approach is to use a custom protocol  scheme (like `my-application:`). For most applications, you  may simply use the automatic discovery of return URLs, which will use the  [`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`  method](https://docs.microsoft.com/en-us/uwp/api/windows.security.authentication.web.webauthenticationbroker.getcurrentapplicationcallbackuri).
-- **Browser Anti-Popup  Protection**: On WebAssembly, a  foreign/public web site is usually used to authenticate the user. Doing this  without losing the application context requires the opening of a new browser  window. To ensure the window will open on all browsers without being denied,  this one **must be opened using the  handling of a user interaction**. For this reason the  IdentityModel.OidcClient's *automatic  mode* can't be used because it's doing async processing (fetching  the discovery endpoint) before opening the authentication browser.
+- **Platforms**: The `WebAuthenticationBroker` is not yet supported on all platforms yet. For Uno 3.6 it is implemented only on WebAssembly, Android, iOS and MacOS.
+- **Return URI on WebAssembly**: Because of browser security restrictions, on WebAssembly, the return URL must be on the same origin as the application. On other platforms the best approach is to use a custom protocol scheme (like `my-application:`). For most applications, you may simply use the automatic discovery of return URLs, which will use the [`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()` method](https://docs.microsoft.com/en-us/uwp/api/windows.security.authentication.web.webauthenticationbroker.getcurrentapplicationcallbackuri).
+- **Browser Anti-Popup Protection**: On WebAssembly, a foreign/public web site is usually used to authenticate the user. Doing this without losing the application context requires the opening of a new browser window. To ensure the window will open on all browsers without being denied, this one **must be opened using the handling of a user interaction**. For this reason the IdentityModel.OidcClient's *automatic mode* can't be used because it's doing async processing (fetching the discovery endpoint) before opening the authentication browser.
 
 ## Demo Endpoint
 
@@ -54,7 +54,7 @@ public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBa
 
 This activity will intercept the return URI and forward it to any waiting `WebAuthenticationBroker`.
 
-Note: it's using the system browser. Check the [WebAuthenticationBroker documentation](web-authentication-broker.md) to use another mechanism.
+Note: it's using the system browser. Check the [WebAuthenticationBroker documentation](../features/web-authentication-broker.md) to use another mechanism.
 
 **iOS & MacOS**
 
