@@ -36,6 +36,8 @@
           href: uno-community-toolkit.md
         - name: How to add a splash screen
           href: splash-screen.md
+        - name: How to use native Frame navigation
+          href: guides\native-frame-nav-tutorial.md
         - name: How to consume a web API
           href: howto-consume-webservices.md
         - name: How to integrate SignalR
@@ -156,6 +158,8 @@
           href: features\fluent-styles.md
         - name: Fonts
           href: features/custom-fonts.md
+        - name: Native frame navigation
+          href: features\native-frame-nav.md
         - name: Orientation
           href: features/orientation.md
         - name: Routed Events
