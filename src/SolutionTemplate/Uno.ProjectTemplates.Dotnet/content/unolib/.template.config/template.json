@@ -2,13 +2,15 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
   "classifications": [
-    "Web",
+    "Cross-platform",
     "Uno Platform",
-    "WebAssembly",
+    "Library",
     "Android",
     "iOS",
     "Windows",
     "macOS",
+    "Linux",
+    "WebAssembly",
     "dotnet-new"
   ],
   "name": "Cross-Platform Library",

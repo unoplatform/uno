@@ -2,8 +2,9 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
   "classifications": [
-    "Web",
+    "Cross-platform",
     "Uno Platform",
+    "Xamarin.Forms",
     "WebAssembly",
     "dotnet-new"
   ],

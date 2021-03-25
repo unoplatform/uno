@@ -1,12 +1,12 @@
 ﻿{
   "$schema": "http://json.schemastore.org/vs-2017.3.host",
   "name": {
-    "text": "Cross-Platform App",
+    "text": "Cross-Platform UI Tests"
   },
   "description": {
-    "text": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly, Skia/WPF, and Skia/GTK for Linux.",
+    "text": "Project template for creating cross-platform UI tests with the Uno Platform."
   },
-  "order": 610,
+  "order": 615,
   "icon": "uno-logo.png",
   "learnMoreLink": "https://github.com/unoplatform/uno",
   "uiFilters": [

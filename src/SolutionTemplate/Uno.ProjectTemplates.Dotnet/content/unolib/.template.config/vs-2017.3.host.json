@@ -1,16 +1,21 @@
 ﻿{
   "$schema": "http://json.schemastore.org/vs-2017.3.host",
   "name": {
-    "text": "Cross-Platform Library",
+    "text": "Cross-Platform Library"
   },
   "description": {
-    "text": "A project template for creating a Uno Platform Cross-Platform library",
+    "text": "Template for creating a cross-platform library with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly and Skia."
   },
-  "order": 610,
+  "order": 613,
   "icon": "uno-logo.png",
   "learnMoreLink": "https://github.com/unoplatform/uno",
   "uiFilters": [
     "oneaspnet"
+  ],
+  "unsupportedHosts": [
+    {
+      "id": "vs"
+    }
   ],
   "symbolInfo": [
   ]
