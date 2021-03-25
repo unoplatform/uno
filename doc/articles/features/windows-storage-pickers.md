@@ -40,7 +40,9 @@ else
 
 **Notes**: While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, and `FileTypeFilter` has no effect for `FolderPicker`, they both must be set, otherwise the dialog crashes on UWP.
 
-### FileOpenPicker - picking a single file
+### FileOpenPicker
+
+#### Picking a single file
 
 ``` c#
 var fileOpenPicker = new FileOpenPicker();
@@ -61,7 +63,7 @@ else
 
 **Notes**: While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, it must be set, otherwise the dialog crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 
-### FileOpenPicker - picking multiple files
+#### Picking multiple files
 
 ``` c#
 var fileOpenPicker = new FileOpenPicker();
@@ -146,7 +148,7 @@ However, writing to the target file system is limited, so when a write-stream is
 
 In case the **File System Access API** is not available in the browser, Uno Platform also offers a fallback to "download" and "upload" experiences.
 
-For the upload picker, the browser triggers a file picker dialog and Uno Platform then copies the selected files into temporary storage of the app. The `StorageFile` instance you receieve is private for your application and the changes are then not reflected in the original file. To save the changes, you need to trigger the "download picker".
+For the upload picker, the browser triggers a file picker dialog and Uno Platform then copies the selected files into temporary storage of the app. The `StorageFile` instance you receive is private for your application and the changes are not reflected in the original file. To save the changes, you need to trigger the "download picker".
 
 For the download picker, the experience requires the use of [`CachedFileManager`](https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.CachedFileManager):
 
@@ -164,6 +166,24 @@ await FileIO.WriteTextAsync(file, "Hello, world!");
 // this starts the download process of the browser
 await CachedFileManager.CompleteUpdatesAsync(file);
 ```
+
+### Checking the source of opened file
+
+To know how the file needs to be handled, you need to check the type of pickers it comes from. To do this, access the `Provider` property of the file:
+
+```c#
+if (file.Provider.Id == "jsfileaccessapi")
+{
+    // File was picked using File System Access pickers.
+}
+
+if (file.Provider.Id == "computer")
+{
+    // File is a temporary file created using Upload picker.
+}
+```
+
+The local files have provider ID of `computer`, which matches the UWP behavior. `jsfileaccessapi` is used for files coming from the File System Access API.
 
 ### Choosing supported type of pickers
 
@@ -188,7 +208,7 @@ Files picked from file pickers on Android are provided by the *Storage Access Fr
 
 ## iOS
 
-iOS does not offer a built-in `FileSavePicker` alternative. Luckily it is possible to implement this functionality for example using a combination of a `FolderPicker` and `ContentDialog`.
+iOS does not offer a built-in `FileSavePicker` experience. Luckily it is possible to implement this functionality for example using a combination of a `FolderPicker` and `ContentDialog`.
 
 To provide your own custom implementation, create a class that implements the `IFileSavePickerExtension` which is only available on iOS. This class must have a `public` constructor with a `object` parameter. This will actually be an instance of `FileSavePicker` when invoked later. Then implement the `PickSaveFileAsync` method:
 
@@ -221,10 +241,10 @@ public App()
 {
 #if __IOS__
     ApiExtensibility.Register(
-        typeof(Uno.Extensions.Storage.Pickers.IFileSavePickerExtension), 
+        typeof(Uno.Ehttps://twitter.com/thebookisclosed/status/1375006215189753860?s=19xtensions.Storage.Pickers.IFileSavePickerExtension), 
         picker => new CustomFileSavePickerExtension(picker));
 #endif
 }
 ```
 
-As this is quite complex, you can check a full sample implementation of a folder-based save file picker in [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/FileSavePickeriOS). You can modify and adjust this implementation as you see fit for your specific use case.
+As this is quite complex, you can find a working implementation of a folder-based save file picker in [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/FileSavePickeriOS). You can modify and adjust this implementation as you see fit for your specific use case.
