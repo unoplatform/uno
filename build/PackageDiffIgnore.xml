@@ -3612,7 +3612,7 @@
 			<Member
 				fullName="System.String Windows.UI.Xaml.Controls.DatePickerFlyout::DismissButtonPartName"
 				reason="Method not in UWP contract" />
-		</Fields>
+        </Fields>
 		<Properties>
 			<Member
 				fullName="Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode Windows.UI.Xaml.Controls.DatePicker::FlyoutPlacement()"
@@ -3654,6 +3654,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
 				reason="No longer used method that shouldn't be called from user code" />
+      <Member
+				fullName="System.Void Windows.ApplicationModel.Contacts.ContactBatch..ctor()"
+				reason="Method not in UWP contract" />
 		</Methods>
 	</IgnoreSet>
 	<!--

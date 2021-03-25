@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Contacts
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ContactQueryOptions 
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Contacts.ContactQueryDesiredFields DesiredFields
 		{
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public ContactQueryOptions( string text) 
 		{
@@ -87,7 +87,7 @@ namespace Windows.ApplicationModel.Contacts
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public ContactQueryOptions( string text,  global::Windows.ApplicationModel.Contacts.ContactQuerySearchFields fields) 
 		{
@@ -95,7 +95,7 @@ namespace Windows.ApplicationModel.Contacts
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false 
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public ContactQueryOptions() 
 		{
