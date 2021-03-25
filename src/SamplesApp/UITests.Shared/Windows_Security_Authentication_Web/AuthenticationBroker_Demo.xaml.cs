@@ -22,41 +22,49 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 
 		private async void PrepareClient()
 		{
-			var redirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().OriginalString;
-
-			// Create options for endpoint discovery
-			var options = new OidcClientOptions()
+			try
 			{
-				Authority = "https://demo.identityserver.io",
-				ClientId = "interactive.confidential",
-				ClientSecret = "secret",
-				Scope = "openid profile email api offline_access",
-				RedirectUri = redirectUri,
-				PostLogoutRedirectUri = redirectUri,
-				ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
-				Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode
-			};
+				var redirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().OriginalString;
 
-			// Create the client. In production application, this is often created and stored
-			// directly in the Application class.
-			_oidcClient = new OidcClient(options);
+				// Create options for endpoint discovery
+				var options = new OidcClientOptions()
+				{
+					Authority = "https://demo.identityserver.io",
+					ClientId = "interactive.confidential",
+					ClientSecret = "secret",
+					Scope = "openid profile email api offline_access",
+					RedirectUri = redirectUri,
+					PostLogoutRedirectUri = redirectUri,
+					ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
+					Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode
+				};
 
-			// Invoke Discovery and prepare a request state, containing the nonce.
-			// This is done here to ensure the discovery mecanism is done before
-			// the user clicks on the SignIn button. Since the opening of a web window
-			// should be done during the handling of a user interaction (here it's the button click),
-			// it will be too late to reach the discovery endpoint.
-			// Not doing this could trigger popup blockers mechanisms in browsers.
-			_loginState = await _oidcClient.PrepareLoginAsync();
-			btnSignin.IsEnabled = true;
+				// Create the client. In production application, this is often created and stored
+				// directly in the Application class.
+				_oidcClient = new OidcClient(options);
 
-			resultTxt.Text = "Login URI correct";
+				// Invoke Discovery and prepare a request state, containing the nonce.
+				// This is done here to ensure the discovery mecanism is done before
+				// the user clicks on the SignIn button. Since the opening of a web window
+				// should be done during the handling of a user interaction (here it's the button click),
+				// it will be too late to reach the discovery endpoint.
+				// Not doing this could trigger popup blockers mechanisms in browsers.
+				_loginState = await _oidcClient.PrepareLoginAsync();
+				btnSignin.IsEnabled = true;
 
-			// Same for logout url.
-			_logoutUrl = new Uri(await _oidcClient.PrepareLogoutAsync(new LogoutRequest()));
-			btnSignout.IsEnabled = true;
+				resultTxt.Text = "Login URI correct";
 
-			resultTxt.Text = $"Initialization completed.\nStart={_loginState.StartUrl}\nCallback={_loginState.RedirectUri}\nLogout={_logoutUrl}";
+				// Same for logout url.
+				_logoutUrl = new Uri(await _oidcClient.PrepareLogoutAsync(new LogoutRequest()));
+				btnSignout.IsEnabled = true;
+
+				resultTxt.Text = $"Initialization completed.\nStart={_loginState.StartUrl}\nCallback={_loginState.RedirectUri}\nLogout={_logoutUrl}";
+			}
+			catch(Exception ex)
+			{
+				resultTxt.Text = $"Error {ex}";
+
+			}
 		}
 
 		private async void SignIn_Clicked(object sender, RoutedEventArgs e)
