@@ -2,7 +2,7 @@
 
 * The timeout is set by default to 5 minutes. You can change it using `WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout`.
 
-## WebAssembly
+## Usage on WebAssembly
 
 * The _redirect URI_ **MUST** be with the origin (protocol + hostname + port) of the application. It is not possible to use a custom scheme URI.
 * When using the `<iframe>` mode (see _advanced usages_ below), the server must allow for using CSP (Content Security Policy).
@@ -10,22 +10,48 @@
 * It is not possible for applications to clear cookies for the authentication server when this one is from another origin. The only way clear cookies is to deploy the app and the authentication server on the same site (sharing the same origin).
 * You can change the size and the initial title of the open window by setting corresponding settings in `WinRTFeatureConfiguration.WebAuthenticationBroker` .
 
-## iOS & MacOS
+## Usage on iOS & MacOS
 
-* The _redirect URI_ **MUST** use a custom scheme URI and this one must be registered in the `Info.plist` of the application.
+* The *redirect URI* **MUST** use a custom scheme URI and this scheme must be registered in the `Info.plist` of the application.
+* Default *redirect URI* will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
+* The default *redirect URI* will be automatic if there's only one custom scheme defined in the application. If there are more than one scheme, the first one will be used. You may want to set the right one using the `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` property.
+
+## Usage on Android
+
+* The *redirect URI* **MUST** use a custom scheme URI. This one will launch a special *Activity* declared in the application.
+
+* You **MUST** declare an activity inheriting from `WebAuthenticationBrokerActivityBase` in the Android head:
+
+  ``` csharp
+  // Android: add this class near the MainActivity, in the head project
+  [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
+  [IntentFilter(
+  	new[] {Android.Content.Intent.ActionView},
+  	Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
+      // To be changed for a scheme specific to the application
+  	DataScheme = "myapplication")]
+  public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBase
+  {
+      // Note: the name of this class is not important
+  }
+  ```
+
+* To use the automatic discovery of the _redirect URI_, it is required to set the `IntentFilter` using the attributes like in the previous point. If you put it in the manifest, you'll need to set the URI using the `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` property.
+
 * Default _redirect URI_ will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
-* The default _redirect URI_ will be automatic if there's only one custom scheme defined in the application.  If there are more that one scheme, the _default redirect URI_ must be set in the  `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` configuration.
+
+* The default implementation of the `WebAuthenticationBroker` on Android will launch the system browser and the result will come back through the custom scheme of the _Return Uri_. The _AndroidX Chrome Custom Tabs_ may also be used. _Advanced_ section below contains instructions about this.
 
 ## Advanced Usages
 
-### Custom implementation
+### Custom Implementation
 
 For special needs, it is possible to create a custom implementation of the Web Authentication Broker by using the `[ApiExtension]` mechanism of Uno and implementing the `IWebAuthenticationBrokerProvider` interface:
 
 ``` csharp
 [assembly: ApiExtension(typeof(MyNameSpace.MyBrokerImplementation), typeof(Uno.AuthenticationBroker.IWebAuthenticationBrokerProvider))]
 
-public class MyBrokerImplementation : IWebAuthenticationBrokerProvider
+public class MyBrokerImplementation : Uno.AuthenticationBroker.IWebAuthenticationBrokerProvider
 {
 	Uri GetCurrentApplicationCallbackUri() => [TODO]
 
@@ -38,7 +64,61 @@ public class MyBrokerImplementation : IWebAuthenticationBrokerProvider
 
 This implementation can also published as a NuGet package and it will be discovered automatically by the Uno tooling during compilation.
 
-### WebAssembly: Use `<iframe>` instead of a browser window
+### Android: Custom Implementation for AndroidX Chrome Custom Tabs
+
+1. Add references to following NuGet packages:
+
+   * `Xamarin.Android.Support.CustomTabs`
+   * `Xamarin.AndroidX.Lifecycle.LiveData`
+   * `Xamarin.AndroidX.Browser`
+
+2. Directly in the Android head project, create a class inheriting from `WebAuthenticationBrokerProvider`:
+
+   ``` csharp
+   public class ChromeCustomTabsProvider : Uno.AuthenticationBroker.WebAuthenticationBrokerProvider
+   {   
+   }
+   ```
+
+3. Override the `LaunchBrowserCore` virtual method:
+
+   ``` csharp
+   public class ChromeCustomTabsProvider : Uno.AuthenticationBroker.WebAuthenticationBrokerProvider
+   {   
+       protected override async Task LaunchBrowserCore(
+                   WebAuthenticationOptions options,
+                   Uri requestUri,
+                   Uri callbackUri,
+                   CancellationToken ct)
+       {
+           var builder = new CustomTabsIntent.Builder();
+   		var intent = builder.Build();
+   		intent.LaunchUrl(
+               ContextHelper.Current,
+               Android.Net.Uri.Parse(requestUri.OriginalString));
+       }
+   }
+   ```
+
+4. Register the override in the `Application` constructor in the `Main.cs` file:
+
+   ```csharp
+   public Application(IntPtr javaReference, JniHandleOwnership transfer)
+   	: base(() => new App(), javaReference, transfer)
+   {
+   	ConfigureUniversalImageLoader();
+           
+       // ---- Add the following lines ----
+       // Register a custom implementation of WebAuthenticationBroker
+       // by using the AndroidX Chrome Custom Tabs on Android.
+       Uno.Foundation.Extensibility.ApiExtensibility.Register(
+   		typeof(IWebAuthenticationBrokerProvider),
+   		_ => new ChromeCustomTabsProvider());
+       // ---------------------------------
+   }
+   ```
+
+### WebAssembly: How to use `<iframe>` instead of a browser window
 
 On WebAssembly, it is possible to use an in-application `<iframe>` instead of opening a new window. Beware **the authentication server must support this mode**.
 

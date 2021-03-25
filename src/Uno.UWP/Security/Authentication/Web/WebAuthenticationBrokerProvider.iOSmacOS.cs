@@ -26,7 +26,7 @@ namespace Uno.AuthenticationBroker
 		private const string sfAuthenticationErrorDomain = "com.apple.SafariServices.Authentication";
 		private const int sfAuthenticationErrorCanceledLogin = 1;
 #endif
-		public async Task<WebAuthenticationResult> AuthenticateAsync(
+		protected virtual async Task<WebAuthenticationResult> AuthenticateAsyncCore(
 			WebAuthenticationOptions options,
 			Uri requestUri,
 			Uri callbackUri,
@@ -90,7 +90,7 @@ namespace Uno.AuthenticationBroker
 			var startUrl = new NSUrl(requestUri.OriginalString);
 			var callbackUrl = callbackUri.OriginalString;
 
-			var schemes = GetCustomSchemes().ToArray();
+			var schemes = GetApplicationCustomSchemes().ToArray();
 			if (!schemes.Any(s => callbackUrl.StartsWith(s)))
 			{
 				var message = schemes.Length == 0
@@ -177,7 +177,7 @@ namespace Uno.AuthenticationBroker
 #endif
 		}
 
-		private static IEnumerable<string> GetCustomSchemes()
+		protected virtual IEnumerable<string> GetApplicationCustomSchemes()
 		{
 			if (NSBundle.MainBundle.InfoDictionary.TryGetValue((NSString)"CFBundleURLTypes", out var o))
 			{
