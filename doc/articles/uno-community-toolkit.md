@@ -155,5 +155,5 @@ A working sample complete with data is available on GitHub: [Uno Windows Communi
 > [!TIP]
 > If you ran into difficulties with any part of this guide, you can:
 > 
-> * Ask for help on our [Discord channel](https://wwww.platform.uno/discord) - #uno-platform
+> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
 > * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag
