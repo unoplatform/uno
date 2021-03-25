@@ -568,6 +568,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Created_From_Local_Source_In_Codebehind_Ensure_Lazy()
+		{
+			var rd = new ResourceDictionary { Source = new Uri("ms-resource:///Files/App/Xaml/Test_Dictionary_Lazy.xaml") };
+			AssertEx.AssertContainsColorBrushResource(rd, "LiteralColorBrush", Colors.Fuchsia);
+			AssertEx.AssertContainsColorBrushResource(rd, "ThemedLiteralColorBrush", Colors.DarkOrchid);
+
+			Assert.ThrowsException<InvalidOperationException>(() =>
+			{
+				var _ = rd["LazyResource"];
+			});
+
+			Assert.ThrowsException<InvalidOperationException>(() =>
+			{
+				var _ = rd["ThemedLazyResource"];
+			});
+
+			Assert.IsTrue(rd.ThemeDictionaries.ContainsKey("Nope"));
+			Assert.ThrowsException<InvalidOperationException>(() =>
+			{
+				var _ = rd.ThemeDictionaries["Nope"];
+			});
+		}
+
+		[TestMethod]
 		public void When_External_Source()
 		{
 			var page = new Test_Page();
