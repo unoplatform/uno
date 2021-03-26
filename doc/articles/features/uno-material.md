@@ -4,14 +4,40 @@ Uno Material is an add-on package which lets you apply [Material Design styling]
 
 - Color system for both Light and Dark themes
 - Styles for existing WinUI controls like Buttons, TextBox, etc.
-- Custom Controls for Material Components not offered out of the box by WinUI, such as Card and BottomNavigationBar.
+- Custom Controls for Material Components not offered out of the box by WinUI, such as `Card` and `BottomNavigationBar`.
 
 For complete instructions on using Uno Material in your projects, including a set of Sketch files for designers, [consult the readme](https://github.com/unoplatform/Uno.Themes/blob/master/README.md).
 
 ## Getting Started
-See: [How to use Uno.Material](../guides/uno-material-walkthrough.md)
+1. Add NuGet package `Uno.Material` to each of project heads
+1. Add the following code inside `App.xaml`:
+    ```xml
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Load WinUI resources -->
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
-> [!NOTE] Certain controls require [additional setup steps](uno-material-controls-extra-setup.md).
+                <!-- Application's custom styles -->
+                <!-- other ResourceDictionaries -->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    ```
+1. Initialize the material library in `App.xaml.cs`:
+    ```cs
+    protected override void OnLaunched(LaunchActivatedEventArgs e)
+    {
+         Uno.Material.Resources.Init(this, null);
+
+        // [existing code...]
+    }
+    ```
+
+For complete instructions on using Uno Material in your projects, check out this walkthrough: [How to use Uno.Material](../guides/uno-material-walkthrough.md).
+
+> [!NOTE]
+> Certain controls require [additional setup steps](uno-material-controls-extra-setup.md).
 
 ## Features
 

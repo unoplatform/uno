@@ -44,8 +44,6 @@
           href: guides/localization.md
         - name: How to change app language at runtime
           href: guides/hotswap-app-language.md
-        - name: How to use Uno.Material
-          href: guides/uno-material-walkthrough.md
         - name: How to integrate SignalR
           href: signalr.md
         - name: How to update StatusBar color based on dark/light theme
@@ -285,7 +283,14 @@
             - name: Other features
               href: Uno.UI.Toolkit.md
         - name: Uno Material
-          href: features/uno-material.md
+          topicHref: features/uno-material.md
+          items:
+            - name: Overview
+              href: features/uno-material.md
+            - name: Uno.Material walkthrough
+              href: guides/uno-material-walkthrough.md
+            - name: Controls extra setup
+              href: guides/uno-material-controls-extra-setup.md
         - name: Fluent icon font
           href: uno-fluent-assets.md
         - name: Lottie animations

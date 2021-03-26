@@ -2,11 +2,12 @@
 
 This guide will walk you through the necessary steps to setup and to use the [`Uno.Material` package](https://www.nuget.org/packages/Uno.Material) in an Uno Platform application.
 
-> [!TIP] The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [UnoMaterialSample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoMaterialSample)
+> [!TIP]
+> The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [UnoMaterialSample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoMaterialSample)
 
 ## Prerequisites
 
-### [Visual Studio for Windows](#tab/tabid-vswin)
+# [Visual Studio for Windows](#tab/tabid-vswin)
 
 * [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
   * **Universal Windows Platform** workload installed
@@ -14,7 +15,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
   * **ASP**.**NET and web** workload installed
   * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) installed
 
-### [VS Code](#tab/tabid-vscode)
+# [VS Code](#tab/tabid-vscode)
 
 * [**Visual Studio Code**](https://code.visualstudio.com/)
 
@@ -26,7 +27,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 
     > Use `dotnet --version` from the terminal to get the version installed.
 
-### [Visual Studio for Mac](#tab/tabid-vsmac)
+# [Visual Studio for Mac](#tab/tabid-vsmac)
 
 * [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
@@ -36,18 +37,26 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
-### [JetBrains Rider](#tab/tabid-rider)
+# [JetBrains Rider](#tab/tabid-rider)
 
 * [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
 * [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
 
+***
+
+<br>
+
+> [!Tip]
+> For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](get-started.md).
+
 ## Step-by-steps
 ### Section 1: Setup Uno.Material
-1. Create a new Uno Platform application, following the instructions [here](..\get-started.md).
+1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
 1. Add NuGet package `Uno.Material` to each of project heads by:
-    > [!NOTE] You may have to check the `[x] Include Prerelease` to find this package, as there are currently no stable release.
+    > [!NOTE]
+    > You may have to check the `[x] Include Prerelease` to find this package, as there are currently no stable release.
 
-    > [!NOTE]  
+    > [!NOTE]
     > The project heads refer to the projects targeted to a specific platforms:
     > - UnoMaterialSample.Droid
     > - UnoMaterialSample.iOS
@@ -107,7 +116,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     ```
 
 ### Section 2: Using Uno.Material library
-1. Add a couple controls with the material style to `MainPage.xaml`:
+1. Let's add a few controls with the Material style to `MainPage.xaml`:
     ```xml
     <Page x:Class="UnoMaterialSample.MainPage"
           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -130,7 +139,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
         </Grid>
     <Page>
     ```
-1. Add a couple new controls from material:
+1. Now we'll add a few new controls that are defined in the Material package - `Card`, `ChipGroup`, `Chip`, and `Divider`:
     ```xml
     <Page ...
           xmlns:material="using:Uno.Material.Controls">
@@ -174,7 +183,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 > - Going through the source code of control styles: https://github.com/unoplatform/Uno.Themes/tree/master/src/library/Uno.Material/Styles/Controls
 > - Check out the [Uno.Gallery web app](https://gallery.platform.uno/) (Click on the `<>` button to view xaml source)
 
-### Section 3: Overriding Color Pallette
+### Section 3: Overriding Color Palette
 1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
 1. Add a new Resource Dictionary `ColorPaletteOverride.xaml` under `Styles\Application\`
 1. Replace the content of that res-dict with the source from: https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Material/Styles/Application/ColorPalette.xaml
@@ -226,11 +235,28 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     <!-- ... --->
     ```
     > You may also use this for picking colors: https://material.io/design/color/the-color-system.html#tools-for-picking-colors
+1. Run the app, you should now see the controls using your new color scheme.
 
 ## Note
 - Certain controls may require additional setup to setup and/or overriding color pallette. For details, see: [Uno.Material controls extra setup](..\features\uno-material-controls-extra-setup.md)
+
+## Get the complete code
+
+See the completed sample on GitHub: [UnoMaterialSample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoMaterialSample)
 
 ## Additional Resources
 - [Uno.Material](..\features\uno-material.md) overview
 - Uno.Material library repository: https://github.com/unoplatform/Uno.Themes
 - Tools for picking colors: https://material.io/design/color/the-color-system.html#tools-for-picking-colors
+
+<br>
+
+***
+
+## Help! I'm having trouble
+
+> [!TIP]
+> If you ran into difficulties with any part of this guide, you can:
+>
+> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
+> * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag
