@@ -666,6 +666,84 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_Event_Nested()
+		{
+			var SUT = new Binding_Event_Nested();
+
+			SUT.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_Event_DataTemplate()
+		{
+			var SUT = new Binding_Event_DataTemplate();
+
+			SUT.ForceLoaded();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_Event_DataTemplate_Model();
+			root.DataContext = dc;
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, dc.CheckedRaised);
+			Assert.AreEqual(0, dc.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, dc.CheckedRaised);
+			Assert.AreEqual(0, dc.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, dc.CheckedRaised);
+			Assert.AreEqual(1, dc.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_Event_Nested_DataTemplate()
+		{
+			var SUT = new Binding_Event_Nested_DataTemplate();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_Event_Nested_DataTemplate_Model();
+			root.DataContext = dc;
+
+			SUT.ForceLoaded();
+			root.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, dc.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, dc.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, dc.ViewModel.UncheckedRaised);
+		}
+
+		[TestMethod]
 		public void When_xLoad()
 		{
 			var SUT = new Binding_xLoad();
