@@ -531,5 +531,24 @@ namespace Uno.UI
 			public static bool EnableBitmapIconTint { get; set; } = false;
 #endif
 		}
+
+		public static class Composition
+		{
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <remarks>This is captured on window creation, this means that you can </remarks>
+			public static Options Configuration { get; set; } = Options.Disabled;
+
+			[Flags]
+			public enum Options
+			{
+				Disabled = 0,
+
+				UseCompositorThread = 0x1,
+
+				Enabled = UseCompositorThread,
+			}
+		}
 	}
 }
