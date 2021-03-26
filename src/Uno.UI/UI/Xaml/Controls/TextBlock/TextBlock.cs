@@ -20,6 +20,7 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno;
+using Microsoft.Extensions.Logging;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -108,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontStyleProperty, value);
 		}
 
-		public static DependencyProperty FontStyleProperty { get ; } =
+		public static DependencyProperty FontStyleProperty { get; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -138,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextWrappingProperty, value);
 		}
 
-		public static DependencyProperty TextWrappingProperty { get ; } =
+		public static DependencyProperty TextWrappingProperty { get; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
@@ -167,7 +168,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontWeightProperty, value);
 		}
 
-		public static DependencyProperty FontWeightProperty { get ; } =
+		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -201,7 +202,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TextProperty, value); }
 		}
 
-		public static DependencyProperty TextProperty { get ; } =
+		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -244,7 +245,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontFamilyProperty, value);
 		}
 
-		public static DependencyProperty FontFamilyProperty { get ; } =
+		public static DependencyProperty FontFamilyProperty { get; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -274,7 +275,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FontSizeProperty, value);
 		}
 
-		public static DependencyProperty FontSizeProperty { get ; } =
+		public static DependencyProperty FontSizeProperty { get; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
@@ -304,7 +305,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MaxLinesProperty, value);
 		}
 
-		public static DependencyProperty MaxLinesProperty { get ; } =
+		public static DependencyProperty MaxLinesProperty { get; } =
 			DependencyProperty.Register(
 				"MaxLines",
 				typeof(int),
@@ -333,7 +334,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextTrimmingProperty, value);
 		}
 
-		public static DependencyProperty TextTrimmingProperty { get ; } =
+		public static DependencyProperty TextTrimmingProperty { get; } =
 			DependencyProperty.Register(
 				"TextTrimming",
 				typeof(TextTrimming),
@@ -380,7 +381,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -396,8 +397,29 @@ namespace Windows.UI.Xaml.Controls
 		{
 			void refreshForeground()
 			{
-				OnForegroundChangedPartial();
-				InvalidateTextBlock();
+				// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
+				// which may happen when the system theme changes from light to dark. For app-level resources, a large number of views may
+				// be subscribed to changes on the brush, including potentially some that have been removed from the visual tree, collected
+				// on the native side, but not yet collected on the managed side (for Xamarin targets).
+
+				// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
+				// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
+#if !HAS_EXPENSIVE_TRYFINALLY
+				try
+#endif
+				{
+					OnForegroundChangedPartial();
+					InvalidateTextBlock();
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
+					}
+				}
+#endif
 			}
 
 			_foregroundChanged.Disposable =
@@ -447,7 +469,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextAlignmentProperty, value);
 		}
 
-		public static DependencyProperty TextAlignmentProperty { get ; } =
+		public static DependencyProperty TextAlignmentProperty { get; } =
 			DependencyProperty.Register(
 				"TextAlignment",
 				typeof(TextAlignment),
@@ -503,7 +525,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(LineHeightProperty, value);
 		}
 
-		public static DependencyProperty LineHeightProperty { get ; } =
+		public static DependencyProperty LineHeightProperty { get; } =
 			DependencyProperty.Register("LineHeight", typeof(double), typeof(TextBlock), new FrameworkPropertyMetadata(0d,
 				propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged())
 			);
