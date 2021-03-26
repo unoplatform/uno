@@ -196,5 +196,55 @@ namespace Windows.UI.Xaml
 
 		internal Point GetPosition(Point position, UIElement relativeTo)
 			=> TransformToVisual(relativeTo).TransformPoint(position);
+
+#if DEBUG
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		public FrameworkElement[] FindViewsByName(string name) => FindViewsByName(name, searchDescendantsOnly: false);
+
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		/// <param name="searchDescendantsOnly">If true, only look in descendants of the current view; otherwise search the entire visual tree.</param>
+		public FrameworkElement[] FindViewsByName(string name, bool searchDescendantsOnly)
+		{
+
+			FrameworkElement topLevel = this as FrameworkElement;
+
+			if (!searchDescendantsOnly)
+			{
+				while (topLevel?.Parent is FrameworkElement newTopLevel)
+				{
+					topLevel = newTopLevel;
+				}
+			}
+
+			return GetMatchesInChildren(topLevel).ToArray();
+
+			IEnumerable<FrameworkElement> GetMatchesInChildren(FrameworkElement parent)
+			{
+				if (parent == null)
+				{
+					yield break;
+				}
+
+				foreach (var subview in parent._children)
+				{
+					if (subview is FrameworkElement fe && fe.Name == name)
+					{
+						yield return fe;
+					}
+
+					foreach (var match in GetMatchesInChildren(subview as FrameworkElement))
+					{
+						yield return match;
+					}
+				}
+			}
+		}
+#endif
 	}
 }

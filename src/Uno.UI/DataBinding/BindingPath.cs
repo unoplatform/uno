@@ -163,6 +163,11 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
+		/// Name of the leaf property in the path.
+		/// </summary>
+		internal string LeafPropertyName => _value?.PropertyName;
+
+		/// <summary>
 		/// Gets the value of the DependencyProperty with a
 		/// precedence immediately below the one specified at the creation
 		/// of the BindingPath.

@@ -157,9 +157,12 @@ namespace Uno.UI
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
+			=> ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), isThemeResourceExtension, context);
+
+		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, bool isThemeResourceExtension, object context)
 		{
 			// Set initial value based on statically-available top-level resources.
-			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(resourceKey), context, out var value))
+			if (TryStaticRetrieval(specializedKey, context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value));
 
@@ -170,7 +173,35 @@ namespace Uno.UI
 				}
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, resourceKey, isThemeResourceExtension, context);
+			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, isThemeResourceExtension, context);
+		}
+
+		/// <summary>
+		/// Apply a <see cref="Setter"/> in a visual state whose value is theme-bound.
+		/// </summary>
+		/// <param name="resourceKey">Key to the resource</param>
+		/// <param name="context">Optional parameter that provides parse-time context</param>
+		/// <param name="bindingPath">The binding path defined by the Setter target</param>
+		/// <param name="precedence">Value precedence</param>
+		/// <returns>
+		/// True if the value was successfully applied and registered for theme updates, false if no theme resource was found or the target
+		/// property is not a <see cref="DependencyProperty"/>.
+		/// </returns>
+		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence)
+		{
+			if (TryStaticRetrieval(resourceKey, context, out var value))
+			{
+				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
+				if (property != null && bindingPath.DataContext is IDependencyObjectStoreProvider provider)
+				{
+					// Set current resource value
+					bindingPath.Value = value;
+					provider.Store.SetResourceBinding(property, resourceKey, isTheme: true, context, precedence, bindingPath);
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>

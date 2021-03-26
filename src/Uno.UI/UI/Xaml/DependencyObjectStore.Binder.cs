@@ -369,13 +369,17 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public void SetResourceBinding(DependencyProperty dependencyProperty, object resourceKey, bool isTheme, object context)
+		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context)
 		{
 			var precedence = _overriddenPrecedences?.Count > 0
 				? _overriddenPrecedences.Peek()
 				: default;
+			SetResourceBinding(dependencyProperty, resourceKey, isTheme, context, precedence, setterBindingPath: null);
+		}
 
-			var binding = new ResourceBinding(resourceKey, isTheme, context, precedence ?? DependencyPropertyValuePrecedences.Local);
+		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context, DependencyPropertyValuePrecedences? precedence, BindingPath? setterBindingPath)
+		{
+			var binding = new ResourceBinding(resourceKey, isTheme, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
 			SetBinding(dependencyProperty, binding);
 		}
 
@@ -397,7 +401,7 @@ namespace Windows.UI.Xaml
 
 			if (fullBinding != null)
 			{
-				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty) 
+				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty)
 					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.CompiledSource != null);
 
 				if (boundProperty != null)
@@ -431,7 +435,7 @@ namespace Windows.UI.Xaml
 					// Create a stub property so the BindingPropertyHelper is able to pick up 
 					// the plain C# properties.
 					property = DependencyProperty.Register(
-						dependencyProperty, 
+						dependencyProperty,
 						propertyType,
 						originalObjectType,
 						new FrameworkPropertyMetadata(null)
@@ -451,7 +455,7 @@ namespace Windows.UI.Xaml
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
 
-			if(property == null && propertyName != null)
+			if (property == null && propertyName != null)
 			{
 				property = FindStandardProperty(_originalObjectType, propertyName, false);
 			}
@@ -534,9 +538,9 @@ namespace Windows.UI.Xaml
 
 			if (!hasValueDoesNotInherit && hasValueInherits)
 			{
-				if(args.NewValue is IDependencyObjectStoreProvider provider)
+				if (args.NewValue is IDependencyObjectStoreProvider provider)
 				{
-					_childrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] = 
+					_childrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] =
 						provider.Store.Parent != ActualInstance ? args.NewValue : null;
 				}
 				else
@@ -548,8 +552,8 @@ namespace Windows.UI.Xaml
 
 		(bool hasValueInherits, bool hasValueDoesNotInherit) GetPropertyInheritanceConfiguration(DependencyPropertyDetails propertyDetails)
 		{
-			if(
-				propertyDetails.Property == _templatedParentProperty 
+			if (
+				propertyDetails.Property == _templatedParentProperty
 				|| propertyDetails.Property == _dataContextProperty
 			)
 			{
@@ -587,7 +591,7 @@ namespace Windows.UI.Xaml
 		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
 
-		public Windows.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty) 
+		public Windows.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
 	}
 }

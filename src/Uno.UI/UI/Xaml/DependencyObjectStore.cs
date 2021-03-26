@@ -101,6 +101,10 @@ namespace Windows.UI.Xaml
 
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
+		/// <summary>
+		/// Is a theme-bound value currently being set?
+		/// </summary>
+		private bool _isSettingThemeBinding;
 
 		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
@@ -407,23 +411,23 @@ namespace Windows.UI.Xaml
 			SetValue(property, DependencyProperty.UnsetValue, precedence);
 		}
 
-		internal void SetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails = null)
+		internal void SetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails = null, bool isThemeBinding = false)
 		{
 			if (_trace.IsEnabled)
 			{
 				using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
 				{
-					InnerSetValue(property, value, precedence, propertyDetails);
+					InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
 				}
 			}
 			else
 			{
-				InnerSetValue(property, value, precedence, propertyDetails);
+				InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
 			}
 
 		}
 
-		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails)
+		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isThemeBinding)
 		{
 			if (precedence == DependencyPropertyValuePrecedences.Coercion)
 			{
@@ -455,6 +459,12 @@ namespace Windows.UI.Xaml
 
 					// Set even if they are different to make sure the value is now set on the right precedence
 					SetValueInternal(value, precedence, propertyDetails);
+
+					if (!isThemeBinding && !_isSettingThemeBinding)
+					{
+						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
+						_resourceBindings?.ClearBinding(property, precedence);
+					}
 
 					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
 
@@ -596,12 +606,12 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private IDisposable? ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
 		{
-			var currentlyOverridenPrecedence =
+			var currentlyOverriddenPrecedence =
 				_overriddenPrecedences?.Count > 0
 					? _overriddenPrecedences.Peek()
 					: default;
 
-			if (currentlyOverridenPrecedence is {} current)
+			if (currentlyOverriddenPrecedence is { } current)
 			{
 				precedence = current;
 
@@ -1063,7 +1073,7 @@ namespace Windows.UI.Xaml
 						if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
 						{
 							wasSet = true;
-							SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), binding.Precedence);
+							SetResourceBindingValue(property, binding, value);
 							break;
 						}
 					}
@@ -1072,7 +1082,7 @@ namespace Windows.UI.Xaml
 					{
 						if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 						{
-							SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), binding.Precedence);
+							SetResourceBindingValue(property, binding, value);
 						}
 					}
 				}
@@ -1086,6 +1096,31 @@ namespace Windows.UI.Xaml
 			}
 
 			UpdateChildResourceBindings(isThemeChangedUpdate);
+		}
+
+		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
+		{
+			var convertedValue = BindingPropertyHelper.Convert(() => property.Type, value);
+			if (binding.SetterBindingPath != null)
+			{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+				try
+#endif
+				{
+					_isSettingThemeBinding = binding.IsThemeResourceExtension;
+					binding.SetterBindingPath.Value = convertedValue;
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+				finally
+#endif
+				{
+					_isSettingThemeBinding = false;
+				}
+			}
+			else
+			{
+				SetValue(property, convertedValue, binding.Precedence, isThemeBinding: binding.IsThemeResourceExtension);
+			}
 		}
 
 		private bool _isUpdatingChildResourceBindings;

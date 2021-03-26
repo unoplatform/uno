@@ -1,6 +1,9 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Data
 {
@@ -20,16 +23,22 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		public bool IsThemeResourceExtension { get; }
 
-		public object ParseContext { get; }
+		public object? ParseContext { get; }
 
 		public DependencyPropertyValuePrecedences Precedence { get; }
 
-		public ResourceBinding(object resourceKey, bool isThemeResourceExtension, object parseContext, DependencyPropertyValuePrecedences precedence)
+		/// <summary>
+		/// The binding path that this resource binding is targeting, if it was created by a VisualState <see cref="Setter"/>.
+		/// </summary>
+		public BindingPath? SetterBindingPath { get; }
+
+		public ResourceBinding(SpecializedResourceDictionary.ResourceKey resourceKey, bool isThemeResourceExtension, object? parseContext, DependencyPropertyValuePrecedences precedence, BindingPath? setterBindingPath)
 		{
-			ResourceKey = new SpecializedResourceDictionary.ResourceKey(resourceKey);
+			ResourceKey = resourceKey;
 			IsThemeResourceExtension = isThemeResourceExtension;
 			ParseContext = parseContext;
 			Precedence = precedence;
+			SetterBindingPath = setterBindingPath;
 		}
 	}
 }
