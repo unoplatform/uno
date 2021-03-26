@@ -369,9 +369,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		[Obsolete("Use overload that takes a specialized key.")]
-		public void SetResourceBinding(DependencyProperty dependencyProperty, object resourceKey, bool isTheme, object context) => SetResourceBinding(dependencyProperty, new SpecializedResourceDictionary.ResourceKey(resourceKey), isTheme, context);
-
 		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context)
 		{
 			var precedence = _overriddenPrecedences?.Count > 0
