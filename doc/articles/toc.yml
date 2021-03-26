@@ -38,7 +38,7 @@
           href: splash-screen.md
         - name: How to consume a web API
           href: howto-consume-webservices.md
-        - name: How to use localization
+        - name: How to localize text resources
           href: guides/localization.md
         - name: How to change app language at runtime
           href: guides/hotswap-app-language.md

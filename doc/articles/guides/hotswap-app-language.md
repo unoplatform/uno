@@ -2,11 +2,12 @@
 
 This guide will walk you through the necessary steps for changing app language at runtime.
 
-> [!TIP] The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [RuntimeCultureSwitching](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
+> [!TIP]
+> The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [RuntimeCultureSwitching](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
 
 ## Prerequisites
 
-### [Visual Studio for Windows](#tab/tabid-vswin)
+# [Visual Studio for Windows](#tab/tabid-vswin)
 
 * [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
   * **Universal Windows Platform** workload installed
@@ -14,7 +15,7 @@ This guide will walk you through the necessary steps for changing app language a
   * **ASP**.**NET and web** workload installed
   * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) installed
 
-### [VS Code](#tab/tabid-vscode)
+# [VS Code](#tab/tabid-vscode)
 
 * [**Visual Studio Code**](https://code.visualstudio.com/)
 
@@ -26,7 +27,7 @@ This guide will walk you through the necessary steps for changing app language a
 
     > Use `dotnet --version` from the terminal to get the version installed.
 
-### [Visual Studio for Mac](#tab/tabid-vsmac)
+# [Visual Studio for Mac](#tab/tabid-vsmac)
 
 * [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
@@ -36,18 +37,25 @@ This guide will walk you through the necessary steps for changing app language a
     * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
-### [JetBrains Rider](#tab/tabid-rider)
+# [JetBrains Rider](#tab/tabid-rider)
 
 * [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
 * [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
 
+***
+
+<br>
+
+> [!Tip]
+> For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](get-started.md).
+
 ## Step-by-steps
-> [!NOTE]  
+> [!NOTE]
 > This guide is an extension of ["How to use localization"](localization.md), and will build on top the sample from that guide.
 > Make sure you have completed the previous guide or downloaded the [full localization sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization), before continuing.
 
 1. Add two new pages to the `Localization.Shared` project by:
-    R-Click on `Localization.Shared` > Add > New Item ... > Visual C# > XAML > Blank Page
+    Right-click on `Localization.Shared` > Add > New Item ... > Visual C# > XAML > Blank Page
     And, name them `Page1` and `LanguageSettings`
 1. Add some content to the two new pages:
     - `Page1.xaml`:
@@ -135,5 +143,21 @@ This guide will walk you through the necessary steps for changing app language a
     LanguageSettings_Title.Text|Language Settings|Paramètres de langue
     LanguageSettings_GoBack.Content|Go back|Retourner
 
+## Get the complete code
+
+See the completed sample on GitHub: [RuntimeCultureSwitching](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
+
 ## Additional Resources
 https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
+
+<br>
+
+***
+
+## Help! I'm having trouble
+
+> [!TIP]
+> If you ran into difficulties with any part of this guide, you can:
+>
+> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
+> * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag

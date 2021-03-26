@@ -1,12 +1,13 @@
-# How to use localization
+# How to localize text resources
 
 This guide will walk you through the necessary steps to localize an Uno Platform application.
 
-> [!TIP] The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
+> [!TIP]
+> The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
 
 ## Prerequisites
 
-### [Visual Studio for Windows](#tab/tabid-vswin)
+# [Visual Studio for Windows](#tab/tabid-vswin)
 
 * [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
   * **Universal Windows Platform** workload installed
@@ -14,7 +15,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
   * **ASP**.**NET and web** workload installed
   * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) installed
 
-### [VS Code](#tab/tabid-vscode)
+# [VS Code](#tab/tabid-vscode)
 
 * [**Visual Studio Code**](https://code.visualstudio.com/)
 
@@ -26,7 +27,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 
     > Use `dotnet --version` from the terminal to get the version installed.
 
-### [Visual Studio for Mac](#tab/tabid-vsmac)
+# [Visual Studio for Mac](#tab/tabid-vsmac)
 
 * [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
@@ -36,10 +37,17 @@ This guide will walk you through the necessary steps to localize an Uno Platform
     * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
-### [JetBrains Rider](#tab/tabid-rider)
+# [JetBrains Rider](#tab/tabid-rider)
 
 * [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
 * [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
+
+***
+
+<br>
+
+> [!Tip]
+> For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](get-started.md).
 
 ## Step-by-steps
 1. Create a new Uno Platform application, following the instructions [here](..\get-started.md).
@@ -75,9 +83,9 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         ```
 1. Create a new resource file for localization in French in the `UnoLocalization.Shared` project:
     1. Add a new folder `fr` under the `Strings` folder by:
-    R-Click on `String` > Add > New Folder
+    Right-click on `String` > Add > New Folder
     1. Add a new resource file `Resources.resw` under the `fr` folder by:
-    R-Click on `fr` > Add > New Item ... > Visual C# > Xaml > Resources File
+    Right-click on `fr` > Add > New Item ... > Visual C# > Xaml > Resources File
 1. Add the localization strings for both English and French:
 
     Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.xaml`, and add these:
@@ -111,5 +119,21 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         }
         ```
 
+## Get the complete code
+
+See the completed sample on GitHub: [LocalizationSamples/Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
+
 ## Additional Resources
 https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
+
+<br>
+
+***
+
+## Help! I'm having trouble
+
+> [!TIP]
+> If you ran into difficulties with any part of this guide, you can:
+>
+> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
+> * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag
