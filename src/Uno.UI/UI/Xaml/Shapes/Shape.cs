@@ -79,9 +79,9 @@ namespace Windows.UI.Xaml.Shapes
 #if !HAS_EXPENSIVE_TRYFINALLY
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogWarning($"Failed to invalidate for brush changed: {e}");
+					this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
 				}
 			}
 #endif
