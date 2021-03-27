@@ -1,4 +1,4 @@
-﻿#if __ANDROID__
+#if __ANDROID__
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,49 +25,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var style = Windows.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;
 			Assert.IsNotNull(style);
 
-			var SUT = new Frame() {
+			var SUT = new Frame()
+			{
 				Style = style
 			};
 
 			TestServices.WindowHelper.WindowContent = SUT;
 
-			int GetAllMyPages()
-				=> SUT.EnumerateAllChildren(v => v is MyPage).Count();
-
-			/// Actively waiting for pages to be stacked is
-			/// required as NativeFramePresenter.UpdateStack awaits
-			/// for animations to finish, and there's no way to determine
-			/// from the Frame PoV that the animation is finished.
-			async Task WaitForPages(int count)
-			{
-				var sw = Stopwatch.StartNew();
-
-				while(sw.Elapsed < TimeSpan.FromSeconds(5))
-				{
-					await TestServices.WindowHelper.WaitForIdle();
-
-					if (GetAllMyPages() == count)
-					{
-						break;
-					}
-				}
-
-				Assert.AreEqual(count, GetAllMyPages());
-			}
-
-			await WaitForPages(0);
+			await SUT.WaitForPages(0);
 
 			SUT.Navigate(typeof(MyPage));
 
-			await WaitForPages(1);
+			await SUT.WaitForPages(1);
 
 			SUT.Navigate(typeof(MyPage));
 
-			await WaitForPages(2);
+			await SUT.WaitForPages(2);
 
 			SUT.GoBack();
 
-			await WaitForPages(1);
+			await SUT.WaitForPages(1);
+		}
+
+				Style = style
+			};
+
+			TestServices.WindowHelper.WindowContent = SUT;
+
+	internal static class FrameExtensions
+	{
+		public static int GetAllMyPages(this Frame sut) => sut.EnumerateAllChildren(v => v is MyPage).Count();
+
+		/// Actively waiting for pages to be stacked is
+		/// required as NativeFramePresenter.UpdateStack awaits
+		/// for animations to finish, and there's no way to determine
+		/// from the Frame PoV that the animation is finished.
+		public static async Task WaitForPages(this Frame frame, int count)
+		{
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < TimeSpan.FromSeconds(5))
+			{
+				await TestServices.WindowHelper.WaitForIdle();
+
+				if (frame.GetAllMyPages() == count)
+				{
+					break;
+				}
+			}
+
+			Assert.AreEqual(count, frame.GetAllMyPages());
 		}
 	}
 
