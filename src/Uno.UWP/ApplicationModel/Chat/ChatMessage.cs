@@ -30,6 +30,9 @@ namespace Windows.ApplicationModel.Chat
 		public  DateTimeOffset LocalTimestamp { get; set; }
 		public  ChatMessageKind MessageKind { get; set; }
 		public  ChatMessageOperatorKind MessageOperatorKind { get; set; }
+		public bool IsRead { get; set; }
+		public DateTimeOffset NetworkTimestamp { get; set; }
+		public bool IsSeen { get; set; }
 
 		public IList<string> Recipients { get; } = new NonNullList<string>();
 	}
