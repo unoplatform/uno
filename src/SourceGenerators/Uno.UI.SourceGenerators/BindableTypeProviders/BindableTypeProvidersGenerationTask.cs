@@ -1,4 +1,6 @@
-﻿using Uno.Logging;
+﻿#nullable enable
+
+using Uno.Logging;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -32,22 +34,22 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 	{
 		private const string TypeMetadataConfigFile = "TypeMetadataConfig.xml";
 
-		private string _defaultNamespace;
+		private string? _defaultNamespace;
 
 		private Dictionary<INamedTypeSymbol, GeneratedTypeInfo> _typeMap = new Dictionary<INamedTypeSymbol, GeneratedTypeInfo>();
-		private INamedTypeSymbol[] _bindableAttributeSymbol;
-		private ITypeSymbol _dependencyPropertySymbol;
-		private INamedTypeSymbol _objectSymbol;
-		private INamedTypeSymbol _javaObjectSymbol;
-		private INamedTypeSymbol _nsObjectSymbol;
-		private INamedTypeSymbol _nonBindableSymbol;
-		private INamedTypeSymbol _resourceDictionarySymbol;
-		private IModuleSymbol _currentModule;
-		private IReadOnlyDictionary<string, INamedTypeSymbol[]> _namedSymbolsLookup;
+		private INamedTypeSymbol[]? _bindableAttributeSymbol;
+		private ITypeSymbol? _dependencyPropertySymbol;
+		private INamedTypeSymbol? _objectSymbol;
+		private INamedTypeSymbol? _javaObjectSymbol;
+		private INamedTypeSymbol? _nsObjectSymbol;
+		private INamedTypeSymbol? _nonBindableSymbol;
+		private INamedTypeSymbol? _resourceDictionarySymbol;
+		private IModuleSymbol? _currentModule;
+		private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
+		private INamedTypeSymbol? _stringSymbol;
 
-		public string[] AnalyzerSuppressions { get; set; }
+		public string[]? AnalyzerSuppressions { get; set; }
 
-		public INamedTypeSymbol _stringSymbol { get; private set; }
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
@@ -105,7 +107,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 				if (e is AggregateException)
 				{
-					message = (e as AggregateException).InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
+					message = (e as AggregateException)?.InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
 				}
 
 				this.Log().Error("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
@@ -113,7 +115,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 		}
 
 		private INamedTypeSymbol[] FindBindableAttributes(GeneratorExecutionContext context) =>
-			_namedSymbolsLookup.TryGetValue("BindableAttribute", out var types) ? types : new INamedTypeSymbol[0];
+			_namedSymbolsLookup!.TryGetValue("BindableAttribute", out var types) ? types : new INamedTypeSymbol[0];
 
 		private bool IsApplication(GeneratorExecutionContext context)
 		{
@@ -134,7 +136,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			var q = from module in modules
 					from type in module.GlobalNamespace.GetNamespaceTypes()
 					where (
-						_bindableAttributeSymbol.Any(s => type.FindAttributeFlattened(s) != null)
+						(_bindableAttributeSymbol?.Any(s => type.FindAttributeFlattened(s) != null) ?? false)
 						&& !type.IsGenericType
 						&& !type.IsAbstract
 						&& IsValidProvider(type)
@@ -167,7 +169,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 		}
 
 		private bool IsValidProvider(INamedTypeSymbol type)
-			=> type.IsLocallyPublic(_currentModule)
+			=> type.IsLocallyPublic(_currentModule!)
 
 			// Exclude resource dictionaries for linking constraints (XamlControlsResources in particular)
 			// Those are not databound, so there's no need to generate providers for them.
@@ -265,9 +267,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 		private class PropertyNameEqualityComparer : IEqualityComparer<IPropertySymbol>
 		{
-			public bool Equals(IPropertySymbol x, IPropertySymbol y)
+			public bool Equals(IPropertySymbol? x, IPropertySymbol? y)
 			{
-				return x.Name == y.Name;
+				return x?.Name == y?.Name;
 			}
 
 			public int GetHashCode(IPropertySymbol obj)
@@ -309,7 +311,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			var flattenedProperties =
 				from property in ownerType.GetAllProperties()
 				where !property.IsStatic
-					&& !IsIgnoredType(property.ContainingSymbol as INamedTypeSymbol)
+					&& !(property.ContainingSymbol is INamedTypeSymbol containing && IsIgnoredType(containing))
 					&& !IsNonBindable(property)
 					&& !IsOverride(property.GetMethod)
 				select property;
@@ -403,7 +405,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						writer.AppendLineInvariant(@"MetadataBuilder_{0:000}.Build(bindableType); // {1}", baseTypeMapped.Index, ExpandType(baseType));
 					}
 
-					var ctor = ownerType.GetMethods().FirstOrDefault(m => m.MethodKind == MethodKind.Constructor && !m.Parameters.Any() && m.IsLocallyPublic(_currentModule));
+					var ctor = ownerType.GetMethods().FirstOrDefault(m => m.MethodKind == MethodKind.Constructor && !m.Parameters.Any() && m.IsLocallyPublic(_currentModule!));
 
 					if (ctor != null && IsCreateable(ownerType))
 					{
@@ -446,7 +448,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						if (
 							property.SetMethod != null
 							&& property.SetMethod != null
-							&& property.SetMethod.IsLocallyPublic(_currentModule)
+							&& property.SetMethod.IsLocallyPublic(_currentModule!)
 							)
 						{
 							if (property.Type.IsValueType)
@@ -483,21 +485,18 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						var propertyName = dependencyProperty.TrimEnd("Property");
 
-						var getMethod = ownerType.GetMethods().FirstOrDefault(m => m.Name == "Get" + propertyName && m.Parameters.Length == 1 && m.IsLocallyPublic(_currentModule));
-						var setMethod = ownerType.GetMethods().FirstOrDefault(m => m.Name == "Set" + propertyName && m.Parameters.Length == 2 && m.IsLocallyPublic(_currentModule));
+						var getMethod = ownerType.GetMethods().FirstOrDefault(m => m.Name == "Get" + propertyName && m.Parameters.Length == 1 && m.IsLocallyPublic(_currentModule!));
 
 						if (getMethod == null)
 						{
 							getMethod = ownerType
 								.GetProperties()
-								.FirstOrDefault(p => p.Name == propertyName && (p.GetMethod?.IsLocallyPublic(_currentModule) ?? false))
+								.FirstOrDefault(p => p.Name == propertyName && (p.GetMethod?.IsLocallyPublic(_currentModule!) ?? false))
 								?.GetMethod;
 						}
 
 						if (getMethod != null)
 						{
-							var propertyType = GetGlobalQualifier(getMethod.ReturnType) + SanitizeTypeName(getMethod.ReturnType.ToString());
-
 							writer.AppendLineInvariant($@"bindableType.AddProperty({ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{dependencyProperty});");
 						}
 					}
@@ -532,10 +531,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				return GetGlobalQualifier(arrayType.ElementType);
 			}
 
-			ITypeSymbol nullType;
+			ITypeSymbol? nullType;
 			if (ownerType.IsNullable(out nullType))
 			{
-				return GetGlobalQualifier(nullType);
+				return GetGlobalQualifier(nullType!);
 			}
 
 			var needsGlobal = ownerType.SpecialType == SpecialType.None && !ownerType.IsTupleType;
@@ -550,12 +549,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					.Safe()
 					.Any(m => 
 						m.MethodKind == MethodKind.Constructor 
-						&& m.IsLocallyPublic(_currentModule)
+						&& m.IsLocallyPublic(_currentModule!)
 						&& m.Parameters.Safe().None()
 					);
 		}
 
-		private INamedTypeSymbol GetBaseType(INamedTypeSymbol type)
+		private INamedTypeSymbol? GetBaseType(INamedTypeSymbol type)
 		{
 			if (type.BaseType != null)
 			{
@@ -584,21 +583,21 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			return typeSymbol.IsGenericType;
 		}
 
-		private bool HasPublicGetter(IPropertySymbol property) => property.GetMethod?.IsLocallyPublic(_currentModule) ?? false;
+		private bool HasPublicGetter(IPropertySymbol property) => property.GetMethod?.IsLocallyPublic(_currentModule!) ?? false;
 
 		private bool IsStringIndexer(IPropertySymbol property)
 		{
 			return property.IsIndexer
-				&& property.GetMethod.IsLocallyPublic(_currentModule)
+				&& property.GetMethod!.IsLocallyPublic(_currentModule!)
 				&& property.Parameters.Length == 1
 				&& property.Parameters.Any(p => SymbolEqualityComparer.Default.Equals(p.Type, _stringSymbol));
 		}
 
-		private bool IsNonBindable(IPropertySymbol property) => property.FindAttributeFlattened(_nonBindableSymbol) != null;
+		private bool IsNonBindable(IPropertySymbol property) => property.FindAttributeFlattened(_nonBindableSymbol!) != null;
 
-		private bool IsOverride(IMethodSymbol methodDefinition)
+		private bool IsOverride(IMethodSymbol? methodDefinition)
 		{
-			return methodDefinition!=null
+			return methodDefinition !=null
 				&& methodDefinition.IsOverride
 				&& !methodDefinition.IsVirtual;
 		}

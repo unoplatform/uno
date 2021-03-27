@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +10,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class Subclass
 	{
-		public XamlMemberDefinition ContentOwner { get; set; }
+		public Subclass(XamlMemberDefinition contentOwner, string returnType)
+		{
+			ContentOwner = contentOwner;
+			ReturnType = returnType;
+		}
 
-		public string ReturnType { get; set; }
+
+		public XamlMemberDefinition ContentOwner { get;}
+
+		public string ReturnType { get; }
 	}
 }

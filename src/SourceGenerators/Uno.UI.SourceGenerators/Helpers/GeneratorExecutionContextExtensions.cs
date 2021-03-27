@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

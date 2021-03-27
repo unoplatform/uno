@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +10,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class NameScope
 	{
-		public NameScope(string @namespace, string className)
+		public NameScope(string? @namespace, string className)
 		{
 			Namespace = @namespace ?? string.Empty;
 			ClassName = className;
