@@ -1372,6 +1372,21 @@ var Uno;
                 ret2.marshal(pReturn);
                 return true;
             }
+            measureContainerView(viewId, containerWidth, containerHeight, maxWidth, maxHeight) {
+                const cw = containerWidth ? Number(containerWidth) : NaN;
+                const ch = containerWidth ? Number(containerHeight) : NaN;
+                const mw = maxWidth ? Number(maxWidth) : NaN;
+                const mh = maxHeight ? Number(maxHeight) : NaN;
+                const element = this.getView(viewId);
+                const stubNode = document.createElement("div");
+                stubNode.style.width = `${cw}px`;
+                stubNode.style.height = `${ch}px`;
+                element.appendChild(stubNode);
+                const desiredSize = this.measureViewInternal(viewId, mw, mh);
+                console.log(`measureContainerView(${viewId}, cw:${cw}, ch:${ch}, mw:${mw}, mh:${mh}): ${desiredSize[0]}x${desiredSize[1]}`);
+                element.removeChild(stubNode);
+                return `${desiredSize[0]};${desiredSize[1]}`;
+            }
             measureElement(element) {
                 const offsetWidth = element.offsetWidth;
                 const offsetHeight = element.offsetHeight;

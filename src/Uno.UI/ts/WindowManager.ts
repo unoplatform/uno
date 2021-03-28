@@ -1370,6 +1370,28 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public measureContainerView(viewId: number,
+			containerWidth: string,
+			containerHeight: string,
+			maxWidth: string,
+			maxHeight: string): string {
+
+			const cw = containerWidth ? Number(containerWidth) : NaN;
+			const ch = containerWidth ? Number(containerHeight) : NaN;
+			const mw = maxWidth ? Number(maxWidth) : NaN;
+			const mh = maxHeight ? Number(maxHeight) : NaN;
+			const element = this.getView(viewId);
+
+			const stubNode = document.createElement("div");
+			stubNode.style.width = `${cw}px`;
+			stubNode.style.height = `${ch}px`;
+			element.appendChild(stubNode);
+			const desiredSize = this.measureViewInternal(viewId, mw, mh);
+
+			element.removeChild(stubNode);
+			return `${desiredSize[0]};${desiredSize[1]}`;
+		}
+
 		private static MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
 		private static MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
 

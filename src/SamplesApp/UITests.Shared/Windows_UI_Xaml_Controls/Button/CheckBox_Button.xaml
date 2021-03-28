@@ -13,39 +13,46 @@
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="CheckBox_Button">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
+	<StackPanel Spacing="4">
 
-				<StackPanel>
+		<TextBlock Text="Native Checkbox" />
+		<CheckBox Content="Native Checkbox - unchecked"
+				  Command="{Binding [SampleCommand]}"
+				  Style="{StaticResource NativeDefaultCheckBox}" />
+		<CheckBox Content="Native Checkbox - checked"
+				  Command="{Binding [SampleCommand]}"
+				  Style="{StaticResource NativeDefaultCheckBox}"
+				  IsChecked="true" />
+		<CheckBox Content="Native Checkbox - 3-states"
+		          Command="{Binding [SampleCommand]}"
+		          Style="{StaticResource NativeDefaultCheckBox}"
+				  IsThreeState="True"
+		          IsChecked="{x:Null}" />
 
-					<TextBlock Text="Native Checkbox" />
-					<CheckBox Content="Checkbox"
-							  Command="{Binding [SampleCommand]}"
-							  android:Style="{StaticResource AndroidCheckBoxStyle}" />
-					<CheckBox Content="Checkbox"
-							  Command="{Binding [SampleCommand]}"
-							  android:Style="{StaticResource AndroidCheckBoxStyle}"
-							  IsChecked="true" />
+		<TextBlock Text="Checkbox with the default style from UWA" />
+		<CheckBox Content="UWACheckbox - unchecked"
+				  Command="{Binding [SampleCommand]}" />
+		<CheckBox Content="UWACheckbox - checked"
+				  Command="{Binding [SampleCommand]}"
+				  IsChecked="true" />
+		<CheckBox Content="UWACheckbox - 3-states"
+		          Command="{Binding [SampleCommand]}"
+		          IsThreeState="True"
+		          IsChecked="{x:Null}" />
 
-					<TextBlock Text="Checkbox with the default style from UWA" />
-					<CheckBox Content="UWACheckbox"
-							  Command="{Binding [SampleCommand]}" />
-					<CheckBox Content="UWACheckbox"
-							  Command="{Binding [SampleCommand]}"
-							  IsChecked="true" />
+		<TextBlock Text="Checkbox with the default style from UWA Disabled" />
+		<CheckBox Content="UWACheckbox- unchecked"
+				  Command="{Binding [SampleCommand]}"
+				  IsEnabled="False" />
+		<CheckBox Content="UWACheckbox - checked"
+				  Command="{Binding [SampleCommand]}"
+				  IsEnabled="False"
+				  IsChecked="true" />
+		<CheckBox Content="UWACheckbox - 3-states"
+		          Command="{Binding [SampleCommand]}"
+		          IsEnabled="False"
+		          IsThreeState="True"
+		          IsChecked="{x:Null}" />
 
-					<TextBlock Text="Checkbox with the default style from UWA Disabled" />
-					<CheckBox Content="UWACheckbox"
-							  Command="{Binding [SampleCommand]}"
-							  IsEnabled="False" />
-					<CheckBox Content="UWACheckbox"
-							  Command="{Binding [SampleCommand]}"
-							  IsEnabled="False"
-							  IsChecked="true" />
-
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	</StackPanel>
 </UserControl>

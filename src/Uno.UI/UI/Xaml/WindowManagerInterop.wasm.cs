@@ -244,6 +244,22 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region MeasureView
+
+		internal static Size MeasureContainerView(IntPtr htmlId, Size containerSize, Size availableSize)
+		{
+			var cw = containerSize.Width.ToStringInvariant();
+			var ch = containerSize.Height.ToStringInvariant();
+			var w = double.IsInfinity(availableSize.Width) ? "null" : availableSize.Width.ToStringInvariant();
+			var h = double.IsInfinity(availableSize.Height) ? "null" : availableSize.Height.ToStringInvariant();
+			var command = "Uno.UI.WindowManager.current.measureContainerView(" + htmlId + ", \"" + cw + "\", \"" + ch + "\", \"" + w + "\", \"" + h + "\");";
+			var result = WebAssemblyRuntime.InvokeJS(command);
+
+			var parts = result.Split(';');
+
+			return new Size(
+				double.Parse(parts[0], CultureInfo.InvariantCulture),
+				double.Parse(parts[1], CultureInfo.InvariantCulture));
+		}
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize)
 		{
 			if (UseJavascriptEval)

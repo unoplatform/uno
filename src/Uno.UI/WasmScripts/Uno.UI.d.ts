@@ -473,6 +473,7 @@ declare namespace Uno.UI {
             * @param maxHeight string containing height in pixels. Empty string means infinite.
             */
         measureViewNative(pParams: number, pReturn: number): boolean;
+        measureContainerView(viewId: number, containerWidth: string, containerHeight: string, maxWidth: string, maxHeight: string): string;
         private static MAX_WIDTH;
         private static MAX_HEIGHT;
         private measureElement;

@@ -62,8 +62,20 @@
 
 	<wasm:Style
 		x:Key="NativeDefaultButton"
-		TargetType="Button"
-				BasedOn="{StaticResource XamlDefaultButton}" />
+		TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<HtmlButtonPresenter IsEnabled="{TemplateBinding IsEnabled}"
+					            Foreground="{TemplateBinding Foreground}"
+					            Background="{TemplateBinding Background}">
+						<ContentPresenter Margin="{TemplateBinding Padding}"
+						                  Content="{TemplateBinding Content}" />
+					</HtmlButtonPresenter>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
 
 	<skia:Style
 		x:Key="NativeDefaultButton"
@@ -118,8 +130,23 @@
 
 	<wasm:Style
 		x:Key="NativeDefaultCheckBox"
-		TargetType="CheckBox"
-				BasedOn="{StaticResource XamlDefaultCheckBox}" />
+		TargetType="CheckBox">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="CheckBox">
+					<StackPanel Orientation="Horizontal"
+					            Margin="{TemplateBinding Padding}">
+						<HtmlCheckboxPresenter
+							MinWidth="16"
+							x:Name="PART_Checkbox" IsChecked="{TemplateBinding IsChecked}" />
+						<HtmlLabelPresenter
+							RelatedElement="{Binding ElementName=PART_Checkbox}"
+							Content="{TemplateBinding Content}"/>
+					</StackPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
 
 	<skia:Style
 		x:Key="NativeDefaultCheckBox"
@@ -135,10 +162,10 @@
 				TargetType="CheckBox"
 				BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
-	<xamarin:Style
+	<!--<xamarin:Style
 		TargetType="CheckBox"
 		xamarin:IsNativeStyle="True"
-		BasedOn="{StaticResource NativeDefaultCheckBox}" />
+		BasedOn="{StaticResource NativeDefaultCheckBox}" />-->
 
 	<!-- Default native RadioButton styles -->
 	<android:Style x:Key="AndroidRadioButtonStyle"
@@ -153,6 +180,53 @@
 			</Setter.Value>
 		</Setter>
 	</android:Style>
+
+	<android:Style x:Key="NativeDefaultRadioButton"
+	               TargetType="RadioButton"
+	               BaseOn="{StaticResource AndroidRadioButtonStyle}" />
+
+	<ios:Style x:Key="NativeDefaultRadioButton"
+	           TargetType="RadioButton"
+	           BaseOn="{StaticResource XamlDefaultRadioButton}" />
+
+	<wasm:Style x:Key="NativeDefaultRadioButton"
+	           TargetType="RadioButton">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="RadioButton">
+					<StackPanel Orientation="Horizontal"
+					            Margin="{TemplateBinding Padding}">
+						<HtmlRadioButtonPresenter
+							MinWidth="16"
+							x:Name="PART_Checkbox" IsChecked="{TemplateBinding IsChecked}" />
+						<HtmlLabelPresenter
+							RelatedElement="{Binding ElementName=PART_Checkbox}"
+							Content="{TemplateBinding Content}"/>
+					</StackPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
+
+	<skia:Style x:Key="NativeDefaultRadioButton"
+	           TargetType="RadioButton"
+	           BaseOn="{StaticResource XamlDefaultRadioButton}" />
+
+	<macos:Style x:Key="NativeDefaultRadioButton"
+	           TargetType="RadioButton"
+	           BaseOn="{StaticResource XamlDefaultRadioButton}" />
+
+	<net461:Style x:Key="NativeDefaultRadioButton"
+	              TargetType="RadioButton"
+	              BaseOn="{StaticResource XamlDefaultRadioButton}" />
+
+	<android:Style TargetType="RadioButton"
+	               xamarin:IsNativeStyle="True"
+	               BaseOn="{StaticResource NativeDefaultRadioButton}" />
+
+	<wasm:Style TargetType="RadioButton"
+	               xamarin:IsNativeStyle="True"
+	               BaseOn="{StaticResource NativeDefaultRadioButton}" />
 
 	<!-- Default native ToggleSwitch styles -->
 	<ios:Style x:Key="NativeDefaultToggleSwitch"
@@ -293,8 +367,17 @@
 
 	<wasm:Style
 		x:Key="NativeDefaultProgressBar"
-		TargetType="ProgressBar"
-		BasedOn="{StaticResource XamlDefaultProgressBar}" />
+		TargetType="ProgressBar">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ProgressBar">
+					<HtmlProgressBarPresenter Maximum="{TemplateBinding Max}"
+					                          Value="{TemplateBinding ActualValue}"/>
+
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
 
 	<skia:Style
 		x:Key="NativeDefaultProgressBar"

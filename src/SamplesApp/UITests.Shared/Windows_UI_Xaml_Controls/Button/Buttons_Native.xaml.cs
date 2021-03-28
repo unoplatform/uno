@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -23,19 +24,19 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls
 {
-    [SampleControlInfo("Button", "Buttons_Native")]
+	[SampleControlInfo("Button", "Buttons_Native")]
 
-    public sealed partial class Buttons_Native : UserControl
-    {
+	public sealed partial class Buttons_Native : UserControl
+	{
 		int clickActionsCounter = 0;
 		int commandActionsCounter = 0;
 		int tappedActionsCounter = 0;
 		int toggleActionsCounter = 0;
 
 		public Buttons_Native()
-        {
-            this.InitializeComponent();
-        }
+		{
+			this.InitializeComponent();
+		}
 
 		public ICommand ClickCommand => new DelegateCommand<object>(o => resultCommand.Text = $"Command {o} ({++commandActionsCounter})");
 
@@ -77,6 +78,18 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls
 		private void OnClickEnableToggleSwitch02(object sender, object args)
 		{
 			toggleSwitch02.IsEnabled = true;
+		}
+
+		private void OnIncrement(object sender, object args)
+		{
+			if (sender is Windows.UI.Xaml.Controls.Button btn)
+			{
+				var txt = Convert.ToString(btn.Content);
+				var current = int.TryParse(txt, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out var i)
+					? i
+					: 0;
+				btn.Content = "" + (current + 1);
+			}
 		}
 	}
 }
