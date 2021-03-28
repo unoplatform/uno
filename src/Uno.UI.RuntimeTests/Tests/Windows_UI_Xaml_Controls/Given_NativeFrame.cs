@@ -46,6 +46,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await SUT.WaitForPages(1);
 		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_NavigateBackSkipingPages()
+		{
+			var style = Windows.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;
+			Assert.IsNotNull(style);
+
+			var SUT = new Frame()
+			{
+				Style = style
+			};
+
+			TestServices.WindowHelper.WindowContent = SUT;
+
+			await SUT.WaitForPages(0);
+
+			SUT.Navigate(typeof(MyPage));
+
+			await SUT.WaitForPages(1);
+
+			SUT.Navigate(typeof(MyPage));
+
+			await SUT.WaitForPages(2);
+
+			SUT.Navigate(typeof(MyPage));
+
+			await SUT.WaitForPages(3);
+
+			//Remove the previous page to jump from page 3 to page 1
+			SUT.BackStack.Remove(SUT.BackStack.LastOrDefault());
+
+			SUT.GoBack();
+
+			await SUT.WaitForPages(1);
+		}		
 	}
 
 	internal static class FrameExtensions
