@@ -1,4 +1,4 @@
-#if __ANDROID__
+﻿#if __ANDROID__
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -46,11 +46,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await SUT.WaitForPages(1);
 		}
-
-				Style = style
-			};
-
-			TestServices.WindowHelper.WindowContent = SUT;
+	}
 
 	internal static class FrameExtensions
 	{
