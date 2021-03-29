@@ -98,7 +98,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-#if !__ANDROID__
+
 		/// <summary>
 		/// Gets or sets the desired accuracy in meters for data returned from the location service.
 		/// </summary>
@@ -120,11 +120,18 @@ namespace Windows.Devices.Geolocation
 				{
 					// Force set DesiredAccuracy so that its ActualDesiredAccuracyInMeters rule is applied
 					DesiredAccuracy = DesiredAccuracy;
+<<<<<<< HEAD
 					OnDesiredAccuracyInMetersChanged();
+=======
+#if __ANDROID__
+					OnDesiredAccuracyInMetersChanged();
+#endif
+>>>>>>> chore: Android Geolocator with parameters - peer review
 				}
 			}
 		}
 
+<<<<<<< HEAD
 		/// <summary>
 		/// Indicates whether the user should be prompted to set a default location manually.
 		/// </summary>
@@ -141,6 +148,10 @@ namespace Windows.Devices.Geolocation
 		partial void OnDesiredAccuracyInMetersChanged();
 
 		internal uint ActualDesiredAccuracyInMeters
+=======
+	
+	internal uint ActualDesiredAccuracyInMeters
+>>>>>>> chore: Android Geolocator with parameters - peer review
 		{
 			get => _actualDesiredAccuracyInMeters;
 			private set

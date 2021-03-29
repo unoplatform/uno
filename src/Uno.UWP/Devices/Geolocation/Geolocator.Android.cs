@@ -15,6 +15,7 @@ using Uno.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Extensions;
 using Windows.UI.Core;
+using System.Diagnostics;
 
 namespace Windows.Devices.Geolocation;
 
@@ -198,6 +199,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 		throw new TimeoutException("Timeout in GetGeopositionAsync(TimeSpan,TimeSpan)");
 	}
 
+<<<<<<< HEAD
 	private void TryInitialize()
 	{
 		if (_locationManager == null)
@@ -209,6 +211,100 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 			}
 			_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
 			_resumingSubscription.Disposable = null;
+=======
+		private async Task<bool> TryWaitForGetGeopositionAsync(TimeSpan timeout)
+		{
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+			while(stopwatch.Elapsed < timeout)
+			{
+				await Task.Delay(250);
+				if (_locChanged)
+				{
+					stopwatch.Stop();
+					return true;
+				}
+			}
+			stopwatch.Stop();
+			return false;
+		}
+
+		private Location TryGetCachedGeoposition(TimeSpan maximumAge)
+		{
+
+			var providers = _locationManager.GetProviders(_locationCriteria, true);
+			int bestAccuracy = 10000;
+			Location bestLocation = null;
+
+			var startDate = DateTimeOffset.UtcNow;
+			foreach (string locationProvider in providers)
+			{
+				var location = _locationManager.GetLastKnownLocation(locationProvider);
+				if (location != null)
+				{
+					// check how old is this fix
+					var date = DateTimeOffset.FromUnixTimeMilliseconds(location.Time);
+					if (date + maximumAge > startDate)
+					{   // can be used, but is it best accuracy?
+						if (location.HasAccuracy)
+						{
+							if (location.Accuracy < bestAccuracy)
+							{
+								bestAccuracy = (int)location.Accuracy;
+								bestLocation = location;
+							}
+						}
+						else
+						{
+							bestLocation = location;
+						}
+					}
+				}
+			}
+
+			if (bestLocation != null)
+			{
+				return bestLocation;
+			}
+
+			return null;
+		}
+
+		public async Task<Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+		{
+
+			_locationManager = (LocationManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
+
+			_reportInterval = 1000;
+			_movementThreshold = 0;
+
+			RequestUpdates();
+
+			BroadcastStatus(PositionStatus.Initializing);
+
+			Location bestLocation = TryGetCachedGeoposition(maximumAge);
+			if (bestLocation != null)
+			{
+				RemoveUpdates();
+				BroadcastStatus(PositionStatus.Ready);
+				return bestLocation.ToGeoPosition();
+			}
+
+			// wait for fix
+			if(await TryWaitForGetGeopositionAsync(timeout))
+			{
+					// success
+					RemoveUpdates();
+					BroadcastStatus(PositionStatus.Ready);
+					return _location.ToGeoPosition();
+			}
+
+			// timeout
+			BroadcastStatus(PositionStatus.Disabled);
+			RemoveUpdates();
+			throw new TimeoutException("Timeout in GetGeopositionAsync(TimeSpan,TimeSpan)");
+
+>>>>>>> chore: Android Geolocator with parameters - peer review
 		}
 	}
 
@@ -297,6 +393,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 			return null;
 		}
 
+<<<<<<< HEAD
 		var providers = _locationManager.GetProviders(_locationCriteria, true);
 		int bestAccuracy = 10000;
 		Location? bestLocation = null;
@@ -325,6 +422,13 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 					}
 				}
 			}
+=======
+		public void OnDesiredAccuracyInMetersChanged()
+		{
+			// reset request for updates from Android - with new desired accuracy
+			RemoveUpdates();
+			RequestUpdates();
+>>>>>>> chore: Android Geolocator with parameters - peer review
 		}
 
 		if (bestLocation != null)
