@@ -19,7 +19,7 @@ By default, those methods are invoked on the UI Thread.
 With Uno, you can request to run those methods on a dedicated thread by setting in your Android application's constructor:
 
 ```csharp
-Uno.UI.FeatureConfiguration.Composition.Configuration = Uno.UI.FeatureConfiguration.Composition.Options.Enabled;
+Uno.CompositionConfiguration.Configuration = Uno.CompositionConfiguration.Options.Enabled;
 ```
 
 This thread will also be used for [independent animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/storyboarded-animations#dependent-and-independent-animations).

@@ -531,42 +531,5 @@ namespace Uno.UI
 			public static bool EnableBitmapIconTint { get; set; } = false;
 #endif
 		}
-
-		public static class Composition
-		{
-			/// <summary>
-			/// Configures the composition options for the whole application.
-			/// Refer to uno's documentation to get more info about capabilities and impacts of composition for each platform.
-			/// </summary>
-			/// <remarks>
-			/// Due to the nature of the core feature of composition, this flag must be set as soon as possible in your application startup.
-			/// Changing configuration while the application is already running will result to an undefined behavior.
-			/// </remarks>
-			public static Options Configuration { get; set; } = Options.Disabled;
-
-			[Flags]
-			public enum Options
-			{
-				/// <summary>
-				/// Disables all composition supports in the application.
-				/// </summary>
-				Disabled = 0,
-
-#if __ANDROID__
-				/// <summary>
-				/// Use a dedicated background thread to render the views.
-				/// </summary>
-				UseCompositorThread = 0x1,
-#endif
-				/// <summary>
-				/// Enables all composition capabilities for this platform.
-				/// </summary>
-#if __ANDROID__
-				Enabled = UseCompositorThread,
-#else
-				Enabled = 0,
-#endif
-			}
-		}
 	}
 }

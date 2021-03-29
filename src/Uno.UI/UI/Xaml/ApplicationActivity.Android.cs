@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml
 
 		protected override void OnCreate(Bundle bundle)
 		{
-			if (FeatureConfiguration.Composition.Configuration.HasFlag(FeatureConfiguration.Composition.Options.UseCompositorThread))
+			if (Uno.CompositionConfiguration.UseCompositorThread)
 			{
 				Uno.UI.Composition.CompositorThread.Start(this);
 			}
