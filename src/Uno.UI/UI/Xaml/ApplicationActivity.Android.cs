@@ -213,16 +213,35 @@ namespace Windows.UI.Xaml
 
 		protected override void OnNewIntent(Intent intent)
 		{
-			this.Log().LogInformation($"New intent received, data: {intent.Data}");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"New application activity intent received, data: {intent?.Data?.ToString() ?? "(null)"}");
+			}
 			base.OnNewIntent(intent);
 			if (intent != null)
 			{
 				this.Intent = intent;
-				this.Log().LogInformation($"Activity intent updated, data: {this.Intent.Data}. Attempting to handle intent.");
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Application activity intent updated. Attempting to handle intent.");
+				}
+
 				// In case this activity is in SingleTask mode, we try to handle
 				// the intent (for protocol activation scenarios).
-				var handled = (Application as NativeApplication)?.TryHandleIntent(intent);
-				this.Log().LogInformation($"New intent handled = {handled}");
+				var handled = (Application as NativeApplication)?.TryHandleIntent(intent) ?? false;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					if (handled)
+					{
+						this.Log().LogDebug($"Native application handled the intent.");
+					}
+					else
+					{
+						this.Log().LogDebug($"Native application did not handle the intent.");
+					}
+				}
 			}
 		}
 

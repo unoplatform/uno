@@ -47,7 +47,10 @@ namespace Windows.UI.Xaml
 		{
 			if (activity is ApplicationActivity)
 			{
-				this.Log().LogInformation($"Application activity started with intent {activity.Intent}");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Application activity started with intent {activity.Intent}");
+				}
 
 				_app.InitializationCompleted();
 
@@ -64,14 +67,22 @@ namespace Windows.UI.Xaml
 
 		internal bool TryHandleIntent(Intent intent)
 		{
-			this.Log().LogInformation($"Trying to handle intent with data: {intent.Data}");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Trying to handle intent with data: {intent?.Data?.ToString() ?? "(null)"}");
+			}
+
 			var handled = false;
 			if (_lastHandledIntent != intent)
 			{
 				_lastHandledIntent = intent;
 				if (intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
 				{
-					this.Log().LogInformation("Intent contained JumpList extra arguments, calling OnLaunched.");
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
+					}
+
 					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
 					handled = true;
 				}
@@ -79,18 +90,24 @@ namespace Windows.UI.Xaml
 				{
 					if (Uri.TryCreate(intent.Data.ToString(), UriKind.Absolute, out var uri))
 					{
-						this.Log().LogInformation("Intent data parsed, calling OnActivated. App is " + (_app != null ? "not null" : "null"));
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
+						}
+
 						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
 						handled = true;
 					}
 					else
 					{
-						// log error and fall back to normal launch
-						this.Log().LogError("URI cannot be parsed from Intent.Data, continuing unhandled");
+						// log warning and continue with normal launch
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().LogWarning("URI cannot be parsed from Intent.Data, continuing unhandled");
+						}
 					}
 				}
 			}
-			this.Log().LogInformation($"Intent handled = {handled}");
 
 			return handled;
 		}
