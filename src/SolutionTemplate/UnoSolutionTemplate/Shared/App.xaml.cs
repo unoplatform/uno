@@ -32,7 +32,10 @@ namespace $ext_safeprojectname$
             InitializeLogging();
 
             this.InitializeComponent();
+
+#if !WINDOWS
             this.Suspending += OnSuspending;
+#endif
         }
 
         /// <summary>
