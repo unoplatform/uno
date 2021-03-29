@@ -60,61 +60,69 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region ISwipeControl
-		public void Close()
+		public async void Close()
 		{
 			//CheckThread();
 
 			if (m_isOpen && !m_lastActionWasClosing && !m_isInteracting)
 			{
 				m_lastActionWasClosing = true;
-				if (!m_isIdle)
-				{
-					Vector3 initialPosition = default;
-					switch (m_createdContent)
-					{
-						case CreatedContent.Left:
-							initialPosition.X = (float)(-m_swipeContentStackPanel.ActualWidth);
-							break;
-						case CreatedContent.Top:
-							initialPosition.Y = (float)(-m_swipeContentStackPanel.ActualHeight);
-							break;
-						case CreatedContent.Right:
-							initialPosition.X = (float)(m_swipeContentStackPanel.ActualWidth);
-							break;
-						case CreatedContent.Bottom:
-							initialPosition.Y = (float)(m_swipeContentStackPanel.ActualHeight);
-							break;
-						case CreatedContent.None:
-							break;
-						default:
-							global::System.Diagnostics.Debug.Assert(false);
-							break;
-					}
 
-					//m_interactionTracker.TryUpdatePosition(initialPosition);
-				}
+				//Uno workaround:
+				m_isInteracting = true;
+				_desiredPosition = Vector2.Zero;
+				UpdateStackPanelDesiredPosition();
+				await AnimateTransforms();
+				OnSwipeManipulationCompleted(this, null);
 
-				Vector3 addedVelocity = default;
-				switch (m_createdContent)
-				{
-					case CreatedContent.Left:
-						addedVelocity.X = c_MinimumCloseVelocity;
-						break;
-					case CreatedContent.Top:
-						addedVelocity.Y = c_MinimumCloseVelocity;
-						break;
-					case CreatedContent.Right:
-						addedVelocity.X = -c_MinimumCloseVelocity;
-						break;
-					case CreatedContent.Bottom:
-						addedVelocity.Y = -c_MinimumCloseVelocity;
-						break;
-					case CreatedContent.None:
-						break;
-					default:
-						global::System.Diagnostics.Debug.Assert(false);
-						break;
-				}
+				//if (!m_isIdle)
+				//{
+				//	Vector3 initialPosition = default;
+				//	switch (m_createdContent)
+				//	{
+				//		case CreatedContent.Left:
+				//			initialPosition.X = (float)(-m_swipeContentStackPanel.ActualWidth);
+				//			break;
+				//		case CreatedContent.Top:
+				//			initialPosition.Y = (float)(-m_swipeContentStackPanel.ActualHeight);
+				//			break;
+				//		case CreatedContent.Right:
+				//			initialPosition.X = (float)(m_swipeContentStackPanel.ActualWidth);
+				//			break;
+				//		case CreatedContent.Bottom:
+				//			initialPosition.Y = (float)(m_swipeContentStackPanel.ActualHeight);
+				//			break;
+				//		case CreatedContent.None:
+				//			break;
+				//		default:
+				//			global::System.Diagnostics.Debug.Assert(false);
+				//			break;
+				//	}
+
+				//m_interactionTracker.TryUpdatePosition(initialPosition);
+				//}
+
+				//Vector3 addedVelocity = default;
+				//switch (m_createdContent)
+				//{
+				//	case CreatedContent.Left:
+				//		addedVelocity.X = c_MinimumCloseVelocity;
+				//		break;
+				//	case CreatedContent.Top:
+				//		addedVelocity.Y = c_MinimumCloseVelocity;
+				//		break;
+				//	case CreatedContent.Right:
+				//		addedVelocity.X = -c_MinimumCloseVelocity;
+				//		break;
+				//	case CreatedContent.Bottom:
+				//		addedVelocity.Y = -c_MinimumCloseVelocity;
+				//		break;
+				//	case CreatedContent.None:
+				//		break;
+				//	default:
+				//		global::System.Diagnostics.Debug.Assert(false);
+				//		break;
+				//}
 
 				//m_interactionTracker.TryUpdatePositionWithAdditionalVelocity(addedVelocity);
 			}
@@ -448,6 +456,8 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	m_interactionTracker.Properties.InsertBoolean(s_hasLeftContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
 			//}
+			// Uno workaround:
+			_hasLeftContent = args.NewValue is { } && (args.NewValue as IObservableVector<SwipeItem>).Count > 0;
 
 			if (m_createdContent == CreatedContent.Left)
 			{
@@ -476,6 +486,8 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	m_interactionTracker.Properties.InsertBoolean(s_hasRightContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
 			//}
+			// Uno workaround:
+			_hasRightContent = args.NewValue is { } && (args.NewValue as IObservableVector<SwipeItem>).Count > 0;
 
 			if (m_createdContent == CreatedContent.Right)
 			{
@@ -504,6 +516,8 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	m_interactionTracker.Properties.InsertBoolean(s_hasTopContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
 			//}
+			// Uno workaround:
+			_hasTopContent = args.NewValue is { } && (args.NewValue as IObservableVector<SwipeItem>).Count > 0;
 
 			if (m_createdContent == CreatedContent.Top)
 			{
@@ -532,6 +546,8 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	m_interactionTracker.Properties.InsertBoolean(s_hasBottomContentPropertyName, args.NewValue is {} && (args.NewValue as IObservableVector<SwipeItem>).Count > 0);
 			//}
+			// Uno workaround:
+			_hasBottomContent = args.NewValue is { } && (args.NewValue as IObservableVector<SwipeItem>).Count > 0;
 
 			if (m_createdContent == CreatedContent.Bottom)
 			{
@@ -578,6 +594,9 @@ namespace Windows.UI.Xaml.Controls
 
 			//global::System.Diagnostics.Debug.Assert(m_inputEaterTappedToken.value == 0);
 			m_inputEater.Tapped += InputEaterGridTapped;
+
+			// Uno workaround:
+			UnoAttachEventHandlers();
 		}
 
 		private void DetachEventHandlers()
@@ -606,6 +625,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			DetachDismissingHandlers();
+
+			// Uno workaround:
+			UnoDetachEventHandlers();
 		}
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
@@ -1090,6 +1112,12 @@ namespace Windows.UI.Xaml.Controls
 			//m_interactionTracker.TryUpdatePosition(new Vector3(
 			//	0.0f, 0.0f, 0.0f
 			//));
+
+			// Uno workaround:
+			_desiredPosition = Vector2.Zero;
+			UpdateStackPanelDesiredPosition();
+			UpdateTransforms();
+
 			if (wasIdle)
 			{
 				IdleStateEntered(null, null);
@@ -1514,6 +1542,8 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	m_interactionTracker.Properties.InsertBoolean(s_hasLeftContentPropertyName, sender.Count > 0);
 			//}
+			// Uno workaround:
+			_hasLeftContent = sender.Count > 0;
 
 			if (m_createdContent == CreatedContent.Left)
 			{
@@ -1531,6 +1561,8 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	m_interactionTracker.Properties.InsertBoolean(s_hasRightContentPropertyName, sender.Count > 0);
 			//}
+			// Uno workaround:
+			_hasRightContent = sender.Count > 0;
 
 			if (m_createdContent == CreatedContent.Right)
 			{
@@ -1547,6 +1579,8 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	m_interactionTracker.Properties.InsertBoolean(s_hasTopContentPropertyName, sender.Count > 0);
 			//}
+			// Uno workaround:
+			_hasTopContent = sender.Count > 0;
 
 			if (m_createdContent == CreatedContent.Top)
 			{
@@ -1563,6 +1597,8 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	m_interactionTracker.Properties.InsertBoolean(s_hasBottomContentPropertyName, sender.Count > 0);
 			//}
+			// Uno workaround:
+			_hasBottomContent = sender.Count > 0;
 
 			if (m_createdContent == CreatedContent.Bottom)
 			{
@@ -1651,15 +1687,24 @@ namespace Windows.UI.Xaml.Controls
 						case CreatedContent.Bottom:
 							//m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, true);
 							//m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
+							// Uno workaround:
+							_isFarOpen = true;
+							_isNearOpen = false;
 							break;
 						case CreatedContent.Left:
 						case CreatedContent.Top:
 							//m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
 							//m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, true);
+							// Uno workaround:
+							_isFarOpen = false;
+							_isNearOpen = true;
 							break;
 						case CreatedContent.None:
 							//m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
 							//m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
+							// Uno workaround:
+							_isFarOpen = false;
+							_isNearOpen = false;
 							break;
 						default:
 							global::System.Diagnostics.Debug.Assert(false);
@@ -1687,6 +1732,9 @@ namespace Windows.UI.Xaml.Controls
 					DetachDismissingHandlers();
 					//m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
 					//m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
+					// Uno workaround:
+					_isFarOpen = false;
+					_isNearOpen = false;
 
 					var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
 					if (globalTestHooks is { })

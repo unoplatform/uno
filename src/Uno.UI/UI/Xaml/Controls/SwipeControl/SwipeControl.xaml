@@ -17,6 +17,7 @@
                         <Grid x:Name="SwipeContentRoot">
                             <StackPanel x:Name="SwipeContentStackPanel"/>
                         </Grid>
+						<!-- ContentRoot is the part that moves. -->
                         <Grid x:Name="ContentRoot">
                             <ContentPresenter x:Name="ContentPresenter"
                                                       Background="{TemplateBinding Background}"

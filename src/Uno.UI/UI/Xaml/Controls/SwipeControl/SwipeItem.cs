@@ -82,12 +82,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// TODO Uno
 				//appBarButton.Icon = IconSource.CreateIconElement();
+
+				// This is a temporary implementation
+				if (IconSource is FontIconSource fontIconSource)
+				{
+					appBarButton.Icon = new FontIcon()
+					{
+						Glyph = fontIconSource.Glyph
+					};
+				}
 			}
 
 			appBarButton.Label = Text;
 			AttachEventHandlers(appBarButton);
 		}
-
 
 		private void AttachEventHandlers(AppBarButton appBarButton)
 		{

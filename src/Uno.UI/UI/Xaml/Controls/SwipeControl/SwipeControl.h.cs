@@ -208,8 +208,8 @@ namespace Windows.UI.Xaml.Controls
 
 		//Near content = left or top
 		//Far content = right or bottom
-		//private bool m_blockNearContent = false;
-		//private bool m_blockFarContent = false;
+		private bool m_blockNearContent = false;
+		private bool m_blockFarContent = false;
 		private bool m_isHorizontal = true;
 		private CreatedContent m_createdContent = CreatedContent.None;
 
