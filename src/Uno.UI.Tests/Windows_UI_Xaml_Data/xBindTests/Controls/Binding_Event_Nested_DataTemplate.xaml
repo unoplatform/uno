@@ -15,6 +15,10 @@
 						  x:FieldModifier="public"
 						  Checked="{x:Bind ViewModel.OnCheckedRaised}"
 						  Unchecked="{x:Bind ViewModel.OnUncheckedRaised}"/>
+					<CheckBox x:Name="myCheckBox2"
+						  x:FieldModifier="public"
+						  Checked="{x:Bind ViewModel.OnCheckedRaised}"
+						  Unchecked="{x:Bind ViewModel.OnUncheckedRaised}"/>
 				</Grid>
 			</DataTemplate>
 		</ContentControl.ContentTemplate>

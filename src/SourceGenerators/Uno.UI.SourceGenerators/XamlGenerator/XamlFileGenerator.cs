@@ -802,7 +802,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 
 					BuildComponentResouceBindingUpdates(writer);
-					BuildxBindEventHandlerInitializers(writer);
 				}
 
 				writer.AppendLineInvariant(";");
@@ -828,14 +827,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildxBindEventHandlerInitializers(IIndentedStringBuilder writer)
+		private void BuildxBindEventHandlerInitializers(IIndentedStringBuilder writer, string prefix = "")
 		{
 			foreach (var xBindEventHandler in CurrentScope.xBindEventsHandlers)
 			{
-				writer.AppendLineInvariant($"{xBindEventHandler.Name}?.Invoke();");
+				writer.AppendLineInvariant($"{prefix}{xBindEventHandler.Name}?.Invoke();");
 
 				// Only needs to happen once per visual tree creation
-				writer.AppendLineInvariant($"{xBindEventHandler.Name} = null;");
+				writer.AppendLineInvariant($"{prefix}{xBindEventHandler.Name} = null;");
 			}
 		}
 
@@ -913,6 +912,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								writer.AppendLineInvariant($"owner._component_{i}{wrapInstance}.ApplyXBind();");
 							}
+
+							BuildxBindEventHandlerInitializers(writer, "owner.");
 						}
 					}
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()")) { }
