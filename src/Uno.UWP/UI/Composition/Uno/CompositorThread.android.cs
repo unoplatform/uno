@@ -10,6 +10,7 @@ using Android.App;
 using Android.Graphics;
 using Android.OS;
 using Android.Views;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 using Exception = System.Exception;
@@ -19,13 +20,6 @@ using ThreadPriority = System.Threading.ThreadPriority;
 
 namespace Uno.UI.Composition
 {
-	internal interface ICompositionRoot
-	{
-		Window Window { get; }
-
-		View Content { get; }
-	}
-
 	internal class CompositorThread : Java.Lang.Object, ISurfaceHolderCallback2, Choreographer.IFrameCallback
 	{
 		[ThreadStatic] // Static to the related UI Thread !!!
@@ -34,42 +28,47 @@ namespace Uno.UI.Composition
 		public static void Start(ICompositionRoot activity)
 			=> _current ??= new CompositorThread(activity);
 
-		//private RenderNode _animationsNode;
-		//private List<(RenderNode node, double x, double y)> _animatedNodes = new List<(RenderNode node, double x, double y)>();
-
-		private readonly HardwareRenderer _hwRender = new HardwareRenderer();
 		private readonly RenderNode _visualTree = new RenderNode("visual-tree");
 		private readonly ManualResetEventSlim _frameRendered = new ManualResetEventSlim(false);
 		private readonly ICompositionRoot _activity;
 
+		private HardwareRenderer? _hwRender;
 		private Thread? _thread;
+		private Looper? _looper;
 
 		public CompositorThread(ICompositionRoot activity)
 		{
 			_activity = activity;
 
-			_hwRender.SetContentRoot(_visualTree);
 			_activity.Window!.TakeSurface(this);
 		}
 		
 		void ISurfaceHolderCallback.SurfaceCreated(ISurfaceHolder? holder)
 		{
+			_hwRender = new HardwareRenderer();
+			_hwRender.SetContentRoot(_visualTree);
 			_hwRender.SetSurface(holder!.Surface);
+
+			// Even if the SurfaceChanged will be invoke right after this SurfaceCreated,
+			// we set the position now so the compositor thread can already render a frame at the right size.
+			SetBounds(holder.SurfaceFrame!.Width(), holder.SurfaceFrame.Height());
 
 			Start();
 		}
 
 		void ISurfaceHolderCallback.SurfaceChanged(ISurfaceHolder holder, Format format, int width, int height)
 		{
-			_visualTree.SetPosition(new Rect(new Point(), new Size(width, height)));
+			SetBounds(width, height);
 		}
 
 		void ISurfaceHolderCallback.SurfaceDestroyed(ISurfaceHolder? holder)
 		{
 			Stop();
 
-			_hwRender?.Stop();
-			_hwRender?.Destroy(); // Note: This only release the surface, we can restore it by setting a new surface
+			// Note: According to the doc, 'Destroy' only releases the surface and we should be able to restore it by setting a new surface.
+			//		 However, as of 2021-03-29, we have to create a new one for each surface (screen stays black otherwise).
+			_hwRender?.Destroy();
+			_hwRender = null;
 		}
 
 		void ISurfaceHolderCallback2.SurfaceRedrawNeeded(ISurfaceHolder? holder)
@@ -91,27 +90,61 @@ namespace Uno.UI.Composition
 				}
 				catch (Exception e)
 				{
-					this.Log().Error("Async redraw failed.", e);
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error("Async redraw failed.", e);
+					}
 				}
 			});
+		}
+
+		private void SetBounds(int width, int height)
+		{
+			_visualTree.SetPosition(new Rect(new Point(), new Size(width, height)));
 		}
 
 		private void Start()
 		{
 			if (_thread is {})
 			{
-				this.Log().Warn("Try to start an already running compositor thread.");
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("Tried to start an already running compositor thread.");
+				}
+				return;
+			}
+
+			if (_hwRender is null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Tried to start a compositor thread but renderer not set.");
+				}
 				return;
 			}
 
 			_thread = new Thread(() =>
 			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info("Compositor thread started.");
+				}
+
 				_hwRender.Start();
 
 				Looper.Prepare(); // Required to get a Choreographer.Instance
+				_looper = Looper.MyLooper();
+
 				Choreographer.Instance!.PostFrameCallback(this);
 
 				Looper.Loop(); // Start the looper so the Choreographer.Instance will invoke our callback
+
+				_hwRender.Stop();
+
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info("Compositor thread exited.");
+				}
 			})
 			{
 				Name = "Compositor",
@@ -123,22 +156,56 @@ namespace Uno.UI.Composition
 
 		private void Stop()
 		{
-			try
+			var thread = _thread;
+			if (thread is null)
 			{
-				_thread?.Abort();
+				return;
 			}
-			catch (Exception e)
+
+			if (!TryStop(() => _looper?.Quit())
+				&& !TryStop(() => thread.Interrupt())
+				&& !TryStop(() => thread.Abort()))
 			{
-				this.Log().Warn("Failed to abort compositor thread.", e);
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to abort compositor thread.");
+				}
 			}
+
 			_thread = null;
+			_looper = null;
+
+			bool TryStop(Action stopAction)
+			{
+				if (thread.IsAlive)
+				{
+					try
+					{
+						stopAction();
+						thread.Join(75); // A bit longer than 2 frames at 30 fps
+					}
+					catch (Exception)
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
 		}
 
 		void Choreographer.IFrameCallback.DoFrame(long frameTimeNanos)
 		{
-			RenderFrame(frameTimeNanos);
+			try
+			{
+				RenderFrame(frameTimeNanos);
 
-			Choreographer.Instance!.PostFrameCallback(this);
+				Choreographer.Instance!.PostFrameCallback(this);
+			}
+			catch (ThreadAbortException)
+			{
+				Thread.ResetAbort();
+			}
 		}
 
 		private void RenderFrame(long frameTimeNanos)
@@ -151,6 +218,11 @@ namespace Uno.UI.Composition
 			catch (Java.Lang.IllegalStateException)
 			{
 				// Cannot start recording (most probably recording is already running somehow).
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to begin frame rendering.");
+				}
+
 				return;
 			}
 
@@ -160,13 +232,16 @@ namespace Uno.UI.Composition
 			}
 			catch (Exception e)
 			{
-				this.Log().Error("Failed to render frame.", e);
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to render frame.", e);
+				}
 			}
 			finally
 			{
 				_visualTree.EndRecording();
 
-				var request = _hwRender.CreateRenderRequest();
+				var request = _hwRender!.CreateRenderRequest(); // Cannot be null if thread is running
 				var needsSync = !_frameRendered.IsSet;
 
 				if (needsSync)
