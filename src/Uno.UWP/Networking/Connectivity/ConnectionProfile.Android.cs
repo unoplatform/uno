@@ -30,21 +30,45 @@ namespace Windows.Networking.Connectivity
 		{
 			NetworkInformation.VerifyNetworkStateAccess();
 			_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
-#pragma warning disable CS0618 // Type or member is obsolete
-			NetworkInfo info = _connectivityManager.ActiveNetworkInfo;
-			if (info?.IsConnected == true)
+
+			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.LollipopMr1)
 			{
-				IsWwanConnectionProfile = IsConnectionWwan(info.Type);
-				IsWlanConnectionProfile = IsConnectionWlan(info.Type);
+				var activeNetwork = _connectivityManager.ActiveNetwork;
+				if (activeNetwork != null)
+				{
+					var netCaps = _connectivityManager.GetNetworkCapabilities(activeNetwork);
+					if (netCaps != null)
+					{
+						IsWlanConnectionProfile = netCaps.HasTransport(Android.Net.TransportType.Wifi);
+						IsWwanConnectionProfile = netCaps.HasTransport(Android.Net.TransportType.Cellular);
+					}
+				}
 			}
+			else
+			{
+#pragma warning disable CS0618 // Type or member is obsolete
+				NetworkInfo info = _connectivityManager.ActiveNetworkInfo;
+				if (info?.IsConnected == true)
+				{
+					IsWwanConnectionProfile = IsConnectionWwan(info.Type);
+					IsWlanConnectionProfile = IsConnectionWlan(info.Type);
+				}
 #pragma warning restore CS0618 // Type or member is obsolete
+			}
 		}
 
-		public ConnectionCost GetConnectionCost() =>
-			new ConnectionCost(
+		public ConnectionCost GetConnectionCost()
+		{
+			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean)
+			{ // below API 16, we don't have IsActiveNetworkMetered method
+				return new ConnectionCost(NetworkCostType.Unknown);
+			}
+
+			return new ConnectionCost(
 				_connectivityManager.IsActiveNetworkMetered ?
 					NetworkCostType.Fixed : // we currently don't make distinction between variable and fixed metered connection on Android
 					NetworkCostType.Unrestricted);
+		}
 
 		/// <summary>
 		/// Code based on Xamarin.Essentials implementation with some modifications.
