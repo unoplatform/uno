@@ -17,6 +17,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
+using System.Diagnostics;
 
 namespace Windows.Devices.Geolocation
 {
@@ -156,21 +157,29 @@ namespace Windows.Devices.Geolocation
 			_positionChangedSubscriptions.TryRemove(this, out var _);
 		}
 
-		public async Task<Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+		private async Task<bool> TryWaitForGetGeopositionAsync(TimeSpan timeout)
 		{
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+			while(stopwatch.Elapsed < timeout)
+			{
+				await Task.Delay(250);
+				if (_locChanged)
+				{
+					stopwatch.Stop();
+					return true;
+				}
+			}
+			stopwatch.Stop();
+			return false;
+		}
 
-			_locationManager = (LocationManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
-
-			_reportInterval = 1000;
-			_movementThreshold = 0;
-
-			RequestUpdates();
+		private Location TryGetCachedGeoposition(TimeSpan maximumAge)
+		{
 
 			var providers = _locationManager.GetProviders(_locationCriteria, true);
 			int bestAccuracy = 10000;
 			Location bestLocation = null;
-
-			BroadcastStatus(PositionStatus.Initializing);
 
 			var startDate = DateTimeOffset.UtcNow;
 			foreach (string locationProvider in providers)
@@ -191,11 +200,34 @@ namespace Windows.Devices.Geolocation
 							}
 						}
 						else
+						{
 							bestLocation = location;
+						}
 					}
 				}
 			}
 
+			if (bestLocation != null)
+			{
+				return bestLocation;
+			}
+
+			return null;
+		}
+
+		public async Task<Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+		{
+
+			_locationManager = (LocationManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
+
+			_reportInterval = 1000;
+			_movementThreshold = 0;
+
+			RequestUpdates();
+
+			BroadcastStatus(PositionStatus.Initializing);
+
+			Location bestLocation = TryGetCachedGeoposition(maximumAge);
 			if (bestLocation != null)
 			{
 				RemoveUpdates();
@@ -204,17 +236,15 @@ namespace Windows.Devices.Geolocation
 			}
 
 			// wait for fix
-			for (int i = (int)(timeout.TotalMilliseconds / 250.0); i > 0; i--)
+			if(await TryWaitForGetGeopositionAsync(timeout))
 			{
-				await Task.Delay(250);
-				if (_locChanged)
-				{
+					// success
 					RemoveUpdates();
 					BroadcastStatus(PositionStatus.Ready);
 					return _location.ToGeoPosition();
-				}
 			}
 
+			// timeout
 			BroadcastStatus(PositionStatus.Disabled);
 			RemoveUpdates();
 			throw new TimeoutException("Timeout in GetGeopositionAsync(TimeSpan,TimeSpan)");
@@ -294,15 +324,11 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		public uint? DesiredAccuracyInMeters
+		public void OnDesiredAccuracyInMetersChanged()
 		{
-			get => _desiredAccuracyInMeters;
-			set
-			{
-				_desiredAccuracyInMeters = value;
-				RemoveUpdates();
-				RequestUpdates();
-			}
+			// reset request for updates from Android - with new desired accuracy
+			RemoveUpdates();
+			RequestUpdates();
 		}
 
 #region Android ILocationListener
