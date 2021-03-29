@@ -41,6 +41,11 @@ Once the application is created, make sure that the following code is present in
 </Application.Resources>
 ```
 
+More articles on WinUI 3:
+
+ * [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
+ * [Updating from UWP to WinUI 3.](updating-to-winui3.md)
+
 ## Uno Platform Blank library
 
 This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to built separately, but cannot be differentiated.
