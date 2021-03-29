@@ -1,5 +1,3 @@
-#if __ANDROID__
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,20 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			OneShot = oneShot;
 			TriggerType = triggerType;
-			switch(triggerType)
-			{ // supported types
-				case SystemTriggerType.ServicingComplete:
-				case SystemTriggerType.SmsReceived:
-				case SystemTriggerType.TimeZoneChange:
-				case SystemTriggerType.UserAway:
-				case SystemTriggerType.UserPresent:
-					break;
-				default:	// all other types: unsupported
-					throw new NotSupportedException("Unimplemented type of SystemTrigger");
-			}
 		}
 	}
 
 }
-
-#endif
