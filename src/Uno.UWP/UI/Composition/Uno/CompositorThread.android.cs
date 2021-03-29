@@ -56,7 +56,7 @@ namespace Uno.UI.Composition
 			Start();
 		}
 
-		void ISurfaceHolderCallback.SurfaceChanged(ISurfaceHolder holder, Format format, int width, int height)
+		void ISurfaceHolderCallback.SurfaceChanged(ISurfaceHolder? holder, Format format, int width, int height)
 		{
 			SetBounds(width, height);
 		}
@@ -77,7 +77,8 @@ namespace Uno.UI.Composition
 			_frameRendered.Wait();
 		}
 
-		void ISurfaceHolderCallback2.SurfaceRedrawNeededAsync(ISurfaceHolder holder, Java.Lang.IRunnable drawingFinished)
+#if __ANDROID_11__
+		void ISurfaceHolderCallback2.SurfaceRedrawNeededAsync(ISurfaceHolder? holder, Java.Lang.IRunnable drawingFinished)
 		{
 			_frameRendered.Reset();
 
@@ -97,6 +98,7 @@ namespace Uno.UI.Composition
 				}
 			});
 		}
+#endif
 
 		private void SetBounds(int width, int height)
 		{
