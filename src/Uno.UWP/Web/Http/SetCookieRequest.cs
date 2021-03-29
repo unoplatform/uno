@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Uno.UI.Toolkit.Web
+namespace Uno.Web.Http
 {
 	public class SetCookieRequest
     {

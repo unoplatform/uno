@@ -2,11 +2,13 @@
 #nullable enable
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Uno.Foundation;
+using Windows.Web.Http;
 
-namespace Uno.UI.Toolkit.Web
+namespace Uno.Web.Http
 {
 	public class CookieManager
 	{
@@ -23,35 +25,24 @@ namespace Uno.UI.Toolkit.Web
 
 		public void SetCookie(SetCookieRequest cookie)
 		{
-			var builder = new StringBuilder();
-			builder.Append(Uri.EscapeDataString(cookie.Name));
-			builder.Append(ValueSeparator);
-			builder.Append(Uri.EscapeDataString(cookie.Value));
-
-			static void AppendAttribute(StringBuilder builder, string name, object? value)
+			var httpCookie = new HttpCookie(cookie.Name, cookie.Domain ?? string.Empty, cookie.Path ?? string.Empty)
 			{
-				if (value == null)
-				{
-					return;
-				}
-				builder.Append(AttributeSeparator);
-				builder.Append(name);				
-				builder.Append(ValueSeparator);
-				builder.Append(value);
+				Secure = cookie.Secure,
+				Expires = cookie.Expires,
+				Value = cookie.Value,
+			};
+			var serializedCookie = httpCookie.ToString();
+
+			if (cookie.MaxAge != null)
+			{
+				serializedCookie += $"; max-age={cookie.MaxAge.Value.ToString(CultureInfo.InvariantCulture)}";
+			}
+			if (cookie.SameSite != null)
+			{
+				serializedCookie += $"; samesite={cookie.SameSite.Value.ToString("g").ToLowerInvariant()}";
 			}
 
-			AppendAttribute(builder, "path", cookie.Path);
-			AppendAttribute(builder, "domain", cookie.Domain);
-			AppendAttribute(builder, "max-age", cookie.MaxAge?.ToString());
-			AppendAttribute(builder, "expires", cookie.Expires?.ToString("r"));
-			AppendAttribute(builder, "samesite", cookie.SameSite?.ToString("g")?.ToLowerInvariant());
-			if (cookie.Secure)
-			{
-				builder.Append(AttributeSeparator);
-				builder.Append("secure");
-			}
-
-			var escapedCookie = WebAssemblyRuntime.EscapeJs(builder.ToString());
+			var escapedCookie = WebAssemblyRuntime.EscapeJs(serializedCookie);
 			var jsInvoke = $"document.cookie = '{escapedCookie}'";
 			WebAssemblyRuntime.InvokeJS(jsInvoke);
 		}
@@ -71,11 +62,18 @@ namespace Uno.UI.Toolkit.Web
 
 		public Cookie[] GetCookies()
 		{
-			Cookie ParseCookie(string cookieString)
+			Cookie? ParseCookie(string cookieString)
 			{
-				var cookieParts = cookieString.Split("=");
-				var name = Uri.UnescapeDataString(cookieParts[0]);
-				var value = Uri.UnescapeDataString(cookieParts[1]);
+				cookieString = cookieString.Trim();
+				var valueSeparatorIndex = cookieString.IndexOf('=');
+				if (valueSeparatorIndex == -1)
+				{
+					return null;					
+				}
+
+				var name = cookieString.Substring(0, valueSeparatorIndex);
+				var valueStartIndex = valueSeparatorIndex + 1;
+				var value = cookieString.Substring(valueStartIndex, cookieString.Length - valueStartIndex);
 				return new Cookie(name, value);
 			}
 
@@ -86,7 +84,11 @@ namespace Uno.UI.Toolkit.Web
 			}
 		
 			var cookieStrings = cookies.Split(";", StringSplitOptions.RemoveEmptyEntries);
-			return cookieStrings.Select(part => ParseCookie(part)).ToArray();
+			return cookieStrings
+				.Select(part => ParseCookie(part))
+				.Where(cookie => cookie != null)
+				.OfType<Cookie>()
+				.ToArray();
 		}
 	}
 }

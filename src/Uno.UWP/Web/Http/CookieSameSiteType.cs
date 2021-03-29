@@ -1,5 +1,5 @@
 ﻿#if __WASM__
-namespace Uno.UI.Toolkit.Web
+namespace Uno.Web.Http
 {
 	public enum CookieSameSite
     {

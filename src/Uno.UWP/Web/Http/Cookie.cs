@@ -1,7 +1,7 @@
 ﻿#if __WASM__
 #nullable enable
 
-namespace Uno.UI.Toolkit.Web
+namespace Uno.Web.Http
 {
 	public class Cookie
 	{

@@ -3,15 +3,17 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
-using Uno.UI.Toolkit.Web;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using System.Windows.Input;
+#if __WASM__
+using Uno.Web.Http;
+#endif
 
-namespace UITests.Toolkit.Web
+namespace UITests.Uno_Web.Http
 {
-#if true
-	[Sample("Toolkit", ViewModelType = typeof(CookieManagerTestsViewModel))]
+#if __WASM__
+	[Sample("Uno.Web", ViewModelType = typeof(CookieManagerTestsViewModel))]
 #endif
 	public sealed partial class CookieManagerTests : Page
     {
@@ -37,6 +39,7 @@ namespace UITests.Toolkit.Web
 		{
 		}
 
+#if __WASM__
 		public string Name { get; set; }
 
 		public string Value { get; set; }
@@ -109,6 +112,7 @@ namespace UITests.Toolkit.Web
 		private void DeleteCookie()
 		{
 			CookieManager.GetDefault().DeleteCookie(Name, !string.IsNullOrEmpty(Path) ? Path : null);
-		}		
+		}
+#endif
 	}
 }
