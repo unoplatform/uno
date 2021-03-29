@@ -10,12 +10,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.ProjectReunion" Version="0.5.0-prerelease" />
-		<PackageReference Include="Microsoft.ProjectReunion.Foundation" Version="0.5.0-prerelease" />
-		<PackageReference Include="Microsoft.ProjectReunion.WinUI" Version="0.5.0-prerelease" />
+		<PackageReference Include="Microsoft.ProjectReunion" Version="0.5.0" />
+		<PackageReference Include="Microsoft.ProjectReunion.Foundation" Version="0.5.0" />
+		<PackageReference Include="Microsoft.ProjectReunion.WinUI" Version="0.5.0" />
 		<Manifest Include="$(ApplicationManifest)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="Uno.Core" Version="2.3.0" />
 	</ItemGroup>
 
