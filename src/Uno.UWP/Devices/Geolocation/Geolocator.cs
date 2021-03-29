@@ -61,7 +61,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-#if !__ANDROID__
+
 		/// <summary>
 		/// Setting overwrites <see cref="_actualDesiredAccuracyInMeters"/> but does not overwrite <see cref="DesiredAccuracy"/> directly.
 		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see> 
@@ -80,11 +80,13 @@ namespace Windows.Devices.Geolocation
 				{
 					//force set DesiredAccuracy so that its ActualDesiredAccuracyInMeters rule is applied
 					DesiredAccuracy = DesiredAccuracy;
+#if __ANDROID__
+					OnDesiredAccuracyInMetersChanged();
+#endif
 				}
 			}
 		}
 
-#endif
 	
 	internal uint ActualDesiredAccuracyInMeters
 		{
