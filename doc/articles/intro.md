@@ -66,7 +66,7 @@ Uno Platform lets you write an application once in XAML and C#, and deploy it to
 
 #### What platforms can I target with Uno Platform?
 
-Uno Platform applications run on Web (via WebAssembly), Windows, Linux, macOS, iOS and Android. [Check supported platform versions.](getting-started/requirements.md)
+Uno Platform applications run on Web (via WebAssembly), Windows, Linux, macOS, iOS, Android and Tizen. [Check supported platform versions.](getting-started/requirements.md)
 
 #### Are Uno Platform applications native?
 
@@ -80,7 +80,7 @@ Yes. Unless you specify otherwise, your application's UI renders exactly the sam
 
 At a very high level, Uno Platform and Xamarin.Forms/.NET MAUI have different starting points and tap different ecosystems.  We believe WinUI as a starting point has the richest API set and styling engine which can be used to create pixel-perfect applications on all Web, Desktop and Mobile platforms. Xamarin.Forms and its successor .NET MAUI stem from ‘mobile origins’ and aim to bring a shared skills and tooling ecosystem to all platforms Xamarin.Forms currently supports, and more platforms in the future.
 
-At a slightly lower technical level, Uno Platform and Xamarin.Forms/.NET MAUI are XAML-based UI frameworks, but the XAML 'dialect' used by Uno Platform is shared with Microsoft's Desktop (WinUI/UWP) framework, whereas Forms and MAUI have their own 'dialect' with different control names, syntaxes, etc. Uno Platform harnesses control templating ('lookless' controls) for pixel-perfect rendering, whereas Forms/MAUI opts for per-platform renderers to render controls on each supported platform.
+At a slightly lower technical level, Uno Platform and Xamarin.Forms/.NET MAUI are XAML-based UI frameworks, but the XAML 'dialect' used by Uno Platform is shared with Microsoft's Desktop (WinUI/UWP) framework, whereas Xamarin.Forms and MAUI have their own 'dialect' with different control names, syntaxes, etc. Uno Platform harnesses control templating ('lookless' controls) for pixel-perfect rendering, whereas Xamarin.Forms/MAUI opts for per-platform renderers to render controls on each supported platform.
 
 Uno Platform runs on the Web and Linux today, in addition to the other supported platforms listed above. Xamarin.Forms/.NET MAUI currently officially support deployment to Android, iOS, and Windows, with additional community support for macOS and Linux.
 
