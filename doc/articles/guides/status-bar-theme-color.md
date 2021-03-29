@@ -7,7 +7,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
 
 ## Step-by-step instructions
 
-1. Create a new Uno Platform application, following the instructions [here](..\get-started.md).
+1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
 2. In `MainPage.xaml`, add a `<CommandBar>`:
     > On iOS, the status bar color cannot be set directly, so it is done via through a `CommandBar` placed in the page. You could also use any XAML element like `<Grid>` or `<Border>` to achieve a similar effect, if your application doesn't use navigation or doesn't use native navigation. This is because the page content can go under the status bar. In fact, you usually have to add padding to avoid that (see next step).
     ```xml
