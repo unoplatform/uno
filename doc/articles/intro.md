@@ -88,15 +88,15 @@ Ultimately, at the practical level, we suggest you try both frameworks and see w
 
 #### How is Uno Platform different from Blazor?
 
-Uno Platform applications are written in C# and XAML markup, whereas Blazor applications are written in 'Razor' syntax, a hybrid of HTML/CSS and C#.
+Uno Platform applications are cross-platform, running on the web as well as mobile and desktop, equally, from a single codebase. Blazor is a feature of ASP.NET for primarily building web applications.
 
-Uno Platform applications are cross-platform, running on the web and many other target platforms from a single codebase. Blazor is a feature of ASP.NET for building web applications.
+Uno Platform applications are written in C# and XAML markup, whereas Blazor applications are written in 'Razor' syntax, a hybrid of HTML/CSS and C#.
 
 Uno Platform and Blazor both make use of .NET's WebAssembly support to run natively in the browser.
 
 #### How is Uno Platform different from Flutter?
 
-Uno Platform supports C# and XAML markup for authoring applications. Uno Platform applications can use other .NET Standard packages within the broader .NET ecosystem. Flutter uses the Dart language, and doesn't have markup.
+Uno Platform and Flutter solve a similar problem - pixel-perfect applications on all target platforms. However, Uno Platform leverages decades of Microsoft's investment made into developer tooling .NET and C# programming language for developing applications.
 
 #### Do I need to have an existing UWP/WinUI app to use Uno?
 
@@ -108,11 +108,11 @@ Uno Platform is supported by a number of 3rd-party packages and libraries, inclu
 
 #### Where do I get help if I have any questions?
 
-Community support is available through [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) and Discord www.platform.uno/discord - #uno-platform channel. Commercial paid support is available as well - email [info@platform.uno](mailto:info@platform.uno) for more information.
+Free support is available via [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) and Discord www.platform.uno/discord - #uno-platform channel. Commercial paid support is available as well - email [info@platform.uno](mailto:info@platform.uno) for more information.
 
 #### How do you sustain Uno Platform?
 
-The Uno Platform is free and open source under the Apache license. Alongside valued contributions from the Uno community, development by the core team is sustained by paid professional support contracts offered to enterprises who use Uno Platform. [Learn more about our paid professional support.](https://platform.uno/contact/) 
+The Uno Platform is free and open source under the Apache 2.0 license. Alongside valued contributions from the Uno community, development by the core team is sustained by paid professional support contracts offered to enterprises who use Uno Platform. [Learn more about our paid professional support.](https://platform.uno/contact/) 
 
 More details about sustainability are covered here: https://platform.uno/blog/sustaining-the-open-source-uno-platform/ 
 
