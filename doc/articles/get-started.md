@@ -1,16 +1,16 @@
-# Get Started
+# Get Started - Select your development environment
 
 Welcome to Uno Platform! You'll be creating cross-platform applications with XAML and C# in no time.
 
 To set up your development environment, first select the operating system you're developing on.
 
-**I am developing with...**
+**I am developing on...**
 
- - [Windows](#windows)
- - [macOS](#macos)
- - [Linux](#linux)
+ - [Windows](#developing-on-windows)
+ - [macOS](#developing-on-macos)
+ - [Linux](#developing-on-linux)
 
- ## Windows
+ ## Developing on Windows
 
 If you're developing on Windows, we recommend you use **Visual Studio**, for the richest XAML development experience and broadest platform coverage. 
 
@@ -36,7 +36,7 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
  ***
  <br>
 
- ## macOS
+ ## Developing on macOS
 
 You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio Code** to build Uno Platform applications on macOS. See the support matrix below for supported target platforms.
 
@@ -57,7 +57,7 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 ***
  <br>
 
- ## Linux
+ ## Developing on Linux
 
  You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
  

@@ -2,6 +2,8 @@
 
 The support for WinUI 3.0 is currently in preview for the Uno Platform. It is currently generated from the WinUI 2.0 / UWP codebase, by applying a set of transformations to align with WinUI 3.0 APIs using the `Uno.WinUIRevert` tool.
 
+[Read more about WinUI 3 and Uno Platform.](uwp-vs-winui3.md)
+
 ## Migrating an app to WinUI 3.0
 
 - Nuget updates

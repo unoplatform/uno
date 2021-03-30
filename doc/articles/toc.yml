@@ -2,7 +2,7 @@
   topicHref: intro.md
 - name: Get started
   items:
-    - name: Overview
+    - name: Select an environment
       href: get-started.md
     - name: Get Started on Visual Studio
       href: get-started-vs.md

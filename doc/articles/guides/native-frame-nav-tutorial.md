@@ -4,7 +4,7 @@
 The complete sample code can be found here: [NativeFrameNav](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav)
 
 ## Step-by-step instructions
-1. Create a new Uno Platform application, following the instructions [here](..\get-started.md).
+1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
 2. Add two more pages (`BlankPage1` and `BlankPage2`) to the `Your_Project_Name.Shared` project
 
     Right click on the shared project -> `Add` -> `New Item...` -> `Blank Page`
@@ -117,5 +117,5 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
     }
 
 ## Additional Resources
-- [Uno-specific documentation](../controls/CommandBar) on `CommandBar` and `AppBarButton`
+- [Uno-specific documentation](../controls/CommandBar.md) on `CommandBar` and `AppBarButton`
 - [Native Frame navigation](../features/native-frame-nav.md)
