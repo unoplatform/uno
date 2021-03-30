@@ -76,15 +76,18 @@ Yes - Uno Platform taps into the native UI frameworks on most supported platform
 
 Yes. Unless you specify otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno achieves this by taking low-level control of the native visual primitives on the targeted platform. [Read more about how Uno works.](what-is-uno.md)
 
-#### How is Uno Platform different from Xamarin.Forms or .NET MAUI?
+#### How is Uno Platform different from .NET MAUI?
 
-At a very high level, Uno Platform and Xamarin.Forms/.NET MAUI have different starting points and tap different ecosystems.  We believe WinUI as a starting point has the richest API set and styling engine which can be used to create pixel-perfect applications on all Web, Desktop and Mobile platforms. Xamarin.Forms and its successor .NET MAUI stem from ‘mobile origins’ and aim to bring a shared skills and tooling ecosystem to all platforms Xamarin.Forms currently supports, and more platforms in the future.
+First, Uno Platform is available in production today to build single-codebase, pixel-perfect applications for Web, Desktop and Mobile. .NET MAUI is successor to Xamarin.Forms. 
 
-At a slightly lower technical level, Uno Platform and Xamarin.Forms/.NET MAUI are XAML-based UI frameworks, but the XAML 'dialect' used by Uno Platform is shared with Microsoft's Desktop (WinUI/UWP) framework, whereas Xamarin.Forms and MAUI have their own 'dialect' with different control names, syntaxes, etc. Uno Platform harnesses control templating ('lookless' controls) for pixel-perfect rendering, whereas Xamarin.Forms/MAUI opts for per-platform renderers to render controls on each supported platform.
+Second, Uno Platform can target additional platforms like Linux and the Web. 
 
-Uno Platform runs on the Web and Linux today, in addition to the other supported platforms listed above. Xamarin.Forms/.NET MAUI currently officially support deployment to Android, iOS, and Windows, with additional community support for macOS and Linux.
+Third, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows developers are familiar with. It also allows you to tap in WinUI's rich styling engine to create pixel-perfect applications. 
 
-Ultimately, at the practical level, we suggest you try both frameworks and see which works the best for your skillset and scenario. 
+Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like DataGrid, TreeView, TabView, NavigationView and many others.
+
+At the practical level, we suggest you try both and see which works the best for your skillset and scenario.
+
 
 #### How is Uno Platform different from Blazor?
 
