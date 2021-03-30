@@ -3656,6 +3656,19 @@
 				reason="No longer used method that shouldn't be called from user code" />
 		</Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="3.6.6">
+	  <Types>
+	  </Types>
+	  <Methods>
+		<Member
+		  fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
+		  reason="No longer used method that shouldn't be called from user code" />
+	  </Methods>
+	  <Fields>
+	  </Fields>
+	  <Properties>
+	  </Properties>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>
