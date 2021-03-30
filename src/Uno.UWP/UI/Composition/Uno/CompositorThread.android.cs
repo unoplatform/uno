@@ -77,8 +77,8 @@ namespace Uno.UI.Composition
 			_frameRendered.Wait();
 		}
 
-#if __ANDROID_11__
-		void ISurfaceHolderCallback2.SurfaceRedrawNeededAsync(ISurfaceHolder? holder, Java.Lang.IRunnable drawingFinished)
+		// Note: We don't make it an explicit interface implementation as it's not available yet on the Xamarin.Android version used by the CI
+		public void /*ISurfaceHolderCallback2.*/SurfaceRedrawNeededAsync(ISurfaceHolder? holder, Java.Lang.IRunnable drawingFinished)
 		{
 			_frameRendered.Reset();
 
@@ -98,7 +98,6 @@ namespace Uno.UI.Composition
 				}
 			});
 		}
-#endif
 
 		private void SetBounds(int width, int height)
 		{
