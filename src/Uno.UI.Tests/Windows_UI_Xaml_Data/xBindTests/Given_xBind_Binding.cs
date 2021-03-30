@@ -666,6 +666,99 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_Event_Nested()
+		{
+			var SUT = new Binding_Event_Nested();
+
+			SUT.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_Event_DataTemplate()
+		{
+			var SUT = new Binding_Event_DataTemplate();
+
+			SUT.ForceLoaded();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_Event_DataTemplate_Model();
+			root.DataContext = dc;
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, dc.CheckedRaised);
+			Assert.AreEqual(0, dc.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, dc.CheckedRaised);
+			Assert.AreEqual(0, dc.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, dc.CheckedRaised);
+			Assert.AreEqual(1, dc.UncheckedRaised);
+		}
+
+		[TestMethod]
+		public void When_Event_Nested_DataTemplate()
+		{
+			var SUT = new Binding_Event_Nested_DataTemplate();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_Event_Nested_DataTemplate_Model();
+			root.DataContext = dc;
+
+			SUT.ForceLoaded();
+			root.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, dc.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, dc.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, dc.ViewModel.UncheckedRaised);
+
+			var checkBox2 = SUT.FindName("myCheckBox2") as CheckBox;
+
+			Assert.AreEqual(1, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, dc.ViewModel.UncheckedRaised);
+
+			checkBox2.IsChecked = true;
+
+			Assert.AreEqual(2, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, dc.ViewModel.UncheckedRaised);
+
+			checkBox2.IsChecked = false;
+
+			Assert.AreEqual(2, dc.ViewModel.CheckedRaised);
+			Assert.AreEqual(2, dc.ViewModel.UncheckedRaised);
+		}
+
+		[TestMethod]
 		public void When_xLoad()
 		{
 			var SUT = new Binding_xLoad();
@@ -723,6 +816,62 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
+		}
+
+		[TestMethod]
+		public void When_xLoad_Event()
+		{
+			var SUT = new Binding_xLoad_Event();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.myCheckBox);
+			Assert.IsNull(SUT.rootGrid);
+
+			SUT.TopLevelVisiblity = true;
+
+			Assert.IsNotNull(SUT.myCheckBox);
+			Assert.IsNotNull(SUT.rootGrid);
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(0, SUT.ViewModel.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+
+			SUT.TopLevelVisiblity = false;
+
+			// After reload
+			SUT.TopLevelVisiblity = true;
+
+			Assert.IsNotNull(SUT.myCheckBox);
+			Assert.IsNotNull(SUT.rootGrid);
+
+			var checkBox2 = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreNotEqual(checkBox, checkBox2);
+
+			Assert.AreEqual(1, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+
+			checkBox2.IsChecked = true;
+
+			Assert.AreEqual(2, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(1, SUT.ViewModel.UncheckedRaised);
+
+			checkBox2.IsChecked = false;
+
+			Assert.AreEqual(2, SUT.ViewModel.CheckedRaised);
+			Assert.AreEqual(2, SUT.ViewModel.UncheckedRaised);
 		}
 
 		[TestMethod]

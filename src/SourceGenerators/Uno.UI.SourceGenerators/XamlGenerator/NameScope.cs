@@ -21,6 +21,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<BackingFieldDefinition> BackingFields { get; } = new List<BackingFieldDefinition>();
 
 		/// <summary>
+		/// List of action handlers for registering x:Bind events
+		/// </summary>
+		public List<BackingFieldDefinition> xBindEventsHandlers { get; } = new List<BackingFieldDefinition>();
+
+		/// <summary>
 		/// Lists the ElementStub builder holder variables used to pin references for implicit pinning platforms
 		/// </summary>
 		public List<string> ElementStubHolders { get; } = new List<string>();

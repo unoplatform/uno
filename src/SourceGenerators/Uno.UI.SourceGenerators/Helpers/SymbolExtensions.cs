@@ -144,16 +144,16 @@ namespace Microsoft.CodeAnalysis
 				&& symbol.DeclaredAccessibility == Accessibility.Internal
 			);
 
-		public static IEnumerable<IMethodSymbol> GetMethods(this INamedTypeSymbol resolvedType)
+		public static IEnumerable<IMethodSymbol> GetMethods(this ITypeSymbol resolvedType)
 			=> resolvedType.GetMembers().OfType<IMethodSymbol>();
 
-		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this INamedTypeSymbol resolvedType, string name)
+		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this ITypeSymbol resolvedType, string name)
 			=> resolvedType.GetMembers(name).OfType<IMethodSymbol>();
 
-		public static IEnumerable<IFieldSymbol> GetFields(this INamedTypeSymbol resolvedType)
+		public static IEnumerable<IFieldSymbol> GetFields(this ITypeSymbol resolvedType)
 			=> resolvedType.GetMembers().OfType<IFieldSymbol>();
 
-		public static IEnumerable<IFieldSymbol> GetFieldsWithName(this INamedTypeSymbol resolvedType, string name)
+		public static IEnumerable<IFieldSymbol> GetFieldsWithName(this ITypeSymbol resolvedType, string name)
 			=> resolvedType.GetMembers(name).OfType<IFieldSymbol>();
 
 		/// <summary>
