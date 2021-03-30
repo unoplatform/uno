@@ -93,6 +93,8 @@ namespace Windows.UI.Xaml.Shapes
 
 			var heightOffset = ((float)borderThickness.Top / 2) + ((float)borderThickness.Bottom / 2);
 			var widthOffset = ((float)borderThickness.Left / 2) + ((float)borderThickness.Right / 2);
+			var halfWidth = (float)area.Width / 2;
+			var halfHeight = (float)area.Height / 2;
 			var adjustedArea = area;
 			adjustedArea = adjustedArea.Shrink(
 				(nfloat)borderThickness.Left,
@@ -103,7 +105,15 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (cornerRadius != CornerRadius.None)
 			{
-				var maxInnerRadius = Math.Max(0, Math.Min((float)area.Width / 2 - widthOffset, (float)area.Height / 2 - heightOffset));
+				var maxOuterRadius = Math.Max(0, Math.Min(halfWidth - widthOffset, halfHeight - heightOffset));
+				var maxInnerRadius = Math.Max(0, Math.Min(halfWidth, halfHeight));
+
+				cornerRadius = new CornerRadius(
+					Math.Min(cornerRadius.TopLeft, maxOuterRadius),
+					Math.Min(cornerRadius.TopRight, maxOuterRadius),
+					Math.Min(cornerRadius.BottomRight, maxOuterRadius),
+					Math.Min(cornerRadius.BottomLeft, maxOuterRadius));
+
 				var innerCornerRadius = new CornerRadius(
 					Math.Min(cornerRadius.TopLeft, maxInnerRadius),
 					Math.Min(cornerRadius.TopRight, maxInnerRadius),
