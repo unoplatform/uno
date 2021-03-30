@@ -47,6 +47,11 @@ namespace Windows.UI.Xaml
 		{
 			if (activity is ApplicationActivity)
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Application activity started with intent {activity.Intent}");
+				}
+
 				_app.InitializationCompleted();
 
 				var handled = TryHandleIntent(activity.Intent);
@@ -62,12 +67,22 @@ namespace Windows.UI.Xaml
 
 		internal bool TryHandleIntent(Intent intent)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Trying to handle intent with data: {intent?.Data?.ToString() ?? "(null)"}");
+			}
+
 			var handled = false;
 			if (_lastHandledIntent != intent)
 			{
 				_lastHandledIntent = intent;
 				if (intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
 				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
+					}
+
 					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
 					handled = true;
 				}
@@ -75,13 +90,21 @@ namespace Windows.UI.Xaml
 				{
 					if (Uri.TryCreate(intent.Data.ToString(), UriKind.Absolute, out var uri))
 					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
+						}
+
 						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
 						handled = true;
 					}
 					else
 					{
-						// log error and fall back to normal launch
-						this.Log().LogError($"Activation URI {intent.Data} could not be parsed");
+						// log warning and continue with normal launch
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().LogWarning("URI cannot be parsed from Intent.Data, continuing unhandled");
+						}
 					}
 				}
 			}

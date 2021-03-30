@@ -13,6 +13,8 @@ using Uno.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors;
+using Uno.Extensions;
+using Microsoft.Extensions.Logging;
 using Windows.Storage.Pickers;
 using Uno.AuthenticationBroker;
 
@@ -211,11 +213,36 @@ namespace Windows.UI.Xaml
 
 		protected override void OnNewIntent(Intent intent)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"New application activity intent received, data: {intent?.Data?.ToString() ?? "(null)"}");
+			}
 			base.OnNewIntent(intent);
-			this.Intent = intent;
-			// In case this activity is in SingleTask mode, we try to handle
-			// the intent (for protocol activation scenarios).
-			(Application as NativeApplication)?.TryHandleIntent(intent);
+			if (intent != null)
+			{
+				this.Intent = intent;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Application activity intent updated. Attempting to handle intent.");
+				}
+
+				// In case this activity is in SingleTask mode, we try to handle
+				// the intent (for protocol activation scenarios).
+				var handled = (Application as NativeApplication)?.TryHandleIntent(intent) ?? false;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					if (handled)
+					{
+						this.Log().LogDebug($"Native application handled the intent.");
+					}
+					else
+					{
+						this.Log().LogDebug($"Native application did not handle the intent.");
+					}
+				}
+			}
 		}
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
