@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Extensions;
+using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -71,8 +72,13 @@ namespace Windows.UI.Xaml.Controls
 				//Uno workaround:
 				m_isInteracting = true;
 				_desiredPosition = Vector2.Zero;
+				_lastMoves.Clear(); // Clears inertia.
 				UpdateStackPanelDesiredPosition();
-				await AnimateTransforms();
+
+				// This delay is to allow users to see the fully open state before it closes back.
+				await Task.Delay(TimeSpan.FromSeconds(0.250));
+
+				await AnimateTransforms(false, 0d);
 				OnSwipeManipulationCompleted(this, null);
 
 				//if (!m_isIdle)

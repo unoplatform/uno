@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -57,13 +58,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UnoAttachEventHandlers()
 		{
-			m_content.ManipulationMode = ManipulationModes.TranslateX /*| ManipulationModes.TranslateInertia*/;
+			m_content.ManipulationMode = m_isHorizontal ? ManipulationModes.TranslateX : ManipulationModes.TranslateY /*| ManipulationModes.TranslateInertia*/;
 			m_content.ManipulationStarting += OnSwipeManipulationStarting;
 			m_content.ManipulationStarted += OnSwipeManipulationStarted;
 			m_content.ManipulationDelta += OnSwipeManipulationDelta;
 			//m_content.ManipulationInertiaStarting += OnSwipeManipulationInertiaStarting;
 			m_content.ManipulationCompleted += OnSwipeManipulationCompleted;
-		}
+		}		
 
 		private void UnoDetachEventHandlers()
 		{
@@ -102,6 +103,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_positionWhenCaptured = new Vector2((float)_transform.X, (float)_transform.Y);
 			_grabbedTimer.Start();
+			_lastMoves.Clear();
 		}
 
 		private void OnSwipeManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -179,16 +181,21 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateDesiredPosition(ManipulationDeltaRoutedEventArgs e)
 		{
 			var rawDesiredPosition = _positionWhenCaptured + e.Cumulative.Translation.ToVector2();
+			var clampedPosition = GetClampedPosition(rawDesiredPosition);
+			var attenuatedPosition = GetAttenuatedPosition(clampedPosition);
 
+			_desiredPosition = attenuatedPosition;
+		}
+
+		private Vector2 GetClampedPosition(Vector2 rawDesiredPosition)
+		{
 			var harNearContent = _hasLeftContent || _hasTopContent;
 			var hasFarContent = _hasRightContent || _hasBottomContent;
 			var min = _isNearOpen || !hasFarContent ? 0 : -10000;
 			var max = _isFarOpen || !harNearContent ? 0 : 10000;
 
 			var clampedPosition = Vector2.Max(Vector2.Min(rawDesiredPosition, Vector2.One * max), Vector2.One * min);
-			var attenuatedPosition = GetAttenuatedPosition(clampedPosition);
-
-			_desiredPosition = attenuatedPosition;
+			return clampedPosition;
 		}
 
 		private void UpdateStackPanelDesiredPosition()
@@ -279,12 +286,37 @@ namespace Windows.UI.Xaml.Controls
 
 		private async Task SimulateInertia()
 		{
-			// TODO: Use the recorded speeds to ajust the _desiredPosition.
+			const float speedThreshold = 500f; // pixel/s
+			const float simulatedInertiaDuration = 0.5f; // in seconds.
+
+			var unit = m_isHorizontal ? Vector2.UnitX : Vector2.UnitY;
+			var estimatedSpeed = m_isHorizontal ? GetSpeed().X : GetSpeed().Y;
+			var useAfterInertiaPosition = false;
+			var estimatedPositionAfterInertia = _desiredPosition;
+
+			if (Math.Abs(estimatedSpeed) > speedThreshold) 
+			{
+				estimatedPositionAfterInertia = _desiredPosition + unit * estimatedSpeed * simulatedInertiaDuration; // What would be the position if we let the movement go at the current speed during 'simulatedInertiaDuration'.
+				estimatedPositionAfterInertia = GetClampedPosition(estimatedPositionAfterInertia);
+
+				// If inertia would flip sign of the transform, we close instead.
+				var flickToOppositeSideCheck = _desiredPosition * estimatedPositionAfterInertia;
+				// If the stackpanel IsMeasureDirty or IsArrangeDirty are true, it means we can't use its ActualSize, so we close the content.
+				// This solves a problem when the user swipes the content from one side to the other quickly and the stackpanel doesn't have time to measure and arrange itself before the inertia starts.
+				// When that happens, the content can open using the previous stackpanel size, causing an invalid behavior.
+				if (m_swipeContentStackPanel.IsMeasureDirty || m_swipeContentStackPanel.IsArrangeDirty || (m_isHorizontal ? flickToOppositeSideCheck.X < 0 : flickToOppositeSideCheck.Y < 0))
+				{
+					CloseWithoutAnimation();
+					return;
+				}
+
+				_desiredPosition = estimatedPositionAfterInertia;
+				useAfterInertiaPosition = true;
+			}
 
 			var displacement = m_isHorizontal ? _desiredPosition.X : _desiredPosition.Y;
 			var absoluteDisplacement = Math.Abs(displacement);
 			var effectiveStackSize = m_isHorizontal ? m_swipeContentStackPanel.ActualWidth : m_swipeContentStackPanel.ActualHeight;
-			var unit = m_isHorizontal ? Vector2.UnitX : Vector2.UnitY;
 
 			if (m_isOpen)
 			{
@@ -309,9 +341,17 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			var displacementFromInertiaVector = _desiredPosition - estimatedPositionAfterInertia;
+			var displacementFromInertia = m_isHorizontal ? displacementFromInertiaVector.X : displacementFromInertiaVector.Y;
+			if (displacementFromInertia * estimatedSpeed < 0)
+			{
+				// If the inertia speed and the direction to the final position are opposite, we don't use the inertia speed.
+				useAfterInertiaPosition = false;
+			}
+
 			UpdateStackPanelDesiredPosition();
 
-			await AnimateTransforms();
+			await AnimateTransforms(useAfterInertiaPosition, estimatedSpeed);
 
 			m_isInteracting = false;
 
@@ -325,22 +365,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			//It is possible that the user has flicked from a negative position to a position that would result in the interaction
-			//tracker coming to rest at the positive open position (or vise versa). The != zero check does not account for this.
-			//Instead we check to ensure that the current position and the ModifiedRestingPosition have the same sign (multiply to a positive number)
-			//If they do not then we are in this situation and want the end result of the interaction to be the closed state, so close without any animation and return
-			//to prevent further processing of this inertia state.
-
-			// TODO:
-			var positionAfterInertia = _desiredPosition;
-			var flickToOppositeSideCheck = _desiredPosition * positionAfterInertia;
-			if (m_isHorizontal ? flickToOppositeSideCheck.X < 0 : flickToOppositeSideCheck.X < 0)
-			{
-				CloseWithoutAnimation();
-				return;
-			}
-
-			UpdateIsOpen(positionAfterInertia != Vector2.Zero);
+			UpdateIsOpen(_desiredPosition != Vector2.Zero);
 			// If the user has panned the interaction tracker past 0 in the opposite direction of the previously
 			// opened swipe items then when we set m_isOpen to true the animations will snap to that value.
 			// To avoid this we block that side of the animation until the interacting state is entered.
@@ -369,6 +394,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private Vector2 GetSpeed()
+		{
+			if (_lastMoves.Any())
+			{
+				var totalDelta = _lastMoves.Aggregate((sum, item) => sum + item);
+				var speed = totalDelta.DeltaXY / (float)totalDelta.DeltaT;
+				return speed;
+			}
+
+			return Vector2.Zero;
+		}
+
 		private void ConfigurePositionInertiaRestingValues() { }
 
 		private void IdleStateEntered(object @null, object @also_null) { }
@@ -395,19 +432,23 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private async Task AnimateTransforms()
+		private async Task AnimateTransforms(bool useInertiaSpeed, double inertiaSpeed)
 		{
 			var currentPosition = m_isHorizontal ? _transform.X : _transform.Y;
 			var desiredPosition = m_isHorizontal ? _desiredPosition.X : _desiredPosition.Y;
 			var distance = Math.Abs(desiredPosition - currentPosition);
 			var duration = Math.Min(distance / c_MinimumCloseVelocity, 0.3);
+			if (useInertiaSpeed)
+			{
+				duration = distance / inertiaSpeed;
+			}
 
 			var storyboard = new Storyboard();
 			var animation = new DoubleAnimation()
 			{
 				To = desiredPosition,
 				Duration = new Duration(TimeSpan.FromSeconds(duration)),
-				EasingFunction = new QuadraticEase()
+				EasingFunction = useInertiaSpeed ? (IEasingFunction)LinearEase.Instance : new QuadraticEase()
 				{
 					EasingMode = EasingMode.EaseInOut
 				}
@@ -424,7 +465,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					To = stackDesiredPosition,
 					Duration = new Duration(TimeSpan.FromSeconds(duration)),
-					EasingFunction = new QuadraticEase()
+					EasingFunction = useInertiaSpeed ? (IEasingFunction)LinearEase.Instance : new QuadraticEase()
 					{
 						EasingMode = EasingMode.EaseInOut
 					}
@@ -465,6 +506,18 @@ namespace Windows.UI.Xaml.Controls
 			public double DeltaY { get; set; }
 
 			public double DeltaT { get; set; }
+
+			public Vector2 DeltaXY => new Vector2((float)DeltaX, (float)DeltaY);
+
+			public static MoveUpdate operator +(MoveUpdate left, MoveUpdate right)
+			{
+				return new MoveUpdate()
+				{
+					DeltaX = left.DeltaX + right.DeltaX,
+					DeltaY = left.DeltaY + right.DeltaY,
+					DeltaT = left.DeltaT + right.DeltaT
+				};
+			}
 		}
 	}
 
