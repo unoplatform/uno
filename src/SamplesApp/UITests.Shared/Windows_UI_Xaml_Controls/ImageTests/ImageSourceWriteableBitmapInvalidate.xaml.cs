@@ -13,7 +13,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo(category: "WriteableBitmap", controlName: nameof(ImageSourceWriteableBitmapInvalidate))]
+	[Sample("WriteableBitmap")]
 	public sealed partial class ImageSourceWriteableBitmapInvalidate : Page
 	{
 		private WriteableBitmap _bitmap;

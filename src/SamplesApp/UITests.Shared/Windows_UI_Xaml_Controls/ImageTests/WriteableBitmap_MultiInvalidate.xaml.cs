@@ -10,8 +10,8 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 	[Sample("WriteableBitmap")]
 	public sealed partial class WriteableBitmap_MultiInvalidate : Page
 	{
-		private readonly Random _randomizer = new Random();
-		private WriteableBitmap _bitmap;
+		private readonly WriteableBitmap _bitmap;
+		private int _seed = 42;
 
 		public WriteableBitmap_MultiInvalidate()
 		{
@@ -23,6 +23,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		private void UpdateSource(object sender, RoutedEventArgs e)
 		{
+			var randomizer = new Random(_seed++);
 			if (_bitmap.PixelBuffer is Windows.Storage.Streams.Buffer buffer
 				&& buffer.GetType().GetField("_data", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(buffer) is Memory<byte> data)
 			{
@@ -36,7 +37,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 					}
 					else
 					{
-						span[i] = (byte)_randomizer.Next(256);
+						span[i] = (byte)randomizer.Next(256);
 					}
 				}
 			}
