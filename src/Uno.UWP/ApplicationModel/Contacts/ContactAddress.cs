@@ -4,6 +4,7 @@ using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 
+// empty change - forcing build restart
 
 namespace Windows.ApplicationModel.Contacts
 {
