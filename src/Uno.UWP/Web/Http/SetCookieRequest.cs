@@ -1,22 +1,26 @@
 ﻿#if __WASM__
 #nullable enable
 
-
 using System;
 
 namespace Uno.Web.Http
 {
+	/// <summary>
+	/// Represents a request to set cookie.
+	/// </summary>
 	public class SetCookieRequest
-    {
-		public SetCookieRequest(string name, string value)
+	{
+		/// <summary>
+		/// Creates an instance of a request to set cookie.
+		/// </summary>
+		/// <param name="name">Cookie name.</param>
+		/// <param name="value">Cookie value.</param>
+		public SetCookieRequest(Cookie cookie)
 		{
-			Name = name;
-			Value = value;
+			Cookie = cookie;
 		}
 
-		public string Name { get; }
-
-		public string Value { get; }
+		public Cookie Cookie { get; }
 
 		public string? Path { get; set; }
 

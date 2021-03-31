@@ -2,10 +2,10 @@
 namespace Uno.Web.Http
 {
 	public enum CookieSameSite
-    {
-        Lax,
+	{
+		Lax,
 		Strict,
 		None
-    }
+	}
 }
 #endif

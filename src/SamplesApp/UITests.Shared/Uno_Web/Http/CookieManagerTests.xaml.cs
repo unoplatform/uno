@@ -68,7 +68,7 @@ namespace UITests.Uno_Web.Http
 
 		private void SetCookie()
 		{
-			var request = new SetCookieRequest(Name, Value);
+			var request = new SetCookieRequest(new Cookie(Name, Value));
 			if (!string.IsNullOrEmpty(Path))
 			{
 				request.Path = Path;

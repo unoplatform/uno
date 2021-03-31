@@ -4,12 +4,14 @@
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using Uno.Foundation;
 using Windows.Web.Http;
 
 namespace Uno.Web.Http
 {
+	/// <summary>
+	/// Provides read-write access to browser Cookies in WebAssembly.
+	/// </summary>
 	public class CookieManager
 	{
 		private const char ValueSeparator = '=';
@@ -21,25 +23,33 @@ namespace Uno.Web.Http
 		{
 		}
 
+		/// <summary>
+		/// Retrieves the default instance of CookieManager.
+		/// </summary>
+		/// <returns>Cookie manager instance.</returns>
 		public static CookieManager GetDefault() => _cookieManager.Value;
 
-		public void SetCookie(SetCookieRequest cookie)
+		/// <summary>
+		/// Sets a cookie given attributes.
+		/// </summary>
+		/// <param name="request">Set cookie request</param>
+		public void SetCookie(SetCookieRequest request)
 		{
-			var httpCookie = new HttpCookie(cookie.Name, cookie.Domain ?? string.Empty, cookie.Path ?? string.Empty)
+			var httpCookie = new HttpCookie(request.Cookie.Name, request.Domain ?? string.Empty, request.Path ?? string.Empty)
 			{
-				Secure = cookie.Secure,
-				Expires = cookie.Expires,
-				Value = cookie.Value,
+				Secure = request.Secure,
+				Expires = request.Expires,
+				Value = request.Cookie.Value,
 			};
 			var serializedCookie = httpCookie.ToString();
 
-			if (cookie.MaxAge != null)
+			if (request.MaxAge != null)
 			{
-				serializedCookie += $"; max-age={cookie.MaxAge.Value.ToString(CultureInfo.InvariantCulture)}";
+				serializedCookie += $"; max-age={request.MaxAge.Value.ToString(CultureInfo.InvariantCulture)}";
 			}
-			if (cookie.SameSite != null)
+			if (request.SameSite != null)
 			{
-				serializedCookie += $"; samesite={cookie.SameSite.Value.ToString("g").ToLowerInvariant()}";
+				serializedCookie += $"; samesite={request.SameSite.Value.ToString("g").ToLowerInvariant()}";
 			}
 
 			var escapedCookie = WebAssemblyRuntime.EscapeJs(serializedCookie);
@@ -47,28 +57,44 @@ namespace Uno.Web.Http
 			WebAssemblyRuntime.InvokeJS(jsInvoke);
 		}
 
-		public void DeleteCookie(string name, string? path = null)
+		/// <summary>
+		/// Deletes a cookies by name.
+		/// </summary>
+		/// <param name="name">Name of the cookie.</param>
+		/// <param name="domain">Domain of the cookie (optional).</param>
+		/// <param name="path">Path of the cookie (optional).</param>
+		public void DeleteCookie(string name, string? domain = null, string? path = null)
 		{
-			var setCookieRequest = new SetCookieRequest(name, string.Empty)
+			var setCookieRequest = new SetCookieRequest(new Cookie(name, string.Empty))
 			{
 				Expires = DateTimeOffset.MinValue,
-				Path = path
+				Path = path,
+				Domain = domain
 			};
 
 			SetCookie(setCookieRequest);
 		}
 
-		public Cookie? GetCookie(string name) => GetCookies().FirstOrDefault(c => c.Name == name);
+		/// <summary>
+		/// Retrieves a cookie by name.
+		/// </summary>
+		/// <param name="name">Cookie name.</param>
+		/// <returns>Cookie or null if not found.</returns>
+		public Cookie? FindCookie(string name) => GetCookies().FirstOrDefault(c => c.Name == name);
 
+		/// <summary>
+		/// Gets array of currently active cookies.
+		/// </summary>
+		/// <returns>Active cookies.</returns>
 		public Cookie[] GetCookies()
 		{
 			Cookie? ParseCookie(string cookieString)
 			{
 				cookieString = cookieString.Trim();
-				var valueSeparatorIndex = cookieString.IndexOf('=');
+				var valueSeparatorIndex = cookieString.IndexOf(ValueSeparator);
 				if (valueSeparatorIndex == -1)
 				{
-					return null;					
+					return null;
 				}
 
 				var name = cookieString.Substring(0, valueSeparatorIndex);
@@ -82,8 +108,8 @@ namespace Uno.Web.Http
 			{
 				return Array.Empty<Cookie>();
 			}
-		
-			var cookieStrings = cookies.Split(";", StringSplitOptions.RemoveEmptyEntries);
+
+			var cookieStrings = cookies.Split(new char[] { AttributeSeparator }, StringSplitOptions.RemoveEmptyEntries);
 			return cookieStrings
 				.Select(part => ParseCookie(part))
 				.Where(cookie => cookie != null)
