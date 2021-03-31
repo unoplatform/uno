@@ -1,5 +1,4 @@
-﻿#if __WASM__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Globalization;
@@ -118,4 +117,3 @@ namespace Uno.Web.Http
 		}
 	}
 }
-#endif

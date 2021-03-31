@@ -1,5 +1,4 @@
-﻿#if __WASM__
-#nullable enable
+﻿#nullable enable
 
 using System;
 
@@ -22,14 +21,13 @@ namespace Uno.Web.Http
 		}
 
 		/// <summary>
-		/// Cookie name.
+		/// Gets the cookie name.
 		/// </summary>
 		public string Name { get; }
 
 		/// <summary>
-		/// Cookie value.
+		/// Gets the cookie value.
 		/// </summary>
 		public string Value { get; }
 	}
 }
-#endif
