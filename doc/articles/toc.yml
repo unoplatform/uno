@@ -286,6 +286,8 @@
           href: uno-fluent-assets.md
         - name: Lottie animations
           href: features/Lottie.md
+        - name: Working with cookies
+          href: features/working-with-cookies.md
     - name: Core functionality
       items:
         - name: Logging
