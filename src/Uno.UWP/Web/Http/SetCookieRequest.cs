@@ -13,8 +13,7 @@ namespace Uno.Web.Http
 		/// <summary>
 		/// Creates an instance of a request to set cookie.
 		/// </summary>
-		/// <param name="name">Cookie name.</param>
-		/// <param name="value">Cookie value.</param>
+		/// <param name="cookie">Cookie to set.</param>
 		public SetCookieRequest(Cookie cookie)
 		{
 			Cookie = cookie;
