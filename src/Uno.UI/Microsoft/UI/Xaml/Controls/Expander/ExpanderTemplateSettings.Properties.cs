@@ -2,12 +2,12 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ExpanderTemplateSettings
+	public partial class ExpanderTemplateSettings : DependencyObject
 	{
 		public double ContentHeight
 		{
 			get => (double)GetValue(ContentHeightProperty);
-			set => SetValue(ContentHeightProperty, value);
+			internal set => SetValue(ContentHeightProperty, value);
 		}
 
 		public static DependencyProperty ContentHeightProperty { get; } =
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double NegativeContentHeight
 		{
 			get => (double)GetValue(NegativeContentHeightProperty);
-			set => SetValue(NegativeContentHeightProperty, value);
+			internal set => SetValue(NegativeContentHeightProperty, value);
 		}
 
 		public static DependencyProperty NegativeContentHeightProperty { get; } =
