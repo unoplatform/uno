@@ -3580,9 +3580,6 @@
 			<Member
 				fullName="System.Void Windows.Security.Authentication.Web.WebAuthenticationResult..ctor()"
 				reason="Not part of the UWP API" />
-			<Member
-				fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
-				reason="No longer used method that shouldn't be called from user code" />
 		</Methods>
 		<Fields>
 			<Member
@@ -3639,6 +3636,25 @@
 				fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ScrollContentPresenter::VerticalScrollMode()"
 				reason="Not part of the UWP API" />
 		</Properties>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="3.6.6">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
+				reason="No longer used method that shouldn't be called from user code" />
+		</Methods>
 	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):

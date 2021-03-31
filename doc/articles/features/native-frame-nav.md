@@ -45,5 +45,5 @@ On iOS and on Android, it also manages the state of back button on the `CommandB
 - WASM: `SystemNavigationManager.AppViewBackButtonVisibility` needs to be set to `Visible` to intercept the browser back navigation. The intercepted event is forwarded to `SystemNavigationService.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
 
 ## Additional Resources
-- [Uno-specific documentation](../controls/CommandBar) on `CommandBar` and `AppBarButton`
-- [How-to guide](../guides/native-frame-nav-tutorial) & [sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav) on native frame navigation
+- [Uno-specific documentation](../controls/CommandBar.md) on `CommandBar` and `AppBarButton`
+- [How-to guide](../guides/native-frame-nav-tutorial.md) & [sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav) on native frame navigation

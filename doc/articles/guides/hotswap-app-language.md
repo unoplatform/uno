@@ -47,7 +47,7 @@ This guide will walk you through the necessary steps for changing app language a
 <br>
 
 > [!Tip]
-> For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](get-started.md).
+> For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
 ## Step-by-steps
 > [!NOTE]
