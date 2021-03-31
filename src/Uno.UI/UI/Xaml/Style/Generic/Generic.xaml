@@ -7553,6 +7553,7 @@
 					<Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
 						<ContentPresenter x:Name="Text"
                             Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 
