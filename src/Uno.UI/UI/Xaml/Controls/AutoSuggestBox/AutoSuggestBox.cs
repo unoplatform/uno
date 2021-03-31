@@ -280,14 +280,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_queryButton.Content = QueryIcon;
-			if (QueryIcon == null)
-			{
-				_queryButton.Visibility = Visibility.Collapsed;
-			}
-			else
-			{
-				_queryButton.Visibility = Visibility.Visible;
-			}
+			_queryButton.Visibility = QueryIcon == null ? Visibility.Collapsed : Visibility.Visible;
 		}
 
 		private void OnSuggestionListItemClick(object sender, ItemClickEventArgs e)

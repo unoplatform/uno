@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.FontIconTests
 {
-	[SampleControlInfo("IconElement", "FontIconControlTest")]
+	[Sample("IconElement")]
 	public sealed partial class FontIconControlTest : Page
     {
         public FontIconControlTest()
