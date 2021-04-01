@@ -107,12 +107,6 @@
       "defaultValue": "true",
       "description": "Enables the WebAssembly platform support project"
     },
-    "UWP": {
-      "type": "parameter",
-      "dataType": "bool",
-      "defaultValue": "true",
-      "description": "Enables the Windows platform support project"
-    },
     "iOS": {
       "type": "parameter",
       "dataType": "bool",
@@ -169,7 +163,6 @@
       "path": "UnoWinUIQuickStart.iOS\\UnoWinUIQuickStart.iOS.csproj"
     },
     {
-      "condition": "UWP",
       "path": "UnoWinUIQuickStart.UWP\\UnoWinUIQuickStart.Uwp.csproj"
     },
     {
@@ -226,12 +219,6 @@
           "condition": "(!macOS)",
           "exclude": [
             "UnoWinUIQuickStart.macOS/**/*"
-          ]
-        },
-        {
-          "condition": "(!UWP)",
-          "exclude": [
-            "UnoWinUIQuickStart.UWP/**/*"
           ]
         },
         {

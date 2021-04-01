@@ -64,13 +64,6 @@
       "isVisible": "true"
     },
     {
-      "id": "UWP",
-      "name": {
-        "text": "Add support for UWP"
-      },
-      "isVisible": "true"
-    },
-    {
       "id": "vscodeWasm",
       "name": {
         "text": "Adds the Visual Studio Code Debugging support files for WebAssembly"

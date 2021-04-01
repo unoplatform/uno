@@ -16,10 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoQuickStart.iOS", "UnoQui
 EndProject
 #//#endif
 
-#//#if (UWP)
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoQuickStart.Uwp", "UnoQuickStart.UWP\UnoQuickStart.Uwp.csproj", "{$guid1$}"
 EndProject
-#//#endif
 
 #//#if (WebAssembly)
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoQuickStart.Wasm", "UnoQuickStart.Wasm\UnoQuickStart.Wasm.csproj", "{40EA03F7-8A22-4143-B251-79BAC3EB13D2}"
