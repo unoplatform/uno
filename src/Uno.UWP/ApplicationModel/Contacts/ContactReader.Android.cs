@@ -1,4 +1,5 @@
-﻿#if __ANDROID__
+﻿
+#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -101,7 +102,7 @@ namespace Windows.ApplicationModel.Contacts
 				var entry = new Contact();
 				int contactId = _cursor.GetInt(0);  // we defined columns while opening cursor, so we know what data is in which columns
 
-				entry.DisplayName = _cursor.GetString(1);   // we defined columns while opening cursor, so we know what data is in which columns
+				entry.DisplayNameOverride = _cursor.GetString(1);   // we defined columns while opening cursor, so we know what data is in which columns
 
 				bool searchFound = false; // should it be included in result set
 				if (_queryOptions.SearchFields == ContactQuerySearchFields.None ||	// no filtering at all
