@@ -34,6 +34,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _targetPath;
 		private readonly string _defaultLanguage;
 		private readonly bool _isWasm;
+		private readonly bool _isDesignTimeBuild;
 		private readonly string _defaultNamespace;
 		private readonly string[] _assemblySearchPaths;
 		private readonly string[] _excludeXamlNamespaces;
@@ -180,6 +181,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
+			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
 		}
 
 		/// <summary>

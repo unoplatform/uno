@@ -97,7 +97,11 @@ namespace Uno.UI.SourceGenerators.Telemetry
 				return;
 			}
 
-			_trackEventTask.Wait();
+			// Skip the wait if the task has not yet been activated
+			if (_trackEventTask.Status != TaskStatus.WaitingForActivation)
+			{
+				_trackEventTask.Wait(TimeSpan.FromSeconds(1));
+			}
 		}
 
 		public void Dispose()

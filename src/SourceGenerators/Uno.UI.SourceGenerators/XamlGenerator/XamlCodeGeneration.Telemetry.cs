@@ -50,7 +50,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackGenerationDone(TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled)
+			if (IsTelemetryEnabled
+				&& !_isDesignTimeBuild)
 			{
 				try
 				{
@@ -74,7 +75,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackGenerationFailed(Exception exception, TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled)
+			if (IsTelemetryEnabled
+				&& !_isDesignTimeBuild)
 			{
 				try
 				{
@@ -99,7 +101,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackStartGeneration(XamlFileDefinition[] files)
 		{
-			if (IsTelemetryEnabled)
+			if (IsTelemetryEnabled
+				&& !_isDesignTimeBuild)
 			{
 				try
 				{
