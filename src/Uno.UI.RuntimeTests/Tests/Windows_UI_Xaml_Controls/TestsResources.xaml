@@ -102,6 +102,18 @@
 			<TextBlock Text="{Binding}" />
 		</local:CounterGrid>
 	</DataTemplate>
+	<DataTemplate x:Key="SelectableItemTemplateA">
+		<TextBlock x:Name="TextBlockInTemplate"
+				   Text="Selectable A" />
+	</DataTemplate>
+	<DataTemplate x:Key="SelectableItemTemplateB">
+		<TextBlock x:Name="TextBlockInTemplate"
+				   Text="Selectable B" />
+	</DataTemplate>
+	<DataTemplate x:Key="SelectableItemTemplateC">
+		<TextBlock x:Name="TextBlockInTemplate"
+				   Text="Selectable C" />
+	</DataTemplate>
 	<DataTemplate x:Key="DataContextBindingDataTemplate">
 		<Grid DataContext="{Binding SignIn}">
 			<TextBlock Text="{Binding UserName}" />
