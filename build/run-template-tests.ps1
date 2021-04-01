@@ -11,7 +11,6 @@ function Assert-ExitCodeIsZero()
 }
 
 function Get-TemplateConfiguration(
-    [bool]$uwp = $false,
     [bool]$android = $false,
     [bool]$iOS = $false,
     [bool]$macOS = $false,
@@ -21,7 +20,6 @@ function Get-TemplateConfiguration(
     [bool]$skiaTizen = $false,
     [bool]$wasmVsCode = $false)
 {
-    $uwpFlag = '-uwp'
     $androidFlag = '-android'
     $iOSFlag = '-ios'
     $macOSFlag = '-macos'
@@ -31,17 +29,16 @@ function Get-TemplateConfiguration(
     $skiaGtkFlag = '--skia-gtk'
     $skiaTizenFlag = '--skia-tizen'
 
-    $a = If ($uwp)        { $uwpFlag }        Else { $uwpFlag        + '=false' }
-    $b = If ($android)    { $androidFlag }    Else { $androidFlag    + '=false' }
-    $c = If ($iOS)        { $iOSFlag }        Else { $iOSFlag        + '=false' }
-    $d = If ($macOS)      { $macOSFlag }      Else { $macOSFlag      + '=false' }
-    $e = If ($wasm)       { $wasmFlag }       Else { $wasmFlag       + '=false' }
-    $f = If ($wasmVsCode) { $wasmVsCodeFlag } Else { $wasmVsCodeFlag + '=false' }
-    $g = If ($skiaWpf)    { $skiaWpfFlag    } Else { $skiaWpfFlag    + '=false' }
-    $h = If ($skiaGtk)    { $skiaGtkFlag    } Else { $skiaGtkFlag    + '=false' }
-    $i = If ($skiaTizen)  { $skiaTizenFlag  } Else { $skiaTizenFlag  + '=false' }
+    $a = If ($android)    { $androidFlag }    Else { $androidFlag    + '=false' }
+    $b = If ($iOS)        { $iOSFlag }        Else { $iOSFlag        + '=false' }
+    $c = If ($macOS)      { $macOSFlag }      Else { $macOSFlag      + '=false' }
+    $d = If ($wasm)       { $wasmFlag }       Else { $wasmFlag       + '=false' }
+    $e = If ($wasmVsCode) { $wasmVsCodeFlag } Else { $wasmVsCodeFlag + '=false' }
+    $f = If ($skiaWpf)    { $skiaWpfFlag    } Else { $skiaWpfFlag    + '=false' }
+    $g = If ($skiaGtk)    { $skiaGtkFlag    } Else { $skiaGtkFlag    + '=false' }
+    $h = If ($skiaTizen)  { $skiaTizenFlag  } Else { $skiaTizenFlag  + '=false' }
 
-    @($a, $b, $c, $d, $e, $f, $g, $h, $i)
+    @($a, $b, $c, $d, $e, $f, $g, $h)
 }
 
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
@@ -57,7 +54,7 @@ $releaseIPhoneSimulator = $release + '/p:Platform=iPhoneSimulator'
 
 $templateConfigurations =
 @(
-    (Get-TemplateConfiguration -uwp 1),
+    (Get-TemplateConfiguration),
     (Get-TemplateConfiguration -android 1),
     (Get-TemplateConfiguration -iOS 1),
     (Get-TemplateConfiguration -macOS 1),
@@ -94,7 +91,7 @@ for($i = 0; $i -lt $configurations.Length; $i++)
 
 # VS Code
 dotnet new unoapp -n UnoAppVsCode (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1)
-dotnet build -p:RestoreConfigFile=$env:NUGET_CI_CONFIG UnoAppVsCode\UnoAppVsCode.sln
+dotnet build -p:RestoreConfigFile=$env:NUGET_CI_CONFIG UnoAppVsCode\UnoAppVsCode.Wasm\UnoAppVsCode.Wasm.csproj
 Assert-ExitCodeIsZero
 
 # Namespace Tests
@@ -117,7 +114,7 @@ dotnet new unolib-crossruntime -n MyCrossRuntimeLib
 Assert-ExitCodeIsZero
 
 # WinUI - Default
-dotnet new unoapp-winui -n UnoAppWinUI --winui-desktop=false
+dotnet new unoapp-winui -n UnoAppWinUI
 & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
 Assert-ExitCodeIsZero
 
