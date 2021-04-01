@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.SymbolIconTests
 {
-	[Sample("SymbolIcon")]
+	[Sample("IconElement")]
 	public sealed partial class SymbolIcon_Generic : Page
     {
         public SymbolIcon_Generic()

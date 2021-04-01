@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("PathTestsControl", "PathIcon")]
+	[Sample("IconElement")]
 	public sealed partial class PathIcon : UserControl
 	{
 		public PathIcon()
