@@ -24,11 +24,11 @@ Uno.CompositionConfiguration.Configuration = Uno.CompositionConfiguration.Option
 
 This thread will also be used for [independent animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/storyboarded-animations#dependent-and-independent-animations).
 
-**When overriding the `[On]Draw` methods, it's really important to not access any state that can be edited from the UI Thread, including any `DependencyProperty`.**
+**When overriding the `[On]Draw` methods, it is really important not to access any state that can be edited from the UI Thread, including any `DependencyProperty`.**
 **Instead, you should capture the state of your control into a `RenderNode` during the `ArrangeOverride` and render it on the provided `Canvas`.**
 
-_There is few known issues associated with the used of the compositor thread, [make sure to read them](#known_issues)._
+_There are few known issues associated with the used of the compositor thread, [make sure to read the section below](#known_issues)._
 
 ## Knwon issues
 
-* When using the compositor thread, the native ripple effect of Android (used in native buttons) will not work anymore.
+* When using the compositor thread, the native ripple effect of Android (used in native buttons) does not work.
