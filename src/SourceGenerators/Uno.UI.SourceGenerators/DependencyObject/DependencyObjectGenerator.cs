@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,16 +43,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{
 			private readonly GeneratorExecutionContext _context;
-			private readonly INamedTypeSymbol _dependencyObjectSymbol;
-			private readonly INamedTypeSymbol _unoViewgroupSymbol;
-			private readonly INamedTypeSymbol _iosViewSymbol;
-			private readonly INamedTypeSymbol _macosViewSymbol;
-			private readonly INamedTypeSymbol _androidViewSymbol;
-			private readonly INamedTypeSymbol _javaObjectSymbol;
-			private readonly INamedTypeSymbol _androidActivitySymbol;
-			private readonly INamedTypeSymbol _androidFragmentSymbol;
-			private readonly INamedTypeSymbol _bindableAttributeSymbol;
-			private readonly INamedTypeSymbol _iFrameworkElementSymbol;
+			private readonly INamedTypeSymbol? _dependencyObjectSymbol;
+			private readonly INamedTypeSymbol? _unoViewgroupSymbol;
+			private readonly INamedTypeSymbol? _iosViewSymbol;
+			private readonly INamedTypeSymbol? _macosViewSymbol;
+			private readonly INamedTypeSymbol? _androidViewSymbol;
+			private readonly INamedTypeSymbol? _javaObjectSymbol;
+			private readonly INamedTypeSymbol? _androidActivitySymbol;
+			private readonly INamedTypeSymbol? _androidFragmentSymbol;
+			private readonly INamedTypeSymbol? _bindableAttributeSymbol;
+			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
 
 
 			public SerializationMethodsGenerator(GeneratorExecutionContext context)
@@ -131,7 +133,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
-						if (typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
+						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
 						{
 							builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
 						}
@@ -150,7 +152,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol typeSymbol)
+			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
 			{
 				var disposables = new List<IDisposable>();
 

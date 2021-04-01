@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -51,8 +53,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml = false;
 
-		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.CodeBase).LocalPath);
-		private INamedTypeSymbol[] _ambientGlobalResources;
+		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
+		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
 		private Dictionary<string, string> _legacyTypes;
 
@@ -110,7 +112,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isDebug = string.Equals(_configuration, "Debug", StringComparison.OrdinalIgnoreCase);
 
 			_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
-			_projectDirectory = Path.GetDirectoryName(_projectFullPath);
+			_projectDirectory = Path.GetDirectoryName(_projectFullPath)
+				?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
 
 			var xamlItems = context.GetMSBuildItems("Page")
 				.Concat(context.GetMSBuildItems("ApplicationDefinition"));
@@ -419,10 +422,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (
 						key != null
+						&& key.Value?.ToString() is { } value
 						&& resource.Type.Name != "StaticResource"
 					)
 					{
-						map.Add(key.Value.ToString(), _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
+						map.Add(value, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
 					}
 				}
 			}
@@ -440,17 +444,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					this.Log().Info("Parse resource file : " + file);
 
 					//load document
-					XmlDocument doc = new XmlDocument();
+					var doc = new XmlDocument();
 					doc.Load(file);
-					XmlNode root = doc.DocumentElement;
 
 					//extract all localization keys from Win10 resource file
 					resourceKeys = resourceKeys
 						.Concat(doc
 							.SelectNodes("//data")
-							.Cast<XmlElement>()
+							?.Cast<XmlElement>()
 							.Select(node => node.GetAttribute("name"))
-							.ToArray()
+							.ToArray() ?? Array.Empty<string>()
 						)
 						.Distinct()
 						.Select(k => k.Replace(".", "/"))
@@ -541,28 +544,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariant("_initialized = true;");
 
-								foreach (var ambientResource in _ambientGlobalResources)
+								if (_ambientGlobalResources != null)
 								{
-									if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+									foreach (var ambientResource in _ambientGlobalResources)
 									{
-										writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
+										if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+										{
+											writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
+										}
 									}
-								}
 
-								foreach (var ambientResource in _ambientGlobalResources)
-								{
-									// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
-									if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+									foreach (var ambientResource in _ambientGlobalResources)
 									{
-										writer.AppendLineInvariant("global::{0}.RegisterDefaultStyles();", ambientResource.GetFullName());
+										// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
+										if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+										{
+											writer.AppendLineInvariant("global::{0}.RegisterDefaultStyles();", ambientResource.GetFullName());
+										}
 									}
-								}
 
-								foreach (var ambientResource in _ambientGlobalResources)
-								{
-									if (ambientResource.GetMethods().Any(m => m.Name == "RegisterResourceDictionariesBySource"))
+									foreach (var ambientResource in _ambientGlobalResources)
 									{
-										writer.AppendLineInvariant("global::{0}.RegisterResourceDictionariesBySource();", ambientResource.GetFullName());
+										if (ambientResource.GetMethods().Any(m => m.Name == "RegisterResourceDictionariesBySource"))
+										{
+											writer.AppendLineInvariant("global::{0}.RegisterResourceDictionariesBySource();", ambientResource.GetFullName());
+										}
 									}
 								}
 
@@ -618,7 +624,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								var file = files.FirstOrDefault(f =>
 									f.FilePath.Substring(_projectDirectory.Length+1).Equals(baseFilePath, StringComparison.OrdinalIgnoreCase));
 
-								RegisterForXamlFile(file, url);
+								if (file != null)
+								{
+									RegisterForXamlFile(file, url);
+								}
 							}
 
 							void RegisterForXamlFile(XamlFileDefinition file, string url)

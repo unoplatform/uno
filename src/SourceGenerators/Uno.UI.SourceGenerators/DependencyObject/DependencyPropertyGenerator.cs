@@ -183,6 +183,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					return;
 				}
 
+				if (setMethodSymbol == null)
+				{
+					builder.AppendLineInvariant($"#error unable to find setter method for {propertyName} on {ownerType}");
+					return;
+				}
+
 				var attachedBackingFieldOwner = GetAttributeValue(attribute, "AttachedBackingFieldOwner");
 				var metadataOptions = GetAttributeValue(attribute, "Options")?.Value.Value?.ToString() ?? "0";
 				var coerceCallback = GetBooleanAttributeValue(attribute, "CoerceCallback", false);

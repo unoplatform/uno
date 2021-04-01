@@ -1,4 +1,6 @@
-﻿using Uno;
+﻿#nullable enable
+
+using Uno;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -15,11 +17,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool _applyOpened;
 		private readonly string _closureName;
 		private readonly IIndentedStringBuilder _source;
-		private IDisposable _applyDisposable;
-		private readonly string _applyPrefix;
-		private readonly string _delegateType;
+		private IDisposable? _applyDisposable;
+		private readonly string? _applyPrefix;
+		private readonly string? _delegateType;
 
-		public XamlLazyApplyBlockIIndentedStringBuilder(IIndentedStringBuilder source, string closureName, string applyPrefix, string delegateType)
+		public XamlLazyApplyBlockIIndentedStringBuilder(IIndentedStringBuilder source, string closureName, string? applyPrefix, string? delegateType)
 		{
 			_closureName = closureName;
 			_source = source;

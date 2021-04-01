@@ -1,4 +1,6 @@
-﻿extern alias __uno;
+﻿#nullable enable
+
+extern alias __uno;
 
 using System;
 using Uno.Extensions;
@@ -7,18 +9,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class XamlMember : IEquatable<XamlMember>
 	{
-		private string _name;
-		private XamlType _declaringType;
+		private string? _name;
+		private XamlType? _declaringType;
 		private bool _isAttachable;
 
-		private __uno::Uno.Xaml.XamlMember _unoMember;
+		private __uno::Uno.Xaml.XamlMember? _unoMember;
 
-		public static XamlMember FromMember(__uno::Uno.Xaml.XamlMember member) => member != null ? new XamlMember(member) : null;
+		public static XamlMember? FromMember(__uno::Uno.Xaml.XamlMember? member) => member != null ? new XamlMember(member) : null;
 
-		public static XamlMember WithDeclaringType(XamlMember member, XamlType declaringType)
+		public static XamlMember? WithDeclaringType(XamlMember member, XamlType declaringType)
 		{
 			var newMember = FromMember(member._unoMember);
-			newMember._declaringType = declaringType;
+			if (newMember != null)
+			{
+				newMember._declaringType = declaringType;
+			}
 			return newMember;
 		}
 
@@ -32,23 +37,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		}
 
 		public string Name 
-			=> _name.HasValue() ? _name : _unoMember.Name ;
+			=> (_name?.HasValue() ?? false) ? _name : _unoMember?.Name!;
 
 		public XamlType DeclaringType 
-			=> _declaringType != null ? _declaringType : XamlType.FromType(_unoMember.DeclaringType);
+			=> _declaringType != null ? _declaringType : XamlType.FromType(_unoMember?.DeclaringType);
 
 		public XamlType Type
 			=> XamlType.FromType(_unoMember?.Type);
 
-		public string PreferredXamlNamespace 
-			=> _unoMember.PreferredXamlNamespace;
+		public string? PreferredXamlNamespace 
+			=> _unoMember?.PreferredXamlNamespace;
 
 		public bool IsAttachable 
-			=> _declaringType != null ? _isAttachable : _unoMember.IsAttachable;
+			=> _declaringType != null ? _isAttachable : _unoMember?.IsAttachable ?? false;
 
-		public override string ToString() => _unoMember.ToString();
+		public override string ToString() => _unoMember?.ToString() ?? "";
 
-		public bool Equals(XamlMember other)
+		public bool Equals(XamlMember? other)
 			=> _name.HasValue()
 			? (
 				other != null
@@ -56,14 +61,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 				&& _declaringType == other._declaringType
 				&& _isAttachable == other.IsAttachable
 			)
-			: _unoMember.Equals(other?._unoMember);
+			: _unoMember?.Equals(other?._unoMember) ?? false;
 
-		public override bool Equals(object other)
+		public override bool Equals(object? other)
 			=> other is XamlMember otherMember ? Equals(otherMember) : false;
 
 		public override int GetHashCode()
 			=> _name.HasValue()
-			? _name.GetHashCode()
-			: _unoMember.GetHashCode();
+			? _name?.GetHashCode() ?? 0
+			: _unoMember?.GetHashCode() ?? 0;
 	}
 }
