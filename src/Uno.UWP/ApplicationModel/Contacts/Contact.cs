@@ -23,7 +23,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				return string.Join(" ", new [] { HonorificNamePrefix, FirstName, MiddleName, LastName, HonorificNameSuffix }.Where(n => !string.IsNullOrEmpty(n)));
+				if (string.IsNullOrEmpty(DisplayNameOverride))
+				{
+					return string.Join(" ", new [] { HonorificNamePrefix, FirstName, MiddleName, LastName, HonorificNameSuffix }.Where(n => !string.IsNullOrEmpty(n)));
+				}
+				return DisplayNameOverride;
 			}
 		}
 
