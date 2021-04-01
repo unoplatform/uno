@@ -39,7 +39,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[AutoRetry]
 		public void WriteableBitmap_MultiInvalidate()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.WriteableBitmap_MultiInvalidate");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.WriteableBitmap_MultiInvalidate");
 
 			// Request to render
 			var button = _app.Marked("_randomize");
