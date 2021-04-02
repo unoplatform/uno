@@ -33,6 +33,34 @@ namespace Uno.Foundation.Extensibility
 		}
 
 		/// <summary>
+		/// Registers an extension instance builder for the specified type with a strongly-typed owner.
+		/// </summary>
+		/// <typeparam name="TOwner">Type of owner.</typeparam>
+		/// <param name="type">The type to register</param>
+		/// <param name="builder">A builder that will be provided an optional owner, and returns an instance of the extension</param>
+		/// <remarks>This method is generally called automatically when the <see cref="ApiExtensionAttribute"/> has been defined in an assembly.</remarks>
+		public static void Register<TOwner>(Type type, Func<TOwner, object> builder)
+		{
+			type = type ?? throw new ArgumentNullException(nameof(type));
+			builder = builder ?? throw new ArgumentNullException(nameof(type));
+
+			Func<object, object> objectBuilder = o =>
+			{
+				if (!(o is TOwner owner))
+				{
+					throw new InvalidOperationException($"Expected owner of type {typeof(TOwner).Name} to resolve instance of {type.Name}.");
+				}
+
+				return builder(owner);
+			};
+
+			lock (_gate)
+			{
+				_registrations.Add(type, objectBuilder);
+			}
+		}
+
+		/// <summary>
 		/// Creates an instance of an extension of the specified <typeparamref name="T"/> type
 		/// </summary>
 		/// <typeparam name="T">A registered type</typeparam>

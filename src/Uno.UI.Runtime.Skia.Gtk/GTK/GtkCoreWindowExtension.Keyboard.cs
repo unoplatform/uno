@@ -42,7 +42,7 @@ namespace Uno.UI.Runtime.Skia
 				OnKeyReleaseEvent(e);
 			}
 
-			return 1;
+			return 0;
 		}
 
 		private void OnKeyPressEvent(EventKey evt)

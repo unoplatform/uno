@@ -13,6 +13,11 @@ using Uno.Logging;
 using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
+using Gtk;
+using GtkGrid = Gtk.Grid;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -25,6 +30,7 @@ namespace Uno.UI.Runtime.Skia
 		private readonly Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
 		private UnoDrawingArea _area;
+		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
 
 		public static Gtk.Window Window => _window;
@@ -37,11 +43,12 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
-			Gtk.Application.Init();			
+			Gtk.Application.Init();
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
+			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new GtkTextBoxViewExtension(o, _window));
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");
@@ -62,7 +69,7 @@ namespace Uno.UI.Runtime.Skia
 
 			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
 
-			void Dispatch(Action d)
+			void Dispatch(System.Action d)
 			{
 				if (Gtk.Application.EventsPending())
 				{
@@ -99,11 +106,24 @@ namespace Uno.UI.Runtime.Skia
 
 			_window.SizeAllocated += (s, e) =>
 			{
+				_area.WidthRequest = e.Allocation.Width;
+				_area.HeightRequest = e.Allocation.Height;
+				_fix.WidthRequest = _window.AllocatedWidth;
+				_fix.HeightRequest = _window.AllocatedHeight;
 				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			};
 
+			var overlay = new Overlay();			
+
 			_area = new UnoDrawingArea();
-			_window.Add(_area);
+			_fix = new Fixed();
+			overlay.Add(_area);
+			overlay.AddOverlay(_fix);
+			_fix.WidthRequest = _window.AllocatedWidth;
+			_fix.HeightRequest = _window.AllocatedHeight;
+			_area.WidthRequest = _window.AllocatedWidth;
+			_area.HeightRequest = _window.AllocatedHeight;
+			_window.Add(overlay);
 
 			/* avoids double invokes at window level */
 			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
