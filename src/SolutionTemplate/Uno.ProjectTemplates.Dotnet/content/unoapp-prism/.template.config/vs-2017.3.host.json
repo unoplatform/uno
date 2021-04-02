@@ -17,9 +17,9 @@
   },
   "symbolInfo": [
     {
-      "id": "UWP",
+      "id": "WebAssembly",
       "name": {
-        "text": "Add support for UWP"
+        "text": "Add support for WebAssembly"
       },
       "isVisible": "true"
     },

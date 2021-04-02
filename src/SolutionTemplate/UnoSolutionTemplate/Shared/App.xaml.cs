@@ -33,7 +33,7 @@ namespace $ext_safeprojectname$
 
             this.InitializeComponent();
 
-#if !WINDOWS
+#if HAS_UNO || NETFX_CORE
             this.Suspending += OnSuspending;
 #endif
         }

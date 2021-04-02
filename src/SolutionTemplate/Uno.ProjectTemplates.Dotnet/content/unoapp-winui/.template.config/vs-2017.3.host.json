@@ -31,13 +31,6 @@
       "isVisible": "true"
     },
     {
-      "id": "UWP",
-      "name": {
-        "text": "Add support for UWP"
-      },
-      "isVisible": "true"
-    },
-    {
       "id": "iOS",
       "name": {
         "text": "Add support for iOS"

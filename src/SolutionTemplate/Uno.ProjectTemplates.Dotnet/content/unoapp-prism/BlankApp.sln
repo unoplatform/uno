@@ -17,10 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlankApp.iOS", "BlankApp.iO
 EndProject
 #//#endif
 
-#//#if (UWP)
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlankApp.Uwp", "BlankApp.UWP\BlankApp.Uwp.csproj", "{BA84ED6F-9B66-4FCF-816A-C3A63A3BB5C7}"
 EndProject
-#//#endif
 
 #//#if (WebAssembly)
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlankApp.Wasm", "BlankApp.Wasm\BlankApp.Wasm.csproj", "{40EA03F7-8A22-4143-B251-79BAC3EB13D2}"
