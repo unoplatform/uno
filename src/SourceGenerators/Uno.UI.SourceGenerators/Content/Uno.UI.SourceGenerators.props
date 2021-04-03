@@ -41,6 +41,7 @@
 		<CompilerVisibleProperty Include="MSBuildProjectName" />
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
+		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
