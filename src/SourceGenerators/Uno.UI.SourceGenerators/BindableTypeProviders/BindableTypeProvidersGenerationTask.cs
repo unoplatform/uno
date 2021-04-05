@@ -103,7 +103,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			}
 			catch(Exception e)
 			{
-				var message = e.Message + e.StackTrace;
+				string? message = e.Message + e.StackTrace;
 
 				if (e is AggregateException)
 				{
