@@ -133,7 +133,6 @@ $(function () {
       } else {
         webWorkerSearch();
       }
-
       renderSearchBox();
       highlightKeywords();
       addSearchEvent();
@@ -192,7 +191,7 @@ $(function () {
         searchDataRequest.send();
       }
 
-      $("body").bind("queryReady", function () {
+      $("body").on("queryReady", function () {
         var hits = lunrIndex.search(query);
         var results = [];
         hits.forEach(function (hit) {
@@ -204,7 +203,6 @@ $(function () {
     }
 
     function webWorkerSearch() {
-      console.log("using Web Worker");
       var indexReady = $.Deferred();
 
       worker.onmessage = function (oEvent) {
@@ -218,9 +216,8 @@ $(function () {
             break;
         }
       }
-
       indexReady.promise().done(function () {
-        $("body").bind("queryReady", function () {
+        $("body").on("query-ready", function () {
           worker.postMessage({ q: query });
         });
         if (query && (query.length >= 3)) {
@@ -244,32 +241,17 @@ $(function () {
     }
 
     function addSearchEvent() {
-      $('body').bind("searchEvent", function () {
+      $('body').on("searchEvent", function () {
         $('#search-query').keypress(function (e) {
           return e.which !== 13;
         });
 
-        $('#search-query').keyup(function () {
+        $('#search-query').on("keyup", function () {
           query = $(this).val();
-          if (query.length < 0) {
-            flipContents("show");
-          } else {
-            flipContents("hide");
-            $("body").trigger("queryReady");
+            $("body").trigger("query-ready");
             $('#search-results>.search-list').text('Search Results for "' + query + '"');
-          }
         }).off("keydown");
       });
-    }
-
-    function flipContents(action) {
-      if (action === "show") {
-        $('.hide-when-search').show();
-        $('#search-results').hide();
-      } else {
-        $('.hide-when-search').hide();
-        $('#search-results').show();
-      }
     }
 
     function relativeUrlToAbsoluteUrl(currentUrl, relativeUrl) {
@@ -288,7 +270,7 @@ $(function () {
     }
 
     function extractContentBrief(content) {
-      var briefOffset = 512;
+      var briefOffset = 50;
       var words = query.split(/\s+/g);
       var queryIndex = content.indexOf(words[0]);
       var briefContent;
@@ -300,40 +282,29 @@ $(function () {
     }
 
     function handleSearchResults(hits) {
-      console.log(hits);
-      var numPerPage = 9999;
-      $('#pagination').empty();
-      $('#pagination').removeData("twbs-pagination");
       if (hits.length === 0) {
         $('#search-results>.sr-items').html('<p>No results found</p>');
       } else {
-        $('#pagination').twbsPagination({
-          totalPages: Math.ceil(hits.length / numPerPage),
-          visiblePages: 5,
-          onPageClick: function (event, page) {
-            var start = (page - 1) * numPerPage;
-            var curHits = hits.slice(start, start + numPerPage);
-            $('#search-results>.sr-items').empty().append(
-              curHits.map(function (hit) {
-                var currentUrl = window.location.href;
-                var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
-                var itemHref = relHref + hit.href + "?q=" + query;
-                var itemTitle = hit.title;
-                var itemBrief = extractContentBrief(hit.keywords);
+        $('#search-results>.sr-items').empty().append(
+          hits.slice(0,5).map(function (hit) {
+            var currentUrl = window.location.href;
+            var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
+            var itemHref = relHref + hit.href + "?q=" + query;
+            var itemTitle = hit.title;
+            var itemBrief = extractContentBrief(hit.keywords);
 
-                var itemNode = $('<div>').attr('class', 'sr-item');
-                var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").text(itemTitle));
-                var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
-                var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
-                itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
-                return itemNode;
-              })
-            );
-            query.split(/\s+/).forEach(function (word) {
-              if (word !== '') {
-                //$('#search-results>.sr-items *').mark(word);
-              }
-            });
+            var itemNode = $('<a>').attr('class', 'sr-item').attr('href', itemHref);
+            var itemTitleNode = $('<div>').attr('class', 'item-title').text(itemTitle);
+            var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
+            itemNode.append(itemTitleNode).append(itemBriefNode);
+
+            return itemNode;
+          })
+        );
+        $('#search-results').show();
+        query.split(/\s+/).forEach(function (word) {
+          if (word !== '') {
+            $('#search-results>.sr-items *').mark(word);
           }
         });
       }
@@ -360,10 +331,6 @@ $(function () {
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       $.get(navbarPath, function (data) {
         $(data).find("#toc>ul").appendTo("#navbar");
-        if ($('#search-results').length !== 0) {
-          $('#search').show();
-          $('body').trigger("searchEvent");
-        }
         var index = navbarPath.lastIndexOf('/');
         var navrel = '';
         if (index > -1) {
@@ -515,6 +482,18 @@ $(function () {
         });
 
         renderSidebar();
+        if ($('#search-results').length !== 0) {
+          $('#search').show();
+          $('body').trigger("searchEvent");
+        }
+          // if the target of the click isn't the container nor a descendant of the container
+          $('body').mouseup(function (e) {
+              if (!$('#search-results').is(e.target) && $('#search-results').has(e.target).length === 0)
+              {
+                  $('#search-results').hide();
+              }
+          });
+
       });
     }
   }
