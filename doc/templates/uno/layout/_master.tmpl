@@ -19,12 +19,7 @@
         {{>partials/breadcrumb}}
         {{/_disableBreadcrumb}}
       </header>
-      {{#_enableSearch}}
-      <div class="container body-content">
-        {{>partials/searchResults}}
-      </div>
-      {{/_enableSearch}}
-      <div role="main" class="container body-content hide-when-search">
+      <div role="main" class="container body-content">
       {{^_disableToc}}
         {{>partials/toc}}
         <div class="article row grid-right">

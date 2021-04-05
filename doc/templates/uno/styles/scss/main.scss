@@ -9,6 +9,9 @@ $dgray: #242424;
 body {
     font-family: 'Open Sans', sans-serif;
     color: $dgray;
+    mark {
+      background: rgba(21,155,255, 0.25);
+    }
 }
 
 .row {
@@ -68,11 +71,75 @@ h3 {
 }
 
 .sidefilter {
-    top: 116px;
+  top: 116px;
+  z-index: 2;
+  padding: 10px;
+
+  #search {
+    display: block;
+    border-radius: 10px;
+    input:focus {
+      outline: none;
+      border:2px solid #159bff;
+    }
+
+  }
+
+  #search-query {
+    border-radius: 6px;
+    height: 45px;
+    width: 100%;
+
+  }
+
+  #search-results {
+    background: white;
+    position: absolute;
+    margin:5px 0 0 0;
+    width:560px;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 10px;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+
+    .sr-items {
+      a {
+        color: black;
+        &:first-child {
+          border-radius: 10px 10px 0 0;
+        }
+        &:last-child {
+          border-radius: 0 0 10px 10px;
+          margin-bottom: 0;
+        }
+      }
+      p {
+        margin: 10px;
+      }
+
+      .sr-item {
+        display: block;
+        padding: 15px;
+        margin-bottom: 10px;
+        &:hover{
+          background-image:linear-gradient(to bottom, rgba(21,155,255, 0.11) 0%, rgba(21,155,255, 0.11) 100%), linear-gradient(to bottom, rgba(21,155,255, 0.11) 0%, rgba(21,155,255, 0.11) 100%);
+        }
+      }
+
+      .item-title {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .item-brief {
+        font-size: 16px;
+        color: black;
+      }
+    }
+  }
 }
 
 .sidetoc {
-    top: 178px;
+    top: 180px;
 
     .nav > li.active > a {
         color: $purple;
