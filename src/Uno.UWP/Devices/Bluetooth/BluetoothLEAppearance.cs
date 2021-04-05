@@ -16,8 +16,8 @@ namespace Windows.Devices.Bluetooth
 		private BluetoothLEAppearance(ushort rawValue)
 		{
 			RawValue = rawValue;
-			SubCategory = rawValue & 0x3f;
-			Category = (rawValue >> 6) & 0xff;
+			SubCategory = (ushort)(rawValue & 0x3f);
+			Category = (ushort)((rawValue >> 6) & 0xff);
 		}
 
 		public static BluetoothLEAppearance FromRawValue( ushort rawValue)
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			SubCategory = appearanceSubCategory;
 			Category = appearanceCategory;
-			RawValue = (Category << 6) | SubCategory;
+			RawValue = (ushort)((Category << 6) | SubCategory);
 		}
 		public static BluetoothLEAppearance FromParts( ushort appearanceCategory,  ushort appearanceSubCategory)
 		{

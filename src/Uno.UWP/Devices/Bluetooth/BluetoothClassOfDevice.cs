@@ -40,9 +40,9 @@ namespace Windows.Devices.Bluetooth
 			MajorClass = majorClass;
 			MinorClass = minorClass;
 			ServiceCapabilities = serviceCapabilities;
-			RawValue = ((int)serviceCapabilities << 13) |
-				((int)majorClass << 8) |
-				((int)minorClass << 2);
+			RawValue = ((uint)serviceCapabilities << 13) |
+				((uint)majorClass << 8) |
+				((uint)minorClass << 2);
 		}
 
 		public static BluetoothClassOfDevice FromParts(BluetoothMajorClass majorClass, BluetoothMinorClass minorClass, BluetoothServiceCapabilities serviceCapabilities)
