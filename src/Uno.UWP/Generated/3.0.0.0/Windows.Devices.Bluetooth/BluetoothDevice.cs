@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BluetoothDevice : global::System.IDisposable
@@ -187,28 +187,28 @@ namespace Windows.Devices.Bluetooth
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.BluetoothDeviceId.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WasSecureConnectionUsedForPairing.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelectorFromPairingState( bool pairingState)
 		{
 			throw new global::System.NotImplementedException("The member string BluetoothDevice.GetDeviceSelectorFromPairingState(bool pairingState) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelectorFromConnectionStatus( global::Windows.Devices.Bluetooth.BluetoothConnectionStatus connectionStatus)
 		{
 			throw new global::System.NotImplementedException("The member string BluetoothDevice.GetDeviceSelectorFromConnectionStatus(BluetoothConnectionStatus connectionStatus) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelectorFromDeviceName( string deviceName)
 		{
 			throw new global::System.NotImplementedException("The member string BluetoothDevice.GetDeviceSelectorFromDeviceName(string deviceName) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelectorFromBluetoothAddress( ulong bluetoothAddress)
 		{
@@ -243,7 +243,7 @@ namespace Windows.Devices.Bluetooth
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothDevice> BluetoothDevice.FromBluetoothAddressAsync(ulong address) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
