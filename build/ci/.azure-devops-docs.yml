@@ -23,11 +23,7 @@ jobs:
 
   - template: templates/install-windows-sdk.yml
 
-  - task: GitVersion@5
-    inputs:
-      useConfigFile: true
-      configFilePath: GitVersion.yml
-      updateAssemblyInfo: false
+  - template: templates/gitversion.yml
 
   - task: NuGetToolInstaller@0
     inputs:

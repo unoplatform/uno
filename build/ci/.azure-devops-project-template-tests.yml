@@ -16,6 +16,8 @@ jobs:
     inputs:
       artifactName: NugetPackages
 
+  - template: templates/gitversion.yml
+
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
@@ -41,6 +43,8 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: NugetPackages
+
+  - template: templates/gitversion.yml
 
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
