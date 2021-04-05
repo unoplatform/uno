@@ -77,9 +77,9 @@ This article covers how to add a splash screen to your application.
 1. In the `.UWP` project, delete the old splash screen file `SplashScreen.scale-200.png` under the `Asset\` folder.
 
     > [!NOTE]
-    > Do not confused this with the one from `.Shared` project.
+    > Do not confuse this with the one from `.Shared` project.
 
-1. open the `Package.appxmanifest` and navigate to `Visual Assets > SplashScreen`.
+1. Open the `Package.appxmanifest` and navigate to `Visual Assets > SplashScreen`.
 
 1. Make sure the value for `Preview Images > Splash Screen` is set to:
     ```
@@ -157,7 +157,7 @@ This article covers how to add a splash screen to your application.
 1. Open to `info.plist` and update the `UILaunchStoryboardName` value to `LaunchScreen`.
 
     > [!TIP]
-    > iOS caches the splash screen to improve the launch time, even across re-installs.In order to see the actual changes made, you need to restart the iPhone or simulator. Alternatively, you rename the `CFBundleIdentifier` in `info.plist` incrementally (eg: MyApp1 -> MyApp2) before each build.
+    > iOS caches the splash screen to improve the launch time, even across re-installs. In order to see the actual changes made, you need to restart the iPhone or simulator. Alternatively, you can rename the `CFBundleIdentifier` in `info.plist` incrementally (eg: MyApp1 -> MyApp2) before each build.
 
 ## Step 5 - WebAssembly
 
