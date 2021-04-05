@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		int m_lastRealizedDataIndexInsideRealizationWindow  = -1;
 
 
-		// If the scroll orientation is the same as the folow orientation
+		// If the scroll orientation is the same as the follow orientation
 		// we will only have one line since we will never wrap. In that case
 		// we do not want to align the line. We could potentially switch the
 		// meaning of line alignment in this case, but I'll hold off on that
@@ -738,7 +738,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		UIElement GetElementIfRealized(int dataIndex)
+		internal UIElement GetElementIfRealized(int dataIndex)
 		{
 			if (m_elementManager.IsDataIndexRealized(dataIndex))
 			{

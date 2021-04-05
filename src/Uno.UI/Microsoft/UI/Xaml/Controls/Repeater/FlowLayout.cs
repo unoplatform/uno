@@ -145,7 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var lastExtent = flowState.FlowAlgorithm.LastExtent;
 
 				double averageItemsPerLine = 0;
-				double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, averageItemsPerLine) + LineSpacing;
+				double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + LineSpacing;
 				MUX_ASSERT(averageItemsPerLine != 0);
 
 				double extentMajorSize = MajorSize(lastExtent) == 0 ? (itemsCount / averageItemsPerLine) * averageLineSize : MajorSize(lastExtent);
@@ -178,7 +178,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var state = context.LayoutState;
 				var flowState = GetAsFlowState(state);
 				double averageItemsPerLine = 0;
-				double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, averageItemsPerLine) + LineSpacing;
+				double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + LineSpacing;
 				int lineIndex = (int)(targetIndex / averageItemsPerLine);
 				offset = lineIndex * averageLineSize + MajorStart(flowState.FlowAlgorithm.LastExtent);
 			}
@@ -206,7 +206,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var state = context.LayoutState;
 				var flowState = GetAsFlowState(state);
 				double averageItemsPerLine = 0;
-				double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, averageItemsPerLine) + LineSpacing;
+				double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + LineSpacing;
 
 				MUX_ASSERT(averageItemsPerLine != 0);
 				if (firstRealized != null)
@@ -408,7 +408,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Size availableSize,
 			VirtualizingLayoutContext context,
 			FlowLayoutState flowState,
-			double avgCountInLine)
+			out double avgCountInLine)
 		{
 			// default to 1 item per line with 0 size
 			double avgLineSize = 0;

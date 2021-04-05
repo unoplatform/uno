@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private LayoutContextAdapter m_contextAdapter;
 
-		public IReadOnlyList<UIElement> Children => ChildrenCore;
+		public IReadOnlyList<UIElement> Children => GetChildrenCore();
 
-		protected virtual IReadOnlyList<UIElement> ChildrenCore => throw new NotImplementedException();
+		protected internal override IReadOnlyList<UIElement> GetChildrenCore() => base.GetChildrenCore();
 
 		internal VirtualizingLayoutContext GetVirtualizingContextAdapter()
 		{

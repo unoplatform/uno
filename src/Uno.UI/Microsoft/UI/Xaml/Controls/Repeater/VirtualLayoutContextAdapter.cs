@@ -37,17 +37,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region INonVirtualizingLayoutContextOverrides
 
-		protected override IReadOnlyList<UIElement> ChildrenCore
+		protected internal override IReadOnlyList<UIElement> GetChildrenCore()
 		{
-			get
+			if (m_children == null)
 			{
-				if (m_children == null)
-				{
-					m_children = new ChildrenCollection(m_virtualizingContext.GetTarget());
-				}
-
-				return m_children;
+				m_children = new ChildrenCollection(m_virtualizingContext.GetTarget());
 			}
+
+			return m_children;
 		}
 
 		#endregion

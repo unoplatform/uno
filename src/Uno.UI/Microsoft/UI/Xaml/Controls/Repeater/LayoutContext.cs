@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -16,6 +18,8 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region ILayoutContextOverrides
+
+		protected internal virtual IReadOnlyList<UIElement> GetChildrenCore() => throw new NotImplementedException();
 
 		protected internal virtual object LayoutStateCore
 		{
