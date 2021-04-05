@@ -19,7 +19,7 @@
 		<PackageReference Include="Jellyfin.SkiaSharp.NativeAssets.LinuxArm" Version="1.68.0" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
-		<PackageReference Include="GtkSharp" Version="3.24.24.4" />
+		<PackageReference Include="GtkSharp" Version="3.24.24.34" />
 	</ItemGroup>
 	
 	<ItemGroup>
