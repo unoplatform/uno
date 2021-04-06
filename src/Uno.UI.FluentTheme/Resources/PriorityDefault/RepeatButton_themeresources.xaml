@@ -98,6 +98,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
+					<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
                     <ContentPresenter x:Name="ContentPresenter"
                                       Background="{TemplateBinding Background}"
                                       BackgroundSizing="{TemplateBinding BackgroundSizing}"
@@ -105,6 +106,7 @@
                                       BorderThickness="{TemplateBinding BorderThickness}"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                       ContentTransitions="{TemplateBinding ContentTransitions}"
                                       CornerRadius="{TemplateBinding CornerRadius}"
                                       Padding="{TemplateBinding Padding}"

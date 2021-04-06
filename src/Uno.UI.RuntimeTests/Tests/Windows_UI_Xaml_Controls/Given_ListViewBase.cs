@@ -1253,6 +1253,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		public IDictionary<object, DataTemplate> Templates { get; } = new Dictionary<object, DataTemplate>();
 
-		protected override DataTemplate SelectTemplateCore(object item) => Templates.UnoGetValueOrDefault(item);
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item); // On UWP only this overload is called when eg Button.ContentTemplateSelector is set
+
+		protected override DataTemplate SelectTemplateCore(object item)
+		{
+			if (item == null)
+			{
+				return null;
+			}
+
+			var template = Templates.UnoGetValueOrDefault(item);
+			return template;
+		}
 	}
 }
