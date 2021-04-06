@@ -16,6 +16,8 @@ namespace Windows.UI.Xaml.Media
 	//Android partial for Brush
 	public partial class Brush
 	{
+		internal delegate void ColorSetterHandler(Android.Graphics.Color color);
+
 		/// <summary>
 		/// Return a paint with Fill style
 		/// </summary>
@@ -42,7 +44,7 @@ namespace Windows.UI.Xaml.Media
 
 		protected virtual Paint GetPaintInner(Rect destinationRect) => throw new InvalidOperationException();
 
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Android.Graphics.Color> colorSetter, Action imageBrushCallback = null)
+		internal static IDisposable AssignAndObserveBrush(Brush b, ColorSetterHandler colorSetter, Action imageBrushCallback = null)
 		{
 			if (b is SolidColorBrush colorBrush)
 			{
