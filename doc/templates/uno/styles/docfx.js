@@ -486,14 +486,12 @@ $(function () {
           $('#search').show();
           $('body').trigger("searchEvent");
         }
-          // if the target of the click isn't the container nor a descendant of the container
-          $('body').mouseup(function (e) {
-              if (!$('#search-results').is(e.target) && $('#search-results').has(e.target).length === 0)
-              {
-                  $('#search-results').hide();
-              }
-          });
-
+        // if the target of the click isn't the container nor a descendant of the container
+        $('body').mouseup(function (e) {
+          if (!$('#search-results').is(e.target) && $('#search-results').has(e.target).length === 0) {
+            $('#search-results').hide();
+          }
+        });
       });
     }
   }
