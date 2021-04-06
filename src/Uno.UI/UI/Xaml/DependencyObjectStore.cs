@@ -1246,11 +1246,11 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Retrieve the implicit Style for <see cref="ActualInstance"/> by walking the visual tree.
 		/// </summary>
-		internal Style? GetImplicitStyle()
+		internal Style? GetImplicitStyle(in SpecializedResourceDictionary.ResourceKey styleKey)
 		{
 			foreach (var dict in GetResourceDictionaries(includeAppResources: true))
 			{
-				if (dict.TryGetValue(_originalObjectType, out var style, shouldCheckSystem: false))
+				if (dict.TryGetValue(styleKey, out var style, shouldCheckSystem: false))
 				{
 					return style as Style;
 				}
