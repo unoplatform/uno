@@ -69,16 +69,9 @@ namespace Windows.Storage.Pickers
 				var acceptType = new NativeFilePickerAcceptType();
 				acceptType.Description = choice.Key;
 
-				var acceptItems = new List<NativeFilePickerAcceptTypeItem>();
-				foreach (var extension in choice.Value)
-				{
-					var acceptItem = new NativeFilePickerAcceptTypeItem()
-					{
-						MimeType = MimeTypeService.GetFromExtension(extension),
-						Extensions = new[] { extension }
-					};
-					acceptItems.Add(acceptItem);
-				}
+				var acceptItems = choice.Value
+					.GroupBy(ext => MimeTypeService.GetFromExtension(ext))
+					.Select(group => new NativeFilePickerAcceptTypeItem() { MimeType = group.Key, Extensions = group.ToArray() });
 
 				acceptType.Accept = acceptItems.ToArray();
 				acceptTypes.Add(acceptType);
