@@ -802,8 +802,10 @@ namespace Uno.UI.DataBinding
 			private IDisposable SubscribeToPropertyChanged(PropertyChangedHandler action)
 			{
 				var disposables = new CompositeDisposable((_propertyChangedHandlers.Count * 3));
-				foreach (var handler in _propertyChangedHandlers)
+
+				for (var i = 0; i < _propertyChangedHandlers.Count; i++)
 				{
+					var handler = _propertyChangedHandlers[i];
 					object previousValue = default;
 
 					Action updateProperty = () =>
