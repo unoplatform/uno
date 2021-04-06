@@ -248,10 +248,6 @@ namespace Windows.UI.Xaml.Shapes
 						spriteShape.Geometry = compositor.CreatePathGeometry(new CompositionPath(geometry));
 
 						shapeVisual.Shapes.Add(spriteShape);
-
-						// Must be inserted below the other subviews, which may happen when
-						// the current view has subviews.
-						sublayers.Add(shapeVisual);
 					};
 
 					if (borderThickness.Top != 0)
@@ -302,7 +298,11 @@ namespace Windows.UI.Xaml.Shapes
 						});
 					}
 				}
+				
+				sublayers.Add(shapeVisual);
 
+				// Must be inserted below the other subviews, which may happen when
+				// the current view has subviews.
 				parent.Children.InsertAtBottom(shapeVisual);
 			}
 
