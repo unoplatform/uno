@@ -110,7 +110,12 @@ namespace Windows.UI.Xaml
 			for (int i = 0; i < _childrenBindable.Count; i++)
 			{
 				var child = _childrenBindable[i];
-				var parent = child?.GetParent();
+
+				var childAsStoreProvider = child as IDependencyObjectStoreProvider;
+
+				// Get the parent if the child is a provider, otherwise an
+				// "attached store" may be created for no good reason.
+				var parent = childAsStoreProvider?.GetParent();
 
 				//Do not propagate value if you are not this child's parent
 				//Covers case where a child may hold a binding to a view higher up the tree
@@ -123,9 +128,9 @@ namespace Windows.UI.Xaml
 					continue;
 				}
 
-				if (child is IDependencyObjectStoreProvider provider)
+				if (childAsStoreProvider != null)
 				{
-					SetInherited(provider);
+					SetInherited(childAsStoreProvider);
 				}
 				else
 				{
