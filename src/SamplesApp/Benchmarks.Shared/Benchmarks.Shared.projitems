@@ -26,6 +26,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesCreationBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesReadBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesCreationRetrievalBenchmark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\DependencyPropertyBench\SpecializedDPBenchmark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\DependencyPropertyBench\PropagationDPBenchmark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\FrameworkElementBench\FrameworkElementBenchmark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\BorderBench\BorderBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\UIElementPerf\LoadUnloadPerf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\DependencyPropertyBench\SimpleDPBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\UIElementPerf\UIElementCreationBenchmark.cs" />
