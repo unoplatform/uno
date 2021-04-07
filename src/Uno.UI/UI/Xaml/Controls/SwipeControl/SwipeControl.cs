@@ -64,73 +64,80 @@ namespace Windows.UI.Xaml.Controls
 		public async void Close()
 		{
 			//CheckThread();
-
-			if (m_isOpen && !m_lastActionWasClosing && !m_isInteracting)
+			try
 			{
-				m_lastActionWasClosing = true;
 
-				//Uno workaround:
-				m_isInteracting = true;
-				_desiredPosition = Vector2.Zero;
-				_lastMoves.Clear(); // Clears inertia.
-				UpdateStackPanelDesiredPosition();
+				if (m_isOpen && !m_lastActionWasClosing && !m_isInteracting)
+				{
+					m_lastActionWasClosing = true;
 
-				// This delay is to allow users to see the fully open state before it closes back.
-				await Task.Delay(TimeSpan.FromSeconds(0.250));
+					//Uno workaround:
+					m_isInteracting = true;
+					_desiredPosition = Vector2.Zero;
+					_lastMoves.Clear(); // Clears inertia.
+					UpdateStackPanelDesiredPosition();
 
-				await AnimateTransforms(false, 0d);
-				OnSwipeManipulationCompleted(this, null);
+					// This delay is to allow users to see the fully open state before it closes back.
+					await Task.Delay(TimeSpan.FromSeconds(0.250));
 
-				//if (!m_isIdle)
-				//{
-				//	Vector3 initialPosition = default;
-				//	switch (m_createdContent)
-				//	{
-				//		case CreatedContent.Left:
-				//			initialPosition.X = (float)(-m_swipeContentStackPanel.ActualWidth);
-				//			break;
-				//		case CreatedContent.Top:
-				//			initialPosition.Y = (float)(-m_swipeContentStackPanel.ActualHeight);
-				//			break;
-				//		case CreatedContent.Right:
-				//			initialPosition.X = (float)(m_swipeContentStackPanel.ActualWidth);
-				//			break;
-				//		case CreatedContent.Bottom:
-				//			initialPosition.Y = (float)(m_swipeContentStackPanel.ActualHeight);
-				//			break;
-				//		case CreatedContent.None:
-				//			break;
-				//		default:
-				//			global::System.Diagnostics.Debug.Assert(false);
-				//			break;
-				//	}
+					await AnimateTransforms(false, 0d);
+					OnSwipeManipulationCompleted(this, null);
 
-				//m_interactionTracker.TryUpdatePosition(initialPosition);
-				//}
+					//if (!m_isIdle)
+					//{
+					//	Vector3 initialPosition = default;
+					//	switch (m_createdContent)
+					//	{
+					//		case CreatedContent.Left:
+					//			initialPosition.X = (float)(-m_swipeContentStackPanel.ActualWidth);
+					//			break;
+					//		case CreatedContent.Top:
+					//			initialPosition.Y = (float)(-m_swipeContentStackPanel.ActualHeight);
+					//			break;
+					//		case CreatedContent.Right:
+					//			initialPosition.X = (float)(m_swipeContentStackPanel.ActualWidth);
+					//			break;
+					//		case CreatedContent.Bottom:
+					//			initialPosition.Y = (float)(m_swipeContentStackPanel.ActualHeight);
+					//			break;
+					//		case CreatedContent.None:
+					//			break;
+					//		default:
+					//			global::System.Diagnostics.Debug.Assert(false);
+					//			break;
+					//	}
 
-				//Vector3 addedVelocity = default;
-				//switch (m_createdContent)
-				//{
-				//	case CreatedContent.Left:
-				//		addedVelocity.X = c_MinimumCloseVelocity;
-				//		break;
-				//	case CreatedContent.Top:
-				//		addedVelocity.Y = c_MinimumCloseVelocity;
-				//		break;
-				//	case CreatedContent.Right:
-				//		addedVelocity.X = -c_MinimumCloseVelocity;
-				//		break;
-				//	case CreatedContent.Bottom:
-				//		addedVelocity.Y = -c_MinimumCloseVelocity;
-				//		break;
-				//	case CreatedContent.None:
-				//		break;
-				//	default:
-				//		global::System.Diagnostics.Debug.Assert(false);
-				//		break;
-				//}
+					//m_interactionTracker.TryUpdatePosition(initialPosition);
+					//}
 
-				//m_interactionTracker.TryUpdatePositionWithAdditionalVelocity(addedVelocity);
+					//Vector3 addedVelocity = default;
+					//switch (m_createdContent)
+					//{
+					//	case CreatedContent.Left:
+					//		addedVelocity.X = c_MinimumCloseVelocity;
+					//		break;
+					//	case CreatedContent.Top:
+					//		addedVelocity.Y = c_MinimumCloseVelocity;
+					//		break;
+					//	case CreatedContent.Right:
+					//		addedVelocity.X = -c_MinimumCloseVelocity;
+					//		break;
+					//	case CreatedContent.Bottom:
+					//		addedVelocity.Y = -c_MinimumCloseVelocity;
+					//		break;
+					//	case CreatedContent.None:
+					//		break;
+					//	default:
+					//		global::System.Diagnostics.Debug.Assert(false);
+					//		break;
+					//}
+
+					//m_interactionTracker.TryUpdatePositionWithAdditionalVelocity(addedVelocity);
+				}
+			}
+			catch (Exception ex)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(ex);
 			}
 		}
 #endregion
