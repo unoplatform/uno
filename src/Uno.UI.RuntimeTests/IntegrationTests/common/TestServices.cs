@@ -165,6 +165,7 @@ namespace Private.Infrastructure
 			internal static async Task<T> WaitForNonNull<T>(
 				Func<T> getT,
 				int timeoutMS = 1000,
+				string message = null,
 				[CallerMemberName] string callerMemberName = null,
 				[CallerLineNumber] int lineNumber = 0)
 				where T : class
@@ -191,7 +192,7 @@ namespace Private.Infrastructure
 					}
 				}
 
-				var message = $"{callerMemberName}():{lineNumber} Never received non-null value";
+				message ??= $"{callerMemberName}():{lineNumber} Never received non-null value";
 
 				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
 			}

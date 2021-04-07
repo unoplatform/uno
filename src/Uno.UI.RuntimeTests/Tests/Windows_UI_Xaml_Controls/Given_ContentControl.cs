@@ -8,6 +8,10 @@ using Uno.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls.Primitives;
+using System.Linq;
+using static Private.Infrastructure.TestServices;
+using Uno.UI.RuntimeTests.Helpers;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -27,6 +31,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private ResourceDictionary _testsResources;
 
 		public DataTemplate DataContextBindingDataTemplate => _testsResources["DataContextBindingDataTemplate"] as DataTemplate;
+
+		private DataTemplate SelectableItemTemplateA => _testsResources["SelectableItemTemplateA"] as DataTemplate;
+		private DataTemplate SelectableItemTemplateB => _testsResources["SelectableItemTemplateB"] as DataTemplate;
+		private DataTemplate SelectableItemTemplateC => _testsResources["SelectableItemTemplateC"] as DataTemplate;
+
+		// Commented types don't seem to use ContentTemplateSelector on UWP
+		private static readonly Type[] _contentControlStyledDerivedTypes = new[]
+		{
+			typeof(Button),
+			//typeof(AppBarButton),
+			//typeof(AppBar),
+			//typeof(CommandBar),
+			//typeof(SplitButton),
+			typeof(RepeatButton),
+			typeof(ToggleButton),
+			//typeof(AppBarToggleButton),
+			typeof(CheckBox),
+			typeof(RadioButton),
+			//typeof(SplitButton),
+			//typeof(ToggleSplitButton),
+			typeof(DropDownButton)
+		};
+
+		public IEnumerable<ContentControl> DerivedStyledControlsInstances => _contentControlStyledDerivedTypes.Select(t => Activator.CreateInstance(t) as ContentControl);
 
 		[TestInitialize]
 		public void Init()
@@ -57,6 +85,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(tb);
 
 			await TestServices.WindowHelper.WaitFor(() => tb.Text == "Steve");
+		}
+
+		[TestMethod]
+		public async Task When_ContentTemplateSelector_And_Default_Style()
+		{
+			var items = new[] { "item 1", "item 2", "item 3" };
+			foreach (var control in DerivedStyledControlsInstances)
+			{
+				var templateSelector = new KeyedTemplateSelector
+				{
+					Templates =
+					{
+						{ items[0], SelectableItemTemplateA },
+						{ items[1], SelectableItemTemplateB },
+						{ items[2], SelectableItemTemplateC },
+					}
+				};
+
+				control.ContentTemplateSelector = templateSelector;
+				control.Content = "Dummy";
+
+				WindowHelper.WindowContent = control;
+				await WindowHelper.WaitForLoaded(control);
+				control.Content = items[0];
+				var text1 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"), message: $"Template selector not applied for {control.GetType()}");
+				Assert.AreEqual(text1.Text, "Selectable A", $"Template selector not applied for {control.GetType()}");
+
+				control.Content = items[1];
+				var text2 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
+				Assert.AreEqual(text2.Text, "Selectable B");
+
+				control.Content = items[2];
+				var text3 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
+				Assert.AreEqual(text3.Text, "Selectable C");
+			}
+		}
+
+
+		[TestMethod]
+		public async Task When_ContentTemplateSelector_And_Default_Style_And_Fluent()
+		{
+			using (StyleHelper.UseFluentStyles())
+			{
+				await When_ContentTemplateSelector_And_Default_Style();
+			}
 		}
 
 		private class SignInViewModel

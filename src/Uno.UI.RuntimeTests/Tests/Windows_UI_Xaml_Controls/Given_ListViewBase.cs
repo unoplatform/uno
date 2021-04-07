@@ -25,6 +25,8 @@ using Windows.UI;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -47,6 +49,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
 
 		private ItemsPanelTemplate NoCacheItemsStackPanel => _testsResources["NoCacheItemsStackPanel"] as ItemsPanelTemplate;
+
+		private DataTemplate SelectableItemTemplateA => _testsResources["SelectableItemTemplateA"] as DataTemplate;
+		private DataTemplate SelectableItemTemplateB => _testsResources["SelectableItemTemplateB"] as DataTemplate;
+		private DataTemplate SelectableItemTemplateC => _testsResources["SelectableItemTemplateC"] as DataTemplate;
 
 		[TestInitialize]
 		public void Init()
@@ -939,7 +945,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var container2 = (ListViewItem)list.ContainerFromItem(2);
 			Assert.AreEqual(2, container2.Content);
 			var container3 = (ListViewItem)list.ContainerFromIndex(2);
-			Assert.AreEqual(3, container3.Content);			
+			Assert.AreEqual(3, container3.Content);
 			Assert.AreEqual(2, list.IndexFromContainer(container3));
 			Assert.AreEqual(2, list.ItemFromContainer(container2));
 		}
@@ -1176,10 +1182,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var container2 = (ListViewItem)list.ContainerFromItem(newItems[2]);
 				Assert.IsNull(container2);
 				var containerIndex2 = list.ContainerFromIndex(2);
-				Assert.IsNull(containerIndex2);				
+				Assert.IsNull(containerIndex2);
 			};
 
 			list.ItemsSource = newItems;
+		}
+
+		[TestMethod]
+		public async Task When_ItemTemplateSelector_Set()
+		{
+			var itemsSource = new[] { "item 1", "item 2", "item 3" };
+			var templateSelector = new KeyedTemplateSelector
+			{
+				Templates = {
+					{ itemsSource[0], SelectableItemTemplateA },
+					{ itemsSource[1], SelectableItemTemplateB },
+					{ itemsSource[2], SelectableItemTemplateC },
+				}
+			};
+
+			var list = new ListView
+			{
+				ItemsSource = itemsSource,
+				ItemTemplateSelector = templateSelector
+			};
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+
+			var container1 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(0) as ListViewItem);
+			var text1 = container1.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			Assert.IsNotNull(text1);
+			Assert.AreEqual(text1.Text, "Selectable A");
+
+			var container2 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(1) as ListViewItem);
+			var text2 = container2.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			Assert.IsNotNull(text2);
+			Assert.AreEqual(text2.Text, "Selectable B");
+
+			var container3 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(2) as ListViewItem);
+			var text3 = container3.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			Assert.IsNotNull(text3);
+			Assert.AreEqual(text3.Text, "Selectable C");
+		}
+
+		[TestMethod]
+		public async Task When_ItemTemplateSelector_Set_And_Fluent()
+		{
+			using(StyleHelper.UseFluentStyles())
+			{
+				await When_ItemTemplateSelector_Set();
+			}
 		}
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
@@ -1193,6 +1246,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			base.OnItemsChanged(e);
 			ItemsChangedAction?.Invoke();
+		}
+	}
+
+	public class KeyedTemplateSelector : DataTemplateSelector
+	{
+		public IDictionary<object, DataTemplate> Templates { get; } = new Dictionary<object, DataTemplate>();
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item); // On UWP only this overload is called when eg Button.ContentTemplateSelector is set
+
+		protected override DataTemplate SelectTemplateCore(object item)
+		{
+			if (item == null)
+			{
+				return null;
+			}
+
+			var template = Templates.UnoGetValueOrDefault(item);
+			return template;
 		}
 	}
 }
