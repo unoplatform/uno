@@ -2,6 +2,7 @@
 
 using System;
 using Uno.Collections;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml
 {
@@ -9,7 +10,7 @@ namespace Windows.UI.Xaml
 	{
 		private class TypeToPropertiesDictionary
 		{
-			private readonly HashtableEx _entries = new HashtableEx();
+			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default);
 
 			internal bool TryGetValue(Type key, out DependencyProperty[]? result)
 			{

@@ -26,8 +26,7 @@ namespace Windows.UI.Xaml
 	[DebuggerDisplay("Name={Name}, Type={Type.FullName}, Owner={OwnerType.FullName}")]
 	public sealed partial class DependencyProperty
 	{
-		private static Dictionary<Type, Dictionary<string, DependencyProperty>> _registry
-			= new Dictionary<Type, Dictionary<string, DependencyProperty>>(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static DependencyPropertyRegistry _registry = new DependencyPropertyRegistry();
 
 		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
@@ -295,8 +294,6 @@ namespace Windows.UI.Xaml
 		{
 			ForceInitializeTypeConstructor(type);
 
-			DependencyProperty result = null;
-
 			var propertyInfo = DependencyPropertyDescriptor.Parse(name);
 
 			if(propertyInfo != null)
@@ -307,16 +304,9 @@ namespace Windows.UI.Xaml
 
 			do
 			{
-				var properties = _registry.UnoGetValueOrDefault(type);
-
-				if (properties != null)
+				if(_registry.TryGetValue(type, name, out var result))
 				{
-					result = properties.UnoGetValueOrDefault(name);
-
-					if (result != null)
-					{
-						return result;
-					}
+					return result;
 				}
 
 				// Dependency properties are inherited
@@ -324,7 +314,7 @@ namespace Windows.UI.Xaml
 			}
 			while (type != typeof(object) && type != null);
 
-			return result;
+			return null;
 		}
 
 		/// <summary>
@@ -376,11 +366,9 @@ namespace Windows.UI.Xaml
 
 		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
 		{
-			var properties = _registry.FindOrCreate(ownerType, () => new Dictionary<string, DependencyProperty>());
-
 			ResetGetPropertyCache(ownerType, name);
 
-			properties.Add(name, newProperty);
+			_registry.Add(ownerType, name, newProperty);
 		}
 
 		private static DependencyProperty[] InternalGetPropertiesForType(Type type)
@@ -391,12 +379,7 @@ namespace Windows.UI.Xaml
 
 			do
 			{
-				var properties = _registry.UnoGetValueOrDefault(type);
-
-				if (properties != null)
-				{
-					results.AddRange(properties.Values);
-				}
+				_registry.AppendPropertiesForType(type, results);
 
 				// Dependency properties are inherited
 				type = type.BaseType;
