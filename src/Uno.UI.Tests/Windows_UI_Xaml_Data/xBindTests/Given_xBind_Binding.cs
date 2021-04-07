@@ -142,7 +142,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(2, rootData.Model.MyIntProperty);
 		}
-		
+
 		[TestMethod]
 		public void When_Object_TwoWay()
 		{
@@ -345,6 +345,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_Converter_TwoWay()
+		{
+			var SUT = new Binding_Converter_TwoWay();
+
+			SUT.ForceLoaded();
+
+			ListView list = SUT.ViewToggleListView;
+
+			CheckBox cb = SUT.BoundCheckBox;
+
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.IsTrue(cb.IsChecked.Value);
+
+			list.SelectedItem = list.Items[1];
+
+			Assert.AreEqual(1, list.SelectedIndex);
+			 Assert.IsFalse(cb.IsChecked.Value);
+
+			list.SelectedItem = list.Items[0];
+
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.IsTrue(cb.IsChecked.Value);
+		}
+
+		[TestMethod]
 		public void When_ConverterParameter()
 		{
 			var SUT = new Binding_Converter_Parameter();
@@ -479,7 +504,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("TwoWay updated 5", SUT.Default_TwoWay_OneWay_Property);
 			Assert.AreEqual("TwoWay updated 9", SUT.Default_TwoWay_TwoWay_Property);
 		}
-		
+
 		[TestMethod]
 		public void When_DefaultBindingMode_Nested()
 		{
