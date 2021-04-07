@@ -258,7 +258,7 @@ namespace Uno.UI {
 			element.setAttribute("XamlType", uiElementRegistration.typeName);
 			element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
 			if (uiElementRegistration.isFrameworkElement) {
-				this.setAsUnarranged(element);
+				this.setAsUnarranged(element, true);
 			}
 			if (element.hasOwnProperty("tabindex")) {
 				(element as any)["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
@@ -666,11 +666,17 @@ namespace Uno.UI {
 
 		private setAsArranged(element: HTMLElement | SVGElement) {
 
-			element.classList.remove(WindowManager.unoUnarrangedClassName);
+			if (!(<any>element)._unoIsArranged) {
+				(<any>element)._unoIsArranged = true;
+				element.classList.remove(WindowManager.unoUnarrangedClassName);
+			}
 		}
 
-		private setAsUnarranged(element: HTMLElement | SVGElement) {
-			element.classList.add(WindowManager.unoUnarrangedClassName);
+		private setAsUnarranged(element: HTMLElement | SVGElement, force: boolean = false) {
+			if ((<any>element)._unoIsArranged || force) {
+				(<any>element)._unoIsArranged = false;
+				element.classList.add(WindowManager.unoUnarrangedClassName);
+			}
 		}
 
 		/**
