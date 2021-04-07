@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml
 		private static Dictionary<Type, Dictionary<string, DependencyProperty>> _registry
 			= new Dictionary<Type, Dictionary<string, DependencyProperty>>(Uno.Core.Comparison.FastTypeComparer.Default);
 
-		private readonly static Dictionary<Type, DependencyProperty[]> _getPropertiesForType = new Dictionary<Type, DependencyProperty[]>(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
 
 		private readonly static Dictionary<CachedTuple<Type, FrameworkPropertyMetadataOptions>, DependencyProperty[]> _getFrameworkPropertiesForType = new Dictionary<CachedTuple<Type, FrameworkPropertyMetadataOptions>, DependencyProperty[]>(CachedTuple<Type, FrameworkPropertyMetadataOptions>.Comparer);
