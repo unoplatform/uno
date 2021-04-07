@@ -33,7 +33,6 @@ namespace Windows.UI.Xaml
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
 
 		private readonly static Dictionary<CachedTuple<Type, FrameworkPropertyMetadataOptions>, DependencyProperty[]> _getFrameworkPropertiesForType = new Dictionary<CachedTuple<Type, FrameworkPropertyMetadataOptions>, DependencyProperty[]>(CachedTuple<Type, FrameworkPropertyMetadataOptions>.Comparer);
-		private readonly static Dictionary<Type, DependencyProperty[]> _getDependencyObjectPropertiesForType = new Dictionary<Type, DependencyProperty[]>(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
 		private readonly PropertyMetadataDictionary _metadata = new PropertyMetadataDictionary();
@@ -365,23 +364,6 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Gets the dependencies properties for the specified type for which the type is a <see cref="DependencyObject"/>.
-		/// </summary>
-		/// <param name="type">A dependency object</param>
-		/// <returns>An array of Dependency Properties.</returns>
-		internal static DependencyProperty[] GetDependencyObjectPropertiesForType(Type type)
-		{
-			DependencyProperty[] result = null;
-
-			if (!_getDependencyObjectPropertiesForType.TryGetValue(type, out result))
-			{
-				_getDependencyObjectPropertiesForType.Add(type, result = InternalGetDependencyObjectPropertiesForType(type));
-			}
-
-			return result;
-		}
-
-		/// <summary>
 		/// Clears all the property registrations, when used in unit tests.
 		/// </summary>
 		internal static void ClearRegistry()
@@ -390,7 +372,6 @@ namespace Windows.UI.Xaml
 			_getPropertiesForType.Clear();
 			_getPropertyCache.Clear();
 			_getFrameworkPropertiesForType.Clear();
-			_getDependencyObjectPropertiesForType.Clear();
 		}
 
 		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
