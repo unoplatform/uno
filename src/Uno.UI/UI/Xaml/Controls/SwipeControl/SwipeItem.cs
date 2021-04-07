@@ -80,17 +80,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (IconSource is {})
 			{
-				// TODO Uno
-				//appBarButton.Icon = IconSource.CreateIconElement();
-
-				// This is a temporary implementation
-				if (IconSource is FontIconSource fontIconSource)
-				{
-					appBarButton.Icon = new FontIcon()
-					{
-						Glyph = fontIconSource.Glyph
-					};
-				}
+				appBarButton.Icon = IconSource.CreateIconElement();
 			}
 
 			appBarButton.Label = Text;
