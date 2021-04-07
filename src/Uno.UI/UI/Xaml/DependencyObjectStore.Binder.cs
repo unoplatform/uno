@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Threading;
 using Uno.Diagnostics.Eventing;
 using System.Collections;
+using Uno.Collections;
 
 #if !NET461
 using Uno.UI.Controls;
@@ -34,7 +35,7 @@ namespace Windows.UI.Xaml
 
 		private readonly object _gate = new object();
 
-		private readonly Dictionary<DependencyProperty, int> _childrenBindableMap = new Dictionary<DependencyProperty, int>(0, DependencyPropertyComparer.Default);
+		private readonly HashtableEx _childrenBindableMap = new HashtableEx();
 		private readonly List<object?> _childrenBindable = new List<object?>();
 
 		private bool _isApplyingTemplateBindings;
@@ -578,10 +579,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private int GetOrCreateChildBindablePropertyIndex(DependencyProperty property)
 		{
-			if (!_childrenBindableMap.TryGetValue(property, out int index))
+			int index;
+
+			if (!_childrenBindableMap.TryGetValue(property, out var indexRaw))
 			{
 				_childrenBindableMap[property] = index = _childrenBindableMap.Count;
 				_childrenBindable.Add(null);
+			}
+			else
+			{
+				index = (int)indexRaw!;
 			}
 
 			return index;

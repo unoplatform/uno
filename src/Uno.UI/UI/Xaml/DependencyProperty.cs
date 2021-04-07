@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml
 		private readonly static Dictionary<Type, DependencyProperty[]> _getDependencyObjectPropertiesForType = new Dictionary<Type, DependencyProperty[]>(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
-		private readonly Dictionary<Type, PropertyMetadata> _metadata = new Dictionary<Type, PropertyMetadata>(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly PropertyMetadataDictionary _metadata = new PropertyMetadataDictionary();
 
 		private string _name;
 		private Type _propertyType;
