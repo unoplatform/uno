@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,6 +42,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = null;
 
 			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_LoadedAndUnloaded_Check_Binding()
+		{
+#if IS_UNO
+			var (flyout, content) = CreateFlyoutWithBindingMultipleChildren();
+
+			const double MarginValue = 105;
+			const int TargetWidth = 88;
+
+			var border = new Border()
+			{
+				DataContext = "My Data Context"
+			};
+
+			var buttonA = new Button()
+			{
+				Content = "Main Button",
+				Flyout = flyout,
+			};
+
+			border.Child = buttonA;
+
+			TestServices.WindowHelper.WindowContent = border;
+
+			await TestServices.WindowHelper.WaitForLoaded(buttonA);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			buttonA.RaiseClick();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await TestServices.WindowHelper.WaitForLoaded(content);
+
+			flyout.Hide();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			border.Child = null;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			border.DataContext = "A New Context";
+			border.Child = buttonA;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await TestServices.WindowHelper.WaitForLoaded(buttonA);
+
+			buttonA.RaiseClick();
+
+			await TestServices.WindowHelper.WaitForLoaded(content);
+
+			var stackPanel = content as StackPanel;
+
+			Assert.AreEqual("A New Context", (stackPanel.Children[0] as TextBlock).Text);
+
+			flyout.Hide();
+#endif
 		}
 
 		[TestMethod]
@@ -414,6 +477,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					new Button
 					{
 						Content = "Button B",
+					}.Apply(x => x.SetBinding(Button.CommandParameterProperty, new Binding() { Source = flyout }))
+				}
+			};
+
+			flyout.Content = content;
+			return (flyout, content);
+		}
+
+		private (Flyout Flyout, FrameworkElement Content) CreateFlyoutWithBindingMultipleChildren()
+		{
+			var flyout = new Flyout
+			{
+				FlyoutPresenterStyle = GetSimpleFlyoutPresenterStyle()
+			};
+
+			var content = new StackPanel
+			{
+				Children =
+				{
+					new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+					new Button
+					{
+						Content = "Button A",
+					}.Apply(x => x.SetBinding(Button.CommandParameterProperty, new Binding() { Source = flyout })),
+					new Button
+					{
+						Content = "Button B",
+					}.Apply(x => x.SetBinding(Button.CommandParameterProperty, new Binding() { Source = flyout })),
+					new Button
+					{
+						Content = "Button C",
+					}.Apply(x => x.SetBinding(Button.CommandParameterProperty, new Binding() { Source = flyout })),
+					new Button
+					{
+						Content = "Button D",
 					}.Apply(x => x.SetBinding(Button.CommandParameterProperty, new Binding() { Source = flyout }))
 				}
 			};
