@@ -12,6 +12,9 @@ using System.Threading;
 
 namespace Uno.Collections
 {
+	/// <summary>
+	/// Specialized version of <see cref="Hashtable"/> providing TryGetValue and single-threaded optimizations
+	/// </summary>
 	[DebuggerDisplay("Count = {Count}")]
 	internal class HashtableEx : IEnumerable
 	{
@@ -90,9 +93,6 @@ namespace Uno.Collections
 		private int _loadsize;
 		private float _loadFactor;
 
-		private volatile int _version;
-		private volatile bool _isWriterInProgress;
-
 		private ICollection? _keys;
 		private ICollection? _values;
 
@@ -147,7 +147,6 @@ namespace Uno.Collections
 			_buckets = new bucket[hashsize];
 
 			_loadsize = (int)(_loadFactor * hashsize);
-			_isWriterInProgress = false;
 			// Based on the current algorithm, loadsize must be less than hashsize.
 			Debug.Assert(_loadsize < hashsize, "Invalid hashtable loadsize!");
 		}
@@ -244,12 +243,9 @@ namespace Uno.Collections
 		// Removes all entries from this hashtable.
 		public virtual void Clear()
 		{
-			Debug.Assert(!_isWriterInProgress, "Race condition detected in usages of Hashtable - multiple threads appear to be writing to a Hashtable instance simultaneously!  Don't do that - use Hashtable.Synchronized.");
-
 			if (_count == 0 && _occupancy == 0)
 				return;
 
-			_isWriterInProgress = true;
 			for (int i = 0; i < _buckets.Length; i++)
 			{
 				_buckets[i].hash_coll = 0;
@@ -259,8 +255,6 @@ namespace Uno.Collections
 
 			_count = 0;
 			_occupancy = 0;
-			UpdateVersion();
-			_isWriterInProgress = false;
 		}
 
 		// Clone returns a virtually identical copy of this hash table.  This does
@@ -270,7 +264,6 @@ namespace Uno.Collections
 		{
 			bucket[] lbuckets = _buckets;
 			HashtableEx ht = new HashtableEx(_count, _keycomparer);
-			ht._version = _version;
 			ht._loadFactor = _loadFactor;
 			ht._count = 0;
 
@@ -478,8 +471,6 @@ namespace Uno.Collections
 			int bucketNumber = (int)(seed % (uint)lbuckets.Length);
 			do
 			{
-				int currentversion;
-
 				// A read operation on hashtable has three steps:
 				//        (1) calculate the hash and find the slot number.
 				//        (2) compare the hashcode, if equal, go to step 3. Otherwise end.
@@ -496,18 +487,8 @@ namespace Uno.Collections
 				// Our memory model guarantee if we pick up the change in bucket from another processor,
 				// we will see the 'isWriterProgress' flag to be true or 'version' is changed in the reader.
 				//
-				SpinWait spin = default;
-				while (true)
-				{
-					// this is volatile read, following memory accesses can not be moved ahead of it.
-					currentversion = _version;
-					b = lbuckets[bucketNumber];
 
-					if (!_isWriterInProgress && (currentversion == _version))
-						break;
-
-					spin.SpinOnce();
-				}
+				b = lbuckets[bucketNumber];
 
 				if (b.key == null)
 				{
@@ -548,13 +529,6 @@ namespace Uno.Collections
 			rehash(_buckets.Length);
 		}
 
-		private void UpdateVersion()
-		{
-			// Version might become negative when version is int.MaxValue, but the oddity will be still be correct.
-			// So we don't need to special case this.
-			_version++;
-		}
-
 		private void rehash(int newsize)
 		{
 			// reset occupancy
@@ -581,11 +555,8 @@ namespace Uno.Collections
 			}
 
 			// New bucket[] is good to go - replace buckets and other internal state.
-			_isWriterInProgress = true;
 			_buckets = newBuckets;
 			_loadsize = (int)(_loadFactor * newsize);
-			UpdateVersion();
-			_isWriterInProgress = false;
 			// minimum size of hashtable is 3 now and maximum loadFactor is 0.72 now.
 			Debug.Assert(_loadsize < newsize, "Our current implementation means this is not possible.");
 		}
@@ -719,13 +690,10 @@ namespace Uno.Collections
 
 					// We pretty much have to insert in this order.  Don't set hash
 					// code until the value & key are set appropriately.
-					_isWriterInProgress = true;
 					_buckets[bucketNumber].val = nvalue;
 					_buckets[bucketNumber].key = key;
 					_buckets[bucketNumber].hash_coll |= (int)hashcode;
 					_count++;
-					UpdateVersion();
-					_isWriterInProgress = false;
 
 					return;
 				}
@@ -740,10 +708,7 @@ namespace Uno.Collections
 					{
 						throw new ArgumentException("SR.Argument_AddingDuplicate__"); // SR.Format("SR.Argument_AddingDuplicate__", _buckets[bucketNumber].key, key));
 					}
-					_isWriterInProgress = true;
 					_buckets[bucketNumber].val = nvalue;
-					UpdateVersion();
-					_isWriterInProgress = false;
 
 					return;
 				}
@@ -767,13 +732,10 @@ namespace Uno.Collections
 			{
 				// We pretty much have to insert in this order.  Don't set hash
 				// code until the value & key are set appropriately.
-				_isWriterInProgress = true;
 				_buckets[emptySlotNumber].val = nvalue;
 				_buckets[emptySlotNumber].key = key;
 				_buckets[emptySlotNumber].hash_coll |= (int)hashcode;
 				_count++;
-				UpdateVersion();
-				_isWriterInProgress = false;
 
 				return;
 			}
@@ -822,8 +784,6 @@ namespace Uno.Collections
 				throw new ArgumentNullException(nameof(key), "SR.ArgumentNull_Key");
 			}
 
-			Debug.Assert(!_isWriterInProgress, "Race condition detected in usages of Hashtable - multiple threads appear to be writing to a Hashtable instance simultaneously!  Don't do that - use Hashtable.Synchronized.");
-
 			// Assuming only one concurrent writer, write directly into buckets.
 			uint hashcode = InitHash(key, _buckets.Length, out uint seed, out uint incr);
 			int ntry = 0;
@@ -836,7 +796,6 @@ namespace Uno.Collections
 				if (((b.hash_coll & 0x7FFFFFFF) == hashcode) &&
 					KeyEquals(b.key, key))
 				{
-					_isWriterInProgress = true;
 					// Clear hash_coll field, then key, then value
 					_buckets[bn].hash_coll &= unchecked((int)0x80000000);
 					if (_buckets[bn].hash_coll != 0)
@@ -849,8 +808,6 @@ namespace Uno.Collections
 					}
 					_buckets[bn].val = null;  // Free object references sooner & simplify ContainsValue.
 					_count--;
-					UpdateVersion();
-					_isWriterInProgress = false;
 					return;
 				}
 				bn = (int)(((long)bn + incr) % (uint)_buckets.Length);
@@ -943,7 +900,6 @@ namespace Uno.Collections
 		{
 			private readonly HashtableEx _hashtable;
 			private int _bucket;
-			private readonly int _version;
 			private bool _current;
 			private readonly int _getObjectRetType;   // What should GetObject return?
 			private object? _currentKey;
@@ -957,7 +913,6 @@ namespace Uno.Collections
 			{
 				_hashtable = hashtable;
 				_bucket = hashtable._buckets.Length;
-				_version = hashtable._version;
 				_current = false;
 				_getObjectRetType = getObjRetType;
 			}
@@ -976,8 +931,6 @@ namespace Uno.Collections
 
 			public bool MoveNext()
 			{
-				if (_version != _hashtable._version)
-					throw new InvalidOperationException("SR.InvalidOperation_EnumFailedVersion");
 				while (_bucket > 0)
 				{
 					_bucket--;
@@ -1032,8 +985,6 @@ namespace Uno.Collections
 
 			public void Reset()
 			{
-				if (_version != _hashtable._version)
-					throw new InvalidOperationException("SR.InvalidOperation_EnumFailedVersion");
 				_current = false;
 				_bucket = _hashtable._buckets.Length;
 				_currentKey = null;
