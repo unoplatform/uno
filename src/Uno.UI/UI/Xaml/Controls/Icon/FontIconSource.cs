@@ -5,6 +5,24 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class FontIconSource : global::Windows.UI.Xaml.Controls.IconSource
 	{
+		public bool MirroredWhenRightToLeft
+		{
+			get => (bool)GetValue(MirroredWhenRightToLeftProperty);
+			set => SetValue(MirroredWhenRightToLeftProperty, value);
+		}
+
+		public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
+			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new PropertyMetadata(false));
+
+		public bool IsTextScaleFactorEnabled
+		{
+			get => (bool)GetValue(IsTextScaleFactorEnabledProperty);
+			set => SetValue(IsTextScaleFactorEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
+			DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new PropertyMetadata(true));
+
 		public string Glyph
 		{
 			get => (string)GetValue(GlyphProperty);
@@ -54,11 +72,13 @@ namespace Windows.UI.Xaml.Controls
 		internal override IconElement CreateIconElement()
 			=> new FontIcon
 			{
+				MirroredWhenRightToLeft = MirroredWhenRightToLeft,
+				IsTextScaleFactorEnabled = IsTextScaleFactorEnabled,
 				Glyph = Glyph,
 				FontWeight = FontWeight,
 				FontStyle = FontStyle,
 				FontSize = FontSize,
-				FontFamily = FontFamily
+				FontFamily = FontFamily,
 			};
 	}
 }

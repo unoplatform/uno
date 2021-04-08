@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 	public partial class FontIconSource : global::Windows.UI.Xaml.Controls.IconSource
 	{
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool MirroredWhenRightToLeft
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsTextScaleFactorEnabled
 		{
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(string)));
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.FontIconSource),
 			new FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MirroredWhenRightToLeftProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(

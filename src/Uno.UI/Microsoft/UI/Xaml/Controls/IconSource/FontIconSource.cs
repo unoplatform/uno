@@ -1,5 +1,6 @@
 using Windows.UI.Text;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using FontStyle = Windows.UI.Text.FontStyle;
 
@@ -73,5 +74,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty FontFamilyProperty { get; } =
 			DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new PropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont)));
+
+		/// <inheritdoc />
+		internal override IconElement CreateIconElement()
+			=> new FontIcon
+			{
+				MirroredWhenRightToLeft = MirroredWhenRightToLeft,
+				IsTextScaleFactorEnabled = IsTextScaleFactorEnabled,
+				Glyph = Glyph,
+				FontWeight = FontWeight,
+				FontStyle = FontStyle,
+				FontSize = FontSize,
+				FontFamily = FontFamily,
+			};
 	}
 }
