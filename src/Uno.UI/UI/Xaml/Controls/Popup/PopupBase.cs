@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 
-			UpdateDataContext();
+			UpdateDataContext(null);
 			UpdateTemplatedParent();
 
 			if (oldChild is FrameworkElement ocfe)
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnDataContextChanged(e);
 
-			UpdateDataContext();
+			UpdateDataContext(e);
 		}
 
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
@@ -111,13 +111,21 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTemplatedParent();
 		}
 
-		private void UpdateDataContext()
+		private void UpdateDataContext(DependencyPropertyChangedEventArgs e)
 		{
 			_childHasOwnDataContext = false;
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
 				var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
-				if (dataContextProperty != null && dataContextProperty != DependencyProperty.UnsetValue)
+
+				var shouldClearValue = e != null && e.NewValue == null && dataContextProperty == e.OldValue;
+				if (shouldClearValue)
+				{
+					//In this case we are clearing the DataContext that was previously set by the Popup
+					//This usually occurs when the owner of the Popup is removed from the Visual Tree
+					provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+				}
+				else if (dataContextProperty != null && dataContextProperty != DependencyProperty.UnsetValue)
 				{
 					// Child already has locally set DataContext, we shouldn't overwrite it.
 					_childHasOwnDataContext = true;
