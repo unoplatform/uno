@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI;
+using Uno.UI.Samples.Controls;
 
 //using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
 //using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
@@ -31,7 +32,8 @@ using Windows.UI;
 
 namespace MUXControlsTestApp
 {
-    public sealed partial class SwipeControlPage2 : Page //: TestPage
+	[Sample("SwipeControl")]
+	public sealed partial class SwipeControlPage2 : Page //: TestPage
     {
         SwipeItem pastSender;
         public SwipeControlPage2()

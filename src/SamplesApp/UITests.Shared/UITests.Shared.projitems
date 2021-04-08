@@ -1501,6 +1501,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_Automated.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SymbolIconTests\SymbolIcon_Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5065,6 +5069,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControlPage2.xaml.cs">
       <DependentUpon>SwipeControlPage2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_Automated.xaml.cs">
+      <DependentUpon>SwipeControl_Automated.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\TestCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SymbolIconTests\SymbolIcon_Generic.xaml.cs">
       <DependentUpon>SymbolIcon_Generic.xaml</DependentUpon>
@@ -7245,6 +7252,7 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ChatBox\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\Models\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\NewFolder\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PasswordBoxTests\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\WinUI\Images\" />

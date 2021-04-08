@@ -7,13 +7,15 @@
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-    /// <summary>
-    /// Test page used for clearing existing SwipeControls
-    /// </summary>
-    public sealed partial class SwipeControlClearPage : Page //: TestPage
+	/// <summary>
+	/// Test page used for clearing existing SwipeControls
+	/// </summary>
+	[Sample("SwipeControl")]
+	public sealed partial class SwipeControlClearPage : Page //: TestPage
     {
         private string[] items = new string[] { "some text" };
 

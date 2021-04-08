@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using SwipeControl_TestUI;
+using Uno.UI.Samples.Controls;
 
 //using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
 //using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
@@ -29,6 +30,7 @@ using SwipeControl_TestUI;
 
 namespace MUXControlsTestApp
 {
+	[Sample("SwipeControl")]
     public sealed partial class SwipeControlPage : Page //: TestPage
     {
         object asyncEventReportingLock = new object();
