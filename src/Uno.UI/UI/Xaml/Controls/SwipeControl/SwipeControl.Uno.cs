@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -84,6 +85,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSwipeManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
 		{
+#if !DEBUG
+			// On UWP, SwipeControl works only with touch.
+			// We do allow other pointers in DEBUG ... well, because it easier to debug on a PC :)
+			if (e.PointerDeviceType != PointerDeviceType.Touch)
+			{
+				e.Complete();
+				return;
+			}
+#endif
+
 			if (m_isIdle)
 			{
 				m_isIdle = false;
@@ -108,6 +119,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSwipeManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
 		{
+#if !DEBUG
+			// On UWP, SwipeControl works only with touch.
+			// We do allow other pointers in DEBUG ... well, because it easier to debug on a PC :)
+			if (e.PointerDeviceType != PointerDeviceType.Touch)
+			{
+				return;
+			}
+#endif
+
 			RecordMovements(e);
 			UpdateDesiredPosition(e);
 			UpdateStackPanelDesiredPosition();
@@ -229,6 +249,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private async void OnSwipeManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
 		{
+#if !DEBUG
+			// On UWP, SwipeControl works only with touch.
+			// We do allow other pointers in DEBUG ... well, because it easier to debug on a PC :)
+			if (e.PointerDeviceType != PointerDeviceType.Touch)
+			{
+				return;
+			}
+#endif
+
 			try
 			{
 				_grabbedTimer.Stop();
