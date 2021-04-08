@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
@@ -27,6 +29,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		public TextBox? TextBox
+		{
+			get
+			{
+				if (_textBox.TryGetTarget(out var target))
+				{
+					return target;
+				}
+				return null;
+			}
+		}
+
 		public TextBlock DisplayBlock { get; } = new TextBlock();
 
 		internal void SetTextNative(string text) => DisplayBlock.Text = text;
@@ -35,13 +49,15 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
-			if (focusState == FocusState.Unfocused)
+			if (focusState != FocusState.Unfocused)
 			{
-				_textBoxExtension.EndEntry();
+				DisplayBlock.Opacity = 0;
+				_textBoxExtension.StartEntry();
 			}
 			else
 			{
-				_textBoxExtension.StartEntry();
+				_textBoxExtension.EndEntry();
+				DisplayBlock.Opacity = 1;
 			}
 		}
 
@@ -54,5 +70,7 @@ namespace Windows.UI.Xaml.Controls
 				SetTextNative(newText);
 			}
 		}
+
+		public void UpdateMaxLength() => _textBoxExtension.UpdateNativeView();
 	}
 }

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.System;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
@@ -17,12 +12,14 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls;
 using Gtk;
-using GtkGrid = Gtk.Grid;
+using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers;
 
 namespace Uno.UI.Runtime.Skia
 {
 	public class GtkHost : ISkiaHost
 	{
+		private const int UnoThemePriority = 800;
+
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
 
@@ -44,11 +41,13 @@ namespace Uno.UI.Runtime.Skia
 		public void Run()
 		{
 			Gtk.Application.Init();
+			SetupTheme();
+
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
-			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new GtkTextBoxViewExtension(o, _window));
+			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o, _window));
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");
@@ -174,6 +173,13 @@ namespace Uno.UI.Runtime.Skia
 		public void TakeScreenshot(string filePath)
 		{
 			_area.TakeScreenshot(filePath);
+		}
+
+		private void SetupTheme()
+		{
+			var cssProvider = new CssProvider();
+			cssProvider.LoadFromEmbeddedResource("Theming.UnoGtk.css");
+			StyleContext.AddProviderForScreen(Gdk.Screen.Default, cssProvider, UnoThemePriority);
 		}
 	}
 }
