@@ -178,7 +178,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Uno workaround: Added "new" keyword
 		public static
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __MACOS__ || __ANDROID__
 			new
 #endif
 			DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Uno workaround: Added "new" keyword
 		public
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __MACOS__ || __ANDROID__
 			new
 #endif
 			Brush Background
