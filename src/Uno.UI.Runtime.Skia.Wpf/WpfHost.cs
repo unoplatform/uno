@@ -81,7 +81,7 @@ namespace Uno.UI.Skia.Platform
 
 			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
 			{
-				if(priority == DispatcherQueuePriority.Normal)
+				if (priority == DispatcherQueuePriority.Normal)
 				{
 					dispatcher.BeginInvoke(callback);
 				}
@@ -166,7 +166,7 @@ namespace Uno.UI.Skia.Platform
 				return;
 			}
 
-			
+
 			int width, height;
 			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
 			double dpiScaleX = dpi.DpiScaleX;

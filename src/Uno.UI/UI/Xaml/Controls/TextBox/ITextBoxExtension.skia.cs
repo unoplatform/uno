@@ -13,5 +13,7 @@ namespace Uno.UI.Xaml.Controls.Extensions
 		void UpdateSize();
 
 		void UpdatePosition();
+
+		void SetTextNative(string text);
     }
 }

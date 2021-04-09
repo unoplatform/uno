@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
-		private ITextBoxViewExtension _textBoxExtension = null;
+		private readonly ITextBoxViewExtension _textBoxExtension;
 
 		private readonly WeakReference<TextBox> _textBox;
 
@@ -43,7 +43,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBlock DisplayBlock { get; } = new TextBlock();
 
-		internal void SetTextNative(string text) => DisplayBlock.Text = text;
+		internal void SetTextNative(string text)
+		{
+			DisplayBlock.Text = text;
+			_textBoxExtension?.SetTextNative(text);
+		}
 
 		internal void OnForegroundChanged(Brush brush) => DisplayBlock.Foreground = brush;
 
@@ -61,13 +65,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void UpdateText(string newText)
+		internal void UpdateTextFromNative(string newText)
 		{
 			var textBox = _textBox?.GetTarget();
 			if (textBox != null)
 			{
 				var text = textBox.ProcessTextInput(newText);
-				SetTextNative(newText);
+				SetTextNative(text);
 			}
 		}
 

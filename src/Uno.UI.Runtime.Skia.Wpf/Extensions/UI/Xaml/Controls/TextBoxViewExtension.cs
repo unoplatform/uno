@@ -1,10 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using System.Windows;
+using System.Windows.Media;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia.WPF.Controls;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Controls.Extensions;
-using Windows.Foundation;
+using Point = Windows.Foundation.Point;
+using SolidColorBrush = Windows.UI.Xaml.Media.SolidColorBrush;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfTextBox = System.Windows.Controls.TextBox;
 
@@ -14,7 +18,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 	{
 		private readonly TextBoxView _owner;
 		private ContentControl? _contentElement;
-		private WpfTextBox? _currentInputWidget;
+		private WpfTextViewTextBox? _currentInputWidget;
 
 		public TextBoxViewExtension(TextBoxView owner)
 		{
@@ -38,10 +42,10 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			EnsureWidgetForAcceptsReturn();
 			textInputLayer.Children.Add(_currentInputWidget!);
 
-			_contentElement.SizeChanged += _contentElement_SizeChanged;
-			_contentElement.LayoutUpdated += _contentElement_LayoutUpdated;
+			_contentElement.SizeChanged += ContentElementSizeChanged;
+			_contentElement.LayoutUpdated += ContentElementLayoutUpdated;
 			UpdateNativeView();
-			SetInputText(textBox.Text);
+			SetTextNative(textBox.Text);
 
 			UpdateSize();
 			UpdatePosition();
@@ -49,29 +53,17 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			_currentInputWidget!.Focus();
 		}
 
-		private void _contentElement_LayoutUpdated(object sender, object e)
-		{
-			UpdateSize();
-			UpdatePosition();
-		}
-
-		private void _contentElement_SizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args)
-		{
-			UpdateSize();
-			UpdatePosition();
-		}
-
 		public void EndEntry()
 		{
 			if (GetInputText() is { } inputText)
 			{
-				_owner.UpdateText(inputText);
+				_owner.UpdateTextFromNative(inputText);
 			}
 
 			if (_contentElement != null)
 			{
-				_contentElement.SizeChanged -= _contentElement_SizeChanged;
-				_contentElement.LayoutUpdated -= _contentElement_LayoutUpdated;
+				_contentElement.SizeChanged -= ContentElementSizeChanged;
+				_contentElement.LayoutUpdated -= ContentElementLayoutUpdated;
 			}
 
 			var textInputLayer = GetWindowTextInputLayer();
@@ -95,26 +87,20 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 			EnsureWidgetForAcceptsReturn();
 
+			//_currentInputWidget.Margin = new Thickness(
+			//	textBox.ContentElement.Margin.Left,
+			//	textBox.ContentElement.Margin.Top,
+			//	textBox.ContentElement.Margin.Right,
+			//	textBox.ContentElement.Margin.Bottom);
 			_currentInputWidget.FontSize = textBox.FontSize;
-		}
-
-		private void EnsureWidgetForAcceptsReturn()
-		{
-			_currentInputWidget ??= CreateInputControl();
-		}
-
-		private WpfTextBox CreateInputControl()
-		{
-			return new WpfTextBox();
-		}
-
-		private string? GetInputText() => _currentInputWidget?.Text;
-
-		private void SetInputText(string text)
-		{
-			if (_currentInputWidget != null)
+			_currentInputWidget.FontWeight = FontWeight.FromOpenTypeWeight(textBox.FontWeight.Weight);
+			_currentInputWidget.AcceptsReturn = textBox.AcceptsReturn;
+			_currentInputWidget.TextWrapping = textBox.AcceptsReturn ? TextWrapping.Wrap : TextWrapping.NoWrap;
+			_currentInputWidget.MaxLength = textBox.MaxLength;
+			if (textBox.Foreground is SolidColorBrush colorBrush)
 			{
-				_currentInputWidget.Text = text;
+				var unoColor = colorBrush.Color;
+				_currentInputWidget.Foreground = new System.Windows.Media.SolidColorBrush(Color.FromArgb(unoColor.A, unoColor.R, unoColor.G, unoColor.B));
 			}
 		}
 
@@ -149,5 +135,48 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 				WpfCanvas.SetTop(_currentInputWidget, point.Y);
 			}
 		}
+
+		public void SetTextNative(string text)
+		{
+			if (_currentInputWidget != null)
+			{
+				_currentInputWidget.Text = text;
+			}
+		}
+
+		private void EnsureWidgetForAcceptsReturn()
+		{
+			_currentInputWidget ??= CreateInputControl();
+		}
+
+		private WpfTextViewTextBox CreateInputControl()
+		{
+			var textView = new WpfTextViewTextBox();
+			textView.TextChanged += WpfTextViewTextChanged;
+			return textView;
+		}
+
+		private void WpfTextViewTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+		{
+			if (_currentInputWidget != null)
+			{
+				_owner.UpdateTextFromNative(_currentInputWidget.Text);
+			}
+		}
+
+		private string? GetInputText() => _currentInputWidget?.Text;
+
+		private void ContentElementLayoutUpdated(object? sender, object e)
+		{
+			UpdateSize();
+			UpdatePosition();
+		}
+
+		private void ContentElementSizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args)
+		{
+			UpdateSize();
+			UpdatePosition();
+		}
+
 	}
 }
