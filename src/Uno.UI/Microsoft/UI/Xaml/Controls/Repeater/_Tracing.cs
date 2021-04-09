@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			Console.Write(builder.ToString(), parameters);
+			Console.Write(builder.ToString());
 		}
 
 		[Conditional("REPEATER_TRACE_ENABLED")]
