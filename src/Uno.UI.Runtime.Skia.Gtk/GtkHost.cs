@@ -105,10 +105,6 @@ namespace Uno.UI.Runtime.Skia
 
 			_window.SizeAllocated += (s, e) =>
 			{
-				_area.WidthRequest = e.Allocation.Width;
-				_area.HeightRequest = e.Allocation.Height;
-				_fix.WidthRequest = _window.AllocatedWidth;
-				_fix.HeightRequest = _window.AllocatedHeight;
 				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			};
 
@@ -118,10 +114,6 @@ namespace Uno.UI.Runtime.Skia
 			_fix = new Fixed();
 			overlay.Add(_area);
 			overlay.AddOverlay(_fix);
-			_fix.WidthRequest = _window.AllocatedWidth;
-			_fix.HeightRequest = _window.AllocatedHeight;
-			_area.WidthRequest = _window.AllocatedWidth;
-			_area.HeightRequest = _window.AllocatedHeight;
 			_window.Add(overlay);
 
 			/* avoids double invokes at window level */

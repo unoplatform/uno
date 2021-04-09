@@ -25,7 +25,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		private ContentControl? _contentElement;
 		private Widget? _currentInputWidget;
 
-		private SerialDisposable _textChangedDisposable = new SerialDisposable();
+		private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
+		private readonly SerialDisposable _textBoxEventSubscriptions = new SerialDisposable();
 
 		public TextBoxViewExtension(TextBoxView owner, GtkWindow window)
 		{
@@ -54,8 +55,14 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			var textInputLayer = GetWindowTextInputLayer();
 			textInputLayer.Put(_currentInputWidget!, 0, 0);
 
-			_contentElement.SizeChanged += ContentElementSizeChanged;
-			_contentElement.LayoutUpdated += ContentElementLayoutUpdated;
+			textBox.SizeChanged += ContentElementSizeChanged;
+			textBox.LayoutUpdated += ContentElementLayoutUpdated;
+			_textBoxEventSubscriptions.Disposable = Disposable.Create(() =>
+			{
+				textBox.SizeChanged -= ContentElementSizeChanged;
+				textBox.LayoutUpdated -= ContentElementLayoutUpdated;
+			});
+
 			UpdateNativeView();
 			SetWidgetText(textBox.Text);
 
@@ -73,11 +80,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				_owner.UpdateTextFromNative(inputText);
 			}
 
-			if (_contentElement != null)
-			{
-				_contentElement.SizeChanged -= ContentElementSizeChanged;
-				_contentElement.LayoutUpdated -= ContentElementLayoutUpdated;
-			}
+			_contentElement = null;
+			_textBoxEventSubscriptions.Disposable = null;
 
 			var textInputLayer = GetWindowTextInputLayer();
 			textInputLayer.Remove(_currentInputWidget);

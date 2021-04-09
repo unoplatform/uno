@@ -3,7 +3,9 @@
 using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Windows.UI.Xaml.Controls;
+using Uno.Disposables;
 using Uno.UI.Runtime.Skia.WPF.Controls;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -19,6 +21,8 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		private readonly TextBoxView _owner;
 		private ContentControl? _contentElement;
 		private WpfTextViewTextBox? _currentInputWidget;
+
+		private readonly SerialDisposable _textBoxEventSubscriptions = new SerialDisposable();
 
 		public TextBoxViewExtension(TextBoxView owner)
 		{
@@ -42,8 +46,15 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			EnsureWidgetForAcceptsReturn();
 			textInputLayer.Children.Add(_currentInputWidget!);
 
-			_contentElement.SizeChanged += ContentElementSizeChanged;
-			_contentElement.LayoutUpdated += ContentElementLayoutUpdated;
+			textBox.SizeChanged += ContentElementSizeChanged;
+			textBox.LayoutUpdated += ContentElementLayoutUpdated;
+			
+			_textBoxEventSubscriptions.Disposable = Disposable.Create(() =>
+			{
+				textBox.SizeChanged -= ContentElementSizeChanged;
+				textBox.LayoutUpdated -= ContentElementLayoutUpdated;
+			});
+
 			UpdateNativeView();
 			SetTextNative(textBox.Text);
 
@@ -60,11 +71,8 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 				_owner.UpdateTextFromNative(inputText);
 			}
 
-			if (_contentElement != null)
-			{
-				_contentElement.SizeChanged -= ContentElementSizeChanged;
-				_contentElement.LayoutUpdated -= ContentElementLayoutUpdated;
-			}
+			_contentElement = null;
+			_textBoxEventSubscriptions.Disposable = null;
 
 			var textInputLayer = GetWindowTextInputLayer();
 			textInputLayer?.Children.Remove(_currentInputWidget);
