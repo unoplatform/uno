@@ -1,4 +1,4 @@
-﻿.textboxview, .textboxview:active, .textboxview:hover, .textboxview:focus {
+﻿.textboxview, .textboxview:active, .textboxview:hover, .textboxview:focus, .textboxview text {
   min-height: 0px;
   background-color: transparent;
   border-color: transparent;
