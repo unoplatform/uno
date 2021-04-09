@@ -11,7 +11,7 @@ using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 {
 	[TestFixture]
-	public class SwipeControlTests : SampleControlUITestBase
+	public partial class SwipeControlTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

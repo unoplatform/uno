@@ -177,19 +177,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Uno workaround: Added "new" keyword
-		public static
-#if __IOS__ || __MACOS__ || __ANDROID__
-			new
-#endif
-			DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
+		public static new DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
 			"Background", typeof(Brush), typeof(SwipeItem), new PropertyMetadata(default(Brush), OnBackgroundPropertyChanged));
 
 		// Uno workaround: Added "new" keyword
-		public
-#if __IOS__ || __MACOS__ || __ANDROID__
-			new
-#endif
-			Brush Background
+		public new Brush Background
 		{
 			get { return (Brush)GetValue(BackgroundProperty); }
 			set { SetValue(BackgroundProperty, value); }

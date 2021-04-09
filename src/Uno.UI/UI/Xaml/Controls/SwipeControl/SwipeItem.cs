@@ -9,6 +9,7 @@
 
 using System;
 using System.Windows.Input;
+using Windows.Devices.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
@@ -128,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 			object sender,
 			PointerRoutedEventArgs args)
 		{
-			if (args.Pointer.PointerDeviceType == Devices.Input.PointerDeviceType.Touch)
+			if (args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 			{
 				// if we press an item, we want to handle it and not let the parent SwipeControl receive the input
 				args.Handled = true;
