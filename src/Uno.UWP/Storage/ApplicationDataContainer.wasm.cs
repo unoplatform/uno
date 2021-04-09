@@ -217,11 +217,12 @@ namespace Windows.Storage
 				Locality = locality.ToStringInvariant()
 			};
 
-			var ret = (ApplicationDataContainer_TryGetValueReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:tryGetValue", parms, typeof(ApplicationDataContainer_TryGetValueReturn));
+			var ret = ApplicationDataContainer_TryGetValueReturn_Wrapper.Instance;
+			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:tryGetValue", parms, ret);
 
-			value = ret.Value;
+			value = ret.Value.Value;
 
-			return ret.HasValue;
+			return ret.Value.HasValue;
 		}
 
 		[TSInteropMessage]
@@ -230,6 +231,18 @@ namespace Windows.Storage
 		{
 			public string Key;
 			public string Locality;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private class ApplicationDataContainer_TryGetValueReturn_Wrapper
+		{
+			public static ApplicationDataContainer_TryGetValueReturn_Wrapper Instance { get; }
+				= new ApplicationDataContainer_TryGetValueReturn_Wrapper();
+
+			private ApplicationDataContainer_TryGetValueReturn_Wrapper() { }
+
+			public ApplicationDataContainer_TryGetValueReturn Value;
+
 		}
 
 		[TSInteropMessage]
@@ -274,8 +287,9 @@ namespace Windows.Storage
 				Locality = locality.ToStringInvariant()
 			};
 
-			var ret = (ApplicationDataContainer_ContainsKeyReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:containsKey", parms, typeof(ApplicationDataContainer_ContainsKeyReturn));
-			return ret.ContainsKey;
+			var ret = ApplicationDataContainer_ContainsKeyReturn_Wrapper.Instance;
+			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:containsKey", parms, ret);
+			return ret.Value.ContainsKey;
 		}
 
 		[TSInteropMessage]
@@ -285,6 +299,18 @@ namespace Windows.Storage
 			public string Key;
 			public string Value;
 			public string Locality;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private class ApplicationDataContainer_ContainsKeyReturn_Wrapper
+		{
+			public static ApplicationDataContainer_ContainsKeyReturn_Wrapper Instance { get; }
+				= new ApplicationDataContainer_ContainsKeyReturn_Wrapper();
+
+			private ApplicationDataContainer_ContainsKeyReturn_Wrapper() { }
+
+			public ApplicationDataContainer_ContainsKeyReturn Value;
+
 		}
 
 		[TSInteropMessage]
@@ -304,8 +330,10 @@ namespace Windows.Storage
 				Index = index
 			};
 
-			var ret = (ApplicationDataContainer_GetKeyByIndexReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getKeyByIndex", parms, typeof(ApplicationDataContainer_GetKeyByIndexReturn));
-			return ret.Value;
+			var ret = ApplicationDataContainer_GetKeyByIndexReturn_Wrapper.Instance;
+			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getKeyByIndex", parms, ret);
+
+			return ret.Value.Value!;
 		}
 
 		[TSInteropMessage]
@@ -314,6 +342,18 @@ namespace Windows.Storage
 		{
 			public string Locality;
 			public int Index;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private class ApplicationDataContainer_GetKeyByIndexReturn_Wrapper
+		{
+			public static ApplicationDataContainer_GetKeyByIndexReturn_Wrapper Instance { get; }
+				= new ApplicationDataContainer_GetKeyByIndexReturn_Wrapper();
+
+			private ApplicationDataContainer_GetKeyByIndexReturn_Wrapper() { }
+
+			public ApplicationDataContainer_GetKeyByIndexReturn Value;
+
 		}
 
 		[TSInteropMessage]
@@ -333,8 +373,9 @@ namespace Windows.Storage
 				Locality = locality.ToStringInvariant()
 			};
 
-			var ret = (ApplicationDataContainer_GetCountReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getCount", parms, typeof(ApplicationDataContainer_GetCountReturn));
-			return ret.Count;
+			var ret = ApplicationDataContainer_GetCountReturn_Wrapper.Instance;
+			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getCount", parms, ret);
+			return ret.Value.Count;
 		}
 
 		[TSInteropMessage]
@@ -349,6 +390,17 @@ namespace Windows.Storage
 		private struct ApplicationDataContainer_GetCountReturn
 		{
 			public int Count;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private class ApplicationDataContainer_GetCountReturn_Wrapper
+		{
+			public static ApplicationDataContainer_GetCountReturn_Wrapper Instance { get; }
+				= new ApplicationDataContainer_GetCountReturn_Wrapper();
+
+			private ApplicationDataContainer_GetCountReturn_Wrapper() { }
+
+			public ApplicationDataContainer_GetCountReturn Value;
 		}
 		#endregion
 
@@ -383,8 +435,9 @@ namespace Windows.Storage
 				Key = key
 			};
 
-			var ret = (ApplicationDataContainer_RemoveReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:remove", parms, typeof(ApplicationDataContainer_RemoveReturn));
-			return ret.Removed;
+			var ret = ApplicationDataContainer_RemoveReturn_Wrapper.Instance;
+			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:remove", parms, ret);
+			return ret.Value.Removed;
 		}
 
 		[TSInteropMessage]
@@ -393,6 +446,18 @@ namespace Windows.Storage
 		{
 			public string Locality;
 			public string Key;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private class ApplicationDataContainer_RemoveReturn_Wrapper
+		{
+			public static ApplicationDataContainer_RemoveReturn_Wrapper Instance { get; }
+				= new ApplicationDataContainer_RemoveReturn_Wrapper();
+
+			private ApplicationDataContainer_RemoveReturn_Wrapper() { }
+
+			public ApplicationDataContainer_RemoveReturn Value;
+
 		}
 
 		[TSInteropMessage]
@@ -414,8 +479,10 @@ namespace Windows.Storage
 				Index = index
 			};
 
-			var ret = (ApplicationDataContainer_GetValueByIndexReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getValueByIndex", parms, typeof(ApplicationDataContainer_GetValueByIndexReturn));
-			return ret.Value;
+			var ret = ApplicationDataContainer_GetValueByIndexReturn_Wrapper.Instance;
+			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getValueByIndex", parms, ret);
+
+			return ret.Value.Value!;
 		}
 
 		[TSInteropMessage]
@@ -424,6 +491,17 @@ namespace Windows.Storage
 		{
 			public string Locality;
 			public int Index;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private class ApplicationDataContainer_GetValueByIndexReturn_Wrapper
+		{
+			public static ApplicationDataContainer_GetValueByIndexReturn_Wrapper Instance { get; }
+				= new ApplicationDataContainer_GetValueByIndexReturn_Wrapper();
+
+			private ApplicationDataContainer_GetValueByIndexReturn_Wrapper() { }
+
+			public ApplicationDataContainer_GetValueByIndexReturn Value;
 		}
 
 		[TSInteropMessage]

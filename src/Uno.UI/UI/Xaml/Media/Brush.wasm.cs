@@ -3,12 +3,21 @@ using System.Diagnostics;
 using System.Text;
 using Uno.Extensions;
 using Uno.Disposables;
+using Windows.UI; // Required for WinUI 3+ Color
 
 namespace Windows.UI.Xaml.Media
 {
 	public abstract partial class Brush
 	{
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Windows.UI.Color> colorSetter, Action imageBrushCallback = null)
+		/// <summary>
+		/// Color action handler
+		/// </summary>
+		/// <remarks>
+		/// This delegate is not an <see cref="Action{T}"/> to account for https://github.com/dotnet/runtime/issues/50757
+		/// </remarks>
+		internal delegate void ColorSetterHandler(Color color);
+
+		internal static IDisposable AssignAndObserveBrush(Brush b, ColorSetterHandler colorSetter, Action imageBrushCallback = null)
 		{
 			if (b is SolidColorBrush colorBrush)
 			{

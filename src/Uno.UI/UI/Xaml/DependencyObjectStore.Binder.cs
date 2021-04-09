@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml
 		{
 #if !HAS_EXPENSIVE_TRYFINALLY
 			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/mono/mono/issues/13653 for more details.
+			// See https://github.com/dotnet/runtime/issues/50783 for more details.
 			try
 #endif
 			{
@@ -110,7 +110,12 @@ namespace Windows.UI.Xaml
 			for (int i = 0; i < _childrenBindable.Count; i++)
 			{
 				var child = _childrenBindable[i];
-				var parent = child?.GetParent();
+
+				var childAsStoreProvider = child as IDependencyObjectStoreProvider;
+
+				// Get the parent if the child is a provider, otherwise an
+				// "attached store" may be created for no good reason.
+				var parent = childAsStoreProvider?.GetParent();
 
 				//Do not propagate value if you are not this child's parent
 				//Covers case where a child may hold a binding to a view higher up the tree
@@ -123,9 +128,9 @@ namespace Windows.UI.Xaml
 					continue;
 				}
 
-				if (child is IDependencyObjectStoreProvider provider)
+				if (childAsStoreProvider != null)
 				{
-					SetInherited(provider);
+					SetInherited(childAsStoreProvider);
 				}
 				else
 				{
@@ -275,7 +280,7 @@ namespace Windows.UI.Xaml
 			{
 #if !HAS_EXPENSIVE_TRYFINALLY
 				// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-				// See https://github.com/mono/mono/issues/13653 for more details.
+				// See https://github.com/dotnet/runtime/issues/50783 for more details.
 				try
 #endif
 				{
@@ -290,11 +295,17 @@ namespace Windows.UI.Xaml
 
 					_isApplyingDataContextBindings = true;
 
-					using (TryWriteDataContextChangedEventActivity())
+					if (TryWriteDataContextChangedEventActivity() is { } trace)
 					{
-						_properties.ApplyDataContext(actualDataContext);
-
-						ApplyChildrenBindable(actualDataContext, isTemplatedParent: false);
+						// "using" statements are costly under we https://github.com/dotnet/runtime/issues/50783
+						using (trace)
+						{
+							ApplyDataContext(actualDataContext);
+						}
+					}
+					else
+					{
+						ApplyDataContext(actualDataContext);
 					}
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY
@@ -304,6 +315,13 @@ namespace Windows.UI.Xaml
 					_isApplyingDataContextBindings = false;
 				}
 			}
+
+		}
+
+		private void ApplyDataContext(object? actualDataContext)
+		{
+			_properties.ApplyDataContext(actualDataContext);
+			ApplyChildrenBindable(actualDataContext, isTemplatedParent: false);
 		}
 
 		private IDisposable? TryWriteDataContextChangedEventActivity()

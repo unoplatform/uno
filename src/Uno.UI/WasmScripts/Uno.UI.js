@@ -490,7 +490,7 @@ var Uno;
                 element.setAttribute("XamlType", uiElementRegistration.typeName);
                 element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
                 if (uiElementRegistration.isFrameworkElement) {
-                    this.setAsUnarranged(element);
+                    this.setAsUnarranged(element, true);
                 }
                 if (element.hasOwnProperty("tabindex")) {
                     element["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
@@ -818,10 +818,16 @@ var Uno;
                 return true;
             }
             setAsArranged(element) {
-                element.classList.remove(WindowManager.unoUnarrangedClassName);
+                if (!element._unoIsArranged) {
+                    element._unoIsArranged = true;
+                    element.classList.remove(WindowManager.unoUnarrangedClassName);
+                }
             }
-            setAsUnarranged(element) {
-                element.classList.add(WindowManager.unoUnarrangedClassName);
+            setAsUnarranged(element, force = false) {
+                if (element._unoIsArranged || force) {
+                    element._unoIsArranged = false;
+                    element.classList.add(WindowManager.unoUnarrangedClassName);
+                }
             }
             /**
             * Sets the transform matrix of an element

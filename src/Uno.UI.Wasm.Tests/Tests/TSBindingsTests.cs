@@ -23,9 +23,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				Id = (IntPtr)42
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_IntPtr", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_IntPtr", param, ret);
 
-			Assert.AreEqual("42", ret.Value);
+			Assert.AreEqual("42", ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -36,9 +37,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				Id = (IntPtr)0
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_IntPtr_Zero", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_IntPtr_Zero", param, ret);
 
-			Assert.AreEqual("0", ret.Value);
+			Assert.AreEqual("0", ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -49,9 +51,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyString = "This is 42"
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_SingleString", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_SingleString", param, ret);
 
-			Assert.AreEqual(param.MyString, ret.Value);
+			Assert.AreEqual(param.MyString, ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -62,9 +65,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyString = "This is 🤣 🎉"
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_SingleUnicodeString", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_SingleUnicodeString", param, ret);
 
-			Assert.AreEqual(param.MyString, ret.Value);
+			Assert.AreEqual(param.MyString, ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -75,9 +79,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyString = null
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_NullString", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_NullString", param, ret);
 
-			Assert.AreEqual("true", ret.Value);
+			Assert.AreEqual("true", ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -89,9 +94,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyArray = new[] { 1, 2, 3, 42 }
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfInt", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfInt", param, ret);
 
-			Assert.AreEqual("1;2;3;42", ret.Value);
+			Assert.AreEqual("1;2;3;42", ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -103,9 +109,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyArray = null
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_NullArrayOfInt", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_NullArrayOfInt", param, ret);
 
-			Assert.AreEqual("true", ret.Value);
+			Assert.AreEqual("true", ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -117,9 +124,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyArray = new[] { "1", "2", "3", "42" }
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfStrings", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfStrings", param, ret);
 
-			Assert.AreEqual("1;2;3;42", ret.Value);
+			Assert.AreEqual("1;2;3;42", ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -131,9 +139,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyArray = new[] { "🎉🤣😊👆🎁" }
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfUnicodeStrings", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfUnicodeStrings", param, ret);
 
-			Assert.AreEqual(param.MyArray[0], ret.Value);
+			Assert.AreEqual(param.MyArray[0], ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -145,9 +154,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyArray = null
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_NullArrayOfStrings", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_NullArrayOfStrings", param, ret);
 
-			Assert.AreEqual("true", ret.Value);
+			Assert.AreEqual("true", ret.Value.Value);
 		}
 
 		[TestMethod]
@@ -159,9 +169,10 @@ namespace SamplesApp.UnitTests.TSBindings
 				MyArray = new string[4]
 			};
 
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfNullStrings", param, typeof(GenericReturn));
+			var ret = new GenericReturn_Wrapper();
+			TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfNullStrings", param, ret);
 
-			Assert.AreEqual("true;true;true;true", ret.Value);
+			Assert.AreEqual("true;true;true;true", ret.Value.Value);
 		}
 	}
 
@@ -204,6 +215,12 @@ namespace SamplesApp.UnitTests.TSBindings
 	public struct GenericReturn
 	{
 		public string Value;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public class GenericReturn_Wrapper
+	{
+		public GenericReturn Value;
 	}
 }
 #endif

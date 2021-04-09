@@ -90,8 +90,8 @@ namespace Windows.UI.Xaml
 		/// Gets the implicit style for the current object
 		/// </summary>
 		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal static Style StoreGetImplicitStyle(this IDependencyObjectStoreProvider provider)
-			=> provider.Store.GetImplicitStyle();
+		internal static Style StoreGetImplicitStyle(this IDependencyObjectStoreProvider provider, in SpecializedResourceDictionary.ResourceKey styleKey)
+			=> provider.Store.GetImplicitStyle(styleKey);
 
 		internal static IEnumerable<object> GetParents(this object dependencyObject)
 		{

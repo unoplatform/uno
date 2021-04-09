@@ -60,10 +60,16 @@ namespace Windows.UI.Xaml
 
 		private bool _defaultStyleApplied = false;
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
+
 		/// <summary>
 		/// The current user-determined 'active Style'. This will either be the explicitly-set Style, if there is one, or otherwise the resolved implicit Style (either in the view hierarchy or in Application.Resources).
 		/// </summary>
 		private Style _activeStyle = null;
+
+		/// <summary>
+		/// Cache for the current type key for faster implicit style lookup
+		/// </summary>
+		private SpecializedResourceDictionary.ResourceKey _thisTypeResourceKey;
 
 		/// <summary>
 		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be
@@ -383,7 +389,20 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle();
+		private SpecializedResourceDictionary.ResourceKey ThisTypeResourceKey
+		{
+			get
+			{
+				if(_thisTypeResourceKey.IsEmpty)
+				{
+					_thisTypeResourceKey = this.GetType();
+				}
+
+				return _thisTypeResourceKey;
+			}
+		}
+
+		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle(ThisTypeResourceKey);
 
 		#region Requested theme dependency property
 

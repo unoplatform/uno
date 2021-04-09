@@ -569,14 +569,14 @@ namespace Uno.UI.DataBinding
 					ClearCachedGetters();
 					if (_propertyChanged.Disposable != null)
 					{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 						try
 #endif
 						{
 							_isDataContextChanging = true;
 							_propertyChanged.Disposable = null;
 						}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 						finally
 #endif
 						{
@@ -802,8 +802,10 @@ namespace Uno.UI.DataBinding
 			private IDisposable SubscribeToPropertyChanged(PropertyChangedHandler action)
 			{
 				var disposables = new CompositeDisposable((_propertyChangedHandlers.Count * 3));
-				foreach (var handler in _propertyChangedHandlers)
+
+				for (var i = 0; i < _propertyChangedHandlers.Count; i++)
 				{
+					var handler = _propertyChangedHandlers[i];
 					object previousValue = default;
 
 					Action updateProperty = () =>
