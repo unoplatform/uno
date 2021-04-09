@@ -40,9 +40,30 @@ namespace Windows.UI.Xaml.Controls
 
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_SwipeControl);
 			SetDefaultStyleKey(this);
+
+			Loaded += UnfinalizeOnLoad;
+			Unloaded += FinalizeOnUnload;
 		}
 
-		~SwipeControl()
+		// [BEGIN] Uno workaround:
+		//  + we make sure to un-subscribe from events on unload to avoid leaks
+		//  + we must not use finalizer on uno (invoked from a bg thread)
+
+		private static void UnfinalizeOnLoad(object sender, RoutedEventArgs routedEventArgs)
+			=> ((SwipeControl)sender).SwipeControl_Unfinalizer();
+
+		private static void FinalizeOnUnload(object sender, RoutedEventArgs routedEventArgs)
+			=> ((SwipeControl)sender).SwipeControl_Finalizer();
+
+		private void SwipeControl_Unfinalizer()
+		{
+			DetachEventHandlers(); // Do not double subscribe
+			AttachEventHandlers(isUnoUnfinalizer: true);
+		}
+		
+		private void SwipeControl_Finalizer()
+		//~SwipeControl()
+		// [END] Uno workaround
 		{
 			DetachEventHandlers();
 
@@ -584,13 +605,20 @@ namespace Windows.UI.Xaml.Controls
 			CloseWithoutAnimation();
 		}
 
-		private void AttachEventHandlers()
+		private void AttachEventHandlers(bool isUnoUnfinalizer = false)
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
 			//global::System.Diagnostics.Debug.Assert(m_loadedToken.value == 0);
-			Loaded += OnLoaded;
-			m_hasInitialLoadedEventFired = false;
+			if (isUnoUnfinalizer) // Uno workaround: We detach from event on unload and re-attach on loaded
+			{
+				OnLoaded(this, null);
+			}
+			else
+			{
+				Loaded += OnLoaded;
+				m_hasInitialLoadedEventFired = false;
+			}
 
 			//global::System.Diagnostics.Debug.Assert(m_onSizeChangedToken.value == 0);
 			SizeChanged += OnSizeChanged;
