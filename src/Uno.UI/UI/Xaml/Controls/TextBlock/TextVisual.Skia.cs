@@ -26,6 +26,9 @@ namespace Windows.UI.Composition
 
 		private readonly TextBlock _owner;
 
+		private string? _previousRenderText;
+		private string[]? _textLines;
+
 		private static SKTypeface FromFamilyName(
 			string name,
 			SKFontStyleWeight weight,
@@ -44,7 +47,7 @@ namespace Windows.UI.Composition
 			}
 			else
 			{
-				if(string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
+				if (string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
 				{
 					return SKTypeface.FromFamilyName(null, weight, width, slant);
 				}
@@ -100,12 +103,21 @@ namespace Windows.UI.Composition
 
 			var lineHeight = descent - ascent;
 
+			if (_textLines == null || _previousRenderText != _owner.Text)
+			{
+				_textLines = _owner.Text.Split(
+					new[] { "\r\n", "\r", "\n" },
+					StringSplitOptions.None
+				);
+				_previousRenderText = _owner.Text;
+			}
+
 			var bounds = new SKRect(0, 0, (float)availableSize.Width, (float)availableSize.Height);
 			_paint.MeasureText(string.IsNullOrEmpty(_owner.Text) ? " " : _owner.Text, ref bounds);
 
 			var size = bounds.Size;
 
-			size.Height = lineHeight;
+			size.Height = lineHeight * _textLines.Length;
 
 			return new Size(size.Width, size.Height);
 		}
@@ -136,7 +148,15 @@ namespace Windows.UI.Composition
 
 				var lineHeight = descent - ascent;
 
-				surface.Canvas.DrawText(_owner.Text, 0, Size.Y-descent, _paint);
+				_textLines ??= new[] {_owner.Text};
+
+				var y = -ascent;
+
+				foreach (var line in _textLines)
+				{
+					surface.Canvas.DrawText(line, 0, y, _paint);
+					y += lineHeight;
+				}
 			}
 		}
 	}
