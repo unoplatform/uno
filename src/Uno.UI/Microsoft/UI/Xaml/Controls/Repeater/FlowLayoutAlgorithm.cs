@@ -112,11 +112,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public Size Arrange(
-		Size finalSize,
-		VirtualizingLayoutContext context,
-		bool isWrapping,
+			Size finalSize,
+			VirtualizingLayoutContext context,
+			bool isWrapping,
 			FlowLayoutLineAlignment lineAlignment,
-		string layoutId)
+			string layoutId)
 		{
 			REPEATER_TRACE_INFO("%*s: \tArrangeLayout \n", context.Indent, layoutId);
 			ArrangeVirtualizingLayout(finalSize, lineAlignment, isWrapping, layoutId);
@@ -127,9 +127,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		void MakeAnchor(
-		VirtualizingLayoutContext context,
-		int index,
-		Size availableSize)
+			VirtualizingLayoutContext context,
+			int index,
+			Size availableSize)
 		{
 			m_elementManager.ClearRealizedRange();
 			// FlowLayout requires that the anchor is the first element in the row.
@@ -387,7 +387,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							// Does not fit, wrap to the previous row
 							var availableSizeMinor = Minor(availableSize);
-							SetMinorStart(ref currentBounds, availableSizeMinor.IsFinite() ? availableSizeMinor - Minor(desiredSize) : 0.0f);
+							SetMinorStart(ref currentBounds, availableSizeMinor.IsFinite() ? availableSizeMinor - Minor(desiredSize) : MinorSize(LastExtent) - Minor(desiredSize));
 							SetMajorStart(ref currentBounds, lineOffset - Major(desiredSize) - (float)(lineSpacing));
 
 							if (lineNeedsReposition)
@@ -467,8 +467,8 @@ namespace Microsoft.UI.Xaml.Controls
 				// If first element is realized and is not at the very beginning we need to reflow.
 				return
 					m_elementManager.GetRealizedElementCount > 0 &&
-					m_elementManager.GetDataIndexFromRealizedRangeIndex(0) == 0 &&
-					(ScrollOrientation == ScrollOrientation.Vertical ? m_elementManager.GetLayoutBoundsForRealizedIndex(0).X != 0 : m_elementManager.GetLayoutBoundsForRealizedIndex(0).Y != 0);
+				                       m_elementManager.GetDataIndexFromRealizedRangeIndex(0) == 0 &&
+				                       (ScrollOrientation == ScrollOrientation.Vertical ? m_elementManager.GetLayoutBoundsForRealizedIndex(0).X != 0 : m_elementManager.GetLayoutBoundsForRealizedIndex(0).Y != 0);
 			}
 		}
 
