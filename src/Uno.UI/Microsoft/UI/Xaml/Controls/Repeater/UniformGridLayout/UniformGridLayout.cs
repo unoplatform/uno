@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-#nullable enable
 
 using System;
 using System.Collections.Specialized;
@@ -193,10 +192,10 @@ namespace Microsoft.UI.Xaml.Controls
 		Rect IFlowLayoutAlgorithmDelegates.Algorithm_GetExtent(
 			Size availableSize, 
 			VirtualizingLayoutContext context, 
-			UIElement? firstRealized, 
+			UIElement firstRealized, 
 			int firstRealizedItemIndex,
 			Rect firstRealizedLayoutBounds, 
-			UIElement? lastRealized, 
+			UIElement lastRealized, 
 			int lastRealizedItemIndex,
 			Rect lastRealizedLayoutBounds)
 		{

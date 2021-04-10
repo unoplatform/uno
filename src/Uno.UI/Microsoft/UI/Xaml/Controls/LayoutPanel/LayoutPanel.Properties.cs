@@ -7,6 +7,9 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
 			"Layout", typeof(Layout), typeof(LayoutPanel), new PropertyMetadata(default(Layout)));
 
+#if __ANDROID__
+		new
+#endif
 		public Layout Layout
 		{
 			get => (Layout)GetValue(LayoutProperty);

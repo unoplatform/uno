@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-#nullable enable
 
 using Windows.UI.Xaml.Controls;
 
@@ -89,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 //		Rect GetLayoutRectForDataIndex(const Size availableSize,  int index, const Rect lastExtent,  const
 //			VirtualizingLayoutContext context);
 
-		UniformGridLayoutState? GetAsGridState(object state)
+		UniformGridLayoutState GetAsGridState(object state)
 		{
 			//( return get_self<UniformGridLayoutState>(state as UniformGridLayoutState)).get_strong();
 			return state as UniformGridLayoutState;
