@@ -53,8 +53,18 @@ export class UnoNewProjectManager {
             void vscode.window.showOpenDialog(options).then(fileUri => {
                 if (fileUri?.[0] !== undefined) {
                     const projectLocation = path.join(fileUri[0].fsPath, projectName);
-                    fs.mkdirSync(projectLocation);
-                    resolve(projectLocation);
+                    try {
+                        fs.mkdirSync(projectLocation);
+                        resolve(projectLocation);
+                    } catch (error) {
+                        ExtensionUtils.writeln(error.message);
+
+                        if (error.code === "EEXIST") {
+                            ExtensionUtils.showError(`${projectName} already exists in the selected location 🙄`);
+                        }
+
+                        resolve(undefined);
+                    }
                 } else {
                     resolve(undefined);
                 }
