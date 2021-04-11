@@ -26,6 +26,10 @@ export class UnoCsprojManager {
                 e.files[0].fsPath.includes(".Shared") &&
                 e.files[0].fsPath.includes(".xaml")) {
                 void unoCsprojManager.createXamlCs(e);
+            } else if (e.files.length === 1 &&
+                e.files[0].fsPath.includes(".Shared") &&
+                fs.statSync(e.files[0].fsPath).isDirectory()) {
+                void unoCsprojManager.createFolderReference(e);
             }
         });
     }
@@ -84,6 +88,19 @@ export class UnoCsprojManager {
                 },
                 SubType: `Designer`,
                 Generator: `MSBuild:Compile`
+            });
+
+        // write back
+        this.writeJsonToXML(result, path);
+    }
+
+    private setReferenceFolder (result: any, path: PathLike, subLevel: string): void {
+        result.Project
+            .ItemGroup[1]
+            .Compile.push({
+                $: {
+                    Include: `$(MSBuildThisFileDirectory)${subLevel}*.cs`
+                }
             });
 
         // write back
@@ -208,6 +225,26 @@ export class UnoCsprojManager {
                 }
             });
         }
+    }
+
+    public async createFolderReference (folder: vscode.FileCreateEvent): Promise<void> {
+        const sharedProjitemsLocation = this.getPath(".Shared", undefined, true);
+        const sharedProjitemsContent = fs.readFileSync(sharedProjitemsLocation!, "utf-8");
+
+        xml2js.parseString(sharedProjitemsContent, (err, result) => {
+            if (err === null) {
+                let subLevel = path.basename(folder.files[0].fsPath);
+
+                if (subLevel.includes("Shared")) {
+                    subLevel = "";
+                } else {
+                    subLevel += "\\";
+                }
+
+                this.setReferenceFolder(result, sharedProjitemsLocation!, subLevel);
+                ExtensionUtils.writeln(`${subLevel} reference added on shared project`);
+            }
+        });
     }
 
     public async createXamlCs (fileEvent: vscode.FileCreateEvent): Promise<void> {
