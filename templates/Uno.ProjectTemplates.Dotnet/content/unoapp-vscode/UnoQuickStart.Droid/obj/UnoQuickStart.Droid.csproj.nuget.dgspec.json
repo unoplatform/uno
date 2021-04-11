@@ -1,0 +1,82 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Droid\\UnoQuickStart.Droid.csproj": {}
+  },
+  "projects": {
+    "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Droid\\UnoQuickStart.Droid.csproj": {
+      "version": "255.255.255.255",
+      "restore": {
+        "projectUniqueName": "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Droid\\UnoQuickStart.Droid.csproj",
+        "projectName": "UnoQuickStart.Droid",
+        "projectPath": "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Droid\\UnoQuickStart.Droid.csproj",
+        "packagesPath": "C:\\Users\\mpro3\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Droid\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "D:\\Projects\\X\\uno\\src\\NuGet.Config",
+          "C:\\Users\\mpro3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "monoandroid10.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\Projects\\X\\uno\\src\\PackageCache": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://uno-platform.pkgs.visualstudio.com/Uno%20Platform/_packaging/unoplatformdev/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "monoandroid10.0": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "monoandroid10.0": {
+          "dependencies": {
+            "Microsoft.Extensions.Logging.Console": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Filter": {
+              "target": "Package",
+              "version": "[1.1.2, )"
+            },
+            "Microsoft.NETFramework.ReferenceAssemblies.net461": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Microsoft.NETFramework.ReferenceAssemblies.net472": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Uno.UI": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Uno.UI.RemoteControl": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Uno.UniversalImageLoader": {
+              "target": "Package",
+              "version": "[1.9.33, )"
+            }
+          }
+        }
+      }
+    }
+  }
+}

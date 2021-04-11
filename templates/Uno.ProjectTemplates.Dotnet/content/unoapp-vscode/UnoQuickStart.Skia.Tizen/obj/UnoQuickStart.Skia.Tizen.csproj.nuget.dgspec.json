@@ -1,0 +1,106 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Skia.Tizen\\UnoQuickStart.Skia.Tizen.csproj": {}
+  },
+  "projects": {
+    "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Skia.Tizen\\UnoQuickStart.Skia.Tizen.csproj": {
+      "version": "255.255.255.255",
+      "restore": {
+        "projectUniqueName": "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Skia.Tizen\\UnoQuickStart.Skia.Tizen.csproj",
+        "projectName": "UnoQuickStart.Skia.Tizen",
+        "projectPath": "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Skia.Tizen\\UnoQuickStart.Skia.Tizen.csproj",
+        "packagesPath": "C:\\Users\\mpro3\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\content\\unoapp\\UnoQuickStart.Skia.Tizen\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "D:\\Projects\\X\\uno\\src\\NuGet.Config",
+          "C:\\Users\\mpro3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "tizen50"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\Projects\\X\\uno\\src\\PackageCache": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://uno-platform.pkgs.visualstudio.com/Uno%20Platform/_packaging/unoplatformdev/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "tizen50": {
+            "targetAlias": "tizen50",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "tizen50": {
+          "targetAlias": "tizen50",
+          "dependencies": {
+            "Microsoft.Extensions.Logging.Console": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Filter": {
+              "target": "Package",
+              "version": "[1.1.2, )"
+            },
+            "Microsoft.NETFramework.ReferenceAssemblies.net461": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Microsoft.NETFramework.ReferenceAssemblies.net472": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "SkiaSharp.Views": {
+              "target": "Package",
+              "version": "[2.80.0, )"
+            },
+            "Tizen.NET": {
+              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0.15631, )",
+              "autoReferenced": true
+            },
+            "Uno.UI.RemoteControl": {
+              "target": "Package",
+              "version": "[3.0.0-dev.1447, )"
+            },
+            "Uno.UI.Skia.Tizen": {
+              "target": "Package",
+              "version": "[3.0.0-dev.1447, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

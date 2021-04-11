@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
+		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup Condition="exists('..\UnoQuickStart.UWP')">
+		<EmbeddedResource Include="..\UnoQuickStart.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<Content Include="..\UnoQuickStart.UWP\Assets\StoreLogo.png" Link="Assets\StoreLogo.png" />
+		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UpToDateCheckInput Include="..\UnoQuickStart.Shared\**\*.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Note that for WebAssembly version 1.1.1 of the console logger required -->
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+		<PackageReference Include="Uno.UI.Skia.Gtk" Version="3.6.6" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="3.6.6" Condition="'$(Configuration)'=='Debug'" />
+	</ItemGroup>
+
+	<Import Project="..\UnoQuickStart.Shared\UnoQuickStart.Shared.projitems" Label="Shared" />
+
+</Project>

@@ -1,0 +1,12 @@
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\bin\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.dll.config
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\bin\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.deps.json
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\bin\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.dll
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\bin\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.pdb
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\obj\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.csprojAssemblyReference.cache
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\obj\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.csproj.GenerateResource.cache
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\obj\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.AssemblyInfoInputs.cache
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\obj\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.AssemblyInfo.cs
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\obj\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.csproj.CoreCompileInputs.cache
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\obj\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.dll
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\obj\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.pdb
+D:\Projects\X\uno\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\obj\Debug\netstandard2.0\Uno.ProjectTemplates.Dotnet.content.unoapp_vscode.UnoQuickStart.Skia.WPF.Host.Properties.Resources.resources
