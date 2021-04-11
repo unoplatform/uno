@@ -60,6 +60,24 @@ function clearErrorsFromDoc (diagns: vscode.DiagnosticCollection | undefined): v
     }
 }
 
+function reloadXAMLChanges (doc: vscode.TextDocument, prevTimeout: any,
+    xamlSent: string, xamlSentPrev: string, diagns: vscode.DiagnosticCollection,
+    panel: vscode.WebviewPanel): void {
+    // ok, so lets reload the xaml changes
+    if (doc?.languageId === "xml" && doc.fileName.includes(".xaml")) {
+        clearInterval(prevTimeout);
+        if (xamlSent !== doc?.getText()) {
+            clearErrorsFromDoc(diagns);
+            xamlSent = doc?.getText();
+
+            prevTimeout = setTimeout(() => {
+                xamlSentPrev = xamlSent;
+                void panel.webview.postMessage(xamlSent);
+            }, 500);
+        }
+    }
+}
+
 /**
  * Create a instance of a webview panel and load the Uno Playground
  * This will check for change events on documents of type XAML to make a fake
@@ -194,31 +212,17 @@ export function createXAMLPreview (): vscode.Webview {
         const doc = editor?.document;
 
         // ok, so lets reload the xaml changes
-        if (doc?.languageId === "xml" && doc.fileName.includes(".xaml")) {
-            clearInterval(prevTimeout);
-            if (xamlSent !== doc?.getText()) {
-                clearErrorsFromDoc(diagns);
-                xamlSent = doc?.getText();
-
-                prevTimeout = setTimeout(() => {
-                    xamlSentPrev = xamlSent;
-                    void panel.webview.postMessage(xamlSent);
-                }, 500);
-            }
-        }
+        reloadXAMLChanges(
+            doc!, prevTimeout, xamlSent!, xamlSentPrev!, diagns!, panel);
     });
 
     // generate the xaml symbols on the save of a xaml file
-    // TODO: we need to best think about the auto build on save
     var ondidsave = vscode.workspace.onDidSaveTextDocument(() => {
         const editor = vscode.window.activeTextEditor;
         const doc = editor?.document;
 
-        // ok, so lets rebuild to generate the xaml.cs
-        if (doc?.languageId === "xml" && doc.fileName.includes(".xaml")) {
-            void vscode.commands
-                .executeCommand("workbench.action.tasks.runTask", "build");
-        }
+        reloadXAMLChanges(
+            doc!, prevTimeout, xamlSent!, xamlSentPrev!, diagns!, panel);
     });
 
     // do not forget to dispose everything on the dispose of panel
