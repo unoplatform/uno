@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "G+xWqzlVr+MYvsjGFRo290XuwGVTpjD/pn/VtG4FZocBV0e72hmR2VzOX1qn5gjLoSlcrHrQx9+TsVbPQeu8yg==",
+  "success": true,
+  "projectFilePath": "D:\\Projects\\X\\uno\\src\\SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mpro3\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\mpro3\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net461\\1.0.0\\microsoft.netframework.referenceassemblies.net461.1.0.0.nupkg.sha512",
+    "C:\\Users\\mpro3\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net472\\1.0.0\\microsoft.netframework.referenceassemblies.net472.1.0.0.nupkg.sha512",
+    "C:\\Users\\mpro3\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

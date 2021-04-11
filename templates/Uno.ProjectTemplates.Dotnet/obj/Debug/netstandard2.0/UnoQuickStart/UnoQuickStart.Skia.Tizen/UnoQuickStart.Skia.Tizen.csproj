@@ -1,0 +1,34 @@
+<Project Sdk="Tizen.NET.Sdk/1.1.6">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>tizen50</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<DefineConstants>$(DefineConstants);__TIZEN__;</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="lib\" />
+		<Folder Include="res\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="exists('..\UnoQuickStart.UWP')">
+		<EmbeddedResource Include="..\UnoQuickStart.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<Content Include="..\UnoQuickStart.UWP\Assets\StoreLogo.png" Link="Assets\StoreLogo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UpToDateCheckInput Include="..\UnoQuickStart.Shared\**\*.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Include="SkiaSharp.Views" Version="2.80.2" />
+		<PackageReference Include="Uno.UI.Skia.Tizen" Version="3.0.0-dev.1447" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="3.0.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
+	</ItemGroup>
+
+	<Import Project="..\UnoQuickStart.Shared\UnoQuickStart.Shared.projitems" Label="Shared" />
+
+</Project>

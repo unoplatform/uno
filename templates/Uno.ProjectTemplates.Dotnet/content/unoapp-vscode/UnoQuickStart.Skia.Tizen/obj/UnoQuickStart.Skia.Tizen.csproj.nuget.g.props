@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
+    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
+    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\mpro3\.nuget\packages\;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages;C:\Program Files (x86)\Microsoft\Xamarin\NuGet\</NuGetPackageFolders>
+    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">5.10.0</NuGetToolVersion>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <SourceRoot Include="C:\Users\mpro3\.nuget\packages\" />
+    <SourceRoot Include="C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\" />
+    <SourceRoot Include="C:\Program Files (x86)\Microsoft\Xamarin\NuGet\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)tizen.net.api5\5.0.0.14638\build\tizen50\Tizen.NET.API5.props" Condition="Exists('$(NuGetPackageRoot)tizen.net.api5\5.0.0.14638\build\tizen50\Tizen.NET.API5.props')" />
+    <Import Project="$(NuGetPackageRoot)tizen.net\8.0.0.15631\build\tizen40\Tizen.NET.props" Condition="Exists('$(NuGetPackageRoot)tizen.net\8.0.0.15631\build\tizen40\Tizen.NET.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.ui.skia.tizen\3.1.0-beta.1\build\Uno.UI.Skia.Tizen.props" Condition="Exists('$(NuGetPackageRoot)uno.ui.skia.tizen\3.1.0-beta.1\build\Uno.UI.Skia.Tizen.props')" />
+  </ImportGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgUno_UI Condition=" '$(PkgUno_UI)' == '' ">C:\Users\mpro3\.nuget\packages\uno.ui\3.1.0-beta.1</PkgUno_UI>
+    <PkgUno_UI_RemoteControl Condition=" '$(PkgUno_UI_RemoteControl)' == '' ">C:\Users\mpro3\.nuget\packages\uno.ui.remotecontrol\3.0.0-dev.1447</PkgUno_UI_RemoteControl>
+  </PropertyGroup>
+</Project>

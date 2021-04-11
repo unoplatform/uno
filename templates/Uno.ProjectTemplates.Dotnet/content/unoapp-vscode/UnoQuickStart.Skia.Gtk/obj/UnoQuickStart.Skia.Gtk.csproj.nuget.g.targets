@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)uno.sourcegenerationtasks\3.0.0\build\netstandard1.0\Uno.SourceGenerationTasks.targets" Condition="Exists('$(NuGetPackageRoot)uno.sourcegenerationtasks\3.0.0\build\netstandard1.0\Uno.SourceGenerationTasks.targets')" />
+    <Import Project="$(NuGetPackageRoot)uno.core.build\2.3.0\build\Uno.Core.Build.targets" Condition="Exists('$(NuGetPackageRoot)uno.core.build\2.3.0\build\Uno.Core.Build.targets')" />
+    <Import Project="$(NuGetPackageRoot)uno.ui\3.6.6\buildTransitive\netstandard2.0\Uno.UI.targets" Condition="Exists('$(NuGetPackageRoot)uno.ui\3.6.6\buildTransitive\netstandard2.0\Uno.UI.targets')" />
+    <Import Project="$(NuGetPackageRoot)uno.ui.runtime.skia.gtk\3.6.6\buildTransitive\Uno.UI.Runtime.Skia.Gtk.targets" Condition="Exists('$(NuGetPackageRoot)uno.ui.runtime.skia.gtk\3.6.6\buildTransitive\Uno.UI.Runtime.Skia.Gtk.targets')" />
+    <Import Project="$(NuGetPackageRoot)uno.ui.skia.gtk\3.6.6\build\Uno.UI.Skia.Gtk.targets" Condition="Exists('$(NuGetPackageRoot)uno.ui.skia.gtk\3.6.6\build\Uno.UI.Skia.Gtk.targets')" />
+    <Import Project="$(NuGetPackageRoot)uno.ui.remotecontrol\3.6.6\buildTransitive\Uno.UI.RemoteControl.targets" Condition="Exists('$(NuGetPackageRoot)uno.ui.remotecontrol\3.6.6\buildTransitive\Uno.UI.RemoteControl.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.netframework.referenceassemblies.net472\1.0.0\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.netframework.referenceassemblies.net472\1.0.0\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.netframework.referenceassemblies.net461\1.0.0\build\Microsoft.NETFramework.ReferenceAssemblies.net461.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.netframework.referenceassemblies.net461\1.0.0\build\Microsoft.NETFramework.ReferenceAssemblies.net461.targets')" />
+  </ImportGroup>
+</Project>

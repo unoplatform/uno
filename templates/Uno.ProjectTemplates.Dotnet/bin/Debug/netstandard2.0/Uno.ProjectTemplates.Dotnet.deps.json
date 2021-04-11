@@ -1,0 +1,65 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.0/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.0": {},
+    ".NETStandard,Version=v2.0/": {
+      "Uno.ProjectTemplates.Dotnet/255.255.255.255": {
+        "dependencies": {
+          "Microsoft.NETFramework.ReferenceAssemblies.net461": "1.0.0",
+          "Microsoft.NETFramework.ReferenceAssemblies.net472": "1.0.0",
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "Uno.ProjectTemplates.Dotnet.dll": {}
+        }
+      },
+      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "Microsoft.NETFramework.ReferenceAssemblies.net461/1.0.0": {},
+      "Microsoft.NETFramework.ReferenceAssemblies.net472/1.0.0": {},
+      "NETStandard.Library/2.0.3": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Uno.ProjectTemplates.Dotnet/255.255.255.255": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.NETCore.Platforms/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "path": "microsoft.netcore.platforms/1.1.0",
+      "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
+    },
+    "Microsoft.NETFramework.ReferenceAssemblies.net461/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-t4HKFwTQk/TkCCe1Sr2veze2QU6/RkRHkSQrZMHo2oFAoPANBg1l93O2Gh+ogqKRLFCRBbInm9hvEeSKVsuepw==",
+      "path": "microsoft.netframework.referenceassemblies.net461/1.0.0",
+      "hashPath": "microsoft.netframework.referenceassemblies.net461.1.0.0.nupkg.sha512"
+    },
+    "Microsoft.NETFramework.ReferenceAssemblies.net472/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VI0f22cH/xOlXLUVY7t6vr2Gi7cg0vzwpspNGz5isRusyspZblF7jJMw49E8mF1m071JyeVmZVkIK9c5kbiyFA==",
+      "path": "microsoft.netframework.referenceassemblies.net472/1.0.0",
+      "hashPath": "microsoft.netframework.referenceassemblies.net472.1.0.0.nupkg.sha512"
+    },
+    "NETStandard.Library/2.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
+      "path": "netstandard.library/2.0.3",
+      "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
+    }
+  }
+}

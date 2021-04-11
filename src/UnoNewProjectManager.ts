@@ -160,7 +160,7 @@ export class UnoNewProjectManager {
             [
                 "new",
                 "--install",
-                "Uno.ProjectTemplates.Dotnet::3.6.0-dev.578"
+                `${path.join(this.context.extensionPath, "templates", "Uno.ProjectTemplates.Dotnet")}`
             ]);
     }
 
@@ -170,7 +170,7 @@ export class UnoNewProjectManager {
                 const success = await this.executeDotnetWithArgs(projectLocation!,
                     [
                         "new",
-                        "unoapp",
+                        "unoapp-vscode",
                         "-wasm=false",
                         "-uwp=false",
                         "-ios=false",
@@ -198,7 +198,7 @@ export class UnoNewProjectManager {
                 const success = await this.executeDotnetWithArgs(projectLocation!,
                     [
                         "new",
-                        "unoapp",
+                        "unoapp-vscode",
                         "-skia-gtk=false",
                         "-uwp=false",
                         "-ios=false",
@@ -226,7 +226,7 @@ export class UnoNewProjectManager {
                 const success = await this.executeDotnetWithArgs(projectLocation!,
                     [
                         "new",
-                        "unoapp",
+                        "unoapp-vscode",
                         "-uwp=false",
                         "-ios=false",
                         "-android=false",
