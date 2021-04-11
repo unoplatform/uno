@@ -3615,7 +3615,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (propertyPaths.properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], GetType(dataType));
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
+								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType.ToDisplayString(NullableFlowState.None)}), __value); }} }}";
 							}
 							else
 							{
@@ -3657,7 +3657,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]);
 								return $"(___ctx, __value) => {{ " +
 									$"if(___ctx is global::{_className.ns + "." + _className.className} ___tctx) " +
-									$"{rawFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
+									$"{rawFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType.ToDisplayString(NullableFlowState.None)}), __value);" +
 									$" }}";
 							}
 							else
