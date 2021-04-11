@@ -76,6 +76,11 @@
         ],
         "commands": [
             {
+                "command": "unoplatform.xamlCodeBehind",
+                "title": "Open Code Behind",
+                "icon": "$(file-code)"
+            },
+            {
                 "command": "unoplatform.xamlBuild",
                 "title": "Update XAML Symbols (Build Solution)",
                 "icon": "$(sync)"
@@ -98,6 +103,11 @@
                 },
                 {
                     "command": "unoplatform.xamlPreview",
+                    "when": "resourceExtname == .xaml",
+                    "group": "navigation"
+                },
+                {
+                    "command": "unoplatform.xamlCodeBehind",
                     "when": "resourceExtname == .xaml",
                     "group": "navigation"
                 }

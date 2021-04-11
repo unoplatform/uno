@@ -30,6 +30,24 @@ export function activate (context: vscode.ExtensionContext): void {
         )
     );
 
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'unoplatform.xamlCodeBehind', () => {
+                // open the code behind
+                const editor = vscode.window.activeTextEditor;
+                const doc = editor?.document;
+
+                if (doc?.languageId === "xml" && doc.fileName.includes(".xaml")) {
+                    const codeBUri: vscode.Uri = vscode.Uri
+                        .file((doc.uri.fsPath + ".cs"));
+
+                    void vscode.commands
+                        .executeCommand("vscode.open", codeBUri);
+                }
+            }
+        )
+    );
+
     ExtensionUtils.showProgress("Initializing Uno Platform Ext ...", "",
         async (res, pro): Promise<void> => {
             // validate environment
