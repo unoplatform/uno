@@ -20,6 +20,16 @@ export function activate (context: vscode.ExtensionContext): void {
         )
     );
 
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'unoplatform.xamlBuild', () => {
+                // build solution to update XAML symbols
+                void vscode.commands
+                    .executeCommand("workbench.action.tasks.runTask", "build");
+            }
+        )
+    );
+
     ExtensionUtils.showProgress("Initializing Uno Platform Ext ...", "",
         async (res, pro): Promise<void> => {
             // validate environment

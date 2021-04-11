@@ -76,6 +76,11 @@
         ],
         "commands": [
             {
+                "command": "unoplatform.xamlBuild",
+                "title": "Update XAML Symbols (Build Solution)",
+                "icon": "$(sync)"
+            },
+            {
                 "command": "unoplatform.xamlPreview",
                 "title": "Preview Uno Platform XAML",
                 "icon": {
@@ -86,6 +91,11 @@
         ],
         "menus": {
             "editor/title": [
+                {
+                    "command": "unoplatform.xamlBuild",
+                    "when": "resourceExtname == .xaml",
+                    "group": "navigation"
+                },
                 {
                     "command": "unoplatform.xamlPreview",
                     "when": "resourceExtname == .xaml",
