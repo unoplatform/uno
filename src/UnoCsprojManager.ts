@@ -71,15 +71,7 @@ export class UnoCsprojManager {
     }
 
     private setReferenceXamlCs (result: any, path: PathLike, className: string, subLevel: string): void {
-        result.Project
-            .ItemGroup[1]
-            .Compile.push({
-                $: {
-                    Include: `$(MSBuildThisFileDirectory)${subLevel}${className}.xaml.cs`
-                },
-                DependentUpon: `${className}.xaml`
-            });
-
+        // only add the reference to xaml
         result.Project
             .ItemGroup[2]
             .Page.push({
@@ -133,6 +125,24 @@ export class UnoCsprojManager {
         }
 
         return undefined;
+    }
+
+    private forceOmnisharpReload (): void {
+        // get the workspace directories
+        const location = vscode.workspace.rootPath;
+        const skiaGtkPath: PathLike | undefined = this.getPath(".Skia.Gtk", location);
+        const skiaWasmPath: PathLike | undefined = this.getPath(".Wasm", location);
+
+        // virtual save
+        if (skiaGtkPath !== undefined) {
+            const vData = fs.readFileSync(skiaGtkPath);
+            fs.writeFileSync(skiaGtkPath, vData);
+        }
+
+        if (skiaWasmPath !== undefined) {
+            const vData = fs.readFileSync(skiaWasmPath);
+            fs.writeFileSync(skiaWasmPath, vData);
+        }
     }
 
     public setHotReloadHostAddress (location?: PathLike): void {
@@ -241,7 +251,11 @@ export class UnoCsprojManager {
                     subLevel += "\\";
                 }
 
+                // reference it to the shared project
                 this.setReferenceFolder(result, sharedProjitemsLocation!, subLevel);
+                // also we need to update omnisharp
+                this.forceOmnisharpReload();
+
                 ExtensionUtils.writeln(`${subLevel} reference added on shared project`);
             }
         });
