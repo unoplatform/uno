@@ -152,3 +152,11 @@ During a debugging session on a WASM project you can inspect values only using t
 For shared project you must select the debug target before press F5:
 
 ![](https://github.com/microhobby/vs-code-uno-platform/blob/docs/Documentation/img/SelectSharedDebugTarget.gif?raw=true)
+
+# Known Issues
+
+You can check and open issues on [Github repo](https://github.com/microhobby/vs-code-uno-platform/issues)
+
+# Release Notes
+
+Check the [CHANGELOG.md](https://github.com/microhobby/vs-code-uno-platform/blob/main/CHANGELOG.md)
