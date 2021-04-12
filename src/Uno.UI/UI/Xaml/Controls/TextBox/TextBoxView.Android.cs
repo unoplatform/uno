@@ -22,6 +22,7 @@ using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -32,6 +33,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly ManagedWeakReference? _ownerRef;
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
+
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		public TextBoxView(TextBox owner)
 			: base(ContextHelper.Current)
@@ -267,12 +270,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
+			_foregroundChanged.Disposable = null;
 			var scb = newValue as SolidColorBrush;
 
 			if (scb != null)
 			{
-				this.SetTextColor(scb.Color);
-				this.SetCursorColor(scb.Color);
+				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
+				ApplyColor();
+
+				void ApplyColor()
+				{
+					SetTextColor(scb.Color);
+					SetCursorColor(scb.Color);
+				}
 			}
 		}
 	}
