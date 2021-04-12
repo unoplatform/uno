@@ -24,6 +24,6 @@ namespace XamlGenerationTests
 			this.InitializeComponent();
 		}
 
-		public string? TestProperty { get; } = null;
+		public string? TestProperty { get; set; } = null;
 	}
 }
