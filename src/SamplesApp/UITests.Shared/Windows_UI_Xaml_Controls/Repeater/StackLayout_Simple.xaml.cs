@@ -2,6 +2,7 @@
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Uno.UI;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.Repeater
@@ -39,7 +40,7 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater
 		private void Tree(object server, RoutedEventArgs routedEventArgs)
 		{
 #if HAS_UNO || HAS_UNO_WINUI
-			var txt = this.ShowLocalVisualTree();
+			var txt = this.ShowLocalVisualTree(0);
 			Console.WriteLine(txt);
 #endif
 		}
