@@ -1,9 +1,23 @@
 # Change Log
 
-All notable changes to the "uno-platform" extension will be documented in this file.
+## 0.1.0 Beta RC2
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+- Documentation
+- License
 
-## [Unreleased]
+## 0.1.0 Beta RC1
 
-- Initial release
+- Folders created on `Shared` are automatically added to `.Shared.projitems`
+- XAML go to code behind
+- Bug fixes
+
+## Alpha
+
+- Create new Skia Gtk Project
+- Create new WASM Project
+- Create new Shared Skia Gtk/WASM Project
+    - Multiple debug targets
+- Create `.xaml` and automatically create `.xaml.cs` and add it to the `.Shared.projitems`
+- XAML Preview
+- XAML Hot Reload
+- XAML Code completion
