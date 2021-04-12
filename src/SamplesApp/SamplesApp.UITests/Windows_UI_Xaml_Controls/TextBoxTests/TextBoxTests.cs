@@ -199,7 +199,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			{
 				_app.EnterText("ERROR1");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				// Ignore the exception for now.
 				Console.WriteLine(e);
@@ -219,7 +219,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			{
 				_app.EnterText("ERROR2");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Console.WriteLine(e);
 			}
@@ -366,7 +366,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		public void TextBox_TextAlignment_Left_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextAlignment");
-			
+
 			var leftAlignedTextBox = _app.Marked("LeftAlignedTextBox");
 
 			// Assert initial text alignment, change text and assert final text alignment
@@ -765,6 +765,56 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			width3.Should().Be(width1);
 			height3.Should().Be(height1);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_Foreground_Color_Changing()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Foreground_Changing");
+
+			_app.WaitForElement("DummyButton");
+			_app.FastTap("DummyButton"); // Ensure pointer is out of the way and mouse-over states aren't accidentally active
+
+			const string SingleLine = "SingleLineTextBox";
+			const string Multiline = "MultilineTextBox";
+
+			using var initial = TakeScreenshot("Initial");
+
+			PointF GetPixelPosition(string textBoxName)
+			{
+				var rect = _app.GetPhysicalRect(textBoxName);
+				var firstPosition = GetPixelPositionWithColor(initial, rect, Color.Tomato);
+				return new PointF(firstPosition.X + 5, firstPosition.Y + 5);
+			}
+			var singleLinePosition = GetPixelPosition(SingleLine);
+			var multilinePosition = GetPixelPosition(Multiline);
+
+			_app.FastTap("ChangeForeground");
+			_app.WaitForText("StatusTextBlock", "Changed");
+
+			using var after = TakeScreenshot("Foreground Color changed");
+
+			ImageAssert.HasColorAt(after, singleLinePosition.X, singleLinePosition.Y, Color.Blue);
+			ImageAssert.HasColorAt(after, multilinePosition.X, multilinePosition.Y, Color.Blue);
+		}
+
+		private static PointF GetPixelPositionWithColor(ScreenshotInfo screenshotInfo, IAppRect boundingRect, Color expectedColor)
+		{
+			var bitmap = screenshotInfo.GetBitmap();
+			for (var x = boundingRect.X; x < boundingRect.Right; x++)
+			{
+				for (var y = boundingRect.Y; y < boundingRect.Bottom; y++)
+				{
+					var pixel = bitmap.GetPixel((int)x, (int)y);
+					if (pixel.ToArgb() == expectedColor.ToArgb())
+					{
+						return new PointF(x, y);
+					}
+				}
+			}
+
+			throw new InvalidOperationException($"Color {expectedColor} was not found.");
 		}
 	}
 }
