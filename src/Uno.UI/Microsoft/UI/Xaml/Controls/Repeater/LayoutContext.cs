@@ -19,8 +19,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ILayoutContextOverrides
 
-		protected internal virtual IReadOnlyList<UIElement> GetChildrenCore() => throw new NotImplementedException();
-
 		protected internal virtual object LayoutStateCore
 		{
 			get => throw new NotImplementedException();

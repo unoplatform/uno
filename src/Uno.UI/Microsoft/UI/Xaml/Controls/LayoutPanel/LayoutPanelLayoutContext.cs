@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_owner = owner;
 		}
 
-		protected internal override IReadOnlyList<UIElement> GetChildrenCore() => m_owner.Children.ToArray();
+		public override IReadOnlyList<UIElement> ChildrenCore => m_owner.Children.ToArray();
 
 		protected internal override object LayoutStateCore
 		{
