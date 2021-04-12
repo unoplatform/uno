@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class TimePickerFlyout : PickerFlyoutBase
 	{
-#if !__IOS__
+#if !__ANDROID__ && !__IOS__
 		protected override Control CreatePresenter() => throw new NotImplementedException();
 #endif
 

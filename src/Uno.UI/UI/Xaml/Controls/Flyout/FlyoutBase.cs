@@ -269,7 +269,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpened() { }
 
-		protected virtual Control CreatePresenter() => throw new InvalidOperationException();
+		protected virtual Control CreatePresenter() => null;
 
 		private void OnPopupClosed(object sender, object e)
 		{
