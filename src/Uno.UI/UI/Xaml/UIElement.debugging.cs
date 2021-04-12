@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml
 				var output = "";
 				foreach (var binding in bindings)
 				{
-					output += $"{binding.ResourceKey} ({binding.Precedence}), ";
+					output += $"{binding.ResourceKey.Key} ({binding.Precedence}), ";
 				}
 
 				return output;
@@ -79,10 +79,6 @@ namespace Windows.UI.Xaml
 
 		private static DependencyProperty GetDPByName(string propertyName, DependencyObject propertyOwner)
 		{
-			if (!propertyName.EndsWith("Property"))
-			{
-				propertyName += "Property";
-			}
 			return DependencyProperty.GetProperty(propertyOwner.GetType(), propertyName);
 		}
 
