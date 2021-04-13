@@ -61,7 +61,7 @@ namespace Uno.UI.Skia.Platform
 		/// </summary>
 		/// <remarks>
 		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
-		/// </remarks>d
+		/// </remarks>
 		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null)
 		{
 			_current = this;

@@ -94,12 +94,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			}
 
 			EnsureWidgetForAcceptsReturn();
-
-			//_currentInputWidget.Margin = new Thickness(
-			//	textBox.ContentElement.Margin.Left,
-			//	textBox.ContentElement.Margin.Top,
-			//	textBox.ContentElement.Margin.Right,
-			//	textBox.ContentElement.Margin.Bottom);
+			
 			_currentInputWidget.FontSize = textBox.FontSize;
 			_currentInputWidget.FontWeight = FontWeight.FromOpenTypeWeight(textBox.FontWeight.Weight);
 			_currentInputWidget.AcceptsReturn = textBox.AcceptsReturn;
