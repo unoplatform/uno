@@ -11,6 +11,8 @@
     <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <WasmShellEmccLinkOptimization>false</WasmShellEmccLinkOptimization>
+    <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
   </PropertyGroup>
 
   <ItemGroup>
