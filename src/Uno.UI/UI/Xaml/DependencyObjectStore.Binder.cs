@@ -388,16 +388,13 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context)
-		{
-			var precedence = _overriddenPrecedences?.Count > 0
-				? _overriddenPrecedences.Peek()
-				: default;
-			SetResourceBinding(dependencyProperty, resourceKey, isTheme, context, precedence, setterBindingPath: null);
-		}
-
 		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context, DependencyPropertyValuePrecedences? precedence, BindingPath? setterBindingPath)
 		{
+			if (precedence == null && _overriddenPrecedences?.Count > 0)
+			{
+				precedence = _overriddenPrecedences.Peek();
+			}
+
 			var binding = new ResourceBinding(resourceKey, isTheme, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
 			SetBinding(dependencyProperty, binding);
 		}

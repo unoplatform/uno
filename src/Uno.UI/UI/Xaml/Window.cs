@@ -39,6 +39,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal Canvas FocusVisualLayer { get; private set; }
+
 		public UIElement Content
 		{
 			get => InternalGetContent();

@@ -157,9 +157,9 @@ namespace Uno.UI
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
-			=> ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), isThemeResourceExtension, context);
+			=> ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), isThemeResourceExtension, context, null);
 
-		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, bool isThemeResourceExtension, object context)
+		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, bool isThemeResourceExtension, object context, DependencyPropertyValuePrecedences? precedence)
 		{
 			// Set initial value based on statically-available top-level resources.
 			if (TryStaticRetrieval(specializedKey, context, out var value))
@@ -173,7 +173,7 @@ namespace Uno.UI
 				}
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, isThemeResourceExtension, context);
+			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, isThemeResourceExtension, context, precedence, null);
 		}
 
 		/// <summary>

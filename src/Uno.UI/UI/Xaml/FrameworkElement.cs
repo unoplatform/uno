@@ -20,6 +20,7 @@ using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml.Media;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -54,7 +55,7 @@ namespace Windows.UI.Xaml
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
-		
+
 		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
@@ -106,7 +107,7 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
-		
+
 
 		partial void Initialize()
 		{
@@ -116,6 +117,8 @@ namespace Windows.UI.Xaml
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
+
+			InitializeFocusVisualProperties();
 		}
 
 		public
@@ -334,7 +337,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#region Style DependencyProperty
+		#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -342,7 +345,7 @@ namespace Windows.UI.Xaml
 			set => SetValue(StyleProperty, value);
 		}
 
-		public static DependencyProperty StyleProperty { get ; } =
+		public static DependencyProperty StyleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Style),
 				typeof(Style),
@@ -354,7 +357,7 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-#endregion
+		#endregion
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
@@ -393,7 +396,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if(_thisTypeResourceKey.IsEmpty)
+				if (_thisTypeResourceKey.IsEmpty)
 				{
 					_thisTypeResourceKey = this.GetType();
 				}
@@ -437,6 +440,77 @@ namespace Windows.UI.Xaml
 		public ElementTheme ActualTheme => IsWindowRoot ?
 			Application.Current?.ActualElementTheme ?? ElementTheme.Default
 			: ElementTheme.Default;
+
+		public Thickness FocusVisualSecondaryThickness
+		{
+			get => (Thickness)GetValue(FocusVisualSecondaryThicknessProperty);
+			set => SetValue(FocusVisualSecondaryThicknessProperty, value);
+		}
+
+		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FocusVisualSecondaryThickness),
+				typeof(Thickness),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(new Thickness(1)));
+
+		public Brush FocusVisualSecondaryBrush
+		{
+			get => (Brush)GetValue(FocusVisualSecondaryBrushProperty);
+			set => SetValue(FocusVisualSecondaryBrushProperty, value);
+		}
+
+		public static DependencyProperty FocusVisualSecondaryBrushProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FocusVisualSecondaryBrush),
+				typeof(Brush),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(default(Brush)));
+
+		public Thickness FocusVisualPrimaryThickness
+		{
+			get => (Thickness)GetValue(FocusVisualPrimaryThicknessProperty);
+			set => SetValue(FocusVisualPrimaryThicknessProperty, value);
+		}
+
+		public static DependencyProperty FocusVisualPrimaryThicknessProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FocusVisualPrimaryThickness),
+				typeof(Thickness),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(new Thickness(2)));
+
+		public Brush FocusVisualPrimaryBrush
+		{
+			get => (Brush)GetValue(FocusVisualPrimaryBrushProperty);
+			set => SetValue(FocusVisualPrimaryBrushProperty, value);
+		}
+
+		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FocusVisualPrimaryBrush),
+				typeof(Brush),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(default(Brush)));
+
+		public Thickness FocusVisualMargin
+		{
+			get => (Thickness)GetValue(FocusVisualMarginProperty);
+			set => SetValue(FocusVisualMarginProperty, value);
+		}
+
+		public static DependencyProperty FocusVisualMarginProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FocusVisualMargin),
+				typeof(Thickness),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(default(Thickness)));
+
+		private void InitializeFocusVisualProperties()
+		{
+			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), true, null, DependencyPropertyValuePrecedences.DefaultValue);
+			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), true, null, DependencyPropertyValuePrecedences.DefaultValue);
+		}
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
@@ -703,7 +777,7 @@ namespace Windows.UI.Xaml
 								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
-#region AutomationPeer
+		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
@@ -754,7 +828,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-#endregion
+		#endregion
 
 #if !UNO_REFERENCE_API
 		private class FrameworkElementLayouter : Layouter
