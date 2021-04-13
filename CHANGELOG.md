@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.1.0 Beta RC3
+
+- Speed up WASM build
+- Decreases VSIX size
+
 ## 0.1.0 Beta RC2
 
 - Documentation

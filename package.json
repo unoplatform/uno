@@ -5,7 +5,7 @@
     "preview": true,
     "publisher": "microhobby",
     "description": "Uno Platform Projects with Hot Reload and XAML Preview",
-    "version": "0.1.0-rc2",
+    "version": "0.1.0-rc3",
     "repository": {
         "url": "https://github.com/microhobby/vs-code-uno-platform"
     },
