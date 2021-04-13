@@ -8,6 +8,7 @@ using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
+using Uno.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Input
 {
@@ -132,6 +133,7 @@ namespace Windows.UI.Xaml.Input
 			(newFocus as Control)?.UpdateFocusState(focusState);
 
 			FocusNative(newFocus as Control);
+			UpdateFocusVisual(newFocus, focusState);
 
 			if (oldFocusedElement != null)
 			{
@@ -144,6 +146,34 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			return true;
+		}
+
+		private static void UpdateFocusVisual(DependencyObject newFocus, FocusState focusState)
+		{
+			var focusVisualLayer = Window.Current.FocusVisualLayer;
+			SystemFocusVisual focusVisual;
+			if (focusVisualLayer.Children.Count == 0)
+			{
+				focusVisualLayer.Children.Add(new SystemFocusVisual());
+			}
+
+			focusVisual = (SystemFocusVisual)focusVisualLayer.Children[0];
+			if (newFocus is FrameworkElement element && focusState == FocusState.Keyboard)
+			{
+				focusVisual.FocusedElement = element;
+				focusVisual.Visibility = Visibility.Visible;
+				focusVisual.Width = element.ActualWidth;
+				focusVisual.Height = element.ActualHeight;
+				var transformToRoot = element.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
+				var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
+				Canvas.SetLeft(focusVisual, point.X);
+				Canvas.SetTop(focusVisual, point.Y);
+			}
+			else
+			{
+				focusVisual.FocusedElement = null;
+				focusVisual.Visibility = Visibility.Collapsed;
+			}
 		}
 
 		private static void RaiseLostFocusEvent(object oldFocus)
