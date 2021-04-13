@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using SamplesApp.UITests._Utils;
+using Uno.UITest;
 
 namespace SamplesApp.UITests.TestFramework
 {
@@ -20,6 +21,26 @@ namespace SamplesApp.UITests.TestFramework
 
 		public static ExpectedPixels At(string name, Point location)
 			=> new ExpectedPixels(name, location, default, new Color[0, 0]);
+
+		public static ExpectedPixels UniformRect(
+			IAppRect rect,
+			string color,
+			[CallerMemberName] string name = null,
+			[CallerLineNumber] int line = -1)
+		{
+			var c = GetColorFromString(color);
+
+			var colors = new Color[(int)rect.Height, (int)rect.Width];
+
+			for (var py = (int)rect.Height; py < (int)rect.Height; py++)
+			for (var px = (int)rect.Width; px < (int)rect.Width; px++)
+			{
+				colors[py, px] = c;
+			}
+
+			var location = new Point((int)rect.X, (int)rect.Y);
+			return new ExpectedPixels(name, location, location, colors);
+		}
 
 		public ExpectedPixels Named(string name)
 			=> new ExpectedPixels(name, Location, SourceLocation, Values, Tolerance);
