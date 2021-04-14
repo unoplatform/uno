@@ -27,15 +27,18 @@ namespace UITests.Windows_UI_Xaml.FocusManager
 		private void OnDataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as FocusVisualPropertiesViewModel;
-			ViewModel.OnCycle = OnCycle;
+			if (ViewModel != null)
+			{
+				ViewModel.OnCycle = OnCycle;
+			}
 		}
 
 		private void OnCycle()
 		{
-			var currentIndex = FocusPanel.Children.IndexOf(_currentFocusButton);
+			var currentIndex = Array.IndexOf(_buttons, _currentFocusButton);
 			currentIndex++;
-			currentIndex %= FocusPanel.Children.Count;
-			_currentFocusButton = FocusPanel.Children[currentIndex] as Button;
+			currentIndex %= _buttons.Length;
+			_currentFocusButton = _buttons[currentIndex];
 			_currentFocusButton.Focus(FocusState.Keyboard);
 		}
 	}

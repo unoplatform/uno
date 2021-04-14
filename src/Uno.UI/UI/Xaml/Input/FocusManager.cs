@@ -161,13 +161,7 @@ namespace Windows.UI.Xaml.Input
 			if (newFocus is FrameworkElement element && focusState == FocusState.Keyboard)
 			{
 				focusVisual.FocusedElement = element;
-				focusVisual.Visibility = Visibility.Visible;
-				focusVisual.Width = element.ActualWidth;
-				focusVisual.Height = element.ActualHeight;
-				var transformToRoot = element.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
-				var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
-				Canvas.SetLeft(focusVisual, point.X);
-				Canvas.SetTop(focusVisual, point.Y);
+				focusVisual.Visibility = Visibility.Visible;				
 			}
 			else
 			{

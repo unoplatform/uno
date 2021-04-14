@@ -64,7 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 	}
 
-	public class PlainFrameworkElement : FrameworkElement
+	public partial class PlainFrameworkElement : FrameworkElement
 	{
 	}
 }

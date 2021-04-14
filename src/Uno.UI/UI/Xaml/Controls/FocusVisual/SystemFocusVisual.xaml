@@ -12,7 +12,9 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:SystemFocusVisual">
-					<Border>
+					<Border
+						RenderTransform="{Binding Path=FocusedElement.RenderTransform, RelativeSource={RelativeSource TemplatedParent}}"
+						RenderTransformOrigin="{Binding Path=FocusedElement.RenderTransformOrigin, RelativeSource={RelativeSource TemplatedParent}}">
 						<Border                        
                             Background="{x:Null}"
                             BorderBrush="{Binding Path=FocusedElement.FocusVisualPrimaryBrush, RelativeSource={RelativeSource TemplatedParent}}"
