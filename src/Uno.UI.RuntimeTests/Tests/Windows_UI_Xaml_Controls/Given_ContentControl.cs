@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using System.Linq;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentControlPages;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -130,6 +131,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await When_ContentTemplateSelector_And_Default_Style();
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Template_Applied_On_Loading_DataContext_Propagation()
+		{
+			var page = new When_Template_Applied_On_Loading_DataContext_Propagation_Page();
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+			var comboBox = page.SpawnedButtonHost.PseudoContent as ComboBox;
+
+			var dataContextChangedCounter = 0;
+			var itemsSourceChangedCounter = 0;
+			comboBox.DataContextChanged += (_, __) => dataContextChangedCounter++;
+			comboBox.RegisterPropertyChangedCallback(ItemsControl.ItemsSourceProperty, (_, __) => itemsSourceChangedCounter++);
+
+			page.SpawnedButtonHost.SpawnButton();
+			Assert.IsNotNull(comboBox);
+
+			await WindowHelper.WaitForLoaded(comboBox);
+			Assert.AreEqual("Froot", comboBox.SelectedItem);
+			Assert.AreEqual(1, dataContextChangedCounter);
+			Assert.AreEqual(1, itemsSourceChangedCounter);
 		}
 
 		private class SignInViewModel
