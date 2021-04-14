@@ -44,7 +44,28 @@
         <dependency id="Newtonsoft.Json" version="12.0.2" />
       </group>
 
-      <!-- .NET Standard 2.0 -->
+	  <!-- net6.0-ios -->
+	  <group targetFramework="net6.0-ios">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+	  </group>
+
+	  <!-- net6.0-maccatalyst -->
+	  <group targetFramework="net6.0-maccatalyst">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+	  </group>
+
+	  <!-- net6.0-android -->
+	  <group targetFramework="net6.0-android">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+	  </group>
+
+	  <!-- .NET Standard 2.0 -->
       <group targetFramework="netstandard2.0">
         <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
@@ -79,6 +100,16 @@
 		<reference file="Uno.UI.RemoteControl.dll" />
 	  </group>
 
+	  <!-- .NET 6 Android -->
+	  <group targetFramework="net6.0-android">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
+
+	  <!-- .NET 6 iOS -->
+	  <group targetFramework="net6.0-ios">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
+
 	</references>
   </metadata>
   
@@ -99,6 +130,15 @@
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.pdb" target="lib\xamarinmac20" />
 
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-android\Uno.UI.RemoteControl.dll" target="lib\net6.0-android" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-android\Uno.UI.RemoteControl.pdb" target="lib\net6.0-android" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-ios\Uno.UI.RemoteControl.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-ios\Uno.UI.RemoteControl.pdb" target="lib\net6.0-ios" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net6.0-maccatalyst" />
+
 	<!-- Processors -->
 	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.dll" target="tools\rc\processors" />
 	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.pdb" target="tools\rc\processors" />
@@ -118,8 +158,9 @@
     <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.pdb" target="tools\rc" />
     <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\Newtonsoft.Json.dll" target="tools\rc" />
 	
-	<!-- Force UAP to ignore netstandard 2.0 -->
+	<!-- Force UAP/netx-win to ignore netstandard 2.0 -->
 	<file src="_._" target="build\uap10.0.16299" />
 	<file src="_._" target="build\uap10.0.17763" />
+	<file src="_._" target="build\net5.0-windows" />
   </files>
 </package>

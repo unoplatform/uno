@@ -2,14 +2,18 @@
 using Windows.Security.Authentication.Web;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using IdentityModel.OidcClient;
 using Uno.UI.Samples.Controls;
+
+#if !NET6_0_OR_GREATER
+using IdentityModel.OidcClient;
+#endif
 
 namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 {
 	[Sample("Authentication", IsManualTest = true)]
 	public sealed partial class AuthenticationBroker_Demo : Page
 	{
+#if !NET6_0_OR_GREATER
 		public AuthenticationBroker_Demo()
 		{
 			this.InitializeComponent();
@@ -66,9 +70,11 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 
 			}
 		}
+#endif
 
 		private async void SignIn_Clicked(object sender, RoutedEventArgs e)
 		{
+#if !NET6_0_OR_GREATER
 			var startUri = new Uri(_loginState.StartUrl);
 
 			// Important: there should be NO await before calling .AuthenticateAsync() - at least
@@ -100,12 +106,15 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 
 			// TODO: make something useful with the tokens
 			resultTxt.Text = $"Success - Token is {token}";
+#endif
 		}
 
 		private async void SignOut_Clicked(object sender, RoutedEventArgs e)
 		{
+#if !NET6_0_OR_GREATER
 			var userResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, _logoutUrl);
 			resultTxt.Text = $"{userResult.ResponseStatus}";
+#endif
 		}
 	}
 }

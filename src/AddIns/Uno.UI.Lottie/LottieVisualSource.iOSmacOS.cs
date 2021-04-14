@@ -1,4 +1,4 @@
-﻿#if !NET6_0_IOS
+﻿#if !NET6_0
 using System;
 using System.Threading;
 using Windows.Foundation;

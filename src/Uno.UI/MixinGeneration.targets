@@ -5,8 +5,12 @@
 	<T4Path>$(MSBuildThisFileDirectory)..\T4Generator\bin\$(Configuration)</T4Path>
 	<T4Bin>$(T4Path)\T4Generator.exe</T4Bin>
 
-	<IsMonoAndroid>$(TargetFramework.ToLower().StartsWith('monoandroid'))</IsMonoAndroid>
-	<IsXamarinIOS>$(TargetFramework.ToLower().StartsWith('xamarinios'))</IsXamarinIOS>
+	<IsMonoAndroid>false</IsMonoAndroid>
+	<IsMonoAndroid Condition="'$(TargetFramework)'=='net6.0-android' or $(TargetFramework.ToLower().StartsWith('monoandroid'))">true</IsMonoAndroid>
+
+	<IsXamarinIOS>false</IsXamarinIOS>
+	<IsXamarinIOS Condition="'$(TargetFramework)'=='net6.0-ios' or '$(TargetFramework)'=='net6.0-maccatalyst' or $(TargetFramework.ToLower().StartsWith('xamarinios'))">true</IsXamarinIOS>
+
 	<IsXamarinMac>$(TargetFramework.ToLower().StartsWith('xamarinmac'))</IsXamarinMac>
 	<IsReferenceAPI>false</IsReferenceAPI>
 	<IsReferenceAPI Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">true</IsReferenceAPI>
@@ -175,7 +179,7 @@
 
   <Target Name="_InnerGenerateMixins">
 	<PropertyGroup>
-	  <_MonoPrefix Condition="'$(MSBuildRuntimeType)'=='Core'">mono</_MonoPrefix>
+	  <_MonoPrefix Condition="'$(MSBuildRuntimeType)'=='Core' and $([MSBuild]::IsOSUnixLike())">mono</_MonoPrefix>
 	</PropertyGroup>
 	
 	<Exec Command="$(_MonoPrefix) &quot;$(T4Bin)&quot; $(InputFile) $(OutputPath)" />

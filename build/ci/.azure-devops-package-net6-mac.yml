@@ -1,0 +1,132 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: net6_mac_build
+  displayName: 'Build .NET 6 Build (macOS)'
+  timeoutInMinutes: 90
+
+  pool:
+    vmImage: macOS-latest
+
+  strategy:
+    matrix:
+      UWP:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP 
+
+      WinUI:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI 
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+    # net6 related
+    DotNetVersion: 6.0.100-preview.4.21226.14
+    DotNet.Cli.Telemetry.OptOut: true
+    MauiCheck.Version: 0.4.1
+    MauiCheck.Manifest: https://raw.githubusercontent.com/Redth/dotnet-maui-check/main/manifests/maui-dev.manifest.json
+
+    LogDirectory: $(Build.ArtifactStagingDirectory)/logs
+    DOTNET_ROOT: /usr/local/share/dotnet/
+    DotNet.Tools: ~/.dotnet/tools
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 5.0.103'
+    inputs:
+      packageType: sdk
+      version: 5.0.103
+      installationPath: $(DOTNET_ROOT)
+
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 3.1.406'
+    inputs:
+      packageType: sdk
+      version: 3.1.406
+      installationPath: $(DOTNET_ROOT)
+
+  - template: templates/gitversion.yml
+    parameters:
+      dotnetInstallationPath: $(DOTNET_ROOT)
+
+  #- bash: |
+  #    set -x
+  #    export PATH="$(DOTNET_ROOT):$(DotNet.Tools):$PATH"
+  #    echo "##vso[task.setvariable variable=PATH]$PATH"
+  #    curl -L https://raw.githubusercontent.com/dotnet/install-scripts/7a9d5dcab92cf131fc2d8977052f8c2c2d540e22/src/dotnet-install.sh > dotnet-install.sh
+  #    sh dotnet-install.sh --version $(DotNetVersion) --install-dir $DOTNET_ROOT --verbose
+  #    dotnet --list-sdks
+  #    sudo touch $DOTNET_ROOT/sdk/6.0.100-preview.3.21202.5/EnableWorkloadResolver.sentinel
+  #  displayName: Install .NET $(DotNetVersion)
+
+  - bash: >
+      dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version) --add-source https://api.nuget.org/v3/index.json &&
+      maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --manifest $(MauiCheck.Manifest)
+      displayName: Install .NET Workloads
+
+  - bash: sudo xcode-select -s /Applications/Xcode_12.4.app
+    displayName: select Xcode 12.4
+
+  - bash: |
+      set -x
+      mkdir -p ~/Library/Preferences/Xamarin
+      rm -f ~/Library/Preferences/Xamarin/Settings.plist
+      /usr/libexec/PlistBuddy -c "add :AppleSdkRoot string $(dirname $(dirname $(xcode-select -p)))" ~/Library/Preferences/Xamarin/Settings.plist || true
+      cat ~/Library/Preferences/Xamarin/Settings.plist || true
+    displayName: configure vsmac xcode
+
+  - powershell: |
+      cd $(build.sourcesdirectory)/src/Uno.WinUIRevert
+      dotnet run "$(build.sourcesdirectory)"
+  
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+    displayName: Convert source tree to WinUI 3 structure
+  
+  - powershell: |
+      cp $(build.sourcesdirectory)/src/global-net6.json $(build.sourcesdirectory)/src/global.json
+    displayName: Change active .NET SDK for solution
+
+  - powershell: |
+      cd build
+      dotnet build Uno.UI.Build.csproj /t:BuildNet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer).binlog
+    displayName: Setup versions
+    errorActionPreference: stop
+
+  - powershell: |
+      cd src
+      dotnet build Uno.UI-net6-only.slnf -c Release -f net6.0-maccatalyst "/p:PackageOutputPath=$(build.artifactstagingdirectory)/nuget" /bl:$(build.artifactstagingdirectory)/macos-build-$(GitVersion.FullSemVer)-net6-$(UNO_UWP_BUILD).binlog
+    displayName: Build
+    errorActionPreference: stop
+
+  - task: CopyFiles@2
+    condition: always()
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)
+      Contents: |
+        **/bin/**/*.dll
+        **/bin/**/*.pdb
+        **/bin/**/*.xml
+      TargetFolder: $(build.artifactstagingdirectory)/mac-bin-$(XAML_FLAVOR_BUILD)
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages-Artifacts
+      ArtifactType: Container

@@ -15,7 +15,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
         {
             this.InitializeComponent();
 
-#if XAMARIN_IOS || XAMARIN_ANDROID
+#if false // XAMARIN_IOS || XAMARIN_ANDROID
 			var textBox = new TextBox() { PlaceholderText = "Selection", AcceptsReturn = true };
 			var startTextBox = new TextBox() { PlaceholderText = "Start" };
 			var lengthTextBox = new TextBox() { PlaceholderText = "Length" };

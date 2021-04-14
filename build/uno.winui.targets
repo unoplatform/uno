@@ -226,7 +226,13 @@
 	</Target>
 
 	<Target Name="ValidateUnoUIAndroid" BeforeTargets="Build" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
-	  <PropertyGroup>
+	  
+	  <PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
+		<UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
+		<_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
+	  </PropertyGroup>
+
+	  <PropertyGroup Condition="'$(MSBuildRuntimeType)'!='Core'">
 		<UnoUIMinAndroidSDKVersion>10.0</UnoUIMinAndroidSDKVersion>
 		<_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
 	  </PropertyGroup>

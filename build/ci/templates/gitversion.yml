@@ -1,3 +1,5 @@
+parameters:
+  dotnetInstallationPath: ''
 
 steps:
 
@@ -16,12 +18,14 @@ steps:
     inputs:
       packageType: runtime
       version: 5.0.3
+      installationPath: '${{parameters.dotnetInstallationPath}}'
 
   - task: UseDotNet@2
     displayName: 'Use .Net Core runtime 3.1.12'
     inputs:
       packageType: runtime
       version: 3.1.12
+      installationPath: '${{parameters.dotnetInstallationPath}}'
 
   # Restore nuget.org to the list of existing sources, .NET 6 Pre 2 may somehow remove it
   - powershell: |

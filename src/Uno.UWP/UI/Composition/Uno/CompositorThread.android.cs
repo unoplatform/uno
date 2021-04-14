@@ -165,7 +165,11 @@ namespace Uno.UI.Composition
 
 			if (!TryStop(() => _looper?.Quit())
 				&& !TryStop(() => thread.Interrupt())
-				&& !TryStop(() => thread.Abort()))
+
+#if !NET6_0_OR_GREATER
+				&& !TryStop(() => thread.Abort())
+#endif
+			)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
@@ -205,7 +209,9 @@ namespace Uno.UI.Composition
 			}
 			catch (ThreadAbortException)
 			{
+#if !NET6_0_OR_GREATER
 				Thread.ResetAbort();
+#endif
 			}
 		}
 
