@@ -18,12 +18,17 @@ namespace Uno.UI.Extensions
 			=> elt switch
 			{
 				null => "--null--",
-				FrameworkElement fwElt when fwElt.Name.HasValue() => $"{fwElt.Name} -{elt.GetHashCode():X8}",
-				_ => $"{elt.GetType().Name} -{elt.GetHashCode():X8}",
+#if __WASM__
+				FrameworkElement fwElt when fwElt.Name.HasValue() => $"{fwElt.Name}-{fwElt.HtmlId}",
+				UIElement uiElt => $"{elt.GetType().Name}-{uiElt.HtmlId}",
+#else
+				FrameworkElement fwElt when fwElt.Name.HasValue() => $"{fwElt.Name}-{elt.GetHashCode():X8}",
+#endif
+				_ => $"{elt.GetType().Name}-{elt.GetHashCode():X8}",
 			};
 
 		internal static string GetDebugIdentifier(this object? elt)
-			=> $"{new string('\t', elt.GetDebugDepth())} [{elt.GetDebugName()}]";
+			=> $"{new string('\t', Math.Max(0, elt.GetDebugDepth()))} [{elt.GetDebugName()}]";
 
 		internal static int GetDebugDepth(this object? elt) =>
 			elt switch
