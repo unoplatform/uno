@@ -17,11 +17,6 @@ using Uno.UI.Converters;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-#if XAMARIN
-using System.Json;
-#else
-#endif
-
 namespace Windows.UI.Xaml.Data
 {
 	public partial class BindingExpression : IDisposable, IValueChangedListener

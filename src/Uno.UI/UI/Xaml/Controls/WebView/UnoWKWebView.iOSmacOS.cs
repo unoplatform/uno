@@ -644,12 +644,12 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// The reference to the parent UnoWKWebView class on which we invoke callbacks.
 			/// </summary>
-			[Weak]
 			private readonly UnoWKWebView _unoWKWebView;
 
 			public WebViewNavigationDelegate(UnoWKWebView unoWKWebView)
 			{
 				_unoWKWebView = unoWKWebView;
+				throw new NotImplementedException();
 			}
 
 			public override void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, Action<WKNavigationActionPolicy> decisionHandler)

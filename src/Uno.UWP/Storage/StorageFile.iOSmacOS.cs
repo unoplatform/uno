@@ -23,16 +23,17 @@ namespace Windows.Storage
 			var fileName = global::System.IO.Path.GetFileNameWithoutExtension(path);
 			var fileExtension = global::System.IO.Path.GetExtension(path);
 
-			var resourcePathname = NSBundle.MainBundle.PathForResource(global::System.IO.Path.Combine(directoryName, fileName), fileExtension.Substring(1));
+			if (!string.IsNullOrEmpty(directoryName))
+			{
+				var resourcePathname = NSBundle.MainBundle.PathForResource(global::System.IO.Path.Combine(directoryName, fileName), fileExtension.Substring(1));
 
-			if (resourcePathname != null)
-			{
-				return await StorageFile.GetFileFromPathAsync(resourcePathname);
+				if (resourcePathname != null)
+				{
+					return await StorageFile.GetFileFromPathAsync(resourcePathname);
+				}
 			}
-			else
-			{
-				throw new FileNotFoundException($"The file [{path}] cannot be found in the bundle");
-			}
+
+			throw new FileNotFoundException($"The file [{path}] cannot be found in the bundle");
 		}
 	}
 }

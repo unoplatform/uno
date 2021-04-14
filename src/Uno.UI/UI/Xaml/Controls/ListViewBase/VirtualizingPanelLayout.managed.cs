@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 			ItemsControl = null;
 		}
 
-		private void OnScrollChanged(object sender, ScrollViewerViewChangedEventArgs e)
+		private void OnScrollChanged(object? sender, ScrollViewerViewChangedEventArgs e)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{

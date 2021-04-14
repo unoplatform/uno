@@ -11,6 +11,8 @@ using CoreFoundation;
 using SystemConfiguration;
 using Windows.Networking.Connectivity;
 
+#pragma warning disable BI1234 // 'CTCellularDataRestrictedState' is obsolete: 'Starting with ios14.0 Use the 'CallKit' API instead.'
+
 namespace Uno.Networking.Connectivity.Internal
 {
 	enum NetworkStatus

@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 		/// Gets or sets the transformation that needs to be applied to sensor data. Transformations to be applied are tied to the display orientation with which to align the sensor data.
 		/// </summary>
 		/// <remarks>
-		/// This is not currently implemented, and acts as if <see cref="ReadingTransform" /> was set to <see cref="DisplayOrientation.Portrait" />.
+		/// This is not currently implemented, and acts as if <see cref="ReadingTransform" /> was set to <see cref="Graphics.Display.DisplayOrientations.Portrait" />.
 		/// </remarks>
 		[Uno.NotImplemented]
 		public Graphics.Display.DisplayOrientations ReadingTransform { get; set; } = Graphics.Display.DisplayOrientations.Portrait;

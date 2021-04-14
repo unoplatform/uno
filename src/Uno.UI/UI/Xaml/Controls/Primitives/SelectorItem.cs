@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		/// <summary>
-		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396)
+		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx)
 		/// </summary>
 		internal void ApplyMultiSelectState(bool isSelectionMultiple)
 		{

@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UnregisterEvents() => _eventSubscriptions.Disposable = null;
 
-		private void OnOverflowPopupClosed(object sender, object e)
+		private void OnOverflowPopupClosed(object? sender, object e)
 			=> IsOpen = false;
 
 		private void OnMoreButtonClicked(object sender, RoutedEventArgs e)

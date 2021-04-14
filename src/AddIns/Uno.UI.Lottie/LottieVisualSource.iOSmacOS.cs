@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET6_0_IOS
+using System;
 using System.Threading;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
@@ -219,3 +220,62 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private Size CompositionSize => _animation?.IntrinsicContentSize ?? default;
 	}
 }
+#else
+using System;
+using System.Threading;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Foundation;
+using System.Threading.Tasks;
+using Uno.Disposables;
+
+namespace Microsoft.Toolkit.Uwp.UI.Lottie
+{
+	partial class LottieVisualSourceBase
+	{
+		public bool UseHardwareAcceleration { get; set; } = true;
+
+		async Task InnerUpdate(CancellationToken ct)
+		{
+
+		}
+
+		public void Play(double fromProgress, double toProgress, bool looped)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Stop()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Pause()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Resume()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SetProgress(double progress)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Load()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Unload()
+		{
+			throw new NotImplementedException();
+		}
+
+		private Size CompositionSize => default;
+	}
+}
+#endif

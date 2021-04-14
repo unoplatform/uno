@@ -1468,7 +1468,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 
 
-				if (returnValue != null)
+				// if (returnValue != null)
 				{
 					returnValue.Width = widthToReturn;
 				}

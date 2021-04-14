@@ -790,7 +790,7 @@ namespace Windows.UI.Xaml
 			/// <remarks>
 			/// The "internal" here refers only to the private state of the code which has initiated this event, not subclasses.
 			/// This means that an event flagged as "internal" can bubble to update the private state of parents,
-			/// but the UIElement.RoutedEvent won't be raised in any way (public and internal handlers) and it won't be sent to Control.On<RoutedEvent>() neither.
+			/// but the UIElement.RoutedEvent won't be raised in any way (public and internal handlers) and it won't be sent to Control.On`RoutedEvent`() neither.
 			/// </remarks>
 			public bool IsInternal { get; set; }
 

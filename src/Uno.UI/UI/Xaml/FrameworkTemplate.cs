@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml
 
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			var other = obj as FrameworkTemplate;
 
@@ -134,21 +134,21 @@ namespace Windows.UI.Xaml
 
 			private FrameworkTemplateEqualityComparer() { }
 
-			public bool Equals(FrameworkTemplate left, FrameworkTemplate right) =>
+			public bool Equals(FrameworkTemplate? left, FrameworkTemplate? right) =>
 
 				// Same instance
 				ReferenceEquals(left, right)
 
 				// Same delegate (possible if the delegate was created from a 
 				// lambda, which are cached automatically by the C# compiler (as of v6.0)
-				|| left._viewFactory == right._viewFactory
+				|| left?._viewFactory == right?._viewFactory
 
 				// Same target method (instance or static) (possible if the delegate was created from a 
 				// method group, which are *not* cached by the C# compiler (required by 
 				// the C# spec as of version 6.0)
 				|| (
-					ReferenceEquals(left._viewFactory?.Target, right._viewFactory?.Target)
-					&& left._viewFactory?.Method == right._viewFactory?.Method
+					ReferenceEquals(left?._viewFactory?.Target, right?._viewFactory?.Target)
+					&& left?._viewFactory?.Method == right?._viewFactory?.Method
 					);
 
 			public int GetHashCode(FrameworkTemplate obj) => obj._hashCode;

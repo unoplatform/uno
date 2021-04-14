@@ -331,7 +331,7 @@ namespace Windows.UI.Xaml.Controls
 					paint.Alpha = strokePaint.Alpha;
 					return drawable;
 				}
-				else if (viewSize != null && !viewSize.IsEmpty)
+				else if (/*viewSize != null && */!viewSize.IsEmpty)
 				{
 					// Alias the stroke to reduce interop
 					var paintStyleStroke = Paint.Style.Stroke;

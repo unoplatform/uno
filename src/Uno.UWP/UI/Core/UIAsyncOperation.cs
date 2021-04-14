@@ -20,8 +20,8 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Creates a <see cref="UIAsyncOperation"/> using the provided handler.
 		/// </summary>
-		/// <param name="action">A handler/param>
-		/// <param name="scheduleActivity">An ID that defines the activity being scheduled, used for tracing./param>
+		/// <param name="action">A handler</param>
+		/// <param name="scheduleActivity">An ID that defines the activity being scheduled, used for tracing.</param>
 		internal UIAsyncOperation(DispatchedHandler action, EventActivity scheduleActivity)
 		{
 			Action = action;
