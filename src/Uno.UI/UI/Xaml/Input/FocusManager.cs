@@ -158,9 +158,10 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			focusVisual = (SystemFocusVisual)focusVisualLayer.Children[0];
-			if (newFocus is FrameworkElement element && focusState == FocusState.Keyboard)
+
+			if (newFocus is Control control && focusState == FocusState.Keyboard && control.UseSystemFocusVisuals)
 			{
-				focusVisual.FocusedElement = element;
+				focusVisual.FocusedElement = control;
 				focusVisual.Visibility = Visibility.Visible;				
 			}
 			else
