@@ -110,7 +110,7 @@ embed.uno-frameworkelement.uno-unarranged {
   background-clip: text !important;
 
   /* overflow-x:hidden is required for text-overflow: ellipsis to work correctly */
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .uno-buttonbase {
