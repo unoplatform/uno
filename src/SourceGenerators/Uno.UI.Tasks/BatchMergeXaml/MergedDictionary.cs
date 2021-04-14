@@ -112,10 +112,10 @@ namespace Uno.UI.Tasks.BatchMerge
 
         private void AddNamespace(string xmlnsString, string namespaceString)
         {
-            if (!namespaceList.Contains(namespaceString))
+            if (!namespaceList.Contains(xmlnsString))
             {
                 xmlElement.SetAttribute("xmlns:" + xmlnsString, namespaceString);
-                namespaceList.Add(namespaceString);
+                namespaceList.Add(xmlnsString);
             }
         }
 
