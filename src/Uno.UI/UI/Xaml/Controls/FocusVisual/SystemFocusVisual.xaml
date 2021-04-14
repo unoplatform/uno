@@ -12,17 +12,14 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:SystemFocusVisual">
-					<Border
-                        Width="{Binding Path=FocusedElement.ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
-                        Height="{Binding Path=FocusedElement.ActualHeight, RelativeSource={RelativeSource TemplatedParent}}">
+					<Border>
 						<Border                        
                             Background="{x:Null}"
                             BorderBrush="{Binding Path=FocusedElement.FocusVisualPrimaryBrush, RelativeSource={RelativeSource TemplatedParent}}"
                             BorderThickness="{Binding Path=FocusedElement.FocusVisualPrimaryThickness, RelativeSource={RelativeSource TemplatedParent}}"
 					        CornerRadius="{Binding Path=FocusedElement.CornerRadius, RelativeSource={RelativeSource TemplatedParent}}"
                             Margin="{Binding Path=FocusedElement.FocusVisualMargin, RelativeSource={RelativeSource TemplatedParent}}">
-							<Border                                                 
-                                Background="Red"
+							<Border
                                 BorderBrush="{Binding Path=FocusedElement.FocusVisualSecondaryBrush, RelativeSource={RelativeSource TemplatedParent}}"
                                 BorderThickness="{Binding Path=FocusedElement.FocusVisualSecondaryThickness, RelativeSource={RelativeSource TemplatedParent}}"
 						        CornerRadius="{Binding Path=FocusedElement.CornerRadius, RelativeSource={RelativeSource TemplatedParent}}">

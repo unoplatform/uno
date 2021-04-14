@@ -58,7 +58,8 @@ namespace Windows.UI.Xaml
 			{
 				_renderQueued = true;
 
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => {
+				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+				{
 					_renderQueued = false;
 					InvalidateRender();
 				});
@@ -81,7 +82,8 @@ namespace Windows.UI.Xaml
 				{
 					_isMeasureQueued = true;
 
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => {
+					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+					{
 						try
 						{
 							_isMeasureQueued = false;
