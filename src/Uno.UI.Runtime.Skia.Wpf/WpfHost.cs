@@ -15,18 +15,33 @@ using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
 using Windows.Graphics.Display;
 using Windows.System;
 using WinUI = Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
 using WpfApplication = System.Windows.Application;
+using WpfCanvas = System.Windows.Controls.Canvas;
+using WpfControl = System.Windows.Controls.Control;
+using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 
 namespace Uno.UI.Skia.Platform
 {
-	public class WpfHost : FrameworkElement, WinUI.ISkiaHost
+	[TemplatePart(Name = NativeOverlayLayerPart, Type = typeof(WpfCanvas))]
+	public class WpfHost : WpfControl, WinUI.ISkiaHost
 	{
+		private const string NativeOverlayLayerPart = "NativeOverlayLayer";
+
 		private readonly bool designMode;
+
+		[ThreadStatic] private static WpfHost _current;
+
+		private WpfCanvas? _nativeOverlayLayer = null;
 		private WriteableBitmap bitmap;
-		private bool ignorePixelScaling;		
+		private bool ignorePixelScaling;
 
 		static WpfHost()
 		{
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfHost), new WpfFrameworkPropertyMetadata(typeof(WpfHost)));
+
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
@@ -34,10 +49,12 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
 			ApiExtensibility.Register(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 			ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
+			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
 		}
 
-		[ThreadStatic] private static WpfHost _current;
 		public static WpfHost Current => _current;
+
+		internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
 
 		/// <summary>
 		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
@@ -64,7 +81,7 @@ namespace Uno.UI.Skia.Platform
 
 			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
 			{
-				if(priority == DispatcherQueuePriority.Normal)
+				if (priority == DispatcherQueuePriority.Normal)
 				{
 					dispatcher.BeginInvoke(callback);
 				}
@@ -93,6 +110,13 @@ namespace Uno.UI.Skia.Platform
 
 			SizeChanged += WpfHost_SizeChanged;
 			Loaded += WpfHost_Loaded;
+		}
+
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			_nativeOverlayLayer = GetTemplateChild(NativeOverlayLayerPart) as WpfCanvas;
 		}
 
 		private void WpfHost_Loaded(object sender, RoutedEventArgs e)
@@ -142,7 +166,7 @@ namespace Uno.UI.Skia.Platform
 				return;
 			}
 
-			
+
 			int width, height;
 			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
 			double dpiScaleX = dpi.DpiScaleX;

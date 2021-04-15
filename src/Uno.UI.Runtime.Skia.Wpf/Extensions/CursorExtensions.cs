@@ -7,7 +7,7 @@ namespace Uno.UI.Skia.Platform.Extensions
 	{
 		public static CoreCursor ToCoreCursor(this Cursor cursor)
 		{
-			CoreCursorType cursorType = CoreCursorType.Arrow;
+			var cursorType = CoreCursorType.Arrow;
 			if (cursor == Cursors.Wait)
 			{
 				cursorType = CoreCursorType.Wait;
