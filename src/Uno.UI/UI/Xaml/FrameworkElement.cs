@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml
 
 			IFrameworkElementHelper.Initialize(this);
 
-			InitializeFocusVisualProperties();
+			SetFocusVisualBrushDefaults();
 		}
 
 		public
@@ -492,11 +492,11 @@ namespace Windows.UI.Xaml
 
 		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
 
-		private void InitializeFocusVisualProperties()
+		private void SetFocusVisualBrushDefaults()
 		{
-			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), true, null, DependencyPropertyValuePrecedences.DefaultValue);
-			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), true, null, DependencyPropertyValuePrecedences.DefaultValue);
-		}
+			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
+			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
+		}		
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
@@ -749,6 +749,7 @@ namespace Windows.UI.Xaml
 		{
 			Resources?.UpdateThemeBindings();
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
+			SetFocusVisualBrushDefaults();
 		}
 
 		/// <summary>
