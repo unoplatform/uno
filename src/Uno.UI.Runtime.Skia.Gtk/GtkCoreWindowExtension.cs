@@ -98,7 +98,12 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerExited(ptArgs);
+					// The Ungrab mode event is triggered after click 
+					// even when the pointer does not leave the window
+					if (args.Event.Mode != CrossingMode.Ungrab)
+					{
+						_ownerEvents.RaisePointerExited(ptArgs);
+					}
 				}
 			}
 			catch (Exception e)
