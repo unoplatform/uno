@@ -790,7 +790,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var singleLinePosition = GetPixelPosition(SingleLine);
 			var multilinePosition = GetPixelPosition(Multiline);
 
-			_app.FastTap("ChangeForeground");
+			_app.FastTap("ChangeForegroundButton");
 			_app.WaitForText("StatusTextBlock", "Changed");
 
 			using var after = TakeScreenshot("Foreground Color changed");
