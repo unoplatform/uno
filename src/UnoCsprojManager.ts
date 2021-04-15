@@ -264,6 +264,7 @@ export class UnoCsprojManager {
     public async createXamlCs (fileEvent: vscode.FileCreateEvent): Promise<void> {
         // create xaml
         const newXamlLocation = path.join(fileEvent.files[0].fsPath);
+        const newXamlLocationURI = vscode.Uri.file(newXamlLocation);
         const projectName = vscode.workspace.name;
         const fileName = path.basename(newXamlLocation).replace(".xaml", "");
         const xamlTemplateLocation = path.join(this.context.extensionPath, "templates", "xaml", "New.xaml");
@@ -309,13 +310,27 @@ export class UnoCsprojManager {
                 this.setReferenceXamlCs(result, sharedProjitemsLocation!, fileName, subLevel);
                 ExtensionUtils.writeln(`${fileName}.xaml and ${fileName}.xaml.cs created`);
 
-                // buil the solution
-                void vscode.commands
-                    .executeCommand("workbench.action.tasks.runTask", "build");
+                // refresh the xaml file first
+                const newXamlFileContentFilled =
+                    fs.readFileSync(xamlTemplateLocation, "utf-8");
 
-                // open it automatically with previewer
                 void vscode.commands
-                    .executeCommand('unoplatform.xamlPreview');
+                    .executeCommand("vscode.open", newXamlLocationURI).then(() => {
+                        void vscode.window.activeTextEditor?.edit(editBuilder => {
+                            editBuilder.insert(
+                                new vscode.Position(0, 0),
+                                newXamlFileContentFilled
+                            );
+                        });
+
+                        // buil the solution
+                        void vscode.commands
+                            .executeCommand("workbench.action.tasks.runTask", "build");
+
+                        // open it automatically with previewer
+                        void vscode.commands
+                            .executeCommand('unoplatform.xamlPreview');
+                    });
             }
         });
     }
