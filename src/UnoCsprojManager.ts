@@ -265,7 +265,8 @@ export class UnoCsprojManager {
         // create xaml
         const newXamlLocation = path.join(fileEvent.files[0].fsPath);
         const newXamlLocationURI = vscode.Uri.file(newXamlLocation);
-        const projectName = vscode.workspace.name;
+        // split to make sure to get only the workspace without remote connection name
+        const projectName = vscode.workspace.name?.split(" ")[0];
         const fileName = path.basename(newXamlLocation).replace(".xaml", "");
         const xamlTemplateLocation = path.join(this.context.extensionPath, "templates", "xaml", "New.xaml");
         const xamlCsTemplateLocation = path.join(this.context.extensionPath, "templates", "xaml", "New.xaml.cs");
