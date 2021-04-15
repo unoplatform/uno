@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Widget;
@@ -20,6 +22,7 @@ using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -28,8 +31,10 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isRunningTextChanged;
 		private bool _isInitialized = false;
 
-		private readonly ManagedWeakReference _ownerRef;
-		internal TextBox Owner => _ownerRef?.Target as TextBox;
+		private readonly ManagedWeakReference? _ownerRef;
+		internal TextBox? Owner => _ownerRef?.Target as TextBox;
+
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		public TextBoxView(TextBox owner)
 			: base(ContextHelper.Current)
@@ -44,10 +49,10 @@ namespace Windows.UI.Xaml.Controls
 			//Remove default native padding.
 			this.SetPadding(0, 0, 0, 0);
 
-            if (FeatureConfiguration.TextBox.HideCaret)
-            {
-                SetCursorVisible(false);
-            }
+			if (FeatureConfiguration.TextBox.HideCaret)
+			{
+				SetCursorVisible(false);
+			}
 
 			_isInitialized = true;
 
@@ -69,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnTextChanged(Java.Lang.ICharSequence text, int start, int lengthBefore, int lengthAfter)
+		protected override void OnTextChanged(Java.Lang.ICharSequence? text, int start, int lengthBefore, int lengthAfter)
 		{
 			if (!_isRunningTextChanged && _isInitialized)
 			{
@@ -100,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public override IInputConnection OnCreateInputConnection(EditorInfo outAttrs)
+		public override IInputConnection OnCreateInputConnection(EditorInfo? outAttrs)
 		{
 			return new TextBox.TextBoxInputConnection(this, base.OnCreateInputConnection(outAttrs));
 		}
@@ -116,11 +121,11 @@ namespace Windows.UI.Xaml.Controls
 		private class EditTextCursorColorChanger
 		{
 			private static bool _prepared = false;
-			private static Field _editorField;
-			private static Field _cursorDrawableField;
-			private static Field _cursorDrawableResField;
+			private static Field? _editorField;
+			private static Field? _cursorDrawableField;
+			private static Field? _cursorDrawableResField;
 
-			private static void PrepareFields(Context context)
+			private static void PrepareFields(Context? context)
 			{
 				_prepared = true;
 
@@ -128,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 				using (var textView = new TextView(context))
 				{
 					textViewClass = textView.Class;
-			    }
+				}
 				var editText = new EditText(context);
 
 				_cursorDrawableResField = textViewClass.GetDeclaredField("mCursorDrawableRes");
@@ -139,13 +144,16 @@ namespace Windows.UI.Xaml.Controls
 
 				if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 				{
-					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mCursorDrawable");
-					_cursorDrawableField.Accessible = true;
+					_cursorDrawableField = _editorField.Get(editText)?.Class.GetDeclaredField("mCursorDrawable");
 				}
 				else
 				{
-				    // set differently in Android P (API 28) and higher
-					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mDrawableForCursor");
+					// set differently in Android P (API 28) and higher
+					_cursorDrawableField = _editorField.Get(editText)?.Class.GetDeclaredField("mDrawableForCursor");
+				}
+
+				if (_cursorDrawableField != null)
+				{
 					_cursorDrawableField.Accessible = true;
 				}
 			}
@@ -157,6 +165,13 @@ namespace Windows.UI.Xaml.Controls
 					if (!_prepared)
 					{
 						PrepareFields(editText.Context);
+					}
+
+					if (_cursorDrawableField == null || _cursorDrawableResField == null || _editorField == null || PorterDuff.Mode.SrcIn == null)
+					{
+						// PrepareFields() failed, give up now
+						editText.Log().WarnIfEnabled(() => "Failed to change the cursor color. Some devices don't support this.");
+						return;
 					}
 
 					var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
@@ -241,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ForegroundProperty, value); }
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -255,12 +270,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
+			_foregroundChanged.Disposable = null;
 			var scb = newValue as SolidColorBrush;
 
 			if (scb != null)
 			{
-				this.SetTextColor(scb.Color);
-				this.SetCursorColor(scb.Color);
+				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
+				ApplyColor();
+
+				void ApplyColor()
+				{
+					SetTextColor(scb.Color);
+					SetCursorColor(scb.Color);
+				}
 			}
 		}
 	}

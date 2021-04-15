@@ -13,6 +13,7 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -21,6 +22,7 @@ namespace Windows.UI.Xaml.Controls
 		private MultilineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 		private WeakReference<Uno.UI.Controls.Window> _window;
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 
@@ -179,6 +181,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
+			_foregroundChanged.Disposable = null;
 			var textBox = _textBox.GetTarget();
 
 			if (textBox != null)
@@ -187,8 +190,14 @@ namespace Windows.UI.Xaml.Controls
 
 				if (scb != null)
 				{
-					this.TextColor = scb.Color;
-					this.TintColor = scb.Color;
+					_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
+					ApplyColor();
+
+					void ApplyColor()
+					{
+						this.TextColor = scb.Color;
+						this.TintColor = scb.Color;
+					}
 				}
 			}
 		}
