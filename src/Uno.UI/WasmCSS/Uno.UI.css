@@ -152,8 +152,8 @@ embed.uno-frameworkelement.uno-unarranged {
   }
 
   .uno-scrollcontentpresenter.scroll-x-hidden {
-    overflow-x: auto;
-    scrollbar-height: none;
+    overflow-x: auto; /* We must not use "hidden" to allow native scrolling interaction like mouse wheel */
+    scrollbar-width: none; /* scrollbar-height has no effect on FF, using scrollbar-width works on all browsers (non standard proeprty) */
   }
 
   .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
@@ -165,7 +165,7 @@ embed.uno-frameworkelement.uno-unarranged {
   }
 
   .uno-scrollcontentpresenter.scroll-y-hidden {
-    overflow-y: auto;
+    overflow-y: auto; /* We must not use "hidden" to allow native scrolling interaction like mouse wheel */
     scrollbar-width: none;
   }
 
