@@ -315,23 +315,31 @@ export class UnoCsprojManager {
                 const newXamlFileContentFilled =
                     fs.readFileSync(xamlTemplateLocation, "utf-8");
 
-                void vscode.commands
-                    .executeCommand("vscode.open", newXamlLocationURI).then(() => {
-                        void vscode.window.activeTextEditor?.edit(editBuilder => {
-                            editBuilder.insert(
-                                new vscode.Position(0, 0),
-                                newXamlFileContentFilled
-                            );
+                const buildOpenXamlPreview = (): void => {
+                    // buil the solution
+                    void vscode.commands
+                        .executeCommand("workbench.action.tasks.runTask", "build");
+
+                    // open it automatically with previewer
+                    void vscode.commands
+                        .executeCommand('unoplatform.xamlPreview');
+                };
+
+                if (process.platform !== "win32") {
+                    void vscode.commands
+                        .executeCommand("vscode.open", newXamlLocationURI).then(() => {
+                            void vscode.window.activeTextEditor?.edit(editBuilder => {
+                                editBuilder.insert(
+                                    new vscode.Position(0, 0),
+                                    newXamlFileContentFilled
+                                );
+                            });
+
+                            buildOpenXamlPreview();
                         });
-
-                        // buil the solution
-                        void vscode.commands
-                            .executeCommand("workbench.action.tasks.runTask", "build");
-
-                        // open it automatically with previewer
-                        void vscode.commands
-                            .executeCommand('unoplatform.xamlPreview');
-                    });
+                } else {
+                    buildOpenXamlPreview();
+                }
             }
         });
     }
