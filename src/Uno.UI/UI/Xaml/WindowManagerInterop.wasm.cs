@@ -11,7 +11,6 @@ using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Windows.Foundation;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
 
 namespace Uno.UI.Xaml
 {
@@ -39,8 +38,7 @@ namespace Uno.UI.Xaml
 					IsLoadEventsEnabled = isLoadEventsEnabled
 				};
 
-				var ret = TSInteropMarshaller.WrapperBoolean_Return.Instance;
-				TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms, ret);
+				TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms, typeof(bool));
 			}
 		}
 
@@ -85,8 +83,7 @@ namespace Uno.UI.Xaml
 					IsFocusable = isFocusable
 				};
 
-				var ret = TSInteropMarshaller.WrapperBoolean_Return.Instance;
-				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms, ret);
+				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms, typeof(bool));
 			}
 		}
 
@@ -136,12 +133,10 @@ namespace Uno.UI.Xaml
 					Classes = classNames,
 				};
 
-				var ret = new Wrapper_WindowManagerRegisterUIElementReturn();
-				TSInteropMarshaller.InvokeJS("Uno:registerUIElementNative", parms, ret);
-				return ret.Value.RegistrationId;
+				var ret = (WindowManagerRegisterUIElementReturn)TSInteropMarshaller.InvokeJS("Uno:registerUIElementNative", parms, typeof(WindowManagerRegisterUIElementReturn));
+				return ret.RegistrationId;
 			}
 		}
-
 
 		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -156,12 +151,6 @@ namespace Uno.UI.Xaml
 
 			[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
 			public string[] Classes;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		private class Wrapper_WindowManagerRegisterUIElementReturn
-		{
-			public WindowManagerRegisterUIElementReturn Value;
 		}
 
 		[TSInteropMessage]
@@ -200,8 +189,7 @@ namespace Uno.UI.Xaml
 					M32 = matrix.M32,
 				};
 
-				var ret = TSInteropMarshaller.WrapperBoolean_Return.Instance;
-				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms, ret);
+				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms, typeof(bool));
 			}
 		}
 
@@ -240,8 +228,7 @@ namespace Uno.UI.Xaml
 					Enabled = enabled
 				};
 
-				var ret = TSInteropMarshaller.WrapperBoolean_Return.Instance;
-				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms, ret);
+				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms, typeof(bool));
 			}
 		}
 
@@ -282,10 +269,9 @@ namespace Uno.UI.Xaml
 					AvailableHeight = availableSize.Height
 				};
 
-				var ret = WindowManagerMeasureViewReturn_Wrapper.Instance;
-				TSInteropMarshaller.InvokeJS("Uno:measureViewNative", parms, ret);
+				var ret = (WindowManagerMeasureViewReturn)TSInteropMarshaller.InvokeJS("Uno:measureViewNative", parms, typeof(WindowManagerMeasureViewReturn));
 
-				return new Size(ret.Value.DesiredWidth, ret.Value.DesiredHeight);
+				return new Size(ret.DesiredWidth, ret.DesiredHeight);
 			}
 		}
 
@@ -297,17 +283,6 @@ namespace Uno.UI.Xaml
 
 			public double AvailableWidth;
 			public double AvailableHeight;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		private class WindowManagerMeasureViewReturn_Wrapper
-		{
-			public static WindowManagerMeasureViewReturn_Wrapper Instance { get; }
-				= new WindowManagerMeasureViewReturn_Wrapper();
-
-			private WindowManagerMeasureViewReturn_Wrapper() { }
-
-			public WindowManagerMeasureViewReturn Value;
 		}
 
 		[TSInteropMessage]
@@ -1033,10 +1008,9 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId
 				};
 
-				var ret = WindowManagerGetBBoxReturn_Wrapper.Instance;
-				TSInteropMarshaller.InvokeJS("Uno:getBBoxNative", parms, ret);
+				var ret = (WindowManagerGetBBoxReturn)TSInteropMarshaller.InvokeJS("Uno:getBBoxNative", parms, typeof(WindowManagerGetBBoxReturn));
 
-				return new Rect(ret.Value.X, ret.Value.Y, ret.Value.Width, ret.Value.Height);
+				return new Rect(ret.X, ret.Y, ret.Width, ret.Height);
 			}
 		}
 
@@ -1047,17 +1021,6 @@ namespace Uno.UI.Xaml
 			public IntPtr HtmlId;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		private class WindowManagerGetBBoxReturn_Wrapper
-		{
-			public static WindowManagerGetBBoxReturn_Wrapper Instance { get; }
-				= new WindowManagerGetBBoxReturn_Wrapper();
-
-			private WindowManagerGetBBoxReturn_Wrapper() { }
-
-			public WindowManagerGetBBoxReturn Value;
-
-		}
 
 		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -1203,12 +1166,11 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId
 				};
 
-				var ret = WindowManagerGetClientViewSizeReturn_Wrapper.Instance;
-				TSInteropMarshaller.InvokeJS("Uno:getClientViewSizeNative", parms, ret);
+				var ret = (WindowManagerGetClientViewSizeReturn)TSInteropMarshaller.InvokeJS("Uno:getClientViewSizeNative", parms, typeof(WindowManagerGetClientViewSizeReturn));
 
 				return (
-					clientSize: new Size(ret.Value.ClientWidth, ret.Value.ClientHeight),
-					offsetSize: new Size(ret.Value.OffsetWidth, ret.Value.OffsetHeight)
+					clientSize: new Size(ret.ClientWidth, ret.ClientHeight),
+					offsetSize: new Size(ret.OffsetWidth, ret.OffsetHeight)
 				);
 			}
 		}
@@ -1220,17 +1182,6 @@ namespace Uno.UI.Xaml
 			public IntPtr HtmlId;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		private class WindowManagerGetClientViewSizeReturn_Wrapper
-		{
-			public static WindowManagerGetClientViewSizeReturn_Wrapper Instance { get; }
-				= new WindowManagerGetClientViewSizeReturn_Wrapper();
-
-			private WindowManagerGetClientViewSizeReturn_Wrapper() { }
-
-			public WindowManagerGetClientViewSizeReturn Value;
-
-		}
 
 		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
