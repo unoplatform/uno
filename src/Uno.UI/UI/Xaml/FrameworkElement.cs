@@ -441,70 +441,56 @@ namespace Windows.UI.Xaml
 			Application.Current?.ActualElementTheme ?? ElementTheme.Default
 			: ElementTheme.Default;
 
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = CreateFocusVisualSecondaryThicknessProperty();
+
 		public Thickness FocusVisualSecondaryThickness
 		{
-			get => (Thickness)GetValue(FocusVisualSecondaryThicknessProperty);
-			set => SetValue(FocusVisualSecondaryThicknessProperty, value);
+			get => GetFocusVisualSecondaryThicknessValue();
+			set => SetFocusVisualSecondaryThicknessValue(value);
 		}
 
-		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } =
-			DependencyProperty.Register(
-				nameof(FocusVisualSecondaryThickness),
-				typeof(Thickness),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(new Thickness(1)));
+		private static Thickness GetFocusVisualSecondaryThicknessDefaultValue() => new Thickness(1);
+
+		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		public static DependencyProperty FocusVisualSecondaryBrushProperty { get; } = CreateFocusVisualSecondaryBrushProperty();
 
 		public Brush FocusVisualSecondaryBrush
 		{
-			get => (Brush)GetValue(FocusVisualSecondaryBrushProperty);
-			set => SetValue(FocusVisualSecondaryBrushProperty, value);
+			get => GetFocusVisualSecondaryBrushValue();
+			set => SetFocusVisualSecondaryBrushValue(value);
 		}
 
-		public static DependencyProperty FocusVisualSecondaryBrushProperty { get; } =
-			DependencyProperty.Register(
-				nameof(FocusVisualSecondaryBrush),
-				typeof(Brush),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(default(Brush)));
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualPrimaryThicknessProperty { get; } = CreateFocusVisualPrimaryThicknessProperty();
 
 		public Thickness FocusVisualPrimaryThickness
 		{
-			get => (Thickness)GetValue(FocusVisualPrimaryThicknessProperty);
-			set => SetValue(FocusVisualPrimaryThicknessProperty, value);
+			get => GetFocusVisualPrimaryThicknessValue();
+			set => SetFocusVisualPrimaryThicknessValue(value);
 		}
 
-		public static DependencyProperty FocusVisualPrimaryThicknessProperty { get; } =
-			DependencyProperty.Register(
-				nameof(FocusVisualPrimaryThickness),
-				typeof(Thickness),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(new Thickness(2)));
+		private static Thickness GetFocusVisualPrimaryThicknessDefaultValue() => new Thickness(2);
+
+		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } = CreateFocusVisualPrimaryBrushProperty();
 
 		public Brush FocusVisualPrimaryBrush
 		{
-			get => (Brush)GetValue(FocusVisualPrimaryBrushProperty);
-			set => SetValue(FocusVisualPrimaryBrushProperty, value);
+			get => GetFocusVisualPrimaryBrushValue();
+			set => SetFocusVisualPrimaryBrushValue(value);
 		}
 
-		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } =
-			DependencyProperty.Register(
-				nameof(FocusVisualPrimaryBrush),
-				typeof(Brush),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(default(Brush)));
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
 
 		public Thickness FocusVisualMargin
 		{
-			get => (Thickness)GetValue(FocusVisualMarginProperty);
-			set => SetValue(FocusVisualMarginProperty, value);
+			get => GetFocusVisualMarginValue();
+			set => SetFocusVisualMarginValue(value);
 		}
 
-		public static DependencyProperty FocusVisualMarginProperty { get; } =
-			DependencyProperty.Register(
-				nameof(FocusVisualMargin),
-				typeof(Thickness),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(default(Thickness)));
+		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
 
 		private void InitializeFocusVisualProperties()
 		{
