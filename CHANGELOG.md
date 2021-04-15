@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.0 Beta RC5
+
+- Fix bug for new `.xaml` being created with wrong project name on WSL
+
 ## 0.1.0 Beta RC4
 
 - Fix bug for new `.xaml` being created with no template code
