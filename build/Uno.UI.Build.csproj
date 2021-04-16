@@ -252,6 +252,9 @@
 		<Move SourceFiles=".\uno.winui.targets" DestinationFiles=".\$(PackageNamePrefix).targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.targets']/@src" Value="$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
+		<!-- Adjust for net5-windows -->
+		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@src='..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit\**']/@src" Value="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Themes\**" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'!='true'"/>
+
 		<!-- Adjust build targets file for UAP -->
 		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@target='buildTransitive\uap10.0.16299\uno.winui.targets']/@target" Value="buildTransitive\uap10.0.16299\$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<XmlUpdate XmlFileName=".\Uno.WinUI.nuspec" XPath="/x:package/x:files/x:file[@target='buildTransitive\uap10.0.17763\uno.winui.targets']/@target" Value="buildTransitive\uap10.0.17763\$(PackageNamePrefix).targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
@@ -304,6 +307,9 @@
 	<Target Name="BuildNuGetPackage">
 		<PropertyGroup>
 			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;branch=$(GITVERSION_BranchName);commitid=$(GITVERSION_VersionSourceSha)</NuSpecProperties>
+
+			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'=='true'">$(NuSpecProperties);winuisourcepath=uap10.0.17763;winuitargetpath=UAP</NuSpecProperties>
+			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'!='true'">$(NuSpecProperties);winuisourcepath=net5.0-windows10.0.18362.0;winuitargetpath=net5.0-windows10.0.18362.0</NuSpecProperties>
 		</PropertyGroup>
 		
 		<!-- Create the packages -->
