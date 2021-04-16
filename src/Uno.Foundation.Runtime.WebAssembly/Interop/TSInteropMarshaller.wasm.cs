@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
@@ -18,17 +17,6 @@ namespace Uno.Foundation.Interop
 		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(TSInteropMarshaller).Log());
 
 		public const UnmanagedType LPUTF8Str = (UnmanagedType)48;
-
-		[StructLayout(LayoutKind.Sequential)]
-		public class WrapperBoolean_Return
-		{
-			public static WrapperBoolean_Return Instance { get; } = new WrapperBoolean_Return();
-
-			private WrapperBoolean_Return() { }
-
-			public bool Value;
-		}
-
 
 		public static void InvokeJS(
 			string methodName,
@@ -66,15 +54,14 @@ namespace Uno.Foundation.Interop
 			}
 		}
 
-		public static void InvokeJS(
+		public static object InvokeJS(
 			string methodName,
 			object paramStruct,
-			object retStruct,
+			Type retStructType,
 			[System.Runtime.CompilerServices.CallerMemberName] string? memberName = null
 		)
 		{
 			var paramStructType = paramStruct.GetType();
-			var retStructType = retStruct.GetType();
 
 			var returnSize = MarshalSizeOfHelper.SizeOf(retStructType);
 			var paramSize = MarshalSizeOfHelper.SizeOf(paramStructType);
@@ -96,7 +83,8 @@ namespace Uno.Foundation.Interop
 
 				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, pReturnValue);
 
-				Marshal.PtrToStructure(pReturnValue, retStruct);
+				var returnValue = Marshal.PtrToStructure(pReturnValue, retStructType);
+				return returnValue!;
 			}
 			catch (Exception e)
 			{
