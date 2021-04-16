@@ -65,11 +65,9 @@ namespace Windows.Storage.Streams
 			=> throw new NotSupportedException("Cannot Write an input stream.");
 
 		/// <inheritdoc />
-		public override void Flush()
-			=> FlushAsync(CancellationToken.None).Wait();
+		public override void Flush() { }
 
 		/// <inheritdoc />
-		public override Task FlushAsync(CancellationToken cancellationToken)
-			=> throw new NotSupportedException("Cannot Flush an input stream.");
+		public override Task FlushAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 	}
 }

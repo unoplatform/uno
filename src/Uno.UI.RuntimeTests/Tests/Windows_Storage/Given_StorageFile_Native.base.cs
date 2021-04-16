@@ -224,6 +224,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
+		[TestMethod]
+		public async Task When_ReadStreamFlush()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				await FileIO.WriteTextAsync(createdFile, "Hello world!");
+
+				var buffer = new byte[1024];
+
+				using var stream = await createdFile.OpenStreamForReadAsync();
+
+				while (await stream.ReadAsync(buffer, 0, 1024) > 0)
+				{
+				}
+
+				try
+				{
+					stream.Flush();
+				}
+				catch (Exception ex)
+				{
+					Assert.Fail($"Read stream flush threw {ex}");
+				}
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_InputStreamFlush()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			StorageFile? createdFile = null;
+			try
+			{
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				await FileIO.WriteTextAsync(createdFile, "Hello world!");
+
+				var buffer = new byte[1024];
+
+				using var stream = await createdFile.OpenReadAsync();
+
+				try
+				{
+					stream.FlushAsync();
+				}
+				catch (Exception ex)
+				{
+					Assert.Fail($"Input stream flush threw {ex}");
+				}
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 
 		private string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";

@@ -24,6 +24,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			Assert.AreEqual(_unoStaticTestFileContent, actual);
 		}
 
+		[TestMethod]
+		public async Task When_FlushReadOnly()
+		{
+			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://nv-assets.azurewebsites.net/uno-unit-tests.txt"));
+			using var readStream = await sut.OpenReadAsync();
+
+			try
+			{
+				await readStream.FlushAsync();
+			}
+			catch (Exception)
+			{
+				// UWP throws NotImplementedException
+				// Uno throws InvalidOperationException with a description
+			}
+		}
+
 #if !NETFX_CORE
 		[TestMethod]
 		public async Task When_FromFile()
@@ -54,7 +71,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			var tempContentBytes = Encoding.UTF8.GetBytes(tempContent);
 			temp.Write(tempContentBytes, 0, tempContentBytes.Length);
 			temp.Position = 0;
-			
+
 			var actual = await ReadToEnd(sut);
 
 			Assert.AreEqual(tempContent, actual);
