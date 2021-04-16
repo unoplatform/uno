@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Microsoft.UI.Xaml.Controls">
 
-    <Style x:Key="DefaultSwipeControlStyle" TargetType="local:SwipeControl">
+    <!--<Style x:Key="DefaultSwipeControlStyle" TargetType="local:SwipeControl">
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template">
@@ -31,5 +31,5 @@
         </Setter>
     </Style>
 
-    <Style TargetType="local:SwipeControl" BasedOn="{StaticResource DefaultSwipeControlStyle}" />
+    <Style TargetType="local:SwipeControl" BasedOn="{StaticResource DefaultSwipeControlStyle}" />-->
 </ResourceDictionary>

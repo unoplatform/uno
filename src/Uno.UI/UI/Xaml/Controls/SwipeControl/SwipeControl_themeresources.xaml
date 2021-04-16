@@ -5,44 +5,44 @@
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:local="using:Microsoft.UI.Xaml.Controls">
 
-    <ResourceDictionary.ThemeDictionaries>
+    <!--<ResourceDictionary.ThemeDictionaries>
 
         <ResourceDictionary x:Key="Default">
-            <!-- reveal brushes-->
+            --><!-- reveal brushes--><!--
             <StaticResource x:Key="SwipeItemBackground" ResourceKey="ControlFillColorTertiaryBrush"/>
             <StaticResource x:Key="SwipeItemForeground" ResourceKey="TextFillColorPrimaryBrush"/>
             <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="ControlAltFillColorQuarternaryBrush"/>
-            <!-- execute items-->
-            <!-- pre-threshold -->
+            --><!-- execute items-->
+            <!-- pre-threshold --><!--
             <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="ControlAAFillColorDefaultBrush"/>
             <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="ControlFillColorTertiaryBrush"/>
-            <!-- post-threshold -->
+            --><!-- post-threshold --><!--
             <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="TextOnAccentAAFillColorPrimaryBrush"/>
             <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="AccentAAFillColorDefaultBrush" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
-            <!-- reveal brushes-->
+            --><!-- reveal brushes--><!--
             <StaticResource x:Key="SwipeItemBackground" ResourceKey="ControlFillColorTertiaryBrush"/>
             <StaticResource x:Key="SwipeItemForeground" ResourceKey="TextFillColorPrimaryBrush"/>
             <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="ControlAltFillColorQuarternaryBrush"/>
-            <!-- execute items-->
-            <!-- pre-threshold -->
+            --><!-- execute items-->
+            <!-- pre-threshold --><!--
             <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="ControlAAFillColorDefaultBrush"/>
             <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="ControlFillColorTertiaryBrush"/>
-            <!-- post-threshold -->
+            --><!-- post-threshold --><!--
             <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="TextOnAccentAAFillColorPrimaryBrush"/>
             <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="AccentAAFillColorDefaultBrush" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
-            <!-- reveal brushes-->
+            --><!-- reveal brushes--><!--
             <StaticResource x:Key="SwipeItemBackground" ResourceKey="SystemControlBackgroundBaseLowBrush"/>
             <StaticResource x:Key="SwipeItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush"/>
             <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush"/>
-            <!-- execute items-->
-            <!-- pre-threshold -->
+            --><!-- execute items-->
+            <!-- pre-threshold --><!--
             <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush"/>
             <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush"/>
-            <!-- post-threshold -->
+            --><!-- post-threshold --><!--
             <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush"/>
             <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
         </ResourceDictionary>
@@ -62,10 +62,10 @@
             <Setter.Value>
                 <ControlTemplate TargetType="AppBarButton">
                     <Grid x:Name="Root"
-                            MinWidth="{TemplateBinding MinWidth}"
+                            MinWidth="20" MinHeight="20"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                            BorderBrush="Yellow"
+                            BorderThickness="5">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal"/>
@@ -91,7 +91,7 @@
                                             Margin="0,0,0,2"
                                             Content="{TemplateBinding Icon}"/>
                                 </Viewbox>
-                            <!-- Font Size 12pt == 16px in the redlines -->
+                            --><!-- Font Size 12pt == 16px in the redlines --><!--
                             <TextBlock x:Name="TextLabel" 
                                             Grid.Row="1"
                                             Text="{TemplateBinding Label}"
@@ -104,6 +104,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
 </ResourceDictionary>
