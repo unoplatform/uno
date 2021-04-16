@@ -207,6 +207,8 @@ namespace Windows.UI.Xaml.Controls
 		//just do this ourselves in this measure override and prevent the confusing need for properties set on the parent of swipe control to use it at all.
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			base.MeasureOverride(availableSize);
+
 			m_rootGrid.Measure(availableSize);
 			Size contentDesiredSize = m_rootGrid.DesiredSize;
 			if (!double.IsInfinity(availableSize.Width))
