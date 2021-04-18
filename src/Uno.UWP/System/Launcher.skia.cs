@@ -53,5 +53,16 @@ namespace Windows.System
 				return Task.FromResult(false);
 			}
 		}
+
+		public static async Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
+			Uri uri,
+			LaunchQuerySupportType launchQuerySupportType)
+		{
+			if (_launcherExtension.Value != null)
+			{
+				return await _launcherExtension.Value.QueryUriSupportAsync(uri, launchQuerySupportType);
+			}
+			throw new NotImplementedException("QueryUriSupportAsync is not implemented on this platform");
+		}
 	}
 }
