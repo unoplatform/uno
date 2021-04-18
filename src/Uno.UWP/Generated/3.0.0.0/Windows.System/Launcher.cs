@@ -148,8 +148,8 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchUriAsync(Uri uri, LauncherOptions options, ValueSet inputData) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchQuerySupportStatus> QueryUriSupportAsync( global::System.Uri uri,  global::Windows.System.LaunchQuerySupportType launchQuerySupportType)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LaunchQuerySupportStatus> Launcher.QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType) is not implemented in Uno.");
