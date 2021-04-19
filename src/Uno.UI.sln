@@ -219,6 +219,7 @@ Global
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
+		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4

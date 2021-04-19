@@ -15,7 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS | Platform.Android)]
 		public void When_SingleItem()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_Automated");
@@ -34,7 +34,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS | Platform.Android)]
 		public void When_MultipleItems()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_Automated");

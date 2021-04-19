@@ -219,4 +219,12 @@
 
 	<Import Project="MixinGeneration.targets" />
 
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UI\Xaml\Controls\SwipeControl\StoryboardExtensions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\SwipeControl\StoryboardExtensions.cs" />
+	</ItemGroup>
+
 </Project>
