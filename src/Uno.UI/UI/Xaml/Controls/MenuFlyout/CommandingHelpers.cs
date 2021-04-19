@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal static void BindToLabelPropertyIfUnset(
 			 ICommand uiCommand,
-			 FrameworkElement target,
+			 DependencyObject target,
 			 DependencyProperty labelProperty)
 		{
 			string localLabel = null;
@@ -103,13 +103,16 @@ namespace Windows.UI.Xaml.Controls
 
 			if (localLabelAsI == DependencyProperty.UnsetValue || string.IsNullOrEmpty(localLabel))
 			{
-				target.SetBinding(labelProperty, new Binding { Path = "Label", Source = uiCommand });
+				if (target is IDependencyObjectStoreProvider dosp)
+				{
+					dosp.Store.SetBinding(labelProperty, new Binding { Path = "Label", Source = uiCommand });
+				}
 			}
 		}
 
 		internal static void BindToIconPropertyIfUnset(
 			 XamlUICommand uiCommand,
-			 FrameworkElement target,
+			 DependencyObject target,
 			 DependencyProperty iconProperty)
 		{
 			IconElement localIcon;
@@ -119,14 +122,17 @@ namespace Windows.UI.Xaml.Controls
 
 			if (localIconAsI == DependencyProperty.UnsetValue || localIcon == null)
 			{
-				IconSourceToIconSourceElementConverter converter = new IconSourceToIconSourceElementConverter();
-				target.SetBinding(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
+				if (target is IDependencyObjectStoreProvider dosp)
+				{
+					IconSourceToIconSourceElementConverter converter = new IconSourceToIconSourceElementConverter();
+					dosp.Store.SetBinding(iconProperty, new Binding {Path = "IconSource", Source = uiCommand, Converter = converter});
+				}
 			}
 		}
 
 		internal static void BindToIconSourcePropertyIfUnset(
 			 XamlUICommand uiCommand,
-			 FrameworkElement target,
+			 DependencyObject target,
 			 DependencyProperty iconSourceProperty)
 		{
 			object localIconSourceAsI;
@@ -137,7 +143,10 @@ namespace Windows.UI.Xaml.Controls
 
 			if (localIconSourceAsI == DependencyProperty.UnsetValue || localIconSource == null)
 			{
-				target.SetBinding(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
+				if (target is IDependencyObjectStoreProvider dosp)
+				{
+					dosp.Store.SetBinding(iconSourceProperty, new Binding {Path = "IconSource", Source = uiCommand});
+				}
 			}
 		}
 

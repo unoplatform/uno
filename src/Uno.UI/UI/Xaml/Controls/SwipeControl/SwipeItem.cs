@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class SwipeItem : FrameworkElement
+	public partial class SwipeItem : DependencyObject
 	{
 		//static double s_swipeItemWidth = 68.0;
 		//static double s_swipeItemHeight = 60.0;
