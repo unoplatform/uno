@@ -6,6 +6,7 @@
 
 using System;
 using System.Numerics;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Composition;
@@ -723,7 +724,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (args.Pointer.PointerDeviceType == Devices.Input.PointerDeviceType.Touch /*&& m_visualInteractionSource is {}*/)
+			if (args.Pointer.PointerDeviceType == PointerDeviceType.Touch /*&& m_visualInteractionSource is {}*/)
 			{
 				if (m_currentItems is {} &&
 					m_currentItems.Mode == SwipeMode.Execute &&
