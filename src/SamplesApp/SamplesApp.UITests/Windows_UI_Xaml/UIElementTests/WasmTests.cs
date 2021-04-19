@@ -8,7 +8,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml
 {
 	[TestFixture]
-	public class WasmTests : SampleControlUITestBase
+	public partial class WasmTests : SampleControlUITestBase
 	{
 		[Test]
 		[ActivePlatforms(Platform.Browser)]
