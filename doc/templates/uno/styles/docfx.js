@@ -204,7 +204,6 @@ $(function () {
 
     function webWorkerSearch() {
       var indexReady = $.Deferred();
-
       worker.onmessage = function (oEvent) {
         switch (oEvent.data.e) {
           case 'index-ready':
@@ -304,6 +303,7 @@ $(function () {
         $('#search-results').show();
         query.split(/\s+/).forEach(function (word) {
           if (word !== '') {
+            word = word.replace(/\*/g, '');
             $('#search-results>.sr-items *').mark(word);
           }
         });
