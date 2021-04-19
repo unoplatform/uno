@@ -36,7 +36,7 @@ Visual Studio [does not refresh the intellisense cache](https://developercommuni
 
 To fix this issue, build your project once, close the solution and reopen it.
 
-It is also important to note that Uno uses a multi-project structure, for which each project has to be build individually for errors to disapear from the **Error List** window (notice the **Project** column values).
+It is also important to note that Uno uses a multi-project structure, for which each project has to be built individually for errors to disapear from the **Error List** window (notice the **Project** column values).
 
 In order to clear the **Error List** window, build the whole solution completely once. Thereafter, build a specific project and prefer the use of the **Output** tool window (in the menu **View** -> **Output**), taking build messages by order of appearance.
 
