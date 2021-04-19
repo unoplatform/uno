@@ -3654,23 +3654,32 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
 				reason="No longer used method that shouldn't be called from user code" />
-      <Member
+			<Member
 				fullName="System.Void Windows.ApplicationModel.Contacts.ContactBatch..ctor()"
 				reason="Method not in UWP contract" />
 		</Methods>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.6.6">
-	  <Types>
-	  </Types>
-	  <Methods>
-		<Member
-		  fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
-		  reason="No longer used method that shouldn't be called from user code" />
-	  </Methods>
-	  <Fields>
-	  </Fields>
-	  <Properties>
-	  </Properties>
+		<Types>
+		</Types>
+		<Methods>
+			<Member
+			  fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
+			  reason="No longer used method that shouldn't be called from user code" />
+			<Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.SwipeItemInvokedEventArgs..ctor()"
+			  reason="Not part of the UWP API" />
+			<Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.set_Count(System.Int32 value)"
+			  reason="Not part of the UWP API" />
+			<Member
+			  fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.set_IsReadOnly(System.Boolean value)"
+			  reason="Not part of the UWP API" />
+		</Methods>
+		<Fields>
+		</Fields>
+		<Properties>
+		</Properties>
 	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
