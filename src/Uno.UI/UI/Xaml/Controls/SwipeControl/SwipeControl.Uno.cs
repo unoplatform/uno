@@ -10,6 +10,7 @@ using Windows.Devices.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -183,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 			void RecordMovements(ManipulationDeltaRoutedEventArgs e)
 			{
 				// Record the last movements to calculate the speed when releasing.
-				_lastMoves.AddLast(new MoveUpdate()
+				_lastMoves.AddLast(new MoveUpdate
 				{
 					DeltaX = e.Delta.Translation.X,
 					DeltaY = e.Delta.Translation.Y,
@@ -547,30 +548,6 @@ namespace Windows.UI.Xaml.Controls
 					DeltaT = left.DeltaT + right.DeltaT
 				};
 			}
-		}
-	}
-
-	/// <summary>
-	/// Extension methods for classes in the Windows.UI.Xaml.Media.Animation namespace.
-	/// </summary>
-	internal static class StoryboardExtensions
-	{
-		/// <summary>
-		/// Begins a Storyboard and await for its completion
-		/// </summary>
-		/// <param name="storyboard">The storyboard</param>
-		internal static async Task Run(this Storyboard storyboard)
-		{
-			var cts = new TaskCompletionSource<bool>();
-			void OnCompleted(object sender, object e)
-			{
-				cts.SetResult(true);
-				storyboard.Completed -= OnCompleted;
-			}
-
-			storyboard.Completed += OnCompleted;
-			storyboard.Begin();
-			await cts.Task;
 		}
 	}
 }
