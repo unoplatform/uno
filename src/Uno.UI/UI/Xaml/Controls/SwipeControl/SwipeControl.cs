@@ -227,227 +227,229 @@ namespace Windows.UI.Xaml.Controls
 
 		#region IInteractionTrackerOwner
 		// Uno workaround: Interaction tracker is not supported yet, use Manipulation events instead
+		#if false
 
-		//void CustomAnimationStateEntered(
-		//	InteractionTracker sender,
-		//	InteractionTrackerCustomAnimationStateEnteredArgs args)
-		//{
-		//	SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
+		void CustomAnimationStateEntered(
+			InteractionTracker sender,
+			InteractionTrackerCustomAnimationStateEnteredArgs args)
+		{
+			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-		//	m_isInteracting = true;
+			m_isInteracting = true;
 
-		//	if (m_isIdle)
-		//	{
-		//		m_isIdle = false;
-		//		if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
-		//		{
-		//			globalTestHooks.NotifyIdleStatusChanged(this);
-		//		}
-		//	}
-		//}
+			if (m_isIdle)
+			{
+				m_isIdle = false;
+				if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
+				{
+					globalTestHooks.NotifyIdleStatusChanged(this);
+				}
+			}
+		}
 
-		//void RequestIgnored(
-		//	InteractionTracker sender,
+		void RequestIgnored(
+			InteractionTracker sender,
 
-		//InteractionTrackerRequestIgnoredArgs args)
-		//{
-		//	SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
-		//}
+		InteractionTrackerRequestIgnoredArgs args)
+		{
+			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
+		}
 
-		//void IdleStateEntered(
-		//	InteractionTracker sender,
+		void IdleStateEntered(
+			InteractionTracker sender,
 
-		//InteractionTrackerIdleStateEnteredArgs args)
-		//{
-		//	SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
+		InteractionTrackerIdleStateEnteredArgs args)
+		{
+			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-		//	m_isInteracting = false;
-		//	UpdateIsOpen(m_interactionTracker.Position() != float3.zero());
+			m_isInteracting = false;
+			UpdateIsOpen(m_interactionTracker.Position() != float3.zero());
 
-		//	if (m_isOpen)
-		//	{
-		//		if (m_currentItems && m_currentItems.Mode == SwipeMode.Execute && m_currentItems.Size() > 0)
-		//		{
-		//			var swipeItem = (SwipeItem)(m_currentItems.GetAt(0));
-		//			get_self<SwipeItem>(swipeItem).InvokeSwipe(this);
-		//		}
-		//	}
-		//	else
-		//	{
-		//		if (var swipeContentStackPanel = m_swipeContentStackPanel)
-		//		{
-		//			swipeContentStackPanel.Background(null);
-		//			if (var swipeContentStackPanelChildren = swipeContentStackPanel.Children)
-		//			{
-		//				swipeContentStackPanelChildren.Clear();
-		//			}
-		//		}
-		//		if (var swipeContentRoot = m_swipeContentRoot)
-		//		{
-		//			swipeContentRoot.Background(null);
-		//		}
+			if (m_isOpen)
+			{
+				if (m_currentItems && m_currentItems.Mode == SwipeMode.Execute && m_currentItems.Size() > 0)
+				{
+					var swipeItem = (SwipeItem)(m_currentItems.GetAt(0));
+					get_self<SwipeItem>(swipeItem).InvokeSwipe(this);
+				}
+			}
+			else
+			{
+				if (var swipeContentStackPanel = m_swipeContentStackPanel)
+				{
+					swipeContentStackPanel.Background(null);
+					if (var swipeContentStackPanelChildren = swipeContentStackPanel.Children)
+					{
+						swipeContentStackPanelChildren.Clear();
+					}
+				}
+				if (var swipeContentRoot = m_swipeContentRoot)
+				{
+					swipeContentRoot.Background(null);
+				}
 
-		//		m_currentItems.set(null);
-		//		m_createdContent = CreatedContent.None;
-		//	}
+				m_currentItems.set(null);
+				m_createdContent = CreatedContent.None;
+			}
 
-		//	if (!m_isIdle)
-		//	{
-		//		m_isIdle = true;
-		//		if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
-		//		{
-		//			globalTestHooks.NotifyIdleStatusChanged(this);
-		//		}
-		//	}
-		//}
+			if (!m_isIdle)
+			{
+				m_isIdle = true;
+				if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
+				{
+					globalTestHooks.NotifyIdleStatusChanged(this);
+				}
+			}
+		}
 
-		//void InteractingStateEntered(
-		//	InteractionTracker sender,
+		void InteractingStateEntered(
+			InteractionTracker sender,
 
-		//InteractionTrackerInteractingStateEnteredArgs args)
-		//{
-		//	SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
+		InteractionTrackerInteractingStateEnteredArgs args)
+		{
+			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-		//	if (m_isIdle)
-		//	{
-		//		m_isIdle = false;
-		//		if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
-		//		{
-		//			globalTestHooks.NotifyIdleStatusChanged(this);
-		//		}
-		//	}
+			if (m_isIdle)
+			{
+				m_isIdle = false;
+				if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
+				{
+					globalTestHooks.NotifyIdleStatusChanged(this);
+				}
+			}
 
-		//	m_lastActionWasClosing = false;
-		//	m_lastActionWasOpening = false;
-		//	m_isInteracting = true;
+			m_lastActionWasClosing = false;
+			m_lastActionWasOpening = false;
+			m_isInteracting = true;
 
-		//	//Once the user has started interacting with a SwipeControl in the closed state we are free to unblock contents.
-		//	//Contents of items opposite the currently opened ones will not be created.
-		//	if (!m_isOpen)
-		//	{
-		//		m_blockNearContent = false;
-		//		m_blockFarContent = false;
-		//		m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, false);
-		//		m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, false);
-		//	}
-		//}
+			//Once the user has started interacting with a SwipeControl in the closed state we are free to unblock contents.
+			//Contents of items opposite the currently opened ones will not be created.
+			if (!m_isOpen)
+			{
+				m_blockNearContent = false;
+				m_blockFarContent = false;
+				m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, false);
+				m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, false);
+			}
+		}
 
-		//void InertiaStateEntered(
-		//	InteractionTracker sender,
+		void InertiaStateEntered(
+			InteractionTracker sender,
 
-		//InteractionTrackerInertiaStateEnteredArgs & args)
-		//{
-		//	SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
+		InteractionTrackerInertiaStateEnteredArgs & args)
+		{
+			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-		//	m_isInteracting = false;
+			m_isInteracting = false;
 
-		//	if (m_isIdle)
-		//	{
-		//		m_isIdle = false;
-		//		if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
-		//		{
-		//			globalTestHooks.NotifyIdleStatusChanged(this);
-		//		}
-		//	}
+			if (m_isIdle)
+			{
+				m_isIdle = false;
+				if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
+				{
+					globalTestHooks.NotifyIdleStatusChanged(this);
+				}
+			}
 
-		//	//It is possible that the user has flicked from a negative position to a position that would result in the interaction
-		//	//tracker coming to rest at the positive open position (or vise versa). The != zero check does not account for this.
-		//	//Instead we check to ensure that the current position and the ModifiedRestingPosition have the same sign (multiply to a positive number)
-		//	//If they do not then we are in this situation and want the end result of the interaction to be the closed state, so close without any animation and return
-		//	//to prevent further processing of this inertia state.
-		//	var flickToOppositeSideCheck = m_interactionTracker.Position() * args.ModifiedRestingPosition().Value();
-		//	if (m_isHorizontal ? flickToOppositeSideCheck.x < 0 : flickToOppositeSideCheck.y < 0)
-		//	{
-		//		CloseWithoutAnimation();
-		//		return;
-		//	}
+			//It is possible that the user has flicked from a negative position to a position that would result in the interaction
+			//tracker coming to rest at the positive open position (or vise versa). The != zero check does not account for this.
+			//Instead we check to ensure that the current position and the ModifiedRestingPosition have the same sign (multiply to a positive number)
+			//If they do not then we are in this situation and want the end result of the interaction to be the closed state, so close without any animation and return
+			//to prevent further processing of this inertia state.
+			var flickToOppositeSideCheck = m_interactionTracker.Position() * args.ModifiedRestingPosition().Value();
+			if (m_isHorizontal ? flickToOppositeSideCheck.x < 0 : flickToOppositeSideCheck.y < 0)
+			{
+				CloseWithoutAnimation();
+				return;
+			}
 
-		//	UpdateIsOpen(args.ModifiedRestingPosition().Value() != float3.zero());
-		//	// If the user has panned the interaction tracker past 0 in the opposite direction of the previously
-		//	// opened swipe items then when we set m_isOpen to true the animations will snap to that value.
-		//	// To avoid this we block that side of the animation until the interacting state is entered.
-		//	if (m_isOpen)
-		//	{
-		//		switch (m_createdContent)
-		//		{
-		//			case CreatedContent.Bottom:
-		//			case CreatedContent.Right:
-		//				m_blockNearContent = true;
-		//				m_blockFarContent = false;
-		//				m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, true);
-		//				m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, false);
-		//				break;
-		//			case CreatedContent.Top:
-		//			case CreatedContent.Left:
-		//				m_blockNearContent = false;
-		//				m_blockFarContent = true;
-		//				m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, false);
-		//				m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, true);
-		//				break;
-		//			case CreatedContent.None:
-		//				m_blockNearContent = false;
-		//				m_blockFarContent = false;
-		//				m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, false);
-		//				m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, false);
-		//				break;
-		//			default:
-		//				assert(false);
-		//		}
-		//	}
-		//}
+			UpdateIsOpen(args.ModifiedRestingPosition().Value() != float3.zero());
+			// If the user has panned the interaction tracker past 0 in the opposite direction of the previously
+			// opened swipe items then when we set m_isOpen to true the animations will snap to that value.
+			// To avoid this we block that side of the animation until the interacting state is entered.
+			if (m_isOpen)
+			{
+				switch (m_createdContent)
+				{
+					case CreatedContent.Bottom:
+					case CreatedContent.Right:
+						m_blockNearContent = true;
+						m_blockFarContent = false;
+						m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, true);
+						m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, false);
+						break;
+					case CreatedContent.Top:
+					case CreatedContent.Left:
+						m_blockNearContent = false;
+						m_blockFarContent = true;
+						m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, false);
+						m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, true);
+						break;
+					case CreatedContent.None:
+						m_blockNearContent = false;
+						m_blockFarContent = false;
+						m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, false);
+						m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, false);
+						break;
+					default:
+						assert(false);
+				}
+			}
+		}
 
-		//void ValuesChanged(
-		//	InteractionTracker sender,
+		void ValuesChanged(
+			InteractionTracker sender,
 
-		//InteractionTrackerValuesChangedArgs & args)
-		//{
-		//	SWIPECONTROL_TRACE_VERBOSE(this/*, TRACE_MSG_METH, METH_NAME, this*/);
+		InteractionTrackerValuesChangedArgs & args)
+		{
+			SWIPECONTROL_TRACE_VERBOSE(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-		//	var lastInteractedWithSwipeControl = s_lastInteractedWithSwipeControl;
-		//	if (m_isInteracting && (!lastInteractedWithSwipeControl || lastInteractedWithSwipeControl != this))
-		//	{
-		//		if (lastInteractedWithSwipeControl)
-		//		{
-		//			lastInteractedWithSwipeControl.CloseIfNotRemainOpenExecuteItem();
-		//		}
+			var lastInteractedWithSwipeControl = s_lastInteractedWithSwipeControl;
+			if (m_isInteracting && (!lastInteractedWithSwipeControl || lastInteractedWithSwipeControl != this))
+			{
+				if (lastInteractedWithSwipeControl)
+				{
+					lastInteractedWithSwipeControl.CloseIfNotRemainOpenExecuteItem();
+				}
 
-		//		s_lastInteractedWithSwipeControl = get_weak();
+				s_lastInteractedWithSwipeControl = get_weak();
 
-		//		if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
-		//		{
-		//			globalTestHooks.NotifyLastInteractedWithSwipeControlChanged();
-		//		}
-		//	}
+				if (var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks())
+				{
+					globalTestHooks.NotifyLastInteractedWithSwipeControlChanged();
+				}
+			}
 
-		//	float value = 0.0f;
+			float value = 0.0f;
 
-		//	if (m_isHorizontal)
-		//	{
-		//		value = args.Position().x;
-		//		if (!m_blockNearContent && m_createdContent != CreatedContent.Left && value < -c_epsilon)
-		//		{
-		//			CreateLeftContent();
-		//		}
-		//		else if (!m_blockFarContent && m_createdContent != CreatedContent.Right && value > c_epsilon)
-		//		{
-		//			CreateRightContent();
-		//		}
-		//	}
-		//	else
-		//	{
-		//		value = args.Position().y;
-		//		if (!m_blockNearContent && m_createdContent != CreatedContent.Top && value < -c_epsilon)
-		//		{
-		//			CreateTopContent();
-		//		}
-		//		else if (!m_blockFarContent && m_createdContent != CreatedContent.Bottom && value > c_epsilon)
-		//		{
-		//			CreateBottomContent();
-		//		}
-		//	}
+			if (m_isHorizontal)
+			{
+				value = args.Position().x;
+				if (!m_blockNearContent && m_createdContent != CreatedContent.Left && value < -c_epsilon)
+				{
+					CreateLeftContent();
+				}
+				else if (!m_blockFarContent && m_createdContent != CreatedContent.Right && value > c_epsilon)
+				{
+					CreateRightContent();
+				}
+			}
+			else
+			{
+				value = args.Position().y;
+				if (!m_blockNearContent && m_createdContent != CreatedContent.Top && value < -c_epsilon)
+				{
+					CreateTopContent();
+				}
+				else if (!m_blockFarContent && m_createdContent != CreatedContent.Bottom && value > c_epsilon)
+				{
+					CreateBottomContent();
+				}
+			}
 
-		//	UpdateThresholdReached(value);
-		//}
+			UpdateThresholdReached(value);
+		}
+		#endif
 		#endregion
 
 		#region TestHookHelpers
@@ -926,216 +928,218 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		//* Uno workaround: Animation are not yet supported by composition API, we are using XAML animation instead.
-		//void InitializeInteractionTracker()
-		//{
-		//	SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
+		#if false
+		void InitializeInteractionTracker()
+		{
+			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-		//	IInteractionTrackerOwner interactionTrackerOwner = this;
+			IInteractionTrackerOwner interactionTrackerOwner = this;
 
-		//	if (!m_compositor)
-		//	{
-		//		m_compositor.set(ElementCompositionPreview.GetElementVisual(m_rootGrid).Compositor());
-		//	}
+			if (!m_compositor)
+			{
+				m_compositor.set(ElementCompositionPreview.GetElementVisual(m_rootGrid).Compositor());
+			}
 
-		//	m_visualInteractionSource.set(VisualInteractionSource.Create(FindVisualInteractionSourceVisual()));
-		//	m_visualInteractionSource.IsPositionXRailsEnabled(m_isHorizontal);
-		//	m_visualInteractionSource.IsPositionYRailsEnabled(!m_isHorizontal);
-		//	m_visualInteractionSource.ManipulationRedirectionMode(VisualInteractionSourceRedirectionMode.CapableTouchpadOnly);
-		//	m_visualInteractionSource.PositionXSourceMode(m_isHorizontal ? InteractionSourceMode.EnabledWithInertia : InteractionSourceMode.Disabled);
-		//	m_visualInteractionSource.PositionYSourceMode(!m_isHorizontal ? InteractionSourceMode.EnabledWithInertia : InteractionSourceMode.Disabled);
-		//	if (m_isHorizontal)
-		//	{
-		//		m_visualInteractionSource.PositionXChainingMode(InteractionChainingMode.Never);
-		//	}
-		//	else
-		//	{
-		//		m_visualInteractionSource.PositionYChainingMode(InteractionChainingMode.Never);
-		//	}
+			m_visualInteractionSource.set(VisualInteractionSource.Create(FindVisualInteractionSourceVisual()));
+			m_visualInteractionSource.IsPositionXRailsEnabled(m_isHorizontal);
+			m_visualInteractionSource.IsPositionYRailsEnabled(!m_isHorizontal);
+			m_visualInteractionSource.ManipulationRedirectionMode(VisualInteractionSourceRedirectionMode.CapableTouchpadOnly);
+			m_visualInteractionSource.PositionXSourceMode(m_isHorizontal ? InteractionSourceMode.EnabledWithInertia : InteractionSourceMode.Disabled);
+			m_visualInteractionSource.PositionYSourceMode(!m_isHorizontal ? InteractionSourceMode.EnabledWithInertia : InteractionSourceMode.Disabled);
+			if (m_isHorizontal)
+			{
+				m_visualInteractionSource.PositionXChainingMode(InteractionChainingMode.Never);
+			}
+			else
+			{
+				m_visualInteractionSource.PositionYChainingMode(InteractionChainingMode.Never);
+			}
 
-		//	m_interactionTracker.set(InteractionTracker.CreateWithOwner(m_compositor, interactionTrackerOwner));
-		//	m_interactionTracker.InteractionSources().Add(m_visualInteractionSource);
-		//	m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
-		//	m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
-		//	m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, false);
-		//	m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, false);
-		//	m_interactionTracker.Properties.InsertBoolean(s_hasLeftContentPropertyName, LeftItems() && LeftItems().Size() > 0);
-		//	m_interactionTracker.Properties.InsertBoolean(s_hasRightContentPropertyName, RightItems() && RightItems().Size() > 0);
-		//	m_interactionTracker.Properties.InsertBoolean(s_hasTopContentPropertyName, TopItems() && TopItems().Size() > 0);
-		//	m_interactionTracker.Properties.InsertBoolean(s_hasBottomContentPropertyName, BottomItems() && BottomItems().Size() > 0);
-		//	m_interactionTracker.MaxPosition({
-		//		std.numeric_limits<float>.infinity(), std.numeric_limits<float>.infinity(), 0.0f
-		//	});
-		//	m_interactionTracker.MinPosition({
-		//		-1.0f * std.numeric_limits<float>.infinity(), -1.0f * std.numeric_limits<float>.infinity(), 0.0f
-		//	});
+			m_interactionTracker.set(InteractionTracker.CreateWithOwner(m_compositor, interactionTrackerOwner));
+			m_interactionTracker.InteractionSources().Add(m_visualInteractionSource);
+			m_interactionTracker.Properties.InsertBoolean(s_isFarOpenPropertyName, false);
+			m_interactionTracker.Properties.InsertBoolean(s_isNearOpenPropertyName, false);
+			m_interactionTracker.Properties.InsertBoolean(s_blockNearContentPropertyName, false);
+			m_interactionTracker.Properties.InsertBoolean(s_blockFarContentPropertyName, false);
+			m_interactionTracker.Properties.InsertBoolean(s_hasLeftContentPropertyName, LeftItems() && LeftItems().Size() > 0);
+			m_interactionTracker.Properties.InsertBoolean(s_hasRightContentPropertyName, RightItems() && RightItems().Size() > 0);
+			m_interactionTracker.Properties.InsertBoolean(s_hasTopContentPropertyName, TopItems() && TopItems().Size() > 0);
+			m_interactionTracker.Properties.InsertBoolean(s_hasBottomContentPropertyName, BottomItems() && BottomItems().Size() > 0);
+			m_interactionTracker.MaxPosition({
+				std.numeric_limits<float>.infinity(), std.numeric_limits<float>.infinity(), 0.0f
+			});
+			m_interactionTracker.MinPosition({
+				-1.0f * std.numeric_limits<float>.infinity(), -1.0f * std.numeric_limits<float>.infinity(), 0.0f
+			});
 
-		//	// Create and initialize the Swipe animations:
-		//	// If the swipe control is already opened it should not be possible to open the opposite side's items, without first closing the swipe control.
-		//	// This prevents the user from flicking the swipe control closed and accidently opening the other due to inertia.
-		//	// To acheive this we insert the isFarOpen and isNearOpen boolean properties on the interaction tracker and alter the expression output based on these.
-		//	// The opened state is maintained in the interaction trackers IdleStateEntered handler, this means we need to ensure this state is entered each time the swipe control
-		//	// is opened or closed.
+			// Create and initialize the Swipe animations:
+			// If the swipe control is already opened it should not be possible to open the opposite side's items, without first closing the swipe control.
+			// This prevents the user from flicking the swipe control closed and accidently opening the other due to inertia.
+			// To acheive this we insert the isFarOpen and isNearOpen boolean properties on the interaction tracker and alter the expression output based on these.
+			// The opened state is maintained in the interaction trackers IdleStateEntered handler, this means we need to ensure this state is entered each time the swipe control
+			// is opened or closed.
 
-		//	// A more readable version of the expression:
+			// A more readable version of the expression:
 
-		//	/m_swipeAnimation.set(m_compositor.CreateExpressionAnimation("isHorizontal ?"
-		//	"Vector3(tracker.isFarOpen || tracker.blockNearContent ? Clamp(-tracker.Position.X, -this.Target.Size.X, 0) :"
-		//	"tracker.isNearOpen  || tracker.blockFarContent ? Clamp(-tracker.Position.X,  0, this.Target.Size.X) :"
-		//	"Clamp(-tracker.Position.X, (tracker.hasRightContent ? -10000 : 0), (tracker.hasLeftContent ? 10000 : 0)), 0, 0) :"
-		//	"Vector3(0, tracker.isFarOpen  || tracker.blockNearContent ? Clamp(-tracker.Position.Y, -this.Target.Size.Y, 0) :"
-		//	"tracker.isNearOpen || tracker.blockFarContent ? Clamp(-tracker.Position.Y, 0,  this.Target.Size.Y) :"
-		//	"Clamp(-tracker.Position.Y, (tracker.hasBottomContent ? -10000 : 0), (tracker.hasTopContent ? 10000 : 0)), 0)"));
-		//	*/
+			/m_swipeAnimation.set(m_compositor.CreateExpressionAnimation("isHorizontal ?"
+			"Vector3(tracker.isFarOpen || tracker.blockNearContent ? Clamp(-tracker.Position.X, -this.Target.Size.X, 0) :"
+			"tracker.isNearOpen  || tracker.blockFarContent ? Clamp(-tracker.Position.X,  0, this.Target.Size.X) :"
+			"Clamp(-tracker.Position.X, (tracker.hasRightContent ? -10000 : 0), (tracker.hasLeftContent ? 10000 : 0)), 0, 0) :"
+			"Vector3(0, tracker.isFarOpen  || tracker.blockNearContent ? Clamp(-tracker.Position.Y, -this.Target.Size.Y, 0) :"
+			"tracker.isNearOpen || tracker.blockFarContent ? Clamp(-tracker.Position.Y, 0,  this.Target.Size.Y) :"
+			"Clamp(-tracker.Position.Y, (tracker.hasBottomContent ? -10000 : 0), (tracker.hasTopContent ? 10000 : 0)), 0)"));
+			*/
 
-		//	m_swipeAnimation.set(m_compositor.CreateExpressionAnimation(isHorizontalPropertyName() + " ?"
-		//	"Vector3(" + trackerPropertyName() + "." + isFarOpenPropertyName() + " || " + trackerPropertyName() + "." + blockNearContentPropertyName() + " ? Clamp(-" + trackerPropertyName() + ".Position.X, -this.Target.Size.X, 0) :"
-		//		+ trackerPropertyName() + "." + isNearOpenPropertyName() + " || " + trackerPropertyName() + "." + blockFarContentPropertyName() + " ? Clamp(-" + trackerPropertyName() + ".Position.X,  0, this.Target.Size.X) :"
-		//	"Clamp(-" + trackerPropertyName() + ".Position.X, (" + trackerPropertyName() + "." + hasRightContentPropertyName() + " ? -10000 : 0), (" + trackerPropertyName() + "." + hasLeftContentPropertyName() + " ? 10000 : 0)), 0, 0) :"
-		//	"Vector3(0, " + trackerPropertyName() + "." + isFarOpenPropertyName() + " || " + trackerPropertyName() + "." + blockNearContentPropertyName() + "  ? Clamp(-" + trackerPropertyName() + ".Position.Y, -this.Target.Size.Y, 0) :"
-		//		+ trackerPropertyName() + "." + isNearOpenPropertyName() + " || " + trackerPropertyName() + "." + blockFarContentPropertyName() + " ? Clamp(-" + trackerPropertyName() + ".Position.Y, 0,  this.Target.Size.Y) :"
-		//	"Clamp(-" + trackerPropertyName() + ".Position.Y, (" + trackerPropertyName() + "." + hasBottomContentPropertyName() + " ? -10000 : 0), (" + trackerPropertyName() + "." + hasTopContentPropertyName() + " ? 10000 : 0)), 0)"));
+			m_swipeAnimation.set(m_compositor.CreateExpressionAnimation(isHorizontalPropertyName() + " ?"
+			"Vector3(" + trackerPropertyName() + "." + isFarOpenPropertyName() + " || " + trackerPropertyName() + "." + blockNearContentPropertyName() + " ? Clamp(-" + trackerPropertyName() + ".Position.X, -this.Target.Size.X, 0) :"
+				+ trackerPropertyName() + "." + isNearOpenPropertyName() + " || " + trackerPropertyName() + "." + blockFarContentPropertyName() + " ? Clamp(-" + trackerPropertyName() + ".Position.X,  0, this.Target.Size.X) :"
+			"Clamp(-" + trackerPropertyName() + ".Position.X, (" + trackerPropertyName() + "." + hasRightContentPropertyName() + " ? -10000 : 0), (" + trackerPropertyName() + "." + hasLeftContentPropertyName() + " ? 10000 : 0)), 0, 0) :"
+			"Vector3(0, " + trackerPropertyName() + "." + isFarOpenPropertyName() + " || " + trackerPropertyName() + "." + blockNearContentPropertyName() + "  ? Clamp(-" + trackerPropertyName() + ".Position.Y, -this.Target.Size.Y, 0) :"
+				+ trackerPropertyName() + "." + isNearOpenPropertyName() + " || " + trackerPropertyName() + "." + blockFarContentPropertyName() + " ? Clamp(-" + trackerPropertyName() + ".Position.Y, 0,  this.Target.Size.Y) :"
+			"Clamp(-" + trackerPropertyName() + ".Position.Y, (" + trackerPropertyName() + "." + hasBottomContentPropertyName() + " ? -10000 : 0), (" + trackerPropertyName() + "." + hasTopContentPropertyName() + " ? 10000 : 0)), 0)"));
 
-		//	m_swipeAnimation.SetReferenceParameter(s_trackerPropertyName, m_interactionTracker);
-		//	m_swipeAnimation.SetBooleanParameter(s_isHorizontalPropertyName, m_isHorizontal);
-		//	if (IsTranslationFacadeAvailableForSwipeControl(m_content))
-		//	{
-		//		m_swipeAnimation.Target(s_translationPropertyName);
-		//	}
+			m_swipeAnimation.SetReferenceParameter(s_trackerPropertyName, m_interactionTracker);
+			m_swipeAnimation.SetBooleanParameter(s_isHorizontalPropertyName, m_isHorizontal);
+			if (IsTranslationFacadeAvailableForSwipeControl(m_content))
+			{
+				m_swipeAnimation.Target(s_translationPropertyName);
+			}
 
-		//	//A more readable version of the expression:
+			//A more readable version of the expression:
 
-		//	/m_executeExpressionAnimation.set(m_compositor.CreateExpressionAnimation("(foregroundVisual." + GetAnimationTarget() + " * 0.5) + (isHorizontal ?"
-		//	"Vector3((isNearContent ? -0.5, 0.5) * this.Target.Size.X, 0, 0) : "
-		//	"Vector3(0, (isNearContent ? -0.5, 0.5) * this.Target.Size.Y, 0))"));
-		//	*/
+			/m_executeExpressionAnimation.set(m_compositor.CreateExpressionAnimation("(foregroundVisual." + GetAnimationTarget() + " * 0.5) + (isHorizontal ?"
+			"Vector3((isNearContent ? -0.5, 0.5) * this.Target.Size.X, 0, 0) : "
+			"Vector3(0, (isNearContent ? -0.5, 0.5) * this.Target.Size.Y, 0))"));
+			*/
 
-		//	m_executeExpressionAnimation.set(m_compositor.CreateExpressionAnimation("(" + foregroundVisualPropertyName() + "." + GetAnimationTarget(m_swipeContentStackPanel) + " * 0.5) + (" + isHorizontalPropertyName() + " ? "
-		//	"Vector3((" + isNearContentPropertyName() + " ? -0.5 : 0.5) * this.Target.Size.X, 0, 0) : "
-		//	"Vector3(0, (" + isNearContentPropertyName() + " ? -0.5 : 0.5) * this.Target.Size.Y, 0))"));
+			m_executeExpressionAnimation.set(m_compositor.CreateExpressionAnimation("(" + foregroundVisualPropertyName() + "." + GetAnimationTarget(m_swipeContentStackPanel) + " * 0.5) + (" + isHorizontalPropertyName() + " ? "
+			"Vector3((" + isNearContentPropertyName() + " ? -0.5 : 0.5) * this.Target.Size.X, 0, 0) : "
+			"Vector3(0, (" + isNearContentPropertyName() + " ? -0.5 : 0.5) * this.Target.Size.Y, 0))"));
 
-		//	m_executeExpressionAnimation.SetBooleanParameter(s_isHorizontalPropertyName, m_isHorizontal);
-		//	if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
-		//	{
-		//		m_executeExpressionAnimation.Target(s_translationPropertyName);
-		//	}
+			m_executeExpressionAnimation.SetBooleanParameter(s_isHorizontalPropertyName, m_isHorizontal);
+			if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
+			{
+				m_executeExpressionAnimation.Target(s_translationPropertyName);
+			}
 
-		//	//A more readable version of the expression:
+			//A more readable version of the expression:
 
-		//	/m_clipExpressionAnimation.set(m_compositor.CreateExpressionAnimation(L"isHorizontal ?
-		//	Max(swipeRootVisual.Size.X + (isNearContent ? tracker.Position.X : -tracker.Position.X), 0) :
-		//	Max(swipeRootVisual.Size.Y + (isNearContent ? tracker.Position.Y : -tracker.Position.Y), 0)"));*/
+			/m_clipExpressionAnimation.set(m_compositor.CreateExpressionAnimation(L"isHorizontal ?
+			Max(swipeRootVisual.Size.X + (isNearContent ? tracker.Position.X : -tracker.Position.X), 0) :
+			Max(swipeRootVisual.Size.Y + (isNearContent ? tracker.Position.Y : -tracker.Position.Y), 0)"));*/
 
-		//	m_clipExpressionAnimation.set(m_compositor.CreateExpressionAnimation(isHorizontalPropertyName() + " ? "
-		//	"Max(" + swipeRootVisualPropertyName() + ".Size.X + (" + isNearContentPropertyName() + " ? " + trackerPropertyName() + ".Position.X : -" + trackerPropertyName() + ".Position.X) , 0) : "
-		//	"Max(" + swipeRootVisualPropertyName() + ".Size.Y + (" + isNearContentPropertyName() + " ? " + trackerPropertyName() + ".Position.Y : -" + trackerPropertyName() + ".Position.Y) , 0)"));
+			m_clipExpressionAnimation.set(m_compositor.CreateExpressionAnimation(isHorizontalPropertyName() + " ? "
+			"Max(" + swipeRootVisualPropertyName() + ".Size.X + (" + isNearContentPropertyName() + " ? " + trackerPropertyName() + ".Position.X : -" + trackerPropertyName() + ".Position.X) , 0) : "
+			"Max(" + swipeRootVisualPropertyName() + ".Size.Y + (" + isNearContentPropertyName() + " ? " + trackerPropertyName() + ".Position.Y : -" + trackerPropertyName() + ".Position.Y) , 0)"));
 
-		//	m_clipExpressionAnimation.SetReferenceParameter(s_trackerPropertyName, m_interactionTracker);
-		//	m_clipExpressionAnimation.SetBooleanParameter(s_isHorizontalPropertyName, m_isHorizontal);
-		//}
+			m_clipExpressionAnimation.SetReferenceParameter(s_trackerPropertyName, m_interactionTracker);
+			m_clipExpressionAnimation.SetBooleanParameter(s_isHorizontalPropertyName, m_isHorizontal);
+		}
 
-		//void ConfigurePositionInertiaRestingValues()
-		//{
-		//	SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
+		void ConfigurePositionInertiaRestingValues()
+		{
+			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-		//	if (m_isHorizontal)
-		//	{
-		//		IVector<InteractionTrackerInertiaModifier> xModifiers = new Vector<InteractionTrackerInertiaModifier>();
+			if (m_isHorizontal)
+			{
+				IVector<InteractionTrackerInertiaModifier> xModifiers = new Vector<InteractionTrackerInertiaModifier>();
 
-		//		ExpressionAnimation leftCondition = m_compositor.CreateExpressionAnimation("this.Target." + hasLeftContentPropertyName() + " && !this.Target." + isFarOpenPropertyName() + " && this.Target.NaturalRestingPosition.x <= -1 * (this.Target." + isNearOpenPropertyName() + " ? " + swipeContentSizeParameterName() + " : min(" + swipeContentSizeParameterName() + ", " + maxThresholdPropertyName() + "))");
-		//		leftCondition.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualWidth));
-		//		leftCondition.SetScalarParameter(s_maxThresholdPropertyName, c_ThresholdValue);
-		//		ExpressionAnimation leftRestingPoint = m_compositor.CreateExpressionAnimation("-" + swipeContentSizeParameterName());
-		//		leftRestingPoint.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualWidth));
-		//		InteractionTrackerInertiaRestingValue leftOpen = InteractionTrackerInertiaRestingValue.Create(m_compositor);
-		//		leftOpen.Condition(leftCondition);
-		//		leftOpen.RestingValue(leftRestingPoint);
-		//		xModifiers.Append(leftOpen);
+				ExpressionAnimation leftCondition = m_compositor.CreateExpressionAnimation("this.Target." + hasLeftContentPropertyName() + " && !this.Target." + isFarOpenPropertyName() + " && this.Target.NaturalRestingPosition.x <= -1 * (this.Target." + isNearOpenPropertyName() + " ? " + swipeContentSizeParameterName() + " : min(" + swipeContentSizeParameterName() + ", " + maxThresholdPropertyName() + "))");
+				leftCondition.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualWidth));
+				leftCondition.SetScalarParameter(s_maxThresholdPropertyName, c_ThresholdValue);
+				ExpressionAnimation leftRestingPoint = m_compositor.CreateExpressionAnimation("-" + swipeContentSizeParameterName());
+				leftRestingPoint.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualWidth));
+				InteractionTrackerInertiaRestingValue leftOpen = InteractionTrackerInertiaRestingValue.Create(m_compositor);
+				leftOpen.Condition(leftCondition);
+				leftOpen.RestingValue(leftRestingPoint);
+				xModifiers.Append(leftOpen);
 
-		//		ExpressionAnimation rightCondition = m_compositor.CreateExpressionAnimation("this.Target." + hasRightContentPropertyName() + " && !this.Target." + isNearOpenPropertyName() + " && this.Target.NaturalRestingPosition.x >= (this.Target." + isFarOpenPropertyName() + " ? " + swipeContentSizeParameterName() + " : min(" + swipeContentSizeParameterName() + ", " + maxThresholdPropertyName() + "))");
-		//		rightCondition.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualWidth));
-		//		rightCondition.SetScalarParameter(s_maxThresholdPropertyName, c_ThresholdValue);
-		//		ExpressionAnimation rightRestingValue = m_compositor.CreateExpressionAnimation(s_swipeContentSizeParameterName);
-		//		rightRestingValue.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualWidth));
-		//		InteractionTrackerInertiaRestingValue rightOpen = InteractionTrackerInertiaRestingValue.Create(m_compositor);
-		//		rightOpen.Condition(rightCondition);
-		//		rightOpen.RestingValue(rightRestingValue);
-		//		xModifiers.Append(rightOpen);
+				ExpressionAnimation rightCondition = m_compositor.CreateExpressionAnimation("this.Target." + hasRightContentPropertyName() + " && !this.Target." + isNearOpenPropertyName() + " && this.Target.NaturalRestingPosition.x >= (this.Target." + isFarOpenPropertyName() + " ? " + swipeContentSizeParameterName() + " : min(" + swipeContentSizeParameterName() + ", " + maxThresholdPropertyName() + "))");
+				rightCondition.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualWidth));
+				rightCondition.SetScalarParameter(s_maxThresholdPropertyName, c_ThresholdValue);
+				ExpressionAnimation rightRestingValue = m_compositor.CreateExpressionAnimation(s_swipeContentSizeParameterName);
+				rightRestingValue.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualWidth));
+				InteractionTrackerInertiaRestingValue rightOpen = InteractionTrackerInertiaRestingValue.Create(m_compositor);
+				rightOpen.Condition(rightCondition);
+				rightOpen.RestingValue(rightRestingValue);
+				xModifiers.Append(rightOpen);
 
-		//		ExpressionAnimation condition = m_compositor.CreateExpressionAnimation("true");
-		//		ExpressionAnimation restingValue = m_compositor.CreateExpressionAnimation("0");
-		//		InteractionTrackerInertiaRestingValue neutralX = InteractionTrackerInertiaRestingValue.Create(m_compositor);
-		//		neutralX.Condition(condition);
-		//		neutralX.RestingValue(restingValue);
-		//		xModifiers.Append(neutralX);
+				ExpressionAnimation condition = m_compositor.CreateExpressionAnimation("true");
+				ExpressionAnimation restingValue = m_compositor.CreateExpressionAnimation("0");
+				InteractionTrackerInertiaRestingValue neutralX = InteractionTrackerInertiaRestingValue.Create(m_compositor);
+				neutralX.Condition(condition);
+				neutralX.RestingValue(restingValue);
+				xModifiers.Append(neutralX);
 
-		//		m_interactionTracker.ConfigurePositionXInertiaModifiers(xModifiers);
-		//	}
-		//	else
-		//	{
-		//		IVector<InteractionTrackerInertiaModifier> yModifiers = new Vector<InteractionTrackerInertiaModifier>();
+				m_interactionTracker.ConfigurePositionXInertiaModifiers(xModifiers);
+			}
+			else
+			{
+				IVector<InteractionTrackerInertiaModifier> yModifiers = new Vector<InteractionTrackerInertiaModifier>();
 
-		//		ExpressionAnimation topCondition = m_compositor.CreateExpressionAnimation("this.Target." + hasTopContentPropertyName() + " && !this.Target." + isFarOpenPropertyName() + " && this.Target.NaturalRestingPosition.y <= -1 * (this.Target." + isNearOpenPropertyName() + " ? " + swipeContentSizeParameterName() + " : min(" + swipeContentSizeParameterName() + ", " + maxThresholdPropertyName() + "))");
-		//		topCondition.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualHeight));
-		//		topCondition.SetScalarParameter(s_maxThresholdPropertyName, c_ThresholdValue);
-		//		ExpressionAnimation topRestingValue = m_compositor.CreateExpressionAnimation("-" + swipeContentSizeParameterName());
-		//		topRestingValue.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualHeight));
-		//		InteractionTrackerInertiaRestingValue topOpen = InteractionTrackerInertiaRestingValue.Create(m_compositor);
-		//		topOpen.Condition(topCondition);
-		//		topOpen.RestingValue(topRestingValue);
-		//		yModifiers.Append(topOpen);
+				ExpressionAnimation topCondition = m_compositor.CreateExpressionAnimation("this.Target." + hasTopContentPropertyName() + " && !this.Target." + isFarOpenPropertyName() + " && this.Target.NaturalRestingPosition.y <= -1 * (this.Target." + isNearOpenPropertyName() + " ? " + swipeContentSizeParameterName() + " : min(" + swipeContentSizeParameterName() + ", " + maxThresholdPropertyName() + "))");
+				topCondition.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualHeight));
+				topCondition.SetScalarParameter(s_maxThresholdPropertyName, c_ThresholdValue);
+				ExpressionAnimation topRestingValue = m_compositor.CreateExpressionAnimation("-" + swipeContentSizeParameterName());
+				topRestingValue.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualHeight));
+				InteractionTrackerInertiaRestingValue topOpen = InteractionTrackerInertiaRestingValue.Create(m_compositor);
+				topOpen.Condition(topCondition);
+				topOpen.RestingValue(topRestingValue);
+				yModifiers.Append(topOpen);
 
-		//		ExpressionAnimation bottomCondition = m_compositor.CreateExpressionAnimation("this.Target." + hasBottomContentPropertyName() + " && !this.Target." + isNearOpenPropertyName() + " && this.Target.NaturalRestingPosition.y >= (this.Target." + isFarOpenPropertyName() + " ? " + swipeContentSizeParameterName() + " : min(" + swipeContentSizeParameterName() + ", " + maxThresholdPropertyName() + "))");
-		//		bottomCondition.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualHeight));
-		//		bottomCondition.SetScalarParameter(s_maxThresholdPropertyName, c_ThresholdValue);
-		//		ExpressionAnimation bottomRestingValue = m_compositor.CreateExpressionAnimation(s_swipeContentSizeParameterName);
-		//		bottomRestingValue.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualHeight));
-		//		InteractionTrackerInertiaRestingValue bottomOpen = InteractionTrackerInertiaRestingValue.Create(m_compositor);
-		//		bottomOpen.Condition(bottomCondition);
-		//		bottomOpen.RestingValue(bottomRestingValue);
-		//		yModifiers.Append(bottomOpen);
+				ExpressionAnimation bottomCondition = m_compositor.CreateExpressionAnimation("this.Target." + hasBottomContentPropertyName() + " && !this.Target." + isNearOpenPropertyName() + " && this.Target.NaturalRestingPosition.y >= (this.Target." + isFarOpenPropertyName() + " ? " + swipeContentSizeParameterName() + " : min(" + swipeContentSizeParameterName() + ", " + maxThresholdPropertyName() + "))");
+				bottomCondition.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualHeight));
+				bottomCondition.SetScalarParameter(s_maxThresholdPropertyName, c_ThresholdValue);
+				ExpressionAnimation bottomRestingValue = m_compositor.CreateExpressionAnimation(s_swipeContentSizeParameterName);
+				bottomRestingValue.SetScalarParameter(s_swipeContentSizeParameterName, (float)(m_swipeContentStackPanel.ActualHeight));
+				InteractionTrackerInertiaRestingValue bottomOpen = InteractionTrackerInertiaRestingValue.Create(m_compositor);
+				bottomOpen.Condition(bottomCondition);
+				bottomOpen.RestingValue(bottomRestingValue);
+				yModifiers.Append(bottomOpen);
 
-		//		ExpressionAnimation condition = m_compositor.CreateExpressionAnimation("true");
-		//		ExpressionAnimation restingValue = m_compositor.CreateExpressionAnimation("0");
-		//		InteractionTrackerInertiaRestingValue neutralY = InteractionTrackerInertiaRestingValue.Create(m_compositor);
-		//		neutralY.Condition(condition);
-		//		neutralY.RestingValue(restingValue);
-		//		yModifiers.Append(neutralY);
+				ExpressionAnimation condition = m_compositor.CreateExpressionAnimation("true");
+				ExpressionAnimation restingValue = m_compositor.CreateExpressionAnimation("0");
+				InteractionTrackerInertiaRestingValue neutralY = InteractionTrackerInertiaRestingValue.Create(m_compositor);
+				neutralY.Condition(condition);
+				neutralY.RestingValue(restingValue);
+				yModifiers.Append(neutralY);
 
-		//		m_interactionTracker.ConfigurePositionYInertiaModifiers(yModifiers);
-		//	}
-		//}
+				m_interactionTracker.ConfigurePositionYInertiaModifiers(yModifiers);
+			}
+		}
 
-		//Visual FindVisualInteractionSourceVisual()
-		//{
-		//	Visual visualInteractionSource = null;
+		Visual FindVisualInteractionSourceVisual()
+		{
+			Visual visualInteractionSource = null;
 
-		//	// Don't walk up the tree too far largely as an optimization for when SwipeControl isn't used
-		//	// with a list.  The general-case when using swipe with a ListView will probably have the
-		//	// LVIP as the visual parent of the SwipeControl but enabling checking for a few more
-		//	// levels above that could enable more complex list item templates where SwipeControl
-		//	// isn't the root element.
-		//	int maxSteps = 5;
-		//	int steps = 0;
-		//	var current = VisualTreeHelper.GetParent(this);
-		//	while (current && steps < maxSteps)
-		//	{
-		//		if (var lvip = current.try_as<ListViewItemPresenter>())
-		//		{
-		//			visualInteractionSource = ElementCompositionPreview.GetElementVisual(lvip);
-		//			break;
-		//		}
+			// Don't walk up the tree too far largely as an optimization for when SwipeControl isn't used
+			// with a list.  The general-case when using swipe with a ListView will probably have the
+			// LVIP as the visual parent of the SwipeControl but enabling checking for a few more
+			// levels above that could enable more complex list item templates where SwipeControl
+			// isn't the root element.
+			int maxSteps = 5;
+			int steps = 0;
+			var current = VisualTreeHelper.GetParent(this);
+			while (current && steps < maxSteps)
+			{
+				if (var lvip = current.try_as<ListViewItemPresenter>())
+				{
+					visualInteractionSource = ElementCompositionPreview.GetElementVisual(lvip);
+					break;
+				}
 
-		//		current = VisualTreeHelper.GetParent(current);
-		//		++steps;
-		//	}
+				current = VisualTreeHelper.GetParent(current);
+				++steps;
+			}
 
-		//	if (!visualInteractionSource)
-		//	{
-		//		visualInteractionSource = ElementCompositionPreview.GetElementVisual(this);
-		//	}
+			if (!visualInteractionSource)
+			{
+				visualInteractionSource = ElementCompositionPreview.GetElementVisual(this);
+			}
 
-		//	return visualInteractionSource;
-		//}
+			return visualInteractionSource;
+		}
+		#endif
 
 		private void EnsureClip()
 		{
