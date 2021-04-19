@@ -8,11 +8,42 @@ using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using System.ComponentModel;
 using Windows.UI.Xaml.Media;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI
 {
 	public static class FeatureConfiguration
 	{
+		public static class ApiInformation
+		{
+			/// <summary>
+			/// Determines if runtime use of not implemented members raises an exception, or logs an error message.
+			/// </summary>
+			public static bool IsFailWhenNotImplemented
+			{
+				get => Windows.Foundation.Metadata.ApiInformation.IsFailWhenNotImplemented;
+				set => Windows.Foundation.Metadata.ApiInformation.IsFailWhenNotImplemented = value;
+			}
+
+			/// <summary>
+			/// Determines if runtime use of not implemented members is logged only once, or at each use.
+			/// </summary>
+			public static bool AlwaysLogNotImplementedMessages
+			{
+				get => Windows.Foundation.Metadata.ApiInformation.AlwaysLogNotImplementedMessages;
+				set => Windows.Foundation.Metadata.ApiInformation.AlwaysLogNotImplementedMessages = value;
+			}
+
+			/// <summary>
+			/// The message log level used when a not implemented member is used at runtime, if <see cref="IsFailWhenNotImplemented"/> is false.
+			/// </summary>
+			public static LogLevel NotImplementedLogLevel
+			{
+				get => Windows.Foundation.Metadata.ApiInformation.NotImplementedLogLevel;
+				set => Windows.Foundation.Metadata.ApiInformation.NotImplementedLogLevel = value;
+			}
+		}
+
 		public static class AutomationPeer
 		{
 			/// <summary>
