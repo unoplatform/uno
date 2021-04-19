@@ -122,7 +122,7 @@
       <Version>6.2.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.ProjectReunion.WinUI">
-      <Version>0.5.0</Version>
+      <Version>0.5.5</Version>
     </PackageReference>
     <SDKReference Include="WindowsDesktop, Version=10.0.19041.0">
       <Name>Windows Desktop Extensions for the UWP</Name>

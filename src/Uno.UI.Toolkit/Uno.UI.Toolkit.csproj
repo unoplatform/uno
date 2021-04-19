@@ -87,7 +87,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0' or '$(TargetFramework)'=='uap10.0.17763'">
 		<PackageReference Include="Microsoft.ProjectReunion.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'">
-			<Version>0.5.0</Version>
+			<Version>0.5.5</Version>
 		</PackageReference>
 		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
 			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
