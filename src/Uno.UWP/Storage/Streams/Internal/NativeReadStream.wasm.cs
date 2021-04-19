@@ -47,7 +47,7 @@ namespace Uno.Storage.Streams.Internal
 
 		public override void SetLength(long value) => throw new NotSupportedException("This stream is read-only");
 
-		public override void Flush() => throw new NotSupportedException("This stream is read-only");
+		public override void Flush() { }
 
 		public static async Task<NativeReadStream> CreateAsync(Guid fileId)
 		{
