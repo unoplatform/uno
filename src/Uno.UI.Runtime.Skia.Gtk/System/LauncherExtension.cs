@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Uno.Extensions.System;
+using Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers;
 using Windows.System;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
@@ -32,8 +33,20 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
 		{
 			return Task.Run(() =>
 			{
-				var canOpenUri = CheckXdgSettings(uri);
-				return canOpenUri ?
+				bool? canOpenUri = null;
+
+				try
+				{
+					// Easiest way:
+					canOpenUri = CheckXdgSettings(uri);
+				}
+				// Failure here does not affect the the query.
+				catch { }
+
+				// Guaranteed to work on all Linux Gtk platforms.
+				canOpenUri ??= CheckMimeTypeAssociations(uri);
+
+				return canOpenUri.Value ?
 					LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported;
 			});
 		}
@@ -52,6 +65,13 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
 			process.Start();
 			var response = process.StandardOutput.ReadToEnd().Trim();
 			return !string.IsNullOrEmpty(response);
+		}
+
+		private bool CheckMimeTypeAssociations(Uri uri)
+        {
+			var list = new MimeAppsList();
+			var mimeType = $"x-scheme-handler/{uri.Scheme}";
+			return list.Supports(mimeType);
 		}
 	}
 }
