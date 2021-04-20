@@ -117,8 +117,6 @@ namespace Windows.UI.Xaml
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
-
-			SetFocusVisualBrushDefaults();
 		}
 
 		public
@@ -457,7 +455,11 @@ namespace Windows.UI.Xaml
 
 		public Brush FocusVisualSecondaryBrush
 		{
-			get => GetFocusVisualSecondaryBrushValue();
+			get
+			{
+				EnsureFocusVisualBrushDefaults();
+				return GetFocusVisualSecondaryBrushValue();
+			}
 			set => SetFocusVisualSecondaryBrushValue(value);
 		}
 
@@ -477,7 +479,11 @@ namespace Windows.UI.Xaml
 
 		public Brush FocusVisualPrimaryBrush
 		{
-			get => GetFocusVisualPrimaryBrushValue();
+			get
+			{
+				EnsureFocusVisualBrushDefaults();
+				return GetFocusVisualPrimaryBrushValue();
+			}
 			set => SetFocusVisualPrimaryBrushValue(value);
 		}
 
@@ -492,10 +498,19 @@ namespace Windows.UI.Xaml
 
 		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
 
-		private void SetFocusVisualBrushDefaults()
+		private bool _focusVisualBrushesInitialized = false;
+
+		internal void EnsureFocusVisualBrushDefaults()
 		{
+			if (_focusVisualBrushesInitialized)
+			{
+				return;
+			}
+
 			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
 			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
+
+			_focusVisualBrushesInitialized = true;
 		}		
 
 		/// <summary>
@@ -749,7 +764,9 @@ namespace Windows.UI.Xaml
 		{
 			Resources?.UpdateThemeBindings();
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
-			SetFocusVisualBrushDefaults();
+
+			// After theme change, the focus visual brushes may not reflect the correct settings
+			_focusVisualBrushesInitialized = false;
 		}
 
 		/// <summary>

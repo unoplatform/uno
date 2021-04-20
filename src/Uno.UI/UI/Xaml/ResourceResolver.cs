@@ -164,7 +164,7 @@ namespace Uno.UI
 			// Set initial value based on statically-available top-level resources.
 			if (TryStaticRetrieval(specializedKey, context, out var value))
 			{
-				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value));
+				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), precedence);
 
 				if (!isThemeResourceExtension)
 				{

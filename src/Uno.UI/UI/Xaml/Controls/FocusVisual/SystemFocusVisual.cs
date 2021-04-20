@@ -1,11 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
 using Uno.Disposables;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls
 {
-	public partial class SystemFocusVisual : Control
+	internal partial class SystemFocusVisual : Control
 	{
 		private SerialDisposable _focusedElementSubscriptions = new SerialDisposable();
 
@@ -13,8 +14,6 @@ namespace Uno.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(SystemFocusVisual);
 		}
-
-		protected override void OnApplyTemplate() => base.OnApplyTemplate();
 
 		public FrameworkElement FocusedElement
 		{
@@ -37,6 +36,7 @@ namespace Uno.UI.Xaml.Controls
 
 			if (args.NewValue is FrameworkElement element)
 			{
+				element.EnsureFocusVisualBrushDefaults();
 				element.SizeChanged += focusVisual.FocusedElementSizeChanged;
 				element.LayoutUpdated += focusVisual.FocusedElemenLayoutUpdated;
 
