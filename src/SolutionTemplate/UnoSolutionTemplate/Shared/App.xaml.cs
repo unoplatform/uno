@@ -23,11 +23,18 @@ namespace $ext_safeprojectname$
     /// </summary>
     public sealed partial class App : Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
-        public App()
+#if NET5_0 && WINDOWS
+        private Window _window;
+
+#else
+        private Windows.UI.Xaml.Window _window;
+#endif
+
+	/// <summary>
+	/// Initializes the singleton application object.  This is the first line of authored code
+	/// executed, and as such is the logical equivalent of main() or WinMain().
+	/// </summary>
+	public App()
         {
             InitializeLogging();
 
@@ -53,13 +60,13 @@ namespace $ext_safeprojectname$
 #endif
 
 #if NET5_0 && WINDOWS
-            var window = new Window();
-            window.Activate();
+            _window = new Window();
+            _window.Activate();
 #else
-            var window = Windows.UI.Xaml.Window.Current;
+			_window = Windows.UI.Xaml.Window.Current;
 #endif
 
-            var rootFrame = window.Content as Frame;
+            var rootFrame = _window.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -76,7 +83,7 @@ namespace $ext_safeprojectname$
                 }
 
                 // Place the frame in the current Window
-                window.Content = rootFrame;
+                _window.Content = rootFrame;
             }
 
 #if !(NET5_0 && WINDOWS)
@@ -91,7 +98,7 @@ namespace $ext_safeprojectname$
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
                 // Ensure the current window is active
-                window.Activate();
+                _window.Activate();
             }
         }
 
