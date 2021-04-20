@@ -207,6 +207,7 @@ return __f(element);
 			if (d is EventHandler<HtmlCustomEventArgs> handler && args is HtmlCustomEventArgs eventArgs)
 			{
 				handler(sender, eventArgs);
+				return default;
 			}
 
 			throw new InvalidOperationException($"The parameters {args ?? "<null>"} for invoking GenericEventHandlers.RaiseEventHandler with {d} from {sender ?? "<null>"} are incorrect");
