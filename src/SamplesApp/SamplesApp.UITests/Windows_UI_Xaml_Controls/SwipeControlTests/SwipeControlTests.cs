@@ -27,7 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.Right - 10, sutRect.CenterY);
 
-			var result = sut.GetDependencyPropertyValue<string>("Text");
+			var result = output.GetDependencyPropertyValue<string>("Text");
 
 			Assert.AreEqual("Left_1", result);
 		}
@@ -40,19 +40,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 			Run("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_Automated");
 
 			QueryEx sut = "SUT";
-			QueryEx output = "Output";
+			QueryEx output = new QueryEx(q => q.All().Marked("Output"));
 
 			var sutRect = _app.Query(sut).Single().Rect;
 
 			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X + 10, sutRect.CenterY);
 
-			var result = sut.GetDependencyPropertyValue<string>("Text");
+			var result = output.GetDependencyPropertyValue<string>("Text");
 
-			Assert.AreEqual("", result);
+			Assert.IsTrue(string.IsNullOrWhiteSpace(result));
 
-			_app.TapCoordinates(sutRect.CenterY, sutRect.Right);
+			_app.TapCoordinates(sutRect.Right - 10, sutRect.CenterY);
 
-			result = sut.GetDependencyPropertyValue<string>("Text");
+			result = output.GetDependencyPropertyValue<string>("Text");
 
 			Assert.AreEqual("Right_3", result);
 		}
