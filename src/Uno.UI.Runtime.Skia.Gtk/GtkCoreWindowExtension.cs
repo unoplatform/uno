@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Gdk;
 using Gtk;
 using Uno.Extensions;
-using Uno.Foundation.Extensibility;
 using Uno.Logging;
-using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
-using Windows.ApplicationModel;
 using Windows.Devices.Input;
-using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Exception = System.Exception;
 using static Windows.UI.Input.PointerUpdateKind;
+using Exception = System.Exception;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -96,9 +87,16 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
-				if (AsPointerArgs(args.Event) is { } ptArgs)
+				// The Ungrab mode event is triggered after click 
+				// even when the pointer does not leave the window.
+				// This may need to be removed when we implement
+				// native pointer capture support properly.
+				if (args.Event.Mode != CrossingMode.Ungrab)
 				{
-					_ownerEvents.RaisePointerExited(ptArgs);
+					if (AsPointerArgs(args.Event) is { } ptArgs)
+					{
+						_ownerEvents.RaisePointerExited(ptArgs);
+					}
 				}
 			}
 			catch (Exception e)
