@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 
 		/// <inheritdoc />
 		public void Add(SwipeItem item)
-			=> m_items.Add(item);
+			=> Append(item);
 
 		/// <inheritdoc />
 		public bool Contains(SwipeItem item)
@@ -43,17 +43,17 @@ namespace Windows.UI.Xaml.Controls
 
 		/// <inheritdoc />
 		public void Insert(int index, SwipeItem item)
-			=> m_items.Insert(index, item);
+			=> InsertAt((uint)index, item);
 
 		/// <inheritdoc />
 		public void RemoveAt(int index)
-			=> m_items.RemoveAt(index);
+			=> RemoveAt((uint)index);
 
 		/// <inheritdoc />
 		public SwipeItem this[int index]
 		{
-			get => m_items[index];
-			set => m_items[index] = value;
+			get => GetAt((uint)index);
+			set => SetAt((uint)index, value);
 		}
 	}
 }

@@ -148,7 +148,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
             });
         }
 
-        [TestMethod]
+#if false
+		[TestMethod]
         public void MarkupDefinedSwipeItemDoesNotCrash()
         {
             if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone3))
@@ -182,5 +183,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
                 Content.UpdateLayout();
             });
         }
+#endif
     }
 }
