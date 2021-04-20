@@ -109,7 +109,7 @@ embed.uno-frameworkelement.uno-unarranged {
   -webkit-background-clip: text !important;
   background-clip: text !important;
 
-  /* overflow-x:hidden is required for text-overflow: ellipsis to work correctly */
+  /* overflow:hidden is required for text-overflow: ellipsis to work correctly */
   overflow: hidden;
 }
 
