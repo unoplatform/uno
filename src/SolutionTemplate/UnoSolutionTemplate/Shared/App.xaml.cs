@@ -23,6 +23,8 @@ namespace $ext_safeprojectname$
     /// </summary>
     public sealed partial class App : Application
     {
+        private Window window;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -53,10 +55,10 @@ namespace $ext_safeprojectname$
 #endif
 
 #if NET5_0 && WINDOWS
-            var window = new Window();
+            window = new Window();
             window.Activate();
 #else
-            var window = Windows.UI.Xaml.Window.Current;
+            window = Windows.UI.Xaml.Window.Current;
 #endif
 
             var rootFrame = window.Content as Frame;
