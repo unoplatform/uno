@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -25,7 +27,30 @@ namespace Windows.UI.Xaml
 	{
 		public event VectorChangedEventHandler<T> VectorChanged;
 
-		private List<T> _list = new List<T>();
+		private readonly List<T> _list = new List<T>();
+
+		private bool _isLocked;
+
+		internal void Lock()
+		{
+			Debug.Assert(!_isLocked, "collection already locked");
+			_isLocked = true;
+		}
+
+		internal void Unlock()
+		{
+			Debug.Assert(_isLocked, "collection already unlocked");
+			_isLocked = false;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void EnsureNotLocked()
+		{
+			if(_isLocked)
+			{
+				throw new InvalidOperationException("Collection is locked.");
+			}
+		}
 
 		public DependencyObjectCollection()
 		{
@@ -67,14 +92,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public uint Size
-			=> (uint)_list.Count;
+		public uint Size => (uint)_list.Count;
 
-		public int Count
-			=> _list.Count;
+		public int Count => _list.Count;
 
-		public bool IsReadOnly 
-			=> ((ICollection<T>)_list).IsReadOnly;
+		public bool IsReadOnly => ((ICollection<T>)_list).IsReadOnly;
 
 		public T this[int index]
 		{
@@ -85,6 +107,8 @@ namespace Windows.UI.Xaml
 
 				if (!ReferenceEquals(originalValue, value))
 				{
+					EnsureNotLocked();
+
 					OnRemoved(originalValue);
 
 					_list[index] = value;
@@ -100,6 +124,8 @@ namespace Windows.UI.Xaml
 
 		public void Insert(int index, T item)
 		{
+			EnsureNotLocked();
+
 			_list.Insert(index, item);
 
 			OnAdded(item);
@@ -109,6 +135,8 @@ namespace Windows.UI.Xaml
 
 		public void RemoveAt(int index)
 		{
+			EnsureNotLocked();
+
 			OnRemoved(_list[index]);
 
 			_list.RemoveAt(index);
@@ -118,6 +146,8 @@ namespace Windows.UI.Xaml
 
 		public void Add(T item)
 		{
+			EnsureNotLocked();
+
 			_list.Add(item);
 
 			OnAdded(item);
@@ -127,6 +157,8 @@ namespace Windows.UI.Xaml
 
 		public void Clear()
 		{
+			EnsureNotLocked();
+
 			for (int index = 0; index < _list.Count; index++)
 			{
 				OnRemoved(_list[index]);
@@ -145,6 +177,8 @@ namespace Windows.UI.Xaml
 
 		public bool Remove(T item)
 		{
+			EnsureNotLocked();
+
 			var index = _list.IndexOf(item);
 
 			if (index != -1)

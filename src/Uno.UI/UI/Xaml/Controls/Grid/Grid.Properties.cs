@@ -7,7 +7,7 @@ using Uno.UI;
 using Uno.UI.Xaml;
 
 #if XAMARIN_ANDROID
-using View = Android.Views.View;
+using View = Windows.UI.Xaml.UIElement;
 using Font = Android.Graphics.Typeface;
 #elif XAMARIN_IOS_UNIFIED
 using UIKit;
@@ -25,31 +25,31 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Grid
+	partial class Grid
 	{
 		#region Row Property
 		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
 		public static DependencyProperty RowProperty { get ; } = CreateRowProperty();
 
-		public static int GetRow(View view) => GetRowValue(view);
+		public static int GetRow(View view) => GetRowValue(view as UIElement);
 
-		public static void SetRow(View view, int row) => SetRowValue(view, row);
+		public static void SetRow(View view, int row) => SetRowValue(view as UIElement, row);
 		#endregion
 
 		#region Column Property
 		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
 		public static DependencyProperty ColumnProperty { get ; } = CreateColumnProperty();
 
-		public static int GetColumn(View view) => GetColumnValue(view);
+		public static int GetColumn(View view) => GetColumnValue(view as UIElement);
 
-		public static void SetColumn(View view, int column) => SetColumnValue(view, column);
+		public static void SetColumn(View view, int column) => SetColumnValue(view as UIElement, column);
 		#endregion
 
 		#region RowSpan Property
 		[GeneratedDependencyProperty(DefaultValue = 1, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
 		public static DependencyProperty RowSpanProperty { get ; } = CreateRowSpanProperty();
 
-		public static int GetRowSpan(View view) => GetRowSpanValue(view);
+		public static int GetRowSpan(View view) => GetRowSpanValue(view as UIElement);
 
 		public static void SetRowSpan(View view, int rowSpan)
 		{
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 				throw new ArgumentException("The value must be above zero", nameof(rowSpan));
 			}
 
-			SetRowSpanValue(view, rowSpan);
+			SetRowSpanValue(view as UIElement, rowSpan);
 		}
 		#endregion
 
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 		[GeneratedDependencyProperty(DefaultValue = 1, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
 		public static DependencyProperty ColumnSpanProperty { get ; } = CreateColumnSpanProperty();
 
-		public static int GetColumnSpan(View view) => GetColumnSpanValue(view);
+		public static int GetColumnSpan(View view) => GetColumnSpanValue(view as UIElement);
 
 		public static void SetColumnSpan(View view, int columnSpan)
 		{
@@ -75,20 +75,14 @@ namespace Windows.UI.Xaml.Controls
 				throw new ArgumentException("The value must be above zero", nameof(columnSpan));
 			}
 
-			SetColumnSpanValue(view, columnSpan);
+			SetColumnSpanValue(view as UIElement, columnSpan);
 		}
 		#endregion
 
 		public double RowSpacing
 		{
-			get
-			{
-				return (double)this.GetValue(RowSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(RowSpacingProperty, value);
-			}
+			get => (double)GetValue(RowSpacingProperty);
+			set => SetValue(RowSpacingProperty, value);
 		}
 
 		public static DependencyProperty RowSpacingProperty { get; } =
@@ -99,14 +93,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public double ColumnSpacing
 		{
-			get
-			{
-				return (double)this.GetValue(ColumnSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(ColumnSpacingProperty, value);
-			}
+			get => (double)GetValue(ColumnSpacingProperty);
+			set => SetValue(ColumnSpacingProperty, value);
 		}
 
 		public static DependencyProperty ColumnSpacingProperty { get; } =
@@ -117,12 +105,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnGenericPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			var view = dependencyObject as View;
-
-			if (view != null)
-			{
-				view.InvalidateArrange();
-			}
+			(dependencyObject as View)?.InvalidateArrange();
 		}
 	}
 }

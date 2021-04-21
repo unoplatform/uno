@@ -1,6 +1,7 @@
 ﻿#if !__NETSTD_REFERENCE__
 using Windows.Foundation;
 using System;
+using System.Diagnostics;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
@@ -197,6 +198,9 @@ namespace Windows.UI.Xaml
 			get => Visibility == Visibility.Collapsed ? new Size() : _size;
 			internal set
 			{
+				Debug.Assert(value.Width >= 0, "Invalid width");
+				Debug.Assert(value.Height >= 0, "Invalid height");
+
 				var previousSize = _size;
 				_size = value;
 

@@ -40,7 +40,18 @@ namespace Uno.UI.Extensions
 				_ => elt.GetParent()?.GetDebugDepth() + 1?? 0,
 			};
 
-			internal static Thickness GetPadding(this UIElement uiElement)
+		internal static CornerRadius GetCornerRadius(this UIElement uiElement)
+		{
+			if (uiElement is FrameworkElement fe && fe.TryGetCornerRadius(out var cornerRadius))
+			{
+				return cornerRadius;
+			}
+
+			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("CornerRadius");
+			return property != null && uiElement.GetValue(property) is CornerRadius t ? t : default;
+		}
+
+		internal static Thickness GetPadding(this UIElement uiElement)
 		{
 			if(uiElement is FrameworkElement fe && fe.TryGetPadding(out var padding))
 			{
