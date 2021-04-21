@@ -1,12 +1,14 @@
 # Updating an Uno application to WinUI 3.0
 
-The support for WinUI 3.0 is currently in preview for the Uno Platform. It is currently generated from the WinUI 2.0 / UWP codebase, by applying a set of transformations to align with WinUI 3.0 APIs using the `Uno.WinUIRevert` tool.
+<!-- The support for WinUI 3.0 is currently in preview for the Uno Platform. It is currently generated from the WinUI 2.0 / UWP codebase, by applying a set of transformations to align with WinUI 3.0 APIs using the `Uno.WinUIRevert` tool. -->
+
+Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). This article details the changes required when migrating an application from the UWP API set to the WinUI 3 API set.
 
 [Read more about WinUI 3 and Uno Platform.](uwp-vs-winui3.md)
 
 ## Migrating an app to WinUI 3.0
 
-- Nuget updates
+- NuGet updates
     - `Uno.UI` becomes `Uno.WinUI`
     - `Uno.UI.RemoteControl` becomes `Uno.WinUI.RemoteControl`
     - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie`
@@ -14,24 +16,26 @@ The support for WinUI 3.0 is currently in preview for the Uno Platform. It is cu
 - String replacements:
     - `Windows.UI.Xaml` becomes `Microsoft.UI.Xaml`
     - `Windows.UI.Composition` becomes `Microsoft.UI.Composition`
-- Loggers updates
-```
-{ "Windows", LogLevel.Warning },
-{ "Microsoft", LogLevel.Warning },
-```
+- [Logger filter](logging.md) updates
+    ```
+    { "Windows", LogLevel.Warning },
+    { "Microsoft", LogLevel.Warning },
+    ```
 
-## API Changes as of Alpha builds
+## API Changes
 
-- `Thickness` is missing a constructor
-- `Duration` is missing a constructor
-- `GridLength` is missing a constructor
+### Changed or removed controls
+
 - `MapControl` is missing
+- `MediaPlayerElement` is missing
 - `WebView` is now `WebView2`
+
+For a full list of unavailable controls and visual features, as well as timelines for restoration in some cases, consult the [WinUI 3 Feature Roadmap](https://github.com/microsoft/microsoft-ui-xaml/blob/master/docs/roadmap.md#winui-30-feature-roadmap).
+
+### WinRT API changes for Desktop apps
+
+Some WinRT APIs are unsupported in WinUI 3 Desktop apps, notably `CoreDispatcher`, `CoreWindow`, and `ApplicationView`. Consult [this guide](https://github.com/microsoft/microsoft-ui-xaml/blob/master/docs/winrt-apis-for-desktop.md) for supported alternatives to those APIs. `DispatcherQueue`, the replacement for `CoreDispatcher` in WinUI 3, is supported by Uno Platform.
 
 ## Creating an application from the templates
 
-A blank application can be created through:
-
-```bash
-dotnet new unoapp-winui
-```
+Instructions are available [here](get-started-winui3.md) for creating a new Uno Platform application targeting WinUI 3.
