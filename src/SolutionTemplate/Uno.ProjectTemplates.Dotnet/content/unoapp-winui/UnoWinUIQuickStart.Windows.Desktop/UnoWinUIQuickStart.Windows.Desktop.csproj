@@ -10,13 +10,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.ProjectReunion" Version="0.5.0" />
-		<PackageReference Include="Microsoft.ProjectReunion.Foundation" Version="0.5.0" />
-		<PackageReference Include="Microsoft.ProjectReunion.WinUI" Version="0.5.0" />
+		<PackageReference Include="Microsoft.ProjectReunion" Version="0.5.5" />
+		<PackageReference Include="Microsoft.ProjectReunion.Foundation" Version="0.5.5" />
+		<PackageReference Include="Microsoft.ProjectReunion.WinUI" Version="0.5.5" />
 		<Manifest Include="$(ApplicationManifest)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="Uno.Core" Version="2.3.0" />
 	</ItemGroup>
-
+	
+	<ItemGroup>
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.16" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.18362.16" />
+	</ItemGroup>
+	
 	<Import Project="..\UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems" Label="Shared" />
 </Project>
