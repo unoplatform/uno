@@ -53,6 +53,7 @@ namespace Windows.UI.Xaml
 					Visibility = Visibility.Collapsed
 				};
 				_popupRoot = new PopupRoot();
+				FocusVisualLayer = new Canvas();
 
 				_main = new Grid()
 				{
@@ -61,7 +62,8 @@ namespace Windows.UI.Xaml
 					{
 						_rootBorder,
 						_fullWindow,
-						_popupRoot
+						_popupRoot,
+						FocusVisualLayer
 					}
 				};
 

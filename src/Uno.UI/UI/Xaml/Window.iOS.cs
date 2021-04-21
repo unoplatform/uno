@@ -95,6 +95,7 @@ namespace Windows.UI.Xaml
 					HorizontalAlignment = HorizontalAlignment.Stretch,
 					Visibility = Visibility.Collapsed
 				};
+				FocusVisualLayer = new Canvas();
 
 				_main = new Grid()
 				{
@@ -102,7 +103,8 @@ namespace Windows.UI.Xaml
 					Children =
 					{
 						_rootBorder,
-						_fullWindow
+						_fullWindow,
+						FocusVisualLayer
 					}
 				};
 				

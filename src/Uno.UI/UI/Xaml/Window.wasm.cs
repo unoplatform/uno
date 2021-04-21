@@ -144,13 +144,15 @@ namespace Windows.UI.Xaml
 					Content = _rootBorder
 				};
 				_popupRoot = new PopupRoot();
+				FocusVisualLayer = new Canvas();
 				_window = new Grid()
 				{
 					IsVisualTreeRoot = true,
 					Children =
 					{
 						_rootScrollViewer,
-						_popupRoot
+						_popupRoot,
+						FocusVisualLayer
 					}
 				};
 			}
