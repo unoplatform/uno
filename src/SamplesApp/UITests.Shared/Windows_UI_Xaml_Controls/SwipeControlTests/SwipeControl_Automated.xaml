@@ -1,0 +1,45 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_Automated"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.SwipeControlTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.Resources>
+		<FontIconSource x:Name="Icon" Glyph="&#xE710;" />
+	</Page.Resources>
+
+	<Grid>
+		<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+			<TextBlock Text="Last invoked: " />
+			<TextBlock x:Name="Output" />
+		</StackPanel>
+
+		<StackPanel HorizontalAlignment="Center">
+			<SwipeControl Width="400" Height="75" x:Name="SUT">
+				<SwipeControl.LeftItems>
+					<SwipeItems Mode="Execute">
+						<SwipeItem Text="Left_1" IconSource="{StaticResource Icon}" Invoked="ItemInvoked" />
+					</SwipeItems>
+				</SwipeControl.LeftItems>
+				<SwipeControl.RightItems>
+					<SwipeItems Mode="Reveal">
+						<SwipeItem Text="Right_1" IconSource="{StaticResource Icon}" Invoked="ItemInvoked" />
+						<SwipeItem Text="Right_2" IconSource="{StaticResource Icon}" Invoked="ItemInvoked" />
+						<SwipeItem Text="Right_3" IconSource="{StaticResource Icon}" Invoked="ItemInvoked" />
+					</SwipeItems>
+				</SwipeControl.RightItems>
+				<Border Background="OrangeRed">
+					<TextBlock 
+						Text="Swipe control"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"/>
+				</Border>
+			</SwipeControl>
+		</StackPanel>
+
+	</Grid>
+</Page>

@@ -840,6 +840,7 @@ namespace Uno.UI.Helpers.WinUI
 			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : defaultValue;
 		}
 
+		public static object FindInApplicationResources(string resource) => FindInApplicationResources(resource, default);
 		public static object FindInApplicationResources(string resource, object defaultValue)
 		{
 			return FindResource(resource, Application.Current.Resources, defaultValue);

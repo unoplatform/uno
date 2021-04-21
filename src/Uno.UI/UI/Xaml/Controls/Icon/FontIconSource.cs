@@ -1,17 +1,10 @@
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using FontStyle = Windows.UI.Text.FontStyle;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
-	public partial class FontIconSource : IconSource
+	public partial class FontIconSource : global::Windows.UI.Xaml.Controls.IconSource
 	{
-		public FontIconSource()
-		{
-		}
-
 		public bool MirroredWhenRightToLeft
 		{
 			get => (bool)GetValue(MirroredWhenRightToLeftProperty);
@@ -45,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(FontWeightProperty, value);
 		}
 
-		public static DependencyProperty FontWeightProperty { get; } = 
+		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(nameof(FontWeight), typeof(FontWeight), typeof(FontIconSource), new PropertyMetadata(new FontWeight(400)));
 
 		public FontStyle FontStyle

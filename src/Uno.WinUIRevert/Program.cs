@@ -37,7 +37,15 @@ namespace UnoWinUIRevert
 				File.Copy(colorHelperFilePath, Path.Combine(basePath, @"src\Uno.UI\UI\ColorHelper.cs"), true);
 			}
 
-			// Generic remplacements
+			// Files/Class that are implemented in both MUX and WUX and which should not be converted
+			var duplicatedImplementations = new[]
+			{
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\FontIconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\IconSource.cs")
+			};
+			DeleteFiles(duplicatedImplementations);
+
+			// Generic replacements
 			var genericReplacements = new[] {
 				("Windows.UI.Xaml", "Microsoft.UI.Xaml"),
 				("Windows.UI.Composition", "Microsoft.UI.Composition"),
@@ -144,6 +152,17 @@ namespace UnoWinUIRevert
 			var txt = File.ReadAllText(filePath);
 			txt = txt.Replace(from, to);
 			File.WriteAllText(filePath, txt);
+		}
+
+		private static void DeleteFiles(string[] filePaths)
+		{
+			foreach (var filePath in filePaths)
+			{
+				if (File.Exists(filePath))
+				{
+					File.Delete(filePath);
+				}
+			}
 		}
 	}
 }

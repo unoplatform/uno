@@ -9,5 +9,10 @@
 		{
 			return false;
 		}
+
+		public static bool SetIsTranslationEnabledExists()
+		{
+			return false;
+		}
 	}
 }
