@@ -640,7 +640,8 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				x = (float)((renderSize.Width - strokeThickness) / geometrySize.Width);
+				var renderWidthWithStrokeThickness = Math.Max(renderSize.Width - strokeThickness, 0);
+				x = (float)(renderWidthWithStrokeThickness / geometrySize.Width);
 			}
 			if (geometrySize.Height < double.Epsilon)
 			{
@@ -654,7 +655,8 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				y = (float)((renderSize.Height - strokeThickness) / geometrySize.Height);
+				var renderHeightWithStrokeThickness = Math.Max(renderSize.Height - strokeThickness, 0);
+				y = (float)(renderHeightWithStrokeThickness  / geometrySize.Height);
 			}
 
 			return (x, y);
