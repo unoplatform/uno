@@ -119,5 +119,6 @@ The Uno Platform is free and open source under the Apache 2.0 license. Alongside
 
 More details about sustainability are covered here: https://platform.uno/blog/sustaining-the-open-source-uno-platform/ 
 
+<br>
 
 [_See more frequently asked questions about the Uno Platform._](faq.md)

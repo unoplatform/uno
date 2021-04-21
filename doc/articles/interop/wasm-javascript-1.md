@@ -215,7 +215,7 @@ There's 2 ways to _callback_ to managed C# code from JavaScript:
    _JavaScript_:
 
    ``` javascript
-   // Generate a custom generic event from Javascript/Typescript
+   // Generate a custom generic event from JavaScript/Typescript
    htmlElement.dispatchEvent(new Event("simpleEvent"));
    ```
 
