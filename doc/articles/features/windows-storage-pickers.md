@@ -126,6 +126,8 @@ For iOS and macOS, `UTType` is utilized for the same purpose. Here you can provi
 Uno.WinRTFeatureConfiguration.FileTypes.FileTypeToUTTypeMapping.Add(".myextension", "my.custom.UTType");
 ```
 
+Custom Uniform Type Identifiers must be declared in the `info.plist` of your iOS and macOS application. See a full example of this [in Apple documentation](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_declare/understand_utis_declare.html).
+
 ## WebAssembly
 
 There are two implementations of file pickers available in WebAssembly - **File System Access API pickers** and **download/upload pickers**.
