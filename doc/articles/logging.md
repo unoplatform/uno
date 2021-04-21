@@ -191,6 +191,9 @@ The Uno platform also provides an extension that simplifies the use of logging b
 
 By default, when a member is invoked at runtime that's not implemented by Uno (ie, marked with the `[NotImplemented]` attribute), an error message is logged. 
 
+> [!IMPORTANT]
+> This feature flag must be set before the `base.InitializeComponent()` call within the `App.xaml.cs` constructor.
+
 The logging behavior can be configured using feature flags:
 
  * By default, a message is only logged on the first usage of a given member. To log every time the member is invoked:
