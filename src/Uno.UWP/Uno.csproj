@@ -40,6 +40,32 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="UI\Composition\Compositor.Android.cs" />
+	  <None Remove="UI\Composition\CompositorThread.android.cs" />
+	  <None Remove="UI\Composition\ContainerVisual.Android.cs" />
+	  <None Remove="UI\Composition\Uno\ICompositionRoot.android.cs" />
+	  <None Remove="UI\Composition\Uno\NativeTextLayoutVisual.Android.cs" />
+	  <None Remove="UI\UIContentRoot.Android.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Composition\Compositor.Android.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\Compositor.uno.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\CompositorThread.android.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\ContainerVisual.Android.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\Uno\CompositionConfiguration.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\Uno\ICompositionRoot.android.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\Uno\NativeDrawableVisual.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\Uno\NativeTextLayoutVisual.Android.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\Uno\NativeViewVisual.cs" />
+	  <UpToDateCheckInput Remove="UI\Composition\Visual.uno.cs" />
+	  <UpToDateCheckInput Remove="UI\UIContentRoot.Android.cs" />
+	  <UpToDateCheckInput Remove="UI\UIContentRoot.cs" />
+	  <UpToDateCheckInput Remove="UI\UIContext.cs" />
+	  <UpToDateCheckInput Remove="WinRTFeatureConfiguration.Composition.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
@@ -91,5 +117,29 @@
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UI\Composition\Uno\ICompositionRoot.android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="WinRTFeatureConfiguration.Composition.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UI\UIContentRoot.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UI\Composition\ContainerVisual.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UI\Composition\Uno\NativeTextLayoutVisual.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UI\Composition\Visual.uno.cs" />
+	</ItemGroup>
 
 </Project>

@@ -9,16 +9,12 @@ namespace Windows.UI.Xaml.Hosting
 	{
 		private const string ChildVisualName = "childVisual";
 
-#if !__SKIA__
-		static readonly Compositor _compositor = new Compositor();
-#endif
-
 		public static Visual GetElementVisual(UIElement element)
 		{
-#if __SKIA__
+#if UNO_HAS_COMPOSITION
 			return element.Visual;
 #else
-			return new Composition.Visual(_compositor) { NativeOwner = element };
+			return new Composition.Visual(element.UIContext.Compositor) { NativeOwner = element };
 #endif
 		}
 
@@ -34,8 +30,7 @@ namespace Windows.UI.Xaml.Hosting
 				fe.SizeChanged +=
 					(s, e) => visual.NativeLayer.Frame = new CoreGraphics.CGRect(0, 0, element.Frame.Width, element.Frame.Height);
 			}
-#elif __SKIA__
-
+#elif __SKIA__ || __ANDROID__
 			var container = new Composition.ContainerVisual(element.Visual.Compositor) { Comment = ChildVisualName };
 			container.Children.InsertAtTop(visual);
 

@@ -11,6 +11,8 @@ namespace Windows.UI.Composition
 
 		}
 
+		// TODO: We need to Invalidate the render of the parent
+
 		public Matrix3x2 TransformMatrix { get; set; }
 		public Vector2 Scale { get; set; }
 		public float RotationAngleInDegrees { get; set; }

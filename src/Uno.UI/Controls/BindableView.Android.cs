@@ -112,8 +112,10 @@ namespace Uno.UI.Controls
 		/// observer.</remarks>
 		public new virtual void AddView(View view)
 		{
+			var index = ChildCount;
 			_childrenShadow.Add(view);
 			base.AddViewFast(view);
+			OnChildViewAddedInternal(index, view);
 			OnChildViewAdded(view);
 		}
 
@@ -127,6 +129,7 @@ namespace Uno.UI.Controls
 		{
 			_childrenShadow.Insert(index, view);
 			base.AddViewFast(view, index);
+			OnChildViewAddedInternal(index, view);
 			OnChildViewAdded(view);
 		}
 
@@ -138,17 +141,22 @@ namespace Uno.UI.Controls
 		/// observer.</remarks>
 		public new virtual void RemoveView(View view)
 		{
-			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
+			var index = _childrenShadow.IndexOf(view);
+			if (index < 0)
 			{
-				if (view is FrameworkElement fe)
-				{
-					fe.IsManagedLoaded = false;
-					fe.PerformOnUnloaded();
-				}
+				return;
+			}
+
+			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded
+				&& view is FrameworkElement fe)
+			{
+				fe.IsManagedLoaded = false;
+				fe.PerformOnUnloaded();
 			}
 
 			_childrenShadow.Remove(view);
 			base.RemoveViewFast(view);
+			OnChildViewRemovedInternal(index, view);
 
 			ResetDependencyObjectParent(view);
 		}
@@ -163,17 +171,16 @@ namespace Uno.UI.Controls
 		{
 			var removedView = _childrenShadow[index];
 
-			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
+			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded
+				&& removedView is FrameworkElement fe)
 			{
-				if (removedView is FrameworkElement fe)
-				{
-					fe.IsManagedLoaded = false;
-					fe.PerformOnUnloaded();
-				}
+				fe.IsManagedLoaded = false;
+				fe.PerformOnUnloaded();
 			}
 
 			_childrenShadow.RemoveAt(index);
 			base.RemoveViewAtFast(index);
+			OnChildViewRemovedInternal(index, removedView);
 
 			ResetDependencyObjectParent(removedView);
 		}
@@ -195,6 +202,7 @@ namespace Uno.UI.Controls
 
 			_childrenShadow.RemoveAt(oldIndex);
 			_childrenShadow.Insert(newIndex, view);
+			OnChildViewMovedInternal(oldIndex, newIndex, view);
 
 			var reorderIndex = Math.Min(oldIndex, newIndex);
 
@@ -222,6 +230,7 @@ namespace Uno.UI.Controls
 		protected override void OnLocalViewAdded(View view, int index)
 		{
 			_childrenShadow.Insert(index, view);
+			OnChildViewAddedInternal(index, view);
 			OnChildViewAdded(view);
 		}
 
@@ -230,7 +239,24 @@ namespace Uno.UI.Controls
 		/// </summary>
 		protected override void OnLocalViewRemoved(View view)
 		{
-			_childrenShadow.Remove(view);
+			var index = _childrenShadow.IndexOf(view);
+			if (index >= 0)
+			{
+				_childrenShadow.Remove(view);
+				OnChildViewRemovedInternal(index, view);
+			}
+		}
+
+		private protected virtual void OnChildViewAddedInternal(int index, View view)
+		{
+		}
+
+		private protected virtual void OnChildViewMovedInternal(int oldIndex, int newIndex, View view)
+		{
+		}
+
+		private protected virtual void OnChildViewRemovedInternal(int index, View view)
+		{
 		}
 
 		/// <summary>

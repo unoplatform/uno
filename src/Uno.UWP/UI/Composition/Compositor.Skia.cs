@@ -14,7 +14,6 @@ namespace Windows.UI.Composition
 	{
 		private readonly Stack<float> _opacityStack = new Stack<float>();
 		private float _currentOpacity = 1.0f;
-		private bool _isDirty = false;
 
 		private OpacityDisposable PushOpacity(float opacity)
 		{
@@ -141,15 +140,6 @@ namespace Windows.UI.Composition
 				{
 					throw new InvalidOperationException($"Clipping with {geometricClip.Geometry} is not supported");
 				}
-			}
-		}
-
-		partial void InvalidateRenderPartial()
-		{
-			if (!_isDirty)
-			{
-				_isDirty = true;
-				CoreWindow.QueueInvalidateRender();
 			}
 		}
 	}

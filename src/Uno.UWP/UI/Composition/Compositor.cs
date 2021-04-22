@@ -1,13 +1,12 @@
 #nullable enable
 
 using Windows.UI;
+using Windows.UI.Core;
 
 namespace Windows.UI.Composition
 {
 	public partial class Compositor : global::System.IDisposable
 	{
-		private static object _gate = new object();
-
 		public ContainerVisual CreateContainerVisual()
 			=> new ContainerVisual(this)
 			{
@@ -75,9 +74,5 @@ namespace Windows.UI.Composition
 				RightInset = rightInset,
 				BottomInset = bottomInset
 			};
-
-		internal void InvalidateRender() => InvalidateRenderPartial();
-
-		partial void InvalidateRenderPartial();
 	}
 }

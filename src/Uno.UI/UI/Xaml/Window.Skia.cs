@@ -37,8 +37,7 @@ namespace Windows.UI.Xaml
 		public Window()
 		{
 			Init();
-
-			Compositor = new Compositor();
+			InitializeComposition();
 		}
 
 		public void Init()
@@ -128,8 +127,6 @@ namespace Windows.UI.Xaml
 				ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
 			}
 		}
-
-		public Compositor Compositor { get; }
 
 		partial void InternalActivate()
 		{

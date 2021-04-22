@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using Com.Nostra13.Universalimageloader.Core;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace SamplesApp.Droid
 {
@@ -25,6 +26,8 @@ namespace SamplesApp.Droid
 		public Application(IntPtr javaReference, JniHandleOwnership transfer)
 			: base(() => new App(), javaReference, transfer)
 		{
+			Uno.CompositionConfiguration.Configuration = Uno.CompositionConfiguration.Options.Enabled;
+
 			ConfigureUniversalImageLoader();
 		}
 

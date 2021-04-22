@@ -44,7 +44,7 @@ namespace Windows.UI.Composition
 		// Skipping already declared property Offset
 		// Skipping already declared property IsVisible
 		// Skipping already declared property CompositeMode
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionClip Clip
 		{

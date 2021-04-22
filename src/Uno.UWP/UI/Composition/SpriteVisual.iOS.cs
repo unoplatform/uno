@@ -25,7 +25,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal override void StartAnimationCore(string propertyName, CompositionAnimation animation)
+		private protected override void StartAnimationCore(string propertyName, CompositionAnimation animation)
 		{
 			base.StartAnimationCore(propertyName, animation);
 

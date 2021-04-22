@@ -7,6 +7,7 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Uno.Logging;
@@ -25,7 +26,9 @@ namespace Windows.UI.Xaml
 
 		private void InitializeCommon()
 		{
+			UIContext = UIContext.GetForCurrentThread();
 			InitDragAndDrop();
+
 			if (Application.Current != null)
 			{
 				Application.Current.RaiseWindowCreated(this);
@@ -38,6 +41,10 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+
+		public UIContext UIContext { get; private set; }
+
+		public Compositor Compositor => UIContext.Compositor;
 
 		public UIElement Content
 		{

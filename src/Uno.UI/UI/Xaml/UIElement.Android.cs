@@ -52,8 +52,8 @@ namespace Windows.UI.Xaml
 		{
 			Initialize();
 			InitializePointers();
+			InitializeComposition();
 		}
-
 
 		/// <summary>
 		/// Determines if InvalidateMeasure has been called

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI.Composition;
+using Windows.UI.Core;
 using Android.App;
 using Android.Graphics;
 using Android.OS;
@@ -25,28 +27,35 @@ namespace Uno.UI.Composition
 		[ThreadStatic] // Static to the related UI Thread !!!
 		private static CompositorThread? _current;
 
-		public static void Start(ICompositionRoot activity)
-			=> _current ??= new CompositorThread(activity);
+		/// <summary>
+		/// Gets the current compositor thread for the current UI THREAD, if any.
+		/// </summary>
+		public static CompositorThread? GetForCurrentThread()
+			=> _current;
 
-		private readonly RenderNode _visualTree = new RenderNode("visual-tree");
+		public static CompositorThread Start(Compositor compositor, Android.Views.Window window)
+			=> _current ??= new CompositorThread(compositor, window);
+
+		private readonly Compositor _compositor;
 		private readonly ManualResetEventSlim _frameRendered = new ManualResetEventSlim(false);
-		private readonly ICompositionRoot _activity;
 
 		private HardwareRenderer? _hwRender;
 		private Thread? _thread;
 		private Looper? _looper;
+		private Choreographer? _choregrapher;
 
-		public CompositorThread(ICompositionRoot activity)
+		public CompositorThread(Compositor compositor, Android.Views.Window window)
 		{
-			_activity = activity;
-
-			_activity.Window!.TakeSurface(this);
+			_compositor = compositor;
+			//CoreWindow.SetInvalidateRender(OnRenderInvalidated); // TODO
+			window.TakeSurface(this);
 		}
-		
+
+		#region Surface management
 		void ISurfaceHolderCallback.SurfaceCreated(ISurfaceHolder? holder)
 		{
 			_hwRender = new HardwareRenderer();
-			_hwRender.SetContentRoot(_visualTree);
+			_hwRender.SetContentRoot(_compositor.RootNode);
 			_hwRender.SetSurface(holder!.Surface);
 
 			// Even if the SurfaceChanged will be invoke right after this SurfaceCreated,
@@ -74,13 +83,15 @@ namespace Uno.UI.Composition
 		void ISurfaceHolderCallback2.SurfaceRedrawNeeded(ISurfaceHolder? holder)
 		{
 			_frameRendered.Reset();
+			RequestFrame();
 			_frameRendered.Wait();
 		}
 
-#if __ANDROID_11__
-		void ISurfaceHolderCallback2.SurfaceRedrawNeededAsync(ISurfaceHolder? holder, Java.Lang.IRunnable drawingFinished)
+		// Note: We don't make it an explicit interface implementation as it's not available yet on the Xamarin.Android version used by the CI
+		public void /*ISurfaceHolderCallback2.*/SurfaceRedrawNeededAsync(ISurfaceHolder? holder, Java.Lang.IRunnable drawingFinished)
 		{
 			_frameRendered.Reset();
+			RequestFrame();
 
 			Task.Run(() => // TODO: Should we invoke drawingFinished on calling / UI thread?
 			{
@@ -98,13 +109,14 @@ namespace Uno.UI.Composition
 				}
 			});
 		}
-#endif
 
 		private void SetBounds(int width, int height)
 		{
-			_visualTree.SetPosition(new Rect(new Point(), new Size(width, height)));
+			_compositor.RootNode.SetPosition(new Rect(new Point(), new Size(width, height)));
 		}
+		#endregion
 
+		#region Core run loop
 		private void Start()
 		{
 			if (_thread is {})
@@ -136,8 +148,9 @@ namespace Uno.UI.Composition
 
 				Looper.Prepare(); // Required to get a Choreographer.Instance
 				_looper = Looper.MyLooper();
+				_choregrapher = Choreographer.Instance;
 
-				Choreographer.Instance!.PostFrameCallback(this);
+				_choregrapher!.PostFrameCallback(this);
 
 				Looper.Loop(); // Start the looper so the Choreographer.Instance will invoke our callback
 
@@ -196,13 +209,37 @@ namespace Uno.UI.Composition
 			}
 		}
 
+		//private long _frameIndex = 0;
+
 		void Choreographer.IFrameCallback.DoFrame(long frameTimeNanos)
 		{
 			try
 			{
+				if (_firstFrameTime == 0)
+				{
+					_firstFrameTime = frameTimeNanos;
+					_lastReport.time = frameTimeNanos;
+				}
+
+				//if (++_frameIndex % 2 == 0)
+				//{
+				//	Choreographer.Instance!.PostFrameCallback(this);
+				//	return;
+				//}
+
 				RenderFrame(frameTimeNanos);
 
-				Choreographer.Instance!.PostFrameCallback(this);
+				_frameCount++;
+				var elapsed = frameTimeNanos - _lastReport.time;
+				if (elapsed > 1000000000)
+				{
+					var frames = _frameCount - _lastReport.frames;
+
+					Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] {DateTime.Now:T} FPS: {frames * 1000000000.0 / elapsed:F2} (time: {frameTimeNanos}ns | elapsed: {elapsed}ns | frames: {frames})");
+					_lastReport = (frameTimeNanos, _frameCount);
+				}
+
+				//Choreographer.Instance!.PostFrameCallback(this);
 			}
 			catch (ThreadAbortException)
 			{
@@ -210,38 +247,16 @@ namespace Uno.UI.Composition
 			}
 		}
 
+		private ulong _frameCount = 0;
+		private long _firstFrameTime;
+		private (long time, ulong frames) _lastReport;
+
 		private void RenderFrame(long frameTimeNanos)
 		{
-			RecordingCanvas canvas;
 			try
 			{
-				canvas = _visualTree.BeginRecording();
-			}
-			catch (Java.Lang.IllegalStateException)
-			{
-				// Cannot start recording (most probably recording is already running somehow).
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error("Failed to begin frame rendering.");
-				}
-
-				return;
-			}
-
-			try
-			{
-				_activity.Content.Draw(canvas);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error("Failed to render frame.", e);
-				}
-			}
-			finally
-			{
-				_visualTree.EndRecording();
+				const long _ticksPerNanos = TimeSpan.TicksPerMillisecond * 1000;
+				_compositor.Render(frameTimeNanos * _ticksPerNanos);
 
 				var request = _hwRender!.CreateRenderRequest(); // Cannot be null if thread is running
 				var needsSync = !_frameRendered.IsSet;
@@ -258,6 +273,75 @@ namespace Uno.UI.Composition
 					_frameRendered.Set();
 				}
 			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to render frame.", e);
+				}
+			}
+
+			//RecordingCanvas canvas;
+			//try
+			//{
+			//	canvas = _visualTree.BeginRecording();
+			//}
+			//catch (Java.Lang.IllegalStateException)
+			//{
+			//	// Cannot start recording (most probably recording is already running somehow).
+			//	if (this.Log().IsEnabled(LogLevel.Error))
+			//	{
+			//		this.Log().Error("Failed to begin frame rendering.");
+			//	}
+
+			//	return;
+			//}
+
+			
+
+			//try
+			//{
+			//	//if (_activity.Compositor.IsDirty)
+			//	{
+			//		canvas.DrawColor(Color.Orange);
+
+			//		Compositor.Render(_activity.Content);
+
+			//		_activity.Content.Draw(canvas);
+			//	}
+			//}
+			//catch (Exception e)
+			//{
+			//	if (this.Log().IsEnabled(LogLevel.Error))
+			//	{
+			//		this.Log().Error("Failed to render frame.", e);
+			//	}
+			//}
+			//finally
+			//{
+			//	_visualTree.EndRecording();
+
+			//	var request = _hwRender!.CreateRenderRequest(); // Cannot be null if thread is running
+			//	var needsSync = !_frameRendered.IsSet;
+
+			//	if (needsSync)
+			//	{
+			//		request.SetWaitForPresent(true);
+			//	}
+
+			//	request.SyncAndDraw();
+
+			//	if (needsSync)
+			//	{
+			//		_frameRendered.Set();
+			//	}
+			//}
+		}
+		#endregion
+
+		internal void RequestFrame()
+		{
+			_choregrapher?.PostFrameCallback(this);
 		}
 	}
 }

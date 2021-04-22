@@ -14,11 +14,12 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors;
 using Windows.Storage.Pickers;
+using Windows.UI.Composition;
 
 namespace Windows.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
-	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
+	public class ApplicationActivity : Controls.NativePage
 	{
 
 		/// The windows model implies only one managed activity.
@@ -28,8 +29,7 @@ namespace Windows.UI.Xaml
 		internal LayoutProvider LayoutProvider { get; private set; }
 
 		private InputPane _inputPane;
-		private View _content;
-		private Android.Views.Window _window;
+		private UIContext _uiContext;
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -45,13 +45,11 @@ namespace Windows.UI.Xaml
 		{
 			Instance = this;
 
+			_uiContext = UIContext.GetForCurrentThread();
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
 		}
-
-		View Uno.UI.Composition.ICompositionRoot.Content => _content;
-		Android.Views.Window Uno.UI.Composition.ICompositionRoot.Window => _window ??= base.Window;
 
 		public override void OnAttachedToWindow()
 		{
@@ -122,10 +120,7 @@ namespace Windows.UI.Xaml
 
 		protected override void OnCreate(Bundle bundle)
 		{
-			if (Uno.CompositionConfiguration.UseCompositorThread)
-			{
-				Uno.UI.Composition.CompositorThread.Start(this);
-			}
+			_uiContext.Compositor.SetActivity(this);
 
 			base.OnCreate(bundle);
 
@@ -148,7 +143,18 @@ namespace Windows.UI.Xaml
 
 		public override void SetContentView(View view)
 		{
-			_content = view;
+			var contentRootVisual = view switch
+			{
+				// If usage of visual have been disabled, setting a NativeViewVisual flagged as NativeIndependent,
+				// will redirect Compositor.Render request to the view.Draw().
+				// This is required to allow the usage of the of the CompositorThread without managed visuals (degraded perf).
+				_ when !Uno.CompositionConfiguration.UseVisual => new Uno.UI.Composition.NativeViewVisual(view, VisualKind.NativeIndependent, _uiContext),
+
+				UIElement elt => elt.Visual,
+				null => default(Visual),
+				_ => new Uno.UI.Composition.NativeViewVisual(view, _uiContext)
+			};
+			_uiContext.Compositor.SetRootVisual(view, contentRootVisual);
 
 			if (view != null)
 			{

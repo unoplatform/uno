@@ -1,6 +1,4 @@
-﻿#pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
-
-using Android.Graphics;
+﻿using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.Views;
@@ -103,7 +101,8 @@ namespace Windows.UI.Xaml.Controls
 			_currentState = null;
 		}
 
-		private static IDisposable InnerCreateLayers(BindableView view,
+		private static IDisposable InnerCreateLayers(
+			UIElement view,
 			Windows.Foundation.Rect drawArea,
 			Brush background,
 			Thickness borderThickness,
@@ -139,9 +138,9 @@ namespace Windows.UI.Xaml.Controls
 						else
 						{
 							var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath)));
+							ExecuteWithNoRelayout(view, v => v.SetBackground(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath), isImmutable: true));
 						}
-						disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
+						disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackground(null)));
 					}
 
 					if (borderThickness != Thickness.Empty && borderBrush != null && !(borderBrush is ImageBrush))
@@ -185,9 +184,9 @@ namespace Windows.UI.Xaml.Controls
 					else
 					{
 						var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint)));
+						ExecuteWithNoRelayout(view, v => v.SetBackground(Brush.GetBackgroundDrawable(background, drawArea, fillPaint), isImmutable: true));
 					}
-					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
+					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackground(null)));
 				}
 			}
 
@@ -223,13 +222,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static void SetOverlay(BindableView view, CompositeDisposable disposables, Drawable overlay)
+		private static void SetOverlay(UIElement view, CompositeDisposable disposables, Drawable overlay)
 		{
 #if __ANDROID_18__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
-				ExecuteWithNoRelayout(view, v => v.Overlay.Add(overlay));
-				disposables.Add(() => ExecuteWithNoRelayout(view, v => v.Overlay.Remove(overlay)));
+				ExecuteWithNoRelayout(view, v => v.SetOverlay(overlay, isStaticDrawable: true));
+				disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetOverlay(overlay, isStaticDrawable: true)));
 			}
 			else
 #endif
@@ -248,12 +247,12 @@ namespace Windows.UI.Xaml.Controls
 
 				list.Add(overlay);
 
-				view.SetBackgroundDrawable(new LayerDrawable(list.ToArray()));
-				disposables.Add(() => view.SetBackgroundDrawable(null));
+				view.SetBackground(new LayerDrawable(list.ToArray()), isImmutable: true);
+				disposables.Add(() => view.SetBackground(null));
 			}
 		}
 
-		private static IDisposable DispatchSetImageBrushAsBackground(BindableView view, ImageBrush background, Windows.Foundation.Rect drawArea, Action onImageSet, Path maskingPath = null)
+		private static IDisposable DispatchSetImageBrushAsBackground(UIElement view, ImageBrush background, Windows.Foundation.Rect drawArea, Action onImageSet, Path maskingPath = null)
 		{
 			var disposable = new CompositeDisposable();
 			Dispatch(
@@ -270,7 +269,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		//Load bitmap from ImageBrush and set it as a bitmapDrawable background on target view
-		private static async Task<IDisposable> SetImageBrushAsBackground(CancellationToken ct, BindableView view, ImageBrush background, Windows.Foundation.Rect drawArea, Path maskingPath, Action onImageSet)
+		private static async Task<IDisposable> SetImageBrushAsBackground(CancellationToken ct, UIElement view, ImageBrush background, Windows.Foundation.Rect drawArea, Path maskingPath, Action onImageSet)
 		{
 			var bitmap = await background.GetBitmap(ct, drawArea, maskingPath);
 
@@ -283,9 +282,11 @@ namespace Windows.UI.Xaml.Controls
 				return Disposable.Empty;
 			}
 
+#pragma warning disable 0618
 			var bitmapDrawable = new BitmapDrawable(bitmap);
+#pragma warning restore 0618
 			SetDrawableAlpha(bitmapDrawable, (int)(background.Opacity * __opaqueAlpha));
-			ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(bitmapDrawable));
+			ExecuteWithNoRelayout(view, v => v.SetBackground(bitmapDrawable, isImmutable: true));
 
 			return Disposable.Create(() =>
 			{
@@ -294,7 +295,7 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-		private static void ExecuteWithNoRelayout(BindableView target, Action<BindableView> action)
+		private static void ExecuteWithNoRelayout(UIElement target, Action<UIElement> action)
 		{
 			if (target == null)
 			{

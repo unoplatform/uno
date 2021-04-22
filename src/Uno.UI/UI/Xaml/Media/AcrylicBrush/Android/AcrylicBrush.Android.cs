@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS0618
-using System;
+﻿using System;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Views;
@@ -26,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 				AntiAlias = true
 			};
 
-		internal IDisposable Subscribe(BindableView owner, Rect drawArea, Path maskingPath)
+		internal IDisposable Subscribe(UIElement owner, Rect drawArea, Path maskingPath)
 		{
 			var state = new AcrylicState(owner, drawArea, maskingPath);
 
@@ -76,12 +75,12 @@ namespace Windows.UI.Xaml.Media
 
 				// Fall back to solid color
 				var fillPaint = GetFillPaint(Rect.Empty);
-				ExecuteWithNoRelayout(state.Owner, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(this, state.DrawArea, fillPaint, state.MaskingPath)));
+				ExecuteWithNoRelayout(state.Owner, v => v.SetBackground(Brush.GetBackgroundDrawable(this, state.DrawArea, fillPaint, state.MaskingPath), isImmutable: true));
 
 				if (state.FallbackDisposable.Disposable == null)
 				{
 					state.FallbackDisposable.Disposable = Disposable.Create(
-						() => ExecuteWithNoRelayout(state.Owner, v => v.SetBackgroundDrawable(null)));
+						() => ExecuteWithNoRelayout(state.Owner, v => v.SetBackground(null)));
 				}
 			}
 			else
@@ -98,7 +97,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private void ExecuteWithNoRelayout(BindableView view, Action<BindableView> action)
+		private void ExecuteWithNoRelayout(UIElement view, Action<UIElement> action)
 		{
 			using (view.PreventRequestLayout())
 			{
@@ -111,7 +110,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private class AcrylicState
 		{
-			public AcrylicState(BindableView owner, Rect drawArea, Path maskingPath)
+			public AcrylicState(UIElement owner, Rect drawArea, Path maskingPath)
 			{
 				Owner = owner;
 				DrawArea = drawArea;
@@ -128,7 +127,7 @@ namespace Windows.UI.Xaml.Media
 
 			public RealtimeBlurView BlurView { get; set; }
 
-			public BindableView Owner { get; }
+			public UIElement Owner { get; }
 
 			public Rect DrawArea { get; }
 

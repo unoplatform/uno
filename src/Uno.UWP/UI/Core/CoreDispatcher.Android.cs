@@ -65,6 +65,19 @@ namespace Windows.UI.Core
 			return operation;
 		}
 
+		/// <summary>
+		/// Run operation with 'animation' priority, prior to layout and draw calls. This will run at the beginning of the next UI pass.
+		/// </summary>
+		/// <remarks>
+		/// This is a fast path to repeatedly run the same action and is relying on the fact that the underlying
+		/// 'Action' can be executed more than once.
+		/// </remarks>
+		internal void RunAnimation(UIAsyncOperation operation)
+		{
+			ImmutableInterlocked.Enqueue(ref _animationQueue, operation);
+			QueueOperations();
+		}
+
 		private void QueueOperations()
 		{
 			if (!_animationQueue.IsEmpty)

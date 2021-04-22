@@ -25,17 +25,32 @@ namespace Windows.UI.Composition
 
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
+		public string? Comment { get; set; }
+
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
 			StartAnimationCore(propertyName, animation);
 		}
 
-		internal virtual void StartAnimationCore(string propertyName, CompositionAnimation animation) { }
+		private protected virtual void StartAnimationCore(string propertyName, CompositionAnimation animation) { }
 
 		public void StopAnimation(string propertyName)
 		{
 		}
 
-		public string? Comment { get; set; }
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private protected virtual void Dispose(bool isDispose)
+		{
+		}
+
+		~CompositionObject()
+		{
+			Dispose(false);
+		}
 	}
 }

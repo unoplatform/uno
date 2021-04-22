@@ -28,6 +28,7 @@ using Windows.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -375,15 +376,31 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private NativeTextLayoutVisual _visual;
 		private void UpdateNativeTextBlockLayout()
 		{
-			var padding = Padding;
-			base.SetNativeTextBlockLayout(
-				_arrangeLayout?.Layout,
-				LogicalToPhysicalPixels(padding.Left),
-				LogicalToPhysicalPixels(padding.Top)
-			);
-			Invalidate(); // This ensures that OnDraw() will be called, which is typically the case anyway after OnLayout() but not always (eg, if device is being unlocked).
+			if (Uno.CompositionConfiguration.UseVisual)
+			{
+				if (_visual is null)
+				{
+					_visual = new NativeTextLayoutVisual(_arrangeLayout?.Layout, UIContext);
+					Visual.Children.InsertAtTop(_visual);
+				}
+				else
+				{
+					_visual.Text = _arrangeLayout?.Layout;
+				}
+			}
+			else
+			{
+				var padding = Padding;
+				base.SetNativeTextBlockLayout(
+					_arrangeLayout?.Layout,
+					LogicalToPhysicalPixels(padding.Left),
+					LogicalToPhysicalPixels(padding.Top)
+				);
+				Invalidate(); // This ensures that OnDraw() will be called, which is typically the case anyway after OnLayout() but not always (eg, if device is being unlocked).
+			}
 		}
 
 		/// <summary>

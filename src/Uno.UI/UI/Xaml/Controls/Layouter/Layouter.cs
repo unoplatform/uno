@@ -54,13 +54,14 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Size _unclippedDesiredSize;
 
-		private UIElement _elementAsUIElement;
+		private readonly IFrameworkElement _element;
+		private readonly UIElement _elementAsUIElement;
 
-		public IFrameworkElement Panel { get; }
+		public IFrameworkElement Panel => _element;
 
 		protected Layouter(IFrameworkElement element)
 		{
-			Panel = element;
+			_element = element;
 			_elementAsUIElement = element as UIElement;
 
 			var log = this.Log();
@@ -81,11 +82,11 @@ namespace Windows.UI.Xaml.Controls
 				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStart,
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStop,
-					new object[] {LoggingOwnerTypeName, Panel.GetDependencyObjectId()}
+					new object[] {LoggingOwnerTypeName, _element.GetDependencyObjectId()}
 				)
 				: null;
 
-			if (Panel.Visibility == Visibility.Collapsed)
+			if (_element.Visibility == Visibility.Collapsed)
 			{
 				// A collapsed element should not be measured at all
 				return default;
@@ -98,8 +99,8 @@ namespace Windows.UI.Xaml.Controls
 					UIElement.IsLayoutingVisualTreeRoot = true;
 				}
 
-				var (minSize, maxSize) = Panel.GetMinMax();
-				var marginSize = Panel.GetMarginSize();
+				var (minSize, maxSize) = _element.GetMinMax();
+				var marginSize = _element.GetMarginSize();
 
 				// NaN values are accepted as input here, particularly when coming from
 				// SizeThatFits in Image or Scrollviewer. Clamp the value here as it is reused
@@ -112,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeastZero()
 					.AtMost(maxSize);
 
-				LayoutInformation.SetAvailableSize(Panel, frameworkAvailableSize);
+				LayoutInformation.SetAvailableSize(_element, frameworkAvailableSize);
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
 				_logDebug?.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
@@ -141,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// DesiredSize must include margins
 				// TODO: on UWP, it's not clipped. See test When_MinWidth_SmallerThan_AvailableSize
-				LayoutInformation.SetDesiredSize(Panel, clippedDesiredSize);
+				LayoutInformation.SetDesiredSize(_element, clippedDesiredSize);
 
 				// We return "clipped" desiredSize to caller... the unclipped version stays internal
 				return clippedDesiredSize;
@@ -173,13 +174,13 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public void Arrange(Rect finalRect)
 		{
-			LayoutInformation.SetLayoutSlot(Panel, finalRect);
+			LayoutInformation.SetLayoutSlot(_element, finalRect);
 
 			using var traceActivity = _trace.IsEnabled
 				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStart,
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStop,
-					new object[] {LoggingOwnerTypeName, Panel.GetDependencyObjectId()}
+					new object[] {LoggingOwnerTypeName, _element.GetDependencyObjectId()}
 				)
 				: null;
 
@@ -192,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
+					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), _element.Name, finalRect, _element.Margin);
 				}
 
 				var clippedArrangeSize = _elementAsUIElement?.ClippedFrame is Rect clip && !_elementAsUIElement.IsArrangeDirty
@@ -202,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 				bool allowClipToSlot;
 				bool needsClipToSlot;
 
-				if (Panel is ICustomClippingElement customClippingElement)
+				if (_element is ICustomClippingElement customClippingElement)
 				{
 					// Some controls may control itself how clipping is applied
 					allowClipToSlot = customClippingElement.AllowClippingToLayoutSlot;
@@ -231,7 +232,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				var (minSize, maxSize) = this.Panel.GetMinMax();
+				var (minSize, maxSize) = this._element.GetMinMax();
 
 				var arrangeSize = finalRect
 					.Size
@@ -265,16 +266,25 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_elementAsUIElement.RenderSize = renderSize.AtMost(maxSize);
 					_elementAsUIElement.NeedsClipToSlot = needsClipToSlot;
-					_elementAsUIElement.ApplyClip();
+					_elementAsUIElement.SizeVisual(finalRect);
+					_elementAsUIElement.ApplyClip(); // Includes ClipVisual
 
-					if (Panel is FrameworkElement fe)
+					if (_element is FrameworkElement fe)
 					{
 						fe.OnLayoutUpdated();
 					}
+
+					_elementAsUIElement.InvalidateRender();
 				}
-				else if (Panel is IFrameworkElement_EffectiveViewport evp)
+				else if (_element is IFrameworkElement_EffectiveViewport evp)
 				{
 					evp.OnLayoutUpdated();
+
+					_element.InvalidateRender();
+				}
+				else
+				{
+					_element.InvalidateRender();
 				}
 			}
 			finally
@@ -770,9 +780,9 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureChild(view, slotSize);
 		}
 
-		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;
+		private string LoggingOwnerTypeName => ((object)_element ?? this).GetType().Name;
 
-		public override string ToString() => $"[{LoggingOwnerTypeName}.Layouter]" + (string.IsNullOrEmpty(Panel?.Name) ? default : $"(name='{Panel.Name}')");
+		public override string ToString() => $"[{LoggingOwnerTypeName}.Layouter]" + (string.IsNullOrEmpty(_element?.Name) ? default : $"(name='{_element.Name}')");
 	}
 }
 #endif

@@ -26,6 +26,7 @@ using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
+using Windows.UI.Composition;
 
 #if __IOS__
 using UIKit;
@@ -58,9 +59,12 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool IsVisualTreeRoot { get; set; }
 
+		public UIContext UIContext { get; private set; }
+
 		private void Initialize()
 		{
 			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
+			UIContext = UIContext.GetForCurrentThread();
 		}
 
 		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
@@ -477,6 +481,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+			ClipVisual(rect);
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
 		}
@@ -577,16 +582,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Size RenderSize { get; internal set; }
 
-		public virtual void Measure(Size availableSize)
-		{
-		}
-
 #if !UNO_REFERENCE_API
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>
 		internal Rect? ClippedFrame;
 #endif
+
+		public virtual void Measure(Size availableSize)
+		{
+		}
 
 		public virtual void Arrange(Rect finalRect)
 		{

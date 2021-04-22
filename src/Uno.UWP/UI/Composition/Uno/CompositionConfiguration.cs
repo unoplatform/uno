@@ -26,24 +26,44 @@ namespace Uno
 			/// <summary>
 			/// [ANDROID ONLY] Use a dedicated background thread to render the views.
 			/// </summary>
-			UseCompositorThread = 0x1,
+			UseCompositorThread = 1 << 1,
+
+			/// <summary>
+			/// [ANDROID ONLY] Use composition for render transforms.
+			/// </summary>
+			UseCompositionForTransforms = 1 << 2,
+
+			/// <summary>
+			/// [ANDROID ONLY] Use composition for independent animations.
+			/// </summary>
+			/// <remarks>This flag requires the UseCompositionForTransforms.</remarks>
+			UseCompositionForAnimations = 1 << 3 | UseCompositionForTransforms,
 
 			/// <summary>
 			/// Enables all composition capabilities for the current platform.
 			/// </summary>
-			Enabled = UseCompositorThread,
+			Enabled = UseCompositorThread | UseCompositionForTransforms | UseCompositionForAnimations,
 		}
 
-		internal static bool UseCompositorThread
-		{
-			get
-			{
-				var value = Configuration.HasFlag(Options.UseCompositorThread);
+
 #if __ANDROID__
-				value &= ((int)Android.OS.Build.VERSION.SdkInt) >= 29; // Android 10, for RenderNode which is required for all composition operations!
+		private static bool _isCompositionSupported = ((int)Android.OS.Build.VERSION.SdkInt) >= 29; // Android 10, for RenderNode which is required for all composition operations!
+#else
+		private const bool _isCompositionSupported = true;
 #endif
-				return value;
-			}
-		}
+
+		/// <summary>
+		/// Indicates if the app is using it own dedicated compositor thread
+		/// </summary>
+		internal static bool UseCompositorThread
+			=> _isCompositionSupported && Configuration.HasFlag(Options.UseCompositorThread);
+
+		/// <summary>
+		/// Indicates if a Visual is being created for each UIElement
+		/// </summary>
+		internal static bool UseVisual
+			=> _isCompositionSupported && Configuration.HasFlag(Options.UseCompositionForTransforms);
+
+		internal static bool UseVisualForLayers => UseVisual;
 	}
 }

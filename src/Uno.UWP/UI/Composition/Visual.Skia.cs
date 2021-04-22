@@ -14,12 +14,6 @@ namespace Windows.UI.Composition
 
 		}
 
-		public CompositionClip? Clip
-		{
-			get;
-			set;
-		}
-
 		// Backing for scroll offsets
 		private Vector2 _anchorPoint = Vector2.Zero;
 		public Vector2 AnchorPoint

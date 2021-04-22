@@ -21,7 +21,6 @@ namespace Windows.UI.Xaml
 	{
 		internal Size _unclippedDesiredSize;
 		internal Point _visualOffset;
-		private ContainerVisual _visual;
 		private Visibility _visibilityCache;
 		internal double _canvasTop;
 		internal double _canvasLeft;
@@ -76,20 +75,6 @@ namespace Windows.UI.Xaml
 		{
 			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
-
-		internal ContainerVisual Visual
-		{
-			get {
-
-				if (_visual == null)
-				{
-					_visual = Window.Current.Compositor.CreateContainerVisual();
-					_visual.Comment = $"Owner:{GetType()}/{Name}";
-				}
-
-				return _visual;
-			}
-		} 
 
 		/// <summary>
 		/// The origin of the view's bounds relative to its parent.
@@ -253,37 +238,8 @@ namespace Windows.UI.Xaml
 
 		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
 		{
-			var roundedRect = LayoutRound(rect);
-
-			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
-			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
-			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
-
-			ApplyNativeClip(clip ?? Rect.Empty);
-		}
-
-		partial void ApplyNativeClip(Rect clip)
-		{
-			if (ClippingIsSetByCornerRadius)
-			{
-				return; // already applied
-			}
-
-			if (clip.IsEmpty)
-			{
-				Visual.Clip = null;
-			}
-			else
-			{
-				var roundedRectClip = LayoutRound(clip);
-
-				Visual.Clip = Visual.Compositor.CreateInsetClip(
-					topInset: (float)roundedRectClip.Top,
-					leftInset: (float)roundedRectClip.Left,
-					bottomInset: (float)roundedRectClip.Bottom,
-					rightInset: (float)roundedRectClip.Right
-				);
-			}
+			SizeVisual(rect);
+			ClipVisual(clip ?? Rect.Empty);
 		}
 
 		partial void ShowVisual()

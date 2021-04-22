@@ -175,6 +175,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="UI\Xaml\UIElement.Composition.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\UIElement.Composition.Android.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\UIElement.Composition.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
@@ -218,5 +227,9 @@
 	</Target>
 
 	<Import Project="MixinGeneration.targets" />
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UI\Xaml\UIElement.Composition.Android.cs" />
+	</ItemGroup>
 
 </Project>

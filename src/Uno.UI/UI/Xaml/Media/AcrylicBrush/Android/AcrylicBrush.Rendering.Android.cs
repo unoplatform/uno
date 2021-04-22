@@ -60,25 +60,18 @@ namespace Windows.UI.Xaml.Media
 
 				state.BackgroundDrawable.SetColor(androidColor);
 
-				SetBackground(state.Owner, state.BackgroundDrawable);
+				state.Owner.SetBackground(state.BackgroundDrawable);
 			}
 		}
 
 		private void RemoveAcrylicBlur(AcrylicState state)
 		{
-			SetBackground(state.Owner, null);
+			state.Owner.SetBackground(null);
 			state.BackgroundDrawable?.Dispose();
 			state.BackgroundDrawable = null;
 
 			DisableBlur(state);
 			DestroyBlur(state);
-		}
-
-		private void SetBackground(BindableView view, Drawable drawable)
-		{
-#pragma warning disable 618 // Using older method for compatibility with API 15
-			view.SetBackgroundDrawable(drawable);
-#pragma warning restore 618
 		}
 	}
 }

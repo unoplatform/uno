@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Windows.UI.Composition;
 using Android.Views;
 
 namespace Uno.UI.Composition
@@ -8,6 +9,8 @@ namespace Uno.UI.Composition
 	{
 		Window Window { get; }
 
-		View Content { get; }
+		//View Content { get; }
+
+		Compositor Compositor { get; }
 	}
 }
