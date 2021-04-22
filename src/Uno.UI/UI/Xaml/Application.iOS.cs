@@ -1,11 +1,9 @@
 ﻿#if XAMARIN_IOS
 using Foundation;
 using System;
+using System.Linq;
 using UIKit;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
@@ -61,7 +59,7 @@ namespace Windows.UI.Xaml
 				{
 					_preventSecondaryActivationHandling = true;
 					var url = (NSUrl)urlObject;
-					if (TryParseActivationUri(url, out var uri))
+					if (TryParseUri(url, out var uri))
 					{
 						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
 						handled = true;
@@ -74,6 +72,17 @@ namespace Windows.UI.Xaml
 					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 					handled = true;
 				}
+				else if (
+					TryGetUserActivityFromLaunchOptions(launchOptions, out var userActivity) &&
+					userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
+				{
+					_preventSecondaryActivationHandling = true;
+					if (TryParseUri(userActivity.WebPageUrl, out var uri))
+					{				
+						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+						handled = true;
+					}
+				}
 			}
 
 			// default to normal launch
@@ -84,12 +93,29 @@ namespace Windows.UI.Xaml
 			return true;
 		}
 
+		public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler)
+		{
+			// If the application was not running, universal link was already handled by FinishedLaunching
+			if (!_preventSecondaryActivationHandling)
+			{
+				if (userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
+				{
+					if (TryParseUri(userActivity.WebPageUrl, out var uri))
+					{
+						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+					}
+				}
+			}
+			_preventSecondaryActivationHandling = false;
+			return true;
+		}
+
 		public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 		{
 			// If the application was not running, URL was already handled by FinishedLaunching
 			if (!_preventSecondaryActivationHandling)
 			{
-				if (TryParseActivationUri(url, out var uri))
+				if (TryParseUri(url, out var uri))
 				{
 					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
 				}
@@ -149,7 +175,7 @@ namespace Windows.UI.Xaml
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
-		private bool TryParseActivationUri(NSUrl url, out Uri uri)
+		private bool TryParseUri(NSUrl url, out Uri uri)
 		{
 			if (Uri.TryCreate(url.ToString(), UriKind.Absolute, out uri))
 			{
@@ -160,6 +186,19 @@ namespace Windows.UI.Xaml
 				this.Log().LogError($"Activation URI {url} could not be parsed");
 				return false;
 			}
+		}
+
+		private bool TryGetUserActivityFromLaunchOptions(NSDictionary launchOptions, out NSUserActivity userActivity)
+		{
+			userActivity = null;
+
+			if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUserActivityDictionaryKey, out var userActivityObject) &&
+				userActivityObject is NSDictionary userActivityDictionary)
+			{
+				userActivity = userActivityDictionary.Values.OfType<NSUserActivity>().FirstOrDefault();				
+			}
+
+			return userActivity != null;
 		}
 	}
 }
