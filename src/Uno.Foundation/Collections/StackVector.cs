@@ -10,21 +10,20 @@ namespace Uno.Collections
 		internal delegate bool RefPredicateDelegate(ref T item);
 
 		private Memory<T> _inner;
-		private int _length;
 
 		public StackVector(int capacity, int initialLength = 0)
 		{
 			_inner = new Memory<T>(new T[capacity]);
-			_length = initialLength;
+			Count = initialLength;
 		}
 
 		public IEnumerator<T> GetEnumerator() => new StackVectorEnumerator(this);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public int Count => _length;
+		public int Count { get; private set; }
 
-		public Memory<T> Memory => _inner.Slice(0, _length);
+		public Memory<T> Memory => _inner.Slice(0, Count);
 
 		public void Resize(int newCount)
 		{
@@ -41,7 +40,7 @@ namespace Uno.Collections
 				IncrementResizeCount();
 			}
 
-			_length = newCount;
+			Count = newCount;
 		}
 
 #if DEBUG
@@ -58,7 +57,7 @@ namespace Uno.Collections
 
 		public ref T PushBack()
 		{
-			var newLength = _length + 1;
+			var newLength = Count + 1;
 			Resize(newLength);
 			return ref _inner.Span[newLength - 1];
 
@@ -81,7 +80,7 @@ namespace Uno.Collections
 
 		public bool LastOrDefault(ref T last)
 		{
-			var length = _length;
+			var length = Count;
 
 			if(length == 0)
 			{
@@ -96,7 +95,7 @@ namespace Uno.Collections
 		{
 			get
 			{
-				if(index < 0 || index >= _length)
+				if(index < 0 || index >= Count)
 				{
 					throw new ArgumentOutOfRangeException(nameof(index));
 				}
@@ -117,7 +116,7 @@ namespace Uno.Collections
 			bool IEnumerator.MoveNext()
 			{
 				_index++;
-				return _index < _owner._length;
+				return _index < _owner.Count;
 			}
 
 			void IEnumerator.Reset() => _index = -1;

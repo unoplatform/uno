@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 				//var parent = this.GetParent();
 				//var result = (parent as Grid)?.GetActualHeight(this) ?? 0d;
 				//return result;
-				throw new NotImplementedException("TODO - Grid");
+				return _measureArrangeSize;
 			}
 		}
 
