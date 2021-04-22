@@ -25,7 +25,7 @@ namespace Uno.Foundation.Interop
 		)
 		{
 			var paramStructType = paramStruct.GetType();
-			var paramSize = MarshalSizeOfHelper.SizeOf(paramStructType);
+			var paramSize = Marshal.SizeOf(paramStruct);
 
 			if (_logger.Value.IsEnabled(LogLevel.Trace))
 			{
@@ -63,8 +63,8 @@ namespace Uno.Foundation.Interop
 		{
 			var paramStructType = paramStruct.GetType();
 
-			var returnSize = MarshalSizeOfHelper.SizeOf(retStructType);
-			var paramSize = MarshalSizeOfHelper.SizeOf(paramStructType);
+			var returnSize = Marshal.SizeOf(retStructType);
+			var paramSize = Marshal.SizeOf(paramStructType);
 
 			if (_logger.Value.IsEnabled(LogLevel.Trace))
 			{
