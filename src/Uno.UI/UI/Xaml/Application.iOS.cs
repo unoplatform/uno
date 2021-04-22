@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml
 				{
 					_preventSecondaryActivationHandling = true;
 					if (TryParseUri(userActivity.WebPageUrl, out var uri))
-					{				
+					{
 						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
 						handled = true;
 					}
@@ -93,22 +93,11 @@ namespace Windows.UI.Xaml
 			return true;
 		}
 
-		public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler)
-		{
-			// If the application was not running, universal link was already handled by FinishedLaunching
-			if (!_preventSecondaryActivationHandling)
-			{
-				if (userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
-				{
-					if (TryParseUri(userActivity.WebPageUrl, out var uri))
-					{
-						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
-					}
-				}
-			}
-			_preventSecondaryActivationHandling = false;
-			return true;
-		}
+		public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler) =>
+			TryHandleUniversalLinkFromUserActivity(userActivity);		
+
+		public override void UserActivityUpdated(UIApplication application, NSUserActivity userActivity) =>
+			TryHandleUniversalLinkFromUserActivity(userActivity);
 
 		public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 		{
@@ -175,6 +164,27 @@ namespace Windows.UI.Xaml
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
+		private bool TryHandleUniversalLinkFromUserActivity(NSUserActivity userActivity)
+		{
+			// If the application was not running, universal link was already handled by FinishedLaunching
+			if (_preventSecondaryActivationHandling)
+			{
+				_preventSecondaryActivationHandling = false;
+				return true;
+			}
+
+			if (userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
+			{
+				if (TryParseUri(userActivity.WebPageUrl, out var uri))
+				{
+					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		private bool TryParseUri(NSUrl url, out Uri uri)
 		{
 			if (Uri.TryCreate(url.ToString(), UriKind.Absolute, out uri))
@@ -195,7 +205,7 @@ namespace Windows.UI.Xaml
 			if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUserActivityDictionaryKey, out var userActivityObject) &&
 				userActivityObject is NSDictionary userActivityDictionary)
 			{
-				userActivity = userActivityDictionary.Values.OfType<NSUserActivity>().FirstOrDefault();				
+				userActivity = userActivityDictionary.Values.OfType<NSUserActivity>().FirstOrDefault();
 			}
 
 			return userActivity != null;
