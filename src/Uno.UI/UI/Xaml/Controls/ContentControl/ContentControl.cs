@@ -119,6 +119,12 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
+					// Don't propagate DataContext to Content qua Content, only propagate it via the visual tree. Prevents spurious
+					// propagation in case that default style and template is only applied once the control enters the visual tree
+					// (ie if created in code by new SomeControl())
+					// NOTE: There's a case we currently don't support: if the Content is a DependencyObject but *not* a FrameworkElement, then
+					// the DataContext won't get propagated and any bindings won't get updated.
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 					propertyChangedCallback: (s, e) => ((ContentControl)s)?.OnContentChanged(e.OldValue, e.NewValue)
 				)
 			);
