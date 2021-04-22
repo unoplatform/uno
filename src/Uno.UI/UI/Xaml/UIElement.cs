@@ -753,8 +753,10 @@ namespace Windows.UI.Xaml
 			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f; // 100%
 		}
 
-		int XcpRound(double x)
-			=> (int)Math.Floor(x + 0.5);
+		double XcpRound(double x)
+		{
+			return Math.Round(x);
+		}
 
 #if HAS_UNO_WINUI
 #region FocusState DependencyProperty

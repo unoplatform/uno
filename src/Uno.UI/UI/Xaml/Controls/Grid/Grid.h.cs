@@ -294,7 +294,8 @@ namespace Windows.UI.Xaml.Controls
 			m_gridFlags =
 				GridFlags.None; // Internal grid flags used for layout processing. Should have enough bits to fit all flags set by SetGridFlag.
 
-		private double XcpAbsF(double rValue) => rValue < 0.0 ? -rValue : rValue;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private double XcpAbsF(double rValue) => Math.Abs(rValue);
 
 		private UIElementCollection GetUnsortedChildren() => Children;
 	}

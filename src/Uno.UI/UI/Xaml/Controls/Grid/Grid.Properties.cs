@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 
 #if XAMARIN_ANDROID
@@ -105,6 +106,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnGenericPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
+
+			(dependencyObject as View)?.InvalidateMeasure();
 			(dependencyObject as View)?.InvalidateArrange();
 		}
 	}
