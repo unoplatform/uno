@@ -55,7 +55,7 @@
     - name: Tutorials
       items:
         - name: Silverlight migration
-          topicHref: silverlight-migration-landing.md 
+          topicHref: silverlight-migration-landing.md
           items:
             - name: Overview
               href: silverlight-migration-landing.md
@@ -283,7 +283,14 @@
             - name: Other features
               href: Uno.UI.Toolkit.md
         - name: Uno Material
-          href: features/uno-material.md
+          topicHref: features/uno-material.md
+          items:
+            - name: Overview
+              href: features/uno-material.md
+            - name: Uno.Material walkthrough
+              href: guides/uno-material-walkthrough.md
+            - name: Controls extra setup
+              href: guides/uno-material-controls-extra-setup.md
         - name: Fluent icon font
           href: uno-fluent-assets.md
         - name: Lottie animations
