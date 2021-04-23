@@ -12,7 +12,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 	{
 		private Grid _sut;
 
-		[Params(0, 1, 5, 15)]
+		[Params(0, 1, 5, 10)]
 		public int ItemsCount { get; set; }
 
 		[IterationSetup]
@@ -31,6 +31,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 		{
 			_sut = null;
 			GC.Collect();
+			GC.WaitForPendingFinalizers();
 		}
 
 		[Benchmark(Baseline = true)]
