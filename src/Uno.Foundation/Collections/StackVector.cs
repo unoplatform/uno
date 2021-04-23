@@ -51,8 +51,10 @@ namespace Uno.Collections
 		[Conditional("DEBUG")]
 		private void IncrementResizeCount()
 		{
+#if DEBUG
 			_numberOfResizes++;
 			_totalNumberOfResizes++;
+#endif
 		}
 
 		public ref T PushBack()
