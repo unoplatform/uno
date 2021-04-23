@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BenchmarkDotNet.Attributes;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -7,8 +8,6 @@ using BenchmarkDotNet.Engines;
 
 namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 {
-	[MinColumn, MaxColumn, MeanColumn, MedianColumn]
-	[SimpleJob(launchCount: 3, warmupCount: 10, targetCount: 30)]
 	public class SimpleGridBenchmark
 	{
 		private Grid _sut;
@@ -41,29 +40,150 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 		}
 
 		[Benchmark]
-		public void Complex_Measure_And_Arrange()
+		public void Complex_Measure_And_Arrange_Pixels()
 		{
+			Complex_Measure_And_Arrange(new GridLength(10));
+		}
+
+		[Benchmark]
+		public void Complex_Measure_And_Arrange_Auto()
+		{
+			Complex_Measure_And_Arrange(new GridLength(0, GridUnitType.Auto));
+		}
+
+		[Benchmark]
+		public void Complex_Measure_And_Arrange_Star()
+		{
+			Complex_Measure_And_Arrange(new GridLength(1, GridUnitType.Star));
+		}
+
+		private void Complex_Measure_And_Arrange(GridLength gridLength)
+		{
+			var children = _sut.Children;
+
 			for (var i = 0; i < ItemsCount; i++)
 			{
-				var definition = (i % 5) switch
-				{
-					0 => new ColumnDefinition { Width = 10 },
-					1 => new ColumnDefinition { Width = "*" },
-					2 => new ColumnDefinition { Width = "Auto" },
-					3 => new ColumnDefinition { Width = 0 },
-					4 => new ColumnDefinition { Width = "2*" },
-					_ => throw new ArgumentOutOfRangeException()
-				};
-				_sut.ColumnDefinitions.Add(definition);
+				var colDef = new ColumnDefinition { Width = gridLength };
+				_sut.ColumnDefinitions.Add(colDef);
 
-				var border = new Border();
+				var border = children[i];
 
 				Grid.SetColumn(border, i);
-				_sut.Children.Add(border);
 			}
 
-			_sut.Measure(new Size(20, 20));
-			_sut.Arrange(new Rect(0, 0, 20, 20));
+			_sut.Measure(new Size(500, 500));
+			_sut.Arrange(new Rect(0, 0, 500, 500));
+		}
+
+		[Benchmark]
+		public void Complex_MultiDimension_Measure_And_Arrange_Pixels()
+		{
+			Complex_MultiDimension_Measure_And_Arrange(new GridLength(10));
+		}
+
+		[Benchmark]
+		public void Complex_MultiDimension_Measure_And_Arrange_Auto()
+		{
+			Complex_MultiDimension_Measure_And_Arrange(new GridLength(0, GridUnitType.Auto));
+		}
+
+		[Benchmark]
+		public void Complex_MultiDimension_Measure_And_Arrange_Star()
+		{
+			Complex_MultiDimension_Measure_And_Arrange(new GridLength(1, GridUnitType.Star));
+		}
+
+		private void Complex_MultiDimension_Measure_And_Arrange(GridLength gridLength)
+		{
+			var children = _sut.Children;
+
+			for (var i = 0; i < ItemsCount; i++)
+			{
+				var colDef = new ColumnDefinition { Width = gridLength };
+				_sut.ColumnDefinitions.Add(colDef);
+
+				var rowDef = new RowDefinition { Height = gridLength };
+				_sut.RowDefinitions.Add(rowDef);
+
+				var border = children[i];
+
+				Grid.SetColumn(border, i);
+				Grid.SetColumnSpan(border, i % 4 + 1);
+
+				Grid.SetRow(border, i);
+				Grid.SetRowSpan(border, i % 3 + 1);
+			}
+
+			_sut.Measure(new Size(2000, 2000));
+			_sut.Arrange(new Rect(0, 0, 2000, 2000));
+		}
+
+
+		[Benchmark]
+		public void ComplexMixed_Measure_And_Arrange()
+		{
+			var children = _sut.Children;
+
+			for (var i = 0; i < ItemsCount; i++)
+			{
+				var colDef = (i % 5) switch
+				{
+					0 => new ColumnDefinition { Width = new GridLength(10) },
+					1 => new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+					2 => new ColumnDefinition { Width = new GridLength(0, GridUnitType.Auto) },
+					3 => new ColumnDefinition { Width = new GridLength(0) },
+					4 => new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+					_ => throw new ArgumentOutOfRangeException()
+				};
+				_sut.ColumnDefinitions.Add(colDef);
+
+				var border = children[i];
+
+				Grid.SetColumn(border, i);
+			}
+
+			_sut.Measure(new Size(500, 500));
+			_sut.Arrange(new Rect(0, 0, 500, 500));
+		}
+
+		[Benchmark]
+		public void ComplexMixed_MultiDimension_Measure_And_Arrange()
+		{
+			var children = _sut.Children;
+
+			for (var i = 0; i < ItemsCount; i++)
+			{
+				var colDef = (i % 5) switch
+				{
+					0 => new ColumnDefinition { Width = new GridLength(10) },
+					1 => new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+					2 => new ColumnDefinition { Width = new GridLength(0, GridUnitType.Auto) },
+					3 => new ColumnDefinition { Width = new GridLength(0) },
+					4 => new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+					_ => throw new ArgumentOutOfRangeException()
+				};
+				_sut.ColumnDefinitions.Add(colDef);
+
+				var rowDef = (i % 3) switch
+				{
+					0 => new RowDefinition { Height = new GridLength(10) },
+					1 => new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+					2 => new RowDefinition { Height = new GridLength(0, GridUnitType.Auto) },
+					_ => throw new ArgumentOutOfRangeException()
+				};
+				_sut.RowDefinitions.Add(rowDef);
+
+				var border = children[i];
+
+				Grid.SetColumn(border, i);
+				Grid.SetColumnSpan(border, i % 4 + 1);
+
+				Grid.SetRow(border, i);
+				Grid.SetRowSpan(border, i % 3 + 1);
+			}
+
+			_sut.Measure(new Size(2000, 2000));
+			_sut.Arrange(new Rect(0, 0, 2000, 2000));
 		}
 	}
 }
