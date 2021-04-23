@@ -39,6 +39,11 @@ namespace Windows.UI.Xaml.Controls
 				m_pRows.Count - 1);
 		}
 
+		int GetRowSpanAdjusted(UIElement child)
+		{
+			return Math.Min(GetRowSpan(child), m_pRows.Count - GetRowIndex(child));
+		}
+
 		// Get the column index of a child.
 		int GetColumnIndex(
 			UIElement child)
@@ -47,6 +52,11 @@ namespace Windows.UI.Xaml.Controls
 				//(FrameworkElement)(child).m_pLayoutProperties.m_nGridColumn,
 				Grid.GetColumn(child),
 				m_pColumns.Count - 1);
+		}
+
+		int GetColumnSpanAdjusted(UIElement child)
+		{
+			return Math.Min(GetColumnSpan(child), m_pColumns.Count - GetColumnIndex(child));
 		}
 
 		//// Get the row span value of a child.
@@ -76,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 		//------------------------------------------------------------------------
 		DefinitionBase GetRowNoRef(UIElement pChild)
 		{
-			//return (DefinitionBase)(m_pRows.GetItemImpl(GetRowIndex(pChild)));
+			//return (DefinitionBase)(m_pRows.GetItem(GetRowIndex(pChild)));
 			m_pRows.TryGetElementAt(GetRowIndex(pChild), out RowDefinition rd);
 			return rd;
 		}
@@ -91,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 		//------------------------------------------------------------------------
 		DefinitionBase GetColumnNoRef(UIElement pChild)
 		{
-			//return (DefinitionBase)(m_pColumns.GetItemImpl(GetColumnIndex(pChild)));
+			//return (DefinitionBase)(m_pColumns.GetItem(GetColumnIndex(pChild)));
 			m_pColumns.TryGetElementAt(GetColumnIndex(pChild), out ColumnDefinition cd);
 			return cd;
 		}
@@ -270,11 +280,11 @@ namespace Windows.UI.Xaml.Controls
 				cell.m_rowHeightTypes = GetLengthTypeForRange(
 					m_pRows,
 					GetRowIndex(currentChild),
-					GetRowSpan(currentChild));
+					GetRowSpanAdjusted(currentChild));
 				cell.m_columnWidthTypes = GetLengthTypeForRange(
 					m_pColumns,
 					GetColumnIndex(currentChild),
-					GetColumnSpan(currentChild));
+					GetColumnSpanAdjusted(currentChild));
 
 				// Grid classifies cells into four groups based on their column/row
 				// type. The following diagram depicts all the possible combinations
@@ -377,7 +387,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!ignoreColumnDesiredSize)
 				{
-					Xuint columnSpan = GetColumnSpan(pChild);
+					Xuint columnSpan = GetColumnSpanAdjusted(pChild);
 					//pChild.EnsureLayoutStorage();
 					if (columnSpan == 1)
 					{
@@ -397,7 +407,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!forceRowToInfinity)
 				{
-					Xuint rowSpan = GetRowSpan(pChild);
+					Xuint rowSpan = GetRowSpanAdjusted(pChild);
 					//pChild.EnsureLayoutStorage();
 					if (rowSpan == 1)
 					{
@@ -471,7 +481,7 @@ namespace Windows.UI.Xaml.Controls
 				availableSize.Width = GetAvailableSizeForRange(
 					m_pColumns,
 					GetColumnIndex(child),
-					GetColumnSpan(child),
+					GetColumnSpanAdjusted(child),
 					columnSpacing);
 			}
 
@@ -488,7 +498,7 @@ namespace Windows.UI.Xaml.Controls
 				availableSize.Height = GetAvailableSizeForRange(
 					m_pRows,
 					GetRowIndex(child),
-					GetRowSpan(child),
+					GetRowSpanAdjusted(child),
 					rowSpacing);
 			}
 
@@ -867,7 +877,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				//if star definition, setup values for distribution calculation
 
-				DefinitionBase pDef = (DefinitionBase)(definitions.GetItemImpl(i));
+				DefinitionBase pDef = (DefinitionBase)(definitions.GetItem(i));
 
 				if (pDef.GetEffectiveUnitType() == GridUnitType.Star)
 				{
@@ -1387,8 +1397,8 @@ namespace Windows.UI.Xaml.Controls
 						XRECTF arrangeRect = new XRECTF();
 						arrangeRect.X = column.GetFinalOffset() + innerRect.X + (columnSpacing * columnIndex);
 						arrangeRect.Y = row.GetFinalOffset() + innerRect.Y + (rowSpacing * rowIndex);
-						arrangeRect.Width = GetFinalSizeForRange(m_pColumns, columnIndex, GetColumnSpan(currentChild), columnSpacing);
-						arrangeRect.Height = GetFinalSizeForRange(m_pRows, rowIndex, GetRowSpan(currentChild), rowSpacing);
+						arrangeRect.Width = GetFinalSizeForRange(m_pColumns, columnIndex, GetColumnSpanAdjusted(currentChild), columnSpacing);
+						arrangeRect.Height = GetFinalSizeForRange(m_pRows, rowIndex, GetRowSpanAdjusted(currentChild), rowSpacing);
 
 						//currentChild.Arrange(arrangeRect);
 						this.ArrangeElement(currentChild, arrangeRect);
@@ -1431,7 +1441,7 @@ namespace Windows.UI.Xaml.Controls
 
 			for (Xuint i = 0; i < definitions.Count; i++)
 			{
-				DefinitionBase pDef = (DefinitionBase)(definitions.GetItemImpl(i));
+				DefinitionBase pDef = (DefinitionBase)(definitions.GetItem(i));
 
 				if (pDef.GetUserSizeType() == GridUnitType.Star)
 				{
@@ -1518,12 +1528,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			//Process definitions in original order to calculate offsets
-			currDefinition = (DefinitionBase)(definitions.GetItemImpl(0));
+			currDefinition = (DefinitionBase)(definitions.GetItem(0));
 			currDefinition.SetFinalOffset(0.0f);
 
 			for (Xuint i = 0; i < definitions.Count - 1; i++)
 			{
-				nextDefinition = (DefinitionBase)(definitions.GetItemImpl(i + 1));
+				nextDefinition = (DefinitionBase)(definitions.GetItem(i + 1));
 				nextDefinition.SetFinalOffset(currDefinition.GetFinalOffset() + currDefinition.GetMeasureArrangeSize());
 				currDefinition = nextDefinition;
 				nextDefinition = null;

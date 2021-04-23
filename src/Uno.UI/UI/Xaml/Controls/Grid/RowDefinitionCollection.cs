@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			set => throw new NotSupportedException();
 		}
 
-		DefinitionBase DefinitionCollectionBase.GetItemImpl(int index) => _inner[index];
+		DefinitionBase DefinitionCollectionBase.GetItem(int index) => _inner[index];
 
 		public RowDefinition this[int index]
 		{
