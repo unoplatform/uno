@@ -66,7 +66,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 				var colDef = new ColumnDefinition { Width = gridLength };
 				_sut.ColumnDefinitions.Add(colDef);
 
-				var border = children[i];
+				var border = children[i] as FrameworkElement;
 
 				Grid.SetColumn(border, i);
 			}
@@ -105,7 +105,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 				var rowDef = new RowDefinition { Height = gridLength };
 				_sut.RowDefinitions.Add(rowDef);
 
-				var border = children[i];
+				var border = children[i] as FrameworkElement;
 
 				Grid.SetColumn(border, i);
 				Grid.SetColumnSpan(border, i % 4 + 1);
@@ -137,7 +137,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 				};
 				_sut.ColumnDefinitions.Add(colDef);
 
-				var border = children[i];
+				var border = children[i] as FrameworkElement;
 
 				Grid.SetColumn(border, i);
 			}
@@ -173,7 +173,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 				};
 				_sut.RowDefinitions.Add(rowDef);
 
-				var border = children[i];
+				var border = children[i] as FrameworkElement;
 
 				Grid.SetColumn(border, i);
 				Grid.SetColumnSpan(border, i % 4 + 1);
