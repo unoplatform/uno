@@ -26,11 +26,13 @@ namespace Uno.UI.Runtime.Skia
 		private readonly string[] _args;
 		private readonly Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
+		private static Gtk.EventBox _eventBox;
 		private UnoDrawingArea _area;
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
 
 		public static Gtk.Window Window => _window;
+		public static Gtk.EventBox EventBox => _eventBox;
 
 		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
 		{
@@ -108,13 +110,15 @@ namespace Uno.UI.Runtime.Skia
 				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			};
 
-			var overlay = new Overlay();			
+			var overlay = new Overlay();
 
+			_eventBox = new EventBox();
 			_area = new UnoDrawingArea();
 			_fix = new Fixed();
 			overlay.Add(_area);
 			overlay.AddOverlay(_fix);
-			_window.Add(overlay);
+			_eventBox.Add(overlay);
+			_window.Add(_eventBox);
 
 			/* avoids double invokes at window level */
 			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);

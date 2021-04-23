@@ -36,7 +36,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		private Fixed GetWindowTextInputLayer()
 		{
-			var overlay = (Overlay)_window.Child;
+			// now we have the GtkEventBox
+			var overlay = (Overlay)((EventBox) _window.Child).Child;
 			return overlay.Children.OfType<Fixed>().First();
 		}
 
