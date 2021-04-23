@@ -52,12 +52,16 @@ namespace UITests.Windows_UI_Core
 			CoreWindow.GetForCurrentThread().Activated += CoreWindowActivated;
 			XamlWindow.Current.Activated += WindowActivated;
 			XamlWindow.Current.VisibilityChanged += WindowVisibilityChanged;
+			Application.Current.EnteredBackground += AppEnteredBackground;
+			Application.Current.LeavingBackground += AppLeavingBackground;
 
 			Disposables.Add(() =>
 			{
 				CoreWindow.GetForCurrentThread().Activated -= CoreWindowActivated;
 				XamlWindow.Current.Activated -= WindowActivated;
 				XamlWindow.Current.VisibilityChanged -= WindowVisibilityChanged;
+				Application.Current.EnteredBackground -= AppEnteredBackground;
+				Application.Current.LeavingBackground -= AppLeavingBackground;
 			});
 		}
 
@@ -109,29 +113,38 @@ namespace UITests.Windows_UI_Core
 		{
 			CoreWindowActivationState = args.WindowActivationState;
 			CoreWindowActivationMode = sender.ActivationMode;
-			ChangeTime = DateTime.Now.ToLongTimeString();
 			AddHistory("CoreWindow.Activated");
 		}
 
 		private void WindowActivated(object sender, WindowActivatedEventArgs e)
 		{
 			CoreWindowActivationState = e.WindowActivationState;
-			ChangeTime = DateTime.Now.ToLongTimeString();
 			AddHistory("Window.Activated");
 		}
 
 		private void WindowVisibilityChanged(object sender, VisibilityChangedEventArgs e)
 		{
 			WindowVisibility = XamlWindow.Current.Visible ? "Visible" : "Hidden";
-			ChangeTime = DateTime.Now.ToLongTimeString();
 			AddHistory("Window.VisibilityChanged");
+		}
+
+
+		private void AppLeavingBackground(object sender, Windows.ApplicationModel.LeavingBackgroundEventArgs e)
+		{			
+			AddHistory("Application.LeavingBackground");
+		}
+
+		private void AppEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
+		{			
+			AddHistory("Application.EnteredBackground");
 		}
 
 		private void AddHistory(string eventName)
 		{
+			ChangeTime = DateTime.Now.ToLongTimeString();
 			var historyItem =
-				$"{DateTime.Now.ToShortTimeString()} | {eventName} | State: {CoreWindowActivationState} " +
-				$"| Mode: {CoreWindowActivationMode} | Visibility: {WindowVisibility}";
+				$"{DateTime.Now.ToLongTimeString()} | {eventName} | State: {CoreWindowActivationState} " +
+				$"| Mode: {CoreWindow.GetForCurrentThread().ActivationMode} | Visibility: {XamlWindow.Current.Visible}";
 			History.Insert(0, historyItem);
 		}
 	}

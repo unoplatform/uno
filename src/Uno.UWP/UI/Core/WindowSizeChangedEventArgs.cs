@@ -1,25 +1,25 @@
-using System;
 using Windows.Foundation;
-using Windows.Foundation.Metadata;
 
 namespace Windows.UI.Core
 {
-	public sealed partial class WindowSizeChangedEventArgs
+	/// <summary>
+	/// Contains the argument returned by a window size change event.
+	/// </summary>
+	public sealed partial class WindowSizeChangedEventArgs : ICoreWindowEventArgs
 	{
-		public WindowSizeChangedEventArgs(Size newSize)
+		internal WindowSizeChangedEventArgs(Size newSize)
 		{
 			Size = newSize;
 		}
 
-		public bool Handled
-		{
-			get;
-			set;
-		}
+		/// <summary>
+		/// Gets or sets whether the window size event was handled.
+		/// </summary>
+		public bool Handled { get; set; }
 
-		public Size Size
-		{
-			get;
-		}
+		/// <summary>
+		/// Gets the new size of the window in units of effective (view) pixels.
+		/// </summary>
+		public Size Size { get; }
 	}
 }

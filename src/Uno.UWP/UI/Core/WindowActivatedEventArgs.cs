@@ -1,9 +1,8 @@
-using System;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-
 namespace Windows.UI.Core
 {
+	/// <summary>
+	/// Contains the windows activation state information returned by the CoreWindow.Activated event.
+	/// </summary>
 	public sealed partial class WindowActivatedEventArgs
 	{
 		internal WindowActivatedEventArgs(CoreWindowActivationState windowActivationState)
@@ -11,15 +10,14 @@ namespace Windows.UI.Core
 			WindowActivationState = windowActivationState;
 		}
 
-		public bool Handled
-		{
-			get;
-			set;
-		}
+		/// <summary>
+		/// Specifies the property that gets or sets whether the window activation event was handled.
+		/// </summary>
+		public bool Handled { get; set; }
 
-		public CoreWindowActivationState WindowActivationState
-		{
-			get;
-		}
+		/// <summary>
+		/// Gets the activation state of the window at the time the Activated event was raised.
+		/// </summary>
+		public CoreWindowActivationState WindowActivationState { get; }
 	}
 }
