@@ -4,7 +4,7 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	internal interface IRemoteControlServer
+	public interface IRemoteControlServer
 	{
 		Task SendFrame(IMessage fileReload);
 	}

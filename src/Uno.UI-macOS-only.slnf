@@ -23,7 +23,9 @@
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
       "Uno.UI\\Uno.UI.csproj",
-      "Uno.UWP\\Uno.csproj"
+      "Uno.UWP\\Uno.csproj",
+      "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
+      "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj"
     ]
   }
 }

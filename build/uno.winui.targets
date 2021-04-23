@@ -55,8 +55,9 @@
 		<!-- Properties that will be automatically forwarded to the source generators -->
 		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
 		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlProcessorsPath" />
 	</ItemGroup>
-
+  
 	<!-- List of packages that provide an uno-runtime folder -->
 	<ItemGroup>
 		<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="'$(MSBuildThisFile)'=='uno.ui.targets'" />

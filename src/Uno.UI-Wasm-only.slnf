@@ -33,7 +33,9 @@
       "Uno.UI\\Uno.UI.Wasm.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
-      "Uno.UWP\\Uno.Wasm.csproj"
+      "Uno.UWP\\Uno.Wasm.csproj",
+      "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
+      "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj"
     ]
   }
 }

@@ -51,9 +51,17 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 				BuildEndPointAttribute(context, sb);
 				BuildSearchPaths(context, sb);
+				BuildServerProcessorsPaths(context, sb);
 
 				context.AddSource("RemoteControl", sb.ToString());
 			}
+		}
+
+		private void BuildServerProcessorsPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)
+		{
+			sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerProcessorsConfigurationAttribute(" +
+				$"@\"{context.GetMSBuildPropertyValue("UnoRemoteControlProcessorsPath")}\"" +
+				$")]");
 		}
 
 		private static bool IsRemoteControlClientInstalled(GeneratorExecutionContext context)
