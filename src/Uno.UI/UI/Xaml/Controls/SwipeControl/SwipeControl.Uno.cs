@@ -250,17 +250,17 @@ namespace Windows.UI.Xaml.Controls
 
 		private async void OnSwipeManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
 		{
-#if !DEBUG
-			// On UWP, SwipeControl works only with touch.
-			// We do allow other pointers in DEBUG ... well, because it easier to debug on a PC :)
-			if (e.PointerDeviceType != PointerDeviceType.Touch)
-			{
-				return;
-			}
-#endif
-
 			try
 			{
+#if !DEBUG
+				// On UWP, SwipeControl works only with touch.
+				// We do allow other pointers in DEBUG ... well, because it easier to debug on a PC :)
+				// Note: The OnSwipeManipulationCompleted is invoked with null args in the Close()
+				if (e != null && e.PointerDeviceType != PointerDeviceType.Touch)
+				{
+					return;
+				}
+#endif
 				_grabbedTimer.Stop();
 
 				await SimulateInertia();
