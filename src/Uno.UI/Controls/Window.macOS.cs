@@ -604,6 +604,30 @@ namespace Uno.UI.Controls
 				_window = window;
 			}
 
+			public override void DidMiniaturize(NSNotification notification)
+			{
+				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+				Windows.UI.Xaml.Application.Current?.OnEnteredBackground();
+			}
+
+			public override void DidDeminiaturize(NSNotification notification)
+			{
+				Windows.UI.Xaml.Application.Current?.OnLeavingBackground();
+				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			}
+
+			public override void DidBecomeKey(NSNotification notification)
+			{
+				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			}
+
+			public override void DidResignKey(NSNotification notification)
+			{
+				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+			}
+
 			public override async void DidBecomeMain(NSNotification notification)
 			{
 				ApplicationView.GetForCurrentView().SyncTitleWithWindow(_window);
