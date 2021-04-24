@@ -4037,6 +4037,14 @@ var Windows;
                         });
                     }
                 }
+                static observeVisibility() {
+                    if (!this.dispatchVisibilityChange) {
+                        this.dispatchVisibilityChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
+                    }
+                    document.addEventListener("visibilitychange", () => {
+                        Application.dispatchVisibilityChange(document.visibilityState == "visible");
+                    });
+                }
             }
             Xaml.Application = Application;
         })(Xaml = UI.Xaml || (UI.Xaml = {}));

@@ -1116,8 +1116,10 @@ declare namespace Windows.UI.ViewManagement {
 declare namespace Windows.UI.Xaml {
     class Application {
         private static dispatchThemeChange;
+        private static dispatchVisibilityChange;
         static getDefaultSystemTheme(): string;
         static observeSystemTheme(): void;
+        static observeVisibility(): void;
     }
 }
 declare namespace Windows.UI.Xaml {

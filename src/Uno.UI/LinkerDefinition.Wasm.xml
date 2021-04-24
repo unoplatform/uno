@@ -15,7 +15,8 @@
 	</type>
 	<type fullname="Windows.UI.Xaml.Application">
 	  <method name="DispatchSuspending" />
-	  <method name="DispatchSystemThemeChange" />
+      <method name="DispatchSystemThemeChange" />
+      <method name="DispatchVisibilityChange" />
 	</type>
   </assembly>
 

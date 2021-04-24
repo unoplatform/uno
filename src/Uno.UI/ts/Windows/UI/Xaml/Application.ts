@@ -2,6 +2,7 @@
 
 	export class Application {
 		private static dispatchThemeChange: () => number;
+		private static dispatchVisibilityChange: (isVisible: boolean) => number;
 
 		public static getDefaultSystemTheme(): string {
 			if (window.matchMedia) {
@@ -13,19 +14,28 @@
 				}
 			}
 			return null;
-        }
+		}
 
 		public static observeSystemTheme() {
 			if (!this.dispatchThemeChange) {
 				this.dispatchThemeChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
 			}
 
-			if (window.matchMedia)
-			{
+			if (window.matchMedia) {
 				window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
 					Application.dispatchThemeChange();
 				});
 			}
 		}
-    }
+
+		public static observeVisibility() {
+			if (!this.dispatchVisibilityChange) {
+				this.dispatchVisibilityChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
+			}
+
+			document.addEventListener("visibilitychange", () => {
+				Application.dispatchVisibilityChange(document.visibilityState == "visible");
+			});
+		}
+	}
 }

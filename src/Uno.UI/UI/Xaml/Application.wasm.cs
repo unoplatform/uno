@@ -44,12 +44,35 @@ namespace Windows.UI.Xaml
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+
+			ObserveApplicationVisibility();
 		}
 
 		[Preserve]
 		public static int DispatchSystemThemeChange()
 		{
 			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			return 0;
+		}
+
+		[Preserve]
+		public static int DispatchVisibilityChange(bool isVisible)
+		{
+			var application = Windows.UI.Xaml.Application.Current;
+			var window = Windows.UI.Xaml.Window.Current;
+			if (isVisible)
+			{
+				application?.LeavingBackground?.Invoke(application, new LeavingBackgroundEventArgs());
+				window?.OnVisibilityChanged(true);
+				window?.OnActivated(CoreWindowActivationState.CodeActivated);
+			}
+			else
+			{
+				window?.OnActivated(CoreWindowActivationState.Deactivated);
+				window?.OnVisibilityChanged(false);
+				application?.EnteredBackground?.Invoke(application, new EnteredBackgroundEventArgs());
+			}
+
 			return 0;
 		}
 
@@ -73,7 +96,6 @@ namespace Windows.UI.Xaml
 		{
 			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
 		}
-
 
 		private void Initialize()
 		{
@@ -123,6 +145,11 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
 			}
+		}
+
+		private void ObserveApplicationVisibility()
+		{
+			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeVisibility()");
 		}
 	}
 }
