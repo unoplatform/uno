@@ -300,10 +300,7 @@ namespace Windows.UI.Xaml.Controls
 
 					CloseButtonCommand.ExecuteIfPossible(CloseButtonCommandParameter);
 
-					if (Hide(result))
-					{
-						_tcs.SetResult(result);
-					}
+					Hide(result);
 				}
 			}
 
@@ -324,10 +321,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					const ContentDialogResult result = ContentDialogResult.Secondary;
 					SecondaryButtonCommand.ExecuteIfPossible(SecondaryButtonCommandParameter);
-					if (Hide(result))
-					{
-						_tcs.SetResult(result);
-					}
+					Hide(result);
 				}
 			}
 
@@ -350,10 +344,7 @@ namespace Windows.UI.Xaml.Controls
 					const ContentDialogResult result = ContentDialogResult.Primary;
 					PrimaryButtonCommand.ExecuteIfPossible(PrimaryButtonCommandParameter);
 
-					if (Hide(result))
-					{
-						_tcs.SetResult(result);
-					}
+					Hide(result);
 				}
 			}
 
