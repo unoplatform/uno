@@ -217,8 +217,8 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Application.Current?.OnEnteredBackground();
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+			Windows.UI.Xaml.Application.Current?.OnEnteredBackground();
 		}
 
 		partial void InnerDestroy() => ResignCurrent();

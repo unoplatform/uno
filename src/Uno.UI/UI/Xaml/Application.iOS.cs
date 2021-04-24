@@ -10,6 +10,7 @@ using Windows.Graphics.Display;
 using Uno.UI.Services;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
+using Windows.UI.Core;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -31,6 +32,8 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
+
+			SubscribeBackgroundNotifications();
 		}
 
 		public Application(IntPtr handle) : base(handle)
@@ -125,9 +128,6 @@ namespace Windows.UI.Xaml
 			_preventSecondaryActivationHandling = false;
 		}
 
-		public override void DidEnterBackground(UIApplication application)
-			=> OnSuspending();
-
 		partial void OnSuspendingPartial()
 		{
 			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(10));
@@ -209,6 +209,48 @@ namespace Windows.UI.Xaml
 			}
 
 			return userActivity != null;
+		}
+
+		private void SubscribeBackgroundNotifications()
+		{
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+			{
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
+			}
+			else
+			{
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, OnEnteredBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, OnLeavingBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
+			}
+		}
+
+		private void OnEnteredBackground(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+			EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+
+			OnSuspending();
+		}
+
+		private void OnLeavingBackground(NSNotification notification)
+		{			
+			LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+		}
+
+		private void OnActivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+		}
+
+		private void OnDeactivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
 		}
 	}
 }
