@@ -18,6 +18,8 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	public sealed partial class Window
 	{
+		private CoreWindowActivationState? _lastActivationState;
+
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 
 #pragma warning disable 67
@@ -132,6 +134,9 @@ namespace Windows.UI.Xaml
 			InternalActivate();
 
 			OnActivated(CoreWindowActivationState.CodeActivated);
+
+			// Initialize visibility on first activation.
+			Visible = true;
 		}
 
 		partial void InternalActivate();
@@ -156,9 +161,13 @@ namespace Windows.UI.Xaml
 
 		internal void OnActivated(CoreWindowActivationState state)
 		{
-			var activatedEventArgs = new WindowActivatedEventArgs(state);
-			CoreWindow.OnActivated(activatedEventArgs);
-			Activated?.Invoke(this, activatedEventArgs);
+			if (_lastActivationState != state)
+			{
+				_lastActivationState = state;
+				var activatedEventArgs = new WindowActivatedEventArgs(state);
+				CoreWindow.OnActivated(activatedEventArgs);
+				Activated?.Invoke(this, activatedEventArgs);
+			}
 		}
 
 		internal void OnVisibilityChanged(bool newVisibility)

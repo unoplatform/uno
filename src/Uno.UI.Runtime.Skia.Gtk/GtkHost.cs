@@ -110,6 +110,8 @@ namespace Uno.UI.Runtime.Skia
 				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			};
 
+			_window.WindowStateEvent += OnWindowStateChanged;
+
 			var overlay = new Overlay();
 
 			_eventBox = new EventBox();
@@ -136,6 +138,49 @@ namespace Uno.UI.Runtime.Skia
 			UpdateWindowPropertiesFromPackage();
 
 			Gtk.Application.Run();
+		}
+
+		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
+		{
+			var winUIApplication = WUX.Application.Current;
+			var winUIWindow = WUX.Window.Current;
+			var newState = args.Event.NewWindowState;
+			var changedState = args.Event.ChangedMask;			
+
+			var isVisible =
+				!(newState.HasFlag(Gdk.WindowState.Withdrawn) ||
+				newState.HasFlag(Gdk.WindowState.Iconified));
+
+			var isVisibleChanged =
+				changedState.HasFlag(Gdk.WindowState.Withdrawn) ||
+				changedState.HasFlag(Gdk.WindowState.Iconified);
+
+			var focused = newState.HasFlag(Gdk.WindowState.Focused);
+			var focusChanged = changedState.HasFlag(Gdk.WindowState.Focused);
+
+			if (!focused && focusChanged)
+			{
+				winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
+			}
+
+			if (isVisibleChanged)
+			{
+				if (isVisible)
+				{
+					winUIApplication?.OnLeavingBackground();
+					winUIWindow?.OnVisibilityChanged(true);
+				}
+				else
+				{
+					winUIWindow?.OnVisibilityChanged(false);
+					winUIApplication?.OnEnteredBackground();
+				}
+			}
+
+			if (focused && focusChanged)
+			{
+				winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
+			}
 		}
 
 		private void UpdateWindowPropertiesFromPackage()

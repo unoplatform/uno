@@ -47,6 +47,7 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme? _requestedTheme;
 		private bool _systemThemeChangesObserved = false;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
+		private bool _isInBackground = false;
 
 		static Application()
 		{
@@ -258,9 +259,23 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void OnEnteredBackground() => EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+		internal void OnEnteredBackground()
+		{
+			if (!_isInBackground)
+			{
+				_isInBackground = true;
+				EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+			}
+		}
 
-		internal void OnLeavingBackground() => LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+		internal void OnLeavingBackground()
+		{
+			if (_isInBackground)
+			{
+				_isInBackground = false;
+				LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+			}
+		}
 
 		internal void OnResuming()
 		{
