@@ -163,11 +163,14 @@ namespace Windows.UI.Xaml
 
 		internal void OnVisibilityChanged(bool newVisibility)
 		{
-			Visible = newVisibility;
+			if (Visible != newVisibility)
+			{
+				Visible = newVisibility;
 
-			var args = new VisibilityChangedEventArgs();
-			CoreWindow.OnVisibilityChanged(args);
-			VisibilityChanged?.Invoke(this, args);
+				var args = new VisibilityChangedEventArgs();
+				CoreWindow.OnVisibilityChanged(args);
+				VisibilityChanged?.Invoke(this, args);
+			}
 		}
 
 		private void RootSizeChanged(object sender, SizeChangedEventArgs args)
