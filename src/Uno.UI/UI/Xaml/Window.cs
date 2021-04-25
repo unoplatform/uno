@@ -165,7 +165,15 @@ namespace Windows.UI.Xaml
 			{
 				_lastActivationState = state;
 				var activatedEventArgs = new WindowActivatedEventArgs(state);
-				CoreWindow.OnActivated(activatedEventArgs);
+#if HAS_UNO_WINUI
+				// There are two "versions" of WindowActivatedEventArgs in Uno currently
+				// when using WinUI, we need to use "legacy" version to work with CoreWindow
+				// (which will eventually be removed as a legacy API as well.
+				var coreWindowActivatedEventArgs = new Windows.UI.Core.WindowActivatedEventArgs(state);
+#else
+				var coreWindowActivatedEventArgs = activatedEventArgs;
+#endif
+				CoreWindow.OnActivated(coreWindowActivatedEventArgs);
 				Activated?.Invoke(this, activatedEventArgs);
 			}
 		}
@@ -198,7 +206,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region Drag and Drop
+#region Drag and Drop
 		private DragRoot _dragRoot;
 
 		internal DragDropManager DragDrop { get; private set; }
@@ -243,6 +251,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
-		#endregion
+#endregion
 	}
 }
