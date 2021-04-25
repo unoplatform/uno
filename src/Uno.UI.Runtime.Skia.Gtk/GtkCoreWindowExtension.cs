@@ -51,17 +51,21 @@ namespace Uno.UI.Runtime.Skia
 			_owner = (CoreWindow)owner;
 			_ownerEvents = (ICoreWindowEvents)owner;
 
+			// even though we are not going to use events directly in the window here maintain the masks
 			GtkHost.Window.AddEvents((int)RequestedEvents);
+			// add masks for the GtkEventBox
+			GtkHost.EventBox.AddEvents((int)RequestedEvents);
 
-			GtkHost.Window.EnterNotifyEvent += OnWindowEnterEvent;
-			GtkHost.Window.LeaveNotifyEvent += OnWindowLeaveEvent;
-			GtkHost.Window.ButtonPressEvent += OnWindowButtonPressEvent;
-			GtkHost.Window.ButtonReleaseEvent += OnWindowButtonReleaseEvent;
-			GtkHost.Window.MotionNotifyEvent += OnWindowMotionEvent;
-			GtkHost.Window.ScrollEvent += OnWindowScrollEvent;
-			GtkHost.Window.TouchEvent += OnWindowTouchEvent;
-			GtkHost.Window.ProximityInEvent += OnWindowProximityInEvent;
-			GtkHost.Window.ProximityOutEvent += OnWindowProximityOutEvent;
+			// Use GtkEventBox to fix Wayland titlebar events
+			GtkHost.EventBox.EnterNotifyEvent += OnWindowEnterEvent;
+			GtkHost.EventBox.LeaveNotifyEvent += OnWindowLeaveEvent;
+			GtkHost.EventBox.ButtonPressEvent += OnWindowButtonPressEvent;
+			GtkHost.EventBox.ButtonReleaseEvent += OnWindowButtonReleaseEvent;
+			GtkHost.EventBox.MotionNotifyEvent += OnWindowMotionEvent;
+			GtkHost.EventBox.ScrollEvent += OnWindowScrollEvent;
+			GtkHost.EventBox.TouchEvent += OnWindowTouchEvent;
+			GtkHost.EventBox.ProximityInEvent += OnWindowProximityInEvent;
+			GtkHost.EventBox.ProximityOutEvent += OnWindowProximityOutEvent;
 
 			InitializeKeyboard();
 		}
