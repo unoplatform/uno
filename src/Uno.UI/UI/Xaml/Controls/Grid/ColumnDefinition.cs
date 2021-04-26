@@ -16,7 +16,11 @@ namespace Windows.UI.Xaml.Controls
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
 
-			this.RegisterDisposablePropertyChangedCallback((i, p, args) => SetDefaultState());
+			this.RegisterDisposablePropertyChangedCallback((i, p, args) =>
+			{
+				Changed?.Invoke(this, EventArgs.Empty);
+				SetDefaultState();
+			});
 			SetDefaultState();
 		}
 
@@ -131,6 +135,14 @@ namespace Windows.UI.Xaml.Controls
 		void DefinitionBase.UpdateEffectiveMinSize(double newValue)
 		{
 			_effectiveMinSize = Math.Max(_effectiveMinSize, newValue);
+		}
+
+		private event EventHandler Changed;
+
+		event EventHandler DefinitionBase.Changed
+		{
+			add => Changed += value;
+			remove => Changed -= value;
 		}
 
 		#endregion

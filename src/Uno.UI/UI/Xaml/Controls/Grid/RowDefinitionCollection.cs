@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
+using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -23,13 +24,21 @@ namespace Windows.UI.Xaml.Controls
 
 		public int IndexOf(RowDefinition item) => _inner.IndexOf(item);
 
-		public void Insert(int index, RowDefinition item) => _inner.Insert(index, item);
+		public void Insert(int index, RowDefinition item)
+		{
+			_inner.Insert(index, item);
+			(item as DefinitionBase).Changed += OnDefinitionChanged;
+		}
 
 		int IList<DefinitionBase>.IndexOf(DefinitionBase item) => _inner.IndexOf(item as RowDefinition);
 
 		void IList<DefinitionBase>.Insert(int index, DefinitionBase item) => throw new NotSupportedException();
 
-		public void RemoveAt(int index) => _inner.RemoveAt(index);
+		public void RemoveAt(int index)
+		{
+			(_inner[index] as DefinitionBase).Changed -= OnDefinitionChanged;
+			_inner.RemoveAt(index);
+		}
 
 		DefinitionBase IList<DefinitionBase>.this[int index]
 		{
@@ -42,14 +51,30 @@ namespace Windows.UI.Xaml.Controls
 		public RowDefinition this[int index]
 		{
 			get => _inner[index];
-			set => _inner[index] = value;
+			set
+			{
+				if(_inner[index] != value)
+				{
+					(_inner[index] as DefinitionBase).Changed -= OnDefinitionChanged;
+					(value as DefinitionBase).Changed += OnDefinitionChanged;
+					_inner[index] = value;
+				}
+			}
 		}
 
-		public void Add(RowDefinition item) => _inner.Add(item);
+		public void Add(RowDefinition item)
+		{
+			_inner.Add(item);
+			(item as DefinitionBase).Changed += OnDefinitionChanged;
+		}
 
 		void ICollection<DefinitionBase>.Add(DefinitionBase item) => throw new NotSupportedException();
 
-		public void Clear() => _inner.Clear();
+		public void Clear()
+		{
+			_inner.ForEach(item=> (item as DefinitionBase).Changed -= OnDefinitionChanged);
+			_inner.Clear();
+		}
 
 		bool ICollection<DefinitionBase>.Contains(DefinitionBase item) => throw new NotSupportedException();
 
@@ -61,7 +86,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public void CopyTo(RowDefinition[] array, int arrayIndex) => _inner.CopyTo(array, arrayIndex);
 
-		public bool Remove(RowDefinition item) => _inner.Remove(item);
+		public bool Remove(RowDefinition item)
+		{
+			(item as DefinitionBase).Changed -= OnDefinitionChanged;
+			return _inner.Remove(item);
+		}
 
 		public int Count => _inner.Count;
 
@@ -81,5 +110,11 @@ namespace Windows.UI.Xaml.Controls
 		void DefinitionCollectionBase.Lock() => _inner.Lock();
 
 		void DefinitionCollectionBase.Unlock() => _inner.Unlock();
+
+		private void OnDefinitionChanged(object sender, EventArgs e)
+		{
+			// The event is not important, since the listener will only react to the event itself, not the args
+			CollectionChanged?.Invoke(_inner, new VectorChangedEventArgs(CollectionChange.ItemChanged, 0));
+		}
 	}
 }

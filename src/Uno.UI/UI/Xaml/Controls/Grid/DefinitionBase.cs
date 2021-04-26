@@ -43,5 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		internal XFLOAT GetPreferredSize();
 
 		internal void UpdateEffectiveMinSize(XFLOAT newValue);
+
+		internal event EventHandler Changed;
 	}
 }

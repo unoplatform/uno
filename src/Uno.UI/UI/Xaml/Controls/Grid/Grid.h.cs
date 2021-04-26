@@ -273,6 +273,7 @@ namespace Windows.UI.Xaml.Controls
 		void InvalidateDefinitions()
 		{
 			SetGridFlags(GridFlags.DefinitionsChanged);
+			InvalidateMeasure();
 		}
 
 		// public
