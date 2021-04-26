@@ -30,6 +30,17 @@ namespace Windows.UI.Xaml
 #endif
 		private View _content;
 
+		/// <summary>
+		/// A delegate used to raise materialization changes in <see cref="ElementStub.MaterializationChanged"/>
+		/// </summary>
+		/// <param name="sender">The instance being changed</param>
+		public delegate void MaterializationChangedHandler(ElementStub sender);
+
+		/// <summary>
+		/// An event raised when the materialized object of the <see cref="ElementStub"/> has changed.
+		/// </summary>
+		public event MaterializationChangedHandler MaterializationChanged;
+
 		public bool Load
 		{
 			get => (bool)GetValue(LoadProperty);
@@ -40,6 +51,11 @@ namespace Windows.UI.Xaml
 		public static readonly DependencyProperty LoadProperty =
 			DependencyProperty.Register("Load", typeof(bool), typeof(ElementStub), new PropertyMetadata(
 				false, OnLoadChanged));
+
+		/// <summary>
+		/// Determines if the current ElementStub has been materialized to its target View.
+		/// </summary>
+		public bool IsMaterialized => _content != null;
 
 		public ElementStub(Func<View> contentBuilder) : this()
 		{
@@ -125,6 +141,8 @@ namespace Windows.UI.Xaml
 
 				targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
 			}
+
+			MaterializationChanged?.Invoke(this);
 		}
 
 		private void Dematerialize()
@@ -134,6 +152,8 @@ namespace Windows.UI.Xaml
 			{
 				_content = null;
 			}
+
+			MaterializationChanged?.Invoke(this);
 		}
 
 		private static DependencyProperty GetVisibilityProperty(View view)

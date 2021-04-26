@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -935,6 +936,45 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
 			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_StaticResource()
+		{
+			var SUT = new Binding_xLoad_StaticResources();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.TestGrid);
+			SUT.IsTestGridLoaded = true;
+
+			Assert.IsNotNull(SUT.TestGrid);
+			Assert.IsNotNull(SUT.contentControl);
+			Assert.IsNotNull(SUT.contentControl.ContentTemplate);
+
+			SUT.IsTestGridLoaded = false;
+
+			var sw = Stopwatch.StartNew();
+			while (sw.Elapsed < TimeSpan.FromSeconds(1)
+				&& ( SUT.TestGrid != null || SUT.contentControl != null))
+			{
+				await Task.Delay(100);
+
+				// Wait for the ElementNameSubject and ComponentHolder
+				// instances to release their references.
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsNull(SUT.TestGrid);
+
+			Assert.IsNull(SUT.contentControl);
+
+			SUT.IsTestGridLoaded = true;
+
+			Assert.IsNotNull(SUT.TestGrid);
+			Assert.IsNotNull(SUT.contentControl);
+			Assert.IsNotNull(SUT.contentControl.ContentTemplate);
 		}
 	}
 }
