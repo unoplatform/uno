@@ -8,7 +8,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 
 #if XAMARIN_ANDROID
-using View = Windows.UI.Xaml.UIElement;
+using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 #elif XAMARIN_IOS_UNIFIED
 using UIKit;
