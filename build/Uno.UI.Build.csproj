@@ -287,6 +287,9 @@
 		<XmlUpdate XmlFileName=".\uno.winui.WebAssembly.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.WebAssembly.targets']/@src" Value="$(PackageNamePrefix).WebAssembly.targets" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<XmlUpdate XmlFileName=".\uno.winui.WebAssembly.nuspec" XPath="/x:package/x:files/x:file[@src='Uno.WinUI.WebAssembly.props']/@src" Value="$(PackageNamePrefix).WebAssembly.props" Namespace="$(NugetNamespace)" Prefix="x"  Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
+		<!-- remote control -->
+		<Move SourceFiles="..\src\Uno.UI.RemoteControl\buildTransitive\Uno.UI.RemoteControl.targets" DestinationFiles="..\src\Uno.UI.RemoteControl\buildTransitive\$(PackageNamePrefix).RemoteControl.targets" Condition="'$(UNO_UWP_BUILD)'!='true'"/>
+
 		<!-- Lottie move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\Uno.UI.Lottie.targets" DestinationFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\$(PackageNamePrefix).Lottie.targets" />
 		
