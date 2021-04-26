@@ -24,6 +24,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		private readonly GtkWindow _window;
 		private ContentControl? _contentElement;
 		private Widget? _currentInputWidget;
+		private bool _handlingTextChanged;
 
 		private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _textBoxEventSubscriptions = new SerialDisposable();
@@ -84,8 +85,11 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			_contentElement = null;
 			_textBoxEventSubscriptions.Disposable = null;
 
-			var textInputLayer = GetWindowTextInputLayer();
-			textInputLayer.Remove(_currentInputWidget);
+			if (_currentInputWidget != null)
+			{
+				var textInputLayer = GetWindowTextInputLayer();
+				textInputLayer.Remove(_currentInputWidget);
+			}
 		}
 
 		public void UpdateNativeView()
@@ -203,8 +207,27 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			return widget;
 		}
 
-		private void WidgetTextChanged(object? sender, EventArgs e) =>
-			_owner.UpdateTextFromNative(GetInputText() ?? string.Empty);
+		private void WidgetTextChanged(object? sender, EventArgs e)
+		{
+			// Avoid stack overflow as updating text from
+			// shared code briefly sets empty string and causes
+			// infinite loop
+			if (_handlingTextChanged)
+			{
+				return;
+			}
+
+			try
+			{
+				_handlingTextChanged = true;
+				_owner.UpdateTextFromNative(GetInputText() ?? string.Empty);
+
+			}
+			finally
+			{
+				_handlingTextChanged = false;
+			}
+		}
 
 		private string? GetInputText() =>
 			_currentInputWidget switch
