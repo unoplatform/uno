@@ -228,7 +228,7 @@ $(function () {
     // Highlight the searching keywords
     function highlightKeywords() {
       var q = url('?q');
-      if (q !== null) {
+      if (q != null) {
         var keywords = q.split("%20");
         keywords.forEach(function (keyword) {
           if (keyword !== "") {
@@ -247,8 +247,8 @@ $(function () {
 
         $('#search-query').on("keyup", function () {
           query = $(this).val();
-            $("body").trigger("query-ready");
-            $('#search-results>.search-list').text('Search Results for "' + query + '"');
+          $("body").trigger("query-ready");
+          $('#search-results>.search-list').text('Search Results for "' + query + '"');
         }).off("keydown");
       });
     }
@@ -285,7 +285,7 @@ $(function () {
         $('#search-results>.sr-items').html('<p>No results found</p>');
       } else {
         $('#search-results>.sr-items').empty().append(
-          hits.slice(0,5).map(function (hit) {
+          hits.slice(0, 5).map(function (hit) {
             var currentUrl = window.location.href;
             var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
             var itemHref = relHref + hit.href + "?q=" + query;
@@ -525,7 +525,7 @@ $(function () {
       if ($('footer').is(':visible')) {
         $(".sideaffix").css("bottom", "70px");
       }
-      $('#affix a').click(function() {
+      $('#affix a').click(function () {
         var scrollspy = $('[data-spy="scroll"]').data()['bs.scrollspy'];
         var target = e.target.hash;
         if (scrollspy && target) {
