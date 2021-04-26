@@ -175,13 +175,6 @@ namespace Windows.UI.Xaml.Controls
 			if (m_pColumnDefinitions == null || m_pColumnDefinitions.Count == 0)
 			{
 				//empty collection defaults to single row
-				//CValue value;
-				//value.WrapObjectNoRef(null);
-				//CREATEPARAMETERS param(this.
-				//GetContext(), value);
-				//ColumnDefinitionCollection.Create((CDependencyObject)(m_pColumns), &param);
-				//ColumnDefinition.Create((CDependencyObject)(emptyColumn), &param);
-				//m_pColumns.Append(emptyColumn);
 				m_pColumns = new ColumnDefinitionCollection();
 				emptyColumn = new ColumnDefinition();
 				m_pColumns.Add(emptyColumn);
@@ -189,13 +182,8 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				m_pColumns = m_pColumnDefinitions;
-				//m_pColumnDefinitions.AddRef();
 			}
 
-			// Cleanup
-			//ReleaseInterface(emptyRow);
-			//ReleaseInterface(emptyColumn);
-			// return hr;
 		}
 
 		// Sets the initial, effective values of a CDefinitionCollectionBase.
@@ -371,7 +359,6 @@ namespace Windows.UI.Xaml.Controls
 
 			if (cellsHead >= cellCount)
 			{
-				//goto Cleanup;
 				return;
 			}
 
@@ -430,7 +417,6 @@ namespace Windows.UI.Xaml.Controls
 			} while (cellsHead < cellCount);
 
 			//Go through the spanned rows/columns allocating sizes.
-			//for (auto & entry : spanStore.m_vector)
 			foreach(ref var entry in spanStore.Memory.Span)
 			{
 				if (entry.m_isColumnDefinition)
@@ -1332,13 +1318,6 @@ namespace Windows.UI.Xaml.Controls
 			// Locking the row and columns definitions to prevent changes by user code
 			// during the arrange pass.
 			LockDefinitions();
-			//var scopeGuard = wil.scope_exit([&]
-			//{
-			//	delete[] m_ppTempDefinitions;
-			//	m_ppTempDefinitions = null;
-			//	m_cTempDefinitions = 0;
-			//	UnlockDefinitions();
-			//});
 			try
 			{
 				XRECTF innerRect = Border.HelperGetInnerRect(this, finalSize);

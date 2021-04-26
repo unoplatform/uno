@@ -21,15 +21,6 @@ namespace Windows.UI.Xaml.Controls
 		//const int GRID_STARVALUE_MAX = (XFLOAT_MAX / XUint_MAX - 1);
 		const int GRID_STARVALUE_MAX = int.MaxValue;
 
-		//class CColumnDefinitionCollection;
-
-		//class CDefinitionBase;
-
-		//class CDefinitionCollectionBase;
-
-		//class CDOCollection;
-
-		//class CRowDefinitionCollection;
 
 		[Flags]
 		private enum GridFlags : byte
@@ -41,7 +32,6 @@ namespace Windows.UI.Xaml.Controls
 			DefinitionsChanged = 0x08,
 		}
 
-		//DEFINE_ENUM_FLAG_OPERATORS(GridFlags);
 
 		// private
 		// Stores RowSpan or ColumnSpan information.
