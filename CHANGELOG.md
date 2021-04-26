@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.0 Beta RC7
+
+- Bump Uno to v3.7.0
+
 ## 0.1.0 Beta RC6
 
 - Fix bug for new `.xaml` being created with raw template
