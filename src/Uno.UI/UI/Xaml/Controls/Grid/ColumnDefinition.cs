@@ -68,9 +68,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				//var parent = this.GetParent();
-				//var result = (parent as Grid)?.GetActualWidth(this) ?? 0d;
-				//return result;
 				return _measureArrangeSize;
 			}
 		}
