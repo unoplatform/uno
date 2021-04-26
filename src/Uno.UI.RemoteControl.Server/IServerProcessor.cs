@@ -4,7 +4,7 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	internal interface IServerProcessor : IDisposable
+	public interface IServerProcessor : IDisposable
 	{
 		string Scope { get; }
 

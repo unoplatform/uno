@@ -47,6 +47,7 @@
 		<CompilerVisibleProperty Include="IsUnoHead" />
 		<CompilerVisibleProperty Include="UnoRemoteControlPort" />
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
+		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
 		<CompilerVisibleProperty Include="TSBindingsPath" />
 		<CompilerVisibleProperty Include="UseUnoXamlParser" />
 		<CompilerVisibleProperty Include="UnoSkipUserControlsInVisualTree" />

@@ -13,6 +13,7 @@ using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Uno.UI.RemoteControl.Messages;
 
 namespace Uno.UI.RemoteControl
 {
@@ -160,6 +161,8 @@ namespace Uno.UI.RemoteControl
 
 		private async Task ProcessMessages()
 		{
+			InitializeServerProcessors();
+
 			foreach(var processor in _processors)
 			{
 				await processor.Value.Initialize();
@@ -186,10 +189,32 @@ namespace Uno.UI.RemoteControl
 			}
 		}
 
+		private async Task InitializeServerProcessors()
+		{
+			if (AppType.Assembly.GetCustomAttributes(typeof(ServerProcessorsConfigurationAttribute), false) is ServerProcessorsConfigurationAttribute[] configs)
+			{
+				var config = configs.First();
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"ServerProcessorsConfigurationAttribute ProcessorsPath={config.ProcessorsPath}");
+				}
+
+				await SendMessage(new ProcessorsDiscovery(config.ProcessorsPath));
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Unable to find ProjectConfigurationAttribute");
+				}
+			}
+		}
+
 		public static RemoteControlClient Initialize(Type appType)
 			=> Instance = new RemoteControlClient(appType);
 
-		async Task IRemoteControlClient.SendMessage(IMessage message)
+		public async Task SendMessage(IMessage message)
 		{
 			await WebSocketHelper.SendFrame(
 				_webSocket,
