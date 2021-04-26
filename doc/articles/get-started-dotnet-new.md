@@ -24,21 +24,13 @@ A more advanced example which will not generate the android and macOS heads:
 dotnet new unoapp -o MyApp -android=false -macos=false
 ```
 
-## Uno Platform Blank Application for WinUI 3.0 - Preview
+## Uno Platform Blank Application for Project Reunion - WinUI 3
 
-This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly and macOS which uses the new WinUI 3.0 apis.
+This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly and macOS which uses the new WinUI 3 apis.
 
 A basic example:
 ```
 dotnet new unoapp-winui -o MyApp
-```
-
-Once the application is created, make sure that the following code is present in the `App.xaml` file:
-
-```xaml
-<Application.Resources> 
-    <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" /> 
-</Application.Resources>
 ```
 
 More articles on WinUI 3:
