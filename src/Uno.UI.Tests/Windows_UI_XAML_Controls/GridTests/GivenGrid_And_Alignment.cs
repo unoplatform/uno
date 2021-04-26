@@ -535,7 +535,7 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.Arrange(new Rect(0, 0,20, 20));
 			
-			Assert.AreEqual(new Rect(0, 0, 20, 20), c1.Arranged);
+			Assert.AreEqual(new Rect(0, 0, 100, 100), c1.Arranged);
 
 			Assert.AreEqual(1, SUT.GetChildren().Count());
 		}
