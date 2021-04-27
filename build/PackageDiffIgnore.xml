@@ -3665,7 +3665,16 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>
-	<!--
+	<IgnoreSet baseVersion="3.7.3">
+		<Types>
+		</Types>
+		<Methods>
+		</Methods>
+		<Fields>
+		</Fields>
+		<Properties>
+		</Properties>
+	</IgnoreSet>	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>
 		</Types>
