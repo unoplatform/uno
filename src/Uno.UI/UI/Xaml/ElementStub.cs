@@ -129,31 +129,37 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-			var targetDependencyObject = _content as DependencyObject;
-
-			if (isVisibilityChanged && targetDependencyObject != null)
+			if (_content == null)
 			{
-				var visibilityProperty = GetVisibilityProperty(_content);
+				_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
+				var targetDependencyObject = _content as DependencyObject;
 
-				// Set the visibility at the same precedence it was currently set with on the stub.
-				var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
+				if (isVisibilityChanged && targetDependencyObject != null)
+				{
+					var visibilityProperty = GetVisibilityProperty(_content);
 
-				targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+					// Set the visibility at the same precedence it was currently set with on the stub.
+					var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
+
+					targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+				}
+
+				MaterializationChanged?.Invoke(this);
 			}
-
-			MaterializationChanged?.Invoke(this);
 		}
 
 		private void Dematerialize()
 		{
-			var newView = SwapViews(oldView: (FrameworkElement)_content, newViewProvider: () => this as View);
-			if (newView != null)
+			if (_content != null)
 			{
-				_content = null;
-			}
+				var newView = SwapViews(oldView: (FrameworkElement)_content, newViewProvider: () => this as View);
+				if (newView != null)
+				{
+					_content = null;
+				}
 
-			MaterializationChanged?.Invoke(this);
+				MaterializationChanged?.Invoke(this);
+			}
 		}
 
 		private static DependencyProperty GetVisibilityProperty(View view)

@@ -173,6 +173,11 @@ namespace Windows.UI.Xaml
 					stub.Materialize();
 				}
 
+				subject.ElementInstanceChanged += (s, value) =>
+				{
+					_bindingPath.DataContext = value;
+				};
+
 				_bindingPath.DataContext = subject.ElementInstance;
 			}
 			else

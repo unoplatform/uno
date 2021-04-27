@@ -5312,10 +5312,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										{
 											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_className.className} that)"))
 											{
-												// Refresh the bindings when the ElementStub is unloaded. This assumes that
-												// ElementStub will be unloaded **after** the stubbed control has been created
-												// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
-												writer.AppendLineInvariant($"that.Bindings.Update();");
 
 												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
 												{
@@ -5333,6 +5329,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										}
 
 										writer.AppendLineInvariant($"{closureName}.MaterializationChanged += {componentName}_update;");
+
+										using (writer.BlockInvariant($"void {componentName}_unloaded(object sender, RoutedEventArgs e)"))
+										{
+											// Refresh the bindings when the ElementStub is unloaded. This assumes that
+											// ElementStub will be unloaded **after** the stubbed control has been created
+											// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
+											writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
+										}
+
+										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_unloaded;");
 
 										var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
 										xamlObjectDef.Members.AddRange(members);
