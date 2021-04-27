@@ -1,26 +1,25 @@
 # Updating an Uno application to WinUI 3.0
 
-<!-- The support for WinUI 3.0 is currently in preview for the Uno Platform. It is currently generated from the WinUI 2.0 / UWP codebase, by applying a set of transformations to align with WinUI 3.0 APIs using the `Uno.WinUIRevert` tool. -->
-
 Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). This article details the changes required when migrating an application from the UWP API set to the WinUI 3 API set.
 
 [Read more about WinUI 3 and Uno Platform.](uwp-vs-winui3.md)
 
 ## Migrating an app to WinUI 3.0
 
-- NuGet updates
+- **NuGet updates:**
     - `Uno.UI` becomes `Uno.WinUI`
     - `Uno.UI.RemoteControl` becomes `Uno.WinUI.RemoteControl`
     - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie`
     - `Uno.UI.DualScreen` becomes `Uno.WinUI.DualScreen`
-- String replacements:
+- **String replacements:**
     - `Windows.UI.Xaml` becomes `Microsoft.UI.Xaml`
     - `Windows.UI.Composition` becomes `Microsoft.UI.Composition`
-- [Logger filter](logging.md) updates
-    ```
-    { "Windows", LogLevel.Warning },
-    { "Microsoft", LogLevel.Warning },
-    ```
+- **Update `App.xaml.cs`:**
+    - If your solution was created with an older version of the Uno app template, you'll need to update `App.xaml.cs` for compatibility with WinUI 3/Project Reunion.
+
+        Fixes to apply:
+        - Ensure `Window` doesn't fall out of scope ([diff](https://github.com/unoplatform/uno/commit/0d5418dada17561f857cf13750762468b77dfbf0))
+        - Fix invalid defines ([diff](https://github.com/unoplatform/uno/commit/a4c3d3f5ec65071041a7b93f64d7175fbde189ac))
 
 ## API Changes
 
