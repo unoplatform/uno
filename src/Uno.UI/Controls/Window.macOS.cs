@@ -169,7 +169,7 @@ namespace Uno.UI.Controls
 			var pointerDevice = PointerDevice.For(pointerDeviceType);
 			var pointerId = pointerDeviceType == PointerDeviceType.Pen
 				? (uint)nativeEvent.PointingDeviceID()
-				: (uint)0;
+				: (uint)1;
 			var isInContact = GetIsInContact(nativeEvent);
 			var properties = GetPointerProperties(nativeEvent, pointerDeviceType);
 
