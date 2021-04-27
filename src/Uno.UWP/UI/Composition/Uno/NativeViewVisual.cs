@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using Windows.UI;
 using Windows.UI.Composition;
@@ -24,6 +25,12 @@ namespace Uno.UI.Composition
 			: base(context.Compositor)
 		{
 			_view = view;
+			view.LayoutChange += (snd, e) =>
+			{
+				// TODO leak
+				Offset = new Vector3(e.Left, e.Top, 0);
+				Size = new Vector2(e.Right - e.Left, e.Bottom - e.Top);
+			};
 			Kind = kind;
 		}
 

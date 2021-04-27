@@ -159,7 +159,7 @@ namespace Windows.UI.Composition
 			// it's preferable to loop once for nothing than forgetting some changes
 			_isCommitScheduled = 0;
 
-			_view?.Layout(0, 0, 1920 * 2, 1080 * 2);
+			//_view?.Layout(0, 0, 1920 * 2, 1080 * 2);
 
 			var count = Interlocked.Increment(ref _gateCount);
 			var id = Interlocked.Increment(ref _gateId);
@@ -222,6 +222,9 @@ namespace Windows.UI.Composition
 				VisualDirtyStateHelper.Reset(ref _dirtyState, VisualDirtyState.Independent);
 
 				// TODO: Update animations!
+
+				//using var session = Visual.Edit(RootNode);
+				//session?.Canvas.DrawARGB(255,0,255,0);
 
 				_rootVisual?.Render();
 			}

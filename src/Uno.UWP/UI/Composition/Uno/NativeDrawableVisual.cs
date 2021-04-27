@@ -45,6 +45,7 @@ namespace Uno.UI.Composition
 		{
 			base.RenderDependent(canvas);
 
+			_drawable?.SetBounds(0, 0, (int)Size.X, (int)Size.Y); // Offset is set on the RenderNode itself
 			_drawable?.Draw(canvas);
 		}
 

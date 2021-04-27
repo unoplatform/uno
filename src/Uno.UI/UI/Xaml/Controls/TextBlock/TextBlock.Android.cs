@@ -20,7 +20,6 @@ using Android.Views;
 using System.Collections.Specialized;
 using Windows.UI.Xaml.Automation;
 using Android.Graphics.Drawables;
-using static Uno.UI.ViewHelper;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Markup;
 using Uno;
@@ -217,7 +216,7 @@ namespace Windows.UI.Xaml.Controls
 				.Value;
 
 			var shader = Foreground is GradientBrush gb
-				? gb.GetShader(LayoutSlot.LogicalToPhysicalPixels())
+				? gb.GetShader(LogicalToPhysicalPixels(LayoutSlot))
 				: null;
 
 			_paint = TextPaintPool.GetPaint(
@@ -753,7 +752,7 @@ namespace Windows.UI.Xaml.Controls
 			point.X -= Padding.Left;
 			point.Y -= Padding.Top;
 
-			var physicalPoint = point.LogicalToPhysicalPixels();
+			var physicalPoint = LogicalToPhysicalPixels(point);
 
 			var layout = _arrangeLayout.Layout;
 			var rect = new Android.Graphics.Rect(0, 0, layout.Width, layout.Height);
@@ -767,6 +766,29 @@ namespace Windows.UI.Xaml.Controls
 
 			return -1;
 		}
+
+		#endregion
+
+		#region Scaling helpers
+		private static Rect LogicalToPhysicalPixels(Rect value)
+			=> Uno.CompositionConfiguration.UseVisual
+				? value
+				: ViewHelper.LogicalToPhysicalPixels(value);
+
+		private static Point LogicalToPhysicalPixels(Point value)
+			=> Uno.CompositionConfiguration.UseVisual
+				? value
+				: ViewHelper.LogicalToPhysicalPixels(value);
+
+		private static int LogicalToPhysicalPixels(double value)
+			=> Uno.CompositionConfiguration.UseVisual
+				? (int)value
+				: ViewHelper.LogicalToPhysicalPixels(value);
+
+		private static double PhysicalToLogicalPixels(double value)
+			=> Uno.CompositionConfiguration.UseVisual
+				? value
+				: ViewHelper.PhysicalToLogicalPixels(value);
 
 		#endregion
 	}

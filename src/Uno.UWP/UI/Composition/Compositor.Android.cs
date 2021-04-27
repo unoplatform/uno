@@ -8,6 +8,7 @@ using System.Threading;
 using Windows.UI.Core;
 using Android.Graphics;
 using Android.Views;
+using Uno.UI;
 using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
@@ -81,24 +82,26 @@ namespace Windows.UI.Composition
 			Console.WriteLine($"Released lock RENDER NATIVE - id: {id} | count: {count}");
 		}
 
+
+		private int _commitScheduleCount;
 		partial void ScheduleCommit()
 		{
-			_dispatcher?.RunAnimation(_commitOperation);
+			//_dispatcher?.RunAnimation(_commitOperation);
 
-			//var d = _dispatcher;
-			//if (d is null)
-			//{
-			//	Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] CANNOT Scheduling commit: No dispatcher !!!");
-			//	return;
-			//}
+			var d = _dispatcher;
+			if (d is null)
+			{
+				Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] CANNOT Scheduling commit: No dispatcher !!!");
+				return;
+			}
 
-			//var id = Interlocked.Increment(ref _commitScheduleCount);
-			//Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Scheduling commit #{id}");
-			//d.RunAsync(CoreDispatcherPriority.High, () =>
-			//{
-			//	Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Running commit #{id}");
-			//	Commit();
-			//});
+			var id = Interlocked.Increment(ref _commitScheduleCount);
+			Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Scheduling commit #{id}");
+			d.RunAsync(CoreDispatcherPriority.High, () =>
+			{
+				Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Running commit #{id}");
+				Commit();
+			});
 		}
 
 		partial void ScheduleRender()

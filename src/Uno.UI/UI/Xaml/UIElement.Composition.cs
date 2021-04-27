@@ -41,12 +41,15 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			var visual = Visual;
 			var roundedRect = LayoutRound(renderRect);
 
-			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
-			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
-			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
+			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
+			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+			SizeVisualPartial(renderRect);
 		}
+		partial void SizeVisualPartial(Rect renderRect);
 
 		private void ClipVisual(Rect clip)
 		{
@@ -65,6 +68,7 @@ namespace Windows.UI.Xaml
 			if (clip.IsEmpty)
 			{
 				Visual.Clip = null;
+				ClipVisualPartial(null);
 			}
 			else
 			{
@@ -77,8 +81,10 @@ namespace Windows.UI.Xaml
 				visualClip.LeftInset = (float)roundedClip.Left;
 				visualClip.BottomInset = (float)roundedClip.Bottom;
 				visualClip.RightInset = (float)roundedClip.Right;
+				ClipVisualPartial(roundedClip);
 			}
 		}
+		partial void ClipVisualPartial(Rect? renderRect);
 
 		internal void InvalidateRender()
 		{

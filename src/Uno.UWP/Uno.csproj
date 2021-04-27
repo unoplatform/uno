@@ -48,6 +48,7 @@
 	  <None Remove="UI\Composition\Uno\ICompositionRoot.android.cs" />
 	  <None Remove="UI\Composition\Uno\NativeTextLayoutVisual.Android.cs" />
 	  <None Remove="UI\UIContentRoot.Android.cs" />
+	  <None Remove="UI\ViewHelperCore.Android.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -64,6 +65,7 @@
 	  <UpToDateCheckInput Remove="UI\UIContentRoot.Android.cs" />
 	  <UpToDateCheckInput Remove="UI\UIContentRoot.cs" />
 	  <UpToDateCheckInput Remove="UI\UIContext.cs" />
+	  <UpToDateCheckInput Remove="UI\ViewHelperCore.Android.cs" />
 	  <UpToDateCheckInput Remove="WinRTFeatureConfiguration.Composition.cs" />
 	</ItemGroup>
 

@@ -1,12 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using System.Numerics;
 using Windows.UI.Composition;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Views;
 using Uno.UI.Composition;
 using NotImplementedException = System.NotImplementedException;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml
 {
@@ -82,7 +84,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_background is null)
 				{
-					_background = new NativeDrawableVisual(UIContext);
+					_background = new NativeDrawableVisual(UIContext) { Size = Visual.Size };
 					Visual.Children.InsertAtBottom(_background);
 				}
 
@@ -110,7 +112,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_overlay is null)
 				{
-					_overlay = new NativeDrawableVisual(UIContext);
+					_overlay = new NativeDrawableVisual(UIContext) { Size = Visual.Size};
 					Visual.Children.InsertAtTop(_overlay);
 				}
 
@@ -129,6 +131,19 @@ namespace Windows.UI.Xaml
 				{
 					base.Overlay!.Add(@new);
 				}
+			}
+		}
+
+		partial void SizeVisualPartial(Rect renderRect)
+		{
+			if (_background is { } bg)
+			{
+				bg.Size = new Vector2((float)renderRect.Width, (float)renderRect.Height);
+			}
+
+			if (_overlay is { } o)
+			{
+				o.Size = new Vector2((float)renderRect.Width, (float)renderRect.Height);
 			}
 		}
 

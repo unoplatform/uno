@@ -1,5 +1,7 @@
 using System;
+using System.Numerics;
 using System.Threading;
+using Windows.Foundation;
 
 namespace Windows.UI.Composition
 {
@@ -151,4 +153,13 @@ namespace Windows.UI.Composition
 		///// </summary>
 		//IndependentAnimation
 	}
+
+	//internal static class VisualExtensions
+	//{
+	//	public static void SetBounds(this Visual visual, Rect bounds)
+	//	{
+	//		visual.Offset = new Vector3((float)bounds.X, (float)bounds.Y, 0);
+	//		visual.Size = new Vector2((float)bounds.Width, (float)bounds.Height);
+	//	}
+	//}
 }

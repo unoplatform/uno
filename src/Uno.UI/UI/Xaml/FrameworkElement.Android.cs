@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		private Size? _lastLayoutSize;
+		private Rect? _lastLayoutRect;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
@@ -239,20 +239,14 @@ namespace Windows.UI.Xaml
 			{
 				base.OnLayoutCore(changed, left, top, right, bottom);
 
-				Size newSize;
-				if (ArrangeLogicalSize is Rect als)
-				{
+				var finalRect =
 					// If the parent element is from managed code,
 					// we can recover the "Arrange" with double accuracy.
 					// We use that because the conversion to android's "int" is loosing too much precision.
-					newSize = new Size(als.Width, als.Height);
-				}
-				else
-				{
+					ArrangeLogicalSize
 					// Here the "arrange" is coming from a native element,
 					// so we convert those measurements to logical ones.
-					newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
-				}
+					?? new Rect(left, top, right - left, bottom - top).PhysicalToLogicalPixels();
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
@@ -267,20 +261,18 @@ namespace Windows.UI.Xaml
 				}
 
 				var previousSize = AssignedActualSize;
-				AssignedActualSize = newSize;
+				AssignedActualSize = finalRect.Size;
 
 				if (
 					// If the layout has changed, but the final size has not, this is just a translation.
 					// So unless there was a layout requested, we can skip arranging the children.
-					(changed && _lastLayoutSize != newSize)
+					(changed && _lastLayoutRect != finalRect)
 
 					// Even if nothing changed, but a layout was requested, arrange the children.
 					|| IsLayoutRequested
 				)
 				{
-					_lastLayoutSize = newSize;
-
-					var finalRect = new Rect(0, 0, newSize.Width, newSize.Height);
+					_lastLayoutRect = finalRect;
 
 					OnBeforeArrange();
 
@@ -289,10 +281,10 @@ namespace Windows.UI.Xaml
 					OnAfterArrange();
 				}
 
-				if (previousSize != newSize)
+				if (previousSize != finalRect.Size)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, newSize));
-					_renderTransform?.UpdateSize(newSize);
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, finalRect.Size));
+					_renderTransform?.UpdateSize(finalRect.Size);
 				}
 			}
 			catch (Exception e)

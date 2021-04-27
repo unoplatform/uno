@@ -42,7 +42,8 @@ namespace Uno.UI.Composition
 		private HardwareRenderer? _hwRender;
 		private Thread? _thread;
 		private Looper? _looper;
-		private Choreographer? _choregrapher;
+		private Choreographer? _choreographer;
+		private Handler? _handler;
 
 		public CompositorThread(Compositor compositor, Android.Views.Window window)
 		{
@@ -61,6 +62,8 @@ namespace Uno.UI.Composition
 			// Even if the SurfaceChanged will be invoke right after this SurfaceCreated,
 			// we set the position now so the compositor thread can already render a frame at the right size.
 			SetBounds(holder.SurfaceFrame!.Width(), holder.SurfaceFrame.Height());
+
+			_nativeFrameRequestd = false;
 
 			Start();
 		}
@@ -82,6 +85,7 @@ namespace Uno.UI.Composition
 
 		void ISurfaceHolderCallback2.SurfaceRedrawNeeded(ISurfaceHolder? holder)
 		{
+			_nativeFrameRequestd = true;
 			_frameRendered.Reset();
 			RequestFrame();
 			_frameRendered.Wait();
@@ -112,7 +116,11 @@ namespace Uno.UI.Composition
 
 		private void SetBounds(int width, int height)
 		{
-			_compositor.RootNode.SetPosition(new Rect(new Point(), new Size(width, height)));
+			_compositor.RootNode.SetPosition(new Rect(new Point(), new Size(width / ViewHelperCore.Scale, height / ViewHelperCore.Scale)));
+			_compositor.RootNode.SetScaleX((float)ViewHelperCore.Scale);
+			_compositor.RootNode.SetScaleY((float)ViewHelperCore.Scale);
+			//RootNode.SetClipToBounds(false);
+			//RootNode.SetClipToOutline(false);
 		}
 		#endregion
 
@@ -147,10 +155,14 @@ namespace Uno.UI.Composition
 				_hwRender.Start();
 
 				Looper.Prepare(); // Required to get a Choreographer.Instance
-				_looper = Looper.MyLooper();
-				_choregrapher = Choreographer.Instance;
+				_looper = Looper.MyLooper()!;
+				_choreographer = Choreographer.Instance!;
+				_handler = new Handler(_looper);
 
-				_choregrapher!.PostFrameCallback(this);
+#if !DEBUG
+#error only if debugger not attached?
+#endif
+				_choreographer.PostFrameCallback(this);
 
 				Looper.Loop(); // Start the looper so the Choreographer.Instance will invoke our callback
 
@@ -215,6 +227,8 @@ namespace Uno.UI.Composition
 		{
 			try
 			{
+				Console.WriteLine($"================== DoFrame #{_count}");
+
 				if (_firstFrameTime == 0)
 				{
 					_firstFrameTime = frameTimeNanos;
@@ -244,6 +258,11 @@ namespace Uno.UI.Composition
 			catch (ThreadAbortException)
 			{
 				Thread.ResetAbort();
+			}
+			finally
+			{
+				//_choreographer!.PostFrameCallback(this);
+				_choreographer!.PostFrameCallbackDelayed(this, 250);
 			}
 		}
 
@@ -337,11 +356,28 @@ namespace Uno.UI.Composition
 			//	}
 			//}
 		}
-		#endregion
+#endregion
+
+		private int _count;
+		private bool _nativeFrameRequestd;
 
 		internal void RequestFrame()
 		{
-			_choregrapher?.PostFrameCallback(this);
+			if (!_nativeFrameRequestd)
+			{
+				Console.WriteLine($"================== DO NOT REQUEST FRAME BEFORE THE NATIVE");
+				return;
+			}
+
+			var ct = ++_count;
+			Console.WriteLine($"================== RequestFrame - step 1 #{ct}");
+
+			//_handler?.PostAtFrontOfQueue(() =>
+			//{
+			//	Console.WriteLine($"================== RequestFrame - step 2 #{ct}");
+
+			//	_choreographer?.PostFrameCallback(this);
+			//});
 		}
 	}
 }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Numerics;
 using Windows.UI;
 using Windows.UI.Composition;
 using Android.Graphics;
@@ -16,8 +17,7 @@ namespace Uno.UI.Composition
 		public NativeTextLayoutVisual(Layout? text, UIContext context)
 			: base(context.Compositor)
 		{
-			_text = text;
-
+			Text = text;
 			Kind = VisualKind.NativeDependent;
 		}
 
@@ -32,6 +32,9 @@ namespace Uno.UI.Composition
 				}
 
 				_text = value;
+				Size = value is null
+					? Vector2.Zero
+					: new Vector2(value.Width, value.Height);
 
 				Invalidate(VisualDirtyState.Dependent);
 			}

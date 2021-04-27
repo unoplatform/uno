@@ -20,6 +20,7 @@ namespace Windows.UI.Composition
 		private readonly RenderNode _node = new RenderNode(string.Empty);
 
 #if DRAW_DRAW_BOUNDS
+		private const int _debugStrokeThickness = 8;
 		private Paint? _debugBoundsFill;
 		private Paint? _debugBoundsStroke;
 		private static readonly Random _debugColorRandomizer = new Random(42);
@@ -28,7 +29,7 @@ namespace Windows.UI.Composition
 		partial void InitializePartial()
 		{
 			_debugColorRandomizer.NextBytes(_debugColor);
-			_debugBoundsStroke = new Paint { Color = new Android.Graphics.Color(_debugColor[0], _debugColor[1], _debugColor[2], (byte)255), StrokeWidth = 2 };
+			_debugBoundsStroke = new Paint { Color = new Android.Graphics.Color(_debugColor[0], _debugColor[1], _debugColor[2], (byte)255), StrokeWidth = _debugStrokeThickness };
 			_debugBoundsFill = new Paint { Color = new Android.Graphics.Color(_debugColor[0], _debugColor[1], _debugColor[2], (byte)64) };
 
 			_debugBoundsStroke.SetStyle(Paint.Style.Stroke);
@@ -196,7 +197,10 @@ namespace Windows.UI.Composition
 			var point = Offset;
 			var size = Size;
 
-			node.SetPosition((int)point.X, (int)point.Y, (int)size.X, (int)size.Y);
+			//node.SetPosition((int)point.X, (int)point.Y, (int)(point.X + size.X), (int)(point.Y + size.Y));
+			node.SetPosition(new Windows.Foundation.Rect(point.X, point.Y, size.X, size.Y));
+			//node.SetClipToBounds(false);
+			//node.SetClipToOutline(false);
 		}
 
 		/// <summary>
@@ -218,7 +222,7 @@ namespace Windows.UI.Composition
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Error($"Failed to render visual {Comment}");
+						this.Log().Error($"Failed to render visual '{Comment}'");
 					}
 				}
 				finally
@@ -235,25 +239,53 @@ namespace Windows.UI.Composition
 		/// <remarks>This might be invoked either on the UIThread, either on the compositor thread.</remarks>
 		private protected virtual void RenderDependent(Canvas canvas)
 		{
-			canvas.DrawARGB(128, 255, 0, 0);
+			//canvas.DrawARGB(128, 255, 0, 0);
 #if DRAW_DRAW_BOUNDS
-			canvas.DrawARGB(128, 255, 0, 0);
+			//canvas.DrawARGB(128, 255, 0, 0);
 			//canvas.DrawRect(
-			//	_render._offset.X,
-			//	_render._offset.Y,
-			//	_render._size.X,
-			//	_render._size.Y,
+			//	0,
+			//	0,
+			//	255,
+			//	255,
 			//	_debugBoundsFill!);
-			//canvas.DrawRect(
-			//	_render._offset.X,
-			//	_render._offset.Y,
-			//	Math.Max(_render._size.X - 4, 0),
-			//	Math.Max(_render._size.Y - 4, 0),
-			//	_debugBoundsStroke!);
+
+			//var bounds = new Rect(
+			//	(int)_render._offset.X,
+			//	(int)_render._offset.Y,
+			//	(int)_render._size.X,
+			//	(int)_render._size.Y);
+
+			canvas.DrawRect(
+				_render._offset.X,
+				_render._offset.Y,
+				_render._size.X,
+				_render._size.Y,
+				_debugBoundsFill!);
+
+			var halfStrokeThickness = _debugStrokeThickness / 2.0;
+			canvas.DrawRect(
+				(float)Math.Min(_render._offset.X + halfStrokeThickness, _render._size.X),
+				(float)Math.Min(_render._offset.Y + halfStrokeThickness, _render._size.Y),
+				(float)Math.Max(_render._size.X - halfStrokeThickness, 0),
+				(float)Math.Max(_render._size.Y - halfStrokeThickness, 0),
+				_debugBoundsStroke!);
+
+			canvas.DrawLine(
+				_render._offset.X,
+				_render._offset.Y,
+				_render._offset.X + _render._size.X,
+				_render._offset.Y + _render._size.Y,
+				_debugBoundsStroke!);
+			canvas.DrawLine(
+				_render._offset.X,
+				_render._offset.Y + _render._size.Y, 
+				_render._offset.X + _render._size.X,
+				_render._offset.Y,
+				_debugBoundsStroke!);
 #endif
 		}
 
-		private protected static DrawingSession? Edit(RenderNode node)
+		internal static DrawingSession? Edit(RenderNode node)
 		{
 			try
 			{
@@ -271,7 +303,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		private protected readonly struct DrawingSession : IDisposable
+		internal readonly struct DrawingSession : IDisposable
 		{
 			private readonly RenderNode _node;
 
