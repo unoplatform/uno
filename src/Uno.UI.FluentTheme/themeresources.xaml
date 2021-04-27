@@ -14362,6 +14362,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
   <Style x:Key="DefaultFlipViewStyle" TargetType="FlipView">
     <Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
     <Setter Property="BorderThickness" Value="0" />
@@ -14379,7 +14380,7 @@
     <Setter Property="ItemsPanel">
       <Setter.Value>
         <ItemsPanelTemplate>
-          <VirtualizingStackPanel AreScrollSnapPointsRegular="True" Orientation="Horizontal" />
+          <StackPanel AreScrollSnapPointsRegular="True" Orientation="Horizontal" />
         </ItemsPanelTemplate>
       </Setter.Value>
     </Setter>
@@ -14534,7 +14535,7 @@
                 </Border>
               </ControlTemplate>
             </Grid.Resources>
-            <ScrollViewer x:Name="ScrollingHost" VerticalSnapPointsType="MandatorySingle" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" Padding="{TemplateBinding Padding}" ZoomMode="Disabled" TabNavigation="{TemplateBinding TabNavigation}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw">
+            <ScrollViewer x:Name="ScrollingHost" VerticalSnapPointsType="MandatorySingle" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" Padding="{TemplateBinding Padding}" ZoomMode="Disabled" TabNavigation="{TemplateBinding TabNavigation}" IsTabStop="False" ForceChangeToCurrentView="True" AutomationProperties.AccessibilityView="Raw">
               <ItemsPresenter />
             </ScrollViewer>
             <Button x:Name="PreviousButtonHorizontal" Template="{StaticResource HorizontalPreviousTemplate}" Width="20" Height="36" CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource RightCornerRadiusFilterConverter}}" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Left" VerticalAlignment="Center" />

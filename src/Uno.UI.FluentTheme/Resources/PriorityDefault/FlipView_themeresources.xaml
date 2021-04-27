@@ -76,7 +76,7 @@
     </ResourceDictionary.ThemeDictionaries>
 
     <!-- UNO TODO Currently only style using native flip view control is supported -->
-    <!--<Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />-->
+    <Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
 
     <Style x:Key="DefaultFlipViewStyle" TargetType="FlipView">
         <Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
@@ -95,7 +95,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel AreScrollSnapPointsRegular="True" Orientation="Horizontal" />
+                    <StackPanel AreScrollSnapPointsRegular="True" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
@@ -317,6 +317,7 @@
                             ZoomMode="Disabled"
                             TabNavigation="{TemplateBinding TabNavigation}"
                             IsTabStop="False"
+							ForceChangeToCurrentView="True"
                             AutomationProperties.AccessibilityView="Raw">
                             <ItemsPresenter />
                         </ScrollViewer>
@@ -361,5 +362,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 </ResourceDictionary>

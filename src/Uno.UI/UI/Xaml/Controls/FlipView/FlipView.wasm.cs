@@ -11,7 +11,6 @@ using Uno;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[NotImplemented]
 	public partial class FlipView : Selector
 	{
 

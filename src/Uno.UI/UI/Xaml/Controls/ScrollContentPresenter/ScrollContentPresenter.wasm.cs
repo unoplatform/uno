@@ -151,13 +151,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool CanHorizontallyScroll
 		{
-			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled || ForceChangeToCurrentView;
 			set { }
 		}
 
 		public bool CanVerticallyScroll
 		{
-			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled || ForceChangeToCurrentView;
 			set { }
 		}
 

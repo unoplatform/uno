@@ -13,11 +13,19 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
+using Uno.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Selector : ItemsControl
 	{
+		private protected ScrollViewer m_tpScrollViewer;
+
+		private protected int m_iFocusedIndex;
+
+		private protected bool m_skipScrollIntoView;
+
 		public event SelectionChangedEventHandler SelectionChanged;
 
 		private readonly SerialDisposable _collectionViewSubscription = new SerialDisposable();
@@ -27,6 +35,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private BindingPath _selectedValueBindingPath;
 		private bool _disableRaiseSelectionChanged;
+		private int m_lastFocusedIndex;
+		private bool m_inCollectionChange;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -41,6 +51,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public Selector()
 		{
 
+		}
+
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			m_tpScrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
 		}
 
 		public static DependencyProperty SelectedItemProperty { get; } =
@@ -560,6 +577,170 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.Refresh();
 			_itemTemplatesThatArentContainers.Clear();
+		}
+
+
+
+		public bool IsSelectionActive { get; set; }
+
+		protected (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
+		{
+			return (Orientation.Horizontal, Orientation.Horizontal);
+		}
+
+		protected void SetFocusedItem(int index,
+									  bool shouldScrollIntoView,
+									  bool forceFocus,
+									  FocusState focusState,
+									  bool animateIfBringIntoView)
+		{
+			
+		}
+
+		protected void SetFocusedItem(int index,
+									  bool shouldScrollIntoView,
+									  bool forceFocus,
+									  FocusState focusState,
+									  bool animateIfBringIntoView,
+									  FocusNavigationDirection focusNavigationDirection)
+		{
+
+			//bool bFocused = false;
+			//bool shouldFocus = false;
+
+			//var spItems = Items;
+			//var nCount = spItems?.Size;
+
+			//if (index < 0 || nCount <= index)
+			//{
+			//	index = -1;
+			//}
+
+			//if (index >= 0)
+			//{
+			//	m_lastFocusedIndex = index;
+			//}
+
+			//if (!forceFocus)
+			//{
+			//	//shouldFocus = HasFocus();
+			//}
+			//else
+			//{
+			//	shouldFocus = true;
+			//}
+
+			//if (shouldFocus)
+			//{
+			//	m_iFocusedIndex = index;
+			//}
+
+			//if (m_iFocusedIndex == -1)
+			//{
+			//	if (shouldFocus)
+			//	{
+			//		// Since none of our child items have the focus, put the focus back on the main list box.
+			//		//
+			//		// This will happen e.g. when the focused item is being removed but is still in the visual tree at the time of this call.
+			//		// Note that this call may fail e.g. if IsTabStop is false, which is OK; it will just set focus
+			//		// to the next focusable element (or clear focus if none is found).
+			//		bFocused = Focus(focusState);
+			//	}
+
+			//	return;
+			//}
+
+			//if (shouldScrollIntoView)
+			//{
+			//	shouldScrollIntoView = CanScrollIntoView();
+			//}
+
+			//if (shouldScrollIntoView)
+			//{
+			//	ScrollIntoView(
+			//		index,
+			//		isGroupItemIndex: false,
+			//		isHeader: false,
+			//		isFooter: false,
+			//		isFromPublicAPI: false,
+			//		ensureContainerRealized: true,
+			//		animateIfBringIntoView,
+			//		ScrollIntoViewAlignment.Default);
+			//}
+
+			//if (shouldFocus)
+			//{
+			//	var spContainer = ContainerFromIndex(index);
+
+			//	if (spContainer is SelectorItem spSelectorItem)
+			//	{
+			//		//spSelectorItem.FocusSelfOrChild(focusState, animateIfBringIntoView, &bFocused, focusNavigationDirection);
+			//	}
+			//}
+		}
+
+		private void ScrollIntoView(int index, bool isGroupItemIndex, bool isHeader, bool isFooter, bool isFromPublicAPI, bool ensureContainerRealized, bool animateIfBringIntoView, ScrollIntoViewAlignment @default)
+		{
+			
+		}
+
+		protected void SetFocusedItem(int index,
+									  bool shouldScrollIntoView,
+									  bool animateIfBringIntoView,
+									  FocusNavigationDirection focusNavigationDirection)
+		{
+
+			bool hasFocus = false;
+			FocusState focusState = FocusState.Programmatic;
+
+			//hasFocus = HasFocus();
+
+			//if (hasFocus)
+			//{
+			//	DependencyObject spFocused;
+
+			//	//spFocused = GetFocusedElement();
+
+			//	if (spFocused is UIElement spFocusedAsElement)
+			//	{
+			//		focusState = spFocusedAsElement.FocusState;
+			//	}
+			//}
+
+			SetFocusedItem(index,
+							shouldScrollIntoView,
+							forceFocus: false,
+							focusState,
+							animateIfBringIntoView,
+							focusNavigationDirection);
+		}
+
+		protected void SetFocusedItem(int index,
+									  bool shouldScrollIntoView)
+		{
+			
+		}
+
+		bool CanScrollIntoView()
+		{
+			Panel spPanel;
+			bool isItemsHostInvalid = false;
+			bool isInLiveTree = false;
+
+			spPanel = ItemsHost;
+
+			if (spPanel != null)
+			{
+				//isItemsHostInvalid = IsItemsHostInvalid;
+
+				if (!isItemsHostInvalid)
+				{
+					//isInLiveTree = IsInLiveTree();
+					isInLiveTree = true;
+				}
+			}
+
+			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
 		}
 	}
 }
