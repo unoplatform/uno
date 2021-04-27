@@ -16,6 +16,8 @@
       href: get-started-dotnet-new.md
     - name: Additional setup for Linux
       href: get-started-with-linux.md
+    - name: Additional instructions for WinUI 3
+      href: get-started-winui3.md
     - name: Creating an app - Tutorial
       items:
         - name: Getting Started Tutorial 1

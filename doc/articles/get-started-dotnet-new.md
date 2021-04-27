@@ -11,7 +11,7 @@ If you need to determine the parameters available for a template use `dotnet new
 
 ## Uno Platform Blank Application
 
-This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly macOS, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
+This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
 
 A basic example:
 ```
@@ -26,7 +26,9 @@ dotnet new unoapp -o MyApp -android=false -macos=false
 
 ## Uno Platform Blank Application for Project Reunion - WinUI 3
 
-This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly and macOS which uses the new WinUI 3 apis.
+This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly, macOS, Linux, and Win32 Desktop which uses the new WinUI 3 apis.
+
+[**Find detailed instructions here.**](get-started-winui3.md)
 
 A basic example:
 ```

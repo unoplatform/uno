@@ -1,6 +1,6 @@
 # WinUI 3 and Uno Platform
 
-WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/). Scheduled for release in 2021, it succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform.
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/). Scheduled for release in 2021, it succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform. WinUI 3 supports Windows Desktop apps through [Project Reunion](https://docs.microsoft.com/en-us/windows/apps/project-reunion/).
 
 Since WinUI 3 and UWP XAML are very similar in their API, Uno Platform offers compatibility with both. This article goes further into the differences and how they apply to Uno.
 
@@ -13,7 +13,7 @@ WinUI 3 differs in minor ways from UWP XAML in terms of API, and in more substan
 
 ### API
 
-The chief difference between WinUI 3 and UWP XAML is the change of namespace. UWP XAML namespaces begin with 'Windows' - `Windows.UI.Xaml`, `Windows.UI.Composition`, and so on. WinUI 3 namespaces begin with 'Microsoft' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition` and so on. Aside from that change, the API surface is nearly identical. Some of the remaining differences are listed in our [guide to upgrading to WinUI 3](updating-to-winui3.md).
+The chief difference between WinUI 3 and UWP XAML is the change of namespace. UWP XAML namespaces begin with 'Windows' - `Windows.UI.Xaml`, `Windows.UI.Composition`, and so on. WinUI 3 namespaces begin with 'Microsoft' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition` and so on. Aside from that change, the API surface is very similar. Some of the remaining differences are listed in our [guide to upgrading to WinUI 3](updating-to-winui3.md).
 
 ### Technical
 
@@ -50,3 +50,8 @@ If Windows is one of your target platforms, then the [technical differences](#te
 #### Do you depend on features that aren't yet migrated to WinUI 3?
 
 [Check the WinUI 3 roadmap](https://github.com/microsoft/microsoft-ui-xaml/blob/master/docs/roadmap.md#winui-30-feature-roadmap) for a list of features that won't be available in the initial supported release, like `InkCanvas`.
+
+## Further reading
+
+ * [Create a new WinUI 3-flavored Uno Platform app with Project Reunion support](get-started-winui3.md)
+ * [Migrate an existing Uno Platform app to WinUI 3](updating-to-winui3.md)
