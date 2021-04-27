@@ -2771,9 +2771,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						if (HasMarkupExtension(member))
 						{
-							TryValidateContentPresenterBinding(writer, objectDefinition, member);
+							if (!IsXLoadMember(member))
+							{
+								TryValidateContentPresenterBinding(writer, objectDefinition, member);
 
-							BuildComplexPropertyValue(writer, member, closureName + ".", closureName);
+								BuildComplexPropertyValue(writer, member, closureName + ".", closureName);
+							}
+							else
+							{
+								writer.AppendLineInvariant($"/* Skipping x:Load attribute already applied to ElementStub */");
+							}
 						}
 						else if (HasCustomMarkupExtension(member))
 						{
@@ -2941,8 +2948,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariant("// DeferLoadStrategy {0}", member.Value);
 							}
-							else if (member.Member.Name == "Load"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+							else if (IsXLoadMember(member))
 							{
 								writer.AppendLineInvariant("// Load {0}", member.Value);
 							}
@@ -3124,6 +3130,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		private bool IsXLoadMember(XamlMemberDefinition member) =>
+			member.Member.Name == "Load"
+			&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace;
 
 		private void GenerateInlineEvent(string? closureName, IIndentedStringBuilder writer, XamlMemberDefinition member, IEventSymbol eventSymbol)
 		{
@@ -5316,14 +5326,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
 												{
 													writer.AppendLineInvariant($"that.Bindings.UpdateResources();");
-												}
-
-												if (nameMember != null)
-												{
-													using (writer.BlockInvariant("else"))
-													{
-														writer.AppendLineInvariant($"{componentName}_update_subject_capture.ElementInstance = null;");
-													}
 												}
 											}
 										}
