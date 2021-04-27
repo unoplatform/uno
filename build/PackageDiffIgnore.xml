@@ -3656,9 +3656,6 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.set_IsReadOnly(System.Boolean value)"
 				reason="Not part of the UWP API" />
-			<Member
-				fullName="System.Void Windows.UI.Xaml.FrameworkElement.Dispose()"
-				reason="Not part of the UWP API + false positive, it's not something changed in the source" />
 		</Methods>
 		<Fields>
 		</Fields>
@@ -3669,6 +3666,9 @@
 		<Types>
 		</Types>
 		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.FrameworkElement.Dispose()"
+				reason="Not part of the UWP API + false positive, it's not something changed in the source" />
 		</Methods>
 		<Fields>
 		</Fields>
