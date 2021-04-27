@@ -57,7 +57,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var control = new Test_Control();
 			app.HostView.Children.Add(control);
 
-			var rowDef = control.TestGrid.RowDefinitions.First();
+			var rowDef = control.TestGrid.RowDefinitions.First<RowDefinition>();
 			Assert.AreEqual(256, rowDef.Height.Value);
 		}
 

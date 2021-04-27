@@ -642,6 +642,15 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsEnabledOverride() => true;
 
+		internal bool GetUseLayoutRounding()
+		{
+#if __SKIA__
+			return true;
+#else
+			return false;
+#endif
+		}
+
 		internal double LayoutRound(double value)
 		{
 #if __SKIA__
@@ -738,17 +747,19 @@ namespace Windows.UI.Xaml
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
 		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
-		private double GetScaleFactorForLayoutRounding()
+		internal double GetScaleFactorForLayoutRounding()
 		{
 			// TODO use actual scaling based on current transforms.
 			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f; // 100%
 		}
 
-		int XcpRound(double x)
-			=> (int)Math.Floor(x + 0.5);
+		double XcpRound(double x)
+		{
+			return Math.Round(x);
+		}
 
 #if HAS_UNO_WINUI
-		#region FocusState DependencyProperty
+#region FocusState DependencyProperty
 
 		public FocusState FocusState
 		{
@@ -766,9 +777,9 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-		#endregion
+#endregion
 
-		#region IsTabStop DependencyProperty
+#region IsTabStop DependencyProperty
 
 		public bool IsTabStop
 		{
@@ -786,7 +797,7 @@ namespace Windows.UI.Xaml
 					(s, e) => ((Control)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
 			);
-		#endregion
+#endregion
 
 		private protected virtual void OnIsTabStopChanged(bool oldValue, bool newValue) { }
 #endif

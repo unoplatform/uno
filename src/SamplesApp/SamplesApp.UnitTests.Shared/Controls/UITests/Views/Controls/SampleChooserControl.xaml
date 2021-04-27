@@ -340,7 +340,7 @@
 
 				<!--NAVIGATION BUTTONS-->
 				<Border Background="{StaticResource Color08Brush}"
-						Grid.ColumnSpan="2"
+						
 						BorderThickness="0,1,0,0"
 						BorderBrush="{StaticResource Color05Brush}"
 						Height="50"

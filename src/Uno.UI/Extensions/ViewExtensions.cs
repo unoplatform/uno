@@ -12,6 +12,7 @@ using _View = Windows.UI.Xaml.UIElement;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Uno.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -41,8 +42,54 @@ namespace Uno.UI.Extensions
 				TextBlock textBlock => $" Text=\"{textBlock.Text}\" Foreground={textBlock.Foreground}",
 				ScrollViewer scrollViewer => $" Extent={scrollViewer.ExtentWidth}x{scrollViewer.ExtentHeight} Offset={scrollViewer.ScrollOffsets}",
 				Viewbox viewbox => $" Stretch={viewbox.Stretch}",
+				SplitView splitview => $" Mode={splitview.DisplayMode}",
+				Grid grid => GetGridDetails(grid),
 				_ => ""
 			};
+
+			string GetGridDetails(Grid grid)
+			{
+				string columns = default;
+				if (grid.ColumnDefinitions.Count > 1)
+				{
+					columns = " Cols=" + grid.ColumnDefinitions
+						.Select<ColumnDefinition, string>(x => x.Width.ToString())
+						.JoinBy(",");
+				}
+
+				string rows = default;
+				if (grid.RowDefinitions.Count > 1)
+				{
+					rows = " Rows=" + grid.RowDefinitions
+						.Select<RowDefinition, string>(x => x.Height.ToString())
+						.JoinBy(",");
+				}
+
+				return columns + rows;
+			}
+		}
+
+		internal static string GetElementGridOrCanvasDetails(this UIElement element)
+		{
+			var sb = new StringBuilder();
+
+			CheckProperty(Grid.ColumnProperty);
+			CheckProperty(Grid.RowProperty);
+			CheckProperty(Grid.ColumnSpanProperty);
+			CheckProperty(Grid.RowSpanProperty);
+			CheckProperty(Canvas.TopProperty);
+			CheckProperty(Canvas.LeftProperty);
+			CheckProperty(Canvas.ZIndexProperty);
+
+			void CheckProperty(DependencyProperty property)
+			{
+				if (element.ReadLocalValue(property) is int value)
+				{
+					sb.Append($" {property.OwnerType.Name}.{property.Name}={value}");
+				}
+			}
+
+			return sb.ToString();
 		}
 
 		internal static string GetTransformDetails(this Transform transform)

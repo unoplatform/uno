@@ -639,6 +639,7 @@ namespace AppKit
 						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 						.Append(uiElement?.GetElementSpecificDetails())
+						.Append(uiElement?.GetElementGridOrCanvasDetails())
 						.Append(uiElement?.RenderTransform.GetTransformDetails())
 						.AppendLine();
 			}

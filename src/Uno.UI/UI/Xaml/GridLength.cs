@@ -133,16 +133,15 @@ namespace Windows.UI.Xaml
 
 		private string DebugDisplay => ToDisplayString();
 
-		internal readonly string ToDisplayString()
-		{
-			var inner = GridUnitType switch
+		internal readonly string ToDisplayString() => $"GridLength({this})";
+
+		public override string ToString() =>
+			GridUnitType switch
 			{
 				GridUnitType.Auto => "Auto",
 				GridUnitType.Pixel => $"{Value:f1}px",
 				GridUnitType.Star => $"{Value:f1}*",
 				_ => "invalid"
 			};
-			return $"GridLength({inner})";
-		}
 	}
 }

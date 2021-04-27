@@ -84,7 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await CheckForSize(200, 400, "Initial");
 			await CheckForSize(250, 450, "Growing 1st time");
 			await CheckForSize(225, 425, "Shringking 1st time");
-			await CheckForSize(5, 7, "Super-shrinking");
+			await CheckForSize(16, 16, "Super-shrinking");
 			await CheckForSize(200, 400, "Back Original");
 
 			async Task CheckForSize(int width, int height, string name)

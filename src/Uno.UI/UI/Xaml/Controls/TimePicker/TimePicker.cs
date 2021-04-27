@@ -211,12 +211,12 @@ namespace Windows.UI.Xaml.Controls
 				UpdateHeaderVisibility();
 			}
 
-			var columns = _flyoutButtonContentGrid?.ColumnDefinitions;
+			var columns = _flyoutButtonContentGrid?.ColumnDefinitions as DefinitionCollectionBase;
 			const int periodColumnPosition = 4;
 			if ((columns?.Count ?? 0) > periodColumnPosition)
 			{
 				// This is a workaround for the lack of support for GetTemplateChild on non-IFrameworkElement types. (Bug #26303)
-				_thirdTextBlockColumn = columns.ElementAt(periodColumnPosition);
+				_thirdTextBlockColumn = columns?.GetItem(periodColumnPosition) as ColumnDefinition;
 			}
 
 			_isViewReady = true;
