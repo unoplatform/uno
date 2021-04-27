@@ -260,7 +260,7 @@ namespace Uno.UI.Runtime.Skia
 			var position = new Windows.Foundation.Point(x, y);
 			EventHelper.GetState(evt, out var state);
 
-			var pointerId = 0u;
+			var pointerId = 1u;
 			var modifiers = GetKeyModifiers(state);
 			var properties = new PointerPointProperties();
 
