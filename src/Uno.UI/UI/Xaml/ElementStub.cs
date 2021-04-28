@@ -30,6 +30,17 @@ namespace Windows.UI.Xaml
 #endif
 		private View _content;
 
+		/// <summary>
+		/// A delegate used to raise materialization changes in <see cref="ElementStub.MaterializationChanged"/>
+		/// </summary>
+		/// <param name="sender">The instance being changed</param>
+		public delegate void MaterializationChangedHandler(ElementStub sender);
+
+		/// <summary>
+		/// An event raised when the materialized object of the <see cref="ElementStub"/> has changed.
+		/// </summary>
+		public event MaterializationChangedHandler MaterializationChanged;
+
 		public bool Load
 		{
 			get => (bool)GetValue(LoadProperty);
@@ -40,6 +51,11 @@ namespace Windows.UI.Xaml
 		public static readonly DependencyProperty LoadProperty =
 			DependencyProperty.Register("Load", typeof(bool), typeof(ElementStub), new PropertyMetadata(
 				false, OnLoadChanged));
+
+		/// <summary>
+		/// Determines if the current ElementStub has been materialized to its target View.
+		/// </summary>
+		public bool IsMaterialized => _content != null;
 
 		public ElementStub(Func<View> contentBuilder) : this()
 		{
@@ -113,26 +129,36 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-			var targetDependencyObject = _content as DependencyObject;
-
-			if (isVisibilityChanged && targetDependencyObject != null)
+			if (_content == null)
 			{
-				var visibilityProperty = GetVisibilityProperty(_content);
+				_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
+				var targetDependencyObject = _content as DependencyObject;
 
-				// Set the visibility at the same precedence it was currently set with on the stub.
-				var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
+				if (isVisibilityChanged && targetDependencyObject != null)
+				{
+					var visibilityProperty = GetVisibilityProperty(_content);
 
-				targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+					// Set the visibility at the same precedence it was currently set with on the stub.
+					var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
+
+					targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+				}
+
+				MaterializationChanged?.Invoke(this);
 			}
 		}
 
 		private void Dematerialize()
 		{
-			var newView = SwapViews(oldView: (FrameworkElement)_content, newViewProvider: () => this as View);
-			if (newView != null)
+			if (_content != null)
 			{
-				_content = null;
+				var newView = SwapViews(oldView: (FrameworkElement)_content, newViewProvider: () => this as View);
+				if (newView != null)
+				{
+					_content = null;
+				}
+
+				MaterializationChanged?.Invoke(this);
 			}
 		}
 

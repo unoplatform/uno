@@ -23,6 +23,7 @@ namespace Uno.UI.Tests
 #else
 				var logLevel = LogLevel.Information;
 #endif
+				builder.SetMinimumLevel(logLevel);
 				builder.AddConsole(o => o.LogToStandardErrorThreshold = logLevel);
 			});
 

@@ -752,11 +752,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 							}
 
-							for (var i = 0; i < CurrentScope.Components.Count; i++)
-							{
-								var current = CurrentScope.Components[i];
-								writer.AppendLineInvariant($"private {GetType(current.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} _component_{i};");
-							}
+							BuildComponentFields(writer);
 
 							TryBuildElementStubHolders(writer);
 
@@ -809,7 +805,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineInvariant("Bindings.Update();");
 					}
 
-					BuildComponentResouceBindingUpdates(writer);
+					writer.AppendLineInvariant("Bindings.UpdateResources();");
 				}
 
 				writer.AppendLineInvariant(";");
@@ -859,12 +855,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildComponentFields(IndentedStringBuilder writer)
+		private void BuildComponentFields(IIndentedStringBuilder writer)
 		{
 			for (var i = 0; i < CurrentScope.Components.Count; i++)
 			{
 				var current = CurrentScope.Components[i];
-				writer.AppendLineInvariant($"private {GetType(current.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} _component_{i};");
+
+				var componentName = $"_component_{i}";
+				var typeName = GetType(current.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+				writer.AppendLineInvariant($"private global::Windows.UI.Xaml.Markup.ComponentHolder {componentName}_Holder = new global::Windows.UI.Xaml.Markup.ComponentHolder();");
+
+				using (writer.BlockInvariant($"private {GetType(current.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} _component_{i}"))
+				{
+					using (writer.BlockInvariant("get"))
+					{
+						writer.AppendLineInvariant($"return ({typeName}){componentName}_Holder.Instance;");
+					}
+
+					using (writer.BlockInvariant("set"))
+					{
+						writer.AppendLineInvariant($"{componentName}_Holder.Instance = value;");
+					}
+				}
 			}
 		}
 
@@ -881,6 +894,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineInvariant("void Initialize();");
 					writer.AppendLineInvariant("void Update();");
+					writer.AppendLineInvariant("void UpdateResources();");
 					writer.AppendLineInvariant("void StopTracking();");
 				}
 
@@ -922,6 +936,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 
 							BuildxBindEventHandlerInitializers(writer, "owner.");
+						}
+					}
+					using (writer.BlockInvariant($"void {bindingsInterfaceName}.UpdateResources()"))
+					{
+						writer.AppendLineInvariant($"var owner = Owner;");
+
+						for (var i = 0; i < CurrentScope.Components.Count; i++)
+						{
+							var component = CurrentScope.Components[i];
+
+							if (HasMarkupExtensionNeedingComponent(component) && IsDependencyObject(component))
+							{
+								writer.AppendLineInvariant($"owner._component_{i}.UpdateResourceBindings();");
+							}
 						}
 					}
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()")) { }
@@ -2743,9 +2771,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						if (HasMarkupExtension(member))
 						{
-							TryValidateContentPresenterBinding(writer, objectDefinition, member);
+							if (!IsXLoadMember(member))
+							{
+								TryValidateContentPresenterBinding(writer, objectDefinition, member);
 
-							BuildComplexPropertyValue(writer, member, closureName + ".", closureName);
+								BuildComplexPropertyValue(writer, member, closureName + ".", closureName);
+							}
+							else
+							{
+								writer.AppendLineInvariant($"/* Skipping x:Load attribute already applied to ElementStub */");
+							}
 						}
 						else if (HasCustomMarkupExtension(member))
 						{
@@ -2913,8 +2948,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariant("// DeferLoadStrategy {0}", member.Value);
 							}
-							else if (member.Member.Name == "Load"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+							else if (IsXLoadMember(member))
 							{
 								writer.AppendLineInvariant("// Load {0}", member.Value);
 							}
@@ -3096,6 +3130,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		private bool IsXLoadMember(XamlMemberDefinition member) =>
+			member.Member.Name == "Load"
+			&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace;
 
 		private void GenerateInlineEvent(string? closureName, IIndentedStringBuilder writer, XamlMemberDefinition member, IEventSymbol eventSymbol)
 		{
@@ -5275,7 +5313,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										writer.AppendLineInvariant($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
-										using (writer.BlockInvariant($"void {componentName}_update(object sender, RoutedEventArgs e)"))
+										if (nameMember != null)
+										{
+											writer.AppendLineInvariant($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
+										}
+
+										using (writer.BlockInvariant($"void {componentName}_update(global::Windows.UI.Xaml.ElementStub sender)"))
+										{
+											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_className.className} that)"))
+											{
+
+												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
+												{
+													writer.AppendLineInvariant($"that.Bindings.UpdateResources();");
+												}
+											}
+										}
+
+										writer.AppendLineInvariant($"{closureName}.MaterializationChanged += {componentName}_update;");
+
+										using (writer.BlockInvariant($"void {componentName}_unloaded(object sender, RoutedEventArgs e)"))
 										{
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
 											// ElementStub will be unloaded **after** the stubbed control has been created
@@ -5283,7 +5340,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
 										}
 
-										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_update;");
+										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_unloaded;");
 
 										var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
 										xamlObjectDef.Members.AddRange(members);

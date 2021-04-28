@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 using Windows.UI.Xaml;
@@ -935,6 +937,129 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
 			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_StaticResource()
+		{
+			var SUT = new Binding_xLoad_StaticResources();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.TestGrid);
+			SUT.IsTestGridLoaded = true;
+
+			Assert.IsNotNull(SUT.TestGrid);
+			Assert.IsNotNull(SUT.contentControl);
+			Assert.IsNotNull(SUT.contentControl.ContentTemplate);
+
+			SUT.IsTestGridLoaded = false;
+
+			AssertIsNullAsync(() => SUT.TestGrid);
+			AssertIsNullAsync(() => SUT.contentControl);
+
+			SUT.IsTestGridLoaded = true;
+
+			Assert.IsNotNull(SUT.TestGrid);
+			Assert.IsNotNull(SUT.contentControl);
+			Assert.IsNotNull(SUT.contentControl.ContentTemplate);
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_Setter()
+		{
+			var SUT = new Binding_xLoad_Setter();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+
+			SUT.IsEllipseLoaded = false;
+
+			AssertIsNullAsync(() => SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+		}
+
+		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/5836")]
+		public async Task When_xLoad_Setter_Order()
+		{
+			var SUT = new Binding_xLoad_Setter_Order();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+
+			SUT.IsEllipseLoaded = false;
+
+			AssertIsNullAsync(() => SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+		}
+
+		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null)
+		{
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < timeout && getter() != null)
+			{
+				await Task.Delay(100);
+
+				// Wait for the ElementNameSubject and ComponentHolder
+				// instances to release their references.
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsNull(getter());
+		}
+
+		private async Task AssertIsNoNullAsync<T>(Func<T> getter, TimeSpan? timeout)
+		{
+			timeout ??= TimeSpan.FromSeconds(1);
+
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < timeout && getter() == null)
+			{
+				await Task.Delay(100);
+
+				// Wait for the ElementNameSubject and ComponentHolder
+				// instances to release their references.
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsNotNull(getter());
 		}
 	}
 }
