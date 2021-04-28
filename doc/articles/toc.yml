@@ -52,6 +52,8 @@
           href: interop/MSAL.md
         - name: How to authenticate with OpenID Connect
           href: guides\open-id-connect.md
+        - name: How to deploy a WebAssembly app on Azure Static Web Apps
+          href: guides\azure-static-webapps.md
     - name: Tutorials
       items:
         - name: Silverlight migration
