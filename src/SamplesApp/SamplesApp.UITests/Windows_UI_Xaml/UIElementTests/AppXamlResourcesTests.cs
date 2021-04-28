@@ -20,8 +20,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 
 			_app.WaitForElement("Border01");
 
-			Assert.AreEqual("Should be Yellow: [Color: 000000FF;000000FF;000000FF;00000000]", _app.GetText("result01"));
-			Assert.AreEqual("Should be Purple: [Color: 000000FF;00000080;00000000;00000080]", _app.GetText("result02"));
+			Assert.AreEqual("Should be Yellow: [#FFFFFF00]", _app.GetText("result01"));
+			Assert.AreEqual("Should be Purple: [#FF800080]", _app.GetText("result02"));
 		}
 	}
 }

@@ -32,8 +32,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 			var color1 = icon1.GetDependencyPropertyValue<string>("Foreground");
 			var color2 = icon2.GetDependencyPropertyValue<string>("Foreground");
 
-			_app.WaitForDependencyPropertyValue(icon1, "Foreground", "[SolidColorBrush [Color: 000000FF;000000FF;000000FF;00000000]]");
-			_app.WaitForDependencyPropertyValue(icon2, "Foreground", "[SolidColorBrush [Color: 000000FF;00000000;00000080;00000000]]");
+			_app.WaitForDependencyPropertyValue(icon1, "Foreground", "[SolidColorBrush [#FFFFFF00]]");
+			_app.WaitForDependencyPropertyValue(icon2, "Foreground", "[SolidColorBrush [#FF008000]]");
 
 			TakeScreenshot("Changed");
 		}

@@ -105,10 +105,6 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-#if DEBUG
-		public string ShowLocalVisualTree(int fromHeight) => AppKit.UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
-#endif
-
 		/// <inheritdoc />
 		public override bool AcceptsFirstResponder()
 			=> true; // This is required to receive the KeyDown / KeyUp. Note: Key events are then bubble in managed.
