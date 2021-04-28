@@ -63,6 +63,11 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// The scale applied by the composition rendering
+		/// </summary>
+		public static double VisualScale { get; set; }
+
+		/// <summary>
 		/// The maximum logical pixel value which can be converted to physical pixels without overflow.
 		/// </summary>
 		private static double MaxLogicalValue { get; }
@@ -82,12 +87,27 @@ namespace Uno.UI
 
 				// WARNING: The Density value is not completely based on the DPI of the device.
 				// On two 8" devices, the Density may not be consistent.
-				_cachedDensity = displayMetrics.Density;
-				_cachedScaledDensity = displayMetrics.ScaledDensity;
-				_cachedScaledXDpi = displayMetrics.Xdpi;
 
-				MaxLogicalValue = (int.MaxValue - 1) / _cachedDensity;
-				MinLogicalValue = (int.MinValue + 1) / _cachedDensity;
+				if (Uno.CompositionConfiguration.UseVisual)
+				{
+					_cachedDensity = 1.0;
+					VisualScale = displayMetrics.Density;
+					_cachedScaledDensity = displayMetrics.ScaledDensity / displayMetrics.Density;
+					_cachedScaledXDpi = displayMetrics.Xdpi / displayMetrics.Density;
+
+					MaxLogicalValue = double.MaxValue;
+					MinLogicalValue = double.MinValue;
+				}
+				else
+				{
+					_cachedDensity = displayMetrics.Density;
+					VisualScale = _cachedDensity;
+					_cachedScaledDensity = displayMetrics.ScaledDensity;
+					_cachedScaledXDpi = displayMetrics.Xdpi;
+
+					MaxLogicalValue = (int.MaxValue - 1) / _cachedDensity;
+					MinLogicalValue = (int.MinValue + 1) / _cachedDensity;
+				}
 			}
 
 			if (typeof(ViewHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -104,7 +124,14 @@ namespace Uno.UI
 			{
 				AdjustScaledDensity(displayMetrics);
 
-				_cachedScaledDensity = displayMetrics.ScaledDensity;
+				if (Uno.CompositionConfiguration.UseVisual)
+				{
+					_cachedScaledDensity = displayMetrics.ScaledDensity / displayMetrics.Density;
+				}
+				else
+				{
+					_cachedScaledDensity = displayMetrics.ScaledDensity;
+				}
 			}
 		}
 

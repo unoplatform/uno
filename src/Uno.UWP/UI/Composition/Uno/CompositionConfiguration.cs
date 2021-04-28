@@ -65,5 +65,7 @@ namespace Uno
 			=> _isCompositionSupported && Configuration.HasFlag(Options.UseCompositionForTransforms);
 
 		internal static bool UseVisualForLayers => UseVisual;
+
+		internal static bool UseLogicalPixelsForNativeVisualTree => UseVisual;
 	}
 }

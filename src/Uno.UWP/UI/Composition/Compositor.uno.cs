@@ -60,8 +60,8 @@ namespace Windows.UI.Composition
 
 		private Android.Views.View? _view;
 
-		private int _gateId;
-		private int _gateCount;
+		//private int _gateId;
+		//private int _gateCount;
 
 		/// <summary>
 		/// Set the visual of the content root of the window.
@@ -70,40 +70,40 @@ namespace Windows.UI.Composition
 		/// <param name="rootVisual">The visual of the root element of the visual tree.</param>
 		internal void SetRootVisual(Android.Views.View view, Visual? rootVisual)
 		{
-			var count = Interlocked.Increment(ref _gateCount);
-			var id = Interlocked.Increment(ref _gateId);
-			Console.WriteLine($"Acquiring lock ROOT - id: {id} | count: {count}");
+			//var count = Interlocked.Increment(ref _gateCount);
+			//var id = Interlocked.Increment(ref _gateId);
+			//Console.WriteLine($"Acquiring lock ROOT - id: {id} | count: {count}");
 
 			lock (_gate)
 			{
-				Console.WriteLine($"Acquired lock ROOT - id: {id} | count: {_gateCount}");
+				//Console.WriteLine($"Acquired lock ROOT - id: {id} | count: {_gateCount}");
 
 				_view = view;
 				_rootVisual = rootVisual;
 				SetRootVisualPartial(rootVisual);
 			}
 
-			count = Interlocked.Decrement(ref _gateCount);
-			Console.WriteLine($"Released lock ROOT - id: {id} | count: {count}");
+			//count = Interlocked.Decrement(ref _gateCount);
+			//Console.WriteLine($"Released lock ROOT - id: {id} | count: {count}");
 
 
-			var reqId = 0;
-			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-			timer.Tick += (snd, e) =>
-			{
-				try
-				{
-					Console.WriteLine($"Recurrent commit {++reqId}");
-					Commit();
-				}
-				catch (Exception error)
-				{
-					Console.WriteLine($"Recurrent commit {reqId} failed: {error}");
-				}
-			};
-			timer.Interval = TimeSpan.FromSeconds(1);
-			timer.IsRepeating = true;
-			timer.Start();
+			//var reqId = 0;
+			//var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+			//timer.Tick += (snd, e) =>
+			//{
+			//	try
+			//	{
+			//		Console.WriteLine($"Recurrent commit {++reqId}");
+			//		Commit();
+			//	}
+			//	catch (Exception error)
+			//	{
+			//		Console.WriteLine($"Recurrent commit {reqId} failed: {error}");
+			//	}
+			//};
+			//timer.Interval = TimeSpan.FromSeconds(1);
+			//timer.IsRepeating = true;
+			//timer.Start();
 
 			//_dispatcher!.RunAsync(CoreDispatcherPriority.Normal, RecurrentCommit);
 			//async void RecurrentCommit()
@@ -133,7 +133,7 @@ namespace Windows.UI.Composition
 			if (Interlocked.CompareExchange(ref _isCommitScheduled, 1, 0) == 0)
 			{
 				//Console.WriteLine("*********** Scheduling commit");
-				//ScheduleCommit();
+				ScheduleCommit();
 			}
 			else
 			{
@@ -161,13 +161,13 @@ namespace Windows.UI.Composition
 
 			//_view?.Layout(0, 0, 1920 * 2, 1080 * 2);
 
-			var count = Interlocked.Increment(ref _gateCount);
-			var id = Interlocked.Increment(ref _gateId);
-			Console.WriteLine($"Acquiring lock COMMIT - id: {id} | count: {count}");
+			//var count = Interlocked.Increment(ref _gateCount);
+			//var id = Interlocked.Increment(ref _gateId);
+			//Console.WriteLine($"Acquiring lock COMMIT - id: {id} | count: {count}");
 
 			lock (_gate)
 			{
-				Console.WriteLine($"Acquired lock COMMIT - id: {id} | count: {_gateCount}");
+				//Console.WriteLine($"Acquired lock COMMIT - id: {id} | count: {_gateCount}");
 
 				VisualDirtyStateHelper.Reset(ref _dirtyState, VisualDirtyState.Dependent);
 				var dirtyRoots = Interlocked.Exchange(ref _dirtyRoots, ImmutableList<Visual>.Empty);
@@ -178,8 +178,8 @@ namespace Windows.UI.Composition
 				}
 			}
 
-			count = Interlocked.Decrement(ref _gateCount);
-			Console.WriteLine($"Released lock COMMIT - id: {id} | count: {count}");
+			//count = Interlocked.Decrement(ref _gateCount);
+			//Console.WriteLine($"Released lock COMMIT - id: {id} | count: {count}");
 
 			RequestRender();
 		}
@@ -211,13 +211,13 @@ namespace Windows.UI.Composition
 			// it's preferable to loop once for nothing than forgetting some changes
 			_isRenderScheduled = 0;
 
-			var count = Interlocked.Increment(ref _gateCount);
-			var id = Interlocked.Increment(ref _gateId);
-			Console.WriteLine($"Acquiring lock RENDER - id: {id} | count: {count}");
+			//var count = Interlocked.Increment(ref _gateCount);
+			//var id = Interlocked.Increment(ref _gateId);
+			//Console.WriteLine($"Acquiring lock RENDER - id: {id} | count: {count}");
 
 			lock (_gate)
 			{
-				Console.WriteLine($"Acquired lock RENDER - id: {id} | count: {_gateCount}");
+				//Console.WriteLine($"Acquired lock RENDER - id: {id} | count: {_gateCount}");
 
 				VisualDirtyStateHelper.Reset(ref _dirtyState, VisualDirtyState.Independent);
 
@@ -229,8 +229,8 @@ namespace Windows.UI.Composition
 				_rootVisual?.Render();
 			}
 
-			count = Interlocked.Decrement(ref _gateCount);
-			Console.WriteLine($"Released lock RENDER - id: {id} | count: {count}");
+			//count = Interlocked.Decrement(ref _gateCount);
+			//Console.WriteLine($"Released lock RENDER - id: {id} | count: {count}");
 
 			// TODO: if(_pendingAnimations.Any()) { RequestRender(); }
 		}

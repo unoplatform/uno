@@ -28,6 +28,7 @@ using Microsoft.Extensions.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Composition;
+using static Uno.UI.ViewHelper;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -216,7 +217,7 @@ namespace Windows.UI.Xaml.Controls
 				.Value;
 
 			var shader = Foreground is GradientBrush gb
-				? gb.GetShader(LogicalToPhysicalPixels(LayoutSlot))
+				? gb.GetShader(LayoutSlot.LogicalToPhysicalPixels())
 				: null;
 
 			_paint = TextPaintPool.GetPaint(
@@ -752,7 +753,7 @@ namespace Windows.UI.Xaml.Controls
 			point.X -= Padding.Left;
 			point.Y -= Padding.Top;
 
-			var physicalPoint = LogicalToPhysicalPixels(point);
+			var physicalPoint = point.LogicalToPhysicalPixels();
 
 			var layout = _arrangeLayout.Layout;
 			var rect = new Android.Graphics.Rect(0, 0, layout.Width, layout.Height);
@@ -766,29 +767,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return -1;
 		}
-
-		#endregion
-
-		#region Scaling helpers
-		private static Rect LogicalToPhysicalPixels(Rect value)
-			=> Uno.CompositionConfiguration.UseVisual
-				? value
-				: ViewHelper.LogicalToPhysicalPixels(value);
-
-		private static Point LogicalToPhysicalPixels(Point value)
-			=> Uno.CompositionConfiguration.UseVisual
-				? value
-				: ViewHelper.LogicalToPhysicalPixels(value);
-
-		private static int LogicalToPhysicalPixels(double value)
-			=> Uno.CompositionConfiguration.UseVisual
-				? (int)value
-				: ViewHelper.LogicalToPhysicalPixels(value);
-
-		private static double PhysicalToLogicalPixels(double value)
-			=> Uno.CompositionConfiguration.UseVisual
-				? value
-				: ViewHelper.PhysicalToLogicalPixels(value);
 
 		#endregion
 	}

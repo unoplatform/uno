@@ -67,41 +67,41 @@ namespace Windows.UI.Composition
 			//	in that case rendering the view at it's current state is fine;
 			//	either when we have a managed view nested in a native view, then the Commit() should have already been invoked.
 
-			var count = Interlocked.Increment(ref _gateCount);
-			var id = Interlocked.Increment(ref _gateId);
-			Console.WriteLine($"Acquiring lock RENDER NATIVE - id: {id} | count: {count}");
+			//var count = Interlocked.Increment(ref _gateCount);
+			//var id = Interlocked.Increment(ref _gateId);
+			//Console.WriteLine($"Acquiring lock RENDER NATIVE - id: {id} | count: {count}");
 
 			lock (_gate)
 			{
-				Console.WriteLine($"Acquired lock RENDER NATIVE  - id: {id} | count: {_gateCount}");
+				//Console.WriteLine($"Acquired lock RENDER NATIVE  - id: {id} | count: {_gateCount}");
 
 				visual.DrawOn(canvas);
 			}
 
-			count = Interlocked.Decrement(ref _gateCount);
-			Console.WriteLine($"Released lock RENDER NATIVE - id: {id} | count: {count}");
+			//count = Interlocked.Decrement(ref _gateCount);
+			//Console.WriteLine($"Released lock RENDER NATIVE - id: {id} | count: {count}");
 		}
 
 
-		private int _commitScheduleCount;
+		//private int _commitScheduleCount;
 		partial void ScheduleCommit()
 		{
-			//_dispatcher?.RunAnimation(_commitOperation);
+			_dispatcher?.RunAnimation(_commitOperation);
 
-			var d = _dispatcher;
-			if (d is null)
-			{
-				Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] CANNOT Scheduling commit: No dispatcher !!!");
-				return;
-			}
+			//var d = _dispatcher;
+			//if (d is null)
+			//{
+			//	Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] CANNOT Scheduling commit: No dispatcher !!!");
+			//	return;
+			//}
 
-			var id = Interlocked.Increment(ref _commitScheduleCount);
-			Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Scheduling commit #{id}");
-			d.RunAsync(CoreDispatcherPriority.High, () =>
-			{
-				Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Running commit #{id}");
-				Commit();
-			});
+			//var id = Interlocked.Increment(ref _commitScheduleCount);
+			//Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Scheduling commit #{id}");
+			//d.RunAsync(CoreDispatcherPriority.High, () =>
+			//{
+			//	Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Running commit #{id}");
+			//	Commit();
+			//});
 		}
 
 		partial void ScheduleRender()

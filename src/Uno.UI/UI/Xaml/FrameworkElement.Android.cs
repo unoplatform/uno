@@ -237,6 +237,19 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
+				if (IsVisualTreeRoot && Uno.CompositionConfiguration.UseLogicalPixelsForNativeVisualTree)
+				{
+					// When using visuals, we can apply scaling directly on the native render tree,
+					// so we prefer to use logical pixel also for the native visual tree.
+					// So here, at the root of the application, we scale down the requested size to logical pixels,
+					// that are then going to be used for the whole native visual tree.
+
+					left = (int)(left / ViewHelper.VisualScale);
+					top = (int)(top / ViewHelper.VisualScale);
+					right = (int)(right / ViewHelper.VisualScale);
+					bottom = (int)(bottom / ViewHelper.VisualScale);
+				}
+
 				base.OnLayoutCore(changed, left, top, right, bottom);
 
 				var finalRect =

@@ -144,7 +144,7 @@ namespace Uno.UI.Controls
 			var letterSpacing = (float)characterSpacing / 1000f; // Android LetterSpacing is in em units
 			var rawTextSize = (float)ViewHelper.ApplyDimension(Android.Util.ComplexUnitType.Px, size);
 
-			var density = (float)ViewHelper.Scale;
+			var density = (float)ViewHelper.VisualScale;
 			var textSize = rawTextSize * (float)FontHelper.GetFontRatio();
 
 			return (density, textSize, letterSpacing);

@@ -116,11 +116,22 @@ namespace Uno.UI.Composition
 
 		private void SetBounds(int width, int height)
 		{
-			_compositor.RootNode.SetPosition(new Rect(new Point(), new Size(width / ViewHelperCore.Scale, height / ViewHelperCore.Scale)));
-			_compositor.RootNode.SetScaleX((float)ViewHelperCore.Scale);
-			_compositor.RootNode.SetScaleY((float)ViewHelperCore.Scale);
-			//RootNode.SetClipToBounds(false);
-			//RootNode.SetClipToOutline(false);
+			if (CompositionConfiguration.UseLogicalPixelsForNativeVisualTree)
+			{
+				var scale = ViewHelperCore.Scale;
+				var logicalWidth = width / scale;
+				var logicalHeight = height / scale;
+
+				_compositor.RootNode.SetPosition(new Rect(new Point(), new Size(logicalWidth, logicalHeight)));
+				_compositor.RootNode.SetScaleX((float)scale);
+				_compositor.RootNode.SetScaleY((float)scale);
+				_compositor.RootNode.SetPivotX(0);
+				_compositor.RootNode.SetPivotY(0);
+			}
+			else
+			{
+				_compositor.RootNode.SetPosition(new Rect(new Point(), new Size(width, height)));
+			}
 		}
 		#endregion
 
