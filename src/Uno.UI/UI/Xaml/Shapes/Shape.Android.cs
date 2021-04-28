@@ -13,40 +13,50 @@ using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.Views;
 using System.Numerics;
+using Uno.UI.Composition;
 using Canvas = Android.Graphics.Canvas;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Shape
 	{
+		private readonly NativeCustomRenderNodeVisual _shapeVisual;
 		private Android.Graphics.Path _path;
 		private Windows.Foundation.Rect _drawArea;
 
-		protected bool HasStroke
-		{
-			get { return Stroke != null && ActualStrokeThickness > 0; }
-		}
+		protected bool HasStroke => Stroke != null && ActualStrokeThickness > 0;
 
 		internal double PhysicalStrokeThickness => ViewHelper.LogicalToPhysicalPixels((double)ActualStrokeThickness);
 
 		public Shape()
 		{
-			SetWillNotDraw(false);
+			if (Uno.CompositionConfiguration.UseVisual)
+			{
+				_shapeVisual = new NativeCustomRenderNodeVisual(UIContext);
+				Visual.Children.InsertAtTop(_shapeVisual);
+			}
+			else
+			{
+				SetWillNotDraw(false);
+			}
 		}
 
 		protected override void OnDraw(Canvas canvas)
 		{
 			base.OnDraw(canvas);
+
+			if (Uno.CompositionConfiguration.UseVisual)
+			{
+				return;
+			}
+
 			if (_path == null)
 			{
 				return;
 			}
 
-			//Drawing paths on the canvas does not respect the canvas' ClipBounds
-			canvas.ClipRect(ClippedFrame?.LogicalToPhysicalPixels().ToRectF());
-
-			DrawFill(canvas);
-			DrawStroke(canvas);
+			DrawShape(canvas);
 		}
 
 		private protected void Render(
@@ -57,25 +67,59 @@ namespace Windows.UI.Xaml.Shapes
 			double renderOriginX = 0d,
 			double renderOriginY = 0d)
 		{
-			_path = path;
-			if (_path == null)
+			var drawArea = default(Rect);
+			if (path is { })
 			{
-				return;
+				var matrix = new Android.Graphics.Matrix();
+				matrix.SetScale((float)scaleX * (float)ViewHelper.Scale, (float)scaleY * (float)ViewHelper.Scale);
+				matrix.PostTranslate(ViewHelper.LogicalToPhysicalPixels(renderOriginX), ViewHelper.LogicalToPhysicalPixels(renderOriginY));
+				path.Transform(matrix);
+
+				size = size?.LogicalToPhysicalPixels();
+				drawArea = GetPathBoundingBox(path);
+				drawArea.Width = size?.Width ?? drawArea.Width;
+				drawArea.Height = size?.Height ?? drawArea.Height;
 			}
 
-			var matrix = new Android.Graphics.Matrix();
+			_path = path;
+			_drawArea = drawArea;
 
-			matrix.SetScale((float)scaleX * (float)ViewHelper.Scale, (float)scaleY * (float)ViewHelper.Scale);
-			matrix.PostTranslate(ViewHelper.LogicalToPhysicalPixels(renderOriginX), ViewHelper.LogicalToPhysicalPixels(renderOriginY));
+			if (Uno.CompositionConfiguration.UseVisual)
+			{
+				_shapeVisual.Node = CreateRenderNode();
+			}
+			else
+			{
+				Invalidate();
+			}
+		}
 
-			_path.Transform(matrix);
-			size = size?.LogicalToPhysicalPixels();
+		private RenderNode CreateRenderNode()
+		{
+			if (_path is null)
+			{
+				return null;
+			}
 
-			_drawArea = GetPathBoundingBox(_path);
-			_drawArea.Width = size?.Width ?? _drawArea.Width;
-			_drawArea.Height = size?.Height ?? _drawArea.Height;
+			var node = new RenderNode(string.Empty);
+			node.SetPosition(_drawArea);
 
-			Invalidate();
+			using var session = Composition.Visual.Edit(node);
+			if (session?.Canvas is { } canvas)
+			{
+				DrawShape(canvas);
+			}
+
+			return node;
+		}
+
+		private void DrawShape(Canvas canvas)
+		{
+			//Drawing paths on the canvas does not respect the canvas' ClipBounds
+			canvas.ClipRect((ClippedFrame?.LogicalToPhysicalPixels() ?? default).ToRectF());
+
+			DrawFill(canvas);
+			DrawStroke(canvas);
 		}
 
 		private void DrawFill(Canvas canvas)
