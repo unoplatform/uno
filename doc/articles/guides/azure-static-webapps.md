@@ -2,7 +2,7 @@
 
 The Azure team has released a new service named [Azure Static Web Apps in Preview](https://docs.microsoft.com/en-us/azure/static-web-apps/overview).
 
-This integration allows the publication of GitHub and Azure DevOps git repositories to a service specialized for static web apps. It uses GitHub Actions or Azure DevOps to build and publish the application. The integration also supports the creation of temporary environments for Pull Requests, giving the ability to perform validations while a Pull Request is opened.
+This integration allows the publication of GitHub and Azure DevOps Git repositories to a service specialized for static web apps. It uses GitHub Actions or Azure DevOps to build and publish the application. The integration also supports the creation of temporary environments for Pull Requests, giving the ability to perform validations while a Pull Request is opened.
 
 You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration) to configure the server-side behavior of the application.
 
