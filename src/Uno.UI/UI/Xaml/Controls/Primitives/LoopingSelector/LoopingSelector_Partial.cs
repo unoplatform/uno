@@ -1904,8 +1904,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				//IFCEXPECT(enqueued);
 				enqueued = spDispatcherQueue.TryEnqueue(() =>
 				{
+					// UNO-TODO: Animations are disabled because of https://github.com/unoplatform/uno/issues/5845
 					_tpScrollViewer.ChangeViewWithOptionalAnimation(null, spVerticalOffset, null,
-						false /* disableAnimation */);
+						true /* disableAnimation */);
 				});
 			}
 		}
