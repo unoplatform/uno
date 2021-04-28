@@ -135,6 +135,7 @@ namespace Windows.UI.Xaml.Shapes
 
 				var path = GetRoundedRect(cornerRadius, innerCornerRadius, area, adjustedArea);
 				var innerPath = GetRoundedPath(cornerRadius, adjustedArea);
+				var outerPath = GetRoundedPath(cornerRadius, area);
 
 				var insertionIndex = 0;
 
@@ -199,7 +200,7 @@ namespace Windows.UI.Xaml.Shapes
 
 				parent.Mask = new CAShapeLayer()
 				{
-					Path = path,
+					Path = outerPath,
 					Frame = area,
 					// We only use the fill color to create the mask area
 					FillColor = _Color.White.CGColor,
@@ -210,7 +211,7 @@ namespace Windows.UI.Xaml.Shapes
 					owner.ClippingIsSetByCornerRadius = true;
 				}
 
-				state.BoundsPath = path;
+				state.BoundsPath = outerPath;
 			}
 			else
 			{
@@ -368,22 +369,34 @@ namespace Windows.UI.Xaml.Shapes
 			var path = new CGPath();
 
 			GetRoundedPath(cornerRadius, area, path);
-			GetRoundedPath(innerCornerRadius, insetArea, path);
-
+			GetRoundedPath(innerCornerRadius, insetArea, path, clockwise: false);
 			return path;
 		}
 
-		private static CGPath GetRoundedPath(CornerRadius cornerRadius, CGRect area, CGPath path = null)
+		private static CGPath GetRoundedPath(CornerRadius cornerRadius, CGRect area, CGPath path = null, bool clockwise = true)
 		{
 			path ??= new CGPath();
 			// How AddArcToPoint works:
 			// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
-			path.MoveToPoint(area.GetMidX(), area.Y);
-			path.AddArcToPoint(area.Right, area.Top, area.Right, area.GetMidY(), (float)cornerRadius.TopRight);
-			path.AddArcToPoint(area.Right, area.Bottom, area.GetMidX(), area.Bottom, (float)cornerRadius.BottomRight);
-			path.AddArcToPoint(area.Left, area.Bottom, area.Left, area.GetMidY(), (float)cornerRadius.BottomLeft);
-			path.AddArcToPoint(area.Left, area.Top, area.GetMidX(), area.Top, (float)cornerRadius.TopLeft);
-			path.AddLineToPoint(area.GetMidX(), area.Y);
+
+			if (clockwise)
+			{
+				path.MoveToPoint(area.GetMidX(), area.Y);
+				path.AddArcToPoint(area.Right, area.Top, area.Right, area.GetMidY(), (float)cornerRadius.TopRight);
+				path.AddArcToPoint(area.Right, area.Bottom, area.GetMidX(), area.Bottom, (float)cornerRadius.BottomRight);
+				path.AddArcToPoint(area.Left, area.Bottom, area.Left, area.GetMidY(), (float)cornerRadius.BottomLeft);
+				path.AddArcToPoint(area.Left, area.Top, area.GetMidX(), area.Top, (float)cornerRadius.TopLeft);
+				path.AddLineToPoint(area.GetMidX(), area.Y);
+			}
+			else
+			{
+				path.MoveToPoint(area.GetMidX(), area.Y);
+				path.AddArcToPoint(area.Left, area.Top, area.Left, area.GetMidY(), (float)cornerRadius.TopLeft);
+				path.AddArcToPoint(area.Left, area.Bottom, area.GetMidX(), area.Bottom, (float)cornerRadius.BottomLeft);
+				path.AddArcToPoint(area.Right, area.Bottom, area.Right, area.GetMidY(), (float)cornerRadius.BottomRight);
+				path.AddArcToPoint(area.Right, area.Top, area.GetMidX(), area.Top, (float)cornerRadius.TopRight);
+				path.AddLineToPoint(area.GetMidX(), area.Y);
+			}
 
 			return path;
 		}
