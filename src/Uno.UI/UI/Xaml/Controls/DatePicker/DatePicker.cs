@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Controls
 					m_epYearSelectionChangedHandler.Disposable = null;
 				}
 
-				if (m_tpFlyoutButton != null && !false)
+				if (m_tpFlyoutButton != null)
 				{
 					m_epFlyoutButtonClickHandler.Disposable = null;
 				}
@@ -494,12 +494,9 @@ namespace Windows.UI.Xaml.Controls
 
 				if (m_tpFlyoutButton != null)
 				{
-					if (!false)
-					{
-						m_tpFlyoutButton.Click += OnFlyoutButtonClick;
-						m_epFlyoutButtonClickHandler.Disposable =
-							Disposable.Create(() => m_tpFlyoutButton.Click -= OnFlyoutButtonClick);
-					}
+					m_tpFlyoutButton.Click += OnFlyoutButtonClick;
+					m_epFlyoutButtonClickHandler.Disposable =
+						Disposable.Create(() => m_tpFlyoutButton.Click -= OnFlyoutButtonClick);
 					RefreshFlyoutButtonAutomationName();
 				}
 
@@ -882,26 +879,23 @@ namespace Windows.UI.Xaml.Controls
 		   Task<DateTimeOffset?> getOperation,
 		   AsyncStatus status)
 		{
-			if (!false)
+			// CheckThread();
+
+			m_tpAsyncSelectionInfo = null;
+
+			if (status == AsyncStatus.Completed)
 			{
-				// CheckThread();
+				DateTimeOffset? selectedDate;
+				selectedDate = getOperation.Result;
 
-				m_tpAsyncSelectionInfo = null;
-
-				if (status == AsyncStatus.Completed)
+				// A null IReference object is returned when the user cancels out of the
+				// 
+				if (selectedDate != null)
 				{
-					DateTimeOffset? selectedDate;
-					selectedDate = getOperation.Result;
-
-					// A null IReference object is returned when the user cancels out of the
-					// 
-					if (selectedDate != null)
-					{
-						// We set SelectedDate instead of Date in order to ensure that the value
-						// propagates to both SelectedDate and Date.
-						// See the comment at the top of OnPropertyChanged2 for details.
-						SelectedDate = selectedDate;
-					}
+					// We set SelectedDate instead of Date in order to ensure that the value
+					// propagates to both SelectedDate and Date.
+					// See the comment at the top of OnPropertyChanged2 for details.
+					SelectedDate = selectedDate;
 				}
 			}
 		}
@@ -1060,7 +1054,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (pDP == DatePicker.DateProperty)
 			{
-				if (m_defaultDate.Value.ToUniversalTime() == NullDateSentinelValue && false)
+				if (m_defaultDate.Value.ToUniversalTime() == NullDateSentinelValue)
 				{
 					GetTodaysDate(out m_defaultDate);
 				}
@@ -1608,7 +1602,7 @@ namespace Windows.UI.Xaml.Controls
 			// For the Threshold template we set the Day, Month and Year strings on separate TextBlocks:
 			if (m_tpYearTextBlock != null)
 			{
-				if (selectedDate != null || false)
+				if (selectedDate != null)
 				{
 					GetYearFormatter(YearFormat, strCalendarIdentifier, out spYearFormatter);
 					strYear = spYearFormatter.Format(date.Value);
@@ -1622,7 +1616,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (m_tpMonthTextBlock != null)
 			{
-				if (selectedDate != null || false)
+				if (selectedDate != null)
 				{
 					GetMonthFormatter(MonthFormat, strCalendarIdentifier, out spMonthFormatter);
 					strMonth = spMonthFormatter.Format(date.Value);
@@ -1636,7 +1630,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (m_tpDayTextBlock != null)
 			{
-				if (selectedDate != null || false)
+				if (selectedDate != null)
 				{
 					strDayFormat = DayFormat;
 					GetDayFormatter(strDayFormat, strCalendarIdentifier, out spDayFormatter);
