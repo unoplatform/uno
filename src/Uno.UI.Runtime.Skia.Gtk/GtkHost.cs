@@ -15,6 +15,7 @@ using Gtk;
 using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers;
 using Uno.Extensions.System;
 using Uno.UI.Runtime.Skia.GTK.Extensions.System;
+using Uno.UI.Runtime.Skia.GTK.UI.Core;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -59,6 +60,13 @@ namespace Uno.UI.Runtime.Skia
 			_window = new Gtk.Window("Uno Host");
 			_window.SetDefaultSize(1024, 800);
 			_window.SetPosition(Gtk.WindowPosition.Center);
+
+			_window.Realized += (s, e) =>
+			{
+				// Load the correct cursors before the window is shown
+				// but after the window has been initialized.
+				Cursors.Reload();
+			};
 
 			_window.DeleteEvent += delegate
 			{
