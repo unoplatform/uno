@@ -30,7 +30,7 @@ namespace Windows.UI.Composition
 		private /*VisualDirtyState*/ int _dirtyState;
 		private ImmutableList<Visual> _dirtyRoots = ImmutableList<Visual>.Empty; // We have to maintain a List in order to allow UIElement nested in native elements
 
-		internal void InvalidateRoot(Visual rootVisual, VisualDirtyState kind)
+		internal void InvalidateRoot(Visual rootVisual, CompositionPropertyType kind)
 		{
 			// TODO: Remove the kind here ... not needed
 
@@ -132,13 +132,16 @@ namespace Windows.UI.Composition
 		{
 			if (Interlocked.CompareExchange(ref _isCommitScheduled, 1, 0) == 0)
 			{
+
+			}
+			{
 				//Console.WriteLine("*********** Scheduling commit");
 				ScheduleCommit();
 			}
-			else
-			{
-				Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Commit already requested");
-			}
+			//else
+			//{
+			//	Console.WriteLine($"*********** [{Thread.CurrentThread.ManagedThreadId}] Commit already requested");
+			//}
 		}
 
 		partial void ScheduleCommit();
@@ -169,12 +172,14 @@ namespace Windows.UI.Composition
 			{
 				//Console.WriteLine($"Acquired lock COMMIT - id: {id} | count: {_gateCount}");
 
-				VisualDirtyStateHelper.Reset(ref _dirtyState, VisualDirtyState.Dependent);
+				VisualDirtyStateHelper.Reset(ref _dirtyState, CompositionPropertyType.Dependent);
 				var dirtyRoots = Interlocked.Exchange(ref _dirtyRoots, ImmutableList<Visual>.Empty);
 
 				foreach (var root in dirtyRoots)
 				{
 					root.Commit();
+
+					root.CheckChildrenPendingDirtyState();
 				}
 			}
 
@@ -219,7 +224,7 @@ namespace Windows.UI.Composition
 			{
 				//Console.WriteLine($"Acquired lock RENDER - id: {id} | count: {_gateCount}");
 
-				VisualDirtyStateHelper.Reset(ref _dirtyState, VisualDirtyState.Independent);
+				VisualDirtyStateHelper.Reset(ref _dirtyState, CompositionPropertyType.Independent);
 
 				// TODO: Update animations!
 

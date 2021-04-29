@@ -43,6 +43,6 @@ namespace Uno.UI.Composition
 		/// Invalidates the last draw.
 		/// </summary>
 		public void Invalidate()
-			=> base.Invalidate(VisualDirtyState.Dependent);
+			=> base.Invalidate(CompositionPropertyType.Dependent);
 	}
 }

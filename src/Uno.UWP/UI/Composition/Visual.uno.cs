@@ -2,91 +2,159 @@ using System;
 using System.Numerics;
 using System.Threading;
 using Windows.Foundation;
+using Android.OS;
 
 namespace Windows.UI.Composition
 {
 	public partial class Visual
 	{
-		private int _dirtyState;
+		//private /*VisualDirtyState*/ int _dirtyState;
+		//private /*VisualDirtyState*/ int _renderDirtyState;
 
 		//internal bool IsDirty => DirtyState > VisualDirtyState.None;
 
-		internal VisualDirtyState DirtyState => (VisualDirtyState)_dirtyState;
+		//internal VisualDirtyState DirtyState => (VisualDirtyState)_dirtyState;
 
-		internal void Invalidate(VisualDirtyState kind)
-		{
-			if (VisualDirtyStateHelper.Invalidate(ref _dirtyState, kind))
-			{
+		///// <summary>
+		///// Invalidates local
+		///// </summary>
+		///// <param name="kind"></param>
+		//private protected void Invalidate(VisualDirtyState kind)
+		//{
+		//	if (VisualDirtyStateHelper.Invalidate(ref _dirtyState, kind))
+		//	{
+		//		if (Parent is { } parent)
+		//		{
+		//			parent.Invalidate(kind);
+		//		}
+		//		else
+		//		{
+		//			Compositor.InvalidateRoot(this, kind);
+		//		}
+		//	}
+		//}
 
-			}
+		//private bool IsDirty(VisualDirtyState kind)
+		//	=> (_dirtyState & (int)kind) != 0;
 
-			{
-				if (Parent is { } parent)
-				{
-					parent.Invalidate(kind);
-				}
-				else
-				{
-					Compositor.InvalidateRoot(this, kind);
-				}
-			}
-		}
-
-		private bool IsDirty(VisualDirtyState kind)
-			=> (_dirtyState & (int)kind) != 0;
-
-		private void Reset(VisualDirtyState kind)
-			=> VisualDirtyStateHelper.Reset(ref _dirtyState, kind);
+		//private bool Reset(VisualDirtyState kind)
+		//	=> VisualDirtyStateHelper.Reset(ref _renderDirtyState, kind);
 
 		//private void ClearDirtyState()
 		//{
 		//	_dirtyState = VisualDirtyState.None;
 		//}
 
+		///// <inheritdoc />
+		//internal override void Commit()
+		//{
+		//	base.Commit();
+		//	VisualDirtyStateHelper.Commit(ref _fields, ref _dirtyState, ref _renderFields, ref _renderDirtyState);
+		//}
+
+		/// <inheritdoc />
+		private protected override void OnInvalidated(CompositionPropertyType kind)
+		{
+			base.OnInvalidated(kind);
+
+			if (Parent is { } parent)
+			{
+				parent.Invalidate(kind);
+
+				global::System.Diagnostics.Debug.Assert((parent.PendingDirtyState & kind) == kind);
+			}
+			else
+			{
+				Compositor.InvalidateRoot(this, kind);
+			}
+		}
+
+		/// <inheritdoc />
+		private protected override void OnCommit()
+		{
+			base.OnCommit();
+
+			_renderFields = _fields;
+		}
+
 		/// <summary>
 		/// WARNING: This method is most probably NOT what you want!
-		/// This is an **internal method for the composition engine**, it's the first step of the composition. <br />
+		/// This is an **internal method for the composition engine**, it's the second and final step of the composition.<br />
 		/// 
-		/// Commits the pending changes of this visual and its children into the rendering engine.
+		/// Natively renders this visual and its children.
 		/// </summary>
-		/// <remarks>This has to be invoked from the UI thread and is expected to be incredibly fast.</remarks>
-		/// <remarks>This method is mutually-excluded with the <see cref="Render"/>.</remarks>
-		internal virtual void Commit()
+		/// <remarks>If the platform has a compositor thread, this is expected to be invoked on that thread.</remarks>
+		/// <remarks>This method is mutually-excluded with the <see cref="CompositionObject.Commit"/>.</remarks>
+		internal virtual void Render()
 		{
-			_render = _ui;
+			RenderIndependent();
+			RenderDependent();
 		}
+
+		/// <summary>
+		/// WARNING: This method is most probably NOT what you want!
+		/// This is an **internal method for the composition engine**.<br />
+		/// 
+		/// Natively renders independent properties of this visual and its children.
+		/// </summary>
+		/// <remarks>If the platform has a compositor thread, this is expected to be invoked on that thread.</remarks>
+		/// <remarks>This method is mutually-excluded with the <see cref="CompositionObject.Commit"/>.</remarks>
+		internal void RenderIndependent()
+		{
+			if (Reset(CompositionPropertyType.Independent)) { }
+			{
+				// Give opportunity to implementers to run shared code
+				OnRenderIndependent();
+
+				// Effectively render the content to native
+				NativeRenderIndependent();
+			}
+		}
+
+		private protected virtual void OnRenderIndependent() { }
+		partial void NativeRenderIndependent();
 
 		/// <summary>
 		/// WARNING: This method is most probably NOT what you want!
 		/// This is an **internal method for the composition engine**, it's the second and final step of the composition. <br />
 		/// 
-		/// Natively renders this visual and its children.
+		/// Natively renders dependent properties of this visual and its children.
 		/// </summary>
 		/// <remarks>If the platform has a compositor thread, this is expected to be invoked on that thread.</remarks>
-		/// <remarks>This method is mutually-excluded with the <see cref="Commit"/>.</remarks>
-		internal virtual void Render()
+		/// <remarks>This method is mutually-excluded with the <see cref="CompositionObject.Commit"/>.</remarks>
+		internal void RenderDependent()
 		{
-			RenderPartial();
+			if (Reset(CompositionPropertyType.Dependent)) { }
+			{
+				// Give opportunity to implementers to run shared code
+				OnRenderDependent();
+
+				// Effectively render the content to native
+				NativeRenderDependent();
+			}
 		}
 
-		partial void RenderPartial();
+		private protected virtual void OnRenderDependent() { }
+		partial void NativeRenderDependent();
 	}
 
 	[Flags]
-	internal enum VisualDirtyState
+	internal enum CompositionPropertyType
 	{
 		None = 0,
 
+		//LocalIndependent = 1 << 1,
+		//ChildIndependent = 1 << 2,
 		Independent = 1,
 
+		//LocalDependent = 1 << 4,
+		//ChildDependent = 1 << 5,
 		Dependent = 2,
-
-		//Native = -1,
 	}
 
 	internal static class VisualDirtyStateHelper
 	{
-		public static bool Invalidate(ref int dirtyState, VisualDirtyState kind)
+		public static CompositionPropertyType Invalidate(ref int dirtyState, CompositionPropertyType kind)
 		{
 			var k = (int)kind;
 
@@ -97,14 +165,27 @@ namespace Windows.UI.Composition
 				updated = current | k;
 				if (current == updated)
 				{
-					return false;
+					return CompositionPropertyType.None;
 				}
 			} while (Interlocked.CompareExchange(ref dirtyState, updated, current) != current);
 
-			return true;
+			return (CompositionPropertyType)~current & kind;
 		}
 
-		public static void Reset(ref int dirtyState, VisualDirtyState kind)
+		//public static void Commit<TFields>(
+		//	ref TFields fields, ref int dirtyState,
+		//	ref TFields renderFields, ref int renderDirtyState)
+		//{
+		//	renderFields = fields;
+
+		//	// We copy the dirty state only after having commit fields,
+		//	// so it avoid concurrency issue with property setters that are setting the field before invalidating the visual.
+		//	// Note: This method might be invoked more than once per commit, so we have to append the dirty state, not overriding it.
+		//	//		 This also had an additional layer of protection against concurrency issue.
+		//	renderDirtyState |= Interlocked.Exchange(ref dirtyState, (int)VisualDirtyState.None);
+		//}
+
+		public static bool Reset(ref int dirtyState, CompositionPropertyType kind)
 		{
 			var k = ~(int)kind;
 
@@ -115,9 +196,11 @@ namespace Windows.UI.Composition
 				updated = current & k;
 				if (current == updated)
 				{
-					return;
+					return false;
 				}
 			} while (Interlocked.CompareExchange(ref dirtyState, updated, current) != current);
+
+			return true;
 		}
 	}
 

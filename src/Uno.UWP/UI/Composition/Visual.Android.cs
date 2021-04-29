@@ -1,6 +1,6 @@
 #nullable enable
 
-//#define DRAW_DRAW_BOUNDS
+#define DRAW_DRAW_BOUNDS
 
 #if __ANDROID__
 using System.Numerics;
@@ -134,58 +134,54 @@ namespace Windows.UI.Composition
 		//	canvas.DrawRenderNode(visual._node);
 		//}
 
-		partial void RenderPartial()
-		{
-			//	Update();
-			//}
+		//partial void RenderPartial()
+		//{
+		//	//	Update();
+		//	//}
 
-			///// <summary>
-			///// Requests to this Visual to apply its pending changes to its internal native RenderNode.
-			///// On Android we have a 2 stages process in order to have a dedicated CompositorThread:
-			/////		The updates are pushed to the native node only when a Frame is about to be rendered,
-			/////		avoiding an update while the node is being rendered on the screen.
-			///// </summary>
-			//private void Update()
-			//{
-			//var (needsIndependentRender, needsDependentRender) = Kind switch
-			//{
-			//	VisualKind.UnknownNativeView => (true, true),
-			//	VisualKind.NativeIndependent => (true, true),
+		//	///// <summary>
+		//	///// Requests to this Visual to apply its pending changes to its internal native RenderNode.
+		//	///// On Android we have a 2 stages process in order to have a dedicated CompositorThread:
+		//	/////		The updates are pushed to the native node only when a Frame is about to be rendered,
+		//	/////		avoiding an update while the node is being rendered on the screen.
+		//	///// </summary>
+		//	//private void Update()
+		//	//{
+		//	//var (needsIndependentRender, needsDependentRender) = Kind switch
+		//	//{
+		//	//	VisualKind.UnknownNativeView => (true, true),
+		//	//	VisualKind.NativeIndependent => (true, true),
 
-			//	//(_, VisualDirtyState.Dependent) => (true, true),
-			//	//(_, VisualDirtyState.Independent) => (true, false),
-			//	_ => (IsDirty(VisualDirtyState.Independent), IsDirty(VisualDirtyState.Dependent))
-			//};
+		//	//	//(_, VisualDirtyState.Dependent) => (true, true),
+		//	//	//(_, VisualDirtyState.Independent) => (true, false),
+		//	//	_ => (IsDirty(VisualDirtyState.Independent), IsDirty(VisualDirtyState.Dependent))
+		//	//};
 
-			var (needsIndependentRender, needsDependentRender) = (true, true);
+		//	var (needsIndependentRender, needsDependentRender) = (true, true);
 
-			if (needsIndependentRender)
-			{
-				RenderIndependent();
-			}
+		//	if (needsIndependentRender)
+		//	{
+		//		RenderIndependent();
+		//	}
 
-			if (needsDependentRender)
-			{
-				RenderDependent();
-			}
+		//	if (needsDependentRender)
+		//	{
+		//		RenderDependent();
+		//	}
 
-			//switch (Kind)
-			//{
-			//	case VisualKind.UnknownNativeView:
-			//	case VisualKind.NativeIndependent:
-			//		Invalidate(VisualDirtyState.Dependent);
-			//		break;
-			//}
+		//	//switch (Kind)
+		//	//{
+		//	//	case VisualKind.UnknownNativeView:
+		//	//	case VisualKind.NativeIndependent:
+		//	//		Invalidate(VisualDirtyState.Dependent);
+		//	//		break;
+		//	//}
 
-			//ClearDirtyState();
-		}
+		//	//ClearDirtyState();
+		//}
 
-		private protected void RenderIndependent()
-		{
-			Reset(VisualDirtyState.Independent);
-
-			RenderIndependent(_node);
-		}
+		partial void NativeRenderIndependent()
+			=> RenderIndependent(_node);
 
 		/// <summary>
 		/// Push the independent properties of this visual into the native RenderNode.
@@ -194,8 +190,8 @@ namespace Windows.UI.Composition
 		/// <remarks>This might be invoked either on the UIThread, either on the compositor thread.</remarks>
 		private protected virtual void RenderIndependent(RenderNode node)
 		{
-			var point = Offset;
-			var size = Size;
+			var point = _renderFields._offset;
+			var size = _renderFields._size;
 
 			//node.SetPosition((int)point.X, (int)point.Y, (int)(point.X + size.X), (int)(point.Y + size.Y));
 			node.SetPosition(new Windows.Foundation.Rect(point.X, point.Y, size.X, size.Y));
@@ -207,15 +203,12 @@ namespace Windows.UI.Composition
 		/// Request to this visual to draw its dependent content onto the native canvas.
 		/// </summary>
 		/// <remarks>This might be invoked either on the UIThread, either on the compositor thread.</remarks>
-		private protected void RenderDependent()
+		partial void NativeRenderDependent()
 		{
 			if (Edit(_node) is { } session)
 			{
 				try
 				{
-					Reset(VisualDirtyState.Dependent);
-
-					//session.Canvas.DrawColor(Android.Graphics.Color.Transparent, BlendMode.Clear!);
 					RenderDependent(session.Canvas);
 				}
 				catch (Exception)
@@ -255,32 +248,34 @@ namespace Windows.UI.Composition
 			//	(int)_render._size.X,
 			//	(int)_render._size.Y);
 
+			var values = _renderFields;
+
 			canvas.DrawRect(
-				_render._offset.X,
-				_render._offset.Y,
-				_render._size.X,
-				_render._size.Y,
+				values._offset.X,
+				values._offset.Y,
+				values._size.X,
+				values._size.Y,
 				_debugBoundsFill!);
 
 			var halfStrokeThickness = _debugStrokeThickness / 2.0;
 			canvas.DrawRect(
-				(float)Math.Min(_render._offset.X + halfStrokeThickness, _render._size.X),
-				(float)Math.Min(_render._offset.Y + halfStrokeThickness, _render._size.Y),
-				(float)Math.Max(_render._size.X - halfStrokeThickness, 0),
-				(float)Math.Max(_render._size.Y - halfStrokeThickness, 0),
+				(float)Math.Min(values._offset.X + halfStrokeThickness, values._size.X),
+				(float)Math.Min(values._offset.Y + halfStrokeThickness, values._size.Y),
+				(float)Math.Max(values._size.X - halfStrokeThickness, 0),
+				(float)Math.Max(values._size.Y - halfStrokeThickness, 0),
 				_debugBoundsStroke!);
 
 			canvas.DrawLine(
-				_render._offset.X,
-				_render._offset.Y,
-				_render._offset.X + _render._size.X,
-				_render._offset.Y + _render._size.Y,
+				values._offset.X,
+				values._offset.Y,
+				values._offset.X + values._size.X,
+				values._offset.Y + values._size.Y,
 				_debugBoundsStroke!);
 			canvas.DrawLine(
-				_render._offset.X,
-				_render._offset.Y + _render._size.Y, 
-				_render._offset.X + _render._size.X,
-				_render._offset.Y,
+				values._offset.X,
+				values._offset.Y + values._size.Y, 
+				values._offset.X + values._size.X,
+				values._offset.Y,
 				_debugBoundsStroke!);
 #endif
 		}

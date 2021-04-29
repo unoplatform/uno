@@ -32,8 +32,9 @@ namespace Windows.UI.Composition
 			public CompositionClip? _clip;
 		}
 
-		private Fields _ui = Fields.Create(); // WARNING: Visual can also be modified from a background thread. This is 
-		private Fields _render = Fields.Create();
+		private Fields _fields = Fields.Create(); // WARNING: Visual can also be modified from a background thread.
+		private Fields _renderFields = Fields.Create();
+		private ContainerVisual? _parent;
 
 		internal Visual(Compositor compositor) : base(compositor)
 		{
@@ -42,7 +43,23 @@ namespace Windows.UI.Composition
 
 		partial void InitializePartial();
 
-		public ContainerVisual? Parent { get; internal set; }
+		public ContainerVisual? Parent
+		{
+			get => _parent;
+			internal set
+			{
+				if (_parent == value)
+				{
+					return;
+				}
+
+				_parent = value;
+				if (value is { })
+				{
+					ShareDirtyStateWith(value);
+				}
+			}
+		}
 
 		// TODO: Need to register / un-register from force redraw?
 		internal VisualKind Kind { get; set; } = VisualKind.UnknownNativeView; // TODO: By default should be managed
@@ -50,33 +67,33 @@ namespace Windows.UI.Composition
 		#region Visual properties
 		public Matrix4x4 TransformMatrix
 		{
-			get => _ui._transformMatrix;
+			get => _fields._transformMatrix;
 			set
 			{
-				if (_ui._transformMatrix == value)
+				if (_fields._transformMatrix == value)
 				{
 					return;
 				}
 
-				_ui._transformMatrix = value;
+				_fields._transformMatrix = value;
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 		public Vector3 Offset
 		{
-			get => _ui._offset;
+			get => _fields._offset;
 			set
 			{
-				if (_ui._offset == value)
+				if (_fields._offset == value)
 				{
 					return;
 				}
 
-				_ui._offset = value;
+				_fields._offset = value;
 				OnOffsetChanged(value);
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 
@@ -84,18 +101,18 @@ namespace Windows.UI.Composition
 
 		public bool IsVisible
 		{
-			get => _ui._isVisible;
+			get => _fields._isVisible;
 			set
 			{
-				if (_ui._isVisible == value)
+				if (_fields._isVisible == value)
 				{
 					return;
 				}
 
-				_ui._isVisible = value;
+				_fields._isVisible = value;
 				OnIsVisibleChanged(value);
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 
@@ -105,18 +122,18 @@ namespace Windows.UI.Composition
 
 		public Vector3 CenterPoint
 		{
-			get => _ui._centerPoint;
+			get => _fields._centerPoint;
 			set
 			{
-				if (_ui._centerPoint == value)
+				if (_fields._centerPoint == value)
 				{
 					return;
 				}
 
-				_ui._centerPoint = value;
+				_fields._centerPoint = value;
 				OnCenterPointChanged(value);
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 
@@ -124,18 +141,18 @@ namespace Windows.UI.Composition
 
 		public global::System.Numerics.Vector3 Scale
 		{
-			get => _ui._scale;
+			get => _fields._scale;
 			set
 			{
-				if (_ui._scale == value)
+				if (_fields._scale == value)
 				{
 					return;
 				}
 
-				_ui._scale = value;
+				_fields._scale = value;
 				OnScaleChanged(value);
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 
@@ -143,18 +160,18 @@ namespace Windows.UI.Composition
 
 		public float RotationAngleInDegrees
 		{
-			get => _ui._rotationAngleInDegrees;
+			get => _fields._rotationAngleInDegrees;
 			set
 			{
-				if (_ui._rotationAngleInDegrees == value)
+				if (_fields._rotationAngleInDegrees == value)
 				{
 					return;
 				}
 
-				_ui._rotationAngleInDegrees = value;
+				_fields._rotationAngleInDegrees = value;
 				OnRotationAngleInDegreesChanged(value);
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 
@@ -162,18 +179,18 @@ namespace Windows.UI.Composition
 
 		public Vector2 Size
 		{
-			get => _ui._size;
+			get => _fields._size;
 			set
 			{
-				if (_ui._size == value)
+				if (_fields._size == value)
 				{
 					return;
 				}
 
-				_ui._size = value;
+				_fields._size = value;
 				OnSizeChanged(value);
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 
@@ -181,36 +198,36 @@ namespace Windows.UI.Composition
 
 		public float Opacity
 		{
-			get => _ui._opacity;
+			get => _fields._opacity;
 			set
 			{
-				if (_ui._opacity == value)
+				if (_fields._opacity == value)
 				{
 					return;
 				}
 
-				_ui._opacity = value;
+				_fields._opacity = value;
 				OnOpacityChanged(value);
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 		partial void OnOpacityChanged(float value);
 
 		public Vector3 RotationAxis
 		{
-			get => _ui._rotationAxis;
+			get => _fields._rotationAxis;
 			set
 			{
-				if (_ui._rotationAxis == value)
+				if (_fields._rotationAxis == value)
 				{
 					return;
 				}
 
-				_ui._rotationAxis = value;
+				_fields._rotationAxis = value;
 				OnRotationAxisChanged(value);
 
-				Invalidate(VisualDirtyState.Independent);
+				Invalidate(CompositionPropertyType.Independent);
 			}
 		}
 
@@ -218,8 +235,8 @@ namespace Windows.UI.Composition
 
 		public CompositionClip? Clip
 		{
-			get => _ui._clip;
-			set => _ui._clip = value;
+			get => _fields._clip;
+			set => _fields._clip = value;
 		}
 		#endregion
 	}

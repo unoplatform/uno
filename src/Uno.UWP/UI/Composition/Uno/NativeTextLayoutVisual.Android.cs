@@ -36,7 +36,7 @@ namespace Uno.UI.Composition
 					? Vector2.Zero
 					: new Vector2(value.Width, value.Height);
 
-				Invalidate(VisualDirtyState.Dependent);
+				Invalidate(CompositionPropertyType.Dependent);
 			}
 		}
 

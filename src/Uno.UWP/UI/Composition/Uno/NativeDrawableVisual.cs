@@ -131,7 +131,7 @@ namespace Uno.UI.Composition
 			{
 				if (_owner.TryGetTarget(out var owner))
 				{
-					owner.Invalidate(VisualDirtyState.Dependent);
+					owner.Invalidate(CompositionPropertyType.Dependent);
 				}
 			}
 

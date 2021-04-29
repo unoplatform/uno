@@ -11,7 +11,7 @@ using Android.Views;
 
 namespace Uno.UI.Composition
 {
-	internal class NativeViewVisual : Visual
+	internal sealed class NativeViewVisual : Visual
 	{
 		private readonly View _view;
 		private readonly bool _preferDrawOnUIThread = false;
@@ -35,9 +35,9 @@ namespace Uno.UI.Composition
 		}
 
 		/// <inheritdoc />
-		internal override void Commit()
+		private protected override void OnCommit()
 		{
-			base.Commit();
+			base.OnCommit();
 
 			// Even if the Commit should be as fast as possible, this is a balance between perf and functionality.
 			// Allowing controls that must be drawn on UI thread to draw in the Commit has a bad perf impact,

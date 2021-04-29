@@ -41,14 +41,14 @@ namespace Uno.UI.Composition
 					? default
 					: new Vector2(value.Right, value.Bottom); // We keep Offset to 0 and use the "full size" of the sub-node so it won't be clipped!
 
-				Invalidate(VisualDirtyState.Dependent);
+				Invalidate(CompositionPropertyType.Dependent);
 			}
 		}
 
 		/// <inheritdoc />
-		internal override void Commit()
+		private protected override void OnCommit()
 		{
-			base.Commit();
+			base.OnCommit();
 
 			_renderNode = _uiNode;
 		}
