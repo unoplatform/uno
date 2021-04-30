@@ -151,7 +151,8 @@ namespace Benchmarks.Shared.Controls
 			   where !type.IsGenericType
 			   where type.Namespace?.StartsWith(BenchmarksBaseNamespace) ?? false
 			   where BenchmarkConverter.TypeToBenchmarks(type, config).BenchmarksCases.Length != 0
-			   where string.IsNullOrEmpty(ClassFilter) || type.Name.Contains(ClassFilter)
+			   where string.IsNullOrEmpty(ClassFilter)
+			         || type.Name.IndexOf(ClassFilter, StringComparison.InvariantCultureIgnoreCase) >= 0
 			   select type;
 
 		public class CoreConfig : ManualConfig
