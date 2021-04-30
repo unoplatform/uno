@@ -48,7 +48,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 			textBox.SizeChanged += ContentElementSizeChanged;
 			textBox.LayoutUpdated += ContentElementLayoutUpdated;
-			
+
 			_textBoxEventSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				textBox.SizeChanged -= ContentElementSizeChanged;
@@ -94,12 +94,14 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			}
 
 			EnsureWidgetForAcceptsReturn();
-			
+
 			_currentInputWidget.FontSize = textBox.FontSize;
 			_currentInputWidget.FontWeight = FontWeight.FromOpenTypeWeight(textBox.FontWeight.Weight);
 			_currentInputWidget.AcceptsReturn = textBox.AcceptsReturn;
 			_currentInputWidget.TextWrapping = textBox.AcceptsReturn ? TextWrapping.Wrap : TextWrapping.NoWrap;
 			_currentInputWidget.MaxLength = textBox.MaxLength;
+			_currentInputWidget.IsReadOnly = textBox.IsReadOnly;
+
 			if (textBox.Foreground is SolidColorBrush colorBrush)
 			{
 				var unoColor = colorBrush.Color;
