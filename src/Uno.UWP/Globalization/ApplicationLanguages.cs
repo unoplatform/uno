@@ -88,8 +88,7 @@ namespace Windows.Globalization
 			CultureInfo.CurrentUICulture = primaryCulture;
 		}
 
-		private static readonly Regex _cultureFormatRegex =
-			new Regex(@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?");
+		private static Regex _cultureFormatRegex;
 
 		private static CultureInfo CreateCulture(string cultureId)
 		{
@@ -99,6 +98,10 @@ namespace Windows.Globalization
 			}
 			catch (CultureNotFoundException)
 			{
+				_cultureFormatRegex ??= new Regex(
+					@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?",
+					RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
 				var match = _cultureFormatRegex.Match(cultureId);
 				try
 				{
