@@ -21,7 +21,20 @@ namespace Windows.UI.Xaml.Controls
 
 		protected internal override void Open()
 		{
-			var date = Date == DateTimeOffset.MinValue ? DateTimeOffset.Now : Date;
+			var date = Date;
+			// If we're setting the date to the null sentinel value,
+			// we'll instead set it to the current date for the purposes
+			// of where to place the user's position in the looping selectors.
+			if (date.Ticks == DatePicker.DEFAULT_DATE_TICKS)
+			{
+				var temp = new Windows.Globalization.Calendar();
+				var calendar = new Windows.Globalization.Calendar(
+					temp.Languages,
+					CalendarIdentifier,
+					temp.GetClock());
+				calendar.SetToNow();
+				date = calendar.GetDateTime();
+			}
 
 			// Note: Month needs to be -1 since on Android months go from 0-11
 			// http://developer.android.com/reference/android/app/DatePickerDialog.OnDateSetListener.html#onDateSet(android.widget.DatePicker, int, int, int)

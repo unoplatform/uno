@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePickerFlyoutPresenter : Control
 	{
+		private const long DEFAULT_DATE_TICKS = 504910368000000000;
+
 		const bool PICKER_SHOULD_LOOP = true;
 
 		const int DATEPICKER_RTL_CHARACTER_CODE = 8207;
@@ -663,7 +665,7 @@ namespace Windows.UI.Xaml.Controls
 			// If we're setting the date to the null sentinel value,
 			// we'll instead set it to the current date for the purposes
 			// of where to place the user's position in the looping selectors.
-			if (newDate == DateTime.MinValue)
+			if (newDate.Ticks == DEFAULT_DATE_TICKS)
 			{
 				//DateTime dateTime = default;
 				Calendar calendar;
