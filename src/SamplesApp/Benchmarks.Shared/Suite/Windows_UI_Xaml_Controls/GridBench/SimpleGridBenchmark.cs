@@ -12,7 +12,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 	{
 		private Grid _sut;
 
-		[Params(0, 1, 5, 8)]
+		[Params(0, 1, 5)]
 		public int ItemsCount { get; set; }
 
 		[IterationSetup]
