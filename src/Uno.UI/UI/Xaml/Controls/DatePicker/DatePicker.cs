@@ -21,6 +21,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePicker : Control
 	{
+		internal const long DEFAULT_DATE_TICKS = 504910368000000000;
+
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
 		public event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
 			   
@@ -1054,11 +1056,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (pDP == DatePicker.DateProperty)
 			{
-				if (m_defaultDate.Value.ToUniversalTime() == NullDateSentinelValue)
-				{
-					GetTodaysDate(out m_defaultDate);
-				}
-
 				pValue = m_defaultDate;
 				return true;
 			}
@@ -2240,11 +2237,13 @@ namespace Windows.UI.Xaml.Controls
 
 		/* static */
 
-		private static DateTimeOffset NullDateSentinel { get; } = new DateTimeOffset();
+		private static DateTimeOffset NullDateSentinel { get; } =
+			new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
 
 		/* static */
 
-		private static DateTimeOffset NullDateSentinelValue { get; } = new DateTimeOffset();
+		private static DateTimeOffset NullDateSentinelValue { get; } =
+			new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
 
 		void GetTodaysDate(out DateTimeOffset? todaysDate)
 		{

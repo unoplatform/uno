@@ -129,7 +129,20 @@ namespace Windows.UI.Xaml.Controls
 		private void DatePickerFlyout_Opening(object sender, EventArgs e)
 		{
 			InitializeContent();
-			var date = Date == DateTimeOffset.MinValue ? DateTimeOffset.Now : Date;
+			var date = Date;
+			// If we're setting the date to the null sentinel value,
+			// we'll instead set it to the current date for the purposes
+			// of where to place the user's position in the looping selectors.
+			if (date.Ticks == DatePicker.DEFAULT_DATE_TICKS)
+			{
+				var temp = new Windows.Globalization.Calendar();
+				var calendar = new Windows.Globalization.Calendar(
+					temp.Languages,
+					CalendarIdentifier,
+					temp.GetClock());
+				calendar.SetToNow();
+				date = calendar.GetDateTime();
+			}
 			UpdateSelectorDate(date);
 		}
 

@@ -22,6 +22,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 	[TestClass]
 	public class DatePickerIntegrationTests
 	{
+		private const long DEFAULT_DATE_TICKS = 504910368000000000;
+
 		[TestInitialize]
 		void ClassSetup()
 		{
@@ -96,7 +98,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				today.SetToNow();
 
 				// Default value of Date should be the null sentinel value.
-				datePicker.Date.Ticks.Should().Be(0);
+				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS); // 1600-12-31, as per MS documentation
 				datePicker.SelectedDate.Should().BeNull();
 
 				// Default value of MinYear should be 100 years ago.
@@ -979,30 +981,31 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
+				using var _ = new AssertionScope();
+
 				this.Log().Info("Setting SelectedDate to null.  Date should be the null sentinel value.");
 				datePicker.SelectedDate = null;
 
-				Assert.AreEqual(0, datePicker.Date.Ticks);
+				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS);
 
 				this.Log().Info("Setting SelectedDate to February 2, 2018. Date should change to this value.");
 				datePicker.SelectedDate = (date2);
 
 				VerifyDatesAreEqual(date2, datePicker.Date);
-				Assert.IsNotNull(datePicker.SelectedDate);
+				datePicker.SelectedDate.Should().NotBeNull();
 				VerifyDatesAreEqual(date2, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date to January 1, 2018. SelectedDate should change to this value.");
 				datePicker.Date = date;
 
 				VerifyDatesAreEqual(date, datePicker.Date);
-				Assert.IsNotNull(datePicker.SelectedDate);
+				datePicker.SelectedDate.Should().NotBeNull();
 				VerifyDatesAreEqual(date, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date to the null sentinel value. SelectedDate should become null.");
-				DateTimeOffset nullDate = new DateTimeOffset();
-				datePicker.Date = nullDate;
+				datePicker.Date = new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
 
-				Assert.IsNull(datePicker.SelectedDate, "SelectedDate should be back to null");
+				datePicker.SelectedDate.Should().BeNull("SelectedDate should be back to null");
 			});
 		}
 
@@ -1073,20 +1076,18 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			{
 				datePicker.CalendarIdentifier = "JapaneseCalendar";
 
-				Assert.AreEqual(0, datePicker.Date.Ticks);
+				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS);
 
 				this.Log().Info("Setting SelectedDate to January 9, 2019. Date should change to this value.");
 				datePicker.SelectedDate = (date);
 
 				VerifyDatesAreEqual(date, datePicker.Date);
-				Assert.IsNotNull(datePicker.SelectedDate);
+				datePicker.SelectedDate.Should().NotBeNull();
 				VerifyDatesAreEqual(date, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date back to the null sentinel value. SelectedDate should become null.");
-				var nullDate = new DateTimeOffset();
-				datePicker.Date = nullDate;
-
-				Assert.IsNull(datePicker.SelectedDate);
+				datePicker.Date = new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+				datePicker.SelectedDate.Should().BeNull();
 			});
 		}
 
@@ -1097,12 +1098,14 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 		private void VerifyDatesAreEqual(Calendar expected, DateTimeOffset actual)
 		{
+			using var _ = new AssertionScope();
+
 			var actualCalendar = new Calendar();
 			actualCalendar.SetDateTime(actual);
 
-			Assert.AreEqual(expected.Year, actualCalendar.Year);
-			Assert.AreEqual(expected.Month, actualCalendar.Month);
-			Assert.AreEqual(expected.Day, actualCalendar.Day);
+			actualCalendar.Year.Should().Be(expected.Year);
+			actualCalendar.Month.Should().Be(expected.Month);
+			actualCalendar.Day.Should().Be(expected.Day);
 		}
 
 		private void VerifyDatesAreEqual(DateTimeOffset expected, DateTimeOffset actual)
