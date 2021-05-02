@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml.Controls
 					m_bIsPointerLeftButtonDown = true;
 					m_bIsPressed = true;
 
-					pArgs.Handled = true;
+					pArgs.Handled = CapturePointer(pArgs.Pointer);
 					UpdateVisualState();
 				}
 			}
