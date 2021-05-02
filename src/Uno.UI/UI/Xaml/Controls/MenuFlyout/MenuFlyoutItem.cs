@@ -235,8 +235,13 @@ namespace Windows.UI.Xaml.Controls
 						PerformPointerUpAction();
 					}
 #else
-				PerformPointerUpAction();
+				// Only perform actions if the pointer is still in over.
+				// This is consistent with UWP.
+				if (m_bIsPointerOver)
+				{
+					PerformPointerUpAction();
 #endif
+				}
 			}
 		}
 
