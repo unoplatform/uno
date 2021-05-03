@@ -192,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 			bool treatStarAsAuto)
 		{
 			//for (auto & cdo : definitions)
-			foreach(DefinitionBase def in definitions)
+			foreach(DefinitionBase def in definitions.GetItems())
 			{
 				//var def = (DefinitionBase)(cdo);
 				bool useLayoutRounding = GetUseLayoutRounding();
@@ -585,7 +585,7 @@ namespace Windows.UI.Xaml.Controls
 			// e) Prepare indices.
 			for (int i = spanStart; i < spanEnd; i++)
 			{
-				var def = (DefinitionBase)((definitions)[i]);
+				var def = definitions.GetItem(i);
 				XFLOAT effectiveMinSize = def.GetEffectiveMinSize();
 				XFLOAT preferredSize = def.GetPreferredSize();
 				XFLOAT maxSize = Math.Max(def.GetUserMaxSize(), effectiveMinSize);
@@ -760,7 +760,7 @@ namespace Windows.UI.Xaml.Controls
 
 			do
 			{
-				var def = (DefinitionBase)((definitions)[index]);
+				var def = (DefinitionBase)(definitions.GetItem(index));
 				switch (def.GetEffectiveUnitType())
 				{
 					case GridUnitType.Auto:
@@ -792,7 +792,7 @@ namespace Windows.UI.Xaml.Controls
 
 			do
 			{
-				var def = (DefinitionBase)((definitions)[index]);
+				var def = (DefinitionBase)(definitions.GetItem(index));
 				availableSize += (def.GetEffectiveUnitType() == GridUnitType.Auto)
 					? def.GetEffectiveMinSize()
 					: def.GetMeasureArrangeSize();
@@ -817,7 +817,7 @@ namespace Windows.UI.Xaml.Controls
 
 			do
 			{
-				var def = (DefinitionBase)((definitions)[index]);
+				var def = (DefinitionBase)(definitions.GetItem(index));
 				finalSize += def.GetMeasureArrangeSize();
 			} while (index > 0 && --index >= start);
 
@@ -834,7 +834,7 @@ namespace Windows.UI.Xaml.Controls
 
 			for (Xuint i = 0; i < definitions.Count; ++i)
 			{
-				var def = (DefinitionBase)((definitions)[i]);
+				var def = (DefinitionBase)(definitions.GetItem(i));
 				desiredSize += def.GetEffectiveMinSize();
 			}
 
