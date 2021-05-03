@@ -1,3 +1,4 @@
+//#define DEBUG_SET_RESOURCE_SOURCE
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -138,6 +139,9 @@ namespace Windows.UI.Xaml
 					TryResolveAlias(ref value);
 				}
 
+#if DEBUG && DEBUG_SET_RESOURCE_SOURCE
+				TryApplySource(value, resourceKey);
+#endif
 				return true;
 			}
 
