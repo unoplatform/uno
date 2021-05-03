@@ -29,24 +29,16 @@ namespace Windows.UI.Xaml
 
 		private readonly List<T> _list = new List<T>();
 
-		private bool _isLocked;
+		private int _isLocked;
 
-		internal void Lock()
-		{
-			Debug.Assert(!_isLocked, "collection already locked");
-			_isLocked = true;
-		}
+		internal void Lock() => _isLocked++;
 
-		internal void Unlock()
-		{
-			Debug.Assert(_isLocked, "collection already unlocked");
-			_isLocked = false;
-		}
+		internal void Unlock() => _isLocked--;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void EnsureNotLocked()
 		{
-			if(_isLocked)
+			if(_isLocked > 0)
 			{
 				throw new InvalidOperationException("Collection is locked.");
 			}
