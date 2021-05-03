@@ -136,7 +136,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Template_Applied_On_Loading_DataContext_Propagation()
 		{
-			var page = new When_Template_Applied_On_Loading_DataContext_Propagation_Page();
+			var page = new Template_Loading_DataContext_Page();
 			WindowHelper.WindowContent = page;
 			await WindowHelper.WaitForLoaded(page);
 			var comboBox = page.SpawnedButtonHost.PseudoContent as ComboBox;
