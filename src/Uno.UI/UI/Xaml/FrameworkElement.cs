@@ -511,7 +511,7 @@ namespace Windows.UI.Xaml
 			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
 
 			_focusVisualBrushesInitialized = true;
-		}		
+		}
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
@@ -540,6 +540,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 			_defaultStyleApplied = true;
+			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 
 			var style = Style.GetDefaultStyleForType(GetDefaultStyleKey());
 

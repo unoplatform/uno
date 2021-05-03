@@ -105,6 +105,10 @@ namespace Windows.UI.Xaml
 		/// Is a theme-bound value currently being set?
 		/// </summary>
 		private bool _isSettingThemeBinding;
+		/// <summary>
+		/// The theme last to apply theme bindings on this object and its children.
+		/// </summary>
+		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
 		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
@@ -1705,7 +1709,38 @@ namespace Windows.UI.Xaml
 					}
 				}
 			}
+
+			CheckThemeBindings(previousParent, value);
 		}
+
+		/// <summary>
+		/// If we're being unloaded, save the current theme. If we're being loaded, check if application theme has changed since theme
+		/// bindings were last applied, and update if needed.
+		/// </summary>
+		private void CheckThemeBindings(object? previousParent, object? value)
+		{
+			if (ActualInstance is FrameworkElement frameworkElement)
+			{
+				if (value == null && previousParent != null)
+				{
+					_themeLastUsed = Application.Current?.RequestedThemeForResources;
+				}
+				else if (previousParent == null && value != null && _themeLastUsed is { } previousTheme)
+				{
+					_themeLastUsed = null;
+					if (Application.Current?.RequestedThemeForResources is { } currentTheme && !previousTheme.Equals(currentTheme))
+					{
+						Application.PropagateThemeChanged(frameworkElement);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Set theme used when applying theme-bound values.
+		/// </summary>
+		/// <param name="resourceKey">Key for the theme used</param>
+		internal void SetLastUsedTheme(SpecializedResourceDictionary.ResourceKey? resourceKey) => _themeLastUsed = resourceKey;
 
 		private ManagedWeakReference ThisWeakReference
 			=> _thisWeakRef ??= Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
