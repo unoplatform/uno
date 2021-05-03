@@ -128,10 +128,52 @@ namespace Windows.Storage.Pickers
 				return new[] { "*/*" };
 			}
 
-			return FileTypeFilter
-				.Select(extension => MimeTypeService.GetFromExtension(extension))
-				.Distinct()
-				.ToArray();
+			List<string> mimeTypes = new List<string>();
+
+			Android.Webkit.MimeTypeMap? mimeTypeMap = Android.Webkit.MimeTypeMap.Singleton;
+			if (mimeTypeMap is null )
+			{
+				// when map is unavailable (probably never happens, but Singleton returns nullable)
+				return new[] { "*/*" };
+			}
+
+
+			foreach (string oneExtensionForLoop in FileTypeFilter)
+            {
+				string oneExtension = oneExtensionForLoop;
+				if (oneExtension.StartsWith("."))
+				{
+					// Supported format from UWP, e.g. ".jpg"
+					oneExtension = oneExtension.Substring(1);
+				}
+
+				if(!mimeTypeMap.HasExtension(oneExtension))
+                {
+					// when there is unknown extension, we should show all files
+					mimeTypeMap.Dispose();
+					return new[] { "*/*" };
+				}
+
+				string? mimeType = mimeTypeMap.GetMimeTypeFromExtension(oneExtension);
+				if (string.IsNullOrEmpty(mimeType))
+				{
+					// second check for unknown extension...
+					mimeTypeMap.Dispose();
+					return new[] { "*/*" };
+				}
+				else
+				{
+#pragma warning disable CS8604 // Possible null reference argument.
+					if (!mimeTypes.Contains(mimeType))
+#pragma warning restore CS8604 // Possible null reference argument.
+					{
+						mimeTypes.Add(mimeType);
+					}
+				}
+			}
+
+			mimeTypeMap.Dispose();
+			return mimeTypes.ToArray();
 		}
 	}
 }
