@@ -43,6 +43,17 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			}
 		}
 
+		[Test]
+		[AutoRetry]
+		public void SelectionOnLoad()
+		{
+			Run("UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests.RadioButtonsInitialLoadSelected");
+
+			var rad = QueryAll("LightThemeRadio");
+
+			Assert.IsTrue(rad.GetDependencyPropertyValue<string>("IsChecked") == "True");
+		}
+
 		private void SelectByItem(int v)
 		{
 			SetIndexToSelect(v);
