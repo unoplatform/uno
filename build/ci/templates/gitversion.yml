@@ -27,11 +27,11 @@ steps:
   - powershell: |
       dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org | Out-Null
       $global:LASTEXITCODE = 0
-    displayName: Adjust nuget.org source 
+    displayName: Adjust nuget.org source
 
   - task: gitversion/setup@0
     inputs:
-      versionSpec: '5.6.6'
+      versionSpec: '5.6.8'
 
   - task: gitversion/execute@0
     inputs:
