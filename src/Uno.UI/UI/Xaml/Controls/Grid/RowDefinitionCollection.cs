@@ -30,21 +30,13 @@ namespace Windows.UI.Xaml.Controls
 			(item as DefinitionBase).Changed += OnDefinitionChanged;
 		}
 
-		int IList<DefinitionBase>.IndexOf(DefinitionBase item) => _inner.IndexOf(item as RowDefinition);
-
-		void IList<DefinitionBase>.Insert(int index, DefinitionBase item) => throw new NotSupportedException();
-
 		public void RemoveAt(int index)
 		{
 			(_inner[index] as DefinitionBase).Changed -= OnDefinitionChanged;
 			_inner.RemoveAt(index);
 		}
 
-		DefinitionBase IList<DefinitionBase>.this[int index]
-		{
-			get => _inner[index];
-			set => throw new NotSupportedException();
-		}
+		IEnumerable<DefinitionBase> DefinitionCollectionBase.GetItems() => _inner;
 
 		DefinitionBase DefinitionCollectionBase.GetItem(int index) => _inner[index];
 
@@ -68,19 +60,11 @@ namespace Windows.UI.Xaml.Controls
 			(item as DefinitionBase).Changed += OnDefinitionChanged;
 		}
 
-		void ICollection<DefinitionBase>.Add(DefinitionBase item) => throw new NotSupportedException();
-
 		public void Clear()
 		{
 			_inner.ForEach(item=> (item as DefinitionBase).Changed -= OnDefinitionChanged);
 			_inner.Clear();
 		}
-
-		bool ICollection<DefinitionBase>.Contains(DefinitionBase item) => throw new NotSupportedException();
-
-		void ICollection<DefinitionBase>.CopyTo(DefinitionBase[] array, int arrayIndex) => throw new NotSupportedException();
-
-		bool ICollection<DefinitionBase>.Remove(DefinitionBase item) => throw new NotSupportedException();
 
 		public bool Contains(RowDefinition item) => _inner.Contains(item);
 
@@ -100,8 +84,6 @@ namespace Windows.UI.Xaml.Controls
 		/// The inner list is exposed in order to get the struct enumerable exposed by List<T> to avoid allocations.
 		/// </summary>
 		internal List<RowDefinition> InnerList => _inner.Items;
-
-		IEnumerator<DefinitionBase> IEnumerable<DefinitionBase>.GetEnumerator() => _inner.GetEnumerator();
 
 		public global::System.Collections.Generic.IEnumerator<RowDefinition> GetEnumerator() => _inner.GetEnumerator();
 
