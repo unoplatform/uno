@@ -558,6 +558,49 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_DefaultBindingMode_DataTemplate_Undefined()
+		{
+			var SUT = new Binding_DefaultBindMode_DataTemplate();
+			var model = new Binding_DefaultBindMode_DataTemplate_Model();
+
+			var default_undefined = (TextBlock)SUT.FindName("Default_undefined");
+			var default_undefined_OneWay = (TextBlock)SUT.FindName("Default_undefined_OneWay");
+			var default_undefined_TwoWay = (TextBlock)SUT.FindName("Default_undefined_TwoWay");
+
+			Assert.IsNull(model.Default_undefined_Property);
+			Assert.IsNull(model.Default_undefined_OneWay_Property);
+			Assert.IsNull(model.Default_undefined_TwoWay_Property);
+
+			model.Default_undefined_Property = "undefined updated 1";
+			model.Default_undefined_OneWay_Property = "undefined updated 2";
+			model.Default_undefined_TwoWay_Property = "undefined updated 3";
+
+			SUT.DataContext = model;
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("undefined updated 1", default_undefined.Text);
+			Assert.AreEqual("undefined updated 2", default_undefined_OneWay.Text);
+			Assert.AreEqual("undefined updated 3", default_undefined_TwoWay.Text);
+
+			model.Default_undefined_Property = "undefined updated 4";
+			model.Default_undefined_OneWay_Property = "undefined updated 5";
+			model.Default_undefined_TwoWay_Property = "undefined updated 6";
+
+			Assert.AreEqual("undefined updated 4", default_undefined.Text);
+			Assert.AreEqual("undefined updated 5", default_undefined_OneWay.Text);
+			Assert.AreEqual("undefined updated 6", default_undefined_TwoWay.Text);
+
+			default_undefined.Text = "undefined updated 7";
+			default_undefined_OneWay.Text = "undefined updated 8";
+			default_undefined_TwoWay.Text = "undefined updated 9";
+
+			Assert.AreEqual("undefined updated 4", model.Default_undefined_Property);
+			Assert.AreEqual("undefined updated 5", model.Default_undefined_OneWay_Property);
+			Assert.AreEqual("undefined updated 9", model.Default_undefined_TwoWay_Property);
+		}
+
+		[TestMethod]
 		public void When_TwoWay_NamedElement()
 		{
 			var SUT = new Binding_TwoWay_NamedElement();

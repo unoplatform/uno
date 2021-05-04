@@ -721,44 +721,47 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var className = kvp.Key;
 					var contentOwner = kvp.Value.ContentOwner;
 
-					using (Scope(ns, className))
+					using (TrySetDefaultBindMode(contentOwner.Owner, kvp.Value.DefaultBindMode))
 					{
-						var classAccessibility = isTopLevel ? "" : "private";
-
-						using (writer.BlockInvariant($"{classAccessibility} class {className}"))
+						using (Scope(ns, className))
 						{
-							using (ResourceOwnerScope())
+							var classAccessibility = isTopLevel ? "" : "private";
+
+							using (writer.BlockInvariant($"{classAccessibility} class {className}"))
 							{
-								using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner?.Name})"))
+								using (ResourceOwnerScope())
 								{
-									writer.AppendLineInvariant("var nameScope = new global::Windows.UI.Xaml.NameScope();");
-									writer.AppendLineInvariant($"{kvp.Value.ReturnType} __rootInstance = null;");
-									writer.AppendLineInvariant("__rootInstance = ");
-
-									// Is never considered in Global Resources because class encapsulation
-									BuildChild(writer, contentOwner, contentOwner.Objects.First());
-
-									writer.AppendLineInvariant(";");
-
-									BuildCompiledBindingsInitializerForTemplate(writer);
-
-									using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)", kvp.Value.ReturnType))
+									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner?.Name})"))
 									{
-										writer.AppendLineInvariant("global::Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
-										writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
-									}
+										writer.AppendLineInvariant("var nameScope = new global::Windows.UI.Xaml.NameScope();");
+										writer.AppendLineInvariant($"{kvp.Value.ReturnType} __rootInstance = null;");
+										writer.AppendLineInvariant("__rootInstance = ");
 
-									writer.AppendLineInvariant("return __rootInstance;");
+										// Is never considered in Global Resources because class encapsulation
+										BuildChild(writer, contentOwner, contentOwner.Objects.First());
+
+										writer.AppendLineInvariant(";");
+
+										BuildCompiledBindingsInitializerForTemplate(writer);
+
+										using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)", kvp.Value.ReturnType))
+										{
+											writer.AppendLineInvariant("global::Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
+											writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
+										}
+
+										writer.AppendLineInvariant("return __rootInstance;");
+									}
 								}
-							}
 
 							BuildComponentFields(writer);
 
-							TryBuildElementStubHolders(writer);
+								TryBuildElementStubHolders(writer);
 
-							BuildBackingFields(writer);
+								BuildBackingFields(writer);
 
-							BuildChildSubclasses(writer);
+								BuildChildSubclasses(writer);
+							}
 						}
 					}
 				}
@@ -3436,7 +3439,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType)
 		{
-			CurrentScope.Subclasses[name] = new Subclass(owner, returnType);
+			CurrentScope.Subclasses[name] = new Subclass(owner, returnType, GetDefaultBindMode());
 		}
 
 		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? prefix, string? closureName = null, bool generateAssignation = true)
@@ -5391,9 +5394,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Set the active DefaultBindMode, if x:DefaultBindMode is defined on this <paramref name="xamlObjectDefinition"/>.
 		/// </summary>
-		private IDisposable? TrySetDefaultBindMode(XamlObjectDefinition xamlObjectDefinition)
+		private IDisposable? TrySetDefaultBindMode(XamlObjectDefinition? xamlObjectDefinition, string? ambientDefaultBindMode = null)
 		{
-			var definedMode = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "DefaultBindMode")?.Value?.ToString();
+			var definedMode = xamlObjectDefinition
+				?.Members
+				.FirstOrDefault(m => m.Member.Name == "DefaultBindMode")?.Value?.ToString()
+				?? ambientDefaultBindMode;
 
 			if (definedMode == null)
 			{
