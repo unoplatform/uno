@@ -164,11 +164,12 @@ namespace Windows.Storage.Pickers
 				else
 				{
 #pragma warning disable CS8604 // Possible null reference argument.
+					// it canot be null, as this is within "if", but still compiler complains about possible null reference
 					if (!mimeTypes.Contains(mimeType))
-#pragma warning restore CS8604 // Possible null reference argument.
 					{
 						mimeTypes.Add(mimeType);
 					}
+#pragma warning restore CS8604 // Possible null reference argument.
 				}
 			}
 
