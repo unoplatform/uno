@@ -171,11 +171,17 @@ namespace Windows.UI.Xaml
 				&& visibility != Visibility.Visible
 				&& PointerCapture.Any(out var captures))
 			{
-				foreach (var capture in captures)
+				for (var captureIndex = 0; captureIndex < captures.Count; captureIndex++)
 				{
-					foreach (var target in capture.Targets.ToList())
+					var capture = captures[captureIndex];
+
+					var targets = capture.Targets.ToList();
+
+					for (var targetIndex = 0; targetIndex < targets.Count; targetIndex++)
 					{
-						if (target.Element.GetParents().Contains(sender))
+						var target = targets[targetIndex];
+
+						if (target.Element.HasParent(sender))
 						{
 							target.Element.Release(capture, PointerCaptureKind.Any);
 						}

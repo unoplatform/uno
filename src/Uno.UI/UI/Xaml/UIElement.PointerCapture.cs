@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 			public static bool TryGet(Pointer pointer, out PointerCapture capture)
 				=> _actives.TryGetValue(pointer, out capture);
 
-			public static bool Any(out IEnumerable<PointerCapture> cloneOfAllCaptures)
+			public static bool Any(out List<PointerCapture> cloneOfAllCaptures)
 			{
 				if (_actives.Any())
 				{
