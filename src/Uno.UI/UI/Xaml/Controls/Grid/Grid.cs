@@ -1315,6 +1315,12 @@ namespace Windows.UI.Xaml.Controls
 		//------------------------------------------------------------------------
 		protected override XSIZEF ArrangeOverride(XSIZEF finalSize)
 		{
+			if (m_pRows == null || m_pColumns == null)
+			{
+				// Should call .Measure() first!
+				return default;
+			}
+
 			// Locking the row and columns definitions to prevent changes by user code
 			// during the arrange pass.
 			LockDefinitions();
