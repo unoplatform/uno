@@ -70,17 +70,7 @@ namespace Windows.UI.Xaml
 				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 				// Second raise the event, either on the OriginalSource or on the capture owners if any
-				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
-				{
-					foreach (var target in capture.Targets.ToArray())
-					{
-						target.Element.OnNativePointerWheel(routedArgs);
-					}
-				}
-				else
-				{
-					originalSource.OnNativePointerWheel(routedArgs);
-				}
+				RaiseUsingCaptures(Wheel, originalSource, routedArgs);
 			}
 
 			private void CoreWindow_PointerEntered(CoreWindow sender, PointerEventArgs args)
@@ -109,7 +99,7 @@ namespace Windows.UI.Xaml
 
 				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-				originalSource.OnNativePointerEnter(routedArgs);
+				Raise(Enter, originalSource, routedArgs);
 			}
 
 			private void CoreWindow_PointerExited(CoreWindow sender, PointerEventArgs args)
@@ -135,7 +125,7 @@ namespace Windows.UI.Xaml
 
 				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-				ClearPointerState(routedArgs, null, overBranchLeaf);
+				Raise(Leave, overBranchLeaf, routedArgs);
 			}
 
 			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
@@ -165,7 +155,7 @@ namespace Windows.UI.Xaml
 				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 				_pressedElements[routedArgs.Pointer] = originalSource;
-				originalSource.OnNativePointerDown(routedArgs);
+				Raise(Pressed, originalSource, routedArgs);
 			}
 
 			private void CoreWindow_PointerReleased(CoreWindow sender, PointerEventArgs args)
@@ -194,30 +184,9 @@ namespace Windows.UI.Xaml
 
 				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-				// Second raise the event, either on the OriginalSource or on the capture owners if any
-				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
-				{
-					foreach (var target in capture.Targets.ToArray())
-					{
-						target.Element.OnNativePointerUp(routedArgs);
-					}
-				}
-				else
-				{
-					originalSource.OnNativePointerUp(routedArgs);
-				}
-
-				if (_pressedElements.TryGetValue(routedArgs.Pointer, out var pressedLeaf))
-				{
-					// We must make sure to clear the pressed state on all elements that was flagged as pressed.
-					// This is required as the current originalSource might not be the same as when we pressed (pointer moved),
-					// ** OR ** the pointer has been captured by a parent element so we didn't raised to released on the sub elements.
-
-					_pressedElements.Remove(routedArgs.Pointer);
-					ClearPointerState(routedArgs, root: null, pressedLeaf, clearOver: false);
-				}
+				RaiseUsingCaptures(Released, originalSource, routedArgs);
+				ClearPressedState(routedArgs);
 			}
-
 
 			private void CoreWindow_PointerMoved(CoreWindow sender, PointerEventArgs args)
 			{
@@ -247,31 +216,17 @@ namespace Windows.UI.Xaml
 				// First raise the PointerExited events on the stale branch
 				if (staleBranch.HasValue)
 				{
-					var (root, leaf) = staleBranch.Value;
-
-					ClearPointerState(routedArgs, root, leaf);
+					Raise(Leave, staleBranch.Value, routedArgs);
 				}
 
 				// Second (try to) raise the PointerEnter on the OriginalSource
 				// Note: This won't do anything if already over.
 				routedArgs.Handled = false;
-				originalSource.OnNativePointerEnter(routedArgs);
+				Raise(Enter, originalSource, routedArgs);
 
 				// Finally raise the event, either on the OriginalSource or on the capture owners if any
-				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
-				{
-					foreach (var target in capture.Targets.ToArray())
-					{
-						routedArgs.Handled = false;
-						target.Element.OnNativePointerMove(routedArgs);
-					}
-				}
-				else
-				{
-					// Note: We prefer to use the "WithOverCheck" overload as we already know that the pointer is effectively over
-					routedArgs.Handled = false;
-					originalSource.OnNativePointerMoveWithOverCheck(routedArgs, isOver: true);
-				}
+				routedArgs.Handled = false;
+				RaiseUsingCaptures(Move, originalSource, routedArgs);
 			}
 
 			private void CoreWindow_PointerCancelled(CoreWindow sender, PointerEventArgs args)
@@ -299,19 +254,12 @@ namespace Windows.UI.Xaml
 
 				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-				// Second raise the event, either on the OriginalSource or on the capture owners if any
-				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
-				{
-					foreach (var target in capture.Targets.ToArray())
-					{
-						target.Element.OnNativePointerCancel(routedArgs, isSwallowedBySystem: false);
-					}
-				}
-				else
-				{
-					originalSource.OnNativePointerCancel(routedArgs, isSwallowedBySystem: false);
-				}
+				RaiseUsingCaptures(Cancelled, originalSource, routedArgs);
+				ClearPressedState(routedArgs);
+			}
 
+			private void ClearPressedState(PointerRoutedEventArgs routedArgs)
+			{
 				if (_pressedElements.TryGetValue(routedArgs.Pointer, out var pressedLeaf))
 				{
 					// We must make sure to clear the pressed state on all elements that was flagged as pressed.
@@ -319,42 +267,80 @@ namespace Windows.UI.Xaml
 					// ** OR ** the pointer has been captured by a parent element so we didn't raised to released on the sub elements.
 
 					_pressedElements.Remove(routedArgs.Pointer);
-					ClearPointerState(routedArgs, root: null, pressedLeaf, clearOver: false);
+
+					// Note: The event is propagated silently (public events won't be raised) as it's only to clear internal state
+					var ctx = new BubblingContext {IsInternal = true};
+					pressedLeaf.OnPointerUp(routedArgs, ctx);
 				}
 			}
 
-			// Clears the pointer state (over and pressed) only for a part of the visual tree
-			private void ClearPointerState(PointerRoutedEventArgs routedArgs, UIElement? root, UIElement leaf, bool clearOver = true)
+			#region Helpers
+			private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);
+
+			private static readonly RaisePointerEventArgs Wheel = (elt, args, ctx) => elt.OnPointerWheel(args, ctx);
+			private static readonly RaisePointerEventArgs Enter = (elt, args, ctx) => elt.OnPointerEnter(args, ctx);
+			private static readonly RaisePointerEventArgs Leave = (elt, args, ctx) =>
 			{
-				var element = leaf;
+				elt.OnPointerExited(args, ctx);
 
-				routedArgs.CanBubbleNatively = true; // TODO: UGLY HACK TO AVOID BUBBLING: we should be able to request to bubble only up to a the root
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				// Even if it's not true, when pointer is leaving an element, we propagate a SILENT (a.k.a. internal) up event to clear the pressed state.
+				// Note: This is usually limited only to a given branch (cf. Move)
+				// Note: This differs of how we behave on iOS, macOS and Android which does have "implicit capture" while pressed.
+				//		 It should only impact the "Pressed" visual states of controls.
+				ctx.IsInternal = true;
+				args.Handled = false;
+				elt.OnPointerUp(args, ctx);
+			};
+			private static readonly RaisePointerEventArgs Pressed = (elt, args, ctx) => elt.OnPointerDown(args, ctx);
+			private static readonly RaisePointerEventArgs Released = (elt, args, ctx) => elt.OnPointerUp(args, ctx);
+			private static readonly RaisePointerEventArgs Move = (elt, args, ctx) => elt.OnPointerMove(args, ctx);
+			private static readonly RaisePointerEventArgs Cancelled = (elt, args, ctx) => elt.OnPointerCancel(args, ctx);
+
+			private static void Raise(RaisePointerEventArgs raise, UIElement originalSource, PointerRoutedEventArgs routedArgs)
+				=> raise(originalSource, routedArgs, BubblingContext.Bubble);
+
+			private static void Raise(RaisePointerEventArgs raise, VisualTreeHelper.Branch branch, PointerRoutedEventArgs routedArgs)
+				=> raise(branch.Leaf, routedArgs, BubblingContext.BubbleUpTo(branch.Root));
+
+			private static void RaiseUsingCaptures(RaisePointerEventArgs raise, UIElement originalSource, PointerRoutedEventArgs routedArgs)
+			{
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 				{
-					this.Log().Trace($"Exiting branch from (root) {root.GetDebugName()} to (leaf) {element.GetDebugName()}\r\n");
-				}
+					var targets = capture.Targets.ToList();
+					if (capture.IsImplicitOnly)
+					{
+						raise(originalSource, routedArgs, BubblingContext.Bubble);
 
-				while (element is { })
+						foreach (var target in targets)
+						{
+							routedArgs.Handled = false;
+							raise(target.Element, routedArgs, BubblingContext.NoBubbling);
+						}
+					}
+					else
+					{
+						var explicitTarget = targets.Find(c => c.Kind == PointerCaptureKind.Explicit)!;
+
+						raise(explicitTarget.Element, routedArgs, BubblingContext.Bubble);
+
+						foreach (var target in targets)
+						{
+							if (target == explicitTarget)
+							{
+								continue;
+							}
+
+							routedArgs.Handled = false;
+							raise(target.Element, routedArgs, BubblingContext.NoBubbling);
+						}
+					}
+				}
+				else
 				{
-					routedArgs.Handled = false;
-					if (clearOver)
-					{
-						element.OnNativePointerExited(routedArgs);
-					}
-					// TODO: This differs of how we behave on iOS, macOS and Android which does have "implicit capture" while pressed.
-					//		 It should only impact the "Pressed" visual states of controls.
-					element.SetPressed(routedArgs, isPressed: false, muteEvent: true);
-
-					if (element == root)
-					{
-						break;
-					}
-
-					element = element.GetParent() as UIElement;
+					raise(originalSource, routedArgs, BubblingContext.Bubble);
 				}
-
-				routedArgs.CanBubbleNatively = false;
 			}
+			#endregion
 		}
 
 		// TODO Should be per CoreWindow
