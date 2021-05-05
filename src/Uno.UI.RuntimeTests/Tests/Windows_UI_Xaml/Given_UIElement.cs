@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Shapes;
 using System;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -190,6 +189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsFalse(sut.Failed);
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_GetVisualTreeParent()
@@ -215,7 +215,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 				return current;
 			}
-		}
+		} 
+#endif
 	}
 
 	internal partial class When_UpdateLayout_Then_ReentrancyNotAllowed_Element : FrameworkElement

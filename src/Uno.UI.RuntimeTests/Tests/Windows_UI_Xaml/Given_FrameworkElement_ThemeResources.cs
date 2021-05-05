@@ -10,6 +10,7 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 #if NETFX_CORE
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
