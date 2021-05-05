@@ -3664,6 +3664,9 @@
 	</IgnoreSet>
 	<IgnoreSet baseVersion="3.7.3">
 		<Types>
+			<Member
+				fullName="Windows.UI.Xaml.UIElementExtensions"
+				reason="Not part of the WinUI API, was previously incorrectly included for Android/iOS/macOS." />
 		</Types>
 		<Methods>
 			<Member
