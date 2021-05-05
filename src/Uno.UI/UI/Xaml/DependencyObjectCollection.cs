@@ -75,12 +75,16 @@ namespace Windows.UI.Xaml
 
 		private void UpdateParent(object parent)
 		{
-			foreach (var item in _list)
+			var actualParent = parent ?? this;
+
+			for (var i = 0; i < _list.Count; i++)
 			{
+				var item = _list[i];
+
 				// Because parent propagation doesn't currently support all cases, 
 				// we can't assume that the DependencyObjectCollection will have a parent.
 				// To preserve DataContext propagation, we fallback to self if no parent is set.
-				item.SetParent(parent ?? this);
+				item.SetParent(actualParent);
 			}
 		}
 
