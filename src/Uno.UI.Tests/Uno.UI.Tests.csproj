@@ -144,7 +144,11 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	</ItemGroup>
+	
 	<ItemGroup>
 		<None Update="ResourceLoader\Strings\en\Resources.resw">
 			<Generator>ResXFileCodeGenerator</Generator>
