@@ -499,6 +499,13 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object value)
 		{
+			var unregisteringInheritedProperties = _unregisteringInheritedProperties || _parentUnregisteringInheritedProperties;
+			if (unregisteringInheritedProperties)
+			{
+				// This guards against the scenario where inherited DataContext is removed when the view is removed from the visual tree,
+				// in which case 2-way bindings should not be updated.
+				return;
+			}
 			_properties.SetSourceValue(propertyDetails, value);
 		}
 

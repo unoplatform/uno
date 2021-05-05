@@ -102,6 +102,10 @@ namespace Windows.UI.Xaml
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
 		/// <summary>
+		/// An ancestor store is unregistering inherited properties.
+		/// </summary>
+		private bool _parentUnregisteringInheritedProperties;
+		/// <summary>
 		/// Is a theme-bound value currently being set?
 		/// </summary>
 		private bool _isSettingThemeBinding;
@@ -1582,8 +1586,27 @@ namespace Windows.UI.Xaml
 				{
 					for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
 					{
-						var store = _childrenStores[storeIndex];
-						store.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
+						var childStore = _childrenStores[storeIndex];
+						var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+						try
+#endif
+						{
+							if (propagateUnregistering)
+							{
+								childStore._parentUnregisteringInheritedProperties = true;
+							}
+							childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
+						}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+						finally
+#endif
+						{
+							if (propagateUnregistering)
+							{
+								childStore._parentUnregisteringInheritedProperties = false; 
+							}
+						}
 					}
 				}
 			}
