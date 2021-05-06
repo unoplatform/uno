@@ -395,6 +395,14 @@ namespace Uno.UI
 			/// </remarks>
 			public static ScrollViewerUpdatesMode DefaultUpdatesMode { get; set; } = ScrollViewerUpdatesMode.AsynchronousIdle;
 
+			/// <summary>
+			/// Defines the delay after which the scrollbars hide themselves when pointer is not over.<br/>
+			/// Default is 4 sec.<br/>
+			/// Setting this to <see cref="TimeSpan.MaxValue"/> will completely disable the auto hide feature.
+			/// </summary>
+			/// <remarks>This is effective only for managed scrollbars (WASM, macOS and Skia for now)</remarks>
+			public static TimeSpan? DefaultAutoHideDelay { get; set; }
+
 #if __ANDROID__
 			/// <summary>
 			/// This value defines an optional delay to be set for native ScrollBar thumbs to disapear. The

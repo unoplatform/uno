@@ -907,7 +907,7 @@ namespace Windows.UI.Xaml.Controls
 
 			OnBringIntoViewOnFocusChangeChangedPartial(BringIntoViewOnFocusChange);
 
-			ResetScrollIndicator(forced: true);
+			PrepareScrollIndicator();
 		}
 
 		partial void OnApplyTemplatePartial();
@@ -1368,16 +1368,30 @@ namespace Windows.UI.Xaml.Controls
 			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
 		}
 
-#region Scroll indicators visual states (Managed scroll bars only)
+		#region Scroll indicators visual states (Managed scroll bars only)
+		private static readonly TimeSpan _indicatorResetDelay = FeatureConfiguration.ScrollViewer.DefaultAutoHideDelay ?? TimeSpan.FromSeconds(4);
+		private static readonly bool _indicatorResetDisabled = _indicatorResetDelay == TimeSpan.MaxValue;
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
+
+		private void PrepareScrollIndicator() // OnApplyTemplate
+		{
+			if (_indicatorResetDisabled)
+			{
+				ShowScrollIndicator(PointerDeviceType.Mouse, forced: true);
+			}
+			else
+			{
+				ResetScrollIndicator(forced: true);
+			}
+		}
 
 		private static void ShowScrollIndicator(object sender, PointerRoutedEventArgs e) // OnPointerMove
 			=> (sender as ScrollViewer)?.ShowScrollIndicator(e.Pointer.PointerDeviceType);
 
-		private void ShowScrollIndicator(PointerDeviceType type)
+		private void ShowScrollIndicator(PointerDeviceType type, bool forced = false)
 		{
-			if (!ComputedIsVerticalScrollEnabled && !ComputedIsHorizontalScrollEnabled)
+			if (!forced && !ComputedIsVerticalScrollEnabled && !ComputedIsHorizontalScrollEnabled)
 			{
 				return;
 			}
@@ -1393,13 +1407,18 @@ namespace Windows.UI.Xaml.Controls
 				_indicatorState = indicatorState;
 			}
 
+			if (_indicatorResetDisabled)
+			{
+				return;
+			}
+
 			// Automatically hide the scroll indicator after a delay without any interaction
 			if (_indicatorResetTimer == null)
 			{
 				var weakRef = WeakReferencePool.RentSelfWeakReference(this);
 				_indicatorResetTimer = new DispatcherQueueTimer
 				{
-					Interval = TimeSpan.FromSeconds(4),
+					Interval = _indicatorResetDelay,
 					IsRepeating = false
 				};
 				_indicatorResetTimer.Tick += (snd, e) => (weakRef.Target as ScrollViewer)?.ResetScrollIndicator();
@@ -1412,6 +1431,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ResetScrollIndicator(bool forced = false)
 		{
+			if (_indicatorResetDisabled)
+			{
+				return;
+			}
+
 			_indicatorResetTimer?.Stop();
 
 			if (!forced && ((_horizontalScrollbar?.IsPointerOver ?? false) || (_verticalScrollbar?.IsPointerOver ?? false)))
@@ -1447,6 +1471,6 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
 			}
 		}
-#endregion
+		#endregion
 	}
 }
