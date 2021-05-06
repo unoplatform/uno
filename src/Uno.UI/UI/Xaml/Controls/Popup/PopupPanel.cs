@@ -174,17 +174,18 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-#if __ANDROID__
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			// Set Parent to the Popup, to obtain the same behavior as UWP that the Popup (and therefore the rest of the main visual tree)
+			// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
+			this.SetParent(Popup);
+		}
+
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-
-			if (FeatureConfiguration.Popup.UseNativePopup)
-			{
-				// Unset parent here, because it doesn't get unset in the usual way because the parent is a native view.
-				this.SetParent(null);
-			}
+			this.SetParent(null);
 		}
-#endif
 	}
 }
