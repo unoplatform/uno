@@ -25,21 +25,12 @@ namespace Windows.UI.Xaml.Media
 
 		public double Opacity
 		{
-			get => (double)GetValue(OpacityProperty);
-			set => SetValue(OpacityProperty, value);
+			get => GetOpacityValue();
+			set => SetOpacityValue(value);
 		}
 
-		// Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
-		public static DependencyProperty OpacityProperty { get ; } =
-			DependencyProperty.Register(
-				"Opacity", 
-				typeof(double), 
-				typeof(Brush),
-				new FrameworkPropertyMetadata(
-					defaultValue: 1d,
-					propertyChangedCallback: (s, e) => ((Brush)s).OnOpacityChanged((double)e.OldValue, (double)e.NewValue)
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = 1d, ChangedCallback = true)]
+		public static DependencyProperty OpacityProperty { get ; } = CreateOpacityProperty();
 
 		protected virtual void OnOpacityChanged(double oldValue, double newValue)
 		{
@@ -60,20 +51,12 @@ namespace Windows.UI.Xaml.Media
 
 		public Transform RelativeTransform
 		{
-			get => (Transform)GetValue(RelativeTransformProperty);
-			set => SetValue(RelativeTransformProperty, value);
+			get => GetRelativeTransformValue();
+			set => SetRelativeTransformValue(value);
 		}
 
-		public static DependencyProperty RelativeTransformProperty { get ; } =
-			DependencyProperty.Register(
-				"RelativeTransform",
-				typeof(Transform),
-				typeof(Brush),
-				new FrameworkPropertyMetadata(
-					null,
-
-					propertyChangedCallback: (s, e) =>
-						((Brush)s).OnRelativeTransformChanged((Transform)e.OldValue, (Transform)e.NewValue)));
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static DependencyProperty RelativeTransformProperty { get ; } = CreateRelativeTransformProperty();
 
 		protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
 		{
