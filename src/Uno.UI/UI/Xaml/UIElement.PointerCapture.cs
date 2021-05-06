@@ -230,7 +230,7 @@ namespace Windows.UI.Xaml
 					|| _nativeCaptureElement.GetHitTestVisibility() == HitTestability.Collapsed)
 				{
 					// If 'autoRelease' we want to release any previous capture that was not release properly no matter the reason.
-					// BUT we don't want to release a capture that was made by a child control (so LastDispatchedEventFrameId should already be equals to current FrameId).
+					// BUT we don't want to release a capture that was made by a child control (so MostRecentDispatchedEventFrameId should already be equals to current FrameId).
 					// We also do not allow a control that is not loaded to keep a capture (they should all have been release on unload).
 					// ** This is an IMPORTANT safety catch to prevent the application to become unresponsive **
 					Clear();
