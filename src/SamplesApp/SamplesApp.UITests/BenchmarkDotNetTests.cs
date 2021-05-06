@@ -23,7 +23,7 @@ namespace SamplesApp.UITests.Runtime
 
 		[Test]
 		[AutoRetry(tryCount: 1)]
-		[Timeout(500000)] // Adjust this timeout based on average test run duration
+		[Timeout(2000000)] // Adjust this timeout based on average test run duration
 		public async Task RunBenchmarks()
 		{
 			Run("Benchmarks.Shared.Controls.BenchmarkDotNetTestsPage");

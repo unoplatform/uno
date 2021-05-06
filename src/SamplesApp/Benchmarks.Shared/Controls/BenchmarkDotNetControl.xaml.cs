@@ -10,6 +10,7 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Exporters.Csv;
 using BenchmarkDotNet.Exporters.Json;
+using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
@@ -81,6 +82,15 @@ namespace Benchmarks.Shared.Controls
 
 					await SetStatus($"Running benchmarks for {type}");
 					var b = BenchmarkRunner.Run(type, config);
+
+					for (int i = 0; i < 3; i++)
+					{
+						await Dispatcher.RunIdleAsync(_ =>
+						{
+							GC.Collect();
+							GC.WaitForPendingFinalizers();
+						});
+					}
 				}
 
 				await SetStatus($"Finished");
@@ -169,7 +179,8 @@ namespace Benchmarks.Shared.Controls
 				Add(Job.InProcess
 					.WithLaunchCount(1)
 					.WithWarmupCount(1)
-					.WithIterationCount(1)
+					.WithIterationCount(5)
+					.WithIterationTime(TimeInterval.FromMilliseconds(100))
 #if __IOS__
 					// Fails on iOS with code generation used by EmitInvokeMultiple
 					.WithUnrollFactor(1)
