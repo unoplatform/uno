@@ -1315,6 +1315,14 @@ namespace Windows.UI.Xaml.Controls
 		//------------------------------------------------------------------------
 		protected override XSIZEF ArrangeOverride(XSIZEF finalSize)
 		{
+			// UNO NRE FIX
+			if (HasGridFlags(GridFlags.DefinitionsChanged))
+			{
+				// A call to .Measure() is required before arranging children
+				// When the DefinitionsChanged is set, the measure is already invalidated
+				return default;  // Returning (0, 0)
+			}
+
 			// Locking the row and columns definitions to prevent changes by user code
 			// during the arrange pass.
 			LockDefinitions();
