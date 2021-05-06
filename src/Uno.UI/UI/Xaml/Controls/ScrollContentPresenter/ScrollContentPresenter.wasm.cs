@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
 		private ScrollBarVisibility _verticalScrollBarVisibility;
-		private ScrollBarVisibility _horizotalScrollBarVisibility;
+		private ScrollBarVisibility _horizontalScrollBarVisibility;
 
 		internal Size ScrollBarSize
 		{
@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 		ScrollBarVisibility IScrollContentPresenter.VerticalScrollBarVisibility { get => VerticalScrollBarVisibility; set => VerticalScrollBarVisibility = value; }
 		internal ScrollBarVisibility VerticalScrollBarVisibility
 		{
-			get { return _verticalScrollBarVisibility; }
+			get => _verticalScrollBarVisibility;
 			set
 			{
 				if (_verticalScrollBarVisibility != value)
@@ -113,12 +113,12 @@ namespace Windows.UI.Xaml.Controls
 		ScrollBarVisibility IScrollContentPresenter.HorizontalScrollBarVisibility { get => HorizontalScrollBarVisibility; set => HorizontalScrollBarVisibility = value; }
 		internal ScrollBarVisibility HorizontalScrollBarVisibility
 		{
-			get { return _horizotalScrollBarVisibility; }
+			get => _horizontalScrollBarVisibility;
 			set
 			{
-				if (_horizotalScrollBarVisibility != value)
+				if (_horizontalScrollBarVisibility != value)
 				{
-					_horizotalScrollBarVisibility = value;
+					_horizontalScrollBarVisibility = value;
 					SetClasses(HorizontalVisibilityClasses, (int)value);
 				}
 			}
