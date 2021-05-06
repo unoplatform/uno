@@ -170,6 +170,14 @@ namespace Windows.UI.Xaml.Controls
 			//		 But this would require us to refactor more deeply the Popup which is not the purpose of the current work.
 		};
 
+		internal override void UpdateThemeBindings()
+		{
+			base.UpdateThemeBindings();
+
+			// Ensure bindings are updated on the child, which may be part of an isolated visual tree on some platforms (ie Android).
+			Application.PropagateThemeChanged(Child);
+		}
+
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
 			get

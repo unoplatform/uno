@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml
 
 			bool IsInherited(DependencyProperty dp, Type type)
 			{
-				if (dp.Name == "DataContext")
+				if (dp?.Name == "DataContext")
 				{
 					return true;
 				}

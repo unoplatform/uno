@@ -20,9 +20,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentControlPages
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public sealed partial class When_Template_Applied_On_Loading_DataContext_Propagation_Page : Page
+	public sealed partial class Template_Loading_DataContext_Page : Page
 	{
-		public When_Template_Applied_On_Loading_DataContext_Propagation_Page()
+		public Template_Loading_DataContext_Page()
 		{
 			this.InitializeComponent();
 			DataContext = new ViewModel() { MyItemsSource = new[] { "Froot", "Veg" }, MyText = "Froot" };

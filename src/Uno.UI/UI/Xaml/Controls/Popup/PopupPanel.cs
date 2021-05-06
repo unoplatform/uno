@@ -173,5 +173,18 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalSize;
 		}
+
+#if __ANDROID__
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			if (FeatureConfiguration.Popup.UseNativePopup)
+			{
+				// Unset parent here, because it doesn't get unset in the usual way because the parent is a native view.
+				this.SetParent(null);
+			}
+		}
+#endif
 	}
 }
