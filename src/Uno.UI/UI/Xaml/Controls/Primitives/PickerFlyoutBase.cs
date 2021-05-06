@@ -19,6 +19,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected virtual void OnConfirmed() => throw new InvalidOperationException();
 
 		protected virtual bool ShouldShowConfirmationButtons() => throw new InvalidOperationException();
+
+		protected override void InitializePopupPanel()
+		{
+			// -- UNO STUFF --
+			// Prevent Flyout from creating a PlacementPopupPanel and let the Popup create it.
+			// That way the FlyoutBase.PlaceFlyoutForDateTimePicker() will be able to do its job.
+		}
 	}
 
 }

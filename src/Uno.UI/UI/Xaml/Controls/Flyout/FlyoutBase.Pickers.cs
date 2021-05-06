@@ -1,4 +1,7 @@
 ﻿using Windows.Foundation;
+using Windows.UI.ViewManagement;
+using Uno.UI;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -12,6 +15,37 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//ctl::ComPtr<PickerFlyoutThemeTransition> spTransitionAsPickerFlyoutThemeTransition;
 
 			//m_isPositionedForDateTimePicker = true;
+
+			// **************************************************************************************
+			// UNO-FIX: Ensure the flyout stays in visible bounds
+			// **************************************************************************************
+			var childRect = ((FrameworkElement)_popup.Child).GetAbsoluteBoundsRect();
+			var rect = new Rect(point, childRect.Size);
+			var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+			if (rect.Right > visibleBounds.Right)
+			{
+				rect.X = visibleBounds.Right - rect.Width;
+			}
+
+			if (rect.Bottom > visibleBounds.Bottom)
+			{
+				rect.Y = visibleBounds.Bottom - rect.Height;
+			}
+
+			if (rect.Top < visibleBounds.Top)
+			{
+				rect.Y = visibleBounds.Top;
+			}
+
+			if (rect.Left < visibleBounds.Left)
+			{
+				rect.X = visibleBounds.Left;
+			}
+			// **************************************************************************************
+
+			//_popup.CustomLayouter = new PickerLayouter(this);
+			SetPopupPositionPartial(default, rect.Location);
 
 			//IFC_RETURN(ForwardPopupFlowDirection());
 			//SetTargetPosition(point);

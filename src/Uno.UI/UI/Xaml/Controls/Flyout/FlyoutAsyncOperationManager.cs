@@ -149,9 +149,6 @@ namespace Windows.UI.Xaml.Controls
 
 			AssertInvariants();
 
-			//Cleanup:
-			//RRETURN(hr);
-
 			return spAsyncOp;
 		}
 

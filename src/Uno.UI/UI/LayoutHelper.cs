@@ -375,7 +375,6 @@ namespace Uno.UI
 			}
 		}
 
-		[Pure]
 		internal static Rect UnionWith(this Rect rect1, Rect rect2)
 		{
 			rect1.Union(rect2);
