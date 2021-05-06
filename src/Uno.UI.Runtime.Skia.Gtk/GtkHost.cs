@@ -147,9 +147,9 @@ namespace Uno.UI.Runtime.Skia
 
 				if (File.Exists(iconPath))
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
 					{
-						this.Log().Warn($"Loading icon file [{iconPath}] from Package.appxmanifest file");
+						this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 					}
 
 					GtkHost.Window.SetIconFromFile(iconPath);
