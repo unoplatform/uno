@@ -80,6 +80,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool _isTopLevelDictionary;
 		private readonly bool _isUnoAssembly;
+
+		/// <summary>
+		/// True if VisualStateManager children can be set lazily
+		/// </summary>
+		private readonly bool _isLazyVisualStateManagerEnabled;
 		/// <summary>
 		/// True if the generator is currently creating child subclasses (for templates, etc)
 		/// </summary>
@@ -191,7 +196,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isDebug,
 			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
-			bool isUnoAssembly
+			bool isUnoAssembly,
+			bool isLazyVisualStateManagerEnabled
 		)
 		{
 			_fileDefinition = file;
@@ -210,6 +216,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isDebug = isDebug;
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
+			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 
 			InitCaches();
 
@@ -2185,6 +2192,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												.InvariantCultureFormat(contentProperty.Name));
 										}
 									}
+									else if (IsLazyVisualStateManagerProperty(contentProperty))
+									{
+										writer.AppendLineInvariant($"/* Lazy VisualStateManager property {contentProperty}*/");
+									}
 									else // Content is not a collection
 									{
 										var objectUid = GetObjectUid(topLevelControl);
@@ -2765,7 +2776,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLine(GenerateRootPhases(objectDefinition, closureName) ?? "");
 					}
 
-					foreach (var member in extendedProperties)
+					var lazyProperties = extendedProperties.Where(IsLazyVisualStateManagerProperty).ToArray();
+
+					foreach (var member in extendedProperties.Except(lazyProperties))
 					{
 						if (extractionTargetMembers != null)
 						{
@@ -3065,6 +3078,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
+					var implicitContentChild = FindImplicitContentMember(objectDefinition);
+					var lazyContentProperty = FindLazyContentProperty(implicitContentChild, objectDefinition);
+
+					if (lazyProperties.Any() || lazyContentProperty != null)
+					{
+						// This block is used to generate lazy initializations of some
+						// inner VisualStateManager properties in VisualState and VisualTransition.
+						// This allows for faster materialization of controls, avoiding the construction
+						// of inferequently used objects graphs.
+
+						using (writer.BlockInvariant($"global::Uno.UI.Helpers.MarkupHelper.Set{objectDefinition.Type.Name}Lazy({closureName}, () => "))
+						{
+							BuildLiteralLazyVisualStateManagerProperties(writer, objectDefinition, closureName);
+
+							if (implicitContentChild != null && lazyContentProperty != null)
+							{
+								writer.AppendLineInvariant($"{closureName}.{lazyContentProperty.Name} = ");
+
+								var xamlObjectDefinition = implicitContentChild.Objects.First();
+								using (TryAdaptNative(writer, xamlObjectDefinition, lazyContentProperty.Type as INamedTypeSymbol))
+								{
+									BuildChild(writer, implicitContentChild, xamlObjectDefinition);
+								}
+								writer.AppendLineInvariant($";");
+							}
+						}
+						writer.AppendLineInvariant($");");
+					}
+
 					if (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition))
 					{
 						writer.AppendLineInvariant($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
@@ -3132,6 +3174,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLine(formatted);
 				}
 			}
+		}
+
+		private IPropertySymbol? FindLazyContentProperty(XamlMemberDefinition? implicitContentChild, XamlObjectDefinition objectDefinition)
+		{
+			if (implicitContentChild != null)
+			{
+				var elementType = FindType(objectDefinition.Type);
+
+				if (elementType != null)
+				{
+					var contentProperty = FindContentProperty(elementType);
+
+					if (contentProperty != null && IsLazyVisualStateManagerProperty(contentProperty))
+					{
+						return contentProperty;
+					}
+				}
+			}
+
+			return null;
 		}
 
 		private bool IsXLoadMember(XamlMemberDefinition member) =>
@@ -4611,26 +4673,51 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildLiteralProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, string? closureName = null)
 		{
-			TryAnnotateWithGeneratorSource(writer);
-			var closingPunctuation = string.IsNullOrWhiteSpace(closureName) ? "," : ";";
-
 			var extendedProperties = GetExtendedProperties(objectDefinition);
 
-			var objectUid = GetObjectUid(objectDefinition);
+			bool PropertyFilter(XamlMemberDefinition member)
+				=> IsType(objectDefinition.Type, member.Member.DeclaringType)
+						&& !IsAttachedProperty(member)
+						&& !IsLazyVisualStateManagerProperty(member)
+						&& FindEventType(member.Member) == null
+						&& member.Member.Name != "_UnknownContent"; // We are defining the elements of a collection explicitly declared in XAML
 
+			BuildLiteralPropertiesWithFilter(writer, objectDefinition, closureName, extendedProperties, PropertyFilter);
+		}
+
+		private void BuildLiteralLazyVisualStateManagerProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, string? closureName = null)
+		{
+			var extendedProperties = GetExtendedProperties(objectDefinition);
+
+			bool PropertyFilter(XamlMemberDefinition member)
+				=> IsLazyVisualStateManagerProperty(member);
+
+			BuildLiteralPropertiesWithFilter(writer, objectDefinition, closureName, extendedProperties, PropertyFilter);
+		}
+
+		private void BuildLiteralPropertiesWithFilter(
+			IIndentedStringBuilder writer,
+			XamlObjectDefinition objectDefinition,
+			string? closureName,
+			IEnumerable<XamlMemberDefinition> extendedProperties,
+			Func<XamlMemberDefinition, bool> propertyPredicate
+		)
+		{
 			if (extendedProperties.Any())
 			{
+				TryAnnotateWithGeneratorSource(writer);
+
+				var objectUid = GetObjectUid(objectDefinition);
+				var closingPunctuation = string.IsNullOrWhiteSpace(closureName) ? "," : ";";
+
 				foreach (var member in extendedProperties)
 				{
 					var fullValueSetter = string.IsNullOrWhiteSpace(closureName) ? member.Member!.Name : "{0}.{1}".InvariantCultureFormat(closureName, member.Member!.Name);
 
 					// Exclude attached properties, must be set in the extended apply section.
 					// If there is no type attached, this can be a binding.
-					if (IsType(objectDefinition.Type, member.Member.DeclaringType)
-						&& !IsAttachedProperty(member)
-						&& FindEventType(member.Member) == null
-						&& member.Member.Name != "_UnknownContent" // We are defining the elements of a collection explicitly declared in XAML
-					)
+					// Exclude lazy initialized properties, those are always in the extended block.
+					if (propertyPredicate(member))
 					{
 						if (member.Objects.None())
 						{
@@ -4740,6 +4827,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private bool IsLazyVisualStateManagerProperty(XamlMemberDefinition member)
+			=> _isLazyVisualStateManagerEnabled
+				&& member.Owner != null
+				&& member.Owner.Type.Name switch
+				{
+					"VisualState" => member.Member.Name == "Storyboard"
+									|| member.Member.Name == "Setters",
+					"VisualTransition" => member.Member.Name == "Storyboard",
+					_ => false,
+				};
+
+		private bool IsLazyVisualStateManagerProperty(IPropertySymbol property)
+			=> _isLazyVisualStateManagerEnabled
+				&& property.ContainingSymbol.Name switch
+			{
+				"VisualState" => property.Name == "Storyboard"
+								|| property.Name == "Setters",
+				"VisualTransition" => property.Name == "Storyboard",
+				_ => false,
+			};
+
 		/// <summary>
 		/// Determines if the member is inline initializable and the first item is not a new collection instance
 		/// </summary>
@@ -4831,6 +4939,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						m.Member.Name == "Style" && HasBindingMarkupExtension(m)
 					)
 					|| IsAttachedProperty(m)
+					|| IsLazyVisualStateManagerProperty(m)
 					||
 					(
 						// If the object is a collection and it has both _UnknownContent (i.e. an item) and other properties defined,
