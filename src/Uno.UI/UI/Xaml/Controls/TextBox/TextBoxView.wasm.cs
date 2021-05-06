@@ -7,7 +7,6 @@ using Windows.UI.Xaml.Media;
 using Uno.Logging;
 using Windows.Foundation;
 using System.Globalization;
-using Uno.UI.UI.Xaml.Documents;
 using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls

@@ -6,7 +6,6 @@ using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Foundation;
 using System.Linq;
-using Uno.UI.UI.Xaml.Documents;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Media;

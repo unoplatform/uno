@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -155,7 +156,7 @@ namespace Windows.UI.Xaml
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
-					this.SetStyle("color", scb.ColorWithOpacity.ToHexString());
+					WindowManagerInterop.SetElementColor(HtmlId, scb.ColorWithOpacity);
 					break;
 				case GradientBrush gradient:
 					this.SetStyle(
