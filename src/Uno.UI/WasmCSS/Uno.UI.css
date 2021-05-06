@@ -63,6 +63,17 @@ svg.uno-uielement {
   position: fixed;
 }
 
+.uno-uielement.uno-visibility-collapsed {
+  /*
+    Note: On wasm when we have an 'hidden' (or 'collapsed') element, its height is used to compute the native 'scrollHeight',
+	  driving the SV to flicker when we scroll while at the bottom of the viewport (if those hidden element would have increase the viewport if visible).
+	  To avoid that, we move the element way out of the visible bounds of the view.
+  */
+  visibility: hidden !important;
+  top: -100000px !important;
+  left: -100000px !important;
+}
+
 svg.uno-frameworkelement.uno-unarranged,
 iframe.uno-frameworkelement.uno-unarranged,
 img.uno-frameworkelement.uno-unarranged,

@@ -779,6 +779,37 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		#region SetVisibility
+
+		internal static void SetVisibility(IntPtr htmlId, bool visible)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setVisibility(\"{htmlId}\", {visible});";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetVisibilityParams()
+				{
+					HtmlId = htmlId,
+					Visible = visible,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setVisibilityNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetVisibilityParams
+		{
+			public IntPtr HtmlId;
+
+			public bool Visible;
+		}
+		#endregion
+
 		#region SetProperty
 
 		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)

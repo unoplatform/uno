@@ -28,6 +28,7 @@ namespace Uno.UI {
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
+		private static readonly unoCollapsedClassName = "uno-visibility-collapsed";
 
 		private static _cctor = (() => {
 			WindowManager.initMethods();
@@ -362,6 +363,31 @@ namespace Uno.UI {
 
 		private setXUidInternal(elementId: number, name: string): void {
 			this.getView(elementId).setAttribute("xuid", name);
+		}
+
+		/**
+			* Sets the visibility of the specified element
+			*/
+		public setVisibility(elementId: number, visible: boolean): string {
+			this.setVisibilityInternal(elementId, visible);
+			return "ok";
+		}
+
+		public setVisibilityNative(pParam: number): boolean {
+			const params = WindowManagerSetVisibilityParams.unmarshal(pParam);
+			this.setVisibilityInternal(params.HtmlId, params.Visible);
+			return true;
+		}
+
+		private setVisibilityInternal(elementId: number, visible: boolean): void {
+			const element = this.getView(elementId);
+
+			if (visible) {
+				element.classList.remove(WindowManager.unoCollapsedClassName);
+			}
+			else {
+				element.classList.add(WindowManager.unoCollapsedClassName);
+			}
 		}
 
 		/**

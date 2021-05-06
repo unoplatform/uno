@@ -577,6 +577,27 @@ var Uno;
                 this.getView(elementId).setAttribute("xuid", name);
             }
             /**
+                * Sets the visibility of the specified element
+                */
+            setVisibility(elementId, visible) {
+                this.setVisibilityInternal(elementId, visible);
+                return "ok";
+            }
+            setVisibilityNative(pParam) {
+                const params = WindowManagerSetVisibilityParams.unmarshal(pParam);
+                this.setVisibilityInternal(params.HtmlId, params.Visible);
+                return true;
+            }
+            setVisibilityInternal(elementId, visible) {
+                const element = this.getView(elementId);
+                if (visible) {
+                    element.classList.remove(WindowManager.unoCollapsedClassName);
+                }
+                else {
+                    element.classList.add(WindowManager.unoCollapsedClassName);
+                }
+            }
+            /**
                 * Set an attribute for an element.
                 */
             setAttributes(elementId, attributes) {
@@ -1819,6 +1840,7 @@ var Uno;
         WindowManager._isLoadEventsEnabled = false;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
+        WindowManager.unoCollapsedClassName = "uno-visibility-collapsed";
         WindowManager._cctor = (() => {
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
@@ -4996,6 +5018,19 @@ class WindowManagerSetUnsetClassesParams {
             else {
                 ret.CssClassesToUnset = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetVisibilityParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetVisibilityParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Visible = Boolean(Module.getValue(pData + 4, "i32"));
         }
         return ret;
     }
