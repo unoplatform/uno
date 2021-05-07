@@ -99,6 +99,7 @@
 		<Page Include="Windows_UI_Xaml\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
+		<Page Include="Windows_UI_Xaml_Markup\**\*.xaml" />
 		<Page Include="App\**\*.xaml" />
 		<None Remove="Lottie\animation.json" />
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />

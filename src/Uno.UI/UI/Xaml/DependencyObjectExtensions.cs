@@ -103,6 +103,22 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal static bool HasParent(this object dependencyObject, DependencyObject searchedParent)
+		{
+			var parent = dependencyObject.GetParent();
+			while (parent != null)
+			{
+				if(ReferenceEquals(parent, searchedParent))
+				{
+					return true;
+				}
+
+				parent = parent.GetParent();
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Set the parent of the specified dependency object
 		/// </summary>

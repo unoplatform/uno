@@ -54,6 +54,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml = false;
 
+		/// <summary>
+		/// When set, Visual State Manager children will be initialized lazily for performance
+		/// </summary>
+		private readonly bool _isLazyVisualStateManagerEnabled = true;
+
 		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
 		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
@@ -155,6 +160,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldAnnotateGeneratedXaml"), out var shouldAnnotateGeneratedXaml))
 			{
 				_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
+			}
+
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlLazyVisualStateManagerEnabled"), out var isLazyVisualStateManagerEnabled))
+			{
+				_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			}
 
 			_targetPath = Path.Combine(
@@ -286,7 +296,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isDebug: _isDebug,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
-									isUnoAssembly: IsUnoAssembly
+									isUnoAssembly: IsUnoAssembly,
+									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled
 								)
 								.GenerateFile()
 						)
