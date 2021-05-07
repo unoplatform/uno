@@ -3656,6 +3656,16 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.set_IsReadOnly(System.Boolean value)"
 				reason="Not part of the UWP API" />
+		</Methods>
+		<Fields>
+		</Fields>
+		<Properties>
+		</Properties>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="3.7.3">
+		<Types>
+		</Types>
+		<Methods>
 			<Member
 				fullName="System.Void Windows.UI.Core.WindowSizeChangedEventArgs..ctor(Windows.Foundation.Size newSize)"
 				reason="Not part of the UWP API" />

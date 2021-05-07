@@ -109,14 +109,20 @@ namespace UITests.Windows_UI_Core
 			}
 		}
 
-		private void CoreWindowActivated(CoreWindow sender, WindowActivatedEventArgs args)
+		private void CoreWindowActivated(CoreWindow sender, Windows.UI.Core.WindowActivatedEventArgs args)
 		{
 			CoreWindowActivationState = args.WindowActivationState;
 			CoreWindowActivationMode = sender.ActivationMode;
 			AddHistory("CoreWindow.Activated");
 		}
 
-		private void WindowActivated(object sender, WindowActivatedEventArgs e)
+		private void WindowActivated(object sender,
+#if HAS_
+			Microsoft.UI.Xaml.WindowActivatedEventArgs e
+#else
+			Windows.UI.Core.WindowActivatedEventArgs e
+#endif
+			)
 		{
 			CoreWindowActivationState = e.WindowActivationState;
 			AddHistory("Window.Activated");
@@ -130,12 +136,12 @@ namespace UITests.Windows_UI_Core
 
 
 		private void AppLeavingBackground(object sender, Windows.ApplicationModel.LeavingBackgroundEventArgs e)
-		{			
+		{
 			AddHistory("Application.LeavingBackground");
 		}
 
 		private void AppEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
-		{			
+		{
 			AddHistory("Application.EnteredBackground");
 		}
 
