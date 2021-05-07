@@ -141,6 +141,7 @@ declare namespace Uno.UI {
         static get isLoadEventsEnabled(): boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
+        private static readonly unoCollapsedClassName;
         private static _cctor;
         /**
             * Initialize the WindowManager
@@ -227,6 +228,12 @@ declare namespace Uno.UI {
             */
         setXUidNative(pParam: number): boolean;
         private setXUidInternal;
+        /**
+            * Sets the visibility of the specified element
+            */
+        setVisibility(elementId: number, visible: boolean): string;
+        setVisibilityNative(pParam: number): boolean;
+        private setVisibilityInternal;
         /**
             * Set an attribute for an element.
             */
@@ -1396,6 +1403,11 @@ declare class WindowManagerSetUnsetClassesParams {
     CssClassesToUnset_Length: number;
     CssClassesToUnset: Array<string>;
     static unmarshal(pData: number): WindowManagerSetUnsetClassesParams;
+}
+declare class WindowManagerSetVisibilityParams {
+    HtmlId: number;
+    Visible: boolean;
+    static unmarshal(pData: number): WindowManagerSetVisibilityParams;
 }
 declare class WindowManagerSetXUidParams {
     HtmlId: number;
