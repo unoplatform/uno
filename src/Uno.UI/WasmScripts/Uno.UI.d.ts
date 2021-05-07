@@ -318,11 +318,23 @@ declare namespace Uno.UI {
         private setAsArranged;
         private setAsUnarranged;
         /**
-        * Sets the visibility of the specified element
+        * Sets the color property of the specified element
         */
         setElementColor(elementId: number, color: number): string;
         setElementColorNative(pParam: number): boolean;
         private setElementColorInternal;
+        /**
+        * Sets the background color property of the specified element
+        */
+        setElementBackgroundColor(pParam: number): boolean;
+        /**
+        * Sets the background image property of the specified element
+        */
+        setElementBackgroundGradient(pParam: number): boolean;
+        /**
+        * Clears the background property of the specified element
+        */
+        resetElementBackground(pParam: number): boolean;
         /**
         * Sets the transform matrix of an element
         *
@@ -553,6 +565,7 @@ declare namespace Uno.UI {
         private dispatchEvent;
         private getIsConnectedToRootElement;
         private handleToString;
+        private numberToCssColor;
         setCursor(cssCursor: string): string;
         getNaturalImageSize(imageUrl: string): Promise<string>;
     }
@@ -1299,6 +1312,10 @@ declare class WindowManagerRemoveViewParams {
     ChildView: number;
     static unmarshal(pData: number): WindowManagerRemoveViewParams;
 }
+declare class WindowManagerResetElementBackgroundParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerResetElementBackgroundParams;
+}
 declare class WindowManagerResetStyleParams {
     HtmlId: number;
     Styles_Length: number;
@@ -1337,6 +1354,16 @@ declare class WindowManagerSetContentHtmlParams {
     HtmlId: number;
     Html: string;
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
+}
+declare class WindowManagerSetElementBackgroundColorParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementBackgroundColorParams;
+}
+declare class WindowManagerSetElementBackgroundGradientParams {
+    HtmlId: number;
+    CssGradient: string;
+    static unmarshal(pData: number): WindowManagerSetElementBackgroundGradientParams;
 }
 declare class WindowManagerSetElementColorParams {
     HtmlId: number;

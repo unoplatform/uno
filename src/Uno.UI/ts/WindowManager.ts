@@ -679,7 +679,6 @@ namespace Uno.UI {
 			}
 		}
 
-
 		/**
 		* Sets the color property of the specified element
 		*/
@@ -697,7 +696,53 @@ namespace Uno.UI {
 		private setElementColorInternal(elementId: number, color: number): void {
 			const element = this.getView(elementId);
 
-			element.style.setProperty("color", "#" + color.toString(16).padStart(8, '0'));
+			element.style.setProperty("color", this.numberToCssColor(color));
+		}
+
+		/**
+		* Sets the background color property of the specified element
+		*/
+		public setElementBackgroundColor(pParam: number): boolean {
+			const params = WindowManagerSetElementBackgroundColorParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.setProperty("background-color", this.numberToCssColor(params.Color));
+			style.removeProperty("background-image");
+
+			return true;
+		}
+
+		/**
+		* Sets the background image property of the specified element
+		*/
+		public setElementBackgroundGradient(pParam: number): boolean {
+			const params = WindowManagerSetElementBackgroundGradientParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.removeProperty("background-color");
+			style.setProperty("background-image", params.CssGradient);
+
+			return true;
+		}
+
+		/**
+		* Clears the background property of the specified element
+		*/
+		public resetElementBackground(pParam: number): boolean {
+			const params = WindowManagerResetElementBackgroundParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.removeProperty("background-color");
+			style.removeProperty("background-image");
+			style.removeProperty("background-size");
+
+			return true;
 		}
 
 		/**
@@ -1902,6 +1947,10 @@ namespace Uno.UI {
 
 			// Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
 			return handle + "";
+		}
+
+		private numberToCssColor(color: number): string {
+			return "#" + color.toString(16).padStart(8, '0');
 		}
 
 		public setCursor(cssCursor: string): string {
