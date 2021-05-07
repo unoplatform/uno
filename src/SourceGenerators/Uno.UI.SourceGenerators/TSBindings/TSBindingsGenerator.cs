@@ -55,7 +55,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				{
 					_stringSymbol = context.Compilation.GetTypeByMetadataName("System.String");
 					_intSymbol = context.Compilation.GetTypeByMetadataName("System.Int32");
-					_uintSymbol = context.Compilation.GetTypeByMetadataName("System.UInt32") ?? throw new Exception($"System.UInt32");
+					_uintSymbol = context.Compilation.GetTypeByMetadataName("System.UInt32");
 					_floatSymbol = context.Compilation.GetTypeByMetadataName("System.Single");
 					_doubleSymbol = context.Compilation.GetTypeByMetadataName("System.Double");
 					_byteSymbol = context.Compilation.GetTypeByMetadataName("System.Byte");

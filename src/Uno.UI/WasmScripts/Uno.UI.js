@@ -851,7 +851,7 @@ var Uno;
                 }
             }
             /**
-            * Sets the visibility of the specified element
+            * Sets the color property of the specified element
             */
             setElementColor(elementId, color) {
                 this.setElementColorInternal(elementId, color);
@@ -864,7 +864,41 @@ var Uno;
             }
             setElementColorInternal(elementId, color) {
                 const element = this.getView(elementId);
-                element.style.setProperty("color", "#" + color.toString(16).padStart(8, '0'));
+                element.style.setProperty("color", this.numberToCssColor(color));
+            }
+            /**
+            * Sets the background color property of the specified element
+            */
+            setElementBackgroundColor(pParam) {
+                const params = WindowManagerSetElementBackgroundColorParams.unmarshal(pParam);
+                const element = this.getView(params.HtmlId);
+                const style = element.style;
+                style.setProperty("background-color", this.numberToCssColor(params.Color));
+                style.removeProperty("background-image");
+                return true;
+            }
+            /**
+            * Sets the background image property of the specified element
+            */
+            setElementBackgroundGradient(pParam) {
+                const params = WindowManagerSetElementBackgroundGradientParams.unmarshal(pParam);
+                const element = this.getView(params.HtmlId);
+                const style = element.style;
+                style.removeProperty("background-color");
+                style.setProperty("background-image", params.CssGradient);
+                return true;
+            }
+            /**
+            * Clears the background property of the specified element
+            */
+            resetElementBackground(pParam) {
+                const params = WindowManagerResetElementBackgroundParams.unmarshal(pParam);
+                const element = this.getView(params.HtmlId);
+                const style = element.style;
+                style.removeProperty("background-color");
+                style.removeProperty("background-image");
+                style.removeProperty("background-size");
+                return true;
             }
             /**
             * Sets the transform matrix of an element
@@ -1812,6 +1846,9 @@ var Uno;
             handleToString(handle) {
                 // Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
                 return handle + "";
+            }
+            numberToCssColor(color) {
+                return "#" + color.toString(16).padStart(8, '0');
             }
             setCursor(cssCursor) {
                 const unoBody = document.getElementById(this.containerElementId);
@@ -4653,6 +4690,16 @@ class WindowManagerRemoveViewParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerResetElementBackgroundParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerResetElementBackgroundParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerResetStyleParams {
     static unmarshal(pData) {
         const ret = new WindowManagerResetStyleParams();
@@ -4815,6 +4862,38 @@ class WindowManagerSetContentHtmlParams {
             }
             else {
                 ret.Html = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementBackgroundColorParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetElementBackgroundColorParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Color = Module.HEAPU32[(pData + 4) >> 2];
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementBackgroundGradientParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetElementBackgroundGradientParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.CssGradient = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.CssGradient = null;
             }
         }
         return ret;

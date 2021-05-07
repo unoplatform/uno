@@ -9,13 +9,22 @@ namespace Windows.UI
 		/// <summary>
 		/// Get color value in CSS format "rgba(r, g, b, a)"
 		/// </summary>
-		public string ToCssString() => 
-			"rgba(" 
-			+ R.ToString(CultureInfo.InvariantCulture) + "," 
-			+ G.ToString(CultureInfo.InvariantCulture) + "," 
+		public string ToCssString() =>
+			"rgba("
+			+ R.ToString(CultureInfo.InvariantCulture) + ","
+			+ G.ToString(CultureInfo.InvariantCulture) + ","
 			+ B.ToString(CultureInfo.InvariantCulture) + ","
 			+ (A / 255.0).ToString(CultureInfo.InvariantCulture)
 			+ ")";
+
+		/// <summary>
+		/// Get color value in CSS format "rgba(r, g, b, a)"
+		/// </summary>
+		internal uint ToCssInteger() =>
+			(uint)(R << 24)
+			| (uint)(G << 16)
+			| (uint)(B << 8)
+			| A;
 
 		internal string ToHexString()
 		{

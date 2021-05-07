@@ -160,6 +160,7 @@ namespace Uno.UI.Xaml
 		{
 			public int RegistrationId;
 		}
+
 		#endregion
 
 		#region SetElementTransform
@@ -862,11 +863,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetElementColor(IntPtr htmlId, Color color)
 		{
-			var colorAsInteger =
-				(uint)(color.R << 24)
-				| (uint)(color.G << 16)
-				| (uint)(color.B << 8)
-				| color.A;
+			var colorAsInteger = color.ToCssInteger();
 
 			if (UseJavascriptEval)
 			{
@@ -1290,6 +1287,71 @@ namespace Uno.UI.Xaml
 			public bool HasTop;
 			public bool DisableAnimation;
 
+			public IntPtr HtmlId;
+		}
+		#endregion
+
+		#region SetElementBackgroundColor
+		internal static void SetElementBackgroundColor(IntPtr htmlId, Color color)
+		{
+			var parms = new WindowManagerSetElementBackgroundColorParams
+			{
+				HtmlId = htmlId,
+				Color = color.ToCssInteger()
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:setElementBackgroundColor", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetElementBackgroundColorParams
+		{
+			public IntPtr HtmlId;
+
+			public uint Color;
+		}
+		#endregion
+
+		#region SetElementBackgroundColor
+		internal static void SetElementBackgroundGradient(IntPtr htmlId, string cssGradient)
+		{
+			var parms = new WindowManagerSetElementBackgroundGradientParams
+			{
+				HtmlId = htmlId,
+				CssGradient = cssGradient
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:setElementBackgroundGradient", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetElementBackgroundGradientParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string CssGradient;
+		}
+		#endregion
+
+		#region SetElementBackgroundColor
+
+		internal static void ResetElementBackground(IntPtr htmlId)
+		{
+			var parms = new WindowManagerResetElementBackgroundParams
+			{
+				HtmlId = htmlId,
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:resetElementBackground", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerResetElementBackgroundParams
+		{
 			public IntPtr HtmlId;
 		}
 		#endregion

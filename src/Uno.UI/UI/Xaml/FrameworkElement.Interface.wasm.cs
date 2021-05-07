@@ -159,15 +159,15 @@ namespace Windows.UI.Xaml
 			{
 				case SolidColorBrush solidColorBrush:
 					var color = solidColorBrush.ColorWithOpacity;
-					SetStyle(("background-color", color.ToHexString()), ("background-image", ""));
+					WindowManagerInterop.SetElementBackgroundColor(HtmlId, color);
 					RecalculateBrushOnSizeChanged(false);
 					break;
 				case GradientBrush gradientBrush:
-					SetStyle(("background-color", ""), ("background-image", gradientBrush.ToCssString(RenderSize)));
+					WindowManagerInterop.SetElementBackgroundGradient(HtmlId, gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
 					break;
 				default:
-					ResetStyle("background-color", "background-image", "background-size");
+					WindowManagerInterop.ResetElementBackground(HtmlId);
 					RecalculateBrushOnSizeChanged(false);
 					break;
 			}
