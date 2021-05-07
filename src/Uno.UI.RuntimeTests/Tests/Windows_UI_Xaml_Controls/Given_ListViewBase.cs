@@ -27,6 +27,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using System.ComponentModel;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1235,7 +1236,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Removed_From_Tree_And_Selection_TwoWay_Bound()
+		{
+			var page = new ListViewBoundSelectionPage();
+
+			var dc = new When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext();
+			page.DataContext = dc;
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+			Assert.IsNull(dc.MySelection);
+
+			var SUT = page.MyListView;
+			SUT.SelectedItem = "Rice";
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Rice", dc.MySelection);
+
+			page.HostPanel.Children.Remove(page.IntermediateGrid);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.DataContext);
+
+			Assert.AreEqual("Rice", dc.MySelection);
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
+
+		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : INotifyPropertyChanged
+		{
+			public event PropertyChangedEventHandler PropertyChanged;
+
+			public string[] MyItems { get; } = new[] { "Red beans", "Rice" };
+
+			private string _mySelection;
+			public string MySelection
+			{
+				get => _mySelection;
+				set
+				{
+					var changing = _mySelection != value;
+					_mySelection = value;
+					if (changing)
+					{
+						PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MySelection)));
+					}
+				}
+			}
+		}
 	}
 
 	public partial class OnItemsChangedListView : ListView
