@@ -10,6 +10,7 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Exporters.Csv;
 using BenchmarkDotNet.Exporters.Json;
+using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
@@ -63,7 +64,7 @@ namespace Benchmarks.Shared.Controls
 
 		private async Task Run()
 		{
-			_logger = new TextBlockLogger(runLogs);
+			_logger = new TextBlockLogger(runLogs, debugLog.IsChecked ?? false);
 
 			try
 			{
@@ -81,6 +82,15 @@ namespace Benchmarks.Shared.Controls
 
 					await SetStatus($"Running benchmarks for {type}");
 					var b = BenchmarkRunner.Run(type, config);
+
+					for (int i = 0; i < 3; i++)
+					{
+						await Dispatcher.RunIdleAsync(_ =>
+						{
+							GC.Collect();
+							GC.WaitForPendingFinalizers();
+						});
+					}
 				}
 
 				await SetStatus($"Finished");
@@ -169,7 +179,8 @@ namespace Benchmarks.Shared.Controls
 				Add(Job.InProcess
 					.WithLaunchCount(1)
 					.WithWarmupCount(1)
-					.WithIterationCount(1)
+					.WithIterationCount(5)
+					.WithIterationTime(TimeInterval.FromMilliseconds(100))
 #if __IOS__
 					// Fails on iOS with code generation used by EmitInvokeMultiple
 					.WithUnrollFactor(1)
@@ -198,15 +209,22 @@ namespace Benchmarks.Shared.Controls
 			   };
 
 			private readonly TextBlock _target;
+			private LogKind _minLogKind;
 
-			public TextBlockLogger(TextBlock target)
-				=> _target = target;
+			public TextBlockLogger(TextBlock target, bool isDebug)
+			{
+				_target = target;
+				_minLogKind = isDebug ? LogKind.Default : LogKind.Statistic;
+			}
 
 			public void Flush() { }
 
 			public void Write(LogKind logKind, string text)
 			{
-				_target.Inlines.Add(new Run { Text = text, Foreground = GetLogKindColor(logKind) });
+				if (logKind >= _minLogKind)
+				{
+					_target.Inlines.Add(new Run { Text = text, Foreground = GetLogKindColor(logKind) });
+				}
 			}
 
 			public static Brush GetLogKindColor(LogKind logKind)
@@ -223,8 +241,11 @@ namespace Benchmarks.Shared.Controls
 
 			public void WriteLine(LogKind logKind, string text)
 			{
-				Write(logKind, text);
-				WriteLine();
+				if (logKind >= _minLogKind)
+				{
+					Write(logKind, text);
+					WriteLine();
+				}
 			}
 		}
 	}
