@@ -316,6 +316,13 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						Select(args.Index);
 					}
+
+					// TODO: Uno specific - remove when #4689 is fixed 
+					//If SelectedItem/SelectedIndex has already been set by the time the elements are loaded, ensure we sync the selection
+					if (args.Index == SelectedIndex)
+					{
+						toggleButton.IsChecked = true;
+					}
 				}
 				var repeater = m_repeater;
 				if (repeater != null)
