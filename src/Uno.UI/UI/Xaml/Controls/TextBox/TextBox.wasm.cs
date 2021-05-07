@@ -1,5 +1,4 @@
 ﻿using Uno.Extensions;
-using Uno.UI.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 

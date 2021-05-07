@@ -10,6 +10,7 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml
@@ -824,6 +825,43 @@ namespace Uno.UI.Xaml
 			public string[] Pairs;
 		}
 
+		#endregion
+
+		#region SetVisibility
+
+		internal static void SetElementColor(IntPtr htmlId, Color color)
+		{
+			var colorAsInteger =
+				(uint)(color.R << 24)
+				| (uint)(color.G << 16)
+				| (uint)(color.B << 8)
+				| color.A;
+
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setElementColor(\"{htmlId}\", {color});";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetElementColorParams()
+				{
+					HtmlId = htmlId,
+					Color = colorAsInteger,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setElementColorNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetElementColorParams
+		{
+			public IntPtr HtmlId;
+
+			public uint Color;
+		}
 		#endregion
 
 		#region RemoveView

@@ -318,6 +318,12 @@ declare namespace Uno.UI {
         private setAsArranged;
         private setAsUnarranged;
         /**
+        * Sets the visibility of the specified element
+        */
+        setElementColor(elementId: number, color: number): string;
+        setElementColorNative(pParam: number): boolean;
+        private setElementColorInternal;
+        /**
         * Sets the transform matrix of an element
         *
         */
@@ -1331,6 +1337,11 @@ declare class WindowManagerSetContentHtmlParams {
     HtmlId: number;
     Html: string;
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
+}
+declare class WindowManagerSetElementColorParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementColorParams;
 }
 declare class WindowManagerSetElementTransformParams {
     HtmlId: number;

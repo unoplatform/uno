@@ -679,6 +679,27 @@ namespace Uno.UI {
 			}
 		}
 
+
+		/**
+		* Sets the color property of the specified element
+		*/
+		public setElementColor(elementId: number, color: number): string {
+			this.setElementColorInternal(elementId, color);
+			return "ok";
+		}
+
+		public setElementColorNative(pParam: number): boolean {
+			const params = WindowManagerSetElementColorParams.unmarshal(pParam);
+			this.setElementColorInternal(params.HtmlId, params.Color);
+			return true;
+		}
+
+		private setElementColorInternal(elementId: number, color: number): void {
+			const element = this.getView(elementId);
+
+			element.style.setProperty("color", "#" + color.toString(16).padStart(8, '0'));
+		}
+
 		/**
 		* Sets the transform matrix of an element
 		*

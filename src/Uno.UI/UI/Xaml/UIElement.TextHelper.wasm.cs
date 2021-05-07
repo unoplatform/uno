@@ -9,12 +9,13 @@ using Windows.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 
-namespace Uno.UI.UI.Xaml.Documents
+namespace Windows.UI.Xaml
 {
-	internal static class UIElementTextHelper
+	partial class UIElement
 	{
-		internal static void SetText(this UIElement element, string text)
+		internal void SetText(string text)
 		{
 			if (string.IsNullOrWhiteSpace(text))
 			{
@@ -33,14 +34,14 @@ namespace Uno.UI.UI.Xaml.Documents
 				}
 			}
 
-			element.SetProperty("textContent", text);
+			this.SetProperty("textContent", text);
 		}
 
-		internal static void SetFontStyle(this UIElement element, object localValue)
+		internal void SetFontStyle(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("font-style");
+				this.ResetStyle("font-style");
 			}
 			else
 			{
@@ -48,35 +49,35 @@ namespace Uno.UI.UI.Xaml.Documents
 				switch (value)
 				{
 					case FontStyle.Normal:
-						element.SetStyle("font-style", "normal");
+						this.SetStyle("font-style", "normal");
 						break;
 					case FontStyle.Italic:
-						element.SetStyle("font-style", "italic");
+						this.SetStyle("font-style", "italic");
 						break;
 					case FontStyle.Oblique:
-						element.SetStyle("font-style", "oblique");
+						this.SetStyle("font-style", "oblique");
 						break;
 				}
 			}
 		}
 
-		internal static void SetFontWeight(this UIElement element, object localValue)
+		internal void SetFontWeight(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("font-weight");
+				this.ResetStyle("font-weight");
 			}
 			else
 			{
-				element.SetStyle("font-weight", ((FontWeight)localValue).ToCssString());
+				this.SetStyle("font-weight", ((FontWeight)localValue).ToCssString());
 			}
 		}
 
-		internal static void SetFontFamily(this UIElement element, object localValue)
+		internal void SetFontFamily(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("font-family");
+				this.ResetStyle("font-family");
 			}
 			else
 			{
@@ -89,94 +90,96 @@ namespace Uno.UI.UI.Xaml.Documents
 						value = FontFamily.Default;
 					}
 
-					element.SetStyle("font-family", value.ParsedSource);
+					this.SetStyle("font-family", value.ParsedSource);
 				}
 			}
 		}
 
-		internal static void SetFontSize(this UIElement element, object localValue)
+		internal void SetFontSize(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("font-size");
+				this.ResetStyle("font-size");
 			}
 			else
 			{
 				var value = (double)localValue;
-				element.SetStyle("font-size", value.ToStringInvariant() + "px");
+				this.SetStyle("font-size", value.ToStringInvariant() + "px");
 			}
 		}
 
-		internal static void SetMaxLines(this UIElement element, object localValue)
+		internal void SetMaxLines(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("display", "-webkit-line-clamp", "webkit-box-orient");
+				this.ResetStyle("display", "-webkit-line-clamp", "webkit-box-orient");
 			}
 			else
 			{
 				var value = (int)localValue;
-				element.SetStyle(("display", "-webkit-box"), ("-webkit-line-clamp", value.ToStringInvariant()), ("-webkit-box-orient", "vertical"));
+				this.SetStyle(("display", "-webkit-box"), ("-webkit-line-clamp", value.ToStringInvariant()), ("-webkit-box-orient", "vertical"));
 			}
 		}
 
-		private static void SetTextTrimming(this UIElement element, object localValue)
+		private void SetTextTrimming(object localValue)
 		{
 			switch (localValue)
 			{
 				case TextTrimming.CharacterEllipsis:
 				case TextTrimming.WordEllipsis: // Word-level ellipsis not supported by HTML/CSS
-					element.SetStyle("text-overflow", "ellipsis");
+					this.SetStyle("text-overflow", "ellipsis");
 					break;
 
 				case TextTrimming.Clip:
-					element.SetStyle("text-overflow", "clip");
+					this.SetStyle("text-overflow", "clip");
 					break;
 
 				case UnsetValue uv:
-					element.ResetStyle("text-overflow");
+					this.ResetStyle("text-overflow");
 					break;
 
 				default:
-					element.SetStyle("text-overflow", "");
+					this.SetStyle("text-overflow", "");
 					break;
 			}
 		}
 
-		private static WeakAttachedDictionary<UIElement, string> _imageBrushSubscription =
-			new WeakAttachedDictionary<UIElement, string>();
+		private SerialDisposable _brushSubscription;
 
-		internal static void SetForeground(this UIElement element, object localValue)
+		internal void SetForeground(object localValue)
 		{
-			var brushSubscription = _imageBrushSubscription.GetValue(element, "foreground", () => new SerialDisposable());
-
-			brushSubscription.Disposable = null;
+			if (_brushSubscription != null)
+			{
+				_brushSubscription.Disposable = null;
+			}
 
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
-					element.SetStyle("color", scb.ColorWithOpacity.ToHexString());
+					WindowManagerInterop.SetElementColor(HtmlId, scb.ColorWithOpacity);
 					break;
 				case GradientBrush gradient:
-					element.SetStyle(
-						("background", gradient.ToCssString(element.RenderSize)),
+					this.SetStyle(
+						("background", gradient.ToCssString(this.RenderSize)),
 						("color", "transparent"),
 						("background-clip", "text")
 					);
 					break;
 
 				case ImageBrush imageBrush:
-					brushSubscription.Disposable = imageBrush.Subscribe(img =>
+					_brushSubscription ??= new SerialDisposable();
+
+					_brushSubscription.Disposable = imageBrush.Subscribe(img =>
 					{
 						switch (img.Kind)
 						{
 							case ImageDataKind.Empty:
 							case ImageDataKind.Error:
-								element.ResetStyle(
+								this.ResetStyle(
 									"background-color",
 									"background-image",
 									"background-size");
-								element.SetStyle(
+								this.SetStyle(
 									("color", "transparent"),
 									("background-clip", "text"));
 								break;
@@ -184,7 +187,7 @@ namespace Uno.UI.UI.Xaml.Documents
 							case ImageDataKind.DataUri:
 							case ImageDataKind.Url:
 							default:
-								element.SetStyle(
+								this.SetStyle(
 									("color", "transparent"),
 									("background-clip", "text"),
 									("background-color", ""),
@@ -198,58 +201,58 @@ namespace Uno.UI.UI.Xaml.Documents
 					});
 					break;
 				case AcrylicBrush acrylic:
-					acrylic.Apply(element);
-					element.SetStyle("background-clip", "text");
+					acrylic.Apply(this);
+					this.SetStyle("background-clip", "text");
 					break;
 
 				case UnsetValue uv:
 
 				// TODO: support other foreground types
 				default:
-					element.ResetStyle("color", "background", "background-clip");
-					AcrylicBrush.ResetStyle(element);
+					this.ResetStyle("color", "background", "background-clip");
+					AcrylicBrush.ResetStyle(this);
 					break;
 			}
 		}
 
-		internal static void SetCharacterSpacing(this UIElement element, object localValue)
+		internal void SetCharacterSpacing(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("letter-spacing");
+				this.ResetStyle("letter-spacing");
 			}
 			else
 			{
 				var value = (int)localValue;
-				element.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
+				this.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
 			}
 		}
 
-		internal static void SetLineHeight(this UIElement element, object localValue)
+		internal void SetLineHeight(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("line-height");
+				this.ResetStyle("line-height");
 			}
 			else
 			{
 				var value = (double)localValue;
 				if (Math.Abs(value) < 0.0001)
 				{
-					element.ResetStyle("line-height");
+					this.ResetStyle("line-height");
 				}
 				else
 				{
-					element.SetStyle("line-height", value.ToStringInvariant() + "px");
+					this.SetStyle("line-height", value.ToStringInvariant() + "px");
 				}
 			}
 		}
 
-		internal static void SetTextAlignment(this UIElement element, object localValue)
+		internal void SetTextAlignment(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("text-align");
+				this.ResetStyle("text-align");
 			}
 			else
 			{
@@ -257,30 +260,30 @@ namespace Uno.UI.UI.Xaml.Documents
 				switch (value)
 				{
 					case TextAlignment.Left:
-						element.SetStyle("text-align", "left");
+						this.SetStyle("text-align", "left");
 						break;
 					case TextAlignment.Center:
-						element.SetStyle("text-align", "center");
+						this.SetStyle("text-align", "center");
 						break;
 					case TextAlignment.Right:
-						element.SetStyle("text-align", "right");
+						this.SetStyle("text-align", "right");
 						break;
 					case TextAlignment.Justify:
-						element.SetStyle("text-align", "justify");
+						this.SetStyle("text-align", "justify");
 						break;
 					case TextAlignment.DetectFromContent:
 					default:
-						element.ResetStyle("text-align");
+						this.ResetStyle("text-align");
 						break;
 				}
 			}
 		}
 
-		internal static void SetTextWrappingAndTrimming(this UIElement element, object textWrapping, object textTrimming)
+		internal void SetTextWrappingAndTrimming(object textWrapping, object textTrimming)
 		{
 			if (textWrapping is UnsetValue)
 			{
-				element.ResetStyle("white-space", "word-break", "text-overflow");
+				this.ResetStyle("white-space", "word-break", "text-overflow");
 			}
 			else
 			{
@@ -288,7 +291,7 @@ namespace Uno.UI.UI.Xaml.Documents
 				switch (value)
 				{
 					case TextWrapping.NoWrap:
-						element.SetStyle(
+						this.SetStyle(
 							("white-space", "pre"),
 							("word-break", ""));
 
@@ -296,16 +299,16 @@ namespace Uno.UI.UI.Xaml.Documents
 						// https://drafts.csswg.org/css-overflow-3/#propdef-block-ellipsis
 						//
 						// For now, trimming isonly supported when wrapping is disabled.
-						SetTextTrimming(element, textTrimming);
+						SetTextTrimming(textTrimming);
 						break;
 					case TextWrapping.Wrap:
-						element.SetStyle(
+						this.SetStyle(
 							("white-space", "pre-wrap"),
 							("word-break", "break-word"), // This is required to still wrap words that are longer than the ViewPort
 							("text-overflow", ""));
 						break;
 					case TextWrapping.WrapWholeWords:
-						element.SetStyle(
+						this.SetStyle(
 							("white-space", "pre-wrap"),
 							("word-break", "keep-all"), // This is required to still wrap words that are longer than the ViewPort
 							("text-overflow", ""));
@@ -314,11 +317,11 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 		}
 
-		internal static void SetTextDecorations(this UIElement element, object localValue)
+		internal void SetTextDecorations(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("text-decoration");
+				this.ResetStyle("text-decoration");
 			}
 			else
 			{
@@ -326,26 +329,26 @@ namespace Uno.UI.UI.Xaml.Documents
 				switch (value)
 				{
 					case TextDecorations.None:
-						element.SetStyle("text-decoration", "none");
+						this.SetStyle("text-decoration", "none");
 						break;
 					case TextDecorations.Underline:
-						element.SetStyle("text-decoration", "underline");
+						this.SetStyle("text-decoration", "underline");
 						break;
 					case TextDecorations.Strikethrough:
-						element.SetStyle("text-decoration", "line-through");
+						this.SetStyle("text-decoration", "line-through");
 						break;
 					case TextDecorations.Underline | TextDecorations.Strikethrough:
-						element.SetStyle("text-decoration", "underline line-through");
+						this.SetStyle("text-decoration", "underline line-through");
 						break;
 				}
 			}
 		}
 
-		internal static void SetTextPadding(this UIElement element, object localValue)
+		internal void SetTextPadding(object localValue)
 		{
 			if (localValue is UnsetValue)
 			{
-				element.ResetStyle("padding");
+				this.ResetStyle("padding");
 			}
 			else
 			{
@@ -362,7 +365,7 @@ namespace Uno.UI.UI.Xaml.Documents
 					"px"
 				};
 
-				element.SetStyle("padding", string.Concat(paddingStr));
+				this.SetStyle("padding", string.Concat(paddingStr));
 			}
 		}
 	}

@@ -830,6 +830,22 @@ var Uno;
                 }
             }
             /**
+            * Sets the visibility of the specified element
+            */
+            setElementColor(elementId, color) {
+                this.setElementColorInternal(elementId, color);
+                return "ok";
+            }
+            setElementColorNative(pParam) {
+                const params = WindowManagerSetElementColorParams.unmarshal(pParam);
+                this.setElementColorInternal(params.HtmlId, params.Color);
+                return true;
+            }
+            setElementColorInternal(elementId, color) {
+                const element = this.getView(elementId);
+                element.style.setProperty("color", "#" + color.toString(16).padStart(8, '0'));
+            }
+            /**
             * Sets the transform matrix of an element
             *
             */
@@ -4778,6 +4794,19 @@ class WindowManagerSetContentHtmlParams {
             else {
                 ret.Html = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementColorParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetElementColorParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Color = Module.HEAPU32[(pData + 4) >> 2];
         }
         return ret;
     }
