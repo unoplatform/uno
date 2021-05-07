@@ -504,6 +504,10 @@ namespace Windows.UI.Xaml
 			{
 				// This guards against the scenario where inherited DataContext is removed when the view is removed from the visual tree,
 				// in which case 2-way bindings should not be updated.
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("SetSourceValue() not called because inherited property is being unset.");
+				}
 				return;
 			}
 			_properties.SetSourceValue(propertyDetails, value);

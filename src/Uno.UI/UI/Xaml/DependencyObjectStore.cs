@@ -1586,27 +1586,7 @@ namespace Windows.UI.Xaml
 				{
 					for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
 					{
-						var childStore = _childrenStores[storeIndex];
-						var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-						try
-#endif
-						{
-							if (propagateUnregistering)
-							{
-								childStore._parentUnregisteringInheritedProperties = true;
-							}
-							childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
-						}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-						finally
-#endif
-						{
-							if (propagateUnregistering)
-							{
-								childStore._parentUnregisteringInheritedProperties = false; 
-							}
-						}
+						CallChildCallback(_childrenStores[storeIndex], instanceRef, property, eventArgs);
 					}
 				}
 			}
@@ -1641,6 +1621,30 @@ namespace Windows.UI.Xaml
 			{
 				var callback = _genericCallbacks.Data[callbackIndex];
 				callback.Invoke(instanceRef, property, eventArgs);
+			}
+		}
+
+		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, DependencyPropertyChangedEventArgs eventArgs)
+		{
+			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			try
+#endif
+			{
+				if (propagateUnregistering)
+				{
+					childStore._parentUnregisteringInheritedProperties = true;
+				}
+				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			finally
+#endif
+			{
+				if (propagateUnregistering)
+				{
+					childStore._parentUnregisteringInheritedProperties = false;
+				}
 			}
 		}
 
