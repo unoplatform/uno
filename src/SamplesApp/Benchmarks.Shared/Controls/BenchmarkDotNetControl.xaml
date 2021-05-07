@@ -27,6 +27,9 @@
 						   Text="" />
 				<TextBlock x:Name="runStatus"
 						   Text="Not initialized" />
+				<CheckBox x:Name="debugLog"
+						  IsChecked="False"
+						  Content="Debug Logging" />
 				<Button x:Name="downloadResults"
 						Content="Download Results"
 						IsEnabled="false"

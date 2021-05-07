@@ -63,7 +63,7 @@ namespace Benchmarks.Shared.Controls
 
 		private async Task Run()
 		{
-			_logger = new TextBlockLogger(runLogs);
+			_logger = new TextBlockLogger(runLogs, debugLog.IsChecked ?? false);
 
 			try
 			{
@@ -198,15 +198,22 @@ namespace Benchmarks.Shared.Controls
 			   };
 
 			private readonly TextBlock _target;
+			private LogKind _minLogKind;
 
-			public TextBlockLogger(TextBlock target)
-				=> _target = target;
+			public TextBlockLogger(TextBlock target, bool isDebug)
+			{
+				_target = target;
+				_minLogKind = isDebug ? LogKind.Default : LogKind.Statistic;
+			}
 
 			public void Flush() { }
 
 			public void Write(LogKind logKind, string text)
 			{
-				_target.Inlines.Add(new Run { Text = text, Foreground = GetLogKindColor(logKind) });
+				if (logKind >= _minLogKind)
+				{
+					_target.Inlines.Add(new Run { Text = text, Foreground = GetLogKindColor(logKind) });
+				}
 			}
 
 			public static Brush GetLogKindColor(LogKind logKind)
@@ -223,8 +230,11 @@ namespace Benchmarks.Shared.Controls
 
 			public void WriteLine(LogKind logKind, string text)
 			{
-				Write(logKind, text);
-				WriteLine();
+				if (logKind >= _minLogKind)
+				{
+					Write(logKind, text);
+					WriteLine();
+				}
 			}
 		}
 	}
