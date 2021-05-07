@@ -10,6 +10,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Uno.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -163,6 +164,11 @@ namespace Windows.UI.Xaml
 		{
 			if (_lastActivationState != state)
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Window activating with {state} state.");
+				}
+
 				_lastActivationState = state;
 				var activatedEventArgs = new WindowActivatedEventArgs(state);
 #if HAS_UNO_WINUI
@@ -182,6 +188,11 @@ namespace Windows.UI.Xaml
 		{
 			if (Visible != newVisibility)
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Window visibility changing to {newVisibility}");
+				}
+
 				Visible = newVisibility;
 
 				var args = new VisibilityChangedEventArgs();

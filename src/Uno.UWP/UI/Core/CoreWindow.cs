@@ -1,6 +1,8 @@
 #nullable enable
 
 using System;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Input;
 
@@ -103,6 +105,12 @@ namespace Windows.UI.Core
 		internal void OnActivated(WindowActivatedEventArgs args)
 		{
 			_lastActivationState = args.WindowActivationState;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"CoreWindow activating with {_lastActivationState} state.");
+			}
+
 			UpdateActivationMode();
 
 			Activated?.Invoke(this, args);
