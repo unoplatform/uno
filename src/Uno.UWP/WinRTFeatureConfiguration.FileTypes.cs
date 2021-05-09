@@ -22,7 +22,7 @@ namespace Uno
 		{
 			public static class Pickers
 			{
-#if __WASM__
+#if UNO_REFERENCE_API
 				/// <summary>
 				/// Gets or sets a value indicating whether the file pickers based on
 				/// JS File System Access API are used. When set to false, or if the user's
@@ -36,7 +36,7 @@ namespace Uno
 		}
 	}
 
-#if __WASM__
+#if UNO_REFERENCE_API
 	[Flags]
 	public enum WasmPickerConfiguration
 	{
