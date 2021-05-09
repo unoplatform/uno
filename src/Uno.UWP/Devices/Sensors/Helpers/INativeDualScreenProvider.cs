@@ -5,6 +5,8 @@ namespace Uno.Devices.Sensors
 {
 	public interface INativeDualScreenProvider
 	{
+		bool IsDualScreen { get; }
+
 		bool? IsSpanned { get; }
 	}
 }
