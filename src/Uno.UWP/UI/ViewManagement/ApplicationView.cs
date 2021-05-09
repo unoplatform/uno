@@ -105,7 +105,7 @@ namespace Windows.UI.ViewManagement
 			return false;
 		}
 
-		public IAsyncOperation<bool> TryEnterViewModeAsync(ApplicationViewMode viewMode) =>
+		public IAsyncOperation<bool> TryEnterViewModeAsync(global::Windows.UI.ViewManagement.ApplicationViewMode viewMode) =>
 			AsyncOperation.FromTask(cancellation =>
 			{
 				if (ViewMode == viewMode)
@@ -124,8 +124,8 @@ namespace Windows.UI.ViewManagement
 				return Task.FromResult(false);
 			});
 
-		public IAsyncOperation<bool> TryEnterViewModeAsync(ApplicationViewMode viewMode, ViewModePreferences viewModePreferences) =>
-			TryEnterViewModeAsync(viewMode);
+		public IAsyncOperation<bool> TryEnterViewModeAsync(global::Windows.UI.ViewManagement.ApplicationViewMode viewMode, global::Windows.UI.ViewManagement.ViewModePreferences viewModePreferences) =>
+				TryEnterViewModeAsync(viewMode);
 
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
