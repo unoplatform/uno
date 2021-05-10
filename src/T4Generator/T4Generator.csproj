@@ -19,7 +19,7 @@
 		<PackageReference Include="microsoft.visualstudio.texttemplating.15.0">
 			<Version>16.3.29316.127</Version>
 		</PackageReference>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
 	</ItemGroup>
 	
 	<Target Name="_ForceRemoveAnalyzers" BeforeTargets="CoreCompile">
