@@ -89,7 +89,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 			var distictPaths = string.Join(",\n", xamlPaths.Distinct().Select(p => $"@\"{p}\""));
 
-			sb.AppendLineInvariant("{0}", $"new[]{{{distictPaths}}}");
+			sb.AppendLineInvariant("{0}", $"new string[]{{{distictPaths}}}");
 
 			sb.AppendLineInvariant($")]");
 		}
