@@ -99,7 +99,7 @@
 	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
 	-->
 	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.0" PrivateAssets="All" />
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.0" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
 
   <PropertyGroup>
