@@ -98,7 +98,7 @@
 	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
 	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
 	-->
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.0" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2" PrivateAssets="All" />
 	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
