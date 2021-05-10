@@ -2185,6 +2185,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													writer.AppendLineInvariant(",");
 												}
 											}
+											writer.AppendLineInvariant(",");
 										}
 										else
 										{

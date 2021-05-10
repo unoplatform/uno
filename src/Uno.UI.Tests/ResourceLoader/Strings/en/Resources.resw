@@ -123,4 +123,7 @@
   <data name="Given_ResourceLoader.When_LocalizedResource" xml:space="preserve">
     <value>Text in 'en'</value>
   </data>
+  <data name="ThemeRadioButtons.Header" xml:space="preserve">
+    <value>Header in 'en'</value>
+  </data>
 </root>
