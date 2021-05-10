@@ -18,6 +18,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		internal partial class CalendarViewDayItemAutomationPeer : CalendarViewBaseItemAutomationPeer
 		{
+			public CalendarViewDayItemAutomationPeer(CalendarViewDayItem owner) : base(owner)
+			{
+			}
+
 			protected override object GetPatternCore(PatternInterface patternInterface)
 			{
 				object ppReturnValue = null;

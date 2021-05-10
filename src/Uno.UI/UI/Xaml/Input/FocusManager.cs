@@ -10,6 +10,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Xaml.Controls;
 
+
 namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class FocusManager
@@ -205,5 +206,12 @@ namespace Windows.UI.Xaml.Input
 		public static event EventHandler<FocusManagerGotFocusEventArgs> GotFocus;
 		public static event EventHandler<FocusManagerLostFocusEventArgs> LostFocus;
 
+		internal static void SetEngagedControl(Control spScrollViewer)
+		{
+			// UNO-TODO
+#if !DEBUG
+#error not implemented
+#endif
+		}
 	}
 }

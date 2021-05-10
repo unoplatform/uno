@@ -58,6 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 		//private void GetVirtualizationDirectionImpl(
 		//    out Orientation pReturnValue);
+		internal void GetVirtualizationDirection(out Orientation orientation) => orientation = _layoutStrategyImpl.VirtualizationDirection;
 
 		//private void EstimateElementIndexImpl(
 		//     ElementType elementType,

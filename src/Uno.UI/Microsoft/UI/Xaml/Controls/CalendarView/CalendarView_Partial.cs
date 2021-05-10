@@ -801,21 +801,21 @@ namespace Windows.UI.Xaml.Controls
 			// Setting custom CalendarScrollViewerAutomationPeer for these scrollviewers to be the default one.
 			if (spMonthViewScrollViewer is {})
 			{
-				((ScrollViewer)spMonthViewScrollViewer).AutomationPeerFactoryIndex = () => new CalendarScrollViewerAutomationPeer();
+				((ScrollViewer)spMonthViewScrollViewer).AutomationPeerFactoryIndex = () => new CalendarScrollViewerAutomationPeer(spMonthViewScrollViewer);
 
 				m_tpMonthViewScrollViewer = spMonthViewScrollViewer;
 			}
 
 			if (spYearViewScrollViewer is { })
 			{
-				((ScrollViewer)spYearViewScrollViewer).AutomationPeerFactoryIndex = () => new CalendarScrollViewerAutomationPeer();
+				((ScrollViewer)spYearViewScrollViewer).AutomationPeerFactoryIndex = () => new CalendarScrollViewerAutomationPeer(spYearViewScrollViewer);
 
 				m_tpYearViewScrollViewer = spYearViewScrollViewer;
 			}
 
 			if (spDecadeViewScrollViewer is { })
 			{
-				((ScrollViewer)spDecadeViewScrollViewer).AutomationPeerFactoryIndex = () => new CalendarScrollViewerAutomationPeer();
+				((ScrollViewer)spDecadeViewScrollViewer).AutomationPeerFactoryIndex = () => new CalendarScrollViewerAutomationPeer(spDecadeViewScrollViewer);
 
 				m_tpDecadeViewScrollViewer = spDecadeViewScrollViewer;
 			}
@@ -854,7 +854,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 		// Change to the correct visual state for the control.
-		private void ChangeVisualState(
+		private protected override void ChangeVisualState(
 			bool bUseTransitions)
 		{
 			CalendarViewDisplayMode mode = CalendarViewDisplayMode.Month;
@@ -1002,7 +1002,11 @@ namespace Windows.UI.Xaml.Controls
 			spApplicationLanguages = Windows.Globalization.ApplicationLanguages.Languages;
 
 			spCalendarLanguages = new List<string>();
-			spCalendarLanguages.Add(language);
+
+			if (language is { }) // UNO
+			{
+				spCalendarLanguages.Add(language);
+			}
 
 			size = spApplicationLanguages.Count;
 
@@ -1707,7 +1711,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private void SetDisplayDateImpl( DateTime date)
+		internal void SetDisplayDate( DateTime date)
 		{
 			// if m_dateSourceChanged is true, this means we might changed m_minDate or m_maxDate
 			// so we should not call CoerceDate until next measure pass, by then the m_minDate and
@@ -2089,7 +2093,11 @@ namespace Windows.UI.Xaml.Controls
 
 						//A control must be focused before we can set Engagement on it, attempt to set focus first
 						bool focused = false;
-						focused = FocusManager.SetFocusedElement(spScrollViewer, FocusState.Keyboard, false /*animateIfBringintoView*/);
+						//focused = FocusManager.SetFocusedElement(spScrollViewer, FocusState.Keyboard, false /*animateIfBringintoView*/);
+						focused = FocusManager.SetFocusedElement(spScrollViewer, FocusNavigationDirection.None, FocusState.Keyboard);
+#if !DEBUG
+error SetFocusedElement() incorrect here
+#endif
 						if (focused)
 						{
 							FocusManager.SetEngagedControl(spScrollViewer);
@@ -2607,8 +2615,7 @@ namespace Windows.UI.Xaml.Controls
 			AutomationPeer ppAutomationPeer = null;
 
 			CalendarViewAutomationPeer spAutomationPeer;
-			spAutomationPeer = new CalendarViewAutomationPeer();
-			spAutomationPeer.Owner = this;
+			spAutomationPeer = new CalendarViewAutomationPeer(this);
 			ppAutomationPeer = spAutomationPeer;
 
 			return ppAutomationPeer;

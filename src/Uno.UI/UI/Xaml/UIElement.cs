@@ -39,11 +39,6 @@ namespace Windows.UI.Xaml
 		private XamlRoot _xamlRoot = null;
 		private string _uid;
 
-		private void Initialize()
-		{
-			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
-		}
-
 		//private protected virtual void PrepareState() 
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
@@ -108,11 +103,6 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnUidChangedPartial();
-
-		/// <summary>
-		/// Is this view set to Window.Current.Content?
-		/// </summary>
-		internal bool IsWindowRoot { get; set; }
 
 		public XamlRoot XamlRoot
 		{

@@ -228,7 +228,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private void SetLayoutStrategyBase(CalendarLayoutStrategy spLayoutStrategy)
 		{
 			_layoutStrategy = spLayoutStrategy;
-			spLayoutStrategy.SetLayoutDataInfoProvider(this);
+			spLayoutStrategy.LayoutDataInfoProvider = this;
 		}
 
 		private void CacheFirstVisibleElementBeforeOrientationChange()

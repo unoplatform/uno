@@ -14,9 +14,13 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarView
 	{
-		internal class CalendarViewAutomationPeer : AutomationPeer
+		internal class CalendarViewAutomationPeer : CalendarViewBaseItem.CalendarViewBaseItemAutomationPeer
 		{
 			private const uint BulkChildrenLimit = 20;
+
+			internal CalendarViewAutomationPeer(CalendarView owner) : base(owner)
+			{
+			}
 
 			protected override object GetPatternCore(PatternInterface patternInterface)
 			{

@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 	partial class CalendarLayoutStrategy
 	{
 		// TODO UNO
-		public ILayoutDataInfoProvider GetLayoutDataInfoProviderImpl
+		internal ILayoutDataInfoProvider LayoutDataInfoProvider
 		{
 			get => _spDataInfoProvider;
 			set
@@ -23,12 +23,12 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Layout related methods
 
-		private void BeginMeasureImpl() /*override*/
+		void ILayoutStrategy.BeginMeasure()
 		{
 			_layoutStrategyImpl.BeginMeasure();
 		}
 
-		private void EndMeasureImpl() /*override*/
+		void ILayoutStrategy.EndMeasure()
 		{
 			_layoutStrategyImpl.EndMeasure();
 		}
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 				out pReturnValue);
 		}
 
-		private void EstimatePanelExtentImpl(
+		internal void EstimatePanelExtent(
 			EstimationReference lastHeaderReference,
 			EstimationReference lastContainerReference,
 			Rect windowConstraint,

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,5 +17,61 @@ namespace Windows.UI.Xaml.Controls
 			}
 			set => SetVirtualizationDirection(value);
 		}
+
+		internal void BeginMeasure()
+		{
+			_layoutStrategyImpl.BeginMeasure();
+		}
+
+		internal void EndMeasure()
+		{
+			_layoutStrategyImpl.EndMeasure();
+		}
+
+		internal Size GetElementMeasureSize(ElementType elementType, int elementIndex, Rect windowConstraint)
+		{
+			GetElementMeasureSizeImpl(elementType, elementIndex, windowConstraint, out var size);
+			return size;
+		}
+
+		internal Rect GetElementBounds(
+			ElementType elementType,
+			int elementIndex,
+			Size containerDesiredSize,
+			LayoutReference referenceInformation,
+			Rect windowConstraint)
+		{
+			GetElementBoundsImpl(
+				elementType,
+				elementIndex,
+				containerDesiredSize,
+				referenceInformation,
+				windowConstraint,
+				out var rect);
+
+			return rect;
+		}
+
+		internal bool ShouldContinueFillingUpSpace(
+			ElementType elementType,
+			int elementIndex,
+			LayoutReference referenceInformation,
+			Rect windowToFill)
+		{
+			ShouldContinueFillingUpSpaceImpl(
+				elementType,
+				elementIndex,
+				referenceInformation,
+				windowToFill,
+				out var shouldContinue);
+			return shouldContinue;
+		}
+
+		internal Point GetPositionOfFirstElement()
+		{
+			GetPositionOfFirstElementImpl(out var point);
+			return point;
+		}
+
 	}
 }

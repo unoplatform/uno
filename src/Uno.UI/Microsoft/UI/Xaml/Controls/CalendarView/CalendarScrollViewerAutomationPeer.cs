@@ -6,8 +6,12 @@ using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal class CalendarScrollViewerAutomationPeer : AutomationPeer
+	internal class CalendarScrollViewerAutomationPeer : ScrollViewerAutomationPeer
 	{
+		public CalendarScrollViewerAutomationPeer(ScrollViewer owner) : base(owner)
+		{
+		}
+
 		protected override string GetClassNameCore()
 		{
 			return "CalendarScrollViewer";
@@ -77,5 +81,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return ppReturnValue;
 		}
+
 	}
 }

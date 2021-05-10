@@ -11,8 +11,12 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarViewItem
 	{
-		internal partial class CalendarViewItemAutomationPeer : AutomationPeer
+		internal partial class CalendarViewItemAutomationPeer : CalendarViewBaseItemAutomationPeer
 		{
+			internal CalendarViewItemAutomationPeer(CalendarViewItem owner) : base(owner)
+			{
+			}
+
 			protected override object GetPatternCore(PatternInterface patternInterface)
 			{
 				object ppReturnValue = null;

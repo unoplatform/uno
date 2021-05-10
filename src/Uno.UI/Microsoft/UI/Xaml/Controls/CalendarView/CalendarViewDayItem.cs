@@ -151,8 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			AutomationPeer ppAutomationPeer = null;
 
 			CalendarViewDayItemAutomationPeer spAutomationPeer;
-			spAutomationPeer = new CalendarViewDayItemAutomationPeer();
-			spAutomationPeer.Owner = this;
+			spAutomationPeer = new CalendarViewDayItemAutomationPeer(this);
 			ppAutomationPeer = spAutomationPeer;
 			return ppAutomationPeer;
 		}
