@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected override void InitializePopupPanel()
 		{
-			// -- UNO STUFF --
+			// -- UNO SPECIFIC --
 			// Prevent Flyout from creating a PlacementPopupPanel and let the Popup create it.
 			// That way the FlyoutBase.PlaceFlyoutForDateTimePicker() will be able to do its job.
 		}
