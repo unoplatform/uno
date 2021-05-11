@@ -5,6 +5,7 @@ $blue: #159bff;
 $purple: #7a67f8;
 $turquoise: #66e4a8;
 $dgray: #242424;
+$lgray: #c4c4c4;
 
 body {
     font-family: 'Open Sans', sans-serif;
@@ -12,8 +13,27 @@ body {
     mark {
       background: rgba(21,155,255, 0.25);
     }
-}
 
+    .toc {
+        background-color: transparent;
+    }
+
+    .alert {
+        background-color: transparent;
+        border-color: $lgray;
+        color: $dgray;
+        padding: 26px 16px;
+        transition: transform .2s;
+        &:hover {
+            transform: scale(1.05);
+            border-color: $blue;
+            box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+            h4{
+                color: $blue;
+            }
+        }
+    }
+}
 .row {
     &:before {
         content: none;
@@ -34,19 +54,19 @@ a {
 }
 
 h1 {
-    font-size: 44px;
+    font-size: 48px;
     font-weight: 600;
     text-transform: none;
 }
 
 h2 {
-    font-size: 36px;
+    font-size: 44px;
     font-weight: 600;
     text-transform: none;
 }
 
 h3 {
-    font-size: 30px;
+    font-size: 36px;
     font-weight: 600;
     text-transform: none;
 }
@@ -74,6 +94,7 @@ h3 {
   top: 116px;
   z-index: 2;
   padding: 10px;
+  background-color: transparent!important;
 
   #search {
     display: block;
@@ -88,6 +109,7 @@ h3 {
     border-radius: 6px;
     height: 45px;
     width: 100%;
+    padding: 10px;
   }
 
   #search-results {
@@ -146,9 +168,18 @@ h3 {
 
 .sidetoc {
     top: 180px;
+    background-color: white!important;
+
+    .nav > li {
+        line-height: 1.79;
+        a {
+            color: $dgray;
+        }
+    }
 
     .nav > li.active > a {
-        color: $purple;
+        color: $dgray;
+        font-weight: bold;
 
         &:hover {
             color: #000;
@@ -156,6 +187,26 @@ h3 {
     }
 
     .toc {
+        .nav > li > .expand-stub::before {
+            font-family: 'Glyphicons Halflings';
+            content: '\e258';
+            font-size: 0.8em;
+        }
+        .nav > li.in > .expand-stub::before {
+            font-family: 'Glyphicons Halflings';
+            display: inline-block;
+            content: '\e258';
+            font-size: 0.8em;
+            transform: rotate(90deg);
+        }
+
+        ul {
+            padding-left: 5px;
+            li a {
+              padding-left: 5px;
+            }
+        }
+
         @media only screen and (max-width: 768px) {
             margin-left: 0;
 
@@ -178,6 +229,54 @@ h3 {
         z-index: 999;
     }
 }
+.sideaffix {
+    .contribution-link {
+      font-size: 16px !important;
+    }
+
+    #affix {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.5;
+        height: auto;
+        a {
+            color: $dgray;
+        }
+
+        ul > li.active > a {
+            font-weight: bold;
+          &:before {
+              color: $dgray;
+          }
+            ul > li.active > a {
+              font-weight: bold;
+              &:before {
+                color: $dgray;
+              }
+            }
+        }
+        li:last-child {
+            padding-bottom: 16px;
+            margin-bottom: 0;
+        }
+
+        .title {
+            text-transform: none;
+            font-size: 20px;
+        }
+
+        .level1::before {
+            width: 75%;
+            border-top: 1px solid $lgray;
+        }
+
+        .level1::after {
+            width: 75%;
+            border-top: 1px solid $lgray;
+        }
+    }
+}
+
 
 .navbar-header {
 
