@@ -147,7 +147,12 @@ namespace SamplesApp.UITests
 
 			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
 				.Replace(" ", "_")
-				.Replace(".", "_");
+				.Replace(".", "_")
+				.Replace("(", "")
+				.Replace(")", "")
+				.Replace("\"", "")
+				.Replace(",", "_")
+				.Replace("__", "_");
 
 			var fileInfo = _app.Screenshot(title);
 

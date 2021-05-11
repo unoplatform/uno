@@ -243,11 +243,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Open();
 			_isOpen = true;
 
-#if __ANDROID__
-			// On Android, the Loaded event won't be triggered synchronously during the Open()
-			// method. So we need to requeue the OnOpened()
-			// More on this: https://github.com/unoplatform/uno/issues/3519
+			// **************************************************************************************
+			// UNO-FIX: Defer the raising of the Opened event to ensure everything is well
+			// initialized before opening it.
+			// **************************************************************************************
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			// **************************************************************************************
 			{
 				if (_isOpen)
 				{
@@ -255,10 +256,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					Opened?.Invoke(this, EventArgs.Empty);
 				}
 			});
-#else
-			OnOpened();
-			Opened?.Invoke(this, EventArgs.Empty);
-#endif
 		}
 
 		private protected virtual void OnOpening() { }

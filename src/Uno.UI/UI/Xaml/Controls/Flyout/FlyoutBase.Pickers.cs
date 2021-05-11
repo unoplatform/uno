@@ -1,4 +1,7 @@
 ﻿using Windows.Foundation;
+using Windows.UI.ViewManagement;
+using Uno.UI;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -12,6 +15,46 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//ctl::ComPtr<PickerFlyoutThemeTransition> spTransitionAsPickerFlyoutThemeTransition;
 
 			//m_isPositionedForDateTimePicker = true;
+
+			// **************************************************************************************
+			// UNO-FIX: Ensure the flyout stays in visible bounds
+			// **************************************************************************************
+			var childRect = ((FrameworkElement)_popup.Child).GetAbsoluteBoundsRect();
+			var rect = new Rect(point, childRect.Size);
+			var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+			if (rect.Right > visibleBounds.Right)
+			{
+				rect.X = visibleBounds.Right - rect.Width;
+			}
+
+			if (rect.Bottom > visibleBounds.Bottom)
+			{
+				rect.Y = visibleBounds.Bottom - rect.Height;
+			}
+
+			if (rect.Top < visibleBounds.Top)
+			{
+				rect.Y = visibleBounds.Top;
+			}
+
+			if (rect.Left < visibleBounds.Left)
+			{
+				rect.X = visibleBounds.Left;
+			}
+			// **************************************************************************************
+
+			// **************************************************************************************
+			// UNO-FIX: Make the location relative to the Anchor
+			// **************************************************************************************
+			var target = Target;
+			var targetTransform = target.TransformToVisual(default).Inverse;
+			var relativeLocation = targetTransform.TransformPoint(rect.Location);
+			// **************************************************************************************
+
+
+			//_popup.CustomLayouter = new PickerLayouter(this);
+			SetPopupPositionPartial(target, relativeLocation);
 
 			//IFC_RETURN(ForwardPopupFlowDirection());
 			//SetTargetPosition(point);

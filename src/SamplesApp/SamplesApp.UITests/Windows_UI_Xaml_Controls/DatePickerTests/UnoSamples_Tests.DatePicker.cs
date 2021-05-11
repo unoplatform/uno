@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
@@ -276,6 +278,56 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", waitForSampleControl: false);
 
 			_app.WaitForNoElement(datePickerFlyout);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // This test not working on iOS
+		[TestCase("topLeft", true, false, true)]
+		[TestCase("topRight", true, false, true)]
+		[TestCase("bottomLeft", true, false, true)]
+		[TestCase("bottomRight", true, false, true)]
+		[TestCase("centerLeftOutside", false, true, true)]
+		[TestCase("rightLeftOutside", false, true, true)]
+		[TestCase("narrow", true, true, true)]
+
+		// Following cases are deactivated because of https://github.com/microsoft/microsoft-ui-xaml/issues/4968
+		//[TestCase("topCenterRotated", false, false, true)]
+		//[TestCase("center", true, true, true)]
+		//[TestCase("scaled", true, true, true)]
+		//[TestCase("viewBox", true, true, true)]
+		public void DatePicker_PickerFlyout_Placements(string name, bool checkHorizontal, bool checkVertical, bool checkWidth)
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_Placement");
+			using var _ = new AssertionScope();
+
+			// Ensure picker not opened
+			_app.WaitForNoElement("HighlightRect");
+
+			var datePicker = _app.Marked(name);
+			datePicker.FastTap();
+
+			_app.WaitForElement("HighlightRect");
+
+			var controlRect = _app.GetLogicalRect(datePicker);
+			var highlightRect = _app.GetLogicalRect("HighlightRect");
+
+			if (checkHorizontal)
+			{
+				controlRect.CenterX.Should().BeApproximately(highlightRect.CenterX, 2f, "horizontal center");
+			}
+
+			if (checkVertical)
+			{
+				controlRect.CenterY.Should().BeApproximately(highlightRect.CenterY, 2f, "vertical center");
+			}
+
+			if (checkWidth)
+			{
+				controlRect.Width.Should().BeApproximately(highlightRect.Width, 2f, "width");
+			}
+
+			_app.FastTap("DismissButton");
 		}
 	}
 }
