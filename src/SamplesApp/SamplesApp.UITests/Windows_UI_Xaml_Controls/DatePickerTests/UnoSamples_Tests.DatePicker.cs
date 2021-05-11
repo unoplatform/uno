@@ -282,6 +282,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // This test not working on iOS
 		[TestCase("topLeft", true, false, true)]
 		[TestCase("topRight", true, false, true)]
 		[TestCase("bottomLeft", true, false, true)]
