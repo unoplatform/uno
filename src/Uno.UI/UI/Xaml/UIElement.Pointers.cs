@@ -890,11 +890,6 @@ namespace Windows.UI.Xaml
 			SetPressed(args, false, muteEvent: true);
 			SetOver(args, false, muteEvent: true);
 
-			if (!isOverOrCaptured)
-			{
-				return false;
-			}
-		
 			if (_gestures.IsValueCreated)
 			{
 				_gestures.Value.CompleteGesture();
@@ -902,6 +897,11 @@ namespace Windows.UI.Xaml
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessAborted(args);
 				}
+			}
+
+			if (!isOverOrCaptured)
+			{
+				return false;
 			}
 
 			var handledInManaged = false;
