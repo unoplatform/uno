@@ -211,5 +211,19 @@ namespace Uno.UI.DualScreen
 				return null;
 			}
 		}
+
+		public bool IsDualScreen
+		{
+			get
+			{
+				if (!(ContextHelper.Current is Activity currentActivity))
+				{
+					throw new InvalidOperationException("The API was called too early in the application lifecycle");
+				}
+
+				InitializeHelper(currentActivity);
+				return _isDualScreenDevice ?? false;
+			}
+		}
 	}
 }
