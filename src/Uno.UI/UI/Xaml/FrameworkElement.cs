@@ -135,7 +135,21 @@ namespace Windows.UI.Xaml
 #if __ANDROID__
 		new
 #endif
-		DependencyObject Parent => ((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+		DependencyObject Parent =>
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+			LogicalParentOverride ??
+#endif
+			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+
+
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+		/// <summary>
+		/// Allows to override the publicly-visible <see cref="Parent"/> without modifying DP propagation.
+		/// </summary>
+		internal DependencyObject LogicalParentOverride { get; set; }
+
+		internal UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
+#endif
 
 		private bool _isParsing;
 		/// <summary>

@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml
 			var parent = dependencyObject.GetParent();
 			while (parent != null)
 			{
-				if(ReferenceEquals(parent, searchedParent))
+				if (ReferenceEquals(parent, searchedParent))
 				{
 					return true;
 				}
@@ -125,6 +125,21 @@ namespace Windows.UI.Xaml
 		internal static void SetParent(this object dependencyObject, object parent)
 		{
 			GetStore(dependencyObject).Parent = parent;
+		}
+
+		internal static void SetLogicalParent(this FrameworkElement element, DependencyObject logicalParent)
+		{
+#if UNO_HAS_MANAGED_POINTERS || __WASM__ // WASM has managed-esque pointers
+
+			// UWP distinguishes between the 'logical parent' (or inheritance parent) and the 'visual parent' of an element. Uno already
+			// recognises this distinction on some targets, but for targets using CoerceHitTestVisibility() for hit testing, the pointer
+			// implementation depends upon the logical parent (ie DepObjStore.Parent) being identical to the visual parent, because it
+			// piggybacks on the DP inheritance mechanism. Therefore we use LogicalParentOverride as a workaround to modify the publicly-visible
+			// FrameworkElement.Parent without affecting DP propagation.
+			element.LogicalParentOverride = logicalParent;
+#else
+			SetParent(element, logicalParent);
+#endif
 		}
 
 		/// <summary>

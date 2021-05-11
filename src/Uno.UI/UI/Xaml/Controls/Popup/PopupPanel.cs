@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Measured PopupPanel #={GetHashCode()} ({(Popup.CustomLayouter == null?"":"**using custom layouter**")}) DC={Popup.DataContext} child={child} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} availableSize={availableSize} measured={_lastMeasuredSize}");
+				this.Log().LogDebug($"Measured PopupPanel #={GetHashCode()} ({(Popup.CustomLayouter == null ? "" : "**using custom layouter**")}) DC={Popup.DataContext} child={child} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} availableSize={availableSize} measured={_lastMeasuredSize}");
 			}
 
 			// Note that we return the availableSize and not the _lastMeasuredSize. This is because this
@@ -179,13 +179,13 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 			// Set Parent to the Popup, to obtain the same behavior as UWP that the Popup (and therefore the rest of the main visual tree)
 			// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
-			this.SetParent(Popup);
+			this.SetLogicalParent(Popup);
 		}
 
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			this.SetParent(null);
+			this.SetLogicalParent(null);
 		}
 	}
 }
