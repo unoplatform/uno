@@ -56,17 +56,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 			var navigateToAnchorButton = _app.Marked("NavigateToAnchorButton");
 			var clickAnchorButton = _app.Marked("ClickAnchorButton");
 
-			_app.WaitForText(navigationCompletedTextBlock, "https://tools.ietf.org/html/rfc6749");
+			_app.WaitForText(navigationCompletedTextBlock, "https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html");
 
 			// navigate to anchor
 			_app.FastTap(navigateToAnchorButton);
-			_app.WaitForText(navigationCompletedTextBlock, "https://tools.ietf.org/html/rfc6749#section-1");
+			_app.WaitForText(navigationCompletedTextBlock, "https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html#section-1");
 
 			TakeScreenshot("navigate to anchor");
 
 			// user click in the browser itself
 			_app.FastTap(clickAnchorButton);
-			_app.WaitForText(navigationCompletedTextBlock, "https://tools.ietf.org/html/rfc6749#page-4");
+			_app.WaitForText(navigationCompletedTextBlock, "https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html#page-4");
 
 			TakeScreenshot("click anchor");
 		}
