@@ -99,6 +99,7 @@
 		<Page Include="Windows_UI_Xaml\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
+		<Page Include="ResourceLoader\Controls\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Markup\**\*.xaml" />
 		<Page Include="App\**\*.xaml" />
 		<None Remove="Lottie\animation.json" />
@@ -151,6 +152,13 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="ResourceLoader\Controls\When_Collection_And_InlineProperty.xaml" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Update="ResourceLoader\Controls\When_Collection_And_InlineProperty.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</None>
 		<None Update="ResourceLoader\Strings\en\Resources.resw">
 			<Generator>ResXFileCodeGenerator</Generator>
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
