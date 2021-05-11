@@ -147,6 +147,11 @@ namespace Windows.UI.Xaml.Controls
 			get { return _templatedRoot; }
 			set
 			{
+				if (_templatedRoot == value)
+				{
+					return;
+				}
+
 				CleanupView(_templatedRoot);
 
 				UnregisterSubView();

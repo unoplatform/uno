@@ -165,11 +165,11 @@ namespace Windows.UI.Xaml
 		/// normally you shouldn't need to call this method. It may be useful in advanced memory management scenarios.</remarks>
 		public static void Scavenge() => Instance.Scavenge(true);
 
-		internal View DequeueTemplate(FrameworkTemplate template)
+		internal View? DequeueTemplate(FrameworkTemplate template)
 		{
 			var list = GetTemplatePool(template);
 
-			View instance;
+			View? instance;
 
 			if (list.Count == 0)
 			{
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
 
-				instance = template.LoadContent() ?? new Grid();
+				instance = template.LoadContent();
 
 				if (IsPoolingEnabled && instance is IFrameworkElement)
 				{
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml
 			}
 
 #if USE_HARD_REFERENCES
-			if (IsPoolingEnabled)
+			if (IsPoolingEnabled && instance is {})
 			{
 				_activeInstances.Add(instance);
 			}
