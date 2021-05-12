@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			pReturnValue = _layoutStrategyImpl.VirtualizationDirection;
 		}
 
-		private void EstimateElementIndexImpl(
+		internal void EstimateElementIndex(
 			ElementType elementType,
 			EstimationReference headerReference,
 			EstimationReference containerReference,
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Estimate the location of an anchor group, using items-per-group to estimate an average group extent.
-		private void EstimateElementBoundsImpl(
+		internal void EstimateElementBounds(
 			ElementType elementType,
 			int elementIndex,
 			EstimationReference headerReference,

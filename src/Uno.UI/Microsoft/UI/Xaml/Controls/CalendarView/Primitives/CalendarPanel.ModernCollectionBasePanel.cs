@@ -88,10 +88,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal void DisconnectItemsHost()
 			=> RegisterItemsHost(null);
 
-		internal int FirstVisibleIndexBase { get; }
-		internal int LastVisibleIndexBase { get; }
-		internal int FirstCacheIndexBase { get; }
-		internal int LastCacheIndexBase { get; }
+		internal int FirstVisibleIndexBase { get; private set; }
+		internal int LastVisibleIndexBase { get; private set; }
+		internal int FirstCacheIndexBase { get; private set; }
+		internal int LastCacheIndexBase { get; private set; }
 
 		[NotImplemented]
 		internal PanelScrollingDirection PanningDirectionBase { get; } = PanelScrollingDirection.None;
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				var index = -1;
 				var count = _host.Count;
-				var layout = new LayoutReference{RelativeLocation = ReferenceIdentity.AfterMe};
+				var layout = new LayoutReference{RelativeLocation = ReferenceIdentity.Myself};
 				var window = new Rect(default, availableSize);
 
 				while (
@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					&& _layoutStrategy.ShouldContinueFillingUpSpace(ElementType.ItemContainer, index, layout, window))
 				{
 					var (container, isNew) = _cache.GetOrCreate(index);
-					if (isNew)
+					if (isNew || !Children.Contains(container)) // TODO: Our Children are being altered, we cannot trust the isNew! :@
 					{
 						Children.Add((UIElement)container);
 					}
@@ -130,14 +130,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					var itemBounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index, itemsSize, layout, window);
 
 					container.Measure(itemsSize);
+					container.GetVirtualizationInformation().MeasureSize = itemsSize;
+
+					layout.RelativeLocation = ReferenceIdentity.AfterMe;
 					layout.ReferenceBounds = itemBounds;
 				}
+
+				StartIndex = 0;
+				FirstVisibleIndexBase = 0;
+				LastVisibleIndexBase = index;
 			}
 			finally
 			{
 				ShouldInterceptInvalidate = false;
 				_layoutStrategy.EndMeasure();
 			}
+			VisibleIndicesUpdated?.Invoke(this, null);
 
 			//foreach (var item in _host)
 			//{
@@ -166,13 +174,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			foreach (var child in Children)
 			{
 				var index = _cache.IndexFromContainer(child);
-
-
-				//var relativeSize = _layoutStrategy.GetElementMeasureSize(ElementType.ItemContainer, index, window);
-
-				// Note: We don't have the container bounds, so we don't use the GetElementArrangeBounds
 				var bounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index, child.DesiredSize, layout, window);
+
 				child.Arrange(bounds);
+				child.GetVirtualizationInformation().Bounds = bounds;
 			}
 
 			return finalSize;
