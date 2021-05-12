@@ -9,11 +9,11 @@ $lgray: #c4c4c4;
 
 
 :target::before {
-  content: '';
-  display: block;
-  margin-top: -130px;
-  height: 130px;
-  width: 1px;
+    content: '';
+    display: block;
+    margin-top: -130px;
+    height: 130px;
+    width: 1px;
 }
 body {
     font-family: 'Open Sans', sans-serif;
@@ -209,7 +209,7 @@ h3 {
         }
 
         ul ul > li > a:before {
-          content: '';
+            content: '';
         }
 
         ul {
@@ -268,9 +268,9 @@ h3 {
             }
         }
 
-       ul ul > li > a:before {
-          top: 2px;
-       }
+        ul ul > li > a:before {
+            top: 2px;
+        }
         li:last-child {
             padding-bottom: 16px;
             margin-bottom: 0;
