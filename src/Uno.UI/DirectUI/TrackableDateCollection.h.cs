@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using DateTime = System.DateTimeOffset;
 
@@ -25,20 +26,20 @@ namespace DirectUI
 
 		//public:
 
-		public class DateSetType : HashSet<DateTime>
+		public class DateSetType : SortedSet<DateTime>
 		{
 			public DateSetType(Func<DateTime, DateTime, bool> comparer)
 				: base(new ComparerAdapter(comparer))
 			{
 			}
 
-			private class ComparerAdapter : IEqualityComparer<DateTime>
+			private class ComparerAdapter : IComparer<DateTime>
 			{
 				private readonly Func<DateTime, DateTime, bool> _compare;
 
 				public ComparerAdapter(Func<DateTime, DateTime, bool> compare) => _compare = compare;
-				public bool Equals(DateTime x, DateTime y) => _compare(x, y);
-				public int GetHashCode(DateTime obj) => 0; // force conflicts
+
+				public int Compare(DateTime x, DateTime y) => _compare(x, y) ? -1 : 1;
 			}
 		}
 

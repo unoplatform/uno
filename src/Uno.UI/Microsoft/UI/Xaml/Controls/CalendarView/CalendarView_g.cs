@@ -6,14 +6,34 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarView
 	{
-		void GetSelectedDatesChangedEventSourceNoRef(out SelectedDatesChangedEventSourceType ppEventSource)
+		// UNO: Most parts of that files are in the uno's generated CalendarView.Properties.cs
+
+		internal void GetCalendarViewDayItemChangingEventSourceNoRef(out TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> pEventSource)
 		{
-			throw new NotImplementedException("UNO-TODO");
+			pEventSource = CalendarViewDayItemChanging;
 		}
 
-		public void GetCalendarViewDayItemChangingEventSourceNoRef(out TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> pEventSource)
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CalendarView, global::Windows.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs> CalendarViewDayItemChanging;
+
+		private void GetSelectedDatesChangedEventSourceNoRef(out SelectedDatesChangedEventSourceType ppEventSource)
 		{
-			throw new NotImplementedException("UNO-TODO");
+			ppEventSource = SelectedDatesChanged;
 		}
+
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CalendarView, global::Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs> SelectedDatesChanged;
+
+		// UNO: The correspondent internal/impl method has been exposed publicly
+		//public void SetDisplayDate( global::System.DateTimeOffset date)
+		//{
+		//	CheckThread();
+		//	SetDisplayDateImpl();
+		//}
+
+		// UNO: The correspondent internal/impl method has been exposed publicly
+		//public void SetYearDecadeDisplayDimensions( int columns,  int rows)
+		//{
+		//	CheckThread();
+		//	SetYearDecadeDisplayDimensionsImpl();
+		//}
 	}
 }

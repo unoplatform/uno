@@ -291,8 +291,8 @@ namespace Windows.UI.Xaml.Controls
 				ValueTypeCollection<DateTime> spAddedDates;
 				ValueTypeCollection<DateTime> spRemovedDates;
 
-				spAddedDates = default;
-				spRemovedDates = default;
+				spAddedDates = new ValueTypeCollection<DateTime>();
+				spRemovedDates = new ValueTypeCollection<DateTime>();
 
 				foreach (var it in addedDates)
 				{
@@ -304,11 +304,11 @@ namespace Windows.UI.Xaml.Controls
 					spRemovedDates.Append(it);
 				}
 
-				spEventArgs = default;
+				spEventArgs = new CalendarViewSelectedDatesChangedEventArgs();
 				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTime>;
 				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTime>;
 				GetSelectedDatesChangedEventSourceNoRef(out pEventSource);
-				pEventSource.Invoke(this, spEventArgs);
+				pEventSource?.Invoke(this, spEventArgs);
 
 
 				bool bAutomationListener = false;

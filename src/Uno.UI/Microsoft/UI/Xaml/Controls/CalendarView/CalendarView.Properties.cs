@@ -917,7 +917,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode)));
+			new FrameworkPropertyMetadata(global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode.Single));
 
 		public static global::Windows.UI.Xaml.DependencyProperty TemplateSettingsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -949,18 +949,5 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
 
-
-
-
-
-		//public  void SetDisplayDate( global::System.DateTimeOffset date)
-		//{
-		//	global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "void CalendarView.SetDisplayDate(DateTimeOffset date)");
-		//}
-
-		//public  void SetYearDecadeDisplayDimensions( int columns,  int rows)
-		//{
-		//	global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "void CalendarView.SetYearDecadeDisplayDimensions(int columns, int rows)");
-		//}
 	}
 }

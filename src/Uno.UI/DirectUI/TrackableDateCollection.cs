@@ -60,7 +60,7 @@ namespace DirectUI
 			m_removedDates.Clear();
 		}
 
-		private void RemoveAt(uint index)
+		public override void RemoveAt(uint index)
 		{
 			RaiseCollectionChanging(CollectionChanging.ItemRemoving, default);
 
@@ -74,15 +74,13 @@ namespace DirectUI
 			return;
 		}
 
-		private void Clear()
+		public override void Clear()
 		{
 			RaiseCollectionChanging(CollectionChanging.Resetting, default);
 
-			uint Count = 0;
+			var count = Count;
 
-			Count = Count;
-
-			for (uint i = 0; i < Count; ++i)
+			for (uint i = 0; i < count; ++i)
 			{
 				DateTime date;
 
@@ -93,7 +91,6 @@ namespace DirectUI
 			base.Clear();
 
 			return;
-
 		}
 
 		public override void Append(DateTime item)

@@ -1241,8 +1241,9 @@ namespace DirectUI
 
 		public bool IndexOf(T value, out uint index)
 		{
-			index = (uint)m_vector.IndexOf(value);
-			return index >= 0;
+			var i = m_vector.IndexOf(value);
+			index = (uint)i;
+			return i >= 0;
 		}
 		// END UNO Specific
 
