@@ -319,7 +319,7 @@ namespace Uno.UI.Runtime.Skia
 					break;
 
 				case PointerDeviceType.Mouse:
-					properties.IsLeftButtonPressed = IsPressed(state, ModifierType.Button1Mask, properties.PointerUpdateKind, LeftButtonPressed, LeftButtonPressed);
+					properties.IsLeftButtonPressed = IsPressed(state, ModifierType.Button1Mask, properties.PointerUpdateKind, LeftButtonPressed, LeftButtonReleased);
 					properties.IsMiddleButtonPressed = IsPressed(state, ModifierType.Button2Mask, properties.PointerUpdateKind, MiddleButtonPressed, MiddleButtonReleased);
 					properties.IsRightButtonPressed = IsPressed(state, ModifierType.Button3Mask, properties.PointerUpdateKind, RightButtonPressed, RightButtonReleased);
 					properties.IsXButton1Pressed = IsPressed(state, ModifierType.Button4Mask, properties.PointerUpdateKind, XButton1Pressed, XButton1Released);
