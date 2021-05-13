@@ -7,8 +7,8 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<StackPanel Spacing="8">
-		<StackPanel Orientation="Horizontal" Spacing="10">
+	<StackPanel Spacing="12">
+		<StackPanel Orientation="Horizontal" Spacing="10" Background="LightBlue" Padding="3">
 			<ComboBox x:Name="dow" Header="FirstDayOfWeek">
 				<ComboBoxItem IsSelected="True">Sunday</ComboBoxItem>
 				<ComboBoxItem>Monday</ComboBoxItem>
@@ -17,6 +17,17 @@
 				<ComboBoxItem>Thursday</ComboBoxItem>
 				<ComboBoxItem>Friday</ComboBoxItem>
 				<ComboBoxItem>Saturday</ComboBoxItem>
+			</ComboBox>
+			<ComboBox x:Name="dowf" Header="DOW Format">
+				<!-- https://docs.microsoft.com/en-us/uwp/api/windows.globalization.datetimeformatting.datetimeformatter -->
+				<ComboBoxItem Content="{}{dayofweek.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.abbreviated}" IsSelected="True"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.abbreviated(2)}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.abbreviated(3)}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.solo.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.solo.abbreviated}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.solo.abbreviated(2)}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.solo.abbreviated(3)}"></ComboBoxItem>
 			</ComboBox>
 			<ComboBox x:Name="cid" Header="Calendar">
 				<ComboBoxItem>ChineseLunarCalendar</ComboBoxItem>
@@ -37,12 +48,13 @@
 			</ComboBox>
 			<ToggleButton x:Name="today" IsChecked="True">IsTodayHighlighted</ToggleButton>
 		</StackPanel>
-		<StackPanel Orientation="Horizontal" Spacing="10">
+		<StackPanel Orientation="Horizontal" Spacing="10" Background="Bisque" Padding="3">
 			<CalendarDatePicker
 				x:Name="cdp1"
 				Header="Stock CalendarDatePicker"
 				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid}"
 				FirstDayOfWeek="{Binding SelectedItem.Content, ElementName=dow}"
+				DayOfWeekFormat="{Binding SelectedItem.Content, ElementName=dowf}"
 				IsTodayHighlighted="{Binding IsChecked, ElementName=today}"/>
 			<ToggleButton IsChecked="{Binding IsCalendarOpen, ElementName=cdp1, Mode=TwoWay}">
 				IsCalendarOpen
@@ -54,7 +66,7 @@
 
 			<TextBlock>Date: <Run Text="{Binding Date, ElementName=cdp1}" /></TextBlock>
 		</StackPanel>
-		<StackPanel Orientation="Horizontal" Spacing="10">
+		<StackPanel Orientation="Horizontal" Spacing="10" Background="Bisque" Padding="3">
 			<CalendarDatePicker
 				x:Name="cdp2"
 				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid}"
@@ -62,6 +74,7 @@
 				IsCalendarOpen="True"
 				IsEnabled="False"
 				FirstDayOfWeek="{Binding SelectedItem.Content, ElementName=dow}"
+				DayOfWeekFormat="{Binding SelectedItem.Content, ElementName=dowf}"
 				IsTodayHighlighted="{Binding IsChecked, ElementName=today}" />
 			<ToggleButton IsChecked="{Binding IsEnabled, ElementName=cdp2, Mode=TwoWay}">
 				IsEnabled
@@ -73,7 +86,7 @@
 
 			<TextBlock>Date: <Run Text="{Binding Date, ElementName=cdp2}" /></TextBlock>
 		</StackPanel>
-		<StackPanel Orientation="Horizontal" Spacing="10">
+		<StackPanel Orientation="Horizontal" Spacing="10" Background="Bisque" Padding="3">
 			<CalendarDatePicker
 				x:Name="cdp3"
 				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid}"
@@ -81,6 +94,7 @@
 				PlaceholderText="--PLACEHOLDER--"
 				IsCalendarOpen="True"
 				IsGroupLabelVisible="False"
+				DayOfWeekFormat="{Binding SelectedItem.Content, ElementName=dowf}"
 				FirstDayOfWeek="{Binding SelectedItem.Content, ElementName=dow}"
 				IsTodayHighlighted="{Binding IsChecked, ElementName=today}" />
 			<ToggleButton IsChecked="{Binding IsEnabled, ElementName=cdp3, Mode=TwoWay}">
