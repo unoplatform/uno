@@ -14,9 +14,18 @@ namespace SamplesApp.UITests.TestFramework
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
 	internal class ActivePlatformsAttribute : PropertyAttribute
 	{
+		public Platform[] Platforms
+		{
+			get
+			{
+				var property = Properties["ActivePlatforms"] as IList<object>;
+				return property?.FirstOrDefault() as Platform[];
+			}
+		}
+
 		public ActivePlatformsAttribute(params Platform[] platforms)
 		{
-			base.Properties.Add("ActivePlatforms", platforms);
+			Properties.Add("ActivePlatforms", platforms);
 		}
 	}
 }
