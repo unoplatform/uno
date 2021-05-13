@@ -1,99 +1,103 @@
-//// Copyright (c) Microsoft Corporation. All rights reserved.
-//// Licensed under the MIT License. See LICENSE in the project root for license information.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
-//#pragma once
+using System;
+using DirectUI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
-
-//using namespace DirectUI;
-//using namespace DirectUISynonyms;
-
-////CalendarDatePickerAutomationPeerFactory.CreateInstanceWithOwnerImpl
+//CalendarDatePickerAutomationPeerFactory.CreateInstanceWithOwnerImpl
 //IMPLEMENT_CONTROL_AUTOMATIONPEERFACTORY_CREATEINSTANCE(CalendarDatePicker)
 
-//// Initializes a new instance of the CalendarDatePickerAutomationPeer class.
-//CalendarDatePickerAutomationPeer()
-//{
-//}
+// Initializes a new instance of the CalendarDatePickerAutomationPeer class.
+namespace Windows.UI.Xaml.Automation.Peers
+{
 
-//// Deructor
-//CalendarDatePickerAutomationPeer.~CalendarDatePickerAutomationPeer()
-//{
-//}
+	partial class CalendarDatePickerAutomationPeer : FrameworkElementAutomationPeer
+	{
+		private const string UIA_AP_CALENDARDATEPICKER = nameof(UIA_AP_CALENDARDATEPICKER);
 
-//private void GetPatternCore( xaml_automation_peers.PatternInterface patternInterface, out  DependencyObject ppReturnValue)
-//{
-//    ppReturnValue = NULL;
+		public CalendarDatePickerAutomationPeer(Controls.CalendarDatePicker owner) : base(owner)
+		{
+		}
 
-//    if (patternInterface == xaml_automation_peers.PatternInterface_Invoke 
-//        || patternInterface == xaml_automation_peers.PatternInterface_Value)
-//    {
-//        ppReturnValue = ctl.as_iinspectable(this);
-//        ctl.addref_interface(this);
-//    }
-//    else
-//    {
-//        CalendarDatePickerAutomationPeerGenerated.GetPatternCore(patternInterface, ppReturnValue);
-//    }
+		private void GetPatternCore(PatternInterface patternInterface,
+			out DependencyObject ppReturnValue)
+		{
+			ppReturnValue = null;
 
-//}
+			if (patternInterface == PatternInterface.Invoke
+			    || patternInterface == PatternInterface.Value)
+			{
+				//ppReturnValue = ctl.as_iinspectable(this);
+				ppReturnValue = this;
+				//ctl.addref_interface(this);
+			}
+			else
+			{
+				//CalendarDatePickerAutomationPeerGenerated.GetPatternCore(patternInterface, ppReturnValue);
+				ppReturnValue = base.GetPatternCore(patternInterface) as DependencyObject;
+			}
 
-//private void GetClassNameCore(out HSTRING returnValue)
-//{
-//    return stringReference("CalendarDatePicker").CopyTo(returnValue);
-//}
+		}
 
-//private void GetAutomationControlTypeCore(out xaml_automation_peers.AutomationControlType pReturnValue)
-//{
-//    pReturnValue = xaml_automation_peers.AutomationControlType_Button;
-//    return;
-//}
+		protected override string GetClassNameCore()
+		{
+			return nameof(CalendarDatePicker);
+		}
 
-//private void GetLocalizedControlTypeCore(out HSTRING returnValue)
-//{
-//    DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_CALENDARDATEPICKER, returnValue);
-    
-//    return;
-//}
+		protected override AutomationControlType GetAutomationControlTypeCore()
+		{
+			return AutomationControlType.Button;
+		}
 
-//private void  InvokeImpl()
-//{
-//    UIElement pOwner = NULL;
-//    bool bIsEnabled;
+		protected override string GetLocalizedControlTypeCore()
+		{
+			return DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_CALENDARDATEPICKER);
+		}
 
-//    bIsEnabled = IsEnabled);
-//    if (!bIsEnabled)
-//    {
-//        UIA_E_ELEMENTNOTENABLED;
-//    }
+		public void Invoke()
+		{
+			UIElement pOwner = null;
+			bool bIsEnabled;
 
-//    pOwner = Owner;
-//    ((CalendarDatePicker)(pOwner)).IsCalendarOpen = true;
+			bIsEnabled = IsEnabled();
+			if (!bIsEnabled)
+			{
+				//UIA_E_ELEMENTNOTENABLED;
+				throw new ElementNotEnabledException();
+			}
 
-//Cleanup:
-//    ReleaseInterface(pOwner);
-//    return hr;
-//}
+			pOwner = Owner;
+			((CalendarDatePicker)(pOwner)).IsCalendarOpen = true;
+		}
 
-//private void get_IsReadOnlyImpl(out BOOLEAN value)
-//{
-//    value = true;
-//    return;
-//}
+		private void get_IsReadOnlyImpl(out bool value)
+		{
+			value = true;
+			return;
+		}
 
-//private void get_ValueImpl(out HSTRING value)
-//{
-//    UIElement spOwner;
-//    spOwner = Owner;
-    
-//    var ownerItem = spOwner as CalendarDatePicker;
-//    IFCPTR_RETURN(ownerItem);
+		private void get_ValueImpl(out string value)
+		{
+			UIElement spOwner;
+			spOwner = Owner;
 
-//    ownerItem.GetCurrentFormattedDate(value);
-    
-//    return;
-//}
+			var ownerItem = spOwner as CalendarDatePicker;
+			//IFCPTR_RETURN(ownerItem);
+			if (ownerItem == null)
+			{
+				throw new ArgumentNullException();
+			}
 
-//private void SetValueImpl(string value)
-//{
-//    throw new NotImplementedException();
-//}
+			ownerItem.GetCurrentFormattedDate(out value);
+
+			return;
+		}
+
+		public void SetValueImpl(string value)
+		{
+			throw new NotImplementedException();
+		}
+	}
+}

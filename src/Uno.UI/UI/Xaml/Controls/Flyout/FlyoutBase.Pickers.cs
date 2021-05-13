@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿using System;
+using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using NotImplementedException = System.NotImplementedException;
@@ -90,6 +91,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//}
 
 			//return S_OK;
+		}
+
+		internal void DisablePresenterResizing()
+		{
+#if !DEBUG
+#error TODO ??
+#endif
 		}
 	}
 }

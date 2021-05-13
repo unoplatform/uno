@@ -12,6 +12,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Markup;
 using System.ComponentModel;
 using System.Reflection;
+using Windows.System;
 using Windows.UI.Core;
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
@@ -83,6 +84,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected virtual void ChangeVisualState(bool useTransitions)
 		{
+		}
+
+		[NotImplemented] // Method for WinUI code compatibility. Not implemented yet
+		private protected void GetKeyboardModifiers(out VirtualKeyModifiers virtualKeyModifiers)
+		{
+			virtualKeyModifiers = VirtualKeyModifiers.None;
 		}
 
 		/// <summary>
@@ -850,6 +857,8 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnTapped(TappedRoutedEventArgs e) { }
 		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
 		protected virtual void OnRightTapped(RightTappedRoutedEventArgs e) { }
+		[NotImplemented] // For WinUI code compatibility, not implemented yet
+		private protected virtual void OnRightTappedUnhandled(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
 		protected virtual void OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
@@ -1126,6 +1135,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected bool GoToState(bool useTransitions, string stateName) => VisualStateManager.GoToState(this, stateName, useTransitions);
 
+		// This is a method to support code from WinUI
+		private protected void GoToState(bool useTransitions, string stateName, out bool b)
+		{
+			b = VisualStateManager.GoToState(this, stateName, useTransitions);
+		}
+
 #if DEBUG
 #if !__IOS__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
@@ -1136,6 +1151,7 @@ namespace Windows.UI.Xaml.Controls
 		public string[] CurrentVisualStates => VisualStateGroups.Select(vsg => vsg.CurrentState?.Name).ToArray();
 #endif
 
+		// This is a method to support code from WinUI
 		internal void ConditionallyGetTemplatePartAndUpdateVisibility<T>(
 			string strName,
 			bool visible,

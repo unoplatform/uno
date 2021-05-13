@@ -962,45 +962,5 @@ namespace Windows.UI.Xaml.Controls
 		//{
 		//	global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "void CalendarView.SetYearDecadeDisplayDimensions(int columns, int rows)");
 		//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		//public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CalendarView, global::Windows.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs> CalendarViewDayItemChanging
-		//{
-		//	add
-		//	{
-		//		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "event TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> CalendarView.CalendarViewDayItemChanging");
-		//	}
-		//	remove
-		//	{
-		//		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "event TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> CalendarView.CalendarViewDayItemChanging");
-		//	}
-		//}
-
-		//public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CalendarView, global::Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs> SelectedDatesChanged
-		//{
-		//	add
-		//	{
-		//		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "event TypedEventHandler<CalendarView, CalendarViewSelectedDatesChangedEventArgs> CalendarView.SelectedDatesChanged");
-		//	}
-		//	remove
-		//	{
-		//		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "event TypedEventHandler<CalendarView, CalendarViewSelectedDatesChangedEventArgs> CalendarView.SelectedDatesChanged");
-		//	}
-		//}
-
 	}
 }

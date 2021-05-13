@@ -11,8 +11,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public string CalendarIdentifier
 		{
-			get { return (string)GetValue(CalendarIdentifierProperty); }
-			set { SetValue(CalendarIdentifierProperty, value); }
+			get => (string)GetValue(CalendarIdentifierProperty);
+			set => SetValue(CalendarIdentifierProperty, value);
 		}
 
 		public static readonly DependencyProperty CalendarViewStyleProperty = DependencyProperty.Register(
@@ -20,8 +20,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public Style CalendarViewStyle
 		{
-			get { return (Style)GetValue(CalendarViewStyleProperty); }
-			set { SetValue(CalendarViewStyleProperty, value); }
+			get => (Style)GetValue(CalendarViewStyleProperty);
+			set => SetValue(CalendarViewStyleProperty, value);
 		}
 
 		public static readonly DependencyProperty DateProperty = DependencyProperty.Register(
@@ -29,8 +29,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public DateTimeOffset? Date
 		{
-			get { return (DateTimeOffset?)GetValue(DateProperty); }
-			set { SetValue(DateProperty, value); }
+			get => (DateTimeOffset?)GetValue(DateProperty);
+			set => SetValue(DateProperty, value);
 		}
 
 		public static readonly DependencyProperty DateFormatProperty = DependencyProperty.Register(
@@ -38,8 +38,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public string DateFormat
 		{
-			get { return (string)GetValue(DateFormatProperty); }
-			set { SetValue(DateFormatProperty, value); }
+			get => (string)GetValue(DateFormatProperty);
+			set => SetValue(DateFormatProperty, value);
 		}
 
 		public static readonly DependencyProperty DayOfWeekFormatProperty = DependencyProperty.Register(
@@ -47,8 +47,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public string DayOfWeekFormat
 		{
-			get { return (string)GetValue(DayOfWeekFormatProperty); }
-			set { SetValue(DayOfWeekFormatProperty, value); }
+			get => (string)GetValue(DayOfWeekFormatProperty);
+			set => SetValue(DayOfWeekFormatProperty, value);
 		}
 
 		public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
@@ -56,8 +56,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Description
 		{
-			get { return (string)GetValue(DescriptionProperty); }
-			set { SetValue(DescriptionProperty, value); }
+			get => (string)GetValue(DescriptionProperty);
+			set => SetValue(DescriptionProperty, value);
 		}
 
 		public static readonly DependencyProperty DisplayModeProperty = DependencyProperty.Register(
@@ -65,8 +65,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public CalendarViewDisplayMode DisplayMode
 		{
-			get { return (CalendarViewDisplayMode)GetValue(DisplayModeProperty); }
-			set { SetValue(DisplayModeProperty, value); }
+			get => (CalendarViewDisplayMode)GetValue(DisplayModeProperty);
+			set => SetValue(DisplayModeProperty, value);
 		}
 
 		public static readonly DependencyProperty FirstDayOfWeekProperty = DependencyProperty.Register(
@@ -74,8 +74,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public DayOfWeek FirstDayOfWeek
 		{
-			get { return (DayOfWeek)GetValue(FirstDayOfWeekProperty); }
-			set { SetValue(FirstDayOfWeekProperty, value); }
+			get => (DayOfWeek)GetValue(FirstDayOfWeekProperty);
+			set => SetValue(FirstDayOfWeekProperty, value);
 		}
 
 		public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(
@@ -83,8 +83,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public object Header
 		{
-			get { return (object)GetValue(HeaderProperty); }
-			set { SetValue(HeaderProperty, value); }
+			get => (object)GetValue(HeaderProperty);
+			set => SetValue(HeaderProperty, value);
 		}
 
 		public static readonly DependencyProperty HeaderTemplateProperty = DependencyProperty.Register(
@@ -92,8 +92,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public DataTemplate HeaderTemplate
 		{
-			get { return (DataTemplate)GetValue(HeaderTemplateProperty); }
-			set { SetValue(HeaderTemplateProperty, value); }
+			get => (DataTemplate)GetValue(HeaderTemplateProperty);
+			set => SetValue(HeaderTemplateProperty, value);
 		}
 
 		public static readonly DependencyProperty IsCalendarOpenProperty = DependencyProperty.Register(
@@ -101,8 +101,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsCalendarOpen
 		{
-			get { return (bool)GetValue(IsCalendarOpenProperty); }
-			set { SetValue(IsCalendarOpenProperty, value); }
+			get => (bool)GetValue(IsCalendarOpenProperty);
+			set => SetValue(IsCalendarOpenProperty, value);
 		}
 
 		public static readonly DependencyProperty IsGroupLabelVisibleProperty = DependencyProperty.Register(
@@ -110,8 +110,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsGroupLabelVisible
 		{
-			get { return (bool)GetValue(IsGroupLabelVisibleProperty); }
-			set { SetValue(IsGroupLabelVisibleProperty, value); }
+			get => (bool)GetValue(IsGroupLabelVisibleProperty);
+			set => SetValue(IsGroupLabelVisibleProperty, value);
 		}
 
 		public static readonly DependencyProperty IsOutOfScopeEnabledProperty = DependencyProperty.Register(
@@ -119,8 +119,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsOutOfScopeEnabled
 		{
-			get { return (bool)GetValue(IsOutOfScopeEnabledProperty); }
-			set { SetValue(IsOutOfScopeEnabledProperty, value); }
+			get => (bool)GetValue(IsOutOfScopeEnabledProperty);
+			set => SetValue(IsOutOfScopeEnabledProperty, value);
 		}
 
 		public static readonly DependencyProperty IsTodayHighlightedProperty = DependencyProperty.Register(
@@ -128,8 +128,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsTodayHighlighted
 		{
-			get { return (bool)GetValue(IsTodayHighlightedProperty); }
-			set { SetValue(IsTodayHighlightedProperty, value); }
+			get => (bool)GetValue(IsTodayHighlightedProperty);
+			set => SetValue(IsTodayHighlightedProperty, value);
 		}
 
 		public static readonly DependencyProperty LightDismissOverlayModeProperty = DependencyProperty.Register(
@@ -137,8 +137,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
-			get { return (LightDismissOverlayMode)GetValue(LightDismissOverlayModeProperty); }
-			set { SetValue(LightDismissOverlayModeProperty, value); }
+			get => (LightDismissOverlayMode)GetValue(LightDismissOverlayModeProperty);
+			set => SetValue(LightDismissOverlayModeProperty, value);
 		}
 
 		public static readonly DependencyProperty MaxDateProperty = DependencyProperty.Register(
@@ -146,8 +146,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public DateTimeOffset MaxDate
 		{
-			get { return (DateTimeOffset)GetValue(MaxDateProperty); }
-			set { SetValue(MaxDateProperty, value); }
+			get => (DateTimeOffset)GetValue(MaxDateProperty);
+			set => SetValue(MaxDateProperty, value);
 		}
 
 		public static readonly DependencyProperty MinDateProperty = DependencyProperty.Register(
@@ -155,8 +155,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public DateTimeOffset MinDate
 		{
-			get { return (DateTimeOffset)GetValue(MinDateProperty); }
-			set { SetValue(MinDateProperty, value); }
+			get => (DateTimeOffset)GetValue(MinDateProperty);
+			set => SetValue(MinDateProperty, value);
 		}
 
 		public static readonly DependencyProperty PlaceholderTextProperty = DependencyProperty.Register(
@@ -164,8 +164,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public string PlaceholderText
 		{
-			get { return (string)GetValue(PlaceholderTextProperty); }
-			set { SetValue(PlaceholderTextProperty, value); }
+			get => (string)GetValue(PlaceholderTextProperty);
+			set => SetValue(PlaceholderTextProperty, value);
 		}
 	}
 }

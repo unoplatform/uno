@@ -991,7 +991,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// helper method to prepend a string into a collection of string.
 		/*static */
-		private static IEnumerable<string> CreateCalendarLanguagesStatic(
+		internal static IEnumerable<string> CreateCalendarLanguagesStatic(
 			string language)
 		{
 			IEnumerable<string> ppLanguages = default;
@@ -1545,8 +1545,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// change the dimensions of YearView and DecadeView.
 		// API name to be reviewed.
-		private void SetYearDecadeDisplayDimensionsImpl(
-			int columns, int rows)
+		public void SetYearDecadeDisplayDimensions(int columns, int rows)
 		{
 			global::System.Diagnostics.Debug.Assert(columns > 0 && rows > 0);
 
