@@ -22,7 +22,8 @@ namespace Windows.UI.Xaml.Media
 		{
 			var source = ResourceDictionary.GetResourceSource(this);
 
-			return source?.ResourceKey.Key ?? "";
+			return source?.ResourceKey.Key ?? "No associated key found. Make sure you uncommented '//#define DEBUG_SET_RESOURCE_SOURCE' in ResourceDictionary.cs";
+
 		}
 
 		public ResourceDictionary? GetContainingResourceDictionary()
