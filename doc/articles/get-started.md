@@ -26,9 +26,9 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
  |                 | Windows 10 (UWP/WinUI) | Android | iOS | Web (WebAssembly) | macOS | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |-----------------|------------------------|---------|-----|-------------------|-------|------------------|-----------------------|
-| **Visual Studio**   | ✔️                      | ✔️       | ✔️†  | ✔️                 | ❌     | ✔️                | ✔️                     |
-| **VS Code**         | ❌                      | ❌       | ❌   | ✔️                 | ❌     | ✔️                | ✔️                     |
-| **JetBrains Rider** | ✔️                      | ✔️       | ✔️†  | ✔️                 | ❌     | ✔️                | ✔️                     |
+| [**Visual Studio**](get-started-vs.md)   | ✔️                      | ✔️       | ✔️†  | ✔️                 | ❌     | ✔️                | ✔️                     |
+| [**VS Code**](get-started-vscode.md)         | ❌                      | ❌       | ❌   | ✔️                 | ❌     | ✔️                | ✔️                     |
+| [**JetBrains Rider**](get-started-rider.md) | ✔️                      | ✔️       | ✔️†  | ✔️                 | ❌     | ✔️                | ✔️                     |
 
 
  † You'll need to be connected to a Mac to run and debug iOS apps from Windows.
@@ -50,9 +50,9 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 
 |                       | Windows 10 (UWP/WinUI) | Android | iOS | Web (WebAssembly) | macOS | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |-----------------------|------------------------|---------|-----|-------------------|-------|------------------|-----------------------|
-| **Visual Studio for Mac** | ❌                      | ✔️       | ✔️   | ❌                 | ✔️     | ✔️                | ❌                     |
-| **VS Code**               | ❌                      | ❌       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
-| **JetBrains Rider**       | ❌                      | ✔️       | ✔️   | ✔️                 | ✔️     | ✔️                | ❌                     |
+| [**Visual Studio for Mac**](get-started-vsmac.md) | ❌                      | ✔️       | ✔️   | ❌                 | ✔️     | ✔️                | ❌                     |
+| [**VS Code**](get-started-vscode.md)               | ❌                      | ❌       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
+| [**JetBrains Rider**](get-started-rider.md)       | ❌                      | ✔️       | ✔️   | ✔️                 | ✔️     | ✔️                | ❌                     |
 
 ***
  <br>
@@ -72,5 +72,5 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 
 |                 | Windows 10 (UWP/WinUI) | Android | iOS | Web (WebAssembly) | macOS | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |-----------------|------------------------|---------|-----|-------------------|-------|------------------|-----------------------|
-| **VS Code**         | ❌                      | ❌       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
-| **JetBrains Rider** | ❌                      | ✔️       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
+| [**VS Code**](get-started-vscode.md)         | ❌                      | ❌       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
+| [**JetBrains Rider**](get-started-rider.md) | ❌                      | ✔️       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
