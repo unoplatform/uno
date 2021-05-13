@@ -989,6 +989,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CalendarView\CalendarDatePicker_Features.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CalendarView\CalendarView_Basics.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4794,6 +4798,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Buttons_Native.xaml.cs">
       <DependentUpon>Buttons_Native.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CalendarView\CalendarDatePicker_Features.xaml.cs">
+      <DependentUpon>CalendarDatePicker_Features.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CalendarView\CalendarView_Basics.xaml.cs">
       <DependentUpon>CalendarView_Basics.xaml</DependentUpon>
