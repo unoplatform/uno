@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {
-	[SampleControlInfo]
+	[Sample("Date Picking")]
 	public sealed partial class DatePickerFlyout_Automated : UserControl
 	{
 		public DatePickerFlyout_Automated()
