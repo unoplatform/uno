@@ -47,7 +47,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 <br>
 
 > [!Tip]
-> For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](get-started.md).
+> For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
 ## Step-by-steps
 ### Section 1: Setup Uno.Material
@@ -238,14 +238,14 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 1. Run the app, you should now see the controls using your new color scheme.
 
 ## Note
-- Certain controls may require additional setup to setup and/or overriding color pallette. For details, see: [Uno.Material controls extra setup](..\features\uno-material-controls-extra-setup.md)
+- Certain controls may require additional setup to setup and/or overriding color pallette. For details, see: [Uno.Material controls extra setup](../features/uno-material-controls-extra-setup.md)
 
 ## Get the complete code
 
 See the completed sample on GitHub: [UnoMaterialSample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoMaterialSample)
 
 ## Additional Resources
-- [Uno.Material](..\features\uno-material.md) overview
+- [Uno.Material](../features/uno-material.md) overview
 - Uno.Material library repository: https://github.com/unoplatform/Uno.Themes
 - Tools for picking colors: https://material.io/design/color/the-color-system.html#tools-for-picking-colors
 
