@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The 'finalSize' provided for the last Arrange
 		/// </summary>
-		/// <remarks>This is the backing flied for <see cref="LayoutInformation.GetLayoutSlot"/></remarks>
+		/// <remarks>This is the backing field for <see cref="LayoutInformation.GetLayoutSlot"/></remarks>
 		Rect LayoutSlot { get; set; }
 	}
 }
