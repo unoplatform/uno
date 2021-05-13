@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -75,7 +76,7 @@ namespace SamplesApp.UITests
 
 			// Check if the test needs to be ignore or not
 			// If nothing specified, it is considered as a global test
-			var platforms = GetActivePlatforms();
+			var platforms = GetActivePlatforms().Distinct().ToArray();
 			if (platforms.Length != 0)
 			{
 				// Otherwise, we need to define on which platform the test is running and compare it with targeted platform
@@ -217,35 +218,56 @@ namespace SamplesApp.UITests
 			return methodInfo?.GetCustomAttributes(typeof(T), true) is T[] array ? array : new T[0];
 		}
 
-		private Platform[] GetActivePlatforms()
+		private IEnumerable<Platform> GetActivePlatforms()
 		{
-			if (TestContext.CurrentContext.Test.Properties["ActivePlatforms"].FirstOrDefault() is Platform[] platforms)
+			var currentTest = TestContext.CurrentContext.Test;
+			if (currentTest.ClassName == null)
 			{
-				if (platforms.Length != 0)
-				{
-					return platforms;
-				}
+				yield break;
 			}
-			else
+			if (Type.GetType(currentTest.ClassName) is { } classType)
 			{
-				if (Type.GetType(TestContext.CurrentContext.Test.ClassName) is Type classType)
+				if (classType.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is
+					ActivePlatformsAttribute[] classAttributes)
 				{
-					if (classType.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is ActivePlatformsAttribute[] attributes)
+					foreach (var attr in classAttributes)
 					{
-						if (
-							attributes.Length != 0
-							&& attributes[0]
-								.Properties["ActivePlatforms"]
-								.OfType<object>()
-								.FirstOrDefault() is Platform[] platforms2)
+						if (attr.Platforms == null)
 						{
-							return platforms2;
+							continue;
+						}
+
+						foreach (var platform in attr.Platforms)
+						{
+							yield return platform;
 						}
 					}
 				}
-			}
 
-			return Array.Empty<Platform>();
+				if (currentTest.MethodName is { })
+				{
+					var testMethodInfo = classType.GetMethod(currentTest.MethodName);
+
+					if (testMethodInfo is { } mi &&
+					    mi.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is
+						    ActivePlatformsAttribute[] methodAttributes)
+					{
+						foreach (var attr in methodAttributes)
+						{
+							if (attr.Platforms == null)
+							{
+								continue;
+							}
+
+							foreach (var platform in attr.Platforms)
+							{
+								yield return platform;
+							}
+						}
+					}
+				}
+
+			}
 		}
 
 		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
