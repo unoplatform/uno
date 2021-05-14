@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.ApplicationModel.Resources;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -21,7 +22,10 @@ namespace DirectUI
 			=> _current ?? new DXamlCore();
 
 		public string GetLocalizedResourceString(string key)
-			=> key;
+		{
+			var loader = ResourceLoader.GetForCurrentView();
+			return loader.GetString(key);
+		}
 
 		public ElementSoundPlayerService GetElementSoundPlayerServiceNoRef()
 			=> _elementSoundPlayerServiceNoRef ??= new ElementSoundPlayerService();
