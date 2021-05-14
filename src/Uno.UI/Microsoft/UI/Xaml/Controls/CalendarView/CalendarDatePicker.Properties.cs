@@ -1,6 +1,7 @@
 using System;
-using System.Linq;
+
 using DateTime = System.DateTimeOffset;
+using Calendar = Windows.Globalization.Calendar;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -166,6 +167,76 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get => (string)GetValue(PlaceholderTextProperty);
 			set => SetValue(PlaceholderTextProperty, value);
+		}
+
+		private static Calendar _gregorianCalendar;
+
+		private const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
+
+		private bool SetPropertyDefaultValue(DependencyProperty property, out object value)
+		{
+			Calendar GetOrCreateGregorianCalendar()
+			{
+				if (_gregorianCalendar is null)
+				{
+					var tempCalendar = new Calendar();
+					_gregorianCalendar = new Calendar(
+							tempCalendar.Languages,
+							"GregorianCalendar",
+							tempCalendar.GetClock());
+				}
+
+				return _gregorianCalendar;
+			}
+
+			DateTime ClampDate(
+				DateTime date,
+				DateTime minDate,
+				DateTime maxDate)
+			{
+				return date < minDate ? minDate : date > maxDate ? maxDate : date;
+			}
+
+			if (property == CalendarDatePicker.MinDateProperty)
+			{
+				var calendar = GetOrCreateGregorianCalendar();
+				calendar.SetToMin();
+				var minCalendarDate = calendar.GetDateTime();
+				calendar.SetToMax();
+				var maxCalendarDate = calendar.GetDateTime();
+
+				//Default value is today's date minus 100 Gregorian years.
+				calendar.SetToday();
+				calendar.AddYears(-DEFAULT_MIN_MAX_DATE_YEAR_OFFSET);
+				calendar.Month = calendar.FirstMonthInThisYear;
+				calendar.Day = calendar.FirstDayInThisMonth;
+				var minDate = calendar.GetDateTime();
+
+				value = ClampDate(minDate, minCalendarDate, maxCalendarDate);
+				return true;
+			}
+
+			if (property == CalendarDatePicker.MaxDateProperty)
+			{
+				var calendar = GetOrCreateGregorianCalendar();
+				calendar.SetToMin();
+				var minCalendarDate = calendar.GetDateTime();
+				calendar.SetToMax();
+				var maxCalendarDate = calendar.GetDateTime();
+
+				//Default value is today's date plus 100 Gregorian years.
+				calendar.SetToday();
+				calendar.AddYears(DEFAULT_MIN_MAX_DATE_YEAR_OFFSET);
+				calendar.Month = calendar.LastMonthInThisYear;
+				calendar.Day = calendar.LastDayInThisMonth;
+				var maxDate = calendar.GetDateTime();
+
+				value = ClampDate(maxDate, minCalendarDate, maxCalendarDate);
+				return true;
+			}
+
+			value = default;
+			return false;
 		}
 	}
 }

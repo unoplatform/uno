@@ -95,9 +95,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void DisablePresenterResizing()
 		{
-#if !DEBUG
-#error TODO ??
-#endif
 		}
 	}
 }

@@ -288,6 +288,9 @@ namespace Windows.Globalization
 		public void SetToNow()
 			=> _time = DateTime.Now;
 
+		internal void SetToday() // Useful helper not part of UWP contract
+			=> _time = DateTime.Today;
+
 		public void SetToMin()
 		{
 			var calendarMinSupportedDateTime = _calendar.MinSupportedDateTime;
