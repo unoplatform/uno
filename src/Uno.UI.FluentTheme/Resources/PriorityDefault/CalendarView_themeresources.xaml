@@ -242,8 +242,13 @@
                             </VisualStateGroup>
                             <VisualStateGroup x:Name="DisplayModeStates">
                                 <VisualState x:Name="Month" />
-                                <VisualState x:Name="Year">
-                                    <Storyboard>
+								<VisualState x:Name="Year">
+									<!--Begin: Uno only-->
+									<VisualState.Setters>
+										<Setter Target="YearViewScrollViewer.IsHitTestVisible" Value="True"></Setter>
+									</VisualState.Setters>
+									<!--End: Uno only-->
+									<Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MonthViewScrollViewer" Storyboard.TargetProperty="IsEnabled">
                                             <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="False" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -256,7 +261,12 @@
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Decade">
-                                    <Storyboard>
+									<!--Begin: Uno only-->
+									<VisualState.Setters>
+										<Setter Target="DecadeViewScrollViewer.IsHitTestVisible" Value="True"></Setter>
+									</VisualState.Setters>
+									<!--End: Uno only-->
+									<Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MonthViewScrollViewer" Storyboard.TargetProperty="IsEnabled">
                                             <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="False" />
                                         </ObjectAnimationUsingKeyFrames>

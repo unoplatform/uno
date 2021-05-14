@@ -35,6 +35,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			private int _generationEndIndex = -1;
 			private GenerationState _generationState;
 			private (int at, int count) _generationRecyclableBefore;
+			private (int at, int count) _generationUnusedInRange;
 			private (int at, int count) _generationRecyclableAfter;
 
 			internal CalendarViewGeneratorHost? Host
@@ -47,15 +48,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			internal int StartIndex { get; private set; } = -1;
+			internal int FirstIndex { get; private set; } = -1;
 
-			internal int EndIndex { get; private set; } = -1;
+			internal int LastIndex { get; private set; } = -1;
 
 			private bool IsInRange(int itemIndex)
-				=> itemIndex >= StartIndex && itemIndex <= EndIndex;
+				=> itemIndex >= FirstIndex && itemIndex <= LastIndex;
 
 			private int GetEntryIndex(int itemIndex)
-				=> itemIndex - StartIndex;
+				=> itemIndex - FirstIndex;
 
 			private enum GenerationState
 			{
@@ -70,12 +71,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					throw new InvalidOperationException("Host not set yet");
 				}
-				//Debug.Assert(_recyclableEntries is null);
 				Debug.Assert(_generationStartIndex == -1);
 				Debug.Assert(_generationCurrentIndex == -1);
 				Debug.Assert(_generationEndIndex == -1);
-
-				//_recyclableEntries = new Queue<CacheEntry>(_entries.Count);
 
 				_generationStartIndex = startIndex;
 				_generationCurrentIndex = startIndex;
@@ -83,8 +81,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_generationState = GenerationState.Before;
 
 				// Note: Start and End indexes are INCLUSIVE
-				startIndex = Math.Max(StartIndex, startIndex);
-				endIndex = Math.Min(EndIndex, endIndex);
+				startIndex = Math.Max(FirstIndex, startIndex);
+				endIndex = Math.Min(LastIndex, endIndex);
 
 				if (endIndex < 0)
 				{
@@ -94,7 +92,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				var startEntryIndex = Math.Min(GetEntryIndex(startIndex), _entries.Count);
 				var endEntryIndex = Math.Max(0, GetEntryIndex(endIndex) + 1);
 
+				// Since the _generationEndIndex is only an estimation, we might have some items that was not flagged as recyclable which are not going to be not used.
+				// The easiest solution is to track them using the _generationUnusedInRange.
+
 				_generationRecyclableBefore = (0, startEntryIndex);
+				_generationUnusedInRange = (startEntryIndex, endEntryIndex - startEntryIndex);
 				_generationRecyclableAfter = (endEntryIndex, Math.Max(0, _entries.Count - endEntryIndex));
 
 				Debug.Assert(
@@ -104,21 +106,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			internal IEnumerable<CacheEntry> CompleteGeneration(int endIndex)
 			{
-				//Debug.Assert(_recyclableEntries is { });
 				Debug.Assert(_generationCurrentIndex - 1 == endIndex); // endIndex is inclusive while _generationCurrentIndex is the next index to use
 
-				// Since the _generationEndIndex is only an estimation, we might have some items that was not flagged as recyclable which were not used.
-				var unexpectedUnusedEntries = (at: -1, count: Math.Max(0, _generationEndIndex - endIndex));
-				if (unexpectedUnusedEntries.count > 0)
-				{
-					// If actually all entries have been recycled, some entries might be part of the recyclable head.
-					unexpectedUnusedEntries.at = Math.Max(_generationRecyclableBefore.at + _generationRecyclableBefore.count, _generationRecyclableAfter.at - unexpectedUnusedEntries.count);
-					unexpectedUnusedEntries.count = Math.Min(unexpectedUnusedEntries.count, _entries.Count - unexpectedUnusedEntries.at);
-				}
-
 				var unusedEntriesCount = _generationRecyclableBefore.count
-					+ _generationRecyclableAfter.count
-					+ unexpectedUnusedEntries.count;
+					+ _generationUnusedInRange.count
+					+ _generationRecyclableAfter.count;
 
 				IEnumerable<CacheEntry> unusedEntries;
 				if (unusedEntriesCount > 0)
@@ -137,12 +129,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						removed += _generationRecyclableAfter.count;
 					}
 
-					if (unexpectedUnusedEntries.count > 0)
+					if (_generationUnusedInRange.count > 0)
 					{
-						_entries.CopyTo(unexpectedUnusedEntries.at, removedEntries, removed, unexpectedUnusedEntries.count);
-						_entries.RemoveRange(unexpectedUnusedEntries.at, unexpectedUnusedEntries.count); //TODO: Move to a second recycling stage instead of throwing them away.
+						_entries.CopyTo(_generationUnusedInRange.at, removedEntries, removed, _generationUnusedInRange.count);
+						_entries.RemoveRange(_generationUnusedInRange.at, _generationUnusedInRange.count); //TODO: Move to a second recycling stage instead of throwing them away.
 
-						removed += unexpectedUnusedEntries.count;
+						removed += _generationUnusedInRange.count;
 					}
 
 					if (_generationRecyclableBefore.count > 0)
@@ -159,19 +151,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 				else
 				{
-					Debug.Assert(unusedEntriesCount == 0);
-
 					unusedEntries = Enumerable.Empty<CacheEntry>();
 				}
 
 				_entries.Sort(CacheEntryComparer.Instance);
 
-				StartIndex = _entries[0].Index;
-				EndIndex = _entries[_entries.Count - 1].Index;
+				FirstIndex = _entries[0].Index;
+				LastIndex = _entries[_entries.Count - 1].Index;
 
-				Debug.Assert(_generationStartIndex == StartIndex);
-				Debug.Assert(endIndex == EndIndex);
-				Debug.Assert(StartIndex + _entries.Count - 1 == EndIndex);
+				Debug.Assert(_generationStartIndex == FirstIndex);
+				Debug.Assert(endIndex == LastIndex);
+				Debug.Assert(FirstIndex + _entries.Count - 1 == LastIndex);
 				Debug.Assert(_entries.Skip(1).Select((e, i) => _entries[i].Index + 1 == e.Index).AllTrue());
 
 				_generationStartIndex = -1;
@@ -192,8 +182,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				switch (_generationState)
 				{
-					case GenerationState.Before when index >= StartIndex:
-						if (index > EndIndex)
+					case GenerationState.Before when index >= FirstIndex:
+						if (index > LastIndex)
 						{
 							_generationState = GenerationState.After;
 							goto after;
@@ -203,7 +193,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							_generationState = GenerationState.InRange;
 							goto inRange;
 						}
-					case GenerationState.InRange when index > EndIndex
+					case GenerationState.InRange when index > LastIndex
 						|| GetEntryIndex(index) >= _generationRecyclableAfter.at + _generationRecyclableAfter.count: // Unfortunately we had already recycled that container, we need to create a new one!
 						_generationState = GenerationState.After;
 						goto after;
@@ -219,6 +209,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							// Finally a container which was eligible for recycling is still valid ... we saved it in extremis!
 							_generationRecyclableAfter.at++;
 							_generationRecyclableAfter.count--;
+						}
+						else
+						{
+							_generationUnusedInRange.at++;
+							_generationUnusedInRange.count--;
 						}
 
 						Debug.Assert(entry.Index == index);
@@ -282,11 +277,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			/// <inheritdoc />
 			public int IndexFromContainer(DependencyObject container)
-				=> container is UIElement elt ? _entries.Find(e => e.Container == elt)?.Index ?? default : default;
+				=> container is UIElement elt ? _entries.Find(e => e.Container == elt)?.Index ?? -1 : -1;
 
 			/// <inheritdoc />
 			public DependencyObject? ContainerFromIndex(int index)
-				=> IsInRange(index) ? _entries[GetEntryIndex(index)].Container : default;
+				=> index >= 0 && IsInRange(index) ? _entries[GetEntryIndex(index)].Container : default;
 		}
 
 		private class CacheEntry
@@ -333,10 +328,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		#region Private and internal API required by UWP code
-		internal int FirstVisibleIndexBase { get; private set; }
-		internal int LastVisibleIndexBase { get; private set; }
-		internal int FirstCacheIndexBase => _cache.StartIndex;
-		internal int LastCacheIndexBase => _cache.EndIndex;
+		internal int FirstVisibleIndexBase { get; private set; } = -1;
+		internal int LastVisibleIndexBase { get; private set; } = -1;
+		internal int FirstCacheIndexBase => _cache.FirstIndex;
+		internal int LastCacheIndexBase => _cache.LastIndex;
 
 		[NotImplemented]
 		internal PanelScrollingDirection PanningDirectionBase { get; } = PanelScrollingDirection.None;
@@ -370,10 +365,25 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			_layoutStrategy.EstimateElementBounds(ElementType.ItemContainer, index, default, default, default, out var bounds);
 
-			Owner?.ScrollViewer?.ChangeView(
-				horizontalOffset: null,
-				verticalOffset: bounds.Y + offset,
-				zoomFactor: null);
+			if (Owner?.ScrollViewer is { } sv)
+			{
+				var newOffset = bounds.Y + offset;
+
+				// When we navigate between decade/month/year views, the CalendarView_Partial_Interaction.FocusItem
+				// will set the date which will invoke this ScrollItemIntoView method,
+				// then it will request GetContainerFromIndex and tries to focus it.
+				// So here we prepare the _effectiveViewport (which will most probably be re-updated by the ChangeView below),
+				// and then force a base_Measure()
+				_effectiveViewport.Y += newOffset - sv.VerticalOffset;
+
+				sv.ChangeView(
+					horizontalOffset: null,
+					verticalOffset: newOffset,
+					zoomFactor: null);
+
+				// Makes sure the container of the requested date is materialized before the end of this method
+				base_MeasureOverride(_lastLayoutedViewport.Size);
+			}
 		}
 
 		private Size GetViewportSize()
@@ -526,8 +536,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					Children.Remove(unusedEntry.Container);
 				}
 
-				Debug.Assert(_cache.StartIndex <= FirstVisibleIndex);
-				Debug.Assert(_cache.EndIndex >= LastVisibleIndex);
+				Debug.Assert(_cache.FirstIndex <= FirstVisibleIndex || FirstVisibleIndex == -1);
+				Debug.Assert(_cache.LastIndex >= LastVisibleIndex || LastVisibleIndex == -1);
+				Debug.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
 
 				ShouldInterceptInvalidate = false;
 				_layoutStrategy.EndMeasure();
@@ -552,6 +563,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			var layout = new LayoutReference(); // Empty layout which will actually drive the ShouldContinueFillingUpSpace to always return true
 			var window = new Rect(default, finalSize);
+
+			Debug.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
 
 			foreach (var child in Children)
 			{
@@ -590,7 +603,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	internal class ContainerManager
 	{
 		// Required properties from WinUI code
-		public int StartOfContainerVisualSection() => _owner.FirstVisibleIndex;
+		public int StartOfContainerVisualSection() => Math.Max(0, _owner.FirstVisibleIndex);
 
 		public int TotalItemsCount => Host?.Count ?? 0;
 
