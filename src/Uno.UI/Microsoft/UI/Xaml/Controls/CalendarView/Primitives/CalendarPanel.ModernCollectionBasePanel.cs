@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return unusedEntries;
 			}
 
-			internal (UIElement container, bool isNew) GetOrCreate(int index)
+			internal (CacheEntry entry, CacheEntryKind kind) GetOrCreate(int index)
 			{
 				Debug.Assert(_host is { });
 				Debug.Assert(_generationStartIndex <= index);
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 						Debug.Assert(entry.Index == index);
 
-						return (entry.Container, false);
+						return (entry, CacheEntryKind.Kept);
 					}
 
 					case GenerationState.Before:
@@ -233,11 +233,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						var item = _host![index];
 
 						CacheEntry entry;
-						bool isNew;
+						CacheEntryKind kind;
 						if (_generationRecyclableBefore.count > 0)
 						{
 							entry = _entries[_generationRecyclableBefore.at];
-							isNew = false;
+							kind = CacheEntryKind.Recycled;
 
 							_generationRecyclableBefore.at++;
 							_generationRecyclableBefore.count--;
@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						else if (_generationRecyclableAfter.count > 0)
 						{
 							entry = _entries[_generationRecyclableAfter.at + _generationRecyclableAfter.count - 1];
-							isNew = false;
+							kind = CacheEntryKind.Recycled;
 
 							_generationRecyclableAfter.count--;
 
@@ -255,7 +255,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						{
 							var container = (UIElement)_host.GetContainerForItem(item, null);
 							entry = new CacheEntry(container);
-							isNew = true;
+							kind = CacheEntryKind.New;
 
 							_entries.Add(entry);
 						}
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 						_host.PrepareItemContainer(entry.Container, item);
 
-						return (entry.Container, isNew);
+						return (entry, kind);
 					}
 				}
 
@@ -309,6 +309,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public int Compare(CacheEntry x, CacheEntry y) => x.Index.CompareTo(y.Index);
 		}
 
+		private enum CacheEntryKind
+		{
+			New,
+			Kept,
+			Recycled
+		}
+
 		internal event VisibleIndicesUpdatedEventCallback VisibleIndicesUpdated;
 
 		private readonly ContainersCache _cache = new ContainersCache();
@@ -328,8 +335,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		#region Private and internal API required by UWP code
 		internal int FirstVisibleIndexBase { get; private set; }
 		internal int LastVisibleIndexBase { get; private set; }
-		internal int FirstCacheIndexBase { get; private set; }
-		internal int LastCacheIndexBase { get; private set; }
+		internal int FirstCacheIndexBase => _cache.StartIndex;
+		internal int LastCacheIndexBase => _cache.EndIndex;
 
 		[NotImplemented]
 		internal PanelScrollingDirection PanningDirectionBase { get; } = PanelScrollingDirection.None;
@@ -370,14 +377,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		private Size GetViewportSize()
-		{
-			return _lastLayoutedViewport.Size.AtLeast(_defaultHardCodedSize).FiniteOrDefault(_defaultHardCodedSize);
-		}
+			=> _lastLayoutedViewport.Size.AtLeast(_defaultHardCodedSize).FiniteOrDefault(_defaultHardCodedSize);
 
 		internal Size GetDesiredViewportSize()
-		{
-			return _layoutStrategy.GetDesiredViewportSize();
-		}
+			=> _layoutStrategy?.GetDesiredViewportSize() ?? default;
 
 		[NotImplemented]
 		internal void GetTargetIndexFromNavigationAction(
@@ -396,9 +399,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal IItemContainerMapping GetItemContainerMapping()
-		{
-			throw new NotImplementedException();
-		}
+			=> _cache;
 
 		private void SetLayoutStrategyBase(CalendarLayoutStrategy spLayoutStrategy)
 		{
@@ -463,10 +464,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						|| _layoutStrategy.ShouldContinueFillingUpSpace(ElementType.ItemContainer, index, layout, remainingWindowToFill))
 					)
 				{
-					var (container, isNew) = _cache.GetOrCreate(index);
-					if (isNew)
+					var (entry, kind) = _cache.GetOrCreate(index);
+					if (kind == CacheEntryKind.New)
 					{
-						Children.Add(container);
+						Children.Add(entry.Container);
 					}
 
 					var itemSize = _layoutStrategy.GetElementMeasureSize(ElementType.ItemContainer, index, renderWindow); // Note: It's actually the same for all items
@@ -480,8 +481,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						return default;
 					}
 
-					container.Measure(itemSize);
-					container.GetVirtualizationInformation().MeasureSize = itemSize;
+					entry.Container.Measure(itemSize);
+					entry.Container.GetVirtualizationInformation().MeasureSize = itemSize;
+					switch (kind)
+					{
+						case CacheEntryKind.New:
+							_host.SetupContainerContentChangingAfterPrepare(entry.Container, entry.Item, entry.Index, itemSize);
+							break;
+
+						case CacheEntryKind.Recycled:
+							// Note: ModernBasePanel seems to use only SetupContainerContentChangingAfterPrepare
+							_host.RaiseContainerContentChangingOnRecycle(entry.Container, entry.Item);
+							break;
+					}
 
 					var isVisible = viewport.Contains(itemBounds.Location);
 					if (firstVisibleIndex == -1 && isVisible)

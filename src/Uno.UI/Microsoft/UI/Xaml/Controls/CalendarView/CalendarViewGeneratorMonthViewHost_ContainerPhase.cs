@@ -1,3 +1,5 @@
+#nullable enable
+
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
@@ -18,9 +20,9 @@ namespace Windows.UI.Xaml.Controls
 		// the CalendarView version removes UIPlaceHolder and handles blackout state.
 		// Other logicals are still same as ListViewBase.
 
-		private void SetupContainerContentChangingAfterPrepare(
+		internal override void SetupContainerContentChangingAfterPrepare(
 			DependencyObject pContainer,
-			DependencyObject pItem,
+			object pItem,
 			int itemIndex,
 			Size measureSize)
 		{
@@ -47,6 +49,12 @@ namespace Windows.UI.Xaml.Controls
 
 				spArgs = (spContainer as CalendarViewDayItem).GetBuildTreeArgs();
 				spArgsConcrete = spArgs as CalendarViewDayItemChangingEventArgs;
+			}
+
+			// Uno only null-ref fix:
+			if (pVirtualizationInformation is null || spArgsConcrete is null)
+			{
+				return;
 			}
 
 			// store the size we would measure with
@@ -202,9 +210,9 @@ namespace Windows.UI.Xaml.Controls
 			return pWorkLeft;
 		}
 
-		private void RaiseContainerContentChangingOnRecycle(
+		internal override void RaiseContainerContentChangingOnRecycle(
 			UIElement pContainer,
-			DependencyObject pItem)
+			object pItem)
 		{
 			CalendarViewDayItemChangingEventArgs spArgs;
 			CalendarViewDayItemChangingEventArgs spArgsConcrete;

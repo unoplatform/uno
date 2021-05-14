@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// reset CIC event if the container is being cleared.
-		private void ClearContainerForItem(
+		internal override void ClearContainerForItem(
 			DependencyObject pContainer,
 			object pItem)
 		{

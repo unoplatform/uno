@@ -46,7 +46,10 @@ namespace DirectUI
 					return;
 				}
 
+				treeBuilder.IsRegisteredForCallbacks = false;
+
 				var workerHasWorkLeft = treeBuilder.BuildTree();
+
 				if (workerHasWorkLeft)
 				{
 					var workerReRegistered = treeBuilder.IsRegisteredForCallbacks;

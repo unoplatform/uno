@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarViewDayItemChangingEventArgs spArgs;
 
-				spArgs = default;
+				spArgs = new CalendarViewDayItemChangingEventArgs();
 				m_tpBuildTreeArgs = spArgs;
 				pspArgs = spArgs;
 			}

@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		internal void ClearContainerForItem(
+		internal virtual void ClearContainerForItem(
 			DependencyObject pContainer,
 			object pItem)
 		{
