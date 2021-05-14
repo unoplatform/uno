@@ -1617,7 +1617,7 @@ namespace Windows.UI.Xaml.Controls
 			index = pHost.CalculateOffsetFromMinDate(date);
 			Debug.Assert(index >= 0);
 			Debug.Assert(pHost.Panel is {});
-			pHost.Panel.ScrollItemintoView(
+			pHost.Panel.ScrollItemIntoView(
 				index,
 				ScrollIntoViewAlignment.Leading,
 				0.0 /* offset */,

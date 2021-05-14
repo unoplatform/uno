@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				if (unexpectedUnusedEntries.count > 0)
 				{
 					// If actually all entries have been recycled, some entries might be part of the recyclable head.
-					unexpectedUnusedEntries.at = Math.Max(_generationRecyclableBefore.at, _generationRecyclableAfter.at - unexpectedUnusedEntries.count);
+					unexpectedUnusedEntries.at = Math.Max(_generationRecyclableBefore.at + _generationRecyclableBefore.count, _generationRecyclableAfter.at - unexpectedUnusedEntries.count);
 					unexpectedUnusedEntries.count = Math.Min(unexpectedUnusedEntries.count, _entries.Count - unexpectedUnusedEntries.at);
 				}
 
@@ -354,14 +354,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal DependencyObject? ContainerFromIndex(int index)
 			=> _cache.ContainerFromIndex(index);
 
-		[NotImplemented]
-		internal void ScrollItemintoView(int index, ScrollIntoViewAlignment alignment, double offset, bool forceSynchronous)
-		{
-		}
-
-		[NotImplemented]
 		internal void ScrollItemIntoView(int index, ScrollIntoViewAlignment alignment, double offset, bool forceSynchronous)
 		{
+			if (_layoutStrategy is null)
+			{
+				return;
+			}
+
+			_layoutStrategy.EstimateElementBounds(ElementType.ItemContainer, index, default, default, default, out var bounds);
+
+			Owner?.ScrollViewer?.ChangeView(
+				horizontalOffset: null,
+				verticalOffset: bounds.Y + offset,
+				zoomFactor: null);
 		}
 
 		private Size GetViewportSize()
