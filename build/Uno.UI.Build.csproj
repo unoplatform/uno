@@ -154,7 +154,10 @@
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourcesGenerationTask.cs" />
 		</ItemGroup>
 
-		<FileUpdate Files="@(_Sha1Replace)" Regex="v0" ReplacementText="v$(GitVersion_Sha)" />
+    <WriteLinesToFile
+        File="%(_Sha1Replace)"
+        Lines="$([System.IO.File]::ReadAllText(%(_Sha1Replace)).Replace('v0','v$(GitVersion_Sha)'))"
+        Overwrite="true" />
 
 	</Target>
 
