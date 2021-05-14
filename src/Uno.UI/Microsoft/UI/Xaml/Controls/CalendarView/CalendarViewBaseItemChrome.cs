@@ -138,6 +138,12 @@ namespace Windows.UI.Xaml.Controls
 				InvalidateRender();
 			}
 
+			// Uno only
+			if (args.Property == Control.BackgroundProperty)
+			{
+				InvalidateRender();
+			}
+
 			base.OnPropertyChanged2(args);
 		}
 
@@ -227,6 +233,9 @@ namespace Windows.UI.Xaml.Controls
 			CSizeUtil.Deflate(ref availableSize, borderThickness);
 			CSizeUtil.Deflate(ref availableSize, padding);
 
+			// Uno workaround
+			Uno_MeasureChrome(availableSize);
+
 			if (m_pMainTextBlock is { })
 			{
 				m_pMainTextBlock.Measure(availableSize);
@@ -264,9 +273,7 @@ namespace Windows.UI.Xaml.Controls
 			Size newFinalSize = default;
 			Rect finalBounds = new Rect(0.0f, 0.0f, finalSize.Width, finalSize.Height);
 			Thickness borderThickness = GetItemBorderThickness();
-			// TODO UNO
-			//Thickness padding = GetPadding();
-			Thickness padding = default;
+			Thickness padding = Padding;
 
 			CSizeUtil.Deflate(ref finalBounds, borderThickness);
 			CSizeUtil.Deflate(ref finalBounds, padding);
@@ -283,6 +290,9 @@ namespace Windows.UI.Xaml.Controls
 				padding.Top = LayoutRound(padding.Top);
 				padding.Bottom = LayoutRound(padding.Bottom);
 			}
+
+			// Uno workaround
+			Uno_ArrangeChrome(finalBounds);
 
 			if (m_pMainTextBlock is { })
 			{
@@ -304,12 +314,6 @@ namespace Windows.UI.Xaml.Controls
 			newFinalSize = finalSize;
 
 			return newFinalSize;
-		}
-
-		/// <inheritdoc />
-		internal override void OnArrangeVisual(Rect rect, Rect? clip)
-		{
-			base.OnArrangeVisual(rect, clip);
 		}
 
 		private void CreateTextBlock(
@@ -997,6 +1001,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InvalidateRender()
 		{
+			Uno_InvalidateRender();
+
 			// TODO UNO
 			//NWSetContentDirty(this, DirtyFlags.Bounds);
 			//// if we have template child and density bars, we need to invalidate render on

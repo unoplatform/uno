@@ -1,4 +1,5 @@
 using System;
+using Windows.UI.Text;
 using DateTime = System.DateTimeOffset;
 
 namespace Windows.UI.Xaml.Controls
@@ -645,7 +646,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CalendarItemBorderThickness), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+			new FrameworkPropertyMetadata(Thickness.Empty));
 
 		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemForegroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -663,25 +664,25 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DayItemFontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
+			new FrameworkPropertyMetadata((global::Windows.UI.Xaml.Media.FontFamily)"XamlAutoFontFamily"));
 
 		public static global::Windows.UI.Xaml.DependencyProperty DayItemFontSizeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DayItemFontSize), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(20.0));
 
 		public static global::Windows.UI.Xaml.DependencyProperty DayItemFontStyleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DayItemFontStyle), typeof(global::Windows.UI.Text.FontStyle), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
+			new FrameworkPropertyMetadata(FontStyle.Normal));
 
 		public static global::Windows.UI.Xaml.DependencyProperty DayItemFontWeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DayItemFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
+			new FrameworkPropertyMetadata(FontWeights.Normal));
 
 		public static global::Windows.UI.Xaml.DependencyProperty DayOfWeekFormatProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -705,49 +706,49 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstOfMonthLabelFontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
+			new FrameworkPropertyMetadata((global::Windows.UI.Xaml.Media.FontFamily)"XamlAutoFontFamily"));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontSizeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstOfMonthLabelFontSize), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(12.0));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontStyleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstOfMonthLabelFontStyle), typeof(global::Windows.UI.Text.FontStyle), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
+			new FrameworkPropertyMetadata(FontStyle.Normal));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontWeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstOfMonthLabelFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
+			new FrameworkPropertyMetadata(FontWeights.Normal));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelFontFamilyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstOfYearDecadeLabelFontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
+			new FrameworkPropertyMetadata((global::Windows.UI.Xaml.Media.FontFamily)"XamlAutoFontFamily"));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelFontSizeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstOfYearDecadeLabelFontSize), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(12.0));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelFontStyleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstOfYearDecadeLabelFontStyle), typeof(global::Windows.UI.Text.FontStyle), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
+			new FrameworkPropertyMetadata(FontStyle.Normal));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelFontWeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstOfYearDecadeLabelFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
+			new FrameworkPropertyMetadata(FontWeights.Normal));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FocusBorderBrushProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -759,13 +760,13 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalDayItemAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
+			new FrameworkPropertyMetadata(HorizontalAlignment.Center));
 
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalFirstOfMonthLabelAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalFirstOfMonthLabelAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
+			new FrameworkPropertyMetadata(HorizontalAlignment.Center));
 
 		public static global::Windows.UI.Xaml.DependencyProperty HoverBorderBrushProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -833,25 +834,25 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MonthYearItemFontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
+			new FrameworkPropertyMetadata((global::Windows.UI.Xaml.Media.FontFamily)"XamlAutoFontFamily"));
 
 		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemFontSizeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MonthYearItemFontSize), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(20.0));
 
 		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemFontStyleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MonthYearItemFontStyle), typeof(global::Windows.UI.Text.FontStyle), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
+			new FrameworkPropertyMetadata(FontStyle.Normal));
 
 		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemFontWeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MonthYearItemFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
+			new FrameworkPropertyMetadata(FontWeights.Normal));
 
 		public static global::Windows.UI.Xaml.DependencyProperty NumberOfWeeksInViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -929,7 +930,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TodayFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
+			new FrameworkPropertyMetadata(FontWeights.SemiBold));
 
 		public static global::Windows.UI.Xaml.DependencyProperty TodayForegroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -941,13 +942,13 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalDayItemAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
+			new FrameworkPropertyMetadata(VerticalAlignment.Center));
 
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalFirstOfMonthLabelAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalFirstOfMonthLabelAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
+			new FrameworkPropertyMetadata(VerticalAlignment.Top));
 
 	}
 }

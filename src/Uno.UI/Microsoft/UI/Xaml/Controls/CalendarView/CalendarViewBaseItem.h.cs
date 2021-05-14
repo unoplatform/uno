@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml.Controls
 			m_monthForDebug = 0;
 			m_dayForDebug = 0;
 #endif
+			// Uno only
+			Initialize_CalendarViewBaseItemChrome();
 		}
 
 		

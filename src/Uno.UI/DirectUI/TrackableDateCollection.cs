@@ -37,15 +37,15 @@ namespace DirectUI
 		{
 
 #if DEBUG
-			{
-				// currently there is no case could cause addedDates and removedDates overlap.
-				// just for sure to double check
+			//{
+			//	// currently there is no case could cause addedDates and removedDates overlap.
+			//	// just for sure to double check
 
-				foreach (var it in m_addedDates)
-				{
-					global::System.Diagnostics.Debug.Assert(!m_removedDates.Any(d => m_lessThanComparer(it, d))); // TODO UNO d, it ?
-				}
-			}
+			//	foreach (var it in m_addedDates)
+			//	{
+			//		global::System.Diagnostics.Debug.Assert(!m_removedDates.Any(d => m_lessThanComparer(it, d))); // TODO UNO d, it ?
+			//	}
+			//}
 #endif
 			foreach (var date in m_addedDates)
 			{
