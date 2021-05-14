@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private void ClearContainerForItem(
+		internal void ClearContainerForItem(
 			DependencyObject pContainer,
 			object pItem)
 		{
@@ -212,7 +212,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new NotImplementedException();
 		}
 
-		private bool CanRecycleContainer(
+		internal bool CanRecycleContainer(
 			DependencyObject pContainer)
 		{
 			var pCanRecycleContainer = true;
@@ -602,7 +602,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void AdjustToFirstUnitInThisScope(out DateTime pDate)
 		{
 			int _ = 0;
-			AdjustToLastUnitInThisScope(out pDate, ref _);
+			AdjustToFirstUnitInThisScope(out pDate, ref _);
 		}
 
 		private void AdjustToFirstUnitInThisScope(out DateTime pDate, ref int pUnit /* = null */)
@@ -649,7 +649,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//if (pUnit)
 			//{
-			//	pUnit = lastUnit;
+				pUnit = lastUnit;
 			//}
 		}
 

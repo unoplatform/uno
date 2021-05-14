@@ -103,7 +103,10 @@ namespace DirectUI
 
 			global::System.Diagnostics.Debug.Assert(m_spCalendar is {});
 
-			long delta = lhs.ToUniversalTime().Ticks - rhs.ToUniversalTime().Ticks;
+			lhs = lhs.ToUniversalTime(); // UNO
+			rhs = rhs.ToUniversalTime(); // UNO
+
+			long delta = lhs.Ticks - rhs.Ticks;
 			if (delta < 0)
 			{
 				delta = -delta;

@@ -19,6 +19,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			// Initalize the base class first.
 			// base.Initialize();
+			base_Initialize();
 
 			spCalendarLayoutStrategy = new CalendarLayoutStrategy();
 			SetLayoutStrategyBase(spCalendarLayoutStrategy);
@@ -374,7 +375,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				Size ignored = default;
 				// no children yet, call base.MeasureOverride to generate at least one anchor item
-				ignored = base.MeasureOverride(availableSize);
+				ignored = base_MeasureOverride(availableSize);
 
 				spChildAsIDO = ContainerFromIndex(ContainerManager.StartOfContainerVisualSection());
 				Debug.Assert(spChildAsIDO is {});

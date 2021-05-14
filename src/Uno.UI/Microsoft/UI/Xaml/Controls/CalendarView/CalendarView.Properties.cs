@@ -777,19 +777,19 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsGroupLabelVisible), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(false));
 
 		public static global::Windows.UI.Xaml.DependencyProperty IsOutOfScopeEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsOutOfScopeEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(true));
 
 		public static global::Windows.UI.Xaml.DependencyProperty IsTodayHighlightedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTodayHighlighted), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(true));
 
 		public static global::Windows.UI.Xaml.DependencyProperty MaxDateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

@@ -52,6 +52,24 @@ namespace Windows.UI.Xaml.Controls
 			return rect;
 		}
 
+		internal Rect GetElementArrangeBounds(
+			ElementType elementType,
+			int elementIndex,
+			Rect containerBounds,
+			Rect windowConstraint,
+			Size finalSize)
+		{
+			GetElementArrangeBoundsImpl(
+				elementType,
+				elementIndex,
+				containerBounds,
+				windowConstraint,
+				finalSize,
+				out var pReturnValue);
+
+			return pReturnValue;
+		}
+
 		internal bool ShouldContinueFillingUpSpace(
 			ElementType elementType,
 			int elementIndex,
