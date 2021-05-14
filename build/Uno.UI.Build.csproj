@@ -155,8 +155,8 @@
 		</ItemGroup>
 
     <WriteLinesToFile
-        File="%(_Sha1Replace)"
-        Lines="$([System.IO.File]::ReadAllText(%(_Sha1Replace)).Replace('v0','v$(GitVersion_Sha)'))"
+        File="%(_Sha1Replace.Identity)"
+        Lines="$([System.IO.File]::ReadAllText(%(_Sha1Replace.Identity)).Replace('v0','v$(GitVersion_Sha)'))"
         Overwrite="true" />
 
 	</Target>
