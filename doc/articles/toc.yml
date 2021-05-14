@@ -18,6 +18,8 @@
       href: get-started-with-linux.md
     - name: Additional instructions for WinUI 3
       href: get-started-winui3.md
+    - name: Using uno-check
+      href: uno-check.md
     - name: Creating an app - Tutorial
       topicHref: getting-started-tutorial-1.md
       items:
