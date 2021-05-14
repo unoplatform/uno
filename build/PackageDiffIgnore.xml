@@ -3662,7 +3662,7 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>
-	<IgnoreSet baseVersion="3.7.3">
+	<IgnoreSet baseVersion="3.7.4">
 		<Types>
 			<Member
 				fullName="Windows.UI.Xaml.UIElementExtensions"
