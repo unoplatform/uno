@@ -16,10 +16,10 @@ namespace DirectUI
 		private BudgetManager _budgetManager;
 
 		public static DXamlCore GetCurrent()
-			=> _current ?? new DXamlCore();
+			=> _current ??= new DXamlCore();
 
 		public static DXamlCore GetCurrentNoCreate()
-			=> _current ?? new DXamlCore();
+			=> _current ??= new DXamlCore();
 
 		public string GetLocalizedResourceString(string key)
 		{

@@ -1,9 +1,10 @@
-﻿using Windows.Devices.Input;
+﻿using Uno;
 
 namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
+		[NotImplemented]
 		internal GestureModes GestureFollowing
 		{
 			get
