@@ -22,6 +22,8 @@ using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
+using Uno.UI.Xaml;
+using Uno.UI.Runtime.Skia.Wpf;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -43,6 +45,7 @@ namespace Uno.UI.Skia.Platform
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfHost), new WpfFrameworkPropertyMetadata(typeof(WpfHost)));
 
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
+			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(IApplicationExtension), o => new WpfApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));

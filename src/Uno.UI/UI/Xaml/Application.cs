@@ -11,6 +11,7 @@ using Windows.ApplicationModel;
 using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
 using Uno.Extensions;
+using Microsoft.Extensions.Logging;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -182,11 +183,14 @@ namespace Windows.UI.Xaml
 			UISettings.OnColorValuesChanged();
 		}
 
-#if !__ANDROID__ && !__MACOS__
+#if !__ANDROID__ && !__MACOS__ && !__SKIA__
 		[NotImplemented]
 		public void Exit()
 		{
-
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("This platform does not support application exit.");
+			}
 		}
 #endif
 
