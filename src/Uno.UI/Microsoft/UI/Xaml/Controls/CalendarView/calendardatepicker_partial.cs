@@ -102,12 +102,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (args.Property == CalendarDatePicker.DateProperty)
 			{
-				DateTime spNewDateReference;
-				DateTime spOldDateReference;
+				DateTime? spNewDateReference;
+				DateTime? spOldDateReference;
 				//CValueBoxer.UnboxValue<DateTime>(args.OldValue, spOldDateReference);
 				//CValueBoxer.UnboxValue<DateTime>(args.NewValue, spNewDateReference);
-				spOldDateReference = (DateTime)args.OldValue;
-				spNewDateReference = (DateTime)args.NewValue;
+				spOldDateReference = (DateTime?)args.OldValue;
+				spNewDateReference = (DateTime?)args.NewValue;
 				OnDateChanged(spOldDateReference, spNewDateReference);
 			}
 			else if (args.Property == FrameworkElement.LanguageProperty ||
@@ -306,7 +306,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!m_isSelectedDatesChangingInternally)
 			{
 				CalendarViewSelectionMode mode = CalendarViewSelectionMode.None;
-				m_tpCalendarView.SelectionMode = mode;
+				mode = m_tpCalendarView.SelectionMode;
 
 				// We only care about single selection mode.
 				// In case the calendarview's selection mode is set to multiple by developer,
@@ -361,7 +361,7 @@ namespace Windows.UI.Xaml.Controls
 				minDate = MinDate;
 				maxDate = MaxDate;
 				//coercedDate.UniversalTime = Math.Min(maxDate.UniversalTime, Math.Max(minDate.UniversalTime, date.UniversalTime));
-				coercedDate = new DateTime(Math.Min(maxDate.UtcTicks, Math.Min(minDate.UtcTicks, date.UtcTicks)), TimeSpan.Zero);
+				coercedDate = new DateTime(Math.Min(maxDate.UtcTicks, Math.Max(minDate.UtcTicks, date.UtcTicks)), TimeSpan.Zero);
 
 				// if Date is not in the range of min/max date, we'll coerce it and trigger DateChanged again.
 				//if (coercedDate.UniversalTime != date.UniversalTime)

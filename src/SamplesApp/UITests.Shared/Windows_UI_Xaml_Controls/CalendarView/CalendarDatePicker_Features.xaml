@@ -92,7 +92,6 @@
 				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid}"
 				Header="IsGroupLabelVisible=False"
 				PlaceholderText="--PLACEHOLDER--"
-				IsCalendarOpen="True"
 				IsGroupLabelVisible="False"
 				DayOfWeekFormat="{Binding SelectedItem.Content, ElementName=dowf}"
 				FirstDayOfWeek="{Binding SelectedItem.Content, ElementName=dow}"
