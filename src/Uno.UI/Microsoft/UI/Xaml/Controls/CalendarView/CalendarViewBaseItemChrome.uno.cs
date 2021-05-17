@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			var borderThickness = GetItemBorderThickness();
 			var borderBrush = GetItemBorderBrush(forFocus: false);
 
-			_borderRenderer.UpdateLayer(this, background, borderThickness, borderBrush, CornerRadius.None, null);
+			_borderRenderer.UpdateLayer(this, background, borderThickness, borderBrush, CornerRadius.None, default);
 		}
 	}
 }
