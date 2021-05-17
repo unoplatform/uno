@@ -778,6 +778,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnValueChanged(double oldValue, double newValue)
 		{
 			UpdateTrackLayout();
+			base.OnValueChanged(oldValue, newValue);
 		}
 
 		// Called when the Minimum value changed.
