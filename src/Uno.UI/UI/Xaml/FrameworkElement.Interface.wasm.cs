@@ -207,38 +207,6 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
-		#region IsEnabled DependencyProperty
-
-		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
-
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
-
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
-
-		protected virtual void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
-		{
-			OnIsEnabledChanged((bool)args.OldValue, (bool)args.NewValue);
-			IsEnabledChanged?.Invoke(this, args);
-		}
-
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-			UpdateHitTest();
-
-			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-			{
-				UpdateDOMProperties();
-			}
-		}
-
-		#endregion
-
 		public int? RenderPhase
 		{
 			get => throw new NotImplementedException();

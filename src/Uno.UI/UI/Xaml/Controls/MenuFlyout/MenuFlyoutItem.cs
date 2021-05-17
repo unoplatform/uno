@@ -417,11 +417,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Called when the IsEnabled property changes.
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			bool bIsEnabled = IsEnabled;
-
-			if (!bIsEnabled)
+			if (!e.NewValue)
 			{
 				ClearStateFlags();
 			}

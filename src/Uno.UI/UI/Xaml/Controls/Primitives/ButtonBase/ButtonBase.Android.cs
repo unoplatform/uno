@@ -19,6 +19,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			// need the Tapped event to be registered for "Click" to work properly
 			Tapped += (snd, evt) => { };
+			Clickable = true;
 		}
 
 		private protected override void OnLoaded()
@@ -39,9 +40,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_isEnabledSubscription.Disposable = null;
 		}
 
-		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			Clickable = newValue;
+			Clickable = e.NewValue;
 		}
 
 		partial void RegisterEvents()

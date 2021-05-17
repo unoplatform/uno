@@ -266,18 +266,24 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual bool IsEnabled
 		{
-            get => GetIsEnabledValue();
-            set => SetIsEnabledValue(value);
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
 		}
 
+#if <#= mixin.IsFrameworkElement #>
+		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
+#endif
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
-			OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
-			IsEnabledChanged?.Invoke(this, e);
-		}
+#if <#= mixin.IsFrameworkElement #>
+			// Calling the internal override (WinUI compatibility) -- Defined in FrameworkElement.cs
+			// Note: only available for controls inheriting from FrameworkElement
+			_isEnabledChangedEventArgs.SourceEvent = e;
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+#endif
 
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
+			var newValue = (bool)e.NewValue;
+
 #if <#= mixin.IsUnoMotionTarget #>
 			base.SetNativeIsEnabled(newValue);
 #endif
@@ -289,7 +295,8 @@ namespace <#= mixin.NamespaceName #>
 #endif
 
 			OnIsEnabledChangedCore();
-			
+
+			IsEnabledChanged?.Invoke(this, e);
 		}
 
 		#endregion
@@ -499,8 +506,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual string Name
 		{
-            get => GetNameValue();
-            set => SetNameValue(value);
+			get => GetNameValue();
+			set => SetNameValue(value);
 		}
 		#endregion
 
@@ -510,8 +517,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual Thickness Margin
 		{
-            get => GetMarginValue();
-            set => SetMarginValue(value);
+			get => GetMarginValue();
+			set => SetMarginValue(value);
 		}
 		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
@@ -522,8 +529,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public HorizontalAlignment HorizontalAlignment
 		{
-            get => GetHorizontalAlignmentValue();
-            set => SetHorizontalAlignmentValue(value);
+			get => GetHorizontalAlignmentValue();
+			set => SetHorizontalAlignmentValue(value);
 		}
 		#endregion
 
@@ -533,8 +540,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public VerticalAlignment VerticalAlignment
 		{
-            get => GetVerticalAlignmentValue();
-            set => SetVerticalAlignmentValue(value);
+			get => GetVerticalAlignmentValue();
+			set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
 
@@ -544,8 +551,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewWidthHeight #> double Width
 		{
-            get => GetWidthValue();
-            set => SetWidthValue(value);
+			get => GetWidthValue();
+			set => SetWidthValue(value);
 		}
 		#endregion
 
@@ -555,8 +562,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewWidthHeight #> double Height
 		{
-            get => GetHeightValue();
-            set => SetHeightValue(value);
+			get => GetHeightValue();
+			set => SetHeightValue(value);
 		}
 		#endregion
 
@@ -566,8 +573,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewMinWidthHeight #> double MinWidth
 		{
-            get => GetMinWidthValue();
-            set => SetMinWidthValue(value);
+			get => GetMinWidthValue();
+			set => SetMinWidthValue(value);
 		}
 		#endregion
 
@@ -577,8 +584,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewMinWidthHeight #> double MinHeight
 		{
-            get => GetMinHeightValue();
-            set => SetMinHeightValue(value);
+			get => GetMinHeightValue();
+			set => SetMinHeightValue(value);
 		}
 		#endregion
 
@@ -588,8 +595,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewMaxWidthHeight #> double MaxWidth
 		{
-            get => GetMaxWidthValue();
-            set => SetMaxWidthValue(value);
+			get => GetMaxWidthValue();
+			set => SetMaxWidthValue(value);
 		}
 		#endregion
 
@@ -599,8 +606,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewMaxWidthHeight #> double MaxHeight
 		{
-            get => GetMaxHeightValue();
-            set => SetMaxHeightValue(value);
+			get => GetMaxHeightValue();
+			set => SetMaxHeightValue(value);
 		}
 		#endregion
 		

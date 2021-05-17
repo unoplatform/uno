@@ -64,7 +64,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void InitializeProperties()
 		{
-			OnIsEnabledChanged(false, IsEnabled);
 			PartialInitializeProperties();
 		}
 
@@ -178,14 +177,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return baseValue;
 		}
-
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-			base.OnIsEnabledChanged(oldValue, newValue);
-			OnIsEnabledChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue);
 
 		public override View ContentTemplateRoot
 		{

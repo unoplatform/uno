@@ -576,33 +576,54 @@ namespace <#= mixin.NamespaceName #>
 
 		#region IsEnabled Dependency Property
 
+		// public bool IsEnabled
+		// {
+		// 	get { return (bool)this.GetValue(IsEnabledProperty); }
+		// 	set { this.SetValue(IsEnabledProperty, value); }
+		// }
+
+		[GeneratedDependencyProperty(
+			DefaultValue = true,
+			Options = FrameworkPropertyMetadataOptions.Inherits,
+			ChangedCallback = true
+#if <#= mixin.IsFrameworkElement #>
+			, CoerceCallback = true
+#endif
+		)]
+				public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
+
 		public bool IsEnabled
 		{
-			get { return (bool)this.GetValue(IsEnabledProperty); }
-			set { this.SetValue(IsEnabledProperty, value); }
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
 		}
 
-		public static DependencyProperty IsEnabledProperty { get ; } =
-			DependencyProperty.Register(
-				"IsEnabled",
-				typeof(bool),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					true,
-					FrameworkPropertyMetadataOptions.Inherits,
-					(s, e) => {
-						((<#= mixin.ClassName #>)s).OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
-						((<#= mixin.ClassName #>)s).IsEnabledChanged?.Invoke(s, e);
-					}
-				)
-			);
+		//public static DependencyProperty IsEnabledProperty { get ; } =
+		//	DependencyProperty.Register(
+		//		"IsEnabled",
+		//		typeof(bool),
+		//		typeof(<#= mixin.ClassName #>),
+		//		new FrameworkPropertyMetadata(
+		//			true,
+		//			FrameworkPropertyMetadataOptions.Inherits,
+		//			(s, e) => {
+		//				((<#= mixin.ClassName #>)s).OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
+		//				((<#= mixin.ClassName #>)s).IsEnabledChanged?.Invoke(s, e);
+		//			}
+		//		)
+		//	);
 
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
-			// TODO UserInteractionEnabled = newValue;
-		}
+			// Calling the internal override (WinUI compatibility) -- See FrameworkElement.cs
+			_isEnabledChangedEventArgs.SourceEvent = e;
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
 
-		partial void OnIsEnabledChangedPartial();
+			var newValue = (bool)e.NewValue;
+			UserInteractionEnabled = newValue;
+
+			IsEnabledChanged?.Invoke(this, e);
+		}
 
 		#endregion
 

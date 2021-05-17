@@ -11,16 +11,6 @@ using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
-	internal partial class IsEnabledChangedEventArgs
-	{
-		public IsEnabledChangedEventArgs()
-		{
-		}
-
-		public bool OldValue { get; set; }
-
-		public bool NewValue { get; set; }
-	}
 
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
@@ -70,44 +60,6 @@ namespace Windows.UI.Xaml
 		{
 			return finalSize;
 		}
-
-
-		#region IsEnabled DependencyProperty
-
-		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
-
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
-
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
-
-		protected virtual void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
-		{
-			UpdateHitTest();
-
-			_isEnabledChangedEventArgs.OldValue = (bool)args.OldValue;
-			_isEnabledChangedEventArgs.NewValue = (bool)args.NewValue;
-			OnIsEnabledChanged(_isEnabledChangedEventArgs);
-
-			OnIsEnabledChanged((bool)args.OldValue, (bool)args.NewValue);
-			IsEnabledChanged?.Invoke(this, args);
-		}
-
-		// This is internal, so for perf consideration we reused the same instance of args every time.
-		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
-		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
-		{
-		}
-
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-		}
-
-		#endregion
 
 		public int? RenderPhase
 		{

@@ -73,23 +73,6 @@ namespace Windows.UI.Xaml
 			return finalSize;
 		}
 
-		#region IsEnabled DependencyProperty
-
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
-
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
-
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-		}
-
-		#endregion
-
 		public int? RenderPhase
 		{
 			get => throw new NotImplementedException();

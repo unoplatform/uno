@@ -295,9 +295,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(instance, args)");
 					}
-					else
+					else if(propertyChangedMethod?.Parameters.Length == 2)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(instance, ({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+					}
+					else
+					{
+						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: default // Method {changedCallbackName} can't be used as propertyChangedCallback here.");
 					}
 				}
 
@@ -400,9 +404,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(args)");
 					}
-					else
+					else if (propertyChangedMethod?.Parameters.Length == 2)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+					}
+					else
+					{
+						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: default // Method {changedCallbackName} can't be used as propertyChangedCallback here.");
 					}
 				}
 

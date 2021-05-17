@@ -88,7 +88,6 @@ namespace Windows.UI.Xaml.Controls
 			OnMaxLengthChanged(CreateInitialValueChangerEventArgs(MaxLengthProperty, null, MaxLength));
 			OnAcceptsReturnChanged(CreateInitialValueChangerEventArgs(AcceptsReturnProperty, null, AcceptsReturn));
 			OnIsReadonlyChanged(CreateInitialValueChangerEventArgs(IsReadOnlyProperty, null, IsReadOnly));
-			OnIsEnabledChanged(false, IsEnabled);
 			OnForegroundColorChanged(null, Foreground);
 			UpdateFontPartial();
 			OnHeaderChanged();

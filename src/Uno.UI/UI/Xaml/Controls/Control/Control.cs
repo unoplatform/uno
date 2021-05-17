@@ -742,9 +742,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(oldValue, newValue);
+			base.OnIsEnabledChanged(e);
 			OnIsFocusableChanged();
 		}
 
