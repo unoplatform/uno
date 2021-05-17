@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 
 				{
 					int MaxNumberOfMonthsToBeChecked = 3;
-					DateTime longestMonth;
+					DateTime longestMonth = default;
 					int lengthOfLongestMonth = 0;
 					int numberOfDays = 0;
 					int day = 0;

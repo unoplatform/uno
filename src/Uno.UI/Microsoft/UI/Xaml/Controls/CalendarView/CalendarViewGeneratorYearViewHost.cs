@@ -202,7 +202,7 @@ namespace Windows.UI.Xaml.Controls
 				// UmAlQuraCalendar, maxLength = 12 @ index 0
 				{
 					int MaxNumberOfYearsToBeChecked = 3;
-					DateTime longestYear;
+					DateTime longestYear = default;
 					int lengthOfLongestYear = 0;
 					int numberOfMonths = 0;
 					int month = 0;
