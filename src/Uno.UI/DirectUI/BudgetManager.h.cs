@@ -4,9 +4,6 @@
 //  Abstract:
 //      Represents budgetmanager to keep the uitick times
 
-#pragma once
-
-
 namespace DirectUI
 {
 	internal partial class BudgetManager
@@ -14,9 +11,9 @@ namespace DirectUI
 		// The default elapsed time before deferring
 		private const int BUDGET_MANAGER_DEFAULT_LIMIT = 40;
 
-		long m_freq;
-		long m_startFrameTime;
-		long m_endFrameTime;
+		//long m_freq;
+		//long m_startFrameTime;
+		//long m_endFrameTime;
 	}
 }
 

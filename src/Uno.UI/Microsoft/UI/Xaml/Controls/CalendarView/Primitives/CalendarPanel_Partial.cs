@@ -83,10 +83,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// if not we need to change the items size and remeasure the panel.
 				viewportSize = GetViewportSize();
 
-				Debug.Assert(viewportSize.Height != 0.0 && viewportSize.Width != 0.0);
+				global::System.Diagnostics.Debug.Assert(viewportSize.Height != 0.0 && viewportSize.Width != 0.0);
 
 				// and the size of biggest item has been determined if the Panel is not Secondary Panel.
-				Debug.Assert(m_type == CalendarPanelType.Secondary ||
+				global::System.Diagnostics.Debug.Assert(m_type == CalendarPanelType.Secondary ||
 					(m_isBiggestItemSizeDetermined && m_biggestItemSize.Width != 0.0 && m_biggestItemSize.Height != 0.0));
 
 				if (m_type == CalendarPanelType.Secondary_SelfAdaptive)
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					rows = (int)args.NewValue;
 					spCalendarLayoutStrategy = LayoutStrategy;
-					Debug.Assert(rows > 0); // guaranteed to be positive number
+					global::System.Diagnostics.Debug.Assert(rows > 0); // guaranteed to be positive number
 					((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetRows(rows);
 					OnRowsOrColsChanged(Orientation.Vertical);
 				}
@@ -174,7 +174,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					cols = (int)args.NewValue;
 					spCalendarLayoutStrategy = LayoutStrategy;
-					Debug.Assert(cols > 0); // guaranteed to be positive number
+					global::System.Diagnostics.Debug.Assert(cols > 0); // guaranteed to be positive number
 					((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetCols(cols);
 					OnRowsOrColsChanged(Orientation.Horizontal);
 				}
@@ -194,7 +194,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					startIndex = (int)args.NewValue;
 
-					Debug.Assert(startIndex >= 0);
+					global::System.Diagnostics.Debug.Assert(startIndex >= 0);
 
 					spCalendarLayoutStrategy = LayoutStrategy;
 					var table = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetIndexCorrectionTable();
@@ -235,32 +235,32 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Virtual helper method to the ItemsPerPage that can be overridden by derived classes.
-		protected /* override */ void ItemsPerPageImpl(
-			Rect window,
-			out double pItemsPerPage)
-		{
-			throw new NotImplementedException();
-		}
+		//protected /* override */ void ItemsPerPageImpl(
+		//	Rect window,
+		//	out double pItemsPerPage)
+		//{
+		//	throw new NotImplementedException();
+		//}
 
 		#region Special elements overrides
 
-		protected /* override */ void NeedsSpecialItem(out bool pResult) /*override*/
-		{
-			ILayoutStrategy spCalendarLayoutStrategy;
-			pResult = false;
+		//protected /* override */ void NeedsSpecialItem(out bool pResult) /*override*/
+		//{
+		//	ILayoutStrategy spCalendarLayoutStrategy;
+		//	pResult = false;
 
-			spCalendarLayoutStrategy = LayoutStrategy;
-			pResult = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).NeedsSpecialItem();
-		}
+		//	spCalendarLayoutStrategy = LayoutStrategy;
+		//	pResult = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).NeedsSpecialItem();
+		//}
 
-		protected /* override */ void SpecialItemIndex(out int pResult) /*override*/
-		{
-			ILayoutStrategy spCalendarLayoutStrategy;
-			pResult = -1;
+		//protected /* override */ void SpecialItemIndex(out int pResult) /*override*/
+		//{
+		//	ILayoutStrategy spCalendarLayoutStrategy;
+		//	pResult = -1;
 
-			spCalendarLayoutStrategy = LayoutStrategy;
-			pResult = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetSpecialItemIndex();
-		}
+		//	spCalendarLayoutStrategy = LayoutStrategy;
+		//	pResult = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetSpecialItemIndex();
+		//}
 
 		#endregion
 
@@ -378,7 +378,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				ignored = base_MeasureOverride(availableSize);
 
 				spChildAsIDO = ContainerFromIndex(ContainerManager.StartOfContainerVisualSection());
-				Debug.Assert(spChildAsIDO is {});
+				global::System.Diagnostics.Debug.Assert(spChildAsIDO is {});
 			}
 
 			// there is at least one item in Panel, and the item has entered visual tree
@@ -394,7 +394,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				List<string> pStrings = null;
 				pStrings = pOwner.GetPossibleItemStrings();
 
-				Debug.Assert(!pStrings.Empty());
+				global::System.Diagnostics.Debug.Assert(!pStrings.Empty());
 
 				// try all the possible string and find the biggest desired size.
 				foreach (var str in pStrings)
@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				var type = value;
 
-				Debug.Assert(type != CalendarPanelType.Invalid);
+				global::System.Diagnostics.Debug.Assert(type != CalendarPanelType.Invalid);
 
 				if (m_type != type)
 				{
@@ -429,7 +429,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					// we change the type from Secondary_SelfAdaptive to Secondary.
 					// the scenario is: by default YearPanel and DecadePanel are Secondary_SelfAdaptive, but once
 					// developer calls SetYearDecadeDisplayDimensions, we'll change the type to Secondary (and never change back).
-					Debug.Assert(m_type == CalendarPanelType.Invalid ||
+					global::System.Diagnostics.Debug.Assert(m_type == CalendarPanelType.Invalid ||
 						(m_type == CalendarPanelType.Secondary_SelfAdaptive &&
 							type == CalendarPanelType.Secondary));
 

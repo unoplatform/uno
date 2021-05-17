@@ -494,7 +494,7 @@ namespace Windows.UI.Xaml.Controls
 			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.MinDate));
 			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, firstDateOfNextScope));
 
-			Cleanup:
+			//Cleanup:
 			pFirstDateOfNextScope = firstDateOfNextScope;
 		}
 

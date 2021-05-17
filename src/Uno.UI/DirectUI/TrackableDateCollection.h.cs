@@ -6,9 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using DateTime = System.DateTimeOffset;
 
-#pragma once
-
-
 namespace DirectUI
 {
 	internal partial class TrackableDateCollection : ValueTypeObservableCollection<DateTime>

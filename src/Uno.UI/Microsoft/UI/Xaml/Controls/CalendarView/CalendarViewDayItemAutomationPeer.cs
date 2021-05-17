@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 				return ppReturnValue;
 			}
 
-			protected virtual AutomationControlType GetAutomationControlTypeCore()
+			protected override AutomationControlType GetAutomationControlTypeCore()
 			{
 				var pReturnValue = AutomationControlType.DataItem;
 

@@ -45,59 +45,65 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnSelectDayItem(CalendarViewDayItem pItem)
 		{
-			CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
-
-			global::System.Diagnostics.Debug.Assert(m_tpMonthViewItemHost.Panel is {});
-			selectionMode = SelectionMode;
-
-			if (selectionMode != CalendarViewSelectionMode.None)
+			try
 			{
-				bool isBlackout = false;
+				CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
 
-				isBlackout = pItem.IsBlackout;
-				if (!isBlackout) // can't select a blackout item.
+				global::System.Diagnostics.Debug.Assert(m_tpMonthViewItemHost.Panel is { });
+				selectionMode = SelectionMode;
+
+				if (selectionMode != CalendarViewSelectionMode.None)
 				{
-					uint size = 0;
-					DateTime date;
-					uint index = 0;
-					bool found = false;
+					bool isBlackout = false;
 
-					size = m_tpSelectedDates.Size;
-
-					m_isSelectedDatesChangingInternally = true;
-
-					global::System.Diagnostics.Debug.Assert(size <= 1 || selectionMode == CalendarViewSelectionMode.Multiple);
-
-					date = pItem.Date;
-
-					found = m_tpSelectedDates.IndexOf(date, out index);
-					if (found)
+					isBlackout = pItem.IsBlackout;
+					if (!isBlackout) // can't select a blackout item.
 					{
-						// when user deselect an item, we remove all equivalent dates from selectedDates.
-						// so the item will be unselected.
-						// (the opposite case is when developer removes a date from selectedDates,
-						// we only remove that date from selectedDates, so the corresponding item
-						// will be still selected until all equivalent dates are removed from selectedDates)
+						uint size = 0;
+						DateTime date;
+						uint index = 0;
+						bool found = false;
 
-						(m_tpSelectedDates as TrackableDateCollection).RemoveAll(date); // out index
-					}
-					else
-					{
-						if (selectionMode == CalendarViewSelectionMode.Single && size == 1)
+						size = m_tpSelectedDates.Size;
+
+						m_isSelectedDatesChangingInternally = true;
+
+						global::System.Diagnostics.Debug.Assert(size <= 1 ||
+						                                        selectionMode == CalendarViewSelectionMode.Multiple);
+
+						date = pItem.Date;
+
+						found = m_tpSelectedDates.IndexOf(date, out index);
+						if (found)
 						{
-							// there was one selected date, remove it.
-							m_tpSelectedDates.Clear();
+							// when user deselect an item, we remove all equivalent dates from selectedDates.
+							// so the item will be unselected.
+							// (the opposite case is when developer removes a date from selectedDates,
+							// we only remove that date from selectedDates, so the corresponding item
+							// will be still selected until all equivalent dates are removed from selectedDates)
+
+							(m_tpSelectedDates as TrackableDateCollection).RemoveAll(date); // out index
+						}
+						else
+						{
+							if (selectionMode == CalendarViewSelectionMode.Single && size == 1)
+							{
+								// there was one selected date, remove it.
+								m_tpSelectedDates.Clear();
+							}
+
+							m_tpSelectedDates.Append(date);
 						}
 
-						m_tpSelectedDates.Append(date);
+						RaiseSelectionChangedEventIfChanged();
 					}
-
-					RaiseSelectionChangedEventIfChanged();
 				}
 			}
-
-			Cleanup:
-			m_isSelectedDatesChangingInternally = false;
+			finally
+			{
+				//Cleanup:
+				m_isSelectedDatesChangingInternally = false;
+			}
 		}
 
 		// when we select a monthitem or yearitem, we changed to the corresponding view.

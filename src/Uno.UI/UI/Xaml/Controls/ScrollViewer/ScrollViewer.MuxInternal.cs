@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool IsInDirectManipulation { get; }
 		internal bool TemplatedParentHandlesScrolling { get; set; }
-		internal Func<AutomationPeer> AutomationPeerFactoryIndex { get; set; }
+		internal Func<AutomationPeer>? AutomationPeerFactoryIndex { get; set; }
 
 		internal void SetDirectManipulationStateChangeHandler(IDirectManipulationStateChangeHandler? handler)
 		{

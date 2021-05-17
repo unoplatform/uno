@@ -137,25 +137,25 @@ namespace DirectUI
 			return;
 		}
 
-		private void IndexOf(DateTime value, out uint index, out bool found)
-		{
-			index = 0;
-			found = false;
+		//private void IndexOf(DateTime value, out uint index, out bool found)
+		//{
+		//	index = 0;
+		//	found = false;
 
-			CheckThread();
+		//	CheckThread();
 
-			for (uint i = 0; i < m_vector.Count(); ++i)
-			{
-				if (m_areEquivalentComparer(m_vector[(int)i], value))
-				{
-					index = i;
-					found = true;
-					break;
-				}
-			}
+		//	for (uint i = 0; i < m_vector.Count(); ++i)
+		//	{
+		//		if (m_areEquivalentComparer(m_vector[(int)i], value))
+		//		{
+		//			index = i;
+		//			found = true;
+		//			break;
+		//		}
+		//	}
 
-			return;
-		}
+		//	return;
+		//}
 
 		internal void CountOf(DateTime value, out uint pCount)
 		{

@@ -12,14 +12,14 @@ namespace Windows.UI.Xaml.Controls
 		private bool m_inRecycleQueue;
 		private CalendarViewDayItem m_pItem;
 		private uint m_phase;
-		private bool m_wantsCallBack;
-		private TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> m_pCallback;
+		//private bool m_wantsCallBack;
+		//private TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> m_pCallback;
 
-		private UIElement m_pContainerBackPointer;
+		//private UIElement m_pContainerBackPointer;
 
 		internal CalendarViewDayItemChangingEventArgs()
 		{
-			m_pContainerBackPointer = null;
+			//m_pContainerBackPointer = null;
 		}
 
 		public bool InRecycleQueue

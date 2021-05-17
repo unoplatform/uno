@@ -3,9 +3,6 @@
 
 using DirectUI;
 
-#pragma once
-
-
 namespace Windows.UI.Xaml.Controls
 {
 	internal partial class CalendarViewGeneratorMonthViewHost : CalendarViewGeneratorHost

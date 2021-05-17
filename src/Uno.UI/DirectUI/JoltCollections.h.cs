@@ -10,7 +10,7 @@ using Windows.UI.Core;
 namespace DirectUI
 {
 
-#pragma region Iterator
+#region Iterator
 	// FUTURE: Could we just use the WRL implementations here?
 	internal abstract class IteratorBase<T> : IEnumerator<T>
 	{
@@ -1583,7 +1583,7 @@ namespace DirectUI
 	//	}
 
 	//}
-#pragma endregion
+#endregion
 
 	internal class TrackerCollection<T> : List<T>, IVector<T>
 	{

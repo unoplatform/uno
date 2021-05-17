@@ -3,9 +3,6 @@
 
 using System;
 
-#pragma once
-
-
 namespace Windows.UI.Xaml.Controls
 {
 	internal partial class CalendarViewGeneratorDecadeViewHost : CalendarViewGeneratorHost

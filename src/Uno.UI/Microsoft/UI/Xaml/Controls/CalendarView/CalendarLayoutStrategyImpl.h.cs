@@ -5,9 +5,6 @@ using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 
-#pragma once
-
-
 namespace Windows.UI.Xaml.Controls
 {
 

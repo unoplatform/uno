@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Globalization;
@@ -338,7 +337,7 @@ namespace Windows.UI.Xaml.Controls
 					isNewStretched = (VerticalAlignment)(args.NewValue) == VerticalAlignment.Stretch;
 					break;
 				default:
-					Debug.Assert(false);
+					global::System.Diagnostics.Debug.Assert(false);
 					break;
 			}
 
@@ -821,7 +820,7 @@ namespace Windows.UI.Xaml.Controls
 				m_tpDecadeViewScrollViewer = spDecadeViewScrollViewer;
 			}
 
-			Debug.Assert(!m_areDirectManipulationStateChangeHandlersHooked);
+			global::System.Diagnostics.Debug.Assert(!m_areDirectManipulationStateChangeHandlersHooked);
 
 			ForeachHost(pHost =>
 			{
@@ -897,11 +896,11 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnPrimaryPanelDesiredSizeChanged(CalendarViewGeneratorHost pHost)
 		{
 			// monthpanel is the only primary panel
-			Debug.Assert(pHost == m_tpMonthViewItemHost);
+			global::System.Diagnostics.Debug.Assert(pHost == m_tpMonthViewItemHost);
 
 			var pMonthViewPanel = pHost.Panel;
 
-			Debug.Assert(pMonthViewPanel is {});
+			global::System.Diagnostics.Debug.Assert(pMonthViewPanel is {});
 
 			Size desiredViewportSize = default;
 			desiredViewportSize = pMonthViewPanel.GetDesiredViewportSize();
@@ -1121,7 +1120,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RegisterItemHosts()
 		{
-			Debug.Assert(!m_itemHostsConnected);
+			global::System.Diagnostics.Debug.Assert(!m_itemHostsConnected);
 
 			m_itemHostsConnected = true;
 
@@ -1424,7 +1423,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				Debug.Assert(false, "header button should be disabled already in decade view mode.");
+				global::System.Diagnostics.Debug.Assert(false, "header button should be disabled already in decade view mode.");
 			}
 
 			}
@@ -1518,7 +1517,7 @@ namespace Windows.UI.Xaml.Controls
 							// targetDate should be still in valid range.
 							var temp = targetDate;
 							CoerceDate(temp);
-							Debug.Assert(temp.UniversalTime == targetDate.UniversalTime);
+							global::System.Diagnostics.Debug.Assert(temp.UniversalTime == targetDate.UniversalTime);
 						}
 
 #endif
@@ -1616,8 +1615,8 @@ namespace Windows.UI.Xaml.Controls
 			int index = 0;
 
 			index = pHost.CalculateOffsetFromMinDate(date);
-			Debug.Assert(index >= 0);
-			Debug.Assert(pHost.Panel is {});
+			global::System.Diagnostics.Debug.Assert(index >= 0);
+			global::System.Diagnostics.Debug.Assert(pHost.Panel is {});
 			pHost.Panel.ScrollItemIntoView(
 				index,
 				ScrollIntoViewAlignment.Leading,
@@ -1656,10 +1655,10 @@ namespace Windows.UI.Xaml.Controls
 
 				// 1. compute the target index.
 				index = pHost.CalculateOffsetFromMinDate(date);
-				Debug.Assert(index >= 0);
+				global::System.Diagnostics.Debug.Assert(index >= 0);
 
 				cols = pCalendarPanel.Cols;
-				Debug.Assert(cols > 0);
+				global::System.Diagnostics.Debug.Assert(cols > 0);
 
 				// cols should not be 0 at this point. If it is, perhaps
 				// the calendar view has not been fully brought up yet.
@@ -1672,7 +1671,7 @@ namespace Windows.UI.Xaml.Controls
 					spFirstVisibleItemAsI = pCalendarPanel.ContainerFromIndex(firstVisibleIndex);
 					spFirstVisibleItem = (CalendarViewBaseItem)spFirstVisibleItemAsI;
 
-					Debug.Assert(spFirstVisibleItem.GetVirtualizationInformation() is {});
+					global::System.Diagnostics.Debug.Assert(spFirstVisibleItem.GetVirtualizationInformation() is {});
 
 					// 3. based on the first visible item's bounds, compute the target item's offset
 					var bounds = spFirstVisibleItem.GetVirtualizationInformation().Bounds;
@@ -1704,7 +1703,7 @@ namespace Windows.UI.Xaml.Controls
 						spVerticalOffsetReference,
 						null /*zoomFactor*/,
 						false /*disableAnimation*/);
-					Debug.Assert(handled);
+					global::System.Diagnostics.Debug.Assert(handled);
 				}
 			}
 
@@ -1761,7 +1760,7 @@ namespace Windows.UI.Xaml.Controls
 			// m_dateSourceChanged being true means the current m_minDate or m_maxDate is
 			// out of dated.
 
-			Debug.Assert(!m_dateSourceChanged);
+			global::System.Diagnostics.Debug.Assert(!m_dateSourceChanged);
 			if (m_dateComparer.LessThan(date, m_minDate))
 			{
 				date = m_minDate;
@@ -1788,7 +1787,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var pCalendarPanel = pHost.Panel;
 
-			Debug.Assert(pCalendarPanel is {});
+			global::System.Diagnostics.Debug.Assert(pCalendarPanel is {});
 
 			// We explicitly call UpdateLayout in OnDisplayModeChanged, this will ocassionaly make CalendarPanelType invalid,
 			// which causes CalendarPanel to skip the row&col calculations.
@@ -1799,7 +1798,7 @@ namespace Windows.UI.Xaml.Controls
 				startIndex = pCalendarPanel.StartIndex;
 				numberOfItemsInCol = pCalendarPanel.Cols;
 
-				Debug.Assert(startIndex < numberOfItemsInCol);
+				global::System.Diagnostics.Debug.Assert(startIndex < numberOfItemsInCol);
 
 				firstVisibleIndex = pCalendarPanel.FirstVisibleIndexBase;
 				lastVisibleIndex = pCalendarPanel.LastVisibleIndexBase;
@@ -1856,7 +1855,7 @@ namespace Windows.UI.Xaml.Controls
 			bool ignoreInDirectManipulation)
 		{
 			var pCalendarPanel = pHost.Panel;
-			if (pCalendarPanel is null)
+			if (pCalendarPanel is null || pCalendarPanel.DesiredSize == default)
 			{
 				// it is possible that we change IsOutOfScopeEnabled property before CalendarView enters visual tree.
 				return;
@@ -2148,7 +2147,7 @@ error SetFocusedElement() incorrect here
 				firstVisibleIndex = pPreviousPanel.FirstVisibleIndexBase;
 				lastVisibleIndex = pPreviousPanel.LastVisibleIndexBase;
 
-				Debug.Assert(firstVisibleIndex != -1 && lastVisibleIndex != -1);
+				global::System.Diagnostics.Debug.Assert(firstVisibleIndex != -1 && lastVisibleIndex != -1);
 
 				spChildAsIDO = pPreviousPanel.ContainerFromIndex(firstVisibleIndex);
 				spChildAsI = spChildAsIDO as CalendarViewBaseItem;
@@ -2187,7 +2186,7 @@ error SetFocusedElement() incorrect here
 							// in this case firstVisibleDate must be in scope (i.e. it must be less than or equals to the maxDateOfCurrentScope).
 							int temp = 0;
 							temp = spPreviousHost.CompareDate(firstVisibleDate, spPreviousHost.GetMaxDateOfCurrentScope());
-							Debug.Assert(temp <= 0);
+							global::System.Diagnostics.Debug.Assert(temp <= 0);
 						}
 #endif
 						firstVisibleInscopeDate = firstVisibleDate;
@@ -2378,7 +2377,7 @@ error SetFocusedElement() incorrect here
 
 				m_monthViewStartIndex = (m_weekDayOfMinDate - firstDayOfWeek + s_numberOfDaysInWeek) % s_numberOfDaysInWeek;
 
-				Debug.Assert(m_monthViewStartIndex >= 0 && m_monthViewStartIndex < s_numberOfDaysInWeek);
+				global::System.Diagnostics.Debug.Assert(m_monthViewStartIndex >= 0 && m_monthViewStartIndex < s_numberOfDaysInWeek);
 
 				pMonthPanel.StartIndex = m_monthViewStartIndex;
 			}
@@ -2413,7 +2412,7 @@ error SetFocusedElement() incorrect here
 			}
 			else
 			{
-				Debug.Assert(false);
+				global::System.Diagnostics.Debug.Assert(false);
 				throw new InvalidOperationException();
 			}
 		}
@@ -2540,7 +2539,7 @@ error SetFocusedElement() incorrect here
 			int col = 0;
 			pCanPanelShowFullScope = false;
 
-			Debug.Assert(pCalendarPanel is {});
+			global::System.Diagnostics.Debug.Assert(pCalendarPanel is {});
 
 			row = pCalendarPanel.Rows;
 			col = pCalendarPanel.Cols;
@@ -2597,7 +2596,7 @@ error SetFocusedElement() incorrect here
 			CalendarViewBaseItem pItem,
 			Style pStyle)
 		{
-			Debug.Assert(pItem is CalendarViewDayItem);
+			global::System.Diagnostics.Debug.Assert(pItem is CalendarViewDayItem);
 			if (pStyle is { })
 			{
 				pItem.Style = pStyle;
@@ -2674,7 +2673,7 @@ error SetFocusedElement() incorrect here
 					}
 					else
 					{
-						Debug.Assert(mode == CalendarViewDisplayMode.Year);
+						global::System.Diagnostics.Debug.Assert(mode == CalendarViewDisplayMode.Year);
 						headerName = FormatYearName(itemDate);
 					}
 
@@ -2684,7 +2683,7 @@ error SetFocusedElement() incorrect here
 					m_currentHeaderPeer = peer;
 				}
 
-				Debug.Assert(m_currentHeaderPeer is { } || m_previousHeaderPeer is { });
+				global::System.Diagnostics.Debug.Assert(m_currentHeaderPeer is { } || m_previousHeaderPeer is { });
 
 				var peerToUse =
 					usePreviousHeaderPeer ? m_previousHeaderPeer : m_currentHeaderPeer;

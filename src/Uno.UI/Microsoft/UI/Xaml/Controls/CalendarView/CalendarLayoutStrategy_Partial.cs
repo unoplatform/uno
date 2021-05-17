@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			Rect windowConstraint,
 			out Rect pReturnValue) /*override*/
 		{
-			pReturnValue =  null;
+			pReturnValue =  default;
 			pReturnValue = _layoutStrategyImpl.GetElementBounds(
 				elementType,
 				elementIndex,
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 			Size finalSize,
 			out Rect pReturnValue) /*override*/
 		{
-			pReturnValue = null;
+			pReturnValue = default;
 			pReturnValue = _layoutStrategyImpl.GetElementArrangeBounds(
 				elementType,
 				elementIndex,
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 			Rect window,
 			out Rect pReturnValue) /*override*/
 		{
-			pReturnValue = null;
+			pReturnValue = default;
 			_layoutStrategyImpl.EstimateElementBounds(
 				elementType,
 				elementIndex,

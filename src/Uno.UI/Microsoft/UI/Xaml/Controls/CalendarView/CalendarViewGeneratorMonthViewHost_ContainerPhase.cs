@@ -30,10 +30,10 @@ namespace Windows.UI.Xaml.Controls
 			// we will setup information that we will need during the lifetime of this container
 
 			CalendarViewDayItem spContainer;
-			CalendarViewDayItemChangingEventArgs spArgsConcrete = default;
+			CalendarViewDayItemChangingEventArgs? spArgsConcrete = default;
 
 			// raw pointer, since we're not a refcounted object
-			VirtualizationInformation pVirtualizationInformation = null;
+			VirtualizationInformation? pVirtualizationInformation = null;
 
 			spContainer = (CalendarViewDayItem)pContainer;
 
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 			// raise the event. This is the synchronous version. we will raise it 'async' as well when we have time
 			// but we guarantee calling it after prepare
 			
-			CalendarViewDayItemChangingEventSourceType pEventSource = null;
+			CalendarViewDayItemChangingEventSourceType? pEventSource = null;
 
 			Owner.GetCalendarViewDayItemChangingEventSourceNoRef(out pEventSource);
 
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// force measure. This will be no-op since content has not been set/changed
 				// but we need it for the contenttemplateroot
-				(spContainer as CalendarViewDayItem).Measure(measureSize);
+				(spContainer as CalendarViewDayItem)?.Measure(measureSize);
 
 				pEventSource.Invoke(Owner, spArgsConcrete);
 			}
@@ -212,7 +212,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void RaiseContainerContentChangingOnRecycle(
 			UIElement pContainer,
-			object pItem)
+			object? pItem)
 		{
 			CalendarViewDayItemChangingEventArgs spArgs;
 			CalendarViewDayItemChangingEventArgs spArgsConcrete;
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml.Controls
 			spArgs = (spContainer as CalendarViewDayItem).GetBuildTreeArgs();
 			spArgsConcrete = spArgs as CalendarViewDayItemChangingEventArgs;
 
-			CalendarViewDayItemChangingEventSourceType pEventSource = null;
+			CalendarViewDayItemChangingEventSourceType? pEventSource = null;
 
 			Owner.GetCalendarViewDayItemChangingEventSourceNoRef(out pEventSource);
 
@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// these four match the indices, except they are mapped into a lookup array.
 				// notice however, that we understand how visibleindex could have been -1.
-				int cacheStartInVector = -1;
+				//int cacheStartInVector = -1;
 				int visibleStartInVector = -1;
 				int visibleEndInVector = -1;
 				int cacheEndInVector = -1;
@@ -311,7 +311,7 @@ namespace Windows.UI.Xaml.Controls
 				// translate to array indices
 				if (cacheEnd > -1) // -1 means there is no thing.. no visible or cached containers
 				{
-					cacheStartInVector = 0;
+					//cacheStartInVector = 0;
 					visibleStartInVector = visibleStart > -1 ? visibleStart - cacheStart : 0;
 					visibleEndInVector = visibleEnd > -1 ? visibleEnd - cacheStart : visibleStartInVector;
 					cacheEndInVector = cacheEnd - cacheStart;
@@ -425,9 +425,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					long phase = 0;
 					DependencyObject spContainer;
-					CalendarViewDayItem spContainerAsCalendarViewDayItem = default;
-					VirtualizationInformation pVirtualizationInformation = null;
-					CalendarViewDayItemChangingEventArgs spArgs = default;
+					CalendarViewDayItem? spContainerAsCalendarViewDayItem = default;
+					VirtualizationInformation? pVirtualizationInformation = null;
+					CalendarViewDayItemChangingEventArgs? spArgs = default;
 					CalendarViewDayItemChangingEventArgs spArgsConcrete;
 					// always update the current position when done, except when the phase requested is lower than current phase
 					bool shouldUpdateCurrentPosition = true;
@@ -451,7 +451,7 @@ namespace Windows.UI.Xaml.Controls
 
 						spContainerAsCalendarViewDayItem = (CalendarViewDayItem) spContainer;
 
-						pVirtualizationInformation = (spContainer as UIElement).GetVirtualizationInformation();
+						pVirtualizationInformation = (spContainer as UIElement)?.GetVirtualizationInformation();
 						spArgs = (spContainerAsCalendarViewDayItem as CalendarViewDayItem).GetBuildTreeArgs();
 
 						argsPhase = spArgs.Phase;
@@ -466,7 +466,7 @@ namespace Windows.UI.Xaml.Controls
 						spContainer = spMapping.ContainerFromIndex(cacheStart + currentPositionInVector);
 
 						spContainerAsCalendarViewDayItem = (CalendarViewDayItem) spContainer;
-						pVirtualizationInformation = (spContainer as UIElement).GetVirtualizationInformation();
+						pVirtualizationInformation = (spContainer as UIElement)?.GetVirtualizationInformation();
 
 						spArgs = (spContainerAsCalendarViewDayItem as CalendarViewDayItem).GetBuildTreeArgs();
 					}
@@ -486,7 +486,7 @@ namespace Windows.UI.Xaml.Controls
 
 						global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is {});
 
-						measureSize = pVirtualizationInformation.MeasureSize;
+						measureSize = pVirtualizationInformation!.MeasureSize;
 
 						// did we store a callback
 						spCallback = spArgsConcrete.Callback;
@@ -507,7 +507,7 @@ namespace Windows.UI.Xaml.Controls
 
 						// the user might have changed elements. In order to keep the budget fair, we need to try and incur
 						// most of the cost right now.
-						(spContainerAsCalendarViewDayItem as CalendarViewDayItem).Measure(measureSize);
+						(spContainerAsCalendarViewDayItem as CalendarViewDayItem)?.Measure(measureSize);
 
 						// register callback
 						if (wantsCallBack)
@@ -671,7 +671,7 @@ namespace Windows.UI.Xaml.Controls
 						continue;
 					}
 
-					spArgs = (spContainer as CalendarViewDayItem).GetBuildTreeArgs();
+					spArgs = (spContainer as CalendarViewDayItem)!.GetBuildTreeArgs();
 
 					(spArgs as CalendarViewDayItemChangingEventArgs).ResetLifetime();
 				}

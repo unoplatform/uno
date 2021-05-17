@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 				return ppReturnValue;
 			}
 
-			private string GetClassNameCore()
+			protected override string GetClassNameCore()
 			{
 				string pReturnValue;
 				pReturnValue = "CalendarView";
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 				return pReturnValue;
 			}
 
-			private AutomationControlType GetAutomationControlTypeCore()
+			protected override AutomationControlType GetAutomationControlTypeCore()
 			{
 				AutomationControlType pReturnValue;
 				pReturnValue = AutomationControlType.Calendar;
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 				return pReturnValue;
 			}
 
-			private IList<AutomationPeer> GetChildrenCore()
+			protected override IList<AutomationPeer> GetChildrenCore()
 			{
 				IList<AutomationPeer> ppReturnValue;
 

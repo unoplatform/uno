@@ -9,8 +9,6 @@ using Windows.UI.Xaml.Media;
 using DirectUI;
 using DateTime = System.DateTimeOffset;
 
-#pragma once
-
 namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarView
@@ -75,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 		internal Brush m_pTodayBlackoutBackground;
 
 
-		private IDictionary<uint, DependencyObject> m_colorToBrushMap;
+		//private IDictionary<uint, DependencyObject> m_colorToBrushMap;
 
 		// hold the resource extension to keep the bindings for the internal properties.
 		//private ThemeResourceExtension[] m_internalThemeResourceExtensions = new ThemeResourceExtension[6];

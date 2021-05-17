@@ -27,13 +27,14 @@ namespace Windows.UI.Xaml.Controls
 			UpdateChromeIfNeeded(finalBounds);
 		}
 
-		/// <inheritdoc />
+#if __SKIA__
 		internal override void OnArrangeVisual(Rect rect, Rect? clip)
 		{
 			UpdateChromeIfNeeded(rect);
 
 			base.OnArrangeVisual(rect, clip);
 		}
+#endif
 
 		private void UpdateChromeIfNeeded(Rect rect)
 		{

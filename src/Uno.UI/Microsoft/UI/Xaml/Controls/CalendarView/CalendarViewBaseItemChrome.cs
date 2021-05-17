@@ -339,7 +339,7 @@ namespace Windows.UI.Xaml.Controls
 		// Sets up and adds the main and label block to the tree.
 		private void EnsureTextBlock(ref TextBlock spTextBlock)
 		{
-			UIElementCollection pChildrenCollectionNoRef = null;
+			//UIElementCollection pChildrenCollectionNoRef = null;
 
 			if (spTextBlock is null)
 			{
@@ -949,7 +949,7 @@ namespace Windows.UI.Xaml.Controls
 			if (m_pMainTextBlock is { })
 			{
 				object value;
-				uint count = 0;
+				//uint count = 0;
 
 				value = m_pMainTextBlock.GetValue(TextBlock.TextProperty);
 
@@ -1338,7 +1338,7 @@ namespace Windows.UI.Xaml.Controls
 			return pOwner != null;
 		}
 
-		private bool GetTextBlockAlignments(
+		private protected override bool GetTextBlockAlignments(
 			bool isLabel,
 			out TextBlockAlignments pProperties)
 		{

@@ -3,9 +3,6 @@
 
 using Windows.Foundation;
 
-#pragma once
-
-
 namespace Windows.UI.Xaml.Controls
 {
 	internal partial class CalendarLayoutStrategy : ILayoutStrategy

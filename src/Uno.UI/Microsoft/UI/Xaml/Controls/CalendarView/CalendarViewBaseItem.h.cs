@@ -5,9 +5,6 @@ using System;
 using Windows.Foundation;
 using DateTime = System.DateTimeOffset;
 
-#pragma once
-
-
 namespace Windows.UI.Xaml.Controls
 {
 	// UNO ONLY

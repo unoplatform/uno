@@ -264,15 +264,12 @@ namespace Windows.UI.Xaml.Controls
 					// Our reference is before the region we're counting
 					// Notice no "count-1" here. Groups and containers after and including our reference are still considered valid traversal candidates
 					return totalGroups - referenceGroupIndex;
-					break;
 
 				case RelativePosition.After:
 					return referenceGroupIndex;
-					break;
 
 				default:
 					return 0;
-					break;
 			}
 		}
 
@@ -291,15 +288,12 @@ namespace Windows.UI.Xaml.Controls
 					// Our reference is before the region we're counting
 					// Notice no "count-1" here. Groups and containers after and including our reference are still considered valid traversal candidates
 					return totalItems - referenceItemIndex;
-					break;
 
 				case RelativePosition.After:
 					return referenceItemIndex;
-					break;
 
 				default:
 					return 0;
-					break;
 			}
 		}
 

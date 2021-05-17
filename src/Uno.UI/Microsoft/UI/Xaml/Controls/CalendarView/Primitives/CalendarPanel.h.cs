@@ -4,9 +4,6 @@
 using System;
 using Windows.Foundation;
 
-#pragma once
-
-
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class CalendarPanel
@@ -40,10 +37,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		//      private void OnPropertyChanged2(  PropertyChangedParams& args) override;
 
 		// Only ItemsStackPanel and CalendarPanel support the maintain viewport behavior.
-		protected /* override */ ItemsUpdatingScrollMode ItemsUpdatingScrollMode => (ItemsUpdatingScrollMode)(ItemsUpdatingScrollMode.KeepItemsInView);
+		//protected /* override */ ItemsUpdatingScrollMode ItemsUpdatingScrollMode => (ItemsUpdatingScrollMode)(ItemsUpdatingScrollMode.KeepItemsInView);
 
 		// a wrapgrid is able to portal (AddDeleteTransition)
-		protected /* override */ bool IsPortallingSupported => true;
+		//protected /* override */ bool IsPortallingSupported => true;
 
 		//// Virtual helper method to get the ItemsPerPage that can be overridden by derived classes.
 		//protected /* override */ void ItemsPerPageImpl(Rect window, out double pItemsPerPage);

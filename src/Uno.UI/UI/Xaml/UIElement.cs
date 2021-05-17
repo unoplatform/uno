@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml
 		}
 
 		#region VirtualizationInformation
-		private VirtualizationInformation? _virtualizationInformation;
+		private VirtualizationInformation _virtualizationInformation;
 		internal VirtualizationInformation GetVirtualizationInformation() => _virtualizationInformation ??= new VirtualizationInformation();
 
 		/// <summary>
