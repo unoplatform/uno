@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 
 				isBlackout = (bool)args.NewValue;
 
-				IsBlackout = isBlackout;
+				SetIsBlackout(isBlackout);
 
 				// when setting an item to blackout, we need remove it from selectedDates (if it exists)
 				if (isBlackout)

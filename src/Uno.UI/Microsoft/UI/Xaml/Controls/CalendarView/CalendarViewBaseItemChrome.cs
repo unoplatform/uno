@@ -743,7 +743,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Blackout state affects background, foreground and forground.
-		private void SetIsBlackout(bool state)
+		internal void SetIsBlackout(bool state)
 		{
 			if (m_isBlackout != state)
 			{
