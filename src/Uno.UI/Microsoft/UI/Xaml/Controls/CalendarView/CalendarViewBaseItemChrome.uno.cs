@@ -28,6 +28,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if __SKIA__
+		/// <inheritdoc />
 		internal override void OnArrangeVisual(Rect rect, Rect? clip)
 		{
 			UpdateChromeIfNeeded(rect);

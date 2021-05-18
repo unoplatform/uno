@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The 'return' size produced by the last Measure
 		/// </summary>
-		/// <remarks>This is the backing flied for the **internal** <see cref="LayoutInformation.GetDesiredSize"/></remarks>
+		/// <remarks>This is the backing flied for the **internal** <see cref="LayoutInformation.GetDesiredSize(Windows.UI.Xaml.UIElement)"/></remarks>
 		Size DesiredSize { get; set; }
 
 		/// <summary>

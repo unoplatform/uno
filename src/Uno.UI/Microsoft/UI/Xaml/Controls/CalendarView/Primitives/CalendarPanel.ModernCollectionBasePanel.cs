@@ -442,19 +442,33 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return default;
 			}
 
+			// Compute the effective viewport of the panel (i.e. the portion of the panel for which we have to generate items)
+			// By default, if the CalendarView is not stretch, it will render at its default hardcoded size.
+			// It will also never be smaller than this hardcoded size (content will clipped)
+			// Note: If the Calendar has a defined size (or min / max) we ignore it in Measure, and we wait for the Arrange to "force" us to apply it.
+			var calendar = _host.Owner;
+			var viewport = new Rect(
+				_effectiveViewport.Location.FiniteOrDefault(default),
+				_effectiveViewport.Size.AtLeast(availableSize).AtLeast(_defaultHardCodedSize).FiniteOrDefault(_defaultHardCodedSize));
+			if (calendar.HorizontalAlignment != HorizontalAlignment.Stretch)
+			{
+				viewport.Width = _defaultHardCodedSize.Width;
+			}
+			if (calendar.VerticalAlignment != VerticalAlignment.Stretch)
+			{
+				viewport.Height = _defaultHardCodedSize.Height;
+			}
+
 			_layoutStrategy.BeginMeasure();
 			ShouldInterceptInvalidate = true;
 			var index = -1;
 			try
 			{
-				var size = _effectiveViewport.Size.AtLeast(availableSize).AtLeast(_defaultHardCodedSize).FiniteOrDefault(_defaultHardCodedSize);
-				var position = _effectiveViewport.Location.FiniteOrDefault(default);
-				var viewport = new Rect(position, size);
-
 				// Gets the index of the first element to render and the actual viewport to use
 				_layoutStrategy.EstimateElementIndex(ElementType.ItemContainer, default, default, viewport, out var renderWindow, out var startIndex);
 				renderWindow.Size = viewport.Size; // The actualViewport contains only position information
 
+				// Prepare the items generator to generate some new items (will also set which items can be recycled in this measure pass).
 				var expectedItemsCount = LastVisibleIndex - FirstVisibleIndex;
 				_cache.BeginGeneration(startIndex, startIndex + expectedItemsCount);
 
