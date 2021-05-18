@@ -20,22 +20,6 @@ namespace Windows.UI.Xaml
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
-
-			InitializeStateTriggerCollection();
-			InitializeSettersCollection();
-		}
-
-		private void InitializeSettersCollection()
-		{
-			Setters = new SetterBaseCollection(this, isAutoPropertyInheritanceEnabled: false);
-		}
-
-		private void InitializeStateTriggerCollection()
-		{
-			var stateTriggers = new DependencyObjectCollection<StateTriggerBase>(this, isAutoPropertyInheritanceEnabled: false);
-			stateTriggers.VectorChanged += OnStateTriggerCollectionChanged;
-
-			StateTriggers = stateTriggers;
 		}
 
 		public string Name { get; set; }
@@ -86,8 +70,14 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
+				if(!(GetValue(SettersProperty) is SetterBaseCollection collection))
+				{
+					collection = Setters = new SetterBaseCollection(this, isAutoPropertyInheritanceEnabled: false);
+				}
+
 				EnsureMaterialized();
-				return (SetterBaseCollection)GetValue(SettersProperty);
+
+				return collection;
 			}
 
 			internal set => SetValue(SettersProperty, value);
@@ -107,7 +97,19 @@ namespace Windows.UI.Xaml
 
 		public IList<StateTriggerBase> StateTriggers
 		{
-			get => (IList<StateTriggerBase>)GetValue(StateTriggersProperty);
+			get
+			{
+				if(!(GetValue(StateTriggersProperty) is IList<StateTriggerBase> list))
+				{
+					var stateTriggers = new DependencyObjectCollection<StateTriggerBase>(this, isAutoPropertyInheritanceEnabled: false);
+					stateTriggers.VectorChanged += OnStateTriggerCollectionChanged;
+
+					list = StateTriggers = stateTriggers;
+				}
+
+				return list;
+			}
+
 			internal set => SetValue(StateTriggersProperty, value);
 		}
 
