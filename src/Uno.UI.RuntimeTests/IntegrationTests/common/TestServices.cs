@@ -73,6 +73,21 @@ namespace Private.Infrastructure
 				}
 			}
 
+			internal static async Task WaitForRelayouted(FrameworkElement frameworkElement)
+			{
+				var isRelayouted = false;
+
+				void OnLayoutUpdated(object _, object __)
+				{
+					frameworkElement.LayoutUpdated -= OnLayoutUpdated;
+					isRelayouted = true;
+				}
+
+				frameworkElement.LayoutUpdated += OnLayoutUpdated;
+
+				await WaitFor(() => isRelayouted, message: $"{frameworkElement} re-layouted");
+			}
+
 			internal static async Task WaitForEqual(double expected, Func<double> actualFunc, double tolerance = 1.0, int timeoutMS = 1000)
 			{
 				if (actualFunc is null)
