@@ -164,6 +164,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ColumnDefinition_Width_Changed()
+		{
+			var outerShell = new Grid { Width = 290, Height = 220 };
+
+			var colDef0 = new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) };
+			var colDef1 = new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) };
+			var SUT = new Grid
+			{
+				ColumnDefinitions =
+				{
+					colDef0,
+					colDef1,
+				}
+			};
+			outerShell.Children.Add(SUT);
+			AddChild(SUT, new Border { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }, 0, 0);
+			AddChild(SUT, new Border { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }, 0, 1);
+
+			TestServices.WindowHelper.WindowContent = outerShell;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			const double expectedColWidth = 290 / 2;
+			Assert.AreEqual(expectedColWidth, colDef0.ActualWidth);
+			Assert.AreEqual(expectedColWidth, colDef1.ActualWidth);
+
+			colDef0.Width = new GridLength(80, GridUnitType.Pixel);
+			Assert.AreEqual(expectedColWidth, colDef0.ActualWidth);
+			Assert.AreEqual(expectedColWidth, colDef1.ActualWidth);
+
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
+
+			Assert.AreEqual(80, colDef0.ActualWidth);
+			Assert.AreEqual(210, colDef1.ActualWidth);
+		}
+
+		private static void AddChild(Grid parent, FrameworkElement child, int row, int col, int? rowSpan = null, int? colSpan = null)
+		{
+			Grid.SetRow(child, row);
+			Grid.SetColumn(child, col);
+
+			if (rowSpan is { } rs)
+			{
+				Grid.SetRowSpan(child, rs);
+			}
+			if (colSpan is { } cs)
+			{
+				Grid.SetColumnSpan(child, cs);
+			}
+
+			parent.Children.Add(child);
+		}
+
 		private async Task WaitForMeasure(FrameworkElement view, int timeOutMs = 1000)
 		{
 			var isMeasured = false;

@@ -19,9 +19,8 @@ namespace Windows.UI.Xaml.Controls
 			this.RegisterDisposablePropertyChangedCallback((i, p, args) =>
 			{
 				Changed?.Invoke(this, EventArgs.Empty);
-				SetDefaultState();
+				InvalidateDefinition();
 			});
-			SetDefaultState();
 		}
 
 		#region Width DependencyProperty
@@ -77,13 +76,12 @@ namespace Windows.UI.Xaml.Controls
 
 		#region internal DefinitionBase
 
-		private void SetDefaultState()
+		private void InvalidateDefinition()
 		{
-			_effectiveMinSize = default;
-			_measureArrangeSize = default;
-			_sizeCache = default;
-			_finalOffset = default;
-			_effectiveUnitType = GridUnitType.Auto;
+			if (this.GetParent() is Grid parentGrid)
+			{
+				parentGrid.InvalidateDefinitions();
+			}
 		}
 
 		private double _effectiveMinSize;
