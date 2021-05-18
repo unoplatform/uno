@@ -4,15 +4,18 @@ If you're having trouble building an Uno Platform project and your dev environme
 
 `uno-check` is a dotnet command-line tool that runs a suite of automated check-ups on your dev environment, making sure you have all the prerequisites installed to successfully develop an Uno Platform application. If it finds something missing, out of date, or misconfigured, it will either offer to automatically fix it, or else direct you to instructions to manually fix the problem.
 
+![The uno-check tool running](Assets/uno-check-running.gif)
+
 ## Install and run uno-check
 
 1. Make sure you have the [dotnet SDK installed](https://dotnet.microsoft.com/download).
 
 2. Open a command-line prompt. If you're on Windows, you can run Windows Terminal if you have it installed, or else Command Prompt or Windows Powershell from the Start menu. If you're on Mac, you can run the Terminal.
 
-3. Install the tool: Go to the [NuGet page for Uno.Check](https://www.nuget.org/packages/Uno.Check), copy the listed installation command (which should be something like `dotnet tool install --global Uno.Check --version 1.0.0-dev.239`), paste it into your command prompt, and run the command.
-
-    *Since Uno.Check is in prerelease, you need to specify the version number when you install it.*
+3. Install the tool by running the following command from the command prompt:
+    ```
+    dotnet tool install --global Uno.Check
+    ```
 
 4. Run the tool from the command prompt with the following command:
     ```
