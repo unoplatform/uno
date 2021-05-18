@@ -359,17 +359,6 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Register for changes all dependency properties changes notifications for the specified instance.
-		/// </summary>
-		/// <param name="instance">The instance for which to observe properties changes</param>
-		/// <param name="handler">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal static IDisposable RegisterInheritedPropertyChangedCallback(this object instance, ExplicitPropertyChangedCallback handler)
-		{
-			return GetStore(instance).RegisterInheritedPropertyChangedCallback(handler);
-		}
-
-		/// <summary>
 		/// Registers to parent changes.
 		/// </summary>
 		/// <param name="instance">The target dependency object</param>
