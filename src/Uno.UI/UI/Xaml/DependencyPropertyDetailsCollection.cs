@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml
 
 		private readonly static ArrayPool<DependencyPropertyDetails> _pool = ArrayPool<DependencyPropertyDetails>.Create(500, 100);
 
-		private DependencyPropertyDetails[] _entries = Empty;
+		private DependencyPropertyDetails[]? _entries;
 		private int _entriesLength;
 		private int _minId;
 		private int _maxId;
@@ -49,29 +49,49 @@ namespace Windows.UI.Xaml
 			_ownerType = ownerType;
 			_ownerReference = ownerReference;
 
-			var propertiesForType = DependencyProperty.GetPropertiesForType(ownerType);
-
-			if (propertiesForType.Length != 0)
-			{
-				_minId = propertiesForType[0].UniqueId;
-				_maxId = propertiesForType[propertiesForType.Length - 1].UniqueId;
-
-				var entriesLength = _maxId - _minId + 1;
-				var entries = _pool.Rent(entriesLength);
-
-				// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
-				AssignEntries(entries, entriesLength);
-			}
-
 			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
+		}
+
+		private DependencyPropertyDetails[] Entries
+		{
+			get
+			{
+				EnsureEntriesInitialized();
+				return _entries!;
+			}
+		}
+
+		private void EnsureEntriesInitialized()
+		{
+			if (_entries == null)
+			{
+				var propertiesForType = DependencyProperty.GetPropertiesForType(_ownerType);
+
+				if (propertiesForType.Length != 0)
+				{
+					_minId = propertiesForType[0].UniqueId;
+					_maxId = propertiesForType[propertiesForType.Length - 1].UniqueId;
+
+					var entriesLength = _maxId - _minId + 1;
+					var entries = _pool.Rent(entriesLength);
+
+					// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
+					AssignEntries(entries, entriesLength);
+
+				}
+				else
+				{
+					_entries = Empty;
+				}
+			}
 		}
 
 		public void Dispose()
 		{
 			for (var i = 0; i < _entriesLength; i++)
 			{
-				_entries![i]?.Dispose();
+				Entries![i]?.Dispose();
 			}
 
 			ReturnEntriesToPool();
@@ -101,6 +121,8 @@ namespace Windows.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
+			EnsureEntriesInitialized();
+
 			var propertyId = property.UniqueId;
 
 			var entryIndex = propertyId - _minId;
@@ -110,7 +132,7 @@ namespace Windows.UI.Xaml
 
 			if (isInRange)
 			{
-				ref var propertyEntry = ref _entries![entryIndex];
+				ref var propertyEntry = ref Entries![entryIndex];
 
 				if (forceCreate && propertyEntry == null)
 				{
@@ -135,7 +157,7 @@ namespace Windows.UI.Xaml
 					{
 						newEntriesSize = _maxId - propertyId + 1;
 						newEntries = _pool.Rent(newEntriesSize);
-						Array.Copy(_entries, 0, newEntries, _minId - propertyId, _entriesLength);
+						Array.Copy(Entries, 0, newEntries, _minId - propertyId, _entriesLength);
 
 						_minId = propertyId;
 
@@ -146,12 +168,12 @@ namespace Windows.UI.Xaml
 						newEntriesSize = propertyId - _minId + 1;
 
 						newEntries = _pool.Rent(newEntriesSize);
-						Array.Copy(_entries, 0, newEntries, 0, _entriesLength);
+						Array.Copy(Entries, 0, newEntries, 0, _entriesLength);
 
 						AssignEntries(newEntries, newEntriesSize);
 					}
 
-					ref var propertyEntry = ref _entries![property.UniqueId - _minId];
+					ref var propertyEntry = ref Entries![property.UniqueId - _minId];
 					propertyEntry = new DependencyPropertyDetails(property, _ownerType);
 					if (_defaultValueProvider != null && _defaultValueProvider(property, out var v))
 					{
@@ -187,7 +209,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal IEnumerable<DependencyPropertyDetails> GetAllDetails() => _entries.Trim();
+		internal IEnumerable<DependencyPropertyDetails> GetAllDetails() => Entries.Trim();
 
 		public void RegisterDefaultValueProvider(DependencyObjectStore.DefaultValueProvider provider)
 		{

@@ -279,9 +279,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
-		internal static void CoerceValue(this object instance, DependencyProperty property)
+		internal static void CoerceValue(this IDependencyObjectStoreProvider storeProvider, DependencyProperty property)
 		{
-			GetStore(instance).CoerceValue(property);
+			storeProvider.Store.CoerceValue(property);
 		}
 
 		/// <summary>
@@ -414,9 +414,13 @@ namespace Windows.UI.Xaml
 			uielement?.InvalidateRender();
 		}
 
-		internal static void RegisterDefaultValueProvider(this DependencyObject dependencyObject, DependencyObjectStore.DefaultValueProvider provider)
-		{
-			GetStore(dependencyObject).RegisterDefaultValueProvider(provider);
-		}
+		internal static void RegisterDefaultValueProvider(this IDependencyObjectStoreProvider storeProvider, DependencyObjectStore.DefaultValueProvider provider)
+			=> storeProvider.Store.RegisterDefaultValueProvider(provider);
+
+		/// <summary>
+		/// See <see cref="DependencyObjectStore.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
+		/// </summary>
+		internal static void RegisterPropertyChangedCallbackStrong(this IDependencyObjectStoreProvider storeProvider, ExplicitPropertyChangedCallback handler)
+			=> storeProvider.Store.RegisterPropertyChangedCallbackStrong(handler);
 	}
 }

@@ -167,10 +167,10 @@ namespace Windows.UI.Xaml
 		}
 
 		private void SetInheritedTemplatedParent(object? templatedParent)
-			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _templatedParentPropertyDetails);
+			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _properties.TemplatedParentPropertyDetails);
 
 		private void SetInheritedDataContext(object? dataContext)
-			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _dataContextPropertyDetails);
+			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
