@@ -152,10 +152,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="ResourceLoader\Controls\When_Collection_And_InlineProperty.xaml" />
-	</ItemGroup>
-	
-	<ItemGroup>
 		<None Update="ResourceLoader\Controls\When_Collection_And_InlineProperty.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</None>

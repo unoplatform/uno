@@ -733,6 +733,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 		}
 
+		[TestMethod]
+		public void When_Brush_And_StringColor()
+		{
+			var s = GetContent(nameof(When_Brush_And_StringColor));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ContentControl;
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;

@@ -103,6 +103,10 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
+			else if (type == typeof(Media.Brush) && control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string brushStringValue)
+			{
+				return XamlBindingHelper.ConvertValue(typeof(Media.Brush), brushStringValue);
+			}
 			else
 			{
 				var instance = Activator.CreateInstance(type);
