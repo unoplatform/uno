@@ -35,6 +35,8 @@ namespace Windows.UI.Xaml
 			}
 
 			ApiExtensibility.CreateInstance(this, out _applicationExtension);
+
+			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
 
 		internal static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback, string[] args)
