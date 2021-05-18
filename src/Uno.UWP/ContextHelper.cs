@@ -39,6 +39,17 @@ namespace Uno.UI
 			}
 			set => _current = value;
 		}
+
+		/// <summary>
+		/// Tries getting the current context.
+		/// </summary>
+		/// <param name="context">The context if available</param>
+		/// <returns>true if the current context is available, otherwise false.</returns>
+		internal static bool TryGetCurrent(out Android.Content.Context context)
+		{
+			context = _current;
+			return _current != null;
+		}
 	}
 }
 #endif

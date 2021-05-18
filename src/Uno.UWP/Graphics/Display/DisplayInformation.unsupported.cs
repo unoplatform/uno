@@ -1,9 +1,10 @@
 ﻿using Uno;
+using System;
 
 namespace Windows.Graphics.Display
 {
 	public partial class DisplayInformation
-    {
+	{
 #if __WASM__ || NET461 || __SKIA__ || __NETSTD_REFERENCE__
 		/// <summary>
 		//// Gets the native orientation of the display monitor, 
@@ -49,6 +50,10 @@ namespace Windows.Graphics.Display
 #endif
 
 #if NET461 || __NETSTD_REFERENCE__
+		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
+
+		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
+
 		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DisplayOrientations CurrentOrientation => DisplayOrientations.None;
 

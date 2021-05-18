@@ -17,7 +17,6 @@ namespace Windows.Graphics.Display
 
 		private const float BaseDpi = 96.0f;
 
-		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
 		private static readonly object _syncLock = new object();
 
 		private static DisplayOrientations _autoRotationPreferences;
@@ -42,7 +41,7 @@ namespace Windows.Graphics.Display
 
 		public bool StereoEnabled { get; private set; } = false;
 
-		public static DisplayInformation GetForCurrentView() => _lazyInstance.Value;
+		public static DisplayInformation GetForCurrentView() => InternalGetForCurrentView();
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations);
 
