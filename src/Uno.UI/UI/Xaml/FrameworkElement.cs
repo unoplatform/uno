@@ -580,6 +580,10 @@ namespace Windows.UI.Xaml
 		#region IsEnabled DependencyProperty
 
 #if !(__ANDROID__ || __IOS__ || __MACOS__) // On those platforms, this code is generated through mixins
+		// Note: we keep the event args as a private field for perf consideration: This avoids to create a new instance each time.
+		//		 As it's used only internally it's safe to do so.
+		private IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
+
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
@@ -595,9 +599,10 @@ namespace Windows.UI.Xaml
 		{
 			UpdateHitTest();
 
+			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
 			_isEnabledChangedEventArgs.SourceEvent = args;
-			OnIsEnabledChanged(_isEnabledChangedEventArgs);
 
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
 			IsEnabledChanged?.Invoke(this, args);
 
 			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
@@ -611,12 +616,10 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		// This is internal, so for perf consideration we reused the same instance of args every time.
 		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
 		{
 		}
-
-#endregion
+		#endregion
 
 		/// <summary>
 		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
