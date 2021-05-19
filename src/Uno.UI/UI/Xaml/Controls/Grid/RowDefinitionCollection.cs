@@ -27,12 +27,10 @@ namespace Windows.UI.Xaml.Controls
 		public void Insert(int index, RowDefinition item)
 		{
 			_inner.Insert(index, item);
-			(item as DefinitionBase).Changed += OnDefinitionChanged;
 		}
 
 		public void RemoveAt(int index)
 		{
-			(_inner[index] as DefinitionBase).Changed -= OnDefinitionChanged;
 			_inner.RemoveAt(index);
 		}
 
@@ -47,8 +45,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if(_inner[index] != value)
 				{
-					(_inner[index] as DefinitionBase).Changed -= OnDefinitionChanged;
-					(value as DefinitionBase).Changed += OnDefinitionChanged;
 					_inner[index] = value;
 				}
 			}
@@ -57,12 +53,10 @@ namespace Windows.UI.Xaml.Controls
 		public void Add(RowDefinition item)
 		{
 			_inner.Add(item);
-			(item as DefinitionBase).Changed += OnDefinitionChanged;
 		}
 
 		public void Clear()
 		{
-			_inner.ForEach(item=> (item as DefinitionBase).Changed -= OnDefinitionChanged);
 			_inner.Clear();
 		}
 
@@ -72,7 +66,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool Remove(RowDefinition item)
 		{
-			(item as DefinitionBase).Changed -= OnDefinitionChanged;
 			return _inner.Remove(item);
 		}
 
@@ -92,11 +85,5 @@ namespace Windows.UI.Xaml.Controls
 		void DefinitionCollectionBase.Lock() => _inner.Lock();
 
 		void DefinitionCollectionBase.Unlock() => _inner.Unlock();
-
-		private void OnDefinitionChanged(object sender, EventArgs e)
-		{
-			// The event is not important, since the listener will only react to the event itself, not the args
-			CollectionChanged?.Invoke(_inner, new VectorChangedEventArgs(CollectionChange.ItemChanged, 0));
-		}
 	}
 }
