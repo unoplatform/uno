@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 
 		private readonly object _gate = new object();
 
-		private readonly HashtableEx _childrenBindableMap = new HashtableEx();
+		private readonly HashtableEx _childrenBindableMap = new HashtableEx(DependencyPropertyComparer.Default);
 		private readonly List<object?> _childrenBindable = new List<object?>();
 
 		private bool _isApplyingTemplateBindings;
