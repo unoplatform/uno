@@ -219,12 +219,6 @@
 
 	<Import Project="MixinGeneration.targets" />
 
-	<ItemGroup>
-	  <SourceGeneratorInput Remove="UI\Xaml\Controls\SwipeControl\StoryboardExtensions.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\SwipeControl\StoryboardExtensions.cs" />
-	</ItemGroup>
+	<!-- If any ItemGroup appears here with Remove=XXX, they should be deleted -->
 
 </Project>

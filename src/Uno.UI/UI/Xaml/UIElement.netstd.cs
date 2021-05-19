@@ -46,8 +46,6 @@ namespace Windows.UI.Xaml
 		internal bool IsLoading { get; private set; }
 #endif
 
-		internal bool IsInLiveTree => IsLoading || IsLoaded;
-
 		/// <summary>
 		/// Gets the element depth in the visual tree.
 		/// ** WARNING** This is set before the FrameworkElement loading event and cleared on unload.

@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UIElement spFirstChild;
 			// added in UIElement.GetFirstChild()
-			spFirstChild = _children.First();
+			spFirstChild = VisualTreeHelper.GetChild(this, 0) as UIElement;
 
 			// We overrode HasTemplateChild and AddTemplateChild to make sure
 			// the template child (if exists) will be always at index 0.
@@ -343,7 +343,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (spTextBlock is null)
 			{
-				object value;
+				//object value;
 
 				// TODO UNO
 				//value = GetValue(UIElement.ChildrenInternalProperty);

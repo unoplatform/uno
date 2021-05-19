@@ -614,6 +614,7 @@ namespace Windows.UI.Xaml
 			}
 #endif
 		}
+		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
 #endif
 
 		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)

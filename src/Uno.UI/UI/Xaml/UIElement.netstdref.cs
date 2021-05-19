@@ -16,8 +16,6 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		internal bool ShouldInterceptInvalidate { get; set; }
-
 		public IntPtr Handle { get; }
 
 		public string Name { get; set; }

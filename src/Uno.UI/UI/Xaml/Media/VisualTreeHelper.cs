@@ -239,6 +239,22 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
+		internal static void RemoveChild(UIElement view, UIElement child)
+		{
+#if __ANDROID__
+			view.RemoveView(child);
+#elif __IOS__ || __MACOS__
+			if(child.Superview == view)
+			{
+				child.RemoveFromSuperview();
+			}
+#elif UNO_REFERENCE_API
+			view.RemoveChild(child);
+#else
+			throw new NotImplementedException("AddChild not implemented on this platform.");
+#endif
+		}
+
 		internal static IReadOnlyList<_View> ClearChildren(UIElement view)
 		{
 #if __ANDROID__
