@@ -51,6 +51,8 @@ namespace Windows.UI.Xaml
 
 			if (_stack != null)
 			{
+				// Note that `clearArray` is required here to avoid pooled arrays to leak
+				// instances from set property values.
 				_pool.Return(_stack, clearArray: true);
 			}
 		}
