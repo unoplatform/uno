@@ -60,7 +60,19 @@ namespace Windows.UI.Xaml
 
 		private void Initialize()
 		{
-			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
+			this.RegisterDefaultValueProvider(OnGetDefaultValue);
+		}
+
+		private bool OnGetDefaultValue(DependencyProperty property, out object defaultValue)
+		{
+			if (property == KeyboardAcceleratorsProperty)
+			{
+				defaultValue = new List<KeyboardAccelerator>(0);
+				return true;
+			}
+
+			defaultValue = null;
+			return false;
 		}
 
 		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());

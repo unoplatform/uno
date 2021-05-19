@@ -189,7 +189,8 @@ namespace Uno.UI
 		/// </returns>
 		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence)
 		{
-			if (TryStaticRetrieval(resourceKey, context, out var value))
+			if (TryStaticRetrieval(resourceKey, context, out var value)
+				&& bindingPath.DataContext != null)
 			{
 				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
 				if (property != null && bindingPath.DataContext is IDependencyObjectStoreProvider provider)

@@ -14,6 +14,7 @@ using Uno.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
 {
@@ -22,7 +23,6 @@ namespace Windows.UI.Xaml
 		internal Size _unclippedDesiredSize;
 		internal Point _visualOffset;
 		private ContainerVisual _visual;
-		private Visibility _visibilityCache;
 		internal double _canvasTop;
 		internal double _canvasLeft;
 		private Rect _currentFinalRect;
@@ -37,30 +37,24 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 			InitializeKeyboard();
 
-			RegisterPropertyChangedCallback(VisibilityProperty, OnVisibilityPropertyChanged);
-			RegisterPropertyChangedCallback(Controls.Canvas.LeftProperty, OnCanvasLeftChanged);
-			RegisterPropertyChangedCallback(Controls.Canvas.TopProperty, OnCanvasTopChanged);
+			this.RegisterPropertyChangedCallbackStrong(OnPropertyChanged);
 
 			UpdateHitTest();
 		}
 		partial void InitializeKeyboard();
 
-		private void OnCanvasTopChanged(DependencyObject sender, DependencyProperty dp)
+		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 		{
-			_canvasTop = (double)this.GetValue(Controls.Canvas.TopProperty);
+			if(property == Controls.Canvas.TopProperty)
+			{
+				_canvasTop = (double)args.NewValue;
+			}
+			else if (property == Controls.Canvas.LeftProperty)
+			{
+				_canvasLeft = (double)args.NewValue;
+			}
 		}
 
-		private void OnCanvasLeftChanged(DependencyObject sender, DependencyProperty dp)
-		{
-			_canvasLeft = (double)this.GetValue(Controls.Canvas.LeftProperty);
-		}
-
-		private void OnVisibilityPropertyChanged(DependencyObject sender, DependencyProperty dp)
-		{
-			UpdateHitTest();
-
-			_visibilityCache = (Visibility)GetValue(VisibilityProperty);
-		}
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -193,6 +187,7 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
+			UpdateHitTest();
 			UpdateOpacity();
 
 			if (newVisibility == Visibility.Collapsed)

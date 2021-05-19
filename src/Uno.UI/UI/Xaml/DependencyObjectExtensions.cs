@@ -279,9 +279,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
-		internal static void CoerceValue(this object instance, DependencyProperty property)
+		internal static void CoerceValue(this IDependencyObjectStoreProvider storeProvider, DependencyProperty property)
 		{
-			GetStore(instance).CoerceValue(property);
+			storeProvider.Store.CoerceValue(property);
 		}
 
 		/// <summary>
@@ -359,17 +359,6 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Register for changes all dependency properties changes notifications for the specified instance.
-		/// </summary>
-		/// <param name="instance">The instance for which to observe properties changes</param>
-		/// <param name="handler">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal static IDisposable RegisterInheritedPropertyChangedCallback(this object instance, ExplicitPropertyChangedCallback handler)
-		{
-			return GetStore(instance).RegisterInheritedPropertyChangedCallback(handler);
-		}
-
-		/// <summary>
 		/// Registers to parent changes.
 		/// </summary>
 		/// <param name="instance">The target dependency object</param>
@@ -425,9 +414,13 @@ namespace Windows.UI.Xaml
 			uielement?.InvalidateRender();
 		}
 
-		internal static void RegisterDefaultValueProvider(this DependencyObject dependencyObject, DependencyObjectStore.DefaultValueProvider provider)
-		{
-			GetStore(dependencyObject).RegisterDefaultValueProvider(provider);
-		}
+		internal static void RegisterDefaultValueProvider(this IDependencyObjectStoreProvider storeProvider, DependencyObjectStore.DefaultValueProvider provider)
+			=> storeProvider.Store.RegisterDefaultValueProvider(provider);
+
+		/// <summary>
+		/// See <see cref="DependencyObjectStore.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
+		/// </summary>
+		internal static void RegisterPropertyChangedCallbackStrong(this IDependencyObjectStoreProvider storeProvider, ExplicitPropertyChangedCallback handler)
+			=> storeProvider.Store.RegisterPropertyChangedCallbackStrong(handler);
 	}
 }

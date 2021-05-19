@@ -68,8 +68,6 @@ namespace Windows.UI.Xaml
 		private bool _isDisposed;
 
 		private readonly DependencyPropertyDetailsCollection _properties;
-		private readonly DependencyPropertyDetails _dataContextPropertyDetails;
-		private readonly DependencyPropertyDetails _templatedParentPropertyDetails;
 		private ResourceBindingCollection? _resourceBindings;
 
 		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
@@ -178,8 +176,6 @@ namespace Windows.UI.Xaml
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
 			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
-			_dataContextPropertyDetails = _properties.DataContextPropertyDetails;
-			_templatedParentPropertyDetails = _properties.TemplatedParentPropertyDetails;
 
 			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
@@ -233,7 +229,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="property">The <see cref="DependencyProperty" /> identifier of the property for which to retrieve the value. </param>
 		/// <returns>Returns the current effective value.</returns>
-		public object GetValue(DependencyProperty property)
+		public object? GetValue(DependencyProperty property)
 		{
 			return GetValue(property: property, propertyDetails: null, precedence: null, isPrecedenceSpecific: false);
 		}
@@ -244,7 +240,7 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
-		public object ReadLocalValue(DependencyProperty property)
+		public object? ReadLocalValue(DependencyProperty property)
 		{
 			return GetValue(property, precedence: DependencyPropertyValuePrecedences.Local, isPrecedenceSpecific: true);
 		}
@@ -255,17 +251,17 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
-		public object GetAnimationBaseValue(DependencyProperty property)
+		public object? GetAnimationBaseValue(DependencyProperty property)
 		{
 			return GetValue(property, precedence: DependencyPropertyValuePrecedences.Local);
 		}
 
-		internal object GetValue(DependencyProperty property, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		internal object? GetValue(DependencyProperty property, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
 			return GetValue(property, null, precedence, isPrecedenceSpecific);
 		}
 
-		internal object GetValue(DependencyProperty property, DependencyPropertyDetails? propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		internal object? GetValue(DependencyProperty property, DependencyPropertyDetails? propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
 			WritePropertyEventTrace(TraceProvider.GetValue, property, precedence);
 
@@ -276,9 +272,9 @@ namespace Windows.UI.Xaml
 			return GetValue(propertyDetails, precedence, isPrecedenceSpecific);
 		}
 
-		private object GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
-			if (propertyDetails == _dataContextPropertyDetails || propertyDetails == _templatedParentPropertyDetails)
+			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -360,8 +356,8 @@ namespace Windows.UI.Xaml
 		private static readonly List<DependencyPropertyPath> _propagationBypass =
 			new List<DependencyPropertyPath>();
 
-		private static readonly Dictionary<DependencyPropertyPath, object> _propagationBypassed =
-			new Dictionary<DependencyPropertyPath, object>(DependencyPropertyPath.Comparer.Default);
+		private static readonly Dictionary<DependencyPropertyPath, object?> _propagationBypassed =
+			new Dictionary<DependencyPropertyPath, object?>(DependencyPropertyPath.Comparer.Default);
 
 		internal static IDisposable? BypassPropagation(DependencyObject instance, DependencyProperty property)
 		{
@@ -750,6 +746,18 @@ namespace Windows.UI.Xaml
 			);
 		}
 
+		/// <summary>
+		/// Registers an strong-referenced explicit DependencyProperty changed handler to be notified of any property change.
+		/// </summary>
+		/// <remarks>
+		/// This method is meant to be used only for a DependencyObject to
+		/// itself, to match the behavior of generic WinUI's OnPropertyChanged virtual method.
+		/// </remarks>
+		internal void RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback handler)
+		{
+			_genericCallbacks = _genericCallbacks.Add(handler);
+		}
+
 		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
 		{
 			public InheritedPropertyChangedCallbackDisposable(ManagedWeakReference objectStoreWeak, DependencyObjectStore childStore)
@@ -847,7 +855,7 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		internal (object value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
 			var stack = _properties.GetPropertyDetails(property);
 
@@ -1018,11 +1026,11 @@ namespace Windows.UI.Xaml
 		{
 			if (_parentDataContextProperty.UniqueId == property.UniqueId)
 			{
-				return (_dataContextProperty, _dataContextPropertyDetails);
+				return (_dataContextProperty, _properties.DataContextPropertyDetails);
 			}
 			else if (_parentTemplatedParentProperty == property)
 			{
-				return (_templatedParentProperty, _templatedParentPropertyDetails);
+				return (_templatedParentProperty, _properties.TemplatedParentPropertyDetails);
 			}
 			else
 			{
@@ -1176,7 +1184,7 @@ namespace Windows.UI.Xaml
 		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
 		{
 			var propertyValues = _properties.GetAllDetails()
-				.Except(_dataContextPropertyDetails, _templatedParentPropertyDetails)
+				.Except(_properties.DataContextPropertyDetails, _properties.TemplatedParentPropertyDetails)
 				.Select(d => GetValue(d));
 			foreach (var propertyValue in propertyValues)
 			{
@@ -1503,9 +1511,9 @@ namespace Windows.UI.Xaml
 		private void RaiseCallbacks(
 			DependencyObject actualInstanceAlias,
 			DependencyPropertyDetails propertyDetails,
-			object previousValue,
+			object? previousValue,
 			DependencyPropertyValuePrecedences previousPrecedence,
-			object newValue,
+			object? newValue,
 			DependencyPropertyValuePrecedences newPrecedence
 		)
 		{
@@ -1550,9 +1558,9 @@ namespace Windows.UI.Xaml
 			DependencyObject actualInstanceAlias,
 			DependencyProperty property,
 			DependencyPropertyDetails propertyDetails,
-			object previousValue,
+			object? previousValue,
 			DependencyPropertyValuePrecedences previousPrecedence,
-			object newValue,
+			object? newValue,
 			DependencyPropertyValuePrecedences newPrecedence,
 			bool bypassesPropagation = false
 		)
@@ -1656,7 +1664,7 @@ namespace Windows.UI.Xaml
 		/// Updates the parent of the <paramref name="newValue"/> to the
 		/// <paramref name="actualInstanceAlias"/> and resets the parent of <paramref name="previousValue"/>.
 		/// </summary>
-		private static void UpdateAutoParent(DependencyObject actualInstanceAlias, object previousValue, object newValue)
+		private static void UpdateAutoParent(DependencyObject actualInstanceAlias, object? previousValue, object? newValue)
 		{
 			if (
 				previousValue is DependencyObject previousObject

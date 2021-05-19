@@ -1644,6 +1644,13 @@ namespace Uno.UI.Tests.BinderTests
 #endif
 		}
 
+		[TestMethod]
+		public void When_DefaultValueOverride()
+		{
+			var SUT = new MyDependencyObjectWithDefaultValueOverride();
+			Assert.AreEqual(42, SUT.GetValue(MyDependencyObjectWithDefaultValueOverride.MyPropertyProperty));
+		}
+
 		private class MyDependencyObject : FrameworkElement
 		{
 			internal static readonly DependencyProperty PropAProperty = DependencyProperty.Register(
@@ -1789,6 +1796,39 @@ namespace Uno.UI.Tests.BinderTests
 		#endregion
 
 	}
+
+	partial class MyDependencyObjectWithDefaultValueOverride : DependencyObject
+	{
+		public MyDependencyObjectWithDefaultValueOverride()
+		{
+			this.RegisterDefaultValueProvider(OnProvideDefaultValue);
+		}
+
+		private bool OnProvideDefaultValue(DependencyProperty property, out object defaultValue)
+		{
+			if(property == MyPropertyProperty)
+			{
+				defaultValue = 42;
+
+				return true;
+			}
+
+			defaultValue = null;
+			return false;
+		}
+
+		public int MyProperty
+		{
+			get { return (int)GetValue(MyPropertyProperty); }
+			set { SetValue(MyPropertyProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyPropertyProperty =
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyDependencyObjectWithDefaultValueOverride), new PropertyMetadata(0));
+
+	}
+
 
 	#endregion
 }

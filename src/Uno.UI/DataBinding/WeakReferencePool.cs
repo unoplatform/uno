@@ -148,13 +148,6 @@ namespace Uno.UI.DataBinding
 					var handle = _weakReferencePool.Pop();
 					handle.Target = target;
 
-					if(handle.Target != target)
-					{
-						handle.Target = target;
-
-						throw new InvalidOperationException();
-					}
-
 					return handle;
 				}
 			}
