@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 		//	return DependencyObjectTraits<CGrid>.Index;
 		//}
 
-		void InvalidateDefinitions()
+		internal void InvalidateDefinitions()
 		{
 			SetGridFlags(GridFlags.DefinitionsChanged);
 			InvalidateMeasure();

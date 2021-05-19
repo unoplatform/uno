@@ -17,10 +17,8 @@ namespace Windows.UI.Xaml.Controls
 
 			this.RegisterDisposablePropertyChangedCallback((i, p, args) =>
 			{
-				Changed?.Invoke(this, EventArgs.Empty);
-				SetDefaultState();
+				InvalidateDefinition();
 			});
-			SetDefaultState();
 		}
 
 		#region Height DependencyProperty
@@ -78,13 +76,12 @@ namespace Windows.UI.Xaml.Controls
 
 		#region internal DefinitionBase
 
-		private void SetDefaultState()
+		private void InvalidateDefinition()
 		{
-			_effectiveMinSize = default;
-			_measureArrangeSize = default;
-			_sizeCache = default;
-			_finalOffset = default;
-			_effectiveUnitType = GridUnitType.Auto;
+			if (this.GetParent() is Grid parentGrid)
+			{
+				parentGrid.InvalidateDefinitions();
+			}
 		}
 
 		private double _effectiveMinSize;
@@ -133,14 +130,6 @@ namespace Windows.UI.Xaml.Controls
 		void DefinitionBase.UpdateEffectiveMinSize(double newValue)
 		{
 			_effectiveMinSize = Math.Max(_effectiveMinSize, newValue);
-		}
-
-		private event EventHandler Changed;
-
-		event EventHandler DefinitionBase.Changed
-		{
-			add => Changed += value;
-			remove => Changed -= value;
 		}
 
 		#endregion
