@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml
 
 					if(_defaultValueProvider != null && _defaultValueProvider(property, out var v))
 					{
-						propertyEntry.SetValue(v, DependencyPropertyValuePrecedences.DefaultValue);
+						propertyEntry.SetDefaultValue(v);
 					}
 				}
 
