@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml
 
 					OnBeforeArrange();
 
-					var finalRect = Parent is UIElement ? LayoutSlotWithMarginsAndAlignments : RectFromUIRect(Frame);
+					var finalRect = Superview is UIElement ? LayoutSlotWithMarginsAndAlignments : RectFromUIRect(Frame);
 
 					_layouter.Arrange(finalRect);
 
