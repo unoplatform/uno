@@ -52,24 +52,23 @@
 			<CalendarDatePicker
 				x:Name="cdp1"
 				Header="Stock CalendarDatePicker"
-				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid}"
-				FirstDayOfWeek="{Binding SelectedItem.Content, ElementName=dow}"
+				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid, FallbackValue=GregorianCalendar}"
+				FirstDayOfWeek="{Binding SelectedItem.Content, ElementName=dow, FallbackValue=Sunday}"
 				DayOfWeekFormat="{Binding SelectedItem.Content, ElementName=dowf}"
 				IsTodayHighlighted="{Binding IsChecked, ElementName=today}"/>
-			<ToggleButton IsChecked="{Binding IsCalendarOpen, ElementName=cdp1, Mode=TwoWay}">
-				IsCalendarOpen
-			</ToggleButton>
 			<ToggleButton IsChecked="{Binding IsEnabled, ElementName=cdp1, Mode=TwoWay}">
 				IsEnabled
 			</ToggleButton>
+			<ToggleButton IsChecked="{Binding IsCalendarOpen, ElementName=cdp1, Mode=TwoWay}">
+				IsCalendarOpen
+			</ToggleButton>
 			<TextBox Header="Header" Text="{Binding Header, ElementName=cdp1, Mode=TwoWay}" />
-
 			<TextBlock>Date: <Run Text="{Binding Date, ElementName=cdp1}" /></TextBlock>
 		</StackPanel>
 		<StackPanel Orientation="Horizontal" Spacing="10" Background="Bisque" Padding="3">
 			<CalendarDatePicker
 				x:Name="cdp2"
-				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid}"
+				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid, FallbackValue=GregorianCalendar}"
 				Header="IsCalendarOpen=True"
 				IsCalendarOpen="True"
 				IsEnabled="False"
@@ -89,7 +88,7 @@
 		<StackPanel Orientation="Horizontal" Spacing="10" Background="Bisque" Padding="3">
 			<CalendarDatePicker
 				x:Name="cdp3"
-				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid}"
+				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid, FallbackValue=GregorianCalendar}"
 				Header="IsGroupLabelVisible=False"
 				PlaceholderText="--PLACEHOLDER--"
 				IsGroupLabelVisible="False"
