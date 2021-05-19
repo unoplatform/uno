@@ -1,8 +1,8 @@
 # Uno.Material Controls: Extra setup
 
 ## Table of Contents
-- [ToggleSwitch](#ToggleSwitch):
-- [DatePicker & TimePicker](#DatePickers-and-TimePickers):
+- [ToggleSwitch](#toggleswitch)
+- [DatePicker & TimePicker](#datepickers-and-timepickers)
 
 ## ToggleSwitch
 

@@ -9,6 +9,7 @@ Congratulations, you've just created a new project using the [Uno Platform](http
 * More advanced examples in our [Uno.Samples repository](https://github.com/unoplatform/uno.samples)
 * Fork a fully-fledged [Ch9 application and source code ](https://platform.uno/code-samples/#ch9)
 * You can find detailed documentation on Uno topics [on our web site](https://platform.uno/docs/articles/intro.html).
+* Run the [uno-check CLI tool](uno-check.md) to ensure your dev environment is set up correctly
 
 ## Common Issues
 The Uno Platform features and support is constantly evolving, but you may encounter some of the  issues below while building your application.

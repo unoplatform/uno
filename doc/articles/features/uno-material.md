@@ -86,5 +86,5 @@ The colors used in the material styles are part of the color palette system, whi
 ## Additional Resources
 - Official Material Design site: https://material.io/design
 - Uno.Material library repository: https://github.com/unoplatform/Uno.Themes
-- [Additional control-specific setup](uno-material-controls-extra-setup)
+- [Additional control-specific setup](uno-material-controls-extra-setup.md)
 - Tools for picking colors: https://material.io/design/color/the-color-system.html#tools-for-picking-colors
