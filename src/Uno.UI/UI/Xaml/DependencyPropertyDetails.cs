@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml
 		private readonly Type _dependencyObjectType;
 		private object? _fastLocalValue;
 		private BindingExpression? _lastBindings;
-		private static readonly ArrayPool<object?> _pool = ArrayPool<object?>.Create(100, 100);
+		private static readonly ArrayPool<object?> _pool = ArrayPool<object?>.Create(_stackLength, 100);
 		private object?[]? _stack;
 		private PropertyMetadata? _metadata;
 		private object? _defaultValue;
