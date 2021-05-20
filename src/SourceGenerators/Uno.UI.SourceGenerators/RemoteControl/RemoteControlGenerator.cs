@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -110,11 +111,24 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			{
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
-					.Where(x => !IPAddress.IsLoopback(x.Address));
+					.Where(x => !IPAddress.IsLoopback(x.Address))
+					.Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
 
 				foreach (var addressInfo in addresses)
 				{
-					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressInfo.Address}\", {unoRemoteControlPort})]");
+					var address = addressInfo.Address;
+
+					string addressStr;
+					if(address.AddressFamily == AddressFamily.InterNetworkV6)
+					{
+						address.ScopeId = 0; // remove annoying "%xx" on IPv6 addresses
+						addressStr = $"[{address}]";
+					}
+					else
+					{
+						addressStr = address.ToString();
+					}
+					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressStr}\", {unoRemoteControlPort})]");
 				}
 			}
 			else
