@@ -140,7 +140,11 @@ namespace Windows.UI.Xaml
 				return _requestedThemeForResources;
 			}
 
-			private set => _requestedThemeForResources = value;
+			private set
+			{
+				_requestedThemeForResources = value;
+				ResourceDictionary.SetActiveTheme(value);
+			}
 		}
 
 		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
