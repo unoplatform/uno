@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml
 
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
+		private object? _hardOwnerReference;
 		private readonly DependencyProperty _dataContextProperty;
 		private readonly DependencyProperty _templatedParentProperty;
 
@@ -39,6 +40,8 @@ namespace Windows.UI.Xaml
 		private int _minId;
 		private int _maxId;
 		private DependencyObjectStore.DefaultValueProvider? _defaultValueProvider;
+
+		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
 
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
@@ -214,6 +217,16 @@ namespace Windows.UI.Xaml
 		public void RegisterDefaultValueProvider(DependencyObjectStore.DefaultValueProvider provider)
 		{
 			_defaultValueProvider = provider;
+		}
+
+		internal void TryEnableHardReferences()
+		{
+			_hardOwnerReference = _ownerReference.Target;
+		}
+
+		internal void DisableHardReferences()
+		{
+			_hardOwnerReference = null;
 		}
 	}
 }

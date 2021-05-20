@@ -1798,6 +1798,8 @@ namespace Windows.UI.Xaml
 			{
 				_hardParentRef = Parent;
 				_hardOriginalObjectRef = ActualInstance;
+
+				_properties.TryEnableHardReferences();
 			}
 		}
 
@@ -1810,6 +1812,8 @@ namespace Windows.UI.Xaml
 			{
 				_hardParentRef = null;
 				_hardOriginalObjectRef = null;
+
+				_properties.DisableHardReferences();
 			}
 		}
 
