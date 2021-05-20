@@ -110,28 +110,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					?? throw new NullReferenceException($"Cannot find the materialized border of item {index}");
 
 				var containerToListView = container.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.IsTrue(Math.Abs(containerToListView.X) < tolerance);
-				Assert.IsTrue(Math.Abs(containerToListView.Y - ((100 + 5 * 2) * index)) < tolerance);
-				Assert.IsTrue(Math.Abs(containerToListView.Width - 42) < tolerance);
-				Assert.IsTrue(Math.Abs(containerToListView.Height - 42) < tolerance);
+				Assert.AreEqual(containerToListView.X, 0, tolerance);
+				Assert.AreEqual(containerToListView.X, 0, tolerance);
+				Assert.AreEqual(containerToListView.Y, ((100 + 5 * 2) * index), tolerance);
+				Assert.AreEqual(containerToListView.Width, 42, tolerance);
+				Assert.AreEqual(containerToListView.Height, 42, tolerance);
 
 				var borderToListView = border.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.IsTrue(Math.Abs(borderToListView.X) < tolerance);
-				Assert.IsTrue(Math.Abs(borderToListView.Y - ((100 + 5 * 2) * index + 5)) < tolerance);
-				Assert.IsTrue(Math.Abs(borderToListView.Width - 42) < tolerance);
-				Assert.IsTrue(Math.Abs(borderToListView.Height - 42) < tolerance);
+				Assert.AreEqual(borderToListView.X, 0, tolerance);
+				Assert.AreEqual(borderToListView.Y, ((100 + 5 * 2) * index + 5), tolerance);
+				Assert.AreEqual(borderToListView.Width, 42, tolerance);
+				Assert.AreEqual(borderToListView.Height, 42, tolerance);
 
 				var containerToSut = container.TransformToVisual(sut).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.IsTrue(Math.Abs(containerToSut.X - 15) < tolerance);
-				Assert.IsTrue(Math.Abs(containerToSut.Y - (15 + (100 + 5 * 2) * index)) < tolerance);
-				Assert.IsTrue(Math.Abs(containerToSut.Width - 42) < tolerance);
-				Assert.IsTrue(Math.Abs(containerToSut.Height - 42) < tolerance);
+				Assert.AreEqual(containerToSut.X, 15, tolerance);
+				Assert.AreEqual(containerToSut.Y, (15 + (100 + 5 * 2) * index), tolerance);
+				Assert.AreEqual(containerToSut.Width, 42, tolerance);
+				Assert.AreEqual(containerToSut.Height, 42, tolerance);
 
 				var borderToSut = border.TransformToVisual(sut).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.IsTrue(Math.Abs(borderToSut.X - 15) < tolerance);
-				Assert.IsTrue(Math.Abs(borderToSut.Y - (15 + (100 + 5 * 2) * index + 5)) < tolerance);
-				Assert.IsTrue(Math.Abs(borderToSut.Width - 42) < tolerance);
-				Assert.IsTrue(Math.Abs(borderToSut.Height - 42) < tolerance);
+				Assert.AreEqual(borderToSut.X, 15, tolerance);
+				Assert.AreEqual(borderToSut.Y, (15 + (100 + 5 * 2) * index + 5), tolerance);
+				Assert.AreEqual(borderToSut.Width, 42, tolerance);
+				Assert.AreEqual(borderToSut.Height, 42, tolerance);
 			}
 		}
 #endif
