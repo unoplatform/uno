@@ -7,6 +7,14 @@ $turquoise: #66e4a8;
 $dgray: #242424;
 $lgray: #c4c4c4;
 
+
+:target::before {
+    content: '';
+    display: block;
+    margin-top: -130px;
+    height: 130px;
+    width: 1px;
+}
 body {
     font-family: 'Open Sans', sans-serif;
     color: $dgray;
@@ -200,6 +208,10 @@ h3 {
             transform: rotate(90deg);
         }
 
+        ul ul > li > a:before {
+            content: '';
+        }
+
         ul {
             padding-left: 5px;
             li a {
@@ -254,6 +266,10 @@ h3 {
                 color: $dgray;
               }
             }
+        }
+
+        ul ul > li > a:before {
+            top: 2px;
         }
         li:last-child {
             padding-bottom: 16px;
