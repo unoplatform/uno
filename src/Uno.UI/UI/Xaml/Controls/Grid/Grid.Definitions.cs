@@ -4,18 +4,33 @@
 	{
 		public Grid()
 		{
-			var rowDefinitions = new RowDefinitionCollection(this);
-			rowDefinitions.CollectionChanged += (snd, evt) => InvalidateDefinitions();
-
-			var columnDefinitions = new ColumnDefinitionCollection(this);
-			columnDefinitions.CollectionChanged += (snd, evt) => InvalidateDefinitions();
-
-			m_pRowDefinitions = rowDefinitions;
-			m_pColumnDefinitions = columnDefinitions;
 		}
 
-		public RowDefinitionCollection RowDefinitions => m_pRowDefinitions;
+		public RowDefinitionCollection RowDefinitions
+		{
+			get
+			{
+				if(m_pRowDefinitions == null)
+				{
+					m_pRowDefinitions = new RowDefinitionCollection(this);
+					m_pRowDefinitions.CollectionChanged += (snd, evt) => InvalidateDefinitions();
+				}
+				return m_pRowDefinitions;
+			}
+		}
 
-		public ColumnDefinitionCollection ColumnDefinitions => m_pColumnDefinitions;
+		public ColumnDefinitionCollection ColumnDefinitions
+		{
+			get
+			{
+
+				if (m_pColumnDefinitions == null)
+				{
+					m_pColumnDefinitions = new ColumnDefinitionCollection(this);
+					m_pColumnDefinitions.CollectionChanged += (snd, evt) => InvalidateDefinitions();
+				}
+				return m_pColumnDefinitions;
+			}
+		}
 	}
 }
