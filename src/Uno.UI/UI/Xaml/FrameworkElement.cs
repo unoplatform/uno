@@ -617,6 +617,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
+		// Virtual method for compatibility with WinUI code
 		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
 		{
 		}
