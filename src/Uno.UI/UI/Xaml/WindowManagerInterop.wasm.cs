@@ -39,7 +39,7 @@ namespace Uno.UI.Xaml
 					IsLoadEventsEnabled = isLoadEventsEnabled
 				};
 
-				TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms, typeof(bool));
+				TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms);
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace Uno.UI.Xaml
 					IsFocusable = isFocusable
 				};
 
-				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms, typeof(bool));
+				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms);
 			}
 		}
 
@@ -191,7 +191,7 @@ namespace Uno.UI.Xaml
 					M32 = matrix.M32,
 				};
 
-				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms, typeof(bool));
+				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms);
 			}
 		}
 
@@ -230,7 +230,7 @@ namespace Uno.UI.Xaml
 					Enabled = enabled
 				};
 
-				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms, typeof(bool));
+				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms);
 			}
 		}
 
