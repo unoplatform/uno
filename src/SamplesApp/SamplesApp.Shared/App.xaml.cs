@@ -281,7 +281,13 @@ namespace SamplesApp
 			const string samplePrefix = "sample=";
 			try
 			{
+				if (launchActivatedEventArgs.Arguments == null)
+				{
+					return false;
+				}
+
 				var args = Uri.UnescapeDataString(launchActivatedEventArgs.Arguments);
+
 				if (string.IsNullOrEmpty(args) || !args.StartsWith(samplePrefix))
 				{
 					return false;
