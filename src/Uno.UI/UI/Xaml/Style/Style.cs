@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml
 	[Markup.ContentProperty(Name = "Setters")]
 	public partial class Style
 	{
+		private static ILogger _logger = typeof(Style).Log();
+
 		private delegate void ApplyToHandler(DependencyObject instance);
 
 		public delegate Style StyleProviderHandler();
@@ -226,24 +228,24 @@ namespace Windows.UI.Xaml
 			if (style == null && !useUWPDefaultStyles)
 			{
 
-				if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
+				if (_logger.IsEnabled(LogLevel.Debug))
 				{
-					typeof(Style).Log().LogDebug($"No native style found for type {type}, falling back on UWP style");
+					_logger.LogDebug($"No native style found for type {type}, falling back on UWP style");
 				}
 
 				// If no native style found, fall back on UWP style
 				style = GetDefaultStyleForType(type, useUWPDefaultStyles: true);
 			}
 
-			if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
+			if (_logger.IsEnabled(LogLevel.Debug))
 			{
 				if (style != null)
 				{
-					typeof(Style).Log().LogDebug($"Returning {(useUWPDefaultStyles ? "UWP" : "native")} style {style} for type {type}");
+					_logger.LogDebug($"Returning {(useUWPDefaultStyles ? "UWP" : "native")} style {style} for type {type}");
 				}
 				else
 				{
-					typeof(Style).Log().LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
+					_logger.LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
 				}
 			}
 
