@@ -149,9 +149,14 @@ namespace Windows.UI.Xaml.Controls
 
 				child.Measure(slotSize);
 
+				var desired = child.DesiredSize;
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
+
 				return new Size(
-					Math.Min(size.Width, child.DesiredSize.Width),
-					Math.Min(size.Height, child.DesiredSize.Height)
+					Math.Min(size.Width, desired.Width),
+					Math.Min(size.Height, desired.Height)
 				);
 			}
 
@@ -170,6 +175,9 @@ namespace Windows.UI.Xaml.Controls
 				childRect.Height = Math.Max(finalSize.Height, desiredSize.Height);
 
 				child.Arrange(childRect);
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
 			}
 
 			return finalSize;

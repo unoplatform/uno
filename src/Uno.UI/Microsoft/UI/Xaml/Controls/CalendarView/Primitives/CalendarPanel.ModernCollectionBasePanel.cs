@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	// This file is aimed to implement methods that should be implemented by the ModernCollectionBasePanel which is not present in Uno
 
-	partial class CalendarPanel : ILayoutDataInfoProvider
+	partial class CalendarPanel : ILayoutDataInfoProvider, ICustomScrollInfo
 	{
 		// The CalendarView has a minimum size of 296x350, any size under this one will trigger clipping
 		// TODO: Is this size updated according to accessibility font scale factor?
@@ -327,6 +327,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			EffectiveViewportChanged += OnEffectiveViewportChanged;
 		}
 
+
+		/// <inheritdoc />
+		public double? ViewportWidth { get; private set; }
+
+		/// <inheritdoc />
+		public double? ViewportHeight { get; private set; }
+
 		#region Private and internal API required by UWP code
 		internal int FirstVisibleIndexBase { get; private set; } = -1;
 		internal int LastVisibleIndexBase { get; private set; } = -1;
@@ -554,6 +561,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				global::System.Diagnostics.Debug.Assert(_cache.LastIndex >= LastVisibleIndex || LastVisibleIndex == -1);
 				global::System.Diagnostics.Debug.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
 
+				// We force the parent ScrollViewer to use the same viewport as us, no matter its own stretching.
+				ViewportHeight = viewport.Height;
+
 				ShouldInterceptInvalidate = false;
 				_layoutStrategy.EndMeasure();
 			}
@@ -593,7 +603,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return finalSize;
 		}
-#endregion
+		#endregion
 
 		private static void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 		{
