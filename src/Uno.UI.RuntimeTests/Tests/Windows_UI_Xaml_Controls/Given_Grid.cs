@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -50,15 +51,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					RowSpacing = rowSpacing,
 					ColumnDefinitions =
 					{
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto)},
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Auto)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
 					},
 					RowDefinitions =
 					{
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto)},
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Auto)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
 					},
 					Children =
 					{
