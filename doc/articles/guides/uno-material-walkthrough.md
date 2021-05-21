@@ -235,6 +235,15 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     <!-- ... --->
     ```
     > You may also use this for picking colors: https://material.io/design/color/the-color-system.html#tools-for-picking-colors
+1. In `App.xaml.cs`, update the line that initializes the material library to include the new palette:
+    ```cs
+    protected override void OnLaunched(LaunchActivatedEventArgs e)
+    {
+         Uno.Material.Resources.Init(this, new ResourceDictionary { Source = new Uri("ms-appx:///Styles/Application/ColorPaletteOverride.xaml") });
+
+        // [existing code...]
+    }
+    ```
 1. Run the app, you should now see the controls using your new color scheme.
 
 ## Note
