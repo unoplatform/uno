@@ -217,6 +217,40 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // For some reason WaitForText() fails to even find the TextBlock on iOS
+		public void ComboBox_Dropdown_Background()
+		{
+			var isCurrentlyOpen = false;
+
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Dropdown_Background_4418");
+
+			_app.WaitForElement("IsOpenTextBlock");
+			ToggleComboBox();
+			ToggleComboBox();
+
+			ToggleComboBox();
+			ToggleComboBox();
+
+			ToggleComboBox();
+			// Third time's the bug
+
+			var scrn = TakeScreenshot("ComboBox open");
+			var rect = _app.GetPhysicalRect("ViewfinderBorder");
+
+			ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, Color.Tomato);
+
+			ToggleComboBox();
+
+			void ToggleComboBox()
+			{
+				_app.FastTap("YeComboBox");
+				isCurrentlyOpen = !isCurrentlyOpen;
+				_app.WaitForText("IsOpenTextBlock", isCurrentlyOpen.ToString());
+			}
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
 		public void ComboBoxTests_PlaceholderText() => ComboBoxTests_PlaceholderText_Impl("TestBox", 4, combo =>
 		{

@@ -50,7 +50,11 @@ namespace Windows.UI.Xaml.Controls
 			// This is required because android Height and Width are hidden by Control.
 			var baseView = view as View;
 
-			var drawArea = view.LayoutSlot.LogicalToPhysicalPixels();
+			var logicalDrawArea = view.LayoutSlot;
+			// Set origin to 0, because drawArea should be in the coordinates of the view itself
+			logicalDrawArea.X = 0;
+			logicalDrawArea.Y = 0;
+			var drawArea = logicalDrawArea.LogicalToPhysicalPixels();
 			var newState = new LayoutState(drawArea, background, borderThickness, borderBrush, cornerRadius, padding);
 			var previousLayoutState = _currentState;
 
