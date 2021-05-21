@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
-			var parent = this.GetParent();
+			var parent = this.GetVisualTreeParent();
 			switch (parent)
 			{
 				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml
 				case UIView view:
 					do
 					{
-						parent = parent.GetParent();
+						parent = parent.GetVisualTreeParent();
 
 						switch (parent)
 						{
@@ -196,12 +196,6 @@ namespace Windows.UI.Xaml
 								return false;
 						}
 					} while (true);
-
-				default:
-					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Found a parent which is NOT a UIView."));
-
-					parentElement = null;
-					return false;
 			}
 		}
 

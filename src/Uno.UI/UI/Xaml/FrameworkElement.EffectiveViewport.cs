@@ -13,6 +13,11 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
 using _This = Windows.UI.Xaml.FrameworkElement;
+#if __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -77,7 +82,7 @@ namespace Windows.UI.Xaml
 				{
 					TRACE_EFFECTIVE_VIEWPORT("Enabling effective viewport propagation.");
 
-					var parent = Parent;
+					var parent = this.GetVisualTreeParent();
 					if (parent is IFrameworkElement_EffectiveViewport parentFwElt)
 					{
 						_parentViewportUpdatesSubscription = parentFwElt.RequestViewportUpdates(this);

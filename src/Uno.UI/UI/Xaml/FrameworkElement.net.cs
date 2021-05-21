@@ -15,6 +15,8 @@ namespace Windows.UI.Xaml
 
 		internal List<View> _children = new List<View>();
 
+		internal UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
+
 		private protected virtual void OnPostLoading() { }
 
 		partial void OnLoadingPartial();

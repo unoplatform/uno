@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Get the parent view in the visual tree.
 		/// </summary>
-		public static UIElement GetVisualTreeParent(this UIElement uiElement) => (uiElement as FrameworkElement)?.Parent as UIElement;
+		public static UIElement GetVisualTreeParent(this UIElement uiElement) => (uiElement as FrameworkElement)?.VisualParent;
 	}
 }
 #endif
