@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -200,6 +201,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(80, colDef0.ActualWidth);
 			Assert.AreEqual(210, colDef1.ActualWidth);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Definitions_Cleared_And_Empty()
+		{
+			var SUT = new Grid();
+			var tb = new TextBlock { Text = "Text" };
+			AddChild(SUT, new Border { Width = 50, Height = 20 }, 0, 0);
+			AddChild(SUT, tb, 0, 0);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			SUT.ColumnDefinitions.Clear();
+
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			NumberAssert.Greater(tb.ActualWidth, 0);
+			NumberAssert.Greater(tb.ActualHeight, 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Child_Added_Measure_And_Visible_Arrange()
+		{
+			// This test emulates the layout sequence associated with DataGridColumnHeadersPresenter in the WCT
+			var gridAdder = new GridAdder() { MinWidth = 5, MinHeight = 5 };
+			TestServices.WindowHelper.WindowContent = gridAdder;
+			await TestServices.WindowHelper.WaitForLoaded(gridAdder);
+
+			if (gridAdder.Exception != null)
+			{
+				throw new AssertFailedException("Exception occurred", gridAdder.Exception);
+			}
+
+			var SUT = gridAdder.AddedGrid;
+			Assert.IsNotNull(SUT);
+			Assert.AreEqual(Visibility.Visible, SUT.Visibility);
+
+			Assert.AreEqual(27, SUT.ActualHeight);
+			NumberAssert.Greater(SUT.ActualWidth, 0);
 		}
 
 		private static void AddChild(Grid parent, FrameworkElement child, int row, int col, int? rowSpan = null, int? colSpan = null)
