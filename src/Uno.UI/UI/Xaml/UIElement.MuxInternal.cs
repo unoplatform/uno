@@ -14,7 +14,6 @@ namespace Windows.UI.Xaml
 #else
 		internal bool IsInLiveTree => throw new NotSupportedException();
 #endif
-		internal bool ShouldInterceptInvalidate { get; set; }
 
 #if !__NETSTD__
 		internal void RemoveChild(UIElement viewToRemove) => VisualTreeHelper.RemoveChild(this, viewToRemove);

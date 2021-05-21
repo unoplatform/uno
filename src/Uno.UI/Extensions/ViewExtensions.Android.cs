@@ -413,12 +413,6 @@ namespace Uno.UI
 		/// <param name="view">The view to invalidate.</param>
 		public static void InvalidateMeasure(this View view)
 		{
-			if(view is UIElement uie && uie.ShouldInterceptInvalidate)
-			{
-				return;
-			}
-
-
 			if (view is Controls.BindableView bindableView)
 			{
 				// Use the C# implementation of RequestLayout so that it is
@@ -437,11 +431,6 @@ namespace Uno.UI
 		/// <param name="view">The view to invalidate.</param>
 		public static void InvalidateArrange(this View view)
 		{
-			if (view is UIElement uie && uie.ShouldInterceptInvalidate)
-			{
-				return;
-			}
-
 			InvalidateMeasure(view);
 		}
 

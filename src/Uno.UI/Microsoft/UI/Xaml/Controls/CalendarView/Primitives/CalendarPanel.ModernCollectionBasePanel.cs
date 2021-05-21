@@ -467,7 +467,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			_layoutStrategy.BeginMeasure();
+#if __ANDROID__ // TODO: IOS
+			using var a = PreventRequestLayout();
+#else
 			ShouldInterceptInvalidate = true;
+#endif
 			var index = -1;
 			try
 			{
@@ -564,7 +568,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// We force the parent ScrollViewer to use the same viewport as us, no matter its own stretching.
 				ViewportHeight = viewport.Height;
 
+#if !__ANDROID__
 				ShouldInterceptInvalidate = false;
+#endif
 				_layoutStrategy.EndMeasure();
 			}
 			VisibleIndicesUpdated?.Invoke(this, null);
@@ -603,7 +609,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return finalSize;
 		}
-		#endregion
+#endregion
 
 		private static void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 		{

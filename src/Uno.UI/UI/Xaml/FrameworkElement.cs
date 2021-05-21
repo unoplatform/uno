@@ -582,7 +582,8 @@ namespace Windows.UI.Xaml
 #if !(__ANDROID__ || __IOS__ || __MACOS__) // On those platforms, this code is generated through mixins
 		// Note: we keep the event args as a private field for perf consideration: This avoids to create a new instance each time.
 		//		 As it's used only internally it's safe to do so.
-		private IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
+		[ThreadStatic]
+		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
@@ -614,7 +615,6 @@ namespace Windows.UI.Xaml
 			}
 #endif
 		}
-		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
 #endif
 
 		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
