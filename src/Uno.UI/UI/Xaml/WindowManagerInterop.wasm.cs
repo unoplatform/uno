@@ -21,6 +21,9 @@ namespace Uno.UI.Xaml
 	/// <remarks>Slow methods are present for the WPF hosting mode, for which memory sharing is not available</remarks>
 	internal partial class WindowManagerInterop
 	{
+		//When users set double.MaxValue to scroll to the end of the page Javascript doesn't scroll.
+		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
+
 		private static bool UseJavascriptEval =>
 			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
 
@@ -1264,13 +1267,16 @@ namespace Uno.UI.Xaml
 		#region ScrollTo
 		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
 		{
+			var sanitizedTop = top.HasValue && top == double.MaxValue ? MAX_SCROLLING_OFFSET : top;
+			var sanitizedLeft = left.HasValue && left == double.MaxValue ? MAX_SCROLLING_OFFSET : left;
+
 			var parms = new WindowManagerScrollToOptionsParams
 			{
 				HtmlId = htmlId,
-				HasLeft = left.HasValue,
-				Left = left ?? 0,
-				HasTop = top.HasValue,
-				Top = top ?? 0,
+				HasLeft = sanitizedLeft.HasValue,
+				Left = sanitizedLeft ?? 0,
+				HasTop = sanitizedTop.HasValue,
+				Top = sanitizedTop ?? 0,
 				DisableAnimation = disableAnimation
 			};
 
