@@ -125,6 +125,7 @@ namespace Windows.UI.Xaml
 		internal bool TryGetValue(Type resourceKey, out object value, bool shouldCheckSystem)
 			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem) =>
 			TryGetValue(resourceKey, ResourceKey.Empty, out value, shouldCheckSystem);
 
@@ -534,23 +535,14 @@ namespace Windows.UI.Xaml
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
+		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
+			=> Themes.Active = key;
+
 		private static class Themes
 		{
 			public static SpecializedResourceDictionary.ResourceKey Light { get; } = "Light";
 			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
-			public static SpecializedResourceDictionary.ResourceKey Active
-			{
-				get
-				{
-					var res = Application.Current?.RequestedThemeForResources;
-					if (res?.Key != null)
-					{
-						return res.Value;
-					}
-
-					return Light;
-				}
-			}
+			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Light;
 		}
 	}
 }
