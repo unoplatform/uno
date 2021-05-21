@@ -28,6 +28,7 @@
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Skia.csproj",
       "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",
+      "Uno.UI.Runtime.Skia.Linux.FrameBuffer\\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj",
       "Uno.UI.Runtime.Skia.Tizen\\Uno.UI.Runtime.Skia.Tizen.csproj",
       "Uno.UI.Runtime.Skia.Wpf\\Uno.UI.Runtime.Skia.Wpf.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.Skia.csproj",
