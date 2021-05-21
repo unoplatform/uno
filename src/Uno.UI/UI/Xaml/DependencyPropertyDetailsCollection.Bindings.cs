@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
 			{
-				binding.DataContext = _ownerReference.Target;
+				binding.DataContext = Owner;
 			}
 			else
 			{

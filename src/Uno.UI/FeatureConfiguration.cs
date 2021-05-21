@@ -158,11 +158,7 @@ namespace Uno.UI
 			/// See https://github.com/unoplatform/uno/issues/4730 for details.
 			/// </remarks>
 			public static bool IsStoreHardReferenceEnabled { get; set; }
-#if __WASM__
-				= false;
-#else
 				= true;
-#endif
 		}
 
 		public static class Font
