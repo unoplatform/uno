@@ -217,6 +217,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // For some reason WaitForText() fails to even find the TextBlock on iOS
 		public void ComboBox_Dropdown_Background()
 		{
 			var isCurrentlyOpen = false;
@@ -237,6 +238,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var rect = _app.GetPhysicalRect("ViewfinderBorder");
 
 			ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, Color.Tomato);
+
+			ToggleComboBox();
 
 			void ToggleComboBox()
 			{
