@@ -301,6 +301,8 @@
           href: features/Lottie.md
         - name: Working with cookies
           href: features/working-with-cookies.md
+        - name: Using pointer cursors
+          href: features/cursors.md
     - name: Core functionality
       items:
         - name: Logging
