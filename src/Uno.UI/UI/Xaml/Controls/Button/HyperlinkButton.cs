@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
@@ -13,13 +13,17 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public HyperlinkButton()
 		{
+			PartialInitializeProperties();
+
 			InitializeVisualStates();
 
 			Click += (s, e) => TryNavigate();
 
 			DefaultStyleKey = typeof(HyperlinkButton);
 		}
-		
+
+		partial void PartialInitializeProperties();
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();

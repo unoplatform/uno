@@ -21,6 +21,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		partial void PartialInitializeProperties()
 		{
+			if (!FeatureConfiguration.ButtonBase.UseHandCursor)
+			{
+				// Override the default style by explicitly setting the cursor.
+				SetStyle("cursor", "default");
+			}
+
 			// We need to ensure the "Tapped" event is registered
 			// for the "Click" event to work properly
 			Tapped += (snd, evt) => { };
