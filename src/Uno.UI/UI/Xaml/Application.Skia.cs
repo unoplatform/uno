@@ -12,6 +12,7 @@ using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.Foundation.Extensibility;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -19,6 +20,7 @@ namespace Windows.UI.Xaml
 	{
 		private static bool _startInvoked = false;
 		private static string[] _args;
+		private readonly IApplicationExtension _applicationExtension;
 
 		internal ISkiaHost Host { get; set; }
 
@@ -32,6 +34,8 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
 
+			ApiExtensibility.CreateInstance(this, out _applicationExtension);
+
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
 
@@ -39,6 +43,21 @@ namespace Windows.UI.Xaml
 		{
 			_args = args;
 			Start(callback);
+		}
+
+		public void Exit()
+		{
+			if (_applicationExtension != null && _applicationExtension.CanExit)
+			{
+				_applicationExtension.Exit();
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning("This platform does not support application exit.");
+				}
+			}
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
