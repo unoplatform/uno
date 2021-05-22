@@ -30,7 +30,6 @@ namespace Microsoft.UI.Xaml.Controls
 		[NotImplemented]
 		public static void EnsureRevealLights(UIElement element) { }
 
-
 		[NotImplemented]
 		public bool UseCompactResources
 		{
@@ -39,9 +38,18 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		[NotImplemented]
-		public static readonly DependencyProperty UseCompactResourcesProperty =
-			DependencyProperty.Register("UseCompactResources", typeof(bool), typeof(XamlControlsResources), new PropertyMetadata(false));
+		public static DependencyProperty UseCompactResourcesProperty { get; } =
+			DependencyProperty.Register(nameof(UseCompactResources), typeof(bool), typeof(XamlControlsResources), new PropertyMetadata(false));
 
+		[NotImplemented]
+		public ControlsResourcesVersion ControlsResourcesVersion
+		{
+			get => (ControlsResourcesVersion)GetValue(ControlsResourcesVersionProperty);
+			set => SetValue(ControlsResourcesVersionProperty, value);
+		}
 
+		[NotImplemented]
+		public static DependencyProperty ControlsResourcesVersionProperty { get; } =
+			DependencyProperty.Register(nameof(ControlsResourcesVersion), typeof(ControlsResourcesVersion), typeof(XamlControlsResources), new PropertyMetadata(ControlsResourcesVersion.Version1));
 	}
 }
