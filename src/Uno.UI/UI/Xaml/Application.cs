@@ -48,6 +48,7 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme? _requestedTheme;
 		private bool _systemThemeChangesObserved = false;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
+		private bool _isInBackground = false;
 
 		static Application()
 		{
@@ -166,13 +167,33 @@ namespace Windows.UI.Xaml
 		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
 
 #pragma warning disable CS0067 // The event is never used
+		/// <summary>
+		/// Occurs when the application transitions from Suspended state to Running state.
+		/// </summary>
 		public event EventHandler<object> Resuming;
 #pragma warning restore CS0067 // The event is never used
 
 #pragma warning disable CS0067 // The event is never used
+		/// <summary>
+		/// Occurs when the application transitions to Suspended state from some other state.
+		/// </summary>
 		public event SuspendingEventHandler Suspending;
 #pragma warning restore CS0067 // The event is never used
 
+		/// <summary>
+		/// Occurs when the app moves from the foreground to the background.
+		/// </summary>
+		public event EnteredBackgroundEventHandler EnteredBackground;
+
+		/// <summary>
+		/// Occurs when the app moves from the background to the foreground.
+		/// </summary>
+		public event LeavingBackgroundEventHandler LeavingBackground;
+
+		/// <summary>
+		/// Occurs when an exception can be handled by app code, as forwarded from a native-level Windows Runtime error.
+		/// Apps can mark the occurrence as handled in event data.
+		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
 		public void OnSystemThemeChanged()
@@ -239,6 +260,24 @@ namespace Windows.UI.Xaml
 			else
 			{
 				return null;
+			}
+		}
+
+		internal void OnEnteredBackground()
+		{
+			if (!_isInBackground)
+			{
+				_isInBackground = true;
+				EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+			}
+		}
+
+		internal void OnLeavingBackground()
+		{
+			if (_isInBackground)
+			{
+				_isInBackground = false;
+				LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
 			}
 		}
 

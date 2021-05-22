@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared event Windows.UI.Xaml.Application.Resuming
 		// Skipping already declared event Windows.UI.Xaml.Application.Suspending
 		// Skipping already declared event Windows.UI.Xaml.Application.UnhandledException
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.UI.Xaml.EnteredBackgroundEventHandler EnteredBackground
 		{
@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.UI.Xaml.LeavingBackgroundEventHandler LeavingBackground
 		{

@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml
 
 		public Window()
 		{
+			CoreWindow = new CoreWindow();
+
 			InitializeCommon();
 		}
 
