@@ -33,9 +33,23 @@
 				Application.dispatchVisibilityChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
 			}
 
-			document.addEventListener("visibilitychange", () => {
-				Application.dispatchVisibilityChange(document.visibilityState == "visible");
-			});
+			if (document.onvisibilitychange !== undefined) {
+				document.addEventListener("visibilitychange", () => {
+					Application.dispatchVisibilityChange(document.visibilityState == "visible");
+				});
+			}
+
+			if (window.onpagehide !== undefined) {
+				window.addEventListener("pagehide", () => {
+					Application.dispatchVisibilityChange(false);
+				});
+			}
+
+			if (window.onpageshow !== undefined) {
+				window.addEventListener("pageshow", () => {
+					Application.dispatchVisibilityChange(true);
+				});
+			}
 		}
 	}
 }

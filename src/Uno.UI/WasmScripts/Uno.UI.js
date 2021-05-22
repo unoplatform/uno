@@ -4028,8 +4028,8 @@ var Windows;
                     return null;
                 }
                 static observeSystemTheme() {
-                    if (!this.dispatchThemeChange) {
-                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+                    if (!Application.dispatchThemeChange) {
+                        Application.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
                     }
                     if (window.matchMedia) {
                         window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
@@ -4038,12 +4038,24 @@ var Windows;
                     }
                 }
                 static observeVisibility() {
-                    if (!this.dispatchVisibilityChange) {
-                        this.dispatchVisibilityChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
+                    if (!Application.dispatchVisibilityChange) {
+                        Application.dispatchVisibilityChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
                     }
-                    document.addEventListener("visibilitychange", () => {
-                        Application.dispatchVisibilityChange(document.visibilityState == "visible");
-                    });
+                    if (document.onvisibilitychange !== undefined) {
+                        document.addEventListener("visibilitychange", () => {
+                            Application.dispatchVisibilityChange(document.visibilityState == "visible");
+                        });
+                    }
+                    if (window.onpagehide !== undefined) {
+                        window.addEventListener("pagehide", () => {
+                            Application.dispatchVisibilityChange(false);
+                        });
+                    }
+                    if (window.onpageshow !== undefined) {
+                        window.addEventListener("pageshow", () => {
+                            Application.dispatchVisibilityChange(true);
+                        });
+                    }
                 }
             }
             Xaml.Application = Application;
