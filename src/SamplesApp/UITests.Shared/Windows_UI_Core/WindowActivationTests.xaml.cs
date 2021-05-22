@@ -117,7 +117,7 @@ namespace UITests.Windows_UI_Core
 		}
 
 		private void WindowActivated(object sender,
-#if HAS_
+#if HAS_UNO_WINUI
 			Microsoft.UI.Xaml.WindowActivatedEventArgs e
 #else
 			Windows.UI.Core.WindowActivatedEventArgs e
