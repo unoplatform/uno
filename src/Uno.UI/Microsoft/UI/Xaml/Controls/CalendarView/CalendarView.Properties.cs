@@ -1,4 +1,5 @@
 using System;
+using Windows.Globalization;
 using Windows.UI.Text;
 using DateTime = System.DateTimeOffset;
 
@@ -796,19 +797,53 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxDate), typeof(global::System.DateTimeOffset), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(GetDefaultMaxDate())); 
+			new FrameworkPropertyMetadata(GetDefaultMaxDate()));
+
+		private static Calendar _gregorianCalendar;
+
+		private const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
+
+		private static Calendar GetOrCreateGregorianCalendar()
+		{
+			if (_gregorianCalendar is null)
+			{
+				var tempCalendar = new Calendar();
+				_gregorianCalendar = new Calendar(
+					tempCalendar.Languages,
+					"GregorianCalendar",
+					tempCalendar.GetClock());
+			}
+
+			return _gregorianCalendar;
+		}
+
+		private static DateTime ClampDate(
+			DateTime date,
+			DateTime minDate,
+			DateTime maxDate)
+		{
+			return date < minDate ? minDate : date > maxDate ? maxDate : date;
+		}
 
 		private static DateTimeOffset GetDefaultMaxDate()
 		{
 			// default maxdate is December 31st 100 years in the future ==> That the comment on UWP ... but actually it's 200 years!
 			// cf. DependencyProperty.cpp
 
-			// On Uno to get the "January 1st" we use the MinDate instead of calendar.
+			var calendar = GetOrCreateGregorianCalendar();
+			calendar.SetToMin();
+			var minCalendarDate = calendar.GetDateTime();
+			calendar.SetToMax();
+			var maxCalendarDate = calendar.GetDateTime();
 
-			var min = global::System.DateTimeOffset.MinValue;
-			var year = global::System.DateTimeOffset.Now.Year + 200;
+			//Default value is today's date plus 100 Gregorian years.
+			calendar.SetToday();
+			calendar.AddYears(DEFAULT_MIN_MAX_DATE_YEAR_OFFSET);
+			calendar.Month = calendar.LastMonthInThisYear;
+			calendar.Day = calendar.LastDayInThisMonth;
+			var maxDate = calendar.GetDateTime();
 
-			return min.AddYears(year);
+			return ClampDate(maxDate, minCalendarDate, maxCalendarDate);
 		}
 
 		public static global::Windows.UI.Xaml.DependencyProperty MinDateProperty { get; } = 
@@ -822,12 +857,20 @@ namespace Windows.UI.Xaml.Controls
 			// default mindate is January 1st, 100 years ago
 			// cf. DependencyProperty.cpp
 
-			// On Uno to get the "January 1st" we use the MinDate instead of calendar.
+			var calendar = GetOrCreateGregorianCalendar();
+			calendar.SetToMin();
+			var minCalendarDate = calendar.GetDateTime();
+			calendar.SetToMax();
+			var maxCalendarDate = calendar.GetDateTime();
 
-			var min = global::System.DateTimeOffset.MinValue;
-			var year = global::System.DateTimeOffset.Now.Year - 100;
+			//Default value is today's date minus 100 Gregorian years.
+			calendar.SetToday();
+			calendar.AddYears(-DEFAULT_MIN_MAX_DATE_YEAR_OFFSET);
+			calendar.Month = calendar.FirstMonthInThisYear;
+			calendar.Day = calendar.FirstDayInThisMonth;
+			var minDate = calendar.GetDateTime();
 
-			return min.AddYears(year);
+			return ClampDate(minDate, minCalendarDate, maxCalendarDate);
 		}
 
 		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemFontFamilyProperty { get; } = 
