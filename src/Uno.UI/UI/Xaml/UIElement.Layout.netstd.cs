@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml
 		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
 		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
 		/// </summary>
+		internal bool ShouldInterceptInvalidate { get; set; }
+
 		public void InvalidateMeasure()
 		{
 			if (ShouldInterceptInvalidate)
