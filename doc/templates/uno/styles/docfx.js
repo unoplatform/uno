@@ -1118,5 +1118,9 @@ $(function () {
     // Exclude tabbed content case
     $('a:not([data-tab])').click(delegateAnchors);
     scrollToCurrent();
+
+    $(document).ready(function(){
+      $('body').scrollspy({ offset: 150});
+    });
   }
 });
