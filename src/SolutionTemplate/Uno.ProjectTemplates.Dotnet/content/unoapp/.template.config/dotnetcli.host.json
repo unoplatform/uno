@@ -24,6 +24,10 @@
     "skia-gtk": {
       "longName": "skia-gtk",
       "shortName": "skia-gtk"
+    },
+    "skia-linux-fb": {
+      "longName": "skia-linux-fb",
+      "shortName": "skia-linux-fb"
     }
   }
 }

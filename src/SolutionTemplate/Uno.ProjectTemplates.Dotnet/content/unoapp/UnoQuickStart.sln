@@ -46,6 +46,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoQuickStart.Skia.Tizen", 
 EndProject
 #//#endif
 
+#//#if (skia-linux-fb)
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoQuickStart.Skia.Linux.FrameBuffer", "UnoQuickStart.Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj", "{761D821E-9905-4444-9ADF-76C995FE5427}"
+EndProject
+#//#endif
+
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		UnoQuickStart.Shared\UnoQuickStart.Shared.projitems*{$guid2$}*SharedItemsImports = 4
@@ -254,6 +259,7 @@ Global
 		{$guid5$}.Release|x86.ActiveCfg = Release|Any CPU
 		{$guid5$}.Release|x86.Build.0 = Release|Any CPU
 
+#//#if (skia-gtk)
 		{A5B8155A-118F-4794-B551-C6F3CF7E5411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A5B8155A-118F-4794-B551-C6F3CF7E5411}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5B8155A-118F-4794-B551-C6F3CF7E5411}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -282,7 +288,9 @@ Global
 		{A5B8155A-118F-4794-B551-C6F3CF7E5411}.Release|x64.Build.0 = Release|Any CPU
 		{A5B8155A-118F-4794-B551-C6F3CF7E5411}.Release|x86.ActiveCfg = Release|Any CPU
 		{A5B8155A-118F-4794-B551-C6F3CF7E5411}.Release|x86.Build.0 = Release|Any CPU
+#//#endif
 
+#//#if (skia-tizen)
 		{9AED22A6-77DC-4799-BAE7-5F26F2070BD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9AED22A6-77DC-4799-BAE7-5F26F2070BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AED22A6-77DC-4799-BAE7-5F26F2070BD2}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -311,6 +319,38 @@ Global
 		{9AED22A6-77DC-4799-BAE7-5F26F2070BD2}.Release|x64.Build.0 = Release|Any CPU
 		{9AED22A6-77DC-4799-BAE7-5F26F2070BD2}.Release|x86.ActiveCfg = Release|Any CPU
 		{9AED22A6-77DC-4799-BAE7-5F26F2070BD2}.Release|x86.Build.0 = Release|Any CPU
+#//#endif
+
+#//#if (skia-linux-fb)
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|ARM.Build.0 = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|x64.Build.0 = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Debug|x86.Build.0 = Debug|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|Any CPU.Build.0 = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|ARM.ActiveCfg = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|ARM.Build.0 = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|ARM64.Build.0 = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|iPhone.Build.0 = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|x64.ActiveCfg = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|x64.Build.0 = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|x86.ActiveCfg = Release|Any CPU
+		{761D821E-9905-4444-9ADF-76C995FE5427}.Release|x86.Build.0 = Release|Any CPU
+#//#endif
 
 		{6CF284A4-22B1-4F05-97F4-F095C07A598E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6CF284A4-22B1-4F05-97F4-F095C07A598E}.Debug|Any CPU.Build.0 = Debug|Any CPU

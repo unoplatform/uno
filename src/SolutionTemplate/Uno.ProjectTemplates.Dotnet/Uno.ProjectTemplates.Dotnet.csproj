@@ -241,7 +241,7 @@
 
 					}
 
-					var platforms = new string[] { "iOS", "UWP", "Wasm", "Droid", "macOS", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen" };
+					var platforms = new string[] { "iOS", "UWP", "Wasm", "Droid", "macOS", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
 
 					foreach(var platform in platforms)
 					{
