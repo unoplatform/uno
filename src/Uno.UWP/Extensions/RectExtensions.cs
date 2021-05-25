@@ -48,5 +48,11 @@ namespace Uno.Extensions
 		}
 
 		internal static Rect OffsetRect(this Rect rect, Point offset) => rect.OffsetRect(offset.X, offset.Y);
+
+		internal static bool IsIntersecting(this Rect rect, Rect other)
+		{
+			rect.Intersect(other);
+			return !rect.IsEmpty;
+		}
 	}
 }

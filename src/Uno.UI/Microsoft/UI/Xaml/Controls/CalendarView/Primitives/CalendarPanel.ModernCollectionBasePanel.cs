@@ -497,7 +497,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					var pixelsPerRow = viewport.Height / Rows;
 					renderWindow.Y = Math.Max(0, renderWindow.Y - pixelsPerRow);
-					renderWindow.Height = renderWindow.Height + pixelsPerRow;
+					renderWindow.Height = renderWindow.Height + (2 * pixelsPerRow);
 				}
 
 				// Prepare the items generator to generate some new items (will also set which items can be recycled in this measure pass).
@@ -549,7 +549,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							break;
 					}
 
-					var isVisible = viewport.Contains(itemBounds.Location);
+					var isVisible = itemBounds.IsIntersecting(viewport);
 					if (firstVisibleIndex == -1 && isVisible)
 					{
 						firstVisibleIndex = index;
