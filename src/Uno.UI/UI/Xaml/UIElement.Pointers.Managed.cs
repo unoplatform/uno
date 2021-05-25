@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -274,7 +275,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			#region Helpers
+#region Helpers
 			private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);
 
 			private static readonly RaisePointerEventArgs Wheel = (elt, args, ctx) => elt.OnPointerWheel(args, ctx);
@@ -340,7 +341,7 @@ namespace Windows.UI.Xaml
 					raise(originalSource, routedArgs, BubblingContext.Bubble);
 				}
 			}
-			#endregion
+#endregion
 		}
 
 		// TODO Should be per CoreWindow
@@ -354,7 +355,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region HitTestVisibility
+#region HitTestVisibility
 		internal void UpdateHitTest()
 		{
 			this.CoerceValue(HitTestVisibilityProperty);
@@ -366,27 +367,21 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// This property should never be directly set, and its value should always be calculated through coercion (see <see cref="CoerceHitTestVisibility(DependencyObject, object, bool)"/>.
 		/// </remarks>
-		private static readonly DependencyProperty HitTestVisibilityProperty =
-			DependencyProperty.Register(
-				"HitTestVisibility",
-				typeof(HitTestability),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(
-					HitTestability.Visible,
-					FrameworkPropertyMetadataOptions.Inherits,
-					coerceValueCallback: CoerceHitTestVisibility,
-					propertyChangedCallback: OnHitTestVisibilityChanged
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = HitTestability.Collapsed, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		internal static DependencyProperty HitTestVisibilityProperty { get; } = CreateHitTestVisibilityProperty();
+
+		internal HitTestability HitTestVisibility
+		{
+			get => GetHitTestVisibilityValue();
+			set => SetHitTestVisibilityValue(value);
+		}
 
 		/// <summary>
 		/// This calculates the final hit-test visibility of an element.
 		/// </summary>
 		/// <returns></returns>
-		private static object CoerceHitTestVisibility(DependencyObject dependencyObject, object baseValue)
+		private object CoerceHitTestVisibility(object baseValue)
 		{
-			var element = (UIElement)dependencyObject;
-
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
 			var baseHitTestVisibility = (HitTestability)baseValue;
 
@@ -399,15 +394,15 @@ namespace Windows.UI.Xaml
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
 			if (
 #if !__MACOS__
-				!element.IsLoaded ||
+				!IsLoaded ||
 #endif
-				!element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
+				!IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
 			{
 				return HitTestability.Collapsed;
 			}
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
-			if (!element.IsViewHit())
+			if (!IsViewHit())
 			{
 				return HitTestability.Invisible;
 			}
@@ -416,10 +411,20 @@ namespace Windows.UI.Xaml
 			return HitTestability.Visible;
 		}
 
-		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		internal void SetHitTestVisibilityForRoot()
 		{
+			// Root element must be visible to hit testing, regardless of the other properties values.
+			// The default value of HitTestVisibility is collapsed to avoid spending time coercing to a
+			// Collapsed.
+			HitTestVisibility = HitTestability.Visible;
 		}
-		#endregion
+
+		internal void ClearHitTestVisibilityForRoot()
+		{
+			this.ClearValue(HitTestVisibilityProperty);
+		}
+
+#endregion
 
 		partial void CapturePointerNative(Pointer pointer)
 			=> CoreWindow.GetForCurrentThread()!.SetPointerCapture();

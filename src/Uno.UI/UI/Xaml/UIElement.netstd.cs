@@ -56,10 +56,16 @@ namespace Windows.UI.Xaml
 			=> visualTreeRoot.OnElementLoading(1);
 
 		internal static void RootElementLoaded(UIElement visualTreeRoot)
-			=> visualTreeRoot.OnElementLoaded();
+		{
+			visualTreeRoot.SetHitTestVisibilityForRoot();
+			visualTreeRoot.OnElementLoaded();
+		}
 
 		internal static void RootElementUnloaded(UIElement visualTreeRoot)
-			=> visualTreeRoot.OnElementUnloaded();
+		{
+			visualTreeRoot.ClearHitTestVisibilityForRoot();
+			visualTreeRoot.OnElementUnloaded();
+		}
 
 		// Overloads for the FrameworkElement to raise the events
 		// (Load/Unload is actually a concept of the FwElement, but it's easier to handle it directly from the UIElement)
