@@ -166,6 +166,11 @@ namespace Windows.UI.Xaml
 					WindowManagerInterop.SetElementBackgroundGradient(HtmlId, gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
 					break;
+				case XamlCompositionBrushBase unsupportedCompositionBrush:
+					var fallbackColor = unsupportedCompositionBrush.FallbackColorWithOpacity;
+					WindowManagerInterop.SetElementBackgroundColor(HtmlId, fallbackColor);
+					RecalculateBrushOnSizeChanged(false);
+					break;
 				default:
 					WindowManagerInterop.ResetElementBackground(HtmlId);
 					RecalculateBrushOnSizeChanged(false);

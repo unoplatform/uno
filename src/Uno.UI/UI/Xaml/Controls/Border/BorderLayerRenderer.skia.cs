@@ -148,6 +148,11 @@ namespace Windows.UI.Xaml.Shapes
 					Brush.AssignAndObserveBrush(acrylicBrush, color => backgroundShape.FillBrush = compositor.CreateColorBrush(color))
 						.DisposeWith(disposables);
 				}
+				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
+				{
+					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundShape.FillBrush = compositor.CreateColorBrush(color))
+						.DisposeWith(disposables);
+				}
 				else
 				{
 					backgroundShape.FillBrush = null;
@@ -217,6 +222,16 @@ namespace Windows.UI.Xaml.Shapes
 					Brush.AssignAndObserveBrush(acrylicBrush, c => backgroundShape.FillBrush = compositor.CreateColorBrush(c))
 						.DisposeWith(disposables);
 
+					Disposable.Create(() => backgroundShape.FillBrush = null)
+						.DisposeWith(disposables);
+				}
+				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
+				{
+					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, c => backgroundShape.FillBrush = compositor.CreateColorBrush(c))
+						.DisposeWith(disposables);
+
+					// This is required because changing the CornerRadius changes the background drawing 
+					// implementation and we don't want a rectangular background behind a rounded background.
 					Disposable.Create(() => backgroundShape.FillBrush = null)
 						.DisposeWith(disposables);
 				}

@@ -185,6 +185,11 @@ namespace Windows.UI.Xaml.Shapes
 					acrylicBrush.Subscribe(owner, area, adjustedArea, parent, sublayers, ref insertionIndex, fillMask)
 						.DisposeWith(disposables);
 				}
+				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
+				{
+					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => innerLayer.FillColor = color)
+						.DisposeWith(disposables);
+				}
 				else
 				{
 					innerLayer.FillColor = Colors.Transparent;
@@ -267,6 +272,16 @@ namespace Windows.UI.Xaml.Shapes
 					var insertionIndex = 0;
 
 					acrylicBrush.Subscribe(owner, fullArea, insideArea, parent, sublayers, ref insertionIndex, fillMask: null);
+				}
+				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
+				{
+					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => parent.BackgroundColor = color)
+						.DisposeWith(disposables);
+
+					// This is required because changing the CornerRadius changes the background drawing 
+					// implementation and we don't want a rectangular background behind a rounded background.
+					Disposable.Create(() => parent.BackgroundColor = null)
+						.DisposeWith(disposables);
 				}
 				else
 				{
