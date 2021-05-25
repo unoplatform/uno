@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages
 		private Grid _grid;
 		public Grid AddedGrid => _grid;
 		public Exception Exception { get; private set; }
+		public bool WasArranged { get; private set; } = false;
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -38,6 +39,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			WasArranged = true;
+
 			try
 			{
 				_grid.Visibility = Visibility.Visible;
