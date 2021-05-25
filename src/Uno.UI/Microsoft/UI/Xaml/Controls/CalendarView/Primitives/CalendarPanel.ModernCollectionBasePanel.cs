@@ -492,6 +492,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_layoutStrategy.EstimateElementIndex(ElementType.ItemContainer, default, default, viewport, out var renderWindow, out var startIndex);
 				renderWindow.Size = viewport.Size; // The actualViewport contains only position information
 
+				// We request to the algo to render an extra row before and after the actual viewport
+				if (Rows > 0) // This can occur on first measure when we only determine the biggest item size
+				{
+					var pixelsPerRow = viewport.Height / Rows;
+					renderWindow.Y = Math.Max(0, renderWindow.Y - pixelsPerRow);
+					renderWindow.Height = renderWindow.Height + pixelsPerRow;
+				}
+
 				// Prepare the items generator to generate some new items (will also set which items can be recycled in this measure pass).
 				var expectedItemsCount = LastVisibleIndex - FirstVisibleIndex;
 				_cache.BeginGeneration(startIndex, startIndex + expectedItemsCount);
@@ -500,16 +508,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				int firstVisibleIndex = -1, lastVisibleIndex = -1;
 				var count = _host.Count;
 				var layout = new LayoutReference { RelativeLocation = ReferenceIdentity.Myself };
-				var remainingWindowToFill = renderWindow;
+				var currentLine = (y: double.MinValue, col: 0);
 
 				while (
 					index < count
 					&&
-						// _layoutStrategy.ShouldContinueFillingUpSpace only considers items on a single line, 
-						// so we enumerate until we reach the bottom of the viewport,
-						(layout.ReferenceBounds.Bottom < renderWindow.Bottom
-						// then we ask to the _layoutStrategy to get items to fill the last line
-						|| _layoutStrategy.ShouldContinueFillingUpSpace(ElementType.ItemContainer, index, layout, remainingWindowToFill))
+						// _layoutStrategy.ShouldContinueFillingUpSpace behaves weirdly, so we prefer to just check the bounds of the last measured element
+						// First we continue until we reach the last line, then we make sure to complete those line.
+						(layout.ReferenceBounds.Bottom < renderWindow.Bottom || currentLine.col < Cols)
 					)
 				{
 					var (entry, kind) = _cache.GetOrCreate(index);
@@ -556,8 +562,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					layout.RelativeLocation = ReferenceIdentity.AfterMe;
 					layout.ReferenceBounds = itemBounds;
-					remainingWindowToFill.Y = Math.Min(renderWindow.Bottom, itemBounds.Y);
-					remainingWindowToFill.Height = Math.Max(0, renderWindow.Bottom - itemBounds.Bottom);
+
+					if (currentLine.y < itemBounds.Y)
+					{
+						currentLine = (itemBounds.Y, 1);
+					}
+					else
+					{
+						currentLine.col++;
+					}
 
 					index++;
 				}
