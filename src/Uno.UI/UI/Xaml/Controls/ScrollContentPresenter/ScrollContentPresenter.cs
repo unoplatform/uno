@@ -30,6 +30,24 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
 	{
+		#region ScrollOwner
+		private ManagedWeakReference _scroller;
+
+		public object ScrollOwner
+		{
+			get => _scroller.Target;
+			set
+			{
+				if (_scroller is { } oldScroller)
+				{
+					WeakReferencePool.ReturnWeakReference(this, oldScroller);
+				}
+
+				_scroller = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
+		#endregion
+
 		private void InitializeScrollContentPresenter()
 		{
 			this.RegisterParentChangedCallback(this, OnParentChanged);

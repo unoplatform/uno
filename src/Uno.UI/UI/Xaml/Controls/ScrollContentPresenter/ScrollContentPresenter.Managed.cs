@@ -75,21 +75,7 @@ namespace Windows.UI.Xaml.Controls
 		const double ScrollViewerMinHeightToReflowAroundOcclusions = 32.0f;
 
 		private readonly IScrollStrategy _strategy;
-		private ManagedWeakReference _scroller;
-
-		public object ScrollOwner
-		{
-			get => _scroller.Target;
-			set
-			{
-				if (_scroller is { } oldScroller)
-				{
-					WeakReferencePool.ReturnWeakReference(this, oldScroller);
-				}
-
-				_scroller = WeakReferencePool.RentWeakReference(this, value);
-			}
-		}
+		
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
 		public bool CanHorizontallyScroll { get; set; }
