@@ -265,33 +265,21 @@ namespace Windows.UI.Xaml
 			this.CoerceValue(HitTestVisibilityProperty);
 		}
 
-		/// <summary>
-		/// Represents the final calculated hit-test visibility of the element.
-		/// </summary>
-		/// <remarks>
-		/// This property should never be directly set, and its value should always be calculated through coercion (see <see cref="CoerceHitTestVisibility(DependencyObject, object, bool)"/>.
-		/// </remarks>
-		private static DependencyProperty HitTestVisibilityProperty { get ; } =
-			DependencyProperty.Register(
-				"HitTestVisibility",
-				typeof(HitTestability),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(
-					HitTestability.Visible,
-					FrameworkPropertyMetadataOptions.Inherits,
-					coerceValueCallback: (s, e) => CoerceHitTestVisibility(s, e),
-					propertyChangedCallback: (s, e) => OnHitTestVisibilityChanged(s, e)
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = HitTestability.Collapsed, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		internal static DependencyProperty HitTestVisibilityProperty { get; } = CreateHitTestVisibilityProperty();
+
+		internal HitTestability HitTestVisibility
+		{
+			get => GetHitTestVisibilityValue();
+			set => SetHitTestVisibilityValue(value);
+		}
 
 		/// <summary>
 		/// This calculates the final hit-test visibility of an element.
 		/// </summary>
 		/// <returns></returns>
-		private static object CoerceHitTestVisibility(DependencyObject dependencyObject, object baseValue)
+		private object CoerceHitTestVisibility(object baseValue)
 		{
-			var element = (UIElement)dependencyObject;
-
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
 			var baseHitTestVisibility = (HitTestability)baseValue;
 
@@ -302,13 +290,13 @@ namespace Windows.UI.Xaml
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
-			if (!element.IsLoaded || !element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
+			if (!IsLoaded || !IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
 			{
 				return HitTestability.Collapsed;
 			}
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
-			if (!element.IsViewHit())
+			if (!IsViewHit())
 			{
 				return HitTestability.Invisible;
 			}
@@ -317,19 +305,14 @@ namespace Windows.UI.Xaml
 			return HitTestability.Visible;
 		}
 
-		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is UIElement element
-				&& args.OldValue is HitTestability oldValue
-				&& args.NewValue is HitTestability newValue)
-			{
-				element.OnHitTestVisibilityChanged(oldValue, newValue);
-			}
-		}
-
 		private protected virtual void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
 		{
-			if (newValue == HitTestability.Visible)
+			ApplyHitTestVisibility(newValue);
+		}
+
+		private void ApplyHitTestVisibility(HitTestability value)
+		{
+			if (value == HitTestability.Visible)
 			{
 				// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
 				// This means that they can be the target of hit-testing and will raise pointer events when interacted with.
@@ -349,6 +332,20 @@ namespace Windows.UI.Xaml
 				UpdateDOMProperties();
 			}
 		}
+
+		internal void SetHitTestVisibilityForRoot()
+		{
+			// Root element must be visible to hit testing, regardless of the other properties values.
+			// The default value of HitTestVisibility is collapsed to avoid spending time coercing to a
+			// Collapsed.
+			HitTestVisibility = HitTestability.Visible;
+		}
+
+		internal void ClearHitTestVisibilityForRoot()
+		{
+			this.ClearValue(HitTestVisibilityProperty);
+		}
+
 		#endregion
 
 		// TODO: This should be marshaled instead of being parsed! https://github.com/unoplatform/uno/issues/2116

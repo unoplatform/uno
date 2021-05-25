@@ -43,5 +43,10 @@ namespace Windows.UI.Xaml
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
 		}
+
+
+		internal void SetHitTestVisibilityForRoot() => throw new NotSupportedException("Reference assembly");
+
+		internal void ClearHitTestVisibilityForRoot() => throw new NotSupportedException("Reference assembly");
 	}
 }

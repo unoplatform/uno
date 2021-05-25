@@ -20,14 +20,17 @@ body {
   position: absolute;
   display: inline;
   outline: none;
-  pointer-events: auto;
+  /*
+      Disable pointer events by default to match HitTestVisibilityProperty
+      default value
+  */
+  pointer-events: none;
   /*
     Padding & margin are required for measure/arrange to behave well:
     margin & padding are calculated through Xaml elements.
   */
   margin: 0 !important;
   padding: 0;
-
   line-height: normal;
   -webkit-box-sizing: border-box !important;
   -moz-box-sizing: border-box !important;

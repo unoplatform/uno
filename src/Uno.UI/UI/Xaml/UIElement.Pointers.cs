@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml
 		internal HitTestability GetHitTestVisibility()
 		{
 #if __WASM__ || __SKIA__
-			return (HitTestability)this.GetValue(HitTestVisibilityProperty);
+			return HitTestVisibility;
 #else
 			// This is a coalesced HitTestVisible and should be unified with it
 			// We should follow the WASM way and unify it on all platforms!

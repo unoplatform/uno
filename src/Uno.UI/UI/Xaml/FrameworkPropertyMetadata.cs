@@ -117,14 +117,24 @@ namespace Windows.UI.Xaml
 		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
 		{
 		}
-		
+
 		internal FrameworkPropertyMetadata(
 			PropertyChangedCallback propertyChangedCallback,
 			CoerceValueCallback coerceValueCallback
 		) : base(propertyChangedCallback, coerceValueCallback)
 		{
 		}
-		
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
+			FrameworkPropertyMetadataOptions options,
+			BackingFieldUpdateCallback backingFieldUpdateCallback,
+			CoerceValueCallback coerceValueCallback
+		) : base(defaultValue: defaultValue, propertyChangedCallback: null, coerceValueCallback: coerceValueCallback, backingFieldUpdateCallback: backingFieldUpdateCallback)
+		{
+			Options = options.WithDefault();
+		}
+
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			FrameworkPropertyMetadataOptions options,
