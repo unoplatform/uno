@@ -442,9 +442,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		#endregion
 
 		#region Panel / base class (i.e. ModernCollectionBasePanel) implementation (Measure/Arrange)
-		private Size base_MeasureOverride(Size availableSize)
+		private Rect GetLayoutViewport(Size availableSize = default)
 		{
-			if (_host is null || _layoutStrategy is null)
+			if (_host is null)
 			{
 				return default;
 			}
@@ -453,6 +453,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// By default, if the CalendarView is not stretch, it will render at its default hardcoded size.
 			// It will also never be smaller than this hardcoded size (content will clipped)
 			// Note: If the Calendar has a defined size (or min / max) we ignore it in Measure, and we wait for the Arrange to "force" us to apply it.
+
 			var calendar = _host.Owner;
 			var viewport = new Rect(
 				_effectiveViewport.Location.FiniteOrDefault(default),
@@ -465,6 +466,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				viewport.Height = _defaultHardCodedSize.Height;
 			}
+
+			return viewport;
+		}
+
+		private Size base_MeasureOverride(Size availableSize)
+		{
+			if (_host is null || _layoutStrategy is null)
+			{
+				return default;
+			}
+
+			var viewport = GetLayoutViewport(availableSize);
 
 			_layoutStrategy.BeginMeasure();
 #if __ANDROID__ // TODO: IOS
@@ -513,7 +526,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						// We don't have any valid cell size yet (This measure pass has been caused by DetermineTheBiggestItemSize),
 						// so we stop right after having inserted the first child in the Children collection.
 						index++;
-						return default;
+						return _defaultHardCodedSize;
 					}
 
 					entry.Container.Measure(itemSize);
@@ -622,7 +635,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					return;
 				}
 
-				if (Math.Abs(that._effectiveViewport.Y - that._lastLayoutedViewport.Y) > 100)
+				// Uno: This SetViewportSize should be done in the CalendarPanel_Partial.ArrangeOverride of the Panel (not the 'base_'),
+				// but (due to invalid layouting event sequence in uno?) it would cause a second layout pass.
+				// Also on Android in Year and Decade views, the Arrange would never be invoked if the CellSize is not defined ...
+				// which is actually set **ONLY** by this SetViewport for Year and Decade host
+				// (We bypass the SetItemMinimumSize in the CalendarPanel_Partial.MeasureOverride if m_type is **not** CalendarPanelType.Primary)
+				that._layoutStrategy.SetViewportSize(that.GetLayoutViewport().Size, out var needsMeasure);
+
+				if (needsMeasure || Math.Abs(that._effectiveViewport.Y - that._lastLayoutedViewport.Y) > 100)
 				{
 					that.InvalidateMeasure();
 				}
