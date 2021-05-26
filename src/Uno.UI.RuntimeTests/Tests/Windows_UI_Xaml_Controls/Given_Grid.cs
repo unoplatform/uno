@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -50,15 +52,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					RowSpacing = rowSpacing,
 					ColumnDefinitions =
 					{
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto)},
-						new ColumnDefinition {Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Auto)},
+						new ColumnDefinition {Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
 					},
 					RowDefinitions =
 					{
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto)},
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
-						new RowDefinition {Height = GridLengthHelper.FromValueAndType(1, GridUnitType.Star)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Auto)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
+						new RowDefinition {Height = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star)},
 					},
 					Children =
 					{
@@ -199,6 +201,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(80, colDef0.ActualWidth);
 			Assert.AreEqual(210, colDef1.ActualWidth);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Definitions_Cleared_And_Empty()
+		{
+			var SUT = new Grid();
+			var tb = new TextBlock { Text = "Text" };
+			AddChild(SUT, new Border { Width = 50, Height = 20 }, 0, 0);
+			AddChild(SUT, tb, 0, 0);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			SUT.ColumnDefinitions.Clear();
+
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			await TestServices.WindowHelper.WaitForLoaded(tb); // Needed for iOS where measurement is async
+
+			NumberAssert.Greater(tb.ActualWidth, 0);
+			NumberAssert.Greater(tb.ActualHeight, 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Child_Added_Measure_And_Visible_Arrange()
+		{
+			// This test emulates the layout sequence associated with DataGridColumnHeadersPresenter in the WCT
+			var gridAdder = new GridAdder() { MinWidth = 5, MinHeight = 5 };
+			TestServices.WindowHelper.WindowContent = gridAdder;
+			await TestServices.WindowHelper.WaitForLoaded(gridAdder);
+
+			await TestServices.WindowHelper.WaitFor(() => gridAdder.WasArranged); // Needed for iOS where measurement is async
+
+			if (gridAdder.Exception != null)
+			{
+				throw new AssertFailedException("Exception occurred", gridAdder.Exception);
+			}
+
+			var SUT = gridAdder.AddedGrid;
+			Assert.IsNotNull(SUT);
+			Assert.AreEqual(Visibility.Visible, SUT.Visibility);
+
+#if !__ANDROID__ && !__IOS__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
+			Assert.AreEqual(27, SUT.ActualHeight);
+			NumberAssert.Greater(SUT.ActualWidth, 0); 
+#endif
 		}
 
 		private static void AddChild(Grid parent, FrameworkElement child, int row, int col, int? rowSpan = null, int? colSpan = null)
