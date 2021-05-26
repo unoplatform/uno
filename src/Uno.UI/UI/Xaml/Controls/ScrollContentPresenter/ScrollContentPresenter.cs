@@ -65,6 +65,7 @@ namespace Windows.UI.Xaml.Controls
 
 #if __IOS__ || __ANDROID__
 		private NativeScrollContentPresenter Native => Content as NativeScrollContentPresenter;
+		private object RealContent => Native?.Content;
 		public ScrollBarVisibility HorizontalScrollBarVisibility => Native?.HorizontalScrollBarVisibility ?? default;
 		public ScrollBarVisibility VerticalScrollBarVisibility => Native?.VerticalScrollBarVisibility ?? default;
 		public bool CanHorizontallyScroll
@@ -203,6 +204,25 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsViewHit()
 			=> true;
+#elif __IOS__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter
+		protected override Size MeasureOverride(Size size)
+		{
+			var result = base.MeasureOverride(size);
+
+			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
+
+			return result;
+		}
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var result = base.ArrangeOverride(finalSize);
+
+			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
+
+			return result;
+		}
 #endif
 	}
 }
