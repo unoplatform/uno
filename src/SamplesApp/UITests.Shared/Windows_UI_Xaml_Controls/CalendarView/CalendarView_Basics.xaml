@@ -9,52 +9,7 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-
-		</Grid.ColumnDefinitions>
-
-		<CalendarView x:Name="sut"
-            FirstDayOfWeek="{Binding SelectedItem.Content, ElementName=dow, Mode=TwoWay}"
-            SelectionMode="{Binding SelectedItem.Content, ElementName=selection, Mode=TwoWay}"
-            DisplayMode="{Binding SelectedItem.Content, ElementName=mode, FallbackValue=Month, Mode=TwoWay}" />
-
-		<StackPanel Grid.Column="1" Background="#20000000" Margin="5" Spacing="5">
-			<StackPanel Orientation="Horizontal" Spacing="5">
-				<ComboBox x:Name="mode" Header="DisplayMode">
-					<ComboBoxItem IsSelected="True">Month</ComboBoxItem>
-					<ComboBoxItem>Decade</ComboBoxItem>
-					<ComboBoxItem>Year</ComboBoxItem>
-				</ComboBox>
-				<ComboBox x:Name="selection" Header="DisplayMode">
-					<ComboBoxItem IsSelected="True">Single</ComboBoxItem>
-					<ComboBoxItem>Multiple</ComboBoxItem>
-					<ComboBoxItem>None</ComboBoxItem>
-				</ComboBox>
-				<ComboBox x:Name="dow" Header="FirstDayOfWeek">
-					<ComboBoxItem IsSelected="True">Sunday</ComboBoxItem>
-					<ComboBoxItem>Monday</ComboBoxItem>
-					<ComboBoxItem>Tuesday</ComboBoxItem>
-					<ComboBoxItem>Wednesday</ComboBoxItem>
-					<ComboBoxItem>Thursday</ComboBoxItem>
-					<ComboBoxItem>Friday</ComboBoxItem>
-					<ComboBoxItem>Saturday</ComboBoxItem>
-				</ComboBox>
-				<ToggleButton x:Name="today" IsChecked="{Binding IsTodayHighlighted, ElementName=sut, Mode=TwoWay}">IsTodayHighlighted</ToggleButton>
-			</StackPanel>
-			<StackPanel Orientation="Horizontal" Spacing="5">
-				<DatePicker x:Name="min" Header="MinDate" Date="{Binding MinDate, ElementName=sut, Mode=TwoWay}" />
-				<DatePicker x:Name="min" Header="MaxDate" Date="{Binding MaxDate, ElementName=sut, Mode=TwoWay}" />
-			</StackPanel>
-
-			<StackPanel Orientation="Horizontal" Spacing="5">
-				<DatePicker x:Name="setDisplayDate" Header="SetDisplayDate" />
-				<Button Click="SetDisplayDate">Set</Button>
-			</StackPanel>
-
-			<TextBlock>Selected Date(s):</TextBlock>
-			<ItemsControl x:Name="selected" />
-		</StackPanel>
+		<TextBlock VerticalAlignment="Top">This is a vanilla CalendarView...</TextBlock>
+		<CalendarView x:Name="sut" />
 	</Grid>
 </Page>

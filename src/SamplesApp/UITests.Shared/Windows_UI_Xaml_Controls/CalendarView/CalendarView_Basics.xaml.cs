@@ -11,16 +11,6 @@ namespace UITests.Windows_UI_Xaml_Controls.CalendarViewTests
 		public CalendarView_Basics()
 		{
 			this.InitializeComponent();
-
-			sut.SelectedDatesChanged += (snd, evt) =>
-			{
-				selected.ItemsSource = sut.SelectedDates.ToArray();
-			};
-		}
-
-		private void SetDisplayDate(object sender, RoutedEventArgs args)
-		{
-			sut.SetDisplayDate(setDisplayDate.Date);
 		}
 	}
 }
