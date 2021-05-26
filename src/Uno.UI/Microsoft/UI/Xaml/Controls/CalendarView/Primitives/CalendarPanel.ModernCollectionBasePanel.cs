@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Uno;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -386,7 +387,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				sv.ChangeView(
 					horizontalOffset: null,
 					verticalOffset: newOffset,
-					zoomFactor: null);
+					zoomFactor: null,
+					forceSynchronous);
 
 				// Makes sure the container of the requested date is materialized before the end of this method
 				base_MeasureOverride(_lastLayoutedViewport.Size);
@@ -599,6 +601,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 				_layoutStrategy.EndMeasure();
 			}
+
 			VisibleIndicesUpdated?.Invoke(this, null);
 
 			_layoutStrategy.EstimatePanelExtent(
@@ -655,7 +658,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// (We bypass the SetItemMinimumSize in the CalendarPanel_Partial.MeasureOverride if m_type is **not** CalendarPanelType.Primary)
 				that._layoutStrategy.SetViewportSize(that.GetLayoutViewport().Size, out var needsMeasure);
 
-				if (needsMeasure || Math.Abs(that._effectiveViewport.Y - that._lastLayoutedViewport.Y) > 100)
+				if (needsMeasure || Math.Abs(that._effectiveViewport.Y - that._lastLayoutedViewport.Y) > (that._lastLayoutedViewport.Height / that.Rows) * .75)
 				{
 					that.InvalidateMeasure();
 				}
