@@ -121,10 +121,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 
     <!--#if (Container == "Unity") -->
-    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1909" />
+    <PackageReference Include="Prism.Unity.Uno" Version="8.1.97" />
     <!--#endif -->
     <!--#if (Container == "DryIoc") -->
-    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1909" />
+    <PackageReference Include="Prism.DryIoc.Uno" Version="8.1.97" />
     <!--#endif -->
   </ItemGroup>
   <ItemGroup>
