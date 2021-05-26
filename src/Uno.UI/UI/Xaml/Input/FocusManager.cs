@@ -209,9 +209,6 @@ namespace Windows.UI.Xaml.Input
 		internal static void SetEngagedControl(Control spScrollViewer)
 		{
 			// UNO-TODO
-#if !DEBUG
-#error not implemented
-#endif
 		}
 	}
 }

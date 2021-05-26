@@ -2094,9 +2094,6 @@ namespace Windows.UI.Xaml.Controls
 						bool focused = false;
 						//focused = FocusManager.SetFocusedElement(spScrollViewer, FocusState.Keyboard, false /*animateIfBringintoView*/);
 						focused = FocusManager.SetFocusedElement(spScrollViewer, FocusNavigationDirection.None, FocusState.Keyboard);
-#if !DEBUG
-error SetFocusedElement() incorrect here
-#endif
 						if (focused)
 						{
 							FocusManager.SetEngagedControl(spScrollViewer);
