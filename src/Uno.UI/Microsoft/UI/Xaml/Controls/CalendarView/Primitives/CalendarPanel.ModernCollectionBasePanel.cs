@@ -493,6 +493,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// Gets the index of the first element to render and the actual viewport to use
 				_layoutStrategy.EstimateElementIndex(ElementType.ItemContainer, default, default, viewport, out var renderWindow, out var startIndex);
 				renderWindow.Size = viewport.Size; // The actualViewport contains only position information
+				startIndex = Math.Max(0, startIndex - StartIndex);
 
 				// We request to the algo to render an extra row before and after the actual viewport
 				if (Rows > 0) // This can occur on first measure when we only determine the biggest item size
@@ -527,7 +528,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					}
 
 					var itemSize = _layoutStrategy.GetElementMeasureSize(ElementType.ItemContainer, index, renderWindow); // Note: It's actually the same for all items
-					var itemBounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index, itemSize, layout, renderWindow);
+					var itemBounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index + StartIndex, itemSize, layout, renderWindow);
 
 					if (itemSize.Width < _minCellSize.Width && itemSize.Height < _minCellSize.Height)
 					{
@@ -577,7 +578,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					index++;
 				}
 				
-				StartIndex = 0;
 				FirstVisibleIndexBase = Math.Max(firstVisibleIndex, startIndex);
 				LastVisibleIndexBase = Math.Max(FirstVisibleIndexBase, lastVisibleIndex);
 				_lastLayoutedViewport = viewport;
@@ -628,7 +628,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			foreach (var child in Children)
 			{
 				var index = _cache.IndexFromContainer(child);
-				var bounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index, child.DesiredSize, layout, window);
+				var bounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index + StartIndex, child.DesiredSize, layout, window);
 
 				//TODO _layoutStrategy.GetElementArrangeBounds()
 
