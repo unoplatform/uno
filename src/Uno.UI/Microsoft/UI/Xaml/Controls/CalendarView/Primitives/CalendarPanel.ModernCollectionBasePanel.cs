@@ -530,7 +530,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					var itemSize = _layoutStrategy.GetElementMeasureSize(ElementType.ItemContainer, index, renderWindow); // Note: It's actually the same for all items
 					var itemBounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index + StartIndex, itemSize, layout, renderWindow);
 
-					if (itemSize.Width < _minCellSize.Width && itemSize.Height < _minCellSize.Height)
+					if (itemSize.Width < _minCellSize.Width && itemSize.Height < _minCellSize.Height || Cols == 0 || Rows == 0)
 					{
 						// We don't have any valid cell size yet (This measure pass has been caused by DetermineTheBiggestItemSize),
 						// so we stop right after having inserted the first child in the Children collection.
