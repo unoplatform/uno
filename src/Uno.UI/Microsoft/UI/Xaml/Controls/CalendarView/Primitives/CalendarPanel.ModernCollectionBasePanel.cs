@@ -480,6 +480,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			var viewport = GetLayoutViewport(availableSize);
+			if (Rows > 0 && Cols > 0)
+			{
+				// Uno: This SetViewportSize should be done in the CalendarPanel_Partial.ArrangeOverride of the Panel(not the 'base_'),
+				// but (due to invalid layouting event sequence in uno?) it would cause a second layout pass.
+				// Invoking it here makes sure that the ItemSize is valid for this measure pass.
+				_layoutStrategy.SetViewportSize(viewport.Size, out _);
+			}
 
 			_layoutStrategy.BeginMeasure();
 #if __ANDROID__ // TODO: IOS
@@ -488,6 +495,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ShouldInterceptInvalidate = true;
 #endif
 			var index = -1;
+			var bottom = 0.0;
 			try
 			{
 				// Gets the index of the first element to render and the actual viewport to use
@@ -530,7 +538,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					var itemSize = _layoutStrategy.GetElementMeasureSize(ElementType.ItemContainer, index, renderWindow); // Note: It's actually the same for all items
 					var itemBounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index + StartIndex, itemSize, layout, renderWindow);
 
-					if (itemSize.Width < _minCellSize.Width && itemSize.Height < _minCellSize.Height || Cols == 0 || Rows == 0)
+					bottom = itemBounds.Bottom;
+
+					if ((itemSize.Width < _minCellSize.Width && itemSize.Height < _minCellSize.Height) || Cols == 0 || Rows == 0)
 					{
 						// We don't have any valid cell size yet (This measure pass has been caused by DetermineTheBiggestItemSize),
 						// so we stop right after having inserted the first child in the Children collection.
@@ -610,6 +620,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				default /* not used by CalendarLayoutStrategyImpl */,
 				out var desiredSize);
 
+			// When the StartIndex is greater than 0, the desiredSize might ignore the last line.
+			if (desiredSize.Height < bottom)
+			{
+				desiredSize.Height = bottom;
+			}
+
 			return desiredSize;
 		}
 
@@ -646,7 +662,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				that._effectiveViewport = args.EffectiveViewport;
 
-				if (that._host is null || that._layoutStrategy is null)
+				if (that._host is null || that._layoutStrategy is null || that.Cols == 0 || that.Rows == 0)
 				{
 					return;
 				}

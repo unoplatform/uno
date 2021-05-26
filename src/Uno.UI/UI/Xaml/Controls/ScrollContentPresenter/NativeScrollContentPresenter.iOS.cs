@@ -27,8 +27,19 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInAnimatedScroll;
 
-		internal CGPoint UpperScrollLimit => (CGPoint)(ContentSize - Frame.Size);
 		CGPoint IUIScrollView.UpperScrollLimit => UpperScrollLimit;
+		internal CGPoint UpperScrollLimit
+		{
+			get
+			{
+				var extent = ContentSize;
+				var viewport = Frame.Size;
+
+				return new CGPoint(
+					Math.Max(0, extent.Width - viewport.Width),
+					Math.Max(0, extent.Height - viewport.Height));
+			}
+		}
 
 		internal NativeScrollContentPresenter(ScrollViewer scroller) : this()
 		{

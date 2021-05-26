@@ -57,15 +57,38 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private (double? horizontal, double? vertical, bool disableAnimation)? _pendingChangeView;
+
+		protected override void OnAfterArrange()
+		{
+			base.OnAfterArrange();
+
+			if (_pendingChangeView is {} req)
+			{
+				var success = ChangeViewNative(req.horizontal, req.vertical, null, req.disableAnimation);
+				if (success || !IsArrangeDirty)
+				{
+					_pendingChangeView = default;
+				}
+			}
+		}
+
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
 			if (_scrollableContainer != null)
 			{
 				// iOS doesn't limit the offset to the scrollable bounds by itself
-				var newOffset = new CGPoint(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset)
-					.Clamp(CGPoint.Empty, _scrollableContainer.UpperScrollLimit);
+				var limit = _scrollableContainer.UpperScrollLimit;
+				var desiredOffsets = new Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
+				var clampedOffsets = new Foundation.Point(MathEx.Clamp(desiredOffsets.X, 0, limit.X), MathEx.Clamp(desiredOffsets.Y, 0, limit.Y));
 
-				_scrollableContainer.SetContentOffset(newOffset, !disableAnimation);
+				var success = desiredOffsets == clampedOffsets;
+				if (!success && IsArrangeDirty)
+				{
+					_pendingChangeView = (horizontalOffset, verticalOffset, disableAnimation);
+				}
+
+				_scrollableContainer.SetContentOffset(desiredOffsets, !disableAnimation);
 
 				if(zoomFactor is { } zoom)
 				{
@@ -73,8 +96,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				// Return true if successfully scrolled to asked offsets
-				return (horizontalOffset == null || horizontalOffset == newOffset.X) &&
-				       (verticalOffset == null || verticalOffset == newOffset.Y);
+				return success;
 			}
 
 			return false;
