@@ -459,6 +459,7 @@ namespace Windows.UI.Xaml.Controls
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
 			public readonly Thickness Padding;
+			public readonly Color? BackgroundFallbackColor;
 
 			public LayoutState(Windows.Foundation.Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, Thickness padding)
 			{
@@ -474,6 +475,8 @@ namespace Windows.UI.Xaml.Controls
 
 				BackgroundColor = (Background as SolidColorBrush)?.Color;
 				BorderBrushColor = (BorderBrush as SolidColorBrush)?.Color;
+
+				BackgroundFallbackColor = (Background as XamlCompositionBrushBase)?.FallbackColor;
 			}
 
 			public bool Equals(LayoutState other)
@@ -487,7 +490,8 @@ namespace Windows.UI.Xaml.Controls
 					&& other.BorderBrushColor == BorderBrushColor
 					&& other.BorderThickness == BorderThickness
 					&& other.CornerRadius == CornerRadius
-					&& other.Padding == Padding;
+					&& other.Padding == Padding
+					&& other.BackgroundFallbackColor == BackgroundFallbackColor;
 			}
 		}
 	}

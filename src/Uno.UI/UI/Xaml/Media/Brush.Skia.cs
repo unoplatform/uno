@@ -57,6 +57,22 @@ namespace Windows.UI.Xaml.Media
 
 					return disposables;
 				}
+				else if (b is XamlCompositionBrushBase unsupportedCompositionBrush)
+				{
+					colorSetter(unsupportedCompositionBrush.FallbackColorWithOpacity);
+
+					unsupportedCompositionBrush.RegisterDisposablePropertyChangedCallback(
+						XamlCompositionBrushBase.FallbackColorProperty,
+						(s, colorArg) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity)
+					)
+					.DisposeWith(disposables);
+
+					unsupportedCompositionBrush.RegisterDisposablePropertyChangedCallback(
+						OpacityProperty,
+						(s, colorArg) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity)
+					)
+					.DisposeWith(disposables);
+				}
 				else
 				{
 					colorSetter(SolidColorBrushHelper.Transparent.Color);
