@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:wasm="http://uno.ui/wasm" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:ios="http://platform.uno/ios" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:wasm="http://uno.ui/wasm" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:ios="http://platform.uno/ios" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Default">
       <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
@@ -9623,6 +9623,7 @@
                 <Setter Property="TabNavigation" Value="Once" />
                 <Setter Property="BringIntoViewOnFocusChange" Value="False" />
                 <Setter Property="Template" Value="{StaticResource ScrollViewerScrollBarlessTemplate}" />
+                <Setter Property="(uno:ScrollViewer.ShouldFallBackToNativeScrollBars)" Value="False" />
               </Style>
             </Border.Resources>
             <VisualStateManager.VisualStateGroups>
@@ -9665,6 +9666,11 @@
               <VisualStateGroup x:Name="DisplayModeStates">
                 <VisualState x:Name="Month" />
                 <VisualState x:Name="Year">
+                  <!--Begin: Uno only-->
+                  <VisualState.Setters>
+                    <Setter Target="YearViewScrollViewer.IsHitTestVisible" Value="True" />
+                  </VisualState.Setters>
+                  <!--End: Uno only-->
                   <Storyboard>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MonthViewScrollViewer" Storyboard.TargetProperty="IsEnabled">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="False" />
@@ -9678,6 +9684,11 @@
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Decade">
+                  <!--Begin: Uno only-->
+                  <VisualState.Setters>
+                    <Setter Target="DecadeViewScrollViewer.IsHitTestVisible" Value="True" />
+                  </VisualState.Setters>
+                  <!--End: Uno only-->
                   <Storyboard>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MonthViewScrollViewer" Storyboard.TargetProperty="IsEnabled">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="False" />
@@ -9880,9 +9891,9 @@
                 <Button x:Name="NextButton" Grid.Column="2" Content="&#xE0E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" IsTabStop="True" Padding="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreContentAfter}" Style="{StaticResource NavigationButtonStyle}" />
               </Grid>
               <Grid x:Name="Views" Grid.Row="1">
-                <Grid.Clip>
-                  <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ClipRect}" />
-                </Grid.Clip>
+                <!--<Grid.Clip>
+                                    <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ClipRect}" />
+                                </Grid.Clip>-->
                 <Border x:Name="BackgroundLayer" Background="{TemplateBinding BorderBrush}">
                   <Border.RenderTransform>
                     <ScaleTransform x:Name="BackgroundTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />

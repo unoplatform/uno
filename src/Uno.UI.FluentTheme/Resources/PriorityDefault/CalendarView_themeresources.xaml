@@ -470,9 +470,9 @@
                                 <Button x:Name="NextButton" Grid.Column="2" Content="&#xE0E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" IsTabStop="True" Padding="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreContentAfter}" Style="{StaticResource NavigationButtonStyle}" />
                             </Grid>
                             <Grid x:Name="Views" Grid.Row="1">
-                                <Grid.Clip>
+                                <!--<Grid.Clip>
                                     <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ClipRect}" />
-                                </Grid.Clip>
+                                </Grid.Clip>-->
                                 <Border x:Name="BackgroundLayer" Background="{TemplateBinding BorderBrush}">
                                     <Border.RenderTransform>
                                         <ScaleTransform x:Name="BackgroundTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
