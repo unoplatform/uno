@@ -26,7 +26,7 @@
 					<ComboBoxItem>Decade</ComboBoxItem>
 					<ComboBoxItem>Year</ComboBoxItem>
 				</ComboBox>
-				<ComboBox x:Name="selection" Header="DisplayMode">
+				<ComboBox x:Name="selection" Header="SelectionMode">
 					<ComboBoxItem IsSelected="True">Single</ComboBoxItem>
 					<ComboBoxItem>Multiple</ComboBoxItem>
 					<ComboBoxItem>None</ComboBoxItem>
