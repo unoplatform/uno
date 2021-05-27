@@ -1,15 +1,18 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Uno;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
+using Uno.Logging;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls.Primitives
@@ -26,7 +29,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Below this threshold, we only make sure to insert the first item in the Children collection to allow valid computation of the DetermineTheBiggestItemSize.
 		private static readonly Size _minCellSize = new Size(10, 10);
 
-		private class ContainersCache : IItemContainerMapping
+		private class ContainersCache : IItemContainerMapping, IEnumerable<CacheEntry>
 		{
 			private readonly List<CacheEntry> _entries = new List<CacheEntry>(31 + 7 * 2); // A month + one week before and after
 			private CalendarViewGeneratorHost? _host;
@@ -283,6 +286,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			/// <inheritdoc />
 			public DependencyObject? ContainerFromIndex(int index)
 				=> index >= 0 && IsInRange(index) ? _entries[GetEntryIndex(index)].Container : default;
+
+			/// <inheritdoc />
+			public IEnumerator<CacheEntry> GetEnumerator()
+				=> _entries.GetEnumerator();
+
+			/// <inheritdoc />
+			IEnumerator IEnumerable.GetEnumerator()
+				=> GetEnumerator();
 		}
 
 		private class CacheEntry
@@ -297,6 +308,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public int Index { get; set; }
 
 			public object? Item { get; set; }
+
+			public Rect Bounds { get; set; }
 		}
 
 		private class CacheEntryComparer : IComparer<CacheEntry>
@@ -376,13 +389,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (Owner?.ScrollViewer is { } sv)
 			{
 				var newOffset = bounds.Y + offset;
+				var currentOffset = sv.VerticalOffset;
 
 				// When we navigate between decade/month/year views, the CalendarView_Partial_Interaction.FocusItem
 				// will set the date which will invoke this ScrollItemIntoView method,
 				// then it will request GetContainerFromIndex and tries to focus it.
 				// So here we prepare the _effectiveViewport (which will most probably be re-updated by the ChangeView below),
 				// and then force a base_Measure()
-				_effectiveViewport.Y += newOffset - sv.VerticalOffset;
+				_effectiveViewport.Y += newOffset - currentOffset;
 
 				sv.ChangeView(
 					horizontalOffset: null,
@@ -489,7 +503,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			_layoutStrategy.BeginMeasure();
-#if __ANDROID__ // TODO: IOS
+#if __ANDROID__
 			using var a = PreventRequestLayout();
 #else
 			ShouldInterceptInvalidate = true;
@@ -498,18 +512,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			var bottom = 0.0;
 			try
 			{
-				// Gets the index of the first element to render and the actual viewport to use
-				_layoutStrategy.EstimateElementIndex(ElementType.ItemContainer, default, default, viewport, out var renderWindow, out var startIndex);
-				renderWindow.Size = viewport.Size; // The actualViewport contains only position information
-				startIndex = Math.Max(0, startIndex - StartIndex);
-
-				// We request to the algo to render an extra row before and after the actual viewport
+				// We request to the algo to render 'preloadRows' extra rows before and after the actual viewport
+				var requestedRenderingWindow = viewport;
 				if (Rows > 0) // This can occur on first measure when we only determine the biggest item size
 				{
 					var pixelsPerRow = viewport.Height / Rows;
-					renderWindow.Y = Math.Max(0, renderWindow.Y - pixelsPerRow);
-					renderWindow.Height = renderWindow.Height + (2 * pixelsPerRow);
+					const double preloadRows = 1.5;
+					requestedRenderingWindow.Y = Math.Max(0, requestedRenderingWindow.Y - (preloadRows * pixelsPerRow));
+					requestedRenderingWindow.Height = requestedRenderingWindow.Height + (2 * preloadRows * pixelsPerRow);
 				}
+
+				// Gets the index of the first element to render and the actual viewport to use
+				_layoutStrategy.EstimateElementIndex(ElementType.ItemContainer, default, default, viewport, out var renderWindow, out var startIndex);
+				renderWindow.Size = requestedRenderingWindow.Size; // The renderWindow contains only position information
+				startIndex = Math.Max(0, startIndex - StartIndex);
 
 				// Prepare the items generator to generate some new items (will also set which items can be recycled in this measure pass).
 				var expectedItemsCount = LastVisibleIndex - FirstVisibleIndex;
@@ -548,6 +564,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						return _defaultHardCodedSize;
 					}
 
+					entry.Bounds = itemBounds;
 					entry.Container.Measure(itemSize);
 					entry.Container.GetVirtualizationInformation().MeasureSize = itemSize;
 					switch (kind)
@@ -641,15 +658,28 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			global::System.Diagnostics.Debug.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
 
-			foreach (var child in Children)
+			var children = 0;
+			foreach (var entry in _cache)
 			{
-				var index = _cache.IndexFromContainer(child);
-				var bounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index + StartIndex, child.DesiredSize, layout, window);
+				children++;
+				var bounds = _layoutStrategy.GetElementArrangeBounds(ElementType.ItemContainer, entry.Index + StartIndex, entry.Bounds, window, finalSize);
 
-				//TODO _layoutStrategy.GetElementArrangeBounds()
+				entry.Container.Arrange(bounds);
+				entry.Container.GetVirtualizationInformation().Bounds = bounds;
+			}
 
-				child.Arrange(bounds);
-				child.GetVirtualizationInformation().Bounds = bounds;
+			if (children != Children.Count)
+			{
+				this.Log().Error("Invalid count of children ... fall-backing to slow arrange algorithm!");
+
+				foreach (var child in Children)
+				{
+					var index = _cache.IndexFromContainer(child);
+					var bounds = _layoutStrategy.GetElementBounds(ElementType.ItemContainer, index + StartIndex, child.DesiredSize, layout, window);
+
+					child.Arrange(bounds);
+					child.GetVirtualizationInformation().Bounds = bounds;
+				}
 			}
 
 			return finalSize;
