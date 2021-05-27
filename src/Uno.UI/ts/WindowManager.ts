@@ -895,6 +895,9 @@ namespace Uno.UI {
 			const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
 			if (handled) {
 				evt.stopPropagation();
+				// Not calling preventDefault() here, as that will break native focus dispatch for pointerdown
+				// If needed, we may add preventDefault() for some specific event type later, but it is not needed
+				// for any scenario yet.
 			}
 		}
 
@@ -1028,6 +1031,7 @@ namespace Uno.UI {
 				var handled = this.dispatchEvent(element, eventName, eventPayload);
 				if (handled) {
 					event.stopPropagation();
+					event.preventDefault();
 				}
 			};
 
