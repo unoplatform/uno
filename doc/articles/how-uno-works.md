@@ -61,4 +61,4 @@ Uno.UI parses XAML files at build time. XAML markup is automatically converted i
 
 ### Images, string resources, etc
 
-Images are copied by Uno.UI into the target project according to the directory structure and naming conventions of the target platform. Similarly, string resources (`.resw` files) are converted into the native target format. Read more [here](features/working-with-assets.md). Again, this conversion processs is normally transparent to the application developer.
+Images are copied by Uno.UI into the target project according to the directory structure and naming conventions of the target platform. Similarly, string resources (`.resw` files) are converted into the native target format. Read more [here](features/working-with-assets.md). Again, this conversion process is normally transparent to the application developer.
