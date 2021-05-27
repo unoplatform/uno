@@ -40,13 +40,13 @@
     <PackageReference Include="Uno.UI.RemoteControl" Version="3.0.5" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.3.0" />
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="1.3.0" />
-    <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
 
     <!--#if (Container == "Unity") -->
-    <PackageReference Include="Prism.Unity.Uno" Version="8.0.0.1909" />
+    <PackageReference Include="Prism.Unity.Uno" Version="8.1.97" />
     <!--#endif -->
     <!--#if (Container == "DryIoc") -->
-    <PackageReference Include="Prism.DryIoc.Uno" Version="8.0.0.1909" />
+    <PackageReference Include="Prism.DryIoc.Uno" Version="8.1.97" />
     <!--#endif -->
   </ItemGroup>
   <Import Project="..\BlankApp.Shared\BlankApp.Shared.projitems" Label="Shared" Condition="Exists('..\BlankApp.Shared\BlankApp.Shared.projitems')" />
