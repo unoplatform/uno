@@ -56,6 +56,9 @@ namespace Windows.UI.Xaml.Controls
 			// DrawInnerBorder			=> The today / selected state
 
 			var background = Background;
+			var borderThickness = GetItemBorderThickness();
+			var borderBrush = GetItemBorderBrush(forFocus: false);
+
 			if (background is null
 				|| background.Opacity == 0
 				|| (background is SolidColorBrush solid && solid.Color.IsTransparent))
@@ -65,11 +68,9 @@ namespace Windows.UI.Xaml.Controls
 
 			if (m_isToday && m_isSelected && GetItemInnerBorderBrush() is { } selectedBrush)
 			{
-				background = selectedBrush;
+				// We don't support inner border yet, so even if not optimal we just use it as border.
+				borderBrush = selectedBrush;
 			}
-
-			var borderThickness = GetItemBorderThickness();
-			var borderBrush = GetItemBorderBrush(forFocus: false);
 
 			_borderRenderer.UpdateLayer(this, background, borderThickness, borderBrush, CornerRadius.None, default);
 		}
