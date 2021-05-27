@@ -12,7 +12,7 @@ using UIKit;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Child")]
-	public partial class Popover : PopupBase
+	public partial class Popover : NativePopupBase
 	{
 		private const double DefaultPopoverWidth = 320;
 
