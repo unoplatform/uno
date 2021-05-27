@@ -42,13 +42,13 @@
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="117.0.0" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="117.0.0" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="117.0.1" />
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1610.0" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="117.0.1" />
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
