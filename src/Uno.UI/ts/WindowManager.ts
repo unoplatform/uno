@@ -2033,7 +2033,7 @@ namespace Uno.UI {
 
 	if (typeof define === "function") {
 		define(
-			[`${config.uno_app_base}/AppManifest`],
+			[`./AppManifest.js`],
 			() => {
 			}
 		);
