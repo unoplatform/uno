@@ -2,13 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
-#if NETFX_CORE
-using Windows.UI.Xaml.Controls.Primitives;
-#endif
-
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {

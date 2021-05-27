@@ -138,11 +138,11 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		public static IReadOnlyList<Controls.Primitives.Popup> GetOpenPopups(Window window)
+		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
 			return _openPopups
 				.Select(WeakReferenceExtensions.GetTarget)
-				.OfType<Controls.Primitives.Popup>()
+				.OfType<Popup>()
 				.ToList()
 				.AsReadOnly();
 		}

@@ -27,10 +27,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-#if !WINDOWS_UWP
-using Popup = Windows.UI.Xaml.Controls.Popup; // Should be in Primitives!
-#endif
-
 namespace MUXControlsTestApp
 {
 	// This type is used for Interaction tests that do verification and log results to a textbox which the

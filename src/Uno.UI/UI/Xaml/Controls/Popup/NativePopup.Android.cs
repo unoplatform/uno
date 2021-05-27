@@ -12,7 +12,7 @@ using Uno.UI;
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	[ContentProperty(Name = "Child")]
-	public partial class NativePopup : PopupBase
+	public partial class NativePopup : NativePopupBase
 	{
 		private Android.Widget.PopupWindow _popupWindow;
 
@@ -66,5 +66,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_popupWindow.Dismiss();
 			}
 		}
+
+		public new View Anchor
+		{
+			get { return (View)this.GetValue(AnchorProperty); }
+			set { this.SetValue(AnchorProperty, value); }
+		}
+
+		public static DependencyProperty AnchorProperty { get; } =
+			DependencyProperty.Register(
+				"Anchor",
+				typeof(View),
+				typeof(NativePopup),
+				new FrameworkPropertyMetadata(
+					defaultValue: (View)null,
+					options: FrameworkPropertyMetadataOptions.None
+				)
+			);
 	}
 }

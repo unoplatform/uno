@@ -3667,6 +3667,16 @@
 			<Member
 				fullName="Windows.UI.Xaml.UIElementExtensions"
 				reason="Not part of the WinUI API, was previously incorrectly included for Android/iOS/macOS." />
+
+			<Member
+				fullName="Windows.UI.Xaml.Controls.Popup"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.PopupBase"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.NativePopup"
+				reason="Adjust Popup hierarchy" />
 		</Types>
 		<Methods>
 			<Member
@@ -3674,54 +3684,18 @@
 				reason="Not part of the UWP API + false positive, it's not something changed in the source" />
 
 			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.add_Closed(System.EventHandler`1&lt;System.Object&gt; value)"
-				reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.UI.Xaml.Controls.Popup&gt; Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window window)"
+				reason="Adjust Popup hierarchy" />
 			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.remove_Closed(System.EventHandler`1&lt;System.Object&gt; value)"
-				reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.UI.Xaml.Controls.Popup&gt; Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(Windows.UI.Xaml.XamlRoot xamlRoot)"
+				reason="Adjust Popup hierarchy" />
 			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.add_Opened(System.EventHandler`1&lt;System.Object&gt; value)"
-				reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
-			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.remove_Opened(System.EventHandler`1&lt;System.Object&gt; value))"
-				reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
-
-			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.PopupBase.get_IsOpen()"
-				reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
-			<Member
-				fullName=" System.Void Windows.UI.Xaml.Controls.PopupBase.set_IsOpen(System.Boolean value)"
-				reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
-
-			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.set_Child(Windows.UI.Xaml.UIElement value)"
-				reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
-			<Member
-				fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.PopupBase.get_Child()"
-				reason="Valid visibility virtual slot change based on internal interface implementation, not a breaking change"/>
-
-			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnIsOpenChanged(System.Boolean oldIsOpen, System.Boolean newIsOpen)"
-				reason="Invalid property api"/>
-			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnChildChanged(Windows.UI.Xaml.UIElement oldChild, Windows.UI.Xaml.UIElement newChild)"
-				reason="Invalid property api"/>
-			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnIsLightDismissEnabledChanged(System.Boolean oldIsLightDismissEnabled, System.Boolean newIsLightDismissEnabled)"
-				reason="Invalid property api"/>
-			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnHorizontalOffsetChanged(System.Double oldHorizontalOffset, System.Double newHorizontalOffset)"
-				reason="Invalid property api"/>
-			<Member
-				fullName="System.Void Windows.UI.Xaml.Controls.PopupBase.OnVerticalOffsetChanged(System.Double oldVerticalOffset, System.Double newVerticalOffset)"
-				reason="Invalid property api"/>
+				fullName="System.Void Windows.UI.Xaml.Controls.Popover.OnAnchorChanged(UIKit.UIView oldAnchor, UIKit.UIView newAnchor)"
+				reason="Adjust Popup hierarchy" />
 		</Methods>
 		<Fields>
 		</Fields>
 		<Properties>
-			<Member
-				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Popup::PopupPanelProperty()"
-				reason="Unused member with incorrect visibility"/>
 		</Properties>
 	</IgnoreSet>	<!--
 	Supported nodes (please keep at the bottom of this file):
