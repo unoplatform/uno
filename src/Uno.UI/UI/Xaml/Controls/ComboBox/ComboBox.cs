@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			if (_popup is PopupBase oldPopup)
+			if (_popup is Popup oldPopup)
 			{
 				oldPopup.CustomLayouter = null;
 			}
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
 
-			if (_popup is PopupBase popup)
+			if (_popup is Popup popup)
 			{
 				//TODO Uno specific: Ensures popup does not take focus when opened.
 				//This can be removed when the actual ComboBox code is fully ported
@@ -478,15 +478,15 @@ namespace Windows.UI.Xaml.Controls
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new FrameworkPropertyMetadata(null));
 
-		private class DropDownLayouter : PopupBase.IDynamicPopupLayouter
+		private class DropDownLayouter : Popup.IDynamicPopupLayouter
 		{
 			private ManagedWeakReference _combo;
 			private ManagedWeakReference _popup;
 
 			private ComboBox? Combo => _combo.Target as ComboBox;
-			private PopupBase? Popup => _popup.Target as Popup;
+			private Popup? Popup => _popup.Target as Popup;
 
-			public DropDownLayouter(ComboBox combo, PopupBase popup)
+			public DropDownLayouter(ComboBox combo, Popup popup)
 			{
 				_combo = (combo as IWeakReferenceProvider).WeakReference;
 				_popup = (popup as IWeakReferenceProvider).WeakReference;

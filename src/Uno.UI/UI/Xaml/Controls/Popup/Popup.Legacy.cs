@@ -12,39 +12,12 @@ using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Popup : PopupBase
-	{
-		public Popup()
-		{
-			RegisterDependencyPropertyForward(LightDismissOverlayModeProperty, Primitives.Popup.LightDismissOverlayModeProperty);
-		}
-
-		public new LightDismissOverlayMode LightDismissOverlayMode
-		{
-			get => GetLightDismissOverlayModeValue();
-			set => SetLightDismissOverlayModeValue(value);
-		}
-
-		private void OnLightDismissOverlayModeChanged(LightDismissOverlayMode oldValue, LightDismissOverlayMode newValue)
-			=> base.LightDismissOverlayMode = newValue;
-
-		[GeneratedDependencyProperty(DefaultValue = LightDismissOverlayMode.Auto, LocalCache =false, ChangedCallback = true)]
-		public new static DependencyProperty LightDismissOverlayModeProperty { get; } = CreateLightDismissOverlayModeProperty();
-
-		[NotImplemented]
-		public new bool ShouldConstrainToRootBounds
-		{
-			get => base.ShouldConstrainToRootBounds;
-			set => base.ShouldConstrainToRootBounds = value;
-		}
-	}
-
-	public partial class PopupBase : Primitives.Popup
+	public partial class NativePopupBase : Primitives.Popup
 	{
 		private Dictionary<DependencyProperty, DependencyProperty> _forwardedProperties
 			= new Dictionary<DependencyProperty, DependencyProperty>();
 
-		public PopupBase()
+		public NativePopupBase()
 		{
 			RegisterDependencyPropertyForward(IsOpenProperty, Primitives.Popup.IsOpenProperty);
 			RegisterDependencyPropertyForward(ChildProperty, Primitives.Popup.ChildProperty);
