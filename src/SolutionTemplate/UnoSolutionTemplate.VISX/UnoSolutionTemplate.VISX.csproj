@@ -180,7 +180,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.0" version="12.0.30111" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime" version="14.3.26929" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime" version="15.0.26929" />
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime" version="15.6.27413" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime" version="16.10.31320.204" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.8.0" version="8.0.50728" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.9.0" version="9.0.30730" />
     <PackageReference Include="Microsoft.VisualStudio.Text.Data" version="15.6.27740" />
