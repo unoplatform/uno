@@ -56,11 +56,11 @@ namespace Windows.UI.Xaml.Controls
 			if (focusState != FocusState.Unfocused)
 			{
 				DisplayBlock.Opacity = 0;
-				_textBoxExtension.StartEntry();
+				_textBoxExtension?.StartEntry();
 			}
 			else
 			{
-				_textBoxExtension.EndEntry();
+				_textBoxExtension?.EndEntry();
 				DisplayBlock.Opacity = 1;
 			}
 		}
@@ -78,6 +78,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void UpdateMaxLength() => _textBoxExtension.UpdateNativeView();
+		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
 	}
 }

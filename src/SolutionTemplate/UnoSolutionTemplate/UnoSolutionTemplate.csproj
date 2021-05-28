@@ -75,6 +75,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Skia.Linux.FrameBuffer\Program.cs" />
+    <None Include="Skia.Linux.FrameBuffer\Assets\Fonts\uno-fluentui-assets.ttf" />
+    <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
     <None Include="Skia.Tizen\Program.cs" />
     <None Include="Skia.Tizen\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Tizen\UnoQuickStart.Skia.Tizen.csproj" />
@@ -241,6 +244,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Tizen\shared\res\Icon.png" />
+    <None Include="Skia.Linux.FrameBuffer\SkiaLinuxFrameBuffer.vstemplate">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Skia.Tizen\SkiaTizen.vstemplate" />
     <None Include="Skia.Tizen\tizen-manifest.xml" />
     <Content Include="UWP\Assets\LockScreenLogo.scale-200.png" />

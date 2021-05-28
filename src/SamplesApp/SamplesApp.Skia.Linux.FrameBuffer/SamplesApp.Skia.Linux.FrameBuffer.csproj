@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'=='netstandard2.0'">
+		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!='' and '$(UnoTargetFrameworkOverride)'!='netstandard2.0'">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+	  <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+	  <ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj" />
+	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+	  <ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+	  <ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Compile Update="Program.cs" />
+	</ItemGroup>
+
+	<Import Project="..\..\..\build\*.Skia.Gtk.props" />
+	<Import Project="..\..\..\build\*.Skia.Gtk.targets" />
+
+</Project>

@@ -64,6 +64,13 @@
       "isVisible": "true"
     },
     {
+      "id": "skia-linux-fb",
+      "name": {
+        "text": "Add support for Skia/Linux FrameBuffer"
+      },
+      "isVisible": "true"
+    },
+    {
       "id": "vscodeWasm",
       "name": {
         "text": "Adds the Visual Studio Code Debugging support files for WebAssembly"

@@ -329,7 +329,7 @@ namespace SamplesApp
 			deferral.Complete();
 		}
 
-		static void ConfigureFilters()
+		public static void ConfigureFilters()
 		{
 #if HAS_UNO
 			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => typeof(App).Log().Error("UnobservedTaskException", e.Exception);

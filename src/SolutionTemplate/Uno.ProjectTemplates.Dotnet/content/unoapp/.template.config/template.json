@@ -127,6 +127,12 @@
       "defaultValue": "true",
       "description": "Enables the Skia/Tizen platform support project"
     },
+    "skia-linux-fb": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/Linux Framebuffer platform support project"
+    },
     "vscodeWasm": {
       "type": "parameter",
       "dataType": "bool",
@@ -172,8 +178,11 @@
     {
       "condition": "skia-tizen",
       "path": "UnoQuickStart.Skia.Tizen\\UnoQuickStart.Skia.Tizen.csproj"
+    },
+    {
+      "condition": "skia-linux-fb",
+      "path": "UnoQuickStart.Skia.Linux.FrameBuffer\\UnoQuickStart.Skia.Linux.FrameBuffer.csproj"
     }
-
   ],
   "sources": [
     {
@@ -219,6 +228,12 @@
           "condition": "(!skia-tizen)",
           "exclude": [
             "UnoQuickStart.Skia.Tizen/**/*"
+          ]
+        },
+        {
+          "condition": "(!skia-linux-fb)",
+          "exclude": [
+            "UnoQuickStart.Skia.Linux.FrameBuffer/**/*"
           ]
         },
         {
