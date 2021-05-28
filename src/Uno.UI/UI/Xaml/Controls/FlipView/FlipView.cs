@@ -116,8 +116,25 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			// Call base class implementation
-			base.OnApplyTemplate();
+			base.OnApplyTemplate();				
+		}
 
+        private protected override void OnLoaded()
+        {
+            base.OnLoaded();
+
+			HookTemplate();
+        }
+
+        private protected override void OnUnloaded()
+        {
+            base.OnUnloaded();
+
+			UnhookTemplate();
+        }
+
+        private void HookTemplate()
+		{
 			// Unhook from old Template
 			UnhookTemplate();
 
@@ -412,12 +429,6 @@ namespace Windows.UI.Xaml.Controls
 
 			_fixOffsetSubscription.Disposable = null;
 			_buttonsFadeOutTimerSubscription.Disposable = null;
-
-			m_tpScrollViewer?.Dispose();
-			m_tpPreviousButtonHorizontalPart?.Dispose();
-			m_tpNextButtonHorizontalPart?.Dispose();
-			m_tpPreviousButtonVerticalPart?.Dispose();
-			m_tpNextButtonVerticalPart?.Dispose();
 		}
 
 		ButtonBase CreateButtonClickEventHandler(string buttonName, RoutedEventHandler eventHandler)
@@ -1600,7 +1611,10 @@ namespace Windows.UI.Xaml.Controls
 
 				spNewDispatcherTimer = new DispatcherTimer();
 
-				_fixOffsetSubscription.Disposable = Disposable.Create(() => spNewDispatcherTimer.Tick -= FixOffset);
+				_fixOffsetSubscription.Disposable = Disposable.Create(() => {
+					spNewDispatcherTimer?.Stop();
+					spNewDispatcherTimer.Tick -= FixOffset;
+				});
 				spNewDispatcherTimer.Tick += FixOffset;
 
 				TimeSpan showDurationTimeSpan = TimeSpan.Zero;
@@ -1641,7 +1655,11 @@ namespace Windows.UI.Xaml.Controls
 
 				spNewDispatcherTimer = new DispatcherTimer();
 
-				_buttonsFadeOutTimerSubscription.Disposable = Disposable.Create(() => spNewDispatcherTimer.Tick -= ButtonsFadeOutTimerTickHandler);
+				_buttonsFadeOutTimerSubscription.Disposable = Disposable.Create(() => {
+					spNewDispatcherTimer?.Stop();
+					spNewDispatcherTimer.Tick -= ButtonsFadeOutTimerTickHandler;
+				});
+
 				spNewDispatcherTimer.Tick += ButtonsFadeOutTimerTickHandler;
 
 				spNewDispatcherTimer.Interval = showDurationTimeSpan;

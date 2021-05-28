@@ -16,8 +16,6 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <Style TargetType="FlipViewItem" BasedOn="{StaticResource DefaultFlipViewItemStyle}" />
-
     <Style x:Key="DefaultFlipViewItemStyle" TargetType="FlipViewItem">
         <Setter Property="Background" Value="{ThemeResource FlipViewItemBackground}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -41,5 +39,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+	<Style TargetType="FlipViewItem" BasedOn="{StaticResource DefaultFlipViewItemStyle}" />
+
 </ResourceDictionary>

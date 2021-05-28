@@ -14362,7 +14362,6 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
   <Style x:Key="DefaultFlipViewStyle" TargetType="FlipView">
     <Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
     <Setter Property="BorderThickness" Value="0" />
@@ -14547,6 +14546,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
   <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" />
   <Style x:Key="DefaultFlyoutPresenterStyle" TargetType="FlyoutPresenter">
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -18829,7 +18829,7 @@
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
     <Setter Property="ItemInfo" Value="{ThemeResource MUX_RatingControlDefaultFontInfo}" />
-    <!-- IsFocusEngagementEnabled means the control has to be "engaged" with 
+    <!-- IsFocusEngagementEnabled means the control has to be "engaged" with
              using the A button before it actually receives key input from gamepad. -->
     <Setter Property="IsFocusEngagementEnabled" Value="True" />
     <!-- I've picked values so that these LOOK like the redlines, but these
@@ -19021,7 +19021,7 @@
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <!-- UNO TODO: Doesn't appear in ScrollViewer because default visual states are incompatible with Uno fixed-orientation optimizations
-             for performance. As of WinUI 2.5, seems visually very similar to previous ScrollBar template anyway. If this is restored, the 
+             for performance. As of WinUI 2.5, seems visually very similar to previous ScrollBar template anyway. If this is restored, the
              modifications made to the base UWP style on performance grounds should also be made here. -->
     <win:Setter Property="Template">
       <Setter.Value>
