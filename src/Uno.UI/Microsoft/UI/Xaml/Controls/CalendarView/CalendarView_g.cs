@@ -13,14 +13,14 @@ namespace Windows.UI.Xaml.Controls
 			pEventSource = CalendarViewDayItemChanging;
 		}
 
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CalendarView, global::Windows.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs> CalendarViewDayItemChanging;
+		public event TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> CalendarViewDayItemChanging;
 
 		private void GetSelectedDatesChangedEventSourceNoRef(out SelectedDatesChangedEventSourceType ppEventSource)
 		{
 			ppEventSource = SelectedDatesChanged;
 		}
 
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CalendarView, global::Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs> SelectedDatesChanged;
+		public event SelectedDatesChangedEventSourceType SelectedDatesChanged;
 
 		// UNO: The correspondent internal/impl method has been exposed publicly
 		//public void SetDisplayDate( global::System.DateTimeOffset date)

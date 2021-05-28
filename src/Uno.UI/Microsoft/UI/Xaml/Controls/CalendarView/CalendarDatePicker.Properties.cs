@@ -2,6 +2,7 @@ using System;
 
 using DateTime = System.DateTimeOffset;
 using Calendar = Windows.Globalization.Calendar;
+using DayOfWeek = Windows.Globalization.DayOfWeek;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -121,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty IsOutOfScopeEnabledProperty = DependencyProperty.Register(
-			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(default(bool)));
+			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(defaultValue: true));
 
 		public bool IsOutOfScopeEnabled
 		{
@@ -130,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty IsTodayHighlightedProperty = DependencyProperty.Register(
-			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(default(bool)));
+			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(defaultValue: true));
 
 		public bool IsTodayHighlighted
 		{
