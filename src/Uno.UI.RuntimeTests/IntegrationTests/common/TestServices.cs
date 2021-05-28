@@ -21,12 +21,29 @@ namespace Private.Infrastructure
 	{
 		public class WindowHelper
 		{
+			private static UIElement _originalWindowContent = null;
+
+			public static bool UseActualWindowRoot { get; set; }
+
 			public static object WindowContent
 			{
-				get => RootControl.Content;
+				get
+				{
+					if (UseActualWindowRoot)
+					{
+						return Windows.UI.Xaml.Window.Current.Content;
+					}
+					return EmbeddedTestRootControl.Content;
+				}
+
 				internal set
 				{
-					if (RootControl is ContentControl content)
+					if (UseActualWindowRoot)
+					{
+						_originalWindowContent = Windows.UI.Xaml.Window.Current.Content;
+						Windows.UI.Xaml.Window.Current.Content = value as UIElement;
+					}
+					else if (EmbeddedTestRootControl is ContentControl content)
 					{
 						content.Content = value;
 					}
@@ -37,12 +54,25 @@ namespace Private.Infrastructure
 				}
 			}
 
-			public static ContentControl RootControl { get; set; }
+			public static void RestoreOriginalWindowContent()
+			{
+				if (_originalWindowContent != null)
+				{
+					Windows.UI.Xaml.Window.Current.Content = _originalWindowContent;
+					_originalWindowContent = null;
+				}
+			}
+
+			public static ContentControl EmbeddedTestRootControl { get; set; }
+
+			public static UIElement RootElement => UseActualWindowRoot ?
+					Windows.UI.Xaml.Window.Current.Content :
+					EmbeddedTestRootControl;
 
 			internal static async Task WaitForIdle()
 			{
-				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
-				await RootControl.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 			}
 
 			/// <summary>
@@ -243,8 +273,8 @@ namespace Private.Infrastructure
 		{
 #if __WASM__
 			action();
-#else
-			await WindowHelper.RootControl.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+#else			
+			await WindowHelper.RootElement.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
 #endif
 		}
 

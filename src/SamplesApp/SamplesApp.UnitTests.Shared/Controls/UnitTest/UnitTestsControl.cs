@@ -49,7 +49,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			this.InitializeComponent();
 
-			Private.Infrastructure.TestServices.WindowHelper.RootControl = unitTestContentRoot;
+			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRootControl = unitTestContentRoot;
 
 			DataContext = null;
 
@@ -472,8 +472,12 @@ namespace Uno.UI.Samples.Tests
 					continue;
 				}
 
-				var runsOnUIThread = HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod)
-									 || HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
+				var runsOnUIThread =
+					HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod) ||
+					HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
+				var requiresFullWindow =
+					HasCustomAttribute<RequiresFullWindowAttribute>(testMethod) ||
+					HasCustomAttribute<RequiresFullWindowAttribute>(testMethod.DeclaringType);
 				var expectedException = testMethod.GetCustomAttributes<ExpectedExceptionAttribute>()
 					.SingleOrDefault();
 				var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
@@ -505,6 +509,11 @@ namespace Uno.UI.Samples.Tests
 
 					try
 					{
+						if (requiresFullWindow)
+						{
+							Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
+						}
+
 						object returnValue = null;
 						if (runsOnUIThread)
 						{
@@ -559,6 +568,12 @@ namespace Uno.UI.Samples.Tests
 					catch (Exception e)
 					{
 						sw.Stop();
+
+						if (requiresFullWindow)
+						{
+							Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
+							Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
+						}
 
 						if (e is AggregateException agg)
 						{
