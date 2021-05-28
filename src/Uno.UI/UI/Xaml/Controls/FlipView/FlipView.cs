@@ -21,7 +21,7 @@ using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Xaml.Automation;
-using Uno.UI.UI.Xaml;
+using Uno.UI.Xaml;
 using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
@@ -1236,7 +1236,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				double height = 0;
 				double width = 0;
-				Rect rootRect = default;
 
 				m_inMeasure = true;
 
@@ -1245,19 +1244,19 @@ namespace Windows.UI.Xaml.Controls
 				// Fix is to use min of availableSize and window size as available size for measuring FlipView.
 				//DXamlCore.GetCurrent().GetContentBoundsForElement(GetHandle(), &rootRect);
 
-				rootRect = Windows.UI.Xaml.Window.Current.Bounds;
+				var rootSize = XamlRoot.Size;
 
 				height = Height;
 
 				if (double.IsNaN(height))
 				{
-					availableSize.Height = Math.Min(rootRect.Height, availableSize.Height);
+					availableSize.Height = Math.Min(rootSize.Height, availableSize.Height);
 				}
 
 				width = Width;
 				if (double.IsNaN(width))
 				{
-					availableSize.Width = Math.Min(rootRect.Width, availableSize.Width);
+					availableSize.Width = Math.Min(rootSize.Width, availableSize.Width);
 				}
 
 				return base.MeasureOverride(availableSize);
