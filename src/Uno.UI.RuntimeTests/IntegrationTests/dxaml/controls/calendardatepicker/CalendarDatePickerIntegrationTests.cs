@@ -688,6 +688,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
 		}
 
+#if !WINDOWS_UWP
 		[TestMethod]
 		public async Task DonotResizeCalendarView()
 		{
@@ -731,6 +732,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 		}
+#endif
 
 		[TestMethod]
 		public async Task CanPresetDate()

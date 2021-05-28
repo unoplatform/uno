@@ -80,12 +80,4 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		protected static CalendarPanel CalendarPanel(object o) => o as CalendarPanel;
 		protected static CalendarViewDayItem CalendarViewDayItem(object o) => o as CalendarViewDayItem;
 	}
-
-	internal class XcbPurpleBrush : SolidColorBrush
-	{
-		internal XcbPurpleBrush()
-		{
-			Color = Colors.Purple;
-		}
-	}
 }

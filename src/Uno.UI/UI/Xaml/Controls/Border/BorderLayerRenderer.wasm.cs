@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 				case XamlCompositionBrushBase unsupportedCompositionBrush:
 					var fallbackColor = unsupportedCompositionBrush.FallbackColorWithOpacity;
-					WindowManagerInterop.SetElementBackgroundColor(HtmlId, fallbackColor);
+					WindowManagerInterop.SetElementBackgroundColor(element.HtmlId, fallbackColor);
 					RecalculateBrushOnSizeChanged(element, false);
 					break;
 				default:

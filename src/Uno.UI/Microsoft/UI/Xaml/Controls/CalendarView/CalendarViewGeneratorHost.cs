@@ -353,8 +353,6 @@ namespace Windows.UI.Xaml.Controls
 			long diffInUTC = 0;
 			int diffInUnit = 0;
 
-			int maxEstimationRetryCount = 3; // the max times that we should estimate
-			int maxReboundCount = 3; // the max times that we should reduce the step when the estimation is over the boundary.
 			int minDistanceToEstimate = 3; // the min estimated distance that we should do estimation.
 
 			pCalendar.SetDateTime(estimatedDate);
@@ -363,6 +361,8 @@ namespace Windows.UI.Xaml.Controls
 			// we could need more times (uncommon scenario)
 			var averageTicksPerUnit = GetAverageTicksPerUnit();
 #if DEBUG
+			int maxEstimationRetryCount = 3; // the max times that we should estimate
+			int maxReboundCount = 3; // the max times that we should reduce the step when the estimation is over the boundary.
 			int estimationCount = 0;
 #endif
 			while (true)

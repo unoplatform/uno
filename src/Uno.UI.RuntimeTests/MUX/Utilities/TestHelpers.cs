@@ -104,7 +104,7 @@ namespace MUXControlsTestApp
 		public static UIElement TestContentRoot
 		{
 			get => TestServices.WindowHelper.WindowContent;
-			set => TestServices.WindowHelper.WindowContent = value;
+			set => TestServices.WindowHelper.WindowContent = value as UIElement;
 		}
 
 		public static Application Current => Application.Current;

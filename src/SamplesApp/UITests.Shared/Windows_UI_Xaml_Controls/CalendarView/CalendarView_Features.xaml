@@ -44,7 +44,7 @@
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="5">
 				<DatePicker x:Name="min" Header="MinDate" Date="{Binding MinDate, ElementName=sut, Mode=TwoWay}" />
-				<DatePicker x:Name="min" Header="MaxDate" Date="{Binding MaxDate, ElementName=sut, Mode=TwoWay}" />
+				<DatePicker x:Name="max" Header="MaxDate" Date="{Binding MaxDate, ElementName=sut, Mode=TwoWay}" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal" Spacing="5">

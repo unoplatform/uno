@@ -26,13 +26,21 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 		public static void HideFlyout<T>(T flyoutControl)
 			where T : FlyoutBase
 		{
+#if WINDOWS_UWP
+			flyoutControl.Hide();
+#else
 			flyoutControl.Close();
+#endif
 		}
 
 		internal static void OpenFlyout<T>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
 			where T: FlyoutBase
 		{
+#if WINDOWS_UWP
+			flyoutControl.ShowAt(target);
+#else
 			flyoutControl.Open();
+#endif
 		}
 
 		public static void ValidateOpenFlyoutOverlayBrush(string name)

@@ -1065,7 +1065,7 @@ namespace Windows.UI.Xaml.Controls
 							date = (DateTime)spDateReference;
 							// if Date property is being set, we should always display the Date when Calendar is open.
 							SetDisplayDate(date);
-							spSelectedDates.Append(date);
+							spSelectedDates.Add(date);
 						}
 					}
 					finally

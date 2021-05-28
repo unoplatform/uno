@@ -2980,8 +2980,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				cv.MaxDate = ConvertToDateTime(1, 2014, 1, 1);
 				cv.SelectedDates.Add(ConvertToDateTime(1, 2014, 1, 1));
 
-				cv.CalendarItemBorderBrush = new XcbPurpleBrush();
-				cv.CalendarItemBackground = new XcbPurpleBrush();
+				cv.CalendarItemBorderBrush = new SolidColorBrush { Color = Colors.Purple };
+				cv.CalendarItemBackground = new SolidColorBrush { Color = Colors.Purple };
 				rootPanel.Children.Add(cv);
 			});
 
