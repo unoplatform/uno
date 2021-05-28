@@ -471,7 +471,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool isLastRelativeChild = true;
 			while (parentNode != null && isLastRelativeChild)
 			{
-				int relativeIndex = parentNode.Children.IndexOf(childNode);
+				int relativeIndex = parentNode.Children.IndexOf(child);
 				if (parentNode.Children.Count - 1 != relativeIndex)
 				{
 					isLastRelativeChild = false;
@@ -485,7 +485,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (parentNode != null)
 			{
-				int siblingIndex = parentNode.Children.IndexOf(childNode);
+				int siblingIndex = parentNode.Children.IndexOf(child);
 				var siblingNode = parentNode.Children[siblingIndex + 1];
 				IndexOfNode(siblingNode, out stopIndex);
 			}
