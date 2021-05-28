@@ -206,9 +206,10 @@ namespace Windows.UI.Xaml.Input
 		public static event EventHandler<FocusManagerGotFocusEventArgs> GotFocus;
 		public static event EventHandler<FocusManagerLostFocusEventArgs> LostFocus;
 
-		internal static void SetEngagedControl(Control spScrollViewer)
+		internal static void SetEngagedControl(Control control)
 		{
-			// UNO-TODO
+			// Focus engagement applies only to gamepads
+			// We don't support them yet with Uno.
 		}
 	}
 }

@@ -23,7 +23,11 @@ namespace DirectUI
 		// Used to indicate whether this is a continuous focus rectangle (not dashed)
 		// When true, the second rect is drawn inside the first
 		// When false, the rects are drawn as alternating dotted lines
-		public bool isContinuous;
+		//
+		// IMPORTANT UNO: MS recommends to not support dashed focus visual! Only "high visibility focus rects"
+		// (solid lines that are thicker and have two colors to show up on any background/theme).
+		//
+		// public bool isContinuous;
 
 		// Used to indicate if we are drawing a borderless reveal glow
 		public bool isRevealBorderless;

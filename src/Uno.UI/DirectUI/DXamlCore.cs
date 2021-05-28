@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.ApplicationModel.Resources;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -18,6 +17,10 @@ namespace DirectUI
 		public static DXamlCore GetCurrent()
 			=> _current ??= new DXamlCore();
 
+		// UNO: This should **NOT** create the singleton!
+		//		_but_ if we do return a 'null' the 'OnApplyTemplate' of the `CalendarView` will fail.
+		//		As for now our implementation of the 'DXamlCore' is pretty light and stored as a basic singleton,
+		//		we accept to create it even with the "NoCreate" overload.
 		public static DXamlCore GetCurrentNoCreate()
 			=> _current ??= new DXamlCore();
 
@@ -35,43 +38,5 @@ namespace DirectUI
 
 		public BudgetManager GetBudgetManager()
 			=> _budgetManager ??= new BudgetManager();
-	}
-
-	internal class BuildTreeService
-	{
-		public void RegisterWork(ITreeBuilder treeBuilder)
-		{
-			treeBuilder.IsRegisteredForCallbacks = true;
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.High, () =>
-			{
-				if (treeBuilder.IsBuildTreeSuspended)
-				{
-					RegisterWork(treeBuilder);
-					return;
-				}
-
-				treeBuilder.IsRegisteredForCallbacks = false;
-
-				var workerHasWorkLeft = treeBuilder.BuildTree();
-
-				if (workerHasWorkLeft)
-				{
-					var workerReRegistered = treeBuilder.IsRegisteredForCallbacks;
-					if (!workerReRegistered)
-					{
-						RegisterWork(treeBuilder);
-					}
-				}
-			});
-		}
-	}
-
-	internal interface ITreeBuilder
-	{
-		public bool IsBuildTreeSuspended { get; }
-
-		public bool IsRegisteredForCallbacks { get; set; }
-
-		public bool BuildTree();
 	}
 }

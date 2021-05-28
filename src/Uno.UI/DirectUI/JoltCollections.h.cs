@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.Core;
 
 namespace DirectUI
@@ -21,7 +22,7 @@ namespace DirectUI
 		//END_INTERFACE_MAP(IteratorBase, ctl.WeakReferenceSource)
 
 		// UNO only
-		protected void CheckThread() => CoreDispatcher.CheckThreadAccess();
+		protected void CheckThread() => DispatcherQueue.CheckThreadAccess();
 
 		public void SetView(IVectorView<T> pView)
 		{
