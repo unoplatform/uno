@@ -128,7 +128,7 @@
       "path": "BlankApp.UWP\\BlankApp.Uwp.csproj"
     },
     {
-      "condition": "Wasm",
+      "condition": "WebAssembly",
       "path": "BlankApp.Wasm\\BlankApp.Wasm.csproj"
     },
     {
@@ -148,7 +148,7 @@
           "exclude": [ "BlankApp/BlankApp.iOS/**/*" ]
         },
         {
-          "condition": "(!WebAsembly)",
+          "condition": "(!WebAssembly)",
           "exclude": [ "BlankApp/BlankApp.Wasm/**/*" ]
         },
         {
