@@ -21,13 +21,13 @@ namespace Private.Infrastructure
 {
 	public partial class TestServices
 	{
-		public class WindowHelper
+		public static class WindowHelper
 		{
 			private static UIElement _originalWindowContent = null;
 
 			public static bool UseActualWindowRoot { get; set; }
 
-			public static object WindowContent
+			public static UIElement WindowContent
 			{
 				get
 				{
@@ -35,14 +35,14 @@ namespace Private.Infrastructure
 					{
 						return Windows.UI.Xaml.Window.Current.Content;
 					}
-					return EmbeddedTestRootControl.Content;
+					return EmbeddedTestRootControl.Content as UIElement;
 				}
 
 				internal set
 				{
 					if (UseActualWindowRoot)
 					{
-						Windows.UI.Xaml.Window.Current.Content = value as UIElement;
+						Windows.UI.Xaml.Window.Current.Content = value;
 					}
 					else if (EmbeddedTestRootControl is ContentControl content)
 					{
