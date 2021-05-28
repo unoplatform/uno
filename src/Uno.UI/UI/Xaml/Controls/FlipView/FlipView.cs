@@ -1611,7 +1611,7 @@ namespace Windows.UI.Xaml.Controls
 				spNewDispatcherTimer = new DispatcherTimer();
 
 				_fixOffsetSubscription.Disposable = Disposable.Create(() => {
-					spNewDispatcherTimer?.Stop();
+					spNewDispatcherTimer.Stop();
 					spNewDispatcherTimer.Tick -= FixOffset;
 				});
 				spNewDispatcherTimer.Tick += FixOffset;
@@ -1655,7 +1655,7 @@ namespace Windows.UI.Xaml.Controls
 				spNewDispatcherTimer = new DispatcherTimer();
 
 				_buttonsFadeOutTimerSubscription.Disposable = Disposable.Create(() => {
-					spNewDispatcherTimer?.Stop();
+					spNewDispatcherTimer.Stop();
 					spNewDispatcherTimer.Tick -= ButtonsFadeOutTimerTickHandler;
 				});
 
