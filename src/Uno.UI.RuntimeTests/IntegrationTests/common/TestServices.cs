@@ -40,7 +40,6 @@ namespace Private.Infrastructure
 				{
 					if (UseActualWindowRoot)
 					{
-						_originalWindowContent = Windows.UI.Xaml.Window.Current.Content;
 						Windows.UI.Xaml.Window.Current.Content = value as UIElement;
 					}
 					else if (EmbeddedTestRootControl is ContentControl content)
@@ -52,6 +51,11 @@ namespace Private.Infrastructure
 						Console.WriteLine("Failed to get test content control");
 					}
 				}
+			}
+
+			public static void SaveOriginalWindowContent()
+			{
+				_originalWindowContent = Windows.UI.Xaml.Window.Current.Content;
 			}
 
 			public static void RestoreOriginalWindowContent()

@@ -511,7 +511,11 @@ namespace Uno.UI.Samples.Tests
 					{
 						if (requiresFullWindow)
 						{
-							Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
+							await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+							{
+								Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
+								Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
+							});
 						}
 
 						object returnValue = null;
@@ -569,12 +573,6 @@ namespace Uno.UI.Samples.Tests
 					{
 						sw.Stop();
 
-						if (requiresFullWindow)
-						{
-							Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
-							Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
-						}
-
 						if (e is AggregateException agg)
 						{
 							e = agg.InnerExceptions.FirstOrDefault();
@@ -599,6 +597,17 @@ namespace Uno.UI.Samples.Tests
 						{
 							_currentRun.Succeeded++;
 							ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, e);
+						}
+					}
+					finally
+					{
+						if (requiresFullWindow)
+						{
+							await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+							{
+								Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
+								Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
+							});
 						}
 					}
 				}
