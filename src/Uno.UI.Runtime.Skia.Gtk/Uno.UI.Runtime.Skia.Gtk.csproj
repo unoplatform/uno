@@ -32,7 +32,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-		<PackageReference Include="SkiaSharp.Views" />
+		<!--<PackageReference Include="SkiaSharp.Views" />-->
 	</ItemGroup>
 
 	<ItemGroup>
