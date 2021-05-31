@@ -3683,6 +3683,9 @@
 				reason="Not part of the UWP API" />
 		</Methods>
 		<Fields>
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::UseCompactResourcesProperty"
+				reason="This should be a property, not a field" />
 		</Fields>
 		<Properties>
 		</Properties>
