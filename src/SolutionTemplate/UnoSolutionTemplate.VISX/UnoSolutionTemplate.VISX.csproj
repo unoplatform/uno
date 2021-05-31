@@ -177,7 +177,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop" version="7.10.6073" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.10.0" version="10.0.30320" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.11.0" version="11.0.61031" />
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.0" version="12.0.30111" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.0" version="16.10.31320.204" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime" version="14.3.26929" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime" version="15.0.26929" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime" version="15.6.27413" />
