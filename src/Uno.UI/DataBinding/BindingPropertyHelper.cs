@@ -589,7 +589,7 @@ namespace Uno.UI.DataBinding
 
 					if (bindableProperty.OwnerType != null)
 					{
-						if (bindableProperty != null && bindableProperty.Property.Getter != null)
+						if (bindableProperty?.Property?.Getter != null)
 						{
 							if (bindableProperty.Property.DependencyProperty is { } dependencyProperty)
 							{
@@ -841,12 +841,12 @@ namespace Uno.UI.DataBinding
 					{
 						if (bindableProperty != null)
 						{
-							if(bindableProperty.Property.DependencyProperty is { } dependencyProperty)
+							if(bindableProperty.Property?.DependencyProperty is { } dependencyProperty)
 							{
 								return (instance, value) => instance.SetValue(dependencyProperty, convertSelector(() => bindableProperty.Property.PropertyType, value), precedence);
 							}
 
-							if (bindableProperty.Property.Setter != null)
+							if (bindableProperty.Property?.Setter != null)
 							{
 								var setter = bindableProperty.Property.Setter;
 
