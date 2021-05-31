@@ -401,10 +401,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
 				}
 
-				if (changedCallback)
+				changedCallbackName ??= $"On{propertyName}Changed";
+				var propertyChangedMethods = propertySymbol.ContainingType.GetMethods().Where(m => m.Name == changedCallbackName).ToArray();
+				if (changedCallback || propertyChangedMethods.Any())
 				{
-					changedCallbackName ??= $"On{propertyName}Changed";
-					var propertyChangedMethods = propertySymbol.ContainingType.GetMethods().Where(m => m.Name == changedCallbackName).ToArray();
 					var callbackWithEventArgs = propertyChangedMethods
 						?.FirstOrDefault(m => SymbolEqualityComparer.Default.Equals(m?.Parameters.FirstOrDefault()?.Type, _dependencyPropertyChangedEventArgsSymbol));
 					if (callbackWithEventArgs is { })
