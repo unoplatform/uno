@@ -20,7 +20,7 @@
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
 	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.1.0-dev.6" />
 	<PackageReference Update="Uno.SourceGeneration" Version="3.1.0-dev.6" />
-	<PackageReference Update="Uno.Core" Version="2.4.0-dev.2" />
+	<PackageReference Update="Uno.Core" Version="2.3.0" />
 	<PackageReference Update="Uno.Core.Build" Version="2.4.0-dev.2" />
 	<PackageReference Update="Uno.Diagnostics.Eventing" Version="1.0.4" />
 	<PackageReference Update="Uno.Wasm.Bootstrap" Version="2.0.0-dev.180" />
