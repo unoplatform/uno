@@ -28,6 +28,7 @@ using static Private.Infrastructure.CalendarHelper;
 namespace Windows.UI.Xaml.Tests.Enterprise
 {
 	[TestClass]
+	[Ignore("Validating regressions only for now")]
 	public partial class CalendarViewIntegrationTests : BaseDxamlTestClass
 	{
 
