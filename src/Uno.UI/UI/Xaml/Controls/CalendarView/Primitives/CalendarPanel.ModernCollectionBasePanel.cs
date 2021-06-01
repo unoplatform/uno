@@ -54,7 +54,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			internal int FirstIndex { get; private set; } = -1;
 
-			internal int LastIndex { get; private set; } = -1;
+			// MinValue: We make sure to have the LastIndex lower than FirstIndex so enumerating from FirstIndex to i ** <= ** LastIndex
+			// (like in ForeachChildInPanel) we make sure to not consider -1 as a valid index.
+			internal int LastIndex { get; private set; } = int.MinValue; 
 
 			private bool IsInRange(int itemIndex)
 				=> itemIndex >= FirstIndex && itemIndex <= LastIndex;
