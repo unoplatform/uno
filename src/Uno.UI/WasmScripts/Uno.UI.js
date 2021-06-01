@@ -1100,6 +1100,7 @@ var Uno;
                     var handled = this.dispatchEvent(element, eventName, eventPayload);
                     if (handled) {
                         event.stopPropagation();
+                        event.preventDefault();
                     }
                 };
                 element.addEventListener(eventName, eventHandler, onCapturePhase);
