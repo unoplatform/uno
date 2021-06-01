@@ -912,6 +912,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
         xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
+        xmlns:toolkit="using:Uno.UI.Toolkit"
         mc:Ignorable="d">
 
         <Page.DataContext>
@@ -978,7 +979,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
     <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find" 
                     Name="BreedSearchBox"
                     Width="300" Margin="4,20" HorizontalAlignment="Left"
-                    Text="{x:Bind ViewModel.SearchTerm, Mode=OneWay}"
+                    Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
                     QuerySubmitted="BreedSearchBox_QuerySubmitted" />
     ```
 
@@ -1038,6 +1039,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
         xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
+        xmlns:toolkit="using:Uno.UI.Toolkit"
         mc:Ignorable="d">
 
         <Page.DataContext>
@@ -1129,7 +1131,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     ![WebAssembly Search UI preview](Assets/how-to-webservice/wasm-ui-preview.png)
 
-    This validates that your code to use **Uno.UI.Wasm.WasmHttpHandler** for Wasm, rather than **HttpClientHandler** is working.
+    This validates that your code uses **Uno.UI.Wasm.WasmHttpHandler** for Wasm, rather than **HttpClientHandler**.
 
     Here is how the app looks running in the iPhone and Android simulators:
 
@@ -1141,7 +1143,7 @@ Congratulations - you now have a cross-platform application that interacts with 
 
 In the previous tasks, you created a web service client and UI that performs a simple cat breed search. In this task you will add a service that leverages the favorites API. We will build a UI that will add a picture of a selected breed to your favorites when you click it in the search results, and will remove it from the favorites when you click it in the favorites list.
 
-To achieve this, the **WebApiBase** class will updated to include additional operations that support HTTP Post, Delete and Put verbs. You will then add two more services:
+To achieve this, the **WebApiBase** class will updated be to include additional operations that support HTTP Post, Delete and Put verbs. You will then add two more services:
 
 * **ImageApi** - returns a list of images for a given breed.
 * **FavoritesApi** - supports adding and deleting an image from your favorites.
@@ -1304,10 +1306,10 @@ You will start by adding the data models.
 1. To add support for the put operation, locate the comment **// Insert PutAsync method below here** and replace it with the following code:
 
     ```csharp
-    // Insert PostAsync method below here
-    protected async Task<string> PostAsync(string url, string payload, Dictionary<string, string> headers = null)
+    // Insert PutAsync method below here
+    protected async Task<string> PutAsync(string url, string payload, Dictionary<string, string> headers = null)
     {
-        using (var request = CreateRequestMessage(HttpMethod.Post, url, headers))
+        using (var request = CreateRequestMessage(HttpMethod.Put, url, headers))
         {
             request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
             using (var response = await _client.SendAsync(request))
@@ -1327,11 +1329,11 @@ You will start by adding the data models.
 
     Now you will add the additional services. The first service you will add is the **ImageApi**. If you recall, if the user clicks on a breed, this service will be used to retrieve a list of images of that breed.
 
-1. To add a class for the Favorites API service, in the **TheCatApiClient.Shared** project, right-click the **WebServices** folder, select **Add** and click **Class...**
+1. To add a class for the Image API service, in the **TheCatApiClient.Shared** project, right-click the **WebServices** folder, select **Add** and click **Class...**
 
-1. On the **Add New Item** dialog, in the **Name** field, enter **FavoritesApi.cs**
+1. On the **Add New Item** dialog, in the **Name** field, enter **ImageApi.cs**
 
-1. In the editor, replace the content of the **FavoritesApi.cs** class with the following:
+1. In the editor, replace the content of the **ImageApi.cs** class with the following:
 
     ```csharp
     using System.Collections.Generic;
@@ -1483,20 +1485,14 @@ You will start by adding the data models.
 
     In order to add an image to your favorites, the API expects a JSON payload that contains the image ID and an optional **sub_id** value. The **Add** methods constructs this using a **Dictionary** that is then serialized to JSON and submitted as the payload. Rather than returning a **Favorite**, it returns a **Response** instance which contains the new Favorite ID.
 
-1. To add support for adding an image to your favorites, locate the comment **// Insert Add below here** and replace it with the following code:
+1. To add support for adding an image to your favorites, locate the comment **// Insert Delete below here** and replace it with the following code:
 
     ```csharp
-    // Insert Add below here
-    public async Task<Response> Add(CatImage image)
+    // Insert Delete below here
+    public async Task<Response> Delete(Favorite favorite)
     {
-        var result = await this.PostAsync(
-            $"https://api.thecatapi.com/v1/favourites",
-            JsonSerializer.Serialize(
-                new Dictionary<string, string>
-                {
-                    { "image_id", image.Id },
-                    { "sub_id", "uno-client" }
-                }),
+        var result = await this.DeleteAsync(
+            $"https://api.thecatapi.com/v1/favourites/{favorite.Id}",
             _defaultHeaders);
 
         if (result != null)
@@ -1507,8 +1503,6 @@ You will start by adding the data models.
         return null;
     }
     ```
-
-    In order to add an image to your favorites, the api expects a JSON payload that contains the image ID and an optional **sub_id** value. The **Add** methods constructs this using a **Dictionary** that is then serialized to JSON and submitted as the payload. Rather than returning a **Favorite**, it returns a **Response** instance which contains the new Favorite ID.
 
 1. The implementation of **FavoritesApi** should look similar to:
 
@@ -1594,7 +1588,7 @@ Now that the services are complete, it is time to update the UI.
 
 ## Task 9 - Add favorites to the UI view model
 
-In this task you will add the favorites capability to the Main view-model.
+In this task, you will add the favorites capability to the Main view-model.
 
 1. Open the **MainViewModel.cs** file in the editor.
 
@@ -1685,7 +1679,7 @@ In this task you will add the favorites capability to the Main view-model.
     You should notice the use of the `.ConfigureAwait(false)` code throughout to ensure the UI is not blocked. You will also notice the use of the **DispatchAsync** helper to ensure the **CollectionChanged** event raised by the insertion is raised on the UI thread so any bound control updates correctly.
 
 
-1. Finally, to add support for deleting a favorite, locate the **// Insert AddFavorite below here** comment and replace it with the following code:
+1. Finally, to add support for deleting a favorite, locate the **// Insert DeleteFavorite below here** comment and replace it with the following code:
 
     ```csharp
     // Insert DeleteFavorite below here
@@ -1852,7 +1846,7 @@ The full source code for this tutorial is available here - [Tutorial Source Code
   * [Keep the UI thread responsive](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
   * [Reserved attributes: Determine caller information](https://docs.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information)
   * [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
-  *[ObservableCollection<T> Class](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=netcore-3.1)
+  * [ObservableCollection<T> Class](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=netcore-3.1)
 * The Cat API Documentation
   * [Key Signup](https://thecatapi.com/signup)
   * [API documentation](https://docs.thecatapi.com/)
