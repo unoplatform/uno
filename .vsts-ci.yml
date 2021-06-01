@@ -12,7 +12,8 @@ pr:
       - master
       - release/beta/*
       - release/stable/*
-
+      - feature/*
+      
   paths:
     include:
     - '/'
