@@ -111,8 +111,8 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			{
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
-					.Where(x => !IPAddress.IsLoopback(x.Address))
-					.Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
+					.Where(x => !IPAddress.IsLoopback(x.Address));
+					//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
 
 				foreach (var addressInfo in addresses)
 				{
