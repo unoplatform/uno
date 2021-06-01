@@ -49,7 +49,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			this.InitializeComponent();
 
-			Private.Infrastructure.TestServices.WindowHelper.RootControl = unitTestContentRoot;
+			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRootControl = unitTestContentRoot;
 
 			DataContext = null;
 
@@ -472,8 +472,12 @@ namespace Uno.UI.Samples.Tests
 					continue;
 				}
 
-				var runsOnUIThread = HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod)
-									 || HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
+				var runsOnUIThread =
+					HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod) ||
+					HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
+				var requiresFullWindow =
+					HasCustomAttribute<RequiresFullWindowAttribute>(testMethod) ||
+					HasCustomAttribute<RequiresFullWindowAttribute>(testMethod.DeclaringType);
 				var expectedException = testMethod.GetCustomAttributes<ExpectedExceptionAttribute>()
 					.SingleOrDefault();
 				var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
@@ -505,6 +509,15 @@ namespace Uno.UI.Samples.Tests
 
 					try
 					{
+						if (requiresFullWindow)
+						{
+							await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+							{
+								Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
+								Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
+							});
+						}
+
 						object returnValue = null;
 						if (runsOnUIThread)
 						{
@@ -584,6 +597,17 @@ namespace Uno.UI.Samples.Tests
 						{
 							_currentRun.Succeeded++;
 							ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, e);
+						}
+					}
+					finally
+					{
+						if (requiresFullWindow)
+						{
+							await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+							{
+								Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
+								Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
+							});
 						}
 					}
 				}
