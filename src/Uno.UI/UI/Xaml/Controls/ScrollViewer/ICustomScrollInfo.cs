@@ -23,6 +23,11 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public static void ApplyViewport(this ICustomScrollInfo scrollInfo, ref Size size)
 		{
+			if (scrollInfo is null)
+			{
+				return;
+			}
+
 			if (scrollInfo.ViewportWidth is { } width)
 			{
 				size.Width = width;
@@ -35,6 +40,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public static void ApplyViewport(this ICustomScrollInfo scrollInfo, ref Rect rect)
 		{
+			if (scrollInfo is null)
+			{
+				return;
+			}
+
 			if (scrollInfo.ViewportWidth is { } width)
 			{
 				rect.Width = width;
