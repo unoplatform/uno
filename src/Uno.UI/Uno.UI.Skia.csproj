@@ -126,8 +126,4 @@
 	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 	  </None>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="DirectUI\" />
-	</ItemGroup>
 </Project>

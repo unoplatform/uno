@@ -5,6 +5,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class Control
 	{
+		[NotImplemented]
 		public event TypedEventHandler<Control, FocusEngagedEventArgs> FocusEngaged
 		{
 			[NotImplemented]

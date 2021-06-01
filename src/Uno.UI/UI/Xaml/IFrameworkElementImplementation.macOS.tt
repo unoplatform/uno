@@ -575,13 +575,6 @@ namespace <#= mixin.NamespaceName #>
 		partial void OnUnloadedPartial();
 
 		#region IsEnabled Dependency Property
-
-		// public bool IsEnabled
-		// {
-		// 	get { return (bool)this.GetValue(IsEnabledProperty); }
-		// 	set { this.SetValue(IsEnabledProperty, value); }
-		// }
-
 		[GeneratedDependencyProperty(
 			DefaultValue = true,
 			Options = FrameworkPropertyMetadataOptions.Inherits,
