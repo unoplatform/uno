@@ -124,10 +124,10 @@ dotnet new unoapp-uitest -o UnoUITests01
 Assert-ExitCodeIsZero
 
 # XF - Default
-7z x build\assets\xfapp-uwp-4.8.0.1451.zip -oXFApp
-
-pushd XFApp
-dotnet new wasmxfhead
-& $msbuild /ds /r /p:Configuration=Debug XFApp.Wasm\XFApp.Wasm.csproj
-Assert-ExitCodeIsZero
-popd
+# 7z x build\assets\xfapp-uwp-4.8.0.1451.zip -oXFApp
+# 
+# pushd XFApp
+# dotnet new wasmxfhead
+# & $msbuild /ds /r /p:Configuration=Debug XFApp.Wasm\XFApp.Wasm.csproj
+# Assert-ExitCodeIsZero
+# popd
