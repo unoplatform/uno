@@ -56,14 +56,14 @@ namespace Private.Infrastructure
 			Assert.IsNotNull(value, msg);
 		}
 
-		public static void VERIFY_IS_TRUE(bool value)
+		public static void VERIFY_IS_TRUE(bool value, string message = null)
 		{
-			Assert.IsTrue(value);
+			Assert.IsTrue(value, message);
 		}
 
-		public static void VERIFY_IS_FALSE(bool value)
+		public static void VERIFY_IS_FALSE(bool value, string message = null)
 		{
-			Assert.IsFalse(value);
+			Assert.IsFalse(value, message);
 		}
 
 		public static void VERIFY_IS_LESS_THAN(double actual, double expected)

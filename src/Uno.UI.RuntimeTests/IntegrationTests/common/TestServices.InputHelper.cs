@@ -1,6 +1,12 @@
-﻿using Windows.Foundation;
+﻿using System;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
+using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Private.Infrastructure
 {
@@ -29,7 +35,10 @@ namespace Private.Infrastructure
 
 			public static void Tap(UIElement element)
 			{
-				throw new System.NotImplementedException();
+#if !NETFX_CORE
+				var args = new TappedEventArgs(PointerDeviceType.Touch, default, 1);
+				element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args));
+#endif
 			}
 
 			public static void ScrollMouseWheel(CalendarView cv, int i)
@@ -37,10 +46,7 @@ namespace Private.Infrastructure
 				throw new System.NotImplementedException();
 			}
 
-			public static void LeftMouseClick(UIElement element)
-			{
-				throw new System.NotImplementedException();
-			}
+			public static void LeftMouseClick(UIElement element) => Tap(element);
 		}
 	}
 }

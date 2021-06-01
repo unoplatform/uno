@@ -532,6 +532,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("TestServices.InputHelper.DynamicPressCenter() / TestServices.InputHelper.DynamicRelease() not implemented yet")]
 		public async Task CanNotSelectBlackoutDate()
 		{
 			TestCleanupWrapper cleanup;
@@ -612,6 +613,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("Test deactivate in Uno")]
 		public async Task CanNotSelectMoreDates()
 		{
 			TestCleanupWrapper cleanup;
@@ -799,6 +801,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("Not Implemented")]
 		public async Task TestCICEvents()
 		{
 			TestCleanupWrapper cleanup;
@@ -923,7 +926,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			});
 
 			await cicEvent.WaitForDefault();
-			VERIFY_IS_TRUE(cicEvent.HasFired());
+			VERIFY_IS_TRUE(cicEvent.HasFired(), "Event not fired");
 		}
 
 
@@ -999,17 +1002,17 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				StackPanel rootPanel = XamlReader.Load(
-					@"(<StackPanel Width=""400"" Height=""400"" xmlns =""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+					@"<StackPanel Width=""400"" Height=""400"" xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
 						HorizontalAlignment=""Center"" VerticalAlignment=""Center"">
-							<CalendarView x:Name=""calendarview"" HorizontalAlignment=""Stretch"" VerticalAlignment=""Stretch"" Margin=""50"" NumberOfWeeksInView =""2"" / >
-						</StackPanel>)") as StackPanel;
+							<CalendarView x:Name=""calendarview"" HorizontalAlignment=""Stretch"" VerticalAlignment=""Stretch"" Margin=""50"" NumberOfWeeksInView=""2"" />
+						</StackPanel>") as StackPanel;
 
 				VERIFY_THROWS_WINRT<Exception>(() => XamlReader.Load(
-						@"(<CalendarView xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" NumberOfWeeksInView =""1"" />)"),
+						@"<CalendarView xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" NumberOfWeeksInView=""1"" />"),
 					"Should not be able to set NumberOfWeeksInView to a value smaller than 2.");
 
 				VERIFY_THROWS_WINRT<Exception>(() => XamlReader.Load(
-					@"(<CalendarView xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" NumberOfWeeksInView = ""9""/>)"),
+					@"(<CalendarView xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" NumberOfWeeksInView=""9""/>"),
 					"Should not be able to set NumberOfWeeksInView to a value greater than 8.");
 
 				calendarView = rootPanel.FindName("calendarview") as CalendarView;
@@ -1708,6 +1711,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task CanSwitchDisplayModeByCtrlUpAfterLoaded()
 		{
 			TestCleanupWrapper cleanup;
@@ -1743,6 +1747,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task KeyboardNavigationTestNavigationKeyTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -2009,6 +2014,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//}
 
 		[TestMethod]
+		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task KeyboardNavigationTestCanTryToNavigateOutOfBoundary()
 		{
 			TestCleanupWrapper cleanup;
@@ -2218,6 +2224,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task KeyboardNavigationTestSpaceEnterTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -3018,6 +3025,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("ControlHelper.ValidateUIElementTree() not supported yet.")]
 		public async Task ValidateUIElementTree()
 		{
 			await ControlHelper.ValidateUIElementTree(
@@ -3234,6 +3242,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task CanChangeDecadeCalendarIdentifier()
 		{
 			await VerifyChangingCalendarIdentifier(CalendarViewDisplayMode.Decade);
