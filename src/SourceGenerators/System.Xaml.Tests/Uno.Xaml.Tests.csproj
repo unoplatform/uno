@@ -7,7 +7,7 @@
     <DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="NUnit" Version="3.13.1" />
+		<PackageReference Include="NUnit" Version="3.13.2" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
 	</ItemGroup>
