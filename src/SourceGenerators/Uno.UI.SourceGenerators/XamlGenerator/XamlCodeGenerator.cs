@@ -34,10 +34,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			//	Debugger.Launch();
 			//}
 
-			var gen = new XamlCodeGeneration(context);
-
 			if (PlatformHelper.IsValidPlatform(context))
 			{
+				var gen = new XamlCodeGeneration(context);
 				var genereratedTrees = gen.Generate();
 
 				foreach (var tree in genereratedTrees)
