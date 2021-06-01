@@ -369,6 +369,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void OnItemClicked(int clickedIndex)
 		{
+			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
+
 			var item = ItemFromIndex(clickedIndex);
 			if (IsItemClickEnabled)
 			{
@@ -849,15 +851,5 @@ namespace Windows.UI.Xaml.Controls
 				TryLoadMoreItems();
 			}
 		}
-
-		/// <summary>
-		/// Is the ListView.managed implementation used on this platform?
-		/// </summary>
-		internal static bool UsesManagedLayouting =>
-#if __IOS__ || __ANDROID__
-			false;
-#else
-			true;
-#endif
 	}
 }

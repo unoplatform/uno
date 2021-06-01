@@ -39,8 +39,7 @@ using _View = Windows.UI.Xaml.FrameworkElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	// Temporarily inheriting from ListViewBase instead of Selector to leverage existing selection and virtualization code
-	public partial class ComboBox : ListViewBase // TODO: Selector
+	public partial class ComboBox : Selector
 	{
 		public event EventHandler<object>? DropDownClosed;
 		public event EventHandler<object>? DropDownOpened;
@@ -62,7 +61,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true);
 
-			IsItemClickEnabled = true;
 			DefaultStyleKey = typeof(ComboBox);
 		}
 
@@ -188,15 +186,51 @@ namespace Windows.UI.Xaml.Controls
 			IsDropDownOpen = false;
 		}
 
-		protected override void OnHeaderChanged(object oldHeader, object newHeader)
+
+		public object Header
 		{
-			base.OnHeaderChanged(oldHeader, newHeader);
+			get { return (object)this.GetValue(HeaderProperty); }
+			set { this.SetValue(HeaderProperty, value); }
+		}
+
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register(
+				"Header",
+				typeof(object),
+				typeof(ComboBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((ComboBox)s)?.OnHeaderChanged((object)e.OldValue, (object)e.NewValue)
+				)
+			);
+
+		private void OnHeaderChanged(object oldHeader, object newHeader)
+		{
 			UpdateHeaderVisibility();
 		}
 
-		protected override void OnHeaderTemplateChanged(DataTemplate oldHeaderTemplate, DataTemplate newHeaderTemplate)
+
+		public DataTemplate HeaderTemplate
 		{
-			base.OnHeaderTemplateChanged(oldHeaderTemplate, newHeaderTemplate);
+			get { return (DataTemplate)this.GetValue(HeaderTemplateProperty); }
+			set { this.SetValue(HeaderTemplateProperty, value); }
+		}
+
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register(
+				"HeaderTemplate",
+				typeof(DataTemplate),
+				typeof(ComboBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: (DataTemplate?)null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					propertyChangedCallback: (s, e) => ((ComboBox)s)?.OnHeaderTemplateChanged((DataTemplate)e.OldValue, (DataTemplate)e.NewValue)
+				)
+			);
+
+		private void OnHeaderTemplateChanged(DataTemplate oldHeaderTemplate, DataTemplate newHeaderTemplate)
+		{
 			UpdateHeaderVisibility();
 		}
 
@@ -384,11 +418,6 @@ namespace Windows.UI.Xaml.Controls
 				OnDropDownOpened(args);
 
 				RestoreSelectedItem();
-
-				if (SelectedItem != null)
-				{
-					ScrollIntoView(SelectedItem);
-				}
 			}
 			else
 			{
@@ -560,8 +589,10 @@ namespace Windows.UI.Xaml.Controls
 					// since the layouting on those platforms is not yet as aligned with UWP as on WASM/Skia, and in particular
 					// virtualizing panels aren't used in the ComboBox yet (#556 and #1133), we skip it for now
 					{
+#pragma warning disable CS0162 // Unreachable code detected
 						child.HorizontalAlignment = HorizontalAlignment.Left;
 						child.VerticalAlignment = VerticalAlignment.Top;
+#pragma warning restore CS0162 // Unreachable code detected
 					}
 				}
 
