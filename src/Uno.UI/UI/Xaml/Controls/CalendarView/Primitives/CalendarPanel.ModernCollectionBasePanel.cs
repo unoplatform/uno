@@ -496,13 +496,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			var viewport = GetLayoutViewport(availableSize);
-			if (Rows > 0 && Cols > 0)
-			{
-				// Uno: This SetViewportSize should be done in the CalendarPanel_Partial.ArrangeOverride of the Panel(not the 'base_'),
-				// but (due to invalid layouting event sequence in uno?) it would cause a second layout pass.
-				// Invoking it here makes sure that the ItemSize is valid for this measure pass.
-				_layoutStrategy.SetViewportSize(viewport.Size, out _);
-			}
+			_lastLayoutedViewport = viewport;
+
+			// Uno: This SetViewportSize should be done in the CalendarPanel_Partial.ArrangeOverride of the Panel(not the 'base_'),
+			// but (due to invalid layouting event sequence in uno?) it would cause a second layout pass.
+			// Invoking it here makes sure that Rows, Cols and ItemSize are valid for this measure pass.
+			ForceConfigViewport(viewport.Size);
 
 			_layoutStrategy.BeginMeasure();
 #if __ANDROID__
@@ -609,7 +608,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				
 				FirstVisibleIndexBase = Math.Max(firstVisibleIndex, startIndex);
 				LastVisibleIndexBase = Math.Max(FirstVisibleIndexBase, lastVisibleIndex);
-				_lastLayoutedViewport = viewport;
 			}
 			finally
 			{
@@ -689,28 +687,51 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endregion
 
 		private static void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+			=> (sender as CalendarPanel)?.OnEffectiveViewportChanged(args);
+
+		private void OnEffectiveViewportChanged(EffectiveViewportChangedEventArgs args)
 		{
-			if (sender is CalendarPanel that)
+			_effectiveViewport = args.EffectiveViewport;
+
+			if (_host is null || _layoutStrategy is null)
 			{
-				that._effectiveViewport = args.EffectiveViewport;
-
-				if (that._host is null || that._layoutStrategy is null || that.Cols == 0 || that.Rows == 0)
-				{
-					return;
-				}
-
-				// Uno: This SetViewportSize should be done in the CalendarPanel_Partial.ArrangeOverride of the Panel (not the 'base_'),
-				// but (due to invalid layouting event sequence in uno?) it would cause a second layout pass.
-				// Also on Android in Year and Decade views, the Arrange would never be invoked if the CellSize is not defined ...
-				// which is actually set **ONLY** by this SetViewport for Year and Decade host
-				// (We bypass the SetItemMinimumSize in the CalendarPanel_Partial.MeasureOverride if m_type is **not** CalendarPanelType.Primary)
-				that._layoutStrategy.SetViewportSize(that.GetLayoutViewport().Size, out var needsMeasure);
-
-				if (needsMeasure || Math.Abs(that._effectiveViewport.Y - that._lastLayoutedViewport.Y) > (that._lastLayoutedViewport.Height / that.Rows) * .75)
-				{
-					that.InvalidateMeasure();
-				}
+				return;
 			}
+
+			var needsMeasure = ForceConfigViewport(GetLayoutViewport().Size);
+			if (needsMeasure || Math.Abs(_effectiveViewport.Y - _lastLayoutedViewport.Y) > (_lastLayoutedViewport.Height / Rows) * .75)
+			{
+				InvalidateMeasure();
+			}
+		}
+
+		private bool ForceConfigViewport(Size viewportSize)
+		{
+			// Uno: Those SetViewportSize and SetPanelDimension should be done in the CalendarPanel_Partial.ArrangeOverride of the Panel (not the 'base_'),
+			// but (due to invalid layouting event sequence in uno?) it would cause a second layout pass.
+			// Also on Android in Year and Decade views, the Arrange would never be invoked if the CellSize is not defined (0,0) ...
+			// which is actually set **ONLY** by this SetViewport for Year and Decade host
+			// (We bypass the SetItemMinimumSize in the CalendarPanel_Partial.MeasureOverride if m_type is **not** CalendarPanelType.Primary)
+
+			if (m_type == CalendarPanelType.Secondary_SelfAdaptive && m_biggestItemSize.Width > 2 && m_biggestItemSize.Height > 2)
+			{
+				int effectiveCols = (int)(viewportSize.Width / m_biggestItemSize.Width);
+				int effectiveRows = (int)(viewportSize.Height / m_biggestItemSize.Height);
+
+				effectiveCols = Math.Max(1, Math.Min(effectiveCols, m_suggestedCols));
+				effectiveRows = Math.Max(1, Math.Min(effectiveRows, m_suggestedRows));
+
+				SetPanelDimension(effectiveCols, effectiveRows);
+			}
+
+			if (Rows == 0 || Cols == 0)
+			{
+				return false;
+			}
+
+			_layoutStrategy!.SetViewportSize(viewportSize, out var needsMeasure);
+
+			return needsMeasure;
 		}
 	}
 
