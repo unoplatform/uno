@@ -32,6 +32,8 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
+		internal bool ShouldInterceptInvalidate { get; set; }
+
 		internal void AddChild(UIElement child, int? index = null) => throw new NotSupportedException("Reference assembly");
 		internal void MoveChildTo(int oldIndex, int newIndex) => throw new NotSupportedException("Reference assembly");
 		internal bool RemoveChild(UIElement child) => throw new NotSupportedException("Reference assembly");
