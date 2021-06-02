@@ -316,7 +316,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.PeerFromProvider(IRawElementProviderSimple provider) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected internal global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer( global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer)
 		{

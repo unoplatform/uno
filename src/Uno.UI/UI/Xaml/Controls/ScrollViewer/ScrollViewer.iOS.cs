@@ -79,8 +79,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// iOS doesn't limit the offset to the scrollable bounds by itself
 				var limit = _scrollableContainer.UpperScrollLimit;
-				var desiredOffsets = new Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
-				var clampedOffsets = new Foundation.Point(MathEx.Clamp(desiredOffsets.X, 0, limit.X), MathEx.Clamp(desiredOffsets.Y, 0, limit.Y));
+				var desiredOffsets = new Windows.Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
+				var clampedOffsets = new Windows.Foundation.Point(MathEx.Clamp(desiredOffsets.X, 0, limit.X), MathEx.Clamp(desiredOffsets.Y, 0, limit.Y));
 
 				var success = desiredOffsets == clampedOffsets;
 				if (!success && IsArrangeDirty)

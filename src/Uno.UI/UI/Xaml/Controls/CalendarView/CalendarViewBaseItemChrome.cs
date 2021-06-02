@@ -7,8 +7,10 @@
 #undef min
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -668,6 +670,20 @@ namespace Windows.UI.Xaml.Controls
 		private protected CalendarView GetOwner()
 		{
 			return m_wrOwner.Target;
+		}
+
+		// We are not supporting rendering of those density bars yet
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void SetDensityColors(IEnumerable<Color> colors)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarViewDayItem", "void CalendarViewDayItem.SetDensityColors(IEnumerable<Color> colors)");
+
+			// UNO TODO
+			// As the code for density bars has not been tested yet, we prefer to just do nothing with provided colors!
+
+			//var c = new ValueTypeCollection<Color>();
+			//c.SetView(colors.ToList());
+			//SetDensityColors(c);
 		}
 
 		internal void SetDensityColors(

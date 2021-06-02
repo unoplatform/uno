@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarViewDayItem.IsBlackout.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarViewDayItem.IsBlackout.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarViewDayItem.Date.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void SetDensityColors( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Color> colors)
 		{

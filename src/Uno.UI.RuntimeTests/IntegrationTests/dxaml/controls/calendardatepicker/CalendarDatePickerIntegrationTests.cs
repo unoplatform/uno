@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+#if !WINDOWS_UWP
+
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -593,7 +595,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 					"      Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left' Background='Black'/> ")
 				);
 
-				Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
+				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 
 			// load into visual tree
@@ -641,7 +643,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 					"      Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left' Background='Black'/> ")
 				);
 
-				Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
+				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 
 
@@ -710,7 +712,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 					"      Width='200' Height='200' VerticalAlignment='Top' HorizontalAlignment='Left' Background='Black'/> ")
 				);
 				rootPanel.Children.Append(cp);
-				Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
+				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
 				cp.IsCalendarOpen = true;
 				// there is not enough space to show the flyout, before this fix, the flyoutpresenter's content will be clipped
 				cp.HorizontalAlignment = HorizontalAlignment.Center;
@@ -856,7 +858,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 					"</StackPanel>"
 				));
 
-				Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
+				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -956,3 +958,5 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 	}
 }
+
+#endif

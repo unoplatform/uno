@@ -5039,7 +5039,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				{
 					loadedEvent.Set();
 				});
-				Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
+				global::Private.Infrastructure.TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 
 			await loadedEvent.WaitForDefault();

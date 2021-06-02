@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarDatePicker
 	{
-		public static readonly DependencyProperty CalendarIdentifierProperty = DependencyProperty.Register(
+		public static DependencyProperty CalendarIdentifierProperty { get; } = DependencyProperty.Register(
 			"CalendarIdentifier", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
 
 		public string CalendarIdentifier
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(CalendarIdentifierProperty, value);
 		}
 
-		public static readonly DependencyProperty CalendarViewStyleProperty = DependencyProperty.Register(
+		public static DependencyProperty CalendarViewStyleProperty { get; } = DependencyProperty.Register(
 			"CalendarViewStyle", typeof(Style), typeof(CalendarDatePicker), new PropertyMetadata(default(Style)));
 
 		public Style CalendarViewStyle
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(CalendarViewStyleProperty, value);
 		}
 
-		public static readonly DependencyProperty DateProperty = DependencyProperty.Register(
+		public static DependencyProperty DateProperty { get; } = DependencyProperty.Register(
 			"Date", typeof(DateTimeOffset?), typeof(CalendarDatePicker), new PropertyMetadata(default(DateTimeOffset?)));
 
 		public DateTimeOffset? Date
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(DateProperty, value);
 		}
 
-		public static readonly DependencyProperty DateFormatProperty = DependencyProperty.Register(
+		public static DependencyProperty DateFormatProperty { get; } = DependencyProperty.Register(
 			"DateFormat", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
 
 		public string DateFormat
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(DateFormatProperty, value);
 		}
 
-		public static readonly DependencyProperty DayOfWeekFormatProperty = DependencyProperty.Register(
+		public static DependencyProperty DayOfWeekFormatProperty { get; } = DependencyProperty.Register(
 			"DayOfWeekFormat", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
 
 		public string DayOfWeekFormat
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(DayOfWeekFormatProperty, value);
 		}
 
-		public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
+		public static DependencyProperty DescriptionProperty { get; } = DependencyProperty.Register(
 			"Description", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
 
 #if __IOS__ || __MACOS__
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(DescriptionProperty, value);
 		}
 
-		public static readonly DependencyProperty DisplayModeProperty = DependencyProperty.Register(
+		public static DependencyProperty DisplayModeProperty { get; } = DependencyProperty.Register(
 			"DisplayMode", typeof(CalendarViewDisplayMode), typeof(CalendarDatePicker), new PropertyMetadata(default(CalendarViewDisplayMode)));
 
 		public CalendarViewDisplayMode DisplayMode
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(DisplayModeProperty, value);
 		}
 
-		public static readonly DependencyProperty FirstDayOfWeekProperty = DependencyProperty.Register(
+		public static DependencyProperty FirstDayOfWeekProperty { get; } = DependencyProperty.Register(
 			"FirstDayOfWeek", typeof(DayOfWeek), typeof(CalendarDatePicker), new PropertyMetadata(default(DayOfWeek)));
 
 		public DayOfWeek FirstDayOfWeek
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(FirstDayOfWeekProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(
+		public static DependencyProperty HeaderProperty { get; } = DependencyProperty.Register(
 			"Header", typeof(object), typeof(CalendarDatePicker), new PropertyMetadata(default(object)));
 
 		public object Header
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderProperty, value);
 		}
 
-		public static readonly DependencyProperty HeaderTemplateProperty = DependencyProperty.Register(
+		public static DependencyProperty HeaderTemplateProperty { get; } = DependencyProperty.Register(
 			"HeaderTemplate", typeof(DataTemplate), typeof(CalendarDatePicker), new PropertyMetadata(default(DataTemplate)));
 
 		public DataTemplate HeaderTemplate
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderTemplateProperty, value);
 		}
 
-		public static readonly DependencyProperty IsCalendarOpenProperty = DependencyProperty.Register(
+		public static DependencyProperty IsCalendarOpenProperty { get; } = DependencyProperty.Register(
 			"IsCalendarOpen", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(default(bool)));
 
 		public bool IsCalendarOpen
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsCalendarOpenProperty, value);
 		}
 
-		public static readonly DependencyProperty IsGroupLabelVisibleProperty = DependencyProperty.Register(
+		public static DependencyProperty IsGroupLabelVisibleProperty { get; } = DependencyProperty.Register(
 			"IsGroupLabelVisible", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(default(bool)));
 
 		public bool IsGroupLabelVisible
@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsGroupLabelVisibleProperty, value);
 		}
 
-		public static readonly DependencyProperty IsOutOfScopeEnabledProperty = DependencyProperty.Register(
+		public static DependencyProperty IsOutOfScopeEnabledProperty { get; } = DependencyProperty.Register(
 			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(defaultValue: true));
 
 		public bool IsOutOfScopeEnabled
@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsOutOfScopeEnabledProperty, value);
 		}
 
-		public static readonly DependencyProperty IsTodayHighlightedProperty = DependencyProperty.Register(
+		public static DependencyProperty IsTodayHighlightedProperty { get; } = DependencyProperty.Register(
 			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(defaultValue: true));
 
 		public bool IsTodayHighlighted
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsTodayHighlightedProperty, value);
 		}
 
-		public static readonly DependencyProperty LightDismissOverlayModeProperty = DependencyProperty.Register(
+		public static DependencyProperty LightDismissOverlayModeProperty { get; } = DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode), typeof(CalendarDatePicker), new PropertyMetadata(default(LightDismissOverlayMode)));
 
 		public LightDismissOverlayMode LightDismissOverlayMode
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(LightDismissOverlayModeProperty, value);
 		}
 
-		public static readonly DependencyProperty MaxDateProperty = DependencyProperty.Register(
+		public static DependencyProperty MaxDateProperty { get; } = DependencyProperty.Register(
 			"MaxDate", typeof(DateTimeOffset), typeof(CalendarDatePicker), new PropertyMetadata(default(DateTimeOffset)));
 
 		public DateTimeOffset MaxDate
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MaxDateProperty, value);
 		}
 
-		public static readonly DependencyProperty MinDateProperty = DependencyProperty.Register(
+		public static DependencyProperty MinDateProperty { get; } = DependencyProperty.Register(
 			"MinDate", typeof(DateTimeOffset), typeof(CalendarDatePicker), new PropertyMetadata(default(DateTimeOffset)));
 
 		public DateTimeOffset MinDate
@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MinDateProperty, value);
 		}
 
-		public static readonly DependencyProperty PlaceholderTextProperty = DependencyProperty.Register(
+		public static DependencyProperty PlaceholderTextProperty { get; } = DependencyProperty.Register(
 			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
 
 		public string PlaceholderText
