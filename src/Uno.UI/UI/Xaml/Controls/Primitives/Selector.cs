@@ -690,7 +690,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 									  FocusNavigationDirection focusNavigationDirection)
 		{
 
-			bool hasFocus = false;
+			//bool hasFocus = false;
 			FocusState focusState = FocusState.Programmatic;
 
 			//hasFocus = HasFocus();

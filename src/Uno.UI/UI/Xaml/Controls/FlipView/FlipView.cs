@@ -180,12 +180,13 @@ namespace Windows.UI.Xaml.Controls
 				{
 					//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT, strAutomationName);
 					AutomationProperties.SetName(m_tpNextButtonHorizontalPart, strAutomationName);
-
 				}
 			}
 
 
 			spPreviousButtonVerticalPart = CreateButtonClickEventHandler("PreviousButtonVertical", OnPreviousButtonPartClick);
+
+			m_tpPreviousButtonVerticalPart = spPreviousButtonVerticalPart;
 
 			if (m_tpPreviousButtonVerticalPart != null)
 			{
@@ -198,7 +199,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS, strAutomationName);
 					AutomationProperties.SetName(m_tpPreviousButtonVerticalPart, strAutomationName);
-
 				}
 			}
 
@@ -459,7 +459,6 @@ namespace Windows.UI.Xaml.Controls
 
 				if (m_tpScrollViewer != null)
 				{
-					SizeChangedEventHandler spSizeChangedHandler;
 					Orientation physicalOrientation = Orientation.Vertical;
 
 					// Ignore mouse wheel scroll events to route them to the parent
@@ -618,7 +617,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!isCtrlPressed)
 				{
-					long lTimeCurrent = default;
+					//long lTimeCurrent = default;
 					bool canFlip = false;
 					bool queryCounterSuccess = false;
 
@@ -643,8 +642,8 @@ namespace Windows.UI.Xaml.Controls
 						}
 						else
 						{
-							long frequency;
-							bool queryFrequencySuccess;
+							//long frequency;
+							//bool queryFrequencySuccess;
 
 							//queryFrequencySuccess = QueryPerformanceFrequency(frequency);
 							//queryFrequencySuccess &&
@@ -1081,8 +1080,8 @@ namespace Windows.UI.Xaml.Controls
 			bool nothingNext = false;
 			Orientation physicalOrientation = Orientation.Vertical;
 			bool isVertical = false;
-			bool bIgnore = false;
-			bool bHasFocus = false;
+			//bool bIgnore = false;
+			//bool bHasFocus = false;
 
 			// Determine the correct button/previous/next visibility
 			var spItems = Items;
@@ -1493,7 +1492,7 @@ namespace Windows.UI.Xaml.Controls
 				if (m_tpScrollViewer != null)
 				{
 					double svOffset = 0;
-					double siOffset = 0;
+					//double siOffset = 0;
 					Orientation physicalOrientation = Orientation.Horizontal;
 					bool isVertical = false;
 
