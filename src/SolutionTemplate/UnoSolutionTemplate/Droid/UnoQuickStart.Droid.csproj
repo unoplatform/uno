@@ -102,5 +102,4 @@
 			<Compile Remove="$(_AndroidResourceDesignerFile)"/>
 		</ItemGroup>
 	</Target>
-
 </Project>
