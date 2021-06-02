@@ -1710,7 +1710,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		internal void SetDisplayDate( DateTime date)
+		public void SetDisplayDate(DateTime date)
 		{
 			// if m_dateSourceChanged is true, this means we might changed m_minDate or m_maxDate
 			// so we should not call CoerceDate until next measure pass, by then the m_minDate and

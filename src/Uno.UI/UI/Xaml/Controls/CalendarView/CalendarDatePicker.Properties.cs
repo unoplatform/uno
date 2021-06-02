@@ -54,14 +54,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DescriptionProperty { get; } = DependencyProperty.Register(
-			"Description", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
+			"Description", typeof(object), typeof(CalendarDatePicker), new PropertyMetadata(default(object)));
 
 #if __IOS__ || __MACOS__
 		public new // .Description already exists on NSObject (both macOS & iOS)
 #else
 		public
 #endif
-			string Description
+			object Description
 		{
 			get => (string)GetValue(DescriptionProperty);
 			set => SetValue(DescriptionProperty, value);
