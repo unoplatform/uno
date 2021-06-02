@@ -85,10 +85,17 @@ namespace Windows.UI.Xaml.Controls
 				var success = desiredOffsets == clampedOffsets;
 				if (!success && IsArrangeDirty)
 				{
-					_pendingChangeView = (horizontalOffset, verticalOffset, disableAnimation);
-				}
+					// If the the requested offsets are out-of - bounds, but we actually does have our final bounds yet,
+					// we allow to set the desired offsets. If needed, they will then be clamped by the OnAfterArrange().
+					// This is needed to allow a ScrollTo before the SV has been layouted.
 
-				_scrollableContainer.SetContentOffset(desiredOffsets, !disableAnimation);
+					_pendingChangeView = (horizontalOffset, verticalOffset, disableAnimation);
+					_scrollableContainer.SetContentOffset(desiredOffsets, !disableAnimation);
+				}
+				else
+				{
+					_scrollableContainer.SetContentOffset(clampedOffsets, !disableAnimation);
+				}
 
 				if(zoomFactor is { } zoom)
 				{
