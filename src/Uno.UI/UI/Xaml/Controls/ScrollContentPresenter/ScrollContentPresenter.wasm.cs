@@ -216,13 +216,18 @@ namespace Windows.UI.Xaml.Controls
 					rootFwElt.LayoutUpdated += TryProcessScrollTo;
 				}
 
-				// As the native ScrollTo is going to be async, we manually raise the event with the provided values.
-				// If those values are invalid, the browser will raise the final event anyway.
-				(TemplatedParent as ScrollViewer)?.OnScrollInternal(
-					horizontalOffset ?? GetNativeHorizontalOffset(),
-					verticalOffset ?? GetNativeVerticalOffset(),
-					isIntermediate: false
-				);
+				if (disableAnimation)
+				{
+					// As the native ScrollTo is going to be async, we manually raise the event with the provided values.
+					// If those values are invalid, the browser will raise the final event anyway.
+					// Note: If the caller has allowed animation, we assume that it's not interested by a sync response,
+					//		 we prefer to wait for the browser to effectively scroll.
+					(TemplatedParent as ScrollViewer)?.OnScrollInternal(
+						horizontalOffset ?? GetNativeHorizontalOffset(),
+						verticalOffset ?? GetNativeVerticalOffset(),
+						isIntermediate: false
+					);
+				}
 			}
 		}
 
