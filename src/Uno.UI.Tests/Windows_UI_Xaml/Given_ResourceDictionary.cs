@@ -772,5 +772,28 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			button.Style = style;
 			Assert.AreEqual(new Thickness(99, 33, 7, 7), button.Margin);
 		}
+
+		[TestMethod]
+		public void When_Custom_Resource_Dictionary_With_Custom_Property()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var rd = app.Resources.MergedDictionaries.FirstOrDefault(x => x is Subclassed_Dictionary_With_Property);
+
+			Assert.IsNotNull(rd);
+			Assert.IsTrue(rd.ContainsKey("TestKey"));
+			Assert.AreEqual(rd["TestKey"], "Test123");
+		}
+
+		[TestMethod]
+		public void When_Custom_Resource_Dictionary_With_Custom_Property_in_Custom_Control()
+		{
+			var ctrl = new Test_Control_With_Subclassed_ResourceDictionary_With_Custom_Property();
+			var resources = ctrl.Resources;
+
+			Assert.IsNotNull(resources);
+			Assert.IsTrue(resources.ContainsKey("TestKey"));
+			Assert.AreEqual(resources["TestKey"], "Test123");
+		}
 	}
 }

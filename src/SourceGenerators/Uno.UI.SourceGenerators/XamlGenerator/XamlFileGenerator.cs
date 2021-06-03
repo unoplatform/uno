@@ -1299,7 +1299,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (IsResourceDictionarySubclass(topLevelControl.Type))
 			{
 				var type = GetType(topLevelControl.Type);
-				writer.AppendLineInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString()));
+				using (writer.BlockInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString())))
+				{
+					BuildLiteralProperties(writer, topLevelControl);
+				}
 			}
 			else
 			{
@@ -2394,7 +2397,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant("Resources = ");
 
 					var type = GetType(rdSubclass.Type);
-					writer.AppendLineInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString()));
+					using (writer.BlockInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString())))
+					{
+						BuildLiteralProperties(writer, rdSubclass);
+					}
 					writer.AppendLineInvariant(isInInitializer ? "," : ";");
 				}
 				else if (resourcesRoot != null || mergedDictionaries != null || themeDictionaries != null)
