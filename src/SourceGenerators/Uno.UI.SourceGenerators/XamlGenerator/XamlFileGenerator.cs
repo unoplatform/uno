@@ -3664,6 +3664,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			rawFunction = rawFunction
 				?.Replace("x:False", "false")
 				.Replace("x:True", "true")
+				.Replace("{x:Null}", "null")
 				.Replace("x:Null", "null")
 				?? "";
 
@@ -3737,6 +3738,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
+				var originalRawFunction = rawFunction;
 				rawFunction = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMember);
 
 				string buildBindBack()
@@ -3777,7 +3779,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var bindFunction = $"___ctx is global::{_className.ns + "." + _className.className} ___tctx ? (object)({rawFunction}) : null";
-				return $".Apply(___b =>  /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				return $".Apply(___b =>  /*defaultBindMode{GetDefaultBindMode()} {originalRawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
 

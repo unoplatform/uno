@@ -1069,6 +1069,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 		}
 
+		[TestMethod]
+		public async Task When_Binding_xNull()
+		{
+			var SUT = new Binding_xNull();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNotNull(SUT.tb01);
+			Assert.AreEqual("Jan 1", SUT.tb01.Text);
+
+			Assert.IsNotNull(SUT.tb02);
+			Assert.AreEqual("MMM d <null>", SUT.tb02.Text);
+
+			Assert.IsNotNull(SUT.tb03);
+			Assert.AreEqual("MMM d <null>", SUT.tb03.Text);
+		}
+
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null)
 		{
 			var sw = Stopwatch.StartNew();
