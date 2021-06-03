@@ -39,14 +39,14 @@ namespace <#= mixin.NamespaceName #>
 		bool IFrameworkElementInternal.HasLayouter => <#= mixin.HasLayouter #>;
 
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
 		/// </summary>
 		public DependencyObject Parent => ((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 #endif
 
-#if <#= mixin.HasAttachedToWindow #>
+#if <#= mixin.HasAttachedToWindow #> // HasAttachedToWindow
 		partial void OnAttachedToWindowPartial()
 		{
 			OnLoading();
@@ -59,7 +59,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 #endif
 
-#if <#= mixin.OverridesAttachedToWindow #>
+#if <#= mixin.OverridesAttachedToWindow #> // OverridesAttachedToWindow
 		private NSWindow _currentWindow;
 
 		public override void ViewDidMoveToWindow()
@@ -153,11 +153,11 @@ namespace <#= mixin.NamespaceName #>
 
 		public event SizeChangedEventHandler SizeChanged;
 
-#if <#= mixin.DefineLayoutSubviews #> || <#= mixin.DefineSetNeedsLayout #>
+#if <#= mixin.DefineLayoutSubviews #> || <#= mixin.DefineSetNeedsLayout #> // DefineLayoutSubviews || DefineSetNeedsLayout
 		private bool _layoutRequested = false;
 #endif
 
-#if <#= mixin.DefineLayoutSubviews #>
+#if <#= mixin.DefineLayoutSubviews #> // DefineLayoutSubviews
 		public override void Layout()
 		{
 			_layoutRequested = false;
@@ -165,7 +165,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 #endif
 
-#if <#= mixin.DefineSetNeedsLayout #>
+#if <#= mixin.DefineSetNeedsLayout #> // DefineSetNeedsLayout
 		public override bool NeedsLayout
 		{
 			set
@@ -341,7 +341,7 @@ namespace <#= mixin.NamespaceName #>
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		private protected virtual double GetActualWidth() => _actualSize.Width;
 		private protected virtual double GetActualHeight() => _actualSize.Height;
 #endif
@@ -355,7 +355,7 @@ namespace <#= mixin.NamespaceName #>
 				var previousSize = _actualSize;
 				_actualSize = value.Size.ToFoundationSize().PhysicalToLogicalPixels();
 
-#if <#= mixin.IsFrameworkElement #>
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
 				RenderSize = _actualSize;
 				AssignedActualSize = _actualSize;
 #endif
@@ -400,7 +400,7 @@ namespace <#= mixin.NamespaceName #>
 		/// </summary>
 		public Rect AppliedFrame { get; private set; }
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		public event EventHandler<object> LayoutUpdated;
 
 		internal virtual void OnLayoutUpdated ()
@@ -575,39 +575,43 @@ namespace <#= mixin.NamespaceName #>
 		partial void OnUnloadedPartial();
 
 		#region IsEnabled Dependency Property
+		[GeneratedDependencyProperty(
+			DefaultValue = true,
+			Options = FrameworkPropertyMetadataOptions.Inherits,
+			ChangedCallback = true
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
+			, CoerceCallback = true
+#endif
+		)]
+				public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
 
 		public bool IsEnabled
 		{
-			get { return (bool)this.GetValue(IsEnabledProperty); }
-			set { this.SetValue(IsEnabledProperty, value); }
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
 		}
 
-		public static DependencyProperty IsEnabledProperty { get ; } =
-			DependencyProperty.Register(
-				"IsEnabled",
-				typeof(bool),
-				typeof(<#= mixin.ClassName #>),
-				new FrameworkPropertyMetadata(
-					true,
-					FrameworkPropertyMetadataOptions.Inherits,
-					(s, e) => {
-						((<#= mixin.ClassName #>)s).OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
-						((<#= mixin.ClassName #>)s).IsEnabledChanged?.Invoke(s, e);
-					}
-				)
-			);
-
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
+		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
+#endif
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
-			// TODO UserInteractionEnabled = newValue;
-		}
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
+			// Calling the internal override (WinUI compatibility) -- See FrameworkElement.cs
+			_isEnabledChangedEventArgs.SourceEvent = e;
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+#endif
 
-		partial void OnIsEnabledChangedPartial();
+			var newValue = (bool)e.NewValue;
+			// UserInteractionEnabled = newValue; // UNO-TODO: Set MacOS native equivalent
+
+			IsEnabledChanged?.Invoke(this, e);
+		}
 
 		#endregion
 
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region Opacity Dependency Property
 
 		public double Opacity
@@ -702,7 +706,7 @@ namespace <#= mixin.NamespaceName #>
 
 #endif
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region IsHitTestVisible Dependency Property
 
 		public bool IsHitTestVisible
@@ -778,7 +782,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 		#endregion
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region RenderTransform Dependency Property
 
 		/// <summary>
@@ -932,7 +936,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		partial void HitCheckOverridePartial(ref bool hitCheck);
 
 		protected virtual bool IsViewHit()
@@ -953,7 +957,7 @@ namespace <#= mixin.NamespaceName #>
 		{
 			OnGenericPropertyUpdatedPartial(args);
 
-#if <#= mixin.IsFrameworkElement #>
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
             if(this is FrameworkElement fe)
             {
                 fe.InvalidateMeasure();
@@ -1007,7 +1011,7 @@ namespace <#= mixin.NamespaceName #>
 		#region AutomationPeer
 
 
-#if !<#= mixin.HasAutomationPeer #>
+#if !<#= mixin.HasAutomationPeer #> // HasAutomationPeer
         private AutomationPeer _automationPeer;
 
 		private AutomationPeer OnCreateAutomationPeerOverride()

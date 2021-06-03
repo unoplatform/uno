@@ -82,12 +82,12 @@ namespace <#= mixin.NamespaceName #>
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		private protected virtual double GetActualWidth() => _actualSize.Width;
 		private protected virtual double GetActualHeight() => _actualSize.Height;
 #endif		
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
 		/// </summary>
@@ -184,7 +184,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 		#endregion
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region Opacity Dependency Property
 		public double Opacity
 		{
@@ -258,7 +258,7 @@ namespace <#= mixin.NamespaceName #>
 			DefaultValue = true,
 			Options = FrameworkPropertyMetadataOptions.Inherits,
 			ChangedCallback = true
-#if <#= mixin.IsFrameworkElement #>
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
 			, CoerceCallback = true
 #endif
 		)]
@@ -266,35 +266,42 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual bool IsEnabled
 		{
-            get => GetIsEnabledValue();
-            set => SetIsEnabledValue(value);
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
 		}
 
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
+		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
+#endif
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
-			OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
-			IsEnabledChanged?.Invoke(this, e);
-		}
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
+			// Calling the internal override (WinUI compatibility) -- Defined in FrameworkElement.cs
+			// Note: only available for controls inheriting from FrameworkElement
+			_isEnabledChangedEventArgs.SourceEvent = e;
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+#endif
 
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-#if <#= mixin.IsUnoMotionTarget #>
+			var newValue = (bool)e.NewValue;
+
+#if <#= mixin.IsUnoMotionTarget #> // IsFrameworkElement
 			base.SetNativeIsEnabled(newValue);
 #endif
 			Enabled = newValue;
 
-#if <#= mixin.IsFocusable #>
+#if <#= mixin.IsFocusable #> // IsFocusable
 			Focusable = newValue;
 			FocusableInTouchMode = newValue;
 #endif
 
 			OnIsEnabledChangedCore();
-			
+
+			IsEnabledChanged?.Invoke(this, e);
 		}
 
 		#endregion
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region IsHitTestVisible Dependency Property
 
 		public bool IsHitTestVisible
@@ -319,7 +326,7 @@ namespace <#= mixin.NamespaceName #>
 
 		}
 
-#if !<#= mixin.IsUnoMotionTarget #>
+#if !<#= mixin.IsUnoMotionTarget #> // IsUnoMotionTarget
 		public override bool DispatchTouchEvent(MotionEvent e)
 		{
 			if (IsHitTestVisible && IsEnabled && HitCheck())
@@ -436,7 +443,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#endregion
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region Visibility Dependency Property
 
 		public static DependencyProperty VisibilityProperty { get ; } =
@@ -499,8 +506,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual string Name
 		{
-            get => GetNameValue();
-            set => SetNameValue(value);
+			get => GetNameValue();
+			set => SetNameValue(value);
 		}
 		#endregion
 
@@ -510,8 +517,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual Thickness Margin
 		{
-            get => GetMarginValue();
-            set => SetMarginValue(value);
+			get => GetMarginValue();
+			set => SetMarginValue(value);
 		}
 		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
@@ -522,8 +529,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public HorizontalAlignment HorizontalAlignment
 		{
-            get => GetHorizontalAlignmentValue();
-            set => SetHorizontalAlignmentValue(value);
+			get => GetHorizontalAlignmentValue();
+			set => SetHorizontalAlignmentValue(value);
 		}
 		#endregion
 
@@ -533,8 +540,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public VerticalAlignment VerticalAlignment
 		{
-            get => GetVerticalAlignmentValue();
-            set => SetVerticalAlignmentValue(value);
+			get => GetVerticalAlignmentValue();
+			set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
 
@@ -544,8 +551,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewWidthHeight #> double Width
 		{
-            get => GetWidthValue();
-            set => SetWidthValue(value);
+			get => GetWidthValue();
+			set => SetWidthValue(value);
 		}
 		#endregion
 
@@ -555,8 +562,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewWidthHeight #> double Height
 		{
-            get => GetHeightValue();
-            set => SetHeightValue(value);
+			get => GetHeightValue();
+			set => SetHeightValue(value);
 		}
 		#endregion
 
@@ -566,8 +573,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewMinWidthHeight #> double MinWidth
 		{
-            get => GetMinWidthValue();
-            set => SetMinWidthValue(value);
+			get => GetMinWidthValue();
+			set => SetMinWidthValue(value);
 		}
 		#endregion
 
@@ -577,8 +584,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewMinWidthHeight #> double MinHeight
 		{
-            get => GetMinHeightValue();
-            set => SetMinHeightValue(value);
+			get => GetMinHeightValue();
+			set => SetMinHeightValue(value);
 		}
 		#endregion
 
@@ -588,8 +595,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewMaxWidthHeight #> double MaxWidth
 		{
-            get => GetMaxWidthValue();
-            set => SetMaxWidthValue(value);
+			get => GetMaxWidthValue();
+			set => SetMaxWidthValue(value);
 		}
 		#endregion
 
@@ -599,8 +606,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public <#= mixin.HasNewMaxWidthHeight #> double MaxHeight
 		{
-            get => GetMaxHeightValue();
-            set => SetMaxHeightValue(value);
+			get => GetMaxHeightValue();
+			set => SetMaxHeightValue(value);
 		}
 		#endregion
 		
@@ -644,7 +651,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 		#endregion
 
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region Tag Dependency Property
 
 		public new object Tag
@@ -795,14 +802,14 @@ namespace <#= mixin.NamespaceName #>
 			
 		}
 
-#if <#= mixin.OverridesOnLayout #>
+#if <#= mixin.OverridesOnLayout #> // OverridesOnLayout
 		private Size _actualSize;
 		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
 		{
 			var newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
 			var previousSize = _actualSize;
 
-#if <#= mixin.CallsBaseOnLayout #>
+#if <#= mixin.CallsBaseOnLayout #> // CallsBaseOnLayout
 			base.OnLayout(changed, left, top, right, bottom);
 #endif
 
@@ -827,7 +834,7 @@ namespace <#= mixin.NamespaceName #>
 
 		private AutomationPeer _automationPeer;
 
-#if !<#= mixin.HasAutomationPeer #>
+#if !<#= mixin.HasAutomationPeer #> // HasAutomationPeer
 		private AutomationPeer OnCreateAutomationPeerOverride()
 		{
 			return null;
@@ -840,7 +847,7 @@ namespace <#= mixin.NamespaceName #>
 #endif
 
 		protected
-#if !<#= mixin.IsFrameworkElement #>
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		virtual
 #else
 		override

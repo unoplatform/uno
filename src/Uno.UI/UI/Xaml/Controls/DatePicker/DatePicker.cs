@@ -178,7 +178,6 @@ namespace Windows.UI.Xaml.Controls
 		public DatePicker()
 		{
 			this.RegisterDefaultValueProvider(GetDefaultValue2);
-			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged2(e));
 
 			m_numberOfYears = 0;
 			m_reactionToSelectionChangeAllowed = true;
@@ -1254,7 +1253,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Handle the custom propery changed event and call the
 		// OnPropertyChanged2 methods.
-		void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			// DatePickerGenerated.OnPropertyChanged2(args);
 

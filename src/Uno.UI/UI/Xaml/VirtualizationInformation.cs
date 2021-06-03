@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
+using Uno;
 
 namespace Windows.UI.Xaml
 {
 	/// <summary>
-	/// Class that holds virtualization information. We do not create this class indiscriminately, but only
-	// for containers that happen to be virtualizing.
+	/// Class that holds virtualization information. We do not create this class indiscriminately,
+	/// but only for containers that happen to be virtualizing.
 	/// </summary>
 	internal sealed class VirtualizationInformation
 	{
@@ -23,5 +24,7 @@ namespace Windows.UI.Xaml
 		public bool IsContainerFromTemplateRoot { get; set; }
 
 		public Rect Bounds { get; set; }
+
+		public Size MeasureSize { get; set; }
 	}
 }

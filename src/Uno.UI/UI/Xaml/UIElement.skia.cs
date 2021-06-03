@@ -41,6 +41,7 @@ namespace Windows.UI.Xaml
 
 			UpdateHitTest();
 		}
+
 		partial void InitializeKeyboard();
 
 		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)

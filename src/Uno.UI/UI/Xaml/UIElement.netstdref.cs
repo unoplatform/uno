@@ -16,8 +16,6 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		internal bool ShouldInterceptInvalidate { get; set; }
-
 		public IntPtr Handle { get; }
 
 		public string Name { get; set; }
@@ -33,6 +31,8 @@ namespace Windows.UI.Xaml
 		internal bool IsArrangeDirty => false;
 
 		internal bool IsPointerCaptured { get; set; }
+
+		internal bool ShouldInterceptInvalidate { get; set; }
 
 		internal void AddChild(UIElement child, int? index = null) => throw new NotSupportedException("Reference assembly");
 		internal void MoveChildTo(int oldIndex, int newIndex) => throw new NotSupportedException("Reference assembly");

@@ -287,25 +287,37 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 
 				changedCallbackName ??= $"On{propertyName}Changed";
-				var propertyChangedMethod = propertyOwnerType.GetMethods().FirstOrDefault(m => m.Name == changedCallbackName);
-				if (changedCallback || propertyChangedMethod != null)
+				var propertyChangedMethods = propertyOwnerType.GetMethods().Where(m => m.Name == changedCallbackName).ToArray();
+				if (changedCallback || (propertyChangedMethods?.Any() ?? false))
 				{
-					var isDPChangedEventArgsParam = SymbolEqualityComparer.Default.Equals(propertyChangedMethod?.Parameters.ElementAtOrDefault(1)?.Type, _dependencyPropertyChangedEventArgsSymbol);
-					if (isDPChangedEventArgsParam)
+					if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgs) is { } callbackWithEventArgs)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(instance, args)");
 					}
+					else if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgsOnly) is { } callbackWithEventArgsOnly)
+					{
+						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(args)");
+					}
+					else if (propertyChangedMethods?.FirstOrDefault(m => m?.Parameters.Length == 2) is { } callbackWithOldAndNew)
+					{
+						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+					}
 					else
 					{
-						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(instance, ({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+						builder.AppendLineInvariant($"#error Valid {changedCallbackName} not found.  Must be {changedCallbackName}(DependencyPropertyChangedEventArgs), {changedCallbackName}(Instance, DependencyPropertyChangedEventArgs) or {changedCallbackName}(oldValue, newValue)");
 					}
 				}
-
 
 				builder.AppendLineInvariant($"));");
 
 				builder.AppendLineInvariant($"#endregion");
 			}
+
+			private bool IsCallbackWithDPChangedArgsOnly(IMethodSymbol m)
+				=> SymbolEqualityComparer.Default.Equals(m?.Parameters.FirstOrDefault()?.Type, _dependencyPropertyChangedEventArgsSymbol);
+
+			private bool IsCallbackWithDPChangedArgs(IMethodSymbol m)
+				=> m?.Parameters.Length == 2 && SymbolEqualityComparer.Default.Equals(m?.Parameters[1].Type, _dependencyPropertyChangedEventArgsSymbol);
 
 			static KeyValuePair<string, TypedConstant>? GetAttributeValue(AttributeData attribute, string parameterName)
 				=> attribute?.NamedArguments.FirstOrDefault(kvp => kvp.Key == parameterName);
@@ -391,18 +403,24 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 
 				changedCallbackName ??= $"On{propertyName}Changed";
-
-				var propertyChangedMethod = propertySymbol.ContainingType.GetMethods().FirstOrDefault(m => m.Name == changedCallbackName);
-				if (changedCallback || propertyChangedMethod != null)
+				var propertyChangedMethods = propertySymbol.ContainingType.GetMethods().Where(m => m.Name == changedCallbackName).ToArray();
+				if (changedCallback || propertyChangedMethods.Any())
 				{
-					var isDPChangedEventArgsParam = SymbolEqualityComparer.Default.Equals(propertyChangedMethod?.Parameters.FirstOrDefault()?.Type, _dependencyPropertyChangedEventArgsSymbol);
-					if (isDPChangedEventArgsParam)
+					if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgs) is { } callbackWithEventArgs)
+					{
+						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(instance, args)");
+					}
+					else if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgsOnly) is { } callbackWithEventArgsOnly)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(args)");
 					}
-					else
+					else if (propertyChangedMethods?.FirstOrDefault(m => m?.Parameters.Length == 2) is { } callbackWithOldAndNew)
 					{
 						builder.AppendLineInvariant($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+					}
+					else
+					{
+						builder.AppendLineInvariant($"#error Valid {changedCallbackName} not found.  Must be {changedCallbackName}(DependencyPropertyChangedEventArgs), {changedCallbackName}(Instance, DependencyPropertyChangedEventArgs) or {changedCallbackName}(oldValue, newValue)");
 					}
 				}
 

@@ -32,6 +32,21 @@ namespace Windows.System
 
 			return _current;
 		}
+
+		/// <summary>
+		/// Enforce access on the UI thread.
+		/// </summary>
+		internal static void CheckThreadAccess()
+		{
+#if !__WASM__
+			// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
+			if (!CoreDispatcher.Main.HasThreadAccess)
+			{
+				throw new InvalidOperationException("The application called an interface that was marshalled for a different thread.");
+			}
+#endif
+		}
+
 #if !HAS_UNO_WINUI
 		public bool TryEnqueue(DispatcherQueueHandler callback)
 		{

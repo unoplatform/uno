@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					TRACE_EFFECTIVE_VIEWPORT("New child requested viewport propagation which has already been enabled. Force updating all children.");
+					TRACE_EFFECTIVE_VIEWPORT("New child requested viewport propagation which has already been enabled, forwarding current viewport to it.");
 
 					// We are already subscribed, the parent won't send any update (and our _parentViewport is expected to be up-to-date).
 					// But if this "reconfigure" was made for a new child (child != null), we have to initialize its own _parentViewport.

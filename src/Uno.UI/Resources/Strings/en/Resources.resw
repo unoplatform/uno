@@ -132,4 +132,7 @@
   <data name="StorageProviderNativeWasmDisplayName" xml:space="preserve">
     <value>JS File Access API</value>
   </data>
+  <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
+    <value>select a date</value>
+  </data>
 </root>

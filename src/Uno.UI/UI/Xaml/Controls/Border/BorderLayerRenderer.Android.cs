@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="borderBrush">The border brush</param>
 		/// <param name="cornerRadius">The corner radius</param>
 		/// <param name="padding">The padding to apply on the content</param>
-		public void UpdateLayers(
+		public void UpdateLayer(
 			FrameworkElement view,
 			Brush background,
 			Thickness borderThickness,
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Removes the added layers during a call to <see cref="UpdateLayers" />.
+		/// Removes the added layers during a call to <see cref="UpdateLayer" />.
 		/// </summary>
 		internal void Clear()
 		{

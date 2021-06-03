@@ -349,16 +349,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(oldValue, newValue);
+			base.OnIsEnabledChanged(e);
 
 			UpdateCommonStates();
-
-			OnIsEnabledChangedPartial(oldValue, newValue);
 		}
-
-		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue);
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 		{

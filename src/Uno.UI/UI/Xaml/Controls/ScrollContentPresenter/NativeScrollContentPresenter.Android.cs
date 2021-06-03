@@ -192,6 +192,9 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					desiredChildSize = MeasureChild(child, scrollSpace);
+
+					// Give opportunity to the the content to define the viewport size itself
+					(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
 				}
 
 				return desiredChildSize;
@@ -218,6 +221,10 @@ namespace Windows.UI.Xaml.Controls
 						width,
 						height
 					));
+
+					// Give opportunity to the the content to define the viewport size itself
+					(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
+
 				}
 
 				return slotSize;

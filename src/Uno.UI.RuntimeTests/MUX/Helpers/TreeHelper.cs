@@ -32,6 +32,44 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			return child;
 		}
 
+		public static void GetVisualChildrenByType<T>(UIElement parent, ref List<T> children) where T : UIElement
+		{
+			var count = VisualTreeHelper.GetChildrenCount(parent);
+
+			for (var i = 0; i < count; i++)
+			{
+				var current = VisualTreeHelper.GetChild(parent, i) as FrameworkElement;
+
+				if (current is T child)
+				{
+					children.Add(child);
+				}
+				else
+				{
+					GetVisualChildrenByType(current, ref children);
+				}
+			}
+		}
+
+		public static T GetVisualChildByType<T>(UIElement parent) where T: UIElement
+		{
+			T child = default;
+
+			var count = VisualTreeHelper.GetChildrenCount(parent);
+
+			for (var i = 0; i < count && child == default; i++)
+			{
+				var current = VisualTreeHelper.GetChild(parent, i) as FrameworkElement;
+
+				child = current is T c
+					? c
+					: GetVisualChildByType<T>(current);
+			}
+
+			return child;
+		}
+
+
 		internal static FrameworkElement GetVisualChildByNameFromOpenPopups(string name, DependencyObject element)
 		{
 			var popups = GetOpenPopups(element);

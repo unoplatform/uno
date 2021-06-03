@@ -17,6 +17,7 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Windows.UI;
 using System.Dynamic;
+using Windows.UI.Xaml.Shapes;
 
 namespace Windows.UI.Xaml
 {
@@ -90,10 +91,8 @@ namespace Windows.UI.Xaml
 		}
 
 		public bool HasParent()
-		{
-			return Parent != null;
-		}
-		
+			=> Parent != null;
+
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
@@ -105,7 +104,8 @@ namespace Windows.UI.Xaml
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
-		internal void SetActualSize(Size size) => AssignedActualSize = size;
+		internal void SetActualSize(Size size)
+			=> AssignedActualSize = size;
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
@@ -199,66 +199,10 @@ namespace Windows.UI.Xaml
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
 		protected void SetCornerRadius(CornerRadius cornerRadius)
-		{
-			if (cornerRadius == CornerRadius.None)
-			{
-				ResetStyle("border-radius", "overflow");
-			}
-			else
-			{
-				var borderRadiusCssString =
-					$"{cornerRadius.TopLeft.ToStringInvariant()}px {cornerRadius.TopRight.ToStringInvariant()}px {cornerRadius.BottomRight.ToStringInvariant()}px {cornerRadius.BottomLeft.ToStringInvariant()}px";
-				SetStyle(
-					("border-radius", borderRadiusCssString),
-					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
-			}
-
-		}
+			=> BorderLayerRenderer.SetCornerRadius(this, cornerRadius);
 
 		protected void SetBorder(Thickness thickness, Brush brush)
-		{
-			if (thickness == Thickness.Empty)
-			{
-				SetStyle(
-					("border-style", "none"),
-					("border-color", ""),
-					("border-width", ""));
-			}
-			else
-			{
-				var borderWidth = $"{thickness.Top.ToStringInvariant()}px {thickness.Right.ToStringInvariant()}px {thickness.Bottom.ToStringInvariant()}px {thickness.Left.ToStringInvariant()}px";
-				switch (brush)
-				{
-					case SolidColorBrush solidColorBrush:
-						var borderColor = solidColorBrush.ColorWithOpacity;
-						SetStyle(
-							("border", ""),
-							("border-style", "solid"),
-							("border-color", borderColor.ToHexString()),
-							("border-width", borderWidth));
-						break;
-					case GradientBrush gradientBrush:
-						var border = gradientBrush.ToCssString(RenderSize); // TODO: Reevaluate when size is changing
-						SetStyle(
-							("border-style", "solid"),
-							("border-color", ""),
-							("border-image", border),
-							("border-width", borderWidth));
-						break;
-					case AcrylicBrush acrylicBrush:
-						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
-						SetStyle(
-							("border", ""),
-							("border-style", "solid"),
-							("border-color", acrylicFallbackColor.ToHexString()),
-							("border-width", borderWidth));
-						break;
-					default:
-						ResetStyle("border-style", "border-color", "border-image", "border-width");
-						break;
-				}
-			}
-		}
+			=> BorderLayerRenderer.SetBorder(this, thickness, brush);
 
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 

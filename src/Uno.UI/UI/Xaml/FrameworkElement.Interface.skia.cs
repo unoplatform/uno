@@ -11,6 +11,7 @@ using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
+
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
 		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
@@ -59,34 +60,6 @@ namespace Windows.UI.Xaml
 		{
 			return finalSize;
 		}
-
-
-		#region IsEnabled DependencyProperty
-
-		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
-
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
-
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
-
-		protected virtual void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
-		{
-			UpdateHitTest();
-
-			OnIsEnabledChanged((bool)args.OldValue, (bool)args.NewValue);
-			IsEnabledChanged?.Invoke(this, args);
-		}
-
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-		}
-
-		#endregion
 
 		public int? RenderPhase
 		{

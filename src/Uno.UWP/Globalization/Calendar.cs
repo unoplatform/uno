@@ -288,6 +288,9 @@ namespace Windows.Globalization
 		public void SetToNow()
 			=> _time = DateTime.Now;
 
+		internal void SetToday() // Useful helper not part of UWP contract
+			=> _time = DateTime.Today;
+
 		public void SetToMin()
 		{
 			var calendarMinSupportedDateTime = _calendar.MinSupportedDateTime;
@@ -392,6 +395,9 @@ namespace Windows.Globalization
 		public string YearAsPaddedString(int minDigits)
 			=> _time.Year.ToString(new string('0', minDigits), _resolvedCulture);
 
+		internal string MonthAsFullString()
+			=> MonthAsString();
+
 		public string MonthAsString()
 			=> _time.ToString("MMM", _resolvedCulture);
 
@@ -418,8 +424,11 @@ namespace Windows.Globalization
 		public string DayOfWeekAsString()
 			=> _time.ToString("dddd", _resolvedCulture);
 
+		internal string DayOfWeekAsFullString()
+			=> DayOfWeekAsString();
+
 		public string DayOfWeekAsString(int idealLength)
-			=> _time.ToString("dddd", _resolvedCulture);
+			=> _time.ToString("ddd", _resolvedCulture);
 
 		public string DayOfWeekAsSoloString()
 			=> _time.ToString("dddd", _resolvedCulture);
