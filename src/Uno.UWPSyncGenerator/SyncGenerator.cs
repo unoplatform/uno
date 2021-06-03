@@ -63,17 +63,29 @@ namespace Uno.UWPSyncGenerator
 					kind = TypeKind.Interface;
 				}
 
-
 				if (type.TypeKind == TypeKind.Enum)
 				{
 					allSymbols.AppendIf(b);
+
+					if (type.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, FlagsAttributeSymbol)))
+					{
+						b.AppendLineInvariant($"[global::System.FlagsAttribute]");
+					}
+				}
+				else
+				{
+					allSymbols.AppendIf(b);
+					b.AppendLineInvariant($"[global::Uno.NotImplemented]");
+					b.AppendLineInvariant($"#endif");
 				}
 
-				allSymbols.AppendIf(b);
-				b.AppendLineInvariant($"[global::Uno.NotImplemented]");
-				b.AppendLineInvariant($"#endif");
+				var enumBaseType =
+					type.TypeKind == TypeKind.Enum &&
+					type.EnumUnderlyingType.SpecialType != SpecialType.System_Int32 ?
+						$": {type.EnumUnderlyingType.ToDisplayString()}" :
+							string.Empty;
 
-				using (b.BlockInvariant($"public {staticQualifier} {partialModifier} {kind.ToString().ToLower()} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {BuildInterfaces(type)}"))
+				using (b.BlockInvariant($"public {staticQualifier} {partialModifier} {kind.ToString().ToLower()} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {enumBaseType}{BuildInterfaces(type)}"))
 				{
 					if (type.TypeKind != TypeKind.Enum)
 					{
