@@ -188,27 +188,27 @@ namespace Windows.Globalization
 		#region Read / Write _time
 		public int Era
 		{
-			get => _calendar.GetEra(_time.DateTime);
+			get => _calendar.GetEra(_time.UtcDateTime);
 			[NotImplemented] set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "int Calendar.Era");
 		}
 
 		public int Year
 		{
-			get => _calendar.GetYear(_time.DateTime);
+			get => _calendar.GetYear(_time.UtcDateTime);
 			set => AddYears(value - Year);
 		}
 
 		public int Month
 		{
-			get => _calendar.GetMonth(_time.DateTime);
+			get => _calendar.GetMonth(_time.UtcDateTime);
 			set => AddMonths(value - Month);
 		}
 
-		public global::Windows.Globalization.DayOfWeek DayOfWeek => (global::Windows.Globalization.DayOfWeek)_calendar.GetDayOfWeek(_time.DateTime);
+		public global::Windows.Globalization.DayOfWeek DayOfWeek => (global::Windows.Globalization.DayOfWeek)_calendar.GetDayOfWeek(_time.UtcDateTime);
 
 		public int Day
 		{
-			get => _calendar.GetDayOfMonth(_time.DateTime);
+			get => _calendar.GetDayOfMonth(_time.UtcDateTime);
 			set => AddDays(value - Day);
 		}
 
@@ -216,7 +216,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				var hour = _calendar.GetHour(_time.DateTime);
+				var hour = _calendar.GetHour(_time.UtcDateTime);
 
 				if(hour < 12 || _clock == ClockIdentifiers.TwentyFourHour)
 				{
@@ -233,13 +233,13 @@ namespace Windows.Globalization
 
 		public int Minute
 		{
-			get => _calendar.GetMinute(_time.DateTime);
+			get => _calendar.GetMinute(_time.UtcDateTime);
 			set => AddMinutes(value - Minute);
 		}
 
 		public int Second
 		{
-			get => _calendar.GetSecond(_time.DateTime);
+			get => _calendar.GetSecond(_time.UtcDateTime);
 			set => AddSeconds(value - Second);
 		}
 
@@ -278,7 +278,7 @@ namespace Windows.Globalization
 
 		public int Nanosecond
 		{
-			get => (int)(_calendar.GetMilliseconds(_time.DateTime) * 1000);
+			get => (int)(_calendar.GetMilliseconds(_time.UtcDateTime) * 1000);
 			set => AddNanoseconds(value - Nanosecond);
 		}
 
@@ -286,7 +286,7 @@ namespace Windows.Globalization
 			=> _time = value;
 
 		public void SetToNow()
-			=> _time = DateTime.Now;
+			=> _time = DateTimeOffset.Now;
 
 		internal void SetToday() // Useful helper not part of UWP contract
 			=> _time = DateTime.Today;

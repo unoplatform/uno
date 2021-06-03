@@ -282,8 +282,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			rootPanel = await CalendarHelper.CreateTestResources();
 
-
-
 			// load into visual tree
 			await RunOnUIThread(() =>
 			{

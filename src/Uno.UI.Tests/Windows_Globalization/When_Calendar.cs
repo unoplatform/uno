@@ -695,5 +695,54 @@ namespace Uno.UI.Tests.Windows_Globalization
 				SUT.DayOfWeekAsString().Should().Be(dayOfWeekAsString, nameof(dayOfWeekAsString));
 			}
 		}
+
+		[TestMethod]
+		[DataRow(WG.CalendarIdentifiers.JulianValue)]
+		[DataRow(WG.CalendarIdentifiers.GregorianValue)]
+		[DataRow(WG.CalendarIdentifiers.HebrewValue)]
+		[DataRow(WG.CalendarIdentifiers.HijriValue)]
+		[DataRow(WG.CalendarIdentifiers.JapaneseValue)]
+		[DataRow(WG.CalendarIdentifiers.KoreanValue)]
+		[DataRow(WG.CalendarIdentifiers.TaiwanValue)]
+		[DataRow(WG.CalendarIdentifiers.ThaiValue)]
+		[DataRow(WG.CalendarIdentifiers.UmAlQuraValue)]
+		[DataRow(WG.CalendarIdentifiers.PersianValue)]
+		[DataRow(WG.CalendarIdentifiers.ChineseLunarValue)]
+		[DataRow(WG.CalendarIdentifiers.VietnameseLunarValue)]
+		[DataRow(WG.CalendarIdentifiers.TaiwanLunarValue)]
+		[DataRow(WG.CalendarIdentifiers.KoreanLunarValue)]
+		[DataRow(WG.CalendarIdentifiers.JapaneseLunarValue)]
+		public void TestCalendarLimits(string calendar)
+		{
+			using var _ = new AssertionScope();
+
+			var sut = new WG.Calendar(new [] {"en"}, WG.CalendarIdentifiers.Japanese, "24HourClock");
+
+			sut.SetToMin();
+			CheckLimits($"Min");
+
+			sut.SetToMax();
+			CheckLimits($"Max");
+
+			sut.SetToNow();
+			CheckLimits($"Max");
+
+			void CheckLimits(string context)
+			{
+				// Following tests are just to ensure no exceptions are raised
+				// by asking those values
+				sut.NumberOfEras.Should().BePositive(context);
+				sut.Era.Should().BePositive(context);
+				sut.FirstMonthInThisYear.Should().BePositive(context);
+				sut.NumberOfDaysInThisMonth.Should().BePositive(context);
+				sut.DayOfWeek.Should().NotBeNull(context);
+				sut.NumberOfEras.Should().BePositive(context);
+				sut.FirstEra.Should().BePositive(context);
+				sut.LastEra.Should().BePositive(context);
+				sut.Period.Should().BePositive(context);
+				sut.ResolvedLanguage.Should().NotBeEmpty(context);
+			}
+		}
 	}
 }
+
