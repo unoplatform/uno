@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.Common;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -356,7 +357,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				// Note: below string contains invisible unicode characters (BiDi characters),
 				// you should always use copy&paste to get the string, directly
 				// type the string will cause the string comparison fails.
-				VERIFY_IS_TRUE(dateText.Text == "‎10‎/‎21‎/‎2000");
+				//VERIFY_IS_TRUE(dateText.Text == "‎10‎/‎21‎/‎2000");
+
+				dateText.Text.Should().Be("10/21/2000"); // UNO: Those BiDi characters are not emitted by Uno
 			});
 
 			await RunOnUIThread(() =>
@@ -499,7 +502,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				cp.CalendarIdentifier = Windows.Globalization.CalendarIdentifiers.Taiwan;
 
 				LOG_OUTPUT("actual text: %s.", dateText.Text);
-				VERIFY_IS_TRUE(dateText.Text == "Monday, January 1, 90");
+				VERIFY_ARE_EQUAL("Monday, January 1, 90", dateText.Text);
 			});
 
 		}
@@ -806,7 +809,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			{
 				LOG_OUTPUT("actual text: %s.", dateText.Text);
 				// clear the Date property will display placehoder text.
-				VERIFY_IS_TRUE(dateText.Text == cp.PlaceholderText);
+				VERIFY_ARE_EQUAL(dateText.Text, cp.PlaceholderText);
 
 				VERIFY_ARE_EQUAL(calendarView.SelectedDates.Count, 0);
 			});
@@ -925,6 +928,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
+		[Ignore("FlyoutHelper.ValidateOpenFlyoutOverlayBrush() not implemented yet.")]
 		public async Task ValidateOverlayBrush()
 		{
 			TestCleanupWrapper cleanup;

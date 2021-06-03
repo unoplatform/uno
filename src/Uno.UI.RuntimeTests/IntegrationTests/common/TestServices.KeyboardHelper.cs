@@ -8,7 +8,7 @@ namespace Private.Infrastructure
 		{
 			public static void PressKeySequence(string keys)
 			{
-				throw new System.NotImplementedException();
+				throw new System.NotImplementedException("PressKeySequence(string keys)");
 			}
 
 			public static void Down()

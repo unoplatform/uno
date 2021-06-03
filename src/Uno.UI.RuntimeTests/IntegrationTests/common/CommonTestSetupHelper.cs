@@ -4,7 +4,7 @@
 	{
 		private static bool _isInitialized = false;
 
-		internal static async void CommonTestClassSetup()
+		internal static void CommonTestClassSetup()
 		{
 			if (!_isInitialized)
 			{

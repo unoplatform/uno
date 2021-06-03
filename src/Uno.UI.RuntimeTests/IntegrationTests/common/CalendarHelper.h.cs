@@ -110,7 +110,7 @@ namespace Private.Infrastructure
 			{
 				rootPanel = XamlReader.Load(
 						"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
-						"      Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left' Background='Navy'/> ")
+						"      Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left' Background='Navy'/>")
 					as Grid;
 
 				TestServices.WindowHelper.WindowContent = rootPanel;

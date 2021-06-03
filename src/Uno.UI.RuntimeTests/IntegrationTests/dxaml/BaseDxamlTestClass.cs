@@ -22,14 +22,14 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			return TestServices.RunOnUIThread(action);
 		}
 
-		protected static void VERIFY_IS_TRUE(bool value)
+		protected static void VERIFY_IS_TRUE(bool value, string message = null)
 		{
-			TestServices.VERIFY_IS_TRUE(value);
+			TestServices.VERIFY_IS_TRUE(value, message);
 		}
 
-		protected static void VERIFY_IS_FALSE(bool value)
+		protected static void VERIFY_IS_FALSE(bool value, string message = null)
 		{
-			TestServices.VERIFY_IS_FALSE(value);
+			TestServices.VERIFY_IS_FALSE(value, message);
 		}
 
 		protected static void VERIFY_ARE_EQUAL<T>(T actual, T expected)

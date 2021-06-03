@@ -500,6 +500,7 @@ namespace Windows.UI.Tests.Enterprise.CalendarViewTests
 		//}
 
 		[TestMethod]
+		[Ignore("Test using AutomationPeers not implemented yet on Uno")]
 		public async Task VerifyDayItemRowHeaders()
 		{
 			TestCleanupWrapper cleanup;

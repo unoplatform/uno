@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 	partial class CalendarDatePicker
 	{
 		public static DependencyProperty CalendarIdentifierProperty { get; } = DependencyProperty.Register(
-			"CalendarIdentifier", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
+			"CalendarIdentifier", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata("GregorianCalendar"));
 
 		public string CalendarIdentifier
 		{
