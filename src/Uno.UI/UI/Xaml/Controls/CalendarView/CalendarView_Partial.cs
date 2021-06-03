@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 			m_pTodaySelectedInnerBorderBrush = Resources[c_strTodaySelectedInnerBorderBrushStorage] as Brush;
 			m_pTodayHoverBorderBrush = Resources[c_strTodayHoverBorderBrushStorage] as Brush;
 			m_pTodayPressedBorderBrush = Resources[c_strTodayPressedBorderBrushStorage] as Brush;
-			m_pTodayBackground = Resources[c_strTodayBackgroundStorage] as Brush;
+			//m_pTodayBackground = Resources[c_strTodayBackgroundStorage] as Brush;
 			m_pTodayBlackoutBackground = Resources[c_strTodayBlackoutBackgroundStorage] as Brush;
 			//m_dayItemFontSize = 20.0f;
 			//m_dayItemFontStyle = FontStyle.Normal;

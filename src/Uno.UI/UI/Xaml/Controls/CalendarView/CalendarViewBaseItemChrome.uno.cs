@@ -58,12 +58,24 @@ namespace Windows.UI.Xaml.Controls
 			var background = Background;
 			var borderThickness = GetItemBorderThickness();
 			var borderBrush = GetItemBorderBrush(forFocus: false);
+			var cornerRadius = GetItemCornerRadius();
 
-			if (background is null
-				|| background.Opacity == 0
-				|| (background is SolidColorBrush solid && solid.Color.IsTransparent))
+			if (IsClear(background))
 			{
-				background = GetItemBackgroundBrush();
+				if (FindTodaySelectedBackgroundBrush() is { } todaySelectedBackground
+					&& !IsClear(todaySelectedBackground))
+				{
+					background = todaySelectedBackground;
+				}
+				else if(FindSelectedBackgroundBrush() is { } selectedBackground
+					&& !IsClear(selectedBackground))
+				{
+					background = selectedBackground;
+				}
+				else
+				{
+					background = GetItemBackgroundBrush();
+				}
 			}
 
 			if (m_isToday && m_isSelected && GetItemInnerBorderBrush() is { } selectedBrush)
@@ -72,7 +84,12 @@ namespace Windows.UI.Xaml.Controls
 				borderBrush = selectedBrush;
 			}
 
-			_borderRenderer.UpdateLayer(this, background, borderThickness, borderBrush, CornerRadius.None, default);
+			_borderRenderer.UpdateLayer(this, background, borderThickness, borderBrush, cornerRadius, default);
 		}
+
+		private bool IsClear(Brush brush)
+			=> brush is null
+				|| brush.Opacity == 0
+				|| (brush is SolidColorBrush solid && solid.Color.IsTransparent);
 	}
 }
