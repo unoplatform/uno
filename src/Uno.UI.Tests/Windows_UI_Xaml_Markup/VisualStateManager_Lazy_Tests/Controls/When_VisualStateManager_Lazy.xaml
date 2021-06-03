@@ -12,7 +12,7 @@
 			<VisualStateGroup x:Name="CommonStates">
 				<VisualStateGroup.Transitions>
 
-					<VisualTransition From="Normal" To="PointerOver">
+					<VisualTransition From="Normal" To="PointerOver" x:Name="testTransition" x:FieldModifier="public">
 						<Storyboard>
 							<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border1" Storyboard.TargetProperty="Background">
 								<DiscreteObjectKeyFrame KeyTime="0" Value="Transparent" />
@@ -25,13 +25,13 @@
 
 				</VisualStateGroup.Transitions>
 				
-				<VisualState x:Name="Normal">
+				<VisualState x:Name="Normal" x:FieldModifier="public">
 					<Storyboard>
 						<PointerUpThemeAnimation Storyboard.TargetName="border1" />
 					</Storyboard>
 				</VisualState>
 
-				<VisualState x:Name="PointerOver">
+				<VisualState x:Name="PointerOver" x:FieldModifier="public">
 					<Storyboard>
 						<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border1" Storyboard.TargetProperty="Background">
 							<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundPointerOver}" />
@@ -46,7 +46,7 @@
 					</Storyboard>
 				</VisualState>
 
-				<VisualState x:Name="Pressed">
+				<VisualState x:Name="Pressed" x:FieldModifier="public">
 					<Storyboard>
 						<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border1" Storyboard.TargetProperty="Background">
 							<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundPressed}" />
@@ -61,7 +61,7 @@
 					</Storyboard>
 				</VisualState>
 
-				<VisualState x:Name="Disabled">
+				<VisualState x:Name="Disabled" x:FieldModifier="public">
 					<Storyboard>
 						<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border1" Storyboard.TargetProperty="Background">
 							<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundDisabled}" />
