@@ -46,6 +46,7 @@ namespace Uno.UWPSyncGenerator
 
 		private ISymbol _voidSymbol;
 		private ISymbol _dependencyPropertySymbol;
+		protected ISymbol FlagsAttributeSymbol { get; private set; }
 		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
 
@@ -77,6 +78,7 @@ namespace Uno.UWPSyncGenerator
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
+			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
 
@@ -812,10 +814,9 @@ namespace Uno.UWPSyncGenerator
 
 					if (type.TypeKind == TypeKind.Enum)
 					{
-						// if (!field.IsSpecialName)
-						{
-							b.AppendLineInvariant($"{field.Name},");
-						}
+						var constantValue = field.ConstantValue != null ? $" = {field.ConstantValue}" : string.Empty;
+
+						b.AppendLineInvariant($"{field.Name}{constantValue},");
 					}
 					else
 					{
