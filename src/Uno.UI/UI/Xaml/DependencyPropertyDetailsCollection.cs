@@ -244,11 +244,12 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public void RegisterDefaultValueProvider(DependencyObjectStore.DefaultValueProvider provider)
 		{
-			if (_defaultValueProviders == null)
+			if (provider == null)
 			{
-				_defaultValueProviders = new List<DependencyObjectStore.DefaultValueProvider>();
+				throw new ArgumentNullException(nameof(provider));
 			}
 
+			_defaultValueProviders ??= new List<DependencyObjectStore.DefaultValueProvider>();
 			_defaultValueProviders.Add(provider);
 		}
 
