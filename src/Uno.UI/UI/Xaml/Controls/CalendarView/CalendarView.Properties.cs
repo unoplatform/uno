@@ -619,6 +619,84 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		#region Uno-only Properties
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public global::Windows.UI.Xaml.CornerRadius DayItemCornerRadius
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.CornerRadius)this.GetValue(DayItemCornerRadiusProperty);
+			}
+			set
+			{
+				this.SetValue(DayItemCornerRadiusProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public global::Windows.UI.Xaml.CornerRadius CalendarItemCornerRadius
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.CornerRadius)this.GetValue(CalendarItemCornerRadiusProperty);
+			}
+			set
+			{
+				this.SetValue(CalendarItemCornerRadiusProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public global::Windows.UI.Xaml.Media.Brush SelectedBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedBackgroundProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public global::Windows.UI.Xaml.Media.Brush TodayBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(TodayBackgroundProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public global::Windows.UI.Xaml.Media.Brush TodaySelectedBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodaySelectedBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(TodaySelectedBackgroundProperty, value);
+			}
+		}
+		#endregion
+
 		public static global::Windows.UI.Xaml.DependencyProperty BlackoutForegroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(BlackoutForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
@@ -993,5 +1071,51 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
 			new FrameworkPropertyMetadata(VerticalAlignment.Top));
 
+		#region Uno-only DependencyProperties
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public static global::Windows.UI.Xaml.DependencyProperty DayItemCornerRadiusProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(DayItemCornerRadius), typeof(global::Windows.UI.Xaml.CornerRadius),
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
+			new FrameworkPropertyMetadata(CornerRadius.None));
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemCornerRadiusProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(CalendarItemCornerRadius), typeof(global::Windows.UI.Xaml.CornerRadius),
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
+			new FrameworkPropertyMetadata(CornerRadius.None));
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedBackgroundProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(SelectedBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public static global::Windows.UI.Xaml.DependencyProperty TodayBackgroundProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TodayBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+
+		/// <summary>
+		/// Uno specific property
+		/// </summary>
+		public static global::Windows.UI.Xaml.DependencyProperty TodaySelectedBackgroundProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TodaySelectedBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endregion
 	}
 }

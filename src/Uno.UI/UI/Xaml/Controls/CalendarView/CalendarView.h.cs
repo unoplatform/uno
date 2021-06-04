@@ -64,12 +64,19 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Thickness m_calendarItemBorderThickness => CalendarItemBorderThickness;
 
+		// Below brushes are Uno-specific in order to add more styling customization
+		internal Brush m_pSelectedBackground => SelectedBackground;
+		internal Brush m_pTodayBackground => TodayBackground ?? Resources[c_strTodayBackgroundStorage] as Brush;
+		internal Brush m_pTodaySelectedBackground => TodaySelectedBackground;
+		internal CornerRadius m_calendarItemCornerRadius => CalendarItemCornerRadius;
+		internal CornerRadius m_dayItemCornerRadius => DayItemCornerRadius;
+
+
 		// Below brushes are hardcoded and internal, we can make them public when needed.
 		internal Brush m_pDisabledForeground;
 		internal Brush m_pTodaySelectedInnerBorderBrush;
 		internal Brush m_pTodayHoverBorderBrush;
 		internal Brush m_pTodayPressedBorderBrush;
-		internal Brush m_pTodayBackground;
 		internal Brush m_pTodayBlackoutBackground;
 
 

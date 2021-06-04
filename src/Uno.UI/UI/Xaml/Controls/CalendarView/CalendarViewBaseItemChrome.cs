@@ -1306,6 +1306,42 @@ namespace Windows.UI.Xaml.Controls
 
 			return GetOwner() != null;
 		}
+
+		//Uno only
+		#region Uno Specific Logic
+		private Brush FindTodaySelectedBackgroundBrush()
+		{
+			var pOwner = GetOwner();
+			if (pOwner is { } && m_isToday && m_isSelected)
+			{
+				return pOwner.m_pTodaySelectedBackground;
+			}
+
+			return null;
+		}
+
+		private Brush FindSelectedBackgroundBrush()
+		{
+			var pOwner = GetOwner();
+			if (pOwner is { } && !m_isToday && m_isSelected)
+			{
+				return pOwner.m_pSelectedBackground;
+			}
+
+			return null;
+		}
+
+		private protected virtual CornerRadius GetItemCornerRadius()
+		{
+			var pOwner = GetOwner();
+			if (pOwner is { })
+			{
+				return pOwner.m_calendarItemCornerRadius;
+			}
+
+			return CornerRadius.None;
+		}
+		#endregion
 	}
 
 	partial class CalendarViewDayItem
@@ -1355,5 +1391,19 @@ namespace Windows.UI.Xaml.Controls
 
 			return pOwner != null;
 		}
+
+		//Uno only
+		#region Uno Specific Logic
+		private protected override CornerRadius GetItemCornerRadius()
+		{
+			var pOwner = GetOwner();
+			if (pOwner is { })
+			{
+				return pOwner.m_dayItemCornerRadius;
+			}
+
+			return CornerRadius.None;
+		}
+		#endregion
 	}
 }
