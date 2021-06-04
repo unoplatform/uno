@@ -150,7 +150,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
-	
 	<ItemGroup>
 		<None Update="ResourceLoader\Controls\When_Collection_And_InlineProperty.xaml">
 		  <Generator>MSBuild:Compile</Generator>
