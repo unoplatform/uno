@@ -1,6 +1,9 @@
 using Gdk;
 using System;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Uno.UI.Runtime.Skia;
+using Uno.Logging;
 
 namespace Uno.UI.Runtime.Skia.GTK.UI.Core
 {
@@ -67,9 +70,12 @@ namespace Uno.UI.Runtime.Skia.GTK.UI.Core
 					}
 				}
 			}
-			catch
+			catch (Exception exception)
 			{
-				// Fallback cursor should always work, ignore exception.
+				if (typeof(Cursors).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Cursors).Log().Error($"Unexpected exception while loading cursor \"{name}\" from theme.", exception);
+				}
 			}
 			cursor = new Cursor(fallback);
 		}
