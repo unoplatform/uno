@@ -20,6 +20,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Uno_MeasureChrome(Size availableSize)
 		{
+			// Uno Patch:
+			// When CalendarDatePicker is closing we won't get a PointerExited, so we will stay flag as hovered.
+			// If we re-open the picker, the flag is never cleared and we will still drawing the over state.
+			// Here we patch this by syncing the local over state with the uno's internal over state.
+			if (IsHovered() && !IsPointerOver)
+			{
+				SetIsHovered(false);
+			}
 		}
 
 		private void Uno_ArrangeChrome(Rect finalBounds)
