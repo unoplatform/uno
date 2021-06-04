@@ -3,6 +3,6 @@
 namespace Windows.UI.Xaml.Printing
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void AddPagesEventHandler(object @sender, global::Windows.UI.Xaml.Printing.AddPagesEventArgs @e);
+	public delegate void AddPagesEventHandler(object sender, global::Windows.UI.Xaml.Printing.AddPagesEventArgs e);
 	#endif
 }

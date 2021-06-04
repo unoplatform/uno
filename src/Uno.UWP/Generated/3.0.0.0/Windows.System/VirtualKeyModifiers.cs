@@ -3,10 +3,8 @@
 namespace Windows.System
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum VirtualKeyModifiers 
+	[global::System.FlagsAttribute]
+	public   enum VirtualKeyModifiers : uint
 	{
 		// Skipping already declared field Windows.System.VirtualKeyModifiers.None
 		// Skipping already declared field Windows.System.VirtualKeyModifiers.Control

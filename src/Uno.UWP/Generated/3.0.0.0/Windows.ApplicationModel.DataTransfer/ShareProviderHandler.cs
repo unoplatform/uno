@@ -3,6 +3,6 @@
 namespace Windows.ApplicationModel.DataTransfer
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void ShareProviderHandler(global::Windows.ApplicationModel.DataTransfer.ShareProviderOperation @operation);
+	public delegate void ShareProviderHandler(global::Windows.ApplicationModel.DataTransfer.ShareProviderOperation operation);
 	#endif
 }

@@ -3,9 +3,6 @@
 namespace Windows.UI.Core
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum CoreProcessEventsOption 
 	{
 		// Skipping already declared field Windows.UI.Core.CoreProcessEventsOption.ProcessOneAndAllPending

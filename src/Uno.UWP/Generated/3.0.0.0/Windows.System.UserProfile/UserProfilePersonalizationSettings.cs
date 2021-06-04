@@ -32,12 +32,6 @@ namespace Windows.System.UserProfile
 		}
 		#endif
 		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.Current.get
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool UserProfilePersonalizationSettings.IsSupported() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.System.UserProfile.UserProfilePersonalizationSettings.IsSupported()
 	}
 }

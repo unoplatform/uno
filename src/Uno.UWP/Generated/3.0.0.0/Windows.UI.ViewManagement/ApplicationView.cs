@@ -255,27 +255,9 @@ namespace Windows.UI.ViewManagement
 		}
 		#endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.ViewMode.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsViewModeSupported( global::Windows.UI.ViewManagement.ApplicationViewMode viewMode)
-		{
-			throw new global::System.NotImplementedException("The member bool ApplicationView.IsViewModeSupported(ApplicationViewMode viewMode) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> TryEnterViewModeAsync( global::Windows.UI.ViewManagement.ApplicationViewMode viewMode)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationView.TryEnterViewModeAsync(ApplicationViewMode viewMode) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> TryEnterViewModeAsync( global::Windows.UI.ViewManagement.ApplicationViewMode viewMode,  global::Windows.UI.ViewManagement.ViewModePreferences viewModePreferences)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationView.TryEnterViewModeAsync(ApplicationViewMode viewMode, ViewModePreferences viewModePreferences) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.IsViewModeSupported(Windows.UI.ViewManagement.ApplicationViewMode)
+		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.TryEnterViewModeAsync(Windows.UI.ViewManagement.ApplicationViewMode)
+		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.TryEnterViewModeAsync(Windows.UI.ViewManagement.ApplicationViewMode, Windows.UI.ViewManagement.ViewModePreferences)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryConsolidateAsync()

@@ -2,37 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if false
-
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum BackgroundAccessStatus 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Unspecified,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AllowedWithAlwaysOnRealTimeConnectivity,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AllowedMayUseActiveRealTimeConnectivity,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Denied,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AlwaysAllowed,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AllowedSubjectToSystemPolicy,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DeniedBySystemPolicy,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DeniedByUser,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.Unspecified
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.AllowedWithAlwaysOnRealTimeConnectivity
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.AllowedMayUseActiveRealTimeConnectivity
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.Denied
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.AlwaysAllowed
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.AllowedSubjectToSystemPolicy
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.DeniedBySystemPolicy
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.DeniedByUser
 	}
 	#endif
 }

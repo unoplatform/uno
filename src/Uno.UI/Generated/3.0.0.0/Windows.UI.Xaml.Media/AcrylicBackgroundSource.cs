@@ -2,18 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum AcrylicBackgroundSource 
 	{
-		#if false
-		HostBackdrop,
-		#endif
-		#if false
-		Backdrop,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Media.AcrylicBackgroundSource.HostBackdrop
+		// Skipping already declared field Windows.UI.Xaml.Media.AcrylicBackgroundSource.Backdrop
 	}
 	#endif
 }

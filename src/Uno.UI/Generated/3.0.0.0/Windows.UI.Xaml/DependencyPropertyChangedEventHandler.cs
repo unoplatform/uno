@@ -3,6 +3,6 @@
 namespace Windows.UI.Xaml
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void DependencyPropertyChangedEventHandler(object @sender, global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs @e);
+	public delegate void DependencyPropertyChangedEventHandler(object sender, global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs e);
 	#endif
 }

@@ -2,18 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum ApplicationRequiresPointerMode 
 	{
-		#if false
-		Auto,
-		#endif
-		#if false
-		WhenRequested,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.ApplicationRequiresPointerMode.Auto
+		// Skipping already declared field Windows.UI.Xaml.ApplicationRequiresPointerMode.WhenRequested
 	}
 	#endif
 }

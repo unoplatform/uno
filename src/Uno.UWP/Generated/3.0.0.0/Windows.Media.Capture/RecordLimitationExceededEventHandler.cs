@@ -3,6 +3,6 @@
 namespace Windows.Media.Capture
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void RecordLimitationExceededEventHandler(global::Windows.Media.Capture.MediaCapture @sender);
+	public delegate void RecordLimitationExceededEventHandler(global::Windows.Media.Capture.MediaCapture sender);
 	#endif
 }

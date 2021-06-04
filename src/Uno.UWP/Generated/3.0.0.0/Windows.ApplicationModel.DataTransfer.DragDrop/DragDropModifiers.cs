@@ -2,33 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer.DragDrop
 {
-	#if false
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum DragDropModifiers 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum DragDropModifiers : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Shift,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Control,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Alt,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LeftButton,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		MiddleButton,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RightButton,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.None
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.Shift
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.Control
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.Alt
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.LeftButton
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.MiddleButton
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.RightButton
 	}
 	#endif
 }

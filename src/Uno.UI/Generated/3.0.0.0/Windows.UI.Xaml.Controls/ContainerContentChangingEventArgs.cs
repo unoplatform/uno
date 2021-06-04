@@ -2,65 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ContainerContentChangingEventArgs 
 	{
-		#if false
-		[global::Uno.NotImplemented]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContainerContentChangingEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs", "bool ContainerContentChangingEventArgs.Handled");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool InRecycleQueue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContainerContentChangingEventArgs.InRecycleQueue is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  object Item
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object ContainerContentChangingEventArgs.Item is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Primitives.SelectorItem ItemContainer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SelectorItem ContainerContentChangingEventArgs.ItemContainer is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  int ItemIndex
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int ContainerContentChangingEventArgs.ItemIndex is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property InRecycleQueue
+		// Skipping already declared property Item
+		// Skipping already declared property ItemContainer
+		// Skipping already declared property ItemIndex
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Phase
@@ -71,13 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public ContainerContentChangingEventArgs() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs", "ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs.ItemContainer.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs.InRecycleQueue.get

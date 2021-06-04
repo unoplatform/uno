@@ -7,30 +7,8 @@ namespace Windows.ApplicationModel.Chat
 	#endif
 	public  partial class ChatMessage : global::Windows.ApplicationModel.Chat.IChatItem
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Chat.ChatItemKind ItemKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ChatItemKind ChatMessage.ItemKind is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsIncoming
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsIncoming is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.IsIncoming");
-			}
-		}
-		#endif
+		// Skipping already declared property ItemKind
+		// Skipping already declared property IsIncoming
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsForwardingDisabled
@@ -59,34 +37,8 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Chat.ChatMessageStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ChatMessageStatus ChatMessage.Status is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "ChatMessageStatus ChatMessage.Status");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string From
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.From is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.From");
-			}
-		}
-		#endif
+		// Skipping already declared property Status
+		// Skipping already declared property From
 		// Skipping already declared property Body
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -102,48 +54,9 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsRead
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsRead is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.IsRead");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset NetworkTimestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ChatMessage.NetworkTimestamp is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "DateTimeOffset ChatMessage.NetworkTimestamp");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset LocalTimestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ChatMessage.LocalTimestamp is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "DateTimeOffset ChatMessage.LocalTimestamp");
-			}
-		}
-		#endif
+		// Skipping already declared property IsRead
+		// Skipping already declared property NetworkTimestamp
+		// Skipping already declared property LocalTimestamp
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Chat.ChatMessageStatus> RecipientSendStatuses
@@ -185,34 +98,8 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSeen
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsSeen is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "bool ChatMessage.IsSeen");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Chat.ChatMessageKind MessageKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ChatMessageKind ChatMessage.MessageKind is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "ChatMessageKind ChatMessage.MessageKind");
-			}
-		}
-		#endif
+		// Skipping already declared property IsSeen
+		// Skipping already declared property MessageKind
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsReceivedDuringQuietHours
@@ -297,20 +184,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Chat.ChatMessageOperatorKind MessageOperatorKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ChatMessageOperatorKind ChatMessage.MessageOperatorKind is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "ChatMessageOperatorKind ChatMessage.MessageOperatorKind");
-			}
-		}
-		#endif
+		// Skipping already declared property MessageOperatorKind
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsReplyDisabled

@@ -3,10 +3,8 @@
 namespace Windows.UI.Xaml.Media.Imaging
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum BitmapCreateOptions 
+	[global::System.FlagsAttribute]
+	public   enum BitmapCreateOptions : uint
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.Imaging.BitmapCreateOptions.None
 		// Skipping already declared field Windows.UI.Xaml.Media.Imaging.BitmapCreateOptions.IgnoreImageCache

@@ -3,6 +3,6 @@
 namespace Windows.UI.Xaml
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void LeavingBackgroundEventHandler(object @sender, global::Windows.ApplicationModel.LeavingBackgroundEventArgs @e);
+	public delegate void LeavingBackgroundEventHandler(object sender, global::Windows.ApplicationModel.LeavingBackgroundEventArgs e);
 	#endif
 }

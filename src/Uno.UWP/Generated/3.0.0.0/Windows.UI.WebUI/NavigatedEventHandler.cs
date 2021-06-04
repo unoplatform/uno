@@ -3,6 +3,6 @@
 namespace Windows.UI.WebUI
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void NavigatedEventHandler(object @sender, global::Windows.UI.WebUI.IWebUINavigatedEventArgs @e);
+	public delegate void NavigatedEventHandler(object sender, global::Windows.UI.WebUI.IWebUINavigatedEventArgs e);
 	#endif
 }
