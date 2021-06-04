@@ -2,116 +2,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RandomAccessStreamOverStream : global::Windows.Storage.Streams.IRandomAccessStream,global::Windows.Storage.Streams.IOutputStream,global::System.IDisposable,global::Windows.Storage.Streams.IInputStream
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ulong Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong RandomAccessStreamOverStream.Size is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.RandomAccessStreamOverStream", "ulong RandomAccessStreamOverStream.Size");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CanRead
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool RandomAccessStreamOverStream.CanRead is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CanWrite
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool RandomAccessStreamOverStream.CanWrite is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ulong Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong RandomAccessStreamOverStream.Position is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Size
+		// Skipping already declared property CanRead
+		// Skipping already declared property CanWrite
+		// Skipping already declared property Position
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.Size.get
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.Size.set
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IInputStream GetInputStreamAt( ulong position)
-		{
-			throw new global::System.NotImplementedException("The member IInputStream RandomAccessStreamOverStream.GetInputStreamAt(ulong position) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt( ulong position)
-		{
-			throw new global::System.NotImplementedException("The member IOutputStream RandomAccessStreamOverStream.GetOutputStreamAt(ulong position) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.GetInputStreamAt(ulong)
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.GetOutputStreamAt(ulong)
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.Position.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Seek( ulong position)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.RandomAccessStreamOverStream", "void RandomAccessStreamOverStream.Seek(ulong position)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
-		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStream RandomAccessStreamOverStream.CloneStream() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.Seek(ulong)
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.CloneStream()
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.CanRead.get
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.CanWrite.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.RandomAccessStreamOverStream", "void RandomAccessStreamOverStream.Dispose()");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync( global::Windows.Storage.Streams.IBuffer buffer,  uint count,  global::Windows.Storage.Streams.InputStreamOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> RandomAccessStreamOverStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync( global::Windows.Storage.Streams.IBuffer buffer)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> RandomAccessStreamOverStream.WriteAsync(IBuffer buffer) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> FlushAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RandomAccessStreamOverStream.FlushAsync() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.Dispose()
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.ReadAsync(Windows.Storage.Streams.IBuffer, uint, Windows.Storage.Streams.InputStreamOptions)
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.WriteAsync(Windows.Storage.Streams.IBuffer)
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.FlushAsync()
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable
 		// Processing: Windows.Storage.Streams.IInputStream

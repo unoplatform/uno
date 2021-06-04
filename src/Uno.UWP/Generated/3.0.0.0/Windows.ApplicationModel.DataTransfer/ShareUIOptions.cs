@@ -2,46 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class ShareUIOptions
+	public  partial class ShareUIOptions 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.DataTransfer.ShareUITheme Theme
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ShareUITheme ShareUIOptions.Theme is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareUIOptions", "ShareUITheme ShareUIOptions.Theme");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect? SelectionRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect? ShareUIOptions.SelectionRect is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareUIOptions", "Rect? ShareUIOptions.SelectionRect");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ShareUIOptions()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareUIOptions", "ShareUIOptions.ShareUIOptions()");
-		}
-		#endif
+		// Skipping already declared property Theme
+		// Skipping already declared property SelectionRect
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.ShareUIOptions.ShareUIOptions()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.ShareUIOptions()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.Theme.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.Theme.set

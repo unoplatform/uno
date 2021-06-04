@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DataRequestedEventArgs 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.DataTransfer.DataRequest Request
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DataRequest DataRequestedEventArgs.Request is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Request
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.Request.get
 	}
 }

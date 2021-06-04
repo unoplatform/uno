@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PickerFlyout : global::Windows.UI.Xaml.Controls.Primitives.PickerFlyoutBase
@@ -51,13 +51,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PickerFlyout), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PickerFlyout() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PickerFlyout", "PickerFlyout.PickerFlyout()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PickerFlyout.Content.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PickerFlyout.Content.set

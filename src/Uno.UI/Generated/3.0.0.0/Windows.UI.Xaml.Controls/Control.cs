@@ -540,34 +540,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnKeyDown(Windows.UI.Xaml.Input.KeyRoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnGotFocus(Windows.UI.Xaml.RoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnLostFocus(Windows.UI.Xaml.RoutedEventArgs)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnDragEnter( global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnDragLeave( global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnDragOver( global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDragOver(global::Windows.UI.Xaml.DragEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnDrop( global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDrop(global::Windows.UI.Xaml.DragEventArgs e)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDragEnter(Windows.UI.Xaml.DragEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDragLeave(Windows.UI.Xaml.DragEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDragOver(Windows.UI.Xaml.DragEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDrop(Windows.UI.Xaml.DragEventArgs)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnPreviewKeyDown( global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e)

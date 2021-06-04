@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CommandBarFlyout : global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase
@@ -27,13 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CommandBarFlyout() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CommandBarFlyout", "CommandBarFlyout.CommandBarFlyout()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.CommandBarFlyout.CommandBarFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBarFlyout.CommandBarFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBarFlyout.PrimaryCommands.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBarFlyout.SecondaryCommands.get

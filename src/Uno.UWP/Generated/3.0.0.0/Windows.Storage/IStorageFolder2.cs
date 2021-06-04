@@ -2,13 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IStorageFolder2 
 	{
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> TryGetItemAsync( string name);
-		#endif
+		// Skipping already declared method Windows.Storage.IStorageFolder2.TryGetItemAsync(string)
 	}
 }

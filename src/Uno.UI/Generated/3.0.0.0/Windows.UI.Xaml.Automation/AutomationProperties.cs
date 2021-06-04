@@ -91,30 +91,9 @@ namespace Windows.UI.Xaml.Automation
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PositionInSetProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"PositionInSet", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SizeOfSetProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"SizeOfSet", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LandmarkTypeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"LandmarkType", typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType)));
-		#endif
+		// Skipping already declared property PositionInSetProperty
+		// Skipping already declared property SizeOfSetProperty
+		// Skipping already declared property LandmarkTypeProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty LocalizedLandmarkTypeProperty { get; } = 
@@ -301,20 +280,8 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.LandmarkTypeProperty.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType GetLandmarkType( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			return (global::Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType)element.GetValue(LandmarkTypeProperty);
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetLandmarkType( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType value)
-		{
-			element.SetValue(LandmarkTypeProperty, value);
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.GetLandmarkType(Windows.UI.Xaml.DependencyObject)
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.SetLandmarkType(Windows.UI.Xaml.DependencyObject, Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType)
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.LocalizedLandmarkTypeProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -331,35 +298,11 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.PositionInSetProperty.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static int GetPositionInSet( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			return (int)element.GetValue(PositionInSetProperty);
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetPositionInSet( global::Windows.UI.Xaml.DependencyObject element,  int value)
-		{
-			element.SetValue(PositionInSetProperty, value);
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.GetPositionInSet(Windows.UI.Xaml.DependencyObject)
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.SetPositionInSet(Windows.UI.Xaml.DependencyObject, int)
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.SizeOfSetProperty.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static int GetSizeOfSet( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			return (int)element.GetValue(SizeOfSetProperty);
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetSizeOfSet( global::Windows.UI.Xaml.DependencyObject element,  int value)
-		{
-			element.SetValue(SizeOfSetProperty, value);
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.GetSizeOfSet(Windows.UI.Xaml.DependencyObject)
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.SetSizeOfSet(Windows.UI.Xaml.DependencyObject, int)
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.LevelProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-#if false
-#if false
-	[global::Uno.NotImplemented]
-#endif
+	#if false || false || false || false || false || false || false
 	public   enum ElementTheme 
 	{
-#if false
-		Default,
-#endif
-#if false
-		Light,
-#endif
-#if false
-		Dark,
-#endif
+		// Skipping already declared field Windows.UI.Xaml.ElementTheme.Default
+		// Skipping already declared field Windows.UI.Xaml.ElementTheme.Light
+		// Skipping already declared field Windows.UI.Xaml.ElementTheme.Dark
 	}
-#endif
+	#endif
 }

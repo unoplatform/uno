@@ -2,51 +2,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IRandomAccessStream : global::System.IDisposable,global::Windows.Storage.Streams.IInputStream,global::Windows.Storage.Streams.IOutputStream
 	{
-		#if false
-		bool CanRead
-		{
-			get;
-		}
-		#endif
-		#if false
-		bool CanWrite
-		{
-			get;
-		}
-		#endif
-		#if false
-		ulong Position
-		{
-			get;
-		}
-		#endif
-		#if false
-		ulong Size
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property CanRead
+		// Skipping already declared property CanWrite
+		// Skipping already declared property Position
+		// Skipping already declared property Size
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Size.get
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Size.set
-		#if false
-		global::Windows.Storage.Streams.IInputStream GetInputStreamAt( ulong position);
-		#endif
-		#if false
-		global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt( ulong position);
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.GetInputStreamAt(ulong)
+		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.GetOutputStreamAt(ulong)
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.Position.get
-		#if false
-		void Seek( ulong position);
-		#endif
-		#if false
-		global::Windows.Storage.Streams.IRandomAccessStream CloneStream();
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.Seek(ulong)
+		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStream.CloneStream()
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.CanRead.get
 		// Forced skipping of method Windows.Storage.Streams.IRandomAccessStream.CanWrite.get
 	}

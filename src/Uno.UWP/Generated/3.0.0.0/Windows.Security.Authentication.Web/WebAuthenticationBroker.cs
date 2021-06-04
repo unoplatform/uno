@@ -42,5 +42,8 @@ namespace Windows.Security.Authentication.Web
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateSilentlyAsync(Uri requestUri, WebAuthenticationOptions options) is not implemented in Uno.");
 		}
 		#endif
+		// Skipping already declared method Windows.Security.Authentication.Web.WebAuthenticationBroker.AuthenticateAsync(Windows.Security.Authentication.Web.WebAuthenticationOptions, System.Uri, System.Uri)
+		// Skipping already declared method Windows.Security.Authentication.Web.WebAuthenticationBroker.AuthenticateAsync(Windows.Security.Authentication.Web.WebAuthenticationOptions, System.Uri)
+		// Skipping already declared method Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri()
 	}
 }

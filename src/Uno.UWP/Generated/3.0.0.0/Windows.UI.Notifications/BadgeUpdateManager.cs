@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 			throw new global::System.NotImplementedException("The member BadgeUpdateManagerForUser BadgeUpdateManager.GetForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Notifications.BadgeUpdater CreateBadgeUpdaterForApplication()
 		{

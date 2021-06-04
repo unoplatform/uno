@@ -2,27 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum NavigationViewPaneDisplayMode 
 	{
-		#if false
-		Auto,
-		#endif
-		#if false
-		Left,
-		#endif
-		#if false
-		Top,
-		#endif
-		#if false
-		LeftCompact,
-		#endif
-		#if false
-		LeftMinimal,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Auto
+		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Left
+		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top
+		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftCompact
+		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal
 	}
 	#endif
 }

@@ -2,18 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum PickerViewMode 
 	{
-		#if false
-		List,
-		#endif
-		#if false
-		Thumbnail,
-		#endif
+		// Skipping already declared field Windows.Storage.Pickers.PickerViewMode.List
+		// Skipping already declared field Windows.Storage.Pickers.PickerViewMode.Thumbnail
 	}
 	#endif
 }

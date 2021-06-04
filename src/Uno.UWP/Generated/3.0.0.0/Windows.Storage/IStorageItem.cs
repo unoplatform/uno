@@ -2,56 +2,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IStorageItem 
 	{
-		#if false
-		global::Windows.Storage.FileAttributes Attributes
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::System.DateTimeOffset DateCreated
-		{
-			get;
-		}
-		#endif
-		#if false
-		string Name
-		{
-			get;
-		}
-		#endif
-		#if false
-		string Path
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncAction RenameAsync( string desiredName);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncAction RenameAsync( string desiredName,  global::Windows.Storage.NameCollisionOption option);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncAction DeleteAsync();
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncAction DeleteAsync( global::Windows.Storage.StorageDeleteOption option);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.BasicProperties> GetBasicPropertiesAsync();
-		#endif
+		// Skipping already declared property Attributes
+		// Skipping already declared property DateCreated
+		// Skipping already declared property Name
+		// Skipping already declared property Path
+		// Skipping already declared method Windows.Storage.IStorageItem.RenameAsync(string)
+		// Skipping already declared method Windows.Storage.IStorageItem.RenameAsync(string, Windows.Storage.NameCollisionOption)
+		// Skipping already declared method Windows.Storage.IStorageItem.DeleteAsync()
+		// Skipping already declared method Windows.Storage.IStorageItem.DeleteAsync(Windows.Storage.StorageDeleteOption)
+		// Skipping already declared method Windows.Storage.IStorageItem.GetBasicPropertiesAsync()
 		// Forced skipping of method Windows.Storage.IStorageItem.Name.get
 		// Forced skipping of method Windows.Storage.IStorageItem.Path.get
 		// Forced skipping of method Windows.Storage.IStorageItem.Attributes.get
 		// Forced skipping of method Windows.Storage.IStorageItem.DateCreated.get
-		#if false
-		bool IsOfType( global::Windows.Storage.StorageItemTypes type);
-		#endif
+		// Skipping already declared method Windows.Storage.IStorageItem.IsOfType(Windows.Storage.StorageItemTypes)
 	}
 }

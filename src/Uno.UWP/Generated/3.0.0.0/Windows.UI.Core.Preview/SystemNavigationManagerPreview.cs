@@ -10,7 +10,7 @@ namespace Windows.UI.Core.Preview
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.add
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Core.Preview.SystemNavigationManagerPreview GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member SystemNavigationManagerPreview SystemNavigationManagerPreview.GetForCurrentView() is not implemented in Uno.");

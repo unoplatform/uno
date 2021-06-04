@@ -102,6 +102,8 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member ExpressionAnimation Compositor.CreateExpressionAnimation(string expression) is not implemented in Uno.");
 		}
 		#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateInsetClip()
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateInsetClip(float, float, float, float)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.LinearEasingFunction CreateLinearEasingFunction()
@@ -109,13 +111,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member LinearEasingFunction Compositor.CreateLinearEasingFunction() is not implemented in Uno.");
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionPropertySet CreatePropertySet()
-		{
-			throw new global::System.NotImplementedException("The member CompositionPropertySet Compositor.CreatePropertySet() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreatePropertySet()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.QuaternionKeyFrameAnimation CreateQuaternionKeyFrameAnimation()
@@ -389,6 +385,8 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member IAsyncAction Compositor.RequestCommitAsync() is not implemented in Uno.");
 		}
 		#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateGeometricClip()
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateGeometricClip(Windows.UI.Composition.CompositionGeometry)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual()
