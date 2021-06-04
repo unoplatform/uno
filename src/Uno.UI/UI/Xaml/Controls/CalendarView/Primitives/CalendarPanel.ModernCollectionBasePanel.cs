@@ -509,7 +509,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #else
 			ShouldInterceptInvalidate = true;
 #endif
-			var index = -1;
+			int index = -1, startIndex = 0, firstVisibleIndex = -1, lastVisibleIndex = -1;
 			var bottom = 0.0;
 			try
 			{
@@ -524,7 +524,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 
 				// Gets the index of the first element to render and the actual viewport to use
-				_layoutStrategy.EstimateElementIndex(ElementType.ItemContainer, default, default, viewport, out var renderWindow, out var startIndex);
+				_layoutStrategy.EstimateElementIndex(ElementType.ItemContainer, default, default, viewport, out var renderWindow, out startIndex);
 				renderWindow.Size = requestedRenderingWindow.Size; // The renderWindow contains only position information
 				startIndex = Math.Max(0, startIndex - StartIndex);
 
@@ -533,7 +533,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_cache.BeginGeneration(startIndex, startIndex + expectedItemsCount);
 
 				index = startIndex;
-				int firstVisibleIndex = -1, lastVisibleIndex = -1;
 				var count = _host.Count;
 				var layout = new LayoutReference { RelativeLocation = ReferenceIdentity.Myself };
 				var currentLine = (y: double.MinValue, col: 0);
@@ -605,12 +604,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					index++;
 				}
-				
-				FirstVisibleIndexBase = Math.Max(firstVisibleIndex, startIndex);
-				LastVisibleIndexBase = Math.Max(FirstVisibleIndexBase, lastVisibleIndex);
 			}
 			finally
 			{
+				FirstVisibleIndexBase = Math.Max(firstVisibleIndex, startIndex);
+				LastVisibleIndexBase = Math.Max(FirstVisibleIndexBase, lastVisibleIndex);
+
 				foreach (var unusedEntry in _cache.CompleteGeneration(index - 1))
 				{
 					Children.Remove(unusedEntry.Container);
