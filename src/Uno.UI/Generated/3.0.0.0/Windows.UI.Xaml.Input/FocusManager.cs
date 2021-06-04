@@ -7,6 +7,7 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class FocusManager 
 	{
+		// Skipping already declared method Windows.UI.Xaml.Input.FocusManager.GetFocusedElement(Windows.UI.Xaml.XamlRoot)
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GotFocus.add
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GotFocus.remove
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.LostFocus.add

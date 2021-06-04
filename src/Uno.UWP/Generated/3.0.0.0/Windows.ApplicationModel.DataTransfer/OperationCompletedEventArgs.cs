@@ -3,30 +3,12 @@
 namespace Windows.ApplicationModel.DataTransfer
 {
 	#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+	[global::Uno.NotImplemented]
 	#endif
 	public  partial class OperationCompletedEventArgs 
 	{
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
-		public  global::Windows.ApplicationModel.DataTransfer.DataPackageOperation Operation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DataPackageOperation OperationCompletedEventArgs.Operation is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
-		public  string AcceptedFormatId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string OperationCompletedEventArgs.AcceptedFormatId is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Operation
+		// Skipping already declared property AcceptedFormatId
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Operation.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.AcceptedFormatId.get
 	}

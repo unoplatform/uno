@@ -3,16 +3,10 @@
 namespace Windows.ApplicationModel.DataTransfer
 {
 	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented("NET461")]
+	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DataProviderDeferral 
 	{
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
-		public  void Complete()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataProviderDeferral", "void DataProviderDeferral.Complete()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataProviderDeferral.Complete()
 	}
 }

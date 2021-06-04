@@ -2,33 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum PositionSource 
 	{
-		#if false
-		Cellular,
-		#endif
-		#if false
-		Satellite,
-		#endif
-		#if false
-		WiFi,
-		#endif
-		#if false
-		IPAddress,
-		#endif
-		#if false
-		Unknown,
-		#endif
-		#if false
-		Default,
-		#endif
-		#if false
-		Obfuscated,
-		#endif
+		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Cellular
+		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Satellite
+		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.WiFi
+		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.IPAddress
+		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Unknown
+		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Default
+		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Obfuscated
 	}
 	#endif
 }

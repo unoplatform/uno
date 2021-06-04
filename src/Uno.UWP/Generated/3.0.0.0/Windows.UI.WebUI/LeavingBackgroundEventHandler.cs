@@ -3,6 +3,6 @@
 namespace Windows.UI.WebUI
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void LeavingBackgroundEventHandler(object @sender, global::Windows.ApplicationModel.ILeavingBackgroundEventArgs @e);
+	public delegate void LeavingBackgroundEventHandler(object sender, global::Windows.ApplicationModel.ILeavingBackgroundEventArgs e);
 	#endif
 }

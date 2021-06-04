@@ -3,10 +3,8 @@
 namespace Windows.Graphics.Display
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum DisplayOrientations 
+	[global::System.FlagsAttribute]
+	public   enum DisplayOrientations : uint
 	{
 		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.None
 		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.Landscape

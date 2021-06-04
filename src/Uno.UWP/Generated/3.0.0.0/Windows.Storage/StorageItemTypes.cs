@@ -2,21 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum StorageItemTypes 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum StorageItemTypes : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		File,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Folder,
-		#endif
+		// Skipping already declared field Windows.Storage.StorageItemTypes.None
+		// Skipping already declared field Windows.Storage.StorageItemTypes.File
+		// Skipping already declared field Windows.Storage.StorageItemTypes.Folder
 	}
 	#endif
 }

@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false
-	public delegate void StreamedFileDataRequestedHandler(global::Windows.Storage.StreamedFileDataRequest @stream);
-	#endif
+	// Skipping already declared delegate Windows.Storage.StreamedFileDataRequestedHandler
 }

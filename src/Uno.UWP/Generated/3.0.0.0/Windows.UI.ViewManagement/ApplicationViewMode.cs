@@ -3,9 +3,6 @@
 namespace Windows.UI.ViewManagement
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum ApplicationViewMode 
 	{
 		// Skipping already declared field Windows.UI.ViewManagement.ApplicationViewMode.Default
