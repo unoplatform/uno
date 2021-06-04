@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.IO;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.Logging;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 {
@@ -218,7 +220,13 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 					Add(RemovedAssociations, kvp.Key, kvp.Value);
 				}
 			}
-			catch { }
+			catch (Exception exception)
+			{
+				if (typeof(MimeAppsList).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(MimeAppsList).Log().Error($"Failed to {nameof(ParseFile)}.", exception);
+				}
+			}
 		}
 	}
 }

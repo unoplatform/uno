@@ -8,8 +8,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 	// Implementation based on this: https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
 	internal class DesktopFile
 	{
-		private Dictionary<string, Dictionary<string, string>> Groups = new Dictionary<string, Dictionary<string, string>>();
-		public Dictionary<string, string> DesktopEntry => Groups["Desktop Entry"];
+		private readonly Dictionary<string, Dictionary<string, string>> _groups = new Dictionary<string, Dictionary<string, string>>();
+		public Dictionary<string, string> DesktopEntry => _groups["Desktop Entry"];
 
 		public DesktopFile(string desktopFileId)
 		{
@@ -57,9 +57,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 				if (line.StartsWith('[') && line.EndsWith(']'))
 				{
 					currentHeaderName = line.Substring(1, line.Length - 2);
-					if (!Groups.ContainsKey(currentHeaderName))
+					if (!_groups.ContainsKey(currentHeaderName))
 					{
-						Groups.Add(currentHeaderName, new Dictionary<string, string>());
+						_groups.Add(currentHeaderName, new Dictionary<string, string>());
 					}
 					continue;
 				}
@@ -68,12 +68,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 				var key = line.Substring(0, splitPos).Trim();
 				var value = line.Substring(splitPos + 1).Trim();
 
-				try
-				{
-					Groups[currentHeaderName].Add(key, value);
-				}
-				// Ignore same keys
-				catch { }
+				_groups[currentHeaderName].TryAdd(key, value);
 			}
 
 		}

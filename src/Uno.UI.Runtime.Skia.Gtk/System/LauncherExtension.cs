@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Uno.Extensions.System;
 using Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers;
+using Uno.Logging;
 using Windows.System;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
@@ -40,8 +43,14 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
 					// Easiest way:
 					canOpenUri = CheckXdgSettings(uri);
 				}
-				// Failure here does not affect the the query.
-				catch { }
+				catch (Exception exception)
+				{
+					// Failure here does not affect the the query.
+					if (typeof(LauncherExtension).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(LauncherExtension).Log().Error($"Failed to invoke xdg-settings", exception);
+					}
+				}
 
 				// Guaranteed to work on all Linux Gtk platforms.
 				canOpenUri ??= CheckMimeTypeAssociations(uri);

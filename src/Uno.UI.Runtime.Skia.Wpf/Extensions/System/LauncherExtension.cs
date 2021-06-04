@@ -46,7 +46,7 @@ namespace Uno.Extensions.System
 
 			if (key == null)
 			{
-				throw new SystemException(@"Failed to open Registry.");
+				throw new InvalidOperationException(@"Failed to open Registry.");
 			}
 
 			using var schemeKey = key.OpenSubKey(uri.Scheme);
