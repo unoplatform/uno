@@ -158,6 +158,19 @@ var Uno;
 })(Uno || (Uno = {}));
 var Uno;
 (function (Uno) {
+    var UI;
+    (function (UI) {
+        let HtmlEventDispatchResult;
+        (function (HtmlEventDispatchResult) {
+            HtmlEventDispatchResult[HtmlEventDispatchResult["Ok"] = 0] = "Ok";
+            HtmlEventDispatchResult[HtmlEventDispatchResult["StopPropagation"] = 1] = "StopPropagation";
+            HtmlEventDispatchResult[HtmlEventDispatchResult["PreventDefault"] = 2] = "PreventDefault";
+            HtmlEventDispatchResult[HtmlEventDispatchResult["NotDispatched"] = 128] = "NotDispatched";
+        })(HtmlEventDispatchResult = UI.HtmlEventDispatchResult || (UI.HtmlEventDispatchResult = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
     var Http;
     (function (Http) {
         class HttpClient {
@@ -990,9 +1003,12 @@ var Uno;
             }
             static dispatchPointerEvent(element, evt) {
                 const payload = WindowManager.pointerEventExtractor(evt);
-                const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
-                if (handled) {
+                const result = WindowManager.current.dispatchEvent(element, evt.type, payload);
+                if (result & UI.HtmlEventDispatchResult.StopPropagation) {
                     evt.stopPropagation();
+                }
+                if (result & UI.HtmlEventDispatchResult.PreventDefault) {
+                    evt.preventDefault();
                 }
             }
             static onPointerEnterReceived(evt) {
@@ -1097,9 +1113,11 @@ var Uno;
                     const eventPayload = eventExtractor
                         ? `${eventExtractor(event)}`
                         : "";
-                    var handled = this.dispatchEvent(element, eventName, eventPayload);
-                    if (handled) {
+                    const result = this.dispatchEvent(element, eventName, eventPayload);
+                    if (result & UI.HtmlEventDispatchResult.StopPropagation) {
                         event.stopPropagation();
+                    }
+                    if (result & UI.HtmlEventDispatchResult.PreventDefault) {
                         event.preventDefault();
                     }
                 };
@@ -1831,7 +1849,7 @@ var Uno;
                     // this way always succeed because synchronous calls are not possible
                     // between the host and the browser, unlike wasm.
                     UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
-                    return true;
+                    return UI.HtmlEventDispatchResult.Ok;
                 }
                 else {
                     return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
@@ -1904,7 +1922,7 @@ var Uno;
         WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
         if (typeof define === "function") {
-            define([`${config.uno_app_base}/AppManifest`], () => {
+            define([`./AppManifest.js`], () => {
             });
         }
         else {

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Extensions.Logging;
@@ -13,7 +15,7 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
-		private delegate bool RawEventHandler(UIElement sender, string paylaod);
+		private delegate HtmlEventDispatchResult RawEventHandler(UIElement sender, string paylaod);
 
 		internal delegate object GenericEventHandler(Delegate d, object sender, object args);
 
@@ -103,12 +105,12 @@ namespace Windows.UI.Xaml
 				// _isSubscribed = false;
 			}
 
-			public bool Dispatch(EventArgs eventArgs, string nativeEventPayload)
+			public HtmlEventDispatchResult Dispatch(EventArgs eventArgs, string nativeEventPayload)
 			{
 				if (_invocationList.Count == 0)
 				{
 					// Nothing to do (should not occur once we can remove handler in HTML)
-					return false;
+					return HtmlEventDispatchResult.NotDispatched;
 				}
 
 				try
@@ -126,27 +128,44 @@ namespace Windows.UI.Xaml
 						args = _payloadConverter(_owner, nativeEventPayload);
 					}
 
+					var result = HtmlEventDispatchResult.Ok;
 					foreach (var invocationItem in _invocationList)
 					{
 						if (invocationItem.Handler is RawEventHandler rawHandler)
 						{
-							if (rawHandler(_owner, nativeEventPayload))
+							var handlerResult = rawHandler(_owner, nativeEventPayload);
+
+							if (handlerResult.HasFlag(HtmlEventDispatchResult.StopPropagation))
 							{
-								return true;
+								// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
+								return result | HtmlEventDispatchResult.StopPropagation;
+							}
+							else
+							{
+								result |= handlerResult;
 							}
 						}
 						else
 						{
-							var result = invocationItem.Invoker(invocationItem.Handler, _owner, args);
+							var handlerResult = invocationItem.Invoker(invocationItem.Handler, _owner, args);
 
-							if (result is bool isHandedInManaged && isHandedInManaged)
+							switch (handlerResult)
 							{
-								return true; // will call ".preventDefault()" in JS to prevent native bubbling
+								case bool isHandedInManaged when isHandedInManaged:
+									return HtmlEventDispatchResult.StopPropagation | HtmlEventDispatchResult.PreventDefault;
+
+								case HtmlEventDispatchResult dispatchResult when dispatchResult.HasFlag(HtmlEventDispatchResult.StopPropagation):
+									// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
+									return result | HtmlEventDispatchResult.StopPropagation;
+
+								case HtmlEventDispatchResult dispatchResult:
+									result |= dispatchResult;
+									break;
 							}
 						}
 					}
 
-					return false; // let native bubbling in HTML
+					return HtmlEventDispatchResult.Ok; // let native bubbling in HTML
 				}
 				catch (Exception e)
 				{
@@ -209,7 +228,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal bool InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null)
+		internal HtmlEventDispatchResult InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null)
 		{
 			var n = eventName;
 			try
@@ -229,23 +248,32 @@ namespace Windows.UI.Xaml
 				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 
-			return false;
+			return HtmlEventDispatchResult.Ok;
 		}
 
+		/// <summary>
+		/// Dispatches a native event to managed code
+		/// </summary>
+		/// <param name="handle">HTML element ID</param>
+		/// <param name="eventName">Event name</param>
+		/// <param name="eventArgs">Serialized event args</param>
+		/// <returns>The HtmlEventDispatchResult of the dispatch.</returns>
+		/// <remarks>The return value is an integer for marshaling consideration, but is actually an HtmlEventDispatchResult.</remarks>
 		[Preserve]
-		public static bool DispatchEvent(int handle, string eventName, string eventArgs)
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static int DispatchEvent(int handle, string eventName, string eventArgs)
 		{
 			// Dispatch to right object, if we can find it
 			if (GetElementFromHandle(handle) is UIElement element)
 			{
-				return element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
+				return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
 			}
 			else
 			{
 				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
 			}
 
-			return false;
+			return (int)HtmlEventDispatchResult.NotDispatched;
 		}
 
 		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.OrdinalIgnoreCase);
@@ -261,6 +289,40 @@ namespace Windows.UI.Xaml
 			FocusEventExtractor = 4,
 			CustomEventDetailStringExtractor = 5, // For use with CustomEvent("name", {detail:{string detail here}})
 			CustomEventDetailJsonExtractor = 6, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
+		}
+
+		[Flags]
+		internal enum HtmlEventDispatchResult
+		{
+			/// <summary>
+			/// Event has been dispatched properly, but there is no specific action to take.
+			/// </summary>
+			Ok = 0,
+
+			/// <summary>
+			/// Stops **native** propagation of the event to parent elements (a.k.a. Handled).
+			/// </summary>
+			StopPropagation = 1, // a.k.a. Handled
+
+			/// <summary>
+			/// This prevents the default native behavior of the event.
+			/// For instance mouse wheel to scroll the view, tab to changed focus, etc.
+			/// WARNING: Cf. remarks
+			/// </summary>
+			/// <remarks>
+			/// The "default behavior" is applied only once the event as reached the root element.
+			/// This means that if a parent element requires to prevent the default behavior, it will also prevent the default for all its children.
+			/// For instance preventing the default behavior for the wheel event on a `Popup`, will also disable the mouse wheel scrolling for its content.
+			/// </remarks>
+			PreventDefault = 2,
+
+			/// <summary>
+			/// The event has not been dispatch.
+			/// WARNING: This must not be used by application.
+			/// It only indicates that there is no active listener for that event and it should not be raised enymore.
+			/// It should not in anyway indicates an error in event processing.
+			/// </summary>
+			NotDispatched = 128
 		}
 	}
 }

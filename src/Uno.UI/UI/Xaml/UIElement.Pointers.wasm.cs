@@ -111,25 +111,41 @@ namespace Windows.UI.Xaml
 		//	But the web-browser will actually behave like WinUI for pointerenter and pointerleave, so here by setting it to true,
 		//	we just ensure that the managed code won't try to bubble it by its own.
 		//	However, if the event is Handled in managed, it will then bubble while it should not! https://github.com/unoplatform/uno/issues/3007
-		private static bool DispatchNativePointerEnter(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false));
+		// Note about the HtmlEventDispatchResult:
+		//	For pointer events we never want to prevent the default behavior.
+		//	Especially for wheel where preventing the default would break scrolling.
+		//	cf. remarks on HtmlEventDispatchResult.PreventDefault
+		private static HtmlEventDispatchResult DispatchNativePointerEnter(UIElement target, string eventPayload)
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false))
+				? HtmlEventDispatchResult.StopPropagation
+				: HtmlEventDispatchResult.Ok;
 
-		private static bool DispatchNativePointerLeave(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false));
+		private static HtmlEventDispatchResult DispatchNativePointerLeave(UIElement target, string eventPayload)
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false))
+				? HtmlEventDispatchResult.StopPropagation
+				: HtmlEventDispatchResult.Ok;
 
-		private static bool DispatchNativePointerDown(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerDown(ToPointerArgs(target, args, isInContact: true));
+		private static HtmlEventDispatchResult DispatchNativePointerDown(UIElement target, string eventPayload)
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerDown(ToPointerArgs(target, args, isInContact: true))
+				? HtmlEventDispatchResult.StopPropagation
+				: HtmlEventDispatchResult.Ok;
 
-		private static bool DispatchNativePointerUp(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerUp(ToPointerArgs(target, args, isInContact: true));
+		private static HtmlEventDispatchResult DispatchNativePointerUp(UIElement target, string eventPayload)
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerUp(ToPointerArgs(target, args, isInContact: true))
+				? HtmlEventDispatchResult.StopPropagation
+				: HtmlEventDispatchResult.Ok;
 
-		private static bool DispatchNativePointerMove(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerMove(ToPointerArgs(target, args, isInContact: true));
+		private static HtmlEventDispatchResult DispatchNativePointerMove(UIElement target, string eventPayload)
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerMove(ToPointerArgs(target, args, isInContact: true))
+				? HtmlEventDispatchResult.StopPropagation
+				: HtmlEventDispatchResult.Ok;
 
-		private static bool DispatchNativePointerCancel(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerCancel(ToPointerArgs(target, args, isInContact: false), isSwallowedBySystem: true);
+		private static HtmlEventDispatchResult DispatchNativePointerCancel(UIElement target, string eventPayload)
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerCancel(ToPointerArgs(target, args, isInContact: false), isSwallowedBySystem: true)
+				? HtmlEventDispatchResult.StopPropagation
+				: HtmlEventDispatchResult.Ok;
 
-		private static bool DispatchNativePointerWheel(UIElement target, string eventPayload)
+		private static HtmlEventDispatchResult DispatchNativePointerWheel(UIElement target, string eventPayload)
 		{
 			if (TryParse(eventPayload, out var args))
 			{
@@ -146,11 +162,13 @@ namespace Windows.UI.Xaml
 					// Note: Web browser vertical scrolling is the opposite compared to WinUI!
 					handled |= target.OnNativePointerWheel(ToPointerArgs(target, args, wheel: (false, -args.wheelDeltaY), isInContact: null /* maybe */));
 				}
-				return handled;
+				return handled
+					? HtmlEventDispatchResult.StopPropagation
+					: HtmlEventDispatchResult.Ok;
 			}
 			else
 			{
-				return false;
+				return HtmlEventDispatchResult.Ok;
 			}
 		}
 
