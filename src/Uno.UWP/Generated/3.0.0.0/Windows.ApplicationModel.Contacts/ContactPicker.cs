@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Contacts
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ContactPicker 
@@ -65,13 +65,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContactPicker() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactPicker", "ContactPicker.ContactPicker()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPicker.ContactPicker()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.ContactPicker()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.CommitButtonText.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.CommitButtonText.set
@@ -93,20 +87,8 @@ namespace Windows.ApplicationModel.Contacts
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.DesiredFieldsWithContactFieldType.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> PickContactAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactPicker.PickContactAsync() is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Contacts.Contact>> PickContactsAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<Contact>> ContactPicker.PickContactsAsync() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPicker.PickContactAsync()
+		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPicker.PickContactsAsync()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.User.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -115,12 +97,6 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member ContactPicker ContactPicker.CreateForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> IsSupportedAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ContactPicker.IsSupportedAsync() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPicker.IsSupportedAsync()
 	}
 }

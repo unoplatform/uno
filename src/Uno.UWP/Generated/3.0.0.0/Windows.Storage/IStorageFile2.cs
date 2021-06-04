@@ -7,11 +7,7 @@ namespace Windows.Storage
 	#endif
 	public  partial interface IStorageFile2 
 	{
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync( global::Windows.Storage.FileAccessMode accessMode,  global::Windows.Storage.StorageOpenOptions options);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteAsync( global::Windows.Storage.StorageOpenOptions options);
-		#endif
+		// Skipping already declared method Windows.Storage.IStorageFile2.OpenAsync(Windows.Storage.FileAccessMode, Windows.Storage.StorageOpenOptions)
+		// Skipping already declared method Windows.Storage.IStorageFile2.OpenTransactedWriteAsync(Windows.Storage.StorageOpenOptions)
 	}
 }

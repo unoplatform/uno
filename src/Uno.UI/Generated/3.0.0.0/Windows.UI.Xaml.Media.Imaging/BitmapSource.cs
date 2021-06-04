@@ -15,20 +15,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapSource.BitmapSource()
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapSource.PixelWidth.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapSource.PixelHeight.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetSource( global::Windows.Storage.Streams.IRandomAccessStream streamSource)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.BitmapSource", "void BitmapSource.SetSource(IRandomAccessStream streamSource)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SetSourceAsync( global::Windows.Storage.Streams.IRandomAccessStream streamSource)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BitmapSource.SetSourceAsync(IRandomAccessStream streamSource) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.BitmapSource.SetSource(Windows.Storage.Streams.IRandomAccessStream)
+		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.BitmapSource.SetSourceAsync(Windows.Storage.Streams.IRandomAccessStream)
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapSource.PixelWidthProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapSource.PixelHeightProperty.get
 	}

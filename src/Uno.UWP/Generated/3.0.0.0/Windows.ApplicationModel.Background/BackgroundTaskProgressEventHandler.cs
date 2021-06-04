@@ -3,6 +3,6 @@
 namespace Windows.ApplicationModel.Background
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void BackgroundTaskProgressEventHandler(global::Windows.ApplicationModel.Background.BackgroundTaskRegistration @sender, global::Windows.ApplicationModel.Background.BackgroundTaskProgressEventArgs @args);
+	public delegate void BackgroundTaskProgressEventHandler(global::Windows.ApplicationModel.Background.BackgroundTaskRegistration sender, global::Windows.ApplicationModel.Background.BackgroundTaskProgressEventArgs args);
 	#endif
 }

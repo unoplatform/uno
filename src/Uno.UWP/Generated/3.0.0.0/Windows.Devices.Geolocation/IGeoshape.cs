@@ -2,29 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IGeoshape 
 	{
-		#if false
-		global::Windows.Devices.Geolocation.AltitudeReferenceSystem AltitudeReferenceSystem
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.Devices.Geolocation.GeoshapeType GeoshapeType
-		{
-			get;
-		}
-		#endif
-		#if false
-		uint SpatialReferenceId
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property AltitudeReferenceSystem
+		// Skipping already declared property GeoshapeType
+		// Skipping already declared property SpatialReferenceId
 		// Forced skipping of method Windows.Devices.Geolocation.IGeoshape.GeoshapeType.get
 		// Forced skipping of method Windows.Devices.Geolocation.IGeoshape.SpatialReferenceId.get
 		// Forced skipping of method Windows.Devices.Geolocation.IGeoshape.AltitudeReferenceSystem.get

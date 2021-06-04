@@ -2,18 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum FileAccessMode 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Read,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ReadWrite,
-		#endif
+		// Skipping already declared field Windows.Storage.FileAccessMode.Read
+		// Skipping already declared field Windows.Storage.FileAccessMode.ReadWrite
 	}
 	#endif
 }

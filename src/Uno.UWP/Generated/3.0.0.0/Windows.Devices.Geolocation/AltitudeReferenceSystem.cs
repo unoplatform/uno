@@ -3,9 +3,6 @@
 namespace Windows.Devices.Geolocation
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum AltitudeReferenceSystem 
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.AltitudeReferenceSystem.Unspecified

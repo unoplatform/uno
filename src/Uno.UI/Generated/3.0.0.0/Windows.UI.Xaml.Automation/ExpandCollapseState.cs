@@ -2,24 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum ExpandCollapseState 
 	{
-		#if false
-		Collapsed,
-		#endif
-		#if false
-		Expanded,
-		#endif
-		#if false
-		PartiallyExpanded,
-		#endif
-		#if false
-		LeafNode,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.Collapsed
+		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.Expanded
+		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.PartiallyExpanded
+		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.LeafNode
 	}
 	#endif
 }

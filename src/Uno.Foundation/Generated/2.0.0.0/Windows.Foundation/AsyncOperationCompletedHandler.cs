@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation
 {
-	#if false || false
-	public delegate void AsyncOperationCompletedHandler<TResult>(global::Windows.Foundation.IAsyncOperation<TResult> @asyncInfo, global::Windows.Foundation.AsyncStatus @asyncStatus);
-	#endif
+	// Skipping already declared delegate Windows.Foundation.AsyncOperationCompletedHandler<TResult>
 }

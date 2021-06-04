@@ -41,6 +41,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property AreHorizontalSnapPointsRegular
+		// Skipping already declared property AreVerticalSnapPointsRegular
+		// Skipping already declared property AreScrollSnapPointsRegularProperty
 		// Skipping already declared property OrientationProperty
 		// Skipping already declared property BorderBrushProperty
 		// Skipping already declared property BorderThicknessProperty
@@ -79,6 +82,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.HorizontalSnapPointsChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.VerticalSnapPointsChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.VerticalSnapPointsChanged.remove
+		// Skipping already declared method Windows.UI.Xaml.Controls.StackPanel.GetIrregularSnapPoints(Windows.UI.Xaml.Controls.Orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
+		// Skipping already declared method Windows.UI.Xaml.Controls.StackPanel.GetRegularSnapPoints(Windows.UI.Xaml.Controls.Orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetInsertionIndexes( global::Windows.Foundation.Point position, out int first, out int second)
@@ -94,6 +99,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.PaddingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.AreScrollSnapPointsRegularProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.OrientationProperty.get
+		// Skipping already declared event Windows.UI.Xaml.Controls.StackPanel.HorizontalSnapPointsChanged
+		// Skipping already declared event Windows.UI.Xaml.Controls.StackPanel.VerticalSnapPointsChanged
 		// Processing: Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 		// Processing: Windows.UI.Xaml.Controls.IInsertionPanel
 	}
