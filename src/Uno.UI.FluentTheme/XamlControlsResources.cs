@@ -51,5 +51,8 @@ namespace Microsoft.UI.Xaml.Controls
 		[NotImplemented]
 		public static DependencyProperty ControlsResourcesVersionProperty { get; } =
 			DependencyProperty.Register(nameof(ControlsResourcesVersion), typeof(ControlsResourcesVersion), typeof(XamlControlsResources), new PropertyMetadata(ControlsResourcesVersion.Version1));
+
+		[NotImplemented]
+		internal static bool IsUsingResourcesVersion2() => false;
 	}
 }
