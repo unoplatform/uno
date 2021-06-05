@@ -741,7 +741,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void OnItemsChanged(object item)
+		//TODO Uno: The second parameter is needed, as OnItemsChanged may get called before OnApplyTemplate due to control lifecycle differences
+		internal void OnItemsChanged(object item, TabViewListView tabListView)
 		{
 			var args = item as IVectorChangedEventArgs;
 			if (args != null)
@@ -750,7 +751,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				int numItems = TabItems.Count;
 
-				var listViewInnerSelectedIndex = m_listView.SelectedIndex;
+				var listViewInnerSelectedIndex = (m_listView ?? tabListView).SelectedIndex;
 				var selectedIndex = SelectedIndex;
 
 				if (selectedIndex != listViewInnerSelectedIndex && listViewInnerSelectedIndex != -1)
