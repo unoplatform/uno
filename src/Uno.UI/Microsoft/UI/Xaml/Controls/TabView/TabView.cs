@@ -1,4 +1,4 @@
-// MUX Reference: TabView.cpp, commit 309c88f
+// MUX Reference: TabView.cpp, TabView.h, commit a987a18
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -202,25 +202,60 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (SharedHelpers.IsThemeShadowAvailable())
 			{
-				var shadowCaster = GetTemplateChild("ShadowCaster") as Grid;
-				if (shadowCaster != null)
+				if (!SharedHelpers.Is21H1OrHigher())
 				{
-					var shadow = new ThemeShadow();
-					shadow.Receivers.Add(GetShadowReceiver());
+					var shadowCaster = GetTemplateChild("ShadowCaster") as Grid;
+					if (shadowCaster != null)
+					{
+						var shadow = new ThemeShadow();
+						shadow.Receivers.Add(GetShadowReceiver());
 
-					double shadowDepth = (double)SharedHelpers.FindInApplicationResources(c_tabViewShadowDepthName, c_tabShadowDepth);
+						double shadowDepth = (double)SharedHelpers.FindInApplicationResources(c_tabViewShadowDepthName, c_tabShadowDepth);
 
-					var currentTranslation = shadowCaster.Translation;
-					var translation = new Vector3(currentTranslation.X, currentTranslation.Y, (float)shadowDepth);
-					shadowCaster.Translation = translation;
+						var currentTranslation = shadowCaster.Translation;
+						var translation = new Vector3(currentTranslation.X, currentTranslation.Y, (float)shadowDepth);
+						shadowCaster.Translation = translation;
 
-					shadowCaster.Shadow = shadow;
+						shadowCaster.Shadow = shadow;
+					}
 				}
 			}
 
 			UpdateListViewItemContainerTransitions();
 		}
 
+		internal void SetTabSeparatorOpacity(int index, int opacityValue)
+		{
+			if (ContainerFromIndex(index) is TabViewItem tvi)
+			{
+				// The reason we set the opacity directly instead of using VisualState
+				// is because we want to hide the separator on hover/pressed
+				// but the tab adjacent on the left to the selected tab
+				// must hide the tab separator at all times.
+				// It causes two visual states to modify the same property
+				// what leads to undesired behaviour.
+				if (tvi.GetTemplateChild("TabSeparator") is FrameworkElement tabSeparator)
+				{
+					tabSeparator.Opacity = opacityValue;
+				}
+			}
+		}
+
+		internal void SetTabSeparatorOpacity(int index)
+		{
+			var selectedIndex = SelectedIndex;
+
+			// If Tab is adjacent on the left to selected one or
+			// it is selected tab - we hide the tabSeparator.
+			if (index == selectedIndex || index + 1 == selectedIndex)
+			{
+				SetTabSeparatorOpacity(index, 0);
+			}
+			else
+			{
+				SetTabSeparatorOpacity(index, 1);
+			}
+		}
 
 		private void OnListViewDraggingPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
@@ -287,7 +322,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnSelectedIndexPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
+			// We update previous selected and adjacent on the left tab
+			// as well as current selected and adjacent on the left tab
+			// to show/hide tabSeparator accordingly.
 			UpdateSelectedIndex();
+			SetTabSeparatorOpacity((int)args.OldValue);
+			SetTabSeparatorOpacity(((int)args.OldValue) - 1);
+			SetTabSeparatorOpacity(SelectedIndex - 1);
+			SetTabSeparatorOpacity(SelectedIndex);
 		}
 
 		private void OnSelectedItemPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -708,13 +750,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 				int numItems = TabItems.Count;
 
+				var listViewInnerSelectedIndex = m_listView.SelectedIndex;
+				var selectedIndex = SelectedIndex;
+
+				if (selectedIndex != listViewInnerSelectedIndex && listViewInnerSelectedIndex != -1)
+				{
+					SelectedIndex = listViewInnerSelectedIndex;
+					selectedIndex = listViewInnerSelectedIndex;
+				}
+
 				if (args.CollectionChange == CollectionChange.ItemRemoved)
 				{
 					m_updateTabWidthOnPointerLeave = true;
 					if (numItems > 0)
 					{
 						// SelectedIndex might also already be -1
-						var selectedIndex = SelectedIndex;
 						if (selectedIndex == -1 || selectedIndex == args.Index)
 						{
 							// Find the closest tab to select instead.
@@ -759,6 +809,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					UpdateTabWidths();
+					SetTabSeparatorOpacity(numItems - 1);
 				}
 			}
 		}
@@ -916,7 +967,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void RequestCloseTab(TabViewItem container)
+		internal void RequestCloseTab(TabViewItem container, bool updateTabWidths)
 		{
 			var listView = m_listView;
 			if (listView != null)
@@ -931,7 +982,7 @@ namespace Microsoft.UI.Xaml.Controls
 					internalTabViewItem.RaiseRequestClose(args);
 				}
 			}
-			UpdateTabWidths(false);
+			UpdateTabWidths(updateTabWidths);
 		}
 
 		private void OnScrollDecreaseClick(object sender, RoutedEventArgs args)
@@ -1056,7 +1107,7 @@ namespace Microsoft.UI.Xaml.Controls
 							// Size tab column to needed size
 							tabColumn.MaxWidth = availableWidth;
 							var requiredWidth = tabWidth * TabItems.Count;
-							if (requiredWidth >= availableWidth)
+							if (requiredWidth > (availableWidth - (padding.Left + padding.Right)))
 							{
 								tabColumn.Width = GridLengthHelper.FromPixels(availableWidth);
 								var listview = m_listView;
@@ -1158,23 +1209,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (listView != null)
 			{
 				listView.SelectedItem = SelectedItem;
-
-				// TODO: Uno specific - this is currently commented out,
-				// possibly a WinUI bug - https://github.com/microsoft/microsoft-ui-xaml/issues/3969
-				//var tvi = SelectedItem as TabViewItem;
-				//if (tvi == null)
-				//{
-				//	tvi = ContainerFromItem(SelectedItem) as TabViewItem;
-				//}
-
-				//if (tvi != null)
-				//{
-				//	listView.SelectedItem = tvi;
-
-				//	// Setting ListView.SelectedItem will not work here in all cases.
-				//	// The reason why that doesn't work but this does is unknown.
-				//	tvi.IsSelected = true;
-				//}
 			}
 		}
 
@@ -1210,6 +1244,15 @@ namespace Microsoft.UI.Xaml.Controls
 				return listView.ContainerFromIndex(index);
 			}
 			return null;
+		}
+
+		internal int IndexFromContainer(DependencyObject container)
+		{
+			if (m_listView is ListView listView)
+			{
+				return listView.IndexFromContainer(container);
+			}
+			return -1;
 		}
 
 		public object ItemFromContainer(DependencyObject container)
@@ -1271,7 +1314,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (selectedTab.IsClosable)
 				{
 					// Close the tab on ctrl + F4
-					RequestCloseTab(selectedTab);
+					RequestCloseTab(selectedTab, true);
 					handled = true;
 				}
 			}
