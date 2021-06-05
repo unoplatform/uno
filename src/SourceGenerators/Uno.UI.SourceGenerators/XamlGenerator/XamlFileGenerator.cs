@@ -761,7 +761,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 								}
 
-							BuildComponentFields(writer);
+								BuildComponentFields(writer);
 
 								TryBuildElementStubHolders(writer);
 
@@ -1720,6 +1720,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
+		/// Determines if the member definition as x:Name property
+		/// </summary>
+		/// <param name="m"></param>
+		/// <returns></returns>
+		private static bool HasXNameProperty(XamlMemberDefinition m)
+			=> m.Member.Name == "Name" && m.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace;
+
+		/// <summary>
 		/// Is <paramref name="valueNode"/> a {StaticResource ...} or {ThemeResource ...} reference?
 		/// </summary>
 		private bool HasResourceMarkupExtension(XamlMemberDefinition valueNode)
@@ -1785,6 +1793,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool HasDescendantsWithMarkupExtension(XamlObjectDefinition xamlObjectDefinition)
 			=> HasDescendantsWith(xamlObjectDefinition, HasMarkupExtension);
 
+		private bool HasDescendantsWithXName(XamlMemberDefinition memberDefinition)
+			=> memberDefinition.Objects.Any(o => HasDescendantsWith(o, HasXNameProperty));
+
 		private bool HasDescendantsWith(XamlObjectDefinition xamlObjectDefinition, Func<XamlMemberDefinition, bool> predicate)
 		{
 			foreach (var member in xamlObjectDefinition.Members)
@@ -1796,7 +1807,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				foreach (var obj in member.Objects)
 				{
-					if (HasDescendantsWithMarkupExtension(obj))
+					if (HasDescendantsWith(obj, predicate))
 					{
 						return true;
 					}
@@ -1805,7 +1816,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var obj in xamlObjectDefinition.Objects)
 			{
-				if (HasDescendantsWithMarkupExtension(obj))
+				if (HasDescendantsWith(obj, predicate))
 				{
 					return true;
 				}
@@ -1848,7 +1859,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var attributeData = symbol.FindAttribute(XamlConstants.Types.CreateFromStringAttribute);
 			var targetMethod = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "MethodName").Value.Value?.ToString();
 
-			if(targetMethod == null)
+			if (targetMethod == null)
 			{
 				throw new NotSupportedException($"Unable to find MethodNameproperty on {symbol}");
 			}
@@ -2196,7 +2207,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												.InvariantCultureFormat(contentProperty.Name));
 										}
 									}
-									else if (IsLazyVisualStateManagerProperty(contentProperty))
+									else if (IsLazyVisualStateManagerProperty(contentProperty) && !HasDescendantsWithXName(implicitContentChild))
 									{
 										writer.AppendLineInvariant($"/* Lazy VisualStateManager property {contentProperty}*/");
 									}
@@ -3193,7 +3204,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var contentProperty = FindContentProperty(elementType);
 
-					if (contentProperty != null && IsLazyVisualStateManagerProperty(contentProperty))
+					if (contentProperty != null && IsLazyVisualStateManagerProperty(contentProperty) && !HasDescendantsWithXName(implicitContentChild))
 					{
 						return contentProperty;
 					}
@@ -4841,21 +4852,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& member.Owner != null
 				&& member.Owner.Type.Name switch
 				{
-					"VisualState" => member.Member.Name == "Storyboard"
-									|| member.Member.Name == "Setters",
-					"VisualTransition" => member.Member.Name == "Storyboard",
+					"VisualState" => (member.Member.Name == "Storyboard"
+									|| member.Member.Name == "Setters") && !HasDescendantsWithXName(member),
+					"VisualTransition" => member.Member.Name == "Storyboard" && !HasDescendantsWithXName(member),
 					_ => false,
 				};
 
 		private bool IsLazyVisualStateManagerProperty(IPropertySymbol property)
 			=> _isLazyVisualStateManagerEnabled
 				&& property.ContainingSymbol.Name switch
-			{
-				"VisualState" => property.Name == "Storyboard"
-								|| property.Name == "Setters",
-				"VisualTransition" => property.Name == "Storyboard",
-				_ => false,
-			};
+				{
+					"VisualState" => property.Name == "Storyboard"
+									|| property.Name == "Setters",
+					"VisualTransition" => property.Name == "Storyboard",
+					_ => false,
+				};
 
 		/// <summary>
 		/// Determines if the member is inline initializable and the first item is not a new collection instance
@@ -5381,127 +5392,127 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						writer.AppendLine(")");
 					});
-					
+
 					return new DisposableAction(() =>
+					{
+						disposable?.Dispose();
+
+						string closureName;
+						using (var innerWriter = CreateApplyBlock(writer, GetType(XamlConstants.Types.ElementStub), out closureName))
 						{
-							disposable?.Dispose();
+							var elementStubType = new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext());
 
-							string closureName;
-							using (var innerWriter = CreateApplyBlock(writer, GetType(XamlConstants.Types.ElementStub), out closureName))
+							if (hasDataContextMarkup)
 							{
-								var elementStubType = new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext());
+								// We need to generate the datacontext binding, since the Visibility
+								// may require it to bind properly.
 
-								if (hasDataContextMarkup)
+								GenerateBinding("DataContext", dataContextMember, definition);
+							}
+
+							if (nameMember != null)
+							{
+								innerWriter.AppendLineInvariant(
+									$"{closureName}.Name = \"{nameMember.Value}\";"
+								);
+
+								// Set the element name to the stub, then when the stub will be replaced
+								// the actual target control will override it.
+								innerWriter.AppendLineInvariant(
+									$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
+								);
+							}
+
+							if (hasLoadMarkup || hasVisibilityMarkup)
+							{
+								var members = new List<XamlMemberDefinition>();
+
+								if (hasLoadMarkup)
 								{
-									// We need to generate the datacontext binding, since the Visibility
-									// may require it to bind properly.
-
-									GenerateBinding("DataContext", dataContextMember, definition);
+									members.Add(GenerateBinding("Load", loadMember, definition));
 								}
 
-								if (nameMember != null)
+								if (hasVisibilityMarkup)
 								{
-									innerWriter.AppendLineInvariant(
-										$"{closureName}.Name = \"{nameMember.Value}\";"
-									);
-
-									// Set the element name to the stub, then when the stub will be replaced
-									// the actual target control will override it.
-									innerWriter.AppendLineInvariant(
-										$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
-									);
+									members.Add(GenerateBinding("Visibility", visibilityMember, definition));
 								}
 
-								if (hasLoadMarkup || hasVisibilityMarkup)
+								if (!_isTopLevelDictionary
+									&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
 								{
-									var members = new List<XamlMemberDefinition>();
+									var componentName = $"_component_{ CurrentScope.ComponentCount}";
+									writer.AppendLineInvariant($"this.{componentName} = {closureName};");
 
-									if (hasLoadMarkup)
+									writer.AppendLineInvariant($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+
+									if (nameMember != null)
 									{
-										members.Add(GenerateBinding("Load", loadMember, definition));
+										writer.AppendLineInvariant($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
 									}
 
-									if (hasVisibilityMarkup)
+									using (writer.BlockInvariant($"void {componentName}_update(global::Windows.UI.Xaml.ElementStub sender)"))
 									{
-										members.Add(GenerateBinding("Visibility", visibilityMember, definition));
-									}
-
-									if (!_isTopLevelDictionary
-										&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
-									{
-										var componentName = $"_component_{ CurrentScope.ComponentCount}";
-										writer.AppendLineInvariant($"this.{componentName} = {closureName};");
-
-										writer.AppendLineInvariant($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
-
-										if (nameMember != null)
+										using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_className.className} that)"))
 										{
-											writer.AppendLineInvariant($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
-										}
 
-										using (writer.BlockInvariant($"void {componentName}_update(global::Windows.UI.Xaml.ElementStub sender)"))
-										{
-											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_className.className} that)"))
+											using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
 											{
-
-												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
-												{
-													writer.AppendLineInvariant($"that.Bindings.UpdateResources();");
-												}
+												writer.AppendLineInvariant($"that.Bindings.UpdateResources();");
 											}
 										}
-
-										writer.AppendLineInvariant($"{closureName}.MaterializationChanged += {componentName}_update;");
-
-										using (writer.BlockInvariant($"void {componentName}_unloaded(object sender, RoutedEventArgs e)"))
-										{
-											// Refresh the bindings when the ElementStub is unloaded. This assumes that
-											// ElementStub will be unloaded **after** the stubbed control has been created
-											// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
-											writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
-										}
-
-										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_unloaded;");
-
-										var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
-										xamlObjectDef.Members.AddRange(members);
-										CurrentScope.Components.Add(xamlObjectDef);
 									}
 
-								}
-								else
-								{
-									if (visibilityMember != null)
+									writer.AppendLineInvariant($"{closureName}.MaterializationChanged += {componentName}_update;");
+
+									using (writer.BlockInvariant($"void {componentName}_unloaded(object sender, RoutedEventArgs e)"))
 									{
-										innerWriter.AppendLineInvariant(
-											"{0}.Visibility = {1};",
-											closureName,
-											BuildLiteralValue(visibilityMember)
-										);
+										// Refresh the bindings when the ElementStub is unloaded. This assumes that
+										// ElementStub will be unloaded **after** the stubbed control has been created
+										// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
+										writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
 									}
+
+									writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_unloaded;");
+
+									var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
+									xamlObjectDef.Members.AddRange(members);
+									CurrentScope.Components.Add(xamlObjectDef);
 								}
 
-								XamlMemberDefinition GenerateBinding(string name, XamlMemberDefinition? memberDefinition, XamlObjectDefinition owner)
+							}
+							else
+							{
+								if (visibilityMember != null)
 								{
-									var def = new XamlMemberDefinition(
-										new XamlMember(name,
-											elementStubType,
-											false
-										), 0, 0,
-										owner
+									innerWriter.AppendLineInvariant(
+										"{0}.Visibility = {1};",
+										closureName,
+										BuildLiteralValue(visibilityMember)
 									);
-
-									if (memberDefinition != null)
-									{
-										def.Objects.AddRange(memberDefinition.Objects);
-									}
-
-									BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
-
-									return def;
 								}
 							}
+
+							XamlMemberDefinition GenerateBinding(string name, XamlMemberDefinition? memberDefinition, XamlObjectDefinition owner)
+							{
+								var def = new XamlMemberDefinition(
+									new XamlMember(name,
+										elementStubType,
+										false
+									), 0, 0,
+									owner
+								);
+
+								if (memberDefinition != null)
+								{
+									def.Objects.AddRange(memberDefinition.Objects);
+								}
+
+								BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
+
+								return def;
+							}
 						}
+					}
 					);
 				}
 			}

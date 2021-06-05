@@ -23,6 +23,61 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 		}
 
 		[TestMethod]
+		public async Task When_VisualStateManager_Lazy()
+		{
+			var SUT = new When_VisualStateManager_Lazy();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(SUT);
+
+			await WaitForIdle();
+
+			Assert.IsNotNull(SUT.testTransition.LazyBuilder);
+			Assert.IsNotNull(SUT.Normal.LazyBuilder);
+			Assert.IsNotNull(SUT.PointerOver.LazyBuilder);
+			Assert.IsNotNull(SUT.Pressed.LazyBuilder);
+			Assert.IsNotNull(SUT.Disabled.LazyBuilder);
+
+			await GoTo(nameof(SUT.Normal));
+
+			Assert.IsNotNull(SUT.testTransition.LazyBuilder);
+			Assert.IsNull(SUT.Normal.LazyBuilder);
+			Assert.IsNotNull(SUT.PointerOver.LazyBuilder);
+			Assert.IsNotNull(SUT.Pressed.LazyBuilder);
+			Assert.IsNotNull(SUT.Disabled.LazyBuilder);
+
+			await GoTo(nameof(SUT.PointerOver));
+
+			Assert.IsNull(SUT.testTransition.LazyBuilder);
+			Assert.IsNull(SUT.Normal.LazyBuilder);
+			Assert.IsNull(SUT.PointerOver.LazyBuilder);
+			Assert.IsNotNull(SUT.Pressed.LazyBuilder);
+			Assert.IsNotNull(SUT.Disabled.LazyBuilder);
+
+			await GoTo(nameof(SUT.Pressed));
+
+			Assert.IsNull(SUT.testTransition.LazyBuilder);
+			Assert.IsNull(SUT.Normal.LazyBuilder);
+			Assert.IsNull(SUT.PointerOver.LazyBuilder);
+			Assert.IsNull(SUT.Pressed.LazyBuilder);
+			Assert.IsNotNull(SUT.Disabled.LazyBuilder);
+
+			await GoTo(nameof(SUT.Disabled));
+
+			Assert.IsNull(SUT.testTransition.LazyBuilder);
+			Assert.IsNull(SUT.Normal.LazyBuilder);
+			Assert.IsNull(SUT.PointerOver.LazyBuilder);
+			Assert.IsNull(SUT.Pressed.LazyBuilder);
+			Assert.IsNull(SUT.Disabled.LazyBuilder);
+
+			async Task GoTo(string stateName)
+			{
+				var goToResult = VisualStateManager.GoToState(SUT, stateName, useTransitions: false);
+				Assert.IsTrue(goToResult);
+				await WaitForIdle();
+			}
+		}
+
+		[TestMethod]
 		public async Task When_VisualStateManager_Lazy_ThemeChanges()
 		{
 			var SUT = new When_VisualStateManager_Lazy_ThemeChanges();
@@ -77,6 +132,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 			var fg = SUT.PrimaryButton.Foreground as SolidColorBrush;
 			Assert.IsNotNull(fg);
 			Assert.AreEqual(Colors.White, fg.Color);
+		}
+
+		[TestMethod]
+		public async Task When_xName()
+		{
+			var SUT = new When_VisualStateManager_xName();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(SUT);
+
+			await WaitForIdle();
+
+			Assert.IsNotNull(SUT.State3.LazyBuilder);
+			Assert.IsNull(SUT.State2.LazyBuilder);
+
+			Assert.IsNotNull(SUT.testAnimation);
+			Assert.IsNotNull(SUT.testKeyFrame);
+			Assert.AreEqual("0", SUT.testKeyFrame.Value);
 		}
 
 		private static async Task ShowDialog(MyContentDialog dialog)
