@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (tabView != null)
 			{
 				var internalTabView = tabView;
-				internalTabView.OnItemsChanged(item);
+				internalTabView.OnItemsChanged(item, this);
 			}
 		}
 
