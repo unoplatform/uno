@@ -18,6 +18,7 @@ using WinUI = Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
+using Uno.Extensions.System;
 using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
@@ -53,6 +54,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 			ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
+			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 		}
 
 		public static WpfHost Current => _current;
