@@ -8,13 +8,12 @@ using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Logging;
 using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
+using Windows.Storage.Helpers;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class SvgImageSource
 	{
-		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
-
 		internal string ContentType { get; set; } = "image/svg+xml";
 
 		partial void InitPartial()
@@ -52,7 +51,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				}
 				else
 				{
-					var path = Path.Combine(UNO_BOOTSTRAP_APP_BASE, uri.OriginalString);
+					var path = AssetsPathBuilder.BuildAssetUri(uri.OriginalString);
 					image = new ImageData
 					{
 						Kind = ImageDataKind.Url,
