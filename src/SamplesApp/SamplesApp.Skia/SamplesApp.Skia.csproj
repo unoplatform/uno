@@ -29,7 +29,7 @@
 		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
 		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 
