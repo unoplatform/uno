@@ -105,16 +105,30 @@ namespace Private.Infrastructure
 			}
 		}
 
-		internal static void VERIFY_ARE_EQUAL<T>(T actual, T expected)
+		internal static void VERIFY_ARE_EQUAL<T>(T actual, T expected, string message = null)
 		{
 			//Assert.AreEqual(expected: expected, actual: actual);
-			actual­.Should().Be(expected);
+			actual­.Should().Be(expected, message);
 		}
 
-		internal static void VERIFY_ARE_VERY_CLOSE(double actual, double expected, double tolerance = 0.1d)
+		internal static void VERIFY_ARE_VERY_CLOSE(double actual, double expected, double tolerance = 0.1d, string message = null)
 		{
 			var difference = Math.Abs(actual - expected);
-			Assert.IsTrue(difference <= tolerance, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance})");
+			Assert.IsTrue(difference <= tolerance, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance}) {message}");
+		}
+
+		internal static void VERIFY_DATES_ARE_EQUAL(DateTimeOffset actual, DateTimeOffset expected, string message = null)
+		{
+			actual.Date.Should().Be(expected.Date, message);
+		}
+
+		internal static void VERIFY_DATES_ARE_EQUAL(long actualTicks, long expectedTicks, string message = null)
+		{
+			VERIFY_DATES_ARE_EQUAL(
+				new DateTimeOffset(actualTicks, TimeSpan.Zero),
+				new DateTimeOffset(expectedTicks, TimeSpan.Zero),
+				message);
+
 		}
 
 		internal static void LOG_OUTPUT(string log, params object[] arguments)
