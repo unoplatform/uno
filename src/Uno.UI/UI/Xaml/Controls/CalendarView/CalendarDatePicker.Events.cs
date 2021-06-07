@@ -28,5 +28,13 @@ namespace Windows.UI.Xaml.Controls
 			add => _dateChanged += value;
 			remove => _dateChanged -= value;
 		}
+
+		private protected override void OnUnloaded()
+		{
+			// Ensure flyout is closed when the control is unloaded
+			IsCalendarOpen = false;
+
+			base.OnUnloaded();
+		}
 	}
 }
