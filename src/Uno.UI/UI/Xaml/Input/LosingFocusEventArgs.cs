@@ -64,6 +64,12 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public DependencyObject? NewFocusedElement { get; set; }
 
+		DependencyObject? IChangingFocusEventArgs.NewFocusedElement
+		{
+			get => NewFocusedElement;
+			set => NewFocusedElement = value;
+		}
+
 		/// <summary>
 		/// Gets or sets a value that marks the routed event as handled.
 		/// A true value for Handled prevents most handlers along the event
@@ -71,10 +77,21 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public bool Handled { get; set; }
 
+		bool IHandleableRoutedEventArgs.Handled
+		{
+			get => Handled;
+			set => Handled = value;
+		}
+
 		/// <summary>
 		/// Gets or sets whether focus navigation should be canceled.
 		/// </summary>
 		public bool Cancel { get; set; }
+
+		bool IChangingFocusEventArgs.Cancel
+		{
+			get => Cancel;
+		}
 
 		/// <summary>
 		/// Attempts to cancel the ongoing focus action.

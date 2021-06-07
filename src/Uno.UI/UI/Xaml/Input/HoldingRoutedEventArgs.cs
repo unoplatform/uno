@@ -11,6 +11,7 @@ namespace Windows.UI.Xaml.Input
 		private readonly Point _position;
 
 		public HoldingRoutedEventArgs() { }
+
 		internal HoldingRoutedEventArgs(UIElement originalSource, HoldingEventArgs args)
 			: base(originalSource)
 		{
@@ -27,6 +28,12 @@ namespace Windows.UI.Xaml.Input
 		internal uint PointerId { get; }
 
 		public bool Handled { get; set; }
+
+		bool IHandleableRoutedEventArgs.Handled
+		{
+			get => Handled;
+			set => Handled = value;
+		}		
 
 		public PointerDeviceType PointerDeviceType { get; }
 

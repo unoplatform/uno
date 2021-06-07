@@ -133,7 +133,7 @@ namespace Uno.UI.Xaml.Input
 
 		private Manifolds _manifolds;
 		private XYFocusAlgorithms _heuristic = new XYFocusAlgorithms();
-		private HashSet<int> _exploredList = new HashSet<int>(InitialCandidateListCapacity);
+		private HashSet<int> _exploredList = new HashSet<int>();
 
 		internal Manifolds ResetManifolds()
 		{

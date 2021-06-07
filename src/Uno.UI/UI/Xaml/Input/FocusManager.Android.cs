@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Input
 			return absoluteFocusedPosition;
 		}
 
-		public static View InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
+		private static View InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
 		{
 			var focusedView = InnerGetFocusedElement();
 			var absoluteFocusedPosition = GetAbsolutePosition(focusedView);

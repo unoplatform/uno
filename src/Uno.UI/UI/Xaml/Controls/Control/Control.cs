@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Uno.UI.Xaml;
 using Windows.Foundation;
+using Uno;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 #if XAMARIN_ANDROID
@@ -700,7 +701,7 @@ namespace Windows.UI.Xaml.Controls
 			set => TabFocusNavigation = value;
 		}
 
-		public static DependencyProperty TabNavigationProperty { get; } = UIElement.TabFocusNavigationProperty;
+		public static DependencyProperty TabNavigationProperty => UIElement.TabFocusNavigationProperty;
 
 		#endregion
 

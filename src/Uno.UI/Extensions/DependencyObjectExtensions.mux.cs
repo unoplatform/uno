@@ -19,18 +19,6 @@ namespace Uno.UI.Extensions
 			//return m_sharedState->Value().GetCoreServices();
 		}
 
-		internal static bool IsAncestorOf(this DependencyObject dependencyObject, DependencyObject? child)
-		{
-			var parent = child?.GetParentInternal(false);
-
-			while (parent != null && parent != dependencyObject)
-			{
-				parent = parent?.GetParentInternal(false);
-			}
-
-			return dependencyObject == parent;
-		}
-
 		internal static DependencyObject? GetParentInternal(this DependencyObject dependencyObject, bool publicParentOnly = true)
 		{
 			//TODO Uno: Currently we return any parent, regardless of its "publicness".

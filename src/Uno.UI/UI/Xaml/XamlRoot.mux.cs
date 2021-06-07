@@ -1,4 +1,5 @@
-﻿using Uno.UI.Xaml.Core;
+﻿using DirectUI;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml
 {

@@ -40,12 +40,12 @@ namespace Windows.UI.Xaml.Input
 			throw new NotImplementedException();
 		}
 
-		public static View InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
+		private static View InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
 		{
 			throw new NotImplementedException();
 		}
 
-		public static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
 		{
 			throw new NotImplementedException();
 		}

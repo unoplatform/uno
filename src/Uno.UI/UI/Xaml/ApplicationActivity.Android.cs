@@ -15,6 +15,7 @@ using Uno.UI;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Windows.Storage.Pickers;
+using Windows.System;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 
@@ -122,25 +123,25 @@ namespace Windows.UI.Xaml
 					e.KeyCode == Keycode.DpadUp ||
 					e.KeyCode == Keycode.SystemNavigationUp)
 				{
-					return focusHandler.TryHandleDirectionalFocus(System.VirtualKey.Up);
+					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Up);
 				}
 				else if (
 					e.KeyCode == Keycode.DpadDown ||
 					e.KeyCode == Keycode.SystemNavigationDown)
 				{
-					return focusHandler.TryHandleDirectionalFocus(System.VirtualKey.Down);
+					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Down);
 				}
 				else if (
 					e.KeyCode == Keycode.DpadRight ||
 					e.KeyCode == Keycode.SystemNavigationRight)
 				{
-					return focusHandler.TryHandleDirectionalFocus(System.VirtualKey.Right);
+					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Right);
 				}
 				else if (
 					e.KeyCode == Keycode.DpadLeft ||
 					e.KeyCode == Keycode.SystemNavigationLeft)
 				{
-					return focusHandler.TryHandleDirectionalFocus(System.VirtualKey.Left);
+					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Left);
 				}
 			}
 

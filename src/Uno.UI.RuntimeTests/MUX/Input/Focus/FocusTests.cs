@@ -453,17 +453,20 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 
 		private async Task SimulateNavigationDirectionAsync(UIElement container, FocusNavigationDirection direction)
 		{
-			var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
+			await UIExecutor.ExecuteAsync(() =>
 			{
+				var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
+				{
 #if !WINDOWS_UWP
-				SearchRoot = container.XamlRoot.Content
+					SearchRoot = container.XamlRoot.Content
 #endif
+				});
+				if (nextElement != null && nextElement is UIElement uiElement)
+				{
+					uiElement.Focus(FocusState.Keyboard);
+				}
 			});
-			if (nextElement != null && nextElement is UIElement uiElement)
-			{
-				uiElement.Focus(FocusState.Keyboard);
-			}
-			// Small delay to ensure the focus event fires
+			// Small delay to ensure the focus event have time to fire
 			await Task.Delay(50);
 		}
 

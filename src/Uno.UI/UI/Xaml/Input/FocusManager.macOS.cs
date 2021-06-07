@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Input
 			return true;
 		}
 
-		public static NSView InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
+		private static NSView InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
 		{
 			var focusedView = GetFocusedElement() as NSView;
 			var absoluteFocusedFrame = focusedView.ConvertRectToView(focusedView.Bounds, NSApplication.SharedApplication.KeyWindow.ContentView);

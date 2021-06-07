@@ -15,8 +15,6 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
-using Windows.Foundation;
-using Windows.UI.Xaml.Input;
 
 #if __IOS__
 using UIKit;

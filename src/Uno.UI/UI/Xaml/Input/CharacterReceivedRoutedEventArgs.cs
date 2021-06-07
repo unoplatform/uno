@@ -21,6 +21,12 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public bool Handled { get; set; }
 
+		bool IHandleableRoutedEventArgs.Handled
+		{
+			get => Handled;
+			set => Handled = value;
+		}
+
 		/// <summary>
 		/// Gets the composed character associated with the UIElement.CharacterReceived event.
 		/// </summary>

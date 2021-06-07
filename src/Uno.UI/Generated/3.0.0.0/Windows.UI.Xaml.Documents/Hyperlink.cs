@@ -302,7 +302,7 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.GotFocus.remove
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.LostFocus.add
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.LostFocus.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Focus( global::Windows.UI.Xaml.FocusState value)
 		{

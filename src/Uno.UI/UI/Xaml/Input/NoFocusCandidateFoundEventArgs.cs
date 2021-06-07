@@ -29,5 +29,11 @@ namespace Windows.UI.Xaml.Input
 		/// route from handling the same event again.
 		/// </summary>
 		public bool Handled { get; set; }
+
+		bool IHandleableRoutedEventArgs.Handled
+		{
+			get => Handled;
+			set => Handled = value;
+		}		
 	}
 }

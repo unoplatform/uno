@@ -6,6 +6,7 @@
 
 using System;
 using System.Threading.Tasks;
+using DirectUI;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Xaml.Core;
@@ -426,7 +427,7 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		//TODO Uno: Will be used for focus engagement.
-		internal static void SetEngagedControlImpl(object pEngagedControl)
+		internal static void SetEngagedControl(object pEngagedControl)
 		{
 			DependencyObject? controlAsDO = pEngagedControl as DependencyObject;
 

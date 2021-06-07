@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DirectUI;
+using Uno.UI;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Uno.UI;
-using Windows.UI;
-using Uno.UI.Xaml;
-using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Documents
 {
@@ -38,6 +40,50 @@ namespace Windows.UI.Xaml.Documents
 		}
 
 		#endregion
+
+		public
+#if __WASM__
+			new
+#endif
+			bool Focus(FocusState value)
+		{
+			//If the App tries to call Focus with an Unfocused state, throw:
+			if (FocusState.Unfocused == value)
+			{
+				throw new ArgumentOutOfRangeException(nameof(value), "Focus method does not allow FocusState.Unfocused");
+			}
+
+			var valueNative = value;
+
+			Hyperlink coreHyperlink = this;
+			if (coreHyperlink == null)
+			{
+				// Focus may be called on a disconnected element (when the framework 
+				// peer has been disassociated from its core peer).  If the core peer
+				// has already been disassociated, return 'unfocusable'.
+				return false;
+			}
+
+			DependencyObject spFocusTarget = null;
+
+			var pFocusManager = VisualTree.GetFocusManagerForElement(this);
+			if (pFocusManager == null)
+			{
+				return false;
+			}
+
+			if (coreHyperlink.IsFocusable())
+			{
+				spFocusTarget = coreHyperlink;
+			}
+
+			var result = pFocusManager.SetFocusedElement(
+				new FocusMovement(
+					spFocusTarget,
+					FocusNavigationDirection.None,
+					valueNative));
+			return result.WasMoved;
+		}
 
 		public event TypedEventHandler<Hyperlink, HyperlinkClickEventArgs> Click;
 
@@ -201,11 +247,11 @@ namespace Windows.UI.Xaml.Documents
 			set { SetValue(IsTabStopProperty, value); }
 		}
 
-		public static DependencyProperty IsTabStopProperty =
+		public static DependencyProperty IsTabStopProperty { get; } =
 			DependencyProperty.Register(
-				"IsTabStop",
+				nameof(IsTabStop),
 				typeof(bool),
-				typeof(Control),
+				typeof(Hyperlink),
 				new FrameworkPropertyMetadata(defaultValue: (bool)true)
 			);
 
@@ -307,7 +353,7 @@ namespace Windows.UI.Xaml.Documents
 			set => base.IsTabStop = value;
 		}
 
-		public static new DependencyProperty IsTabStopProperty { get; } = UIElement.IsTabStopProperty;		
+		public static new DependencyProperty IsTabStopProperty { get; } = UIElement.IsTabStopProperty;
 
 		public new int TabIndex
 		{

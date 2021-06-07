@@ -113,7 +113,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void RemoveFocusEngagement()
+		/// <summary>
+		/// Releases focus from the control boundaries for a control that
+		/// has focus engagement (for game pad/remote interaction).
+		/// </summary>
+		public void RemoveFocusEngagement()
 		{
 			if (IsFocusEngaged)
 			{
