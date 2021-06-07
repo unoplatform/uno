@@ -127,7 +127,7 @@
       <SolidColorBrush x:Key="TextBoxBorderThemeBrush" Color="#FFFFFFFF" />
       <SolidColorBrush x:Key="TextBoxButtonBackgroundThemeBrush" Color="Transparent" />
       <SolidColorBrush x:Key="TextBoxButtonBorderThemeBrush" Color="Transparent" />
-      <SolidColorBrush x:Key="TextBoxButtonForegroundThemeBrush" Color="#99000000" />
+      <SolidColorBrush x:Key="TextBoxButtonForegroundThemeBrush" Color="#99FFFFFF" />
       <SolidColorBrush x:Key="TextBoxButtonPointerOverBackgroundThemeBrush" Color="#FFDEDEDE" />
       <SolidColorBrush x:Key="TextBoxButtonPointerOverBorderThemeBrush" Color="Transparent" />
       <SolidColorBrush x:Key="TextBoxButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
@@ -138,8 +138,12 @@
       <SolidColorBrush x:Key="TextBoxDisabledBorderThemeBrush" Color="#66FFFFFF" />
       <SolidColorBrush x:Key="TextBoxDisabledForegroundThemeBrush" Color="#FF666666" />
       <SolidColorBrush x:Key="TextBoxForegroundThemeBrush" Color="#FF000000" />
+      <StaticResource x:Key="TextControlBackgroundFocused" ResourceKey="SystemControlBackgroundAltHighBrush" />
       <StaticResource x:Key="TextControlBorderBrush" ResourceKey="SystemControlForegroundBaseMediumBrush" />
       <StaticResource x:Key="TextControlBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlButtonForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlForegroundFocused" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TextControlPlaceholderForegroundFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
       <Color x:Key="SystemRevealAltHighColor">#F2000000</Color>
       <Color x:Key="SystemRevealAltLowColor">#30000000</Color>
       <Color x:Key="SystemRevealAltMediumColor">#91000000</Color>
@@ -1615,8 +1619,12 @@
       <SolidColorBrush x:Key="TextBoxDisabledBorderThemeBrush" Color="#26000000" />
       <SolidColorBrush x:Key="TextBoxDisabledForegroundThemeBrush" Color="#FF666666" />
       <SolidColorBrush x:Key="TextBoxForegroundThemeBrush" Color="#FF000000" />
+      <StaticResource x:Key="TextControlBackgroundFocused" ResourceKey="SystemControlBackgroundAltHighBrush" />
       <StaticResource x:Key="TextControlBorderBrush" ResourceKey="SystemControlForegroundBaseMediumBrush" />
       <StaticResource x:Key="TextControlBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlButtonForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlForegroundFocused" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TextControlPlaceholderForegroundFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
       <Color x:Key="SystemRevealAltHighColor">#E6FFFFFF</Color>
       <Color x:Key="SystemRevealAltLowColor">#2EFFFFFF</Color>
       <Color x:Key="SystemRevealAltMediumColor">#8AFFFFFF</Color>
@@ -3092,8 +3100,12 @@
       <SolidColorBrush x:Key="TextBoxDisabledBorderThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
       <SolidColorBrush x:Key="TextBoxDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
       <SolidColorBrush x:Key="TextBoxForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <StaticResource x:Key="TextControlBackgroundFocused" ResourceKey="SystemControlBackgroundAltHighBrush" />
       <StaticResource x:Key="TextControlBorderBrush" ResourceKey="SystemControlForegroundBaseMediumBrush" />
       <StaticResource x:Key="TextControlBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlButtonForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlForegroundFocused" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TextControlPlaceholderForegroundFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
       <Color x:Key="SystemRevealAltHighColor">#FF000000</Color>
       <Color x:Key="SystemRevealAltLowColor">#33000000</Color>
       <Color x:Key="SystemRevealAltMediumColor">#99000000</Color>
@@ -5787,9 +5799,6 @@
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="RequestedTheme">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Light" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -9941,12 +9950,14 @@
                     <CalendarPanel x:Name="MonthViewPanel" />
                   </ScrollViewer>
                 </Grid>
+                <!-- Uno only: Opacity set to 0 to avoir flicker when changing display mode -->
                 <ScrollViewer x:Name="YearViewScrollViewer" UseLayoutRounding="False" Opacity="0" Visibility="Collapsed" IsFocusEngagementEnabled="True" Style="{StaticResource ScrollViewerStyle}">
                   <ScrollViewer.RenderTransform>
                     <ScaleTransform x:Name="YearViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                   </ScrollViewer.RenderTransform>
                   <CalendarPanel x:Name="YearViewPanel" />
                 </ScrollViewer>
+                <!-- Uno only: Opacity set to 0 to avoir flicker when changing display mode -->
                 <ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" IsFocusEngagementEnabled="True" Opacity="0" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
                   <ScrollViewer.RenderTransform>
                     <ScaleTransform x:Name="DecadeViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />

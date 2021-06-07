@@ -520,12 +520,14 @@
                                         <CalendarPanel x:Name="MonthViewPanel" />
                                     </ScrollViewer>
                                 </Grid>
+								<!-- Uno only: Opacity set to 0 to avoir flicker when changing display mode -->
 								<ScrollViewer x:Name="YearViewScrollViewer" UseLayoutRounding="False" Opacity="0" Visibility="Collapsed" IsFocusEngagementEnabled="True" Style="{StaticResource ScrollViewerStyle}">
                                     <ScrollViewer.RenderTransform>
                                         <ScaleTransform x:Name="YearViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                                     </ScrollViewer.RenderTransform>
                                     <CalendarPanel x:Name="YearViewPanel" />
                                 </ScrollViewer>
+								<!-- Uno only: Opacity set to 0 to avoir flicker when changing display mode -->
 								<ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" IsFocusEngagementEnabled="True" Opacity="0" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
                                     <ScrollViewer.RenderTransform>
                                         <ScaleTransform x:Name="DecadeViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
