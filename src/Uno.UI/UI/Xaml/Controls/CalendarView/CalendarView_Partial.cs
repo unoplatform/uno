@@ -1251,15 +1251,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DetachButtonClickedEvents()
 		{
-			if (m_epHeaderButtonClickHandler is { })
+			if (m_epHeaderButtonClickHandler is { } && m_tpHeaderButton is {})
 			{
 				m_tpHeaderButton.Click -= m_epHeaderButtonClickHandler;
 			}
-			if (m_epPreviousButtonClickHandler is {})
+			if (m_epPreviousButtonClickHandler is {} && m_tpPreviousButton is {})
 			{
 				m_tpPreviousButton.Click -= m_epPreviousButtonClickHandler;
 			}
-			if (m_epNextButtonClickHandler is {})
+			if (m_epNextButtonClickHandler is {} && m_tpNextButton is {})
 			{
 				m_tpNextButton.Click -= m_epNextButtonClickHandler;
 			}

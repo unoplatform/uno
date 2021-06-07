@@ -703,7 +703,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void DetachVisibleIndicesUpdatedEvent()
 		{
-			if (m_epVisibleIndicesUpdatedHandler is {})
+			if (m_epVisibleIndicesUpdatedHandler is {} && m_tpPanel is {})
 			{
 				m_tpPanel.VisibleIndicesUpdated -= m_epVisibleIndicesUpdatedHandler;
 			}
@@ -711,7 +711,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void AttachScrollViewerFocusEngagedEvent()
 		{
-			if (m_tpPanel is { })
+			if (m_tpPanel is { } && m_tpScrollViewer is { })
 			{
 				ScrollViewer sv = (m_tpScrollViewer as ScrollViewer);
 				m_epScrollViewerFocusEngagedEventHandler ??= new ControlFocusEngagedEventCallback(
@@ -728,7 +728,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void DetachScrollViewerFocusEngagedEvent()
 		{
-			if (m_epScrollViewerFocusEngagedEventHandler is {})
+			if (m_epScrollViewerFocusEngagedEventHandler is {} && m_tpScrollViewer is {})
 			{
 				m_tpScrollViewer.FocusEngaged -= m_epScrollViewerFocusEngagedEventHandler;
 			}
