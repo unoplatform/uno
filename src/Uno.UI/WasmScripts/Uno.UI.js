@@ -1121,6 +1121,7 @@ var Uno;
                     const result = this.dispatchEvent(element, eventName, eventPayload);
                     if (result & UI.HtmlEventDispatchResult.StopPropagation) {
                         event.stopPropagation();
+                        event.preventDefault();
                     }
                     if (result & UI.HtmlEventDispatchResult.PreventDefault) {
                         event.preventDefault();

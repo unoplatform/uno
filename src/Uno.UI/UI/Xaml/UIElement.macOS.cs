@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
 			var newVisibility = (Visibility)newValue;
 
@@ -120,6 +120,50 @@ namespace Windows.UI.Xaml
 
 			base.OnNativeKeyDown(evt);
 		}
+
+		private NSEventModifierMask _lastFlags = (NSEventModifierMask)0;
+
+		private protected override void OnNativeFlagsChanged(NSEvent evt)
+		{
+			var newFlags = evt.ModifierFlags;
+
+			var flags = Enum.GetValues(typeof(NSEventModifierMask)).OfType<NSEventModifierMask>();
+			foreach (var flag in flags)
+			{
+				var key = VirtualKeyHelper.FromFlags(flag);
+				if (key == null)
+				{
+					continue;
+				}
+
+				var raiseKeyDown = CheckFlagKeyDown(flag, newFlags);
+				var raiseKeyUp = CheckFlagKeyUp(flag, newFlags);
+
+				if (raiseKeyDown || raiseKeyUp)
+				{
+					var args = new KeyRoutedEventArgs(this, key.Value)
+					{
+						CanBubbleNatively = false // Only the first responder gets the event
+					};
+
+					if (raiseKeyDown)
+					{
+						RaiseEvent(KeyDownEvent, args);
+					}
+
+					if (raiseKeyUp)
+					{
+						RaiseEvent(KeyUpEvent, args);
+					}
+				}
+			}
+
+			_lastFlags = newFlags;
+		}
+
+		private bool CheckFlagKeyUp(NSEventModifierMask flag, NSEventModifierMask newMask) => _lastFlags.HasFlag(flag) && !newMask.HasFlag(flag);
+
+		private bool CheckFlagKeyDown(NSEventModifierMask flag, NSEventModifierMask newMask) => !_lastFlags.HasFlag(flag) && newMask.HasFlag(flag);
 
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{

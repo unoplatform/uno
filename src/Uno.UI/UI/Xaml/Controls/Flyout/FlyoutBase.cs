@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -163,6 +164,36 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
+
+		/// <summary>
+		/// Gets or sets whether a disabled control can receive focus.
+		/// </summary>
+		public bool AllowFocusWhenDisabled
+		{
+			get => GetAllowFocusWhenDisabledValue();
+			set => SetAllowFocusWhenDisabledValue(value);
+		}
+
+		/// <summary>
+		/// Identifies the AllowFocusWhenDisabled  dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = false, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
+		/// </summary>
+		public bool AllowFocusOnInteraction
+		{
+			get => GetAllowFocusOnInteractionValue();
+			set => SetAllowFocusOnInteractionValue(value);
+		}
+
+		/// <summary>
+		/// Identifies for the AllowFocusOnInteraction dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
 		public FrameworkElement Target { get; private set; }
 

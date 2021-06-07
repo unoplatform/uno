@@ -15,35 +15,35 @@ namespace Windows.UI.Xaml.Input
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GettingFocus.remove
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.LosingFocus.add
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.LosingFocus.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Input.FocusMovementResult> TryFocusAsync( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.FocusState value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<FocusMovementResult> FocusManager.TryFocusAsync(DependencyObject element, FocusState value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Input.FocusMovementResult> TryMoveFocusAsync( global::Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<FocusMovementResult> FocusManager.TryMoveFocusAsync(FocusNavigationDirection focusNavigationDirection) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Input.FocusMovementResult> TryMoveFocusAsync( global::Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection,  global::Windows.UI.Xaml.Input.FindNextElementOptions focusNavigationOptions)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<FocusMovementResult> FocusManager.TryMoveFocusAsync(FocusNavigationDirection focusNavigationDirection, FindNextElementOptions focusNavigationOptions) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryMoveFocus( global::Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection,  global::Windows.UI.Xaml.Input.FindNextElementOptions focusNavigationOptions)
 		{
 			throw new global::System.NotImplementedException("The member bool FocusManager.TryMoveFocus(FocusNavigationDirection focusNavigationDirection, FindNextElementOptions focusNavigationOptions) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyObject FindNextElement( global::Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)
 		{
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Input
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Input.FocusManager.FindFirstFocusableElement(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Windows.UI.Xaml.Input.FocusManager.FindLastFocusableElement(Windows.UI.Xaml.DependencyObject)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyObject FindNextElement( global::Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection,  global::Windows.UI.Xaml.Input.FindNextElementOptions focusNavigationOptions)
 		{
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Input
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Input.FocusManager.FindNextFocusableElement(Windows.UI.Xaml.Input.FocusNavigationDirection)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.UIElement FindNextFocusableElement( global::Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection,  global::Windows.Foundation.Rect hintRect)
 		{
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Input
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Input.FocusManager.TryMoveFocus(Windows.UI.Xaml.Input.FocusNavigationDirection)
 		// Skipping already declared method Windows.UI.Xaml.Input.FocusManager.GetFocusedElement()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.GettingFocusEventArgs> GettingFocus
 		{
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Input
 		}
 		#endif
 		// Skipping already declared event Windows.UI.Xaml.Input.FocusManager.GotFocus
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.LosingFocusEventArgs> LosingFocus
 		{

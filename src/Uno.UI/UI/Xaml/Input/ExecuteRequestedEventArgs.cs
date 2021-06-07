@@ -1,10 +1,17 @@
 namespace Windows.UI.Xaml.Input
 {
-	public  partial class ExecuteRequestedEventArgs 
+	/// <summary>
+	/// Provides event data for the ExecuteRequested event.
+	/// </summary>
+	public partial class ExecuteRequestedEventArgs
 	{
-		public  object Parameter
+		internal ExecuteRequestedEventArgs()
 		{
-			get; internal set;
 		}
+
+		/// <summary>
+		/// Gets the command parameter passed into the Execute method that raised this event.
+		/// </summary>
+		public object Parameter { get; internal set; }
 	}
 }

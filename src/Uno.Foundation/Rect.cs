@@ -99,6 +99,10 @@ namespace Windows.Foundation
 
 		public bool IsEmpty => Empty.Equals(this);
 
+		internal bool IsInfinite => Infinite.Equals(this);
+
+		internal bool IsUniform => Left == Top && Left == Right && Left == Bottom;
+
 		public static implicit operator Rect(string text)
 		{
 			if (text == null)

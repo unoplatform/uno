@@ -1,24 +1,25 @@
 using System;
 using System.Drawing;
-using Uno.Disposables;
-using Uno.Extensions;
-using Uno.UI.Extensions;
 using System.Linq;
-using Windows.UI.Core;
-using Uno.Diagnostics.Eventing;
+using CoreGraphics;
 using Foundation;
 using UIKit;
-using CoreGraphics;
 using Uno.Collections;
-using Windows.UI.Xaml.Input;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Logging;
+using Uno.UI.Controls;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
 using WebKit;
+using Windows.Foundation;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml;
-using Uno.UI.Controls;
-using Uno.Logging;
-using Windows.Foundation;
-using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Controls
 {
@@ -71,6 +72,45 @@ namespace Uno.UI.Controls
 			FocusedViewBringIntoViewOnKeyboardOpensPadding = 20;
 		}
 
+		public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
+		{
+			var handled = false;
+			var focusInputHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual?.AssociatedVisualTree?.UnoFocusInputHandler;
+			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && focusInputHandler != null)
+			{
+				foreach (UIPress press in presses)
+				{
+					if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardTab)
+					{
+						var shift =
+							press.Key.ModifierFlags.HasFlag(UIKeyModifierFlags.AlphaShift) ||
+							press.Key.ModifierFlags.HasFlag(UIKeyModifierFlags.Shift);
+						handled |= focusInputHandler.TryHandleTabFocus(shift);
+					}
+					else if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardLeftArrow)
+					{
+						handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Left);
+					}
+					else if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardRightArrow)
+					{
+						handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Right);
+					}
+					else if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardUpArrow)
+					{
+						handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Up);
+					}
+					else if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardDownArrow)
+					{
+						handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Down);
+					}
+				}
+			}
+
+			if (!handled)
+			{
+				base.PressesBegan(presses, evt);
+			}
+		}
 
 		/// <summary>
 		/// The behavior to use to bring the focused item into view when opening the keyboard.
@@ -139,7 +179,7 @@ namespace Uno.UI.Controls
 			}
 			else
 			{
-				if(_touchTrace != null)
+				if (_touchTrace != null)
 				{
 					_touchTrace.Dispose();
 					_touchTrace = null;

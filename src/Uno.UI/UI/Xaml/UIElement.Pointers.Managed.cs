@@ -107,6 +107,16 @@ namespace Windows.UI.Xaml
 			{
 				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 				var originalSource = Windows.UI.Xaml.Window.Current.Content;
+				if (originalSource == null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"CoreWindow_PointerExited ({args.CurrentPoint.Position}) Called before window content set.");
+					}
+
+					return;
+				}
+
 				var overBranchLeaf = VisualTreeHelper.SearchDownForLeaf(originalSource, _isOver);
 
 				if (overBranchLeaf is null)

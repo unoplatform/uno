@@ -1,9 +1,11 @@
-﻿using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno;
+using Uno.Extensions;
+using Windows.Foundation;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -56,10 +58,13 @@ namespace Windows.UI.Xaml
 			throw new NotSupportedException();
 		}
 
-		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
-		{
-		}
-
 		public string ShowLocalVisualTree(int fromHeight = 1000) => Uno.UI.ViewExtensions.ShowLocalVisualTree(this, fromHeight);
+
+		//TODO Uno: This is currently just a stub, should be implemented properly for tests
+		[NotImplemented]
+		internal void AddChild(UIElement child, int? index = null)
+		{
+			child.SetParent(this);
+		}
 	}
 }

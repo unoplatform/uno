@@ -12,6 +12,7 @@ using System.Drawing;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml
 {
@@ -22,9 +23,8 @@ namespace Windows.UI.Xaml
 		private static Window _current;
 		private RootViewController _mainController;
 		private UIElement _content;
-		private Grid _main;
+		private RootVisual _rootVisual;
 		private Border _rootBorder;
-		private Border _fullWindow;
 		private object _windowResizeNotificationObject;
 
 		/// <summary>
@@ -75,32 +75,21 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement value)
 		{
-			if (_main == null)
+			if (_rootVisual == null)
 			{
 				_rootBorder = new Border();
-				_fullWindow = new Border()
+				var coreServices = Uno.UI.Xaml.Core.CoreServices.Instance;
+				coreServices.PutVisualRoot(_rootBorder);
+				_rootVisual = coreServices.MainRootVisual;
+
+				if (_rootVisual == null)
 				{
-					VerticalAlignment = VerticalAlignment.Stretch,
-					HorizontalAlignment = HorizontalAlignment.Stretch,
-					Visibility = Visibility.Collapsed
-				};
+					throw new InvalidOperationException("The root visual could not be created.");
+				}
 
-				FocusVisualLayer = new Canvas() { IsHitTestVisible = false };
-
-				_main = new Grid()
-				{
-					IsVisualTreeRoot = true,
-					Children =
-					{
-						_rootBorder,
-						_fullWindow,
-						FocusVisualLayer
-					}
-				};
-
-				_mainController.View = _main;
-				_main.Frame = _window.Frame;
-				_main.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+				_mainController.View = _rootVisual;
+				_rootVisual.Frame = _window.Frame;
+				_rootVisual.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
 			}
 
 			_rootBorder.Child?.RemoveFromSuperview();
@@ -112,14 +101,14 @@ namespace Windows.UI.Xaml
 				| NSTrackingAreaOptions.ActiveInKeyWindow
 				| NSTrackingAreaOptions.EnabledDuringMouseDrag // We want enter/leave events even if the button is pressed
 				| NSTrackingAreaOptions.InVisibleRect; // Automagicaly syncs the bounds rect
-			var trackingArea = new NSTrackingArea(Bounds, options, _main, null);
+			var trackingArea = new NSTrackingArea(Bounds, options, _rootVisual, null);
 
-			_main.AddTrackingArea(trackingArea);
+			_rootVisual.AddTrackingArea(trackingArea);
 		}
 
 		private UIElement InternalGetContent() => _content;
 
-		private UIElement InternalGetRootElement() => _main;
+		private UIElement InternalGetRootElement() => _rootVisual;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -157,15 +146,15 @@ namespace Windows.UI.Xaml
 		{
 			if (element == null)
 			{
-				_fullWindow.Child = null;
+				FullWindowMediaRoot.Child = null;
 				_rootBorder.Visibility = Visibility.Visible;
-				_fullWindow.Visibility = Visibility.Collapsed;
+				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
 			}
 			else
 			{
-				_fullWindow.Visibility = Visibility.Visible;
+				FullWindowMediaRoot.Visibility = Visibility.Visible;
 				_rootBorder.Visibility = Visibility.Collapsed;
-				_fullWindow.Child = element;
+				FullWindowMediaRoot.Child = element;
 			}
 		}
 

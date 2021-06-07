@@ -244,14 +244,18 @@ namespace Windows.UI.Xaml.Input
 			return searchViewGroup.EnumerateAllChildrenReverse(IsFocusableView, maxDepth: 300).FirstOrDefault() as DependencyObject;
 		}
 
-		private static void FocusNative(Control control)
+		private static void FocusNative(UIElement element)
 		{
-			control.RequestFocus();
-
-			// Forcefully try to bring the control into view when keyboard is open to accommodate adjust nothing mode
-			if (InputPane.GetForCurrentView().Visible)
+			// TODO Uno: Handle Hyperlink focus
+			if (element is Control control)
 			{
-				control.StartBringIntoView();
+				control.RequestFocus();
+
+				// Forcefully try to bring the control into view when keyboard is open to accommodate adjust nothing mode
+				if (InputPane.GetForCurrentView().Visible)
+				{
+					control.StartBringIntoView();
+				}
 			}
 		}
 	}

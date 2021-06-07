@@ -16,9 +16,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace Uno.UI.Samples.Content.UITests.FocusManager
+namespace Uno.UI.Samples.Content.UITests.FocusTests
 {
-	[SampleControlInfo("FocusManager", "FocusManager_FocusDirection")]
+	[SampleControlInfo("Focus", "FocusManager_FocusDirection")]
 	public sealed partial class FocusManager_FocusDirection : UserControl
 	{
 		public FocusManager_FocusDirection()

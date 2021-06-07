@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Devices.Input;
+﻿using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public sealed partial class DoubleTappedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public sealed partial class DoubleTappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly UIElement _originalSource;
 		private readonly Point _position;

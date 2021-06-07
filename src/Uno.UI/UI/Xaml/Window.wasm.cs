@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
@@ -24,8 +25,7 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window _current;
-		private Grid _window;
-		private PopupRoot _popupRoot;
+		private RootVisual _rootVisual;
 		private ScrollViewer _rootScrollViewer;
 		private Border _rootBorder;
 		private UIElement _content;
@@ -74,11 +74,11 @@ namespace Windows.UI.Xaml
 
 		private void DispatchInvalidateMeasure()
 		{
-			if (_window != null)
+			if (_rootVisual != null)
 			{
 				var sw = Stopwatch.StartNew();
-				_window.Measure(Bounds.Size);
-				_window.Arrange(Bounds);
+				_rootVisual.Measure(Bounds.Size);
+				_rootVisual.Arrange(Bounds);
 				sw.Stop();
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml
 		[Preserve]
 		public static void Resize(double width, double height)
 		{
-			var window = Current?._window;
+			var window = Current?._rootVisual;
 			if (window == null)
 			{
 				typeof(Window).Log().Error($"Resize ignore, no current window defined");
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement content)
 		{
-			if (_window == null)
+			if (_rootVisual == null)
 			{
 				_rootBorder = new Border();
 				_rootScrollViewer = new ScrollViewer()
@@ -143,42 +143,38 @@ namespace Windows.UI.Xaml
 					HorizontalScrollMode = ScrollMode.Disabled,
 					Content = _rootBorder
 				};
-				_popupRoot = new PopupRoot();
-				FocusVisualLayer = new Canvas();
-				_window = new Grid()
+				//TODO Uno: We can set and RootScrollViewer properly in case of WASM
+				CoreServices.Instance.PutVisualRoot(_rootScrollViewer);
+				_rootVisual = CoreServices.Instance.MainRootVisual;
+
+				if (_rootVisual == null)
 				{
-					IsVisualTreeRoot = true,
-					Children =
-					{
-						_rootScrollViewer,
-						_popupRoot,
-						FocusVisualLayer
-					}
-				};								
+					throw new InvalidOperationException("The root visual could not be created.");
+				}
 			}
 
 			_rootBorder.Child = _content = content;
 			if (content != null)
 			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_rootVisual.IsLoaded)
 				{
-					UIElement.LoadingRootElement(_window);
+					UIElement.LoadingRootElement(_rootVisual);
 				}
 
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent({_window.HtmlId});");
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent({_rootVisual.HtmlId});");
 
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_rootVisual.IsLoaded)
 				{
-					UIElement.RootElementLoaded(_window);
+					UIElement.RootElementLoaded(_rootVisual);
 				}
 			}
 			else
 			{
 				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent();");
 
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && _window.IsLoaded)
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && _rootVisual.IsLoaded)
 				{
-					UIElement.RootElementUnloaded(_window);
+					UIElement.RootElementUnloaded(_rootVisual);
 				}
 			}
 
@@ -187,7 +183,7 @@ namespace Windows.UI.Xaml
 
 		private UIElement InternalGetContent() => _content;
 
-		private UIElement InternalGetRootElement() => _window!;
+		private UIElement InternalGetRootElement() => _rootVisual!;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -223,18 +219,24 @@ namespace Windows.UI.Xaml
 				this.Log().Debug($"Creating popup");
 			}
 
+			if (PopupRoot == null)
+			{
+				throw new InvalidOperationException("PopupRoot is not initialized yet.");
+			}
+
 			var popupPanel = popup.PopupPanel;
-			_popupRoot.Children.Add(popupPanel);
+			PopupRoot.Children.Add(popupPanel);
 
 			return new CompositeDisposable(
-				Disposable.Create(() => {
+				Disposable.Create(() =>
+				{
 
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Closing popup");
 					}
 
-					_popupRoot.Children.Remove(popupPanel);
+					PopupRoot.Children.Remove(popupPanel);
 				}),
 				VisualTreeHelper.RegisterOpenPopup(popup)
 			);

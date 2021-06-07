@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Uno.Disposables;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
 
 namespace Windows.UI.Xaml.Controls
 {

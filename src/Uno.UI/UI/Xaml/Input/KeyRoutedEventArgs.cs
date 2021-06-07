@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.System;
+﻿using Windows.System;
 using Uno.UI.Xaml.Input;
 using Windows.UI.Core;
 using Windows.Foundation.Metadata;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class KeyRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public partial class KeyRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly CorePhysicalKeyStatus? _keyStatus;
 

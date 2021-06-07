@@ -14,6 +14,8 @@ using Uno.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
@@ -186,7 +188,7 @@ namespace Windows.UI.Xaml
 
 		public IntPtr Handle { get; set; }
 
-		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newVisibility)
 		{
 			UpdateHitTest();
 			UpdateOpacity();
@@ -195,7 +197,7 @@ namespace Windows.UI.Xaml
 			{
 				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
 				_size = new Size(0, 0);
-			}
+			}			
 		}
 
 		partial void OnRenderTransformSet()

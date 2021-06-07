@@ -5,7 +5,7 @@ using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class ManipulationCompletedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public partial class ManipulationCompletedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		public ManipulationCompletedRoutedEventArgs() { }
 

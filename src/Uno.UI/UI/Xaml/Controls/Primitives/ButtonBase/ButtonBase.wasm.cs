@@ -26,34 +26,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Tapped += (snd, evt) => { };
 		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			RegisterEvents();
-
-			KeyDown += OnKeyDown;
-		}
-
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-
-			KeyDown -= OnKeyDown;
-		}
-
-		private void OnKeyDown(object sender, KeyRoutedEventArgs keyRoutedEventArgs)
-		{
-			switch (keyRoutedEventArgs?.Key)
-			{
-				case VirtualKey.Enter:
-				case VirtualKey.Execute:
-				case VirtualKey.Space:
-					OnClick();
-					break;
-			}
-		}
-
 		/// <summary>
 		/// Gets the native UI Control, if any.
 		/// </summary>

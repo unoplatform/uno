@@ -1,10 +1,11 @@
+using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public  partial class HoldingRoutedEventArgs : RoutedEventArgs
+	public partial class HoldingRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly UIElement _originalSource;
 		private readonly Point _position;

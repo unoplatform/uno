@@ -4,7 +4,7 @@ using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public  partial class ManipulationInertiaStartingRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public  partial class ManipulationInertiaStartingRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		public ManipulationInertiaStartingRoutedEventArgs() { }
 

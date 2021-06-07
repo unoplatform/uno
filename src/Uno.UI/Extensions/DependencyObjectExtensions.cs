@@ -29,7 +29,7 @@ namespace Uno.UI.Extensions
 		Layer
 	}
 
-	internal static class DependencyObjectExtensions
+	internal static partial class DependencyObjectExtensions
 	{
 		/// <summary>
 		/// ** Recursively ** gets an enumerable sequence of all the parent objects of a given element.

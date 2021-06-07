@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+﻿using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,7 +12,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnChildrenChanged();
 		}
-
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
