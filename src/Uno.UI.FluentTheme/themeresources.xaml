@@ -127,7 +127,7 @@
       <SolidColorBrush x:Key="TextBoxBorderThemeBrush" Color="#FFFFFFFF" />
       <SolidColorBrush x:Key="TextBoxButtonBackgroundThemeBrush" Color="Transparent" />
       <SolidColorBrush x:Key="TextBoxButtonBorderThemeBrush" Color="Transparent" />
-      <SolidColorBrush x:Key="TextBoxButtonForegroundThemeBrush" Color="#99000000" />
+      <SolidColorBrush x:Key="TextBoxButtonForegroundThemeBrush" Color="#99FFFFFF" />
       <SolidColorBrush x:Key="TextBoxButtonPointerOverBackgroundThemeBrush" Color="#FFDEDEDE" />
       <SolidColorBrush x:Key="TextBoxButtonPointerOverBorderThemeBrush" Color="Transparent" />
       <SolidColorBrush x:Key="TextBoxButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
@@ -138,8 +138,12 @@
       <SolidColorBrush x:Key="TextBoxDisabledBorderThemeBrush" Color="#66FFFFFF" />
       <SolidColorBrush x:Key="TextBoxDisabledForegroundThemeBrush" Color="#FF666666" />
       <SolidColorBrush x:Key="TextBoxForegroundThemeBrush" Color="#FF000000" />
+      <StaticResource x:Key="TextControlBackgroundFocused" ResourceKey="SystemControlBackgroundAltHighBrush" />
       <StaticResource x:Key="TextControlBorderBrush" ResourceKey="SystemControlForegroundBaseMediumBrush" />
       <StaticResource x:Key="TextControlBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlButtonForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlForegroundFocused" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TextControlPlaceholderForegroundFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
       <Color x:Key="SystemRevealAltHighColor">#F2000000</Color>
       <Color x:Key="SystemRevealAltLowColor">#30000000</Color>
       <Color x:Key="SystemRevealAltMediumColor">#91000000</Color>
@@ -1615,8 +1619,12 @@
       <SolidColorBrush x:Key="TextBoxDisabledBorderThemeBrush" Color="#26000000" />
       <SolidColorBrush x:Key="TextBoxDisabledForegroundThemeBrush" Color="#FF666666" />
       <SolidColorBrush x:Key="TextBoxForegroundThemeBrush" Color="#FF000000" />
+      <StaticResource x:Key="TextControlBackgroundFocused" ResourceKey="SystemControlBackgroundAltHighBrush" />
       <StaticResource x:Key="TextControlBorderBrush" ResourceKey="SystemControlForegroundBaseMediumBrush" />
       <StaticResource x:Key="TextControlBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlButtonForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlForegroundFocused" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TextControlPlaceholderForegroundFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
       <Color x:Key="SystemRevealAltHighColor">#E6FFFFFF</Color>
       <Color x:Key="SystemRevealAltLowColor">#2EFFFFFF</Color>
       <Color x:Key="SystemRevealAltMediumColor">#8AFFFFFF</Color>
@@ -3092,8 +3100,12 @@
       <SolidColorBrush x:Key="TextBoxDisabledBorderThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
       <SolidColorBrush x:Key="TextBoxDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
       <SolidColorBrush x:Key="TextBoxForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <StaticResource x:Key="TextControlBackgroundFocused" ResourceKey="SystemControlBackgroundAltHighBrush" />
       <StaticResource x:Key="TextControlBorderBrush" ResourceKey="SystemControlForegroundBaseMediumBrush" />
       <StaticResource x:Key="TextControlBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlButtonForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+      <StaticResource x:Key="TextControlForegroundFocused" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TextControlPlaceholderForegroundFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
       <Color x:Key="SystemRevealAltHighColor">#FF000000</Color>
       <Color x:Key="SystemRevealAltLowColor">#33000000</Color>
       <Color x:Key="SystemRevealAltMediumColor">#99000000</Color>
@@ -5787,9 +5799,6 @@
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="RequestedTheme">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Light" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -9681,6 +9690,11 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                     </ObjectAnimationUsingKeyFrames>
+                    <!--Begin: Uno only - We changed the default value to avoid flicker, make sure to set it to 1 even if transitions are disabled -->
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <!--End: Uno only-->
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Decade">
@@ -9699,14 +9713,16 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                     </ObjectAnimationUsingKeyFrames>
+                    <!--Begin: Uno only - We changed the default value to avoid flicker, make sure to set it to 1 even if transitions are disabled -->
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Opacity">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <!--End: Uno only-->
                   </Storyboard>
                 </VisualState>
                 <VisualStateGroup.Transitions>
                   <VisualTransition From="Month" To="Year">
                     <Storyboard>
-                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
-                        <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
-                      </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MonthView" Storyboard.TargetProperty="Opacity">
                         <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0" KeySpline="0.1,0.9,0.2,1" />
                       </DoubleAnimationUsingKeyFrames>
@@ -9715,6 +9731,10 @@
                         <DiscreteDoubleKeyFrame KeyTime="0:0:0.233" Value="0" />
                         <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.1,0.9,0.2,1" />
                       </DoubleAnimationUsingKeyFrames>
+                      <!--Uno only: Make sure to set visibility only AFTER opacity -->
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                      </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MonthViewTransform" Storyboard.TargetProperty="ScaleX">
                         <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0.84" KeySpline="0.1,0.9,0.2,1" />
                       </DoubleAnimationUsingKeyFrames>
@@ -9789,9 +9809,6 @@
                       <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
                         <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                       </ObjectAnimationUsingKeyFrames>
-                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
-                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
-                      </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
                         <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0" KeySpline="0.1,0.9,0.2,1" />
                       </DoubleAnimationUsingKeyFrames>
@@ -9800,6 +9817,10 @@
                         <DiscreteDoubleKeyFrame KeyTime="0:0:0.233" Value="0" />
                         <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.1,0.9,0.2,1" />
                       </DoubleAnimationUsingKeyFrames>
+                      <!--Uno only: Make sure to set visibility only AFTER opacity -->
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
+                      </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewTransform" Storyboard.TargetProperty="ScaleX">
                         <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0.84" KeySpline="0.1,0.9,0.2,1" />
                       </DoubleAnimationUsingKeyFrames>
@@ -9929,13 +9950,15 @@
                     <CalendarPanel x:Name="MonthViewPanel" />
                   </ScrollViewer>
                 </Grid>
-                <ScrollViewer x:Name="YearViewScrollViewer" UseLayoutRounding="False" Visibility="Collapsed" IsFocusEngagementEnabled="True" Style="{StaticResource ScrollViewerStyle}">
+                <!-- Uno only: Opacity set to 0 to avoir flicker when changing display mode -->
+                <ScrollViewer x:Name="YearViewScrollViewer" UseLayoutRounding="False" Opacity="0" Visibility="Collapsed" IsFocusEngagementEnabled="True" Style="{StaticResource ScrollViewerStyle}">
                   <ScrollViewer.RenderTransform>
                     <ScaleTransform x:Name="YearViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                   </ScrollViewer.RenderTransform>
                   <CalendarPanel x:Name="YearViewPanel" />
                 </ScrollViewer>
-                <ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" IsFocusEngagementEnabled="True" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
+                <!-- Uno only: Opacity set to 0 to avoir flicker when changing display mode -->
+                <ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" IsFocusEngagementEnabled="True" Opacity="0" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
                   <ScrollViewer.RenderTransform>
                     <ScaleTransform x:Name="DecadeViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                   </ScrollViewer.RenderTransform>
@@ -20683,8 +20706,8 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Path x:Name="LeftRadiusRender" x:Load="False" Grid.Column="0" Visibility="Collapsed" VerticalAlignment="Bottom" Height="{Binding Source={ThemeResource OverlayCornerRadius}, Path=BottomLeft}" Margin="{Binding Source={ThemeResource OverlayCornerRadius},&#xA;                                Converter={StaticResource TabViewLeftInsetCornerConverter}}" Stretch="Uniform" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" Data="M4 0 L4 4 L0 4 A4,4 90 0 0 4 0 Z" />
-            <Path x:Name="RightRadiusRender" x:Load="False" Grid.Column="2" Visibility="Collapsed" VerticalAlignment="Bottom" Height="{Binding Source={ThemeResource OverlayCornerRadius}, Path=BottomRight}" Margin="{Binding Source={ThemeResource OverlayCornerRadius},&#xA;                                Converter={StaticResource TabViewRightInsetCornerConverter}}" Stretch="Uniform" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" Data="M0 0 L0 4 L4 4 A4 4 90 0 1 0 0 Z" />
+            <Path x:Name="LeftRadiusRender" x:Load="False" Grid.Column="0" Visibility="Collapsed" VerticalAlignment="Bottom" Height="{Binding Source={ThemeResource OverlayCornerRadius}, Path=BottomLeft}" Margin="{Binding Source={ThemeResource OverlayCornerRadius},&#xD;&#xA;                                Converter={StaticResource TabViewLeftInsetCornerConverter}}" Stretch="Uniform" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" Data="M4 0 L4 4 L0 4 A4,4 90 0 0 4 0 Z" />
+            <Path x:Name="RightRadiusRender" x:Load="False" Grid.Column="2" Visibility="Collapsed" VerticalAlignment="Bottom" Height="{Binding Source={ThemeResource OverlayCornerRadius}, Path=BottomRight}" Margin="{Binding Source={ThemeResource OverlayCornerRadius},&#xD;&#xA;                                Converter={StaticResource TabViewRightInsetCornerConverter}}" Stretch="Uniform" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" Data="M0 0 L0 4 L4 4 A4 4 90 0 1 0 0 Z" />
             <Border x:Name="TabSeparator" HorizontalAlignment="Right" Width="1" Grid.Column="1" BorderBrush="{ThemeResource TabViewItemSeparator}" BorderThickness="1" Margin="{ThemeResource TabViewItemSeparatorMargin}" />
             <Grid x:Name="TabContainer" Grid.Column="1" Background="{ThemeResource TabViewItemHeaderBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Control.IsTemplateFocusTarget="True" Padding="{ThemeResource TabViewItemHeaderPadding}" CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}" FocusVisualMargin="{TemplateBinding FocusVisualMargin}">
               <Grid.ColumnDefinitions>

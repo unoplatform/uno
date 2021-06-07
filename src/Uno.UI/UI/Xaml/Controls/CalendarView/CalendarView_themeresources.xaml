@@ -259,6 +259,11 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
                                             <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                                         </ObjectAnimationUsingKeyFrames>
+										<!--Begin: Uno only - We changed the default value to avoid flicker, make sure to set it to 1 even if transitions are disabled -->
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
+											<DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+										</DoubleAnimationUsingKeyFrames>
+										<!--End: Uno only-->
 									</Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Decade">
@@ -277,14 +282,16 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
                                             <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                                         </ObjectAnimationUsingKeyFrames>
+										<!--Begin: Uno only - We changed the default value to avoid flicker, make sure to set it to 1 even if transitions are disabled -->
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                                        </DoubleAnimationUsingKeyFrames>
+										<!--End: Uno only-->
                                     </Storyboard>
                                 </VisualState>
                                 <VisualStateGroup.Transitions>
                                     <VisualTransition From="Month" To="Year">
                                         <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
-                                            </ObjectAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MonthView" Storyboard.TargetProperty="Opacity">
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0" KeySpline="0.1,0.9,0.2,1" />
                                             </DoubleAnimationUsingKeyFrames>
@@ -293,6 +300,10 @@
                                                 <DiscreteDoubleKeyFrame KeyTime="0:0:0.233" Value="0" />
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.1,0.9,0.2,1" />
                                             </DoubleAnimationUsingKeyFrames>
+											<!--Uno only: Make sure to set visibility only AFTER opacity -->
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+											</ObjectAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MonthViewTransform" Storyboard.TargetProperty="ScaleX">
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0.84" KeySpline="0.1,0.9,0.2,1" />
                                             </DoubleAnimationUsingKeyFrames>
@@ -367,9 +378,6 @@
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                                             </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
-                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
-                                            </ObjectAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0" KeySpline="0.1,0.9,0.2,1" />
                                             </DoubleAnimationUsingKeyFrames>
@@ -378,6 +386,10 @@
                                                 <DiscreteDoubleKeyFrame KeyTime="0:0:0.233" Value="0" />
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.1,0.9,0.2,1" />
                                             </DoubleAnimationUsingKeyFrames>
+											<!--Uno only: Make sure to set visibility only AFTER opacity -->
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
+												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
+											</ObjectAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewTransform" Storyboard.TargetProperty="ScaleX">
                                                 <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0.84" KeySpline="0.1,0.9,0.2,1" />
                                             </DoubleAnimationUsingKeyFrames>
@@ -507,13 +519,15 @@
                                         <CalendarPanel x:Name="MonthViewPanel" />
                                     </ScrollViewer>
                                 </Grid>
-                                <ScrollViewer x:Name="YearViewScrollViewer" UseLayoutRounding="False" Visibility="Collapsed" IsFocusEngagementEnabled="True" Style="{StaticResource ScrollViewerStyle}">
+								<!-- Uno only: Opacity set to 0 to avoir flicker when changing display mode -->
+								<ScrollViewer x:Name="YearViewScrollViewer" UseLayoutRounding="False" Opacity="0" Visibility="Collapsed" IsFocusEngagementEnabled="True" Style="{StaticResource ScrollViewerStyle}">
                                     <ScrollViewer.RenderTransform>
                                         <ScaleTransform x:Name="YearViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                                     </ScrollViewer.RenderTransform>
                                     <CalendarPanel x:Name="YearViewPanel" />
                                 </ScrollViewer>
-                                <ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" IsFocusEngagementEnabled="True" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
+								<!-- Uno only: Opacity set to 0 to avoir flicker when changing display mode -->
+								<ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" IsFocusEngagementEnabled="True" Opacity="0" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
                                     <ScrollViewer.RenderTransform>
                                         <ScaleTransform x:Name="DecadeViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                                     </ScrollViewer.RenderTransform>
