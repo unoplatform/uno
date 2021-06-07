@@ -26,7 +26,10 @@ namespace Uno.UI.StartScreen.Extensions
 			}
 
 			var jumpListItem = JumpListItem.CreateWithArguments(shortcut.Id, shortcut.ShortLabel);
-			jumpListItem.Description = shortcut.LongLabel;
+			if (!string.IsNullOrEmpty(shortcut.LongLabel))
+			{
+				jumpListItem.Description = shortcut.LongLabel;
+			}
 			if (shortcut.Extras.ContainsKey(JumpListItem.ImagePathKey))
 			{
 				var imagePath = shortcut.Extras.GetString(JumpListItem.ImagePathKey);
