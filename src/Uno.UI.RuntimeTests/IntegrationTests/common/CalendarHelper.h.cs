@@ -90,7 +90,7 @@ namespace Private.Infrastructure
 		{
 			var calendar = new Calendar
 			{
-				Era = era,
+				//Era = era,  -- REMOVE FOR https://github.com/unoplatform/uno/issues/6160
 				Year = year,
 				Month = month,
 				Day = day,

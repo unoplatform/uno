@@ -2484,7 +2484,7 @@ namespace Windows.UI.Xaml.Controls
 				if (copyEra)
 				{
 					// era is always valid.
-					m_tpCalendar.Era = era;
+					//m_tpCalendar.Era = era; --- FIX FOR https://github.com/unoplatform/uno/issues/6160
 				}
 
 				if (copyYear)
