@@ -12,12 +12,10 @@ Note that you must perform this action on the UI thread.
 
 ## Changing the default cursor for button-based controls on WASM
 
-To provide a web-like feel of Uno Platform WebAssembly apps, we use the "hand" cursor for controls deriving from `ButtonBase`. This makes the experience feel familiar to users. If you want your application to feel more like an application, you can set the `FeatureConfiguration.ButtonBase.UseHandCursor` to `false`:
+To provide a web-like feel of Uno Platform WebAssembly apps, we use the "hand" cursor for controls deriving from `ButtonBase`. This makes the experience feel familiar to users. If you want your application to feel more like a native application, you can set the `FeatureConfiguration.ButtonBase.UseHandCursor` to `false`:
 
 ```
-#if __WASM__
 Uno.UI.FeatureConfiguration.ButtonBase.UseHandCursor = false;
-#endif
 ```
 
-Make sure to set this property early in the application life cycle, for example in `Application` constructor.
+Make sure to set this property early in the application life cycle, ideally at the beginning of the `Main` method in `Program.cs`, which is located in the WASM project.

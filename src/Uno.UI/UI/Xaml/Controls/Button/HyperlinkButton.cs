@@ -13,16 +13,12 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public HyperlinkButton()
 		{
-			PartialInitializeProperties();
-
 			InitializeVisualStates();
 
 			Click += (s, e) => TryNavigate();
 
 			DefaultStyleKey = typeof(HyperlinkButton);
 		}
-
-		partial void PartialInitializeProperties();
 
 		protected override void OnApplyTemplate()
 		{
