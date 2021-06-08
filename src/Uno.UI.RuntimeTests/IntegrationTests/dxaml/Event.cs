@@ -7,61 +7,46 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 {
 	internal class Event
 	{
-		private readonly ManualResetEventSlim _event = new ManualResetEventSlim();
-
 		internal int FiredCount { get; private set; }
+
+		private TaskCompletionSource<bool> _tcs;
 
 		internal async Task<bool> WaitForDefault(int timeout = 5000, CancellationToken ct = default)
 		{
-			var h = _event.WaitHandle;
-			RegisteredWaitHandle registration = default;
-			try
+			var tcs = EnsureTcs();
+
+			var timeoutTask = Task.Delay(timeout, ct);
+
+			var winningTask = await Task.WhenAny(timeoutTask, tcs.Task);
+
+			if (winningTask == timeoutTask)
 			{
-				if (h.WaitOne(0))
-				{
-					return true;
-				}
-
-				if (timeout == 0)
-				{
-					return false;
-				}
-
-				var tcs = new TaskCompletionSource<bool>();
-
-				using var _ = ct.Register(() => tcs.TrySetCanceled());
-
-				registration = ThreadPool
-					.RegisterWaitForSingleObject(
-						h,
-						(_, __) =>
-						{
-							tcs.TrySetResult(true);
-						},
-						null,
-						timeout,
-						executeOnlyOnce: true);
-
-				return await tcs.Task;
+				return false;
 			}
-			finally
-			{
-				registration?.Unregister(h);
-			}
+
+			return await tcs.Task;
+		}
+
+		private TaskCompletionSource<bool> EnsureTcs()
+		{
+			var newTcs = new TaskCompletionSource<bool>();
+			var tcs = Interlocked.CompareExchange(ref _tcs, newTcs, null) ?? newTcs;
+			return tcs;
 		}
 
 		internal void Set()
 		{
+			EnsureTcs().TrySetResult(true);
 			FiredCount++;
-			_event.Set();
 		}
 
-		internal bool HasFired() => _event.IsSet;
-
-		public void Reset()
+		internal bool HasFired()
 		{
-			_event.Reset();
+			var tcs = _tcs;
+			return tcs != null && tcs.Task.IsCompleted;
 		}
+
+		public void Reset() => Interlocked.Exchange(ref _tcs, null)?.TrySetCanceled();
 
 		public Task WaitFor(TimeSpan timeout, CancellationToken ct = default)
 		{
