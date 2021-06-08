@@ -1,7 +1,10 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:wasm="http://uno.ui/wasm"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="wasm">
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
@@ -72,7 +75,8 @@
     <Style TargetType="CalendarDatePicker" BasedOn="{StaticResource DefaultCalendarDatePicker}" />
 
     <Style x:Key="DefaultCalendarDatePicker" TargetType="CalendarDatePicker">
-        <Setter Property="Foreground" Value="{ThemeResource CalendarDatePickerForeground}" />
+		<wasm:Setter Property="CalendarViewStyle" Value="{StaticResource CalendarViewCrippledAnimationStyle}" />
+		<Setter Property="Foreground" Value="{ThemeResource CalendarDatePickerForeground}" />
         <Setter Property="Background" Value="{ThemeResource CalendarDatePickerBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource CalendarDatePickerBorderBrush}" />
         <Setter Property="BorderThickness" Value="{ThemeResource CalendarDatePickerBorderThemeThickness}" />
