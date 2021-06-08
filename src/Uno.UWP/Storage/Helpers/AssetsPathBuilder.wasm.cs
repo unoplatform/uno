@@ -19,6 +19,8 @@ namespace Windows.Storage.Helpers
 		/// </summary>
 		public static string? BuildAssetUri(string? contentRelativePath)
 			=> !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE)
+				// Concatenates the app's base path (used to support deep-linking), with the generated app based content folder name.
+				// See https://github.com/unoplatform/Uno.Wasm.Bootstrap#configuration-environment-variables for more details.
 				? $"{UNO_BOOTSTRAP_WEBAPP_BASE_PATH}{UNO_BOOTSTRAP_APP_BASE}/{contentRelativePath}"
 				: contentRelativePath;
 	}
