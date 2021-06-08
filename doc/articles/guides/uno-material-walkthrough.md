@@ -98,21 +98,17 @@ This guide will walk you through the necessary steps to setup and to use the [`U
                 <!-- Load WinUI resources -->
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
+                <!-- Load Material Color Palette -->
+                <MaterialColors xmlns="using:Uno.Material" />
+
+                <!-- Load the Material control resources -->
+				<MaterialResources xmlns="using:Uno.Material" />
+
                 <!-- Application's custom styles -->
                 <!-- other ResourceDictionaries -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
-    ```
-
-1. Initialize the material library in `App.xaml.cs`:
-    ```cs
-    protected override void OnLaunched(LaunchActivatedEventArgs e)
-    {
-         Uno.Material.Resources.Init(this, null);
-
-        // [existing code...]
-    }
     ```
 
 ### Section 2: Using Uno.Material library
@@ -189,7 +185,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 1. Replace the content of that res-dict with the source from: https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Material/Styles/Application/ColorPalette.xaml
 1. Make a few changes to the color:
     > Here we are replacing the last 2 characters with 00, essentially dropping the blue-channel
-    ```
+    ```xml
     <!-- Light Theme -->
     <ResourceDictionary x:Key="Light">
         <Color x:Key="MaterialPrimaryColor">#5B4C00</Color>
@@ -208,7 +204,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
         <Color x:Key="MaterialOnErrorColor">#000000</Color>
         <Color x:Key="MaterialOverlayColor">#51000000</Color>
 
-        <!-- ... --->
+        <!-- ... -->
     </ResourceDictionary>
 
     <!-- Dark Theme -->
@@ -229,20 +225,30 @@ This guide will walk you through the necessary steps to setup and to use the [`U
         <Color x:Key="MaterialOnErrorColor">#000000</Color>
         <Color x:Key="MaterialOverlayColor">#51FFFFFF</Color>
 
-        <!-- ... --->
+        <!-- ... -->
     </ResourceDictionary>
 
-    <!-- ... --->
+    <!-- ... -->
     ```
     > You may also use this for picking colors: https://material.io/design/color/the-color-system.html#tools-for-picking-colors
-1. In `App.xaml.cs`, update the line that initializes the material library to include the new palette:
-    ```cs
-    protected override void OnLaunched(LaunchActivatedEventArgs e)
-    {
-         Uno.Material.Resources.Init(this, new ResourceDictionary { Source = new Uri("ms-appx:///Styles/Application/ColorPaletteOverride.xaml") });
+1. In `App.xaml`, update the line that initializes the `MaterialColors` to include the new palette override:
+    ```xml
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- ... -->
 
-        // [existing code...]
-    }
+                <!-- Load Material Color Palette with ColorPaletteOverrideSource -->
+				<MaterialColors xmlns="using:Uno.Material"
+								ColorPaletteOverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
+
+                <!-- Load the Material control resources -->
+				<MaterialResources xmlns="using:Uno.Material" />
+                
+                <!-- ... -->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
     ```
 1. Run the app, you should now see the controls using your new color scheme.
 

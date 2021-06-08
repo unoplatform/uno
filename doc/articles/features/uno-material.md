@@ -18,26 +18,58 @@ For complete instructions on using Uno Material in your projects, including a se
                 <!-- Load WinUI resources -->
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
+                <!-- Load Material Color Palette with optional ColorPaletteOverrideSource -->
+                <MaterialColors xmlns="using:Uno.Material"
+								ColorPaletteOverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
+
+                <!-- Load the Material control resources -->
+				<MaterialResources xmlns="using:Uno.Material" />
+
                 <!-- Application's custom styles -->
                 <!-- other ResourceDictionaries -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
     ```
-1. Initialize the material library in `App.xaml.cs`:
-    ```cs
-    protected override void OnLaunched(LaunchActivatedEventArgs e)
-    {
-         Uno.Material.Resources.Init(this, null);
-
-        // [existing code...]
-    }
-    ```
 
 For complete instructions on using Uno Material in your projects, check out this walkthrough: [How to use Uno.Material](../guides/uno-material-walkthrough.md).
 
 > [!NOTE]
 > Certain controls require [additional setup steps](uno-material-controls-extra-setup.md).
+
+## Migrating From Previous Resource Initialization Method
+Prior to the `1.0` release, the initialization of Material resources was required to be done through code-behind within the `App.xaml.cs` file. Resource initialization has now been moved to XAML-only. Follow the steps below to migrate from the old method of initialization to the new one:
+
+1. Remove the following code from `App.xaml.cs` 
+    ```diff
+    protected override void OnLaunched(LaunchActivatedEventArgs e)
+    {
+    -    Material.Resources.Init(this, colorPaletteOverride: new ResourceDictionary() { Source = new Uri("ms-appx:///ColorPaletteOverride.xaml") });
+
+        // App init...
+    }
+
+    ```
+1. Add `MaterialColors` and `MaterialResources` to `App.xaml`:
+    ```diff
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Load WinUI resources -->
+				<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
+
+    +           <!-- Load Material Color Palette with optional ColorPaletteOverrideSource -->
+    +           <MaterialColors xmlns="using:Uno.Material" ColorPaletteOverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
+
+    +            <!-- Load the Material control resources -->
+	+			<MaterialResources xmlns="using:Uno.Material" />
+
+                <!-- Application's custom styles -->
+                <!-- other ResourceDictionaries -->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    ```
 
 ## Features
 
