@@ -9,10 +9,13 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static object _syncLock = new object();
 		private static EventHandler<object> _contentChanged;
 
+#if !__SKIA__
 		public static void Flush()
 		{
 			// Do nothing, data available automatically even after application closes.
+			// Except for Skia.WPF where you do have to Flush().
 		}
+#endif
 
 		public static event EventHandler<object> ContentChanged
 		{
