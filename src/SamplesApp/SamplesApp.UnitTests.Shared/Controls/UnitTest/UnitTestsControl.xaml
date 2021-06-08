@@ -36,6 +36,9 @@
 				<ToggleButton x:Name="consoleOutput"
 						not_skia:Content="🖥️ Console Output"
 						skia:Content="Console Output" />
+				<ToggleButton x:Name="runIgnored"
+						not_skia:Content="🚫 Run [Ignore]"
+						skia:Content="Run [Ignore]" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
