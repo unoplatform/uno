@@ -3,6 +3,7 @@
 
 #nullable enable
 
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -23,8 +24,6 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(BreadcrumbBar),
 				new PropertyMetadata(null));
 
-
-
 		public object? ItemTemplate
 		{
 			get => GetValue(ItemTemplateProperty);
@@ -38,6 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(BreadcrumbBar),
 				new PropertyMetadata(null));
 
-
+		public event TypedEventHandler<BreadcrumbBar, BreadcrumbBarItemClickedEventArgs>? ItemClicked;
 	}
 }

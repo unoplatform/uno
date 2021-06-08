@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Flyout content for ellipsis item
 		private Flyout? m_ellipsisFlyout = null;
 		private ItemsRepeater? m_ellipsisItemsRepeater = null;
-		private DataTemplate m_ellipsisDropDownItemDataTemplate = null;
+		private DataTemplate? m_ellipsisDropDownItemDataTemplate = null;
 		private BreadcrumbElementFactory? m_ellipsisElementFactory = null;
 
 		// Ellipsis dropdown item fields

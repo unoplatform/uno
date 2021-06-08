@@ -1,76 +1,99 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include "pch.h"
-#include "common.h"
-#include "BreadcrumbIterator.h"
+#nullable enable
 
-BreadcrumbIterator( object& itemsSource)
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace Microsoft.UI.Xaml.Controls
 {
-    m_currentIndex = 0;
+	internal partial class BreadcrumbIterator : IEnumerator<object?>
+	{
+		private int m_currentIndex;
+		private ItemsSourceView m_breadcrumbItemsSourceView;
+		private int m_size;
 
-    if (itemsSource)
-    {
-        m_breadcrumbItemsSourceView = ItemsSourceView(itemsSource);
+		internal BreadcrumbIterator(object itemsSource)
+		{
+			m_currentIndex = 0;
 
-        // Add 1 to account for the leading null/ellipsis element
-        m_size = (uint32_t)(m_breadcrumbItemsSourceView.Count() + 1);
-    }
-    else
-    {
-        m_size = 1;
-    }
-}
+			if (itemsSource != null)
+			{
+				m_breadcrumbItemsSourceView = new ItemsSourceView(itemsSource);
 
-object Current()
-{
-    if (m_currentIndex == 0)
-    {
-        return null;
-    }
-    else if (HasCurrent())
-    {
-        return m_breadcrumbItemsSourceView.GetAt(m_currentIndex - 1);
-    }
-    else
-    {
-        throw hresult_out_of_bounds();
-    }
-}
+				// Add 1 to account for the leading null/ellipsis element
+				m_size = m_breadcrumbItemsSourceView.Count + 1;
+			}
+			else
+			{
+				m_size = 1;
+			}
+		}
 
-bool HasCurrent()
-{
-    return (m_currentIndex < m_size);
-}
+		public object? Current
+		{
+			get
+			{
+				if (m_currentIndex == 0)
+				{
+					return null;
+				}
+				else if (HasCurrent())
+				{
+					return m_breadcrumbItemsSourceView.GetAt(m_currentIndex - 1);
+				}
+				else
+				{
+					throw new InvalidOperationException("Out of bounds");
+				}
+			}
+		}
 
-uint GetMany(array_view<object> items)
-{
-    uint howMany{};
-    if (HasCurrent())
-    {
-        do
-        {
-            if (howMany >= items.size()) break;
+		object? IEnumerator.Current => Current;
 
-            items[howMany] = Current();
-            howMany++;
-        } while (MoveNext());
-    }
+		private bool HasCurrent()
+		{
+			return (m_currentIndex < m_size);
+		}
 
-    return howMany;
-}
+		//uint GetMany(array_view<object> items)
+		//{
+		//	uint howMany{ };
+		//	if (HasCurrent())
+		//	{
+		//		do
+		//		{
+		//			if (howMany >= items.size()) break;
 
-bool MoveNext()
-{
-    if (HasCurrent())
-    {
-        ++m_currentIndex;
-        return HasCurrent();
-    }
-    else
-    {
-        throw hresult_out_of_bounds();
-    }
+		//			items[howMany] = Current();
+		//			howMany++;
+		//		} while (MoveNext());
+		//	}
 
-    return false;
+		//	return howMany;
+		//}
+
+		public bool MoveNext()
+		{
+			if (HasCurrent())
+			{
+				++m_currentIndex;
+				return HasCurrent();
+			}
+			else
+			{
+				throw new InvalidOperationException("Out of bounds");
+			}
+
+			return false;
+		}
+
+		bool IEnumerator.MoveNext() => MoveNext();
+
+		public void Reset() { }
+
+		public void Dispose() { }
+	}
 }

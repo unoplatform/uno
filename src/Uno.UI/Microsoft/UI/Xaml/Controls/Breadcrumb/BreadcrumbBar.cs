@@ -191,7 +191,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_breadcrumbItemsSourceView != null)
 			{
-				uint itemCount = m_breadcrumbItemsSourceView.Count;
+				var itemCount = m_breadcrumbItemsSourceView.Count;
 
 				if (m_itemsRepeater is { } itemsRepeater)
 				{
@@ -275,7 +275,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_focusedIndex == args.OldIndex)
 			{
-				uint newIndex = args.NewIndex;
+				var newIndex = args.NewIndex;
 
 				if (args.Element is BreadcrumbBarItem item)
 				{
@@ -298,14 +298,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void RaiseItemClickedEvent(object content, uint index)
+		internal void RaiseItemClickedEvent(object content, int index)
 		{
-			var eventArgs = new BreadcrumbBarItemClickedEventArgs(index, content);
+			var eventArgs = new BreadcrumbBarItemClickedEventArgs(content, index);
 
-			if (m_itemClickedEventSource != null)
-			{
-				m_itemClickedEventSource(this, *eventArgs);
-			}
+			ItemClicked?.Invoke(this, eventArgs);
 		}
 
 		private IVector<object> GetHiddenElementsList(uint firstShownElement)
@@ -342,7 +339,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return new Vector<object>();
 		}
 
-		private void ReIndexVisibleElementsForAccessibility()
+		internal void ReIndexVisibleElementsForAccessibility()
 		{
 			// Once the arrangement of BreadcrumbBar Items has happened then index all visible items
 			if (m_itemsRepeater is { } itemsRepeater)
@@ -360,7 +357,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// For every BreadcrumbBar item we set the index (starting from 1 for the root/highest-level item)
 				// accessibilityIndex is the index to be assigned to each item
 				// itemToIndex is the real index and it may differ from accessibilityIndex as we must only index the visible items
-				for (uint accessibilityIndex = 1, itemToIndex = firstItemToIndex; accessibilityIndex <= visibleItemsCount; ++accessibilityIndex, ++itemToIndex)
+				for (int accessibilityIndex = 1, itemToIndex = firstItemToIndex; accessibilityIndex <= visibleItemsCount; ++accessibilityIndex, ++itemToIndex)
 				{
 					if (itemsRepeater.TryGetElement(itemToIndex) is { } element)
 					{

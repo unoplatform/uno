@@ -7,10 +7,10 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class BreadcrumbBarItemClickedEventArgs
 	{
-		internal BreadcrumbBarItemClickedEventArgs(int index, object item)
+		internal BreadcrumbBarItemClickedEventArgs(object item, int index)
 		{
-			Index = index;
 			Item = item;
+			Index = index;
 		}
 
 		public object Item { get; }

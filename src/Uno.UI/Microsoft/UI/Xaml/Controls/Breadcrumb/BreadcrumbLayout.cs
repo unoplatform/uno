@@ -180,27 +180,18 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			if (var breadcrumb = m_breadcrumb as BreadcrumbBar())
-    {
+			if (m_breadcrumb is BreadcrumbBar breadcrumb)
+	{
 				breadcrumb.ReIndexVisibleElementsForAccessibility();
 			}
 
 			return finalSize;
 		}
 
-		bool EllipsisIsRendered()
-		{
-			return m_ellipsisIsRendered;
-		}
+		internal bool EllipsisIsRendered() => m_ellipsisIsRendered;
 
-		uint FirstRenderedItemIndexAfterEllipsis()
-		{
-			return m_firstRenderedItemIndexAfterEllipsis;
-		}
+		internal uint FirstRenderedItemIndexAfterEllipsis() => m_firstRenderedItemIndexAfterEllipsis;
 
-		uint GetVisibleItemsCount()
-		{
-			return m_visibleItemsCount;
-		}
+		internal uint GetVisibleItemsCount() => m_visibleItemsCount;
 	}
 }
