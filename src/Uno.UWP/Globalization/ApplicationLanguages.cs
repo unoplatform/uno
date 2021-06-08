@@ -43,13 +43,11 @@ namespace Windows.Globalization
 			var languages = new[]
 			{
 #if __ANDROID__
-#pragma warning disable CS0618 // Type or member is obsolete
-				ContextHelper.Current.Resources.Configuration.Locale.ToLanguageTag(),
-#pragma warning restore CS0618 // Type or member is obsolete
+				ContextHelper.Current?.Resources?.Configuration?.Locales?.Get(0)?.ToLanguageTag(),
 #endif
-				CultureInfo.InstalledUICulture.Name,
-				CultureInfo.CurrentUICulture.Name,
-				CultureInfo.CurrentCulture.Name
+				CultureInfo.InstalledUICulture?.Name,
+				CultureInfo.CurrentUICulture?.Name,
+				CultureInfo.CurrentCulture?.Name
 			};
 
 			return languages
