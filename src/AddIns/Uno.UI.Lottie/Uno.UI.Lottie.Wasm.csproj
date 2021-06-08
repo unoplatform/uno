@@ -3,8 +3,8 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build.props"/>
-	<Import Project="../../targetframework-override.props"/>
+	<Import Project="../../netcore-build.props" />
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -28,6 +28,7 @@
 
 	<ItemGroup>
 		<None Remove="tsconfig.json" />
+		<Compile Include="..\..\Uno.UWP\Storage\Helpers\AssetsPathBuilder.wasm.cs" Link="AssetsPathBuilder.wasm.cs" />
 		<Content Include="tsconfig.json" />
 	</ItemGroup>
 	

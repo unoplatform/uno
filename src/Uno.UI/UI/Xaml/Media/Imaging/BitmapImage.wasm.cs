@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation;
 using Windows.Graphics.Display;
+using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
 using Path = global::System.IO.Path;
 
@@ -16,8 +17,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
-		private static readonly string UNO_BOOTSTRAP_APP_BASE = Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
-
 		internal ResolutionScale? ScaleOverride { get; set; }
 
 		internal string ContentType { get; set; } = "application/octet-stream";
@@ -72,7 +71,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			private static async Task<HashSet<string>> GetAssets()
 			{
-				var assetsUri = !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE) ? $"{UNO_BOOTSTRAP_APP_BASE}/uno-assets.txt" : "uno-assets.txt";
+				var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 
 				var assets = await WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
 
@@ -137,14 +136,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 							if (assets.Contains(filePath))
 							{
-								return !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE) ?
-									$"{UNO_BOOTSTRAP_APP_BASE}/{filePath}" :
-									filePath;
+								return AssetsPathBuilder.BuildAssetUri(filePath);
 							}
 						}
 					}
 
-					return !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE) ? $"{UNO_BOOTSTRAP_APP_BASE}/{path}" : path;
+					return AssetsPathBuilder.BuildAssetUri(path);
 				}
 
 				return path;
