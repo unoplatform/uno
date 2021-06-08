@@ -319,7 +319,7 @@ namespace Private.Infrastructure
 				{
 					var child = VisualTreeHelper.GetChild(root, i);
 					var childAsFE = child as FrameworkElement;
-					if (childAsFE.Name == childName)
+					if (childAsFE?.Name == childName)
 					{
 						return child;
 					}
