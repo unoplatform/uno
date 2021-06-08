@@ -351,6 +351,15 @@ namespace Windows.UI.Xaml.Controls
 			SetDisplayDateInternal(date); // scroll item into view so we can move focus to it.
 
 			spItemAsI = pHost.Panel.ContainerFromIndex(index);
+
+			// Uno workaround
+			if (spItemAsI is null)
+			{
+				// The scrolling might occurs async, especially on wasm.
+				// For safety we prefer to ignore this instead of crashing which might cause exceptions worst than loosing the focus.
+				return;
+			}
+
 			global::System.Diagnostics.Debug.Assert(spItemAsI is {});
 			spItem = (CalendarViewBaseItem) spItemAsI;
 
