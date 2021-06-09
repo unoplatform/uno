@@ -14,6 +14,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -48,7 +49,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				set
 				{
 					_host = value;
-					_entries.Clear();
+					Clear();
 				}
 			}
 
@@ -71,6 +72,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				After
 			}
 
+			internal void Clear()
+			{
+				_entries.Clear();
+				FirstIndex = -1;
+				LastIndex = int.MinValue;
+
+				_generationStartIndex = -1;
+				_generationCurrentIndex = -1;
+				_generationEndIndex = -1;
+			}
+
 			internal void BeginGeneration(int startIndex, int endIndex)
 			{
 				if (_host is null)
@@ -86,7 +98,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_generationEndIndex = endIndex;
 				_generationState = GenerationState.Before;
 
-				// Note: Start and End indexes are INCLUSIVE
+				// Note: Fist and Last indexes are INCLUSIVE
 				startIndex = Math.Max(FirstIndex, startIndex);
 				endIndex = Math.Min(LastIndex, endIndex);
 
@@ -607,17 +619,28 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			finally
 			{
-				FirstVisibleIndexBase = Math.Max(firstVisibleIndex, startIndex);
-				LastVisibleIndexBase = Math.Max(FirstVisibleIndexBase, lastVisibleIndex);
-
-				foreach (var unusedEntry in _cache.CompleteGeneration(index - 1))
+				try
 				{
-					Children.Remove(unusedEntry.Container);
+					FirstVisibleIndexBase = Math.Max(firstVisibleIndex, startIndex);
+					LastVisibleIndexBase = Math.Max(FirstVisibleIndexBase, lastVisibleIndex);
+
+					foreach (var unusedEntry in _cache.CompleteGeneration(index - 1))
+					{
+						Children.Remove(unusedEntry.Container);
+					}
+
+					global::System.Diagnostics.Debug.Assert(_cache.FirstIndex <= FirstVisibleIndex || FirstVisibleIndex == -1);
+					global::System.Diagnostics.Debug.Assert(_cache.LastIndex >= LastVisibleIndex || LastVisibleIndex == -1);
+					global::System.Diagnostics.Debug.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
+				}
+				catch
+				{
+					_cache.Clear();
+					Children.Clear();
+
+					InvalidateMeasure();
 				}
 
-				global::System.Diagnostics.Debug.Assert(_cache.FirstIndex <= FirstVisibleIndex || FirstVisibleIndex == -1);
-				global::System.Diagnostics.Debug.Assert(_cache.LastIndex >= LastVisibleIndex || LastVisibleIndex == -1);
-				global::System.Diagnostics.Debug.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
 
 				// We force the parent ScrollViewer to use the same viewport as us, no matter its own stretching.
 				ViewportHeight = viewport.Height;
