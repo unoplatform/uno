@@ -16,6 +16,8 @@ using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
@@ -23,8 +25,13 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Logging;
+using Uno.UI;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Runtime.CompilerServices;
@@ -47,7 +54,9 @@ namespace Windows.UI.Xaml
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
 
-		//private protected virtual void PrepareState()
+		private Vector3 _translation = Vector3.Zero;
+
+		//private protected virtual void PrepareState() 
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
 		//	// but to avoid invoking a virtual method in ctor ** THIS IS NOT INVOKED BY DEFAULT IN UNO **.
@@ -182,6 +191,42 @@ namespace Windows.UI.Xaml
 		}
 
 		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
+
+		/// <summary>
+		/// Gets or sets the x, y, and z rendering position of the element.
+		/// </summary>
+		public Vector3 Translation
+		{
+			get => _translation;
+			set
+			{
+				_translation = value;
+				ThemeShadowManager.UpdateShadow(this);
+			}
+		}
+
+		public Shadow Shadow
+		{
+			get => (Shadow)GetValue(ShadowProperty);
+			set => SetValue(ShadowProperty, value);
+		}
+
+		public static DependencyProperty ShadowProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Shadow),
+				typeof(Shadow),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(default(Shadow), OnShadowChanged));
+
+		private static void OnShadowChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is UIElement uiElement)
+			{
+				ThemeShadowManager.UpdateShadow(uiElement);
+			}
+		}
+
+		partial void UpdateShadowPartial();		
 
 		internal Size AssignedActualSize { get; set; }
 

@@ -737,5 +737,10 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+
+		partial void UpdateShadowPartial()
+		{
+
+		}
 	}
 }
