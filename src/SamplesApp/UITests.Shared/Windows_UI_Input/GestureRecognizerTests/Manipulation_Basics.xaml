@@ -54,6 +54,7 @@
 			ManipulationStarting="OnManipStarting"
 			ManipulationStarted="OnManipStarted"
 			ManipulationDelta="OnManipDelta"
+			ManipulationInertiaStarting="OnManipInertiaStarting"
 			ManipulationCompleted="OnManipCompleted"/>
 
 		<TextBlock

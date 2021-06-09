@@ -84,6 +84,9 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 		private void OnManipDelta(object sender, ManipulationDeltaRoutedEventArgs e)
 			=> Write($"[Delta] {F(e.Position, e.Delta, e.Cumulative)}");
 
+		private void OnManipInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+			=> Write($"[Inertia] {F(new Point(-1, -1), e.Delta, e.Cumulative)}");
+
 		private void OnManipCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
 			=> Write($"[Completed] {F(e.Position, new ManipulationDelta { Scale = 1f }, e.Cumulative)}");
 
