@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		void UserElementFactory(object newValue)
+		internal void UserElementFactory(object newValue)
 		{
 			m_itemTemplateWrapper = newValue as IElementFactoryShim;
 			if (m_itemTemplateWrapper == null)

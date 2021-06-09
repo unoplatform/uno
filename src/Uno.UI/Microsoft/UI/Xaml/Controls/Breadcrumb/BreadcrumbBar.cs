@@ -3,6 +3,8 @@
 
 #nullable enable
 
+using System.Collections.ObjectModel;
+using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -47,35 +49,54 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_itemsRepeater = (ItemsRepeater)GetTemplateChild(s_itemsRepeaterPartName);
 
-			if (var thisAsUIElement7 = this as UIElement7())
-    {
-				thisAsUIElement7.PreviewKeyDown({ this, &BreadcrumbBar.OnChildPreviewKeyDown });
+			if (this is UIElement thisAsUIElement7)
+			{
+				thisAsUIElement7.PreviewKeyDown += OnChildPreviewKeyDown;
+			}
+			else if (this is UIElement thisAsUIElement)
+			{
+				var handler = new KeyEventHandler(OnChildPreviewKeyDown);
+				m_breadcrumbKeyDownHandlerRevoker.Disposable = Disposable.Create(() =>
+				{
+					RemoveHandler(UIElement.KeyDownEvent, handler);
+				});
+				AddHandler(UIElement.KeyDownEvent, handler, true);
 			}
 
-	else if (var thisAsUIElement = this as UIElement())
-    {
-				m_breadcrumbKeyDownHandlerRevoker = AddRoutedEventHandler<RoutedEventType.KeyDown>(thisAsUIElement,
+			AccessKeyInvoked += OnAccessKeyInvoked;
+			GettingFocus += OnGettingFocus;
 
-			{ this, &BreadcrumbBar.OnChildPreviewKeyDown },
-            true /*handledEventsToo*/);
-			}
+			RegisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty, OnFlowDirectionChanged);
 
-			AccessKeyInvoked({ this, &BreadcrumbBar.OnAccessKeyInvoked });
-			GettingFocus({ this, &BreadcrumbBar.OnGettingFocus });
+			if (m_itemsRepeater is { } itemsRepeater)
+			{
+				itemsRepeater.Layout = m_itemsRepeaterLayout;
+				itemsRepeater.ItemsSource = new ObservableCollection<object>();
+				itemsRepeater.ItemTemplate = m_itemsRepeaterElementFactory;
 
-			RegisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty(), { this, &BreadcrumbBar.OnFlowDirectionChanged });
+				m_itemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() =>
+				{
+					itemsRepeater.ElementPrepared -= OnElementPreparedEvent;
+				});
+				itemsRepeater.ElementPrepared += OnElementPreparedEvent;
 
-			if (var itemsRepeater = m_itemsRepeater)
-    {
-				itemsRepeater.Layout(*m_itemsRepeaterLayout);
-				itemsRepeater.ItemsSource(new Vector<object>());
-				itemsRepeater.ItemTemplate(*m_itemsRepeaterElementFactory);
+				m_itemsRepeaterElementIndexChangedRevoker.Disposable = Disposable.Create(() =>
+				{
+					itemsRepeater.ElementIndexChanged -= OnElementIndexChangedEvent;
+				});
+				itemsRepeater.ElementIndexChanged += OnElementIndexChangedEvent;
 
-				m_itemsRepeaterElementPreparedRevoker = itemsRepeater.ElementPrepared(auto_revoke, { this, &BreadcrumbBar.OnElementPreparedEvent });
-				m_itemsRepeaterElementIndexChangedRevoker = itemsRepeater.ElementIndexChanged(auto_revoke, { this, &BreadcrumbBar.OnElementIndexChangedEvent });
-				m_itemsRepeaterElementClearingRevoker = itemsRepeater.ElementClearing(auto_revoke, { this, &BreadcrumbBar.OnElementClearingEvent });
+				m_itemsRepeaterElementClearingRevoker.Disposable = Disposable.Create(() =>
+				{
+					itemsRepeater.ElementClearing -= OnElementClearingEvent;
+				});
+				itemsRepeater.ElementClearing += OnElementClearingEvent;
 
-				m_itemsRepeaterLoadedRevoker = itemsRepeater.Loaded(auto_revoke, { this, &BreadcrumbBar.OnBreadcrumbBarItemsRepeaterLoaded });
+				m_itemsRepeaterLoadedRevoker.Disposable = Disposable.Create(() =>
+				{
+					itemsRepeater.Loaded -= OnBreadcrumbBarItemsRepeaterLoaded;
+				});
+				itemsRepeater.Loaded += OnBreadcrumbBarItemsRepeaterLoaded;
 			}
 
 			UpdateItemsRepeaterItemsSource();
@@ -109,35 +130,35 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateItemTemplate()
+		private void UpdateItemTemplate()
 		{
-			object&newItemTemplate = ItemTemplate();
+			object newItemTemplate = ItemTemplate;
 			m_itemsRepeaterElementFactory.UserElementFactory(newItemTemplate);
 		}
 
-		void UpdateEllipsisBreadcrumbBarItemDropDownItemTemplate()
+		private void UpdateEllipsisBreadcrumbBarItemDropDownItemTemplate()
 		{
-			object&newItemTemplate = ItemTemplate();
+			object newItemTemplate = ItemTemplate;
 
 			// Copy the item template to the ellipsis item too
-			if (var ellipsisBreadcrumbBarItem = m_ellipsisBreadcrumbBarItem)
-    {
-				if (var itemImpl = get_self<BreadcrumbBarItem>(ellipsisBreadcrumbBarItem))
-        {
+			if (m_ellipsisBreadcrumbBarItem is { } ellipsisBreadcrumbBarItem)
+			{
+				if (ellipsisBreadcrumbBarItem is { } itemImpl)
+				{
 					itemImpl.SetEllipsisDropDownItemDataTemplate(newItemTemplate);
 				}
 			}
 		}
 
-		void UpdateBreadcrumbBarItemsFlowDirection()
+		private void UpdateBreadcrumbBarItemsFlowDirection()
 		{
 			// Only if some ItemsSource has been defined then we change the BreadcrumbBarItems flow direction
-			if (ItemsSource())
+			if (ItemsSource != null)
 			{
-				if (var itemsRepeater = m_itemsRepeater)
-        {
+				if (m_itemsRepeater is { } itemsRepeater)
+				{
 					// Add 1 to account for the leading null
-					int elementCount = m_breadcrumbItemsSourceView.Count() + 1;
+					int elementCount = m_breadcrumbItemsSourceView.Count + 1;
 					for (int i{ }; i < elementCount; ++i)
             {
 						var element = itemsRepeater.TryGetElement(i) as BreadcrumbBarItem();
@@ -147,24 +168,28 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateItemsRepeaterItemsSource()
+		private void UpdateItemsRepeaterItemsSource()
 		{
-			m_itemsSourceChanged.revoke();
-			m_itemsSourceAsObservableVectorChanged.revoke();
+			m_itemsSourceChanged.Disposable = null;
+			m_itemsSourceAsObservableVectorChanged.Disposable = null;
 
 			m_breadcrumbItemsSourceView = null;
-			if (ItemsSource())
+			if (ItemsSource != null)
 			{
-				m_breadcrumbItemsSourceView = ItemsSourceView(ItemsSource());
+				m_breadcrumbItemsSourceView = new ItemsSourceView(ItemsSource);
 
-				if (m_breadcrumbItemsSourceView)
+				if (m_breadcrumbItemsSourceView != null)
 				{
-					m_itemsSourceChanged = m_breadcrumbItemsSourceView.CollectionChanged(auto_revoke, { this, &BreadcrumbBar.OnBreadcrumbBarItemsSourceCollectionChanged });
+					m_itemsSourceChanged.Disposable = Disposable.Create(() =>
+					{
+						m_breadcrumbItemsSourceView.CollectionChanged -= OnBreadcrumbBarItemsSourceCollectionChanged;
+					});
+					m_breadcrumbItemsSourceView.CollectionChanged += OnBreadcrumbBarItemsSourceCollectionChanged;
 				}
 			}
 		}
 
-		private void OnBreadcrumbBarItemsSourceCollectionChanged(object sender, object args)
+		private void OnBreadcrumbBarItemsSourceCollectionChanged(object? sender, object? args)
 		{
 			if (m_itemsRepeater is { } itemsRepeater)
 			{
@@ -212,7 +237,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateLastElement(BreadcrumbBarItem newLastBreadcrumbBarItem)
+		private void UpdateLastElement(BreadcrumbBarItem? newLastBreadcrumbBarItem)
 		{
 			// If the element is the last element in the array,
 			// then we reset the visual properties for the previous
@@ -238,7 +263,7 @@ namespace Microsoft.UI.Xaml.Controls
 					itemImpl.SetParentBreadcrumb(this);
 
 					// Set the item index to fill the Index parameter in the ClickedEventArgs
-					uint itemIndex = args.Index;
+					int itemIndex = args.Index;
 					itemImpl.SetIndex(itemIndex);
 
 					// The first element is always the ellipsis item
@@ -248,13 +273,13 @@ namespace Microsoft.UI.Xaml.Controls
 						m_ellipsisBreadcrumbBarItem = item;
 						UpdateEllipsisBreadcrumbBarItemDropDownItemTemplate();
 
-						AutomationProperties.SetName(item, ResourceAccessor.GetLocalizedStringResource(SR_AutomationNameEllipsisBreadcrumbBarItem));
+						AutomationProperties.SetName(item, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameEllipsisBreadcrumbBarItem));
 					}
 					else
 					{
-						if (m_breadcrumbItemsSourceView)
+						if (m_breadcrumbItemsSourceView != null)
 						{
-							uint itemCount = m_breadcrumbItemsSourceView.Count();
+							int itemCount = m_breadcrumbItemsSourceView.Count;
 
 							if (itemIndex == itemCount)
 							{
@@ -305,22 +330,22 @@ namespace Microsoft.UI.Xaml.Controls
 			ItemClicked?.Invoke(this, eventArgs);
 		}
 
-		private IVector<object> GetHiddenElementsList(uint firstShownElement)
+		private ObservableCollection<object> GetHiddenElementsList(uint firstShownElement)
 		{
-			var hiddenElements = new Vector<object>();
+			var hiddenElements = new ObservableCollection<object>();
 
-			if (m_breadcrumbItemsSourceView)
+			if (m_breadcrumbItemsSourceView != null)
 			{
-				for (uint i = 0; i < firstShownElement - 1; ++i)
+				for (int i = 0; i < firstShownElement - 1; ++i)
 				{
-					hiddenElements.Append(m_breadcrumbItemsSourceView.GetAt(i));
+					hiddenElements.Add(m_breadcrumbItemsSourceView.GetAt(i));
 				}
 			}
 
 			return hiddenElements;
 		}
 
-		private IVector<object> HiddenElements()
+		internal ObservableCollection<object> HiddenElements()
 		{
 			// The hidden element list is generated in the BreadcrumbLayout during
 			// the arrange method, so we retrieve the list from it
@@ -336,7 +361,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// By default just return an empty list
-			return new Vector<object>();
+			return new ObservableCollection<object>();
 		}
 
 		internal void ReIndexVisibleElementsForAccessibility()
@@ -526,9 +551,9 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							return 0;
 						}
-						if (var itemsSourceView = itemsRepeater.ItemsSourceView())
-                {
-							return itemsSourceView.Count() - 1;
+						if (itemsRepeater.ItemsSourceView is { } itemsSourceView)
+						{
+							return itemsSourceView.Count - 1;
 						}
 						return -1;
 					} ();

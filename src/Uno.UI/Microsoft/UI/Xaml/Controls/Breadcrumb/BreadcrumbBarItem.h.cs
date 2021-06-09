@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Common item fields
 
 		// Contains the 1-indexed assigned to the element
-		private uint m_index;
+		private int m_index;
 		private bool m_isEllipsisDropDownItem;
 
 		// Inline item fields
@@ -44,37 +44,21 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_isPointerOver = false;
 
 		// Common item token & revoker
+		private readonly SerialDisposable m_childPreviewKeyDownToken = new SerialDisposable();
+		private readonly SerialDisposable m_keyDownRevoker = new SerialDisposable();
 
-		event_token m_childPreviewKeyDownToken
-		{ ;
-			RoutedEventHandler_revoker m_keyDownRevoker
-			{
-				;
+		// Inline item token & revokers
+		private long? m_flowDirectionChangedToken = null;
+		private readonly SerialDisposable m_buttonLoadedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_buttonClickRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_ellipsisRepeaterElementPreparedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_ellipsisRepeaterElementIndexChangedRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_isPressedButtonRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_isPointerOverButtonRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_isEnabledButtonRevoker = new SerialDisposable();
 
-				// Inline item token & revokers
-				event_token m_flowDirectionChangedToken {
-					;
-					Button.Loaded_revoker m_buttonLoadedRevoker {
-						;
-						Button.Click_revoker m_buttonClickRevoker {
-							;
-
-							ItemsRepeater.ElementPrepared_revoker m_ellipsisRepeaterElementPreparedRevoker {
-								;
-								ItemsRepeater.ElementIndexChanged_revoker m_ellipsisRepeaterElementIndexChangedRevoker {
-									;
-
-									PropertyChanged_revoker m_isPressedButtonRevoker {
-										;
-										PropertyChanged_revoker m_isPointerOverButtonRevoker {
-											;
-											PropertyChanged_revoker m_isEnabledButtonRevoker {
-												;
-
-												// Ellipsis dropdown item revoker
-
-												IsEnabledChanged_revoker m_isEnabledChangedRevoker {
-													;
+		// Ellipsis dropdown item revoker
+		private readonly SerialDisposable m_isEnabledChangedRevoker = new SerialDisposable();
 
 		// Common Visual States
 		private const string s_normalStateName = "Normal";

@@ -150,6 +150,8 @@
 		public const string SR_InfoBarCustomLandmarkName = "InfoBarCustomLandmarkName";
 		public const string SR_InfoBarCloseButtonTooltip = "InfoBarCloseButtonTooltip";
 
+		public const string SR_AutomationNameEllipsisBreadcrumbBarItem = "AutomationNameEllipsisBreadcrumbBarItem";
+
 		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
 
 	}

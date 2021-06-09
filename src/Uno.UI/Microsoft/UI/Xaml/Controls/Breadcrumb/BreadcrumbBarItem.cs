@@ -3,8 +3,10 @@
 
 #nullable enable
 
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Devices.Input;
 using Windows.System;
@@ -60,35 +62,35 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (forEllipsisDropDownItem)
 			{
-				if (m_isEnabledChangedRevoker == null)
+				if (m_isEnabledChangedRevoker.Disposable == null)
 				{
-					m_isEnabledChangedRevoker = IsEnabledChanged(auto_revoke, { this,  &BreadcrumbBarItem.OnIsEnabledChanged });
+					m_isEnabledChangedRevoker.Disposable = Disposable.Create(() =>
+					{
+						IsEnabledChanged -= OnIsEnabledChanged;
+					});
+					IsEnabledChanged += OnIsEnabledChanged;
 				}
 			}
-			else if (!m_flowDirectionChangedToken.value)
+			else if (m_flowDirectionChangedToken == null)
 			{
-				m_flowDirectionChangedToken.value = RegisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty(), { this, &BreadcrumbBarItem.OnFlowDirectionChanged });
+				m_flowDirectionChangedToken = RegisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty, OnFlowDirectionChanged);
 			}
 		}
 
-		void RevokeListeners()
+		private void RevokeListeners()
 		{
-			if (m_flowDirectionChangedToken.value)
+			if (m_flowDirectionChangedToken != null)
 			{
-				UnregisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty(), m_flowDirectionChangedToken.value);
-				m_flowDirectionChangedToken.value = 0;
+				UnregisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty, m_flowDirectionChangedToken.Value);
+				m_flowDirectionChangedToken = null;
 			}
 
-			if (m_childPreviewKeyDownToken.value)
+			if (m_childPreviewKeyDownToken.Disposable != null)
 			{
-				if (var thisAsUIElement7 = this as UIElement7())
-        {
-					thisAsUIElement7.PreviewKeyDown(m_childPreviewKeyDownToken);
-					m_childPreviewKeyDownToken.value = 0;
-				}
+				m_childPreviewKeyDownToken.Disposable = null;
 			}
 
-			m_keyDownRevoker.revoke();
+			m_keyDownRevoker.Disposable = null;
 		}
 
 		private void RevokePartsListeners()
@@ -102,7 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isEnabledButtonRevoker.Disposable = null;
 		}
 
-		void OnApplyTemplate()
+		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
@@ -124,11 +126,29 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (m_button is { } button)
 				{
-					m_buttonLoadedRevoker = button.Loaded(auto_revoke, { this, &BreadcrumbBarItem.OnLoadedEvent });
+					m_buttonLoadedRevoker.Disposable = Disposable.Create(() =>
+					{
+						button.Loaded -= OnLoadedEvent;
+					});
+					button.Loaded += OnLoadedEvent;
 
-					m_isPressedButtonRevoker = RegisterPropertyChanged(button, ButtonBase.IsPressedProperty, { this, &BreadcrumbBarItem.OnVisualPropertyChanged });
-					m_isPointerOverButtonRevoker = RegisterPropertyChanged(button, ButtonBase.IsPointerOverProperty, { this, &BreadcrumbBarItem.OnVisualPropertyChanged });
-					m_isEnabledButtonRevoker = RegisterPropertyChanged(button, Control.IsEnabledProperty, { this, &BreadcrumbBarItem.OnVisualPropertyChanged });
+					var isPressedToken = RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
+					m_isPressedButtonRevoker.Disposable = Disposable.Create(() =>
+					{
+						UnregisterPropertyChangedCallback(ButtonBase.IsPressedProperty, isPressedToken);
+					});
+
+					var isPointerOverToken = RegisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
+					m_isPointerOverButtonRevoker.Disposable = Disposable.Create(() =>
+					{
+						UnregisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, isPointerOverToken);
+					});
+
+					var isEnabledToken = RegisterPropertyChangedCallback(Control.IsEnabledProperty, OnVisualPropertyChanged);
+					m_isEnabledButtonRevoker.Disposable = Disposable.Create(() =>
+					{
+						UnregisterPropertyChangedCallback(Control.IsEnabledProperty, isEnabledToken);
+					});
 				}
 
 				UpdateButtonCommonVisualState(false /*useTransitions*/);
@@ -138,22 +158,30 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateItemTypeVisualState();
 		}
 
-		void OnLoadedEvent(object&, RoutedEventArgs&)
+		private void OnLoadedEvent(object sender, RoutedEventArgs args)
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
-			m_buttonLoadedRevoker.revoke();
+			m_buttonLoadedRevoker.Disposable = null;
 
-			if (var button = m_button)
-    {
-				m_buttonClickRevoker.revoke();
+			if (m_button is { } button)
+			{
+				m_buttonClickRevoker.Disposable = null;
 				if (m_isEllipsisItem)
 				{
-					m_buttonClickRevoker = button.Click(auto_revoke, { this, &BreadcrumbBarItem.OnEllipsisItemClick });
+					m_buttonClickRevoker.Disposable = Disposable.Create(() =>
+					{
+						button.Click -= OnEllipsisItemClick;
+					});
+					button.Click += OnEllipsisItemClick;
 				}
 				else
 				{
-					m_buttonClickRevoker = button.Click(auto_revoke, { this, &BreadcrumbBarItem.OnBreadcrumbBarItemClick });
+					m_buttonClickRevoker.Disposable = Disposable.Create(() =>
+					{
+						button.Click -= OnBreadcrumbBarItemClick;
+					});
+					button.Click += OnBreadcrumbBarItemClick;
 				}
 			}
 
@@ -171,14 +199,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void SetParentBreadcrumb(BreadcrumbBar& parent)
+		internal void SetParentBreadcrumb(BreadcrumbBar parent)
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
 			m_parentBreadcrumb = parent;
 		}
 
-		void SetEllipsisDropDownItemDataTemplate(object newDataTemplate)
+		internal void SetEllipsisDropDownItemDataTemplate(object newDataTemplate)
 		{
 			if (newDataTemplate is DataTemplate dataTemplate)
 			{
@@ -190,12 +218,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetIndex(uint index)
+		internal void SetIndex(int index)
 		{
 			m_index = index;
 		}
 
-		void SetIsEllipsisDropDownItem(bool isEllipsisDropDownItem)
+		internal void SetIsEllipsisDropDownItem(bool isEllipsisDropDownItem)
 		{
 			m_isEllipsisDropDownItem = isEllipsisDropDownItem;
 
@@ -204,7 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateItemTypeVisualState();
 		}
 
-		private void RaiseItemClickedEvent(object content, uint index)
+		private void RaiseItemClickedEvent(object content, int index)
 		{
 			if (m_parentBreadcrumb is { } breadcrumb)
 			{
@@ -284,16 +312,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnIsEnabledChanged(
-			 object&,
-			 DependencyPropertyChangedEventArgs&)
+		private void OnIsEnabledChanged(
+			 object sender,
+			 DependencyPropertyChangedEventArgs args)
 		{
 			MUX_ASSERT(m_isEllipsisDropDownItem);
 
 			UpdateEllipsisDropDownItemCommonVisualState(true /*useTransitions*/);
 		}
 
-		void UpdateFlyoutIndex(UIElement element, uint index)
+		private void UpdateFlyoutIndex(UIElement element, int index)
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
@@ -301,7 +329,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (ellipsisItemsRepeater.ItemsSourceView is { } itemSourceView)
 				{
-					uint itemCount = itemSourceView.Count;
+					int itemCount = itemSourceView.Count;
 
 					if (element is BreadcrumbBarItem ellipsisDropDownItemImpl)
 					{
@@ -315,30 +343,30 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		object CloneEllipsisItemSource(Collections.IVector<object> ellipsisItemsSource)
+		private object CloneEllipsisItemSource(ObservableCollection<object> ellipsisItemsSource)
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
 			// A copy of the hidden elements array in BreadcrumbLayout is created
 			// to avoid getting a Layout cycle exception
-			var newItemsSource = new Vector<object>();
+			var newItemsSource = new ObservableCollection<object>();
 
 			// The new list contains all the elements in reverse order
-			int itemsSourceSize = ellipsisItemsSource.Size();
+			int itemsSourceSize = ellipsisItemsSource.Count;
 
 			// The itemsSourceSize should always be at least 1 as it must always contain the ellipsis item
 			MUX_ASSERT(itemsSourceSize > 0);
 
 			for (int i = itemsSourceSize - 1; i >= 0; --i)
 			{
-				var item = ellipsisItemsSource.GetAt(i);
-				newItemsSource.Append(item);
+				var item = ellipsisItemsSource[i];
+				newItemsSource.Add(item);
 			}
 
 			return newItemsSource;
 		}
 
-		void OpenFlyout()
+		private void OpenFlyout()
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
@@ -356,7 +384,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void CloseFlyout()
+		private void CloseFlyout()
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
@@ -366,19 +394,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnVisualPropertyChanged(DependencyObject sender, DependencyProperty property)
+		private void OnVisualPropertyChanged(DependencyObject sender, DependencyProperty property)
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
 			UpdateButtonCommonVisualState(true /*useTransitions*/);
 		}
 
-		void UpdateItemTypeVisualState()
+		private void UpdateItemTypeVisualState()
 		{
 			VisualStateManager.GoToState(this, m_isEllipsisDropDownItem ? s_ellipsisDropDownStateName : s_inlineStateName, false /*useTransitions*/);
 		}
 
-		void UpdateEllipsisDropDownItemCommonVisualState(bool useTransitions)
+		private void UpdateEllipsisDropDownItemCommonVisualState(bool useTransitions)
 		{
 			MUX_ASSERT(m_isEllipsisDropDownItem);
 
@@ -404,7 +432,7 @@ namespace Microsoft.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, commonVisualStateName, useTransitions);
 		}
 
-		void UpdateInlineItemTypeVisualState(bool useTransitions)
+		private void UpdateInlineItemTypeVisualState(bool useTransitions)
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
@@ -438,7 +466,7 @@ namespace Microsoft.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, visualStateName, useTransitions);
 		}
 
-		void UpdateButtonCommonVisualState(bool useTransitions)
+		private void UpdateButtonCommonVisualState(bool useTransitions)
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
@@ -498,7 +526,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void SetPropertiesForLastItem()
+		internal void SetPropertiesForLastItem()
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
@@ -556,22 +584,31 @@ namespace Microsoft.UI.Xaml.Controls
 						m_ellipsisElementFactory.UserElementFactory(dataTemplate);
 					}
 
-					m_ellipsisRepeaterElementPreparedRevoker = ellipsisItemsRepeater.ElementPrepared(auto_revoke, { this, &BreadcrumbBarItem.OnFlyoutElementPreparedEvent });
-					m_ellipsisRepeaterElementIndexChangedRevoker = ellipsisItemsRepeater.ElementIndexChanged(auto_revoke, { this, &BreadcrumbBarItem.OnFlyoutElementIndexChangedEvent });
+					m_ellipsisRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() =>
+					{
+						ellipsisItemsRepeater.ElementPrepared -= OnFlyoutElementPreparedEvent;
+					});
+					ellipsisItemsRepeater.ElementPrepared += OnFlyoutElementPreparedEvent;
+
+					m_ellipsisRepeaterElementIndexChangedRevoker.Disposable = Disposable.Create(() =>
+					{
+						ellipsisItemsRepeater.ElementIndexChanged -= OnFlyoutElementIndexChangedEvent;
+					});
+					ellipsisItemsRepeater.ElementIndexChanged += OnFlyoutElementIndexChangedEvent;
 
 					m_ellipsisItemsRepeater = ellipsisItemsRepeater;
 
 					// Set the repeater as the content.
 					AutomationProperties.SetName(ellipsisFlyout, s_ellipsisFlyoutAutomationName);
-					ellipsisFlyout.Content = ellipsisItemsRepeater);
-					ellipsisFlyout.Placement = FlyoutPlacementMode.Bottom);
+					ellipsisFlyout.Content = ellipsisItemsRepeater;
+					ellipsisFlyout.Placement = FlyoutPlacementMode.Bottom;
 
 					m_ellipsisFlyout = ellipsisFlyout;
 				}
 			}
 		}
 
-		void SetPropertiesForEllipsisItem()
+		internal void SetPropertiesForEllipsisItem()
 		{
 			MUX_ASSERT(!m_isEllipsisDropDownItem);
 
