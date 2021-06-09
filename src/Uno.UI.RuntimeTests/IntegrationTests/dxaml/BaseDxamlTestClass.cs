@@ -32,9 +32,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestServices.VERIFY_IS_FALSE(value, message);
 		}
 
-		protected static void VERIFY_ARE_EQUAL<T>(T actual, T expected)
+		protected static void VERIFY_ARE_EQUAL<T>(T actual, T expected, string message = null)
 		{
-			TestServices.VERIFY_ARE_EQUAL(actual, expected);
+			TestServices.VERIFY_ARE_EQUAL(actual, expected, message);
 		}
 
 		protected static void VERIFY_IS_NULL(object value)

@@ -513,38 +513,49 @@ namespace Uno.UI.Samples.Tests
 
 			try
 			{
+				var shouldRunIgnored = runIgnored.IsChecked ?? false;
+
 				foreach (var testMethod in tests)
 				{
 					string testName = testMethod.Name;
 
 					if (IsIgnored(testMethod, out var ignoreMessage))
 					{
+						if (shouldRunIgnored)
+						{
+							ignoreMessage = $"\n--> [Ignored] IS BYPASSED...";
+						}
+
 						_currentRun.Ignored++;
 						ReportTestResult(testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
-						continue;
+
+						if (!shouldRunIgnored)
+						{
+							continue;
+						}
 					}
 
-				var runsOnUIThread =
-					HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod) ||
-					HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
-				var requiresFullWindow =
-					HasCustomAttribute<RequiresFullWindowAttribute>(testMethod) ||
-					HasCustomAttribute<RequiresFullWindowAttribute>(testMethod.DeclaringType);
-				var expectedException = testMethod.GetCustomAttributes<ExpectedExceptionAttribute>()
-					.SingleOrDefault();
-				var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
-				if (dataRows.Any())
-				{
-					foreach (var row in dataRows)
+					var runsOnUIThread =
+						HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod) ||
+						HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
+					var requiresFullWindow =
+						HasCustomAttribute<RequiresFullWindowAttribute>(testMethod) ||
+						HasCustomAttribute<RequiresFullWindowAttribute>(testMethod.DeclaringType);
+					var expectedException = testMethod.GetCustomAttributes<ExpectedExceptionAttribute>()
+						.SingleOrDefault();
+					var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
+					if (dataRows.Any())
 					{
-						var d = row.Data;
-						await InvokeTestMethod(d);
+						foreach (var row in dataRows)
+						{
+							var d = row.Data;
+							await InvokeTestMethod(d);
+						}
 					}
-				}
-				else
-				{
-					await InvokeTestMethod(new object[0]);
-				}
+					else
+					{
+						await InvokeTestMethod(new object[0]);
+					}
 
 					async Task InvokeTestMethod(object[] parameters)
 					{

@@ -50,6 +50,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private object LoadObject(XamlObjectDefinition control)
 		{
+			if (control == null)
+			{
+				return null;
+			}
+
 			if (
 				control.Type.Name == "NullExtension"
 				&& control.Type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
@@ -71,7 +76,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					var contentOwner = control.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
 
-					return LoadObject(contentOwner.Objects.FirstOrDefault()) as _View;
+					return LoadObject(contentOwner?.Objects.FirstOrDefault()) as _View;
 				};
 
 				return Activator.CreateInstance(type, builder);

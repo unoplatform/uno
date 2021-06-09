@@ -25,7 +25,6 @@ using static Private.Infrastructure.CalendarHelper;
 namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 {
 	[TestClass]
-	[Ignore("Validating regressions only for now")]
 	public partial class CalendarDatePickerIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
@@ -184,6 +183,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task CanOpenFlyoutByKeyboard()
 		{
 			TestCleanupWrapper cleanup;
@@ -398,23 +398,24 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await RunOnUIThread(() =>
 			{
 				VERIFY_IS_NOT_NULL(cp.Date);
-				VERIFY_ARE_EQUAL(cp.Date.Value.UniversalTime(), ConvertToDateTime(1, 2001, 1, 1).UniversalTime());
+				VERIFY_DATES_ARE_EQUAL(cp.Date.Value.UniversalTime(), ConvertToDateTime(1, 2001, 1, 1).UniversalTime());
 
 				// make date beyond the range.
 				// it should be coerced to min/max
 				cp.Date = ConvertToDateTime(1, 2010, 1, 1);
 				cp.UpdateLayout();
 				VERIFY_IS_NOT_NULL(cp.Date);
-				VERIFY_ARE_EQUAL(cp.Date.Value.UniversalTime(), cp.MaxDate.UniversalTime());
+				VERIFY_DATES_ARE_EQUAL(cp.Date.Value.UniversalTime(), cp.MaxDate.UniversalTime());
 
 				cp.Date = ConvertToDateTime(1, 1999, 1, 1);
 				cp.UpdateLayout();
 				VERIFY_IS_NOT_NULL(cp.Date);
-				VERIFY_ARE_EQUAL(cp.Date.Value.UniversalTime(), cp.MinDate.UniversalTime());
+				VERIFY_DATES_ARE_EQUAL(cp.Date.Value.UniversalTime(), cp.MinDate.UniversalTime());
 			});
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - Calendar formatting is still not properly implemented")]
 		public async Task CanFormatDate()
 		{
 			TestCleanupWrapper cleanup;
@@ -455,11 +456,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				cp.UpdateLayout();
 
 				LOG_OUTPUT("actual text: %s.", dateText.Text);
-				VERIFY_IS_TRUE(dateText.Text == "Monday, January 1, 2001");
+				VERIFY_ARE_EQUAL(dateText.Text, "Monday, January 1, 2001");
 			});
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - Fix custom date formatting")]
 		public async Task SettingCalendarIdentifierChangesDateFormat()
 		{
 			TestCleanupWrapper cleanup;
@@ -580,6 +582,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
+		[Ignore("Asserts")]
 		public async Task ValidateUIElementTree()
 		{
 			TestCleanupWrapper cleanup;
@@ -622,6 +625,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
+		[Ignore("Assert errors in tests")]
 		public async Task ValidateVisualStates()
 		{
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -696,6 +700,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 #if !WINDOWS_UWP
 		[TestMethod]
+		[Ignore("Causing bugs in asserts")]
 		public async Task DonotResizeCalendarView()
 		{
 			TestCleanupWrapper cleanup;
@@ -741,6 +746,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 #endif
 
 		[TestMethod]
+		[Ignore("Asserts")]
 		public async Task CanPresetDate()
 		{
 			TestCleanupWrapper cleanup;
@@ -793,7 +799,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				VERIFY_IS_TRUE(dateText.Text == "‎10‎/‎21‎/‎2000");
 
 				VERIFY_ARE_EQUAL(calendarView.SelectedDates.Count, 1);
-				VERIFY_ARE_EQUAL(calendarView.SelectedDates.GetAt(0).UniversalTime(), date1.UniversalTime());
+				VERIFY_DATES_ARE_EQUAL(calendarView.SelectedDates.GetAt(0).UniversalTime(), date1.UniversalTime());
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -832,7 +838,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				VERIFY_IS_TRUE(dateText.Text == "‎1‎/‎1‎/‎2003");
 
 				VERIFY_ARE_EQUAL(calendarView.SelectedDates.Count, 1);
-				VERIFY_ARE_EQUAL(calendarView.SelectedDates.GetAt(0).UniversalTime(), date2.UniversalTime());
+				VERIFY_DATES_ARE_EQUAL(calendarView.SelectedDates.GetAt(0).UniversalTime(), date2.UniversalTime());
 
 				cp.IsCalendarOpen = false;
 			});
@@ -876,12 +882,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				// we can't test the scenario that cdp1.Date is null
 				CalendarHelper.DumpDate(cdp1.Date.Value, "Changing cdp1.Date to");
 				CalendarHelper.DumpDate(cdp2.Date.Value, "Now cdp2.Date is");
-				VERIFY_ARE_EQUAL(cdp1.Date.Value.UniversalTime(), cdp2.Date.Value.UniversalTime());
+				VERIFY_DATES_ARE_EQUAL(cdp1.Date.Value.UniversalTime(), cdp2.Date.Value.UniversalTime());
 
 				cdp2.Date = date2;
 				CalendarHelper.DumpDate(cdp2.Date.Value, "Changing cdp2.Date to");
 				CalendarHelper.DumpDate(cdp1.Date.Value, "Now cdp1.Date is");
-				VERIFY_ARE_EQUAL(cdp1.Date.Value.UniversalTime(), cdp2.Date.Value.UniversalTime());
+				VERIFY_DATES_ARE_EQUAL(cdp1.Date.Value.UniversalTime(), cdp2.Date.Value.UniversalTime());
 			});
 
 		}

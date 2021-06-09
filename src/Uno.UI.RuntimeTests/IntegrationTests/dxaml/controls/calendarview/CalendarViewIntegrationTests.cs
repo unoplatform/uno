@@ -28,7 +28,6 @@ using static Private.Infrastructure.CalendarHelper;
 namespace Windows.UI.Xaml.Tests.Enterprise
 {
 	[TestClass]
-	[Ignore("Validating regressions only for now")]
 	public partial class CalendarViewIntegrationTests : BaseDxamlTestClass
 	{
 
@@ -268,6 +267,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task CanSelectOutOfRangeDate()
 		{
 			TestCleanupWrapper cleanup;
@@ -356,6 +356,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CanSelectDuplicatedDates()
 		{
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -665,6 +666,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CanChangeSelectedDatesInsideSelectedDatesChangedEvent()
 		{
 			TestCleanupWrapper cleanup;
@@ -707,7 +709,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					{
 						VERIFY_ARE_EQUAL(cv.SelectedDates.Count, 1);
 						VERIFY_ARE_EQUAL(e.AddedDates.Count, 1);
-						VERIFY_ARE_EQUAL(e.AddedDates.GetAt(0).UniversalTime(), minDate.UniversalTime());
+						VERIFY_DATES_ARE_EQUAL(e.AddedDates.GetAt(0).UniversalTime(), minDate.UniversalTime());
 
 						LOG_OUTPUT("Try to select the 2nd date %ld inside the SelectedDatesChanged event",
 							maxDate.UniversalTime());
@@ -719,7 +721,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					{
 						VERIFY_ARE_EQUAL(cv.SelectedDates.Count, 2);
 						VERIFY_ARE_EQUAL(e.AddedDates.Count, 1);
-						VERIFY_ARE_EQUAL(e.AddedDates.GetAt(0).UniversalTime(), maxDate.UniversalTime());
+						VERIFY_DATES_ARE_EQUAL(e.AddedDates.GetAt(0).UniversalTime(), maxDate.UniversalTime());
 						secondSelectedDatesChanged.Set();
 					}
 
@@ -737,10 +739,10 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestServices.InputHelper.Tap(firstDayItem);
 
 			await secondSelectedDatesChanged.WaitForDefault();
-			VERIFY_IS_TRUE(secondSelectedDatesChanged.HasFired());
+			VERIFY_IS_TRUE(secondSelectedDatesChanged.HasFired(), "secondSelectedDatesChanged not fired");
 
 			await firstSelectedDatesChanged.WaitForDefault();
-			VERIFY_IS_TRUE(firstSelectedDatesChanged.HasFired());
+			VERIFY_IS_TRUE(firstSelectedDatesChanged.HasFired(), "firstSelectedDatesChanged not fired");
 		}
 
 		[TestMethod]
@@ -863,6 +865,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task VerifyBlackoutProperty()
 		{
 			TestCleanupWrapper cleanup;
@@ -929,6 +932,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 
 		[TestMethod]
+		[Ignore("Asserts ERROR_CALENDAR_NUMBER_OF_WEEKS_OUTOFRANGE")]
 		public async Task VerifyCalendarItemCount()
 		{
 			TestCleanupWrapper cleanup;
@@ -988,6 +992,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("ERROR_CALENDAR_NUMBER_OF_WEEKS_OUTOFRANGE")]
 		public async Task ValidateNumberOfWeeksInViewRange()
 		{
 			TestCleanupWrapper cleanup;
@@ -1056,6 +1061,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO TODO - This test is failing on WASM")]
+#endif
 		public async Task VerifyButtonState()
 		{
 			TestCleanupWrapper cleanup;
@@ -1070,6 +1078,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			DateTimeOffset end = ConvertToDateTime(1, 2400, 1, 1);
 
 			var helper = new CalendarHelper.CalendarViewHelper();
+
+			LOG_OUTPUT("init");
 
 			CalendarView cv = await helper.GetCalendarView();
 
@@ -1095,6 +1105,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			// monthview mode:
 			{
+				LOG_OUTPUT("month view mode");
 				// 1. go to the very beginning
 				await RunOnUIThread(() =>
 				{
@@ -1143,6 +1154,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			// yearview mode:
 			{
+				LOG_OUTPUT("year view mode");
 				// 1. go to the very beginning
 				await RunOnUIThread(() =>
 				{
@@ -1192,6 +1204,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			// decadeview mode:
 			{
+				LOG_OUTPUT("decade view mode");
 				// 1. go to the very beginning
 				await RunOnUIThread(() =>
 				{
@@ -1241,6 +1254,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task VerifyNavigationButtonsBehavior()
 		{
 			TestCleanupWrapper cleanup;
@@ -1300,17 +1314,21 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				{
 					var headText = headerButton.Content as string;
 					LOG_OUTPUT("Current month %s", headText);
-					VERIFY_IS_TRUE(headText == "\u200eJanuary\u200e \u200e2000");
+					//VERIFY_ARE_EQUAL(headText, "\u200eJanuary\u200e \u200e2000");
+					VERIFY_ARE_EQUAL(headText, "January 2000");
 				});
 
 				TestServices.InputHelper.Tap(nextButton);
 				await viewChangedEvent.WaitForDefault();
-				VERIFY_IS_TRUE(viewChangedEvent.HasFired());
+				VERIFY_IS_TRUE(viewChangedEvent.HasFired(), "Event not fired");
 				viewChangedEvent.Reset();
 			}
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("UNO TODO - This this is crashing the app on Android")]
+#endif
 		public async Task VerifySelfAdaptivePanel()
 		{
 			TestCleanupWrapper cleanup;
@@ -1445,11 +1463,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			itemWidth += margin.Left + margin.Right;
 			itemHeight += margin.Top + margin.Bottom;
 
-			VERIFY_IS_TRUE(CalendarHelper.AreClose(viewportWidth / col, itemWidth, 1.0 /* rounding issue, to be fixed */));
-			VERIFY_IS_TRUE(CalendarHelper.AreClose(viewportHeight / row, itemHeight, 1.0 /* rounding issue, to be fixed */));
+			VERIFY_ARE_VERY_CLOSE(viewportWidth / col, itemWidth, 1.0 /* rounding issue, to be fixed */, "itemWidth");
+			VERIFY_ARE_VERY_CLOSE(viewportHeight / row, itemHeight, 1.0 /* rounding issue, to be fixed */, "itemHeight");
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CalendarPanelLayoutTestFirstItemPositonTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -1541,6 +1560,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CalendarPanelLayoutTestRowsAndColsTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -1633,6 +1653,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if __IOS__ || __MACOS__ || __ANDROID__
+		[Ignore("UNO TODO - This test is failing on iOS/macOS/Android")]
+#endif
 		public async Task CalendarPanelLayoutTestStretchTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -1709,7 +1732,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task CanSwitchDisplayModeByCtrlUpAfterLoaded()
 		{
 			TestCleanupWrapper cleanup;
@@ -1745,7 +1768,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task KeyboardNavigationTestNavigationKeyTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -2128,6 +2151,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task KeyboardNavigationTestTabTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -2338,6 +2362,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - InputHelper.ScrollMouseWheel() not implemented yet.")]
 		public async Task SnapPointTest()
 		{
 			// Note: InputHelper.Flick does not like a flick, it is more like a pan. by default CalendarView
@@ -2583,6 +2608,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("UNO TODO - This test is failing on Android")]
+#endif
 		public async Task VerifyTransitionAnimation()
 		{
 			TestCleanupWrapper cleanup;
@@ -2638,7 +2666,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			});
 
 			var storyboardCompletedEvent = new Event();
-			var storyboardCompletedRegistration = CreateSafeEventRegistration<Storyboard, EventHandler>("Completed");
+			var storyboardCompletedRegistration = CreateSafeEventRegistration<Storyboard, EventHandler<object>>("Completed");
 
 			using var _ = storyboardCompletedRegistration.Attach(monthToYearTransitionStoryboard,
 				(snd, evt) =>
@@ -2725,7 +2753,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			var storyboardCompletedEvent = new Event();
 			var storyboardCompletedRegistration =
-				CreateSafeEventRegistration<Storyboard, EventHandler>("Completed");
+				CreateSafeEventRegistration<Storyboard, EventHandler<object>>("Completed");
 
 			using var _ = storyboardCompletedRegistration.Attach(headerTransitionStoryboard,
 				(s, e) =>
@@ -2743,6 +2771,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CanChangeLanguage()
 		{
 			TestCleanupWrapper cleanup;
@@ -2773,17 +2802,19 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				Grid weekDayNamesGrid = Grid(helper.GetTemplateChild("WeekDayNames"));
 				TextBlock firstWeekDay = TextBlock(weekDayNamesGrid.Children.GetAt(0));
-				VERIFY_IS_TRUE(firstWeekDay.Text == "Su");
+				//VERIFY_ARE_EQUAL(firstWeekDay.Text, "Su");
+				VERIFY_ARE_EQUAL(firstWeekDay.Text, "Sun");
 
 				cv.Language = "zh-CN";
 				LOG_OUTPUT("Change languages to Chinese.");
 				cv.UpdateLayout();
-				VERIFY_IS_TRUE(firstWeekDay.Text == "日");
+				VERIFY_ARE_EQUAL(firstWeekDay.Text, "日");
 			});
 
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - InputHelper.MoveMouse() not implemented")]
 		public async Task ValidateDCompTreeWithPointerOverNavigationButton()
 		{
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -2862,6 +2893,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("UNO TODO - This test is failing on Android")]
+#endif
 		public async Task ValidateDCompTree()
 		{
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -3060,6 +3094,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("TODO UNO - For some reason this test is producing a StackOverflow exception.")]
 		public async Task ChangeStylePropsDynamically()
 		{
 			TestCleanupWrapper cleanup;
@@ -3145,6 +3180,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task CanSetDayItemStyle()
 		{
 			TestCleanupWrapper cleanup;
@@ -3228,12 +3264,16 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("UNO TODO - This this is crashing the app on Android")]
+#endif
 		public async Task CanChangeMonthCalendarIdentifier()
 		{
 			await VerifyChangingCalendarIdentifier(CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - Dynamic change of DisplayMode raising exception")]
 		public async Task CanChangeYearCalendarIdentifier()
 		{
 			await VerifyChangingCalendarIdentifier(CalendarViewDisplayMode.Year);
@@ -3347,183 +3387,213 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyPersianCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("PersianCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("PersianCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyPersianCalendarYearBoundaries()
 		{
-			VerifyBoundaries("PersianCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("PersianCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyPersianCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("PersianCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("PersianCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyGregorianCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("GregorianCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("GregorianCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyGregorianCalendarYearBoundaries()
 		{
-			VerifyBoundaries("GregorianCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("GregorianCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyGregorianCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("GregorianCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("GregorianCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyHebrewCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("HebrewCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("HebrewCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyHebrewCalendarYearBoundaries()
 		{
-			VerifyBoundaries("HebrewCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("HebrewCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyHebrewCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("HebrewCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("HebrewCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyHijriCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("HijriCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("HijriCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyHijriCalendarYearBoundaries()
 		{
-			VerifyBoundaries("HijriCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("HijriCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyHijriCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("HijriCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("HijriCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyJapaneseCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("JapaneseCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("JapaneseCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyJapaneseCalendarYearBoundaries()
 		{
-			VerifyBoundaries("JapaneseCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("JapaneseCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyJapaneseCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("JapaneseCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("JapaneseCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyJulianCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("JulianCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("JulianCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyJulianCalendarYearBoundaries()
 		{
-			VerifyBoundaries("JulianCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("JulianCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyJulianCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("JulianCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("JulianCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyKoreanCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("KoreanCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("KoreanCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyKoreanCalendarYearBoundaries()
 		{
-			VerifyBoundaries("KoreanCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("KoreanCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyKoreanCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("KoreanCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("KoreanCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyTaiwanCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("TaiwanCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("TaiwanCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyTaiwanCalendarYearBoundaries()
 		{
-			VerifyBoundaries("TaiwanCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("TaiwanCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyTaiwanCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("TaiwanCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("TaiwanCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyThaiCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("ThaiCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("ThaiCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyThaiCalendarYearBoundaries()
 		{
-			VerifyBoundaries("ThaiCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("ThaiCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task VerifyThaiCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("ThaiCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("ThaiCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyUmAlQuraCalendarMonthBoundaries()
 		{
-			VerifyBoundaries("UmAlQuraCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
+			await VerifyBoundaries("UmAlQuraCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyUmAlQuraCalendarYearBoundaries()
 		{
-			VerifyBoundaries("UmAlQuraCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
+			await VerifyBoundaries("UmAlQuraCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyUmAlQuraCalendarDecadeBoundaries()
 		{
-			VerifyBoundaries("UmAlQuraCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
+			await VerifyBoundaries("UmAlQuraCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
@@ -3556,6 +3626,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - InputHelper.DynamicPressCenter() not implemented")]
 		public async Task ValidateScopeInManipulation()
 		{
 			TestCleanupWrapper cleanup;
@@ -3636,6 +3707,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CanDisplayDateOnCorrectPositionWhenCallSetDisplayDate()
 		{
 			TestCleanupWrapper cleanup;
@@ -3680,7 +3752,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				var distance = scrollViewer.TransformToVisual(calendarPanel)
 					.TransformPoint(new Windows.Foundation.Point(0, 0));
-				VERIFY_IS_TRUE(CalendarHelper.AreClose(distance.Y, 0, 1.0));
+				VERIFY_ARE_VERY_CLOSE(distance.Y, 0, 1.0, "distance.Y 1");
 			});
 
 			// Second we set numberof weeks to 4, call displaydate will bring 1/20/2000 to the first row
@@ -3698,11 +3770,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				var itemHeight = firstItem.ActualHeight;
 				var itemMargin = firstItem.Margin;
 				itemHeight += itemMargin.Top + itemMargin.Bottom;
-				VERIFY_IS_TRUE(CalendarHelper.AreClose(distance.Y, itemHeight * 3, 1.0));
+				VERIFY_ARE_VERY_CLOSE(distance.Y, itemHeight * 3, 1.0, "distance.Y 2");
 			});
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CanDisplayDateOnCorrectPositionWhenSwitchView()
 		{
 			TestCleanupWrapper cleanup;
@@ -3791,12 +3864,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					var itemMargin = firstItem.Margin;
 					itemHeight += itemMargin.Top + itemMargin.Bottom;
 
-					VERIFY_IS_TRUE(CalendarHelper.AreClose(distance.Y, itemHeight * data.distanceOfRows, 1.0));
+					VERIFY_ARE_VERY_CLOSE(distance.Y, itemHeight * data.distanceOfRows, 1.0);
 				});
 			}
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CanDayItemFontPropertiesAffectMeasure()
 		{
 			TestCleanupWrapper cleanup;
@@ -3835,8 +3909,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				double actualWidth = dayItem.ActualWidth;
 				double expectedHeight = 40.0;
 				double expectedWidth = 40.0;
-				VERIFY_IS_TRUE(CalendarHelper.AreClose(actualHeight, expectedHeight));
-				VERIFY_IS_TRUE(CalendarHelper.AreClose(actualWidth, expectedWidth));
+				VERIFY_ARE_VERY_CLOSE(actualHeight, expectedHeight);
+				VERIFY_ARE_VERY_CLOSE(actualWidth, expectedWidth);
 
 				cv.DayItemFontFamily = new Media.FontFamily("Segoe UI Symbol");
 				cv.DayItemFontSize = 50;
@@ -3848,12 +3922,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				actualWidth = dayItem.ActualWidth;
 				expectedHeight = 75.0;
 				expectedWidth = 60.0;
-				VERIFY_IS_TRUE(CalendarHelper.AreClose(actualHeight, expectedHeight));
-				VERIFY_IS_TRUE(CalendarHelper.AreClose(actualWidth, expectedWidth));
+				VERIFY_ARE_VERY_CLOSE(actualHeight, expectedHeight);
+				VERIFY_ARE_VERY_CLOSE(actualWidth, expectedWidth);
 			});
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task VerifyHeaderTextChangesWhenCalendarIdentifierChanged()
 		{
 			TestCleanupWrapper cleanup;
@@ -3886,7 +3961,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				var headText = String(headerButton.Content);
 
 				LOG_OUTPUT("header text in Gregorian calendar: %s", headText);
-				VERIFY_IS_TRUE(headText == "\u200eJanuary\u200e \u200e2000");
+				//VERIFY_ARE_EQUAL(headText, "\u200eJanuary\u200e \u200e2000");
+				VERIFY_ARE_EQUAL(headText, "January 2000");
 
 				cv.CalendarIdentifier = "HebrewCalendar";
 				cv.UpdateLayout();
@@ -3894,12 +3970,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				var headText2 = String(headerButton.Content);
 				LOG_OUTPUT("header text in Hebrew calendar: %s", headText2);
 
-				VERIFY_IS_TRUE(headText2 == "‏שבט‏ ‏תש״ס");
+				VERIFY_ARE_EQUAL(headText2, "‏שבט‏ ‏תש״ס");
 			});
 
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task VerifySetDisplayDateBeforeLoaded()
 		{
 			TestCleanupWrapper cleanup;
@@ -3960,13 +4037,14 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				LOG_OUTPUT("actual position of display date is (%f, %f)., expected (1, 1)", itemPos.X, itemPos.Y);
 
 				//CalendarViewDayItem's margin is {1, 1, 1, 1}
-				VERIFY_ARE_EQUAL(itemPos.X, 1d);
-				VERIFY_ARE_EQUAL(itemPos.Y, 1d);
+				VERIFY_ARE_EQUAL(itemPos.X, 1d, "itemPos.X");
+				VERIFY_ARE_EQUAL(itemPos.Y, 1d, "itemPos.Y");
 			});
 
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task CanFocusOnCorrectItemWithTap()
 		{
 			TestCleanupWrapper cleanup;
@@ -4052,6 +4130,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public async Task VerifyRenderLayers()
 		{
 			TestCleanupWrapper cleanup;
@@ -4149,6 +4228,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task VerifyDisplayDate()
 		{
 			TestCleanupWrapper cleanup;
@@ -4186,7 +4266,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					.TransformPoint(new Windows.Foundation.Point(0, 0));
 				var headText = String(headerButton.Content);
 				LOG_OUTPUT("yearpanel offset is %f, header text is %s", offset.Y, headText);
-				VERIFY_IS_TRUE(headText == "\u200e2050");
+				//VERIFY_ARE_EQUAL(headText, "\u200e2050");
+				VERIFY_ARE_EQUAL(headText, "2050");
 				VERIFY_ARE_EQUAL(offset.Y, -10875);
 
 				// switch back to MonthView and call display the minDate (1/1/2000)
@@ -4199,7 +4280,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				offset = yearPanel.TransformToVisual(yearScrollViewer).TransformPoint(new Windows.Foundation.Point(0, 0));
 				headText = String(headerButton.Content);
 				LOG_OUTPUT("yearpanel offset is %f, header text is %s", offset.Y, headText);
-				VERIFY_IS_TRUE(headText == "\u200e2000");
+				//VERIFY_ARE_EQUAL(headText, "\u200e2000");
+				VERIFY_ARE_EQUAL(headText, "2000");
 				VERIFY_ARE_EQUAL(offset.Y, 0);
 			});
 		}
@@ -4262,6 +4344,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task NavigationButtonShouldBeDisabledWhenThereIsNoMoreDates()
 		{
 			TestCleanupWrapper cleanup;
@@ -4298,8 +4381,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("previous button's enable state is %d, next button's enable state is %d.",
 					previousButton.IsEnabled, nextButton.IsEnabled);
-				VERIFY_IS_FALSE(previousButton.IsEnabled); // can't go backwards
-				VERIFY_IS_TRUE(nextButton.IsEnabled); // can go forward
+				VERIFY_IS_FALSE(previousButton.IsEnabled, "can't go backwards");
+				VERIFY_IS_TRUE(nextButton.IsEnabled, "can go forward");
 			});
 
 			var viewChangedRegistration = CreateSafeEventRegistration<ScrollViewer, EventHandler<ScrollViewerViewChangedEventArgs>>("ViewChanged");
@@ -4329,8 +4412,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				LOG_OUTPUT("previous button's enable state is %d, next button's enable state is %d.",
 					previousButton.IsEnabled, nextButton.IsEnabled);
-				VERIFY_IS_TRUE(previousButton.IsEnabled); // can go backwards
-				VERIFY_IS_FALSE(nextButton.IsEnabled); // can't go forward
+				VERIFY_IS_TRUE(previousButton.IsEnabled, "can go backwards");
+				VERIFY_IS_FALSE(nextButton.IsEnabled, "can't go forward");
 			});
 		}
 
@@ -4450,6 +4533,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
 		public async Task IgnoreBringIntoViewOnFocusChange()
 		{
 			TestCleanupWrapper cleanup;
@@ -4521,6 +4605,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task SuspendBuildTreeWhileCollapsed()
 		{
 			TestCleanupWrapper cleanup;
@@ -4687,6 +4772,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.Utilities.SetTimeZone() not implemented")]
 		public async Task VerifySkippedDaysInSamoa()
 		{
 			string currentTimeZoneId = GetCurrentTimeZoneId();
@@ -4740,6 +4826,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - InputHelper.MoveMouse() not implemented")]
 		public async Task TodayVisualTest()
 		{
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -4822,6 +4909,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task ChangingViewHeaderTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -4848,7 +4936,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					headerButton = Button(helper.GetTemplateChild("HeaderButton"));
 					var headText = String(headerButton.Content);
 					LOG_OUTPUT("Current month %s", headText);
-					VERIFY_IS_TRUE(headText == "\u200eDecember\u200e \u200e2015");
+					//VERIFY_ARE_EQUAL(headText, "\u200eDecember\u200e \u200e2015");
+					VERIFY_ARE_EQUAL(headText, "December 2015");
 				});
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Year by using Tap.");
@@ -4862,7 +4951,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					headerButton = Button(helper.GetTemplateChild("HeaderButton"));
 					var headText = String(headerButton.Content);
 					LOG_OUTPUT("Current year %s", headText);
-					VERIFY_IS_TRUE(headText == "\u200e2015");
+					//VERIFY_ARE_EQUAL(headText, "\u200e2015");
+					VERIFY_ARE_EQUAL(headText, "2015");
 
 				});
 
@@ -4884,6 +4974,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task ChangingViewHeaderWithCustomDimensionsTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -4910,7 +5001,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					headerButton = Button(helper.GetTemplateChild("HeaderButton"));
 					var headText = String(headerButton.Content);
 					LOG_OUTPUT("Current month %s", headText);
-					VERIFY_IS_TRUE(headText == "\u200eDecember\u200e \u200e2015");
+					//VERIFY_ARE_EQUAL(headText, "\u200eDecember\u200e \u200e2015");
+					VERIFY_ARE_EQUAL(headText, "December 2015");
 				});
 
 				await WindowHelper.WaitForIdle();
@@ -4931,8 +5023,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					headerButton = Button(helper.GetTemplateChild("HeaderButton"));
 					var headText = String(headerButton.Content);
 					LOG_OUTPUT("Current year %s", headText);
-					VERIFY_IS_TRUE(headText == "\u200e2015");
-
+					//VERIFY_ARE_EQUAL(headText, "\u200e2015");
+					VERIFY_ARE_EQUAL(headText, "2015");
 				});
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Decade by using Tap.");
@@ -4946,13 +5038,14 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					headerButton = Button(helper.GetTemplateChild("HeaderButton"));
 					var headText = String(headerButton.Content);
 					LOG_OUTPUT("Current decade %s", headText);
-					VERIFY_IS_TRUE(headText == "2010 - 2019");
+					VERIFY_ARE_EQUAL(headText, "2010 - 2019");
 				});
 			}
 
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task VerifyChangingHeightDoesNotScrollAwayFromItems()
 		{
 			TestCleanupWrapper cleanup;
@@ -4988,7 +5081,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(changeCount == 0);
+				VERIFY_ARE_EQUAL(changeCount, 0, "changeCount - 1");
 
 				cv.Height = 350;
 			});
@@ -5000,7 +5093,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				//Initially we had expected this to return as 0, as in this scenario the items should stretch. However
 				//after a little research we discovered that ModernCollectionBasePanel.ArrangeOverride adds small
 				//deltas to the visible window, which causes this behavior when the CalendarView's height increases.
-				VERIFY_IS_TRUE(changeCount == 7);
+				VERIFY_ARE_EQUAL(changeCount, 7);
 
 				changeCount = 0;
 
@@ -5011,11 +5104,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(changeCount == 0);
+				VERIFY_ARE_EQUAL(changeCount, 0, "changeCount - 2");
 			});
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task VerifyForegroundColorChangesPropagateWhenInPopup()
 		{
 			TestCleanupWrapper cleanup;
@@ -5082,6 +5176,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		// we have 128 timezones so far, split them into small parts so the test won't take too long.
 		//const int VerifyAllTimeZonesPartImpl(i, = j) ;
 		[TestMethod]
+		[Ignore("UNO TODO - TestServices.Utilities.SetTimeZone() not implemented")]
 		public async Task VerifyAllTimeZonesPart()
 		{
 			await VerifyTimeZones(0, 20);
@@ -5109,6 +5204,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 
 		[TestMethod]
+		[Ignore("UNO TODO - Asserts ERROR_CALENDAR_NUMBER_OF_WEEKS_OUTOFRANGE")]
 		public async Task VerifyCalendarBoundariesByTappingByTappingNavigationButton(string cid)
 		{
 			TestCleanupWrapper cleanup;
@@ -5274,66 +5370,77 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyPersianCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("PersianCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyGregorianCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("GregorianCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyHebrewCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("HebrewCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyHijriCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("HijriCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyJapaneseCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("JapaneseCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyJulianCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("JulianCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyKoreanCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("KoreanCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyTaiwanCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("TaiwanCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
 		public Task VerifyThaiCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("ThaiCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - Test fails Debug.Assert()")]
 		public Task VerifyUmAlQuraCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("UmAlQuraCalendar");
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO - RTL (Right To Left) not supported yet on Uno")]
 		public async Task VerifyFlowDirectionForCalendar()
 		{
 			TestCleanupWrapper cleanup;
@@ -5479,6 +5586,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[Ignore("UNO TODO")]
 		public async Task CanScrollAcrossJapaneseEraOnDecadeView()
 		{
 			TestCleanupWrapper cleanup;
@@ -5563,7 +5671,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				var headText = String(headerButton.Content);
 				if (newEraHeaderText is { })
 				{
-					VERIFY_IS_TRUE(headText == newEraHeaderText);
+					VERIFY_ARE_EQUAL(headText, newEraHeaderText, "newEraHeaderText 1");
 				}
 			});
 
@@ -5578,7 +5686,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				var headText = String(headerButton.Content);
 				if (oldEraHeaderText is { })
 				{
-					VERIFY_IS_TRUE(headText == oldEraHeaderText);
+					VERIFY_ARE_EQUAL(headText, oldEraHeaderText, "oldEraHeaderText");
 				}
 			});
 
@@ -5593,13 +5701,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				var headText = String(headerButton.Content);
 				if (newEraHeaderText is { })
 				{
-					TestServices.VERIFY_IS_TRUE(headText == newEraHeaderText);
+					VERIFY_ARE_EQUAL(headText, newEraHeaderText, "newEraHeaderText 2");
 				}
 			});
 		}
 
 		[TestMethod]
-		async Task CanSwitchDisplayMode()
+		public async Task CanSwitchDisplayMode()
 		{
 			TestCleanupWrapper cleanup;
 

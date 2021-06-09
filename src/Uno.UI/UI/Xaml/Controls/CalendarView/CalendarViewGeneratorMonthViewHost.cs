@@ -91,7 +91,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// clear the density bar as well.
+#if CALENDARVIEW_DENSITYCOLORS_SUPPORTED // UNO-TODO: .SetDensityColors() not implemented yet
 			spContainer.SetDensityColors(null);
+#endif
 
 			// apply style to CalendarViewDayItem if any.
 			{

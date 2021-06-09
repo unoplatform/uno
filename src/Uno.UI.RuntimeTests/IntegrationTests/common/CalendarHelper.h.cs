@@ -90,7 +90,7 @@ namespace Private.Infrastructure
 		{
 			var calendar = new Calendar
 			{
-				Era = era,
+				//Era = era,  -- REMOVE FOR https://github.com/unoplatform/uno/issues/6160
 				Year = year,
 				Month = month,
 				Day = day,
@@ -319,7 +319,7 @@ namespace Private.Infrastructure
 				{
 					var child = VisualTreeHelper.GetChild(root, i);
 					var childAsFE = child as FrameworkElement;
-					if (childAsFE.Name == childName)
+					if (childAsFE?.Name == childName)
 					{
 						return child;
 					}

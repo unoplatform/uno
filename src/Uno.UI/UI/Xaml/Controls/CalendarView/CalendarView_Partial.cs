@@ -221,14 +221,32 @@ namespace Windows.UI.Xaml.Controls
 
 		~CalendarView()
 		{
-			DetachButtonClickedEvents();
-			m_tpSelectedDates.VectorChanged -= m_epSelectedDatesChangedHandler;
-			DetachScrollViewerKeyDownEvents();
+			//DetachButtonClickedEvents();
+			//m_tpSelectedDates.VectorChanged -= m_epSelectedDatesChangedHandler;
+			//DetachScrollViewerKeyDownEvents();
 
 			if (m_tpSelectedDates is {} selectedDates)
 			{
 				((TrackableDateCollection)selectedDates).SetCollectionChangingCallback(null);
 			}
+		}
+
+		// UNO SPECIFIC
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			AttachButtonClickedEvents();
+			AttachScrollViewerKeyDownEvents();
+		}
+
+		// UNO SPECIFIC
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			DetachButtonClickedEvents();
+			DetachScrollViewerKeyDownEvents();
 		}
 
 		private void PrepareState()
@@ -674,7 +692,7 @@ namespace Windows.UI.Xaml.Controls
 			string strAutomationName;
 
 			DetachVisibleIndicesUpdatedEvents();
-			DetachButtonClickedEvents();
+			//DetachButtonClickedEvents();
 			DetachScrollViewerFocusEngagedEvents();
 			DetachScrollViewerKeyDownEvents();
 
@@ -1218,6 +1236,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void AttachButtonClickedEvents()
 		{
+			DetachButtonClickedEvents(); // Uno
+
 			if (m_tpHeaderButton is {})
 			{
 				m_epHeaderButtonClickHandler ??= new RoutedEventHandler((object pSender, RoutedEventArgs pArgs) =>
@@ -1251,23 +1271,28 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DetachButtonClickedEvents()
 		{
-			if (m_epHeaderButtonClickHandler is { })
+			if (m_epHeaderButtonClickHandler is { } && m_tpHeaderButton is {})
 			{
 				m_tpHeaderButton.Click -= m_epHeaderButtonClickHandler;
+				m_epHeaderButtonClickHandler = null;
 			}
-			if (m_epPreviousButtonClickHandler is {})
+			if (m_epPreviousButtonClickHandler is {} && m_tpPreviousButton is {})
 			{
 				m_tpPreviousButton.Click -= m_epPreviousButtonClickHandler;
+				m_epPreviousButtonClickHandler = null;
 			}
-			if (m_epNextButtonClickHandler is {})
+			if (m_epNextButtonClickHandler is {} && m_tpNextButton is {})
 			{
 				m_tpNextButton.Click -= m_epNextButtonClickHandler;
+				m_epNextButtonClickHandler = null;
 			}
 
 		}
 
 		private void AttachScrollViewerKeyDownEvents()
 		{
+			DetachScrollViewerKeyDownEvents(); // UNO
+
 			//Engagement now prevents events from bubbling from an engaged element. Before we relied on the bubbling behavior to
 			//receive the KeyDown events from the ScrollViewer in the CalendarView. Now instead we have to handle the ScrollViewer's
 			//On Key Down. To prevent handling the same OnKeyDown twice we only call into OnKeyDown if the ScrollViewer is engaged,
@@ -1328,19 +1353,22 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DetachScrollViewerKeyDownEvents()
 		{
-			if (m_epMonthViewScrollViewerKeyDownEventHandler is {})
+			if (m_epMonthViewScrollViewerKeyDownEventHandler is {} && m_tpMonthViewScrollViewer is {})
 			{
 				m_tpMonthViewScrollViewer.KeyDown -= m_epMonthViewScrollViewerKeyDownEventHandler;
+				m_epMonthViewScrollViewerKeyDownEventHandler = null;
 			}
 
-			if (m_epYearViewScrollViewerKeyDownEventHandler is {})
+			if (m_epYearViewScrollViewerKeyDownEventHandler is {} && m_tpYearViewScrollViewer is {})
 			{
 				m_tpYearViewScrollViewer.KeyDown -= m_epYearViewScrollViewerKeyDownEventHandler;
+				m_epYearViewScrollViewerKeyDownEventHandler = null;
 			}
 
-			if (m_epDecadeViewScrollViewerKeyDownEventHandler is {})
+			if (m_epDecadeViewScrollViewerKeyDownEventHandler is {} && m_tpDecadeViewScrollViewer is {})
 			{
 				m_tpDecadeViewScrollViewer.KeyDown -= m_epDecadeViewScrollViewerKeyDownEventHandler;
+				m_epDecadeViewScrollViewerKeyDownEventHandler = null;
 			}
 
 			return;
@@ -2126,7 +2154,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 
-		private void UpdateLastDisplayedDate( CalendarViewDisplayMode lastDisplayMode)
+		private void UpdateLastDisplayedDate(CalendarViewDisplayMode lastDisplayMode)
 		{
 			CalendarViewGeneratorHost spPreviousHost;
 			GetGeneratorHost(lastDisplayMode, out spPreviousHost);
@@ -2484,7 +2512,7 @@ namespace Windows.UI.Xaml.Controls
 				if (copyEra)
 				{
 					// era is always valid.
-					m_tpCalendar.Era = era;
+					//m_tpCalendar.Era = era; --- FIX FOR https://github.com/unoplatform/uno/issues/6160
 				}
 
 				if (copyYear)
