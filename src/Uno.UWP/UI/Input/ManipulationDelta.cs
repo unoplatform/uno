@@ -22,9 +22,7 @@ namespace Windows.UI.Input
 		public float Rotation;
 		public float Expansion;
 
-		/// <inheritdoc />
-		public override string ToString()
-			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
+		internal bool IsEmpty => Translation == Point.Zero && Rotation == 0 && Scale == 1 && Expansion == 0;
 
 		internal ManipulationDelta Add(ManipulationDelta right) => Add(this, right);
 		internal static ManipulationDelta Add(ManipulationDelta left, ManipulationDelta right)
@@ -44,5 +42,10 @@ namespace Windows.UI.Input
 			|| Math.Abs(Translation.Y) >= thresholds.TranslateY
 			|| Rotation >= thresholds.Rotate // We used the ToDegreeNormalized, no need to check for negative angles
 			|| Math.Abs(Expansion) >= thresholds.Expansion;
+
+		/// <inheritdoc />
+		public override string ToString()
+			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
+
 	}
 }
