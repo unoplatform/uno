@@ -18,7 +18,6 @@ namespace Windows.System
 
 		private int _state = States.Idle;
 		private TimeSpan _interval;
-		private DateTimeOffset _lastTick;
 
 		public event TypedEventHandler<DispatcherQueueTimer, object> Tick;
 
@@ -58,12 +57,23 @@ namespace Windows.System
 		///		This is updated **BEFORE** the event is being raised.
 		///		It can safely be used to get the absolute time in the Tick event handler.
 		/// </summary>
-		internal DateTimeOffset LastTickTimestamp => _lastTick;
+		internal DateTimeOffset LastTickTimestamp { get; private set; }
 
 		/// <summary>
 		/// Gets the difference between <see cref="LastTickTimestamp"/> and <see cref="StartTimestamp"/>.
+		/// WARNING: This is not protected from overflow! You must not access it before first Tick!
 		/// </summary>
-		internal TimeSpan LastTickElapsed => _lastTick - StartTimestamp;
+		internal TimeSpan LastTickElapsed
+		{
+			get
+			{
+				var elapsed = LastTickTimestamp - StartTimestamp;
+
+				return elapsed > TimeSpan.Zero
+					? elapsed
+					: TimeSpan.Zero;
+			}
+		}
 
 		/// <summary>
 		/// An internal state that can be used to store a value in order to prevent a closure in the click handler.
@@ -118,7 +128,7 @@ namespace Windows.System
 			// First be sure to stop the pending timer
 			StopNative();
 
-			var elapsed = StartTimestamp - _lastTick;
+			var elapsed = StartTimestamp - LastTickTimestamp;
 			if (elapsed >= interval)
 			{
 				RaiseTick(isTickForRestart: true);
@@ -147,7 +157,7 @@ namespace Windows.System
 
 				if (isRunning)
 				{
-					_lastTick = DateTimeOffset.UtcNow;
+					LastTickTimestamp = DateTimeOffset.UtcNow;
 
 					Tick?.Invoke(this, null);
 				}

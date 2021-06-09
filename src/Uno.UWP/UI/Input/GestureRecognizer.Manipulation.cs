@@ -8,7 +8,6 @@ using System.Linq;
 using System.Numerics;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.System;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
@@ -18,7 +17,7 @@ namespace Windows.UI.Input
 	public partial class GestureRecognizer
 	{
 		// Note: this is also responsible to handle "Drag manipulations"
-		internal class Manipulation
+		internal partial class Manipulation
 		{
 			internal static readonly Thresholds StartTouch = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
 			internal static readonly Thresholds StartPen = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
@@ -391,23 +390,23 @@ namespace Windows.UI.Input
 			[Pure]
 			private ManipulationVelocities GetVelocities(ManipulationDelta delta)
 			{
-				var fromTime = _lastPublishedState.timestamp;
-				var currentTime = _currents.Timestamp;
-
-				var ms = (double)(currentTime - fromTime) / TimeSpan.TicksPerMillisecond;
+				// The _currents.Timestamp is not updated once inertia as started, we must get the elapsed duration from the inertia processor
+				// (and not compare it to PointerPoint.Timestamp in any way, cf. remarks on InertiaProcessor.Elapsed)
+				var elapsedTicks = _inertia?.Elapsed ?? (double)_currents.Timestamp - _lastPublishedState.timestamp;
+				var elapsedMs = elapsedTicks / TimeSpan.TicksPerMillisecond;
 
 				// With uno a single native event might produce multiple managed pointer events.
 				// In that case we would get en empty velocities ... which is often not relevant!
 				// When we detect that case, we prefer to replay the last known velocities.
-				if (delta.IsEmpty || ms == 0)
+				if (delta.IsEmpty || elapsedMs == 0)
 				{
 					return _lastRelevantVelocities;
 				}
 
-				var linearX = delta.Translation.X / ms;
-				var linearY = delta.Translation.Y / ms;
-				var angular = delta.Rotation / ms;
-				var expansion = delta.Expansion / ms;
+				var linearX = delta.Translation.X / elapsedMs;
+				var linearY = delta.Translation.Y / elapsedMs;
+				var angular = delta.Rotation / elapsedMs;
+				var expansion = delta.Expansion / elapsedMs;
 
 				var velocities = new ManipulationVelocities
 				{
@@ -592,98 +591,6 @@ namespace Windows.UI.Input
 
 				public static implicit operator Points(PointerPoint pointer1)
 					=> new Points(pointer1);
-			}
-
-			internal class InertiaProcessor : IDisposable
-			{
-				// TODO: We should somehow sync tick with frame rendering
-				const double framePerSecond = 25;
-				const double durationTicks = 1.5 * TimeSpan.TicksPerSecond;
-
-				private readonly DispatcherQueueTimer _timer;
-				private readonly Manipulation _owner;
-				private readonly ManipulationDelta _initial;
-
-				private readonly bool _isTranslateInertiaXEnabled;
-				private readonly bool _isTranslateInertiaYEnabled;
-				private readonly bool _isRotateInertiaEnabled;
-				private readonly bool _isScaleInertiaEnabled;
-
-				public double DesiredDisplacement;
-				public double DesiredDisplacementDeceleration;
-				public double DesiredRotation;
-				public double DesiredRotationDeceleration;
-				public double DesiredExpansion;
-				public double DesiredExpansionDeceleration;
-
-				public InertiaProcessor(Manipulation owner, ManipulationDelta cumulative, ManipulationVelocities velocities)
-				{
-					_owner = owner;
-					_initial = cumulative;
-
-					_isTranslateInertiaXEnabled = _owner._isTranslateXEnabled && _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia);
-					_isTranslateInertiaYEnabled = _owner._isTranslateYEnabled && _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia);
-					_isRotateInertiaEnabled = _owner._isRotateEnabled && _owner._settings.HasFlag(Input.GestureSettings.ManipulationRotateInertia);
-					_isScaleInertiaEnabled = _owner._isScaleEnabled && _owner._settings.HasFlag(Input.GestureSettings.ManipulationScaleInertia);
-
-					_timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-					_timer.Interval = TimeSpan.FromMilliseconds(1000d / framePerSecond);
-					_timer.IsRepeating = true;
-					_timer.Tick += OnTick;
-
-					// TODO
-					DesiredDisplacement = _isTranslateInertiaXEnabled || _isTranslateInertiaYEnabled ? 300 : 0;
-					DesiredRotation = _isRotateInertiaEnabled ? 60 : 0;
-					DesiredExpansion = _isScaleInertiaEnabled ? 200 : 0;
-				}
-
-				public bool IsRunning => _timer.IsRunning;
-
-				public void Start()
-					=> _timer.Start();
-
-				public ManipulationDelta GetCumulative()
-				{
-					var progress = 1 - Math.Pow(1 - GetNormalizedTime(), 4); // Source: https://easings.net/#easeOutQuart
-
-					var translateX = _isTranslateInertiaXEnabled ? _initial.Translation.X + progress * DesiredDisplacement : 0;
-					var translateY = _isTranslateInertiaYEnabled ? _initial.Translation.Y + progress * DesiredDisplacement : 0;
-					var rotate = _isRotateInertiaEnabled ? _initial.Rotation + progress * DesiredRotation : 0;
-					var expansion = _isScaleInertiaEnabled ? _initial.Expansion + progress * DesiredExpansion : 0;
-
-					var scale = (_owner._origins.Distance + expansion) / _owner._origins.Distance;
-
-					return new ManipulationDelta
-					{
-						Translation = new Point(translateX, translateY),
-						Rotation = (float)MathEx.NormalizeDegree(rotate),
-						Scale = (float)scale,
-						Expansion = (float)expansion
-					};
-				}
-
-				private double GetNormalizedTime()
-				{
-					var elapsed = _timer.LastTickElapsed;
-					var normalizedTime = elapsed.Ticks / durationTicks;
-
-					return normalizedTime;
-				}
-
-				private void OnTick(DispatcherQueueTimer sender, object args)
-				{
-					_owner.NotifyUpdate();
-
-					if (GetNormalizedTime() >= 1)
-					{
-						_timer.Stop();
-						_owner.NotifyUpdate();
-					}
-				}
-
-				/// <inheritdoc />
-				public void Dispose()
-					=> _timer.Stop();
 			}
 		}
 	}
