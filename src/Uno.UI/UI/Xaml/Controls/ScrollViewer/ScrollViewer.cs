@@ -1377,13 +1377,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Scroll indicators visual states (Managed scroll bars only)
+
 		private static readonly TimeSpan _indicatorResetDelay = FeatureConfiguration.ScrollViewer.DefaultAutoHideDelay ?? TimeSpan.FromSeconds(4);
 		private static readonly bool _indicatorResetDisabled = _indicatorResetDelay == TimeSpan.MaxValue;
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
-		private bool m_isInIntermediateViewChangedMode;
-		private bool m_isViewChangedRaisedInIntermediateMode;
-		private bool m_isDraggingThumb;
+		//private bool m_isInIntermediateViewChangedMode;
+		//private bool m_isViewChangedRaisedInIntermediateMode;
+		//private bool m_isDraggingThumb;
 
 		private void PrepareScrollIndicator() // OnApplyTemplate
 		{
