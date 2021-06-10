@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 				isLabelVisible = Owner.IsGroupLabelVisible;
 
-				UpdateLabel(spContainer, !isLabelVisible);
+				UpdateLabel(spContainer, isLabelVisible);
 			}
 
 			// today state will be updated in CalendarViewGeneratorHost.PrepareItemContainer
