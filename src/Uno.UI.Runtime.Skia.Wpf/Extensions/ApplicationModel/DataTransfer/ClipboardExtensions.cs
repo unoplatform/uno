@@ -22,6 +22,7 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 
 		private readonly WpfHost _host;
 		private HwndSource _hwndSource;
+		private bool _pendingStartContentChanged;
 
 		public event EventHandler<object> ContentChanged;
 
@@ -49,6 +50,11 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 
 				var fromDependencyObject = PresentationSource.FromDependencyObject(win);
 				_hwndSource = fromDependencyObject as HwndSource;
+
+				if (_pendingStartContentChanged)
+                {
+					StartContentChanged();
+                }
 			}
 		}
 
@@ -59,6 +65,11 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				_hwndSource.AddHook(OnWmMessage);
 				ClipboardNativeFunctions.AddClipboardFormatListener(_hwndSource.Handle);
 			}
+			else
+            {
+				// Signals the app to hook when it's ready
+				_pendingStartContentChanged = true;
+            }
 		}
 
 		public void StopContentChanged()
@@ -68,6 +79,10 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				ClipboardNativeFunctions.RemoveClipboardFormatListener(_hwndSource.Handle);
 				_hwndSource.RemoveHook(OnWmMessage);
 			}
+			else
+            {
+				_pendingStartContentChanged = false;
+            }
 		}
 
 		public void Flush() => Clipboard.Flush();
