@@ -11,7 +11,7 @@
 			<Version>6.2.11</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.UI.Xaml" Version="2.5.0" />
-		<PackageReference Include="Uno.Core" Version="2.4.0-dev.2" />
+		<PackageReference Include="Uno.Core" Version="2.4.0" />
 		<PackageReference Include="Uno.UI" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
