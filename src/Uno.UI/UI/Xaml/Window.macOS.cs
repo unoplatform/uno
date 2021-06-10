@@ -85,13 +85,16 @@ namespace Windows.UI.Xaml
 					Visibility = Visibility.Collapsed
 				};
 
+				FocusVisualLayer = new Canvas() { IsHitTestVisible = false };
+
 				_main = new Grid()
 				{
 					IsVisualTreeRoot = true,
 					Children =
 					{
 						_rootBorder,
-						_fullWindow
+						_fullWindow,
+						FocusVisualLayer
 					}
 				};
 
