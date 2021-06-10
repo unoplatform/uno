@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Media
 {
@@ -6,6 +8,7 @@ namespace Uno.UI.Xaml.Media
 	{
 		internal static void UpdateShadow(UIElement uiElement)
 		{
+			typeof(ThemeShadowManager).Log().LogError($"Updating shadow null={uiElement.Shadow != null} , {uiElement.Translation.Z}");
 			if (uiElement.Shadow == null || uiElement.Translation.Z <= 0)
 			{
 				UnsetShadow(uiElement);
@@ -15,5 +18,9 @@ namespace Uno.UI.Xaml.Media
 				SetShadow(uiElement);
 			}
 		}
+
+		static partial void UnsetShadow(UIElement uiElement);
+
+		static partial void SetShadow(UIElement uiElement);
 	}
 }

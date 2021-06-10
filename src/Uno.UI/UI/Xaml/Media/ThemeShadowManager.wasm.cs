@@ -1,16 +1,30 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Media
 {
 	internal static partial class ThemeShadowManager
 	{
-		private static void UnsetShadow(UIElement uiElement)
+		static partial void UnsetShadow(UIElement uiElement)
 		{
+			uiElement.SetStyle("box-shadow", "unset");
 		}
 
-		private static void SetShadow(UIElement uiElement)
+		static partial void SetShadow(UIElement uiElement)
 		{
-
+			var translation = uiElement.Translation;
+			var boxShadowValue = CreateBoxShadow(translation.Z);
+			typeof(ThemeShadowManager).Log().LogError($"Box shadow value {boxShadowValue}");
+			uiElement.SetStyle("box-shadow", boxShadowValue);
 		}
+
+		private static string CreateBoxShadow(float translationZ)
+		{
+			var z = (int)translationZ;
+			var halfZ = z / 2;
+			var quarterZ = z / 4;
+			return $"{quarterZ}px {quarterZ}px {halfZ}px 0px rgba(0,0,0,0.3)";
+		} 
 	}
 }

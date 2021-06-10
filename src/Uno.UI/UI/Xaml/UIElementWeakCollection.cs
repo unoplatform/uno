@@ -1,18 +1,28 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Windows.UI.Xaml
 {
+	/// <summary>
+	/// Represents a collection of weak references to UIElement objects.
+	/// </summary>
 	public partial class UIElementWeakCollection : IList<UIElement>, IEnumerable<UIElement>
 	{
 		private readonly List<WeakReference<UIElement>> _innerList = new List<WeakReference<UIElement>>();
 
+		/// <summary>
+		/// Initializes a new instance of the UIElementWeakCollection class.
+		/// </summary>
 		public UIElementWeakCollection()
 		{
 		}
 
+		/// <inheritdoc />
 		public uint Size => (uint)_innerList.Count;
 
+		/// <inheritdoc />
 		public int IndexOf(UIElement item)
 		{
 			for (int i = 0; i < _innerList.Count; i++)
@@ -25,58 +35,78 @@ namespace Windows.UI.Xaml
 			}
 			return -1;
 		}
+
+		/// <inheritdoc />
 		public void Insert(int index, UIElement item) => _innerList.Insert(index, new WeakReference<UIElement>(item));
 
+		/// <inheritdoc />
 		public void RemoveAt(int index) => _innerList.RemoveAt(index);
 
+		/// <inheritdoc />
 		public UIElement this[int index]
 		{
 			get => _innerList[index].TryGetTarget(out var target) ? target : null;
 			set => _innerList[index] = new WeakReference<UIElement>(value);
 		}
+
+		/// <inheritdoc />
 		public void Add(UIElement item) => _innerList.Add(new WeakReference<UIElement>(item));
 
+		/// <inheritdoc />
 		public void Clear() => _innerList.Clear();
 
+		/// <inheritdoc />
 		public bool Contains(UIElement item) => IndexOf(item) >= 0;
 
-		public void CopyTo(global::Windows.UI.Xaml.UIElement[] array, int arrayIndex)
+		/// <inheritdoc />
+		public void CopyTo(UIElement[] array, int arrayIndex)
 		{
-			throw new global::System.NotSupportedException();
+			_innerList
+				.Select(item => item.TryGetTarget(out var target) ? target : null)
+				.ToList()
+				.CopyTo(array, arrayIndex);
 		}
-		public bool Remove(global::Windows.UI.Xaml.UIElement item)
+
+		/// <inheritdoc />
+		public bool Remove(UIElement item)
 		{
-			throw new global::System.NotSupportedException();
+			var index = IndexOf(item);
+			if (index >= 0)
+			{
+				_innerList.RemoveAt(index);
+				return true;
+			}
+
+			return false;
 		}
+
+		/// <inheritdoc />
 		public int Count
 		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
+			get => _innerList.Count;
+			set => throw new InvalidOperationException("Cannot set count");
 		}
+
+		/// <inheritdoc />
 		public bool IsReadOnly
 		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
+			get => false;
+			set => throw new InvalidOperationException("Cannot make read only");
 		}
-		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Xaml.UIElement> GetEnumerator()
+
+		/// <inheritdoc />
+		public IEnumerator<UIElement> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			foreach (var item in _innerList)
+			{
+				if (item.TryGetTarget(out var target))
+				{
+					yield return target;
+				}
+			}
 		}
-		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
+
+		/// <inheritdoc />
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 }
