@@ -2004,7 +2004,7 @@ namespace Windows.UI.Xaml.Controls
 							bool isTodayHighlighted = false;
 
 							isTodayHighlighted = IsTodayHighlighted;
-							((CalendarViewBaseItem)spChildAsI).SetIsToday(!isTodayHighlighted);
+							((CalendarViewBaseItem)spChildAsI).SetIsToday(isTodayHighlighted);
 						}
 					}
 				}
@@ -2021,7 +2021,7 @@ namespace Windows.UI.Xaml.Controls
 			// when IsOutOfScopeEnabled property is false, we don't care about scope state (all are inScope),
 			// so we don't need to hook to ScrollViewer's state change handler.
 			// when IsOutOfScopeEnabled property is true, we need to do so.
-			if (m_areDirectManipulationStateChangeHandlersHooked != !isOutOfScopeEnabled)
+			if (m_areDirectManipulationStateChangeHandlersHooked != isOutOfScopeEnabled)
 			{
 				m_areDirectManipulationStateChangeHandlersHooked = !m_areDirectManipulationStateChangeHandlersHooked;
 
@@ -2252,7 +2252,7 @@ namespace Windows.UI.Xaml.Controls
 					ForeachChildInPanel(pPanel, 
 						(CalendarViewBaseItem pItem) =>
 					{
-						pHost.UpdateLabel(pItem, !isLabelVisible);
+						pHost.UpdateLabel(pItem, isLabelVisible);
 					});
 				}
 			}
