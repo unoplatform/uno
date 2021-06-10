@@ -90,7 +90,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0' or '$(TargetFramework)'=='uap10.0.17763'">
 		<PackageReference Include="Microsoft.ProjectReunion" Condition="'$(UNO_UWP_BUILD)'!='true'">
-			<Version>0.5.6</Version>
+			<Version>0.5.7</Version>
 		</PackageReference>
 
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.16" Condition="'$(UNO_UWP_BUILD)'!='true'" />
