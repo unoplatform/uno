@@ -7649,7 +7649,7 @@
 
 
 	<!-- Default style for Windows.UI.Xaml.Controls.FlipView -->
-	<Style TargetType="FlipView">
+	<netstdref:Style TargetType="FlipView">
 		<Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
 		<Setter Property="BorderThickness" Value="0" />
 		<Setter Property="TabNavigation" Value="Once" />
@@ -7926,6 +7926,6 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</netstdref:Style>
 
 </ResourceDictionary>
