@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 
 					isTodayHighlighted = Owner.IsTodayHighlighted;
 
-					isToday = !!isTodayHighlighted;
+					isToday = isTodayHighlighted;
 				}
 
 				spContainer.SetIsToday(isToday);

@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml.Controls
 			out bool returnValue) /*override*/
 		{
 			returnValue = false;
-			returnValue = !!_layoutStrategyImpl.HasIrregularSnapPoints(elementType);
+			returnValue = _layoutStrategyImpl.HasIrregularSnapPoints(elementType);
 		}
 
 		private void HasSnapPointOnElementImpl(
