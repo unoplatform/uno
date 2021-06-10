@@ -388,7 +388,7 @@ namespace Windows.UI.Xaml.Controls
 
 			found = m_tpSelectedDates.IndexOf(date, out index);
 
-			pIsSelected = !!found;
+			pIsSelected = found;
 
 		}
 

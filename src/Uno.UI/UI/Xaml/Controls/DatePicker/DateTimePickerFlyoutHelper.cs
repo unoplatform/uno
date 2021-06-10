@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				pEventArgs.Handled = !!focusChanged;
+				pEventArgs.Handled = focusChanged;
 			}
 
 			return;
