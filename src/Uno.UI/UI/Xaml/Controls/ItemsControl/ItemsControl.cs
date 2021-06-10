@@ -1490,7 +1490,5 @@ namespace Windows.UI.Xaml.Controls
 		/// Resets internal cached state of the collection.
 		/// </summary>
 		private protected virtual void Refresh() { }
-
-		public Panel ItemsHost { get; }
 	}
 }

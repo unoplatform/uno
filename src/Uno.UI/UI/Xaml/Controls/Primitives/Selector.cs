@@ -727,7 +727,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			bool isItemsHostInvalid = false;
 			bool isInLiveTree = false;
 
-			spPanel = ItemsHost;
+			spPanel = ItemsPanelRoot;
 
 			if (spPanel != null)
 			{

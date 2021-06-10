@@ -1163,7 +1163,7 @@ namespace Windows.UI.Xaml.Controls
 			IVirtualizingPanel spVirtualizingPanel;
 			double width = 0.0;
 
-			spPanel = ItemsHost;
+			spPanel = ItemsPanelRoot;
 			spVirtualizingPanel = spPanel as IVirtualizingPanel;
 
 			if (spVirtualizingPanel != null)
@@ -1198,7 +1198,7 @@ namespace Windows.UI.Xaml.Controls
 			IVirtualizingPanel spVirtualizingPanel;
 			double height = 0.0;
 
-			spPanel = ItemsHost;
+			spPanel = ItemsPanelRoot;
 
 			spVirtualizingPanel = spPanel as IVirtualizingPanel;
 
