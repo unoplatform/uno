@@ -172,10 +172,11 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 		private async Task SetContentAsync(DataPackage content)
 		{
 			var data = content?.GetView();
+			var wpfData = new DataObject();
 
 			if (data?.Contains(StandardDataFormats.Text) ?? false)
 			{
-				Clipboard.SetText(await data.GetTextAsync());
+				wpfData.SetText(await data.GetTextAsync());
 			}
 			if (data?.Contains(StandardDataFormats.Bitmap) ?? false)
 			{
@@ -186,15 +187,15 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				image.BeginInit();
 				image.StreamSource = stream;
 				image.EndInit();
-				Clipboard.SetImage(image);
+				wpfData.SetImage(image);
 			}
 			if (data?.Contains(StandardDataFormats.Html) ?? false)
 			{
-				Clipboard.SetData(DataFormats.Html, await data.GetHtmlFormatAsync());
+				wpfData.SetData(DataFormats.Html, await data.GetHtmlFormatAsync());
 			}
 			if (data?.Contains(StandardDataFormats.Rtf) ?? false)
 			{
-				Clipboard.SetData(DataFormats.Rtf, await data.GetRtfAsync());
+				wpfData.SetData(DataFormats.Rtf, await data.GetRtfAsync());
 			}
 			if (data?.Contains(StandardDataFormats.StorageItems) ?? false)
 			{
@@ -206,8 +207,10 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 					list.Add(item.Path);
 				}
 
-				Clipboard.SetFileDropList(list);
+				wpfData.SetFileDropList(list);
 			}
+
+			Clipboard.SetDataObject(wpfData);
 		}
 
 		private IntPtr OnWmMessage(IntPtr hwnd, int msg, IntPtr wparamOriginal, IntPtr lparamOriginal, ref bool handled)
