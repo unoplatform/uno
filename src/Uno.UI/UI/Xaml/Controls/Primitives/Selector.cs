@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private BindingPath _selectedValueBindingPath;
 		private bool _disableRaiseSelectionChanged;
-		private int m_lastFocusedIndex;
+		//private int m_lastFocusedIndex;
 		private bool m_inCollectionChange;
 
 		/// <summary>

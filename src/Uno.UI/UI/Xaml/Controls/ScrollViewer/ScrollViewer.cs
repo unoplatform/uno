@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
-		private bool m_isInConstantVelocityPan;
+		private bool m_isInConstantVelocityPan = false;
 
 		private static class Parts
 		{
@@ -873,11 +873,12 @@ namespace Windows.UI.Xaml.Controls
 
 			_isTemplateApplied = _presenter != null;
 
+#if __WASM__
 			if (_presenter != null && ForceChangeToCurrentView)
 			{
 				_presenter.ForceChangeToCurrentView = ForceChangeToCurrentView;
 			}
-
+#endif
 			// Load new template
 			_verticalScrollbar = null;
 			_isVerticalScrollBarMaterialized = false;

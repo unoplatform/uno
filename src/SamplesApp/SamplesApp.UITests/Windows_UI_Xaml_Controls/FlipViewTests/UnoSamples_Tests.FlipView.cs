@@ -4,6 +4,8 @@ using FluentAssertions;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
+using NUnit.Framework;
+using SamplesApp.UITests.TestFramework
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 {
