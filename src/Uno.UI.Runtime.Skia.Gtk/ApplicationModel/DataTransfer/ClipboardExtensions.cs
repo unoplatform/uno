@@ -172,60 +172,117 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 		private async Task SetContentAsync(DataPackage content)
 		{
 			var data = content?.GetView();
+			var targetList = new TargetList();
+			var targetStrings = new List<string>();
 
-			if (data?.Contains(StandardDataFormats.Text) ?? false)
+			bool CheckFormat(string format, out uint id)
 			{
-				_clipboard.Text = await data.GetTextAsync();
-			}
-			if (data?.Contains(StandardDataFormats.Bitmap) ?? false)
-			{
-				var streamRef = await data.GetBitmapAsync();
-				var runtimeStream = await streamRef.OpenReadAsync();
-				var stream = runtimeStream.AsStreamForRead();
-				_clipboard.Image = new Pixbuf(stream);
-			}
-			if (data?.Contains(StandardDataFormats.Html) ?? false)
-			{
-				var htmlString = await data.GetHtmlFormatAsync();
-				_clipboard.SetWithData(new[] { new TargetEntry("text/html", 0, 0) },
-					(clipboard, selection, info) =>
-					{
-						selection.Set(HtmlContent, 8, Encoding.UTF8.GetBytes(htmlString));
-					},
-					(clipboard) => { });
-			}
-			if (data?.Contains(StandardDataFormats.Rtf) ?? false)
-			{
-				var rtfString = await data.GetRtfAsync();
-				_clipboard.SetWithData(new[] { new TargetEntry("text/rtf", 0, 0) },
-					(clipboard, selection, info) =>
-					{
-						selection.Set(RtfContent, 8, Encoding.UTF8.GetBytes(rtfString));
-					},
-					(clipboard) => { });
-			}
-			if (data?.Contains(StandardDataFormats.StorageItems) ?? false)
-			{
-				var items = await data?.GetStorageItemsAsync();
-				var builder = new StringBuilder();
-
-				builder.AppendLine("copy");
-				foreach (var item in items)
+				if (data?.Contains(format) ?? false)
 				{
-					var path = item.Path;
-					builder.AppendLine(UrlEncode(path));
+					id = (uint)targetStrings.Count;
+					targetStrings.Add(format);
+					return true;
+				}
+				id = 0;
+				return false;
+			}
+
+			async void SetDataNative(Clipboard clipboard, SelectionData nativeData, uint info)
+			{
+				var format = targetStrings[(int)info];
+
+				var uris = new List<string>();
+
+				// Cannot use switch here, these strings are not constants!!!
+				if (format == StandardDataFormats.Text)
+				{
+					nativeData.Text = await data.GetTextAsync();
+				}
+				else if (format == StandardDataFormats.Bitmap)
+				{
+					var streamRef = await data.GetBitmapAsync();
+					var uwpStream = await streamRef.OpenReadAsync();
+					var stream = uwpStream.AsStreamForRead();
+					nativeData.SetPixbuf(new Pixbuf(stream));
+				}
+				else if (format == StandardDataFormats.Html)
+				{
+					var htmlString = await data.GetHtmlFormatAsync();
+					nativeData.Set(HtmlContent, 8, Encoding.UTF8.GetBytes(htmlString));
+				}
+				else if (format == StandardDataFormats.Rtf)
+				{
+					var rtfString = await data.GetRtfAsync();
+					nativeData.Set(RtfContent, 8, Encoding.UTF8.GetBytes(rtfString));
+				}
+				else if (format == StandardDataFormats.StorageItems)
+				{
+					var items = await data.GetStorageItemsAsync();
+					var builder = new StringBuilder();
+
+					builder.AppendLine("copy");
+					foreach (var item in items)
+					{
+						var path = item.Path;
+						builder.AppendLine(UrlEncode(path));
+					}
+
+					nativeData.Set(GnomeCopiedFilesContent, 8, Encoding.UTF8.GetBytes(builder.ToString().Trim()));
+				}
+				else if (format == StandardDataFormats.ApplicationLink)
+				{
+					uris.Add((await data.GetApplicationLinkAsync()).ToString());
+				}
+				else if (format == StandardDataFormats.WebLink)
+				{
+					uris.Add((await data.GetWebLinkAsync()).ToString());
+				}
+				else if (format == StandardDataFormats.Uri)
+				{
+					uris.Add((await data.GetUriAsync()).ToString());
 				}
 
-				var target0 = new TargetEntry("x-special/gnome-copied-files", 0, 0);
-				var target1 = new TargetEntry("text/uri-list", 0, 0);
-
-				_clipboard.SetWithData(new[] { target0, target1 },
-				(clipboard, selection, info) =>
+				if (uris.Count != 0)
 				{
-					selection.Set(selection.Target, 8, Encoding.UTF8.GetBytes(builder.ToString().Trim()));
-				},
-				(clipboard) => { });
+					nativeData.SetUris(uris.ToArray());
+				}
 			}
+
+			uint id;
+			if (CheckFormat(StandardDataFormats.Text, out id))
+			{
+				targetList.AddTextTargets(id);
+			}
+			if (CheckFormat(StandardDataFormats.Bitmap, out id))
+			{
+				targetList.AddImageTargets(id, true);
+			}
+			if (CheckFormat(StandardDataFormats.Html, out id))
+			{
+				targetList.Add(HtmlContent, 0, id);
+			}
+			if (CheckFormat(StandardDataFormats.Rtf, out id))
+			{
+				targetList.Add(RtfContent, 0, id);
+			}
+			if (CheckFormat(StandardDataFormats.StorageItems, out id))
+			{
+				targetList.Add(GnomeCopiedFilesContent, 0, id);
+			}
+			if (CheckFormat(StandardDataFormats.ApplicationLink, out id))
+			{
+				targetList.AddUriTargets(id);
+			}
+			if (CheckFormat(StandardDataFormats.WebLink, out id))
+			{
+				targetList.AddUriTargets(id);
+			}
+			if (CheckFormat(StandardDataFormats.Uri, out id))
+			{
+				targetList.AddUriTargets(id);
+			}
+
+			_clipboard.SetWithData((TargetEntry [])targetList, SetDataNative, (clipboard) => { });
 		}
 
 		public void StartContentChanged()
