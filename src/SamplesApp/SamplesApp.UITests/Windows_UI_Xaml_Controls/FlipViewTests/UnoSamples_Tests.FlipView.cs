@@ -5,12 +5,12 @@ using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
 using NUnit.Framework;
-using SamplesApp.UITests.TestFramework
+using SamplesApp.UITests.TestFramework;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 {
     [TestFixture]
-    public class UnoSamples_Tests : SampleControlUITestBase
+    public partial class UnoSamples_Tests : SampleControlUITestBase
     {
 		[Test]
 		[AutoRetry]

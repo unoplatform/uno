@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private BindingPath _selectedValueBindingPath;
 		private bool _disableRaiseSelectionChanged;
 		//private int m_lastFocusedIndex;
-		private bool m_inCollectionChange;
+		private bool m_inCollectionChange = false;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
