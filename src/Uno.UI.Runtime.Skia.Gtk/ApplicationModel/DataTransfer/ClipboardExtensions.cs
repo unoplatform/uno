@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Gdk;
 using Gtk;
+using Microsoft.Extensions.Logging;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Extensions;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -84,30 +86,38 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 				// while GTK# just exposes 1 string?
 				var uris = _clipboard.WaitForUris();
 
-				global::System.Diagnostics.Debug.WriteLine(uris);
-
-				if (uris != null)
+				try
 				{
-					DataPackage.SeparateUri(
-						uris,
-						out string webLink,
-						out string applicationLink);
+					if (uris != null)
+					{
+						DataPackage.SeparateUri(
+							uris,
+							out string webLink,
+							out string applicationLink);
 
-					var clipWebLink = webLink != null ? new Uri(webLink) : null;
-					var clipApplicationLink = applicationLink != null ? new Uri(applicationLink) : null;
-					var clipUri = new Uri(uris);
+						var clipWebLink = webLink != null ? new Uri(webLink) : null;
+						var clipApplicationLink = applicationLink != null ? new Uri(applicationLink) : null;
+						var clipUri = new Uri(uris);
 
-					if (clipWebLink != null)
-					{
-						dataPackage.SetWebLink(clipWebLink);
+						if (clipWebLink != null)
+						{
+							dataPackage.SetWebLink(clipWebLink);
+						}
+						if (clipApplicationLink != null)
+						{
+							dataPackage.SetApplicationLink(clipApplicationLink);
+						}
+						if (clipUri != null)
+						{
+							dataPackage.SetUri(clipUri);
+						}
 					}
-					if (clipApplicationLink != null)
+				}
+				catch (UriFormatException e)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						dataPackage.SetApplicationLink(clipApplicationLink);
-					}
-					if (clipUri != null)
-					{
-						dataPackage.SetUri(clipUri);
+						this.Log().LogError($"Invalid URI on clipboard: {uris}", e);
 					}
 				}
 			}
@@ -127,8 +137,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 
 					foreach (var fileUriString in dataList)
 					{
-						var fileUri = new Uri(fileUriString);
-						var path = fileUri.LocalPath;
+						var path = Uri.UnescapeDataString(fileUriString.Substring("file://".Length));
 
 						var attr = File.GetAttributes(path);
 						if (attr.HasFlag(global::System.IO.FileAttributes.Directory))
@@ -213,7 +222,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 				_clipboard.SetWithData(new[] { target0, target1 },
 				(clipboard, selection, info) =>
 				{
-					selection.Set(selection.Target, 8, Encoding.UTF8.GetBytes(builder.ToString()));
+					selection.Set(selection.Target, 8, Encoding.UTF8.GetBytes(builder.ToString().Trim()));
 				},
 				(clipboard) => { });
 			}
@@ -257,7 +266,11 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 				}
 				else
 				{
-					uri.Append($"%{(int)ch:X2}");
+					var bytes = Encoding.UTF8.GetBytes(new[] { ch });
+					foreach (var b in bytes)
+					{
+						uri.Append($"%{b:X2}");
+					}
 				}
 			}
 			return "file://" + uri.ToString();
