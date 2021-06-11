@@ -25,7 +25,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 		static readonly Atom RtfContent = Atom.Intern("text/rtf", false);
 		static readonly Atom GnomeCopiedFilesContent = Atom.Intern("x-special/gnome-copied-files", false);
 
-		private Clipboard _clipboard;
+		private readonly Clipboard _clipboard;
 
 		public ClipboardExtensions(object owner)
 		{
@@ -273,7 +273,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 					}
 				}
 			}
-			return "file://" + uri.ToString();
+			return "file://" + uri;
 		}
 	}
 }
