@@ -63,7 +63,7 @@ namespace Windows.Gaming.Input
 		#endif
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.Vibration.get
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.Vibration.set
-		#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Gaming.Input.GamepadReading GetCurrentReading()
 		{

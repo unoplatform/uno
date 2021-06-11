@@ -1,35 +1,161 @@
 ﻿#if __ANDROID__
+
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Android.Content;
 using Android.Hardware.Input;
 using Android.Views;
-using Javax.Security.Auth;
 using Uno.Extensions;
+using Uno.Gaming.Input.Internal;
 using Uno.UI;
 
 namespace Windows.Gaming.Input
 {
 	public partial class Gamepad
 	{
-		private static InputManager _inputManager;
-		private static InputManager.IInputDeviceListener _listener;
+		private static InputManager? _inputManager;
+		private static InputManager.IInputDeviceListener? _listener;
 		private static Dictionary<int, Gamepad> _gamepadCache = new Dictionary<int, Gamepad>();
 
 		private readonly int _nativeDeviceId;
+
+		private GamepadReading _gamepadReading = new GamepadReading();
 
 		public Gamepad(int nativeDeviceId)
 		{
 			_nativeDeviceId = nativeDeviceId;
 		}
 
+		public GamepadReading GetCurrentReading() => _gamepadReading;
+
+		internal static bool OnKeyEvent(KeyEvent e)
+		{
+			if (IsGamepad(e.Device))
+			{
+				if (TryGetOrCreateGamepad(e.DeviceId, out var gamepad))
+				{
+					gamepad!._gamepadReading.Timestamp = (ulong)e.EventTime;
+
+					if (e.Action == KeyEventActions.Down)
+					{
+						var button = KeycodeToGamepadButtons(e.KeyCode);
+						gamepad!._gamepadReading.Buttons =
+							gamepad._gamepadReading.Buttons | button;
+
+						return button != GamepadButtons.None;
+					}
+					else
+					{
+						var button = KeycodeToGamepadButtons(e.KeyCode);
+						gamepad!._gamepadReading.Buttons =
+							gamepad._gamepadReading.Buttons & (~button);
+
+						return button != GamepadButtons.None;
+					}
+				}
+			}
+			return false;
+		}
+
+		internal static bool OnGenericMotionEvent(MotionEvent motionEvent)
+		{
+			if (IsGamepad(motionEvent.Device))
+			{
+				if (TryGetOrCreateGamepad(motionEvent.DeviceId, out var gamepad))
+				{
+					gamepad!._gamepadReading.Timestamp = (ulong)motionEvent.EventTime;
+					if (GamepadDpad.GetDirectionPressed(motionEvent) is { } direction)
+					{
+						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons & (~GamepadButtons.DPadDown);
+						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons & (~GamepadButtons.DPadUp);
+						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons & (~GamepadButtons.DPadLeft);
+						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons & (~GamepadButtons.DPadRight);
+
+						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons | direction;
+					}
+
+					var inputDevice = motionEvent.Device!;
+					
+					gamepad!._gamepadReading.LeftThumbstickX =
+						GetCenteredAxis(motionEvent, inputDevice, Axis.X);
+					gamepad!._gamepadReading.LeftThumbstickY =
+						GetCenteredAxis(motionEvent, inputDevice, Axis.Y);
+					gamepad!._gamepadReading.RightThumbstickX =
+						GetCenteredAxis(motionEvent, inputDevice, Axis.Z);
+					gamepad!._gamepadReading.RightThumbstickY =
+						GetCenteredAxis(motionEvent, inputDevice, Axis.Rz);
+					gamepad!._gamepadReading.RightTrigger =
+						GetCenteredAxis(motionEvent, inputDevice, Axis.Rx);
+					gamepad!._gamepadReading.LeftTrigger =
+						GetCenteredAxis(motionEvent, inputDevice, Axis.Ry);
+
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private static float GetCenteredAxis(
+			MotionEvent motionEvent,
+			InputDevice device,
+			Axis axis)
+		{
+			var range = device.GetMotionRange(axis, motionEvent.Source);
+
+			// A joystick at rest does not always report an absolute position of
+			// (0,0). Use the getFlat() method to determine the range of values
+			// bounding the joystick axis center.
+			if (range != null)
+			{
+				float flat = range.Flat;
+				float value = motionEvent.GetAxisValue(axis);
+
+				// Ignore axis values that are within the 'flat' region of the
+				// joystick axis center.
+				if (Math.Abs(value) > flat)
+				{
+					return value;
+				}
+			}
+			else
+			{
+				return motionEvent.GetAxisValue(axis);
+			}
+
+			return 0;
+		}
+
+		private static GamepadButtons KeycodeToGamepadButtons(Keycode keycode) =>
+			keycode switch
+			{
+				Keycode.ButtonA => GamepadButtons.A,
+				Keycode.ButtonX => GamepadButtons.X,
+				Keycode.ButtonB => GamepadButtons.B,
+				Keycode.ButtonY => GamepadButtons.Y,
+				Keycode.DpadUp => GamepadButtons.DPadUp,
+				Keycode.DpadRight => GamepadButtons.DPadRight,
+				Keycode.DpadDown => GamepadButtons.DPadDown,
+				Keycode.DpadLeft => GamepadButtons.DPadLeft,
+				Keycode.DpadUpLeft => GamepadButtons.DPadUp | GamepadButtons.DPadLeft,
+				Keycode.DpadUpRight => GamepadButtons.DPadUp | GamepadButtons.DPadRight,
+				Keycode.DpadDownRight => GamepadButtons.DPadDown | GamepadButtons.DPadRight,
+				Keycode.DpadDownLeft => GamepadButtons.DPadDown | GamepadButtons.DPadLeft,
+				Keycode.ButtonThumbl => GamepadButtons.LeftThumbstick,
+				Keycode.ButtonThumbr => GamepadButtons.RightThumbstick,
+				Keycode.ButtonL1 => GamepadButtons.LeftShoulder,
+				Keycode.ButtonR1 => GamepadButtons.RightShoulder,
+				Keycode.ButtonStart => GamepadButtons.Menu,
+				Keycode.ButtonSelect => GamepadButtons.View,
+				_ => GamepadButtons.None,
+			};
+
 		private static IReadOnlyList<Gamepad> GetGamepadsInternal()
 		{
 			var cachedDeviceIds = _gamepadCache.Keys.ToArray();
-			var connectedIds = InputDevice.GetDeviceIds();
+			var connectedIds = InputDevice.GetDeviceIds() ?? Array.Empty<int>();
 
 			//remove disconnected
 			var disconnectedDevices = cachedDeviceIds.Except(connectedIds);
@@ -42,7 +168,7 @@ namespace Windows.Gaming.Input
 				{
 					if (!_gamepadCache.ContainsKey(deviceId))
 					{
-						_gamepadCache.Add(deviceId, gamepad);
+						_gamepadCache.Add(deviceId, gamepad!);
 					}
 				}
 			}
@@ -54,7 +180,12 @@ namespace Windows.Gaming.Input
 		{
 			if (_inputManager == null)
 			{
-				_inputManager = (InputManager)ContextHelper.Current.GetSystemService(Context.InputService);
+				_inputManager = (InputManager?)ContextHelper.Current.GetSystemService(Context.InputService);
+
+				if (_inputManager == null)
+				{
+					throw new InvalidOperationException("Cannot access input manager");
+				}
 			}
 		}
 
@@ -80,25 +211,26 @@ namespace Windows.Gaming.Input
 			EnsureInputManagerInitialized();
 
 			_listener = new InputDeviceListener();
-			_inputManager.RegisterInputDeviceListener(_listener, null);
+			_inputManager!.RegisterInputDeviceListener(_listener, null);
 		}
 
 		private static void DetachInputDeviceListener()
 		{
-			if (_gamepadAdded != null || _gamepadRemoved != null)
+			if (_gamepadAddedWrapper.HasSubscribers ||
+				_gamepadRemovedWrapper.HasSubscribers)
 			{
 				return;
 			}
 
-			_inputManager.UnregisterInputDeviceListener(_listener);
+			_inputManager!.UnregisterInputDeviceListener(_listener);
 			_listener?.Dispose();
 			_listener = null;
 		}
 
-		private static bool IsGamepad(InputDevice inputDevice) =>
-			inputDevice.Sources.HasFlag(InputSourceType.Gamepad);
+		private static bool IsGamepad(InputDevice? inputDevice) =>
+			inputDevice?.Sources.HasFlag(InputSourceType.Gamepad) == true;
 
-		private static bool TryGetOrCreateGamepad(int deviceId, out Gamepad gamepad)
+		private static bool TryGetOrCreateGamepad(int deviceId, out Gamepad? gamepad)
 		{
 			gamepad = null;
 
@@ -128,7 +260,7 @@ namespace Windows.Gaming.Input
 				{
 					if (!_gamepadCache.ContainsKey(deviceId))
 					{
-						_gamepadCache.Add(deviceId, gamepad);						
+						_gamepadCache.Add(deviceId, gamepad!);
 					}
 					OnGamepadAdded(gamepad);
 				}
@@ -139,7 +271,7 @@ namespace Windows.Gaming.Input
 			}
 
 			public void OnInputDeviceRemoved(int deviceId)
-			{				
+			{
 				if (_gamepadCache.TryGetValue(deviceId, out var gamepad))
 				{
 					_gamepadCache.Remove(deviceId);

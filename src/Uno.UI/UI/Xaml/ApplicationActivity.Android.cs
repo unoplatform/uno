@@ -11,8 +11,10 @@ using Android.Views.InputMethods;
 using Uno.AuthenticationBroker;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Gaming.Input.Internal;
 using Uno.UI;
 using Windows.Devices.Sensors;
+using Windows.Gaming.Input;
 using Windows.Graphics.Display;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -93,21 +95,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public void DismissKeyboard()
-		{
-			var windowToken = CurrentFocus?.WindowToken;
-
-			if (windowToken != null)
-			{
-				var inputManager = (InputMethodManager)GetSystemService(InputMethodService);
-				inputManager.HideSoftInputFromWindow(windowToken, HideSoftInputFlags.None);
-			}
-		}
-
 		public override bool DispatchKeyEvent(KeyEvent e)
 		{
-			var handled = false;
-			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
+			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && e.Action == KeyEventActions.Down)
 			{
 				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
 				if (focusHandler != null && e.Action == KeyEventActions.Down)
@@ -149,7 +139,33 @@ namespace Windows.UI.Xaml
 				return base.DispatchKeyEvent(e);
 			}
 
-			return true;
+			if (Gamepad.OnKeyEvent(e))
+			{
+				return true;
+			}
+
+			return base.DispatchKeyEvent(e);
+		}
+
+		public override bool DispatchGenericMotionEvent(MotionEvent e)
+		{
+			if (Gamepad.OnGenericMotionEvent(e))
+			{
+				return true;
+			}
+
+			return base.DispatchGenericMotionEvent(e);
+		}
+
+		public void DismissKeyboard()
+		{
+			var windowToken = CurrentFocus?.WindowToken;
+
+			if (windowToken != null)
+			{
+				var inputManager = (InputMethodManager)GetSystemService(InputMethodService);
+				inputManager.HideSoftInputFromWindow(windowToken, HideSoftInputFlags.None);
+			}
 		}
 
 		public void SetOrientation(ScreenOrientation orientation)

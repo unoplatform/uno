@@ -1,80 +1,56 @@
 ﻿#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Uno.Helpers;
 
 namespace Windows.Gaming.Input
 {
-    public partial class Gamepad : IGameController
+	/// <summary>
+	/// Represents a gamepad.
+	/// </summary>
+	public partial class Gamepad : IGameController
     {
-		private readonly static object _syncLock = new object();
+		private static readonly object _syncLock = new object();
 
-		private static EventHandler<Gamepad> _gamepadAdded;
-		private static EventHandler<Gamepad> _gamepadRemoved;
+		private static readonly StartStopEventWrapper<EventHandler<Gamepad>> _gamepadAddedWrapper;
+		private static readonly StartStopEventWrapper<EventHandler<Gamepad>> _gamepadRemovedWrapper;
 
+		static Gamepad()
+		{
+			_gamepadAddedWrapper = new StartStopEventWrapper<EventHandler<Gamepad>>(
+				StartGamepadAdded, EndGamepadAdded, _syncLock);
+			_gamepadRemovedWrapper = new StartStopEventWrapper<EventHandler<Gamepad>>(
+				StartGamepadRemoved, EndGamepadRemoved, _syncLock);
+		}
+
+		/// <summary>
+		/// The list of all connected gamepads.
+		/// </summary>
 		public static IReadOnlyList<Gamepad> Gamepads => GetGamepadsInternal();
 
+		/// <summary>
+		/// Signals when a new gamepad is connected.
+		/// </summary>
 		public static event EventHandler<Gamepad> GamepadAdded
-		{			
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _gamepadAdded == null;
-					_gamepadAdded += value;
-					if (isFirstSubscriber)
-					{
-						StartGamepadAdded();
-					}
-				}
-			}		
-			remove
-			{
-				lock (_syncLock)
-				{					
-					_gamepadAdded -= value;
-					if(_gamepadAdded == null)
-					{
-						EndGamepadAdded();
-					}
-				}
-			}
+		{
+			add => _gamepadAddedWrapper.AddHandler(value);
+			remove => _gamepadAddedWrapper.RemoveHandler(value);
 		}
-		
+
+		/// <summary>
+		/// Signals when a gamepad is disconnected.
+		/// </summary>
 		public static event EventHandler<Gamepad> GamepadRemoved
-		{			
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _gamepadRemoved == null;
-					_gamepadRemoved += value;
-					if (isFirstSubscriber)
-					{
-						StartGamepadRemoved();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_gamepadRemoved -= value;
-					if (_gamepadRemoved == null)
-					{
-						EndGamepadRemoved();
-					}
-				}
-			}
+		{
+			add => _gamepadRemovedWrapper.AddHandler(value);
+			remove => _gamepadRemovedWrapper.RemoveHandler(value);
 		}		
 
 		internal static void OnGamepadAdded(Gamepad gamepad) =>
-			_gamepadAdded?.Invoke(null, gamepad);
+			_gamepadAddedWrapper.Event?.Invoke(null, gamepad);
 
 		internal static void OnGamepadRemoved(Gamepad gamepad) =>
-			_gamepadRemoved?.Invoke(null, gamepad);
+			_gamepadRemovedWrapper.Event?.Invoke(null, gamepad);
     }
 }
 #endif
