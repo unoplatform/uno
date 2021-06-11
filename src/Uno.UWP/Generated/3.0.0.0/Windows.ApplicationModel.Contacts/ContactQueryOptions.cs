@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Contacts
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ContactQueryOptions 
@@ -35,20 +35,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Contacts.ContactQueryDesiredFields DesiredFields
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactQueryDesiredFields ContactQueryOptions.DesiredFields is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactQueryDesiredFields ContactQueryOptions.DesiredFields");
-			}
-		}
-		#endif
+		// Skipping already declared property DesiredFields
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<string> AnnotationListIds
@@ -79,29 +66,11 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContactQueryOptions( string text) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactQueryOptions.ContactQueryOptions(string text)");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string)
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContactQueryOptions( string text,  global::Windows.ApplicationModel.Contacts.ContactQuerySearchFields fields) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactQueryOptions.ContactQueryOptions(string text, ContactQuerySearchFields fields)");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
-		#if false 
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContactQueryOptions() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactQueryOptions.ContactQueryOptions()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.TextSearch.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactListIds.get

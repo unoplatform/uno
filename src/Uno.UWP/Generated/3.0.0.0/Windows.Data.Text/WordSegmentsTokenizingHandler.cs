@@ -3,6 +3,6 @@
 namespace Windows.Data.Text
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void WordSegmentsTokenizingHandler(global::System.Collections.Generic.IEnumerable<global::Windows.Data.Text.WordSegment> @precedingWords, global::System.Collections.Generic.IEnumerable<global::Windows.Data.Text.WordSegment> @words);
+	public delegate void WordSegmentsTokenizingHandler(global::System.Collections.Generic.IEnumerable<global::Windows.Data.Text.WordSegment> precedingWords, global::System.Collections.Generic.IEnumerable<global::Windows.Data.Text.WordSegment> words);
 	#endif
 }

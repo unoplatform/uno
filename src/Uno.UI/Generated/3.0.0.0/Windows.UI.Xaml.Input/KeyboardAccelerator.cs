@@ -7,94 +7,14 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class KeyboardAccelerator : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject ScopeOwner
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(ScopeOwnerProperty);
-			}
-			set
-			{
-				this.SetValue(ScopeOwnerProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.VirtualKeyModifiers Modifiers
-		{
-			get
-			{
-				return (global::Windows.System.VirtualKeyModifiers)this.GetValue(ModifiersProperty);
-			}
-			set
-			{
-				this.SetValue(ModifiersProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.VirtualKey Key
-		{
-			get
-			{
-				return (global::Windows.System.VirtualKey)this.GetValue(KeyProperty);
-			}
-			set
-			{
-				this.SetValue(KeyProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsEnabledProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Key), typeof(global::Windows.System.VirtualKey), 
-			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
-			new FrameworkPropertyMetadata(default(global::Windows.System.VirtualKey)));
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ModifiersProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Modifiers), typeof(global::Windows.System.VirtualKeyModifiers), 
-			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
-			new FrameworkPropertyMetadata(default(global::Windows.System.VirtualKeyModifiers)));
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ScopeOwnerProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
-		#endif
+		// Skipping already declared property ScopeOwner
+		// Skipping already declared property Modifiers
+		// Skipping already declared property Key
+		// Skipping already declared property IsEnabled
+		// Skipping already declared property IsEnabledProperty
+		// Skipping already declared property KeyProperty
+		// Skipping already declared property ModifiersProperty
+		// Skipping already declared property ScopeOwnerProperty
 		// Skipping already declared method Windows.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator()
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator()
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.Key.get

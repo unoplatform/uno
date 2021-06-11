@@ -3,6 +3,6 @@
 namespace Windows.Storage
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void ApplicationDataSetVersionHandler(global::Windows.Storage.SetVersionRequest @setVersionRequest);
+	public delegate void ApplicationDataSetVersionHandler(global::Windows.Storage.SetVersionRequest setVersionRequest);
 	#endif
 }

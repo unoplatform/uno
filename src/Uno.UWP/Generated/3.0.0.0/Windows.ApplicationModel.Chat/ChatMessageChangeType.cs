@@ -3,9 +3,6 @@
 namespace Windows.ApplicationModel.Chat
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum ChatMessageChangeType 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageChangeType.MessageCreated

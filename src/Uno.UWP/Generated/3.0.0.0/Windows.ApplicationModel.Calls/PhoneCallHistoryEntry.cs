@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Calls
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PhoneCallHistoryEntry 
@@ -21,34 +21,8 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsMissed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsMissed is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntry", "bool PhoneCallHistoryEntry.IsMissed");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsIncoming
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsIncoming is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntry", "bool PhoneCallHistoryEntry.IsIncoming");
-			}
-		}
-		#endif
+		// Skipping already declared property IsMissed
+		// Skipping already declared property IsIncoming
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsCallerIdBlocked
@@ -77,20 +51,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? PhoneCallHistoryEntry.Duration is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntry", "TimeSpan? PhoneCallHistoryEntry.Duration");
-			}
-		}
-		#endif
+		// Skipping already declared property Duration
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsEmergency
@@ -119,20 +80,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset StartTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PhoneCallHistoryEntry.StartTime is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntry", "DateTimeOffset PhoneCallHistoryEntry.StartTime");
-			}
-		}
-		#endif
+		// Skipping already declared property StartTime
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Calls.PhoneCallHistorySourceIdKind SourceIdKind
@@ -147,20 +95,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress Address
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PhoneCallHistoryEntryAddress PhoneCallHistoryEntry.Address is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntry", "PhoneCallHistoryEntryAddress PhoneCallHistoryEntry.Address");
-			}
-		}
-		#endif
+		// Skipping already declared property Address
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string SourceId
@@ -217,20 +152,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsVoicemail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsVoicemail is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntry", "bool PhoneCallHistoryEntry.IsVoicemail");
-			}
-		}
-		#endif
+		// Skipping already declared property IsVoicemail
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Id
@@ -251,13 +173,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PhoneCallHistoryEntry() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntry", "PhoneCallHistoryEntry.PhoneCallHistoryEntry()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.PhoneCallHistoryEntry()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.PhoneCallHistoryEntry()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.Address.get

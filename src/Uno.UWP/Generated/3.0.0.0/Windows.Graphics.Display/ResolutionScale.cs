@@ -3,9 +3,6 @@
 namespace Windows.Graphics.Display
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum ResolutionScale 
 	{
 		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Invalid

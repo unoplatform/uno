@@ -3,6 +3,6 @@
 namespace Windows.UI.Xaml.Input
 {
 	#if false || false || NET461 || false || false || false || false
-	public delegate void KeyEventHandler(object @sender, global::Windows.UI.Xaml.Input.KeyRoutedEventArgs @e);
+	public delegate void KeyEventHandler(object sender, global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e);
 	#endif
 }

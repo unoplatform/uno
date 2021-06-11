@@ -3,6 +3,6 @@
 namespace Windows.UI.ApplicationSettings
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void WebAccountCommandInvokedHandler(global::Windows.UI.ApplicationSettings.WebAccountCommand @command, global::Windows.UI.ApplicationSettings.WebAccountInvokedArgs @args);
+	public delegate void WebAccountCommandInvokedHandler(global::Windows.UI.ApplicationSettings.WebAccountCommand command, global::Windows.UI.ApplicationSettings.WebAccountInvokedArgs args);
 	#endif
 }

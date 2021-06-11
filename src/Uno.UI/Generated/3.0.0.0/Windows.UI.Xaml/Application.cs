@@ -10,34 +10,8 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property Resources
 		// Skipping already declared property RequestedTheme
 		// Skipping already declared property DebugSettings
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.ApplicationRequiresPointerMode RequiresPointerMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ApplicationRequiresPointerMode Application.RequiresPointerMode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "ApplicationRequiresPointerMode Application.RequiresPointerMode");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.FocusVisualKind FocusVisualKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusVisualKind Application.FocusVisualKind is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "FocusVisualKind Application.FocusVisualKind");
-			}
-		}
-		#endif
+		// Skipping already declared property RequiresPointerMode
+		// Skipping already declared property FocusVisualKind
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ApplicationHighContrastAdjustment HighContrastAdjustment

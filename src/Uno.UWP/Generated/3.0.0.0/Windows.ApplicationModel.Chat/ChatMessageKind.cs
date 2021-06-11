@@ -2,33 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Chat
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum ChatMessageKind 
 	{
-		#if false
-		Standard,
-		#endif
-		#if false
-		FileTransferRequest,
-		#endif
-		#if false
-		TransportCustom,
-		#endif
-		#if false
-		JoinedConversation,
-		#endif
-		#if false
-		LeftConversation,
-		#endif
-		#if false
-		OtherParticipantJoinedConversation,
-		#endif
-		#if false
-		OtherParticipantLeftConversation,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.Standard
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.FileTransferRequest
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.TransportCustom
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.JoinedConversation
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.LeftConversation
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.OtherParticipantJoinedConversation
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.OtherParticipantLeftConversation
 	}
 	#endif
 }

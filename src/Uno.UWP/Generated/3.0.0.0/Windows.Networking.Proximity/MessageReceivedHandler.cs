@@ -3,6 +3,6 @@
 namespace Windows.Networking.Proximity
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void MessageReceivedHandler(global::Windows.Networking.Proximity.ProximityDevice @sender, global::Windows.Networking.Proximity.ProximityMessage @message);
+	public delegate void MessageReceivedHandler(global::Windows.Networking.Proximity.ProximityDevice sender, global::Windows.Networking.Proximity.ProximityMessage message);
 	#endif
 }

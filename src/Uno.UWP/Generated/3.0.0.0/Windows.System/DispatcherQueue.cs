@@ -18,6 +18,8 @@ namespace Windows.System
 		}
 		#endif
 		// Skipping already declared method Windows.System.DispatcherQueue.CreateTimer()
+		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueueHandler)
+		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueuePriority, Windows.System.DispatcherQueueHandler)
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.add
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.remove
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownCompleted.add

@@ -2,61 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if false
-
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum SystemTriggerType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Invalid,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		SmsReceived,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UserPresent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UserAway,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkStateChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ControlChannelReset,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		InternetAvailable,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		SessionConnected,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ServicingComplete,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LockScreenApplicationAdded,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LockScreenApplicationRemoved,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TimeZoneChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		OnlineIdConnectedStateChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		BackgroundWorkCostChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PowerStateChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DefaultSignInAccountChange,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.Invalid
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.SmsReceived
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.UserPresent
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.UserAway
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.NetworkStateChange
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.ControlChannelReset
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.InternetAvailable
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.SessionConnected
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.ServicingComplete
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.LockScreenApplicationAdded
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.LockScreenApplicationRemoved
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.TimeZoneChange
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.OnlineIdConnectedStateChange
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.BackgroundWorkCostChange
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.PowerStateChange
+		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.DefaultSignInAccountChange
 	}
 	#endif
 }

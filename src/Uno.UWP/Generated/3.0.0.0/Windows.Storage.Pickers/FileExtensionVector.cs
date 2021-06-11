@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FileExtensionVector : global::System.Collections.Generic.IList<string>,global::System.Collections.Generic.IEnumerable<string>
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint FileExtensionVector.Size is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Size
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.GetAt(uint)
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Size.get
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.GetView()
@@ -31,130 +22,11 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.ReplaceAll(string[])
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.First()
 		// Processing: System.Collections.Generic.IList<string>
-		#if false
-		// DeclaringType: System.Collections.Generic.IList<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int IndexOf( string item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.IList<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Insert( int index,  string item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.IList<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAt( int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.IList<string>.this[int]
 		// Processing: System.Collections.Generic.ICollection<string>
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( string item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( string item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( string[] array,  int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( string item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.ICollection<string>.Count
+		// Skipping already implement System.Collections.Generic.ICollection<string>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<string>
-		#if false
-		// DeclaringType: System.Collections.Generic.IEnumerable<string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IEnumerator<string> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 		// Processing: System.Collections.IEnumerable
-		#if false
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 	}
 }

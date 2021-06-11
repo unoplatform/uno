@@ -2,39 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RandomAccessStreamReference : global::Windows.Storage.Streams.IRandomAccessStreamReference
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> OpenReadAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> RandomAccessStreamReference.OpenReadAsync() is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Storage.Streams.RandomAccessStreamReference CreateFromFile( global::Windows.Storage.IStorageFile file)
-		{
-			throw new global::System.NotImplementedException("The member RandomAccessStreamReference RandomAccessStreamReference.CreateFromFile(IStorageFile file) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Storage.Streams.RandomAccessStreamReference CreateFromUri( global::System.Uri uri)
-		{
-			throw new global::System.NotImplementedException("The member RandomAccessStreamReference RandomAccessStreamReference.CreateFromUri(Uri uri) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Storage.Streams.RandomAccessStreamReference CreateFromStream( global::Windows.Storage.Streams.IRandomAccessStream stream)
-		{
-			throw new global::System.NotImplementedException("The member RandomAccessStreamReference RandomAccessStreamReference.CreateFromStream(IRandomAccessStream stream) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.OpenReadAsync()
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromFile(Windows.Storage.IStorageFile)
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(System.Uri)
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(Windows.Storage.Streams.IRandomAccessStream)
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamReference
 	}
 }

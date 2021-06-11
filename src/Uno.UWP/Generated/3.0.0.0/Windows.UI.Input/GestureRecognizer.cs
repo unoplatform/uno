@@ -441,22 +441,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.DraggingEventArgs> Dragging
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, DraggingEventArgs> GestureRecognizer.Dragging");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, DraggingEventArgs> GestureRecognizer.Dragging");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Input.GestureRecognizer.Dragging
 		// Skipping already declared event Windows.UI.Input.GestureRecognizer.Holding
 		// Skipping already declared event Windows.UI.Input.GestureRecognizer.ManipulationCompleted
 		// Skipping already declared event Windows.UI.Input.GestureRecognizer.ManipulationInertiaStarting

@@ -144,6 +144,20 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool IsHitTestVisible
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool Visual.IsHitTestVisible is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "bool Visual.IsHitTestVisible");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Composition.Visual.AnchorPoint.get
 		// Forced skipping of method Windows.UI.Composition.Visual.AnchorPoint.set
 		// Forced skipping of method Windows.UI.Composition.Visual.BackfaceVisibility.get
@@ -183,5 +197,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.Visual.RelativeOffsetAdjustment.set
 		// Forced skipping of method Windows.UI.Composition.Visual.RelativeSizeAdjustment.get
 		// Forced skipping of method Windows.UI.Composition.Visual.RelativeSizeAdjustment.set
+		// Forced skipping of method Windows.UI.Composition.Visual.IsHitTestVisible.get
+		// Forced skipping of method Windows.UI.Composition.Visual.IsHitTestVisible.set
 	}
 }
