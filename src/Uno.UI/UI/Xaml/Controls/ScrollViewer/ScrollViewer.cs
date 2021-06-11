@@ -47,7 +47,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
-		private bool m_isInDirectManipulation;
 		private bool m_isInConstantVelocityPan;
 
 		private static class Parts
@@ -1510,9 +1509,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		internal bool IsInDirectManipulation => m_isInDirectManipulation;
-
-		internal bool IsInManipulation => m_isInDirectManipulation || m_isInConstantVelocityPan;
+		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
 
 		internal bool ForceChangeToCurrentView { get; set; } = false;
 
