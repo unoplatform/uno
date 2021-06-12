@@ -1850,8 +1850,8 @@ namespace Windows.UI.Xaml.Controls
 				if (isScopeChanged)
 				{
 #if __ANDROID__
-					// .InvalidateMeasure() bug
-					DispatcherQueue.GetForCurrentThread().TryEnqueue(() => UpdateHeaderText(false /*withAnimation*/));
+					// .InvalidateMeasure() bug https://github.com/unoplatform/uno/issues/6236
+					DispatcherQueue.TryEnqueue(() => UpdateHeaderText(false /*withAnimation*/));
 #else
 					UpdateHeaderText(false /*withAnimation*/);
 #endif
