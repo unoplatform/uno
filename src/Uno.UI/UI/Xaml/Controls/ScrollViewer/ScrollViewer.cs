@@ -1485,12 +1485,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		internal void ScrollToHorizontalOffset(double offset)
+		public void ScrollToHorizontalOffset(double offset)
 		{
 			_ = ChangeView(offset, null, null, false);
 		}
 
-		internal void ScrollToVerticalOffset(double offset)
+		public void ScrollToVerticalOffset(double offset)
 		{
 			_ = ChangeView(null, offset, null, false);
 		}
