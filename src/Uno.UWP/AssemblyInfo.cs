@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 
 #if __IOS__
-[assembly: Foundation.LinkerSafe]
+[assembly: AssemblyMetadata("IsTrimmable", "True")]
 #elif __ANDROID__
 [assembly: Android.LinkerSafe]
 #endif
