@@ -14,6 +14,7 @@ Here's what to look for:
 - ListView and GridView
 	- Don't use template selectors inside the ItemTemplate, prefer using the ItemTemplateSelector on ListView/GridView.
 	- The default [ListViewItem and GridViewItem styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
+- Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
 - Animations
 	- Prefer `Opacity` animations to `Visibility` animations (this avoids some measuring performance issues).
 		- Unless the visual tree of the element is very big, where in this case `Visibility` is better suited.
