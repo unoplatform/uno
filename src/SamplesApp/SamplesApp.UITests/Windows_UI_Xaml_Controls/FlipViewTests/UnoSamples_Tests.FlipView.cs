@@ -10,7 +10,7 @@ using SamplesApp.UITests.TestFramework;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 {
     [TestFixture]
-    public partial class UnoSamples_Tests : SampleControlUITestBase
+    public partial class FlipView_Tests : SampleControlUITestBase
     {
 		[Test]
 		[AutoRetry]

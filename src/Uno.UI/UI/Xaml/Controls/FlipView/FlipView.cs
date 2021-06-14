@@ -162,15 +162,11 @@ namespace Windows.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpPreviousButtonHorizontalPart);
 
-				Console.WriteLine($"m_tpPreviousButtonHorizontalPart.strAutomationName: {strAutomationName}");
-
 				if (strAutomationName == null)
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
 					AutomationProperties.SetName(m_tpPreviousButtonHorizontalPart, strAutomationName);
 				}
-
-				Console.WriteLine($"m_tpPreviousButtonHorizontalPart.strAutomationName (after): {strAutomationName}");
 			}
 
 			spNextButtonHorizontalPart = CreateButtonClickEventHandler("NextButtonHorizontal", OnNextButtonPartClick);
