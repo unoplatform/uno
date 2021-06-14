@@ -525,7 +525,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
-			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBoxItem_1");
+			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
 			TakeScreenshot("FocusManager - GetFocusedElement - ComboBoxItem - 2 - After Selection");
 		}
 
@@ -551,7 +551,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
 
 			item1.FastTap();
-			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBoxItem_1");
+			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
 
 			_app.TapCoordinates(20, 100);
 
