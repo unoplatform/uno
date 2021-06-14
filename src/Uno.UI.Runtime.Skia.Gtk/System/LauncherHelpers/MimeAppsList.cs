@@ -84,16 +84,16 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 			}
 
 			locations.Add(XdgConfigHome);
-			locations.AddRange(XdgConfigDirs.Split(":"));
+			locations.AddRange(XdgConfigDirs.Split(':'));
 			locations.Add(Path.Combine(XdgDataHome, "applications"));
-			locations.AddRange(XdgDataDirs.Split(":").Select(path => Path.Combine(path, "applications")));
+			locations.AddRange(XdgDataDirs.Split(':').Select(path => Path.Combine(path, "applications")));
 
 			foreach (var location in locations)
 			{
 				ParseFile(location);
 			}
 
-			foreach (var dir in XdgDataDirs.Split(":"))
+			foreach (var dir in XdgDataDirs.Split(':'))
 			{
 				var desktopFileDir = Path.Combine(dir, "applications");
 				var directoryInfo = new DirectoryInfo(desktopFileDir);
@@ -110,7 +110,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 					{
 						continue;
 					}
-					var mimeTypes = desktopFile.DesktopEntry["MimeType"].Split(";");
+					var mimeTypes = desktopFile.DesktopEntry["MimeType"].Split(';');
 					foreach (var mimeType in mimeTypes)
 					{
 						Add(DesktopFileAssociations, mimeType, fileName);
@@ -138,7 +138,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 				}
 				else
 				{
-					target.Add(key, values.ToHashSet());
+					target.Add(key, new HashSet<string>(values));
 				}
 			}
 			// Using algorithm here: https://specifications.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html#ordering
@@ -170,7 +170,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 						}
 
 						var key = line.Substring(0, line.IndexOf('=')).Trim();
-						var values = line.Substring(line.IndexOf('=') + 1).Trim().Split(";");
+						var values = line.Substring(line.IndexOf('=') + 1).Trim().Split(';');
 
 						switch (currentSection)
 						{

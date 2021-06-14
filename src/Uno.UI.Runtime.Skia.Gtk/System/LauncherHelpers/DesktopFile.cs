@@ -20,7 +20,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 			}
 			desktopFileId = desktopFileId.Replace('-', '/');
 
-			foreach (var dir in XdgDataDirs.Split(":"))
+			foreach (var dir in XdgDataDirs.Split(':'))
 			{
 				var path = Path.Combine(dir, "applications", desktopFileId);
 				if (!File.Exists(path))
@@ -50,11 +50,11 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 				{
 					continue;
 				}
-				if (line.StartsWith('#'))
+				if (line.StartsWith("#"))
 				{
 					continue;
 				}
-				if (line.StartsWith('[') && line.EndsWith(']'))
+				if (line.StartsWith("[") && line.EndsWith("]"))
 				{
 					currentHeaderName = line.Substring(1, line.Length - 2);
 					if (!_groups.ContainsKey(currentHeaderName))
@@ -68,9 +68,12 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 				var key = line.Substring(0, splitPos).Trim();
 				var value = line.Substring(splitPos + 1).Trim();
 
-				_groups[currentHeaderName].TryAdd(key, value);
+				var group = _groups[currentHeaderName];
+				if (!group.ContainsKey(key))
+				{
+					group.Add(key, value);
+				}
 			}
-
 		}
 	}
 }
