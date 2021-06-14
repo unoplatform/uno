@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
+using Windows.System;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -1848,7 +1849,12 @@ namespace Windows.UI.Xaml.Controls
 
 				if (isScopeChanged)
 				{
+#if __ANDROID__
+					// .InvalidateMeasure() bug https://github.com/unoplatform/uno/issues/6236
+					DispatcherQueue.TryEnqueue(() => UpdateHeaderText(false /*withAnimation*/));
+#else
 					UpdateHeaderText(false /*withAnimation*/);
+#endif
 				}
 
 				// everytime visible indices changed, we need to update
