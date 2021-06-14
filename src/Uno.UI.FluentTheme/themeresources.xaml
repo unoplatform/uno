@@ -14362,7 +14362,6 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
   <Style x:Key="DefaultFlipViewStyle" TargetType="FlipView">
     <Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
     <Setter Property="BorderThickness" Value="0" />
@@ -14547,6 +14546,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <netstdref:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
   <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" />
   <Style x:Key="DefaultFlyoutPresenterStyle" TargetType="FlyoutPresenter">
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />

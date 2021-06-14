@@ -23,11 +23,15 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 using Uno.Disposables;
+using DirectUI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
+		const string UIA_FLIPVIEW_PREVIOUS = nameof(UIA_FLIPVIEW_PREVIOUS);
+		const string UIA_FLIPVIEW_NEXT = nameof(UIA_FLIPVIEW_NEXT); 
+
 		event EventHandler<ScrollViewerViewChangedEventArgs> m_epScrollViewerViewChangedHandler;
 
 		const int TICKS_PER_MILLISECOND = 10000;
@@ -158,11 +162,15 @@ namespace Windows.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpPreviousButtonHorizontalPart);
 
+				Console.WriteLine($"m_tpPreviousButtonHorizontalPart.strAutomationName: {strAutomationName}");
+
 				if (strAutomationName == null)
 				{
-					//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS, strAutomationName);
+					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
 					AutomationProperties.SetName(m_tpPreviousButtonHorizontalPart, strAutomationName);
 				}
+
+				Console.WriteLine($"m_tpPreviousButtonHorizontalPart.strAutomationName (after): {strAutomationName}");
 			}
 
 			spNextButtonHorizontalPart = CreateButtonClickEventHandler("NextButtonHorizontal", OnNextButtonPartClick);
@@ -178,7 +186,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (strAutomationName == null)
 				{
-					//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT, strAutomationName);
+					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT);
 					AutomationProperties.SetName(m_tpNextButtonHorizontalPart, strAutomationName);
 				}
 			}
@@ -197,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (strAutomationName == null)
 				{
-					//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS, strAutomationName);
+					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
 					AutomationProperties.SetName(m_tpPreviousButtonVerticalPart, strAutomationName);
 				}
 			}
@@ -215,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (strAutomationName == null)
 				{
-					//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT, strAutomationName);
+					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT);
 					AutomationProperties.SetName(m_tpNextButtonVerticalPart, strAutomationName);
 
 				}

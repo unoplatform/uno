@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -134,5 +134,11 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>select a date</value>
+  </data>
+  <data name="UIA_FLIPVIEW_PREVIOUS" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="UIA_FLIPVIEW_NEXT" xml:space="preserve">
+    <value>Next</value>
   </data>
 </root>

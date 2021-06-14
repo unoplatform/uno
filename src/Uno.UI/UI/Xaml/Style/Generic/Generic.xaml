@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7889,37 +7889,41 @@
 							<ItemsPresenter />
 						</ScrollViewer>
 						<Button x:Name="PreviousButtonHorizontal"
-                Template="{StaticResource HorizontalPreviousTemplate}"
-                Width="20"
-                Height="36"
-                IsTabStop="False"
-                UseSystemFocusVisuals="False"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center" />
+								Template="{StaticResource HorizontalPreviousTemplate}"
+								Width="20"
+								Height="36"
+								IsTabStop="False"
+								UseSystemFocusVisuals="False"
+								HorizontalAlignment="Left"
+								AutomationProperties.Name="PreviousButtonHorizontal"
+								VerticalAlignment="Center" />
 						<Button x:Name="NextButtonHorizontal"
-                Template="{StaticResource HorizontalNextTemplate}"
-                Width="20"
-                Height="36"
-                IsTabStop="False"
-                UseSystemFocusVisuals="False"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center" />
+								Template="{StaticResource HorizontalNextTemplate}"
+								Width="20"
+								Height="36"
+								IsTabStop="False"
+								UseSystemFocusVisuals="False"
+								HorizontalAlignment="Right"
+								AutomationProperties.Name="NextButtonHorizontal"
+								VerticalAlignment="Center" />
 						<Button x:Name="PreviousButtonVertical"
-                Template="{StaticResource VerticalPreviousTemplate}"
-                Width="36"
-                Height="20"
-                IsTabStop="False"
-                UseSystemFocusVisuals="False"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top" />
+								Template="{StaticResource VerticalPreviousTemplate}"
+								Width="36"
+								Height="20"
+								IsTabStop="False"
+								UseSystemFocusVisuals="False"
+								HorizontalAlignment="Center"
+								AutomationProperties.Name="PreviousButtonVertical"
+								VerticalAlignment="Top" />
 						<Button x:Name="NextButtonVertical"
-                Template="{StaticResource VerticalNextTemplate}"
-                Width="36"
-                Height="20"
-                IsTabStop="False"
-                UseSystemFocusVisuals="False"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Bottom" />
+								Template="{StaticResource VerticalNextTemplate}"
+								Width="36"
+								Height="20"
+								IsTabStop="False"
+								UseSystemFocusVisuals="False"
+								HorizontalAlignment="Center"
+								AutomationProperties.Name="NextButtonVertical"
+								VerticalAlignment="Bottom" />
 
 					</Grid>
 
