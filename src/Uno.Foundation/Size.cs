@@ -19,9 +19,9 @@ namespace Windows.Foundation
 
 		public static Size Empty => new Size(double.NegativeInfinity, double.NegativeInfinity);
 
-		public double Height { get; set; }
-
 		public bool IsEmpty => double.IsNegativeInfinity(Width) && double.IsNegativeInfinity(Height);
+
+		public double Height { get; set; }
 
 		public double Width { get; set; }
 
