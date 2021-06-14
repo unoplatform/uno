@@ -73,7 +73,7 @@
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.0.1" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
