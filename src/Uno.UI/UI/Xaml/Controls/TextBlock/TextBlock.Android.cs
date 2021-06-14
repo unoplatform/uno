@@ -113,6 +113,11 @@ namespace Windows.UI.Xaml.Controls
 		private TextUtils.TruncateAt _ellipsize;
 		private Android.Text.Layout.Alignment _layoutAlignment;
 
+		/// <summary>
+		/// Used by unit tests to verify that the displayed color matches the nominal managed color.
+		/// </summary>
+		internal Android.Graphics.Color? NativeArrangedColor => _arrangeLayout?.Layout.Paint?.Color;
+
 		private void InitializePartial()
 		{
 			// This makes OnDraw to be called
