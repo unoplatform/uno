@@ -16,6 +16,8 @@ using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers;
 using Uno.Extensions.System;
 using Uno.UI.Runtime.Skia.GTK.Extensions.System;
 using Uno.UI.Runtime.Skia.GTK.UI.Core;
+using Uno.Extensions.Storage.Pickers;
+using Windows.Storage.Pickers;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -55,6 +57,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
 			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o, _window));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
+			ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");
