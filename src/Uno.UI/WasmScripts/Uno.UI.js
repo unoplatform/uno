@@ -407,7 +407,12 @@ var Uno;
                     // created later on 
                     img.onload = loadingDone;
                     img.onerror = loadingDone;
-                    img.src = String(UnoAppManifest.splashScreenImage);
+                    const UNO_BOOTSTRAP_APP_BASE = config.environmentVariables["UNO_BOOTSTRAP_APP_BASE"] || "";
+                    const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
+                    const fullImagePath = UNO_BOOTSTRAP_APP_BASE !== ''
+                        ? `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`
+                        : String(UnoAppManifest.splashScreenImage);
+                    img.src = fullImagePath;
                     // If there's no response, skip the loading
                     setTimeout(loadingDone, 2000);
                 });
