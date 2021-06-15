@@ -32,6 +32,14 @@ Here's what to look for:
 - Bindings
 	- Prefer bindings with short paths.
 	- To shorten paths, use the `DataContext` property on containers, such as `StackPanel` or `Grid`.
+	- Add the `Windows.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
+		- When data binding to classes not inheriting from DependencyObject, in Debug configuration only, the following message may appear:
+			```
+			The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider. 
+			Reflection was used instead of the binding engine and generated static metadata. Add the Bindable 	attribute to prevent this message and performance issues.
+			```
+			This message indicates that the binding engine will fall back on reflection based code, which is generally slow. To compensate for this, Uno use the `BindableTypeProvidersSourceGenerator`, which generates static non-generic code to avoid reflection operations during binding operations.
+			This attribute is inherited and is generally used on ViewModel based classes.
 - [`x:Phase`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-phase-attribute)
 	- For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
 	- It is only supported for items inside `ListViewItem` templates, it will be ignored for others.
