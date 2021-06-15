@@ -237,7 +237,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="provider">Default value provider.</param>
 		/// <remarks>
-		/// Providers which are registered later have higher precedence.
+		/// Providers which are registered later have higher priority.
 		/// E.g. when both a derived and base class register their own default
 		/// value provider in the constructor for the same property, the derived
 		/// class value is used.
