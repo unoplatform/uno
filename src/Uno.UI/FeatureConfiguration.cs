@@ -566,5 +566,17 @@ namespace Uno.UI
 			public static bool EnableBitmapIconTint { get; set; } = false;
 #endif
 		}
+
+		public static class Cursors
+		{
+#if UNO_REFERENCE_API
+			/// <summary>
+			/// Gets or sets a value indicating whether "interactive" controls like
+			/// Buttons and ToggleSwitches use the pointer cursor in WebAssembly
+			/// to emulate a "web-like" feel. Default is <see langword="true"/>.
+			/// </summary>
+			public static bool UseHandForInteraction { get; set; } = true;
+#endif
+		}
 	}
 }

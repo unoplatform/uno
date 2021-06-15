@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml
 						_popupRoot,
 						FocusVisualLayer
 					}
-				};
+				};								
 			}
 
 			_rootBorder.Child = _content = content;
@@ -181,6 +181,8 @@ namespace Windows.UI.Xaml
 					UIElement.RootElementUnloaded(_window);
 				}
 			}
+
+			UpdateRootAttributes();
 		}
 
 		private UIElement InternalGetContent() => _content;
@@ -195,6 +197,23 @@ namespace Windows.UI.Xaml
 			}
 
 			return _current;
+		}
+
+		internal void UpdateRootAttributes()
+		{
+			if (_window == null)
+			{
+				throw new InvalidOperationException("Internal window root is not yet set.");
+			}
+
+			if (FeatureConfiguration.Cursors.UseHandForInteraction)
+			{
+				_window.SetAttribute("data-use-hand-cursor-interaction", "true");
+			}
+			else
+			{
+				_window.RemoveAttribute("data-use-hand-cursor-interaction");
+			}
 		}
 
 		internal IDisposable OpenPopup(Popup popup)
