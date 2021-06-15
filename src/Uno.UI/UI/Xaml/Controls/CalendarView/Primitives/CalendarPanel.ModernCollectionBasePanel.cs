@@ -488,11 +488,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			var viewport = new Rect(
 				_effectiveViewport.Location.FiniteOrDefault(default),
 				_effectiveViewport.Size.AtLeast(availableSize).AtLeast(_defaultHardCodedSize).FiniteOrDefault(_defaultHardCodedSize));
-			if (calendar.HorizontalAlignment != HorizontalAlignment.Stretch)
+			if (calendar.HorizontalAlignment != HorizontalAlignment.Stretch && double.IsNaN(calendar.Width) && calendar.MinWidth <= 0)
 			{
 				viewport.Width = _defaultHardCodedSize.Width;
 			}
-			if (calendar.VerticalAlignment != VerticalAlignment.Stretch)
+			if (calendar.VerticalAlignment != VerticalAlignment.Stretch && double.IsNaN(calendar.Height) && calendar.MinHeight <= 0)
 			{
 				viewport.Height = _defaultHardCodedSize.Height;
 			}
