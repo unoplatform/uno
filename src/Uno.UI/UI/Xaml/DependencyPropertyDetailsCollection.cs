@@ -249,7 +249,7 @@ namespace Windows.UI.Xaml
 				throw new ArgumentNullException(nameof(provider));
 			}
 
-			_defaultValueProviders ??= new List<DependencyObjectStore.DefaultValueProvider>();
+			_defaultValueProviders ??= new List<DependencyObjectStore.DefaultValueProvider>(2);
 			_defaultValueProviders.Add(provider);
 		}
 
