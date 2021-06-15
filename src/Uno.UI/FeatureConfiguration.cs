@@ -571,15 +571,15 @@ namespace Uno.UI
 #endif
 		}
 
-		public static class ButtonBase
+		public static class Cursors
 		{
 #if UNO_REFERENCE_API
 			/// <summary>
-			/// Gets or sets a value indicating whether controls derived from ButtonBase
-			/// use the pointer cursor in WebAssembly to emulate a "web-like" feel.
-			/// Default is <see langword="true"/>.
+			/// Gets or sets a value indicating whether "interactive" controls like
+			/// Buttons and ToggleSwitches use the pointer cursor in WebAssembly
+			/// to emulate a "web-like" feel. Default is <see langword="true"/>.
 			/// </summary>
-			public static bool UseHandCursor { get; set; } = true;
+			public static bool UseHandForInteraction { get; set; } = true;
 #endif
 		}
 	}

@@ -206,13 +206,13 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException("Internal window root is not yet set.");
 			}
 
-			if (FeatureConfiguration.ButtonBase.UseHandCursor)
+			if (FeatureConfiguration.Cursors.UseHandForInteraction)
 			{
-				_window.SetAttribute("data-buttonbase-usehandcursor", "true");
+				_window.SetAttribute("data-use-hand-cursor-interaction", "true");
 			}
 			else
 			{
-				_window.RemoveAttribute("data-buttonbase-usehandcursor");
+				_window.RemoveAttribute("data-use-hand-cursor-interaction");
 			}
 		}
 

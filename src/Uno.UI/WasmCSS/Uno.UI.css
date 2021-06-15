@@ -124,7 +124,8 @@ embed.uno-frameworkelement.uno-unarranged {
   overflow: hidden;
 }
 
-[data-buttonbase-usehandcursor=true] .uno-buttonbase {
+[data-use-hand-cursor-interaction="true"] .uno-buttonbase,
+[data-use-hand-cursor-interaction="true"] .uno-toggleswitch {
   cursor: pointer;
 }
 
