@@ -193,11 +193,34 @@ namespace Windows.UI.Xaml.Media
 					$"Use {nameof(TryAdaptNative)} if it's not known whether view will be native.");
 			}
 
-			return new ContentPresenter
+			var host = new ContentPresenter
 			{
 				IsNativeHost = true,
 				Content = nativeView
 			};
+
+			// Propagate layout-related attached properties to the managed wrapper, so the host panel takes them into account
+			PropagateAttachedProperties(
+				host,
+				nativeView,
+				Grid.RowProperty,
+				Grid.RowSpanProperty,
+				Grid.ColumnProperty,
+				Grid.ColumnSpanProperty,
+				Canvas.LeftProperty,
+				Canvas.TopProperty,
+				Canvas.ZIndexProperty
+			);
+
+			return host;
+		}
+
+		private static void PropagateAttachedProperties(FrameworkElement host, _View nativeView, params DependencyProperty[] properties)
+		{
+			foreach (var property in properties)
+			{
+				host.SetValue(property, nativeView.GetValue(property));
+			}
 		}
 
 		/// <summary>
