@@ -12,11 +12,11 @@
     <StackPanel Orientation="Vertical">
         <FlipView Width="100"
 				  Height="100">
-			<Button Content="Button 1" Width="100" Background="Green"  AutomationProperties.Name="Button1" />
-			<Button Content="Button 2" Width="100" Background="Blue" AutomationProperties.Name="Button2" />
-			<Button Content="Button 3" Width="100" Background="Red" AutomationProperties.Name="Button3" />
-			<Button Content="Button 4" Width="100" Background="Fuchsia" AutomationProperties.Name="Button4" />
-			<Button Content="Button 5" Width="100" Background="Orange" AutomationProperties.Name="Button5" />
+			<Button x:Name="Button1" Content="Button 1" Width="100" Background="Green"  AutomationProperties.Name="Button1" />
+			<Button x:Name="Button2" Content="Button 2" Width="100" Background="Blue" AutomationProperties.Name="Button2" />
+			<Button x:Name="Button3" Content="Button 3" Width="100" Background="Red" AutomationProperties.Name="Button3" />
+			<Button x:Name="Button4" Content="Button 4" Width="100" Background="Fuchsia" AutomationProperties.Name="Button4" />
+			<Button x:Name="Button5" Content="Button 5" Width="100" Background="Orange" AutomationProperties.Name="Button5" />
         </FlipView>
     </StackPanel>
 </UserControl>

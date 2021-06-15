@@ -6,6 +6,7 @@ using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using System;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 {
@@ -18,9 +19,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.FlipView.FlipView_Buttons");
 
+			_app.WaitForElement("NextButtonHorizontal");
+
 			_app.WaitForElement("Button1");
 
 			_app.WaitForElement("NextButtonHorizontal");
+
+			// FlipView buttons are Collapsed by default.
+			var nextButton = _app.Marked("NextButtonHorizontal");			
+			nextButton.SetDependencyPropertyValue("Visibility", "Visible");
+
 			_app.FastTap("NextButtonHorizontal");
 
 			_app.WaitForElement("Button2");
@@ -33,11 +41,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 			Run("UITests.Windows_UI_Xaml_Controls.FlipView.FlipView_Buttons");
 
 			_app.WaitForElement("NextButtonHorizontal");
+
+			// FlipView buttons are Collapsed by default.
+			var nextButton = _app.Marked("NextButtonHorizontal");
+			nextButton.SetDependencyPropertyValue("Visibility", "Visible");
+
 			_app.FastTap("NextButtonHorizontal");
 
 			_app.WaitForElement("Button2");
 
 			_app.WaitForElement("PreviousButtonHorizontal");
+
+			var backButton = _app.Marked("PreviousButtonHorizontal");
+			backButton.SetDependencyPropertyValue("Visibility", "Visible");
+			
 			_app.FastTap("PreviousButtonHorizontal");
 
 			_app.WaitForElement("Button1");
