@@ -99,7 +99,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		public event EventHandler? SampleChanging;
+		public event EventHandler SampleChanging;
 
 		/// <summary>
 		/// Displays a new page depending on the parameter that was sent.

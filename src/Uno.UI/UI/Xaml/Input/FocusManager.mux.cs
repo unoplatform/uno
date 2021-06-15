@@ -1700,7 +1700,7 @@ namespace Windows.UI.Xaml.Input
 			//TODO:MZ:Exceptions can break focus forever
 			if (_asyncOperation != null && shouldCompleteAsyncOperation == false)
 			{
-				throw new InvalidOperationException("An asynchronous operation is in progress.");
+				//throw new InvalidOperationException("An asynchronous operation is in progress.");
 
 				//return Cleanup();
 			}
@@ -1811,6 +1811,10 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			// Update the focused control
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				_log.Value.LogDebug($"{nameof(UpdateFocus)}() - oldFocus={_focusedElement} ({_realFocusStateForFocusedElement}), newFocus={newFocusTarget} ({nonCoercedFocusState})");
+			}
 			_focusedElement = newFocusTarget;
 			_realFocusStateForFocusedElement = nonCoercedFocusState;
 
@@ -2312,7 +2316,6 @@ namespace Windows.UI.Xaml.Input
 
 			if (FindNextFocus(new FindFocusOptions(direction, queryOnly), xyFocusOptions, movement.Target, false) is DependencyObject nextFocusedElement)
 			{
-				this.Log().LogError("Next focused" + nextFocusedElement?.GetType().Name);
 				result = SetFocusedElement(new FocusMovement(nextFocusedElement, movement));
 
 				if (result.WasMoved && !result.WasCanceled && xyFocusOptions.UpdateManifold)
@@ -2548,7 +2551,6 @@ namespace Windows.UI.Xaml.Input
 
 		private void UpdateFocusRect(FocusNavigationDirection focusNavigationDirection, bool cleanOnly)
 		{
-			this.Log().LogError("Updating focus rect");
 			_focusTarget = GetFocusTarget();
 			_focusRectManager.UpdateFocusRect(_focusedElement, _focusTarget, focusNavigationDirection, cleanOnly);
 		}

@@ -14,8 +14,15 @@ namespace Uno.UI.Tests
 	{
 		private readonly (string owner, string propertyName)[] _ignoreList = new (string, string)[]
 		{
-			("Control", "TabNavigationProperty"),
-			("Control", "TabFocusNavigationProperty"),
+			("Control", "TabFocusNavigation"),
+			("Control", "TabIndex"),
+			("Control", "FocusState"),
+			("Control", "IsTabStop"),
+			("Control", "XYFocusUp"),
+			("Control", "XYFocusDown"),
+			("Control", "XYFocusLeft"),
+			("Control", "XYFocusRight"),
+			("Control", "UseSystemFocusVisuals")
 		};
 
 		[TestMethod]
@@ -58,7 +65,7 @@ namespace Uno.UI.Tests
 			{
 				var owner = getOwnerType(dp);
 
-				if (_ignoreList.Any(ignore => ignore.owner == owner.Name && ignore.propertyName == dp.Name))
+				if (_ignoreList.Any(ignore => ignore.owner == expectedOwner.Name && ignore.propertyName == dp.Name))
 				{
 					return;
 				}

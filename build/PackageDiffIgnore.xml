@@ -3743,7 +3743,7 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>	
-	<IgnoreSet baseVersion="3.8.6">
+	<IgnoreSet baseVersion="3.8.11">
 		<Types>
 		</Types>
 		<Methods>
@@ -3753,9 +3753,6 @@
 				reason="Should not be public" />
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.FocusEngagedEventArgs..ctor()"
-				reason="Should not be public" />
-			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.Control.RequestFocus(Windows.UI.Xaml.FocusState state)"
 				reason="Should not be public" />
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Controls.Control.RequestFocus(Windows.UI.Xaml.FocusState state)"

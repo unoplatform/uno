@@ -197,18 +197,18 @@ namespace Windows.UI.Xaml
 
 		internal void UpdateRootAttributes()
 		{
-			if (_window == null)
+			if (_rootVisual == null)
 			{
 				throw new InvalidOperationException("Internal window root is not yet set.");
 			}
 
 			if (FeatureConfiguration.Cursors.UseHandForInteraction)
 			{
-				_window.SetAttribute("data-use-hand-cursor-interaction", "true");
+				_rootVisual.SetAttribute("data-use-hand-cursor-interaction", "true");
 			}
 			else
 			{
-				_window.RemoveAttribute("data-use-hand-cursor-interaction");
+				_rootVisual.RemoveAttribute("data-use-hand-cursor-interaction");
 			}
 		}
 

@@ -282,7 +282,8 @@ namespace Windows.UI.Xaml.Input
 
 				// Async operation is not guaranteed to be released synchronously.
 				// Therefore, we let UpdateFocus to handle the responsibility of releasing it.
-				movement.ShouldCompleteAsyncOperation = focusManager.TrySetAsyncOperation(spFocusAsyncOperation);
+				// TODO Uno specific: Do not use async operations, only simulated
+				// movement.ShouldCompleteAsyncOperation = focusManager.TrySetAsyncOperation(spFocusAsyncOperation);
 
 				if (movement.ShouldCompleteAsyncOperation)
 				{
@@ -291,6 +292,11 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			FocusMovementResult result = focusManager.FindAndSetNextFocus(movement);
+
+			// TODO Uno specific: Simulate async completion.
+			spFocusAsyncOperation?.CoreSetResults(result);
+			spFocusAsyncOperation?.CoreFireCompletion();
+
 			// We ignore result.GetHResult() here because this is a "Try" function
 			pIsFocusMoved = result.WasMoved;
 
@@ -355,14 +361,18 @@ namespace Windows.UI.Xaml.Input
 				spFocusAsyncOperation.CoreSetResults(new FocusMovementResult());
 			}
 
-			movement.ShouldCompleteAsyncOperation = focusManager.TrySetAsyncOperation(spFocusAsyncOperation);
+			// TODO Uno specific: Do not use async operations, only simulated
+			//movement.ShouldCompleteAsyncOperation = focusManager.TrySetAsyncOperation(spFocusAsyncOperation);
 			if (movement.ShouldCompleteAsyncOperation)
 			{
-				//TODO:MZ: Not sure what to do in this case.
 				//spFocusAsyncOperation.StartOperation();
 			}
 
-			focusManager.SetFocusedElement(movement);
+			var result = focusManager.SetFocusedElement(movement);
+
+			// TODO Uno specific: Simulate async completion.
+			spFocusAsyncOperation?.CoreSetResults(result);
+			spFocusAsyncOperation?.CoreFireCompletion();
 
 			// Async operation is not guaranteed to be released synchronously.
 			// Therefore, we let UpdateFocus to handle the responsibility of releasing it.

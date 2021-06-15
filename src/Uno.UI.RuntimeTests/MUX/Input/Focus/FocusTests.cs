@@ -25,6 +25,7 @@ using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 {
 	[TestClass]
+	[RequiresFullWindow]
 	public class FocusTests
 	{
 		private enum FocusAsyncMethod

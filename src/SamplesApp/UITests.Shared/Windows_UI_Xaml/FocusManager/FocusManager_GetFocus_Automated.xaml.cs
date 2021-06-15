@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.FocusTests
 {
-	[SampleControlInfo("Focus", "GetFocus")]
+	[Sample("Focus", Name = "GetFocus")]
 	public sealed partial class FocusManager_GetFocus_Automated : UserControl
 	{
 		public FocusManager_GetFocus_Automated()

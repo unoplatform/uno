@@ -32,6 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Next_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
@@ -50,6 +51,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Previous_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
@@ -67,6 +69,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Up_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
@@ -84,6 +87,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Down_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
@@ -101,6 +105,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Left_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
@@ -118,6 +123,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Right_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");

@@ -62,7 +62,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			Verify.IsTrue(gotFocus);
 		}
 
-		public static async Task EnsureFocusAsync(UIElement element, FocusState focusState, UInt32 Attempts = 1)
+		public static async Task EnsureFocusAsync(UIElement element, FocusState focusState, UInt32 Attempts = 3)
 		{
 			bool gotFocus = false;
 
