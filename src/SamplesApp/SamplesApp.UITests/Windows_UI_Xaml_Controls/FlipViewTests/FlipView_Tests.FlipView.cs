@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
     {
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
 		public void FlipView_WithButtons_FlipForward()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.FlipView.FlipView_Buttons");
@@ -36,6 +37,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
 		public void FlipView_WithButtons_FlipBackward()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.FlipView.FlipView_Buttons");
