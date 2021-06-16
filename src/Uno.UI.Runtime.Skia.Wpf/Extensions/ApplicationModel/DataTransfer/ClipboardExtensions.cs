@@ -52,9 +52,9 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				_hwndSource = fromDependencyObject as HwndSource;
 
 				if (_pendingStartContentChanged)
-                {
+				{
 					StartContentChanged();
-                }
+				}
 			}
 		}
 
@@ -66,10 +66,10 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				ClipboardNativeFunctions.AddClipboardFormatListener(_hwndSource.Handle);
 			}
 			else
-            {
+			{
 				// Signals the app to hook when it's ready
 				_pendingStartContentChanged = true;
-            }
+			}
 		}
 
 		public void StopContentChanged()
@@ -80,9 +80,9 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				_hwndSource.RemoveHook(OnWmMessage);
 			}
 			else
-            {
+			{
 				_pendingStartContentChanged = false;
-            }
+			}
 		}
 
 		public void Flush() => Clipboard.Flush();
@@ -218,11 +218,11 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 			switch (msg)
 			{
 				case WM_CLIPBOARDUPDATE:
-                {
+				{
 					ContentChanged?.Invoke(this, EventArgs.Empty);
 					handled = true;
 					break;
-                }
+				}
 			}
 
 			return IntPtr.Zero;
