@@ -1,10 +1,16 @@
-﻿using System;
+﻿#if __IOS__ || __MACOS__ || __ANDROID__
+#define HAS_NATIVE_VIEWS
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
 #if __IOS__
 using UIKit;
 #elif __MACOS__
@@ -76,6 +82,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var nativeViewIFrameworkElement01 = page.innerFrameworkElement.FindFirstChild<NativeViewIFrameworkElement>();
 			Assert.IsNotNull(nativeViewIFrameworkElement01);
 			Assert.AreEqual(page.innerFrameworkElement.Tag, nativeViewIFrameworkElement01.MyValue);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Grid_Properties_Set()
+		{
+			var page = new NativeView_Grid_Page();
+
+			TestServices.WindowHelper.WindowContent = page;
+			await TestServices.WindowHelper.WaitForLoaded(page);
+
+			var wrapper = (FrameworkElement)page.HostGrid.Children[1];
+
+			await TestServices.WindowHelper.WaitForLoaded(wrapper); // Needed on *sigh* iOS
+
+#if HAS_NATIVE_VIEWS
+			Assert.IsInstanceOfType(wrapper, typeof(ContentPresenter));
+#endif
+			Assert.AreEqual(1, Grid.GetColumn(wrapper));
+#if !__ANDROID__ // LayoutSlot currently wrongly returns an offset of (0,0) on Android
+			var slot = LayoutInformation.GetLayoutSlot(wrapper);
+			Assert.AreEqual(62, slot.Left);
+#endif
 		}
 	}
 }
