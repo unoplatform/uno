@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		internal void SetDefaultValue(object defaultValue)
+		internal void SetDefaultValue(object? defaultValue)
 		{
 			_defaultValue = defaultValue;
 			_flags |= Flags.DefaultValueSet;
