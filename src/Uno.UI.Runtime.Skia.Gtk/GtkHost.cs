@@ -58,6 +58,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o, _window));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
+			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");

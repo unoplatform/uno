@@ -13,7 +13,7 @@ Legend
 |----------------|-----|-------------|---------|-----|-------|-----|-----|
 | FileOpenPicker | ✅   | ✅      (1)     | ✅       | ✅   | ✅     | ✅   | ✅  |
 | FileSavePicker | ✅   | ✅  (1)         | ✅       | ✅   | ✅     | ✅   | 🚫  |
-| FolderPicker   | ✅   | ✅           | ✅       | ⏸️ (2)|✅     | 🚫  | 🚫  |
+| FolderPicker   | ✅   | ✅           | ✅       | ⏸️ (2)|✅     | 🚫  | ✅  |
 
 (1) - Multiple implementations supported - see WebAssembly section below
 (2) - See iOS section below
