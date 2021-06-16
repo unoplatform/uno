@@ -28,6 +28,11 @@ To create a minimal reproduction project:
  - Keep all project heads, even if the platforms are seemingly not relevant to your issue
  - Remove all the `obj/bin` folders and zip the folder.
  - Attach the zip file to the issue
+
+If the issue is visible on WebAssembly and uses only XAML:
+- Visit https://playground.platform.uno
+- Add your code and data context as needed
+- Create a link and paste it here
 -->
 
 ## Workaround
