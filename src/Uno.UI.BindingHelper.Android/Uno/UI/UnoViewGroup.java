@@ -28,6 +28,8 @@ public abstract class UnoViewGroup
 
 	private Map<View, Matrix> _childrenTransformations = new HashMap<View, Matrix>();
 
+	private boolean _measureRequested;
+
 	private static Method _setFrameMethod;
 
 	static {
@@ -224,8 +226,36 @@ public abstract class UnoViewGroup
 	}
 
 	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	{
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		_measureRequested = false;
+	}
+
+	@Override
 	protected void onDraw(android.graphics.Canvas canvas)
 	{
+		if(_measureRequested && !isLayoutRequested())
+		{
+			// Sometimes the isLayoutRequested (PFLAG_FORCE_LAYOUT in Android)
+			// could be reset without any call to onMeasure().
+
+			// The reason for that is unclear and it's only happening in very specific
+			// edge cases.
+
+			// It can be detected when the onDraw() is called before any call to onMeasure().
+
+			// This detection is done using the _measureRequested variable.
+
+			// GH Issue: https://github.com/unoplatform/uno/issues/6236
+
+			// Force apply the PFLAG_FORCE_LAYOUT on the control + parent hierarchy
+			super.requestLayout();
+
+			// Force the platform to requeue a layout pass
+			super.requestFitSystemWindows();
+		}
+
 		if(_textBlockLayout != null) {
 			canvas.translate(_leftTextBlockPadding, _topTextBlockPadding);
 			_textBlockLayout.draw(canvas);
@@ -280,6 +310,7 @@ public abstract class UnoViewGroup
 			}
 
 			super.requestLayout();
+			_measureRequested = true;
 		}
 	}
 
@@ -456,18 +487,18 @@ public abstract class UnoViewGroup
 		return super.isEnabled();
 	}
 
-    /*
-    // Not supported because set is no virtual
-    public final void setFocusable(boolean focusable)
-    {
-        super.setFocusable(focusable);
-    }
+	/*
+	// Not supported because set is no virtual
+	public final void setFocusable(boolean focusable)
+	{
+		super.setFocusable(focusable);
+	}
 
-    public final boolean getFocusable()
-    {
-        return super.isFocusable();
-    }
-    */
+	public final boolean getFocusable()
+	{
+		return super.isFocusable();
+	}
+	*/
 
 	/**
 	 * Sets the static transform matrix to apply to the given child view.
