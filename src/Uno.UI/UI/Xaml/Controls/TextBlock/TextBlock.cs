@@ -632,7 +632,7 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty TextDecorationsProperty =
 			DependencyProperty.Register(
 				"TextDecorations",
-				typeof(int),
+				typeof(uint),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,

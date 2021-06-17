@@ -595,8 +595,16 @@ namespace Uno.UI.DataBinding
 						output = TextAlignment.Left;
 						return true;
 
+					case "start":
+						output = TextAlignment.Start;
+						return true;
+
 					case "right":
 						output = TextAlignment.Right;
+						return true;
+
+					case "end":
+						output = TextAlignment.End;
 						return true;
 
 					case "justify":
