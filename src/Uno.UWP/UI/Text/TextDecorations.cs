@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Windows.UI.Text
 {
+	/// <summary>
+	/// Defines constants that specify the decorations applied to text.
+	/// </summary>
 	[Flags]
-	public enum TextDecorations
+	public enum TextDecorations : uint
 	{
 		/// <summary>
 		/// No text decorations are applied.
 		/// </summary>
-		None = 0,
+		None = 0U,
 
 		/// <summary>
 		/// Underline is applied to the text.
 		/// </summary>
-		Underline = 1,
+		Underline = 1U,
 
 		/// <summary>
 		/// Strikethrough is applied to the text.
 		/// </summary>
-		Strikethrough = 2,
+		Strikethrough = 2U
 	}
 }
