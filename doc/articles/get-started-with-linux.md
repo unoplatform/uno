@@ -50,7 +50,7 @@ Now let's run the application:
 - Install GTK3:
     ```
     sudo apt update
-    sudo apt install gtk+3.0
+    sudo apt-get install gtk+3.0 
     ```
 - Install dotnet core 3.1
     ```
