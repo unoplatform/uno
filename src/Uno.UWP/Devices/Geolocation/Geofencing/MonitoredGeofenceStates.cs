@@ -1,15 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Windows.Devices.Geolocation.Geofencing
 {
+	/// <summary>
+	/// Indicates the state or states of the Geofences that are currently being monitored by the system.
+	/// </summary>
 	[Flags]
-	public enum MonitoredGeofenceStates
+	public enum MonitoredGeofenceStates : uint
 	{
-		None =0,
-		Entered=1,
-		Exited=2,
-		Removed=4,
+		/// <summary>
+		/// No flag is set.
+		/// </summary>
+		None = 0U,
+		/// <summary>
+		/// The device has entered a geofence area.
+		/// </summary>
+		Entered = 1U,
+		/// <summary>
+		/// The device has left a geofence area.
+		/// </summary>
+		Exited = 2U,
+		/// <summary>
+		/// The geofence has been removed.
+		/// </summary>
+		Removed = 4U
 	}
 }
