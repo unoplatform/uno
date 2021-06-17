@@ -65,7 +65,7 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr-CA\Resources.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Test01.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\Resources.resw" />
-    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sr-Cyrl-BA\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sr\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml.cs">
