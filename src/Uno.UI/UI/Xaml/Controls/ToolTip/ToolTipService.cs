@@ -14,15 +14,21 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ToolTipService),
 				new FrameworkPropertyMetadata(default, OnToolTipChanged));
 
-		public static object GetToolTip(DependencyObject element)
-		{
-			return element.GetValue(ToolTipProperty);
-		}
+		public static object GetToolTip(DependencyObject element) =>
+			element.GetValue(ToolTipProperty);
 
-		public static void SetToolTip( global::Windows.UI.Xaml.DependencyObject element, object value)
-		{
+		public static void SetToolTip(global::Windows.UI.Xaml.DependencyObject element, object value) =>
 			element.SetValue(ToolTipProperty, value);
-		}
+
+		internal static ToolTip GetToolTipObject(DependencyObject obj) =>
+			(ToolTip)obj.GetValue(ToolTipObjectProperty);
+
+		internal static void SetToolTipObject(DependencyObject obj, ToolTip value) =>
+			obj.SetValue(ToolTipObjectProperty, value);
+
+		internal static DependencyProperty ToolTipObjectProperty { get; } =
+			DependencyProperty.RegisterAttached("ToolTipObject", typeof(ToolTip), typeof(ToolTipService), new PropertyMetadata(null));
+
 
 		private static void OnToolTipChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
 		{
@@ -36,64 +42,90 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var toolTip = args.NewValue as ToolTip;
+			var newToolTip = args.NewValue as ToolTip;
+			var existingToolTip = GetToolTipObject(element);
 
-			if (toolTip == null && args.NewValue != null)
+			// Handle cases where the new value is not a ToolTip instance
+			if (newToolTip == null && args.NewValue != null)
 			{
-				toolTip = new ToolTip { Content = args.NewValue };
+				if (existingToolTip != null)
+				{
+					// Just replace content of the existing ToolTip.
+					existingToolTip.Content = args.NewValue;
+					return;
+				}
+				else
+				{
+					// We need to create a ToolTip object for the custom content.
+					newToolTip = new ToolTip { Content = args.NewValue };
+				}
 			}
 
-			if (toolTip != null)
+			// Remove existing ToolTip.
+			if (existingToolTip != null)
 			{
-				// First time: we're subscribing to event handlers
+				existingToolTip.IsOpen = false;
+				SetToolTipObject(element, null);
+				element.PointerEntered -= OnPointerEntered;
+				element.PointerExited -= OnPointerExited;
 
-				long currentHoverId = 0;
+				element.Unloaded -= OnOwnerUnloaded;
+			}
 
-				toolTip.SetAnchor(element);
+			// Setup new ToolTip, if provided.
+			if (newToolTip != null)
+			{
+				newToolTip.SetAnchor(element);
+				SetToolTipObject(element, newToolTip);
 
-				element.Loaded += (snd, evt) =>
-				{
-					element.PointerEntered += OnPointerEntered;
-					element.PointerExited += OnPointerExited;
-				};
+				element.PointerEntered += OnPointerEntered;
+				element.PointerExited += OnPointerExited;
 
-				element.Unloaded += (snd, evt) =>
-				{
-					toolTip.IsOpen = false;
+				element.Unloaded += OnOwnerUnloaded;
+			}
+		}
 
-					element.PointerEntered -= OnPointerEntered;
-					element.PointerExited -= OnPointerExited;
-				};
-
-				void OnPointerEntered(object snd, PointerRoutedEventArgs evt)
-				{
-					var t = HoverTask(++currentHoverId);
-				}
-
-				void OnPointerExited(object snd, PointerRoutedEventArgs evt)
-				{
-					currentHoverId++;
-					toolTip.IsOpen = false;
-				}
+		private static void OnPointerEntered(object sender, PointerRoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipObject(owner) is ToolTip toolTip)
+			{
+				var hoverTask = HoverTask(++toolTip.CurrentHoverId);
 
 				async Task HoverTask(long hoverId)
 				{
 					await Task.Delay(FeatureConfiguration.ToolTip.ShowDelay);
-					if (currentHoverId != hoverId)
+					if (toolTip.CurrentHoverId != hoverId)
 					{
 						return;
 					}
 
-					if (element.IsLoaded)
+					if (owner.IsLoaded)
 					{
 						toolTip.IsOpen = true;
 						await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
-						if (currentHoverId == hoverId)
+						if (toolTip.CurrentHoverId == hoverId)
 						{
 							toolTip.IsOpen = false;
 						}
 					}
 				}
+			}
+		}
+
+		private static void OnPointerExited(object sender, PointerRoutedEventArgs evt)
+		{
+			if (sender is FrameworkElement owner && GetToolTipObject(owner) is ToolTip toolTip)
+			{
+				toolTip.IsOpen = false;
+				toolTip.CurrentHoverId++;
+			}
+		}
+
+		private static void OnOwnerUnloaded(object sender, RoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipObject(owner) is ToolTip toolTip)
+			{
+				toolTip.IsOpen = false;
 			}
 		}
 	}
