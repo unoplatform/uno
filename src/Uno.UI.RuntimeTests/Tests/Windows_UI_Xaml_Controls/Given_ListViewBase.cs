@@ -654,20 +654,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
 			var secondLastItem = list.ContainerFromItem(18) as ListViewItem;
 
-			await WindowHelper.WaitFor(() => GetTop(lastItem), 181, comparer: ApproxEquals);
-			await WindowHelper.WaitFor(() => GetTop(secondLastItem), 152, comparer: ApproxEquals);
+			await WindowHelper.WaitFor(() => GetTop(lastItem, container), 181, comparer: ApproxEquals);
+			await WindowHelper.WaitFor(() => GetTop(secondLastItem, container), 152, comparer: ApproxEquals);
 
 			source.Remove(19);
 
 			await WindowHelper.WaitFor(() => list.Items.Count == 19);
 
-			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem), tolerance: 2);
+			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem, container), tolerance: 2);
+		}
 
-			double GetTop(FrameworkElement element)
+		private static double GetTop(FrameworkElement element, FrameworkElement container)
+		{
+			if (element == null)
 			{
-				var transform = element.TransformToVisual(container);
-				return transform.TransformPoint(new Point()).Y;
+				return double.NaN;
 			}
+			var transform = element.TransformToVisual(container);
+			return transform.TransformPoint(new Point()).Y;
 		}
 
 		[TestMethod]
@@ -1230,7 +1234,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ItemTemplateSelector_Set_And_Fluent()
 		{
-			using(StyleHelper.UseFluentStyles())
+			using (StyleHelper.UseFluentStyles())
 			{
 				await When_ItemTemplateSelector_Set();
 			}
@@ -1258,6 +1262,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNull(SUT.DataContext);
 
 			Assert.AreEqual("Rice", dc.MySelection);
+		}
+
+		[TestMethod]
+		public async Task When_ItemsSource_Move()
+		{
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate
+			};
+
+			var source = new ObservableCollection<string>
+			{
+				"Item0",
+				"Item1",
+				"Item2",
+			};
+			list.ItemsSource = source;
+			list.SelectedIndex = 0;
+
+			var outer = new Grid { Children = { list } };
+			WindowHelper.WindowContent = outer;
+
+			await WindowHelper.WaitForLoaded(list);
+			var container1 = await WindowHelper.WaitForNonNull(() => list.ContainerFromItem("Item1") as ListViewItem);
+			Assert.AreEqual(29, GetTop(container1, outer));
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.AreEqual("Item0", list.SelectedItem);
+
+			source.Move(1, 2);
+			await WindowHelper.WaitForEqual(58, () =>
+			{
+				var container = list.ContainerFromItem("Item1") as ListViewItem;
+				return GetTop(container, outer);
+			});
+
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.AreEqual("Item0", list.SelectedItem);
+
+			source.Move(2, 0);
+			await WindowHelper.WaitForEqual(0, () =>
+			{
+				var container = list.ContainerFromItem("Item1") as ListViewItem;
+				return GetTop(container, outer);
+			});
+
+			Assert.AreEqual(-1, list.SelectedIndex);
+			Assert.AreEqual(null, list.SelectedItem);
 		}
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;

@@ -399,14 +399,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						}
 					}
 					break;
+				case NotifyCollectionChangedAction.Move:
 				case NotifyCollectionChangedAction.Reset:
 					if (SelectedIndexPath?.Section == section)
 					{
-						SelectedIndex = -1;
+						var item = ItemFromIndex(SelectedIndex);
+						if (item == null || !item.Equals(SelectedItem))
+						{
+							// If selected item and index no longer coincide, unselect the selection
+							SelectedIndex = -1;
+						}
 					}
 					break;
 			}
-			//TODO: handle other cases (PBI #27502)
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs c)
