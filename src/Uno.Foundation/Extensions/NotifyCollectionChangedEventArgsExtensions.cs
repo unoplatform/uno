@@ -22,8 +22,9 @@ namespace Uno.Extensions
 				case NotifyCollectionChangedAction.Remove:
 					index = notifyCollectionChangedEventArgs.OldStartingIndex;
 					break;
+				case NotifyCollectionChangedAction.Move:
 				case NotifyCollectionChangedAction.Reset:
-					index = -1;
+					index = 0;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
@@ -39,7 +40,7 @@ namespace Uno.Extensions
 				case NotifyCollectionChangedAction.Add:
 					return CollectionChange.ItemInserted;
 				case NotifyCollectionChangedAction.Move:
-					throw new NotSupportedException($"IObservableVector doesn't support the Move operation.");
+					return CollectionChange.Reset;
 				case NotifyCollectionChangedAction.Remove:
 					return CollectionChange.ItemRemoved;
 				case NotifyCollectionChangedAction.Replace:
