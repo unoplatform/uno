@@ -53,7 +53,7 @@
 
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 
-		<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
+		<CallTarget Targets="PublishVSIX" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 	</Target>
 
 	<Target Name="BuildNet6" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
@@ -83,7 +83,7 @@
 			</MSBuildDeveloperNamespace>
 		</PropertyGroup>
 
-		<XmlPoke XmlInputPath="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\source.extension.vsixmanifest"
+		<XmlPoke XmlInputPath="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX\source.extension.vsixmanifest"
 							 Query="/x:PackageManifest/x:Metadata/x:Identity/@Version"
 							 Value="$(GITVERSION_MajorMinorPatch).$(GITVERSION_CommitsSinceVersionSource)"
 							 Namespaces="$(VSXNamespace)"
@@ -218,8 +218,8 @@
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
 
-	<Target Name="PublishVisx" Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.VSIX.vsix"
+	<Target Name="PublishVSIX" Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX\bin\Release\UnoSolutionTemplate.VSIX.vsix"
 					DestinationFiles="$(OutputDir)\vslatest-generic\UnoPlatform-$(GITVERSION_SemVer).vsix" />
 	</Target>
 

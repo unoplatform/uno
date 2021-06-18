@@ -11,7 +11,7 @@
       "SamplesApp\\SamplesApp.Wasm\\SamplesApp.Wasm.csproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "SolutionTemplate\\UnoLibraryTemplate\\UnoLibraryTemplate.csproj",
-      "SolutionTemplate\\UnoSolutionTemplate.VISX\\UnoSolutionTemplate.VISX.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.VSIX\\UnoSolutionTemplate.VSIX.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.Wizard\\UnoSolutionTemplate.Wizard.csproj",
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
