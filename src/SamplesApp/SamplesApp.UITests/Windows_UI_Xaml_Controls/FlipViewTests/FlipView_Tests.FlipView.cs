@@ -7,6 +7,7 @@ using Uno.UITests.Helpers;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using System;
+using System.Linq;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 {
@@ -58,6 +59,46 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 			backButton.SetDependencyPropertyValue("Visibility", "Visible");
 			
 			_app.FastTap("PreviousButtonHorizontal");
+
+			_app.WaitForElement("Button1");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS | Platform.Android)]
+		public void FlipView_WithButtons_FlipForward_Swipe()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.FlipView.FlipView_Buttons");
+
+			QueryEx sut = "SUT";
+
+			var sutRect = _app.Query(sut).Single().Rect;
+
+			_app.WaitForElement("Button1");
+
+			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X + 10, sutRect.CenterY);
+
+			_app.WaitForElement("Button2");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS | Platform.Android)]
+		public void FlipView_WithButtons_FlipBackward_Swipe()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.FlipView.FlipView_Buttons");
+
+			QueryEx sut = "SUT";
+
+			var sutRect = _app.Query(sut).Single().Rect;
+
+			_app.WaitForElement("Button1");
+
+			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X + 10, sutRect.CenterY);
+
+			_app.WaitForElement("Button2");
+
+			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X - 10, sutRect.CenterY);
 
 			_app.WaitForElement("Button1");
 		}

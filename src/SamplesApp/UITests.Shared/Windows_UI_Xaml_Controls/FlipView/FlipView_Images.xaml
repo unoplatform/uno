@@ -11,7 +11,8 @@
 
     <StackPanel Orientation="Vertical">
         <FlipView Width="100"
-				  Height="100">
+				  Height="100"
+				  x:Name="SUT">
             <Image Source="ms-appx:///Assets/ingredient1.png" AutomationProperties.Name="Ingredient1"/>
             <Image Source="ms-appx:///Assets/ingredient2.png" AutomationProperties.Name="Ingredient2"/>
             <Image Source="ms-appx:///Assets/ingredient3.png" AutomationProperties.Name="Ingredient3"/>

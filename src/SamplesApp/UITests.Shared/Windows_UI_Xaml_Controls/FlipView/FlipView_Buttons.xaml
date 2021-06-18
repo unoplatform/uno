@@ -11,7 +11,8 @@
 
     <StackPanel Orientation="Vertical">
         <FlipView Width="100"
-				  Height="100">
+				  Height="100"
+				  x:Name="SUT">
 			<Button x:Name="Button1" Content="Button 1" Width="100" Background="Green"  AutomationProperties.Name="Button1" />
 			<Button x:Name="Button2" Content="Button 2" Width="100" Background="Blue" AutomationProperties.Name="Button2" />
 			<Button x:Name="Button3" Content="Button 3" Width="100" Background="Red" AutomationProperties.Name="Button3" />
