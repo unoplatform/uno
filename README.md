@@ -3,7 +3,7 @@
 </h1>
 
 
-## Pixel-Perfect. Multi-Platform. C# & XAML. Today.
+## Pixel-Perfect. Multi-Platform. C# & Windows XAML. Today.
 
 [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno) 
 
@@ -17,9 +17,11 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-61-orange.svg?style=flat-square)](#contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
-# What is the Uno Platform
+# What is the Uno Platform?
 
-The Uno Platform (Pronounced 'Oono' or 'Ouno') is a Universal Windows Platform Bridge that allows UWP-based code (C# and XAML) to run on iOS, Android, macOS, WebAssembly, Linux and Windows 7. It provides the full definitions of the UWP [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041), and the implementation of a growing number of parts of the UWP API, such as **Windows.UI.Xaml**, to enable UWP and WinUI applications to run on these platforms.
+The Uno Platform is a UI Platform for building single-codebase applications for Windows, Web/WebAssembly, iOS, macOS, Android and Linux. 
+
+It allows C# and Windows XAML code to run on all target platforms, while allowing you control of every pixel. It comes with support for Fluent, Material and Cupertino design systems out of the box. Uno Platform implements a growing number of the UWP APIs, such as **Windows.UI.Xaml**, to enable UWP and WinUI applications to run on on all platforms with native performance. 
 
 Use the UWP/WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS and WebAssembly.
 
@@ -31,25 +33,22 @@ Visit [our documentation](doc/articles/intro.md) for more details.
 * [**Visual Studio 2019**](https://visualstudio.microsoft.com/) with:
     * **Universal Windows Platform component** installed.
     * **Xamarin component** installed (for Android and iOS development).
-    * **ASP.NET/web component** installed, along with .NET Core 2.2 or later (for WASM development).
+    * **ASP.NET/web component** installed, along with .NET Core SDK 5.0 or later (for WebAssembly development).
 
 To easily create a multi-platform application:
-* Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
-* Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**.
-
-See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guide for more information.
+* See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guides for starting with Visual Studio, Visual Studio Code, JetBrains Rider or Visual Studio Mac.
 
 For a larger example and features demo:
-* Visit the [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) repository.
+* Visit the [Uno Gallery](https://github.com/unoplatform/uno.gallery) repository.
 * Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser.
 
-# Uno Features
+# Uno Platform Features
 * Supported platforms:
     * Windows 10 (via the standard UWP Toolkit)
     * Windows 7 (via Skia)
     * iOS, macOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/))
-    * WebAssembly through the [Mono Wasm SDK](https://github.com/mono/mono/blob/master/sdks/wasm/README.md)
-    * Linux through Skia
+    * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)
+    * Linux through Skia (Gtk and FrameBuffer)
 * Dev loop:
     * Develop on Windows first using Visual Studio
     * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
@@ -62,13 +61,13 @@ For a larger example and features demo:
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
     * [Styling](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles)
     * [Rich Animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/xaml-animation)
-* UWP Code Support:
+* UWP/WinUI Code Support:
     * [Windows Community Toolkit](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
     * [MVVM Light Toolkit](https://github.com/unoplatform/uno.mvvmlight)
     * [Microsoft XAML Behaviors](https://github.com/unoplatform/uno.XamlBehaviors)
-    * [Prism](https://github.com/unoplatform/uno.Prism)
-    * [SkiaSharp](https://github.com/unoplatform/Uno.SkiaSharp)
-    * [SkiaSharp.Extended](https://github.com/unoplatform/Uno.SkiaSharp.Extended)
+    * [Prism](https://github.com/prismlibrary/prism)
+    * [SkiaSharp](https://github.com/mono/SkiaSharp)
+    * [SkiaSharp.Extended](https://github.com/mono/SkiaSharp.Extended)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
     * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/unoplatform/uno.WindowsStateTriggers)
@@ -93,7 +92,7 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 
 * The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/unoplatform/uno.Playground)).
 * The [Uno Gallery](https://gallery.platform.uno) demonstrating the use of Fluent and Material guidelines.
-* The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)). Also try the [pink theme](https://calculator.platform.uno/?theme=pink), the [iOS version](https://apps.apple.com/app/id1464736591) or the [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator).
+* The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)). Also try the [iOS version](https://apps.apple.com/app/id1464736591),  the [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator) and [Linux version](https://snapcraft.io/uno-calculator).
 * The [Ch9](https://ch9.platform.uno) sample educational application.
 * The [Xaml Controls Gallery](https://xamlcontrolsgallery.platform.uno/) ([Source](https://github.com/unoplatform/uno.Xaml-Controls-Gallery)).
 * [SkiaSharp fork for the Uno Platform](https://skiasharp-wasm.platform.uno/), Skia is a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library ([Source](https://github.com/unoplatform/Uno.SkiaSharp)).
@@ -104,17 +103,17 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 * The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/unoplatform/uno.WindowsStateTriggers)).
 * The [SQLite + Entity Framework Core App](https://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/unoplatform/uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
 * The [Uno.WebSockets App](https://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/unoplatform/uno.Wasm.WebSockets)).
-* A [mono-wasm AOT RayTracer](https://raytracer-mono-aot.platform.uno/).
+* A [WebAssembly AOT RayTracer](https://raytracer-mono-aot.platform.uno/).
 
 Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
-Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues).
+Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [Discord](https://platform.uno/discord) - "Uno-Platform" channel where our engineering and community are.
 
 # Contributing
 
-There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG) for help on how to contribute!
+There are many ways that you can contribute to the Uno Platform, as the WinRT and WinUI APIs are pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG) for help on how to contribute!
 
 Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [our guide here](doc/articles/features/working-with-gitpod.md).
 
