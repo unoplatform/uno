@@ -76,7 +76,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 
 			_app.WaitForElement("Button1");
 
-			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X + 10, sutRect.CenterY);
+			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X + 30, sutRect.CenterY);
 
 			_app.WaitForElement("Button2");
 		}
@@ -94,11 +94,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 
 			_app.WaitForElement("Button1");
 
-			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X + 10, sutRect.CenterY);
+			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X + 30, sutRect.CenterY);
 
 			_app.WaitForElement("Button2");
 
-			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X - 10, sutRect.CenterY);
+			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X - 30, sutRect.CenterY);
 
 			_app.WaitForElement("Button1");
 		}
