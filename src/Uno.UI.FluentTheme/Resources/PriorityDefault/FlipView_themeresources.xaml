@@ -4,6 +4,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:netstdref="http://uno.ui/netstdref"
+	xmlns:wasm="http://uno.ui/wasm"
+	xmlns:skia="http://uno.ui/skia"
 	mc:Ignorable="netstdref">
 
     <ResourceDictionary.ThemeDictionaries>
@@ -364,6 +366,7 @@
     </Style>
 
 	<!-- UNO TODO Currently only style using native flip view control is supported -->
-	<netstdref:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
-	
+	<wasm:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
+	<skia:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
+
 </ResourceDictionary>
