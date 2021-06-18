@@ -20,5 +20,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void InitializePartial();
+
+		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange);
 	}
 }

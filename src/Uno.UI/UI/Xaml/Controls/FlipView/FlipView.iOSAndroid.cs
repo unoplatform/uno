@@ -9,7 +9,7 @@ using Uno.Extensions.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno;
 
-namespace Uno.UI.UI.Xaml.Controls.FlipView
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
@@ -51,8 +51,6 @@ namespace Uno.UI.UI.Xaml.Controls.FlipView
 			var smallChange = Math.Abs(newValue - oldValue) <= 1;
 			OnSelectedIndexChangedPartial(oldValue, newValue, smallChange && UseTouchAnimationsForAllNavigation);
 		}
-
-		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange);
 
 		protected override DependencyObject GetContainerForItemOverride()
 		{
