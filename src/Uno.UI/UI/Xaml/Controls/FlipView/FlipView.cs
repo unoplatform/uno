@@ -19,6 +19,16 @@ namespace Windows.UI.Xaml.Controls
 			InitializePartial();
 		}
 
+		public bool UseTouchAnimationsForAllNavigation
+		{
+			get { return (bool)GetValue(UseTouchAnimationsForAllNavigationProperty); }
+			set { SetValue(UseTouchAnimationsForAllNavigationProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for UseTouchAnimationsForAllNavigation.  This enables animation, styling, binding, etc...
+		public static DependencyProperty UseTouchAnimationsForAllNavigationProperty { get; } =
+			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(true));
+
 		partial void InitializePartial();
 
 		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange);

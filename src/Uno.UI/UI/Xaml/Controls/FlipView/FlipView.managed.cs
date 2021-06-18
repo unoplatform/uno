@@ -1,4 +1,4 @@
-#if __WASM__ || __SKIA__
+﻿#if __WASM__ || __SKIA__
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -248,17 +248,6 @@ namespace Windows.UI.Xaml.Controls
 			// Cleanup
 			/// VERIFYHR / (hr);
 		}
-
-		public bool UseTouchAnimationsForAllNavigation
-		{
-			get { return (bool)this.GetValue(UseTouchAnimationsForAllNavigationProperty); }
-			set { this.SetValue(UseTouchAnimationsForAllNavigationProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for UseTouchAnimationsForAllNavigation.  This enables animation, styling, binding, etc...
-		public static DependencyProperty UseTouchAnimationsForAllNavigationProperty { get; } =
-			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(true));
-
 
 		// Saves the Vertical/HorizontalSnapPointsTypes and clears them. This is necessary for us to
 		// be able to chain animate FlipViewItems.

@@ -13,16 +13,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
-		public bool UseTouchAnimationsForAllNavigation
-		{
-			get { return (bool)GetValue(UseTouchAnimationsForAllNavigationProperty); }
-			set { SetValue(UseTouchAnimationsForAllNavigationProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for UseTouchAnimationsForAllNavigation.  This enables animation, styling, binding, etc...
-		public static DependencyProperty UseTouchAnimationsForAllNavigationProperty { get; } =
-			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(true));
-
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnItemsSourceChanged(e);
