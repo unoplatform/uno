@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Given_ResourceLoader.When_LocalizedResource" xml:space="preserve">
-    <value>Text in 'sr-Cyrl-BA'</value>
+    <value>Text in 'sr'</value>
   </data>
 </root>
