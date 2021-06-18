@@ -3662,7 +3662,7 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>
-	<IgnoreSet baseVersion="3.7.7">
+	<IgnoreSet baseVersion="3.8.6">
 		<Types>
 			<Member
 				fullName="Windows.UI.Xaml.UIElementExtensions"
@@ -4119,6 +4119,58 @@
 
 			<Member
 				fullName="System.Int32 Windows.UI.Xaml.Vector3TransitionComponents::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactQueryDesiredFields::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Geolocation.Geofencing.GeofenceState::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.Display.DisplayBrightnessOverrideOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.Display.DisplayOrientations::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Authentication.Web.WebAuthenticationOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.StorageItemTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.StorageOpenOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.System.Threading.WorkItemOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Composition.CompositionBatchTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Core.CoreVirtualKeyStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Popups.MessageDialogOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.TextDecorations::value__"
 				reason="Align enums" />
 		</Fields>
 		<Properties>
