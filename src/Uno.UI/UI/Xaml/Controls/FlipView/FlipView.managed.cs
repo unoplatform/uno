@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __SKIA__
+#if __WASM__ || __SKIA__
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1559,8 +1559,6 @@ namespace Windows.UI.Xaml.Controls
 			var smallChange = Math.Abs(oldSelectedIndex - newSelectedIndex) <= 1;
 			OnSelectedIndexChangedPartial(oldSelectedIndex, newSelectedIndex, smallChange && UseTouchAnimationsForAllNavigation);
 		}
-
-		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange);
 
 		// Called when the IsEnabled property changes.
 		void OnIsEnabledChanged(/*IsEnabledChangedEventArgs pArgs*/)
