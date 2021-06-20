@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows.Input;
+using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Gaming.Input;
@@ -28,8 +30,39 @@ namespace UITests.Windows_Gaming
 
 	public class GamepadReadingTestViewModel : ViewModelBase
 	{
+		private bool _isCheckingAutomatically = false;
+		private DispatcherTimer _checkTimer = new DispatcherTimer()
+		{
+			Interval = TimeSpan.FromMilliseconds(100)
+		};
+
 		public GamepadReadingTestViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
+			_checkTimer.Tick += CheckTimer_Tick;
+			Disposables.Add(Disposable.Create(() =>
+			{
+				_checkTimer.Stop();
+			}));
+		}
+
+		private void CheckTimer_Tick(object sender, object e) =>
+			GetCurrentReading();
+
+		public bool IsCheckingAutomatically
+		{
+			get => _isCheckingAutomatically;
+			set
+			{
+				_isCheckingAutomatically = value;
+				if (_isCheckingAutomatically)
+				{
+					_checkTimer.Start();
+				}
+				else
+				{
+					_checkTimer.Stop();
+				}
+			}
 		}
 
 		public ICommand GetCurrentReadingCommand => GetOrCreateCommand(GetCurrentReading);
@@ -56,7 +89,7 @@ namespace UITests.Windows_Gaming
 		{
 			var gamepad = Gamepad.Gamepads.FirstOrDefault();
 			if (gamepad != null)
-			{				
+			{
 				CurrentReading = gamepad.GetCurrentReading();
 			}
 			else

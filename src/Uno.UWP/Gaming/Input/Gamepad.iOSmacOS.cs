@@ -24,6 +24,149 @@ namespace Windows.Gaming.Input
 			_id = _nextGamepadId++;
 		}
 
+		public GamepadReading GetCurrentReading()
+		{
+			if (_controller.ExtendedGamepad != null)
+			{
+				return ReadExtendedGamepad();
+			}
+			else if (_controller.MicroGamepad != null)
+			{
+				return ReadMicroGamepad();
+			}
+			return new GamepadReading();
+		}
+
+		private GamepadReading ReadExtendedGamepad()
+		{
+			var reading = new GamepadReading();
+
+			reading.Timestamp = (ulong)(_controller.ExtendedGamepad.LastEventTimestamp * 100000);
+
+			if (_controller.ExtendedGamepad.ButtonA.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.A;
+			}
+
+			if (_controller.ExtendedGamepad.ButtonB.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.B;
+			}
+
+			if (_controller.ExtendedGamepad.ButtonY.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.Y;
+			}
+
+			if (_controller.ExtendedGamepad.ButtonX.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.X;
+			}
+
+			if (_controller.ExtendedGamepad.LeftShoulder.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.LeftShoulder;
+			}
+
+			if (_controller.ExtendedGamepad.RightShoulder.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.RightShoulder;
+			}
+
+			if (_controller.ExtendedGamepad.LeftThumbstickButton?.IsPressed == true)
+			{
+				reading.Buttons |= GamepadButtons.LeftThumbstick;
+			}
+
+			if (_controller.ExtendedGamepad.RightThumbstickButton?.IsPressed == true)
+			{
+				reading.Buttons |= GamepadButtons.RightThumbstick;
+			}
+
+			if (_controller.ExtendedGamepad.ButtonMenu.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.Menu;
+			}
+
+			if (_controller.ExtendedGamepad.ButtonOptions?.IsPressed == true)
+			{
+				reading.Buttons |= GamepadButtons.View;
+			}
+
+			if (_controller.ExtendedGamepad.DPad.Left.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.DPadLeft;
+			}
+
+			if (_controller.ExtendedGamepad.DPad.Up.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.DPadUp;
+			}
+
+			if (_controller.ExtendedGamepad.DPad.Right.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.DPadRight;
+			}
+
+			if (_controller.ExtendedGamepad.DPad.Down.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.DPadDown;
+			}
+
+			reading.LeftThumbstickX = _controller.ExtendedGamepad.LeftThumbstick.XAxis.Value;
+			reading.LeftThumbstickY = _controller.ExtendedGamepad.LeftThumbstick.YAxis.Value;
+			reading.RightThumbstickX = _controller.ExtendedGamepad.RightThumbstick.XAxis.Value;
+			reading.RightThumbstickY = _controller.ExtendedGamepad.RightThumbstick.YAxis.Value;
+			reading.LeftTrigger = _controller.ExtendedGamepad.LeftTrigger.Value;
+			reading.RightTrigger = _controller.ExtendedGamepad.RightTrigger.Value;
+
+			return reading;
+		}
+
+		private GamepadReading ReadMicroGamepad()
+		{
+			var reading = new GamepadReading();
+
+			reading.Timestamp = (ulong)_controller.MicroGamepad.LastEventTimestamp;
+
+			if (_controller.MicroGamepad.ButtonA.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.A;
+			}
+
+			if (_controller.MicroGamepad.ButtonX.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.X;
+			}
+
+			if (_controller.MicroGamepad.ButtonMenu.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.Menu;
+			}
+
+			if (_controller.MicroGamepad.Dpad.Left.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.DPadLeft;
+			}
+
+			if (_controller.MicroGamepad.Dpad.Up.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.DPadUp;
+			}
+
+			if (_controller.MicroGamepad.Dpad.Right.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.DPadRight;
+			}
+
+			if (_controller.MicroGamepad.Dpad.Down.IsPressed)
+			{
+				reading.Buttons |= GamepadButtons.DPadDown;
+			}
+
+			return reading;
+		}
+
 		private static IReadOnlyList<Gamepad> GetGamepadsInternal()
 		{
 			lock (_gamepadCache)
@@ -89,7 +232,7 @@ namespace Windows.Gaming.Input
 					_gamepadCache.Add(controller, gamepad);
 				}
 			}
-			_gamepadAdded?.Invoke(null, gamepad);
+			_gamepadAddedWrapper.Event?.Invoke(null, gamepad);
 		}
 
 		private static void OnDidDisconnect(NSNotification notification)
@@ -104,7 +247,7 @@ namespace Windows.Gaming.Input
 					_gamepadCache.Add(controller, gamepad);
 				}
 			}
-			_gamepadRemoved?.Invoke(null, gamepad);
+			_gamepadRemovedWrapper.Event?.Invoke(null, gamepad);
 		}
 	}
 }

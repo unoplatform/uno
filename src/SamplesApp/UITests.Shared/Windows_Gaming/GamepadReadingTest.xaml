@@ -11,6 +11,7 @@
 
 	<StackPanel Spacing="8" Padding="8">
 		<Button Command="{x:Bind ViewModel.GetCurrentReadingCommand}">Get current reading</Button>
+		<ToggleButton IsChecked="{x:Bind ViewModel.IsCheckingAutomatically, Mode=TwoWay}">Check automatically</ToggleButton>
 		
 		<TextBlock>
 			<Run Text="Timestamp:" />
