@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7883,7 +7883,6 @@
 									  ZoomMode="Disabled"
 									  TabNavigation="{TemplateBinding TabNavigation}"
 									  IsTabStop="False"
-									  ForceChangeToCurrentView="True"
 									  AutomationProperties.AccessibilityView="Raw">
 							<ItemsPresenter />
 						</ScrollViewer>

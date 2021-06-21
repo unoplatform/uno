@@ -1512,6 +1512,9 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
 
+		/// <summary>
+		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
+		/// </summary>		
 		internal bool ForceChangeToCurrentView { get; set; } = false;
 
 	}

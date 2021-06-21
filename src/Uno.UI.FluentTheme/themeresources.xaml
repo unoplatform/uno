@@ -14379,6 +14379,7 @@
     <Setter Property="ItemsPanel">
       <Setter.Value>
         <ItemsPanelTemplate>
+          <!-- UNO WORKAROUND: VirtualizingStackPanel is not yet implemented. -->
           <StackPanel AreScrollSnapPointsRegular="True" Orientation="Horizontal" />
         </ItemsPanelTemplate>
       </Setter.Value>

@@ -583,7 +583,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public bool IsSelectionActive { get; set; }
 
-		protected (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
+		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
 		{
 			return (Orientation.Horizontal, Orientation.Horizontal);
 		}
