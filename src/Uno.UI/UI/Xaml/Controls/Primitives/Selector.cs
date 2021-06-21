@@ -474,14 +474,26 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
 
-		internal virtual void OnItemClicked(int clickedIndex) { }
+		internal virtual void OnItemClicked(int clickedIndex)
+		{
+			if (ItemsSource is ICollectionView collectionView)
+			{
+				//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
+				collectionView.MoveCurrentToPosition(clickedIndex);
+
+				// The CollectionView may have intercepted the change
+				clickedIndex = collectionView.CurrentPosition;
+			}
+
+			SelectedIndex = clickedIndex;
+		}
 
 		protected override void OnItemsChanged(object e)
 		{
 			if (e is IVectorChangedEventArgs iVCE)
 			{
 				if (iVCE.CollectionChange == CollectionChange.ItemChanged
-				    || (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
+					|| (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
 				{
 					var item = Items[(int)iVCE.Index];
 
@@ -560,6 +572,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.Refresh();
 			_itemTemplatesThatArentContainers.Clear();
+			RefreshPartial();
 		}
+
+		partial void RefreshPartial();
+
+
+		/// <summary>
+		/// Is the ListView.managed implementation used on this platform?
+		/// </summary>
+		internal const bool UsesManagedLayouting =
+#if __IOS__ || __ANDROID__
+			false;
+#else
+			true;
+#endif
 	}
 }

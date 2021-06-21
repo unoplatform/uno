@@ -11,23 +11,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
-		IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
-
 		private int PageSize => throw new NotImplementedException();
-
-		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
-
-		private protected override void Refresh()
-		{
-			base.Refresh();
-
-			if (VirtualizingPanel != null)
-			{
-				VirtualizingPanel.GetLayouter().Refresh();
-
-				InvalidateMeasure();
-			}
-		}
 
 		private void AddItems(int firstItem, int count, int section)
 		{
