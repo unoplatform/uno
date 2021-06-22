@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public enum PatternInterface : uint
+	public enum PatternInterface
 	{
 		Invoke = 0,
 		Selection = 1,
