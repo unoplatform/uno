@@ -320,7 +320,6 @@
                             ZoomMode="Disabled"
                             TabNavigation="{TemplateBinding TabNavigation}"
                             IsTabStop="False"
-							ForceChangeToCurrentView="True"
                             AutomationProperties.AccessibilityView="Raw">
                             <ItemsPresenter />
                         </ScrollViewer>
