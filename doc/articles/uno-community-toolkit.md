@@ -140,6 +140,39 @@ This control will create an easily organized grid that will allow you to create 
     </controls:DataGrid.Columns>
     ```  
 
+## Referencing the Windows Community Toolkit from a Cross-Targeted Library
+
+The Uno Platform build of the Windows Community toolkit is not needed when running on UWP, which is why you'll need to make some small changes to the project.
+
+Adding the Uno version of the community toolkit to a Uno Platform cross-targeted library can cause build errors like this one:
+
+```
+Controls\TextBox\Themes\Generic.xaml : Xaml Internal Error error WMC9999: 
+Type universe cannot resolve assembly: Uno.UI, Version=255.255.255.255, 
+Culture=neutral, PublicKeyToken=null.
+```
+
+To fix this, instead of adding the Uno version of the toolkit like the code below:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
+</ItemGroup>
+```
+
+Add a conditional reference:
+
+```xml
+<ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.17763'">
+  <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
+</ItemGroup>
+<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.17763'">
+  <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
+</ItemGroup>
+```
+
+You may need to replace `uap10.0.17763` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
+
 ## See a working example with data
 
 ![datagrid-full-sample](Assets/datagrid-full-sample.gif)
