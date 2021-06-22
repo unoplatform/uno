@@ -3744,14 +3744,528 @@
 	</IgnoreSet>	
 	<IgnoreSet baseVersion="3.8.6">
 		<Types>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.Popup"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.PopupBase"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.NativePopup"
+				reason="Adjust Popup hierarchy" />
 		</Types>
 		<Methods>
+			<Member
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.UI.Xaml.Controls.Popup&gt; Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window window)"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.UI.Xaml.Controls.Popup&gt; Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(Windows.UI.Xaml.XamlRoot xamlRoot)"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Popover.OnAnchorChanged(UIKit.UIView oldAnchor, UIKit.UIView newAnchor)"
+				reason="Adjust Popup hierarchy" />
+
+			<Member
+				fullName="System.DateTime Windows.Foundation.IPropertyValue.GetDateTime()"
+				reason="Align IPropertyValue" />
+
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel.get_AreHorizontalSnapPointsRegular()"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel.get_AreVerticalSnapPointsRegular()"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;System.Single&gt; Windows.UI.Xaml.Controls.Primitives.CarouselPanel.GetIrregularSnapPoints(Windows.UI.Xaml.Controls.Orientation orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Single Windows.UI.Xaml.Controls.Primitives.CarouselPanel.GetRegularSnapPoints(Windows.UI.Xaml.Controls.Orientation orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, System.Single&amp; offset)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CarouselPanel.add_HorizontalSnapPointsChanged(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CarouselPanel.remove_HorizontalSnapPointsChanged(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CarouselPanel.add_VerticalSnapPointsChanged(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CarouselPanel.remove_VerticalSnapPointsChanged(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Relates to #4956" />
+
+			<Member
+				fullName="System.UInt32 Windows.UI.Xaml.Media.GradientStopCollection.get_Size()"
+				reason="Relates to #4169" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Media.GradientStopCollection.get_IsReadOnly()"
+				reason="Relates to #4169" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.GradientStopCollection.set_IsReadOnly(System.Boolean value)"
+				reason="Relates to #4169" />
 		</Methods>
+		<Events>
+			<Member
+				fullName="System.EventHandler`1&lt;System.Object&gt; Windows.UI.Xaml.Controls.Primitives.CarouselPanel::HorizontalSnapPointsChanged"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.EventHandler`1&lt;System.Object&gt; Windows.UI.Xaml.Controls.Primitives.CarouselPanel::VerticalSnapPointsChanged"
+				reason="Relates to #4956" />
+		</Events>
 		<Fields>
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.AddResourcePackageOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Appointments.AppointmentDaysOfWeek::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Appointments.FindAppointmentCalendarsOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryDesiredMedia::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactAnnotationOperations::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIContentMode::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Email.EmailQuerySearchFields::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Store.Preview.StoreLogOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.UserDataAccounts.UserDataAccountContentKinds::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.UserDataTasks.UserDataTaskDaysOfWeek::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Data.Text.TextPredictionOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Bluetooth.BluetoothServiceCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicProperties::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayBitsPerChannel::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayManagerOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayModeQueryOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayStateApplyOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayStateFunctionalizeOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Enumeration.DevicePairingKinds::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Enumeration.DevicePickerDisplayStatusOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Lights.LampPurposes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosConnectionTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosPrinterCartridgeSensors::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosPrinterColorCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosPrinterMarkFeedCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosPrinterRuledLineCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Usb.UsbReadOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Usb.UsbWriteOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Foundation.Diagnostics.ErrorOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.ArcadeStickButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.FlightStickButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectAxes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.GamepadButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.OptionalUINavigationButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.RacingWheelButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.RequiredUINavigationButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.DirectX.Direct3D11.Direct3DBindings::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.Printing.OptionDetails.PrintOptionStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.AddPackageByAppInstallerOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.DeploymentOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.PackageStatus::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.PackageTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.RemovalOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Media.Audio.AudioNodeEmitterSettings::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Media.Casting.CastingPlaybackTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Media.MediaProperties.MediaMirroringOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Media.Protection.RevocationAndRenewalReasons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Connectivity.NetworkTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Connectivity.RoamingStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Connectivity.WwanDataClass::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.HostNameSortOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.NetworkOperators.DataClasses::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Proximity.PeerDiscoveryTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Vpn.VpnChannelRequestCredentialsOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Phone.ApplicationModel.ApplicationProfileModes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Phone.Media.Devices.AvailableAudioRoutingEndpoints::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Phone.Notification.Management.AccessoryNotificationType::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Phone.Notification.Management.PlaybackCapability::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorDeviceCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Authentication.Web.Provider.WebAccountSelectionOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Cryptography.Certificates.EnrollKeyUsages::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Cryptography.Certificates.InstallOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Services.Maps.MapManeuverNotices::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Services.Maps.MapRouteRestrictions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.AccessCache.AccessCacheOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.FileAttributes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.FileProperties.PropertyPrefetchOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.FileProperties.ThumbnailOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.Provider.CachedFileOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticEventBufferLatencies::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.System.Profile.UnsupportedAppRequirementReasons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.ApplicationSettings.SupportedWebAccountActions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Composition.Diagnostics.CompositionDebugOverdrawContentKinds::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Composition.Interactions.InteractionBindingAxisModes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Core.CoreInputDeviceTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputKeyOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputMouseOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputPenButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputPenParameters::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputPointerOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Spatial.SpatialGestureSettings::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Notifications.NotificationKinds::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.StartScreen.TileOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.FindOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.PointOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.SelectionOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.TextGetOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.TextSetOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.ViewManagement.ApplicationViewSwitchingOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.ApplicationHighContrastAdjustment::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.Controls.DisabledFormattingAccelerators::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.ElementHighContrastAdjustment::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.Vector3TransitionComponents::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactQueryDesiredFields::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Geolocation.Geofencing.GeofenceState::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.Display.DisplayBrightnessOverrideOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.Display.DisplayOrientations::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Authentication.Web.WebAuthenticationOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.StorageItemTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.StorageOpenOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.System.Threading.WorkItemOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Composition.CompositionBatchTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Core.CoreVirtualKeyStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Popups.MessageDialogOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.TextDecorations::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.UInt32 Windows.UI.Xaml.Automation.Peers.PatternInterface::value__"
+				reason="Align enums" />
+
 		</Fields>
 		<Properties>
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel::AreHorizontalSnapPointsRegular()"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel::AreVerticalSnapPointsRegular()"
+				reason="Relates to #4956" />
+
+			<Member
+				fullName="System.UInt32 Windows.UI.Xaml.Media.GradientStopCollection::Size()"
+				reason="Relates to #4169" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Media.GradientStopCollection::IsReadOnly()"
+				reason="Relates to #4169" />
 		</Properties>
-	</IgnoreSet>	
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>
