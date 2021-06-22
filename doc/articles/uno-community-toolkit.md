@@ -164,7 +164,7 @@ Add a conditional reference:
 
 ```xml
 <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.17763'">
-  <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
+  <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
 </ItemGroup>
 <ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.17763'">
   <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
