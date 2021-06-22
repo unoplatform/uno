@@ -32,11 +32,11 @@ To use MSBuild binary logs:
   - The binlog viewer tool will expand to the detailed build error
 
 ### From the command line
-You may be asked by to generate a binlog from the command line, as it includes more information (the project structure, but not the source files) that can help troubleshoot issues.
+You may be asked to generate a binlog from the command line, as it includes more information (the project structure, but not the source files) that can help troubleshoot issues.
 
-To generate a binlog file:
+To generate a binlog file from the command line:
 - Open a :
-  - Visual Studio Developer command prompt on Windows
+  - [Visual Studio Developer command prompt](https://docs.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell) on Windows
   - A terminal window on Linux or macOS
 - Navigate to the folder of the project head
 - For UWP/iOS/Android/macOS projects, type the following:
