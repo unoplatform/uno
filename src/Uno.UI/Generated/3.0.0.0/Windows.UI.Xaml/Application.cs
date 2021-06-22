@@ -122,37 +122,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared event Windows.UI.Xaml.Application.Resuming
 		// Skipping already declared event Windows.UI.Xaml.Application.Suspending
 		// Skipping already declared event Windows.UI.Xaml.Application.UnhandledException
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.EnteredBackgroundEventHandler EnteredBackground
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "event EnteredBackgroundEventHandler Application.EnteredBackground");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "event EnteredBackgroundEventHandler Application.EnteredBackground");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.LeavingBackgroundEventHandler LeavingBackground
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "event LeavingBackgroundEventHandler Application.LeavingBackground");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "event LeavingBackgroundEventHandler Application.LeavingBackground");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Application.EnteredBackground
+		// Skipping already declared event Windows.UI.Xaml.Application.LeavingBackground
 	}
 }

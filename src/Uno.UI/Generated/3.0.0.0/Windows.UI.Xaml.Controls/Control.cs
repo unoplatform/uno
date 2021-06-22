@@ -628,22 +628,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.BorderBrushProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.DefaultStyleKeyProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.FocusStateProperty.get
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
-		public  event global::Windows.UI.Xaml.DependencyPropertyChangedEventHandler IsEnabledChanged
-		{
-			[global::Uno.NotImplemented("NET461")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "event DependencyPropertyChangedEventHandler Control.IsEnabledChanged");
-			}
-			[global::Uno.NotImplemented("NET461")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "event DependencyPropertyChangedEventHandler Control.IsEnabledChanged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.Control.IsEnabledChanged
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Control, global::Windows.UI.Xaml.Controls.FocusDisengagedEventArgs> FocusDisengaged
@@ -660,5 +645,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.Control.FocusEngaged
 	}
 }
