@@ -32,12 +32,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#region ScrollOwner
 		private ManagedWeakReference _scroller;
-		bool _forceChangeToCurrentView;
-		bool IScrollContentPresenter.ForceChangeToCurrentView
-		{
-			get => _forceChangeToCurrentView;
-			set => _forceChangeToCurrentView = value;
-		}
 
 		public object ScrollOwner
 		{
@@ -53,6 +47,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endregion
+
+		bool _forceChangeToCurrentView = false;
+
+#if __WASM__
+		bool IScrollContentPresenter.ForceChangeToCurrentView
+		{
+			get => _forceChangeToCurrentView;
+			set => _forceChangeToCurrentView = value;
+		}
+#endif
 
 		private void InitializeScrollContentPresenter()
 		{
