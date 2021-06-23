@@ -22,5 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 #nullable enable
 
 		public virtual IconElement? CreateIconElement() => default;
+
+		protected virtual DependencyProperty? GetIconElementProperty(DependencyProperty sourceProperty) => default;
 	}
 }
