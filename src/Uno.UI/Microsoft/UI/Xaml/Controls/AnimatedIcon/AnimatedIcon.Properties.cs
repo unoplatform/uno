@@ -13,8 +13,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty FallbackIconSourceProperty { get; } =
 			DependencyProperty.Register(nameof(FallbackIconSource), typeof(IconSource), typeof(AnimatedIcon), new PropertyMetadata(null, OnFallbackIconSourcePropertyChanged));
 
-
-
 		public IAnimatedVisualSource2 Source
 		{
 			get => (IAnimatedVisualSource2)GetValue(SourceProperty);
@@ -23,7 +21,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIcon), new PropertyMetadata(null, OnSourcePropertyChanged));
-
 
 		private static void OnFallbackIconSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
