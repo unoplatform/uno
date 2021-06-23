@@ -1,4 +1,10 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using System.Numerics;
+using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media;
@@ -74,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 				while (parent)
 				{
 					var stateValue = parent.GetValue(property);
-					if (!(hstring)stateValue).empty()
+					if (!(string)stateValue).empty()
 
 
 			{
@@ -82,10 +88,10 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					parent = VisualTreeHelper.GetParent(parent);
 				}
-				return Tuple.Create((DependencyObject)(null), hstring{ });
+				return Tuple.Create((DependencyObject)(null), string{ });
 			} ();
 
-			if ((hstring)GetValue(property)).empty()
+			if ((string)GetValue(property)).empty()
 
 
 	{
@@ -147,59 +153,59 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		Size ArrangeOverride(Size & finalSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (var visual = m_animatedVisual)
-    {
-				var visualSize = visual.Size();
-				var scale = [finalSize, visualSize]()
+			if (m_animatedVisual is { } visual)
+			{
+				var visualSize = visual.Size;
 
-		{
-					var scale = (float2)(finalSize) / visualSize;
-					if (scale.x < scale.y)
+				Vector2 GetScale(Size finalSize, Vector2 visualSize)
+				{
+					var scale = (Vector2)(finalSize) / visualSize;
+					if (scale.X < scale.Y)
 					{
-						scale.y = scale.x;
+						scale.Y = scale.X;
 					}
 					else
 					{
-						scale.x = scale.y;
+						scale.X = scale.Y;
 					}
 					return scale;
-				} ();
+				}
+				var scale = GetScale(finalSize, visualSize);
 
-				float2 arrangedSize = {
-			std.min(finalSize.Width / scale.x, visualSize.x),
-			std.min(finalSize.Height / scale.y, visualSize.y)
-		};
+				Vector2 arrangedSize = new Vector2(
+					Math.Min(finalSize.Width / scale.X, visualSize.X),
+					Math.Min(finalSize.Height / scale.Y, visualSize.Y));
 				var offset = (finalSize - (visualSize * scale)) / 2;
-				var rootVisual = visual.RootVisual();
-				rootVisual.Offset({ offset, 0.0f });
-				rootVisual.Size(arrangedSize);
-				rootVisual.Scale({ scale, 1.0f });
+				var rootVisual = visual.RootVisual;
+				rootVisual.Offset = new Vector3(offset, 0.0f);
+				rootVisual.Size = arrangedSize;
+				rootVisual.Scale = new Vector3(scale, 1.0f);
 				return finalSize;
 			}
 
-	else
+			else
 			{
-				return __super.ArrangeOverride(finalSize);
+				return base.ArrangeOverride(finalSize);
 			}
 		}
 
-		void OnAnimatedIconStatePropertyChanged(
+		private static void OnAnimatedIconStatePropertyChanged(
 			 DependencyObject sender,
-			 DependencyPropertyChangedEventArgs& args)
+			 DependencyPropertyChangedEventArgs args)
 		{
-			if (var senderAsAnimatedIcon = sender as AnimatedIcon())
-    {
+			if (sender is AnimatedIcon senderAsAnimatedIcon)
+			{
 				senderAsAnimatedIcon.OnStatePropertyChanged();
 			}
 		}
 
-		void OnAncestorAnimatedIconStatePropertyChanged(
+		private void OnAncestorAnimatedIconStatePropertyChanged(
 			 DependencyObject sender,
-			 DependencyProperty& args)
+			 DependencyProperty args)
 		{
-			SetValue(AnimatedIconProperties.s_StateProperty, sender.GetValue(args));
+			SetValue(StateProperty, sender.GetValue(args));
 		}
 
 		// When we receive a state change it might be erroneous. This is because these state changes often come from Animated Icon's parent control's
@@ -210,7 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// enough to ensure that a layout updated will trigger, so we must also invalidate a layout property, arrange was chosen arbitrarily.
 		void OnStatePropertyChanged()
 		{
-			m_pendingState = ValueHelper<hstring>.CastOrUnbox(this.GetValue(AnimatedIconStateProperty()));
+			m_pendingState = ValueHelper<string>.CastOrUnbox(this.GetValue(AnimatedIconStateProperty()));
 			m_layoutUpdatedRevoker = this.LayoutUpdated(auto_revoke, { this, &AnimatedIcon.OnLayoutUpdatedAfterStateChanged });
 			SharedHelpers.QueueCallbackForCompositionRendering(
 
@@ -224,9 +230,9 @@ namespace Microsoft.UI.Xaml.Controls
     );
 		}
 
-		void OnLayoutUpdatedAfterStateChanged(object & sender, object & args)
+		private void OnLayoutUpdatedAfterStateChanged(object sender, object args)
 		{
-			m_layoutUpdatedRevoker.revoke();
+			m_layoutUpdatedRevoker.Disposable = null;
 			switch (m_queueBehavior)
 			{
 				case AnimatedIconAnimationQueueBehavior.Cut:
@@ -237,7 +243,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						// If we already have a queued state, cancel the current animation with the previously queued transition
 						// then Queue this new transition.
-						if (!m_queuedState.empty())
+						if (!string.IsNullOrEmpty(m_queuedState))
 						{
 							TransitionAndUpdateStates(m_currentState, m_queuedState);
 						}
@@ -252,14 +258,14 @@ namespace Microsoft.UI.Xaml.Controls
 					if (m_isPlaying)
 					{
 						// Cancel the previous animation completed handler, before we cancel that animation by starting a new one.
-						if (m_batch)
+						if (m_batch != null)
 						{
-							m_batchCompletedRevoker.revoke();
+							m_batchCompletedRevoker.Disposable = null;
 						}
 
 						// If we already have a queued state, cancel the current animation with the previously queued transition
 						//  played speed up then Queue this new transition.
-						if (!m_queuedState.empty())
+						if (!string.IsNullOrEmpty(m_queuedState))
 						{
 							TransitionAndUpdateStates(m_currentState, m_queuedState, m_speedUpMultiplier);
 							m_queuedState = m_pendingState;
@@ -268,12 +274,12 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							m_queuedState = m_pendingState;
 
-							var markers = Source().Markers();
-							hstring transitionEndName = StringUtil.FormatString("%1!s!%2!s!%3!s!%4!s!", m_previousState.c_str(), s_transitionInfix.data(), m_currentState.c_str(), s_transitionEndSuffix.data());
-							var hasEndMarker = markers.HasKey(transitionEndName);
+							var markers = Source.Markers;
+							string transitionEndName = StringUtil.FormatString("%1!s!%2!s!%3!s!%4!s!", m_previousState, s_transitionInfix, m_currentState, s_transitionEndSuffix);
+							var hasEndMarker = markers.ContainsKey(transitionEndName);
 							if (hasEndMarker)
 							{
-								PlaySegment(NAN, (float)(markers.Lookup(transitionEndName)), m_speedUpMultiplier);
+								PlaySegment(float.NaN, (float)(markers[transitionEndName]), m_speedUpMultiplier);
 							}
 						}
 					}
@@ -286,7 +292,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_pendingState = "";
 		}
 
-		void TransitionAndUpdateStates(hstring& fromState, hstring& toState, float playbackMultiplier)
+		private void TransitionAndUpdateStates(string fromState, string toState, float playbackMultiplier = 1.0f)
 		{
 			TransitionStates(fromState, toState, playbackMultiplier);
 			m_previousState = fromState;
@@ -294,50 +300,50 @@ namespace Microsoft.UI.Xaml.Controls
 			m_queuedState = "";
 		}
 
-		void TransitionStates(hstring& fromState, hstring& toState, float playbackMultiplier)
+		private void TransitionStates(string fromState, string toState, float playbackMultiplier = 1.0f)
 		{
-			if (var source = Source())
-    {
-				if (var markers = source.Markers())
-        {
-					hstring transitionName = StringUtil.FormatString("%1!s!%2!s!%3!s!", fromState.c_str(), s_transitionInfix.data(), toState.c_str());
-					hstring transitionStartName = StringUtil.FormatString("%1!s!%2!s!", transitionName.c_str(), s_transitionStartSuffix.data());
-					hstring transitionEndName = StringUtil.FormatString("%1!s!%2!s!", transitionName.c_str(), s_transitionEndSuffix.data());
+			if (Source is { } source)
+			{
+				if (source.Markers is { } markers)
+				{
+					string transitionName = StringUtil.FormatString("%1!s!%2!s!%3!s!", fromState, s_transitionInfix, toState);
+					string transitionStartName = StringUtil.FormatString("%1!s!%2!s!", transitionName, s_transitionStartSuffix);
+					string transitionEndName = StringUtil.FormatString("%1!s!%2!s!", transitionName, s_transitionEndSuffix);
 
-					var hasStartMarker = markers.HasKey(transitionStartName);
-					var hasEndMarker = markers.HasKey(transitionEndName);
+					var hasStartMarker = markers.ContainsKey(transitionStartName);
+					var hasEndMarker = markers.ContainsKey(transitionEndName);
 					if (hasStartMarker && hasEndMarker)
 					{
-						var fromProgress = (float)(markers.Lookup(transitionStartName));
-						var toProgress = (float)(markers.Lookup(transitionEndName));
+						var fromProgress = (float)(markers[transitionStartName]);
+						var toProgress = (float)(markers[transitionEndName]);
 						PlaySegment(fromProgress, toProgress, playbackMultiplier);
 						m_lastAnimationSegmentStart = transitionStartName;
 						m_lastAnimationSegmentEnd = transitionEndName;
 					}
 					else if (hasEndMarker)
 					{
-						var toProgress = (float)(markers.Lookup(transitionEndName));
+						var toProgress = (float)(markers[transitionEndName]);
 						m_progressPropertySet.InsertScalar(s_progressPropertyName, toProgress);
 						m_lastAnimationSegmentStart = "";
 						m_lastAnimationSegmentEnd = transitionEndName;
 					}
 					else if (hasStartMarker)
 					{
-						var toProgress = (float)(markers.Lookup(transitionStartName));
+						var toProgress = (float)(markers[transitionStartName]);
 						m_progressPropertySet.InsertScalar(s_progressPropertyName, toProgress);
 						m_lastAnimationSegmentStart = transitionStartName;
 						m_lastAnimationSegmentEnd = "";
 					}
-					else if (markers.HasKey(transitionName))
+					else if (markers.ContainsKey(transitionName))
 					{
-						var toProgress = (float)(markers.Lookup(transitionName));
+						var toProgress = (float)(markers[transitionName]);
 						m_progressPropertySet.InsertScalar(s_progressPropertyName, toProgress);
 						m_lastAnimationSegmentStart = "";
 						m_lastAnimationSegmentEnd = transitionName;
 					}
-					else if (markers.HasKey(toState))
+					else if (markers.ContainsKey(toState))
 					{
-						var toProgress = (float)(markers.Lookup(toState));
+						var toProgress = (float)(markers[toState]);
 						m_progressPropertySet.InsertScalar(s_progressPropertyName, toProgress);
 						m_lastAnimationSegmentStart = "";
 						m_lastAnimationSegmentEnd = toState;
@@ -350,7 +356,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 				{
-							hstring fragment = StringUtil.FormatString("%1!s!%2!s!%3!s!", s_transitionInfix.data(), toState.c_str(), s_transitionEndSuffix.data());
+							string fragment = StringUtil.FormatString("%1!s!%2!s!%3!s!", s_transitionInfix.data(), toState.c_str(), s_transitionEndSuffix.data());
 							for (var[key, val] : markers)
 							{
 								std.string value = key.data();
@@ -399,7 +405,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void PlaySegment(float from, float to, float playbackMultiplier)
+		void PlaySegment(float from, float to, float playbackMultiplier = 1.0f)
 		{
 			var segmentLength = [from, to, previousSegmentLength = m_previousSegmentLength]()
 
@@ -425,13 +431,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 	else
 			{
-				var compositor = m_progressPropertySet.Compositor();
+				var compositor = m_progressPropertySet.Compositor;
 				var animation = compositor.CreateScalarKeyFrameAnimation();
-				animation.Duration(duration);
+				animation.Duration = duration;
 				var linearEasing = compositor.CreateLinearEasingFunction();
 
 				// Play from fromProgress.
-				if (!std.isnan(from))
+				if (!float.IsNaN(from))
 				{
 					animation.InsertKeyFrame(0, from);
 				}
@@ -439,12 +445,12 @@ namespace Microsoft.UI.Xaml.Controls
 				// Play to toProgress
 				animation.InsertKeyFrame(1, to, linearEasing);
 
-				animation.IterationBehavior(AnimationIterationBehavior.Count);
-				animation.IterationCount(1);
+				animation.IterationBehavior = AnimationIterationBehavior.Count;
+				animation.IterationCount = 1;
 
-				if (m_batch)
+				if (m_batch != null)
 				{
-					m_batchCompletedRevoker.revoke();
+					m_batchCompletedRevoker.Disposable = null;
 				}
 				m_batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
 				m_batchCompletedRevoker = RegisterScopedBatchCompleted(m_batch, { this, &AnimatedIcon.OnAnimationCompleted });
@@ -455,7 +461,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnSourcePropertyChanged(DependencyPropertyChangedEventArgs&)
+		private void OnSourcePropertyChanged(DependencyPropertyChangedEventArgs&)
 		{
 			if (!ConstructAndInsertVisual())
 			{
@@ -463,47 +469,50 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateMirrorTransform()
+		private void UpdateMirrorTransform()
 		{
-			var scaleTransform = [this]()
-
-
-	{
-				if (!m_scaleTransform)
+			ScaleTransform GetScaleTransform()
+			{
+				if (m_scaleTransform == null)
 				{
 					// Initialize the scale transform that will be used for mirroring and the
 					// render transform origin as center in order to have the icon mirrored in place.
-					Windows.UI.Xaml.Media.ScaleTransform scaleTransform;
+					Windows.UI.Xaml.Media.ScaleTransform scaleTransform = new ScaleTransform();
 
-					RenderTransform(scaleTransform);
-					RenderTransformOrigin({ 0.5, 0.5 });
+					RenderTransform = scaleTransform;
+					RenderTransformOrigin = new Point(0.5, 0.5);
 					m_scaleTransform = scaleTransform;
 					return scaleTransform;
 				}
 				return m_scaleTransform;
-			} ();
+			}
 
+			var scaleTransform = GetScaleTransform();
 
-			scaleTransform.ScaleX(FlowDirection() == FlowDirection.RightToLeft && !MirroredWhenRightToLeft() && m_canDisplayPrimaryContent ? -1.0f : 1.0f);
+			scaleTransform.ScaleX =
+				FlowDirection == FlowDirection.RightToLeft &&
+				!MirroredWhenRightToLeft &&
+				m_canDisplayPrimaryContent ?
+					-1.0f : 1.0f;
 		}
 
-		void OnMirroredWhenRightToLeftPropertyChanged(DependencyPropertyChangedEventArgs&)
+		private void OnMirroredWhenRightToLeftPropertyChanged(DependencyPropertyChangedEventArgs&)
 		{
 			UpdateMirrorTransform();
 		}
 
-		bool ConstructAndInsertVisual()
+		private bool ConstructAndInsertVisual()
 		{
 			var visual = [this]()
 
 
 	{
-				if (var source = Source())
+				if (Source is { } source)
         {
 					TrySetForegroundProperty(source);
 
 					object diagnostics{ };
-					var visual = source.TryCreateAnimatedVisual(Window.Current().Compositor(), diagnostics);
+					var visual = source.TryCreateAnimatedVisual(Window.Current.Compositor, diagnostics);
 					m_animatedVisual = visual;
 					return visual ? visual.RootVisual() : null;
 				}
@@ -515,21 +524,21 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			} ();
 
-			if (var rootPanel = m_rootPanel)
-    {
+			if (m_rootPanel is { } rootPanel)
+			{
 				ElementCompositionPreview.SetElementChildVisual(rootPanel, visual);
 			}
 
 			if (visual)
 			{
 				m_canDisplayPrimaryContent = true;
-				if (var rootPanel = m_rootPanel)
-        {
+				if (m_rootPanel is { } rootPanel)
+				{
 					// Remove the second child, if it exists, as this is the fallback icon.
 					// Which we don't need because we have a visual now.
-					if (rootPanel.Children().Size() > 1)
+					if (rootPanel.Children.Count > 1)
 					{
-						rootPanel.Children().RemoveAt(1);
+						rootPanel.Children.RemoveAt(1);
 					}
 				}
 				visual.Properties().InsertScalar(s_progressPropertyName, 0.0F);
@@ -552,7 +561,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateMirrorTransform();
 		}
 
-		void OnFallbackIconSourcePropertyChanged(DependencyPropertyChangedEventArgs&)
+		private void OnFallbackIconSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			if (!m_canDisplayPrimaryContent)
 			{
@@ -560,66 +569,66 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void SetRootPanelChildToFallbackIcon()
+		private void SetRootPanelChildToFallbackIcon()
 		{
-			if (var iconSource = FallbackIconSource())
-    {
+			if (FallbackIconSource is { } iconSource)
+			{
 				var iconElement = iconSource.CreateIconElement();
-				if (var rootPanel = m_rootPanel)
-        {
+				if (m_rootPanel is { } rootPanel)
+				{
 					// Remove the second child, if it exists, as this is the previous
 					// fallback icon which we don't need because we have a visual now.
-					if (rootPanel.Children().Size() > 1)
+					if (rootPanel.Children.Count > 1)
 					{
-						rootPanel.Children().RemoveAt(1);
+						rootPanel.Children.RemoveAt(1);
 					}
-					rootPanel.Children().Append(iconElement);
+					rootPanel.Children.Add(iconElement);
 				}
 			}
 		}
 
-		void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty& args)
+		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
-			m_foregroundColorPropertyChangedRevoker.revoke();
-			if (var foregroundSolidColorBrush = Foreground() as SolidColorBrush())
-    {
-				m_foregroundColorPropertyChangedRevoker = RegisterPropertyChanged(foregroundSolidColorBrush, SolidColorBrush.ColorProperty(), { this, &AnimatedIcon.OnForegroundBrushColorPropertyChanged });
-				TrySetForegroundProperty(foregroundSolidColorBrush.Color());
+			m_foregroundColorPropertyChangedRevoker.Disposable = null;
+			if (Foreground is SolidColorBrush foregroundSolidColorBrush)
+			{
+				m_foregroundColorPropertyChangedRevoker = foregroundSolidColorBrush.RegisterPropertyChangedCallback(SolidColorBrush.ColorProperty, OnForegroundBrushColorPropertyChanged);
+				TrySetForegroundProperty(foregroundSolidColorBrush.Color);
 			}
 		}
 
-		void OnFlowDirectionPropertyChanged(DependencyObject sender, DependencyProperty& args)
+		private void OnFlowDirectionPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
 			UpdateMirrorTransform();
 		}
 
-		void OnForegroundBrushColorPropertyChanged(DependencyObject sender, DependencyProperty& args)
+		private void OnForegroundBrushColorPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
 			TrySetForegroundProperty(sender.GetValue(args).as< Color > ());
 		}
 
-		void TrySetForegroundProperty(IAnimatedVisualSource2 & source)
+		private void TrySetForegroundProperty(IAnimatedVisualSource2 source)
 		{
-			if (var foregroundSolidColorBrush = Foreground() as SolidColorBrush())
-    {
-				TrySetForegroundProperty(foregroundSolidColorBrush.Color(), source);
+			if (Foreground is SolidColorBrush foregroundSolidColorBrush)
+			{
+				TrySetForegroundProperty(foregroundSolidColorBrush.Color, source);
 			}
 		}
 
-		void TrySetForegroundProperty(Color color, IAnimatedVisualSource2 & source)
+		private void TrySetForegroundProperty(Color color, IAnimatedVisualSource2 source)
 		{
-			var localSource = source ? source : Source();
-			if (localSource)
+			var localSource = source != null ? source : Source;
+			if (localSource != null)
 			{
 				localSource.SetColorProperty(s_foregroundPropertyName, color);
 			}
 		}
 
-		void OnAnimationCompleted(object &, CompositionBatchCompletedEventArgs &)
+		private void OnAnimationCompleted(object sender, CompositionBatchCompletedEventArgs args)
 		{
-			if (m_batch)
+			if (m_batch != null)
 			{
-				m_batchCompletedRevoker.revoke();
+				m_batchCompletedRevoker.Disposable = null;
 			}
 			m_isPlaying = false;
 
@@ -629,7 +638,7 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 				case AnimatedIconAnimationQueueBehavior.QueueOne:
 				case AnimatedIconAnimationQueueBehavior.SpeedUpQueueOne:
-					if (!m_queuedState.empty())
+					if (!string.IsNullOrEmpty(m_queuedState))
 					{
 						TransitionAndUpdateStates(m_currentState, m_queuedState);
 					}
@@ -638,33 +647,32 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Test hooks
-		void SetAnimationQueueBehavior(AnimatedIconAnimationQueueBehavior behavior)
+		private void SetAnimationQueueBehavior(AnimatedIconAnimationQueueBehavior behavior)
 		{
 			m_queueBehavior = behavior;
 		}
 
-
-		void SetDurationMultiplier(float multiplier)
+		private void SetDurationMultiplier(float multiplier)
 		{
 			m_durationMultiplier = multiplier;
 		}
 
-		void SetSpeedUpMultiplier(float multiplier)
+		private void SetSpeedUpMultiplier(float multiplier)
 		{
 			m_speedUpMultiplier = multiplier;
 		}
 
-		hstring GetLastAnimationSegment()
+		private string GetLastAnimationSegment()
 		{
 			return m_lastAnimationSegment;
 		}
 
-		hstring GetLastAnimationSegmentStart()
+		private string GetLastAnimationSegmentStart()
 		{
 			return m_lastAnimationSegmentStart;
 		}
 
-		hstring GetLastAnimationSegmentEnd()
+		private string GetLastAnimationSegmentEnd()
 		{
 			return m_lastAnimationSegmentEnd;
 		}
