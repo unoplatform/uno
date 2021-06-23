@@ -46,7 +46,8 @@ If the issue is visible on WebAssembly and uses only XAML:
 Yes / No
 
 To make sure this is an Uno Platform specific issue, try running your sample application 
-on Windows using the UWP or WinUI project. If it does not work as well, it may be a 
+on Windows using the UWP or WinUI project. If it does not work on Windows either, it may be a 
+
 Windows issue or it may be a documentation issue. In this case, open a discussion instead:
 https://github.com/unoplatform/uno/discussions
 -->
