@@ -1,13 +1,34 @@
-﻿// MUX reference NavigationViewItemBase.cpp, commit f3da94f 
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewItemBase.cpp, commit 574e5ed 
 
+using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NavigationViewItemBase : ContentControl
 	{
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			// TODO Uno specific - unsubscribe Loaded event handler to avoid multiple subscriptions
+			// as OnApplyTemplate will be called repeatedly.
+			Loaded -= OnLoaded;
+			Loaded += OnLoaded;
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			// If the NavViewItem is not prepared in an ItemPresenter it will be missing a reference to NavigationView, so adding that here.
+			if (m_navigationView == null)
+			{
+				SetNavigationViewParent(SharedHelpers.GetAncestorOfType<NavigationView>(this));
+			}
+		}
+
 		internal NavigationViewRepeaterPosition Position
 		{
 			get => m_position;

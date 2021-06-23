@@ -1,4 +1,6 @@
-﻿// MUX Reference NavigationViewItemPresenter.cpp, commit 5e503fa
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference NavigationViewItemsFactory.cpp, commit 5e503fa
 
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,6 @@
-﻿// MUX reference NavigationViewItem.cpp, commit 4fe1fd5
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewItem.cpp, commit 574e5ed
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
@@ -10,10 +12,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Windows.Devices.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -48,6 +50,16 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string c_chevronHidden = "ChevronHidden";
 		private const string c_chevronVisibleOpen = "ChevronVisibleOpen";
 		private const string c_chevronVisibleClosed = "ChevronVisibleClosed";
+
+		private const string c_normalChevronHidden = "NormalChevronHidden";
+		private const string c_normalChevronVisibleOpen = "NormalChevronVisibleOpen";
+		private const string c_normalChevronVisibleClosed = "NormalChevronVisibleClosed";
+		private const string c_pointerOverChevronHidden = "PointerOverChevronHidden";
+		private const string c_pointerOverChevronVisibleOpen = "PointerOverChevronVisibleOpen";
+		private const string c_pointerOverChevronVisibleClosed = "PointerOverChevronVisibleClosed";
+		private const string c_pressedChevronHidden = "PressedChevronHidden";
+		private const string c_pressedChevronVisibleOpen = "PressedChevronVisibleOpen";
+		private const string c_pressedChevronVisibleClosed = "PressedChevronVisibleClosed";
 
 		public NavigationViewItem()
 		{
@@ -121,21 +133,14 @@ namespace Microsoft.UI.Xaml.Controls
 			var splitView = GetSplitView();
 			if (splitView != null)
 			{
-				var splitViewIsPaneOpenChangedSubscription = splitView.RegisterPropertyChangedCallback(
-					SplitView.IsPaneOpenProperty, OnSplitViewPropertyChanged);
-				m_splitViewIsPaneOpenChangedRevoker.Disposable = Disposable.Create(
-					() => splitView.UnregisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, splitViewIsPaneOpenChangedSubscription));
-				var splitViewDisplayModeChangedSubscription = splitView.RegisterPropertyChangedCallback(
-					SplitView.DisplayModeProperty, OnSplitViewPropertyChanged);
-				m_splitViewDisplayModeChangedRevoker.Disposable = Disposable.Create(
-					() => splitView.UnregisterPropertyChangedCallback(SplitView.DisplayModeProperty, splitViewDisplayModeChangedSubscription));
-				var splitViewCompactPaneLengthSubsctiption = splitView.RegisterPropertyChangedCallback(
-					SplitView.CompactPaneLengthProperty, OnSplitViewPropertyChanged);
-				m_splitViewCompactPaneLengthChangedRevoker.Disposable = Disposable.Create(
-					() => splitView.UnregisterPropertyChangedCallback(SplitView.CompactPaneLengthProperty, splitViewCompactPaneLengthSubsctiption));
-
-				UpdateCompactPaneLength();
-				UpdateIsClosedCompact();
+				PrepNavigationViewItem(splitView);
+			}
+			else
+			{
+				// If the NVI is not prepared in an ItemPresenter, it will not have reference to SplitView. So check OnLoaded
+				// if it the reference has been manually set in NavigationViewItemBase::OnLoaded(). 
+				Loaded -= OnLoaded;
+				Loaded += OnLoaded;
 			}
 
 			// Retrieve reference to NavigationView
@@ -176,6 +181,14 @@ namespace Microsoft.UI.Xaml.Controls
 			NavigationView.CreateAndAttachHeaderAnimation(visual);
 
 			_fullyInitialized = true;
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			if (GetSplitView() is { } splitView)
+			{
+				PrepNavigationViewItem(splitView);
+			}
 		}
 
 		private void UpdateRepeaterItemsSource()
@@ -255,11 +268,6 @@ namespace Microsoft.UI.Xaml.Controls
 					&& (splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay || splitView.DisplayMode == SplitViewDisplayMode.CompactInline);
 
 				UpdateVisualState(true /*useTransitions*/);
-
-				var presenter = GetPresenter(); if (presenter != null)
-				{
-					presenter.UpdateClosedCompactVisualState(IsTopLevelItem, m_isClosedCompact);
-				}
 			}
 		}
 
@@ -272,7 +280,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (ShouldEnableToolTip())
 				{
-					ToolTipService.SetToolTip(this, m_suggestedToolTipContent);
+					// Don't SetToolTip with the same parameter because it close/re-open the ToolTip
+					if (toolTipContent != m_suggestedToolTipContent)
+					{
+						ToolTipService.SetToolTip(this, m_suggestedToolTipContent);
+					}
 				}
 				else
 				{
@@ -284,10 +296,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private void SuggestedToolTipChanged(object newContent)
 		{
 			var potentialString = newContent as IPropertyValue;
-			bool stringableToolTip = (potentialString != null && potentialString.Type == PropertyType.String);
+			bool validStringableToolTip = potentialString != null
+				&& potentialString.Type == PropertyType.String
+				&& !string.IsNullOrEmpty(potentialString.GetString());
 
 			object newToolTipContent = null;
-			if (stringableToolTip)
+			if (validStringableToolTip)
 			{
 				newToolTipContent = newContent;
 			}
@@ -320,6 +334,7 @@ namespace Microsoft.UI.Xaml.Controls
 						ExpandCollapseState.Collapsed
 				);
 			}
+			UpdateVisualState(true);
 		}
 
 		private void OnIconPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -360,6 +375,14 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var stateName = showIcon ? (showContent ? "IconOnLeft" : "IconOnly") : "ContentOnly";
 				VisualStateManager.GoToState(presenter, stateName, false /*useTransitions*/);
+			}
+		}
+
+		private void UpdateVisualStateForClosedCompact()
+		{
+			if (GetPresenter() is { } presenter)
+			{
+				presenter.UpdateClosedCompactVisualState(IsTopLevelItem, m_isClosedCompact);
 			}
 		}
 
@@ -533,6 +556,8 @@ namespace Microsoft.UI.Xaml.Controls
 					// Backward Compatibility with RS4-, new implementation prefer IconOnLeft/IconOnly/ContentOnly
 					VisualStateManager.GoToState(presenter, shouldShowIcon ? "IconVisible" : "IconCollapsed", useTransitions);
 				}
+
+				UpdateVisualStateForClosedCompact();
 			}
 
 			UpdateVisualStateForToolTip();
@@ -545,13 +570,110 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualStateForChevron();
 		}
 
+		private enum PointerStateValue { Normal, PointerOver, Pressed };
+
+		private enum ChevronStateValue { ChevronHidden, ChevronVisibleOpen, ChevronVisibleClosed };
+
 		private void UpdateVisualStateForChevron()
 		{
 			var presenter = m_navigationViewItemPresenter;
 			if (presenter != null)
 			{
-				var chevronState = HasChildren() && !(m_isClosedCompact && ShouldRepeaterShowInFlyout()) ? (IsExpanded ? c_chevronVisibleOpen : c_chevronVisibleClosed) : c_chevronHidden;
-				VisualStateManager.GoToState(presenter, chevronState, true);
+				PointerStateValue GetPointerStateValue(bool isEnabled, bool isSelected)
+				{
+					if (isEnabled)
+					{
+						if (m_isPointerOver)
+						{
+							if (m_isPressed)
+							{
+								return PointerStateValue.Pressed; //Pressed
+							}
+							else
+							{
+								return PointerStateValue.PointerOver; //PointerOver
+							}
+						}
+
+						else if (m_isPressed)
+						{
+							return PointerStateValue.Pressed; //Pressed
+						}
+					}
+					return PointerStateValue.Normal; //Normal
+				}
+
+				var pointerStateValue = GetPointerStateValue(IsEnabled, IsSelected);
+
+				var chevronState = HasChildren() && !(m_isClosedCompact && ShouldRepeaterShowInFlyout()) ? (IsExpanded ? ChevronStateValue.ChevronVisibleOpen : ChevronStateValue.ChevronVisibleClosed) : ChevronStateValue.ChevronHidden;
+
+				static string GetPointerChevronState(PointerStateValue pointerStateValue, ChevronStateValue chevronState)
+				{
+					if (chevronState == ChevronStateValue.ChevronHidden)
+					{
+						if (pointerStateValue == PointerStateValue.Normal)
+						{
+							return c_normalChevronHidden;
+						}
+						else if (pointerStateValue == PointerStateValue.PointerOver)
+						{
+							return c_pointerOverChevronHidden;
+						}
+						else if (pointerStateValue == PointerStateValue.Pressed)
+						{
+							return c_pressedChevronHidden;
+						}
+					}
+					else if (chevronState == ChevronStateValue.ChevronVisibleOpen)
+					{
+						if (pointerStateValue == PointerStateValue.Normal)
+						{
+							return c_normalChevronVisibleOpen;
+						}
+						else if (pointerStateValue == PointerStateValue.PointerOver)
+						{
+							return c_pointerOverChevronVisibleOpen;
+						}
+						else if (pointerStateValue == PointerStateValue.Pressed)
+						{
+							return c_pressedChevronVisibleOpen;
+						}
+					}
+					else if (chevronState == ChevronStateValue.ChevronVisibleClosed)
+					{
+						if (pointerStateValue == PointerStateValue.Normal)
+						{
+							return c_normalChevronVisibleClosed;
+						}
+						else if (pointerStateValue == PointerStateValue.PointerOver)
+						{
+							return c_pointerOverChevronVisibleClosed;
+						}
+						else if (pointerStateValue == PointerStateValue.Pressed)
+						{
+							return c_pressedChevronVisibleClosed;
+						}
+					}
+					return c_normalChevronHidden;
+				}
+
+				var pointerChevronState = GetPointerChevronState(pointerStateValue, chevronState);
+				// Go to the appropriate pointerChevronState
+				VisualStateManager.GoToState(presenter, pointerChevronState, true);
+
+				// Go to the appropriate chevronState
+				if (chevronState == ChevronStateValue.ChevronHidden)
+				{
+					VisualStateManager.GoToState(presenter, c_chevronHidden, true);
+				}
+				else if (chevronState == ChevronStateValue.ChevronVisibleOpen)
+				{
+					VisualStateManager.GoToState(presenter, c_chevronVisibleOpen, true);
+				}
+				else if (chevronState == ChevronStateValue.ChevronVisibleClosed)
+				{
+					VisualStateManager.GoToState(presenter, c_chevronVisibleClosed, true);
+				}
 			}
 		}
 
@@ -638,7 +760,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// TODO: Uno specific - Queue callback for composition rendering is not implemented yet - #4690
 						//SharedHelpers.QueueCallbackForCompositionRendering(() =>
 						//{
-							FlyoutBase.ShowAttachedFlyout(m_rootGrid);
+						FlyoutBase.ShowAttachedFlyout(m_rootGrid);
 						//});
 					}
 					else
@@ -952,10 +1074,31 @@ namespace Microsoft.UI.Xaml.Controls
 			_uno_pointerDeferring?.Stop();
 
 			m_isPressed = false;
-			m_isPointerOver = false;
+			// m_isPointerOver should be true before this event so this doesn't need to be set to true in the else block...
+			// What this flag tracks is complicated because of the NavigationView sub items and the m_capturedPointers that are being tracked..
+			// We do this check because PointerCaptureLost can sometimes take the place of PointerReleased events.
+			// In these cases we need to test if the pointer is over the item to maintain the proper state.
+			if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position))
+			{
+				m_isPointerOver = false;
+			}
 			m_capturedPointer = null;
 			ResetTrackedPointerId();
 			UpdateVisualState(true);
+		}
+
+		private bool IsOutOfControlBounds(Point point)
+		{
+			// This is a conservative check. It is okay to say we are
+			// out of the bounds when close to the edge to account for rounding.
+			var tolerance = 1.0;
+			var actualWidth = ActualWidth;
+			var actualHeight = ActualHeight;
+			return
+				point.X < tolerance ||
+				point.X > actualWidth - tolerance ||
+				point.Y < tolerance ||
+				point.Y > actualHeight - tolerance;
 		}
 
 		private void ProcessPointerOver(PointerRoutedEventArgs args)
@@ -1060,6 +1203,25 @@ namespace Microsoft.UI.Xaml.Controls
 			m_toolTip = null;
 			m_repeater = null;
 			m_flyoutContentGrid = null;
+		}
+
+		private void PrepNavigationViewItem(SplitView splitView)
+		{
+			var splitViewIsPaneOpenChangedSubscription = splitView.RegisterPropertyChangedCallback(
+					SplitView.IsPaneOpenProperty, OnSplitViewPropertyChanged);
+			m_splitViewIsPaneOpenChangedRevoker.Disposable = Disposable.Create(
+				() => splitView.UnregisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, splitViewIsPaneOpenChangedSubscription));
+			var splitViewDisplayModeChangedSubscription = splitView.RegisterPropertyChangedCallback(
+				SplitView.DisplayModeProperty, OnSplitViewPropertyChanged);
+			m_splitViewDisplayModeChangedRevoker.Disposable = Disposable.Create(
+				() => splitView.UnregisterPropertyChangedCallback(SplitView.DisplayModeProperty, splitViewDisplayModeChangedSubscription));
+			var splitViewCompactPaneLengthSubsctiption = splitView.RegisterPropertyChangedCallback(
+				SplitView.CompactPaneLengthProperty, OnSplitViewPropertyChanged);
+			m_splitViewCompactPaneLengthChangedRevoker.Disposable = Disposable.Create(
+				() => splitView.UnregisterPropertyChangedCallback(SplitView.CompactPaneLengthProperty, splitViewCompactPaneLengthSubsctiption));
+
+			UpdateCompactPaneLength();
+			UpdateIsClosedCompact();
 		}
 	}
 }

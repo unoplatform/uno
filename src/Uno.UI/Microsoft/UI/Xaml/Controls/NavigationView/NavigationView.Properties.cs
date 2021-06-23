@@ -1,4 +1,6 @@
-﻿// MUX reference NavigationView.properties.cpp, commit 2ec9b1c
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationView.properties.cpp, commit 2ec9b1c
 
 using System.Collections.Generic;
 using Windows.Foundation;

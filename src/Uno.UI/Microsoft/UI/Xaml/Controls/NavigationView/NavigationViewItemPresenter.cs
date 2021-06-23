@@ -1,4 +1,6 @@
-﻿// MUX Reference NavigationViewItemPresenter.cpp, commit de78834
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference NavigationViewItemPresenter.cpp, commit 465f0d7
 
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;
@@ -8,6 +10,9 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
+	/// <summary>
+	/// Represents the visual elements of a NavigationViewItem.
+	/// </summary>
 	public partial class NavigationViewItemPresenter : ContentControl
 	{
 		private const string c_contentGrid = "PresenterContentRootGrid";
@@ -19,6 +24,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public NavigationViewItemPresenter()
 		{
+			SetValue(TemplateSettingsProperty, new NavigationViewItemPresenterTemplateSettings());
 			DefaultStyleKey = typeof(NavigationViewItemPresenter);
 		}
 
@@ -163,13 +169,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_compactPaneLengthValue = compactPaneLength;
 			if (shouldUpdate)
 			{
-				var iconGridColumn = GetTemplateChild(c_iconBoxColumnDefinitionName) as ColumnDefinition;
-				if (iconGridColumn != null)
-				{
-					var gridLength = iconGridColumn.Width;
-					var newGridLength = new GridLength(compactPaneLength, gridLength.GridUnitType);
-					iconGridColumn.Width = newGridLength;
-				}
+				var templateSettings = TemplateSettings;
+				var gridLength = compactPaneLength;
+
+				templateSettings.IconWidth = gridLength;
+				templateSettings.SmallerIconWidth = gridLength - 8;
 			}
 		}
 

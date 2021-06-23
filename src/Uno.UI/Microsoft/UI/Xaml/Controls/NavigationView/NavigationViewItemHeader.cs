@@ -1,4 +1,6 @@
-﻿// MUX reference NavigationViewItemHeader.cpp, commit de78834
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewItemHeader.cpp, commit de78834
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -78,6 +80,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private new void UpdateVisualState(bool useTransitions)
 		{
 			VisualStateManager.GoToState(this, m_isClosedCompact && IsTopLevelItem ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);
+
+			if (GetNavigationView() is { } navigationView)
+			{
+				VisualStateManager.GoToState(this, navigationView.PaneDisplayMode == NavigationViewPaneDisplayMode.Top ? "TopMode" : "LeftMode", useTransitions);
+			}
 		}
 
 		protected override void OnNavigationViewItemBaseDepthChanged()

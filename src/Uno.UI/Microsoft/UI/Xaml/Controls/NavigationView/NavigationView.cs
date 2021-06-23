@@ -1,4 +1,6 @@
-﻿// MUX Reference NavigationView.cpp, commit 426e54f
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference NavigationView.cpp, commit 263622f
 
 using System;
 using System.Collections.Generic;
@@ -6,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
@@ -70,7 +73,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private const string c_itemsContainer = "ItemsContainerGrid";
 		private const string c_itemsContainerRow = "ItemsContainerRow";
-		private const string c_visualItemsSeparator = "VisualItemsSeparator";
 		private const string c_menuItemsScrollViewer = "MenuItemsScrollViewer";
 		private const string c_footerItemsScrollViewer = "FooterItemsScrollViewer";
 
@@ -82,6 +84,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string c_paneHeaderToggleButtonColumn = "PaneHeaderToggleButtonColumn";
 		private const string c_paneHeaderContentBorderRow = "PaneHeaderContentBorderRow";
 
+		private const string c_separatorVisibleStateName = "SeparatorVisible";
+		private const string c_separatorCollapsedStateName = "SeparatorCollapsed";
+
 		private const int c_backButtonHeight = 40;
 		private const int c_backButtonWidth = 40;
 		private const int c_paneToggleButtonHeight = 40;
@@ -92,6 +97,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private const int c_mainMenuBlockIndex = 0;
 		private const int c_footerMenuBlockIndex = 1;
+
+		private const string c_shadowCaster = "ShadowCaster";
+		private const string c_shadowCasterEaseOutStoryboard = "ShadowCasterEaseOutStoryboard";
 
 		private int itemNotFound = -1;
 
@@ -165,6 +173,8 @@ namespace Microsoft.UI.Xaml.Controls
 			m_topNavRepeaterOverflowView = null;
 
 			m_topNavOverflowItemsCollectionChangedRevoker.Disposable = null;
+
+			m_shadowCasterEaseOutStoryboardRevoker.Disposable = null;
 
 #if IS_UNO
 			//TODO: Uno specific - remove when #4689 is fixed
@@ -741,14 +751,14 @@ namespace Microsoft.UI.Xaml.Controls
 				m_itemsContainerRow = (RowDefinition)GetTemplateChild(c_itemsContainerRow);
 				m_menuItemsScrollViewer = (FrameworkElement)GetTemplateChild(c_menuItemsScrollViewer);
 				m_footerItemsScrollViewer = (FrameworkElement)GetTemplateChild(c_footerItemsScrollViewer);
-				m_visualItemsSeparator = (FrameworkElement)GetTemplateChild(c_visualItemsSeparator);
 
 				m_itemsContainerSizeChangedRevoker.Disposable = null;
-				var itemsContainerRow = GetTemplateChild(c_itemsContainer) as FrameworkElement;
-				if (itemsContainerRow != null)
+				if (GetTemplateChild<FrameworkElement>(c_itemsContainer) is { } itemsContainer)
 				{
-					itemsContainerRow.SizeChanged += OnItemsContainerSizeChanged;
-					m_itemsContainerSizeChangedRevoker.Disposable = Disposable.Create(() => itemsContainerRow.SizeChanged -= OnItemsContainerSizeChanged);
+					m_itemsContainer = itemsContainer;
+
+					m_itemsContainer.SizeChanged += OnItemsContainerSizeChanged;
+					m_itemsContainerSizeChangedRevoker.Disposable = Disposable.Create(() => m_itemsContainer.SizeChanged -= OnItemsContainerSizeChanged);
 				}
 
 				if (SharedHelpers.IsRS2OrHigher())
@@ -772,7 +782,15 @@ namespace Microsoft.UI.Xaml.Controls
 				AccessKeyInvoked += OnAccessKeyInvoked;
 				m_accessKeyInvokedRevoker.Disposable = Disposable.Create(() => AccessKeyInvoked -= OnAccessKeyInvoked);
 
-				UpdatePaneShadow();
+				if (SharedHelpers.Is21H1OrHigher())
+				{
+					m_shadowCaster = GetTemplateChild<Grid>(c_shadowCaster);
+					m_shadowCasterEaseOutStoryboard = GetTemplateChild<Storyboard>(c_shadowCasterEaseOutStoryboard);
+				}
+				else
+				{
+					UpdatePaneShadow();
+				}
 
 				m_appliedTemplate = true;
 
@@ -788,6 +806,7 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateVisualState();
 				UpdatePaneTitleMargins();
 				UpdatePaneLayout();
+				UpdatePaneOverlayGroup();
 			}
 			finally
 			{
@@ -1434,7 +1453,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var settingsItem = m_settingsItem;
-			var settingsIcon = new SymbolIcon(Symbol.Setting);
+			var settingsIcon = new AnimatedIcon();
+			settingsIcon.Source = new AnimatedSettingsVisualSource();
+			var settingsFallbackIcon = new SymbolIconSource();
+			settingsFallbackIcon.Symbol = Symbol.Setting;
+			settingsIcon.FallbackIconSource = settingsFallbackIcon;
 			settingsItem.Icon = settingsIcon;
 
 			// Do localization for settings item label and Automation Name
@@ -1609,19 +1632,21 @@ namespace Microsoft.UI.Xaml.Controls
 					var paneContentRow = m_itemsContainerRow;
 					if (paneContentRow != null)
 					{
-						// 20px is the padding between the two item lists
-						var paneFooter = m_leftNavFooterContentBorder;
-						if (paneFooter != null)
+						double GetItemsContainerMargin()
 						{
-							return paneContentRow.ActualHeight - 29 - paneFooter.ActualHeight;
+							if (m_itemsContainer is { } itemsContainer)
+							{
+								var margin = itemsContainer.Margin;
+								return margin.Top + margin.Bottom;
+							}
+							return 0.0;
 						}
-						else
-						{
-							return paneContentRow.ActualHeight - 29;
-						}
+						var itemsContainerMargin = GetItemsContainerMargin();
+						return paneContentRow.ActualHeight - itemsContainerMargin;
 					}
 					return 0.0;
 				}
+
 				var totalAvailableHeight = GetTotalAvailableHeight();
 
 				// Only continue if we have a positive amount of space to manage.
@@ -1642,55 +1667,104 @@ namespace Microsoft.UI.Xaml.Controls
 								var menuItems = m_leftNavRepeater;
 								if (menuItems != null)
 								{
+									double GetFootersActualHeight(ItemsRepeater footerItemsRepeater)
+									{
+										double footerItemsRepeaterTopBottomMargin = 0.0;
+										if (footerItemsRepeater.Visibility == Visibility.Visible)
+										{
+											var footerItemsRepeaterMargin = footerItemsRepeater.Margin;
+											footerItemsRepeaterTopBottomMargin = footerItemsRepeaterMargin.Top + footerItemsRepeaterMargin.Bottom;
+										}
 #if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
-									var footersActualHeight = footerItemsRepeater.DesiredSize.Height;
-									var menuItemsActualHeight = menuItems.DesiredSize.Height;
+										return footerItemsRepeater.DesiredSize.Height + footerItemsRepeaterTopBottomMargin;
 #else
-									var footersActualHeight = footerItemsRepeater.ActualHeight;
-									var menuItemsActualHeight = menuItems.ActualHeight;
+										return footerItemsRepeater.ActualHeight + footerItemsRepeaterTopBottomMargin;
 #endif
-									if (totalAvailableHeight > menuItemsActualHeight + footersActualHeight)
+									}
+									var footersActualHeight = GetFootersActualHeight(footerItemsRepeater);
+
+									double GetPaneFooterActualHeight()
+									{
+										if (m_leftNavFooterContentBorder is { } paneFooter)
+										{
+											double paneFooterTopBottomMargin = 0.0;
+											if (paneFooter.Visibility == Visibility.Visible)
+											{
+												var paneFooterMargin = paneFooter.Margin;
+												paneFooterTopBottomMargin = paneFooterMargin.Top + paneFooterMargin.Bottom;
+											}
+#if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
+											return paneFooter.DesiredSize.Height + paneFooterTopBottomMargin;
+#else
+											return paneFooter.ActualHeight + paneFooterTopBottomMargin;
+#endif
+										}
+										return 0.0;
+									}
+									var paneFooterActualHeight = GetPaneFooterActualHeight();
+
+									// This is the value computed during the measure pass of the layout process. This will be the value used to determine
+									// the partition logic between menuItems and footerGroup, since the ActualHeight may be taller if there's more space.
+									var menuItemsDesiredHeight = menuItems.DesiredSize.Height;
+
+									// This is what the height ended up being, so will be the value that is used to calculate the partition
+									// between menuItems and footerGroup.
+									double GetMenuItemsActualHeight(ItemsRepeater menuItems)
+									{
+										double menuItemsTopBottomMargin = 0.0;
+										if (menuItems.Visibility == Visibility.Visible)
+										{
+											var menuItemsMargin = menuItems.Margin;
+											menuItemsTopBottomMargin = menuItemsMargin.Top + menuItemsMargin.Bottom;
+										}
+#if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
+										return menuItems.DesiredSize.Height+ menuItemsTopBottomMargin;
+#else
+										return menuItems.ActualHeight + menuItemsTopBottomMargin;
+#endif
+									}
+									var menuItemsActualHeight = GetMenuItemsActualHeight(menuItems);
+
+									// Footer and PaneFooter are included in the footerGroup to calculate available height for menu items.
+									var footerGroupActualHeight = footersActualHeight + paneFooterActualHeight;
+
+									if (m_footerItemsSource.Count == 0 && !IsSettingsVisible)
+									{
+										VisualStateManager.GoToState(this, c_separatorCollapsedStateName, false);
+										return totalAvailableHeight;
+									}
+									else if (m_menuItemsSource.Count == 0)
+									{
+										footerItemsScrollViewer.MaxHeight = totalAvailableHeight;
+										VisualStateManager.GoToState(this, c_separatorCollapsedStateName, false);
+										return 0.0;
+									}
+									else if (totalAvailableHeight >= menuItemsDesiredHeight + footersActualHeight)
 									{
 										// We have enough space for two so let everyone get as much as they need.
 										footerItemsScrollViewer.MaxHeight = footersActualHeight;
-										var separator = m_visualItemsSeparator;
-										if (separator != null)
-										{
-											separator.Visibility = Visibility.Collapsed;
-										}
-										return totalAvailableHeight - footersActualHeight;
+										VisualStateManager.GoToState(this, c_separatorCollapsedStateName, false);
+										return totalAvailableHeight - footerGroupActualHeight;
 									}
-									else if (menuItemsActualHeight <= totalAvailableHeightHalf)
+									else if (menuItemsDesiredHeight <= totalAvailableHeightHalf)
 									{
 										// Footer items exceed over the half, so let's limit them.
 										footerItemsScrollViewer.MaxHeight = totalAvailableHeight - menuItemsActualHeight;
-										var separator = m_visualItemsSeparator;
-										if (separator != null)
-										{
-											separator.Visibility = Visibility.Visible;
-										}
+										VisualStateManager.GoToState(this, c_separatorVisibleStateName, false);
 										return menuItemsActualHeight;
 									}
-									else if (footersActualHeight <= totalAvailableHeightHalf)
+									else if (footerGroupActualHeight <= totalAvailableHeightHalf)
 									{
 										// Menu items exceed over the half, so let's limit them.
 										footerItemsScrollViewer.MaxHeight = footersActualHeight;
-										var separator = m_visualItemsSeparator;
-										if (separator != null)
-										{
-											separator.Visibility = Visibility.Visible;
-										}
-										return totalAvailableHeight - footersActualHeight;
+										VisualStateManager.GoToState(this, c_separatorVisibleStateName, false);
+										return totalAvailableHeight - footerGroupActualHeight;
 									}
 									else
 									{
 										// Both are more than half the height, so split evenly.
 										footerItemsScrollViewer.MaxHeight = totalAvailableHeightHalf;
-										var separator = m_visualItemsSeparator;
-										if (separator != null)
-										{
-											separator.Visibility = Visibility.Visible;
-										}
+										VisualStateManager.GoToState(this, c_separatorVisibleStateName, false);
 										return totalAvailableHeightHalf;
 									}
 								}
@@ -1909,36 +1983,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdatePaneButtonsWidths()
 		{
+			var templateSettings = GetTemplateSettings();
+
 			double GetNewButtonWidths()
 			{
-				if (DisplayMode == NavigationViewDisplayMode.Minimal)
-				{
-					return (double)(c_paneToggleButtonWidth);
-				}
 				return CompactPaneLength;
 			}
 			var newButtonWidths = GetNewButtonWidths();
 
-			var backButton = m_backButton;
-			if (backButton != null)
-			{
-				backButton.Width = newButtonWidths;
-			}
-			var paneToggleButton = m_paneToggleButton;
-			if (paneToggleButton != null)
-			{
-				paneToggleButton.MinWidth = newButtonWidths;
-				var iconGridColumnElement = paneToggleButton.GetTemplateChild(c_paneToggleButtonIconGridColumnName);
-				if (iconGridColumnElement != null)
-				{
-					if (iconGridColumnElement is ColumnDefinition paneToggleButtonIconColumn)
-					{
-						var width = paneToggleButtonIconColumn.Width;
-						var newWidth = new GridLength(newButtonWidths, width.GridUnitType);
-						paneToggleButtonIconColumn.Width = newWidth;
-					}
-				}
-			}
+			templateSettings.PaneToggleButtonWidth = newButtonWidths;
+			templateSettings.SmallerPaneToggleButtonWidth = newButtonWidths - 8;
 		}
 
 		private void OnBackButtonClicked(object sender, RoutedEventArgs args)
@@ -2069,20 +2123,22 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var isPaneToggleButtonVisible = IsPaneToggleButtonVisible;
 				var isTopNavigationView = IsTopNavigationView();
+				var paneTitleSize = PaneTitle?.Length ?? 0;
 
-				paneTitleHolderFrameworkElement.Visibility =
-					(isPaneToggleButtonVisible ||
-						isTopNavigationView ||
-						string.IsNullOrEmpty(PaneTitle) ||
-						(PaneDisplayMode == NavigationViewPaneDisplayMode.LeftMinimal && !IsPaneOpen)) ?
-					Visibility.Collapsed : Visibility.Visible;
+				m_isLeftPaneTitleEmpty = (isPaneToggleButtonVisible ||
+					isTopNavigationView ||
+					paneTitleSize == 0 ||
+					(PaneDisplayMode == NavigationViewPaneDisplayMode.LeftMinimal && !IsPaneOpen));
 
-				var paneTitleFrameworkElement = m_paneTitleFrameworkElement;
-				if (paneTitleFrameworkElement != null)
+				paneTitleHolderFrameworkElement.Visibility = m_isLeftPaneTitleEmpty ? Visibility.Collapsed : Visibility.Visible;
+
+				if (m_paneTitleFrameworkElement is { } paneTitleFrameworkElement)
 				{
+					var paneTitleTopPane = m_paneTitleOnTopPane;
+
 					var first = SetPaneTitleFrameworkElementParent(m_paneToggleButton, paneTitleFrameworkElement, isTopNavigationView || !isPaneToggleButtonVisible);
 					var second = SetPaneTitleFrameworkElementParent(m_paneTitlePresenter, paneTitleFrameworkElement, isTopNavigationView || isPaneToggleButtonVisible);
-					var third = SetPaneTitleFrameworkElementParent(m_paneTitleOnTopPane, paneTitleFrameworkElement, !isTopNavigationView || isPaneToggleButtonVisible);
+					var third = SetPaneTitleFrameworkElementParent(paneTitleTopPane, paneTitleFrameworkElement, !isTopNavigationView || isPaneToggleButtonVisible);
 					if (first != null)
 					{
 						first();
@@ -2095,6 +2151,8 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						third();
 					}
+
+					paneTitleTopPane.Visibility = third != null && paneTitleSize != 0 ? Visibility.Visible : Visibility.Collapsed;
 				}
 			}
 		}
@@ -3581,7 +3639,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void UpdateLeftNavigationOnlyVisualState(bool useTransitions)
 		{
 			bool isToggleButtonVisible = IsPaneToggleButtonVisible;
-			VisualStateManager.GoToState(this, isToggleButtonVisible ? "TogglePaneButtonVisible" : "TogglePaneButtonCollapsed", false /*useTransitions*/);
+			VisualStateManager.GoToState(this, isToggleButtonVisible || !m_isLeftPaneTitleEmpty ? "TogglePaneButtonVisible" : "TogglePaneButtonCollapsed", false /*useTransitions*/);
 		}
 
 		private void InvalidateTopNavPrimaryLayout()
@@ -4191,6 +4249,7 @@ namespace Microsoft.UI.Xaml.Controls
 					newAutoSuggestBox.SuggestionChosen += OnAutoSuggestBoxSuggestionChosen;
 					m_autoSuggestBoxSuggestionChosenRevoker.Disposable = Disposable.Create(() => newAutoSuggestBox.SuggestionChosen -= OnAutoSuggestBoxSuggestionChosen);
 				}
+				UpdateVisualState(false);
 			}
 			else if (property == SelectionFollowsFocusProperty)
 			{
@@ -4209,8 +4268,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (property == CompactPaneLengthProperty)
 			{
-				// Need to update receiver margins when CompactPaneLength changes
-				UpdatePaneShadow();
+				if (!SharedHelpers.Is21H1OrHigher())
+				{
+					// Need to update receiver margins when CompactPaneLength changes
+					UpdatePaneShadow();
+				}
 
 				// Update pane-button-grid width when pane is closed and we are not in minimal
 				UpdatePaneButtonsWidths();
@@ -4223,6 +4285,10 @@ namespace Microsoft.UI.Xaml.Controls
 				property == MenuItemTemplateSelectorProperty)
 			{
 				SyncItemTemplates();
+			}
+			else if (property == PaneFooterProperty)
+			{
+				UpdatePaneLayout();
 			}
 		}
 
@@ -4320,24 +4386,38 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdatePaneTabFocusNavigation();
 			UpdateSettingsItemToolTip();
 			UpdatePaneTitleFrameworkElementParents();
+			UpdatePaneOverlayGroup();
+			UpdatePaneButtonsWidths();
 
 			if (SharedHelpers.IsThemeShadowAvailable())
 			{
-				var splitView = m_rootSplitView;
-				if (splitView != null)
+				// Drop Shadows were only introduced in OS versions 21h1 or higher. Projected Shadows will be used for older versions.
+				if (SharedHelpers.Is21H1OrHigher())
 				{
-					var displayMode = splitView.DisplayMode;
-					var isOverlay = displayMode == SplitViewDisplayMode.Overlay || displayMode == SplitViewDisplayMode.CompactOverlay;
-					var paneRoot = splitView.Pane;
-					if (paneRoot != null)
+					if (IsPaneOpen)
 					{
-						var currentTranslation = paneRoot.Translation;
-						var translation = new Vector3(currentTranslation.X, currentTranslation.Y, IsPaneOpen && isOverlay ? c_paneElevationTranslationZ : 0.0f);
-						paneRoot.Translation = translation;
+						SetDropShadow();
+					}
+					else
+					{
+						UnsetDropShadow();
+					}
+				}
+				else
+				{
+					if (m_rootSplitView is { } splitView)
+					{
+						var displayMode = splitView.DisplayMode;
+						var isOverlay = displayMode == SplitViewDisplayMode.Overlay || displayMode == SplitViewDisplayMode.CompactOverlay;
+						if (splitView.Pane is { } paneRoot)
+						{
+							var currentTranslation = paneRoot.Translation;
+							var translation = new Vector3(currentTranslation.X, currentTranslation.Y, IsPaneOpen && isOverlay ? c_paneElevationTranslationZ : 0.0f);
+							paneRoot.Translation = translation;
+						}
 					}
 				}
 			}
-			UpdatePaneButtonsWidths();
 		}
 
 		private void UpdatePaneToggleButtonVisibility()
@@ -4568,7 +4648,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var splitView = m_rootSplitView;
 				if (splitView != null)
 				{
-					double width = GetPaneToggleButtonWidth();
+					double width = GetTemplateSettings().PaneToggleButtonWidth;
 					double togglePaneButtonWidth = width;
 
 					if (ShouldShowBackButton() && splitView.DisplayMode == SplitViewDisplayMode.Overlay)
@@ -4688,16 +4768,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Account for the CloseButton's width in the PaneHeader's placement.
 				paneHeaderCloseButtonColumn.Width = GridLengthHelper.FromValueAndType(paneHeaderPaddingForCloseButton, GridUnitType.Pixel);
-			}
-
-			var paneTitleHolderFrameworkElement = m_paneTitleHolderFrameworkElement;
-			if (paneTitleHolderFrameworkElement != null)
-			{
-				if (paneHeaderContentBorderRowMinHeight == 0.00 && paneTitleHolderFrameworkElement.Visibility == Visibility.Visible)
-				{
-					// Handling the case where the PaneTottleButton is collapsed and the PaneTitle's height needs to push the rest of the NavigationView's UI down.
-					paneHeaderContentBorderRowMinHeight = paneTitleHolderFrameworkElement.ActualHeight;
-				}
 			}
 
 			var paneHeaderContentBorderRow = m_paneHeaderContentBorderRow;
@@ -5017,6 +5087,53 @@ namespace Microsoft.UI.Xaml.Controls
 			return isFullScreenMode || isTabletMode;
 		}
 
+		private void SetDropShadow()
+		{
+			var displayMode = DisplayMode;
+
+			if (displayMode == NavigationViewDisplayMode.Compact || displayMode == NavigationViewDisplayMode.Minimal)
+			{
+				if (m_shadowCaster is { } shadowCaster)
+				{
+					//TODO MZ: Check if shadow is supported on this target
+					if (shadowCaster is { } shadowCaster_uiElement10)
+					{
+						shadowCaster_uiElement10.Shadow = new ThemeShadow();
+					}
+				}
+			}
+		}
+
+		private void UnsetDropShadow()
+		{
+			var shadowCaster = m_shadowCaster;
+
+			if (m_shadowCasterEaseOutStoryboard is { } shadowCasterEaseOutStoryboard)
+			{
+				shadowCasterEaseOutStoryboard.Begin();
+
+				m_shadowCasterEaseOutStoryboardRevoker.Disposable = null;
+				void Completed(object sender, object args)
+				{
+					ShadowCasterEaseOutStoryboard_Completed(shadowCaster);
+				}
+				shadowCasterEaseOutStoryboard.Completed += Completed;
+				m_shadowCasterEaseOutStoryboardRevoker.Disposable = Disposable.Create(() => shadowCasterEaseOutStoryboard.Completed -= Completed);
+			}
+		}
+
+		private void ShadowCasterEaseOutStoryboard_Completed(Grid shadowCaster)
+		{
+			//TODO MZ: Check if shadow is available on this target
+			if (shadowCaster is { } shadowCaster_uiElement10)
+			{
+				if (shadowCaster_uiElement10.Shadow != null)
+				{
+					shadowCaster_uiElement10.Shadow = null;
+				}
+			}
+		}
+
 		private void UpdatePaneShadow()
 		{
 			if (SharedHelpers.IsThemeShadowAvailable())
@@ -5054,7 +5171,6 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-
 				// Shadow will get clipped if casting on the splitView.Content directly
 				// Creating a canvas with negative margins as receiver to allow shadow to be drawn outside the content grid 
 				Thickness shadowReceiverMargin = new Thickness(0, -c_paneElevationTranslationZ, -c_paneElevationTranslationZ, -c_paneElevationTranslationZ);
@@ -5072,6 +5188,21 @@ namespace Microsoft.UI.Xaml.Controls
 					shadowReceiver.Width = OpenPaneLength - shadowReceiverMargin.Right;
 				}
 				shadowReceiver.Margin(shadowReceiverMargin);
+			}
+		}
+
+		private void UpdatePaneOverlayGroup()
+		{
+			if (m_rootSplitView is { } splitView)
+			{
+				if (IsPaneOpen && (splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay || splitView.DisplayMode == SplitViewDisplayMode.Overlay))
+				{
+					VisualStateManager.GoToState(this, "PaneOverlaying", true /*useTransitions*/);
+				}
+				else
+				{
+					VisualStateManager.GoToState(this, "PaneNotOverlaying", true /*useTransitions*/);
+				}
 			}
 		}
 
@@ -5551,7 +5682,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool DoesNavigationViewItemHaveChildren(NavigationViewItem nvi)
 		{
-			return nvi.MenuItems.Count > 0 || nvi.MenuItemsSource != null || nvi.HasUnrealizedChildren;
+			if (nvi.MenuItemsSource != null)
+			{
+				var sourceView = new InspectingDataSource(nvi.MenuItemsSource);
+				return sourceView.Count > 0;
+			}
+
+			return nvi.MenuItems.Count > 0 || nvi.HasUnrealizedChildren;
 		}
 
 		private void ToggleIsExpandedNavigationViewItem(NavigationViewItem nvi)

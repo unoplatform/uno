@@ -1,4 +1,6 @@
-﻿// MUX reference NavigationViewItemBase.h, commit c2d4b16
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewItemBase.h, commit 574e5ed
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -17,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Constant is a temporary measure. Potentially expose using TemplateSettings.
-		protected const int c_itemIndentation = 25;
+		protected const int c_itemIndentation = 31;
 
 		internal bool IsTopLevelItem { get; set; } = false;
 
