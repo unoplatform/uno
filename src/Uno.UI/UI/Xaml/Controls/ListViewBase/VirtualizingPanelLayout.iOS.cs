@@ -1420,6 +1420,12 @@ namespace Windows.UI.Xaml.Controls
 					?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
+		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item) => throw new NotImplementedException();
+
+		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item) => throw new NotImplementedException();
+
+		protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => throw new NotImplementedException();
+
 		protected CGRect AdjustExtentOffset(CGRect frame, nfloat adjustment)
 		{
 			if (ScrollOrientation == Orientation.Vertical)

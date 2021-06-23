@@ -25,6 +25,11 @@ namespace Windows.UI.Xaml.Controls
 			bool isNewGroup
 		)
 		{
+			if (ShouldInsertReorderingView(extentOffset))
+			{
+				nextVisibleItem = GetAndUpdateReorderingIndex().Value;
+			}
+
 			var item = GetFlatItemIndex(nextVisibleItem);
 			var view = recycler.GetViewForPosition(item, state);
 			if (!(view is SelectorItem))

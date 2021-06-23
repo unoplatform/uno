@@ -203,8 +203,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var updatedIndex = default(Uno.UI.IndexPath?);
-			that.CompleteReordering(container, item, ref updatedIndex);
+			var updatedIndex = that.CompleteReordering(container, item);
 
 			if (that.IsGrouping
 				|| !updatedIndex.HasValue
@@ -309,9 +308,11 @@ namespace Windows.UI.Xaml.Controls
 		/// If the SelectionMode is not None or Single, the draggedItem/Container might not be the single that is being reordered.
 		/// However, UWP hides in the ListView only the item that is being clicked by the user to initiate the reorder / drag operation.
 		/// </remarks>
-		partial void UpdateReordering(Point location, FrameworkElement draggedContainer, object draggedItem);
+		private void UpdateReordering(Point location, FrameworkElement draggedContainer, object draggedItem)
+			=> VirtualizingPanel?.GetLayouter().UpdateReorderingItem(location, draggedContainer, draggedItem);
 
-		partial void CompleteReordering(FrameworkElement draggedContainer, object draggedItem, ref Uno.UI.IndexPath? updatedIndex);
+		Uno.UI.IndexPath? CompleteReordering(FrameworkElement draggedContainer, object draggedItem)
+			=> VirtualizingPanel?.GetLayouter().CompleteReorderingItem(draggedContainer, draggedItem);
 
 		#region Helpers
 		private static bool IsObservableCollection(object src)
