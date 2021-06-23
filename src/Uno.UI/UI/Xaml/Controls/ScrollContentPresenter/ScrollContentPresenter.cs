@@ -48,9 +48,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		bool _forceChangeToCurrentView = false;
-
 #if __WASM__
+		bool _forceChangeToCurrentView;
+
 		bool IScrollContentPresenter.ForceChangeToCurrentView
 		{
 			get => _forceChangeToCurrentView;
@@ -167,6 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var slotSize = size;
 
+#if __WASM__
 				if (CanVerticallyScroll || _forceChangeToCurrentView)
 				{
 					slotSize.Height = double.PositiveInfinity;
@@ -175,6 +176,16 @@ namespace Windows.UI.Xaml.Controls
 				{
 					slotSize.Width = double.PositiveInfinity;
 				}
+#else
+				if (CanVerticallyScroll)
+				{
+					slotSize.Height = double.PositiveInfinity;
+				}
+				if (CanHorizontallyScroll)
+				{
+					slotSize.Width = double.PositiveInfinity;
+				}
+#endif
 
 				child.Measure(slotSize);
 
@@ -234,5 +245,5 @@ namespace Windows.UI.Xaml.Controls
 			return result;
 		}
 #endif
-	}
-}
+			}
+		}
