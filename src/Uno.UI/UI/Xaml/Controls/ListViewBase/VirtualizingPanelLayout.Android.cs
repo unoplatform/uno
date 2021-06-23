@@ -2254,7 +2254,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return message + $" - {name}, line {lineNumber}";
 		}
-
-		Uno.UI.IndexPath? GetReorderingIndex() => null;
 	}
 }

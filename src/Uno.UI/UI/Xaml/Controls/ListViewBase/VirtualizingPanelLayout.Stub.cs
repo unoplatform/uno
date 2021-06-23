@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public Orientation Orientation { get; set; }
 
-		Uno.UI.IndexPath? GetReorderingIndex() => null;
+		Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => null;
 	}
 }
 #endif

@@ -56,6 +56,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		protected Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, Uno.UI.IndexPath? currentMaterializedItem)
 		{
+			// TODO: adjust for reordering
 			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == GeneratorDirection.Forward ? 1 : -1);
 		}
 

@@ -1659,7 +1659,5 @@ namespace Windows.UI.Xaml.Controls
 
 		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
 #endif
-
-		Uno.UI.IndexPath? GetReorderingIndex() => null;
 	}
 }
