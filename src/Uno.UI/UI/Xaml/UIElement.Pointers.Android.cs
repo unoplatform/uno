@@ -139,7 +139,9 @@ namespace Windows.UI.Xaml
 				case MotionEventActions.HoverMove:
 					// Note: We use the OnNativePointerMove**WithOverCheck** in order to update the over state in case of press -> move out -> release
 					//		 where Android won't raise the HoverExit (as it has raised it on press, but we have ignored it cf. HoverExit case.)
-					return OnNativePointerMoveWithOverCheck(args, isInView);
+					var result = OnNativePointerMoveWithOverCheck(args, isInView);
+					TryDisallowInterceptOnDrag(args, isInView);
+					return result;
 
 				case MotionEventActions.Cancel:
 					return OnNativePointerCancel(args, isSwallowedBySystem: true);
@@ -151,6 +153,21 @@ namespace Windows.UI.Xaml
 					}
 
 					return false;
+			}
+		}
+
+		/// <summary>
+		/// If a (managed) drag is ready to start, call <see cref="IViewParent.RequestDisallowInterceptTouchEvent(bool)"/> to ensure that native
+		/// ancestors (eg scroll views, RecyclerView) don't intercept the interaction before us.
+		/// </summary>
+		private void TryDisallowInterceptOnDrag(PointerRoutedEventArgs args, bool isInView)
+		{
+			if (isInView && args.Pointer.PointerDeviceType == PointerDeviceType.Touch && CanDrag)
+			{
+				if (_gestures.IsValueCreated && (_gestures.Value.PendingManipulation?.IsHeldLongEnoughToDrag() ?? false))
+				{
+					(this as View).Parent.RequestDisallowInterceptTouchEvent(true);
+				}
 			}
 		}
 

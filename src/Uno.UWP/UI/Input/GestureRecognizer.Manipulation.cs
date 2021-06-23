@@ -317,6 +317,22 @@ namespace Windows.UI.Input
 				};
 			}
 
+			/// <summary>
+			/// Is this manipulation (a) valid to become a drag and (b) held for long enough to count as a drag?
+			/// </summary>
+			internal bool IsHeldLongEnoughToDrag()
+			{
+				if (!_isDraggingEnable)
+				{
+					return false;
+				}
+
+				var down = _origins.Pointer1;
+				var current = _currents.Pointer1; // For current to be current, this should be called after TryUpdate()
+				var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayTicks;
+				return !isInHoldPhase;
+			}
+
 			// For pen and mouse this only means down -> * moves out of tap range;
 			// For touch it means down -> * moves close to origin for DragUsingFingerMinDelayTicks -> * moves far from the origin 
 			private bool IsBeginningOfDragManipulation()
