@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference IconSource.cpp, commit 083796a
+
 #nullable enable
 
 using System;
@@ -10,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class IconSource : DependencyObject
 	{
-		private List<WeakReference<IconElement>> m_createdIconElements;
+		private List<WeakReference<IconElement>> m_createdIconElements = new List<WeakReference<IconElement>>();
 
 		protected IconSource()
 		{

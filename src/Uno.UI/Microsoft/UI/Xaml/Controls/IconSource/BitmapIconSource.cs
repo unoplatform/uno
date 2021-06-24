@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference BitmapIconSource.cpp, commit 083796a
+
 using System;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
@@ -7,10 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class BitmapIconSource : IconSource
 	{
-		public BitmapIconSource()
-		{
-		}
-
 		public Uri UriSource
 		{
 			get => (Uri)GetValue(UriSourceProperty);

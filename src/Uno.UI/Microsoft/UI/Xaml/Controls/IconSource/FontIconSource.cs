@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference FontIconSource.cpp, commit 083796a
+
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -8,10 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FontIconSource : IconSource
 	{
-		public FontIconSource()
-		{
-		}
-
 		public bool MirroredWhenRightToLeft
 		{
 			get => (bool)GetValue(MirroredWhenRightToLeftProperty);
