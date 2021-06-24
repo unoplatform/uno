@@ -124,9 +124,9 @@ dotnet new unoapp-uitest -o UnoUITests01
 Assert-ExitCodeIsZero
 
 # Prism template test
-dotnet new unoapp-prism -o UnoUIPrism01
-& $msbuild $debug UnoUIPrism01\UnoUIPrism01.sln
-Assert-ExitCodeIsZero
+# dotnet new unoapp-prism -o UnoUIPrism01
+# & $msbuild $debug UnoUIPrism01\UnoUIPrism01.sln
+# Assert-ExitCodeIsZero
 
 # XF - Default
 # 7z x build\assets\xfapp-uwp-4.8.0.1451.zip -oXFApp
