@@ -1,5 +1,10 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference AnimatedIcon.cpp, commit 1b9db23
+
+using System;
 using System.Numerics;
+using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI;
@@ -34,12 +39,16 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
+#if HAS_UNO
+			// TODO Uno specific - We must add the child element manually.
+			AddIconElementView(new Border());
+#endif
 			// Construct the visual from the Source property in on apply template so that it participates
 			// in the initial measure for the object.
 			ConstructAndInsertVisual();
 			var panel = VisualTreeHelper.GetChild(this, 0) as Panel;
 			m_rootPanel = panel;
-			m_currentState = GetState(this);
+			m_currentState = State;
 
 			if (panel != null)
 			{
@@ -50,9 +59,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// fallback is used.
 				if (panel.Children.Count > 0)
 				{
-					if (var path = panel.Children[0].GetAt(0))
-            {
-						path.Visibility(Visibility.Collapsed);
+					if (panel.Children[0] is { } path)
+					{
+						path.Visibility = Visibility.Collapsed;
 					}
 				}
 				if (m_animatedVisual is { } visual)
@@ -72,35 +81,35 @@ namespace Microsoft.UI.Xaml.Controls
 			// changed event for AnimatedIcon.State to copy the value to AnimatedIcon.
 			var property = StateProperty;
 
-			var[ancestorWithState, stateValue] = [this, property]()
-
-
-	{
+			(DependencyObject, string) GetAncestorWithState()
+			{
 				var parent = VisualTreeHelper.GetParent(this);
-				while (parent)
+				while (parent != null)
 				{
 					var stateValue = parent.GetValue(property);
-					if (!(string)stateValue).empty()
-
-
-			{
-						return Tuple.Create(parent, stateValue);
+					if (!string.IsNullOrEmpty((string)stateValue))
+					{
+						return (parent, (string)stateValue);
 					}
 					parent = VisualTreeHelper.GetParent(parent);
 				}
-				return Tuple.Create((DependencyObject)(null), string{ });
-			} ();
+				return ((DependencyObject)(null), string.Empty);
+			}
+			var (ancestorWithState, stateValue) = GetAncestorWithState();
 
-			if ((string)GetValue(property)).empty()
-
-
-	{
+			if (string.IsNullOrEmpty((string)GetValue(property)))
+			{
 				SetValue(property, stateValue);
 			}
 
-			if (ancestorWithState)
+			if (ancestorWithState != null)
 			{
-				m_ancestorStatePropertyChangedRevoker = RegisterPropertyChanged(ancestorWithState, property, { this, &AnimatedIcon.OnAncestorAnimatedIconStatePropertyChanged });
+				m_ancestorStatePropertyChangedRevoker.Disposable = null;
+				var token = ancestorWithState.RegisterPropertyChangedCallback(property, OnAncestorAnimatedIconStatePropertyChanged);
+				m_ancestorStatePropertyChangedRevoker.Disposable = Disposable.Create(() =>
+				{
+					ancestorWithState.UnregisterPropertyChangedCallback(property, token);
+				});
 			}
 
 			// Wait until loaded to apply the fallback icon source property because we need the icon source
@@ -110,46 +119,46 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
-		Size MeasureOverride(Size & availableSize)
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			if (var visual = m_animatedVisual)
-    {
+			if (m_animatedVisual is { } visual)
+			{
 				// Animated Icon scales using the Uniform strategy, meaning that it scales the horizonal and vertical
 				// dimensions equally by the maximum amount that doesn't exceed the available size in either dimension.
 				// If the available size is infinite in both dimensions then we don't scale the visual. Otherwise, we
 				// calculate the scale factor by comparing the default visual size to the available size. This produces 2
 				// scale factors, one for each dimension. We choose the smaller of the scale factors to not exceed the
 				// available size in that dimension.
-				var visualSize = visual.Size();
-				if (visualSize != float2.zero())
+				var visualSize = visual.Size;
+				if (visualSize != Vector2.Zero)
 				{
-					var widthScale = availableSize.Width == std.numeric_limits<double>.infinity() ? std.numeric_limits<float>.infinity() : availableSize.Width / visualSize.x;
-					var heightScale = availableSize.Height == std.numeric_limits<double>.infinity() ? std.numeric_limits<float>.infinity() : availableSize.Height / visualSize.y;
-					if (widthScale == std.numeric_limits<double>.infinity() && heightScale == std.numeric_limits<double>.infinity())
+					var widthScale = availableSize.Width == double.PositiveInfinity ? float.PositiveInfinity : availableSize.Width / visualSize.X;
+					var heightScale = availableSize.Height == double.PositiveInfinity ? float.PositiveInfinity : availableSize.Height / visualSize.Y;
+					if (widthScale == double.PositiveInfinity && heightScale == double.PositiveInfinity)
 					{
-						return visualSize;
+						return new Size(visualSize.X, visualSize.Y);
 					}
-					else if (widthScale == std.numeric_limits<double>.infinity())
+					else if (widthScale == double.PositiveInfinity)
 					{
-						return Size{ visualSize.x* heightScale, availableSize.Height };
+						return new Size(visualSize.X * heightScale, availableSize.Height);
 					}
-					else if (heightScale == std.numeric_limits<double>.infinity())
+					else if (heightScale == double.PositiveInfinity)
 					{
-						return Size{ availableSize.Width, visualSize.y* widthScale };
+						return new Size(availableSize.Width, visualSize.Y * widthScale);
 					}
 					else
 					{
-						return (heightScale > widthScale)
-							? Size{ availableSize.Width, visualSize.y* widthScale }
-                : Size{ visualSize.x* heightScale, availableSize.Height };
+						return (heightScale > widthScale) ?
+							new Size(availableSize.Width, visualSize.Y * widthScale) :
+							new Size(visualSize.X * heightScale, availableSize.Height);
 					}
 				}
-				return visualSize;
+				return new Size(visualSize.X, visualSize.Y);
 			}
-	// If we don't have a visual, we will show the fallback icon, so we need to do a traditional measure.
+			// If we don't have a visual, we will show the fallback icon, so we need to do a traditional measure.
 			else
 			{
-				return __super.MeasureOverride(availableSize);
+				return base.MeasureOverride(availableSize);
 			}
 		}
 
@@ -161,23 +170,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 				Vector2 GetScale(Size finalSize, Vector2 visualSize)
 				{
-					var scale = (Vector2)(finalSize) / visualSize;
-					if (scale.X < scale.Y)
+					var scaleX = finalSize.Width / visualSize.X;
+					var scaleY = finalSize.Height / visualSize.Y;
+					if (scaleX < scaleY)
 					{
-						scale.Y = scale.X;
+						scaleY = scaleX;
 					}
 					else
 					{
-						scale.X = scale.Y;
+						scaleX = scaleY;
 					}
-					return scale;
+					return new Vector2((float)scaleX, (float)scaleY);
 				}
 				var scale = GetScale(finalSize, visualSize);
 
 				Vector2 arrangedSize = new Vector2(
-					Math.Min(finalSize.Width / scale.X, visualSize.X),
-					Math.Min(finalSize.Height / scale.Y, visualSize.Y));
-				var offset = (finalSize - (visualSize * scale)) / 2;
+					(float)Math.Min(finalSize.Width / scale.X, visualSize.X),
+					(float)Math.Min(finalSize.Height / scale.Y, visualSize.Y));
+
+				var offset = new Vector2(
+					(float)(finalSize.Width - (visualSize * scale).X) / 2,
+					(float)(finalSize.Height - (visualSize * scale).Y) / 2);
 				var rootVisual = visual.RootVisual;
 				rootVisual.Offset = new Vector3(offset, 0.0f);
 				rootVisual.Size = arrangedSize;
@@ -214,20 +227,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// the NormalToBar transition but instead NormalToFoo followed by FooToBar. Since we can't change these controls logic in WinUI2 we handle
 		// this by waiting until the next layout cycle to play an animated icon transition. However, the state dependency property changed is not
 		// enough to ensure that a layout updated will trigger, so we must also invalidate a layout property, arrange was chosen arbitrarily.
-		void OnStatePropertyChanged()
+		private void OnStatePropertyChanged()
 		{
-			m_pendingState = ValueHelper<string>.CastOrUnbox(this.GetValue(AnimatedIconStateProperty()));
-			m_layoutUpdatedRevoker = this.LayoutUpdated(auto_revoke, { this, &AnimatedIcon.OnLayoutUpdatedAfterStateChanged });
-			SharedHelpers.QueueCallbackForCompositionRendering(
+			m_pendingState = (string)(this.GetValue(StateProperty));
+			m_layoutUpdatedRevoker.Disposable = null;
+			LayoutUpdated += OnLayoutUpdatedAfterStateChanged;
+			m_layoutUpdatedRevoker.Disposable = Disposable.Create(() =>
+			{
+				LayoutUpdated -= OnLayoutUpdatedAfterStateChanged;
+			});
 
-
-				[strongThis = get_strong()]
-
-
-		{
-				strongThis.InvalidateArrange();
-			}
-    );
+			SharedHelpers.QueueCallbackForCompositionRendering(() => InvalidateArrange());
 		}
 
 		private void OnLayoutUpdatedAfterStateChanged(object sender, object args)
@@ -241,13 +251,13 @@ namespace Microsoft.UI.Xaml.Controls
 				case AnimatedIconAnimationQueueBehavior.QueueOne:
 					if (m_isPlaying)
 					{
-						// If we already have a queued state, cancel the current animation with the previously queued transition
+						/// If we already have too many queued states, cancel the current animation with the previously queued transition
 						// then Queue this new transition.
-						if (!string.IsNullOrEmpty(m_queuedState))
+						if (m_queuedStates.Count >= m_queueLength)
 						{
-							TransitionAndUpdateStates(m_currentState, m_queuedState);
+							TransitionAndUpdateStates(m_currentState, m_queuedStates.Peek());
 						}
-						m_queuedState = m_pendingState;
+						m_queuedStates.Enqueue(m_pendingState);
 					}
 					else
 					{
@@ -257,29 +267,38 @@ namespace Microsoft.UI.Xaml.Controls
 				case AnimatedIconAnimationQueueBehavior.SpeedUpQueueOne:
 					if (m_isPlaying)
 					{
-						// Cancel the previous animation completed handler, before we cancel that animation by starting a new one.
-						if (m_batch != null)
-						{
-							m_batchCompletedRevoker.Disposable = null;
-						}
-
-						// If we already have a queued state, cancel the current animation with the previously queued transition
+						// If we already have too many queued states, cancel the current animation with the previously queued transition
 						//  played speed up then Queue this new transition.
-						if (!string.IsNullOrEmpty(m_queuedState))
+						if (m_queuedStates.Count >= m_queueLength)
 						{
-							TransitionAndUpdateStates(m_currentState, m_queuedState, m_speedUpMultiplier);
-							m_queuedState = m_pendingState;
+							// Cancel the previous animation completed handler, before we cancel that animation by starting a new one.
+							if (m_batch != null)
+							{
+								m_batchCompletedRevoker.Disposable = null;
+							}
+							TransitionAndUpdateStates(m_currentState, m_queuedStates.Peek(), m_speedUpMultiplier);
+							m_queuedStates.Enqueue(m_pendingState);
 						}
 						else
 						{
-							m_queuedState = m_pendingState;
-
-							var markers = Source.Markers;
-							string transitionEndName = StringUtil.FormatString("%1!s!%2!s!%3!s!%4!s!", m_previousState, s_transitionInfix, m_currentState, s_transitionEndSuffix);
-							var hasEndMarker = markers.ContainsKey(transitionEndName);
-							if (hasEndMarker)
+							m_queuedStates.Enqueue(m_pendingState);
+							if (!m_isSpeedUp)
 							{
-								PlaySegment(float.NaN, (float)(markers[transitionEndName]), m_speedUpMultiplier);
+								// Cancel the previous animation completed handler, before we cancel that animation by starting a new one.
+								if (m_batch != null)
+								{
+									m_batchCompletedRevoker.Disposable = null;
+								}
+
+								m_isSpeedUp = true;
+
+								var markers = Source.Markers;
+								string transitionEndName = StringUtil.FormatString("%1!s!%2!s!%3!s!%4!s!", m_previousState, s_transitionInfix, m_currentState, s_transitionEndSuffix);
+								var hasEndMarker = markers.ContainsKey(transitionEndName);
+								if (hasEndMarker)
+								{
+									PlaySegment(float.NaN, (float)markers[transitionEndName], null, m_speedUpMultiplier);
+								}
 							}
 						}
 					}
@@ -294,13 +313,25 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void TransitionAndUpdateStates(string fromState, string toState, float playbackMultiplier = 1.0f)
 		{
-			TransitionStates(fromState, toState, playbackMultiplier);
-			m_previousState = fromState;
-			m_currentState = toState;
-			m_queuedState = "";
+			// TODO Uno specific - adjust for multithreaded access according to MUX source code.
+			bool cleanedUpFlag = false;
+			Action cleanupAction = () =>
+			{
+				if (!cleanedUpFlag)
+				{
+					m_previousState = fromState;
+					m_currentState = toState;
+					if (m_queuedStates.Count > 0)
+					{
+						m_queuedStates.Dequeue();
+					}
+				};
+			};
+			TransitionStates(fromState, toState, cleanupAction, playbackMultiplier);
+			cleanupAction();
 		}
 
-		private void TransitionStates(string fromState, string toState, float playbackMultiplier = 1.0f)
+		private void TransitionStates(string fromState, string toState, Action cleanupAction, float playbackMultiplier = 1.0f)
 		{
 			if (Source is { } source)
 			{
@@ -316,7 +347,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						var fromProgress = (float)(markers[transitionStartName]);
 						var toProgress = (float)(markers[transitionEndName]);
-						PlaySegment(fromProgress, toProgress, playbackMultiplier);
+						PlaySegment(fromProgress, toProgress, cleanupAction, playbackMultiplier);
 						m_lastAnimationSegmentStart = transitionStartName;
 						m_lastAnimationSegmentEnd = transitionEndName;
 					}
@@ -352,23 +383,24 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						// Since we can't find an animation for this transition, try to find one that ends in the same place
 						// and cut to that position instead.
-						var[found, value] = [toState, markers, this]()
-
-
-				{
-							string fragment = StringUtil.FormatString("%1!s!%2!s!%3!s!", s_transitionInfix.data(), toState.c_str(), s_transitionEndSuffix.data());
-							for (var[key, val] : markers)
+						(bool found, float value) FindValue()
+						{
+							string fragment = StringUtil.FormatString("%1!s!%2!s!%3!s!", s_transitionInfix, toState, s_transitionEndSuffix);
+							foreach (var marker in markers)
 							{
-								std.string value = key.data();
-								if (value.find(fragment) != std.wstring.npos)
+								string value = marker.Key;
+								if (value.IndexOf(fragment) > -1)
 								{
 									m_lastAnimationSegmentStart = "";
-									m_lastAnimationSegmentEnd = key;
-									return Tuple.Create(true, (float)(val));
+									m_lastAnimationSegmentEnd = marker.Key;
+									return (true, (float)(marker.Value));
 								}
 							}
-							return Tuple.Create(false, 0.0f);
-						} ();
+							return (false, 0.0f);
+						}
+
+						var (found, value) = FindValue();
+
 						if (found)
 						{
 							m_progressPropertySet.InsertScalar(s_progressPropertyName, value);
@@ -380,12 +412,12 @@ namespace Microsoft.UI.Xaml.Controls
 							// provided string doesn't parse to a float we can't distinguish between the string "0.0" and
 							// the string "a" (for example) from the parse output alone. Instead we use the wcstof's second
 							// parameter to determine if the 0.0 return value came from a valid parse or from the default return.
-							wchar_t* strEnd = null;
-							var parsedFloat = wcstof(toState.c_str(), &strEnd);
+							string strEnd = null;
+							var parsedFloat = Wcstof(toState, ref strEnd);
 
-							if (strEnd == toState.c_str() + toState.size())
+							if (strEnd == toState)
 							{
-								PlaySegment(NAN, parsedFloat, playbackMultiplier);
+								PlaySegment(float.NaN, parsedFloat, cleanupAction, playbackMultiplier);
 								m_lastAnimationSegmentStart = "";
 								m_lastAnimationSegmentEnd = toState;
 							}
@@ -393,7 +425,7 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								// None of our attempt to find an animation to play or frame to show have worked, so just cut
 								// to frame 0.
-								m_progressPropertySet.InsertScalar(s_progressPropertyName, 0.0);
+								m_progressPropertySet.InsertScalar(s_progressPropertyName, 0.0f);
 								m_lastAnimationSegmentStart = "";
 								m_lastAnimationSegmentEnd = "0.0";
 							}
@@ -405,31 +437,51 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void PlaySegment(float from, float to, float playbackMultiplier = 1.0f)
+		private float Wcstof(string input, ref string strEnd)
 		{
-			var segmentLength = [from, to, previousSegmentLength = m_previousSegmentLength]()
+			for (int currentLength = input.Length; currentLength > 0; currentLength--)
+			{
+				var shortenedInput = input.Substring(0, currentLength);
+				if (float.TryParse(shortenedInput, out var parsed))
+				{
+					if (input.Length - currentLength == 0)
+					{
+						strEnd = null;
+					}
+					else
+					{
+						strEnd = input.Substring(currentLength, input.Length - currentLength);
+					}
+					return parsed;
+				}
+			}
+			strEnd = input;
+			return 0.0f;
+		}
 
-
-	{
-				if (std.isnan(from))
+		void PlaySegment(float from, float to, Action cleanupAction, float playbackMultiplier = 1.0f)
+		{
+			float GetSegmentLength(float from, float to, float previousSegmentLength)
+			{
+				if (float.IsNaN(from))
 				{
 					return previousSegmentLength;
 				}
-				return std.abs(to - from);
-			} ();
+				return Math.Abs(to - from);
+			}
+			var segmentLength = GetSegmentLength(from, to, m_previousSegmentLength);
 
 			m_previousSegmentLength = segmentLength;
-			var duration = m_animatedVisual ?
-				std.chrono.duration_cast<TimeSpan>(m_animatedVisual.Duration() * segmentLength * (1.0 / playbackMultiplier) * m_durationMultiplier) :
-				TimeSpan.zero();
+			var duration = m_animatedVisual != null ?
+				(m_animatedVisual.Duration * segmentLength * (1.0 / playbackMultiplier) * m_durationMultiplier) :
+				TimeSpan.Zero;
 			// If the duration is really short (< 20ms) don't bother trying to animate, or if animations are disabled.
-			if (duration < TimeSpan{ 20ms } || !SharedHelpers.IsAnimationsEnabled())
-    {
+			if (duration < TimeSpan.FromMilliseconds(20) || !SharedHelpers.IsAnimationsEnabled())
+			{
 				m_progressPropertySet.InsertScalar(s_progressPropertyName, to);
 				OnAnimationCompleted(null, null);
 			}
-
-	else
+			else
 			{
 				var compositor = m_progressPropertySet.Compositor;
 				var animation = compositor.CreateScalarKeyFrameAnimation();
@@ -453,15 +505,25 @@ namespace Microsoft.UI.Xaml.Controls
 					m_batchCompletedRevoker.Disposable = null;
 				}
 				m_batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
-				m_batchCompletedRevoker = RegisterScopedBatchCompleted(m_batch, { this, &AnimatedIcon.OnAnimationCompleted });
+
+				m_batchCompletedRevoker.Disposable = null;
+				m_batch.Completed += OnAnimationCompleted;
+				m_batchCompletedRevoker.Disposable = Disposable.Create(() =>
+				{
+					m_batch.Completed -= OnAnimationCompleted;
+				});
 
 				m_isPlaying = true;
 				m_progressPropertySet.StartAnimation(s_progressPropertyName, animation);
+				if (cleanupAction != null)
+				{
+					cleanupAction();
+				}
 				m_batch.End();
 			}
 		}
 
-		private void OnSourcePropertyChanged(DependencyPropertyChangedEventArgs&)
+		private void OnSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			if (!ConstructAndInsertVisual())
 			{
@@ -496,59 +558,64 @@ namespace Microsoft.UI.Xaml.Controls
 					-1.0f : 1.0f;
 		}
 
-		private void OnMirroredWhenRightToLeftPropertyChanged(DependencyPropertyChangedEventArgs&)
+		private void OnMirroredWhenRightToLeftPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateMirrorTransform();
 		}
 
 		private bool ConstructAndInsertVisual()
 		{
-			var visual = [this]()
-
-
-	{
+			Visual GetVisual()
+			{
 				if (Source is { } source)
-        {
+				{
 					TrySetForegroundProperty(source);
 
-					object diagnostics{ };
+					//object diagnostics{ };
+#if HAS_UNO
+					// TODO Uno - TryCreateAnimatedVisual method does not currently exist on IAnimatedVisualSource
+					IAnimatedVisual visual = null;
+#else
 					var visual = source.TryCreateAnimatedVisual(Window.Current.Compositor, diagnostics);
+#endif
 					m_animatedVisual = visual;
-					return visual ? visual.RootVisual() : null;
+					return visual != null ? visual.RootVisual : null;
 				}
 
-		else
+				else
 				{
 					m_animatedVisual = null;
 					return (Visual)(null);
 				}
-			} ();
+			}
+
+			var visual = GetVisual();
 
 			if (m_rootPanel is { } rootPanel)
 			{
 				ElementCompositionPreview.SetElementChildVisual(rootPanel, visual);
 			}
 
-			if (visual)
+			if (visual != null)
 			{
 				m_canDisplayPrimaryContent = true;
-				if (m_rootPanel is { } rootPanel)
+				if (m_rootPanel is { } innerRootPanel)
 				{
 					// Remove the second child, if it exists, as this is the fallback icon.
 					// Which we don't need because we have a visual now.
-					if (rootPanel.Children.Count > 1)
+					if (innerRootPanel.Children.Count > 1)
 					{
-						rootPanel.Children.RemoveAt(1);
+						innerRootPanel.Children.RemoveAt(1);
 					}
 				}
-				visual.Properties().InsertScalar(s_progressPropertyName, 0.0F);
+				visual.Properties.InsertScalar(s_progressPropertyName, 0.0F);
 
 				// Tie the animated visual's Progress property to the player Progress with an ExpressionAnimation.
-				var compositor = visual.Compositor();
-				var expression = StringUtil.FormatString("_.%1!s!", s_progressPropertyName.data());
+				var compositor = visual.Compositor;
+				var expression = StringUtil.FormatString("_.%1!s!", s_progressPropertyName);
 				var progressAnimation = compositor.CreateExpressionAnimation(expression);
 				progressAnimation.SetReferenceParameter("_", m_progressPropertySet);
-				visual.Properties().StartAnimation(s_progressPropertyName, progressAnimation);
+				visual.Properties.StartAnimation(s_progressPropertyName, progressAnimation);
 
 				return true;
 			}
@@ -558,7 +625,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			UpdateMirrorTransform();
+			// This seems to be a bug in WinUI - this code cannot be reached.
+			// UpdateMirrorTransform();
 		}
 
 		private void OnFallbackIconSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -592,7 +660,11 @@ namespace Microsoft.UI.Xaml.Controls
 			m_foregroundColorPropertyChangedRevoker.Disposable = null;
 			if (Foreground is SolidColorBrush foregroundSolidColorBrush)
 			{
-				m_foregroundColorPropertyChangedRevoker = foregroundSolidColorBrush.RegisterPropertyChangedCallback(SolidColorBrush.ColorProperty, OnForegroundBrushColorPropertyChanged);
+				var token = foregroundSolidColorBrush.RegisterPropertyChangedCallback(SolidColorBrush.ColorProperty, OnForegroundBrushColorPropertyChanged);
+				m_foregroundColorPropertyChangedRevoker.Disposable = Disposable.Create(() =>
+				{
+					foregroundSolidColorBrush.UnregisterPropertyChangedCallback(SolidColorBrush.ColorProperty, token);
+				});
 				TrySetForegroundProperty(foregroundSolidColorBrush.Color);
 			}
 		}
@@ -604,10 +676,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnForegroundBrushColorPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
-			TrySetForegroundProperty(sender.GetValue(args).as< Color > ());
+			TrySetForegroundProperty((Color)sender.GetValue(args));
 		}
 
-		private void TrySetForegroundProperty(IAnimatedVisualSource2 source)
+		private void TrySetForegroundProperty(IAnimatedVisualSource2 source = null)
 		{
 			if (Foreground is SolidColorBrush foregroundSolidColorBrush)
 			{
@@ -615,7 +687,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void TrySetForegroundProperty(Color color, IAnimatedVisualSource2 source)
+		private void TrySetForegroundProperty(Color color, IAnimatedVisualSource2 source = null)
 		{
 			var localSource = source != null ? source : Source;
 			if (localSource != null)
@@ -637,42 +709,59 @@ namespace Microsoft.UI.Xaml.Controls
 				case AnimatedIconAnimationQueueBehavior.Cut:
 					break;
 				case AnimatedIconAnimationQueueBehavior.QueueOne:
-				case AnimatedIconAnimationQueueBehavior.SpeedUpQueueOne:
-					if (!string.IsNullOrEmpty(m_queuedState))
+					if (m_queuedStates.Count > 0)
 					{
-						TransitionAndUpdateStates(m_currentState, m_queuedState);
+						TransitionAndUpdateStates(m_currentState, m_queuedStates.Peek());
+					}
+					break;
+				case AnimatedIconAnimationQueueBehavior.SpeedUpQueueOne:
+					if (m_queuedStates.Count > 0)
+					{
+						if (m_queuedStates.Count == 1)
+						{
+							TransitionAndUpdateStates(m_currentState, m_queuedStates.Peek());
+						}
+						else
+						{
+							TransitionAndUpdateStates(m_currentState, m_queuedStates.Peek(), m_isSpeedUp ? m_speedUpMultiplier : 1.0f);
+						}
 					}
 					break;
 			}
 		}
 
 		// Test hooks
-		private void SetAnimationQueueBehavior(AnimatedIconAnimationQueueBehavior behavior)
+		internal void SetAnimationQueueBehavior(AnimatedIconAnimationQueueBehavior behavior)
 		{
 			m_queueBehavior = behavior;
 		}
 
-		private void SetDurationMultiplier(float multiplier)
+		internal void SetDurationMultiplier(float multiplier)
 		{
 			m_durationMultiplier = multiplier;
 		}
 
-		private void SetSpeedUpMultiplier(float multiplier)
+		internal void SetSpeedUpMultiplier(float multiplier)
 		{
 			m_speedUpMultiplier = multiplier;
 		}
 
-		private string GetLastAnimationSegment()
+		internal void SetQueueLength(int length)
+		{
+			m_queueLength = length;
+		}
+
+		internal string GetLastAnimationSegment()
 		{
 			return m_lastAnimationSegment;
 		}
 
-		private string GetLastAnimationSegmentStart()
+		internal string GetLastAnimationSegmentStart()
 		{
 			return m_lastAnimationSegmentStart;
 		}
 
-		private string GetLastAnimationSegmentEnd()
+		internal string GetLastAnimationSegmentEnd()
 		{
 			return m_lastAnimationSegmentEnd;
 		}

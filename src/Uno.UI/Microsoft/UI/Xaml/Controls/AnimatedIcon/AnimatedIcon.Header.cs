@@ -1,8 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference AnimatedIcon.cpp, commit 893116c
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Uno.Disposables;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Controls;
@@ -18,7 +18,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private string m_currentState = "";
 		private string m_previousState = "";
-		private string m_queuedState = "";
+		private Queue<string> m_queuedStates = new Queue<string>();
+		private int m_queueLength = 2;
 		private string m_pendingState = "";
 		private string m_lastAnimationSegment = "";
 		private string m_lastAnimationSegmentStart = "";
@@ -28,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private float m_previousSegmentLength = 1.0f;
 		private float m_durationMultiplier = 1.0f;
 		private float m_speedUpMultiplier = 7.0f;
-
+		private bool m_isSpeedUp = false;
 
 		private CompositionPropertySet m_progressPropertySet = null;
 		private CompositionScopedBatch m_batch = null;
@@ -37,6 +38,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private SerialDisposable m_layoutUpdatedRevoker = new SerialDisposable();
 		private SerialDisposable m_foregroundColorPropertyChangedRevoker = new SerialDisposable();
 
-		private AnimatedIconAnimationQueueBehavior m_queueBehavior = AnimatedIconAnimationQueueBehavior.SpeedUpQueueOne;
+		private AnimatedIconAnimationQueueBehavior m_queueBehavior = AnimatedIconAnimationQueueBehavior.QueueOne;
 	}
 }

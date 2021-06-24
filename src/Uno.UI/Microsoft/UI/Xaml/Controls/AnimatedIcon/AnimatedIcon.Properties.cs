@@ -1,4 +1,8 @@
-﻿using Windows.UI.Xaml;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference AnimatedIcon.properties.cpp, commit f4d781d
+
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
