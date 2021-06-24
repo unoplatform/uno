@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FallbackIconSourceProperty { get; } =
-			DependencyProperty.Register(nameof(FallbackIconSource), typeof(IconSource), typeof(AnimatedIconSource), new PropertyMetadata(null, OnFallbackIconSourcePropertyChanged));
+			DependencyProperty.Register(nameof(FallbackIconSource), typeof(IconSource), typeof(AnimatedIconSource), new PropertyMetadata(null, OnPropertyChanged));
 
 		public bool MirroredWhenRightToLeft
 		{
@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
-			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(AnimatedIconSource), new PropertyMetadata(false, OnMirroredWhenRightToLeftPropertyChanged));
+			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(AnimatedIconSource), new PropertyMetadata(false, OnPropertyChanged));
 
 		public IAnimatedVisualSource2 Source
 		{
@@ -30,9 +30,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SourceProperty { get; } =
-			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIconSource), new PropertyMetadata(null, OnSourcePropertyChanged));
+			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIconSource), new PropertyMetadata(null, OnPropertyChanged));
 
-		public override IconElement CreateIconElement()
+		internal protected override IconElement CreateIconElementCore()
 		{
 			AnimatedIcon animatedIcon = new AnimatedIcon();
 			if (Source is { } source)
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return animatedIcon;
 		}
 
-		protected override DependencyProperty GetIconElementProperty(DependencyProperty sourceProperty)
+		internal protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
 		{
 			if (sourceProperty == SourceProperty)
 			{
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return AnimatedIcon.MirroredWhenRightToLeftProperty;
 			}
 
-			return base.GetIconElementProperty(sourceProperty);
+			return base.GetIconElementPropertyCore(sourceProperty);
 		}
 
 	}

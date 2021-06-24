@@ -17,9 +17,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DataProperty { get; } =
-			DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new PropertyMetadata(null, OnPropertyChanged));
 
-		public override IconElement CreateIconElement()
+		internal protected override IconElement CreateIconElementCore()
 		{
 			var pathIcon = new PathIcon();
 
@@ -34,6 +34,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return pathIcon;
+		}
+
+		internal protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		{
+			if (sourceProperty == DataProperty)
+			{
+				return PathIcon.DataProperty;
+			}
+
+			return base.GetIconElementPropertyCore(sourceProperty);
 		}
 	}
 }

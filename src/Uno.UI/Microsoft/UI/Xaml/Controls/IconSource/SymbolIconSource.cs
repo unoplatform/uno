@@ -16,9 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SymbolProperty { get; } =
-			DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(SymbolIconSource), new PropertyMetadata(Symbol.Emoji));
+			DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(SymbolIconSource), new PropertyMetadata(Symbol.Emoji, OnPropertyChanged));
 
-		public override IconElement CreateIconElement()
+		internal protected override IconElement CreateIconElementCore()
 		{
 			var symbolIcon = new SymbolIcon()
 			{
@@ -31,6 +31,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return symbolIcon;
+		}
+
+		internal protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		{
+			if (sourceProperty == SymbolProperty)
+			{
+				return SymbolIcon.SymbolProperty;
+			}
+
+			return base.GetIconElementPropertyCore(sourceProperty);
 		}
 	}
 }
