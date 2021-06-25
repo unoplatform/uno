@@ -15,3 +15,4 @@
 \Controls\ColorPicker : 607b6de45ac355b4bf7d1db102c35430d3da54e9
 \Controls\Expander : ce84da3986fde706f4dc02d26851a4598d11e0e0
 \Controls\NumberBox : 2237b09d9ba6052414ddccf3d61316de20564303
+\Controls\RatingControl : 3c73749

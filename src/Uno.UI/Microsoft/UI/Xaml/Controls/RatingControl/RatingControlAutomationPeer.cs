@@ -1,7 +1,6 @@
-// MUX Reference RatingControlAutomationPeer.cpp, commit de78834
-
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RatingControlAutomationPeer.cpp, commit de78834
 
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
