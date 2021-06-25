@@ -175,6 +175,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="Microsoft\UI\Xaml\Controls\Expander\ExpanderTemplateSettings.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />

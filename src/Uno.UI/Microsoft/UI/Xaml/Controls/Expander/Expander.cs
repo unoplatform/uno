@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -10,6 +11,8 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class Expander : ContentControl
     {
 		private readonly string c_expanderHeader = "ExpanderHeader";
+		private readonly string c_expanderContent = "ExpanderContent";
+		private readonly string c_expanderContentClip = "ExpanderContentClip";
 
 		public Expander()
 		{
@@ -17,6 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//__RP_Marker_ClassById(RuntimeProfiler::ProfId_Expander);
 
 			SetDefaultStyleKey(this);
+			SetValue(TemplateSettingsProperty, new ExpanderTemplateSettings());
 		}
 
 		// IUIElement
@@ -66,8 +70,28 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			//if (this.GetTemplateChild<Border>(c_expanderContentClip) is Border expanderContentClip)
+			//{
+			//	var visual = ElementCompositionPreview.GetElementVisual(expanderContentClip);
+			//	visual.Clip(visual.Compositor().CreateInsetClip());
+			//}
+
+			if (this.GetTemplateChild<Border>(c_expanderContent) is Border expanderContent)
+			{
+				expanderContent.SizeChanged += OnContentSizeChanged;
+			}
+
 			UpdateExpandState(false);
 			UpdateExpandDirection(false);
+		}
+
+		private void OnContentSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			var templateSettings = (ExpanderTemplateSettings)GetValue(TemplateSettingsProperty);
+
+			var height = args.NewSize.Height;
+			templateSettings.ContentHeight = height;
+			templateSettings.NegativeContentHeight = -1 * height;
 		}
 
 		protected void RaiseExpandingEvent(Expander container)
@@ -82,15 +106,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected void OnIsExpandedPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (IsExpanded)
+			var isExpanded = IsExpanded;
+
+			if (isExpanded)
 			{
 				RaiseExpandingEvent(this);
 			}
 			else
 			{
+				// Available for a 'Collapsing' event
+			}
+
+			UpdateExpandState(true);
+
+			if (isExpanded)
+			{
+				// Available for an 'Expanded' event
+			}
+			else
+			{
 				RaiseCollapsedEvent(this);
 			}
-			UpdateExpandState(true);
 		}
 
 		protected void OnExpandDirectionPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -116,14 +152,29 @@ namespace Microsoft.UI.Xaml.Controls
 		private void UpdateExpandState(bool useTransitions)
 		{
 			var isExpanded = IsExpanded;
+			var direction = ExpandDirection;
 
 			if (isExpanded)
 			{
-				VisualStateManager.GoToState(this, "Expanded", useTransitions);
+				if (direction == ExpandDirection.Down)
+				{
+					VisualStateManager.GoToState(this, "ExpandDown", useTransitions);
+				}
+				else
+				{
+					VisualStateManager.GoToState(this, "ExpandUp", useTransitions);
+				}
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, "Collapsed", useTransitions);
+				if (direction == ExpandDirection.Down)
+				{
+					VisualStateManager.GoToState(this, "CollapseUp", useTransitions);
+				}
+				else
+				{
+					VisualStateManager.GoToState(this, "CollapseDown", useTransitions);
+				}
 			}
 
 			if (FrameworkElementAutomationPeer.FromElement(this) is AutomationPeer peer)

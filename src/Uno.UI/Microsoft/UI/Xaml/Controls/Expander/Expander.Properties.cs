@@ -21,6 +21,19 @@ namespace Microsoft.UI.Xaml.Controls
 					ExpandDirection.Down,
 					(s, e) => (s as Expander)?.OnExpandDirectionPropertyChanged(e)));
 
+		public ExpanderTemplateSettings TemplateSettings
+		{
+			get => (ExpanderTemplateSettings)GetValue(TemplateSettingsProperty);
+			set => SetValue(TemplateSettingsProperty, value);
+		}
+
+		public static DependencyProperty TemplateSettingsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TemplateSettings),
+				typeof(ExpanderTemplateSettings),
+				typeof(Expander),
+				new PropertyMetadata(null));
+
 		public object Header
 		{
 			get => GetValue(HeaderProperty);
