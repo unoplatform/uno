@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Ellipsis dropdown item fields
 
 		// BreadcrumbBarItem that owns the flyout
-		private BreadcrumbBarItem m_ellipsisItem = null;
+		private BreadcrumbBarItem? m_ellipsisItem = null;
 
 		// Visual State tracking
 		private uint m_trackedPointerId = 0;

@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(ItemsSource),
 				typeof(object),
 				typeof(BreadcrumbBar),
-				new PropertyMetadata(null));
+				new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets the data template for the BreadcrumbBarItem.
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(ItemTemplate),
 				typeof(object),
 				typeof(BreadcrumbBar),
-				new PropertyMetadata(null));
+				new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Occurs when an item is clicked in the BreadcrumbBar.

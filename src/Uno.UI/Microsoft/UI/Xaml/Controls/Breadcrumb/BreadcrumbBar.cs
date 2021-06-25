@@ -10,6 +10,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -379,11 +380,20 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_itemsRepeater is { } itemsRepeater)
 			{
 				uint visibleItemsCount = m_itemsRepeaterLayout.GetVisibleItemsCount();
+				var isEllipsisRendered = m_itemsRepeaterLayout.EllipsisIsRendered();
 				int firstItemToIndex = 1;
 
-				if (m_itemsRepeaterLayout.EllipsisIsRendered())
+				if (isEllipsisRendered)
 				{
 					firstItemToIndex = (int)m_itemsRepeaterLayout.FirstRenderedItemIndexAfterEllipsis();
+				}
+
+				// In order to make the ellipsis inaccessible to accessbility tools when it's hidden,
+				// we set the accessibilityView to raw and restore it to content when it becomes visible.
+				if (m_ellipsisBreadcrumbBarItem is { } ellipsisItem)
+				{
+					var accessibilityView = isEllipsisRendered ? AccessibilityView.Content : AccessibilityView.Raw;
+					ellipsisItem.SetValue(AutomationProperties.AccessibilityViewProperty, accessibilityView);
 				}
 
 				var itemsSourceView = itemsRepeater.ItemsSourceView;

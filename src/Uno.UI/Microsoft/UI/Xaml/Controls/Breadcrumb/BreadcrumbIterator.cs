@@ -86,8 +86,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				throw new InvalidOperationException("Out of bounds");
 			}
-
-			return false;
 		}
 
 		bool IEnumerator.MoveNext() => MoveNext();

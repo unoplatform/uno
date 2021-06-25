@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable m_itemsSourceChanged = new SerialDisposable();
 		private readonly SerialDisposable m_breadcrumbKeyDownHandlerRevoker = new SerialDisposable();
 
-		private SerialDisposable m_itemsSourceAsObservableVectorChanged = new SerialDisposable();
+		private readonly SerialDisposable m_itemsSourceAsObservableVectorChanged = new SerialDisposable();
 
 		// This collection is only composed of the consumer defined objects, it doesn't
 		// include the extra ellipsis/null element. This variable is only used to capture
@@ -27,13 +27,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// This is the "element collection" provided to the underlying ItemsRepeater, so it
 		// includes the extra ellipsis/null element in the position 0.
-		private BreadcrumbIterable m_itemsIterable = null;
+		private BreadcrumbIterable? m_itemsIterable = null;
 
 		private ItemsRepeater? m_itemsRepeater = null;
 
-		private BreadcrumbElementFactory m_itemsRepeaterElementFactory = null;
+		private BreadcrumbElementFactory? m_itemsRepeaterElementFactory = null;
 
-		private BreadcrumbLayout m_itemsRepeaterLayout =null;
+		private BreadcrumbLayout? m_itemsRepeaterLayout =null;
 
 		// Pointers to first and last items to update visual states
 		private BreadcrumbBarItem? m_ellipsisBreadcrumbBarItem = null;

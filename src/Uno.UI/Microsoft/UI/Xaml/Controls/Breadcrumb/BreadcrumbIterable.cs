@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		public BreadcrumbIterable(object itemsSource)
+		public BreadcrumbIterable(object? itemsSource)
 		{
 			ItemsSource = itemsSource;
 		}
