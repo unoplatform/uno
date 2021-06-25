@@ -78,34 +78,33 @@ jobs:
       #  ANDROID_SIMULATOR_APILEVEL: 21
       #  UITEST_TEST_MODE_NAME: Automated
 
-      Android_9.0_Group_01:
-        ANDROID_SIMULATOR_APILEVEL: 28
+      Android_11.0_Group_01:
+        ANDROID_SIMULATOR_APILEVEL: 30
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 1 ## Note: Align with UNO_UITEST_BUCKET_COUNT
 
-      Android_9.0_Group_02:
-        ANDROID_SIMULATOR_APILEVEL: 28
+      Android_11.0_Group_02:
+        ANDROID_SIMULATOR_APILEVEL: 30
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 2 ## Note: Align with UNO_UITEST_BUCKET_COUNT
 
-      Android_9.0_Group_03:
-        ANDROID_SIMULATOR_APILEVEL: 28
+      Android_11.0_Group_03:
+        ANDROID_SIMULATOR_APILEVEL: 30
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 3 ## Note: Align with UNO_UITEST_BUCKET_COUNT
 
-      Android_9.0_Snapshots:
-        ANDROID_SIMULATOR_APILEVEL: 28
+      Android_11.0_Snapshots:
+        ANDROID_SIMULATOR_APILEVEL: 30
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshots
 
-      Android_9.0_RuntimeTests:
-        ANDROID_SIMULATOR_APILEVEL: 28
+      Android_11.0_RuntimeTests:
+        ANDROID_SIMULATOR_APILEVEL: 30
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
 
-      # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
-      # Android_10.0:
-      #   ANDROID_SIMULATOR_APILEVEL: 29
+      #Android_11.0:
+      #   ANDROID_SIMULATOR_APILEVEL: 30
       #   UITEST_TEST_MODE_NAME: Automated
 
   steps:
