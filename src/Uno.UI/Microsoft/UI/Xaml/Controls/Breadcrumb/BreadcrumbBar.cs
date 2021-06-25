@@ -16,8 +16,14 @@ using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// The BreadcrumbBar control provides the direct path of pages or folders to the current location.
+	/// </summary>
 	public partial class BreadcrumbBar : Control
 	{
+		/// <summary>
+		/// Initializes a new instance of the BreadcrumbBar class.
+		/// </summary>
 		public BreadcrumbBar()
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_BreadcrumbBar);
@@ -132,13 +138,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateItemTemplate()
 		{
-			object newItemTemplate = ItemTemplate;
+			var newItemTemplate = ItemTemplate;
 			m_itemsRepeaterElementFactory.UserElementFactory(newItemTemplate);
 		}
 
 		private void UpdateEllipsisBreadcrumbBarItemDropDownItemTemplate()
 		{
-			object newItemTemplate = ItemTemplate;
+			var newItemTemplate = ItemTemplate;
 
 			// Copy the item template to the ellipsis item too
 			if (m_ellipsisBreadcrumbBarItem is { } ellipsisBreadcrumbBarItem)
@@ -158,11 +164,14 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_itemsRepeater is { } itemsRepeater)
 				{
 					// Add 1 to account for the leading null
-					int elementCount = m_breadcrumbItemsSourceView.Count + 1;
-					for (int i{ }; i < elementCount; ++i)
-            {
-						var element = itemsRepeater.TryGetElement(i) as BreadcrumbBarItem();
-						element.FlowDirection(FlowDirection());
+					int elementCount = (m_breadcrumbItemsSourceView?.Count ?? 0) + 1;
+					for (int i = 0; i < elementCount; ++i)
+					{
+						var element = itemsRepeater.TryGetElement(i) as BreadcrumbBarItem;
+						if (element != null)
+						{
+							element.FlowDirection = FlowDirection;
+						}
 					}
 				}
 			}
@@ -176,7 +185,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_breadcrumbItemsSourceView = null;
 			if (ItemsSource != null)
 			{
-				m_breadcrumbItemsSourceView = new ItemsSourceView(ItemsSource);
+				m_breadcrumbItemsSourceView = new InspectingDataSource(ItemsSource);
 
 				if (m_breadcrumbItemsSourceView != null)
 				{
@@ -370,11 +379,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_itemsRepeater is { } itemsRepeater)
 			{
 				uint visibleItemsCount = m_itemsRepeaterLayout.GetVisibleItemsCount();
-				uint firstItemToIndex = 1;
+				int firstItemToIndex = 1;
 
 				if (m_itemsRepeaterLayout.EllipsisIsRendered())
 				{
-					firstItemToIndex = m_itemsRepeaterLayout.FirstRenderedItemIndexAfterEllipsis();
+					firstItemToIndex = (int)m_itemsRepeaterLayout.FirstRenderedItemIndexAfterEllipsis();
 				}
 
 				var itemsSourceView = itemsRepeater.ItemsSourceView;
@@ -403,7 +412,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// If focus is coming from outside the repeater, put focus on the selected item.
 					var oldFocusedElement = args.OldFocusedElement;
-					if (!oldFocusedElement || itemsRepeater != VisualTreeHelper.GetParent(oldFocusedElement))
+					if (oldFocusedElement == null || itemsRepeater != VisualTreeHelper.GetParent(oldFocusedElement))
 					{
 						// Reset the focused index
 						if (m_itemsRepeaterLayout != null)
@@ -437,7 +446,7 @@ namespace Microsoft.UI.Xaml.Controls
 						(Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) &
 							CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
 					{
-						if (args.NewFocusedElement is { } newFocusedElementAsUIE)
+						if (args.NewFocusedElement is UIElement newFocusedElementAsUIE)
 						{
 							FocusElementAt(itemsRepeater.GetElementIndex(newFocusedElementAsUIE));
 							args.Handled = true;
@@ -505,7 +514,7 @@ namespace Microsoft.UI.Xaml.Controls
 						movementPrevious = 0;
 					}
 					else if (m_itemsRepeaterLayout.EllipsisIsRendered() &&
-						m_focusedIndex == (int)(m_itemsRepeaterLayout.FirstRenderedItemIndexAfterEllipsis()))
+						m_focusedIndex == (int)m_itemsRepeaterLayout.FirstRenderedItemIndexAfterEllipsis())
 					{
 						movementPrevious = -m_focusedIndex;
 					}
@@ -527,7 +536,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var repeaterLayout = itemsRepeater.Layout; //TODO MZ: Huh?
 					if (m_itemsRepeaterLayout != null)
 					{
-						movementNext = m_itemsRepeaterLayout.FirstRenderedItemIndexAfterEllipsis();
+						movementNext = (int)m_itemsRepeaterLayout.FirstRenderedItemIndexAfterEllipsis();
 					}
 				}
 			}
@@ -544,9 +553,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (source is UIElement sourceAsUIElement)
 				{
-					var index = [first, itemsRepeater]()
-
-			{
+					int GetIndex()
+					{
 						if (first)
 						{
 							return 0;
@@ -556,7 +564,8 @@ namespace Microsoft.UI.Xaml.Controls
 							return itemsSourceView.Count - 1;
 						}
 						return -1;
-					} ();
+					}
+					var index = GetIndex();
 
 					if (itemsRepeater.GetElementIndex(sourceAsUIElement) == index)
 					{
@@ -667,7 +676,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// BreadcrumbBarItem elements.
 			if (!IsAccessKeyScope)
 			{
-				if (m_focusedIndex)
+				if (m_focusedIndex > 0)
 				{
 					if (m_itemsRepeater is { } itemsRepeater)
 					{

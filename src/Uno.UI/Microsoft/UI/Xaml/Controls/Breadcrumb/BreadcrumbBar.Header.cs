@@ -3,6 +3,7 @@
 
 #nullable enable
 
+using System.Collections.Specialized;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
 
@@ -17,10 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable m_itemsSourceChanged = new SerialDisposable();
 		private readonly SerialDisposable m_breadcrumbKeyDownHandlerRevoker = new SerialDisposable();
 
-		tracker_ref<INotifyCollectionChanged> m_notifyCollectionChanged { this };
-		event_token m_itemsSourceAsCollectionChanged { };
-		event_token m_itemsSourceAsBindableVectorChanged { };
-		IObservableVector<object>.VectorChanged_revoker m_itemsSourceAsObservableVectorChanged { };
+		private SerialDisposable m_itemsSourceAsObservableVectorChanged = new SerialDisposable();
 
 		// This collection is only composed of the consumer defined objects, it doesn't
 		// include the extra ellipsis/null element. This variable is only used to capture

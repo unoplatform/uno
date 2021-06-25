@@ -94,7 +94,7 @@
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="500px"/>
+					<ColumnDefinition Width="500"/>
 				</Grid.ColumnDefinitions>
 
 				<controls:BreadcrumbBar ItemsSource="{x:Bind breadCrumbList}"

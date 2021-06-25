@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #nullable enable
 
+using System;
 using Windows.Foundation;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -15,14 +15,14 @@ namespace Microsoft.UI.Xaml.Controls
 			m_breadcrumb = breadcrumb;
 		}
 
-		uint GetItemCount(NonVirtualizingLayoutContext context)
+		private int GetItemCount(NonVirtualizingLayoutContext context)
 		{
-			return (uint32_t)(context.Children().Size());
+			return context.Children.Count;
 		}
 
-		UIElement GetElementAt(NonVirtualizingLayoutContext context, uint index)
+		private UIElement GetElementAt(NonVirtualizingLayoutContext context, int index)
 		{
-			return context.Children.GetAt(index);
+			return context.Children[index];
 		}
 
 		// Measuring is performed in a single step, every element is measured, including the ellipsis
@@ -31,25 +31,25 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_availableSize = availableSize;
 
-			Size accumulatedCrumbsSize(0, 0);
+			Size accumulatedCrumbsSize = new Size(0, 0);
 
-			for (uint i = 0; i < GetItemCount(context); ++i)
+			for (int i = 0; i < GetItemCount(context); ++i)
 			{
-				var breadcrumbItem = GetElementAt(context, i).as< BreadcrumbBarItem > ();
+				var breadcrumbItem = (BreadcrumbBarItem)GetElementAt(context, i);
 				breadcrumbItem.Measure(availableSize);
 
 				if (i != 0)
 				{
-					accumulatedCrumbsSize.Width += breadcrumbItem.DesiredSize().Width;
-					accumulatedCrumbsSize.Height = std.max(accumulatedCrumbsSize.Height, breadcrumbItem.DesiredSize().Height);
+					accumulatedCrumbsSize.Width += breadcrumbItem.DesiredSize.Width;
+					accumulatedCrumbsSize.Height = Math.Max(accumulatedCrumbsSize.Height, breadcrumbItem.DesiredSize.Height);
 				}
 			}
 
 			// Save a reference to the ellipsis button to avoid querying for it multiple times
 			if (GetItemCount(context) > 0)
 			{
-				if (var ellipsisButton = GetElementAt(context, 0) as BreadcrumbBarItem())
-        {
+				if (GetElementAt(context, 0) is BreadcrumbBarItem ellipsisButton)
+				{
 					m_ellipsisButton = ellipsisButton;
 				}
 			}
@@ -66,42 +66,42 @@ namespace Microsoft.UI.Xaml.Controls
 			return accumulatedCrumbsSize;
 		}
 
-		void ArrangeItem(UIElement& breadcrumbItem, float& accumulatedWidths, float maxElementHeight)
+		private void ArrangeItem(UIElement breadcrumbItem, ref float accumulatedWidths, float maxElementHeight)
 		{
-			Size elementSize = breadcrumbItem.DesiredSize();
-			Rect arrangeRect(accumulatedWidths, 0, elementSize.Width, maxElementHeight);
+			Size elementSize = breadcrumbItem.DesiredSize;
+			Rect arrangeRect = new Rect(accumulatedWidths, 0, elementSize.Width, maxElementHeight);
 			breadcrumbItem.Arrange(arrangeRect);
 
-			accumulatedWidths += elementSize.Width;
+			accumulatedWidths += (float)elementSize.Width;
 		}
 
-		void ArrangeItem(NonVirtualizingLayoutContext& context, int index, float& accumulatedWidths, float maxElementHeight)
+		private void ArrangeItem(NonVirtualizingLayoutContext context, int index, ref float accumulatedWidths, float maxElementHeight)
 		{
 			var element = GetElementAt(context, index);
-			ArrangeItem(element, accumulatedWidths, maxElementHeight);
+			ArrangeItem(element, ref accumulatedWidths, maxElementHeight);
 		}
 
-		void HideItem(UIElement& breadcrumbItem)
+		private void HideItem(UIElement breadcrumbItem)
 		{
-			Rect arrangeRect(0, 0, 0, 0);
+			Rect arrangeRect = new Rect(0, 0, 0, 0);
 			breadcrumbItem.Arrange(arrangeRect);
 		}
 
-		void HideItem(NonVirtualizingLayoutContext& context, int index)
+		private void HideItem(NonVirtualizingLayoutContext context, int index)
 		{
 			var element = GetElementAt(context, index);
 			HideItem(element);
 		}
 
-		int GetFirstBreadcrumbBarItemToArrange(NonVirtualizingLayoutContext & context)
+		private int GetFirstBreadcrumbBarItemToArrange(NonVirtualizingLayoutContext context)
 		{
 			int itemCount = GetItemCount(context);
-			float accumLength = GetElementAt(context, itemCount - 1).DesiredSize().Width +
-				m_ellipsisButton.DesiredSize().Width;
+			float accumLength = (float)GetElementAt(context, itemCount - 1).DesiredSize.Width +
+				(float)m_ellipsisButton.DesiredSize.Width;
 
 			for (int i = itemCount - 2; i >= 0; --i)
 			{
-				float newAccumLength = accumLength + GetElementAt(context, i).DesiredSize().Width;
+				float newAccumLength = accumLength + (float)GetElementAt(context, i).DesiredSize.Width;
 				if (newAccumLength > m_availableSize.Width)
 				{
 					return i + 1;
@@ -112,18 +112,18 @@ namespace Microsoft.UI.Xaml.Controls
 			return 0;
 		}
 
-		float GetBreadcrumbBarItemsHeight(NonVirtualizingLayoutContext & context, int firstItemToRender)
+		private float GetBreadcrumbBarItemsHeight(NonVirtualizingLayoutContext context, int firstItemToRender)
 		{
-			float maxElementHeight{ };
+			float maxElementHeight = 0f;
 
 			if (m_ellipsisIsRendered)
 			{
-				maxElementHeight = m_ellipsisButton.DesiredSize().Height;
+				maxElementHeight = (float)m_ellipsisButton.DesiredSize.Height;
 			}
 
-			for (uint i = firstItemToRender; i < GetItemCount(context); ++i)
+			for (int i = firstItemToRender; i < GetItemCount(context); ++i)
 			{
-				maxElementHeight = std.max(maxElementHeight, GetElementAt(context, i).DesiredSize().Height);
+				maxElementHeight = (float)Math.Max(maxElementHeight, GetElementAt(context, i).DesiredSize.Height);
 			}
 
 			return maxElementHeight;
@@ -134,8 +134,8 @@ namespace Microsoft.UI.Xaml.Controls
 		protected internal override Size ArrangeOverride(NonVirtualizingLayoutContext context, Size finalSize)
 		{
 			int itemCount = GetItemCount(context);
-			int firstElementToRender{ };
-			m_firstRenderedItemIndexAfterEllipsis = itemCount - 1;
+			int firstElementToRender = 0;
+			m_firstRenderedItemIndexAfterEllipsis = (uint)(itemCount - 1);
 			m_visibleItemsCount = 0;
 
 			// If the ellipsis must be drawn, then we find the index (x) of the first element to be rendered, any element with
@@ -144,10 +144,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_ellipsisIsRendered)
 			{
 				firstElementToRender = GetFirstBreadcrumbBarItemToArrange(context);
-				m_firstRenderedItemIndexAfterEllipsis = firstElementToRender;
+				m_firstRenderedItemIndexAfterEllipsis = (uint)firstElementToRender;
 			}
 
-			float accumulatedWidths{ };
+			float accumulatedWidths = 0f;
 			float maxElementHeight = GetBreadcrumbBarItemsHeight(context, firstElementToRender);
 
 			// If there is at least one element, we may render the ellipsis item
@@ -157,7 +157,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (m_ellipsisIsRendered)
 				{
-					ArrangeItem(ellipsisButton, accumulatedWidths, maxElementHeight);
+					ArrangeItem(ellipsisButton, ref accumulatedWidths, maxElementHeight);
 				}
 				else
 				{
@@ -175,13 +175,13 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					ArrangeItem(context, i, accumulatedWidths, maxElementHeight);
+					ArrangeItem(context, i, ref accumulatedWidths, maxElementHeight);
 					++m_visibleItemsCount;
 				}
 			}
 
 			if (m_breadcrumb is BreadcrumbBar breadcrumb)
-	{
+			{
 				breadcrumb.ReIndexVisibleElementsForAccessibility();
 			}
 

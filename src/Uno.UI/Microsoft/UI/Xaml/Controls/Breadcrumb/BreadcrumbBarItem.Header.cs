@@ -11,6 +11,12 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class BreadcrumbBarItem : ContentControl
 	{
+		// Only used for bug workaround in BreadcrumbElementFactory::RecycleElementCore.
+		internal bool IsEllipsisDropDownItem()
+		{
+			return m_isEllipsisDropDownItem;
+		}
+
 		// Common item fields
 
 		// Contains the 1-indexed assigned to the element

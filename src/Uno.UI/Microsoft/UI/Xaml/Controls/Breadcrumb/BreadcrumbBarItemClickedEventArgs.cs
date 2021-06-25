@@ -5,6 +5,9 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Provides data for the BreadcrumbBar.ItemClicked event.
+	/// </summary>
 	public sealed partial class BreadcrumbBarItemClickedEventArgs
 	{
 		internal BreadcrumbBarItemClickedEventArgs(object item, int index)
@@ -13,8 +16,14 @@ namespace Microsoft.UI.Xaml.Controls
 			Index = index;
 		}
 
+		/// <summary>
+		/// Gets the Content property value of the BreadcrumbBarItem that is clicked.
+		/// </summary>
 		public object Item { get; }
 
+		/// <summary>
+		/// Gets the index of the item that was clicked.
+		/// </summary>
 		public int Index { get; }
 	}
 }

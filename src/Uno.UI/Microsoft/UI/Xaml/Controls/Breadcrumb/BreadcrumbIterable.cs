@@ -8,16 +8,20 @@ using System.Collections.Generic;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal partial class BreadcrumbIterable : IEnumerable<object>
+	internal partial class BreadcrumbIterable : IEnumerable<object?>
 	{
+		public BreadcrumbIterable()
+		{
+		}
+
 		public BreadcrumbIterable(object itemsSource)
 		{
 			ItemsSource = itemsSource;
 		}
 
-		public object ItemsSource { get; }
+		public object? ItemsSource { get; }
 
-		public IEnumerator<object> GetEnumerator() => new BreadcrumbIterator(ItemsSource);
+		public IEnumerator<object?> GetEnumerator() => new BreadcrumbIterator(ItemsSource);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}

@@ -4,7 +4,6 @@
 #nullable enable
 
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
@@ -20,9 +19,15 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents an item in a BreadcrumbBar control.
+	/// </summary>
 	public partial class BreadcrumbBarItem : ContentControl
 	{
-		BreadcrumbBarItem()
+		/// <summary>
+		/// Initializes a new instance of the BreadcrumbBarItem class.
+		/// </summary>
+		public BreadcrumbBarItem()
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_BreadcrumbBarItem);
 
@@ -39,24 +44,29 @@ namespace Microsoft.UI.Xaml.Controls
 			RevokeListeners();
 		}
 
-		void HookListeners(bool forEllipsisDropDownItem)
+		private void HookListeners(bool forEllipsisDropDownItem)
 		{
 			if (this is UIElement thisAsUIElement7)
 			{
-				if (!m_childPreviewKeyDownToken.value)
+				if (m_childPreviewKeyDownToken.Disposable == null)
 				{
-					m_childPreviewKeyDownToken = thisAsUIElement7.PreviewKeyDown({ this, &BreadcrumbBarItem.OnChildPreviewKeyDown });
+					thisAsUIElement7.PreviewKeyDown += OnChildPreviewKeyDown;
+					m_childPreviewKeyDownToken.Disposable = Disposable.Create(() =>
+					{
+						thisAsUIElement7.PreviewKeyDown += OnChildPreviewKeyDown;
+					});
 				}
 			}
 			else if (this is UIElement thisAsUIElement)
 			{
-				if (!m_keyDownRevoker)
+				if (m_keyDownRevoker.Disposable == null)
 				{
-					m_keyDownRevoker = AddRoutedEventHandler<RoutedEventType.KeyDown>(thisAsUIElement,
-
-
-				{ this, &BreadcrumbBarItem.OnChildPreviewKeyDown },
-                true /*handledEventsToo*/);
+					var handler = new KeyEventHandler(OnChildPreviewKeyDown);
+					AddHandler(KeyDownEvent, handler, true);
+					m_keyDownRevoker.Disposable = Disposable.Create(() =>
+					{
+						RemoveHandler(KeyDownEvent, handler);
+					});
 				}
 			}
 
@@ -206,7 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_parentBreadcrumb = parent;
 		}
 
-		internal void SetEllipsisDropDownItemDataTemplate(object newDataTemplate)
+		internal void SetEllipsisDropDownItemDataTemplate(object? newDataTemplate)
 		{
 			if (newDataTemplate is DataTemplate dataTemplate)
 			{

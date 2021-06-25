@@ -10,8 +10,15 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
+	/// <summary>
+	/// Exposes BreadcrumbBar types to Microsoft UI Automation.
+	/// </summary>
 	public partial class BreadcrumbBarItemAutomationPeer : FrameworkElementAutomationPeer, IInvokeProvider
 	{
+		/// <summary>
+		/// Initializes a new instance of the BreadcrumbBarItemAutomationPeer class.
+		/// </summary>
+		/// <param name="owner"></param>
 		public BreadcrumbBarItemAutomationPeer(BreadcrumbBarItem owner) : base(owner)
 		{
 		}
@@ -48,7 +55,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return impl;
 		}
 
-		// IInvokeProvider
+		/// <summary>
+		/// Sends a request to invoke the item associated with the automation peer.
+		/// </summary>
 		public void Invoke()
 		{
 			if (GetImpl() is { } breadcrumbItem)

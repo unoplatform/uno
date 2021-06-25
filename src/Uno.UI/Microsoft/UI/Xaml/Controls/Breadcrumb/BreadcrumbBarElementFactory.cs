@@ -4,7 +4,6 @@
 #nullable enable
 
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -16,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		internal void UserElementFactory(object newValue)
+		internal void UserElementFactory(object? newValue)
 		{
 			m_itemTemplateWrapper = newValue as IElementFactoryShim;
 			if (m_itemTemplateWrapper == null)
@@ -29,63 +28,62 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		UIElement GetElementCore(ElementFactoryGetArgs args)
+		protected override UIElement GetElementCore(ElementFactoryGetArgs args)
 		{
-			var newContent = [itemTemplateWrapper = m_itemTemplateWrapper, args]()
-
-
-
-	{
-				if (args.Data() as BreadcrumbBarItem())
-        {
-					return args.Data();
-				}
-
-				if (itemTemplateWrapper)
+			object GetNewContent(IElementFactoryShim? itemTemplateWrapper)
+			{
+				if (args.Data is BreadcrumbBarItem)
 				{
-					return itemTemplateWrapper.GetElement(args).as< object > ();
+					return args.Data;
 				}
-				return args.Data();
-			} ();
+
+				if (itemTemplateWrapper != null)
+				{
+					return itemTemplateWrapper.GetElement(args);
+				}
+				return args.Data;
+			}
+
+			var newContent = GetNewContent(m_itemTemplateWrapper);
 
 			// Element is already a BreadcrumbBarItem, so we just return it.
-			if (var breadcrumbItem = newContent as BreadcrumbBarItem())
-    {
+			if (newContent is BreadcrumbBarItem breadcrumbItem)
+			{
 				// When the list has not changed the returned item is still a BreadcrumbBarItem but the
 				// item is not reset, so we set the content here
-				breadcrumbItem.Content(args.Data());
+				breadcrumbItem.Content = args.Data;
 				return breadcrumbItem;
 			}
 
-			var newBreadcrumbBarItem = BreadcrumbBarItem{ };
-			newBreadcrumbBarItem.Content(args.Data());
+			var newBreadcrumbBarItem = new BreadcrumbBarItem();
+			newBreadcrumbBarItem.Content = args.Data;
 
 			// If a user provided item template exists, we pass the template down
 			// to the ContentPresenter of the BreadcrumbBarItem.
-			if (var itemTemplateWrapper = m_itemTemplateWrapper as ItemTemplateWrapper())
-    {
-				newBreadcrumbBarItem.ContentTemplate(itemTemplateWrapper.Template());
+			if (m_itemTemplateWrapper is ItemTemplateWrapper itemTemplateWrapper)
+			{
+				newBreadcrumbBarItem.ContentTemplate = itemTemplateWrapper.Template;
 			}
 
 			return newBreadcrumbBarItem;
 		}
 
-		void RecycleElementCore(ElementFactoryRecycleArgs& args)
+		protected override void RecycleElementCore(ElementFactoryRecycleArgs args)
 		{
-			if (var element = args.Element())
-    {
+			if (args.Element is { } element)
+			{
 				bool isEllipsisDropDownItem = false; // Use of isEllipsisDropDownItem is workaround for
 													 // crashing bug when attempting to show ellipsis dropdown after clicking one of its items.
 
-				if (var breadcrumbItem = element as BreadcrumbBarItem())
-        {
-					var breadcrumbItemImpl = get_self<BreadcrumbBarItem>(breadcrumbItem);
+				if (element is BreadcrumbBarItem breadcrumbItem)
+				{
+					var breadcrumbItemImpl = breadcrumbItem;
 					breadcrumbItemImpl.ResetVisualProperties();
 
 					isEllipsisDropDownItem = breadcrumbItemImpl.IsEllipsisDropDownItem();
 				}
 
-				if (m_itemTemplateWrapper && isEllipsisDropDownItem)
+				if (m_itemTemplateWrapper != null && isEllipsisDropDownItem)
 				{
 					m_itemTemplateWrapper.RecycleElement(args);
 				}

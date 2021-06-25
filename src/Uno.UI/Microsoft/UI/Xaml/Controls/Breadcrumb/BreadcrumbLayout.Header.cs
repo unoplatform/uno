@@ -4,7 +4,6 @@
 #nullable enable
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {

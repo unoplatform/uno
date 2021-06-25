@@ -12,16 +12,16 @@ namespace Microsoft.UI.Xaml.Controls
 	internal partial class BreadcrumbIterator : IEnumerator<object?>
 	{
 		private int m_currentIndex;
-		private ItemsSourceView m_breadcrumbItemsSourceView;
+		private ItemsSourceView? m_breadcrumbItemsSourceView;
 		private int m_size;
 
-		internal BreadcrumbIterator(object itemsSource)
+		internal BreadcrumbIterator(object? itemsSource)
 		{
 			m_currentIndex = 0;
 
 			if (itemsSource != null)
 			{
-				m_breadcrumbItemsSourceView = new ItemsSourceView(itemsSource);
+				m_breadcrumbItemsSourceView = new InspectingDataSource(itemsSource);
 
 				// Add 1 to account for the leading null/ellipsis element
 				m_size = m_breadcrumbItemsSourceView.Count + 1;
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (HasCurrent())
 				{
-					return m_breadcrumbItemsSourceView.GetAt(m_currentIndex - 1);
+					return m_breadcrumbItemsSourceView!.GetAt(m_currentIndex - 1);
 				}
 				else
 				{
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool HasCurrent()
 		{
-			return (m_currentIndex < m_size);
+			return m_currentIndex < m_size;
 		}
 
 		//uint GetMany(array_view<object> items)
