@@ -39,7 +39,7 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrastScheme.get
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrastChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrastChanged.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.AccessibilitySettings, object> HighContrastChanged
 		{

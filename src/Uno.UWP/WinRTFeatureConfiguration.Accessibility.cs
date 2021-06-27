@@ -1,13 +1,29 @@
-﻿namespace Uno
+﻿using Windows.UI.ViewManagement;
+
+namespace Uno
 {
 	partial class WinRTFeatureConfiguration
 	{
 		public static class Accessibility
 		{
+			private static bool _highContrast = false;
+
 			/// <summary>
-			/// Allows overriding the value returned by <see cref="Windows.UI.ViewManagement.AccessibilitySettings.HighContrast"/>.
+			/// Allows overriding the value returned by <see cref="AccessibilitySettings.HighContrast"/>.
+			/// When changed, the <see cref="AccessibilitySettings.HighContrastChanged"/> event is raised.
 			/// </summary>
-			public static bool HighContrast { get; set; } = false;
+			public static bool HighContrast
+			{
+				get => _highContrast;
+				set
+				{
+					if (_highContrast != value)
+					{
+						_highContrast = value;
+						AccessibilitySettings.OnHighContrastChanged();
+					}
+				}
+			}
 
 			/// <summary>
 			/// Allows overriding the value returned by <see cref="Windows.UI.ViewManagement.AccessibilitySettings.HighContrastScheme"/>.

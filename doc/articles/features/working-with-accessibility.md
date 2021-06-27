@@ -82,6 +82,8 @@ accessibilitySettings.HighContrast; // true
 accessibilitySettings.HighContrastScheme; // High Contrast White
 ```
 
+When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is changed, the `AccessibilitySettings.HighContrastChanged` event is raised.
+
 ## Known issues
 
 - `Hyperlink` in `TextBlock` is not supported.

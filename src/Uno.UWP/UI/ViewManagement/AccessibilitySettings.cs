@@ -1,4 +1,6 @@
-﻿using Uno;
+﻿using System.Collections.Concurrent;
+using Uno;
+using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
 {
@@ -7,11 +9,21 @@ namespace Windows.UI.ViewManagement
 	/// </summary>
 	public partial class AccessibilitySettings
 	{
+		private static readonly ConcurrentDictionary<WeakReference<AccessibilitySettings>, object> _instances = new ConcurrentDictionary<WeakReference<AccessibilitySettings>, object>();
+		private readonly WeakReference<AccessibilitySettings> _weakReference;
+
 		/// <summary>
 		/// Initializes a new AccessibilitySettings object.
 		/// </summary>
 		public AccessibilitySettings()
 		{
+			_weakReference = new WeakReference<AccessibilitySettings>(this);
+			_instances.TryAdd(_weakReference, null);
+		}
+
+		~AccessibilitySettings()
+		{
+			_instances.TryRemove(_weakReference, out var _);
 		}
 
 		/// <summary>
@@ -33,5 +45,26 @@ namespace Windows.UI.ViewManagement
 		/// </remarks>
 		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string HighContrastScheme => WinRTFeatureConfiguration.Accessibility.HighContrastScheme;
+
+		/// <summary>
+		/// Occurs when the system high contrast feature turns on or off.
+		/// </summary>
+		/// <remarks>
+		///	Raised when <see cref="WinRTFeatureConfiguration.Accessibility.HighContrast"/> changes.
+		/// </remarks>
+		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public event TypedEventHandler<AccessibilitySettings, object> HighContrastChanged;
+
+		internal static void OnHighContrastChanged()
+		{
+			foreach (var instance in _instances)
+			{
+				var weakReference = instance.Key;
+				if (weakReference.TryGetTarget(out var accessibilitySettings))
+				{
+					accessibilitySettings.HighContrastChanged?.Invoke(accessibilitySettings, null);
+				}
+			}
+		}
 	}
 }
