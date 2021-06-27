@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Windows.UI
 {
@@ -34,9 +35,19 @@ namespace Windows.UI
 
 		public override int GetHashCode() => (A << 8) ^ (R << 6) ^ (G << 4) ^ B;
 
-		public override string ToString() => $"[#{A:X2}{R:X2}{G:X2}{B:X2}]";
+		public override string ToString() => ToString(null, null);
 
-		public string ToString(string format, IFormatProvider provider) => ToString();
+		public string ToString(string format, IFormatProvider provider)
+		{
+			var sb = new StringBuilder();
+
+			sb.AppendFormat(provider, "#{0:X2}", A);
+			sb.AppendFormat(provider, "{0:X2}", R);
+			sb.AppendFormat(provider, "{0:X2}", G);
+			sb.AppendFormat(provider, "{0:X2}", B);
+
+			return sb.ToString();
+		}
 
 		public static bool operator ==(Color color1, Color color2) => color1.Equals(color2);
 
