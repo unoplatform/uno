@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Composition;
 using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 {
 	// TODO Uno: This is currently a stub, as animated visuals are not properly supported
-	public class AnimatedBackVisualSource : IAnimatedVisualSource, IAnimatedVisualSource2
+	public class AnimatedBackVisualSource : IAnimatedVisualSource2
 	{
 		public IReadOnlyDictionary<string, double> Markers => throw new NotImplementedException();
 		public void Load() => throw new NotImplementedException();
@@ -20,5 +21,6 @@ namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 		public void Stop() => throw new NotImplementedException();
 		public void Unload() => throw new NotImplementedException();
 		public void Update(AnimatedVisualPlayer player) => throw new NotImplementedException();
+		public IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics) => throw new NotImplementedException();
 	}
 }

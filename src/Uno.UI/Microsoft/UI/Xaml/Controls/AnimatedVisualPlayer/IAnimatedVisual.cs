@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// <summary>
 	/// An animated Composition.Visual that can be used by other objects, such as an AnimatedVisualPlayer or AnimatedIcon.
 	/// </summary>
-	interface IAnimatedVisual : IDisposable
+	public partial interface IAnimatedVisual : IDisposable
 	{
 		/// <summary>
 		/// Gets the root Visual of the animated visual.
