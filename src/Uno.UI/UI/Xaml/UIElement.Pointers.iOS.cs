@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml
 					base.TouchesEnded(touches, evt);
 				}
 
-				NotifyParentTouchesManagersManipulationEnded();
+				NotifyParentTouchesManagersTouchEndedOrCancelled();
 			}
 			catch (Exception e)
 			{
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml
 					base.TouchesCancelled(touches, evt);
 				}
 
-				NotifyParentTouchesManagersManipulationEnded();
+				NotifyParentTouchesManagersTouchEndedOrCancelled();
 			}
 			catch (Exception e)
 			{
@@ -282,6 +282,16 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private void NotifyParentTouchesManagersTouchEndedOrCancelled()
+		{
+			NotifyParentTouchesManagersManipulationEnded();
+			if (ManipulationMode != ManipulationModes.None)
+			{
+				// If we were registered to parent TouchesManagers and it wasn't for ManipulationMode, then it was for a drag which is now over
+				ReleaseParentTouchesManager();
+			}
+		}
+
 		private void NotifyParentTouchesManagersManipulationEnded()
 		{
 			if (_isManipulating && (_parentsTouchesManager?.Any() ?? false))
@@ -291,6 +301,16 @@ namespace Windows.UI.Xaml
 				{
 					manager.ManipulationEnded();
 				}
+			}
+		}
+
+		partial void TryPreventInterceptOnDragPartial()
+		{
+			if (_parentsTouchesManager == null)
+			{
+				// Activate TouchesManagers in hierarchy to ensure drag isn't intercepted
+				PrepareParentTouchesManagers(ManipulationModes.None);
+				NotifyParentTouchesManagersManipulationStarted();
 			}
 		}
 
