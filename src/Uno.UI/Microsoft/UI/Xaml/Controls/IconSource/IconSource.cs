@@ -62,9 +62,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal protected virtual IconElement? CreateIconElementCore() => default;
+		private protected virtual IconElement? CreateIconElementCore() => default;
 
-		internal protected virtual DependencyProperty? GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		private protected virtual DependencyProperty? GetIconElementPropertyCore(DependencyProperty sourceProperty)
 		{
 			if (sourceProperty == ForegroundProperty)
 			{

@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_AnimatedIcon);
 
-			m_progressPropertySet = Window.Current.Compositor.CreatePropertySet();
+			m_progressPropertySet = Windows.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
 			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
 			Loaded += OnLoaded;
 
@@ -473,7 +473,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_previousSegmentLength = segmentLength;
 			var duration = m_animatedVisual != null ?
-				(m_animatedVisual.Duration * segmentLength * (1.0 / playbackMultiplier) * m_durationMultiplier) :
+				TimeSpan.FromMilliseconds(m_animatedVisual.Duration.TotalMilliseconds * segmentLength * (1.0 / playbackMultiplier) * m_durationMultiplier) :
 				TimeSpan.Zero;
 			// If the duration is really short (< 20ms) don't bother trying to animate, or if animations are disabled.
 			if (duration < TimeSpan.FromMilliseconds(20) || !SharedHelpers.IsAnimationsEnabled())

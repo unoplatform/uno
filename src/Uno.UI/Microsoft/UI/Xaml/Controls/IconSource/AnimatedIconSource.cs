@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIconSource), new PropertyMetadata(null, OnPropertyChanged));
 
-		internal protected override IconElement CreateIconElementCore()
+		private protected override IconElement CreateIconElementCore()
 		{
 			AnimatedIcon animatedIcon = new AnimatedIcon();
 			if (Source is { } source)
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return animatedIcon;
 		}
 
-		internal protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
 		{
 			if (sourceProperty == SourceProperty)
 			{

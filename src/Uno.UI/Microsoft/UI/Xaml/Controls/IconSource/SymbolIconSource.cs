@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty SymbolProperty { get; } =
 			DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(SymbolIconSource), new PropertyMetadata(Symbol.Emoji, OnPropertyChanged));
 
-		internal protected override IconElement CreateIconElementCore()
+		private protected override IconElement CreateIconElementCore()
 		{
 			var symbolIcon = new SymbolIcon()
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return symbolIcon;
 		}
 
-		internal protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
 		{
 			if (sourceProperty == SymbolProperty)
 			{

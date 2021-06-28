@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty ImageSourceProperty { get; } =
 			DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(ImageIconSource), new PropertyMetadata(null, OnPropertyChanged));
 
-		internal protected override IconElement CreateIconElementCore()
+		private protected override IconElement CreateIconElementCore()
 		{
 			var imageIcon = new ImageIcon();
 			if (ImageSource is { } imageSource)
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return imageIcon;
 		}
 
-		internal protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
 		{
 			if (sourceProperty == ImageSourceProperty)
 			{

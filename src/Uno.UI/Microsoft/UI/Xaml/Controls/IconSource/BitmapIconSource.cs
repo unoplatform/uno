@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty ShowAsMonochromeProperty { get; } =
 			DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new PropertyMetadata(default(bool), OnPropertyChanged));
 
-		internal protected override IconElement CreateIconElementCore()
+		private protected override IconElement CreateIconElementCore()
 		{
 			var bitmapIcon = new BitmapIcon();
 
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return bitmapIcon;
 		}
 
-		internal protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
 		{
 			if (sourceProperty == ShowAsMonochromeProperty)
 			{

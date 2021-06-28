@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new PropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont), OnPropertyChanged));
 
 		/// <inheritdoc />
-		internal protected override IconElement CreateIconElementCore()
+		private protected override IconElement CreateIconElementCore()
 		{
 			var fontIcon = new FontIcon()
 			{
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return fontIcon;
 		}
 
-		internal protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
 		{
 			if (sourceProperty == FontFamilyProperty)
 			{
