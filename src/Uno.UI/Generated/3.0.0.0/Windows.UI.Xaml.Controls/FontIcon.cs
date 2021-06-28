@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class FontIcon 
 	{
 		// Skipping already declared property Glyph
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Text.FontWeight FontWeight
 		{
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontStyle
 		// Skipping already declared property FontSize
 		// Skipping already declared property FontFamily
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsTextScaleFactorEnabled
 		{
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
 		// Skipping already declared property FontStyleProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty FontWeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
 		#endif
 		// Skipping already declared property GlyphProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
