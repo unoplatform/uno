@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Uno;
+using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml;
 
@@ -11,6 +9,10 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class XamlControlsResources : ResourceDictionary
 	{
+		private const ControlsResourcesVersion MaxSupportedResourcesVersion = ControlsResourcesVersion.Version2;
+
+		private static bool _isUsingResourcesVersion2 = false;
+
 		public XamlControlsResources()
 		{
 #if !__NETSTD_REFERENCE__
@@ -25,7 +27,24 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSource();
 		}
 
-		private void UpdateSource() => Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
+		private void UpdateSource()
+		{
+			var requestedVersion = ControlsResourcesVersion;
+			if (ControlsResourcesVersion > MaxSupportedResourcesVersion)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning($"" +
+						$"WinUI resources version {ControlsResourcesVersion} is not supported " +
+						$"in Uno Platform yet. Falling back to {MaxSupportedResourcesVersion} styles.");
+				}
+				requestedVersion = MaxSupportedResourcesVersion;
+			}
+
+			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl((int)requestedVersion));
+
+			_isUsingResourcesVersion2 = requestedVersion == ControlsResourcesVersion.Version2;
+		}
 
 		[NotImplemented]
 		public static void EnsureRevealLights(UIElement element) { }
@@ -41,18 +60,16 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty UseCompactResourcesProperty { get; } =
 			DependencyProperty.Register(nameof(UseCompactResources), typeof(bool), typeof(XamlControlsResources), new FrameworkPropertyMetadata(false));
 
-		[NotImplemented]
 		public ControlsResourcesVersion ControlsResourcesVersion
 		{
 			get => (ControlsResourcesVersion)GetValue(ControlsResourcesVersionProperty);
 			set => SetValue(ControlsResourcesVersionProperty, value);
 		}
 
-		[NotImplemented]
 		public static DependencyProperty ControlsResourcesVersionProperty { get; } =
 			DependencyProperty.Register(nameof(ControlsResourcesVersion), typeof(ControlsResourcesVersion), typeof(XamlControlsResources), new FrameworkPropertyMetadata(ControlsResourcesVersion.Version1));
 
 		[NotImplemented]
-		internal static bool IsUsingResourcesVersion2() => false;
+		internal static bool IsUsingResourcesVersion2() => _isUsingResourcesVersion2;
 	}
 }

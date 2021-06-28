@@ -7,24 +7,21 @@
   <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
 
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
-  <Target Name="GenerateThemeResourceFile" BeforeTargets="BeforeBuild" Outputs="themeresources.xaml" Condition="'$(Configuration)'=='Debug'">
-
+  <Target Name="GenerateThemeResourceV1File" BeforeTargets="BeforeBuild" Outputs="themeresources_v1.xaml" Condition="'$(Configuration)'=='Debug'">
 	<ItemGroup>
-  	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioButtons.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioButtons_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\TeachingTip_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ProgressRing.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer_themeresources.xaml" />
-	  <!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\SplitView_themeresources.xaml" />      
+  	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\RadioButtons.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\RadioButtons_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ProgressRing.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer_themeresources.xaml" />
 
 	  <!-- The excluded files can be restored as the types are made available in Uno.		  
 		  Note: The ProgressRing style can be restored once determinate mode is implemented. https://github.com/unoplatform/uno/issues/3604 -->
 	  <WinUIStylePage
-		  Include="$(MSBuildThisFileDirectory)Resources\**\*.xaml" />
+		  Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" />
 	  <WinUIStylePage
 		  Remove="@(ExcludedTemplates)" />
 	</ItemGroup>
@@ -33,10 +30,37 @@
 	<MakeDir Directories="$(IntermediateOutputPath)" />
 	<BatchMergeXaml
 	  Pages="@(WinUIStylePage)"
-	  MergedXamlFile="themeresources.xaml"
+	  MergedXamlFile="themeresources_v1.xaml"
 	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.read.1u.tlog"
 	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.write.1u.tlog" />
 	<Message Text="Theme resources XAML file was generated" />
+  </Target>
+
+  <Target Name="GenerateThemeResourceV2File" BeforeTargets="BeforeBuild" Outputs="themeresources_v2.xaml" Condition="'$(Configuration)'=='Debug'">
+    <ItemGroup>
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioButtons.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioButtons_themeresources.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_themeresources.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer_themeresources.xaml" />
+
+      <WinUIStylePage
+		  Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" />
+      <WinUIStylePage
+		  Remove="@(ExcludedTemplates)" />
+    </ItemGroup>
+
+    <Message Importance="high" Text="Generating theme resources XAML file " />
+    <MakeDir Directories="$(IntermediateOutputPath)" />
+    <BatchMergeXaml
+	  Pages="@(WinUIStylePage)"
+	  MergedXamlFile="themeresources_v2.xaml"
+	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.read.1u.tlog"
+	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\GenerateThemeResourceFile.write.1u.tlog" />
+    <Message Text="Theme resources XAML file was generated" />
   </Target>
 
   <Choose>

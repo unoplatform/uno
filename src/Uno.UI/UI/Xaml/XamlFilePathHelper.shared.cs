@@ -10,10 +10,10 @@ namespace Uno.UI.Xaml
 {
 	internal static class XamlFilePathHelper
 	{
+		private const string WinUIThemeResourceURLFormatString = "Microsoft.UI.Xaml/Themes/themeresources_v{0}.xaml";
 		public const string AppXIdentifier = "ms-appx:///";
 		public const string MSResourceIdentifier = "ms-resource:///";
 		public static string LocalResourcePrefix => $"{MSResourceIdentifier}Files/";
-		public const string WinUIThemeResourceURL = "Microsoft.UI.Xaml/Themes/themeresources.xaml";
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
 
 		/// <summary>
@@ -44,6 +44,8 @@ namespace Uno.UI.Xaml
 
 		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier)
 			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.InvariantCulture);
+
+		internal static string GetWinUIThemeResourceUrl(int version) => string.Format(WinUIThemeResourceURLFormatString, version);
 
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
 		{
