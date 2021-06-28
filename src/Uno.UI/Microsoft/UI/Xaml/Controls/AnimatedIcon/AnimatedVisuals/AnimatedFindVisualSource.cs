@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 		public void Pause() => throw new NotImplementedException();
 		public void Play(double fromProgress, double toProgress, bool looped) => throw new NotImplementedException();
 		public void Resume() => throw new NotImplementedException();
-		public void SetColorProperty(string propertyName, Color value) => throw new NotImplementedException();
+		public void SetColorProperty(string propertyName, Color value) { }
 		public void SetProgress(double progress) => throw new NotImplementedException();
 		public void Stop() => throw new NotImplementedException();
 		public void Unload() => throw new NotImplementedException();
