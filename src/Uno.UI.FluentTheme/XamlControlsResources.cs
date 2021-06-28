@@ -43,5 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register("UseCompactResources", typeof(bool), typeof(XamlControlsResources), new PropertyMetadata(false));
 
 
+		[NotImplemented]
+		internal static bool IsUsingResourcesVersion2() => false;
 	}
 }

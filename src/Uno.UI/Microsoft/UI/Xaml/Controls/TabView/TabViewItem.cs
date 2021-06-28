@@ -43,6 +43,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SetValue(TabViewTemplateSettingsProperty, new TabViewItemTemplateSettings());
 
+			Loaded += OnLoaded;
+
 			RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedPropertyChanged);
 		}
 
@@ -88,7 +90,13 @@ namespace Microsoft.UI.Xaml.Controls
 					if (internalTabView != null)
 					{
 						var shadow = new ThemeShadow();
-						shadow.Receivers.Add(internalTabView.GetShadowReceiver());
+						if (!SharedHelpers.Is21H1OrHigher())
+						{
+							if (internalTabView.GetShadowReceiver() is UIElement shadowReceiver)
+							{
+								shadow.Receivers.Add(shadowReceiver);
+							}
+						}
 						m_shadow = shadow;
 
 						double shadowDepth = (double)SharedHelpers.FindInApplicationResources(TabView.c_tabViewShadowDepthName, TabView.c_tabShadowDepth);
@@ -109,6 +117,16 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateWidthModeVisualState();
 		}
 
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			if (GetParentTabView() is TabView tabView)
+			{
+				var internalTabView = tabView;
+				var index = internalTabView.IndexFromContainer(this);
+				internalTabView.SetTabSeparatorOpacity(index);
+			}
+		}
+
 		private void OnIsSelectedPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(this);
@@ -120,6 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsSelected)
 			{
 				SetValue(Canvas.ZIndexProperty, 20);
+				StartBringIntoView();
 			}
 			else
 			{
@@ -135,6 +154,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private void UpdateShadow()
 		{
 			if (SharedHelpers.IsThemeShadowAvailable())
+			// TODO Uno: Can't access XamlControlsResources from Uno.UI
+			//&& !Microsoft.UI.Xaml.Controls.XamlControlsResources.IsUsingControlsResourcesVersion2)
 			{
 				if (IsSelected && !m_isDragging)
 				{
@@ -241,7 +262,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var internalTabView = tabView;
 				if (internalTabView != null)
 				{
-					internalTabView.RequestCloseTab(this);
+					internalTabView.RequestCloseTab(this, false);
 				}
 			}
 		}
@@ -352,6 +373,26 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void HideLeftAdjacentTabSeparator()
+		{
+			if (GetParentTabView() is TabView tabView)
+			{
+				var internalTabView = tabView;
+				var index = internalTabView.IndexFromContainer(this);
+				internalTabView.SetTabSeparatorOpacity(index - 1, 0);
+			}
+		}
+
+		private void RestoreLeftAdjacentTabSeparatorVisibility()
+		{
+			if (GetParentTabView() is TabView tabView)
+			{
+				var internalTabView = tabView;
+				var index = internalTabView.IndexFromContainer(this);
+				internalTabView.SetTabSeparatorOpacity(index - 1);
+			}
+		}
+
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
 			base.OnPointerEntered(args);
@@ -364,6 +405,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			UpdateCloseButton();
+			HideLeftAdjacentTabSeparator();
 		}
 
 		protected override void OnPointerExited(PointerRoutedEventArgs args)
@@ -374,6 +416,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isMiddlePointerButtonPressed = false;
 
 			UpdateCloseButton();
+			RestoreLeftAdjacentTabSeparatorVisibility();
 		}
 
 		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
@@ -385,6 +428,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ReleasePointerCapture(args.Pointer);
 				m_isMiddlePointerButtonPressed = false;
 			}
+			RestoreLeftAdjacentTabSeparatorVisibility();
 		}
 
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
@@ -393,6 +437,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_hasPointerCapture = false;
 			m_isMiddlePointerButtonPressed = false;
+			RestoreLeftAdjacentTabSeparatorVisibility();
 		}
 
 		private void OnIconSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
