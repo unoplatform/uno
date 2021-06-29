@@ -46,7 +46,7 @@
 	<Target Name="UnoBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
-		
+
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
 
 		<CallTarget Targets="RunAPISyncTool" Condition="'$(UNO_UWP_BUILD)'=='false'" />
@@ -89,7 +89,7 @@
 							 Value="$(GitVersion_SemVer)"
 							 Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
 							 Prefix="x" />
-		
+
 		<XmlUpdate XmlFileName="%(_legacyProject.Identity)"
 							 XPath="//x:PackageReference[@Include='Uno.UI']/@Version"
 							 Value="$(GitVersion_SemVer)"
@@ -155,7 +155,7 @@
 			<MixinTargetFrameworks Include="net461" />
 			<MixinTargetFrameworks Include="netstandard2.0" />
 		</ItemGroup>
-		
+
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
 						 Projects="..\src\T4Generator\T4Generator.csproj"
 						 Targets="Build"
@@ -175,7 +175,7 @@
 	</Target>
 
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">
-	
+
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
 
@@ -207,7 +207,7 @@
 
 		<!-- Update Uno.WinUI references version -->
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
-		
+
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlUpdate XmlFileName="%(_NuspecFiles.Identity)" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
@@ -292,7 +292,7 @@
 
 		<!-- Lottie move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\Uno.UI.Lottie.targets" DestinationFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\$(PackageNamePrefix).Lottie.targets" />
-		
+
 		<!-- MSAL move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\Uno.UI.MSAL.targets" DestinationFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\$(PackageNamePrefix).MSAL.targets" />
 
@@ -314,7 +314,7 @@
 			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'=='true'">$(NuSpecProperties);winuisourcepath=uap10.0.17763;winuitargetpath=UAP</NuSpecProperties>
 			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'!='true'">$(NuSpecProperties);winuisourcepath=net5.0-windows10.0.18362.0;winuitargetpath=net5.0-windows10.0.18362.0</NuSpecProperties>
 		</PropertyGroup>
-		
+
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
@@ -331,10 +331,9 @@
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
 		</PropertyGroup>
 
-		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.0.0-dev.36" IgnoreExitCode="true" />
-		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_SemVer).md" />
+		<!-- REMOVED INSTRUCTIONS HERE -->
 	</Target>
-	
+
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="UnoBuild">
 		<PropertyGroup>
 			<PackageNamePrefix>Uno.WinUI</PackageNamePrefix>
