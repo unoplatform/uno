@@ -63,12 +63,6 @@
       "defaultValue": "true",
       "description": "Enables the WebAssembly platform support project"
     },
-    "UWP": {
-      "type": "parameter",
-      "dataType": "bool",
-      "defaultValue": "true",
-      "description": "Enables the Windows platform support project"
-    },
     "iOS": {
       "type": "parameter",
       "dataType": "bool",
@@ -131,11 +125,10 @@
       "path": "BlankApp.iOS\\BlankApp.iOS.csproj"
     },
     {
-      "condition": "UWP",
       "path": "BlankApp.UWP\\BlankApp.Uwp.csproj"
     },
     {
-      "condition": "Wasm",
+      "condition": "WebAssembly",
       "path": "BlankApp.Wasm\\BlankApp.Wasm.csproj"
     },
     {
@@ -155,11 +148,7 @@
           "exclude": [ "BlankApp/BlankApp.iOS/**/*" ]
         },
         {
-          "condition": "(!UWP)",
-          "exclude": [ "BlankApp/BlankApp.UWP/**/*" ]
-        },
-        {
-          "condition": "(!WebAsembly)",
+          "condition": "(!WebAssembly)",
           "exclude": [ "BlankApp/BlankApp.Wasm/**/*" ]
         },
         {

@@ -83,4 +83,54 @@ protected override void OnActivated(IActivatedEventArgs e)
 }
 ```
 
-Note that in line with UWP, if the application is not running, the `OnLaunched` method is not called and only `OnActivated` is executed instead. You must perform similar initialization of root app frame if it is not yet set. If the application was running, this initialization can be skipped.
+Note that in line with UWP, if the application is not running, the `OnLaunched` method is not called and only `OnActivated` is executed instead. You must perform similar initialization of root app frame and activate the current `Window` at the end. If the application was running, this initialization can be skipped.
+
+A full application lifecycle handling with shared logic between `OnLaunched` and `OnActivated` could look as follows:
+
+```c#
+protected override void OnLaunched(LaunchActivatedEventArgs e)
+{
+    var rootFrame = GetOrCreateRootFrame(e);
+    if (e.PrelaunchActivated == false)
+    {
+        if (rootFrame.Content == null)
+        {
+            rootFrame.Navigate(typeof(MainPage), e.Arguments);
+        }
+        Window.Current.Activate();
+    }
+}
+
+protected override void OnActivated(IActivatedEventArgs args)
+{
+    var rootFrame = GetOrCreateRootFrame(args);
+    if (args.Kind == ActivationKind.Protocol)
+    {
+        var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)args;
+        var uri = protocolActivatedEventArgs.Uri;
+
+        rootFrame.Navigate(typeof(DetailPage), uri.AbsoluteUri);
+        Window.Current.Activate();
+    }
+}
+
+private Frame GetOrCreateRootFrame(IActivatedEventArgs eventArgs)
+{
+    var rootFrame = Window.Current.Content as Frame;
+
+    if (rootFrame == null)
+    {
+        rootFrame = new Frame();
+        rootFrame.NavigationFailed += OnNavigationFailed;
+
+        if (eventArgs.PreviousExecutionState == ApplicationExecutionState.Terminated)
+        {
+            // Load state from previously suspended application
+        }
+
+        Window.Current.Content = rootFrame;
+    }
+
+    return rootFrame;
+}
+```

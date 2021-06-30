@@ -12,6 +12,11 @@
   "uiFilters": [
     "oneaspnet"
   ],
+  "unsupportedHosts": [
+    {
+      "id": "vs"
+    }
+  ],
   "additionalWizardParameters": {
     "$isMultiProjectTemplate$": "true"
   },
@@ -27,13 +32,6 @@
       "id": "WebAssembly",
       "name": {
         "text": "Enables the WebAssembly platform support project"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "UWP",
-      "name": {
-        "text": "Add support for UWP"
       },
       "isVisible": "true"
     },

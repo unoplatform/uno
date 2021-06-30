@@ -10,6 +10,7 @@ using System.Linq;
 using AppKit;
 using _TextField = AppKit.NSTextField;
 using Windows.UI;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -17,6 +18,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private TextBoxViewDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
+
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		public TextBoxView(TextBox textBox)
 		{
@@ -112,6 +115,7 @@ namespace Windows.UI.Xaml.Controls
 
 			DrawsBackground = false;
 			Bezeled = false;
+			FocusRingType = NSFocusRingType.None;
 		}
 
 		public override CGSize SizeThatFits(CGSize size) => IFrameworkElementHelper.SizeThatFits(this, base.SizeThatFits(size));
@@ -162,16 +166,24 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			var textBox = _textBox.GetTarget();
+			_foregroundChanged.Disposable = null;
 
-			if (textBox != null && Brush.TryGetColorWithOpacity(newValue, out var color))
+			_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => ApplyColor());
+			ApplyColor();
+
+			void ApplyColor()
 			{
-				this.TextColor = color;
-				UpdateCaretColor(color);
-			}
-			else
-			{
-				UpdateCaretColor();
+				var textBox = _textBox.GetTarget();
+
+				if (textBox != null && Brush.TryGetColorWithOpacity(newValue, out var color))
+				{
+					this.TextColor = color;
+					UpdateCaretColor(color);
+				}
+				else
+				{
+					UpdateCaretColor();
+				}
 			}
 		}
 

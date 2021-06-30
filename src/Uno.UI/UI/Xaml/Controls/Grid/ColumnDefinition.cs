@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
-	public partial class ColumnDefinition : DependencyObject
+	public partial class ColumnDefinition : DefinitionBase, DependencyObject
 	{
 		public ColumnDefinition()
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
+
+			this.RegisterDisposablePropertyChangedCallback((i, p, args) =>
+			{
+				InvalidateDefinition();
+			});
 		}
 
 		#region Width DependencyProperty
@@ -60,12 +66,71 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				var parent = this.GetParent();
-				var result = (parent as Grid)?.GetActualWidth(this) ?? 0d;
-				return result;
+				return _measureArrangeSize;
 			}
 		}
 
-		private string DebugDisplay => $"ColumnDefinition(Width={Width.ToDisplayString()};MinWidth={MinWidth};MaxWidth={MaxWidth};ActualWidth={ActualWidth}";
+		//private string DebugDisplay => $"ColumnDefinition(Width={Width.ToDisplayString()};MinWidth={MinWidth};MaxWidth={MaxWidth};ActualWidth={ActualWidth}";
+		private string DebugDisplay => $"ColumnDefinition(Width={Width.ToDisplayString()};MinWidth={MinWidth};MaxWidth={MaxWidth}";
+
+		#region internal DefinitionBase
+
+		private void InvalidateDefinition()
+		{
+			if (this.GetParent() is Grid parentGrid)
+			{
+				parentGrid.InvalidateDefinitions();
+			}
+		}
+
+		private double _effectiveMinSize;
+		private double _measureArrangeSize;
+		private double _sizeCache;
+		private double _finalOffset;
+		private GridUnitType _effectiveUnitType;
+
+		double DefinitionBase.GetUserSizeValue() => Width.Value;
+
+		GridUnitType DefinitionBase.GetUserSizeType() => Width.GridUnitType;
+
+		double DefinitionBase.GetUserMaxSize() => MaxWidth;
+
+		double DefinitionBase.GetUserMinSize() => MinWidth;
+
+		double DefinitionBase.GetEffectiveMinSize() => _effectiveMinSize;
+
+		void DefinitionBase.SetEffectiveMinSize(double value) => _effectiveMinSize = value;
+
+		double DefinitionBase.GetMeasureArrangeSize() => _measureArrangeSize;
+
+		void DefinitionBase.SetMeasureArrangeSize(double value) => _measureArrangeSize = value;
+
+		double DefinitionBase.GetSizeCache() => _sizeCache;
+
+		void DefinitionBase.SetSizeCache(double value) => _sizeCache = value;
+
+		double DefinitionBase.GetFinalOffset() => _finalOffset;
+
+		void DefinitionBase.SetFinalOffset(double value) => _finalOffset = value;
+
+		GridUnitType DefinitionBase.GetEffectiveUnitType() => _effectiveUnitType;
+
+		void DefinitionBase.SetEffectiveUnitType(GridUnitType type) => _effectiveUnitType = type;
+
+		double DefinitionBase.GetPreferredSize()
+		{
+			return
+				(_effectiveUnitType != GridUnitType.Auto
+				 && _effectiveMinSize < _measureArrangeSize)
+					? _measureArrangeSize
+					: _effectiveMinSize;
+		}
+
+		void DefinitionBase.UpdateEffectiveMinSize(double newValue)
+		{
+			_effectiveMinSize = Math.Max(_effectiveMinSize, newValue);
+		}
+
+		#endregion
 	}
 }

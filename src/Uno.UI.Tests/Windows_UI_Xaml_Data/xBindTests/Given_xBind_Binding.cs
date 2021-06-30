@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 using Windows.UI.Xaml;
@@ -142,7 +144,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(2, rootData.Model.MyIntProperty);
 		}
-		
+
 		[TestMethod]
 		public void When_Object_TwoWay()
 		{
@@ -345,6 +347,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_Converter_TwoWay()
+		{
+			var SUT = new Binding_Converter_TwoWay();
+
+			SUT.ForceLoaded();
+
+			ListView list = SUT.ViewToggleListView;
+
+			CheckBox cb = SUT.BoundCheckBox;
+
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.IsTrue(cb.IsChecked.Value);
+
+			list.SelectedItem = list.Items[1];
+
+			Assert.AreEqual(1, list.SelectedIndex);
+			 Assert.IsFalse(cb.IsChecked.Value);
+
+			list.SelectedItem = list.Items[0];
+
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.IsTrue(cb.IsChecked.Value);
+		}
+
+		[TestMethod]
 		public void When_ConverterParameter()
 		{
 			var SUT = new Binding_Converter_Parameter();
@@ -479,7 +506,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("TwoWay updated 5", SUT.Default_TwoWay_OneWay_Property);
 			Assert.AreEqual("TwoWay updated 9", SUT.Default_TwoWay_TwoWay_Property);
 		}
-		
+
 		[TestMethod]
 		public void When_DefaultBindingMode_Nested()
 		{
@@ -528,6 +555,49 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("nested updated 7", SUT.Nested_Default_OneWay_OneWay_Property);
 			Assert.AreEqual("nested updated 12", SUT.Nested_Default_OneWay_TwoWay_Property);
 			Assert.AreEqual("nested updated 81", SUT.Nested_Default_OneWay_OneTime_Property);
+		}
+
+		[TestMethod]
+		public void When_DefaultBindingMode_DataTemplate_Undefined()
+		{
+			var SUT = new Binding_DefaultBindMode_DataTemplate();
+			var model = new Binding_DefaultBindMode_DataTemplate_Model();
+
+			var default_undefined = (TextBlock)SUT.FindName("Default_undefined");
+			var default_undefined_OneWay = (TextBlock)SUT.FindName("Default_undefined_OneWay");
+			var default_undefined_TwoWay = (TextBlock)SUT.FindName("Default_undefined_TwoWay");
+
+			Assert.IsNull(model.Default_undefined_Property);
+			Assert.IsNull(model.Default_undefined_OneWay_Property);
+			Assert.IsNull(model.Default_undefined_TwoWay_Property);
+
+			model.Default_undefined_Property = "undefined updated 1";
+			model.Default_undefined_OneWay_Property = "undefined updated 2";
+			model.Default_undefined_TwoWay_Property = "undefined updated 3";
+
+			SUT.DataContext = model;
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("undefined updated 1", default_undefined.Text);
+			Assert.AreEqual("undefined updated 2", default_undefined_OneWay.Text);
+			Assert.AreEqual("undefined updated 3", default_undefined_TwoWay.Text);
+
+			model.Default_undefined_Property = "undefined updated 4";
+			model.Default_undefined_OneWay_Property = "undefined updated 5";
+			model.Default_undefined_TwoWay_Property = "undefined updated 6";
+
+			Assert.AreEqual("undefined updated 4", default_undefined.Text);
+			Assert.AreEqual("undefined updated 5", default_undefined_OneWay.Text);
+			Assert.AreEqual("undefined updated 6", default_undefined_TwoWay.Text);
+
+			default_undefined.Text = "undefined updated 7";
+			default_undefined_OneWay.Text = "undefined updated 8";
+			default_undefined_TwoWay.Text = "undefined updated 9";
+
+			Assert.AreEqual("undefined updated 4", model.Default_undefined_Property);
+			Assert.AreEqual("undefined updated 5", model.Default_undefined_OneWay_Property);
+			Assert.AreEqual("undefined updated 9", model.Default_undefined_TwoWay_Property);
 		}
 
 		[TestMethod]
@@ -910,6 +980,146 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(SUT.Model.Value.ToString(), SUT.ValueView.Text);
 			Assert.AreEqual(SUT.Model.Text, SUT.TextView.Text);
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_StaticResource()
+		{
+			var SUT = new Binding_xLoad_StaticResources();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.TestGrid);
+			SUT.IsTestGridLoaded = true;
+
+			Assert.IsNotNull(SUT.TestGrid);
+			Assert.IsNotNull(SUT.contentControl);
+			Assert.IsNotNull(SUT.contentControl.ContentTemplate);
+
+			SUT.IsTestGridLoaded = false;
+
+			AssertIsNullAsync(() => SUT.TestGrid);
+			AssertIsNullAsync(() => SUT.contentControl);
+
+			SUT.IsTestGridLoaded = true;
+
+			Assert.IsNotNull(SUT.TestGrid);
+			Assert.IsNotNull(SUT.contentControl);
+			Assert.IsNotNull(SUT.contentControl.ContentTemplate);
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_Setter()
+		{
+			var SUT = new Binding_xLoad_Setter();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+
+			SUT.IsEllipseLoaded = false;
+
+			AssertIsNullAsync(() => SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+		}
+
+		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/5836")]
+		public async Task When_xLoad_Setter_Order()
+		{
+			var SUT = new Binding_xLoad_Setter_Order();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+
+			SUT.IsEllipseLoaded = false;
+
+			AssertIsNullAsync(() => SUT.ellipse);
+			Assert.IsNotNull(SUT.square);
+			Assert.AreEqual(4, SUT.square.StrokeThickness);
+
+			SUT.IsEllipseLoaded = true;
+
+			Assert.IsNotNull(SUT.ellipse);
+			AssertIsNullAsync(() => SUT.square);
+			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
+		}
+
+		[TestMethod]
+		public async Task When_Binding_xNull()
+		{
+			var SUT = new Binding_xNull();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNotNull(SUT.tb01);
+			Assert.AreEqual("Jan 1", SUT.tb01.Text);
+
+			Assert.IsNotNull(SUT.tb02);
+			Assert.AreEqual("MMM d <null>", SUT.tb02.Text);
+
+			Assert.IsNotNull(SUT.tb03);
+			Assert.AreEqual("MMM d <null>", SUT.tb03.Text);
+		}
+
+		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null)
+		{
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < timeout && getter() != null)
+			{
+				await Task.Delay(100);
+
+				// Wait for the ElementNameSubject and ComponentHolder
+				// instances to release their references.
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsNull(getter());
+		}
+
+		private async Task AssertIsNoNullAsync<T>(Func<T> getter, TimeSpan? timeout)
+		{
+			timeout ??= TimeSpan.FromSeconds(1);
+
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < timeout && getter() == null)
+			{
+				await Task.Delay(100);
+
+				// Wait for the ElementNameSubject and ComponentHolder
+				// instances to release their references.
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsNotNull(getter());
 		}
 	}
 }

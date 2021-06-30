@@ -1,4 +1,6 @@
 ﻿#if !WINDOWS_UWP
+// MUX Reference: TabViewTests.cs, commit 542e6f9
+
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
@@ -10,6 +12,7 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Common;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Provider;
@@ -37,7 +40,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 	{
 		[TestMethod]
 		[Ignore("Automation peers are not fully supported on Uno https://github.com/unoplatform/uno/issues/4558")]
-		public void VerifyCompactTabWidthVisualStates()
+		public async Task VerifyCompactTabWidthVisualStates()
 		{
 			TabView tabView = null;
 			RunOnUIThread.Execute(() =>
@@ -57,7 +60,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				tabView.UpdateLayout();
 			});
 			// Waiting for layout
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -65,7 +68,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				tabView.TabWidthMode = TabViewWidthMode.Compact;
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			// Check if switching to compact updates all items correctly
 			RunOnUIThread.Execute(() =>
@@ -74,7 +77,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				tabView.TabItems.Add(CreateTabViewItem("Item 3"));
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			// Check if a newly added item has correct visual states
 			RunOnUIThread.Execute(() =>
@@ -83,7 +86,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				tabView.TabWidthMode = TabViewWidthMode.Equal;
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			// Switch back to non compact and check if every item has the correct visual state
 			RunOnUIThread.Execute(() =>
@@ -93,9 +96,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyTabViewUIABehavior()
+		public Task VerifyTabViewUIABehavior()
 		{
-			RunOnUIThread.Execute(() =>
+			return RunOnUIThread.ExecuteAsync(() =>
 			{
 				TabView tabView = new TabView();
 				TestServices.WindowHelper.WindowContent = tabView;
@@ -118,7 +121,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 		[Ignore("Automation peers are not fully supported on Uno https://github.com/unoplatform/uno/issues/4558")]
-		public void VerifyTabViewItemUIABehavior()
+		public async Task VerifyTabViewItemUIABehavior()
 		{
 			TabView tabView = null;
 
@@ -143,9 +146,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				//Content.UpdateLayout();
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var selectionItemProvider = GetProviderFromTVI(tvi0);
 				Verify.IsTrue(selectionItemProvider.IsSelected, "Item should be selected");

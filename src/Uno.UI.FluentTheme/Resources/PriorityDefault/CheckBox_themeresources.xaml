@@ -656,8 +656,10 @@
                                 Opacity="0" />
 
                         </Grid>
+						<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
                         <ContentPresenter x:Name="ContentPresenter"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                             ContentTransitions="{TemplateBinding ContentTransitions}"
                             Content="{TemplateBinding Content}"
                             Margin="{TemplateBinding Padding}"

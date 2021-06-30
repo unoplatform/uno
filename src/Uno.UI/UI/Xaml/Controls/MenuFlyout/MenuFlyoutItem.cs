@@ -240,7 +240,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		 void OnRightTappedUnhandled(RightTappedRoutedEventArgs pArgs)
+		private protected override void OnRightTappedUnhandled(RightTappedRoutedEventArgs pArgs)
 		{
 			var handled = pArgs.Handled;
 			if (!handled)
@@ -417,11 +417,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Called when the IsEnabled property changes.
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			bool bIsEnabled = IsEnabled;
-
-			if (!bIsEnabled)
+			if (!e.NewValue)
 			{
 				ClearStateFlags();
 			}
@@ -429,6 +427,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				UpdateVisualState();
 			}
+
+			base.OnIsEnabledChanged(e);
 		}
 
 		// Called when the control got focus.
@@ -475,7 +475,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Handle the custom property changed event and call the OnPropertyChanged2 methods.
-		 void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			if(args.Property == UIElement.VisibilityProperty)
 			{

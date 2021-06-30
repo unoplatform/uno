@@ -28,6 +28,7 @@ namespace Uno.UI {
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
+		private static readonly unoCollapsedClassName = "uno-visibility-collapsed";
 
 		private static _cctor = (() => {
 			WindowManager.initMethods();
@@ -106,7 +107,15 @@ namespace Uno.UI {
 				// created later on 
 				img.onload = loadingDone;
 				img.onerror = loadingDone;
-				img.src = String(UnoAppManifest.splashScreenImage);
+
+				const UNO_BOOTSTRAP_APP_BASE = config.environmentVariables["UNO_BOOTSTRAP_APP_BASE"] || "";
+				const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
+
+				const fullImagePath = UNO_BOOTSTRAP_APP_BASE !== ''
+					? `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`
+					: String(UnoAppManifest.splashScreenImage);
+
+				img.src = fullImagePath;
 
 				// If there's no response, skip the loading
 				setTimeout(loadingDone, 2000);
@@ -258,7 +267,7 @@ namespace Uno.UI {
 			element.setAttribute("XamlType", uiElementRegistration.typeName);
 			element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
 			if (uiElementRegistration.isFrameworkElement) {
-				this.setAsUnarranged(element);
+				this.setAsUnarranged(element, true);
 			}
 			if (element.hasOwnProperty("tabindex")) {
 				(element as any)["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
@@ -362,6 +371,31 @@ namespace Uno.UI {
 
 		private setXUidInternal(elementId: number, name: string): void {
 			this.getView(elementId).setAttribute("xuid", name);
+		}
+
+		/**
+			* Sets the visibility of the specified element
+			*/
+		public setVisibility(elementId: number, visible: boolean): string {
+			this.setVisibilityInternal(elementId, visible);
+			return "ok";
+		}
+
+		public setVisibilityNative(pParam: number): boolean {
+			const params = WindowManagerSetVisibilityParams.unmarshal(pParam);
+			this.setVisibilityInternal(params.HtmlId, params.Visible);
+			return true;
+		}
+
+		private setVisibilityInternal(elementId: number, visible: boolean): void {
+			const element = this.getView(elementId);
+
+			if (visible) {
+				element.classList.remove(WindowManager.unoCollapsedClassName);
+			}
+			else {
+				element.classList.add(WindowManager.unoCollapsedClassName);
+			}
 		}
 
 		/**
@@ -666,11 +700,83 @@ namespace Uno.UI {
 
 		private setAsArranged(element: HTMLElement | SVGElement) {
 
-			element.classList.remove(WindowManager.unoUnarrangedClassName);
+			if (!(<any>element)._unoIsArranged) {
+				(<any>element)._unoIsArranged = true;
+				element.classList.remove(WindowManager.unoUnarrangedClassName);
+			}
 		}
 
-		private setAsUnarranged(element: HTMLElement | SVGElement) {
-			element.classList.add(WindowManager.unoUnarrangedClassName);
+		private setAsUnarranged(element: HTMLElement | SVGElement, force: boolean = false) {
+			if ((<any>element)._unoIsArranged || force) {
+				(<any>element)._unoIsArranged = false;
+				element.classList.add(WindowManager.unoUnarrangedClassName);
+			}
+		}
+
+		/**
+		* Sets the color property of the specified element
+		*/
+		public setElementColor(elementId: number, color: number): string {
+			this.setElementColorInternal(elementId, color);
+			return "ok";
+		}
+
+		public setElementColorNative(pParam: number): boolean {
+			const params = WindowManagerSetElementColorParams.unmarshal(pParam);
+			this.setElementColorInternal(params.HtmlId, params.Color);
+			return true;
+		}
+
+		private setElementColorInternal(elementId: number, color: number): void {
+			const element = this.getView(elementId);
+
+			element.style.setProperty("color", this.numberToCssColor(color));
+		}
+
+		/**
+		* Sets the background color property of the specified element
+		*/
+		public setElementBackgroundColor(pParam: number): boolean {
+			const params = WindowManagerSetElementBackgroundColorParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.setProperty("background-color", this.numberToCssColor(params.Color));
+			style.removeProperty("background-image");
+
+			return true;
+		}
+
+		/**
+		* Sets the background image property of the specified element
+		*/
+		public setElementBackgroundGradient(pParam: number): boolean {
+			const params = WindowManagerSetElementBackgroundGradientParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.removeProperty("background-color");
+			style.setProperty("background-image", params.CssGradient);
+
+			return true;
+		}
+
+		/**
+		* Clears the background property of the specified element
+		*/
+		public resetElementBackground(pParam: number): boolean {
+			const params = WindowManagerResetElementBackgroundParams.unmarshal(pParam);
+
+			const element = this.getView(params.HtmlId);
+			const style = element.style;
+
+			style.removeProperty("background-color");
+			style.removeProperty("background-image");
+			style.removeProperty("background-size");
+
+			return true;
 		}
 
 		/**
@@ -794,9 +900,12 @@ namespace Uno.UI {
 
 		public static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void {
 			const payload = WindowManager.pointerEventExtractor(evt);
-			const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
-			if (handled) {
+			const result = WindowManager.current.dispatchEvent(element, evt.type, payload);
+			if (result & HtmlEventDispatchResult.StopPropagation) {
 				evt.stopPropagation();
+			}
+			if (result & HtmlEventDispatchResult.PreventDefault) {
+				evt.preventDefault();
 			}
 		}
 
@@ -927,9 +1036,12 @@ namespace Uno.UI {
 					? `${eventExtractor(event)}`
 					: "";
 
-				var handled = this.dispatchEvent(element, eventName, eventPayload);
-				if (handled) {
+				const result = this.dispatchEvent(element, eventName, eventPayload);
+				if (result & HtmlEventDispatchResult.StopPropagation) {
 					event.stopPropagation();
+				}
+				if (result & HtmlEventDispatchResult.PreventDefault) {
+					event.preventDefault();
 				}
 			};
 
@@ -1841,7 +1953,7 @@ namespace Uno.UI {
 			}
 		}
 
-		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): boolean {
+		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): HtmlEventDispatchResult {
 			const htmlId = Number(element.getAttribute("XamlHandle"));
 
 			// console.debug(`${element.getAttribute("id")}: Raising event ${eventName}.`);
@@ -1855,7 +1967,7 @@ namespace Uno.UI {
 				// this way always succeed because synchronous calls are not possible
 				// between the host and the browser, unlike wasm.
 				UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
-				return true;
+				return HtmlEventDispatchResult.Ok;
 			}
 			else {
 				return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
@@ -1875,6 +1987,10 @@ namespace Uno.UI {
 
 			// Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
 			return handle + "";
+		}
+
+		private numberToCssColor(color: number): string {
+			return "#" + color.toString(16).padStart(8, '0');
 		}
 
 		public setCursor(cssCursor: string): string {
@@ -1931,7 +2047,7 @@ namespace Uno.UI {
 
 	if (typeof define === "function") {
 		define(
-			[`${config.uno_app_base}/AppManifest`],
+			[`./AppManifest.js`],
 			() => {
 			}
 		);

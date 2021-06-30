@@ -98,14 +98,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs e)
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
 #endif
 			{
 				_inProgressVectorChange = e;
 				OnItemsChanged(e);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
 #endif
 			{

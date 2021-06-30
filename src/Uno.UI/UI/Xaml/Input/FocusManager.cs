@@ -8,6 +8,8 @@ using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
+using Uno.UI.Xaml.Controls;
+
 
 namespace Windows.UI.Xaml.Input
 {
@@ -132,6 +134,7 @@ namespace Windows.UI.Xaml.Input
 			(newFocus as Control)?.UpdateFocusState(focusState);
 
 			FocusNative(newFocus as Control);
+			UpdateFocusVisual(newFocus, focusState);
 
 			if (oldFocusedElement != null)
 			{
@@ -144,6 +147,29 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			return true;
+		}
+
+		private static void UpdateFocusVisual(DependencyObject newFocus, FocusState focusState)
+		{
+			var focusVisualLayer = Window.Current.FocusVisualLayer;
+			SystemFocusVisual focusVisual;
+			if (focusVisualLayer.Children.Count == 0)
+			{
+				focusVisualLayer.Children.Add(new SystemFocusVisual());
+			}
+
+			focusVisual = (SystemFocusVisual)focusVisualLayer.Children[0];
+
+			if (newFocus is Control control && focusState == FocusState.Keyboard && control.UseSystemFocusVisuals)
+			{
+				focusVisual.FocusedElement = control;
+				focusVisual.Visibility = Visibility.Visible;				
+			}
+			else
+			{
+				focusVisual.FocusedElement = null;
+				focusVisual.Visibility = Visibility.Collapsed;
+			}
 		}
 
 		private static void RaiseLostFocusEvent(object oldFocus)
@@ -180,5 +206,10 @@ namespace Windows.UI.Xaml.Input
 		public static event EventHandler<FocusManagerGotFocusEventArgs> GotFocus;
 		public static event EventHandler<FocusManagerLostFocusEventArgs> LostFocus;
 
+		internal static void SetEngagedControl(Control control)
+		{
+			// Focus engagement applies only to gamepads
+			// We don't support them yet with Uno.
+		}
 	}
 }

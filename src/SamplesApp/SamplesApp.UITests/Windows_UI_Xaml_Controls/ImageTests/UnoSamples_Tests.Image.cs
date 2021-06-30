@@ -24,10 +24,36 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			// Request to render
 			var button = _app.Marked("_update");
 			_app.WaitForElement(button);
+
+			var screenshotBefore = TakeScreenshot("WriteableBitmap_Invalidate - Before");
+
 			button.FastTap();
 
 			// Take screenshot
-			TakeScreenshot("WriteableBitmap_Invalidate - Result");
+			var screenshotAfter = TakeScreenshot("WriteableBitmap_Invalidate - Result");
+
+			ImageAssert.AreNotEqual(screenshotBefore, screenshotAfter);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void WriteableBitmap_MultiInvalidate()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.WriteableBitmap_MultiInvalidate");
+
+			// Request to render
+			var button = _app.Marked("_randomize");
+			_app.WaitForElement(button);
+			button.FastTap();
+
+			var screenshotBefore = TakeScreenshot("WriteableBitmap_MultiInvalidate - Before");
+
+			button.FastTap();
+
+			// Take screenshot
+			var screenshotAfter = TakeScreenshot("WriteableBitmap_MultiInvalidate - After");
+
+			ImageAssert.AreNotEqual(screenshotBefore, screenshotAfter);
 		}
 
 		[Test]

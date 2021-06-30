@@ -28,7 +28,9 @@
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
       "Uno.UI\\Uno.UI.csproj",
       "Uno.UWP\\Uno.csproj",
-      "UnoItemTemplate\\UnoItemTemplate.csproj"
+      "UnoItemTemplate\\UnoItemTemplate.csproj",
+      "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
+      "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj"
     ]
   }
 }

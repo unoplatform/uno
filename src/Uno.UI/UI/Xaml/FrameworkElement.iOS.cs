@@ -14,8 +14,19 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
+		/// <summary>
+		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
+		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
+		/// </summary>
+		internal bool ShouldInterceptInvalidate { get; set; }
+
 		public override void SetNeedsLayout()
 		{
+			if (ShouldInterceptInvalidate)
+			{
+				return;
+			}
+
 			if (!_inLayoutSubviews)
 			{
 				base.SetNeedsLayout();
@@ -49,7 +60,7 @@ namespace Windows.UI.Xaml
 
 					OnBeforeArrange();
 
-					var finalRect = Parent is UIElement ? LayoutSlotWithMarginsAndAlignments : RectFromUIRect(Frame);
+					var finalRect = Superview is UIElement ? LayoutSlotWithMarginsAndAlignments : RectFromUIRect(Frame);
 
 					_layouter.Arrange(finalRect);
 

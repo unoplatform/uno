@@ -1,11 +1,11 @@
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using Windows.Foundation.Collections;
+using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ColumnDefinitionCollection : IList<ColumnDefinition>, IEnumerable<ColumnDefinition>
+	public partial class ColumnDefinitionCollection : DefinitionCollectionBase, IList<ColumnDefinition>, IEnumerable<ColumnDefinition>
 	{
 		private readonly DependencyObjectCollection<ColumnDefinition> _inner = new DependencyObjectCollection<ColumnDefinition>();
 
@@ -24,25 +24,50 @@ namespace Windows.UI.Xaml.Controls
 
 		public int IndexOf(ColumnDefinition item) => _inner.IndexOf(item);
 
-		public void Insert(int index, ColumnDefinition item) => _inner.Insert(index, item);
+		public void Insert(int index, ColumnDefinition item)
+		{
+			_inner.Insert(index, item);
+		}
 
-		public void RemoveAt(int index) => _inner.RemoveAt(index);
+		public void RemoveAt(int index)
+		{
+			_inner.RemoveAt(index);
+		}
+
+		IEnumerable<DefinitionBase> DefinitionCollectionBase.GetItems() => _inner;
+
+		DefinitionBase DefinitionCollectionBase.GetItem(int index) => _inner[index];
 
 		public ColumnDefinition this[int index]
 		{
 			get => _inner[index];
-			set => _inner[index] = value;
+			set
+			{
+				if (_inner[index] != value)
+				{
+					_inner[index] = value;
+				}
+			}
 		}
 
-		public void Add(ColumnDefinition item) => _inner.Add(item);
+		public void Add(ColumnDefinition item)
+		{
+			_inner.Add(item);
+		}
 
-		public void Clear() => _inner.Clear();
+		public void Clear()
+		{
+			_inner.Clear();
+		}
 
 		public bool Contains(ColumnDefinition item) => _inner.Contains(item);
 
 		public void CopyTo(ColumnDefinition[] array, int arrayIndex) => _inner.CopyTo(array, arrayIndex);
 
-		public bool Remove(ColumnDefinition item) => _inner.Remove(item);
+		public bool Remove(ColumnDefinition item)
+		{
+			return _inner.Remove(item);
+		}
 
 		public int Count => _inner.Count;
 
@@ -58,5 +83,9 @@ namespace Windows.UI.Xaml.Controls
 		public global::System.Collections.Generic.IEnumerator<ColumnDefinition> GetEnumerator() => _inner.GetEnumerator();
 
 		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => _inner.GetEnumerator();
+
+		void DefinitionCollectionBase.Lock() => _inner.Lock();
+
+		void DefinitionCollectionBase.Unlock() => _inner.Unlock();
 	}
 }

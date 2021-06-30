@@ -3612,7 +3612,7 @@
 			<Member
 				fullName="System.String Windows.UI.Xaml.Controls.DatePickerFlyout::DismissButtonPartName"
 				reason="Method not in UWP contract" />
-		</Fields>
+        </Fields>
 		<Properties>
 			<Member
 				fullName="Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode Windows.UI.Xaml.Controls.DatePicker::FlyoutPlacement()"
@@ -3640,22 +3640,118 @@
 	<IgnoreSet baseVersion="3.6.6">
 		<Types>
 		</Types>
-
-		<Events>
-		</Events>
-
-		<Fields>
-		</Fields>
-
-		<Properties>
-		</Properties>
-
 		<Methods>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
 				reason="No longer used method that shouldn't be called from user code" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Contacts.ContactBatch..ctor()"
+				reason="Method not in UWP contract" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.SwipeItemInvokedEventArgs..ctor()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.set_Count(System.Int32 value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.set_IsReadOnly(System.Boolean value)"
+				reason="Not part of the UWP API" />
 		</Methods>
+		<Fields>
+		</Fields>
+		<Properties>
+		</Properties>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="3.7.7">
+		<Types>
+			<Member
+				fullName="Windows.UI.Xaml.UIElementExtensions"
+				reason="Not part of the WinUI API, was previously incorrectly included for Android/iOS/macOS." />
+		</Types>
+		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.Xaml.FrameworkElement.Dispose()"
+				reason="Not part of the UWP API + false positive, it's not something changed in the source" />
+			<Member
+				fullName="System.Void Windows.UI.Core.WindowSizeChangedEventArgs..ctor(Windows.Foundation.Size newSize)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.EnteredBackgroundEventArgs..ctor()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.LeavingBackgroundEventArgs..ctor()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs..ctor()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs..ctor()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple..ctor()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Picker.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.SecureTextBoxView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			<Member
+				fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
+				reason="Internal method which is not part of the UWP API" />
+			
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.UIElement.DispatchEvent(System.Int32 handle, System.String eventName, System.String eventArgs)"
+				reason="Public only for marshaling purposes, need to change return value" />
+		</Methods>
+		<Fields>
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::UseCompactResourcesProperty"
+				reason="This should be a property, not a field" />
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.Automation.Peers.PatternInterface::value__"
+				reason="This enum is an uint in UWP, not an int" />
+		</Fields>
+		<Properties>
+		</Properties>
+	</IgnoreSet>	
+	<IgnoreSet baseVersion="3.8.6">
+		<Types>
+		</Types>
+		<Methods>
+		</Methods>
+		<Fields>
+		</Fields>
+		<Properties>
+		</Properties>
+	</IgnoreSet>	
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>

@@ -16,7 +16,7 @@
   "name": "Cross-Platform Library",
   "identity": "Uno.Platform.UnoLib",
   "groupIdentity": "Uno.Platform.BlankLibrary",
-  "description": "Template for creating a cross-platform library with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly and Skia.",
+  "description": "Template for creating a multi-platform library with the Uno Platform that targets UWP, WebAssembly, Android, iOS, macOS and Linux",
   "precedence": "6001",
   "tags": {
     "language": "C#",

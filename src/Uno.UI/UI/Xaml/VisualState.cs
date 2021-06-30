@@ -14,26 +14,12 @@ namespace Windows.UI.Xaml
 	[ContentProperty(Name = "Storyboard")]
 	public sealed partial class VisualState : DependencyObject
 	{
+		private Action lazyBuilder = null;
+
 		public VisualState()
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
-
-			InitializeStateTriggerCollection();
-			InitializeSettersCollection();
-		}
-
-		private void InitializeSettersCollection()
-		{
-			Setters = new SetterBaseCollection(this, isAutoPropertyInheritanceEnabled: false);
-		}
-
-		private void InitializeStateTriggerCollection()
-		{
-			var stateTriggers = new DependencyObjectCollection<StateTriggerBase>(this, isAutoPropertyInheritanceEnabled: false);
-			stateTriggers.VectorChanged += OnStateTriggerCollectionChanged;
-
-			StateTriggers = stateTriggers;
 		}
 
 		public string Name { get; set; }
@@ -42,11 +28,16 @@ namespace Windows.UI.Xaml
 
 		public Storyboard Storyboard
 		{
-			get => (Storyboard)this.GetValue(StoryboardProperty);
+			get
+			{
+				EnsureMaterialized();
+				return (Storyboard)this.GetValue(StoryboardProperty);
+			}
+
 			set => this.SetValue(StoryboardProperty, value);
 		}
 
-		public static DependencyProperty StoryboardProperty { get ; } =
+		public static DependencyProperty StoryboardProperty { get; } =
 			DependencyProperty.Register(
 				"Storyboard",
 				typeof(Storyboard),
@@ -77,11 +68,22 @@ namespace Windows.UI.Xaml
 
 		public SetterBaseCollection Setters
 		{
-			get => (SetterBaseCollection)GetValue(SettersProperty);
+			get
+			{
+				if(!(GetValue(SettersProperty) is SetterBaseCollection collection))
+				{
+					collection = Setters = new SetterBaseCollection(this, isAutoPropertyInheritanceEnabled: false);
+				}
+
+				EnsureMaterialized();
+
+				return collection;
+			}
+
 			internal set => SetValue(SettersProperty, value);
 		}
 
-		internal static DependencyProperty SettersProperty { get ; } =
+		internal static DependencyProperty SettersProperty { get; } =
 			DependencyProperty.Register(
 				name: "Setters",
 				propertyType: typeof(SetterBaseCollection),
@@ -95,15 +97,27 @@ namespace Windows.UI.Xaml
 
 		public IList<StateTriggerBase> StateTriggers
 		{
-			get => (IList<StateTriggerBase>)GetValue(StateTriggersProperty);
+			get
+			{
+				if(!(GetValue(StateTriggersProperty) is IList<StateTriggerBase> list))
+				{
+					var stateTriggers = new DependencyObjectCollection<StateTriggerBase>(this, isAutoPropertyInheritanceEnabled: false);
+					stateTriggers.VectorChanged += OnStateTriggerCollectionChanged;
+
+					list = StateTriggers = stateTriggers;
+				}
+
+				return list;
+			}
+
 			internal set => SetValue(StateTriggersProperty, value);
 		}
 
 		internal static DependencyProperty StateTriggersProperty { get ; } =
 			DependencyProperty.Register(
-				name: "StateTriggers", 
-				propertyType: typeof(IList<StateTriggerBase>), 
-				ownerType: typeof(VisualState), 
+				name: "StateTriggers",
+				propertyType: typeof(IList<StateTriggerBase>),
+				ownerType: typeof(VisualState),
 				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: StateTriggersChanged
@@ -132,6 +146,42 @@ namespace Windows.UI.Xaml
 		}
 
 		internal VisualStateGroup Owner => this.GetParent() as VisualStateGroup;
+
+		/// <summary>
+		/// Lazy builder provided by the source generator. Invoking this will
+		/// optionally fill <see cref="Storyboard"/> and <see cref="Setters"/>.
+		/// </summary>
+		internal Action LazyBuilder
+		{
+			get => lazyBuilder;
+			set => lazyBuilder = value;
+		}
+
+		/// <summary>
+		/// Ensures that the lazy builder has been invoked
+		/// </summary>
+		private void EnsureMaterialized()
+		{
+			if (LazyBuilder != null)
+			{
+				var builder = LazyBuilder;
+				LazyBuilder = null;
+				builder.Invoke();
+
+				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
+				{
+					storyboardProvider.Store.UpdateResourceBindings(true);
+				}
+
+				foreach(var setter in Setters)
+				{
+					if (setter is IDependencyObjectStoreProvider setterProvider)
+					{
+						setterProvider.Store.UpdateResourceBindings(true);
+					}
+				}
+			}
+		}
 
 		private void OnStateTriggerCollectionChanged(IObservableVector<StateTriggerBase> sender, IVectorChangedEventArgs e)
 		{

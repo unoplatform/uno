@@ -12,6 +12,8 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Drawing;
+using System.Threading.Tasks;
+using Windows.UI.Core;
 using Uno.UI;
 using Microsoft.Extensions.Logging;
 using static Uno.Extensions.MathEx;
@@ -35,8 +37,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private (double? horizontal, double? vertical)? _pendingScrollTo;
+
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{
+			_pendingScrollTo = default;
+
 			var physicalHorizontalOffset = ViewHelper.LogicalToPhysicalPixels(horizontalOffset ?? HorizontalOffset);
 			var physicalVerticalOffset = ViewHelper.LogicalToPhysicalPixels(verticalOffset ?? VerticalOffset);
 
@@ -50,6 +56,14 @@ namespace Windows.UI.Xaml.Controls
 			if (disableAnimation)
 			{
 				_presenter?.ScrollTo(adjustedPhysicalHorizontalOffset, adjustedPhysicalVerticalOffset);
+				if (verticalOffset is { } v && Math.Abs(VerticalOffset - v) > ViewHelper.Scale
+					|| horizontalOffset is { } h && Math.Abs(HorizontalOffset - h) > ViewHelper.Scale)
+				{
+					// The offsets has not been applied as expected.
+					// This is usually because the native view is not ready to scroll to the desired offset.
+					// We have to defer this ScrollTo to the next 
+					_pendingScrollTo = (horizontalOffset, verticalOffset);
+				}
 			}
 			else
 			{
@@ -64,6 +78,17 @@ namespace Windows.UI.Xaml.Controls
 			// Return true if successfully scrolled to asked offsets
 			return (horizontalOffset == null || physicalHorizontalOffset == adjustedPhysicalHorizontalOffset) &&
 			       (verticalOffset == null || physicalVerticalOffset == adjustedPhysicalVerticalOffset);
+		}
+
+		internal void TryApplyPendingScrollTo()
+		{
+			if (_pendingScrollTo is { } pending)
+			{
+				ChangeViewNative(pending.horizontal, pending.vertical, null, disableAnimation: true);
+
+				// For safety we clear the state to avoid infinite attempt to scroll on an invalid offset
+				_pendingScrollTo = default;
+			}
 		}
 
 		private void ChangeViewZoom(float zoomFactor, bool disableAnimation)

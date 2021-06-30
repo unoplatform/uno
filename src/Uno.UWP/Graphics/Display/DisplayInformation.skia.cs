@@ -7,6 +7,10 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
+		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
+
+		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
+
 		private IDisplayInformationExtension _displayInformationExtension;
 
 		partial void Initialize()

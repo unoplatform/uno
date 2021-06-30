@@ -433,6 +433,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
+		public void When_TextTrimming_Is_Set_Then_Ellipsis_Is_Used()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_TextTrimming");
+
+			using var snapshot = this.TakeScreenshot("ellipsisText", ignoreInSnapshotCompare: true);
+
+			var rectOfTextWithEllipsis = _app.GetPhysicalRect("border3");
+			var rectThatShouldBeBlankBecauseOfEllipsis = new AppRect(
+				x: rectOfTextWithEllipsis.Right - 15,
+				y: rectOfTextWithEllipsis.Y,
+				width: 15,
+				height: rectOfTextWithEllipsis.Height * 0.6f);
+
+			var cyan = "#00FFFF";
+
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels.UniformRect(rectThatShouldBeBlankBecauseOfEllipsis, cyan)
+					.WithTolerance(PixelTolerance.None));
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Browser | Platform.Android)] // Test timed-out on iOS
 		public void When_TextAlignment_Then_Layout_Is_Correct()
 		{

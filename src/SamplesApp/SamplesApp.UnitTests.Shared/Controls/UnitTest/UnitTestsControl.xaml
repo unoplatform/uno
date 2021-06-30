@@ -20,7 +20,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Row="0">
-			<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Horizontal" Spacing="4">
 				<Button x:Name="runButton"
 						not_skia:Content="▶️ Run"
 						skia:Content="Run"
@@ -33,6 +33,12 @@
 				<TextBox x:Name="testFilter"
 						 PlaceholderText="Enter test filter here"
 						 Width="140" />
+				<ToggleButton x:Name="consoleOutput"
+						not_skia:Content="🖥️ Console Output"
+						skia:Content="Console Output" />
+				<ToggleButton x:Name="runIgnored"
+						not_skia:Content="🚫 Run [Ignore]"
+						skia:Content="Run [Ignore]" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">

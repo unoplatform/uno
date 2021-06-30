@@ -45,6 +45,8 @@ namespace Windows.UI.Xaml
 			Current = this;
 			SetCurrentLanguage();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
+
+			SubscribeBackgroundNotifications();
 		}
 
 		public Application(IntPtr handle) : base(handle)
@@ -160,10 +162,42 @@ namespace Windows.UI.Xaml
 
 		[Export("themeChanged:")]
 		public void ThemeChanged(NSObject change) => OnSystemThemeChanged();
-		
+
 		public void Exit()
 		{
 			NSApplication.SharedApplication.Terminate(null);
+		}
+
+		private void SubscribeBackgroundNotifications()
+		{
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationHiddenNotification, OnEnteredBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationShownNotification, OnLeavingBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationActivatedNotification, OnActivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationDeactivatedNotification, OnDeactivated);
+		}
+
+		private void OnEnteredBackground(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+			EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+
+			OnSuspending();
+		}
+
+		private void OnLeavingBackground(NSNotification notification)
+		{
+			LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+		}
+
+		private void OnActivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+		}
+
+		private void OnDeactivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
 		}
 	}
 }

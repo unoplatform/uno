@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Uno.Logging;
 
 namespace Windows.Foundation.Metadata
@@ -108,6 +109,11 @@ namespace Windows.Foundation.Metadata
 		/// </summary>
 		public static bool AlwaysLogNotImplementedMessages { get; set; }
 
+		/// <summary>
+		/// The message log level used when a not implemented member is used at runtime, if <see cref="IsFailWhenNotImplemented"/> is false.
+		/// </summary>
+		public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Error;
+
 		private static Type? GetValidType(string typeName)
 		{
 			lock (_assemblies)
@@ -149,7 +155,7 @@ namespace Windows.Foundation.Metadata
 					{
 						_notImplementedOnce.Add(memberName);
 
-						Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(type).Error(message);
+						Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(type).Log(NotImplementedLogLevel, message);
 					}
 				}
 			}

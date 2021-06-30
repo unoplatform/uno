@@ -86,6 +86,7 @@ var overridableMethods = @"
 	protected virtual void OnRestoreInstanceState(Bundle savedInstanceState);
 	public virtual void OnRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState);RestoreInstanceStateWithPersistedState
 	protected virtual void OnResume();
+	public virtual void OnTopResumedActivityChanged(bool isTopResumedActivity);
 	//public virtual Java.Lang.Object OnRetainNonConfigurationInstance();
 	protected virtual void OnSaveInstanceState(Bundle outState);
 	public virtual void OnSaveInstanceState(Bundle outState, PersistableBundle outPersistentState);SaveInstanceStateWithPersistedState

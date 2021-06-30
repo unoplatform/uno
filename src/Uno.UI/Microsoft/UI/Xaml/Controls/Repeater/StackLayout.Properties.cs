@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region DisableVirtualization
 		public static DependencyProperty DisableVirtualizationProperty = DependencyProperty.Register(
-			"DisableVirtualization ", typeof(bool), typeof(StackLayout), new PropertyMetadata(default(bool)));
+			"DisableVirtualization ", typeof(bool), typeof(StackLayout), new PropertyMetadata(default(bool), OnDependencyPropertyChanged));
 
 		public bool DisableVirtualization
 		{

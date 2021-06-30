@@ -108,14 +108,17 @@ namespace Uno.UI.Tasks.BatchMerge
             mergedThemeDictionaryByKeyDictionary = new Dictionary<string, MergedDictionary>();
             namespaceList = new List<string>();
             this.parentDictionary = parentDictionary;
+
+            AddNamespace("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+            xmlElement.SetAttribute("Ignorable", "http://schemas.openxmlformats.org/markup-compatibility/2006", "ios android wasm skia");
         }
 
         private void AddNamespace(string xmlnsString, string namespaceString)
         {
-            if (!namespaceList.Contains(namespaceString))
+            if (!namespaceList.Contains(xmlnsString))
             {
                 xmlElement.SetAttribute("xmlns:" + xmlnsString, namespaceString);
-                namespaceList.Add(namespaceString);
+                namespaceList.Add(xmlnsString);
             }
         }
 

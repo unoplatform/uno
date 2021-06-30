@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,6 +17,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -161,6 +163,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
+			_foregroundChanged.Disposable = null;
 			var textBox = _textBox.GetTarget();
 
 			if (textBox != null)
@@ -169,8 +172,14 @@ namespace Windows.UI.Xaml.Controls
 
 				if (scb != null)
 				{
-					this.TextColor = scb.Color;
-					this.TintColor = scb.Color;
+					_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
+					ApplyColor();
+
+					void ApplyColor()
+					{
+						TextColor = scb.Color;
+						TintColor = scb.Color;
+					}
 				}
 			}
 		}

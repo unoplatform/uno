@@ -12,6 +12,8 @@ namespace Windows.UI.Xaml
 	{
 		bool IFrameworkElementInternal.HasLayouter => throw new NotSupportedException("Reference assembly");
 
+		internal UIElement VisualParent => throw new NotSupportedException("Reference assembly");
+
 		internal T AddChild<T>(T child) where T : View => throw new NotSupportedException("Reference assembly");
 
 		internal T AddChild<T>(T child, int index) where T : View => throw new NotSupportedException("Reference assembly");

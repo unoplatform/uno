@@ -1,5 +1,7 @@
 using System;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -26,5 +28,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty ShowAsMonochromeProperty { get; } =
 			DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new PropertyMetadata(default(bool)));
+
+		public override IconElement CreateIconElement()
+		{
+			var bitmapIcon = new BitmapIcon();
+
+			if (UriSource != null)
+			{
+				bitmapIcon.UriSource = UriSource;
+			}
+
+			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
+			{
+				bitmapIcon.ShowAsMonochrome = ShowAsMonochrome;
+			}
+
+			if (Foreground != null)
+			{
+				bitmapIcon.Foreground = Foreground;
+			}
+
+			return bitmapIcon;
+		}
 	}
 }

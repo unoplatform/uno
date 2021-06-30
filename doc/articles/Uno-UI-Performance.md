@@ -14,6 +14,7 @@ Here's what to look for:
 - ListView and GridView
 	- Don't use template selectors inside the ItemTemplate, prefer using the ItemTemplateSelector on ListView/GridView.
 	- The default [ListViewItem and GridViewItem styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
+- Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
 - Animations
 	- Prefer `Opacity` animations to `Visibility` animations (this avoids some measuring performance issues).
 		- Unless the visual tree of the element is very big, where in this case `Visibility` is better suited.
@@ -31,6 +32,14 @@ Here's what to look for:
 - Bindings
 	- Prefer bindings with short paths.
 	- To shorten paths, use the `DataContext` property on containers, such as `StackPanel` or `Grid`.
+	- Add the `Windows.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
+		- When data binding to classes not inheriting from DependencyObject, in Debug configuration only, the following message may appear:
+			```
+			The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider. 
+			Reflection was used instead of the binding engine and generated static metadata. Add the Bindable 	attribute to prevent this message and performance issues.
+			```
+			This message indicates that the binding engine will fall back on reflection based code, which is generally slow. To compensate for this, Uno use the `BindableTypeProvidersSourceGenerator`, which generates static non-generic code to avoid reflection operations during binding operations.
+			This attribute is inherited and is generally used on ViewModel based classes.
 - [`x:Phase`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-phase-attribute)
 	- For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
 	- It is only supported for items inside `ListViewItem` templates, it will be ignored for others.

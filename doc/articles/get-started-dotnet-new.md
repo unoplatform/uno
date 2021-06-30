@@ -11,7 +11,7 @@ If you need to determine the parameters available for a template use `dotnet new
 
 ## Uno Platform Blank Application
 
-This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly macOS, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
+This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
 
 A basic example:
 ```
@@ -24,21 +24,15 @@ A more advanced example which will not generate the android and macOS heads:
 dotnet new unoapp -o MyApp -android=false -macos=false
 ```
 
-## Uno Platform Blank Application for WinUI 3.0 - Preview
+## Uno Platform Blank Application for Project Reunion - WinUI 3
 
-This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly and macOS which uses the new WinUI 3.0 apis.
+This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly, macOS, Linux, and Win32 Desktop which uses the new WinUI 3 apis.
+
+[**Find detailed instructions here.**](get-started-winui3.md)
 
 A basic example:
 ```
 dotnet new unoapp-winui -o MyApp
-```
-
-Once the application is created, make sure that the following code is present in the `App.xaml` file:
-
-```xaml
-<Application.Resources> 
-    <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" /> 
-</Application.Resources>
 ```
 
 More articles on WinUI 3:
@@ -110,6 +104,12 @@ To use it:
 1. Set the Wasm project as the startup project 
 1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
 1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you�re good to go!
+
+### Uninstalling the templates
+
+Using a command line or terminal, run the following command:
+
+`dotnet new -u Uno.ProjectTemplates.Dotnet`
 
 ### Getting Help
 

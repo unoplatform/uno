@@ -104,6 +104,7 @@ namespace Uno.Storage.Streams.Internal
 				var pinnedData = handle.AddrOfPinnedObject();
 				await WebAssemblyRuntime.InvokeAsync($"{JsType}.writeAsync('{_streamId}', {pinnedData}, {offset}, {count}, {Position})");
 				_length += Math.Max(Position + count, Length);
+				Position += count;
 			}
 			finally
 			{

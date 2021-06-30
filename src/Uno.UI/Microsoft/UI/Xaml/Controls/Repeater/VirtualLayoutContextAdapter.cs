@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region INonVirtualizingLayoutContextOverrides
 
-		protected override IReadOnlyList<UIElement> ChildrenCore
+		public override IReadOnlyList<UIElement> ChildrenCore
 		{
 			get
 			{

@@ -13,6 +13,11 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
 using _This = Windows.UI.Xaml.FrameworkElement;
+#if __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -77,7 +82,7 @@ namespace Windows.UI.Xaml
 				{
 					TRACE_EFFECTIVE_VIEWPORT("Enabling effective viewport propagation.");
 
-					var parent = Parent;
+					var parent = this.GetVisualTreeParent();
 					if (parent is IFrameworkElement_EffectiveViewport parentFwElt)
 					{
 						_parentViewportUpdatesSubscription = parentFwElt.RequestViewportUpdates(this);
@@ -91,7 +96,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					TRACE_EFFECTIVE_VIEWPORT("New child requested viewport propagation which has already been enabled. Force updating all children.");
+					TRACE_EFFECTIVE_VIEWPORT("New child requested viewport propagation which has already been enabled, forwarding current viewport to it.");
 
 					// We are already subscribed, the parent won't send any update (and our _parentViewport is expected to be up-to-date).
 					// But if this "reconfigure" was made for a new child (child != null), we have to initialize its own _parentViewport.

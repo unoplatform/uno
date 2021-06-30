@@ -27,6 +27,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 		private static INamedTypeSymbol _stringSymbol;
 		private static INamedTypeSymbol _intSymbol;
+		private static INamedTypeSymbol _uintSymbol;
 		private static INamedTypeSymbol _floatSymbol;
 		private static INamedTypeSymbol _doubleSymbol;
 		private static INamedTypeSymbol _byteSymbol;
@@ -54,6 +55,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				{
 					_stringSymbol = context.Compilation.GetTypeByMetadataName("System.String");
 					_intSymbol = context.Compilation.GetTypeByMetadataName("System.Int32");
+					_uintSymbol = context.Compilation.GetTypeByMetadataName("System.UInt32");
 					_floatSymbol = context.Compilation.GetTypeByMetadataName("System.Single");
 					_doubleSymbol = context.Compilation.GetTypeByMetadataName("System.Double");
 					_byteSymbol = context.Compilation.GetTypeByMetadataName("System.Byte");
@@ -108,7 +110,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 					if (messageType.Name.EndsWith("Params"))
 					{
-						GenerateUmarshaler(messageType, sb, packValue);
+						GenerateUnmarshaler(messageType, sb, packValue);
 					}
 
 					if (messageType.Name.EndsWith("Return"))
@@ -263,7 +265,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private void GenerateUmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private void GenerateUnmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public static unmarshal(pData:number) : {parametersType.Name}"))
 			{
@@ -344,7 +346,14 @@ namespace Uno.UI.SourceGenerators.TSBindings
 							}
 							else
 							{
-								sb.AppendLineInvariant($"ret.{field.Name} = {GetTSType(field.Type)}(Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\"));");
+								if (CanUseEMHeapProperty(field.Type))
+								{
+									sb.AppendLineInvariant($"ret.{field.Name} = Module.{GetEMHeapProperty(field.Type)}[(pData + {fieldOffset}) >> {GetEMTypeShift(field)}];");
+								}
+								else
+								{
+									sb.AppendLineInvariant($"ret.{field.Name} = {GetTSType(field.Type)}(Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\"));");
+								}
 							}
 						}
 					}
@@ -362,11 +371,15 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
+		private bool CanUseEMHeapProperty(ITypeSymbol type)
+			=> SymbolEqualityComparer.Default.Equals(type, _uintSymbol);
+
 		private int GetNativeFieldSize(IFieldSymbol field)
 		{
-			if(
+			if (
 				SymbolEqualityComparer.Default.Equals(field.Type, _stringSymbol)
 				|| SymbolEqualityComparer.Default.Equals(field.Type, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(field.Type, _uintSymbol)
 				|| SymbolEqualityComparer.Default.Equals(field.Type, _intPtrSymbol)
 				|| SymbolEqualityComparer.Default.Equals(field.Type, _floatSymbol)
 				|| SymbolEqualityComparer.Default.Equals(field.Type, _boolSymbol)
@@ -375,13 +388,59 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			{
 				return 4;
 			}
-			else if(SymbolEqualityComparer.Default.Equals(field.Type, _doubleSymbol))
+			else if (SymbolEqualityComparer.Default.Equals(field.Type, _doubleSymbol))
 			{
 				return 8;
 			}
 			else
 			{
 				throw new NotSupportedException($"The field [{field} {field.Type}] is not supported");
+			}
+		}
+
+		private int GetEMTypeShift(IFieldSymbol field)
+		{
+			var fieldType = field.Type;
+
+			if (
+				SymbolEqualityComparer.Default.Equals(fieldType, _stringSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
+				|| fieldType is IArrayTypeSymbol
+			)
+			{
+				return 2;
+			}
+			else if (
+				SymbolEqualityComparer.Default.Equals(fieldType, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _uintSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _boolSymbol)
+			)
+			{
+				return 2;
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _longSymbol))
+			{
+				return 3;
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _shortSymbol))
+			{
+				return 1;
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _byteSymbol))
+			{
+				return 0;
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _floatSymbol))
+			{
+				return 2;
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _doubleSymbol))
+			{
+				return 3;
+			}
+			else
+			{
+				throw new NotSupportedException($"Unsupported EM type conversion [{fieldType}]");
 			}
 		}
 
@@ -397,6 +456,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else if (
 				SymbolEqualityComparer.Default.Equals(fieldType, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _uintSymbol)
 				|| SymbolEqualityComparer.Default.Equals(fieldType, _boolSymbol)
 			)
 			{
@@ -428,6 +488,49 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
+		private object GetEMHeapProperty(ITypeSymbol fieldType)
+		{
+			if (
+				SymbolEqualityComparer.Default.Equals(fieldType, _stringSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
+				|| fieldType is IArrayTypeSymbol
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _boolSymbol)
+			)
+			{
+				return "HEAP32";
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _uintSymbol))
+			{
+				return "HEAPU32";
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _longSymbol))
+			{
+				// Might overflow
+				return "HEAP32";
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _shortSymbol))
+			{
+				return "HEAP16";
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _byteSymbol))
+			{
+				return "HEAP8";
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _floatSymbol))
+			{
+				return "HEAPF32";
+			}
+			else if (SymbolEqualityComparer.Default.Equals(fieldType, _doubleSymbol))
+			{
+				return "HEAPF64";
+			}
+			else
+			{
+				throw new NotSupportedException($"Unsupported EM type conversion [{fieldType}]");
+			}
+		}
+
 		private static string GetTSType(ITypeSymbol type)
 		{
 			if (type == null)
@@ -445,6 +548,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else if (
 				SymbolEqualityComparer.Default.Equals(type, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _uintSymbol)
 				|| SymbolEqualityComparer.Default.Equals(type, _floatSymbol)
 				|| SymbolEqualityComparer.Default.Equals(type, _doubleSymbol)
 				|| SymbolEqualityComparer.Default.Equals(type, _byteSymbol)
@@ -481,6 +585,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else if (
 				SymbolEqualityComparer.Default.Equals(type, _intSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, _uintSymbol)
 				|| SymbolEqualityComparer.Default.Equals(type, _floatSymbol)
 				|| SymbolEqualityComparer.Default.Equals(type, _doubleSymbol)
 				|| SymbolEqualityComparer.Default.Equals(type, _byteSymbol)

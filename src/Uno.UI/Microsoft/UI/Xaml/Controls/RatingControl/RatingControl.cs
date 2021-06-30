@@ -1,7 +1,6 @@
-// MUX Reference RatingControl.cpp, commit de78834
-
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RatingControl.cpp, commit 3c73749
 
 using System;
 using Uno.UI.Helpers.WinUI;
@@ -591,7 +590,7 @@ namespace Microsoft.UI.Xaml.Controls
 					Value = c_noValueSetSentinel;
 				}
 
-				if (SharedHelpers.IsRS1OrHigher() && IsFocusEngaged && SharedHelpers.IsAnimationsEnabled())
+				if (SharedHelpers.IsRS1OrHigher() && IsFocusEngaged && ShouldEnableAnimation())
 				{
 					double focalPoint = CalculateStarCenter((int)(ratingValue - 1.0));
 					m_sharedPointerPropertySet.InsertScalar("starsScaleFocalPoint", (float)(focalPoint));
@@ -814,7 +813,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var point = args.GetCurrentPoint(m_backgroundStackPanel);
 				float xPosition = (float)point.Position.X;
-				if (SharedHelpers.IsAnimationsEnabled())
+				if (ShouldEnableAnimation())
 				{
 					m_sharedPointerPropertySet.InsertScalar("starsScaleFocalPoint", xPosition);
 					var deviceType = args.Pointer.PointerDeviceType;
@@ -1084,6 +1083,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private bool ShouldEnableAnimation()
+		{
+			// In ControlsResourceVersion2, animation is disabled.
+			return
+				// TODO Uno: Move XamlControlsResources to Uno.UI
+#if !HAS_UNO
+				!XamlControlsResources.IsUsingControlsResourcesVersion2() &&
+#endif
+				SharedHelpers.IsAnimationsEnabled();
+		}
+
 		private void OnFocusEngaged(Control sender, FocusEngagedEventArgs args)
 		{
 			if (!IsReadOnly)
@@ -1141,7 +1151,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ElementSoundPlayer.Play(ElementSoundKind.Invoke);
 			}
 
-			if (SharedHelpers.IsAnimationsEnabled())
+			if (ShouldEnableAnimation())
 			{
 				double focalPoint = CalculateStarCenter((int)(currentValue - 1.0));
 				m_sharedPointerPropertySet.InsertScalar("starsScaleFocalPoint", (float)(focalPoint));

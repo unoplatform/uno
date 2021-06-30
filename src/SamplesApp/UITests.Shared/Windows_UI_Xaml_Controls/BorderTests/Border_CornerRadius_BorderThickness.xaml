@@ -49,6 +49,13 @@
                         BorderThickness="1"
                         Height="10"
                         Width="10"/>
+				<Border BorderBrush="Yellow" 
+                        x:Name="CenterTarget"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BorderThickness="1"
+                        Height="10"
+                        Width="10"/>
 			</Grid>
 			<StackPanel Orientation="Horizontal"
                         Spacing="10">

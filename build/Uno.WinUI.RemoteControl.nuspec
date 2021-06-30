@@ -99,6 +99,10 @@
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.pdb" target="lib\xamarinmac20" />
 
+	<!-- Processors -->
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.dll" target="tools\rc\processors" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.pdb" target="tools\rc\processors" />
+
 	<!-- Build targets -->
 	<file src="..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
 

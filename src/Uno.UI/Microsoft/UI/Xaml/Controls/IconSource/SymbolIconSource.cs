@@ -17,5 +17,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty SymbolProperty { get; } =
 			DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(SymbolIconSource), new PropertyMetadata(Symbol.Emoji));
+
+		public override IconElement CreateIconElement()
+		{
+			var symbolIcon = new SymbolIcon()
+			{
+				Symbol = Symbol
+			};
+
+			if (Foreground != null)
+			{
+				symbolIcon.Foreground = Foreground;
+			}
+
+			return symbolIcon;
+		}
 	}
 }

@@ -18,11 +18,12 @@ namespace Uno.UI.Tests
 
 			var factory = LoggerFactory.Create(builder =>
 			{
-#if DEBUG
+#if false // DEBUG // debug logging is generally very verbose and slows down testing. Enable when needed.
 				var logLevel = LogLevel.Debug;
 #else
 				var logLevel = LogLevel.Information;
 #endif
+				builder.SetMinimumLevel(logLevel);
 				builder.AddConsole(o => o.LogToStandardErrorThreshold = logLevel);
 			});
 

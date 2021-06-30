@@ -98,9 +98,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="Main.cs" />
-		<None Include="Info.plist" />
 		<Compile Include="Properties\AssemblyInfo.cs" />
-		<Content Include="Entitlements.plist" />
 		<BundleResource Include="Resources\SplashScreen%402x.png" />
 		<BundleResource Include="Resources\SplashScreen%403x.png" />
 		<BundleResource Include="Resources\Default-568h%402x.png" />
@@ -118,27 +116,22 @@
 		<PackageReference Include="Uno.UI" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="Uno.Extensions.Logging.OSLog " Version="1.0.1" />
+		<PackageReference Include="Uno.Extensions.Logging.OSLog " Version="1.0.1" />
 	</ItemGroup>
 	<ItemGroup>
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Contents.json">
-		</ImageAsset>
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024%401x.png">
-		</ImageAsset>
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPad-76x76%402x.png">
-		</ImageAsset>
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPad-84x84%402x.png">
-		</ImageAsset>
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-20x20%402x.png">
-		</ImageAsset>
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-20x20%403x.png">
-		</ImageAsset>
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-40x40%403x.png">
-		</ImageAsset>
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-60x60%402x.png">
-		</ImageAsset>
-		<ImageAsset Include="Media.xcassets\LaunchImages.launchimage\Contents.json">
-		</ImageAsset>
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Contents.json" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024%401x.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPad-76x76%402x.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPad-84x84%402x.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-20x20%402x.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-20x20%403x.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-40x40%403x.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-60x60%402x.png" />
+		<ImageAsset Include="Media.xcassets\LaunchImages.launchimage\Contents.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Info.plist" />
+		<None Include="Entitlements.plist" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Media" Visible="false" />

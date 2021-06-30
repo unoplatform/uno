@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		internal readonly Popup _popup;
 		private TaskCompletionSource<ContentDialogResult> _tcs;
 		private readonly SerialDisposable _subscriptions = new SerialDisposable();
+		private bool _hiding = false;
 
 		private Border m_tpBackgroundElementPart;
 		private Border m_tpButton1HostPart;
@@ -114,7 +115,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void Hide() => Hide(ContentDialogResult.None);
+		public void Hide()
+		{
+			if (_hiding)
+			{
+				return;
+			}
+			_hiding = true;
+			Hide(ContentDialogResult.None);
+		}
+
 		private bool Hide(ContentDialogResult result)
 		{
 			void Complete(ContentDialogClosingEventArgs args)
@@ -128,6 +138,7 @@ namespace Windows.UI.Xaml.Controls
 					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
 					_tcs.SetResult(result);
 				}
+				_hiding = false;
 			}
 			var closingArgs = new ContentDialogClosingEventArgs(Complete, result);
 
@@ -300,12 +311,19 @@ namespace Windows.UI.Xaml.Controls
 
 					CloseButtonCommand.ExecuteIfPossible(CloseButtonCommandParameter);
 
-					if (Hide(result))
-					{
-						_tcs.SetResult(result);
-					}
+					Hide(result);
+				}
+				else
+				{
+					_hiding = false;
 				}
 			}
+
+			if (_hiding)
+			{
+				return;
+			}
+			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			CloseButtonClick?.Invoke(this, args);
@@ -324,12 +342,19 @@ namespace Windows.UI.Xaml.Controls
 				{
 					const ContentDialogResult result = ContentDialogResult.Secondary;
 					SecondaryButtonCommand.ExecuteIfPossible(SecondaryButtonCommandParameter);
-					if (Hide(result))
-					{
-						_tcs.SetResult(result);
-					}
+					Hide(result);
+				}
+				else
+				{
+					_hiding = false;
 				}
 			}
+
+			if (_hiding)
+			{
+				return;
+			}
+			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			SecondaryButtonClick?.Invoke(this, args);
@@ -350,12 +375,19 @@ namespace Windows.UI.Xaml.Controls
 					const ContentDialogResult result = ContentDialogResult.Primary;
 					PrimaryButtonCommand.ExecuteIfPossible(PrimaryButtonCommandParameter);
 
-					if (Hide(result))
-					{
-						_tcs.SetResult(result);
-					}
+					Hide(result);
+				}
+				else
+				{
+					_hiding = false;
 				}
 			}
+
+			if (_hiding)
+			{
+				return;
+			}
+			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			PrimaryButtonClick?.Invoke(this, args);

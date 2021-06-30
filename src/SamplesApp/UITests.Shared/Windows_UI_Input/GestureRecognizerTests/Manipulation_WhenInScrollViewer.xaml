@@ -9,6 +9,32 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<ScrollViewer Width="300" Height="300" VerticalAlignment="Center"  HorizontalAlignment="Center" x:Name="TheScroller">
+			<Border Width="300" Height="1024" Background="DeepPink">
+				<Border
+					x:Name="TouchTarget"
+					Width="50"
+					Height="50"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					Margin="10,240,0,0"
+					Background="DeepSkyBlue"
+					ManipulationMode="TranslateX, TranslateY"
+					ManipulationStarting="OnManipStarting"
+					ManipulationStarted="OnManipStarted"
+					ManipulationDelta="OnManipDelta"
+					ManipulationCompleted="OnManipCompleted"/>
+			</Border>
+		</ScrollViewer>
+		<ScrollViewer Grid.Column="1">
+			<TextBlock
+				x:Name="Output"
+				FontSize="10"
+				TextWrapping="Wrap"/>
+		</ScrollViewer>
     </Grid>
 </Page>

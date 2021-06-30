@@ -12,6 +12,11 @@
   "uiFilters": [
     "oneaspnet"
   ],
+  "unsupportedHosts": [
+    {
+      "id": "vs"
+    }
+  ],
   "symbolInfo": [
   ]
 }

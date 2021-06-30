@@ -4,8 +4,8 @@
 		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props"/>
-	<Import Project="../targetframework-override.props"/>
+	<Import Project="../netcore-build.props" />
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -32,7 +32,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-		<PackageReference Include="SkiaSharp.Views" />
+		<!--<PackageReference Include="SkiaSharp.Views" />-->
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,6 +52,10 @@
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Theming\UnoGtk.css" />
 	</ItemGroup>
 
 </Project>

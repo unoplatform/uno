@@ -92,7 +92,7 @@ namespace Windows.Storage.Pickers
 		{
 			if (FileTypeFilter.Count == 0)
 			{
-				throw new InvalidOperationException("You must provide at least a general file type filter ('.*')");
+				throw new InvalidOperationException("You must provide at least a general file type filter ('*')");
 			}
 		}
 	}

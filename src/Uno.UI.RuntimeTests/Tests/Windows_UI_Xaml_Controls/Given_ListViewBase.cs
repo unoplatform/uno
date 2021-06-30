@@ -25,6 +25,9 @@ using Windows.UI;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using System.ComponentModel;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -47,6 +50,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
 
 		private ItemsPanelTemplate NoCacheItemsStackPanel => _testsResources["NoCacheItemsStackPanel"] as ItemsPanelTemplate;
+
+		private DataTemplate SelectableItemTemplateA => _testsResources["SelectableItemTemplateA"] as DataTemplate;
+		private DataTemplate SelectableItemTemplateB => _testsResources["SelectableItemTemplateB"] as DataTemplate;
+		private DataTemplate SelectableItemTemplateC => _testsResources["SelectableItemTemplateC"] as DataTemplate;
 
 		[TestInitialize]
 		public void Init()
@@ -647,20 +654,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
 			var secondLastItem = list.ContainerFromItem(18) as ListViewItem;
 
-			await WindowHelper.WaitFor(() => GetTop(lastItem), 181, comparer: ApproxEquals);
-			await WindowHelper.WaitFor(() => GetTop(secondLastItem), 152, comparer: ApproxEquals);
+			await WindowHelper.WaitFor(() => GetTop(lastItem, container), 181, comparer: ApproxEquals);
+			await WindowHelper.WaitFor(() => GetTop(secondLastItem, container), 152, comparer: ApproxEquals);
 
 			source.Remove(19);
 
 			await WindowHelper.WaitFor(() => list.Items.Count == 19);
 
-			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem), tolerance: 2);
+			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem, container), tolerance: 2);
+		}
 
-			double GetTop(FrameworkElement element)
+		private static double GetTop(FrameworkElement element, FrameworkElement container)
+		{
+			if (element == null)
 			{
-				var transform = element.TransformToVisual(container);
-				return transform.TransformPoint(new Point()).Y;
+				return double.NaN;
 			}
+			var transform = element.TransformToVisual(container);
+			return transform.TransformPoint(new Point()).Y;
 		}
 
 		[TestMethod]
@@ -939,7 +950,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var container2 = (ListViewItem)list.ContainerFromItem(2);
 			Assert.AreEqual(2, container2.Content);
 			var container3 = (ListViewItem)list.ContainerFromIndex(2);
-			Assert.AreEqual(3, container3.Content);			
+			Assert.AreEqual(3, container3.Content);
 			Assert.AreEqual(2, list.IndexFromContainer(container3));
 			Assert.AreEqual(2, list.ItemFromContainer(container2));
 		}
@@ -1176,13 +1187,154 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var container2 = (ListViewItem)list.ContainerFromItem(newItems[2]);
 				Assert.IsNull(container2);
 				var containerIndex2 = list.ContainerFromIndex(2);
-				Assert.IsNull(containerIndex2);				
+				Assert.IsNull(containerIndex2);
 			};
 
 			list.ItemsSource = newItems;
 		}
 
+		[TestMethod]
+		public async Task When_ItemTemplateSelector_Set()
+		{
+			var itemsSource = new[] { "item 1", "item 2", "item 3" };
+			var templateSelector = new KeyedTemplateSelector
+			{
+				Templates = {
+					{ itemsSource[0], SelectableItemTemplateA },
+					{ itemsSource[1], SelectableItemTemplateB },
+					{ itemsSource[2], SelectableItemTemplateC },
+				}
+			};
+
+			var list = new ListView
+			{
+				ItemsSource = itemsSource,
+				ItemTemplateSelector = templateSelector
+			};
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+
+			var container1 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(0) as ListViewItem);
+			var text1 = container1.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			Assert.IsNotNull(text1);
+			Assert.AreEqual(text1.Text, "Selectable A");
+
+			var container2 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(1) as ListViewItem);
+			var text2 = container2.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			Assert.IsNotNull(text2);
+			Assert.AreEqual(text2.Text, "Selectable B");
+
+			var container3 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(2) as ListViewItem);
+			var text3 = container3.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			Assert.IsNotNull(text3);
+			Assert.AreEqual(text3.Text, "Selectable C");
+		}
+
+		[TestMethod]
+		public async Task When_ItemTemplateSelector_Set_And_Fluent()
+		{
+			using (StyleHelper.UseFluentStyles())
+			{
+				await When_ItemTemplateSelector_Set();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Removed_From_Tree_And_Selection_TwoWay_Bound()
+		{
+			var page = new ListViewBoundSelectionPage();
+
+			var dc = new When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext();
+			page.DataContext = dc;
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+			Assert.IsNull(dc.MySelection);
+
+			var SUT = page.MyListView;
+			SUT.SelectedItem = "Rice";
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Rice", dc.MySelection);
+
+			page.HostPanel.Children.Remove(page.IntermediateGrid);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.DataContext);
+
+			Assert.AreEqual("Rice", dc.MySelection);
+		}
+
+		[TestMethod]
+		public async Task When_ItemsSource_Move()
+		{
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate
+			};
+
+			var source = new ObservableCollection<string>
+			{
+				"Item0",
+				"Item1",
+				"Item2",
+			};
+			list.ItemsSource = source;
+			list.SelectedIndex = 0;
+
+			var outer = new Grid { Children = { list } };
+			WindowHelper.WindowContent = outer;
+
+			await WindowHelper.WaitForLoaded(list);
+			var container1 = await WindowHelper.WaitForNonNull(() => list.ContainerFromItem("Item1") as ListViewItem);
+			Assert.AreEqual(29, GetTop(container1, outer));
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.AreEqual("Item0", list.SelectedItem);
+
+			source.Move(1, 2);
+			await WindowHelper.WaitForEqual(58, () =>
+			{
+				var container = list.ContainerFromItem("Item1") as ListViewItem;
+				return GetTop(container, outer);
+			});
+
+			Assert.AreEqual(0, list.SelectedIndex);
+			Assert.AreEqual("Item0", list.SelectedItem);
+
+			source.Move(2, 0);
+			await WindowHelper.WaitForEqual(0, () =>
+			{
+				var container = list.ContainerFromItem("Item1") as ListViewItem;
+				return GetTop(container, outer);
+			});
+
+			Assert.AreEqual(-1, list.SelectedIndex);
+			Assert.AreEqual(null, list.SelectedItem);
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
+
+		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : INotifyPropertyChanged
+		{
+			public event PropertyChangedEventHandler PropertyChanged;
+
+			public string[] MyItems { get; } = new[] { "Red beans", "Rice" };
+
+			private string _mySelection;
+			public string MySelection
+			{
+				get => _mySelection;
+				set
+				{
+					var changing = _mySelection != value;
+					_mySelection = value;
+					if (changing)
+					{
+						PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MySelection)));
+					}
+				}
+			}
+		}
 	}
 
 	public partial class OnItemsChangedListView : ListView
@@ -1193,6 +1345,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			base.OnItemsChanged(e);
 			ItemsChangedAction?.Invoke();
+		}
+	}
+
+	public class KeyedTemplateSelector : DataTemplateSelector
+	{
+		public IDictionary<object, DataTemplate> Templates { get; } = new Dictionary<object, DataTemplate>();
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item); // On UWP only this overload is called when eg Button.ContentTemplateSelector is set
+
+		protected override DataTemplate SelectTemplateCore(object item)
+		{
+			if (item == null)
+			{
+				return null;
+			}
+
+			var template = Templates.UnoGetValueOrDefault(item);
+			return template;
 		}
 	}
 }

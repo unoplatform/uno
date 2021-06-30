@@ -10,6 +10,7 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml
@@ -20,6 +21,9 @@ namespace Uno.UI.Xaml
 	/// <remarks>Slow methods are present for the WPF hosting mode, for which memory sharing is not available</remarks>
 	internal partial class WindowManagerInterop
 	{
+		//When users set double.MaxValue to scroll to the end of the page Javascript doesn't scroll.
+		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
+
 		private static bool UseJavascriptEval =>
 			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
 
@@ -38,7 +42,7 @@ namespace Uno.UI.Xaml
 					IsLoadEventsEnabled = isLoadEventsEnabled
 				};
 
-				TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms, typeof(bool));
+				TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms);
 			}
 		}
 
@@ -83,7 +87,7 @@ namespace Uno.UI.Xaml
 					IsFocusable = isFocusable
 				};
 
-				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms, typeof(bool));
+				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms);
 			}
 		}
 
@@ -159,6 +163,7 @@ namespace Uno.UI.Xaml
 		{
 			public int RegistrationId;
 		}
+
 		#endregion
 
 		#region SetElementTransform
@@ -189,7 +194,7 @@ namespace Uno.UI.Xaml
 					M32 = matrix.M32,
 				};
 
-				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms, typeof(bool));
+				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms);
 			}
 		}
 
@@ -228,7 +233,7 @@ namespace Uno.UI.Xaml
 					Enabled = enabled
 				};
 
-				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms, typeof(bool));
+				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms);
 			}
 		}
 
@@ -779,6 +784,37 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		#region SetVisibility
+
+		internal static void SetVisibility(IntPtr htmlId, bool visible)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setVisibility(\"{htmlId}\", {visible});";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetVisibilityParams()
+				{
+					HtmlId = htmlId,
+					Visible = visible,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setVisibilityNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetVisibilityParams
+		{
+			public IntPtr HtmlId;
+
+			public bool Visible;
+		}
+		#endregion
+
 		#region SetProperty
 
 		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)
@@ -824,6 +860,39 @@ namespace Uno.UI.Xaml
 			public string[] Pairs;
 		}
 
+		#endregion
+
+		#region SetVisibility
+
+		internal static void SetElementColor(IntPtr htmlId, Color color)
+		{
+			var colorAsInteger = color.ToCssInteger();
+
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setElementColor(\"{htmlId}\", {color});";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetElementColorParams()
+				{
+					HtmlId = htmlId,
+					Color = colorAsInteger,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setElementColorNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetElementColorParams
+		{
+			public IntPtr HtmlId;
+
+			public uint Color;
+		}
 		#endregion
 
 		#region RemoveView
@@ -1198,13 +1267,16 @@ namespace Uno.UI.Xaml
 		#region ScrollTo
 		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
 		{
+			var sanitizedTop = top.HasValue && top == double.MaxValue ? MAX_SCROLLING_OFFSET : top;
+			var sanitizedLeft = left.HasValue && left == double.MaxValue ? MAX_SCROLLING_OFFSET : left;
+
 			var parms = new WindowManagerScrollToOptionsParams
 			{
 				HtmlId = htmlId,
-				HasLeft = left.HasValue,
-				Left = left ?? 0,
-				HasTop = top.HasValue,
-				Top = top ?? 0,
+				HasLeft = sanitizedLeft.HasValue,
+				Left = sanitizedLeft ?? 0,
+				HasTop = sanitizedTop.HasValue,
+				Top = sanitizedTop ?? 0,
 				DisableAnimation = disableAnimation
 			};
 
@@ -1221,6 +1293,71 @@ namespace Uno.UI.Xaml
 			public bool HasTop;
 			public bool DisableAnimation;
 
+			public IntPtr HtmlId;
+		}
+		#endregion
+
+		#region SetElementBackgroundColor
+		internal static void SetElementBackgroundColor(IntPtr htmlId, Color color)
+		{
+			var parms = new WindowManagerSetElementBackgroundColorParams
+			{
+				HtmlId = htmlId,
+				Color = color.ToCssInteger()
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:setElementBackgroundColor", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetElementBackgroundColorParams
+		{
+			public IntPtr HtmlId;
+
+			public uint Color;
+		}
+		#endregion
+
+		#region SetElementBackgroundColor
+		internal static void SetElementBackgroundGradient(IntPtr htmlId, string cssGradient)
+		{
+			var parms = new WindowManagerSetElementBackgroundGradientParams
+			{
+				HtmlId = htmlId,
+				CssGradient = cssGradient
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:setElementBackgroundGradient", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetElementBackgroundGradientParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string CssGradient;
+		}
+		#endregion
+
+		#region SetElementBackgroundColor
+
+		internal static void ResetElementBackground(IntPtr htmlId)
+		{
+			var parms = new WindowManagerResetElementBackgroundParams
+			{
+				HtmlId = htmlId,
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:resetElementBackground", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerResetElementBackgroundParams
+		{
 			public IntPtr HtmlId;
 		}
 		#endregion

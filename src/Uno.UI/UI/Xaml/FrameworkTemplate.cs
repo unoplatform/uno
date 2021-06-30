@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal View LoadContentCached() => FrameworkTemplatePool.Instance.DequeueTemplate(this);
+		internal View? LoadContentCached() => FrameworkTemplatePool.Instance.DequeueTemplate(this);
 
 		/// <summary>
 		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.

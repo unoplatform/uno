@@ -19,6 +19,7 @@ using Windows.UI.Core;
 using System.Threading.Tasks;
 using Android.Views.Animations;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Controls;
 
 namespace Uno.UI
 {
@@ -34,9 +35,7 @@ namespace Uno.UI
 
 		public static bool HasParent(this View view)
 		{
-			var provider = view as DependencyObject;
-
-			if (provider != null)
+			if (view is DependencyObject provider)
 			{
 				// This value is set in OnLoaded, which avoids 
 				// interacting with JNI, for performance.
@@ -97,8 +96,7 @@ namespace Uno.UI
 
 			while (view != null)
 			{
-				var typed = view as T;
-				if (typed != null && predicate(typed))
+				if (view is T typed && predicate(typed))
 				{
 					return typed;
 				}
@@ -137,9 +135,7 @@ namespace Uno.UI
 		/// <returns>Children in default order</returns>
 		public static IEnumerable<View> GetChildren(this ViewGroup group)
 		{
-			var shadowProvider = group as Controls.IShadowChildrenProvider;
-
-			if (shadowProvider != null)
+			if (group is IShadowChildrenProvider shadowProvider)
 			{
 				// To avoid calling ChildCount/GetChildAt too much during enumeration, use
 				// a fast path that relies on a shadowed list of the children in BindableView.
@@ -158,9 +154,7 @@ namespace Uno.UI
 		/// <returns>Children in reverse order</returns>
 		public static IEnumerable<View> GetChildrenReverse(this ViewGroup group)
 		{
-			var shadowProvider = group as Controls.IShadowChildrenProvider;
-
-			if (shadowProvider != null)
+			if (group is IShadowChildrenProvider shadowProvider)
 			{
 				// To avoid calling ChildCount/GetChildAt too much during enumeration, use
 				// a fast path that relies on a shadowed list of the children in BindableView.
@@ -185,9 +179,7 @@ namespace Uno.UI
 		/// <returns>A <see cref="View"/> if any, otherwise null.</returns>
 		public static View FindFirstChild(this ViewGroup group)
 		{
-			var shadowProvider = group as Controls.IShadowChildrenProvider;
-
-			if (shadowProvider != null)
+			if (group is IShadowChildrenProvider shadowProvider)
 			{
 				// To avoid calling ChildCount/GetChildAt too much during enumeration, use
 				// a fast path that relies on a shadowed list of the children in BindableView.
@@ -268,9 +260,7 @@ namespace Uno.UI
 				}
 				else if (maxDepth > 0)
 				{
-					var childGroup = sub as ViewGroup;
-
-					if (childGroup != null)
+					if (sub is ViewGroup childGroup)
 					{
 						foreach (var subResult in childGroup.EnumerateAllChildren(selector, maxDepth - 1))
 						{
@@ -298,9 +288,7 @@ namespace Uno.UI
 				}
 				else if (maxDepth > 0)
 				{
-					var childGroup = sub as ViewGroup;
-
-					if (childGroup != null)
+					if (sub is ViewGroup childGroup)
 					{
 						foreach (var subResult in childGroup.EnumerateAllChildrenReverse(selector, maxDepth - 1))
 						{
@@ -325,9 +313,7 @@ namespace Uno.UI
 
 				if (maxDepth > 0)
 				{
-					var childGroup = sub as ViewGroup;
-
-					if (childGroup != null)
+					if (sub is ViewGroup childGroup)
 					{
 						foreach (var subResult in childGroup.EnumerateAllChildren(maxDepth - 1))
 						{
@@ -370,11 +356,7 @@ namespace Uno.UI
 			}
 			else
 			{
-				childSelector = child =>
-				{
-					var t = child as T;
-					return t != null && selector(t);
-				};
+				childSelector = child => child is T t && selector(t);
 			}
 
 			if (includeCurrent
@@ -383,9 +365,7 @@ namespace Uno.UI
 				return view as T;
 			}
 
-			var maxDepth = childLevelLimit.HasValue
-				? childLevelLimit.Value
-				: Int32.MaxValue;
+			var maxDepth = childLevelLimit ?? int.MaxValue;
 
 			return (T)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
 		}
@@ -415,9 +395,7 @@ namespace Uno.UI
 		/// <param name="child">The child view to remove</param>
 		public static void RemoveViewAndDispose(this ViewGroup view, View child)
 		{
-			var bindableView = view as Controls.BindableView;
-
-			if (bindableView != null)
+			if (view is Controls.BindableView bindableView)
 			{
 				// Use the C# implementation of RemoveView so that it is
 				// executed faster. See UnoViewGroup for details.
@@ -435,9 +413,7 @@ namespace Uno.UI
 		/// <param name="view">The view to invalidate.</param>
 		public static void InvalidateMeasure(this View view)
 		{
-			var bindableView = view as Controls.BindableView;
-
-			if (bindableView != null)
+			if (view is Controls.BindableView bindableView)
 			{
 				// Use the C# implementation of RequestLayout so that it is
 				// executed faster. See UnoViewGroup for details.
@@ -578,12 +554,14 @@ namespace Uno.UI
 
 			while (current != null)
 			{
-				var visualParent = current.Parent as ViewGroup;
-				if (visualParent == null)
+				if (current.Parent is ViewGroup visualParent)
+				{
+					current = visualParent;
+				}
+				else
 				{
 					return current;
 				}
-				current = visualParent;
 			}
 
 			return null;
@@ -594,7 +572,7 @@ namespace Uno.UI
 		/// </summary>
 		public static string ShowDescendants(this ViewGroup viewGroup, StringBuilder sb = null, string spacing = "", ViewGroup viewOfInterest = null)
 		{
-			sb = sb ?? new StringBuilder();
+			sb ??= new StringBuilder();
 
 			Inner(viewGroup, spacing);
 			return sb.ToString();
@@ -637,10 +615,13 @@ namespace Uno.UI
 					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
 					.Append(u != null ? $" DesiredSize={u.DesiredSize.ToString("F1")}" : "")
-					.Append(u != null && u.NeedsClipToSlot ? "CLIPPED_TO_SLOT" : "")
-					.Append(u != null && u.RenderTransform != null ? $"RENDER_TRANSFORM({u.RenderTransform.MatrixCore})" : "")
+					.Append(u != null && u.NeedsClipToSlot ? " CLIPPED_TO_SLOT" : "")
 					.Append(u?.Clip != null ? $" Clip={u.Clip.Rect}" : "")
 					.Append(u == null && vg != null ? $" ClipChildren={vg.ClipChildren}" : "")
+					.Append(fe?.Background != null ? $" Background={fe.Background}" : "")
+					.Append(u?.GetElementSpecificDetails())
+					.Append(u?.GetElementGridOrCanvasDetails())
+					.Append(u?.RenderTransform.GetTransformDetails())
 					.Append($" IsLayoutRequested={innerView.IsLayoutRequested}")
 					.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
 					.AppendLine();
@@ -658,9 +639,9 @@ namespace Uno.UI
 			var root = viewGroup;
 			for (int i = 0; i < fromHeight; i++)
 			{
-				if (root.Parent is ViewGroup)
+				if (root.Parent is ViewGroup parent)
 				{
-					root = root.Parent as ViewGroup;
+					root = parent;
 				}
 				else
 				{

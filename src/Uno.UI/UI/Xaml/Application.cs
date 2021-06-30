@@ -11,6 +11,7 @@ using Windows.ApplicationModel;
 using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
 using Uno.Extensions;
+using Microsoft.Extensions.Logging;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -25,13 +26,13 @@ using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
 #elif XAMARIN_IOS
-using View = UIKit.UIView;	
-using ViewGroup = UIKit.UIView;	
-using UIKit;	
+using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;
+using UIKit;
 #elif __MACOS__
-using View = AppKit.NSView;	
-using ViewGroup = AppKit.NSView;	
-using AppKit;	
+using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
+using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
@@ -47,6 +48,7 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme? _requestedTheme;
 		private bool _systemThemeChangesObserved = false;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
+		private bool _isInBackground = false;
 
 		static Application()
 		{
@@ -140,7 +142,11 @@ namespace Windows.UI.Xaml
 				return _requestedThemeForResources;
 			}
 
-			private set => _requestedThemeForResources = value;
+			private set
+			{
+				_requestedThemeForResources = value;
+				ResourceDictionary.SetActiveTheme(value);
+			}
 		}
 
 		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
@@ -161,13 +167,33 @@ namespace Windows.UI.Xaml
 		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
 
 #pragma warning disable CS0067 // The event is never used
+		/// <summary>
+		/// Occurs when the application transitions from Suspended state to Running state.
+		/// </summary>
 		public event EventHandler<object> Resuming;
 #pragma warning restore CS0067 // The event is never used
 
 #pragma warning disable CS0067 // The event is never used
+		/// <summary>
+		/// Occurs when the application transitions to Suspended state from some other state.
+		/// </summary>
 		public event SuspendingEventHandler Suspending;
 #pragma warning restore CS0067 // The event is never used
 
+		/// <summary>
+		/// Occurs when the app moves from the foreground to the background.
+		/// </summary>
+		public event EnteredBackgroundEventHandler EnteredBackground;
+
+		/// <summary>
+		/// Occurs when the app moves from the background to the foreground.
+		/// </summary>
+		public event LeavingBackgroundEventHandler LeavingBackground;
+
+		/// <summary>
+		/// Occurs when an exception can be handled by app code, as forwarded from a native-level Windows Runtime error.
+		/// Apps can mark the occurrence as handled in event data.
+		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
 		public void OnSystemThemeChanged()
@@ -182,11 +208,14 @@ namespace Windows.UI.Xaml
 			UISettings.OnColorValuesChanged();
 		}
 
-#if !__ANDROID__ && !__MACOS__
+#if !__ANDROID__ && !__MACOS__ && !__SKIA__
 		[NotImplemented]
 		public void Exit()
 		{
-
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("This platform does not support application exit.");
+			}
 		}
 #endif
 
@@ -234,6 +263,24 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal void OnEnteredBackground()
+		{
+			if (!_isInBackground)
+			{
+				_isInBackground = true;
+				EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+			}
+		}
+
+		internal void OnLeavingBackground()
+		{
+			if (_isInBackground)
+			{
+				_isInBackground = false;
+				LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+			}
+		}
+
 		internal void OnResuming()
 		{
 			CoreApplication.RaiseResuming();
@@ -274,7 +321,7 @@ namespace Windows.UI.Xaml
 
 		private void OnRequestedThemeChanged()
 		{
-			if (GetTreeRoot() is FrameworkElement root)
+			if (GetTreeRoot() is { } root)
 			{
 				// Update theme bindings in application resources
 				Resources?.UpdateThemeBindings();
@@ -285,43 +332,46 @@ namespace Windows.UI.Xaml
 				PropagateThemeChanged(root);
 			}
 
-			void PropagateThemeChanged(object instance)
+			// Start from the real root, which may not be a FrameworkElement on some platforms
+			View GetTreeRoot()
 			{
-
-				// Update ThemeResource references that have changed
-				if (instance is FrameworkElement fe)
-				{
-					fe.UpdateThemeBindings();
-				}
-
-				//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
-				if (instance is Controls.Panel p)
-				{
-					foreach (object o in p.Children)
-					{
-						PropagateThemeChanged(o);
-					}
-				}
-				else if (instance is ViewGroup g)
-				{
-					foreach (object o in g.GetChildren())
-					{
-						PropagateThemeChanged(o);
-					}
-				}
-			}
-
-			// On some platforms, the user-set root is not the topmost FrameworkElement
-			FrameworkElement GetTreeRoot()
-			{
-				var current = Windows.UI.Xaml.Window.Current.Content as FrameworkElement;
+				View current = Windows.UI.Xaml.Window.Current.Content;
 				var parent = current?.GetVisualTreeParent();
-				while (parent is FrameworkElement feParent)
+				while (parent != null)
 				{
-					current = feParent;
+					current = parent;
 					parent = current?.GetVisualTreeParent();
 				}
 				return current;
+			}
+		}
+
+		/// <summary>
+		/// Propagate theme changed to <paramref name="instance"/> and its descendants, to have them update any theme bindings.
+		/// </summary>
+		internal static void PropagateThemeChanged(object instance)
+		{
+
+			// Update ThemeResource references that have changed
+			if (instance is FrameworkElement fe)
+			{
+				fe.UpdateThemeBindings();
+			}
+
+			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
+			if (instance is Controls.Panel p)
+			{
+				foreach (object o in p.Children)
+				{
+					PropagateThemeChanged(o);
+				}
+			}
+			else if (instance is ViewGroup g)
+			{
+				foreach (object o in g.GetChildren())
+				{
+					PropagateThemeChanged(o);
+				}
 			}
 		}
 	}

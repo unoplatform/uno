@@ -48,7 +48,7 @@ namespace Windows.System
 #endif
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__
 		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)

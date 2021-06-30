@@ -2,8 +2,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
   <ItemGroup>
-	<UnoRuntimeEnabledPackage Include="Uno.UI.RemoteControl" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.remotecontrol.targets'" />
-	<UnoRuntimeEnabledPackage Include="Uno.WinUI.RemoteControl"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.remotecontrol.targets'"  />
+    <UnoRuntimeEnabledPackage Include="Uno.UI.RemoteControl" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.remotecontrol.targets'" />
+    <UnoRuntimeEnabledPackage Include="Uno.WinUI.RemoteControl"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.remotecontrol.targets'"  />
   </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Keep the inner path with '/' separator -->
+    <UnoRemoteControlProcessorsPath Condition="'$(SolutionFileName)'!='Uno.UI.sln'">$(MSBuildThisFileDirectory)../tools/rc/processors</UnoRemoteControlProcessorsPath>
+  </PropertyGroup>
 
 </Project>

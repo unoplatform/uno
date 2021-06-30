@@ -90,8 +90,8 @@ namespace Windows.UI.Xaml
 		/// Gets the implicit style for the current object
 		/// </summary>
 		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal static Style StoreGetImplicitStyle(this IDependencyObjectStoreProvider provider)
-			=> provider.Store.GetImplicitStyle();
+		internal static Style StoreGetImplicitStyle(this IDependencyObjectStoreProvider provider, in SpecializedResourceDictionary.ResourceKey styleKey)
+			=> provider.Store.GetImplicitStyle(styleKey);
 
 		internal static IEnumerable<object> GetParents(this object dependencyObject)
 		{
@@ -103,12 +103,58 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal static bool HasParent(this object dependencyObject, DependencyObject searchedParent)
+		{
+			var parent = dependencyObject.GetParent();
+			while (parent != null)
+			{
+				if (ReferenceEquals(parent, searchedParent))
+				{
+					return true;
+				}
+
+				parent = parent.GetParent();
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Set the parent of the specified dependency object
 		/// </summary>
 		internal static void SetParent(this object dependencyObject, object parent)
 		{
 			GetStore(dependencyObject).Parent = parent;
+		}
+
+		internal static void SetLogicalParent(this FrameworkElement element, DependencyObject logicalParent)
+		{
+#if UNO_HAS_MANAGED_POINTERS || __WASM__ // WASM has managed-esque pointers
+
+			// UWP distinguishes between the 'logical parent' (or inheritance parent) and the 'visual parent' of an element. Uno already
+			// recognises this distinction on some targets, but for targets using CoerceHitTestVisibility() for hit testing, the pointer
+			// implementation depends upon the logical parent (ie DepObjStore.Parent) being identical to the visual parent, because it
+			// piggybacks on the DP inheritance mechanism. Therefore we use LogicalParentOverride as a workaround to modify the publicly-visible
+			// FrameworkElement.Parent without affecting DP propagation.
+			element.LogicalParentOverride = logicalParent;
+#else
+			SetParent(element, logicalParent);
+#endif
+		}
+
+		/// <summary>
+		/// Parts of the internal UWP API of DependencyObject
+		/// Determines if a DO is a parent of another DO
+		/// </summary>
+		internal static bool IsAncestorOf(this DependencyObject ancestor, DependencyObject descendant)
+		{
+			var current = descendant.GetParent();
+			while (current != null && ancestor != current)
+			{
+				current = current.GetParent();
+			}
+
+			return (ancestor == current);
 		}
 
 		/// <summary>
@@ -263,9 +309,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
-		internal static void CoerceValue(this object instance, DependencyProperty property)
+		internal static void CoerceValue(this IDependencyObjectStoreProvider storeProvider, DependencyProperty property)
 		{
-			GetStore(instance).CoerceValue(property);
+			storeProvider.Store.CoerceValue(property);
 		}
 
 		/// <summary>
@@ -343,17 +389,6 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Register for changes all dependency properties changes notifications for the specified instance.
-		/// </summary>
-		/// <param name="instance">The instance for which to observe properties changes</param>
-		/// <param name="handler">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal static IDisposable RegisterInheritedPropertyChangedCallback(this object instance, ExplicitPropertyChangedCallback handler)
-		{
-			return GetStore(instance).RegisterInheritedPropertyChangedCallback(handler);
-		}
-
-		/// <summary>
 		/// Registers to parent changes.
 		/// </summary>
 		/// <param name="instance">The target dependency object</param>
@@ -409,9 +444,13 @@ namespace Windows.UI.Xaml
 			uielement?.InvalidateRender();
 		}
 
-		internal static void RegisterDefaultValueProvider(this DependencyObject dependencyObject, DependencyObjectStore.DefaultValueProvider provider)
-		{
-			GetStore(dependencyObject).RegisterDefaultValueProvider(provider);
-		}
+		internal static void RegisterDefaultValueProvider(this IDependencyObjectStoreProvider storeProvider, DependencyObjectStore.DefaultValueProvider provider)
+			=> storeProvider.Store.RegisterDefaultValueProvider(provider);
+
+		/// <summary>
+		/// See <see cref="DependencyObjectStore.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
+		/// </summary>
+		internal static void RegisterPropertyChangedCallbackStrong(this IDependencyObjectStoreProvider storeProvider, ExplicitPropertyChangedCallback handler)
+			=> storeProvider.Store.RegisterPropertyChangedCallbackStrong(handler);
 	}
 }

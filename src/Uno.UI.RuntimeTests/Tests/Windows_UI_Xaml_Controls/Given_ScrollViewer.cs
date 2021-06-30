@@ -58,6 +58,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(buttons > 0); // We make sure that we really loaded the right template
 			Assert.IsTrue(buttons <= 4);
 		}
+
+
+		[TestMethod]
+		public async Task When_NonScrollableScroller_Then_DoNotLoadAllTemplate()
+		{
+			var sut = new ScrollViewer
+			{
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+				VerticalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				HorizontalScrollMode = ScrollMode.Disabled,
+				Height = 100,
+				Width = 100,
+				Content = new Border { Height = 50, Width = 50 }
+			};
+			WindowHelper.WindowContent = sut;
+
+			await WindowHelper.WaitForIdle();
+
+			var buttons = sut
+				.EnumerateAllChildren(maxDepth: 256)
+				.OfType<RepeatButton>()
+				.Count();
+
+			Assert.IsTrue(buttons == 0);
+		}
+
+		[TestMethod]
+		public async Task When_HorizontallyScrollableTextBox_Then_DoNotLoadAllScrollerTemplate()
+		{
+			var sut = new TextBox
+			{
+				Width = 100,
+				Text = "Hello world, this a long text that would cause the TextBox to enable horizontal scroll, so we should find some RepeatButton in the children of this TextBox."
+			};
+			WindowHelper.WindowContent = sut;
+
+			await WindowHelper.WaitForIdle();
+
+			var bars = sut
+				.EnumerateAllChildren(maxDepth: 256)
+				.OfType<ScrollBar>()
+				.Count();
+
+			Assert.IsTrue(bars == 0); // TextBox is actually not using scrollbars!
+		}
+
+		[TestMethod]
+		public async Task When_NonScrollableTextBox_Then_DoNotLoadAllScrollerTemplate()
+		{
+			var sut = new TextBox
+			{
+				Width = 100,
+				Text = "42"
+			};
+			WindowHelper.WindowContent = sut;
+
+			await WindowHelper.WaitForIdle();
+
+			var bars = sut
+				.EnumerateAllChildren(maxDepth: 256)
+				.OfType<ScrollBar>()
+				.Count();
+
+			Assert.IsTrue(bars == 0); // TextBox is actually not using scrollbars!
+		}
 #endif
 
 		[TestMethod]
@@ -84,7 +150,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await CheckForSize(200, 400, "Initial");
 			await CheckForSize(250, 450, "Growing 1st time");
 			await CheckForSize(225, 425, "Shringking 1st time");
-			await CheckForSize(5, 7, "Super-shrinking");
+			await CheckForSize(16, 16, "Super-shrinking");
 			await CheckForSize(200, 400, "Back Original");
 
 			async Task CheckForSize(int width, int height, string name)

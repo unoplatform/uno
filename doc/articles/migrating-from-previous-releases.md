@@ -114,3 +114,13 @@ Here's how to upgrade:
 Note that there are two new loggers:
 - `Uno.Extensions.Logging.OSLog` which provides the ability to log the the iOS system logs
 - `Uno.Extensions.Logging.WebAssembly.Console` which provides thread safe and colored logging to the browser debugger console
+
+#### Migrating WebAssembly projects to .NET 5
+
+If your WebAssembly project is using the `netstandard2.0` TargetFramework, migrating to `net5.0` can be done as follows:
+
+- Change `<TargetFramework>netstandard2.0</TargetFramework>` to `<TargetFramework>net5.0</TargetFramework>`
+- Upgrade `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` to `2.0.0` or later
+- Add a reference to the `Microsoft.Windows.Compatibility` package to `5.0.1`
+
+You may also want to apply the changes from the section above (logger updates) to benefits from the update to .NET 5.

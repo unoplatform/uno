@@ -13,7 +13,7 @@
   "name": "Cross-Platform UI Tests Library",
   "identity": "Uno.Platform.UITestLibrary",
   "groupIdentity": "Uno.Platform.BlankUITestLibrary",
-  "description": "Project template for creating cross-platform UI Tests with the Uno Platform.",
+  "description": "Project template for creating multi-platform UI Tests with the Uno Platform.",
   "precedence": "6001",
   "tags": {
     "language": "C#",

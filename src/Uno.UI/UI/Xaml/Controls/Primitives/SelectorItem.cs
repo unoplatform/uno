@@ -85,12 +85,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			var disabledStates = newValue ? DisabledStates.Enabled : DisabledStates.Disabled;
+			var disabledStates = e.NewValue ? DisabledStates.Enabled : DisabledStates.Disabled;
 			VisualStateManager.GoToState(this, disabledStates, true);
 
-			base.OnIsEnabledChanged(oldValue, newValue);
+			base.OnIsEnabledChanged(e);
 		}
 
 		/// <summary>

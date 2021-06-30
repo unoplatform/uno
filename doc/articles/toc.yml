@@ -12,11 +12,16 @@
       href: get-started-vsmac.md
     - name: Get Started on Rider
       href: get-started-rider.md
-    - name: dotnet new templates for Uno Platform
+    - name: dotnet new templates
       href: get-started-dotnet-new.md
     - name: Additional setup for Linux
       href: get-started-with-linux.md
+    - name: Additional instructions for WinUI 3
+      href: get-started-winui3.md
+    - name: Using uno-check
+      href: uno-check.md
     - name: Creating an app - Tutorial
+      topicHref: getting-started-tutorial-1.md
       items:
         - name: Getting Started Tutorial 1
           href: getting-started-tutorial-1.md
@@ -52,10 +57,16 @@
           href: interop/MSAL.md
         - name: How to authenticate with OpenID Connect
           href: guides\open-id-connect.md
+        - name: How to deploy a WebAssembly app on Azure Static Web Apps
+          href: guides\azure-static-webapps.md
+        - name: How to integrate Uno.Material
+          href: guides/uno-material-walkthrough.md
+        - name: How to integrate Uno.Cupertino
+          href: guides/uno-cupertino-walkthrough.md
     - name: Tutorials
       items:
         - name: Silverlight migration
-          topicHref: silverlight-migration-landing.md 
+          topicHref: silverlight-migration-landing.md
           items:
             - name: Overview
               href: silverlight-migration-landing.md
@@ -158,6 +169,8 @@
           href: features/working-with-animations.md
         - name: Assets and image display
           href: features/working-with-assets.md
+        - name: Composition API
+          href: composition.md
         - name: Fluent styles
           href: features\fluent-styles.md
         - name: Fonts
@@ -281,11 +294,25 @@
             - name: Other features
               href: Uno.UI.Toolkit.md
         - name: Uno Material
-          href: features/uno-material.md
+          topicHref: features/uno-material.md
+          items:
+            - name: Overview
+              href: features/uno-material.md
+            - name: Controls extra setup
+              href: features/uno-material-controls-extra-setup.md
+        - name: Uno Cupertino
+          topicHref: features/uno-cupertino.md
+          items:
+            - name: Overview
+              href: features/uno-cupertino.md
         - name: Fluent icon font
           href: uno-fluent-assets.md
         - name: Lottie animations
           href: features/Lottie.md
+        - name: Working with cookies
+          href: features/working-with-cookies.md
+        - name: Using pointer cursors
+          href: features/cursors.md
     - name: Core functionality
       items:
         - name: Logging

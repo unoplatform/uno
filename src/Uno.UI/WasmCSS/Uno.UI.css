@@ -20,14 +20,17 @@ body {
   position: absolute;
   display: inline;
   outline: none;
-  pointer-events: auto;
+  /*
+      Disable pointer events by default to match HitTestVisibilityProperty
+      default value
+  */
+  pointer-events: none;
   /*
     Padding & margin are required for measure/arrange to behave well:
     margin & padding are calculated through Xaml elements.
   */
   margin: 0 !important;
   padding: 0;
-
   line-height: normal;
   -webkit-box-sizing: border-box !important;
   -moz-box-sizing: border-box !important;
@@ -61,6 +64,17 @@ svg.uno-uielement {
   -ms-opacity: 0;
   opacity: 0;
   position: fixed;
+}
+
+.uno-uielement.uno-visibility-collapsed {
+  /*
+    Note: On wasm when we have an 'hidden' (or 'collapsed') element, its height is used to compute the native 'scrollHeight',
+	  driving the SV to flicker when we scroll while at the bottom of the viewport (if those hidden element would have increase the viewport if visible).
+	  To avoid that, we move the element way out of the visible bounds of the view.
+  */
+  visibility: hidden !important;
+  top: -100000px !important;
+  left: -100000px !important;
 }
 
 svg.uno-frameworkelement.uno-unarranged,
@@ -108,9 +122,17 @@ embed.uno-frameworkelement.uno-unarranged {
   -ms-background-clip: text !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
+
+  /* overflow:hidden is required for text-overflow: ellipsis to work correctly */
+  overflow: hidden;
 }
 
-.uno-buttonbase {
+[data-use-hand-cursor-interaction="true"] .uno-buttonbase,
+[data-use-hand-cursor-interaction="true"] .uno-toggleswitch {
+  cursor: pointer;
+}
+
+.uno-hyperlinkbutton {
   cursor: pointer;
 }
 
@@ -149,8 +171,8 @@ embed.uno-frameworkelement.uno-unarranged {
   }
 
   .uno-scrollcontentpresenter.scroll-x-hidden {
-    overflow-x: auto;
-    scrollbar-height: none;
+    overflow-x: auto; /* We must not use "hidden" to allow native scrolling interaction like mouse wheel */
+    scrollbar-width: none; /* scrollbar-height has no effect on FF, using scrollbar-width works on all browsers (non standard proeprty) */
   }
 
   .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
@@ -162,7 +184,7 @@ embed.uno-frameworkelement.uno-unarranged {
   }
 
   .uno-scrollcontentpresenter.scroll-y-hidden {
-    overflow-y: auto;
+    overflow-y: auto; /* We must not use "hidden" to allow native scrolling interaction like mouse wheel */
     scrollbar-width: none;
   }
 

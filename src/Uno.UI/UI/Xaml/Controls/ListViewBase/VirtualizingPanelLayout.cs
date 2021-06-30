@@ -13,6 +13,7 @@ using Uno;
 
 namespace Windows.UI.Xaml.Controls
 {
+    [Windows.UI.Xaml.Data.Bindable]
 	abstract partial class VirtualizingPanelLayout : IScrollSnapPointsInfo
 	{
 		/// <summary>

@@ -84,3 +84,11 @@ You will be able to build the UWP project, however, Rider currently does not sup
 ### Video Tutorial
 
 [![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo)
+
+### Troubleshooting Uno Platform Installation Issues
+
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
+
+### Getting Help
+
+If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 

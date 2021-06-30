@@ -41,11 +41,13 @@
 		<CompilerVisibleProperty Include="MSBuildProjectName" />
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
+		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
 		<CompilerVisibleProperty Include="UnoRemoteControlPort" />
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
+		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
 		<CompilerVisibleProperty Include="TSBindingsPath" />
 		<CompilerVisibleProperty Include="UseUnoXamlParser" />
 		<CompilerVisibleProperty Include="UnoSkipUserControlsInVisualTree" />
@@ -387,6 +389,18 @@
 	<Warning
 	  Condition="'$(registry:HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled)'!='1' and '$(UnoUIDisableLongPathWarning)'==''"
 	  Text="Windows LongPath support is not enabled, you may experience build errors. You can avoid these by enabling LongPath with &quot;reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1&quot;, or disable this warning by setting UnoUIDisableLongPathWarning to true."/>
+  </Target>
+
+  <Target Name="_UnoUIValidateInvalidRoslynPath"
+		  BeforeTargets="CoreCompile"
+		  Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'">
+	<!---
+	Validation '#' escaped path https://github.com/unoplatform/uno/issues/5953
+	-->
+
+	<Warning
+	  Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
+	  Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
   </Target>
 
 </Project>

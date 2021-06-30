@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
@@ -602,6 +603,7 @@ namespace Windows.UI.Xaml
 			// [3] Any local handlers?
 			var isHandled = IsHandled(args);
 			if (!ctx.Mode.HasFlag(BubblingMode.IgnoreElement)
+				&& !ctx.IsInternal
 				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
 				&& handlers.Any())
 			{
@@ -682,13 +684,8 @@ namespace Windows.UI.Xaml
 			{
 				mode |= BubblingMode.IgnoreParents;
 			}
-			ctx = new BubblingContext
-			{
-				Mode = mode,
-				Root = ctx.Root
-			};
 			
-			var handledByAnyParent = parent.RaiseEvent(routedEvent, args, ctx);
+			var handledByAnyParent = parent.RaiseEvent(routedEvent, args, ctx.WithMode(mode));
 
 			return handledByAnyParent;
 		}
@@ -737,6 +734,16 @@ namespace Windows.UI.Xaml
 		{
 			public static readonly BubblingContext Bubble = default;
 
+			public static readonly BubblingContext NoBubbling = new BubblingContext { Mode = BubblingMode.NoBubbling };
+
+			/// <summary>
+			/// When bubbling in managed code, the <see cref="UIElement.RaiseEvent"/> will take care to raise the event on each parent,
+			/// considering the Handled flag.
+			/// This value is used to flag events that are sent to element to maintain their internal state,
+			/// but which are not meant to initiate a new event bubbling (a.k.a. invoke the "RaiseEvent" again)
+			/// </summary>
+			public static readonly BubblingContext OnManagedBubbling = new BubblingContext{Mode = BubblingMode.NoBubbling, IsInternal = true};
+
 			public static BubblingContext BubbleUpTo(UIElement root)
 				=> new BubblingContext {Root = root};
 
@@ -750,8 +757,38 @@ namespace Windows.UI.Xaml
 			/// </summary>
 			/// <remarks>It's expected that the event is raised on this Root element.</remarks>
 			public UIElement Root { get; set; }
+
+			/// <summary>
+			/// Indicates that the associated event should not be publicly raised.
+			/// </summary>
+			/// <remarks>
+			/// The "internal" here refers only to the private state of the code which has initiated this event, not subclasses.
+			/// This means that an event flagged as "internal" can bubble to update the private state of parents,
+			/// but the UIElement.RoutedEvent won't be raised in any way (public and internal handlers) and it won't be sent to Control.On<RoutedEvent>() neither.
+			/// </remarks>
+			public bool IsInternal { get; set; }
+
+			/// <summary>
+			/// Indicates that the associated event is an internal event that will not be propagated to parent (cf. <see cref="OnManagedBubbling"/>).
+			/// </summary>
+			public bool IsLocalOnly => IsInternal && Mode == BubblingMode.NoBubbling;
+
+			public BubblingContext WithMode(BubblingMode mode) => new BubblingContext
+			{
+				Mode = mode,
+				Root = Root,
+				IsInternal = IsInternal
+			};
 		}
 
+		/// <summary>
+		/// Defines the mode used to bubble an event.
+		/// </summary>
+		/// <remarks>
+		/// This takes priority over the <see cref="RoutedEvent.IsAlwaysBubbled"/>.
+		/// Preventing default bubble behavior of an event is meant to be used only when the event has already been raised/bubbled,
+		/// but we need to sent it also to some specific elements (e.g. implicit captures).
+		/// </remarks>
 		[Flags]
 		internal enum BubblingMode
 		{
@@ -766,14 +803,14 @@ namespace Windows.UI.Xaml
 			IgnoreElement = 1,
 
 			/// <summary>
-			/// The event should be bubble to parent elements
+			/// The event should not bubble to parent elements
 			/// </summary>
 			IgnoreParents = 2,
 
 			/// <summary>
-			/// The bubbling should stop here (the event won't be raised on the element)
+			/// The bubbling should stop here (the event won't even be raised on the current element)
 			/// </summary>
-			StopBubbling = IgnoreElement | IgnoreParents,
+			NoBubbling = IgnoreElement | IgnoreParents,
 		}
 
 		private static bool IsHandled(RoutedEventArgs args)
@@ -869,5 +906,9 @@ namespace Windows.UI.Xaml
 					break;
 			}
 		}
+
+		// Those methods are part of the internal UWP API
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool ShouldRaiseEvent(Delegate eventHandler) => eventHandler != null;
 	}
 }

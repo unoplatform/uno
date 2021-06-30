@@ -8,7 +8,7 @@ This guide will walk you through the set-up process for building WebAssembly app
 
 * [**Mono**](https://www.mono-project.com/download/stable/)
 
-* **.NET Core SDK**
+* **.NET Core SDK** (NOTE: You need BOTH v3 AND v5 installed)
     * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
     * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 
@@ -118,3 +118,11 @@ You should now be in the same configuration as the generated template files.
 ### Video Tutorial
 
 [![Getting Started Visual Studio Code Video](Assets/vscode-cover.JPG)](http://www.youtube.com/watch?v=O9qgw1Q445M "")
+
+### Troubleshooting Uno Platform Installation Issues
+
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
+
+### Getting Help
+
+If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 

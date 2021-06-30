@@ -1,7 +1,13 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;uap10.0.17763;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;uap10.0.17763;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+
+		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworks);uap10.0.17763</TargetFrameworks>
+		<TargetFrameworksCI Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworksCI);uap10.0.17763</TargetFrameworksCI>
+
+		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'!='true'">$(TargetFrameworks);net5.0-windows10.0.18362.0</TargetFrameworks>
+		<TargetFrameworksCI Condition="'$(UNO_UWP_BUILD)'!='true'">$(TargetFrameworksCI);net5.0-windows10.0.18362.0</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -82,15 +88,19 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
-		<PackageReference Include="Microsoft.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'">
-			<Version>3.0.0-alpha.200210.0</Version>
+	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0' or '$(TargetFramework)'=='uap10.0.17763'">
+		<PackageReference Include="Microsoft.ProjectReunion" Condition="'$(UNO_UWP_BUILD)'!='true'">
+			<Version>0.5.6</Version>
 		</PackageReference>
+
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.16" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.18362.16" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+
 		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
 			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
-
+	
 	<ItemGroup>
 		<Page Remove="Themes\Generic.xaml" />
 		<Page Include="Themes\Generic.xaml" />
@@ -130,4 +140,8 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<!-- https://github.com/microsoft/microsoft-ui-xaml/issues/4503 -->
+	<Target Name="_CalculateXbfSupport" Condition="'$(TargetFramework)'=='uap10.0.17763'"/>
+
 </Project>

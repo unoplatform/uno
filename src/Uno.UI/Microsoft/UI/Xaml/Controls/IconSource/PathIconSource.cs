@@ -1,5 +1,6 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -17,5 +18,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty DataProperty { get; } =
 			DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new PropertyMetadata(null));
+
+		public override IconElement CreateIconElement()
+		{
+			var pathIcon = new PathIcon();
+
+			if (Data != null)
+			{
+				pathIcon.Data = Data;
+			}
+
+			if (Foreground != null)
+			{
+				pathIcon.Foreground = Foreground;
+			}
+
+			return pathIcon;
+		}
 	}
 }

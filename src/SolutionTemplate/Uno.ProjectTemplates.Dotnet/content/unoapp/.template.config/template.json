@@ -2,7 +2,7 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
   "classifications": [
-    "Cross-platform",
+    "Multi-platform",
     "Uno Platform",
     "Android",
     "iOS",
@@ -13,10 +13,10 @@
     "WebAssembly",
     "dotnet-new"
   ],
-  "name": "Cross-Platform App",
+  "name": "Multi-Platform App",
   "identity": "Uno.Platform.UnoApp",
   "groupIdentity": "Uno.Platform.Blank",
-  "description": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux.",
+  "description": "Template for creating a multi-platform C# & XAML application targeting UWP, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux.",
   "precedence": "6001",
   "tags": {
     "language": "C#",
@@ -35,7 +35,7 @@
     "B445DF73-AC9E-4276-9FBA-7CB5AD5D2518",
     "3EA9E612-E717-4E55-9034-DE653429FEFD", // WPF
     "3EA9E612-E717-4E55-9034-C415CD62AF9A", // UWP
-    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9", // UWP
+    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9" // UWP
   ],
   "symbols": {
     "guid1": {
@@ -91,12 +91,6 @@
       "defaultValue": "true",
       "description": "Enables the WebAssembly platform support project"
     },
-    "UWP": {
-      "type": "parameter",
-      "dataType": "bool",
-      "defaultValue": "true",
-      "description": "Enables the Windows platform support project"
-    },
     "iOS": {
       "type": "parameter",
       "dataType": "bool",
@@ -133,6 +127,12 @@
       "defaultValue": "true",
       "description": "Enables the Skia/Tizen platform support project"
     },
+    "skia-linux-fb": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/Linux Framebuffer platform support project"
+    },
     "vscodeWasm": {
       "type": "parameter",
       "dataType": "bool",
@@ -153,7 +153,6 @@
       "path": "UnoQuickStart.iOS\\UnoQuickStart.iOS.csproj"
     },
     {
-      "condition": "UWP",
       "path": "UnoQuickStart.UWP\\UnoQuickStart.Uwp.csproj"
     },
     {
@@ -179,8 +178,11 @@
     {
       "condition": "skia-tizen",
       "path": "UnoQuickStart.Skia.Tizen\\UnoQuickStart.Skia.Tizen.csproj"
+    },
+    {
+      "condition": "skia-linux-fb",
+      "path": "UnoQuickStart.Skia.Linux.FrameBuffer\\UnoQuickStart.Skia.Linux.FrameBuffer.csproj"
     }
-
   ],
   "sources": [
     {
@@ -210,12 +212,6 @@
           ]
         },
         {
-          "condition": "(!UWP)",
-          "exclude": [
-            "UnoQuickStart.UWP/**/*"
-          ]
-        },
-        {
           "condition": "(!skia-gtk)",
           "exclude": [
             "UnoQuickStart.Skia.Gtk/**/*"
@@ -232,6 +228,12 @@
           "condition": "(!skia-tizen)",
           "exclude": [
             "UnoQuickStart.Skia.Tizen/**/*"
+          ]
+        },
+        {
+          "condition": "(!skia-linux-fb)",
+          "exclude": [
+            "UnoQuickStart.Skia.Linux.FrameBuffer/**/*"
           ]
         },
         {

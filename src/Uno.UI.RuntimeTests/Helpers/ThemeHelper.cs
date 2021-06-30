@@ -17,9 +17,13 @@ namespace Uno.UI.RuntimeTests.Helpers
 		{
 			var root = Window.Current.Content as FrameworkElement;
 			Assert.IsNotNull(root);
-			var currentTheme = root!.RequestedTheme;
+			var currentTheme = Application.Current.RequestedTheme;
 			root.RequestedTheme = ElementTheme.Dark;
-			return new DisposableAction(() => root.RequestedTheme = currentTheme);
+
+			return new DisposableAction(() =>
+			{
+				root.RequestedTheme = currentTheme == ApplicationTheme.Light ? ElementTheme.Light : ElementTheme.Dark;
+			});
 		}
 	}
 }

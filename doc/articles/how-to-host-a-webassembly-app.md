@@ -1,6 +1,7 @@
 # Hosting a WebAssembly App
 
 - WASM Web Server Configuration
+  - [Azure Static WebApps](guides/azure-static-webapps.md)
   - [Nginx](#nginx)
   - [Apache](#apache)
 
@@ -171,3 +172,17 @@ AddType application/octet-stream .pdb
 AddType application/font-woff .woff
 AddType application/font-woff .woff2
 ```
+
+## IIS
+Windows Server IIS is supported, and needs some manual installation steps to be ready for Uno Platform WebAssembly apps.
+
+Here are some steps:
+- Install the [URL Rewriter module](https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/url-rewrite-module-configuration-reference)
+- Add an application to the local web site in IIS and set its physical path to: `...\MyApp\MyApp.Wasm\bin\Debug\netstandard2.0\dist` or `...\MyApp\MyApp.Wasm\bin\Debug\net5.0\dist`
+- Add MIME type `application/octet-stream .clr` to IIS.
+- Add MIME type `application/wasm .wasm` to IIS.
+- Add MIME type `application/octet-stream .dat` to IIS.
+- Add MIME type `application/woff2 .woff2` to IIS
+- Add MIME type `application/pdb .pdb` to IIS
+
+Run http:localhost/Myapp for testing

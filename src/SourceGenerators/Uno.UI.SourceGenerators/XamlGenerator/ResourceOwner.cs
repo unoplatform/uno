@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.SourceGenerators.XamlGenerator
+﻿#nullable enable
+
+namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	/// <summary>
 	/// Resource owner variable definition

@@ -1,7 +1,7 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
-	<Name>Cross-Platform Library (Uno Platform)</Name>
-	<Description>Template for creating a cross-platform library with the Uno Platform that targets UWP, Android, iOS, and WebAssembly</Description>
+	<Name>Multi-Platform Library (Uno Platform)</Name>
+	<Description>Template for creating a multi-platform library with the Uno Platform that targets UWP, WebAssembly, Android, iOS, macOS and Linux</Description>
 	<ProjectType>CSharp</ProjectType>
 	<ProjectSubType>
 	</ProjectSubType>

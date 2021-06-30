@@ -16,8 +16,6 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		internal bool ShouldInterceptInvalidate { get; set; }
-
 		public IntPtr Handle { get; }
 
 		public string Name { get; set; }
@@ -34,6 +32,8 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
+		internal bool ShouldInterceptInvalidate { get; set; }
+
 		internal void AddChild(UIElement child, int? index = null) => throw new NotSupportedException("Reference assembly");
 		internal void MoveChildTo(int oldIndex, int newIndex) => throw new NotSupportedException("Reference assembly");
 		internal bool RemoveChild(UIElement child) => throw new NotSupportedException("Reference assembly");
@@ -43,5 +43,10 @@ namespace Windows.UI.Xaml
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
 		}
+
+
+		internal void SetHitTestVisibilityForRoot() => throw new NotSupportedException("Reference assembly");
+
+		internal void ClearHitTestVisibilityForRoot() => throw new NotSupportedException("Reference assembly");
 	}
 }

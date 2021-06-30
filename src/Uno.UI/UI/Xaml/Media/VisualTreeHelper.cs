@@ -193,11 +193,34 @@ namespace Windows.UI.Xaml.Media
 					$"Use {nameof(TryAdaptNative)} if it's not known whether view will be native.");
 			}
 
-			return new ContentPresenter
+			var host = new ContentPresenter
 			{
 				IsNativeHost = true,
 				Content = nativeView
 			};
+
+			// Propagate layout-related attached properties to the managed wrapper, so the host panel takes them into account
+			PropagateAttachedProperties(
+				host,
+				nativeView,
+				Grid.RowProperty,
+				Grid.RowSpanProperty,
+				Grid.ColumnProperty,
+				Grid.ColumnSpanProperty,
+				Canvas.LeftProperty,
+				Canvas.TopProperty,
+				Canvas.ZIndexProperty
+			);
+
+			return host;
+		}
+
+		private static void PropagateAttachedProperties(FrameworkElement host, _View nativeView, params DependencyProperty[] properties)
+		{
+			foreach (var property in properties)
+			{
+				host.SetValue(property, nativeView.GetValue(property));
+			}
 		}
 
 		/// <summary>
@@ -234,6 +257,22 @@ namespace Windows.UI.Xaml.Media
 			view.AddSubview(child);
 #elif UNO_REFERENCE_API
 			view.AddChild(child);
+#else
+			throw new NotImplementedException("AddChild not implemented on this platform.");
+#endif
+		}
+
+		internal static void RemoveChild(UIElement view, UIElement child)
+		{
+#if __ANDROID__
+			view.RemoveView(child);
+#elif __IOS__ || __MACOS__
+			if(child.Superview == view)
+			{
+				child.RemoveFromSuperview();
+			}
+#elif UNO_REFERENCE_API
+			view.RemoveChild(child);
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif

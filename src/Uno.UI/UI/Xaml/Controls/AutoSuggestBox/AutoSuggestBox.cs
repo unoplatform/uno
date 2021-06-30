@@ -1,17 +1,16 @@
 
 using System;
+using System.Collections.Specialized;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using System.Collections.Specialized;
-using Uno.UI.DataBinding;
 
 #if __IOS__
 using UIKit;
@@ -21,7 +20,7 @@ using AppKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class AutoSuggestBox : ItemsControl, IValueChangedListener
+	public partial class AutoSuggestBox : ItemsControl, IValueChangedListener
 	{
 		private TextBox _textBox;
 		private Popup _popup;
@@ -53,12 +52,9 @@ namespace Windows.UI.Xaml.Controls
 			_popup.DisableFocus();
 #endif
 
-			if (_queryButton != null)
-			{
-				_queryButton.Content = new SymbolIcon(Symbol.Find);
-			}
+			UpdateQueryButton();
 
-			_textBoxBinding = new BindingPath("Text", null) {DataContext = _textBox, ValueChangedListener = this};
+			_textBoxBinding = new BindingPath("Text", null) { DataContext = _textBox, ValueChangedListener = this };
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
@@ -276,6 +272,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void UpdateQueryButton()
+		{
+			if (_queryButton == null)
+			{
+				return;
+			}
+
+			_queryButton.Content = QueryIcon;
+			_queryButton.Visibility = QueryIcon == null ? Visibility.Collapsed : Visibility.Visible;
+		}
+
 		private void OnSuggestionListItemClick(object sender, ItemClickEventArgs e)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -322,7 +329,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				RevertTextToUserInput();
 				IsSuggestionListOpen = false;
-			} else
+			}
+			else
 			{
 				_textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
 			}
@@ -351,7 +359,8 @@ namespace Windows.UI.Xaml.Controls
 			if (nextIndex == -1)
 			{
 				RevertTextToUserInput();
-			} else
+			}
+			else
 			{
 				ChoseSuggestion();
 			}
@@ -391,7 +400,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (TextMemberPath != null)
 			{
-				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) {DataContext = o};
+				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) { DataContext = o };
 				value = bindingPath.Value;
 			}
 
@@ -402,7 +411,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var newValue = args.NewValue as string ?? string.Empty;
 
-			if(dependencyObject is AutoSuggestBox tb)
+			if (dependencyObject is AutoSuggestBox tb)
 			{
 				if (tb._textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
 				{

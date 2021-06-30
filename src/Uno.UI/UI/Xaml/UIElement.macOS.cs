@@ -105,10 +105,6 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-#if DEBUG
-		public string ShowLocalVisualTree(int fromHeight) => AppKit.UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
-#endif
-
 		/// <inheritdoc />
 		public override bool AcceptsFirstResponder()
 			=> true; // This is required to receive the KeyDown / KeyUp. Note: Key events are then bubble in managed.
@@ -127,7 +123,7 @@ namespace Windows.UI.Xaml
 
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
-			var parent = this.GetParent();
+			var parent = this.GetVisualTreeParent();
 			switch (parent)
 			{
 				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
@@ -143,7 +139,7 @@ namespace Windows.UI.Xaml
 				case NSView view:
 					do
 					{
-						parent = parent?.GetParent();
+						parent = parent?.GetVisualTreeParent();
 
 						switch (parent)
 						{
@@ -170,12 +166,6 @@ namespace Windows.UI.Xaml
 								return false;
 						}
 					} while (true);
-
-				default:
-					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Found a parent which is NOT a NSView."));
-
-					parentElement = null;
-					return false;
 			}
 		}
 

@@ -7,13 +7,14 @@ using Windows.UI.Xaml.Media;
 using Uno.Logging;
 using Windows.Foundation;
 using System.Globalization;
-using Uno.UI.UI.Xaml.Documents;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
+		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		public Brush Foreground
 		{
@@ -21,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(ForegroundProperty, value);
 		}
 
-		internal static DependencyProperty ForegroundProperty { get ; } =
+		internal static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				name: "Foreground",
 				propertyType: typeof(Brush),
@@ -32,7 +33,15 @@ namespace Windows.UI.Xaml.Controls
 					propertyChangedCallback: (s, e) => (s as TextBoxView)?.OnForegroundChanged(e)));
 
 		private void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
-			=> this.SetForeground(e.NewValue);
+		{
+			_foregroundChanged.Disposable = null;
+			if (e.NewValue is SolidColorBrush scb)
+			{
+				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => this.SetForeground(e.NewValue));
+			}
+
+			this.SetForeground(e.NewValue);
+		}
 
 		public TextBoxView(TextBox textBox, bool isMultiline)
 			: base(isMultiline ? "textarea" : "input")
@@ -62,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			
+
 			HtmlInput += OnInput;
 
 			SetTextNative(_textBox.Text);
@@ -71,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			
+
 			HtmlInput -= OnInput;
 		}
 

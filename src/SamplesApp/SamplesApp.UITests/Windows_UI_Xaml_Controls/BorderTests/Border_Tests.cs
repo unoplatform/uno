@@ -77,6 +77,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 			var topTarget = _app.GetPhysicalRect("TopTarget");
 			var rightTarget = _app.GetPhysicalRect("RightTarget");
 			var bottomTarget = _app.GetPhysicalRect("BottomTarget");
+			var centerTarget = _app.GetPhysicalRect("CenterTarget");
 
 			SetBorderProperty("MyBorder", "CornerRadius", "10");
 
@@ -89,21 +90,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 				ImageAssert.HasPixels(
 					snapshot,
 					ExpectedPixels
-						.At($"left-{expected}-progress", leftTarget.CenterX, leftTarget.CenterY)
+						.At($"left-{expected}", leftTarget.CenterX, leftTarget.CenterY)
 						.WithPixelTolerance(1, 1)
 						.Pixel(expected.Colors[0]),
 					ExpectedPixels
-						.At($"top-{expected}-progress", topTarget.CenterX, topTarget.CenterY)
+						.At($"top-{expected}", topTarget.CenterX, topTarget.CenterY)
 						.WithPixelTolerance(1, 1)
 						.Pixel(expected.Colors[1]),
 					ExpectedPixels
-						.At($"right-{expected}-progress", rightTarget.CenterX, rightTarget.CenterY)
+						.At($"right-{expected}", rightTarget.CenterX, rightTarget.CenterY)
 						.WithPixelTolerance(1, 1)
 						.Pixel(expected.Colors[2]),
 					ExpectedPixels
-						.At($"bottom-{expected}-progress", bottomTarget.CenterX, bottomTarget.CenterY)
+						.At($"bottom-{expected}", bottomTarget.CenterX, bottomTarget.CenterY)
 						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[3])
+						.Pixel(expected.Colors[3]),
+					ExpectedPixels
+						.At($"center-{expected}", centerTarget.CenterX, centerTarget.CenterY)
+						.WithPixelTolerance(1, 1)
+						.Pixel(blue)
 				);
 			}
 		}

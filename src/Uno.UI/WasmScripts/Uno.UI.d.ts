@@ -52,6 +52,14 @@ declare namespace Uno.UI {
         private static isConnectedPolyfill;
     }
 }
+declare module Uno.UI {
+    enum HtmlEventDispatchResult {
+        Ok = 0,
+        StopPropagation = 1,
+        PreventDefault = 2,
+        NotDispatched = 128
+    }
+}
 declare namespace Uno.Http {
     interface IHttpClientConfig {
         id: string;
@@ -141,6 +149,7 @@ declare namespace Uno.UI {
         static get isLoadEventsEnabled(): boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
+        private static readonly unoCollapsedClassName;
         private static _cctor;
         /**
             * Initialize the WindowManager
@@ -227,6 +236,12 @@ declare namespace Uno.UI {
             */
         setXUidNative(pParam: number): boolean;
         private setXUidInternal;
+        /**
+            * Sets the visibility of the specified element
+            */
+        setVisibility(elementId: number, visible: boolean): string;
+        setVisibilityNative(pParam: number): boolean;
+        private setVisibilityInternal;
         /**
             * Set an attribute for an element.
             */
@@ -317,6 +332,24 @@ declare namespace Uno.UI {
         arrangeElementNative(pParams: number): boolean;
         private setAsArranged;
         private setAsUnarranged;
+        /**
+        * Sets the color property of the specified element
+        */
+        setElementColor(elementId: number, color: number): string;
+        setElementColorNative(pParam: number): boolean;
+        private setElementColorInternal;
+        /**
+        * Sets the background color property of the specified element
+        */
+        setElementBackgroundColor(pParam: number): boolean;
+        /**
+        * Sets the background image property of the specified element
+        */
+        setElementBackgroundGradient(pParam: number): boolean;
+        /**
+        * Clears the background property of the specified element
+        */
+        resetElementBackground(pParam: number): boolean;
         /**
         * Sets the transform matrix of an element
         *
@@ -547,6 +580,7 @@ declare namespace Uno.UI {
         private dispatchEvent;
         private getIsConnectedToRootElement;
         private handleToString;
+        private numberToCssColor;
         setCursor(cssCursor: string): string;
         getNaturalImageSize(imageUrl: string): Promise<string>;
     }
@@ -1090,8 +1124,10 @@ declare namespace Windows.UI.ViewManagement {
 declare namespace Windows.UI.Xaml {
     class Application {
         private static dispatchThemeChange;
+        private static dispatchVisibilityChange;
         static getDefaultSystemTheme(): string;
         static observeSystemTheme(): void;
+        static observeVisibility(): void;
     }
 }
 declare namespace Windows.UI.Xaml {
@@ -1293,6 +1329,10 @@ declare class WindowManagerRemoveViewParams {
     ChildView: number;
     static unmarshal(pData: number): WindowManagerRemoveViewParams;
 }
+declare class WindowManagerResetElementBackgroundParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerResetElementBackgroundParams;
+}
 declare class WindowManagerResetStyleParams {
     HtmlId: number;
     Styles_Length: number;
@@ -1331,6 +1371,21 @@ declare class WindowManagerSetContentHtmlParams {
     HtmlId: number;
     Html: string;
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
+}
+declare class WindowManagerSetElementBackgroundColorParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementBackgroundColorParams;
+}
+declare class WindowManagerSetElementBackgroundGradientParams {
+    HtmlId: number;
+    CssGradient: string;
+    static unmarshal(pData: number): WindowManagerSetElementBackgroundGradientParams;
+}
+declare class WindowManagerSetElementColorParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementColorParams;
 }
 declare class WindowManagerSetElementTransformParams {
     HtmlId: number;
@@ -1385,6 +1440,11 @@ declare class WindowManagerSetUnsetClassesParams {
     CssClassesToUnset_Length: number;
     CssClassesToUnset: Array<string>;
     static unmarshal(pData: number): WindowManagerSetUnsetClassesParams;
+}
+declare class WindowManagerSetVisibilityParams {
+    HtmlId: number;
+    Visible: boolean;
+    static unmarshal(pData: number): WindowManagerSetVisibilityParams;
 }
 declare class WindowManagerSetXUidParams {
     HtmlId: number;

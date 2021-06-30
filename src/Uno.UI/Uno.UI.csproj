@@ -88,8 +88,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" Version="2.3.0" />
-		<PackageReference Include="Uno.Core.Build" Version="2.3.0" />
+		<PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
@@ -218,5 +218,7 @@
 	</Target>
 
 	<Import Project="MixinGeneration.targets" />
+
+	<!-- If any ItemGroup appears here with Remove=XXX, they should be deleted -->
 
 </Project>

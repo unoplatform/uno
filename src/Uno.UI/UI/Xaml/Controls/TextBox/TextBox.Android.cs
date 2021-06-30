@@ -363,13 +363,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.Enabled = newValue;
+				_textBoxView.Enabled = e.NewValue;
 			}
-			base.OnIsEnabledChanged(oldValue, newValue);
 		}
 
 		private static TypefaceStyle GetTypefaceStyle(FontStyle fontStyle, FontWeight fontWeight)

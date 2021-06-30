@@ -68,8 +68,6 @@ namespace Windows.UI.Xaml
 		private bool _isDisposed;
 
 		private readonly DependencyPropertyDetailsCollection _properties;
-		private readonly DependencyPropertyDetails _dataContextPropertyDetails;
-		private readonly DependencyPropertyDetails _templatedParentPropertyDetails;
 		private ResourceBindingCollection? _resourceBindings;
 
 		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
@@ -102,9 +100,17 @@ namespace Windows.UI.Xaml
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
 		/// <summary>
+		/// An ancestor store is unregistering inherited properties.
+		/// </summary>
+		private bool _parentUnregisteringInheritedProperties;
+		/// <summary>
 		/// Is a theme-bound value currently being set?
 		/// </summary>
 		private bool _isSettingThemeBinding;
+		/// <summary>
+		/// The theme last to apply theme bindings on this object and its children.
+		/// </summary>
+		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
 		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
@@ -170,8 +176,6 @@ namespace Windows.UI.Xaml
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
 			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
-			_dataContextPropertyDetails = _properties.DataContextPropertyDetails;
-			_templatedParentPropertyDetails = _properties.TemplatedParentPropertyDetails;
 
 			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
@@ -225,7 +229,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="property">The <see cref="DependencyProperty" /> identifier of the property for which to retrieve the value. </param>
 		/// <returns>Returns the current effective value.</returns>
-		public object GetValue(DependencyProperty property)
+		public object? GetValue(DependencyProperty property)
 		{
 			return GetValue(property: property, propertyDetails: null, precedence: null, isPrecedenceSpecific: false);
 		}
@@ -236,7 +240,7 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
-		public object ReadLocalValue(DependencyProperty property)
+		public object? ReadLocalValue(DependencyProperty property)
 		{
 			return GetValue(property, precedence: DependencyPropertyValuePrecedences.Local, isPrecedenceSpecific: true);
 		}
@@ -247,17 +251,17 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
-		public object GetAnimationBaseValue(DependencyProperty property)
+		public object? GetAnimationBaseValue(DependencyProperty property)
 		{
 			return GetValue(property, precedence: DependencyPropertyValuePrecedences.Local);
 		}
 
-		internal object GetValue(DependencyProperty property, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		internal object? GetValue(DependencyProperty property, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
 			return GetValue(property, null, precedence, isPrecedenceSpecific);
 		}
 
-		internal object GetValue(DependencyProperty property, DependencyPropertyDetails? propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		internal object? GetValue(DependencyProperty property, DependencyPropertyDetails? propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
 			WritePropertyEventTrace(TraceProvider.GetValue, property, precedence);
 
@@ -268,9 +272,9 @@ namespace Windows.UI.Xaml
 			return GetValue(propertyDetails, precedence, isPrecedenceSpecific);
 		}
 
-		private object GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
-			if (propertyDetails == _dataContextPropertyDetails || propertyDetails == _templatedParentPropertyDetails)
+			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -352,8 +356,8 @@ namespace Windows.UI.Xaml
 		private static readonly List<DependencyPropertyPath> _propagationBypass =
 			new List<DependencyPropertyPath>();
 
-		private static readonly Dictionary<DependencyPropertyPath, object> _propagationBypassed =
-			new Dictionary<DependencyPropertyPath, object>(DependencyPropertyPath.Comparer.Default);
+		private static readonly Dictionary<DependencyPropertyPath, object?> _propagationBypassed =
+			new Dictionary<DependencyPropertyPath, object?>(DependencyPropertyPath.Comparer.Default);
 
 		internal static IDisposable? BypassPropagation(DependencyObject instance, DependencyProperty property)
 		{
@@ -440,7 +444,7 @@ namespace Windows.UI.Xaml
 			{
 				var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
 #endif
 				{
@@ -491,7 +495,7 @@ namespace Windows.UI.Xaml
 
 					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
 #endif
 				{
@@ -742,6 +746,18 @@ namespace Windows.UI.Xaml
 			);
 		}
 
+		/// <summary>
+		/// Registers an strong-referenced explicit DependencyProperty changed handler to be notified of any property change.
+		/// </summary>
+		/// <remarks>
+		/// This method is meant to be used only for a DependencyObject to
+		/// itself, to match the behavior of generic WinUI's OnPropertyChanged virtual method.
+		/// </remarks>
+		internal void RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback handler)
+		{
+			_genericCallbacks = _genericCallbacks.Add(handler);
+		}
+
 		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
 		{
 			public InheritedPropertyChangedCallbackDisposable(ManagedWeakReference objectStoreWeak, DependencyObjectStore childStore)
@@ -839,7 +855,7 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		internal (object value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
 			var stack = _properties.GetPropertyDetails(property);
 
@@ -915,7 +931,7 @@ namespace Windows.UI.Xaml
 				{
 #if !HAS_EXPENSIVE_TRYFINALLY
 					// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-					// See https://github.com/mono/mono/issues/13653 for more details.
+					// See https://github.com/dotnet/runtime/issues/50783 for more details.
 					try
 #endif
 					{
@@ -978,7 +994,7 @@ namespace Windows.UI.Xaml
 		{
 #if !HAS_EXPENSIVE_TRYFINALLY
 			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/mono/mono/issues/13653 for more details.
+			// See https://github.com/dotnet/runtime/issues/50783 for more details.
 			try
 #endif
 			{
@@ -1010,11 +1026,11 @@ namespace Windows.UI.Xaml
 		{
 			if (_parentDataContextProperty.UniqueId == property.UniqueId)
 			{
-				return (_dataContextProperty, _dataContextPropertyDetails);
+				return (_dataContextProperty, _properties.DataContextPropertyDetails);
 			}
 			else if (_parentTemplatedParentProperty == property)
 			{
-				return (_templatedParentProperty, _templatedParentPropertyDetails);
+				return (_templatedParentProperty, _properties.TemplatedParentPropertyDetails);
 			}
 			else
 			{
@@ -1103,14 +1119,14 @@ namespace Windows.UI.Xaml
 			var convertedValue = BindingPropertyHelper.Convert(() => property.Type, value);
 			if (binding.SetterBindingPath != null)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
 #endif
 				{
 					_isSettingThemeBinding = binding.IsThemeResourceExtension;
 					binding.SetterBindingPath.Value = convertedValue;
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
 #endif
 				{
@@ -1168,7 +1184,7 @@ namespace Windows.UI.Xaml
 		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
 		{
 			var propertyValues = _properties.GetAllDetails()
-				.Except(_dataContextPropertyDetails, _templatedParentPropertyDetails)
+				.Except(_properties.DataContextPropertyDetails, _properties.TemplatedParentPropertyDetails)
 				.Select(d => GetValue(d));
 			foreach (var propertyValue in propertyValues)
 			{
@@ -1246,11 +1262,11 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Retrieve the implicit Style for <see cref="ActualInstance"/> by walking the visual tree.
 		/// </summary>
-		internal Style? GetImplicitStyle()
+		internal Style? GetImplicitStyle(in SpecializedResourceDictionary.ResourceKey styleKey)
 		{
 			foreach (var dict in GetResourceDictionaries(includeAppResources: true))
 			{
-				if (dict.TryGetValue(_originalObjectType, out var style, shouldCheckSystem: false))
+				if (dict.TryGetValue(styleKey, out var style, shouldCheckSystem: false))
 				{
 					return style as Style;
 				}
@@ -1495,9 +1511,9 @@ namespace Windows.UI.Xaml
 		private void RaiseCallbacks(
 			DependencyObject actualInstanceAlias,
 			DependencyPropertyDetails propertyDetails,
-			object previousValue,
+			object? previousValue,
 			DependencyPropertyValuePrecedences previousPrecedence,
-			object newValue,
+			object? newValue,
 			DependencyPropertyValuePrecedences newPrecedence
 		)
 		{
@@ -1542,9 +1558,9 @@ namespace Windows.UI.Xaml
 			DependencyObject actualInstanceAlias,
 			DependencyProperty property,
 			DependencyPropertyDetails propertyDetails,
-			object previousValue,
+			object? previousValue,
 			DependencyPropertyValuePrecedences previousPrecedence,
-			object newValue,
+			object? newValue,
 			DependencyPropertyValuePrecedences newPrecedence,
 			bool bypassesPropagation = false
 		)
@@ -1582,8 +1598,7 @@ namespace Windows.UI.Xaml
 				{
 					for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
 					{
-						var store = _childrenStores[storeIndex];
-						store.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
+						CallChildCallback(_childrenStores[storeIndex], instanceRef, property, eventArgs);
 					}
 				}
 			}
@@ -1608,6 +1623,12 @@ namespace Windows.UI.Xaml
 			// Raise the changes for the callback register to the property itself
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
+			// Raise the common property change callback of WinUI
+			if (actualInstanceAlias is UIElement uiElt)
+			{
+				uiElt.OnPropertyChanged2(eventArgs);
+			}
+
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
 			propertyDetails.CallbackManager.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
@@ -1621,11 +1642,35 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, DependencyPropertyChangedEventArgs eventArgs)
+		{
+			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			try
+#endif
+			{
+				if (propagateUnregistering)
+				{
+					childStore._parentUnregisteringInheritedProperties = true;
+				}
+				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			finally
+#endif
+			{
+				if (propagateUnregistering)
+				{
+					childStore._parentUnregisteringInheritedProperties = false;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Updates the parent of the <paramref name="newValue"/> to the
 		/// <paramref name="actualInstanceAlias"/> and resets the parent of <paramref name="previousValue"/>.
 		/// </summary>
-		private static void UpdateAutoParent(DependencyObject actualInstanceAlias, object previousValue, object newValue)
+		private static void UpdateAutoParent(DependencyObject actualInstanceAlias, object? previousValue, object? newValue)
 		{
 			if (
 				previousValue is DependencyObject previousObject
@@ -1705,7 +1750,38 @@ namespace Windows.UI.Xaml
 					}
 				}
 			}
+
+			CheckThemeBindings(previousParent, value);
 		}
+
+		/// <summary>
+		/// If we're being unloaded, save the current theme. If we're being loaded, check if application theme has changed since theme
+		/// bindings were last applied, and update if needed.
+		/// </summary>
+		private void CheckThemeBindings(object? previousParent, object? value)
+		{
+			if (ActualInstance is FrameworkElement frameworkElement)
+			{
+				if (value == null && previousParent != null)
+				{
+					_themeLastUsed = Application.Current?.RequestedThemeForResources;
+				}
+				else if (previousParent == null && value != null && _themeLastUsed is { } previousTheme)
+				{
+					_themeLastUsed = null;
+					if (Application.Current?.RequestedThemeForResources is { } currentTheme && !previousTheme.Equals(currentTheme))
+					{
+						Application.PropagateThemeChanged(frameworkElement);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Set theme used when applying theme-bound values.
+		/// </summary>
+		/// <param name="resourceKey">Key for the theme used</param>
+		internal void SetLastUsedTheme(SpecializedResourceDictionary.ResourceKey? resourceKey) => _themeLastUsed = resourceKey;
 
 		private ManagedWeakReference ThisWeakReference
 			=> _thisWeakRef ??= Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
@@ -1728,6 +1804,8 @@ namespace Windows.UI.Xaml
 			{
 				_hardParentRef = Parent;
 				_hardOriginalObjectRef = ActualInstance;
+
+				_properties.TryEnableHardReferences();
 			}
 		}
 
@@ -1740,6 +1818,8 @@ namespace Windows.UI.Xaml
 			{
 				_hardParentRef = null;
 				_hardOriginalObjectRef = null;
+
+				_properties.DisableHardReferences();
 			}
 		}
 

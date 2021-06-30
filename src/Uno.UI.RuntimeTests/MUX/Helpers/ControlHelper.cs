@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -85,6 +87,17 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			Assert.IsNotNull(button, "Close button not found");
 
 			await DoClickUsingAP(button);
+		}
+
+		public static async Task ValidateUIElementTree(
+			Size windowSizeOverride,
+			double scale,
+			Func<Task<Panel>> setup,
+			Func<Task> cleanup = null,
+			bool disableHittestingOnRoot = true,
+			bool ignorePopups = false)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

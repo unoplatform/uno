@@ -111,11 +111,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			Assert.IsTrue(result.Contains("[PARENT] Manip delta[CHILD] Pointer moved[PARENT] Manip delta[CHILD] Pointer moved"));
 		}
 
-		private static (Point position, ManipulationDelta delta, ManipulationDelta cumulative) Parse(string raw)
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		[Ignore("We need to do a L manipulation to get manip started then pt cancel due to SV kick-in")]
+		public void Manipulation_WhenInScrollViewer()
+		{
+			Run("UITests.Windows_UI_Input.GestureRecognizerTests.Manipulation_WhenInScrollViewer");
+
+			var scroller = _app.WaitForElement("TheScroller").Single().Rect;
+			var target = _app.WaitForElement("TouchTarget").Single().Rect;
+			_app.DragCoordinates(target.X + 5, target.Bottom - 5, scroller.Right - 20, scroller.Y + 10);
+
+			var result = _app.Marked("Output").GetDependencyPropertyValue<string>("Text");
+			var events = result.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(Parse).ToArray();
+
+			Assert.AreEqual(events.Last().evt.ToLowerInvariant(), "completed");
+		}
+
+		private static (string evt, Point position, ManipulationDelta delta, ManipulationDelta cumulative) Parse(string raw)
 		{
 			string num(string name) => $@" ?(?<{name}>-?\d{{2,3}}\.\d{{2}})";
 			var regex = new Regex(
-				$@"@=\[{num("posX")},{num("posY")}\] "
+				@"\[(?<evt>\w+)\] "
+				+ $@"@=\[{num("posX")},{num("posY")}\] "
 				+ $@"\| X=\(Σ:{num("ΣtrX")} / Δ:{num("ΔtrX")}\) "
 				+ $@"\| Y=\(Σ:{num("ΣtrY")} / Δ:{num("ΔtrY")}\) "
 				+ $@"\| θ=\(Σ:{num("Σr")} / Δ:{num("Δr")}\) "
@@ -125,12 +144,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var values = regex.Match(raw);
 			if (!values.Success)
 			{
+				var nameOnlyRegex = new Regex(@"^\[(?<evt>\w+)\] ");
+				values = nameOnlyRegex.Match(raw);
+				if (values.Success)
+				{
+					return (values.Groups["evt"].Value, default, default, default);
+				}
+
 				throw new FormatException("Cannot parse: ");
 			}
 
 			float f(string name) => float.Parse(values.Groups[name].Value, CultureInfo.InvariantCulture);
 			Point p(string nameX, string nameY) => new Point((int)f(nameX), (int)f(nameY));
 
+			var evt = values.Groups["evt"].Value;
 			var position = p("posX", "posY");
 			var delta = new ManipulationDelta
 			{
@@ -147,7 +174,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 				Expansion = f("Σe")
 			};
 
-			return (position, delta, cumulative);
+			return (evt, position, delta, cumulative);
 		}
 
 		private struct ManipulationDelta

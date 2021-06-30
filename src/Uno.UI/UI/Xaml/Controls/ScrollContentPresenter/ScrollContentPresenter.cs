@@ -30,6 +30,34 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
 	{
+		#region ScrollOwner
+		private ManagedWeakReference _scroller;
+
+		public object ScrollOwner
+		{
+			get => _scroller.Target;
+			set
+			{
+				if (_scroller is { } oldScroller)
+				{
+					WeakReferencePool.ReturnWeakReference(this, oldScroller);
+				}
+
+				_scroller = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
+		#endregion
+
+#if __WASM__
+		bool _forceChangeToCurrentView;
+
+		bool IScrollContentPresenter.ForceChangeToCurrentView
+		{
+			get => _forceChangeToCurrentView;
+			set => _forceChangeToCurrentView = value;
+		}
+#endif
+
 		private void InitializeScrollContentPresenter()
 		{
 			this.RegisterParentChangedCallback(this, OnParentChanged);
@@ -47,6 +75,7 @@ namespace Windows.UI.Xaml.Controls
 
 #if __IOS__ || __ANDROID__
 		private NativeScrollContentPresenter Native => Content as NativeScrollContentPresenter;
+		private object RealContent => Native?.Content;
 		public ScrollBarVisibility HorizontalScrollBarVisibility => Native?.HorizontalScrollBarVisibility ?? default;
 		public ScrollBarVisibility VerticalScrollBarVisibility => Native?.VerticalScrollBarVisibility ?? default;
 		public bool CanHorizontallyScroll
@@ -138,6 +167,16 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var slotSize = size;
 
+#if __WASM__
+				if (CanVerticallyScroll || _forceChangeToCurrentView)
+				{
+					slotSize.Height = double.PositiveInfinity;
+				}
+				if (CanHorizontallyScroll || _forceChangeToCurrentView)
+				{
+					slotSize.Width = double.PositiveInfinity;
+				}
+#else
 				if (CanVerticallyScroll)
 				{
 					slotSize.Height = double.PositiveInfinity;
@@ -146,12 +185,18 @@ namespace Windows.UI.Xaml.Controls
 				{
 					slotSize.Width = double.PositiveInfinity;
 				}
+#endif
 
 				child.Measure(slotSize);
 
+				var desired = child.DesiredSize;
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
+
 				return new Size(
-					Math.Min(size.Width, child.DesiredSize.Width),
-					Math.Min(size.Height, child.DesiredSize.Height)
+					Math.Min(size.Width, desired.Width),
+					Math.Min(size.Height, desired.Height)
 				);
 			}
 
@@ -170,6 +215,9 @@ namespace Windows.UI.Xaml.Controls
 				childRect.Height = Math.Max(finalSize.Height, desiredSize.Height);
 
 				child.Arrange(childRect);
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
 			}
 
 			return finalSize;
@@ -177,6 +225,25 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsViewHit()
 			=> true;
+#elif __IOS__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter
+		protected override Size MeasureOverride(Size size)
+		{
+			var result = base.MeasureOverride(size);
+
+			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
+
+			return result;
+		}
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var result = base.ArrangeOverride(finalSize);
+
+			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
+
+			return result;
+		}
 #endif
-	}
-}
+			}
+		}

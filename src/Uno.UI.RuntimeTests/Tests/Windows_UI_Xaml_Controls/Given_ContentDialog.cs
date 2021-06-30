@@ -135,6 +135,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_CloseDeferred()
+		{
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				PrimaryButtonText = "Accept",
+				SecondaryButtonText = "Nope"
+			};
+
+			bool triggered = false;
+			bool hideSecondTime = false;
+
+			async void SUT_Closing(object sender, ContentDialogClosingEventArgs args)
+			{
+				// Closing should only be invoked once.
+				Assert.IsFalse(triggered);
+				triggered = true;
+				var deferral = args.GetDeferral();
+				await WindowHelper.WaitFor(() => hideSecondTime);
+				deferral.Complete();
+				triggered = false;
+			};
+
+			SUT.Closing += SUT_Closing;
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				SUT.Hide();
+				await WindowHelper.WaitFor(() => triggered);
+				SUT.Hide();
+				hideSecondTime = true;
+			}
+			finally
+			{
+				SUT.Closing -= SUT_Closing;
+				SUT.Hide();
+			}
+		}
+
 		private static async Task ShowDialog(MyContentDialog dialog)
 		{
 			dialog.ShowAsync();

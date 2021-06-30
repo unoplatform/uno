@@ -20,6 +20,7 @@ using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml.Media;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -54,16 +55,22 @@ namespace Windows.UI.Xaml
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
-		
+
 		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
 		private bool _defaultStyleApplied = false;
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
+
 		/// <summary>
 		/// The current user-determined 'active Style'. This will either be the explicitly-set Style, if there is one, or otherwise the resolved implicit Style (either in the view hierarchy or in Application.Resources).
 		/// </summary>
 		private Style _activeStyle = null;
+
+		/// <summary>
+		/// Cache for the current type key for faster implicit style lookup
+		/// </summary>
+		private SpecializedResourceDictionary.ResourceKey _thisTypeResourceKey;
 
 		/// <summary>
 		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be
@@ -100,7 +107,7 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
-		
+
 
 		partial void Initialize()
 		{
@@ -128,7 +135,21 @@ namespace Windows.UI.Xaml
 #if __ANDROID__
 		new
 #endif
-		DependencyObject Parent => ((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+		DependencyObject Parent =>
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+			LogicalParentOverride ??
+#endif
+			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+
+
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+		/// <summary>
+		/// Allows to override the publicly-visible <see cref="Parent"/> without modifying DP propagation.
+		/// </summary>
+		internal DependencyObject LogicalParentOverride { get; set; }
+
+		internal UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
+#endif
 
 		private bool _isParsing;
 		/// <summary>
@@ -328,7 +349,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#region Style DependencyProperty
+		#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -336,7 +357,7 @@ namespace Windows.UI.Xaml
 			set => SetValue(StyleProperty, value);
 		}
 
-		public static DependencyProperty StyleProperty { get ; } =
+		public static DependencyProperty StyleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Style),
 				typeof(Style),
@@ -348,7 +369,7 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-#endregion
+		#endregion
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
@@ -383,7 +404,20 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle();
+		private SpecializedResourceDictionary.ResourceKey ThisTypeResourceKey
+		{
+			get
+			{
+				if (_thisTypeResourceKey.IsEmpty)
+				{
+					_thisTypeResourceKey = this.GetType();
+				}
+
+				return _thisTypeResourceKey;
+			}
+		}
+
+		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle(ThisTypeResourceKey);
 
 		#region Requested theme dependency property
 
@@ -419,6 +453,80 @@ namespace Windows.UI.Xaml
 			Application.Current?.ActualElementTheme ?? ElementTheme.Default
 			: ElementTheme.Default;
 
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = CreateFocusVisualSecondaryThicknessProperty();
+
+		public Thickness FocusVisualSecondaryThickness
+		{
+			get => GetFocusVisualSecondaryThicknessValue();
+			set => SetFocusVisualSecondaryThicknessValue(value);
+		}
+
+		private static Thickness GetFocusVisualSecondaryThicknessDefaultValue() => new Thickness(1);
+
+		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		public static DependencyProperty FocusVisualSecondaryBrushProperty { get; } = CreateFocusVisualSecondaryBrushProperty();
+
+		public Brush FocusVisualSecondaryBrush
+		{
+			get
+			{
+				EnsureFocusVisualBrushDefaults();
+				return GetFocusVisualSecondaryBrushValue();
+			}
+			set => SetFocusVisualSecondaryBrushValue(value);
+		}
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualPrimaryThicknessProperty { get; } = CreateFocusVisualPrimaryThicknessProperty();
+
+		public Thickness FocusVisualPrimaryThickness
+		{
+			get => GetFocusVisualPrimaryThicknessValue();
+			set => SetFocusVisualPrimaryThicknessValue(value);
+		}
+
+		private static Thickness GetFocusVisualPrimaryThicknessDefaultValue() => new Thickness(2);
+
+		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } = CreateFocusVisualPrimaryBrushProperty();
+
+		public Brush FocusVisualPrimaryBrush
+		{
+			get
+			{
+				EnsureFocusVisualBrushDefaults();
+				return GetFocusVisualPrimaryBrushValue();
+			}
+			set => SetFocusVisualPrimaryBrushValue(value);
+		}
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
+
+		public Thickness FocusVisualMargin
+		{
+			get => GetFocusVisualMarginValue();
+			set => SetFocusVisualMarginValue(value);
+		}
+
+		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
+
+		private bool _focusVisualBrushesInitialized = false;
+
+		internal void EnsureFocusVisualBrushDefaults()
+		{
+			if (_focusVisualBrushesInitialized)
+			{
+				return;
+			}
+
+			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
+			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
+
+			_focusVisualBrushesInitialized = true;
+		}
+
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
 		/// 'active style' and for the baked-in 'default style'.
@@ -446,6 +554,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 			_defaultStyleApplied = true;
+			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 
 			var style = Style.GetDefaultStyleForType(GetDefaultStyleKey());
 
@@ -467,6 +576,51 @@ namespace Windows.UI.Xaml
 		{
 			_constraintsChanged = true;
 		}
+
+		#region IsEnabled DependencyProperty
+
+#if !(__ANDROID__ || __IOS__ || __MACOS__) // On those platforms, this code is generated through mixins
+		// Note: we keep the event args as a private field for perf consideration: This avoids to create a new instance each time.
+		//		 As it's used only internally it's safe to do so.
+		[ThreadStatic]
+		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
+
+		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+
+		public bool IsEnabled
+		{
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
+		}
+
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateHitTest();
+
+			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
+			_isEnabledChangedEventArgs.SourceEvent = args;
+
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+			IsEnabledChanged?.Invoke(this, args);
+
+			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
+
+#if __WASM__
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
+#endif
+		}
+#endif
+
+		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		{
+		}
+		#endregion
 
 		/// <summary>
 		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
@@ -670,6 +824,9 @@ namespace Windows.UI.Xaml
 		{
 			Resources?.UpdateThemeBindings();
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
+
+			// After theme change, the focus visual brushes may not reflect the correct settings
+			_focusVisualBrushesInitialized = false;
 		}
 
 		/// <summary>

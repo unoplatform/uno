@@ -712,6 +712,7 @@ namespace Uno.UWPSyncGenerator
 				BaseXamlNamespace + ".FrameworkElement",
 				BaseXamlNamespace + ".UIElement",
 				BaseXamlNamespace + ".Controls.Image",
+				BaseXamlNamespace + ".Controls.CalendarViewDayItem",
 				BaseXamlNamespace + ".Controls.ComboBox",
 				BaseXamlNamespace + ".Controls.CheckBox",
 				BaseXamlNamespace + ".Controls.TextBlock",

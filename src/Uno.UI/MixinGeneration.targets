@@ -171,12 +171,6 @@
   </Target>
 
   <Target Name="_OptimizeT4Generator" Condition="$([MSBuild]::IsOSUnixLike())">
-	<ItemGroup>
-	  <_T4AOTFiles Include="$(T4Path)/*.dll" Exclude="$(T4Path)/System.Text.Encoding.CodePages.dll" />
-	</ItemGroup>
-
-	<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;$(T4Bin)&quot;" Condition="!exists('$(T4Bin).dylib')" />
-	<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;%(_T4AOTFiles.Identity)&quot;" Condition="!exists('%(_T4AOTFiles.Identity).dylib')" />
   </Target>
 
   <Target Name="_InnerGenerateMixins">

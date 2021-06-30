@@ -349,16 +349,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(oldValue, newValue);
+			base.OnIsEnabledChanged(e);
 
 			UpdateCommonStates();
-
-			OnIsEnabledChangedPartial(oldValue, newValue);
 		}
-
-		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue);
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 		{
@@ -473,7 +469,10 @@ namespace Windows.UI.Xaml.Controls
 			/// <inheritdoc />
 			public Size Measure(Size available, Size visibleSize)
 			{
-				if (!(Popup?.Child is FrameworkElement child) || Combo == null)
+				var popup = Popup;
+				var combo = Combo;
+
+				if (!(popup?.Child is FrameworkElement child) || combo == null)
 				{
 					return new Size();
 				}
@@ -487,7 +486,7 @@ namespace Windows.UI.Xaml.Controls
 				//			MaxWidth
 				//			MaxHeight
 
-				if (Combo.IsPopupFullscreen)
+				if (combo.IsPopupFullscreen)
 				{
 					// Size : Note we set both Min and Max to match the UWP behavior which alter only those
 					//        properties. The MinHeight is not set to allow the the root child control to specificy
@@ -500,15 +499,15 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// Set the popup child as max 9 x the height of the combo
 					// (UWP seams to actually limiting to 9 visible items ... which is not necessarily the 9 x the combo height)
-					var maxHeight = Math.Min(visibleSize.Height, Math.Min(Combo.MaxDropDownHeight, Combo.ActualHeight * _itemsToShow));
+					var maxHeight = Math.Min(visibleSize.Height, Math.Min(combo.MaxDropDownHeight, combo.ActualHeight * _itemsToShow));
 
-					child.MinHeight = Combo.ActualHeight;
-					child.MinWidth = Combo.ActualWidth;
+					child.MinHeight = combo.ActualHeight;
+					child.MinWidth = combo.ActualWidth;
 					child.MaxHeight = maxHeight;
 					child.MaxWidth = visibleSize.Width;
 
 					if (UsesManagedLayouting)
-					// This is a breaking change for Android/iOS in some specialised cases (see ComboBox_VisibleBounds sample), and
+					// This is a breaking change for Android/iOS in some specialized cases (see ComboBox_VisibleBounds sample), and
 					// since the layouting on those platforms is not yet as aligned with UWP as on WASM/Skia, and in particular
 					// virtualizing panels aren't used in the ComboBox yet (#556 and #1133), we skip it for now
 					{
@@ -527,12 +526,15 @@ namespace Windows.UI.Xaml.Controls
 			/// <inheritdoc />
 			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize, Point? upperLeftLocation)
 			{
-				if (!(Popup?.Child is FrameworkElement child) || Combo == null)
+				var popup = Popup;
+				var combo = Combo;
+
+				if (!(popup?.Child is FrameworkElement child) || combo == null)
 				{
 					return;
 				}
 
-				if (Combo.IsPopupFullscreen)
+				if (combo.IsPopupFullscreen)
 				{
 					Point getChildLocation()
 					{
@@ -559,7 +561,7 @@ namespace Windows.UI.Xaml.Controls
 					return;
 				}
 
-				var comboRect = Combo.GetAbsoluteBoundsRect();
+				var comboRect = combo.GetAbsoluteBoundsRect();
 				var frame = new Rect(comboRect.Location, desiredSize.AtMost(visibleBounds.Size));
 
 				// On windows, the popup is Y-aligned accordingly to the selected item in order to keep
@@ -571,14 +573,14 @@ namespace Windows.UI.Xaml.Controls
 				// which might not be ready at this point (we could try a 2-pass arrange), and to scroll into view to make it visible.
 				// So for now we only rely on the SelectedIndex and make a highly improvable vertical alignment based on it.
 
-				var itemsCount = Combo.NumberOfItems;
-				var selectedIndex = Combo.SelectedIndex;
+				var itemsCount = combo.NumberOfItems;
+				var selectedIndex = combo.SelectedIndex;
 				if (selectedIndex < 0 && itemsCount > 0)
 				{
 					selectedIndex = itemsCount / 2;
 				}
 
-				var placement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(Combo);
+				var placement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(combo);
 				var stickyThreshold = Math.Max(1, Math.Min(4, (itemsCount / 2) - 1));
 				switch (placement)
 				{
@@ -593,7 +595,7 @@ namespace Windows.UI.Xaml.Controls
 							// As we don't scroll into view to the selected item, this case seems awkward if the selected item
 							// is not directly visible (i.e. without scrolling) when the drop-down appears.
 							// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
-							&& (itemsCount <= _itemsToShow && frame.Height < (Combo.ActualHeight * _itemsToShow) - 3):
+							&& (itemsCount <= _itemsToShow && frame.Height < (combo.ActualHeight * _itemsToShow) - 3):
 
 						frame.Y = comboRect.Bottom - frame.Height;
 						break;

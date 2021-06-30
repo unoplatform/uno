@@ -9,6 +9,8 @@ using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
 using Uno.Extensions;
 using Uno.Logging;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.ViewManagement
 {
@@ -88,6 +90,43 @@ namespace Windows.UI.ViewManagement
 					: ApplicationViewMode.Default;
 			}
 		}
+
+		public bool IsViewModeSupported(ApplicationViewMode viewMode)
+		{
+			if (viewMode == ApplicationViewMode.Default)
+			{
+				return true;
+			}
+			else if (viewMode == ApplicationViewMode.Spanning)
+			{
+				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.IsDualScreen == true;
+			}
+
+			return false;
+		}
+
+		public IAsyncOperation<bool> TryEnterViewModeAsync(global::Windows.UI.ViewManagement.ApplicationViewMode viewMode) =>
+			AsyncOperation.FromTask(cancellation =>
+			{
+				if (ViewMode == viewMode)
+				{
+					// If we are already in the requested mode, we can return true.
+					return Task.FromResult(true);
+				}
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						$"Cannot not enter view mode {viewMode}, " +
+						$"as this transition is not yet supported.");
+				}
+
+				return Task.FromResult(false);
+			});
+
+		public IAsyncOperation<bool> TryEnterViewModeAsync(global::Windows.UI.ViewManagement.ApplicationViewMode viewMode, global::Windows.UI.ViewManagement.ViewModePreferences viewModePreferences) =>
+				TryEnterViewModeAsync(viewMode);
+
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
 			TryInitializeSpanningRectsExtension();

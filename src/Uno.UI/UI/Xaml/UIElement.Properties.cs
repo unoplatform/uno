@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml
 
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{
-			get => GetKeyboardAcceleratorsValue();
+			get => GetKeyboardAcceleratorsValue() ?? (KeyboardAccelerators = new List<KeyboardAccelerator>());
 			set => SetKeyboardAcceleratorsValue(value);
 		}
 	}

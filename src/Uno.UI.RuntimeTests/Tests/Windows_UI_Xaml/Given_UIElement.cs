@@ -8,6 +8,15 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Shapes;
 using System;
 using Windows.UI.Xaml.Media;
+#if NETFX_CORE
+using Uno.UI.Extensions;
+#elif __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#else
+using Uno.UI;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -19,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_Visible_InvalidateArrange()
 		{
-			var sut = new Border() {Width = 100, Height = 10};
+			var sut = new Border() { Width = 100, Height = 10 };
 
 			TestServices.WindowHelper.WindowContent = sut;
 			await TestServices.WindowHelper.WaitForIdle();
@@ -123,7 +132,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				var sut = new Grid
 				{
-					HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					VerticalAlignment = VerticalAlignment.Stretch
 				};
 
 				var originalRootAvailableSize = LayoutInformation.GetAvailableSize(root);
@@ -178,6 +188,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsFalse(sut.Failed);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_GetVisualTreeParent()
+		{
+			var treeRoot = GetTreeRoot();
+			Assert.IsNotNull(treeRoot);
+#if __ANDROID__ || __IOS__ || __MACOS__
+			// On Xamarin platforms, we don't expect the real root of the tree to be a XAML element
+			Assert.IsNotInstanceOfType(treeRoot, typeof(UIElement));
+#else
+			//...and everywhere else, we do
+			Assert.IsInstanceOfType(treeRoot, typeof(UIElement));
+#endif
+			object GetTreeRoot()
+			{
+				var current = Windows.UI.Xaml.Window.Current.Content?.GetVisualTreeParent();
+				current = Windows.UI.Xaml.Window.Current.Content;
+				var parent = current?.GetVisualTreeParent();
+				while (parent != null)
+				{
+					current = parent;
+					parent = current?.GetVisualTreeParent();
+				}
+				return current;
+			}
+		} 
+#endif
 	}
 
 	internal partial class When_UpdateLayout_Then_ReentrancyNotAllowed_Element : FrameworkElement

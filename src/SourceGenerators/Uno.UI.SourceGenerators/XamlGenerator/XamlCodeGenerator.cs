@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Mime;
@@ -32,10 +34,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			//	Debugger.Launch();
 			//}
 
-			var gen = new XamlCodeGeneration(context);
-
 			if (PlatformHelper.IsValidPlatform(context))
 			{
+				var gen = new XamlCodeGeneration(context);
 				var genereratedTrees = gen.Generate();
 
 				foreach (var tree in genereratedTrees)

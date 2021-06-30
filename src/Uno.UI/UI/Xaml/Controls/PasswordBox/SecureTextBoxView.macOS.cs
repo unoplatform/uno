@@ -79,6 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 			DrawsBackground = false;
 			Bezeled = false;
+			FocusRingType = NSFocusRingType.None;
 		}
 
 		public override CGSize SizeThatFits(CGSize size)

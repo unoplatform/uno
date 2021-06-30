@@ -3,16 +3,18 @@ set -euo pipefail
 IFS=$'\n\t'
 
 export BUILDCONFIGURATION=Release
-export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-mkdir android-sdk
-pushd android-sdk
-# URL from https://developer.android.com/studio/index.html#command-tools
-wget https://dl.google.com/android/repository/commandlinetools-mac-6200805_latest.zip
-unzip commandlinetools-mac-6200805_latest.zip
-popd
+# This block allows to override the Android SDK
+# disabled until hosted agents move to macOS 11
+#
+# export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
+#wget https://dl.google.com/android/repository/commandlinetools-mac-7302050_latest.zip
+#unzip commandlinetools-mac-7302050_latest.zip
+#rm commandlinetools-mac-7302050_latest.zip
+#mkdir -p $ANDROID_HOME/cmdline-tools/latest
+#cp -R cmdline-tools/ $ANDROID_HOME/sdk/cmdline-tools/latest/
 
 # uncomment the following lines to override the installed Xamarin.Android SDK
 # wget -nv https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android-d16-2/49/Azure/processDownloadRequest/xamarin-android/xamarin-android/bin/BuildRelease/Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg
@@ -66,6 +68,9 @@ source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
 # list active devices
 $ANDROID_HOME/platform-tools/adb devices
+
+# Workaround for https://github.com/microsoft/appcenter/issues/1451
+$ANDROID_HOME/platform-tools/adb shell settings put global hidden_api_policy 1
 
 echo "Emulator started"
 

@@ -64,9 +64,9 @@
       "isVisible": "true"
     },
     {
-      "id": "UWP",
+      "id": "skia-linux-fb",
       "name": {
-        "text": "Add support for UWP"
+        "text": "Add support for Skia/Linux FrameBuffer"
       },
       "isVisible": "true"
     },

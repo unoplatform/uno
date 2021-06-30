@@ -240,7 +240,7 @@ namespace Uno.UI.DataBinding
 			using (Performance.Measure("InternalGetPropertyType"))
 #endif
 			{
-				if (BindableMetadataProvider != null)
+				if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 				{
 					var bindablePropertyDescriptor = BindablePropertyDescriptor.GetPropertByBindableMetadataProvider(type, property);
 
@@ -321,7 +321,7 @@ namespace Uno.UI.DataBinding
 						return attachedPropertyGetter.ReturnType;
 					}
 
-					if(type.IsPrimitive && property == "Value")
+					if (type.IsPrimitive && property == "Value")
 					{
 						// This case is trying assuming that Value for a primitive is used for the case
 						// of a Nullable primitive.
@@ -509,7 +509,7 @@ namespace Uno.UI.DataBinding
 				}
 
 				// Start by using the provider, to avoid reflection
-				if (BindableMetadataProvider != null)
+				if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 				{
 #if PROFILE
 					using (Performance.Measure("GetValueGetter.BindableMetadataProvider"))
@@ -579,7 +579,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			// Start by using the provider, to avoid reflection
-			if (BindableMetadataProvider != null)
+			if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 			{
 #if PROFILE
 				using (Performance.Measure("GetValueGetter.BindableMetadataProvider"))
@@ -589,7 +589,7 @@ namespace Uno.UI.DataBinding
 
 					if (bindableProperty.OwnerType != null)
 					{
-						if (bindableProperty != null && bindableProperty.Property.Getter != null)
+						if (bindableProperty?.Property?.Getter != null)
 						{
 							if (bindableProperty.Property.DependencyProperty is { } dependencyProperty)
 							{
@@ -760,7 +760,7 @@ namespace Uno.UI.DataBinding
 
 
 				// Start by using the provider, to avoid reflection
-				if (BindableMetadataProvider != null)
+				if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 				{
 #if PROFILE
 					using (Performance.Measure("GetValueSetter.BindableMetadataProvider"))
@@ -829,7 +829,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			// Start by using the provider, to avoid reflection
-			if (BindableMetadataProvider != null)
+			if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
 			{
 #if PROFILE
 				using (Performance.Measure("GetValueSetter.BindableMetadataProvider"))
@@ -841,12 +841,12 @@ namespace Uno.UI.DataBinding
 					{
 						if (bindableProperty != null)
 						{
-							if(bindableProperty.Property.DependencyProperty is { } dependencyProperty)
+							if(bindableProperty.Property?.DependencyProperty is { } dependencyProperty)
 							{
 								return (instance, value) => instance.SetValue(dependencyProperty, convertSelector(() => bindableProperty.Property.PropertyType, value), precedence);
 							}
 
-							if (bindableProperty.Property.Setter != null)
+							if (bindableProperty.Property?.Setter != null)
 							{
 								var setter = bindableProperty.Property.Setter;
 
@@ -1088,6 +1088,13 @@ namespace Uno.UI.DataBinding
 			=> DependencyProperty.UnsetValue;
 
 		private static void UnsetValueSetter(object unused, object? unused2) { }
+
+		/// <summary>
+		/// Determines if the type can be provided by the MetadataProvider
+		/// </summary>
+		/// <remarks>This method needs to be aligned with the symbols query in BindableTypeProvidersSourceGenerator.</remarks>
+		private static bool IsValidMetadataProviderType(Type type)
+			=> type.IsPublic && type.IsClass;
 	}
 }
 #endif

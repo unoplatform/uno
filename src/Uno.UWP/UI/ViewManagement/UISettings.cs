@@ -13,13 +13,13 @@ namespace Windows.UI.ViewManagement
 	/// </summary>
 	/// <remarks>Events on this class are fired as long as the instance is alive.
 	/// To ensure the class does not get garbage collected, keep a strong reference to it.</remarks>
-	public partial class UISettings 
-	{		
+	public partial class UISettings
+	{
 		private static readonly ConcurrentDictionary<WeakReference<UISettings>, object> _instances = new ConcurrentDictionary<WeakReference<UISettings>, object>();
 		private readonly WeakReference<UISettings> _weakReference;
 
 		public UISettings()
-		{			
+		{
 			_weakReference = new WeakReference<UISettings>(this);
 			_instances.TryAdd(_weakReference, null);
 		}
@@ -30,7 +30,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 		internal static void OnColorValuesChanged()
-		{			
+		{
 			foreach (var instance in _instances)
 			{
 				var weakReference = instance.Key;
@@ -207,11 +207,11 @@ namespace Windows.UI.ViewManagement
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "UIElementColor");
 			return Colors.Black;
-		}		
+		}
 
 #pragma warning disable 67
 		[global::Uno.NotImplemented]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> TextScaleFactorChanged;		
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> TextScaleFactorChanged;
 
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> AdvancedEffectsEnabledChanged;

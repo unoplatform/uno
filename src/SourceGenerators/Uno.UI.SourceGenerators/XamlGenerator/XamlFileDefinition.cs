@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -54,7 +56,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		public bool Equals(XamlFileDefinition other)
+		public bool Equals(XamlFileDefinition? other)
 		{
 			if (other is null)
 			{
@@ -66,7 +68,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (obj is XamlFileDefinition xfd)
 			{

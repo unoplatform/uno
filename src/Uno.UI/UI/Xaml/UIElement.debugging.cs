@@ -24,8 +24,23 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
 
-#if __IOS__
+#if XAMARIN_ANDROID
+using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
+using Font = Android.Graphics.Typeface;
+using Android.Graphics;
+using DependencyObject = System.Object;
+#elif __IOS__
+using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;
 using UIKit;
+#elif __MACOS__
+using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
+using AppKit;
+#else
+using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml
@@ -64,7 +79,7 @@ namespace Windows.UI.Xaml
 				var output = "";
 				foreach (var binding in bindings)
 				{
-					output += $"{binding.ResourceKey} ({binding.Precedence}), ";
+					output += $"{binding.ResourceKey.Key} ({binding.Precedence}), ";
 				}
 
 				return output;
@@ -79,10 +94,6 @@ namespace Windows.UI.Xaml
 
 		private static DependencyProperty GetDPByName(string propertyName, DependencyObject propertyOwner)
 		{
-			if (!propertyName.EndsWith("Property"))
-			{
-				propertyName += "Property";
-			}
 			return DependencyProperty.GetProperty(propertyOwner.GetType(), propertyName);
 		}
 
@@ -166,13 +177,32 @@ namespace Windows.UI.Xaml
 
 			bool IsInherited(DependencyProperty dp, Type type)
 			{
-				if (dp.Name == "DataContext")
+				if (dp?.Name == "DataContext")
 				{
 					return true;
 				}
 				var metadata = dp?.GetMetadata(type) as FrameworkPropertyMetadata;
 				return metadata?.Options.HasFlag(FrameworkPropertyMetadataOptions.Inherits) ?? false;
 			}
+		}
+
+		/// <summary>
+		/// Gets the <paramref name="n"/>th ancestor above this element for debugging purposes, where n=0 is the element itself, n=1 is the parent, n=1 is the parent's parent etc.
+		/// </summary>
+		internal FrameworkElement GetNthAncestor(int n)
+		{
+			View current = this;
+			for (int i = 0; i < n; i++)
+			{
+				if (current == null)
+				{
+					break;
+				}
+
+				current = current.GetVisualTreeParent();
+			}
+
+			return current as FrameworkElement;
 		}
 
 		/// <summary>

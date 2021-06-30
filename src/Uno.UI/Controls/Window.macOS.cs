@@ -169,7 +169,7 @@ namespace Uno.UI.Controls
 			var pointerDevice = PointerDevice.For(pointerDeviceType);
 			var pointerId = pointerDeviceType == PointerDeviceType.Pen
 				? (uint)nativeEvent.PointingDeviceID()
-				: (uint)0;
+				: (uint)1;
 			var isInContact = GetIsInContact(nativeEvent);
 			var properties = GetPointerProperties(nativeEvent, pointerDeviceType);
 
@@ -602,6 +602,30 @@ namespace Uno.UI.Controls
 			public WindowDelegate(NSWindow window)
 			{
 				_window = window;
+			}
+
+			public override void DidMiniaturize(NSNotification notification)
+			{
+				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+				Windows.UI.Xaml.Application.Current?.OnEnteredBackground();
+			}
+
+			public override void DidDeminiaturize(NSNotification notification)
+			{
+				Windows.UI.Xaml.Application.Current?.OnLeavingBackground();
+				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			}
+
+			public override void DidBecomeKey(NSNotification notification)
+			{
+				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			}
+
+			public override void DidResignKey(NSNotification notification)
+			{
+				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
 			}
 
 			public override async void DidBecomeMain(NSNotification notification)

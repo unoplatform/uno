@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml
 			{
 				if (ThemeResourceKey.HasValue)
 				{
-					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, isThemeResourceExtension: true, context: ThemeResourceContext);
+					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, isThemeResourceExtension: true, context: ThemeResourceContext, precedence: null);
 				}
 				else
 				{
@@ -172,6 +172,11 @@ namespace Windows.UI.Xaml
 				{
 					stub.Materialize();
 				}
+
+				subject.ElementInstanceChanged += (s, value) =>
+				{
+					_bindingPath.DataContext = value;
+				};
 
 				_bindingPath.DataContext = subject.ElementInstance;
 			}

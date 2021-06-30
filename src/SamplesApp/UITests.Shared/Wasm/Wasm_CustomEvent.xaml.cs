@@ -35,14 +35,17 @@ namespace UITests.Shared.Wasm
 
 	const onDiv1 = function(){
 		div1.dispatchEvent(new Event(""unoevent1""));
+		div1.style.backgroundColor = ""pink"";
 	};
 
 	const onDiv2 = function(){
 		div2.dispatchEvent(new CustomEvent(""unoevent2"", {detail:""String detail from event.""}));
+		div2.style.backgroundColor = ""pink"";
 	};
 
 	const onDiv3 = function(){
 		div3.dispatchEvent(new CustomEvent(""unoevent3"", {detail: {msg:""msg"",int:123,txt:""it works!""}}));
+		div3.style.backgroundColor = ""pink"";
 	};
 
 	div1.addEventListener(""click"", onDiv1);
@@ -54,35 +57,50 @@ namespace UITests.Shared.Wasm
 			WebAssemblyRuntime.InvokeJS($"{script}({genericId},{stringId},{jsonId});");
 
 			genericEvent.RegisterHtmlEventHandler("unoevent1", OnUnoEvent1);
+			genericEvent.RegisterHtmlEventHandler("unoevent1", OnUnoEvent1bis);
 			customEventString.RegisterHtmlCustomEventHandler("unoevent2", OnUnoEvent2, isDetailJson: false);
+			customEventString.RegisterHtmlCustomEventHandler("unoevent2", OnUnoEvent2bis, isDetailJson: false);
 			customEventJson.RegisterHtmlCustomEventHandler("unoevent3", OnUnoEvent3, isDetailJson: true);
-
+			customEventJson.RegisterHtmlCustomEventHandler("unoevent3", OnUnoEvent3bis, isDetailJson: true);
 		}
 
 		private void OnUnoEvent1(object sender, EventArgs e)
 		{
+			tapResult.Text = "[WORKING]";
 			result.Text += $"Received generic event from {sender}\n.";
+		}
+
+		private void OnUnoEvent1bis(object sender, EventArgs e)
+		{
 			tapResult.Text = "Ok";
 		}
 
 		private void OnUnoEvent2(object sender, HtmlCustomEventArgs e)
 		{
+			tapResult.Text = "[WORKING]";
 			result.Text += $"Received string event from {sender}: \"{e.Detail}\"\n.";
+		}
 
+		private void OnUnoEvent2bis(object sender, HtmlCustomEventArgs e)
+		{
 			tapResult.Text =
 				e.Detail == "String detail from event."
-				? "Ok"
-				: "Error: received " + e.Detail;
+					? "Ok"
+					: "Error: received " + e.Detail;
 		}
 
 		private void OnUnoEvent3(object sender, HtmlCustomEventArgs e)
 		{
+			tapResult.Text = "[WORKING]";
 			result.Text += $"Received json event from {sender}: {e.Detail}\n.";
+		}
 
+		private void OnUnoEvent3bis(object sender, HtmlCustomEventArgs e)
+		{
 			try
 			{
 				var json = JToken.Parse(e.Detail);
-				if(json["msg"].Value<string>() == "msg" && json["int"].Value<int>() == 123 && json["txt"].Value<string>() == "it works!")
+				if (json["msg"].Value<string>() == "msg" && json["int"].Value<int>() == 123 && json["txt"].Value<string>() == "it works!")
 				{
 					tapResult.Text = "Ok";
 				}
@@ -92,7 +110,7 @@ namespace UITests.Shared.Wasm
 				}
 
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				tapResult.Text = "Error: " + ex.Message;
 			}

@@ -8,6 +8,7 @@ using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Shapes;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
@@ -18,7 +19,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		private readonly SerialDisposable _backgroundSubscription = new SerialDisposable();
+		private SerialDisposable _backgroundSubscription;
 		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
 
 		public T FindFirstParent<T>(bool includeCurrent) where T : class
@@ -110,128 +111,17 @@ namespace Windows.UI.Xaml
 		}
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+			// Warning some controls (eg. CalendarViewBaseItem) takes ownership of the background rendering.
+			// They override the OnBackgroundChanged and explicitly do not invokes that base method.
 			=> SetAndObserveBackgroundBrush(e.NewValue as Brush);
 
 		private protected void SetAndObserveBackgroundBrush(Brush brush)
 		{
-			_backgroundSubscription.Disposable = null;
-			SetBackgroundBrush(brush);
+			var subscription = _backgroundSubscription ??= new SerialDisposable();
 
-			if (brush is ImageBrush imgBrush)
-			{
-				RecalculateBrushOnSizeChanged(false);
-				_backgroundSubscription.Disposable = imgBrush.Subscribe(img =>
-				{
-					switch (img.Kind)
-					{
-						case ImageDataKind.Empty:
-						case ImageDataKind.Error:
-							ResetStyle("background-color", "background-image", "background-size");
-							break;
-
-						case ImageDataKind.DataUri:
-						case ImageDataKind.Url:
-						default:
-							SetStyle(
-								("background-color", ""),
-								("background-origin", "content-box"),
-								("background-position", imgBrush.ToCssPosition()),
-								("background-size", imgBrush.ToCssBackgroundSize()),
-								("background-image", "url(" + img.Value + ")")
-							);
-							break;
-					}
-				});
-			}
-			else if (brush is AcrylicBrush acrylicBrush)
-			{
-				_backgroundSubscription.Disposable = acrylicBrush.Subscribe(this);
-			}
-			else
-			{
-				_backgroundSubscription.Disposable = Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(brush));
-			}
+			subscription.Disposable = null;
+			subscription.Disposable = BorderLayerRenderer.SetAndObserveBackgroundBrush(this, brush);
 		}
-
-		private void SetBackgroundBrush(Brush brush)
-		{
-			switch (brush)
-			{
-				case SolidColorBrush solidColorBrush:
-					var color = solidColorBrush.ColorWithOpacity;
-					SetStyle(("background-color", color.ToHexString()), ("background-image", ""));
-					RecalculateBrushOnSizeChanged(false);
-					break;
-				case GradientBrush gradientBrush:
-					SetStyle(("background-color", ""), ("background-image", gradientBrush.ToCssString(RenderSize)));
-					RecalculateBrushOnSizeChanged(true);
-					break;
-				default:
-					ResetStyle("background-color", "background-image", "background-size");
-					RecalculateBrushOnSizeChanged(false);
-					break;
-			}
-		}
-
-		private static readonly SizeChangedEventHandler _onSizeChangedForBrushCalculation = (sender, args) =>
-		{
-			var fe = sender as FrameworkElement;
-			fe.SetBackgroundBrush(fe.Background);
-		};
-
-		private bool _onSizeChangedForBrushCalculationSet = false;
-
-		private void RecalculateBrushOnSizeChanged(bool shouldRecalculate)
-		{
-			if (_onSizeChangedForBrushCalculationSet == shouldRecalculate)
-			{
-				return;
-			}
-
-			if (shouldRecalculate)
-			{
-				SizeChanged += _onSizeChangedForBrushCalculation;
-			}
-			else
-			{
-				SizeChanged -= _onSizeChangedForBrushCalculation;
-			}
-
-			_onSizeChangedForBrushCalculationSet = shouldRecalculate;
-		}
-
-		#endregion
-
-		#region IsEnabled DependencyProperty
-
-		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
-
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
-
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
-
-		protected virtual void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
-		{
-			OnIsEnabledChanged((bool)args.OldValue, (bool)args.NewValue);
-			IsEnabledChanged?.Invoke(this, args);
-		}
-
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-			UpdateHitTest();
-
-			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-			{
-				UpdateDOMProperties();
-			}
-		}
-
 		#endregion
 
 		public int? RenderPhase

@@ -10,5 +10,10 @@
     <UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
   </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" />
+  
+  <!-- List of packages that provide an uno-runtime folder -->
+  <PropertyGroup>
+    <UnoRemoteControlProcessorsPath>$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Server.Processors\bin\$(Configuration)\netcoreapp3.1</UnoRemoteControlProcessorsPath>
+  </PropertyGroup>
 
 </Project>

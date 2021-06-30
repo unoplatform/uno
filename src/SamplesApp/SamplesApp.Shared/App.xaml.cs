@@ -281,7 +281,13 @@ namespace SamplesApp
 			const string samplePrefix = "sample=";
 			try
 			{
+				if (launchActivatedEventArgs.Arguments == null)
+				{
+					return false;
+				}
+
 				var args = Uri.UnescapeDataString(launchActivatedEventArgs.Arguments);
+
 				if (string.IsNullOrEmpty(args) || !args.StartsWith(samplePrefix))
 				{
 					return false;
@@ -329,7 +335,7 @@ namespace SamplesApp
 			deferral.Complete();
 		}
 
-		static void ConfigureFilters()
+		public static void ConfigureFilters()
 		{
 #if HAS_UNO
 			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => typeof(App).Log().Error("UnobservedTaskException", e.Exception);

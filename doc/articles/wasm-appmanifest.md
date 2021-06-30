@@ -13,7 +13,7 @@ The properties are :
 
 If you created an application without using the default Uno templates, you may need to add the manifest file manually.
 
-In your WASM head, create a folder named `WasmScripts`, with a file containing the Javascript code below
+In your WASM head, create a folder named `WasmScripts`, with a file containing the JavaScript code below
 (e.g. `AppManifest.js`) and the `Embedded resource` build action.
 
 The manifest file should contain the following:

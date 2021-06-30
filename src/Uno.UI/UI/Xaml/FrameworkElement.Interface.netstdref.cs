@@ -67,37 +67,6 @@ namespace Windows.UI.Xaml
 		public object FindName(string name)
 			=> IFrameworkElementHelper.FindName(this, GetChildren(), name);
 
-		#region IsEnabled DependencyProperty
-
-#pragma warning disable 67
-		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
-#pragma warning restore 67
-
-		public bool IsEnabled
-		{
-			get { return (bool)GetValue(IsEnabledProperty); }
-			set { SetValue(IsEnabledProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for Enabled.  This enables animation, styling, binding, etc...
-		public static DependencyProperty IsEnabledProperty { get; } =
-			DependencyProperty.Register(
-				"IsEnabled",
-				typeof(bool),
-				typeof(FrameworkElement),
-				new PropertyMetadata(
-					defaultValue: true,
-					propertyChangedCallback: (s, e) => ((FrameworkElement)s)?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue),
-					coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
-				)
-			);
-
-		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
-		{
-		}
-
-		#endregion
-
 		#region Background DependencyProperty
 
 		public Brush Background

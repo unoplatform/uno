@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="borderBrush">The border brush</param>
 		/// <param name="cornerRadius">The corner radius</param>
 		/// <param name="padding">The padding to apply on the content</param>
-		public void UpdateLayers(
+		public void UpdateLayer(
 			FrameworkElement view,
 			Brush background,
 			Thickness borderThickness,
@@ -50,7 +50,11 @@ namespace Windows.UI.Xaml.Controls
 			// This is required because android Height and Width are hidden by Control.
 			var baseView = view as View;
 
-			var drawArea = view.LayoutSlot.LogicalToPhysicalPixels();
+			var logicalDrawArea = view.LayoutSlot;
+			// Set origin to 0, because drawArea should be in the coordinates of the view itself
+			logicalDrawArea.X = 0;
+			logicalDrawArea.Y = 0;
+			var drawArea = logicalDrawArea.LogicalToPhysicalPixels();
 			var newState = new LayoutState(drawArea, background, borderThickness, borderBrush, cornerRadius, padding);
 			var previousLayoutState = _currentState;
 
@@ -95,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Removes the added layers during a call to <see cref="UpdateLayers" />.
+		/// Removes the added layers during a call to <see cref="UpdateLayer" />.
 		/// </summary>
 		internal void Clear()
 		{
@@ -455,6 +459,7 @@ namespace Windows.UI.Xaml.Controls
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
 			public readonly Thickness Padding;
+			public readonly Color? BackgroundFallbackColor;
 
 			public LayoutState(Windows.Foundation.Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, Thickness padding)
 			{
@@ -470,6 +475,8 @@ namespace Windows.UI.Xaml.Controls
 
 				BackgroundColor = (Background as SolidColorBrush)?.Color;
 				BorderBrushColor = (BorderBrush as SolidColorBrush)?.Color;
+
+				BackgroundFallbackColor = (Background as XamlCompositionBrushBase)?.FallbackColor;
 			}
 
 			public bool Equals(LayoutState other)
@@ -483,7 +490,8 @@ namespace Windows.UI.Xaml.Controls
 					&& other.BorderBrushColor == BorderBrushColor
 					&& other.BorderThickness == BorderThickness
 					&& other.CornerRadius == CornerRadius
-					&& other.Padding == Padding;
+					&& other.Padding == Padding
+					&& other.BackgroundFallbackColor == BackgroundFallbackColor;
 			}
 		}
 	}

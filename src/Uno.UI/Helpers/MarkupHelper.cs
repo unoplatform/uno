@@ -1,6 +1,10 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Helpers
@@ -31,5 +35,16 @@ namespace Uno.UI.Helpers
 		public static string GetXUid(object target)
 			=> target is IXUidProvider provider ? provider.Uid : "";
 
+		/// <summary>
+		/// Sets a builder for markup-lazy properties in <see cref="VisualState"/>
+		/// </summary>
+		public static void SetVisualStateLazy(VisualState target, Action builder)
+			=> target.LazyBuilder = builder;
+
+		/// <summary>
+		/// Sets a builder for markup-lazy properties in <see cref="VisualTransition"/>
+		/// </summary>
+		public static void SetVisualTransitionLazy(VisualTransition target, Action builder)
+			=> target.LazyBuilder = builder;
 	}
 }

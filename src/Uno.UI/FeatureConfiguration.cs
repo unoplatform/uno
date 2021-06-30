@@ -8,11 +8,42 @@ using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using System.ComponentModel;
 using Windows.UI.Xaml.Media;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI
 {
 	public static class FeatureConfiguration
 	{
+		public static class ApiInformation
+		{
+			/// <summary>
+			/// Determines if runtime use of not implemented members raises an exception, or logs an error message.
+			/// </summary>
+			public static bool IsFailWhenNotImplemented
+			{
+				get => Windows.Foundation.Metadata.ApiInformation.IsFailWhenNotImplemented;
+				set => Windows.Foundation.Metadata.ApiInformation.IsFailWhenNotImplemented = value;
+			}
+
+			/// <summary>
+			/// Determines if runtime use of not implemented members is logged only once, or at each use.
+			/// </summary>
+			public static bool AlwaysLogNotImplementedMessages
+			{
+				get => Windows.Foundation.Metadata.ApiInformation.AlwaysLogNotImplementedMessages;
+				set => Windows.Foundation.Metadata.ApiInformation.AlwaysLogNotImplementedMessages = value;
+			}
+
+			/// <summary>
+			/// The message log level used when a not implemented member is used at runtime, if <see cref="IsFailWhenNotImplemented"/> is false.
+			/// </summary>
+			public static LogLevel NotImplementedLogLevel
+			{
+				get => Windows.Foundation.Metadata.ApiInformation.NotImplementedLogLevel;
+				set => Windows.Foundation.Metadata.ApiInformation.NotImplementedLogLevel = value;
+			}
+		}
+
 		public static class AutomationPeer
 		{
 			/// <summary>
@@ -127,11 +158,7 @@ namespace Uno.UI
 			/// See https://github.com/unoplatform/uno/issues/4730 for details.
 			/// </remarks>
 			public static bool IsStoreHardReferenceEnabled { get; set; }
-#if __WASM__
-				= false;
-#else
 				= true;
-#endif
 		}
 
 		public static class Font
@@ -364,6 +391,14 @@ namespace Uno.UI
 			/// </remarks>
 			public static ScrollViewerUpdatesMode DefaultUpdatesMode { get; set; } = ScrollViewerUpdatesMode.AsynchronousIdle;
 
+			/// <summary>
+			/// Defines the delay after which the scrollbars hide themselves when pointer is not over.<br/>
+			/// Default is 4 sec.<br/>
+			/// Setting this to <see cref="TimeSpan.MaxValue"/> will completely disable the auto hide feature.
+			/// </summary>
+			/// <remarks>This is effective only for managed scrollbars (WASM, macOS and Skia for now)</remarks>
+			public static TimeSpan? DefaultAutoHideDelay { get; set; }
+
 #if __ANDROID__
 			/// <summary>
 			/// This value defines an optional delay to be set for native ScrollBar thumbs to disapear. The
@@ -529,6 +564,18 @@ namespace Uno.UI
 			/// </remarks>
 			/// <returns>True if this feature is on, False otherwise</returns>
 			public static bool EnableBitmapIconTint { get; set; } = false;
+#endif
+		}
+
+		public static class Cursors
+		{
+#if UNO_REFERENCE_API
+			/// <summary>
+			/// Gets or sets a value indicating whether "interactive" controls like
+			/// Buttons and ToggleSwitches use the pointer cursor in WebAssembly
+			/// to emulate a "web-like" feel. Default is <see langword="true"/>.
+			/// </summary>
+			public static bool UseHandForInteraction { get; set; } = true;
 #endif
 		}
 	}

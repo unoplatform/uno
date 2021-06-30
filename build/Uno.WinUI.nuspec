@@ -23,9 +23,9 @@
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
-		<dependency id="Uno.Core" version="2.3.0" />
-		<dependency id="Uno.Core.Build" version="2.3.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.1.0" />
+		<dependency id="Uno.Core" version="2.4.0" />
+		<dependency id="Uno.Core.Build" version="2.4.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
@@ -35,33 +35,33 @@
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
-		<dependency id="Uno.Core" version="2.3.0" />
-		<dependency id="Uno.Core.Build" version="2.3.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.1.0" />
+		<dependency id="Uno.Core" version="2.4.0" />
+		<dependency id="Uno.Core.Build" version="2.4.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
-		<dependency id="Uno.Core" version="2.3.0" />
-		<dependency id="Uno.Core.Build" version="2.3.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.1.0" />
+		<dependency id="Uno.Core" version="2.4.0" />
+		<dependency id="Uno.Core.Build" version="2.4.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
       <!-- macOS -->
       <group targetFramework="xamarinmac20">
-        <dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
-        <dependency id="Uno.Core" version="2.3.0" />
-        <dependency id="Uno.Core.Build" version="2.3.0" />
+        <dependency id="Uno.SourceGenerationTasks" version="3.1.0" />
+        <dependency id="Uno.Core" version="2.4.0" />
+        <dependency id="Uno.Core.Build" version="2.4.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
       <!-- .NET Standard 2.0 -->
       <group targetFramework="netstandard2.0">
-        <dependency id="Uno.SourceGenerationTasks" version="3.0.0" />
-        <dependency id="Uno.Core" version="2.3.0" />
-        <dependency id="Uno.Core.Build" version="2.3.0" />
+        <dependency id="Uno.SourceGenerationTasks" version="3.1.0" />
+        <dependency id="Uno.Core" version="2.4.0" />
+        <dependency id="Uno.Core.Build" version="2.4.0" />
         <dependency id="System.Numerics.Vectors" version="4.5.0" />
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
         <dependency id="System.Memory" version="4.5.2" />
@@ -135,10 +135,10 @@
   <files>
 
 	<!-- UAP -->
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.dll" target="lib\UAP" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.pdb" target="lib\UAP" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.pri" target="lib\UAP" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit\**" target="lib\UAP\Uno.UI.Toolkit" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\$winuitargetpath$" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\$winuitargetpath$" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\$winuitargetpath$" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit\**" target="lib\$winuitargetpath$\Uno.UI.Toolkit" />
 
 	<!-- Android 9.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.dll" target="lib\MonoAndroid11.0" />
@@ -297,6 +297,7 @@
 	<!-- Force UAP to ignore netstandard 2.0 -->
 	<file src="uno.winui.uap.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
 	<file src="uno.winui.uap.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
+	<file src="uno.winui.uap.targets" target="buildTransitive\net5.0-windows\uno.winui.targets" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
   </files>

@@ -1,17 +1,16 @@
 ﻿#if XAMARIN_IOS
 using Foundation;
 using System;
+using System.Linq;
 using UIKit;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
 using Uno.UI.Services;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
+using Windows.UI.Core;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -33,6 +32,8 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
+
+			SubscribeBackgroundNotifications();
 		}
 
 		public Application(IntPtr handle) : base(handle)
@@ -61,7 +62,7 @@ namespace Windows.UI.Xaml
 				{
 					_preventSecondaryActivationHandling = true;
 					var url = (NSUrl)urlObject;
-					if (TryParseActivationUri(url, out var uri))
+					if (TryParseUri(url, out var uri))
 					{
 						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
 						handled = true;
@@ -74,6 +75,17 @@ namespace Windows.UI.Xaml
 					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 					handled = true;
 				}
+				else if (
+					TryGetUserActivityFromLaunchOptions(launchOptions, out var userActivity) &&
+					userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
+				{
+					_preventSecondaryActivationHandling = true;
+					if (TryParseUri(userActivity.WebPageUrl, out var uri))
+					{
+						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+						handled = true;
+					}
+				}
 			}
 
 			// default to normal launch
@@ -84,12 +96,18 @@ namespace Windows.UI.Xaml
 			return true;
 		}
 
+		public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler) =>
+			TryHandleUniversalLinkFromUserActivity(userActivity);		
+
+		public override void UserActivityUpdated(UIApplication application, NSUserActivity userActivity) =>
+			TryHandleUniversalLinkFromUserActivity(userActivity);
+
 		public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 		{
 			// If the application was not running, URL was already handled by FinishedLaunching
 			if (!_preventSecondaryActivationHandling)
 			{
-				if (TryParseActivationUri(url, out var uri))
+				if (TryParseUri(url, out var uri))
 				{
 					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
 				}
@@ -109,9 +127,6 @@ namespace Windows.UI.Xaml
 			}
 			_preventSecondaryActivationHandling = false;
 		}
-
-		public override void DidEnterBackground(UIApplication application)
-			=> OnSuspending();
 
 		partial void OnSuspendingPartial()
 		{
@@ -149,7 +164,28 @@ namespace Windows.UI.Xaml
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 
-		private bool TryParseActivationUri(NSUrl url, out Uri uri)
+		private bool TryHandleUniversalLinkFromUserActivity(NSUserActivity userActivity)
+		{
+			// If the application was not running, universal link was already handled by FinishedLaunching
+			if (_preventSecondaryActivationHandling)
+			{
+				_preventSecondaryActivationHandling = false;
+				return true;
+			}
+
+			if (userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
+			{
+				if (TryParseUri(userActivity.WebPageUrl, out var uri))
+				{
+					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private bool TryParseUri(NSUrl url, out Uri uri)
 		{
 			if (Uri.TryCreate(url.ToString(), UriKind.Absolute, out uri))
 			{
@@ -160,6 +196,61 @@ namespace Windows.UI.Xaml
 				this.Log().LogError($"Activation URI {url} could not be parsed");
 				return false;
 			}
+		}
+
+		private bool TryGetUserActivityFromLaunchOptions(NSDictionary launchOptions, out NSUserActivity userActivity)
+		{
+			userActivity = null;
+
+			if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUserActivityDictionaryKey, out var userActivityObject) &&
+				userActivityObject is NSDictionary userActivityDictionary)
+			{
+				userActivity = userActivityDictionary.Values.OfType<NSUserActivity>().FirstOrDefault();
+			}
+
+			return userActivity != null;
+		}
+
+		private void SubscribeBackgroundNotifications()
+		{
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+			{
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
+			}
+			else
+			{
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, OnEnteredBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, OnLeavingBackground);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
+				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
+			}
+		}
+
+		private void OnEnteredBackground(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+			EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+
+			OnSuspending();
+		}
+
+		private void OnLeavingBackground(NSNotification notification)
+		{			
+			LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+		}
+
+		private void OnActivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+		}
+
+		private void OnDeactivated(NSNotification notification)
+		{
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
 		}
 	}
 }

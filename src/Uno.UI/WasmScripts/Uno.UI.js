@@ -158,6 +158,19 @@ var Uno;
 })(Uno || (Uno = {}));
 var Uno;
 (function (Uno) {
+    var UI;
+    (function (UI) {
+        let HtmlEventDispatchResult;
+        (function (HtmlEventDispatchResult) {
+            HtmlEventDispatchResult[HtmlEventDispatchResult["Ok"] = 0] = "Ok";
+            HtmlEventDispatchResult[HtmlEventDispatchResult["StopPropagation"] = 1] = "StopPropagation";
+            HtmlEventDispatchResult[HtmlEventDispatchResult["PreventDefault"] = 2] = "PreventDefault";
+            HtmlEventDispatchResult[HtmlEventDispatchResult["NotDispatched"] = 128] = "NotDispatched";
+        })(HtmlEventDispatchResult = UI.HtmlEventDispatchResult || (UI.HtmlEventDispatchResult = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
     var Http;
     (function (Http) {
         class HttpClient {
@@ -394,7 +407,12 @@ var Uno;
                     // created later on 
                     img.onload = loadingDone;
                     img.onerror = loadingDone;
-                    img.src = String(UnoAppManifest.splashScreenImage);
+                    const UNO_BOOTSTRAP_APP_BASE = config.environmentVariables["UNO_BOOTSTRAP_APP_BASE"] || "";
+                    const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
+                    const fullImagePath = UNO_BOOTSTRAP_APP_BASE !== ''
+                        ? `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`
+                        : String(UnoAppManifest.splashScreenImage);
+                    img.src = fullImagePath;
                     // If there's no response, skip the loading
                     setTimeout(loadingDone, 2000);
                 });
@@ -490,7 +508,7 @@ var Uno;
                 element.setAttribute("XamlType", uiElementRegistration.typeName);
                 element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
                 if (uiElementRegistration.isFrameworkElement) {
-                    this.setAsUnarranged(element);
+                    this.setAsUnarranged(element, true);
                 }
                 if (element.hasOwnProperty("tabindex")) {
                     element["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
@@ -575,6 +593,27 @@ var Uno;
             }
             setXUidInternal(elementId, name) {
                 this.getView(elementId).setAttribute("xuid", name);
+            }
+            /**
+                * Sets the visibility of the specified element
+                */
+            setVisibility(elementId, visible) {
+                this.setVisibilityInternal(elementId, visible);
+                return "ok";
+            }
+            setVisibilityNative(pParam) {
+                const params = WindowManagerSetVisibilityParams.unmarshal(pParam);
+                this.setVisibilityInternal(params.HtmlId, params.Visible);
+                return true;
+            }
+            setVisibilityInternal(elementId, visible) {
+                const element = this.getView(elementId);
+                if (visible) {
+                    element.classList.remove(WindowManager.unoCollapsedClassName);
+                }
+                else {
+                    element.classList.add(WindowManager.unoCollapsedClassName);
+                }
             }
             /**
                 * Set an attribute for an element.
@@ -818,10 +857,66 @@ var Uno;
                 return true;
             }
             setAsArranged(element) {
-                element.classList.remove(WindowManager.unoUnarrangedClassName);
+                if (!element._unoIsArranged) {
+                    element._unoIsArranged = true;
+                    element.classList.remove(WindowManager.unoUnarrangedClassName);
+                }
             }
-            setAsUnarranged(element) {
-                element.classList.add(WindowManager.unoUnarrangedClassName);
+            setAsUnarranged(element, force = false) {
+                if (element._unoIsArranged || force) {
+                    element._unoIsArranged = false;
+                    element.classList.add(WindowManager.unoUnarrangedClassName);
+                }
+            }
+            /**
+            * Sets the color property of the specified element
+            */
+            setElementColor(elementId, color) {
+                this.setElementColorInternal(elementId, color);
+                return "ok";
+            }
+            setElementColorNative(pParam) {
+                const params = WindowManagerSetElementColorParams.unmarshal(pParam);
+                this.setElementColorInternal(params.HtmlId, params.Color);
+                return true;
+            }
+            setElementColorInternal(elementId, color) {
+                const element = this.getView(elementId);
+                element.style.setProperty("color", this.numberToCssColor(color));
+            }
+            /**
+            * Sets the background color property of the specified element
+            */
+            setElementBackgroundColor(pParam) {
+                const params = WindowManagerSetElementBackgroundColorParams.unmarshal(pParam);
+                const element = this.getView(params.HtmlId);
+                const style = element.style;
+                style.setProperty("background-color", this.numberToCssColor(params.Color));
+                style.removeProperty("background-image");
+                return true;
+            }
+            /**
+            * Sets the background image property of the specified element
+            */
+            setElementBackgroundGradient(pParam) {
+                const params = WindowManagerSetElementBackgroundGradientParams.unmarshal(pParam);
+                const element = this.getView(params.HtmlId);
+                const style = element.style;
+                style.removeProperty("background-color");
+                style.setProperty("background-image", params.CssGradient);
+                return true;
+            }
+            /**
+            * Clears the background property of the specified element
+            */
+            resetElementBackground(pParam) {
+                const params = WindowManagerResetElementBackgroundParams.unmarshal(pParam);
+                const element = this.getView(params.HtmlId);
+                const style = element.style;
+                style.removeProperty("background-color");
+                style.removeProperty("background-image");
+                style.removeProperty("background-size");
+                return true;
             }
             /**
             * Sets the transform matrix of an element
@@ -913,9 +1008,12 @@ var Uno;
             }
             static dispatchPointerEvent(element, evt) {
                 const payload = WindowManager.pointerEventExtractor(evt);
-                const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
-                if (handled) {
+                const result = WindowManager.current.dispatchEvent(element, evt.type, payload);
+                if (result & UI.HtmlEventDispatchResult.StopPropagation) {
                     evt.stopPropagation();
+                }
+                if (result & UI.HtmlEventDispatchResult.PreventDefault) {
+                    evt.preventDefault();
                 }
             }
             static onPointerEnterReceived(evt) {
@@ -1020,9 +1118,12 @@ var Uno;
                     const eventPayload = eventExtractor
                         ? `${eventExtractor(event)}`
                         : "";
-                    var handled = this.dispatchEvent(element, eventName, eventPayload);
-                    if (handled) {
+                    const result = this.dispatchEvent(element, eventName, eventPayload);
+                    if (result & UI.HtmlEventDispatchResult.StopPropagation) {
                         event.stopPropagation();
+                    }
+                    if (result & UI.HtmlEventDispatchResult.PreventDefault) {
+                        event.preventDefault();
                     }
                 };
                 element.addEventListener(eventName, eventHandler, onCapturePhase);
@@ -1753,7 +1854,7 @@ var Uno;
                     // this way always succeed because synchronous calls are not possible
                     // between the host and the browser, unlike wasm.
                     UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
-                    return true;
+                    return UI.HtmlEventDispatchResult.Ok;
                 }
                 else {
                     return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
@@ -1769,6 +1870,9 @@ var Uno;
             handleToString(handle) {
                 // Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
                 return handle + "";
+            }
+            numberToCssColor(color) {
+                return "#" + color.toString(16).padStart(8, '0');
             }
             setCursor(cssCursor) {
                 const unoBody = document.getElementById(this.containerElementId);
@@ -1813,6 +1917,7 @@ var Uno;
         WindowManager._isLoadEventsEnabled = false;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
+        WindowManager.unoCollapsedClassName = "uno-visibility-collapsed";
         WindowManager._cctor = (() => {
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
@@ -1822,7 +1927,7 @@ var Uno;
         WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
         if (typeof define === "function") {
-            define([`${config.uno_app_base}/AppManifest`], () => {
+            define([`./AppManifest.js`], () => {
             });
         }
         else {
@@ -3534,6 +3639,7 @@ var Uno;
                 }
                 static async readAsync(streamId, targetArrayPointer, offset, count, position) {
                     var streamReader;
+                    var readerNeedsRelease = true;
                     try {
                         const instance = NativeFileReadStream._streamMap.get(streamId);
                         var totalRead = 0;
@@ -3547,10 +3653,23 @@ var Uno;
                             totalRead += chunk.value.length;
                             chunk = await streamReader.read();
                         }
+                        // If this is the end of stream, it closed itself
+                        readerNeedsRelease = !chunk.done;
                         return totalRead.toString();
                     }
                     finally {
-                        if (streamReader) {
+                        // Reader must be released only if the underlying stream has not already closed it.				
+                        // Otherwise the release operation sets a new Promise.reject as reader.closed which
+                        // raises silent but observable exception in Chromium-based browsers.
+                        if (streamReader && readerNeedsRelease) {
+                            // Silently handling TypeError exceptions on closed event as the releaseLock()
+                            // raises one in case of a successful close.
+                            streamReader.closed.catch(reason => {
+                                if (!(reason instanceof TypeError)) {
+                                    throw reason;
+                                }
+                            });
+                            streamReader.cancel();
                             streamReader.releaseLock();
                         }
                     }
@@ -3933,12 +4052,32 @@ var Windows;
                     return null;
                 }
                 static observeSystemTheme() {
-                    if (!this.dispatchThemeChange) {
-                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+                    if (!Application.dispatchThemeChange) {
+                        Application.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
                     }
                     if (window.matchMedia) {
                         window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
                             Application.dispatchThemeChange();
+                        });
+                    }
+                }
+                static observeVisibility() {
+                    if (!Application.dispatchVisibilityChange) {
+                        Application.dispatchVisibilityChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
+                    }
+                    if (document.onvisibilitychange !== undefined) {
+                        document.addEventListener("visibilitychange", () => {
+                            Application.dispatchVisibilityChange(document.visibilityState == "visible");
+                        });
+                    }
+                    if (window.onpagehide !== undefined) {
+                        window.addEventListener("pagehide", () => {
+                            Application.dispatchVisibilityChange(false);
+                        });
+                    }
+                    if (window.onpageshow !== undefined) {
+                        window.addEventListener("pageshow", () => {
+                            Application.dispatchVisibilityChange(true);
                         });
                     }
                 }
@@ -4595,6 +4734,16 @@ class WindowManagerRemoveViewParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerResetElementBackgroundParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerResetElementBackgroundParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerResetStyleParams {
     static unmarshal(pData) {
         const ret = new WindowManagerResetStyleParams();
@@ -4758,6 +4907,51 @@ class WindowManagerSetContentHtmlParams {
             else {
                 ret.Html = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementBackgroundColorParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetElementBackgroundColorParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Color = Module.HEAPU32[(pData + 4) >> 2];
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementBackgroundGradientParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetElementBackgroundGradientParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.CssGradient = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.CssGradient = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementColorParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetElementColorParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Color = Module.HEAPU32[(pData + 4) >> 2];
         }
         return ret;
     }
@@ -4976,6 +5170,19 @@ class WindowManagerSetUnsetClassesParams {
             else {
                 ret.CssClassesToUnset = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetVisibilityParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetVisibilityParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Visible = Boolean(Module.getValue(pData + 4, "i32"));
         }
         return ret;
     }

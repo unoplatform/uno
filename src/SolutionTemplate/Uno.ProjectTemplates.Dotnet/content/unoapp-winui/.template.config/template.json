@@ -2,7 +2,7 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
   "classifications": [
-    "Cross-platform",
+    "Multi-platform",
     "Uno Platform",
     "Android",
     "iOS",
@@ -16,7 +16,7 @@
   "name": "Cross-Platform App (WinUI)",
   "identity": "Uno.Platform.UnoApp.WinUI",
   "groupIdentity": "Uno.Platform.Blank.WinUI",
-  "description": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets WinUI 3 for Windows, Android, iOS, macOS, WebAssembly, Skia/WPF and Skia/GTK for Linux.",
+  "description": "Template for creating a multi-platform C# & XAML application targeting WinUI 3, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux.",
   "precedence": "6001",
   "tags": {
     "language": "C#",
@@ -107,12 +107,6 @@
       "defaultValue": "true",
       "description": "Enables the WebAssembly platform support project"
     },
-    "UWP": {
-      "type": "parameter",
-      "dataType": "bool",
-      "defaultValue": "true",
-      "description": "Enables the Windows platform support project"
-    },
     "iOS": {
       "type": "parameter",
       "dataType": "bool",
@@ -169,7 +163,6 @@
       "path": "UnoWinUIQuickStart.iOS\\UnoWinUIQuickStart.iOS.csproj"
     },
     {
-      "condition": "UWP",
       "path": "UnoWinUIQuickStart.UWP\\UnoWinUIQuickStart.Uwp.csproj"
     },
     {
@@ -226,12 +219,6 @@
           "condition": "(!macOS)",
           "exclude": [
             "UnoWinUIQuickStart.macOS/**/*"
-          ]
-        },
-        {
-          "condition": "(!UWP)",
-          "exclude": [
-            "UnoWinUIQuickStart.UWP/**/*"
           ]
         },
         {

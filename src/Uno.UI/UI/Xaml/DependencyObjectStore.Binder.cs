@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Threading;
 using Uno.Diagnostics.Eventing;
 using System.Collections;
+using Uno.Collections;
 
 #if !NET461
 using Uno.UI.Controls;
@@ -34,7 +35,7 @@ namespace Windows.UI.Xaml
 
 		private readonly object _gate = new object();
 
-		private readonly Dictionary<DependencyProperty, int> _childrenBindableMap = new Dictionary<DependencyProperty, int>(0, DependencyPropertyComparer.Default);
+		private readonly HashtableEx _childrenBindableMap = new HashtableEx(DependencyPropertyComparer.Default);
 		private readonly List<object?> _childrenBindable = new List<object?>();
 
 		private bool _isApplyingTemplateBindings;
@@ -55,7 +56,7 @@ namespace Windows.UI.Xaml
 		{
 #if !HAS_EXPENSIVE_TRYFINALLY
 			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/mono/mono/issues/13653 for more details.
+			// See https://github.com/dotnet/runtime/issues/50783 for more details.
 			try
 #endif
 			{
@@ -109,7 +110,12 @@ namespace Windows.UI.Xaml
 			for (int i = 0; i < _childrenBindable.Count; i++)
 			{
 				var child = _childrenBindable[i];
-				var parent = child?.GetParent();
+
+				var childAsStoreProvider = child as IDependencyObjectStoreProvider;
+
+				// Get the parent if the child is a provider, otherwise an
+				// "attached store" may be created for no good reason.
+				var parent = childAsStoreProvider?.GetParent();
 
 				//Do not propagate value if you are not this child's parent
 				//Covers case where a child may hold a binding to a view higher up the tree
@@ -122,9 +128,9 @@ namespace Windows.UI.Xaml
 					continue;
 				}
 
-				if (child is IDependencyObjectStoreProvider provider)
+				if (childAsStoreProvider != null)
 				{
-					SetInherited(provider);
+					SetInherited(childAsStoreProvider);
 				}
 				else
 				{
@@ -161,10 +167,10 @@ namespace Windows.UI.Xaml
 		}
 
 		private void SetInheritedTemplatedParent(object? templatedParent)
-			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _templatedParentPropertyDetails);
+			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _properties.TemplatedParentPropertyDetails);
 
 		private void SetInheritedDataContext(object? dataContext)
-			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _dataContextPropertyDetails);
+			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
@@ -274,7 +280,7 @@ namespace Windows.UI.Xaml
 			{
 #if !HAS_EXPENSIVE_TRYFINALLY
 				// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-				// See https://github.com/mono/mono/issues/13653 for more details.
+				// See https://github.com/dotnet/runtime/issues/50783 for more details.
 				try
 #endif
 				{
@@ -289,11 +295,17 @@ namespace Windows.UI.Xaml
 
 					_isApplyingDataContextBindings = true;
 
-					using (TryWriteDataContextChangedEventActivity())
+					if (TryWriteDataContextChangedEventActivity() is { } trace)
 					{
-						_properties.ApplyDataContext(actualDataContext);
-
-						ApplyChildrenBindable(actualDataContext, isTemplatedParent: false);
+						// "using" statements are costly under we https://github.com/dotnet/runtime/issues/50783
+						using (trace)
+						{
+							ApplyDataContext(actualDataContext);
+						}
+					}
+					else
+					{
+						ApplyDataContext(actualDataContext);
 					}
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY
@@ -303,6 +315,13 @@ namespace Windows.UI.Xaml
 					_isApplyingDataContextBindings = false;
 				}
 			}
+
+		}
+
+		private void ApplyDataContext(object? actualDataContext)
+		{
+			_properties.ApplyDataContext(actualDataContext);
+			ApplyChildrenBindable(actualDataContext, isTemplatedParent: false);
 		}
 
 		private IDisposable? TryWriteDataContextChangedEventActivity()
@@ -369,16 +388,13 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context)
-		{
-			var precedence = _overriddenPrecedences?.Count > 0
-				? _overriddenPrecedences.Peek()
-				: default;
-			SetResourceBinding(dependencyProperty, resourceKey, isTheme, context, precedence, setterBindingPath: null);
-		}
-
 		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context, DependencyPropertyValuePrecedences? precedence, BindingPath? setterBindingPath)
 		{
+			if (precedence == null && _overriddenPrecedences?.Count > 0)
+			{
+				precedence = _overriddenPrecedences.Peek();
+			}
+
 			var binding = new ResourceBinding(resourceKey, isTheme, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
 			SetBinding(dependencyProperty, binding);
 		}
@@ -483,6 +499,17 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object value)
 		{
+			var unregisteringInheritedProperties = _unregisteringInheritedProperties || _parentUnregisteringInheritedProperties;
+			if (unregisteringInheritedProperties)
+			{
+				// This guards against the scenario where inherited DataContext is removed when the view is removed from the visual tree,
+				// in which case 2-way bindings should not be updated.
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("SetSourceValue() not called because inherited property is being unset.");
+				}
+				return;
+			}
 			_properties.SetSourceValue(propertyDetails, value);
 		}
 
@@ -578,10 +605,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private int GetOrCreateChildBindablePropertyIndex(DependencyProperty property)
 		{
-			if (!_childrenBindableMap.TryGetValue(property, out int index))
+			int index;
+
+			if (!_childrenBindableMap.TryGetValue(property, out var indexRaw))
 			{
 				_childrenBindableMap[property] = index = _childrenBindableMap.Count;
 				_childrenBindable.Add(null);
+			}
+			else
+			{
+				index = (int)indexRaw!;
 			}
 
 			return index;

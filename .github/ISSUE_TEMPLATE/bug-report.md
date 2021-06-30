@@ -19,11 +19,38 @@ If the matter is security related, please disclose it privately via https://gith
 
 ## How to reproduce it (as minimally and precisely as possible)
 
-<!-- Please provide a **MINIMAL REPRO PROJECT** and the **STEPS TO REPRODUCE**-->
+<!-- 
+Please provide a **MINIMAL REPRO PROJECT** and the **STEPS TO REPRODUCE**
+
+To create a minimal reproduction project:
+ - Create an Uno app through:
+   - `dotnet new unoapp --install Uno.ProjectTemplates.Dotnet` and `dotnet new unoapp`
+   - or through the [Visual Studio extension](https://platform.uno/docs/articles/get-started-vs.html)
+ - Make sure to add the least code possible to demonstrate the issue
+ - Keep all project heads, even if the platforms are seemingly not relevant to your issue
+ - Remove all the `obj/bin` folders and zip the folder.
+ - Attach the zip file to the issue
+
+If the issue is visible on WebAssembly and uses only XAML:
+- Visit https://playground.platform.uno
+- Add your code and data context as needed
+- Create a link and paste it here
+-->
 
 ## Workaround
 
 <!-- Please provide steps to workaround this problem if possible -->
+
+## Works on UWP/WinUI
+<!--
+Yes / No
+
+To make sure this is an Uno Platform specific issue, try running your sample application 
+on Windows using the UWP or WinUI project. If it does not work on Windows either, it may be a 
+
+Windows issue or it may be a documentation issue. In this case, open a discussion instead:
+https://github.com/unoplatform/uno/discussions
+-->
 
 ## Environment
 

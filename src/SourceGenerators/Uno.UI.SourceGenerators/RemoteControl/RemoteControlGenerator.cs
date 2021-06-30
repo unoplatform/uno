@@ -1,6 +1,9 @@
+#nullable enable
+
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -49,9 +52,17 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 				BuildEndPointAttribute(context, sb);
 				BuildSearchPaths(context, sb);
+				BuildServerProcessorsPaths(context, sb);
 
 				context.AddSource("RemoteControl", sb.ToString());
 			}
+		}
+
+		private void BuildServerProcessorsPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)
+		{
+			sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerProcessorsConfigurationAttribute(" +
+				$"@\"{context.GetMSBuildPropertyValue("UnoRemoteControlProcessorsPath")}\"" +
+				$")]");
 		}
 
 		private static bool IsRemoteControlClientInstalled(GeneratorExecutionContext context)
@@ -79,7 +90,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 			var distictPaths = string.Join(",\n", xamlPaths.Distinct().Select(p => $"@\"{p}\""));
 
-			sb.AppendLineInvariant("{0}", $"new[]{{{distictPaths}}}");
+			sb.AppendLineInvariant("{0}", $"new string[]{{{distictPaths}}}");
 
 			sb.AppendLineInvariant($")]");
 		}
@@ -101,10 +112,23 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
 					.Where(x => !IPAddress.IsLoopback(x.Address));
+					//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
 
 				foreach (var addressInfo in addresses)
 				{
-					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressInfo.Address}\", {unoRemoteControlPort})]");
+					var address = addressInfo.Address;
+
+					string addressStr;
+					if(address.AddressFamily == AddressFamily.InterNetworkV6)
+					{
+						address.ScopeId = 0; // remove annoying "%xx" on IPv6 addresses
+						addressStr = $"[{address}]";
+					}
+					else
+					{
+						addressStr = address.ToString();
+					}
+					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressStr}\", {unoRemoteControlPort})]");
 				}
 			}
 			else

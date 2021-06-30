@@ -9,17 +9,26 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<ScrollViewer>
-		<StackPanel Spacing="6">
-			<DatePicker Header="All parts shown" xamarin:UseNativePicker="False" />
-			<DatePicker Header="Month and year shown" DayVisible="False" xamarin:UseNativePicker="False"  />
-			<DatePicker Header="Month and day shown" YearVisible="False" xamarin:UseNativePicker="False" />
-			<DatePicker Header="Day and year shown" MonthVisible="False" xamarin:UseNativePicker="False" />
-			<DatePicker Header="Only year shown" MonthVisible="False" DayVisible="False" xamarin:UseNativePicker="False" />
-			<DatePicker Header="All parts shown (native)" xamarin:UseNativePicker="True" />
-			<DatePicker Header="Month and year shown (native)" DayVisible="False" xamarin:UseNativePicker="True" />
-			<DatePicker Header="Month and day shown (native)" YearVisible="False" xamarin:UseNativePicker="True" />
-			<DatePicker Header="Day and year shown (native)" MonthVisible="False" xamarin:UseNativePicker="True" />
-			<DatePicker Header="Only year shown (native)" MonthVisible="False" DayVisible="False" xamarin:UseNativePicker="True" />
-		</StackPanel>
+		<Grid ColumnSpacing="10">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<StackPanel Spacing="6">
+				<DatePicker Header="All parts shown" xamarin:UseNativeStyle="False" />
+				<DatePicker Header="Month and year shown" DayVisible="False" xamarin:UseNativeStyle="False"  />
+				<DatePicker Header="Month and day shown" YearVisible="False" xamarin:UseNativeStyle="False" />
+				<DatePicker Header="Day and year shown" MonthVisible="False" xamarin:UseNativeStyle="False" />
+				<DatePicker Header="Only year shown" MonthVisible="False" DayVisible="False" xamarin:UseNativeStyle="False" />
+			</StackPanel>
+			<StackPanel Spacing="6" Grid.Column="1">
+				<DatePicker Header="All parts shown (native)" xamarin:UseNativeStyle="True" />
+				<DatePicker Header="Month and year shown (native)" DayVisible="False" xamarin:UseNativeStyle="True" />
+				<DatePicker Header="Month and day shown (native)" YearVisible="False" xamarin:UseNativeStyle="True" />
+				<DatePicker Header="Day and year shown (native)" MonthVisible="False" xamarin:UseNativeStyle="True" />
+				<DatePicker Header="Only year shown (native)" MonthVisible="False" DayVisible="False" xamarin:UseNativeStyle="True" />
+			</StackPanel>
+		</Grid>
 	</ScrollViewer>
 </Page>

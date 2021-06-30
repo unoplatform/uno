@@ -4,7 +4,7 @@
     <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
-	<Import Project="../netcore-build-windows.props"/>
+	<Import Project="../netcore-build-windows.props" />
 	
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
