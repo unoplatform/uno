@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 
 			itemContainer.DragEnter -= OnReorderUpdated;
 			itemContainer.DragOver -= OnReorderUpdated;
-			itemContainer.DragLeave -= OnReorderCompleted;
+			itemContainer.DragLeave -= OnReorderUpdated;
 			itemContainer.Drop -= OnReorderCompleted;
 		}
 
@@ -142,12 +142,12 @@ namespace Windows.UI.Xaml.Controls
 					// For safety only, avoids double subscription
 					that.DragEnter -= OnReorderUpdated;
 					that.DragOver -= OnReorderUpdated;
-					that.DragLeave -= OnReorderCompleted;
+					that.DragLeave -= OnReorderUpdated;
 					that.Drop -= OnReorderCompleted;
 
 					that.DragEnter += OnReorderUpdated;
 					that.DragOver += OnReorderUpdated;
-					that.DragLeave += OnReorderCompleted;
+					that.DragLeave += OnReorderUpdated;
 					that.Drop += OnReorderCompleted;
 				}
 			}
