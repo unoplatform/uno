@@ -16,11 +16,7 @@
 				<animatedvisuals:AnimatedChevronDownSmallVisualSource/>
 			</controls:AnimatedIcon.Source>
 			<controls:AnimatedIcon.FallbackIconSource>
-				<controls:FontIconSource
-					FontFamily="Segoe MDL2 Assets"
-                    FontSize="12"
-                    Glyph="&#xE70D;"
-                    IsTextScaleFactorEnabled="False"/>
+				<controls:SymbolIconSource Symbol="Emoji" />
 			</controls:AnimatedIcon.FallbackIconSource>
 		</controls:AnimatedIcon>
 	</Grid>

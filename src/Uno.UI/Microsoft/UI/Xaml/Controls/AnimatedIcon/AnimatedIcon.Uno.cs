@@ -1,10 +1,9 @@
 ﻿using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ImageIcon
+	public partial class AnimatedIcon : IconElement
 	{
 		private bool _initialized = false;
 		private bool _applyTemplateCalled = false;
@@ -25,15 +24,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!_initialized)
 			{
-				var image = new Image
-				{
-					Stretch = Stretch.Uniform
-				};
-
-				var grid = new Grid();
-				grid.Children.Add(image);
-
-				AddIconElementView(grid);
+				// TODO Uno specific - We must add the child element manually.
+				AddIconElementView(new Grid());
 				_initialized = true;
 			}
 		}

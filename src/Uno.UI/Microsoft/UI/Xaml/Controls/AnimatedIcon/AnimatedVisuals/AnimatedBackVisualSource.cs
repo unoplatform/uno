@@ -10,17 +10,17 @@ namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 	// TODO Uno: This is currently a stub, as animated visuals are not properly supported
 	public class AnimatedBackVisualSource : IAnimatedVisualSource2
 	{
-		public IReadOnlyDictionary<string, double> Markers => throw new NotImplementedException();
-		public void Load() => throw new NotImplementedException();
-		public Size Measure(Size availableSize) => throw new NotImplementedException();
-		public void Pause() => throw new NotImplementedException();
-		public void Play(double fromProgress, double toProgress, bool looped) => throw new NotImplementedException();
-		public void Resume() => throw new NotImplementedException();
+		public IReadOnlyDictionary<string, double> Markers => new Dictionary<string, double>();
+		public void Load() { }
+		public Size Measure(Size availableSize) => availableSize;
+		public void Pause() { }
+		public void Play(double fromProgress, double toProgress, bool looped) { }
+		public void Resume() { }
 		public void SetColorProperty(string propertyName, Color value) { }
-		public void SetProgress(double progress) => throw new NotImplementedException();
-		public void Stop() => throw new NotImplementedException();
-		public void Unload() => throw new NotImplementedException();
-		public void Update(AnimatedVisualPlayer player) => throw new NotImplementedException();
-		public IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics) => throw new NotImplementedException();
+		public void SetProgress(double progress) { }
+		public void Stop() { }
+		public void Unload() { }
+		public void Update(AnimatedVisualPlayer player) { }
+		public IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics) { diagnostics = new object(); return null; }
 	}
 }

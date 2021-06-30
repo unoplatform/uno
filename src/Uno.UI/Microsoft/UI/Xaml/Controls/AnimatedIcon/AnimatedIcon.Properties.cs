@@ -34,15 +34,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIcon), new PropertyMetadata(null, OnSourcePropertyChanged));
-
-		public string State
+				
+		public static string GetState(DependencyObject obj)
 		{
-			get => (string)GetValue(StateProperty);
-			set => SetValue(StateProperty, value);
+			return (string)obj.GetValue(StateProperty);
 		}
 
-		public static readonly DependencyProperty StateProperty =
-			DependencyProperty.Register(nameof(State), typeof(string), typeof(AnimatedIcon), new PropertyMetadata(null, OnAnimatedIconStatePropertyChanged));
+		public static void SetState(DependencyObject obj, string value)
+		{
+			obj.SetValue(StateProperty, value);
+		}
+
+		public static DependencyProperty StateProperty { get; } =
+			DependencyProperty.RegisterAttached("State", typeof(string), typeof(AnimatedIcon), new PropertyMetadata(null, OnAnimatedIconStatePropertyChanged));
 
 		private static void OnFallbackIconSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -59,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private static void OnSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			var owner = sender as AnimatedIcon;
-			owner?.OnFallbackIconSourcePropertyChanged(args);
+			owner?.OnSourcePropertyChanged(args);
 		}
 	}
 }

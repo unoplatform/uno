@@ -28,8 +28,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_AnimatedIcon);
 
+#if !HAS_UNO
 			m_progressPropertySet = Windows.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
 			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
+#else
+			m_progressPropertySet = new CompositionPropertySet(null);
+#endif
 			Loaded += OnLoaded;
 
 			this.RegisterPropertyChangedCallback(ForegroundProperty, OnForegroundPropertyChanged);
@@ -39,16 +43,13 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
-#if HAS_UNO
-			// TODO Uno specific - We must add the child element manually.
-			AddIconElementView(new Border());
-#endif
+
 			// Construct the visual from the Source property in on apply template so that it participates
 			// in the initial measure for the object.
 			ConstructAndInsertVisual();
 			var panel = VisualTreeHelper.GetChild(this, 0) as Panel;
 			m_rootPanel = panel;
-			m_currentState = State;
+			m_currentState = GetState(this);
 
 			if (panel != null)
 			{
@@ -75,6 +76,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
+#if HAS_UNO
+			// Uno specific: Called to ensure OnApplyTemplate runs
+			EnsureInitialized();
+#endif
+
 			// AnimatedIcon might get added to a UI which has already set the State property on an ancestor.
 			// If this is the case and the animated icon being added doesn't have its own state property
 			// We copy the ancestor value when we load. Additionally we attach to our ancestor's property
@@ -117,7 +123,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// they will not have been set during OnApplyTemplate.
 			OnFallbackIconSourcePropertyChanged(null);
 		}
-
 
 		protected override Size MeasureOverride(Size availableSize)
 		{

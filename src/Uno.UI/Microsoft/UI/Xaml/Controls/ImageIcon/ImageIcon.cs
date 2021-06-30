@@ -12,15 +12,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ImageIcon()
 		{
+			Loaded += ImageIcon_Loaded;
+		}
+
+		private void ImageIcon_Loaded(object sender, RoutedEventArgs e)
+		{
+#if HAS_UNO
+			// Uno specific: Called to ensure OnApplyTemplate runs
+			EnsureInitialized();
+#endif
 		}
 
 		protected override void OnApplyTemplate()
 		{
-#if HAS_UNO
-			// Uno specific: WinUI shares the visual tree initialziation with BitmapIcon
-			InitializeVisualTree();
-#endif
-
 			if (VisualTreeHelper.GetChild(this, 0) is Grid grid)
 			{
 				var image = (Image)VisualTreeHelper.GetChild(grid, 0);
@@ -31,6 +35,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_rootImage = null;
 			}
+
+			_applyTemplateCalled = true;
 		}
 
 		private void OnSourcePropertyChanged(DependencyPropertyChangedEventArgs agrs)
