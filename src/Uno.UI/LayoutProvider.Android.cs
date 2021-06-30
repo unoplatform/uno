@@ -53,8 +53,8 @@ namespace Uno.UI
 		{
 			if (view?.WindowToken != null)
 			{
-				_adjustNothingLayoutProvider.Start(view);
 				_adjustResizeLayoutProvider.Start(view);
+				_adjustNothingLayoutProvider.Start(view);				
 			}
 		}
 
