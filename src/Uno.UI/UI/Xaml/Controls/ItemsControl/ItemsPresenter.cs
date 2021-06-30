@@ -212,5 +212,9 @@ namespace Windows.UI.Xaml.Controls
 
 			return SnapPointsProvider.GetRegularSnapPoints(orientation, alignment, out offset);
 		}
+
+		internal static double OffsetToIndex(double offset) => Math.Max(0, offset - 2);
+
+		internal static double IndexToOffset(int index) => index >= 0 ? index + 2 : 0;
 	}
 }
