@@ -67,7 +67,11 @@ namespace Windows.Storage.Streams
 		public ulong Position => (ulong)_temp.Position;
 
 		/// <inheritdoc />
-		public ulong Size => (ulong)_temp.Length;
+		public ulong Size
+		{
+			get => (ulong)_temp.Length;
+			set => _temp.SetLength((long)value);
+		}
 
 		/// <inheritdoc />
 		public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)
