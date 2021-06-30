@@ -260,12 +260,14 @@ namespace Windows.UI.Xaml.Controls
 				else
 				{
 					newIndex = that.GetIndexFromIndexPath(updatedIndex.Value);
+#if !__IOS__ // This correction doesn't apply on iOS
 					if (indexOfDraggedItem < newIndex)
 					{
 						// If we've moved items down, we have to take in consideration that the updatedIndex
 						// is already assuming that the item has been removed, so it's offsetted by 1.
 						newIndex--;
-					}
+					} 
+#endif
 				}
 
 				for (var i = 0; i < movedItems.Count; i++)

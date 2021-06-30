@@ -44,7 +44,9 @@ namespace Windows.UI.Xaml.Controls
 			// The state of the layout has been invalidated because of an INotifyCollectionChanged operation
 			CollectionChanged,
 			// The state of the layout has been invalidated because the scroll has changed and sticky header positions need updating
-			NeedsHeaderRelayout
+			NeedsHeaderRelayout,
+			// The state of the layout has been invalidated to show provisional item positions during drag-to-reorder
+			Reordering
 		}
 
 		private enum UnusedSpaceState
@@ -102,12 +104,20 @@ namespace Windows.UI.Xaml.Controls
 		private CGSize _lastArrangeSize;
 		private bool _invalidatingHeadersOnBoundsChange;
 		private bool _invalidatingOnCollectionChanged;
+		private bool _invalidatingWhileReordering;
 		private UnusedSpaceState _unusedSpaceState;
 		private readonly Queue<CollectionChangedOperation> _pendingCollectionChanges = new Queue<CollectionChangedOperation>();
 		/// <summary>
 		/// Updates being applied in response to in-place collection modifications.
 		/// </summary>
 		private UICollectionViewUpdateItem[] _updateItems;
+
+		private (Point Location, object Item, UICollectionViewLayoutAttributes LayoutAttributes)? _reorderingState;
+		private NSIndexPath _reorderingDropTarget = null;
+		/// <summary>
+		/// Pre-reorder item positions, stored while applying provisional positions during drag-to-reorder
+		/// </summary>
+		private readonly Dictionary<NSIndexPath, CGRect> _preReorderFrames = new Dictionary<NSIndexPath, CGRect>();
 		#endregion
 
 		#region Properties
@@ -438,6 +448,11 @@ namespace Windows.UI.Xaml.Controls
 				else if (_dirtyState == DirtyState.NeedsHeaderRelayout)
 				{
 					UpdateHeaderPositions();
+					_dirtyState = DirtyState.None;
+				}
+				else if (_dirtyState == DirtyState.Reordering)
+				{
+					UpdateLayoutForReordering();
 					_dirtyState = DirtyState.None;
 				}
 
@@ -877,7 +892,6 @@ namespace Windows.UI.Xaml.Controls
 					//Ensure headers appear above elements
 					layoutAttributes.ZIndex = 1;
 				}
-
 			}
 		}
 
@@ -959,6 +973,15 @@ namespace Windows.UI.Xaml.Controls
 				if (_dirtyState == DirtyState.None)
 				{
 					_dirtyState = DirtyState.NeedsHeaderRelayout;
+				}
+			}
+			// Called while dragging to reorder, apply provisional item positions
+			else if (_invalidatingWhileReordering)
+			{
+				_invalidatingWhileReordering = false;
+				if (_dirtyState == DirtyState.None)
+				{
+					_dirtyState = DirtyState.Reordering;
 				}
 			}
 			//Called for some other reason, update everything
@@ -1420,11 +1443,134 @@ namespace Windows.UI.Xaml.Controls
 					?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
-		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item) => throw new NotImplementedException();
+		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
+		{
+			var indexPath = XamlParent.GetIndexPathFromItem(item);
+			var layoutAttributes = LayoutAttributesForItem(indexPath.ToNSIndexPath());
+			_reorderingState = (location, item, layoutAttributes);
+			if (layoutAttributes != null && !DoesLayoutAttributesContainDraggedPoint(location, layoutAttributes))
+			{
+				// If the drag position is outside of the bounds of the item, recalculate the layout
+				_invalidatingWhileReordering = true;
+				InvalidateLayout();
+			}
+		}
 
-		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item) => throw new NotImplementedException();
+		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
+		{
+			_reorderingState = null;
+			ResetReorderedLayoutAttributes();
+			var dropTarget = _reorderingDropTarget?.ToIndexPath();
+			_reorderingDropTarget = null;
+			InvalidateLayout();
+			return dropTarget;
+		}
 
-		protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => throw new NotImplementedException();
+		/// <summary>
+		/// Update layout with provisional item positions during drag-to-reorder
+		/// </summary>
+		private void UpdateLayoutForReordering()
+		{
+			ResetReorderedLayoutAttributes();
+
+			if (_reorderingState is { } reorderingState && reorderingState.LayoutAttributes is { } draggedAttributes)
+			{
+				var dropTargetAttributes = GetLayoutAttributesUnderPoint(reorderingState.Location);
+				if (dropTargetAttributes == draggedAttributes)
+				{
+					// The item being dragged is currently under the point, no need to shift any items
+					dropTargetAttributes = null;
+				}
+				_reorderingDropTarget = dropTargetAttributes?.IndexPath;
+				if (dropTargetAttributes != null)
+				{
+					var preDragDraggedFrame = draggedAttributes.Frame;
+
+					var preDragDraggedExtentStart = GetExtentStart(preDragDraggedFrame);
+					var dropTargetExtentStart = GetExtentStart(dropTargetAttributes.Frame);
+
+					// If the dragged frame starts before the drop target frame, move its end to the target's end. If it starts after it,
+					// move its start to the target's start. (Moving the start and moving the end will only be different when items have
+					// unequal sizes.)
+					var draggedFrame = preDragDraggedExtentStart < dropTargetExtentStart ?
+						ApplyTemporaryFrame(draggedAttributes, GetExtentEnd(dropTargetAttributes.Frame), SetExtentEnd) :
+						ApplyTemporaryFrame(draggedAttributes, GetExtentStart(dropTargetAttributes.Frame), SetExtentStart);
+					var draggedFrameExtent = GetExtent(draggedFrame.Size);
+
+					foreach (var dict in _itemLayoutInfos.Values)
+					{
+						foreach (var layoutAttributes in dict.Values)
+						{
+							if (layoutAttributes == draggedAttributes)
+							{
+								continue;
+							}
+							var extentStart = GetExtentStart(layoutAttributes.Frame);
+
+							if (extentStart >= dropTargetExtentStart && extentStart < preDragDraggedExtentStart)
+							{
+								// Shift elements at or after target, and before pre-drag position, down
+								ApplyTemporaryFrame(layoutAttributes, draggedFrameExtent, AdjustExtentOffset);
+							}
+							else if (extentStart <= dropTargetExtentStart && extentStart > preDragDraggedExtentStart)
+							{
+								// Shift elements at or before target, and after pre-drag position, up
+								ApplyTemporaryFrame(layoutAttributes, -draggedFrameExtent, AdjustExtentOffset);
+							}
+						}
+					}
+				}
+			}
+
+			CGRect ApplyTemporaryFrame(UICollectionViewLayoutAttributes layoutAttributes, nfloat adjustValue, AdjustFrame adjustFrame)
+			{
+				var frame = layoutAttributes.Frame;
+				_preReorderFrames[layoutAttributes.IndexPath] = frame;
+				adjustFrame(ref frame, adjustValue);
+				layoutAttributes.Frame = frame;
+				return frame;
+			}
+		}
+		private delegate void AdjustFrame(ref CGRect frame, nfloat adjustValue);
+
+		/// <summary>
+		/// Reset provisional item positions to their pre-drag positions.
+		/// </summary>
+		private void ResetReorderedLayoutAttributes()
+		{
+			foreach (var kvp in _preReorderFrames)
+			{
+				if (LayoutAttributesForItem(kvp.Key) is { } layoutAttributes)
+				{
+					layoutAttributes.Frame = kvp.Value;
+				}
+			}
+			_preReorderFrames.Clear();
+		}
+
+		private UICollectionViewLayoutAttributes GetLayoutAttributesUnderPoint(Point point)
+		{
+			foreach (var dict in _itemLayoutInfos.Values)
+			{
+				foreach (var layoutAttributes in dict.Values)
+				{
+					if (DoesLayoutAttributesContainDraggedPoint(point, layoutAttributes))
+					{
+						return layoutAttributes;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private bool DoesLayoutAttributesContainDraggedPoint(Point point, UICollectionViewLayoutAttributes layoutAttributes)
+		{
+			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
+			return layoutAttributes.Frame.Contains(adjustedPoint);
+		}
+
+		protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => throw new NotSupportedException("Not used on iOS");
 
 		protected CGRect AdjustExtentOffset(CGRect frame, nfloat adjustment)
 		{
@@ -1558,6 +1704,36 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				frame.Height = breadth;
+			}
+		}
+
+		protected void SetExtentStart(ref CGRect frame, nfloat extentStart)
+		{
+			if (ScrollOrientation == Orientation.Vertical)
+			{
+				frame.Y = extentStart;
+			}
+			else
+			{
+				frame.X = extentStart;
+			}
+		}
+
+		private void SetExtentEnd(ref CGRect frame, nfloat extentEnd)
+		{
+			var delta = extentEnd - GetExtentEnd(frame);
+			AdjustExtentOffset(ref frame, delta);
+		}
+
+		private void AdjustExtentOffset(ref CGRect frame, nfloat adjustment)
+		{
+			if (ScrollOrientation == Orientation.Vertical)
+			{
+				frame.Y += adjustment;
+			}
+			else
+			{
+				frame.X += adjustment;
 			}
 		}
 
