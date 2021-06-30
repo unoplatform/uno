@@ -10,7 +10,7 @@ namespace Windows.Storage.Streams
 
 		ulong Position { get; }
 
-		ulong Size { get; }
+		ulong Size { get; set; }
 
 		IInputStream GetInputStreamAt( ulong position);
 

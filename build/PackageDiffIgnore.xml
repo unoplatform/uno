@@ -3742,7 +3742,7 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>	
-	<IgnoreSet baseVersion="3.8.6">
+	<IgnoreSet baseVersion="3.8.11">
 		<Types>
 			<Member
 				fullName="Windows.UI.Xaml.Controls.Popup"
@@ -3803,6 +3803,37 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Media.GradientStopCollection.set_IsReadOnly(System.Boolean value)"
 				reason="Relates to #4169" />
+
+			<Member
+				fullName="System.UInt16 Windows.UI.Text.FontWeight.get_Weight()"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.UI.Text.FontWeight.set_Weight(System.UInt16 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.FileRandomAccessStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.InMemoryRandomAccessStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.RandomAccessStreamOverStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Storage.FileProperties.StorageItemThumbnail.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Media.SpeechSynthesis.SpeechSynthesisStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Media.Capture.CapturedFrame.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.ImageStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceThumbnail.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
 		</Methods>
 		<Events>
 			<Member
@@ -4249,6 +4280,540 @@
 				fullName="System.UInt32 Windows.UI.Xaml.Automation.Peers.PatternInterface::value__"
 				reason="Align enums" />
 
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Transparent"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::AliceBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::AntiqueWhite"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Aqua"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Aquamarine"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Azure"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Beige"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Bisque"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Black"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::BlanchedAlmond"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Blue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::BlueViolet"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Brown"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::BurlyWood"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::CadetBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Chartreuse"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Chocolate"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Coral"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::CornflowerBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Cornsilk"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Crimson"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Cyan"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkCyan"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkGoldenrod"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkKhaki"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkMagenta"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkOliveGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkOrange"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkOrchid"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkSalmon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkSeaGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkSlateBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkSlateGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkTurquoise"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkViolet"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DeepPink"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DeepSkyBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DimGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DodgerBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Firebrick"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::FloralWhite"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::ForestGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Fuchsia"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Gainsboro"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::GhostWhite"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Gold"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Goldenrod"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Gray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Green"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::GreenYellow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Honeydew"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::HotPink"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::IndianRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Indigo"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Ivory"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Khaki"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Lavender"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LavenderBlush"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LawnGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LemonChiffon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightCoral"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightCyan"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightGoldenrodYellow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightPink"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSalmon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSeaGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSkyBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSlateGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSteelBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightYellow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Lime"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LimeGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Linen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Magenta"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Maroon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumAquamarine"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumOrchid"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumPurple"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumSeaGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumSlateBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumSpringGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumTurquoise"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumVioletRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MidnightBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MintCream"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MistyRose"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Moccasin"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::NavajoWhite"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Navy"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::OldLace"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Olive"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::OliveDrab"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Orange"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::OrangeRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Orchid"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PaleGoldenrod"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PaleGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PaleTurquoise"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PaleVioletRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PapayaWhip"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PeachPuff"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Peru"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Pink"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Plum"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PowderBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Purple"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Red"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::RosyBrown"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::RoyalBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SaddleBrown"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Salmon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SandyBrown"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SeaGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SeaShell"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Sienna"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Silver"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SkyBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SlateBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SlateGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Snow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SpringGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SteelBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Tan"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Teal"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Thistle"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Tomato"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Turquoise"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Violet"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Wheat"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::White"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::WhiteSmoke"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Yellow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::YellowGreen"
+				reason="Align Colors" />
+
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Thin"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::ExtraLight"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::UltraLight"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::SemiLight"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Light"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Normal"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Regular"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Medium"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::SemiBold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::DemiBold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Bold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::UltraBold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::ExtraBold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Black"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Heavy"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::ExtraBlack"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::UltraBlack"
+				reason="Align FontWeights" />
+
+			<Member
+				fullName="System.Object Windows.UI.Xaml.DependencyProperty::UnsetValue"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Documents.TextElement::CharacterSpacingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Documents.TextElement::TextDecorationsProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ContentPresenter::PaddingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ContentPresenter::BorderThicknessProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ContentPresenter::BorderBrushProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ContentPresenter::CornerRadiusProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Control::FocusStateProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Control::IsTabStopProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ItemsControl::ItemsPanelProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ItemsControl::ItemTemplateProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ItemsControl::ItemTemplateSelectorProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ItemsPresenter::PaddingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ScrollViewer::VerticalOffsetProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ScrollViewer::HorizontalOffsetProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TextBlock::PaddingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TextBlock::CharacterSpacingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TextBlock::TextDecorationsProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Automation.AutomationProperties::NameProperty"
+				reason="Align Properties" />
+
 		</Fields>
 		<Properties>
 			<Member
@@ -4264,6 +4829,10 @@
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Media.GradientStopCollection::IsReadOnly()"
 				reason="Relates to #4169" />
+
+			<Member
+				fullName="System.UInt16 Windows.UI.Text.FontWeight::Weight()"
+				reason="Align Properties" />
 		</Properties>
 	</IgnoreSet>
 	<!--
