@@ -63,7 +63,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
-		<PackageReference Include="Microsoft.UI.Xaml" Version="2.5.0" />
+		<PackageReference Include="Microsoft.UI.Xaml" Version="2.6.0" />
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
