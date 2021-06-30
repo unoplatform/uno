@@ -452,7 +452,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(PaddingProperty, value); }
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -480,7 +480,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(BorderThicknessProperty, value); }
 		}
 
-		public static DependencyProperty BorderThicknessProperty =
+		public static DependencyProperty BorderThicknessProperty { get; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -506,7 +506,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(BorderBrushProperty, value); }
 		}
 
-		public static DependencyProperty BorderBrushProperty =
+		public static DependencyProperty BorderBrushProperty { get; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -529,7 +529,7 @@ namespace Windows.UI.Xaml.Controls
 		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
 
 		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty CornerRadiusProperty = CreateCornerRadiusProperty();
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		public CornerRadius CornerRadius
 		{
