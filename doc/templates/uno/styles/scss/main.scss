@@ -125,19 +125,17 @@ h3 {
     position: absolute;
     margin:5px 0 0 0;
     width:560px;
+    max-height: calc(100vh - 50px - 200px);
     border: 1px solid rgba(0,0,0,0.15);
     border-radius: 10px;
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
     z-index: 1;
-
+    overflow-y: auto;
+    
     .sr-items {
       a {
         color: black;
-        &:first-child {
-          border-radius: 10px 10px 0 0;
-        }
         &:last-child {
-          border-radius: 0 0 10px 10px;
           margin-bottom: 0;
         }
       }
