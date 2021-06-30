@@ -824,7 +824,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// we inverted the direction of that axis in order to put more hue on the outside of the ring,
 				// so we need to do similarly here when positioning the ellipse.
 				if (m_componentsFromLastBitmapCreation == ColorSpectrumComponents.HueSaturation ||
-					m_componentsFromLastBitmapCreation == ColorSpectrumComponents.ValueHue)
+					m_componentsFromLastBitmapCreation == ColorSpectrumComponents.SaturationHue)
 				{
 					sThetaValue = 360 - sThetaValue;
 					sRValue = -sRValue - 1;
