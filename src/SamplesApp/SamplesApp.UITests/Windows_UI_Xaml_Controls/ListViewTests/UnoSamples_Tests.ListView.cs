@@ -473,6 +473,43 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			}
 		}
 
+		[Test]
+		[AutoRetry]
+		public void ListView_Selection_Events_Ordering()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ListView.ListView_Selection_Events");
+			_app.WaitForElement("EventLogs");
+
+			var eventLogs = _app.Marked("EventLogs");
+			var setSelectIndexTo0Button = _app.Marked("SetSelectIndexTo0Button");
+			var clearLogsButton = _app.Marked("ClearLogsButton");
+
+			// selecting item 1 manually
+			clearLogsButton.Tap(); // clear events proc from setting initial data-context
+			_app.Tap("Item_1");
+			var logs = eventLogs.GetDependencyPropertyValue<string>("Text");
+			Assert.AreEqual(logs, GenerateItemSelectionLogs(1, "Item_1"));
+			
+			// selecting item 0 programmatically
+			clearLogsButton.Tap(); // clear events from the step above
+			setSelectIndexTo0Button.Tap();
+			logs = eventLogs.GetDependencyPropertyValue<string>("Text");
+			Assert.AreEqual(logs, GenerateItemSelectionLogs(0, "Item_0"));
+
+			string OnPropertyChanged(string name, object value) => $"VM.PropertyChanged: [{name}]->{value}";
+			string OnSelectionChanged((string, string, int) lv, (string, string, int) vm) => string.Join("\n",
+				"LV.SelectionChanged: (Item|Value|Index): ",
+				$"\t- lv:({lv.Item1}|{lv.Item2}|{lv.Item3}), ",
+				$"\t- vm:({vm.Item1}|{vm.Item2}|{vm.Item3})"
+			);
+			string GenerateItemSelectionLogs(int index, string value) => string.Join("\n",
+				OnPropertyChanged("SelectedIndex", index),
+				OnPropertyChanged("SelectedItem", value),
+				OnPropertyChanged("SelectedValue", value),
+				OnSelectionChanged(lv: (value, value, index), vm: (value, value, index))
+			);
+		}
+
 		private void ClickCheckBoxAt(int i)
 		{
 			_app.Marked("CheckBox").AtIndex(i).Tap();
