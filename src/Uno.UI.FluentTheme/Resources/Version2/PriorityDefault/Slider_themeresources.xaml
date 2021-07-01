@@ -1,0 +1,579 @@
+﻿ <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
+    xmlns:contract6NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)"
+    xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
+    xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <x:Double x:Key="SliderOutsideTickBarThemeHeight">4</x:Double>
+            <x:Double x:Key="SliderTrackThemeHeight">4</x:Double>
+            <Thickness x:Key="SliderBorderThemeThickness">0</Thickness>
+            <Thickness x:Key="SliderHeaderThemeMargin">0,0,0,4</Thickness>
+            <FontWeight x:Key="SliderHeaderThemeFontWeight">Normal</FontWeight>
+
+            <!-- ColorAnimation requires TargetProperty to be Color thus some resources point to the colour instead of brush-->
+            <StaticResource x:Key="SliderContainerBackground" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="ControlFillColorTransparent" />
+            <StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="ControlFillColorTransparent" />
+            <StaticResource x:Key="SliderContainerBackgroundDisabled" ResourceKey="ControlFillColorTransparent" />
+            <StaticResource x:Key="SliderThumbBackground" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderThumbBackgroundPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="SliderThumbBackgroundPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="SliderThumbBackgroundDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="SliderThumbBorderBrush" ResourceKey="ControlElevationBorderBrush" />
+            <StaticResource x:Key="SliderOuterThumbBackground" ResourceKey="ControlSolidFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackFill" ResourceKey="ControlStrongFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackFillPointerOver" ResourceKey="ControlStrongFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackFillPressed" ResourceKey="ControlStrongFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackFillDisabled" ResourceKey="ControlStrongFillColorDisabledBrush" />
+            <StaticResource x:Key="SliderTrackValueFill" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackValueFillPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="SliderTrackValueFillPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="SliderTrackValueFillDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="SliderHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
+            <StaticResource x:Key="SliderHeaderForegroundDisabled" ResourceKey="TextFillColorDisabled" />
+            <StaticResource x:Key="SliderTickBarFill" ResourceKey="ControlStrongFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="ControlStrongFillColorDisabled" />
+            <StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="ControlFillColorInputActiveBrush" />
+
+            <!-- Legacy Brushes -->
+            <SolidColorBrush x:Key="SliderBorderThemeBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="SliderDisabledBorderThemeBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="SliderThumbBackgroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbBorderThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbDisabledBackgroundThemeBrush" Color="#FF7E7E7E" />
+            <SolidColorBrush x:Key="SliderThumbPointerOverBackgroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbPointerOverBorderThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbPressedBackgroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbPressedBorderThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderTickMarkInlineBackgroundThemeBrush" Color="Black" />
+            <SolidColorBrush x:Key="SliderTickMarkInlineDisabledForegroundThemeBrush" Color="Black" />
+            <SolidColorBrush x:Key="SliderTickmarkOutsideBackgroundThemeBrush" Color="#80FFFFFF" />
+            <SolidColorBrush x:Key="SliderTickMarkOutsideDisabledForegroundThemeBrush" Color="#80FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackBackgroundThemeBrush" Color="#29FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackDecreaseBackgroundThemeBrush" Color="#FF5B2EC5" />
+            <SolidColorBrush x:Key="SliderTrackDecreaseDisabledBackgroundThemeBrush" Color="#1FFFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackDecreasePointerOverBackgroundThemeBrush" Color="#FF724BCD" />
+            <SolidColorBrush x:Key="SliderTrackDecreasePressedBackgroundThemeBrush" Color="#FF8152EF" />
+            <SolidColorBrush x:Key="SliderTrackDisabledBackgroundThemeBrush" Color="#29FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackPointerOverBackgroundThemeBrush" Color="#46FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackPressedBackgroundThemeBrush" Color="#59FFFFFF" />
+            <SolidColorBrush x:Key="SliderHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <StaticResource x:Key="SliderContainerBackground" ResourceKey="SystemControlTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="SystemControlTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="SystemControlTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
+            <StaticResource x:Key="SliderThumbBackground" ResourceKey="SystemControlForegroundAccentBrush" />
+            <StaticResource x:Key="SliderThumbBackgroundPointerOver" ResourceKey="SystemAccentColorLight1" />
+            <StaticResource x:Key="SliderThumbBackgroundPressed" ResourceKey="SystemAccentColorDark1" />
+            <StaticResource x:Key="SliderThumbBackgroundDisabled" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
+            <StaticResource x:Key="SliderThumbBorderBrush" ResourceKey="SystemControlForegroundAccentBrush" />
+            <StaticResource x:Key="SliderOuterThumbBackground" ResourceKey="SystemControlForegroundAccentBrush" />
+            <StaticResource x:Key="SliderTrackFill" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
+            <StaticResource x:Key="SliderTrackFillPointerOver" ResourceKey="SystemControlForegroundBaseMediumBrush" />
+            <StaticResource x:Key="SliderTrackFillPressed" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
+            <StaticResource x:Key="SliderTrackFillDisabled" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
+            <StaticResource x:Key="SliderTrackValueFill" ResourceKey="SystemControlHighlightAccentBrush" />
+            <StaticResource x:Key="SliderTrackValueFillPointerOver" ResourceKey="SystemControlHighlightAccentBrush" />
+            <StaticResource x:Key="SliderTrackValueFillPressed" ResourceKey="SystemControlHighlightAccentBrush" />
+            <StaticResource x:Key="SliderTrackValueFillDisabled" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
+            <StaticResource x:Key="SliderHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="SliderHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+            <StaticResource x:Key="SliderTickBarFill" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
+            <StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+            <StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="SystemControlBackgroundAltHighBrush" />
+
+            <x:Double x:Key="SliderOutsideTickBarThemeHeight">4</x:Double>
+            <x:Double x:Key="SliderTrackThemeHeight">2</x:Double>
+            <Thickness x:Key="SliderBorderThemeThickness">1</Thickness>
+            <Thickness x:Key="SliderHeaderThemeMargin">0,0,0,4</Thickness>
+            <FontWeight x:Key="SliderHeaderThemeFontWeight">Normal</FontWeight>
+            <SolidColorBrush x:Key="SliderBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="SliderDisabledBorderThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="SliderThumbBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="SliderThumbBorderThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="SliderThumbDisabledBackgroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="SliderThumbPointerOverBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="SliderThumbPointerOverBorderThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="SliderThumbPressedBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="SliderThumbPressedBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="SliderTickMarkInlineBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="SliderTickMarkInlineDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="SliderTickmarkOutsideBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="SliderTickMarkOutsideDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="SliderTrackBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="SliderTrackDecreaseBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="SliderTrackDecreaseDisabledBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="SliderTrackDecreasePointerOverBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="SliderTrackDecreasePressedBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="SliderTrackDisabledBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="SliderTrackPointerOverBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="SliderTrackPressedBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="SliderHeaderForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <x:Double x:Key="SliderOutsideTickBarThemeHeight">4</x:Double>
+            <x:Double x:Key="SliderTrackThemeHeight">4</x:Double>
+            <Thickness x:Key="SliderBorderThemeThickness">0</Thickness>
+            <Thickness x:Key="SliderHeaderThemeMargin">0,0,0,4</Thickness>
+            <FontWeight x:Key="SliderHeaderThemeFontWeight">Normal</FontWeight>
+
+            <!-- ColorAnimation requires TargetProperty to be Color thus some resources point to the colour instead of brush-->
+            <StaticResource x:Key="SliderContainerBackground" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="ControlFillColorTransparent"/>
+            <StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="ControlFillColorTransparent"/>
+            <StaticResource x:Key="SliderContainerBackgroundDisabled" ResourceKey="ControlFillColorTransparent"/>
+            <StaticResource x:Key="SliderThumbBackground" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderThumbBackgroundPointerOver" ResourceKey="AccentFillColorSecondaryBrush"/>
+            <StaticResource x:Key="SliderThumbBackgroundPressed" ResourceKey="AccentFillColorTertiaryBrush"/>
+            <StaticResource x:Key="SliderThumbBackgroundDisabled" ResourceKey="AccentFillColorDisabledBrush"/>
+            <StaticResource x:Key="SliderThumbBorderBrush" ResourceKey="ControlElevationBorderBrush" />
+            <StaticResource x:Key="SliderOuterThumbBackground" ResourceKey="ControlSolidFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackFill" ResourceKey="ControlStrongFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackFillPointerOver" ResourceKey="ControlStrongFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackFillPressed" ResourceKey="ControlStrongFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackFillDisabled" ResourceKey="ControlStrongFillColorDisabledBrush" />
+            <StaticResource x:Key="SliderTrackValueFill" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTrackValueFillPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="SliderTrackValueFillPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="SliderTrackValueFillDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="SliderHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
+            <StaticResource x:Key="SliderHeaderForegroundDisabled" ResourceKey="TextFillColorDisabled" />
+            <StaticResource x:Key="SliderTickBarFill" ResourceKey="ControlStrongFillColorDefaultBrush" />
+            <StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="ControlStrongFillColorDisabled" />
+            <StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="ControlFillColorInputActiveBrush" />
+
+            <!-- Legacy Brushes -->
+            <SolidColorBrush x:Key="SliderBorderThemeBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="SliderDisabledBorderThemeBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="SliderThumbBackgroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbBorderThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbDisabledBackgroundThemeBrush" Color="#FF7E7E7E" />
+            <SolidColorBrush x:Key="SliderThumbPointerOverBackgroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbPointerOverBorderThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbPressedBackgroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbPressedBorderThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SliderTickMarkInlineBackgroundThemeBrush" Color="Black" />
+            <SolidColorBrush x:Key="SliderTickMarkInlineDisabledForegroundThemeBrush" Color="Black" />
+            <SolidColorBrush x:Key="SliderTickmarkOutsideBackgroundThemeBrush" Color="#80FFFFFF" />
+            <SolidColorBrush x:Key="SliderTickMarkOutsideDisabledForegroundThemeBrush" Color="#80FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackBackgroundThemeBrush" Color="#29FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackDecreaseBackgroundThemeBrush" Color="#FF5B2EC5" />
+            <SolidColorBrush x:Key="SliderTrackDecreaseDisabledBackgroundThemeBrush" Color="#1FFFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackDecreasePointerOverBackgroundThemeBrush" Color="#FF724BCD" />
+            <SolidColorBrush x:Key="SliderTrackDecreasePressedBackgroundThemeBrush" Color="#FF8152EF" />
+            <SolidColorBrush x:Key="SliderTrackDisabledBackgroundThemeBrush" Color="#29FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackPointerOverBackgroundThemeBrush" Color="#46FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackPressedBackgroundThemeBrush" Color="#59FFFFFF" />
+            <SolidColorBrush x:Key="SliderHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <Thickness x:Key="SliderTopHeaderMargin">0,0,0,4</Thickness>
+    <CornerRadius x:Key="SliderTrackCornerRadius">2</CornerRadius>
+    <CornerRadius x:Key="SliderThumbCornerRadius">10</CornerRadius>
+    <x:Double x:Key="SliderPreContentMargin">15</x:Double>
+    <x:Double x:Key="SliderPostContentMargin">15</x:Double>
+    <x:Double x:Key="SliderInnerThumbHeight">12</x:Double>
+    <x:Double x:Key="SliderHorizontalHeight">32</x:Double>
+    <x:Double x:Key="SliderVerticalWidth">32</x:Double>   
+    <x:Double x:Key="SliderHorizontalThumbWidth">20</x:Double>
+    <x:Double x:Key="SliderHorizontalThumbHeight">20</x:Double>
+    <x:Double x:Key="SliderVerticalThumbWidth">20</x:Double>
+    <x:Double x:Key="SliderVerticalThumbHeight">20</x:Double>
+    <x:Double x:Key="SliderInnerThumbWidth">12</x:Double>
+    <x:Double x:Key="SliderInnerThumbHeight">12</x:Double>
+
+    <Style TargetType="Slider" BasedOn="{StaticResource DefaultSliderStyle}" />
+    
+    <Style x:Key="DefaultSliderStyle" TargetType="Slider">
+        <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
+        <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}"/>
+        <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}" />
+        <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+        <Setter Property="ManipulationMode" Value="None" />
+        <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+        <Setter Property="FocusVisualMargin" Value="-7,0,-7,0" />
+        <Setter Property="IsFocusEngagementEnabled" Value="True" />
+        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource SliderTrackCornerRadius}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid Margin="{TemplateBinding Padding}">
+                        <Grid.Resources>
+                            <Style TargetType="Thumb" x:Key="SliderThumbStyle">
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Border
+                                                Margin="-1"
+                                                Background="{ThemeResource SliderOuterThumbBackground}"
+                                                BorderBrush="{ThemeResource SliderThumbBorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="{ThemeResource SliderThumbCornerRadius}">
+                                                <Ellipse
+                                                    x:Name="SliderInnerThumb"
+                                                    RenderTransformOrigin="0.5, 0.5"
+                                                    Fill="{TemplateBinding Background}"                                                  
+                                                    Width="{ThemeResource SliderInnerThumbWidth}"
+                                                    Height="{ThemeResource SliderInnerThumbHeight}">
+                                                    <Ellipse.RenderTransform>
+                                                        <CompositeTransform />
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
+
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CommonStates">
+                                                        <VisualState x:Name="Normal">
+                                                            <Storyboard>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                                                                    <!-- 0.86 is relative scale from 14px to 12px -->
+                                                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.86" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                                                                    <!-- 0.86 is relative scale from 14px to 12px -->
+                                                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.86" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                        <VisualState x:Name="PointerOver">
+                                                            <Storyboard>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                                                                    <!-- 1.167 is relative scale from 12px to 14px -->
+                                                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                                                                    <!-- 1.167 is relative scale from 12px to 14px -->
+                                                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                        <VisualState x:Name="Pressed">
+                                                            <Storyboard>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                                                                    <!-- 0.71 is relative scale from 14px to 10px -->
+                                                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.71" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                                                                    <!-- 0.71 is relative scale from 14px to 10px -->
+                                                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.71" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                        <VisualState x:Name="Disabled">
+                                                            <Storyboard>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                                                                    <!-- 1.167 is relative scale from 12px to 14px -->
+                                                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                                                                    <!-- 1.167 is relative scale from 12px to 14px -->
+                                                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Grid.Resources>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackground}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackground}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackground}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                 <VisualState x:Name="PointerOver">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderContainerBackgroundPointerOver}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>                           
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderContainerBackgroundPressed}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="(Panel.Foreground).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderHeaderForegroundDisabled}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="TopTickBar" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="BottomTickBar" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="LeftTickBar" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="RightTickBar" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderContainerBackgroundDisabled}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusEngagementStates">
+                                <VisualState x:Name="FocusDisengaged" />
+                                <VisualState x:Name="FocusEngagedHorizontal">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="False" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="FocusEngagedVertical">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="False" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <ContentPresenter x:Name="HeaderContentPresenter"
+                            Grid.Row="0"
+                            Content="{TemplateBinding Header}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                            FontWeight="{ThemeResource SliderHeaderThemeFontWeight}"
+                            Foreground="{ThemeResource SliderHeaderForeground}"
+                            Margin="{ThemeResource SliderTopHeaderMargin}"
+                            TextWrapping="Wrap"
+                            Visibility="Collapsed"
+                            x:DeferLoadStrategy="Lazy"/>
+                        <Grid x:Name="SliderContainer"
+                            Grid.Row="1"
+                            Background="{ThemeResource SliderContainerBackground}"
+                            Control.IsTemplateFocusTarget="True"
+                            CornerRadius="{StaticResource ControlCornerRadius}">
+                            <Grid x:Name="HorizontalTemplate" MinHeight="{ThemeResource SliderHorizontalHeight}">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="{ThemeResource SliderPreContentMargin}" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="{ThemeResource SliderPostContentMargin}" />
+                                </Grid.RowDefinitions>
+
+                                <Rectangle x:Name="HorizontalTrackRect"
+                                    Fill="{TemplateBinding Background}"
+                                    Height="{ThemeResource SliderTrackThemeHeight}"
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="3"
+                                    contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                    contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
+                                    contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                    contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                                <Rectangle x:Name="HorizontalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Row="1"
+                                    contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                    contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
+                                    contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                    contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                                <TickBar x:Name="TopTickBar"
+                                    Visibility="Collapsed"
+                                    Fill="{ThemeResource SliderTickBarFill}"
+                                    Height="{ThemeResource SliderOutsideTickBarThemeHeight}"
+                                    VerticalAlignment="Bottom"
+                                    Margin="0,0,0,4"
+                                    Grid.ColumnSpan="3" />
+                                <TickBar x:Name="HorizontalInlineTickBar"
+                                    Visibility="Collapsed"
+                                    Fill="{ThemeResource SliderInlineTickBarFill}"
+                                    Height="{ThemeResource SliderTrackThemeHeight}"
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="3" />
+                                <TickBar x:Name="BottomTickBar"
+                                    Visibility="Collapsed"
+                                    Fill="{ThemeResource SliderTickBarFill}"
+                                    Height="{ThemeResource SliderOutsideTickBarThemeHeight}"
+                                    VerticalAlignment="Top"
+                                    Margin="0,4,0,0"
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="3" />
+                                <Thumb x:Name="HorizontalThumb"
+                                    Style="{StaticResource SliderThumbStyle}"
+                                    DataContext="{TemplateBinding Value}"
+                                    Height="{ThemeResource SliderHorizontalThumbHeight}"
+                                    Width="{ThemeResource SliderHorizontalThumbWidth}"
+                                    contract7Present:CornerRadius="{StaticResource ControlCornerRadius}"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="3"
+                                    Grid.Column="1"
+                                    FocusVisualMargin="-14,-6,-14,-6"
+                                    AutomationProperties.AccessibilityView="Raw" />
+                            </Grid>
+                            <Grid x:Name="VerticalTemplate" MinWidth="{ThemeResource SliderVerticalWidth}" Visibility="Collapsed">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{ThemeResource SliderPreContentMargin}" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="{ThemeResource SliderPostContentMargin}" />
+                                </Grid.ColumnDefinitions>
+
+                                <Rectangle x:Name="VerticalTrackRect"
+                                    Fill="{TemplateBinding Background}"
+                                    Width="{ThemeResource SliderTrackThemeHeight}"
+                                    Grid.Column="1"
+                                    Grid.RowSpan="3"
+                                    contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                    contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
+                                    contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                    contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                                <Rectangle x:Name="VerticalDecreaseRect"
+                                    Fill="{TemplateBinding Foreground}"
+                                    Grid.Column="1"
+                                    Grid.Row="2"
+                                    contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                    contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
+                                    contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                    contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                                <TickBar x:Name="LeftTickBar"
+                                    Visibility="Collapsed"
+                                    Fill="{ThemeResource SliderTickBarFill}"
+                                    Width="{ThemeResource SliderOutsideTickBarThemeHeight}"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,4,0"
+                                    Grid.RowSpan="3" />
+                                <TickBar x:Name="VerticalInlineTickBar"
+                                    Visibility="Collapsed"
+                                    Fill="{ThemeResource SliderInlineTickBarFill}"
+                                    Width="{ThemeResource SliderTrackThemeHeight}"
+                                    Grid.Column="1"
+                                    Grid.RowSpan="3" />
+                                <TickBar x:Name="RightTickBar"
+                                    Visibility="Collapsed"
+                                    Fill="{ThemeResource SliderTickBarFill}"
+                                    Width="{ThemeResource SliderOutsideTickBarThemeHeight}"
+                                    HorizontalAlignment="Left"
+                                    Margin="4,0,0,0"
+                                    Grid.Column="2"
+                                    Grid.RowSpan="3" />
+                                <Thumb x:Name="VerticalThumb"
+                                    Style="{StaticResource SliderThumbStyle}"
+                                    DataContext="{TemplateBinding Value}"
+                                    Width="{ThemeResource SliderVerticalThumbWidth}"
+                                    Height="{ThemeResource SliderVerticalThumbHeight}"
+                                    contract7Present:CornerRadius="{StaticResource ControlCornerRadius}"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    FocusVisualMargin="-6,-14,-6,-14"
+                                    AutomationProperties.AccessibilityView="Raw" />
+                            </Grid>
+
+                        </Grid>
+
+                    </Grid>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

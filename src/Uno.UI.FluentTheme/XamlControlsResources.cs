@@ -67,7 +67,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ControlsResourcesVersionProperty { get; } =
-			DependencyProperty.Register(nameof(ControlsResourcesVersion), typeof(ControlsResourcesVersion), typeof(XamlControlsResources), new FrameworkPropertyMetadata(ControlsResourcesVersion.Version1));
+			DependencyProperty.Register(nameof(ControlsResourcesVersion), typeof(ControlsResourcesVersion), typeof(XamlControlsResources), new PropertyMetadata(ControlsResourcesVersion.Version1, OnControlsResourcesVersionChanged));
+
+		private static void OnControlsResourcesVersionChanged(DependencyObject owner, DependencyPropertyChangedEventArgs args)
+		{
+			var resources = owner as XamlControlsResources;
+			resources?.UpdateSource();
+		}
 
 		[NotImplemented]
 		internal static bool IsUsingResourcesVersion2() => _isUsingResourcesVersion2;

@@ -85,8 +85,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			"Generic.Native.xaml",
 		};
 
-		private const string WinUIThemeResourceV1PathSuffix = "themeresources_v1.xaml";
-		private const string WinUIThemeResourceV2PathSuffix = "themeresources_v2.xaml";
+		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
 #pragma warning disable 649 // Unused member
@@ -714,8 +713,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else if (files.Any() && IsUnoFluentAssembly)
 							{
 								// For Uno assembly, we expose WinUI resources using same uri as on Windows
-								RegisterForFile(WinUIThemeResourceV1PathSuffix, XamlFilePathHelper.WinUIThemeResourceV1URL);
-								RegisterForFile(WinUIThemeResourceV2PathSuffix, XamlFilePathHelper.WinUIThemeResourceV2URL);
+								//TODO MZ: Find appropriate place to put the "max supported version"
+								for (int fluentVersion = 1; fluentVersion <= 2; fluentVersion++)
+								{
+									RegisterForFile(string.Format(WinUIThemeResourcePathSuffixFormatString, fluentVersion), XamlFilePathHelper.GetWinUIThemeResourceUrl(fluentVersion));
+								}
 								RegisterForFile(WinUICompactPathSuffix, XamlFilePathHelper.WinUICompactURL);
 							}
 

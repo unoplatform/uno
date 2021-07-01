@@ -402,13 +402,16 @@ namespace SampleControl.Presentation
 				_useFluentStyles = value;
 				if (_useFluentStyles)
 				{
-					_fluentResources = _fluentResources ?? new XamlControlsResources();
+					_fluentResources = _fluentResources ?? new XamlControlsResources() { ControlsResourcesVersion = ControlsResourcesVersion.Version2 };
 					Application.Current.Resources.MergedDictionaries.Add(_fluentResources);
 				}
 				else
 				{
 					Application.Current.Resources.MergedDictionaries.Remove(_fluentResources);
 				}
+				Application.Current.Resources?.UpdateThemeBindings();
+				Uno.UI.ResourceResolver.UpdateSystemThemeBindings();
+				Application.PropagateThemeChanged(Windows.UI.Xaml.Window.Current.Content);
 				RaisePropertyChanged();
 			}
 		}
