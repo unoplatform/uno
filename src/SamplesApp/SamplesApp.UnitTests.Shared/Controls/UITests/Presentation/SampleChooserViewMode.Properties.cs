@@ -53,6 +53,7 @@ namespace SampleControl.Presentation
 		private bool _isAnyContentVisible = false;
 		private bool _contentAttachedToWindow;
 		private bool _useFluentStyles;
+		private bool _useDarkTheme;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
 
@@ -410,10 +411,25 @@ namespace SampleControl.Presentation
 					Application.Current.Resources.MergedDictionaries.Remove(_fluentResources);
 				}
 #if HAS_UNO
+				// Force the in app styles to reload
 				Application.Current.Resources?.UpdateThemeBindings();
 				Uno.UI.ResourceResolver.UpdateSystemThemeBindings();
 				Application.PropagateThemeChanged(Windows.UI.Xaml.Window.Current.Content);
 #endif
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool UseDarkTheme
+		{
+			get => _useDarkTheme;
+			set
+			{
+				_useDarkTheme = value;
+				if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+				{
+					root.RequestedTheme = _useDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+				}
 				RaisePropertyChanged();
 			}
 		}
