@@ -75,6 +75,19 @@ namespace Microsoft.UI.Xaml.Controls
 					true,
 					(s, e) => (s as Expander)?.OnIsExpandedPropertyChanged(e)));
 
+		public ExpanderTemplateSettings TemplateSettings
+		{
+			get => (ExpanderTemplateSettings)GetValue(TemplateSettingsProperty);
+			set => SetValue(TemplateSettingsProperty, value);
+		}
+
+		public static DependencyProperty TemplateSettingsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TemplateSettings),
+				typeof(ExpanderTemplateSettings),
+				typeof(Expander),
+				new PropertyMetadata(null));
+
 		public event TypedEventHandler<Expander, ExpanderExpandingEventArgs> Expanding;
 		public event TypedEventHandler<Expander, ExpanderCollapsedEventArgs> Collapsed;
 	}
