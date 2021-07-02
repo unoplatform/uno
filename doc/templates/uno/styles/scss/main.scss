@@ -3,7 +3,7 @@
 
 $blue: #159bff;
 $purple: #7a67f8;
-$turquoise: #66e4a8;
+$turquoise: #67e5ad;
 $dgray: #242424;
 $lgray: #c4c4c4;
 
@@ -476,11 +476,9 @@ h3 {
 
         .get-started-btn a,
         a[title="Get Started"] {
-            background-color: rgb(122, 103, 248);
             border: 0;
             border-radius: 8px;
             box-sizing: content-box;
-            color: rgb(255, 255, 255);
             cursor: pointer;
             display: inline-block;
             font-family: 'Open Sans', sans-serif;
@@ -497,14 +495,18 @@ h3 {
             padding-top: 8px;
             text-align: center;
             text-transform: none;
-            transition-delay: 0s, 0s, 0s;
-            transition-duration: 0.2s, 0.2s, 0.2s;
-            transition-property: color, background-color, border-color;
-            transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
             width: auto;
 
+            color: black;
+            background-color: $turquoise;
+            background: linear-gradient(to top, $blue 50%, $turquoise 50%);
+            background-size: 100% 200%;
+            background-position:left top;
+            transition:all 0.5s cubic-bezier(.69,.04,.9,.65);
+
             &:hover {
-                background: darken($purple, 5);
+                color: white;
+                background-position:bottom left;
             }
         }
     }
