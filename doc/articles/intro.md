@@ -4,7 +4,7 @@
 
 <div class="col-md-6 col-xs-12 ">
 <a href="get-started.md">
-<div class="alert alert-info">
+<div class="alert alert-info alert-hover">
 
 #### Get started
 
@@ -16,7 +16,7 @@ Set up with your OS and IDE of choice.
 
 <div class="col-md-6 col-xs-12 ">
 <a href="tutorials-intro.md">
-<div class="alert alert-info">
+<div class="alert alert-info alert-hover">
 
 #### How-tos and tutorials
 
@@ -28,7 +28,7 @@ See real-world examples with working code.
 
 <div class="col-md-6 col-xs-12 ">
 <a href="using-uno-ui.md">
-<div class="alert alert-info">
+<div class="alert alert-info alert-hover">
 
 #### Developing with Uno Platform
 
@@ -40,7 +40,7 @@ Learn the principles of cross-platform development with Uno.
 
 <div class="col-md-6 col-xs-12 ">
 <a href="implemented-views.md">
-<div class="alert alert-info">
+<div class="alert alert-info alert-hover">
 
 #### API reference
 

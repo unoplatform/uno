@@ -32,6 +32,9 @@ body {
         color: $dgray;
         padding: 26px 16px;
         transition: transform .2s;
+    }
+
+    .alert-hover {
         &:hover {
             transform: scale(1.05);
             border-color: $blue;
