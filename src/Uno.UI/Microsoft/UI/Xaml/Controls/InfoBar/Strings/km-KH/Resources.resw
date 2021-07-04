@@ -133,8 +133,40 @@
     <value>របារព័ត៌មាន</value>
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
+  <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
+    <value>រូបតំណាងបញ្ហា</value>
+    <comment>Automation name used to announce the severity error icon.</comment>
+  </data>
+  <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
+    <value>រូបតំណាងព័ត៌មាន</value>
+    <comment>Automation name used to announce the severity informational icon.</comment>
+  </data>
+  <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
+    <value>រូបតំណាងជោគជ័យ</value>
+    <comment>Automation name used to announce the severity success icon.</comment>
+  </data>
+  <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
+    <value>រូបតំណាងព្រមាន</value>
+    <comment>Automation name used to announce the severity warning icon.</comment>
+  </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">
-    <value>%1!s! %2!s!</value>
-    <comment>The formatted string read by narrator when the InfoBar opens: "{Title} {Message}"</comment>
+    <value>%1!s! %2!s! %3!s!</value>
+    <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
+  </data>
+  <data name="InfoBarSeverityErrorName" xml:space="preserve">
+    <value>សារព័ត៌មាន បញ្ហាធ្ងន់ធ្ងរ</value>
+    <comment>Name used to announce severity error to users.</comment>
+  </data>
+  <data name="InfoBarSeverityInformationalName" xml:space="preserve">
+    <value>សារព័ត៌មាន ព័ត៌មានធ្ងន់ធ្ងរ</value>
+    <comment>Name used to announce severity informational to users.</comment>
+  </data>
+  <data name="InfoBarSeveritySuccessName" xml:space="preserve">
+    <value>សារព័ត៌មាន ភាពជោគជ័យធ្ងន់ធ្ងរ</value>
+    <comment>Name used to announce severity success to users.</comment>
+  </data>
+  <data name="InfoBarSeverityWarningName" xml:space="preserve">
+    <value>សារព័ត៌មាន ការព្រមានអំពីភាពធ្ងន់ធ្ងរ</value>
+    <comment>Name used to announce severity warning to users.</comment>
   </data>
 </root>
