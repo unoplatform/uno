@@ -286,7 +286,7 @@ $(function () {
         $('#search-results>.sr-items').html('<p>No results found</p>');
       } else {
         $('#search-results>.sr-items').empty().append(
-          hits.slice(0, 5).map(function (hit) {
+          hits.slice(0, 20).map(function (hit) {
             var currentUrl = window.location.href;
             var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
             var itemHref = relHref + hit.href + "?q=" + query;
