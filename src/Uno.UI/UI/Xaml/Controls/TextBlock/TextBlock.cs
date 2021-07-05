@@ -934,5 +934,7 @@ namespace Windows.UI.Xaml.Controls
 
 			SetDefaultForeground(ForegroundProperty);
 		}
+
+		internal override bool CanHaveChildren() => true;
 	}
 }

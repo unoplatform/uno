@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnGotFocus(pArgs);
 
 			var pCalendarView = GetParentCalendarView();
-			if (pCalendarView is {})
+			if (pCalendarView is { })
 			{
 				pCalendarView.OnItemFocused(this);
 			}
@@ -282,11 +282,9 @@ namespace Windows.UI.Xaml.Controls
 				spItemToFocus = this;
 			}
 
-			if (spItemToFocus is {})
+			if (spItemToFocus is { })
 			{
-				bool focused = false;
-				//FocusManager.SetFocusedElementWithDirection(spItemToFocus, focusState, false /* animateIfBringIntoView */, &focused, focusNavigationDirection);
-				FocusManager.SetFocusedElement(spItemToFocus, focusNavigationDirection, focusState);
+				var focused = FocusManager.SetFocusedElementWithDirection(spItemToFocus, focusState, false /* animateIfBringIntoView */, false, focusNavigationDirection);
 				pFocused = !focused;
 			}
 
@@ -298,16 +296,16 @@ namespace Windows.UI.Xaml.Controls
 		// into numbers that we can easily read.
 		private protected void SetDateForDebug(DateTime value)
 		{
-		    var pCalendarView = GetParentCalendarView();
-		    if (pCalendarView is {})
-		    {
-		        var pCalendar = pCalendarView.Calendar;
-		        pCalendar.SetDateTime(value);
-		        m_eraForDebug = pCalendar.Era;
-		        m_yearForDebug = pCalendar.Year;
-		        m_monthForDebug = pCalendar.Month;
-		        m_dayForDebug = pCalendar.Day;
-		    }
+			var pCalendarView = GetParentCalendarView();
+			if (pCalendarView is { })
+			{
+				var pCalendar = pCalendarView.Calendar;
+				pCalendar.SetDateTime(value);
+				m_eraForDebug = pCalendar.Era;
+				m_yearForDebug = pCalendar.Year;
+				m_monthForDebug = pCalendar.Month;
+				m_dayForDebug = pCalendar.Day;
+			}
 		}
 #endif
 
@@ -324,7 +322,7 @@ namespace Windows.UI.Xaml.Controls
 			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
 			pChrome.UpdateTextBlocksForeground();
 		}
-		
+
 		internal void UpdateTextBlockFontProperties()
 		{
 			CCalendarViewBaseItemChrome pChrome = (CCalendarViewBaseItemChrome)(GetHandle());
@@ -371,7 +369,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			CCalendarViewBaseItemChrome chrome = (CCalendarViewBaseItemChrome)(GetHandle());
 			if (chrome.HasTemplateChild()) // If !HasTemplateChild, then there is no visual in ControlTemplate for CalendarViewDayItemStyle
-				// There should be no VisualStateGroup defined, so ignore UpdateVisualState
+										   // There should be no VisualStateGroup defined, so ignore UpdateVisualState
 			{
 				UpdateVisualState(false /* fUseTransitions */);
 			}

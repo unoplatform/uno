@@ -99,6 +99,8 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		public event EventHandler SampleChanging;
+
 		/// <summary>
 		/// Displays a new page depending on the parameter that was sent.
 		/// </summary>
@@ -769,6 +771,8 @@ description: {sample.Description}";
 		/// <returns>The updated content</returns>
 		public async Task<object> UpdateContent(CancellationToken ct, SampleChooserContent newContent)
 		{
+			SampleChanging?.Invoke(this, EventArgs.Empty);
+
 			//Activator is used here in order to generate the view and bind it directly with the proper view model
 			var control = Activator.CreateInstance(newContent.ControlType);
 

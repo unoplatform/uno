@@ -12,7 +12,7 @@ using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml
 {
-	public partial class DragEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public partial class DragEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly CoreDragInfo _info;
 

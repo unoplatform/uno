@@ -3,20 +3,21 @@ using System;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Views;
-using Windows.Graphics.Display;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
+using Android.Views;
 using Android.Views.InputMethods;
+using Microsoft.Extensions.Logging;
+using Uno.AuthenticationBroker;
+using Uno.Extensions;
 using Uno.UI;
+using Windows.Devices.Sensors;
+using Windows.Graphics.Display;
+using Windows.Storage.Pickers;
+using Windows.System;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
-using Windows.Devices.Sensors;
-using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Windows.Storage.Pickers;
-using Uno.AuthenticationBroker;
 
 namespace Windows.UI.Xaml
 {
@@ -100,6 +101,51 @@ namespace Windows.UI.Xaml
 				var inputManager = (InputMethodManager)GetSystemService(InputMethodService);
 				inputManager.HideSoftInputFromWindow(windowToken, HideSoftInputFlags.None);
 			}
+		}
+
+		public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+		{
+			base.OnKeyDown(keyCode, e);
+			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
+			{
+				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
+				if (focusHandler == null)
+				{
+					return false;
+				}
+
+				if (e.KeyCode == Keycode.Tab)
+				{
+					var shift = e.Modifiers.HasFlag(MetaKeyStates.ShiftLeftOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftRightOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftOn);
+					return focusHandler.TryHandleTabFocus(shift);
+				}
+				else if (
+					e.KeyCode == Keycode.DpadUp ||
+					e.KeyCode == Keycode.SystemNavigationUp)
+				{
+					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Up);
+				}
+				else if (
+					e.KeyCode == Keycode.DpadDown ||
+					e.KeyCode == Keycode.SystemNavigationDown)
+				{
+					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Down);
+				}
+				else if (
+					e.KeyCode == Keycode.DpadRight ||
+					e.KeyCode == Keycode.SystemNavigationRight)
+				{
+					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Right);
+				}
+				else if (
+					e.KeyCode == Keycode.DpadLeft ||
+					e.KeyCode == Keycode.SystemNavigationLeft)
+				{
+					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Left);
+				}
+			}
+
+			return false;
 		}
 
 		public void SetOrientation(ScreenOrientation orientation)

@@ -1,21 +1,27 @@
 ﻿#nullable enable
 
-using SkiaSharp;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Uno.Extensions.Storage.Pickers;
 using System.Windows.Threading;
+using SkiaSharp;
+using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
+using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
+using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
 using Windows.System;
-using WinUI = Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using WinUI = Windows.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
 using Uno.Extensions.System;
@@ -23,8 +29,6 @@ using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
-using Uno.UI.Xaml;
-using Uno.UI.Runtime.Skia.Wpf;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -40,6 +44,7 @@ namespace Uno.UI.Skia.Platform
 		private WpfCanvas? _nativeOverlayLayer = null;
 		private WriteableBitmap bitmap;
 		private bool ignorePixelScaling;
+		private FocusManager? _focusManager;
 
 		static WpfHost()
 		{
@@ -111,7 +116,11 @@ namespace Uno.UI.Skia.Platform
 
 			WinUI.Application.Start(CreateApp, args);
 
-			WinUI.Window.InvalidateRender += () => InvalidateVisual();
+			WinUI.Window.InvalidateRender += () =>
+			{
+				InvalidateFocusVisual();
+				InvalidateVisual();
+			};
 
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
@@ -241,6 +250,15 @@ namespace Uno.UI.Skia.Platform
 			bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
 			bitmap.Unlock();
 			drawingContext.DrawImage(bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
+		}
+
+		private void InvalidateFocusVisual()
+		{
+			if (_focusManager == null)
+			{
+				_focusManager = VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
+			}
+			_focusManager?.FocusRectManager?.RedrawFocusVisual();
 		}
 	}
 }

@@ -32,10 +32,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm and Ios is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Next_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
 
 			var firstTextBox = _app.Marked("FirstTextBox");
 			var secondTextBox = _app.Marked("SecondTextBox");
@@ -51,10 +51,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm and Ios is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Previous_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
 
 			var fourthTextBox = _app.Marked("FourthTextBox");
 			var fifthTextBox = _app.Marked("FifthTextBox");
@@ -69,10 +69,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Up_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
 
 			var secondTextBox = _app.Marked("SecondTextBox");
 			var fifthTextBox = _app.Marked("FifthTextBox");
@@ -87,10 +87,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Down_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
 
 			var secondTextBox = _app.Marked("SecondTextBox");
 			var fifthTextBox = _app.Marked("FifthTextBox");
@@ -105,10 +105,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm and Ios is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Left_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
 
 			var fourthTextBox = _app.Marked("FourthTextBox");
 			var fifthTextBox = _app.Marked("FifthTextBox");
@@ -123,10 +123,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm and Ios is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FocusManager_FocusDirection_Right_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
+			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
 
 			var firstTextBox = _app.Marked("FirstTextBox");
 			var secondTextBox = _app.Marked("SecondTextBox");

@@ -758,5 +758,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
+
+		internal override bool CanHaveChildren() => true;
 	}
 }

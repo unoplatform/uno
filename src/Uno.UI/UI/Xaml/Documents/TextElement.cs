@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI;
+using Uno.UI.Xaml;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -60,7 +61,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(FontFamilyProperty, value); }
 		}
 
-		public static DependencyProperty FontFamilyProperty { get ; } =
+		public static DependencyProperty FontFamilyProperty { get; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -88,7 +89,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(FontStyleProperty, value); }
 		}
 
-		public static DependencyProperty FontStyleProperty { get ; } =
+		public static DependencyProperty FontStyleProperty { get; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -117,7 +118,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(FontSizeProperty, value); }
 		}
 
-		public static DependencyProperty FontSizeProperty { get ; } =
+		public static DependencyProperty FontSizeProperty { get; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
@@ -154,7 +155,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -183,7 +184,7 @@ namespace Windows.UI.Xaml.Documents
 			set { this.SetValue(FontWeightProperty, value); }
 		}
 
-		public static DependencyProperty FontWeightProperty { get ; } =
+		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -291,8 +292,46 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
+		#region AllowFocusOnInteraction Dependency Property
+
+		/// <summary>
+		/// Identifies for the AllowFocusOnInteraction dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
+		/// </summary>
+		public bool AllowFocusOnInteraction
+		{
+			get => GetAllowFocusOnInteractionValue();
+			set => SetAllowFocusOnInteractionValue(value);
+		}
+
+		#endregion
+
 #if !__WASM__ // WASM version is inheriting from UIElement, so it's already implementing it.
 		public string Name { get; set; }
 #endif
+
+		/// <summary>	
+		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
+		/// </summary>
+		/// <returns>FrameworkElement or <see langword="null"/>.</returns>
+		internal FrameworkElement GetContainingFrameworkElement()
+		{
+			var parent = this.GetParent();
+
+			while (
+				parent != null &&
+				!(parent is RichTextBlock) &&
+				!(parent is TextBlock))
+			{
+				parent = parent.GetParent();
+			}
+
+			return parent as FrameworkElement;
+		}
 	}
 }

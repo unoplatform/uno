@@ -6,6 +6,12 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml
 {
+	/// <summary>
+	/// Represents a tree of XAML content and information about the context in which it is hosted.
+	/// </summary>
+	/// <remarks>
+	/// Effectively a public API wrapper around VisualTree.
+	/// </remarks>
 	public sealed partial class XamlRoot
 	{
 		private XamlRoot() { }

@@ -276,5 +276,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnBorderBrushChangedPartial();
 
 		#endregion
+
+		internal override bool CanHaveChildren() => true;
 	}
 }

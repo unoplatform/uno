@@ -8,10 +8,11 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public UserControl()
 		{
-
 		}
 
 		// This mimics UWP
 		private protected override Type GetDefaultStyleKey() => null;
+
+		private protected override bool IsTabStopDefaultValue => false;
 	}
 }

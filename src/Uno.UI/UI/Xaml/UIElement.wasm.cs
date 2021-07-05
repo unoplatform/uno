@@ -410,7 +410,7 @@ namespace Windows.UI.Xaml
 
 		public Func<Size, Size> DesiredSizeSelector { get; set; }
 
-		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newVisibility)
 		{
 			InvalidateMeasure();
 			UpdateHitTest();

@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 
 			pWorkLeft = true;
 
-			spBudget = DXamlCore.GetCurrent().GetBudgetManager();
+			spBudget = DXamlCore.Current.GetBudgetManager();
 			timeElapsedInMS = spBudget.GetElapsedMilliSecondsSinceLastUITick();
 
 			if ((uint)(timeElapsedInMS) <= m_budget)
@@ -254,7 +254,7 @@ namespace Windows.UI.Xaml.Controls
 						if (!m_isRegisteredForCallbacks)
 						{
 							BuildTreeService spBuildTree;
-							spBuildTree = DXamlCore.GetCurrent().GetBuildTreeService();
+							spBuildTree = DXamlCore.Current.GetBuildTreeService();
 							spBuildTree.RegisterWork(this);
 						}
 					}
@@ -709,7 +709,7 @@ namespace Windows.UI.Xaml.Controls
 					if (!m_isRegisteredForCallbacks)
 					{
 						BuildTreeService spBuildTree;
-						spBuildTree = DXamlCore.GetCurrent().GetBuildTreeService();
+						spBuildTree = DXamlCore.Current.GetBuildTreeService();
 						spBuildTree.RegisterWork(this);
 					}
 

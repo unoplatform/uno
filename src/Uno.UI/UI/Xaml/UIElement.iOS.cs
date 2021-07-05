@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
 			var newVisibility = (Visibility)newValue;
 

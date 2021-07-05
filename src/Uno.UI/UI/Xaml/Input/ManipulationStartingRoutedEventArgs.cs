@@ -3,7 +3,7 @@ using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class ManipulationStartingRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public partial class ManipulationStartingRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly ManipulationStartingEventArgs _args;
 		private ManipulationModes _mode;

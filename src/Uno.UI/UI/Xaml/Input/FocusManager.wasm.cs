@@ -1,12 +1,14 @@
 ﻿using System;
-using Uno.UI;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Uno.Foundation;
 using Microsoft.Extensions.Logging;
 using Uno;
+using Uno.Foundation;
+using Uno.UI;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Input
 {
@@ -24,19 +26,23 @@ namespace Windows.UI.Xaml.Input
 				_log.Value.LogDebug($"{nameof(ProcessControlFocused)}() focusedElement={GetFocusedElement()}, control={control}");
 			}
 
-			UpdateFocus(control, FocusNavigationDirection.None, FocusState.Pointer);
+			if (FocusProperties.IsFocusable(control))
+			{
+				var focusManager = VisualTree.GetFocusManagerForElement(control);
+				focusManager?.UpdateFocus(new FocusMovement(control, FocusNavigationDirection.None, FocusState.Pointer));
+			}
 		}
 
 		internal static void ProcessElementFocused(UIElement element)
 		{
 			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				_log.Value.LogDebug($"{nameof(ProcessElementFocused)}() focusedElement={GetFocusedElement()}, element={element}");
+				_log.Value.LogDebug($"{nameof(ProcessElementFocused)}() focusedElement={GetFocusedElement()}, element={element}, searching for focusable parent control");
 			}
 
 			// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
 			var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
-			UpdateFocus(ownerControl, FocusNavigationDirection.None, FocusState.Pointer);
+			ProcessControlFocused(ownerControl);
 		}
 
 		internal static bool FocusNative(UIElement element)
@@ -89,39 +95,19 @@ namespace Windows.UI.Xaml.Input
 			else
 			{
 				// This might occur if a non-Uno element receives focus
-				UpdateFocus(null, FocusNavigationDirection.None, FocusState.Pointer);
+				var focusManager = VisualTree.GetFocusManagerForElement(Window.Current.RootElement);
+				focusManager.ClearFocus();
 			}
 		}
 
 		private static UIElement GetFocusElementFromHandle(int handle)
 		{
-
 			if (handle == -1)
 			{
 				// 
 				return null;
 			}
 			return UIElement.GetElementFromHandle(handle);
-		}
-
-		private static bool InnerTryMoveFocus(FocusNavigationDirection focusNavigationDirection)
-		{
-			return false;
-		}
-
-		private static UIElement InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
-		{
-			return null;
-		}
-
-		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
-		{
-			return null;
-		}
-
-		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
-		{
-			return null;
 		}
 	}
 }

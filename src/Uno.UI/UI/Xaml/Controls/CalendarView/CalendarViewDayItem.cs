@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 					spParentCalendarView.OnSelectDayItem(this);
 					pArgs.Handled = true;
 
-					ElementSoundPlayerService soundPlayerService = DXamlCore.GetCurrent().GetElementSoundPlayerServiceNoRef();
+					var soundPlayerService = DXamlCore.Current.GetElementSoundPlayerServiceNoRef();
 					soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 				}
 			}
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 						pArgs.Handled = true;
 						SetIsKeyboardFocused(true);
 
-						ElementSoundPlayerService soundPlayerService = DXamlCore.GetCurrent().GetElementSoundPlayerServiceNoRef();
+						var soundPlayerService = DXamlCore.Current.GetElementSoundPlayerServiceNoRef();
 						soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 					}
 					else

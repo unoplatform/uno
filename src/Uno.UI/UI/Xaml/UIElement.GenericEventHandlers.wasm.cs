@@ -55,8 +55,7 @@ namespace Windows.UI.Xaml
 			{
 				if (d is RoutedEventHandlerWithHandled handler)
 				{
-					handler(sender, args as RoutedEventArgs);
-					return null;
+					return handler(sender, args as RoutedEventArgs);
 				}
 				return null;
 			}

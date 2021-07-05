@@ -10,6 +10,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Uno.Logging;
+using Uno.UI.Xaml.Core;
 using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml
@@ -60,13 +61,17 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal Canvas FocusVisualLayer { get; private set; }
-
 		public UIElement Content
 		{
 			get => InternalGetContent();
 			set
 			{
+				if (Content == value)
+				{
+					// Content already set, ignore.
+					return;
+				}
+
 				var oldContent = Content;
 				if (oldContent != null)
 				{
@@ -100,6 +105,12 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <remarks>This element is flagged with IsVisualTreeRoot.</remarks>
 		internal UIElement RootElement => InternalGetRootElement();
+
+		internal PopupRoot PopupRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainPopupRoot;
+
+		internal FullWindowMediaRoot FullWindowMediaRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainFullWindowMediaRoot;
+
+		internal Canvas FocusVisualLayer => Uno.UI.Xaml.Core.CoreServices.Instance.MainFocusVisualRoot;
 
 		/// <summary>
 		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
@@ -230,11 +241,7 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable OpenDragAndDrop(DragView dragView)
 		{
-#if __WASM__ || __SKIA__
-			Grid rootElement = _window;
-#else
-			Grid rootElement = _main;
-#endif
+			var rootElement = _rootVisual;
 
 			if (rootElement is null)
 			{

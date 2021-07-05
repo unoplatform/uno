@@ -8,7 +8,7 @@ using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public sealed partial class TappedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public sealed partial class TappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly UIElement _originalSource;
 		private readonly Point _position;

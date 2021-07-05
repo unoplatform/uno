@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 using Uno.Disposables;
 using DirectUI;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml.Controls
 {

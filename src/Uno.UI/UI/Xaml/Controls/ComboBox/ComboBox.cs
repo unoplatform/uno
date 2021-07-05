@@ -165,6 +165,16 @@ namespace Windows.UI.Xaml.Controls
 			Xaml.Window.Current.SizeChanged -= OnWindowSizeChanged;
 		}
 
+		protected virtual void OnDropDownClosed(object e)
+		{
+			DropDownClosed?.Invoke(this, null!);
+		}
+
+		protected virtual void OnDropDownOpened(object e)
+		{
+			DropDownOpened?.Invoke(this, null!);
+		}
+
 		private void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
@@ -370,9 +380,10 @@ namespace Windows.UI.Xaml.Controls
 				_popup.IsOpen = newIsDropDownOpen;
 			}
 
+			var args = new RoutedEventArgs() { OriginalSource = this };
 			if (newIsDropDownOpen)
 			{
-				DropDownOpened?.Invoke(this, newIsDropDownOpen);
+				OnDropDownOpened(args);
 
 				RestoreSelectedItem();
 
@@ -383,8 +394,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				DropDownClosed?.Invoke(this, newIsDropDownOpen);
+				OnDropDownClosed(args);
 				UpdateContentPresenter();
+
+				// Focus moves to ComboBox after item is selected.
+				Focus(FocusState.Programmatic);
 			}
 
 			UpdateDropDownState();

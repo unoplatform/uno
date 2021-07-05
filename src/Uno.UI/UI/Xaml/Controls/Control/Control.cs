@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using Uno;
 using Uno.UI;
-using Uno.UI.DataBinding;
 using System.Linq;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -12,9 +8,11 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Markup;
 using System.ComponentModel;
 using System.Reflection;
-using Windows.System;
-using Windows.UI.Core;
 using Uno.UI.Xaml;
+using Windows.Foundation;
+using Uno;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -51,8 +49,11 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(Control);
 		}
-		
+
+		// TODO: Should use DefaultStyleKeyProperty DP
 		protected object DefaultStyleKey { get; set; }
+
+		private protected override bool IsTabStopDefaultValue => true;
 
 		protected override bool IsSimpleLayout => true;
 
@@ -444,10 +445,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SetUpdateControlTemplate();
 			}
-			else if (oldValue == Visibility.Visible && newValue == Visibility.Collapsed)
-			{
-				Unfocus();
-			}
 
 			OnIsFocusableChanged();
 		}
@@ -497,7 +494,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ForegroundProperty, value); }
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -519,7 +516,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontWeightProperty, value); }
 		}
 
-		public static DependencyProperty FontWeightProperty { get ; } =
+		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(
 				"FontWeight",
 				typeof(FontWeight),
@@ -541,7 +538,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontSizeProperty, value); }
 		}
 
-		public static DependencyProperty FontSizeProperty { get ; } =
+		public static DependencyProperty FontSizeProperty { get; } =
 			DependencyProperty.Register(
 				"FontSize",
 				typeof(double),
@@ -563,7 +560,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontFamilyProperty, value); }
 		}
 
-		public static DependencyProperty FontFamilyProperty { get ; } =
+		public static DependencyProperty FontFamilyProperty { get; } =
 			DependencyProperty.Register(
 				"FontFamily",
 				typeof(FontFamily),
@@ -584,7 +581,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(FontStyleProperty, value); }
 		}
 
-		public static DependencyProperty FontStyleProperty { get ; } =
+		public static DependencyProperty FontStyleProperty { get; } =
 			DependencyProperty.Register(
 				"FontStyle",
 				typeof(FontStyle),
@@ -606,7 +603,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
-		public static DependencyProperty PaddingProperty { get ; } =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -629,7 +626,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BorderThicknessProperty { get ; } =
+		public static DependencyProperty BorderThicknessProperty { get; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -664,7 +661,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BorderBrush.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BorderBrushProperty { get ; } =
+		public static DependencyProperty BorderBrushProperty { get; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -676,54 +673,82 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		#endregion
-
-#if !HAS_UNO_WINUI
-		#region FocusState DependencyProperty
-
-		public FocusState FocusState
+		public CornerRadius CornerRadius
 		{
-			get { return (FocusState)GetValue(FocusStateProperty); }
-			private set { SetValue(FocusStateProperty, value); }
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
 		}
 
-		public static DependencyProperty FocusStateProperty =
-			DependencyProperty.Register(
-				"FocusState",
-				typeof(FocusState),
-				typeof(Control),
-				new FrameworkPropertyMetadata(
-					(FocusState)FocusState.Unfocused
-				)
-			);
+		public static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		#endregion
 
-		#region IsTabStop DependencyProperty
-
-		public bool IsTabStop
-		{
-			get { return (bool)GetValue(IsTabStopProperty); }
-			set { SetValue(IsTabStopProperty, value); }
-		}
-
-		public static DependencyProperty IsTabStopProperty =
-			DependencyProperty.Register(
-				"IsTabStop",
-				typeof(bool),
-				typeof(Control),
-				new FrameworkPropertyMetadata(
-					defaultValue: (bool)true,
-					propertyChangedCallback: (s, e) => ((Control)s)?.OnIsFocusableChanged()
-				)
-			);
-		#endregion
-#else
+#if HAS_UNO_WINUI
 		private protected override void OnIsTabStopChanged(bool oldValue, bool newValue)
 		{
 			OnIsFocusableChanged();
 		}
 #endif
+
+		#region TabNavigation DependencyProperty
+
+		public KeyboardNavigationMode TabNavigation
+		{
+			get => TabFocusNavigation;
+			set => TabFocusNavigation = value;
+		}
+
+		public static DependencyProperty TabNavigationProperty => UIElement.TabFocusNavigationProperty;
+
+		#endregion
+
+		public static bool GetIsTemplateFocusTarget(FrameworkElement element) =>
+			GetIsTemplateFocusTargetValue(element);
+
+		public static void SetIsTemplateFocusTarget(FrameworkElement element, bool value) =>
+			SetIsTemplateFocusTargetValue(element, value);
+
+		[GeneratedDependencyProperty(DefaultValue = false, AttachedBackingFieldOwner = typeof(Control), Attached = true)]
+		public static DependencyProperty IsTemplateFocusTargetProperty { get; } = CreateIsTemplateFocusTargetProperty();
+
+		/// <summary>
+		/// Get or sets a value that indicates whether focus is constrained
+		/// within the control boundaries (for game pad/remote interaction).
+		/// </summary>
+		public bool IsFocusEngaged
+		{
+			get => GetIsFocusEngagedValue();
+			set => SetIsFocusEngagedValue(value);
+		}
+
+		/// <summary>
+		/// Identifies the IsFocusEngaged dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = false, ChangedCallback = true)]
+		public static DependencyProperty IsFocusEngagedProperty { get; } = CreateIsFocusEngagedProperty();
+
+		private void OnIsFocusEngagedChanged(bool oldValue, bool newValue) => SetFocusEngagement();
+
+		/// <summary>
+		/// Get or sets a value that indicates whether focus can be constrained within
+		/// the control boundaries (for game pad/remote interaction).
+		/// </summary>
+		public bool IsFocusEngagementEnabled
+		{
+			get => GetIsFocusEngagementEnabledValue();
+			set => SetIsFocusEngagementEnabledValue(value);
+		}
+
+		/// <summary>
+		/// Identifies the IsFocusEngagementEnabled dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = false)]
+		public static DependencyProperty IsFocusEngagementEnabledProperty { get; } = CreateIsFocusEngagementEnabledProperty();
+
+		private void OnIsFocusEngagementEnabledChanged(bool oldValue, bool newValue) => RemoveFocusEngagement();
 
 		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -740,39 +765,51 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnIsEnabledChanged(e);
 			OnIsFocusableChanged();
+
+			// Part of logic from MUX Control.cpp Enabled method.
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			if (focusManager == null)
+			{
+				return;
+			}
+
+			// Set focus if this control is the first focusable control in case of
+			// no having focus yet
+			if (IsFocusable)
+			{
+				if (focusManager.FocusedElement == null)
+				{
+					// No focused control here, so try to check the control is
+					// the first focusable control
+					var focusable = focusManager.GetFirstFocusableElement();
+					if (this == focusable)
+					{
+						// If we are trying to set focus in a changing focus event handler, we will end up leaving focus on the disabled control.
+						// As a result, we fail fast here. This is being tracked by Bug 9840123
+						Focus(FocusState.Programmatic, animateIfBringIntoView: false);
+					}
+				}
+			}
+
+			bool shouldReevaluateFocus =
+				!IsEnabled && //!pControl->ParserOwnsParent()
+				!AllowFocusWhenDisabled &&
+				// We just disabled this control, find if this control
+				//or one of its children had focus.
+				FocusProperties.HasFocusedElement(this);
+
+			if (shouldReevaluateFocus)
+			{
+				// Set the focus on the next focusable control.
+				focusManager.SetFocusOnNextFocusableElement(focusManager.GetRealFocusStateForFocusedElement(), true);
+			}
 		}
 
 		partial void OnIsFocusableChanged();
-		internal bool IsFocusable =>
-			Visibility == Visibility.Visible
-			&& IsEnabled
-			&& IsTabStop;
 
-		public
-#if HAS_UNO_WINUI // Focus is moved to UIElement, avoid breaking binary compatibility.
-			new
-#endif
-			bool Focus(FocusState value)
-		{
-			if (value == FocusState.Unfocused)
-			{
-				// You can't remove focus from a control by calling this method with FocusState.Unfocused as the parameter. This value is not allowed and causes an exception. To remove focus from a control, set focus to a different control.
-				throw new ArgumentException("Value does not fall within the expected range.", nameof(value));
-			}
+		public event TypedEventHandler<Control, FocusDisengagedEventArgs> FocusDisengaged;
 
-			return RequestFocus(value);
-		}
-
-
-		protected virtual bool RequestFocus(FocusState state)
-		{
-			return FocusManager.SetFocusedElement(this, FocusNavigationDirection.None, state);
-		}
-
-		internal void Unfocus()
-		{
-			FocusState = FocusState.Unfocused;
-		}
+		public event TypedEventHandler<Control, FocusEngagedEventArgs> FocusEngaged;
 
 		protected virtual void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
@@ -829,13 +866,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
-
-		internal virtual void UpdateFocusState(FocusState focusState)
-		{
-			FocusState = focusState;
-		}
-
-		partial void UpdateFocusStatePartial(FocusState focusState);
 
 		protected virtual void OnPointerPressed(PointerRoutedEventArgs e) { }
 		protected virtual void OnPointerReleased(PointerRoutedEventArgs e) { }
@@ -1154,24 +1184,26 @@ namespace Windows.UI.Xaml.Controls
 		internal void ConditionallyGetTemplatePartAndUpdateVisibility<T>(
 			string strName,
 			bool visible,
-			ref T element) where T:UIElement
-        {
-            if (element == null && (visible /*|| !DXamlCore::GetCurrent()->GetHandle()->GetDeferredElementIfExists(strName, GetHandle(), Jupiter::NameScoping::NameScopeType::TemplateNameScope))*/))
-            {
-                // If element should be visible or is not deferred, then fetch it.
+			ref T element) where T : UIElement
+		{
+			if (element == null && (visible /*|| !DXamlCore::GetCurrent()->GetHandle()->GetDeferredElementIfExists(strName, GetHandle(), Jupiter::NameScoping::NameScopeType::TemplateNameScope))*/))
+			{
+				// If element should be visible or is not deferred, then fetch it.
 				element = GetTemplateChild(strName) as T;
 			}
 
-            // If element was found then set its Visibility - this is behavior consistent with pre-Threshold releases.
-            if (element != null)
-            {
-                var spElementAsUIE = element as UIElement;
+			// If element was found then set its Visibility - this is behavior consistent with pre-Threshold releases.
+			if (element != null)
+			{
+				var spElementAsUIE = element as UIElement;
 
-                if (spElementAsUIE != null) 
-                {
-                    spElementAsUIE.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-                }
-            }
-        }
+				if (spElementAsUIE != null)
+				{
+					spElementAsUIE.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+				}
+			}
+		}
+
+		internal override bool CanHaveChildren() => true;
 	}
 }

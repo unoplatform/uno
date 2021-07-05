@@ -12,6 +12,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -27,11 +28,9 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window? _current;
-		private Grid? _window;
-		// private PopupRoot _popupRoot;
+		private RootVisual? _rootVisual;
 		// private ScrollViewer _rootScrollViewer;
 		private Border? _rootBorder;
-		private PopupRoot? _popupRoot;
 		private UIElement? _content;
 
 		public Window()
@@ -76,7 +75,7 @@ namespace Windows.UI.Xaml
 
 		internal void InnerInvalidateMeasure()
 		{
-			if (_window != null)
+			if (_rootVisual != null)
 			{
 				if (!_isMeasureQueued)
 				{
@@ -91,8 +90,8 @@ namespace Windows.UI.Xaml
 							_isMeasuring = true;
 
 							var sw = Stopwatch.StartNew();
-							_window.Measure(Bounds.Size);
-							_window.Arrange(Bounds);
+							_rootVisual.Measure(Bounds.Size);
+							_rootVisual.Arrange(Bounds);
 							sw.Stop();
 
 							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -140,30 +139,22 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement content)
 		{
-			if (_window == null)
+			if (_rootVisual == null)
 			{
 				_rootBorder = new Border();
-				_popupRoot = new PopupRoot();
-				FocusVisualLayer = new Canvas();
+				CoreServices.Instance.PutVisualRoot(_rootBorder);
+				_rootVisual = CoreServices.Instance.MainRootVisual;
 
-				_window = new Grid
+				if (_rootVisual == null)
 				{
-					IsVisualTreeRoot = true,
-					Children =
-					{
-						_rootBorder,
-						_popupRoot,						
-						// Message Dialog => Those are currently using Popup, but they be upper
-						FocusVisualLayer
-						// Drag and drop => Those are added only when needed (they are actually not part of the WinUI visual tree and would have a negative perf impact)
-					}
-				};
+					throw new InvalidOperationException("The root visual could not be created.");
+				}
 
-				UIElement.LoadingRootElement(_window);
+				UIElement.LoadingRootElement(_rootVisual);
 
-				Compositor.RootVisual = _window.Visual;
+				Compositor.RootVisual = _rootVisual.Visual;
 
-				UIElement.RootElementLoaded(_window);
+				UIElement.RootElementLoaded(_rootVisual);
 			}
 
 			if (_rootBorder != null)
@@ -174,7 +165,7 @@ namespace Windows.UI.Xaml
 
 		private UIElement InternalGetContent() => _content!;
 
-		private UIElement InternalGetRootElement() => _window!;
+		private UIElement InternalGetRootElement() => _rootVisual!;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -193,27 +184,27 @@ namespace Windows.UI.Xaml
 				this.Log().Debug($"Creating popup");
 			}
 
-			if (_popupRoot != null)
+			if (PopupRoot == null)
 			{
-				var popupPanel = popup.PopupPanel;
-				_popupRoot.Children.Add(popupPanel);
-
-				return new CompositeDisposable(
-					Disposable.Create(() =>
-					{
-
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Closing popup");
-						}
-
-						_popupRoot.Children.Remove(popupPanel);
-					}),
-					VisualTreeHelper.RegisterOpenPopup(popup)
-				);
+				throw new InvalidOperationException("PopupRoot is not initialized yet.");
 			}
 
-			return new CompositeDisposable();
+			var popupPanel = popup.PopupPanel;
+			PopupRoot.Children.Add(popupPanel);
+
+			return new CompositeDisposable(
+				Disposable.Create(() =>
+				{
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Closing popup");
+					}
+
+					PopupRoot.Children.Remove(popupPanel);
+				}),
+				VisualTreeHelper.RegisterOpenPopup(popup)
+			);
 		}
 	}
 }
