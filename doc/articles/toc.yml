@@ -173,6 +173,8 @@
           href: composition.md
         - name: Fluent styles
           href: features\fluent-styles.md
+        - name: Focus management
+          href: features\focus-management.md      
         - name: Fonts
           href: features/custom-fonts.md
         - name: Native frame navigation
