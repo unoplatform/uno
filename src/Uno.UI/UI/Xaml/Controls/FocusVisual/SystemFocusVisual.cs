@@ -66,7 +66,7 @@ namespace Uno.UI.Xaml.Controls
 
 		private void FocusedElementVisibilityChanged(DependencyObject sender, DependencyProperty dp) => SetLayoutProperties();
 
-		private void FocusedElementLayoutUpdated(object sender, object e) => SetLayoutProperties();
+		private void FocusedElementLayoutUpdated(object? sender, object e) => SetLayoutProperties();
 
 		private void FocusedElementSizeChanged(object sender, SizeChangedEventArgs args) => SetLayoutProperties();
 
