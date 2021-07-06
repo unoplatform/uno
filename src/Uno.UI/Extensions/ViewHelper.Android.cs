@@ -303,11 +303,18 @@ namespace Uno.UI
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Rect LogicalToPhysicalPixels(this Rect size)
 		{
+			var physicalBottom = LogicalToPhysicalPixels(size.Bottom);
+			var physicalRight = LogicalToPhysicalPixels(size.Right);
+
+			var physicalX = LogicalToPhysicalPixels(size.X);
+			var physicalY = LogicalToPhysicalPixels(size.Y);
+
+			// We convert bottom and right to physical pixels and then determine physical width and height from them, rather than the other way around, to ensure that adjacent views touch (otherwise there can be a +/-1-pixel gap due to rounding error, in the case of non-integer logical dimensions).
 			return new Rect(
-				LogicalToPhysicalPixels(size.X),
-				LogicalToPhysicalPixels(size.Y),
-				LogicalToPhysicalPixels(size.Width),
-				LogicalToPhysicalPixels(size.Height)
+				physicalX,
+				physicalY,
+				physicalRight - physicalX,
+				physicalBottom - physicalY
 			);
 		}
 

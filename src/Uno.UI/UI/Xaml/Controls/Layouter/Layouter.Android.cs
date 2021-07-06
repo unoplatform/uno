@@ -64,6 +64,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void SetFrameRoundingAdjustment(View view, Rect frame, Rect physicalFrame)
+		{
+			if (view is UIElement uiElement)
+			{
+				var physicalWidth = ViewHelper.LogicalToPhysicalPixels(frame.Width);
+				var physicalHeight = ViewHelper.LogicalToPhysicalPixels(frame.Height);
+
+				uiElement.FrameRoundingAdjustment = new Size(
+					(int)physicalFrame.Width - physicalWidth,
+					(int)physicalFrame.Height - physicalHeight);
+			}
+		}
+
 		protected void ArrangeChildOverride(View view, Rect frame)
 		{
 			LogArrange(view, frame);
@@ -73,6 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			try
 			{
 				SetArrangeLogicalSize(view, frame);
+				SetFrameRoundingAdjustment(view, frame, physicalFrame);
 
 				view.Layout(
 					(int)physicalFrame.Left,
