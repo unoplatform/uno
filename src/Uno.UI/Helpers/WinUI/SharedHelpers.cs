@@ -99,6 +99,11 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		// logical helpers
+		public static bool Is21H1OrHigher()
+		{
+			return IsAPIContractV14Available();
+		}
+
 		public static bool IsVanadiumOrHigher()
 		{
 			return IsAPIContractV9Available();
@@ -383,6 +388,11 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		// base helpers
+		public static bool IsAPIContractV14Available()
+		{
+			return IsAPIContractVxAvailable(14);
+		}
+
 		public static bool IsAPIContractV9Available()
 		{
 			return IsAPIContractVxAvailable(9);
@@ -653,6 +663,11 @@ namespace Uno.UI.Helpers.WinUI
 					fontIcon.FontFamily = fontIconSource.FontFamily;
 				}
 
+				if (fontIconSource.Foreground != null)
+				{
+					fontIcon.Foreground = fontIconSource.Foreground;
+				}
+
 				fontIcon.FontWeight = fontIconSource.FontWeight;
 				fontIcon.FontStyle = fontIconSource.FontStyle;
 				fontIcon.IsTextScaleFactorEnabled = fontIconSource.IsTextScaleFactorEnabled;
@@ -665,6 +680,11 @@ namespace Uno.UI.Helpers.WinUI
 				SymbolIcon symbolIcon = new SymbolIcon();
 				symbolIcon.Symbol = symbolIconSource.Symbol;
 
+				if (symbolIconSource.Foreground != null)
+				{
+					symbolIcon.Foreground = symbolIconSource.Foreground;
+				}
+
 				return symbolIcon;
 			}
 			else if (iconSource is Microsoft.UI.Xaml.Controls.BitmapIconSource bitmapIconSource)
@@ -674,6 +694,11 @@ namespace Uno.UI.Helpers.WinUI
 				if (bitmapIconSource.UriSource != null)
 				{
 					bitmapIcon.UriSource = bitmapIconSource.UriSource;
+				}
+
+				if (bitmapIconSource.Foreground != null)
+				{
+					bitmapIcon.Foreground = bitmapIconSource.Foreground;
 				}
 
 				if (IsSystemDll() || ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
@@ -690,6 +715,11 @@ namespace Uno.UI.Helpers.WinUI
 				if (pathIconSource.Data != null)
 				{
 					pathIcon.Data = pathIconSource.Data;
+				}
+
+				if (pathIconSource.Foreground != null)
+				{
+					pathIcon.Foreground = pathIconSource.Foreground;
 				}
 
 				return pathIcon;

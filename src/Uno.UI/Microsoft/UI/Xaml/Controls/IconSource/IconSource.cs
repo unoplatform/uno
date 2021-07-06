@@ -6,6 +6,10 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class IconSource : DependencyObject
 	{
+		protected IconSource()
+		{
+		}
+
 		public Brush Foreground
 		{
 			get => (Brush)GetValue(ForegroundProperty);
@@ -17,7 +21,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 #nullable enable
 
-		internal virtual IconElement? CreateIconElement()
-			=> default;
+		public virtual IconElement? CreateIconElement() => default;
 	}
 }

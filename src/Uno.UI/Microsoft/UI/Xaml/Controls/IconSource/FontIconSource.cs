@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(FontWeightProperty, value);
 		}
 
-		public static DependencyProperty FontWeightProperty { get; } = 
+		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(nameof(FontWeight), typeof(FontWeight), typeof(FontIconSource), new PropertyMetadata(new FontWeight(400)));
 
 		public FontStyle FontStyle
@@ -76,16 +76,29 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new PropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont)));
 
 		/// <inheritdoc />
-		internal override IconElement CreateIconElement()
-			=> new FontIcon
+		public override IconElement CreateIconElement()
+		{
+			var fontIcon = new FontIcon()
 			{
-				MirroredWhenRightToLeft = MirroredWhenRightToLeft,
-				IsTextScaleFactorEnabled = IsTextScaleFactorEnabled,
 				Glyph = Glyph,
+				FontSize = FontSize,
 				FontWeight = FontWeight,
 				FontStyle = FontStyle,
-				FontSize = FontSize,
-				FontFamily = FontFamily,
+				IsTextScaleFactorEnabled = IsTextScaleFactorEnabled,
+				MirroredWhenRightToLeft = MirroredWhenRightToLeft,
 			};
+
+			if (FontFamily != null)
+			{
+				fontIcon.FontFamily = FontFamily;
+			}
+
+			if (Foreground != null)
+			{
+				fontIcon.Foreground = Foreground;
+			}
+
+			return fontIcon;
+		}
 	}
 }

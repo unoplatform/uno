@@ -40,6 +40,9 @@ namespace UnoWinUIRevert
 			// Files/Class that are implemented in both MUX and WUX and which should not be converted
 			var duplicatedImplementations = new[]
 			{
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\BitmapIconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\SymbolIconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\PathIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\FontIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\IconSource.cs")
 			};
