@@ -315,8 +315,8 @@
 		<Move SourceFiles=".\uno.winui.Skia.Linux.FrameBuffer.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Linux.FrameBuffer.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<Move SourceFiles=".\uno.winui.Skia.Linux.FrameBuffer.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Linux.FrameBuffer.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
-		<XmlPoke XmlFileName=".\uno.winui.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Linux.FrameBuffer.targets']/@src" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<XmlPoke XmlFileName=".\uno.winui.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Linux.FrameBuffer.props']/@src" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\uno.winui.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Linux.FrameBuffer.targets']/@src" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\uno.winui.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Linux.FrameBuffer.props']/@src" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Skia Tizen targets/props-->
 		<Move SourceFiles=".\uno.winui.Skia.Tizen.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Tizen.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
