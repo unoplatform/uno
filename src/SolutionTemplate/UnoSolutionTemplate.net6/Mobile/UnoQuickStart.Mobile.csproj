@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+		<TargetFramework>net6.0-android30.0</TargetFramework>
+		<!--<TargetFramework>net6.0-ios</TargetFramework>-->
+		<!--<TargetFramework>net6.0-maccatalyst</TargetFramework>-->
+		<SingleProject>true</SingleProject>
+		<OutputType>Exe</OutputType>
+
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
+		<InvariantGlobalization Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">true</InvariantGlobalization>
+
+		<IsUnoHead>true</IsUnoHead>
+  </PropertyGroup>
+
+	<ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0-preview.3.21201.4" />
+    <PackageReference Include="Uno.UI" Version="3.9.0-PullRequest-6004-30390-1-6004.229" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android30.0'">
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.3.0.1-net6preview03.4680155" />
+		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.35" />
+		<PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-ios'">
+		<PackageReference Include="Uno.Extensions.Logging.OSLog " Version="1.2.0-dev.2" />
+	</ItemGroup>
+	
+	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
+</Project>

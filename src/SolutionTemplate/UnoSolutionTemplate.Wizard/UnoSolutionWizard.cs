@@ -13,9 +13,14 @@ namespace UnoSolutionTemplate.Wizard
 	public class UnoSolutionWizard : IWizard
 	{
 		private const string ProjectKinds_vsProjectKindSolutionFolder = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
-
+		private readonly bool _enableNuGetConfig;
 		private string? _targetPath;
 		private DTE2? _dte;
+
+		public UnoSolutionWizard(bool enableNuGetConfig)
+		{
+			_enableNuGetConfig = enableNuGetConfig;
+		}
 
 		public void BeforeOpeningFile(ProjectItem projectItem)
 		{
@@ -31,11 +36,19 @@ namespace UnoSolutionTemplate.Wizard
 
 		public void RunFinished()
 		{
-			var nugetConfigPath = Path.Combine(_targetPath, "..\\.vsconfig");
+			var vsConfigPath = Path.Combine(_targetPath, "..\\.vsconfig");
 
-			if (!File.Exists(nugetConfigPath))
+			if (!File.Exists(vsConfigPath))
 			{
 				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}..vsconfig"));
+				File.WriteAllText(vsConfigPath, reader.ReadToEnd());
+			}
+
+			var nugetConfigPath = Path.Combine(_targetPath, "..\\NuGet.config");
+
+			if (_enableNuGetConfig && !File.Exists(nugetConfigPath))
+			{
+				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}.NuGet-netcore.config"));
 				File.WriteAllText(nugetConfigPath, reader.ReadToEnd());
 			}
 
@@ -43,6 +56,47 @@ namespace UnoSolutionTemplate.Wizard
 			SetStartupProject();
 			SetUWPAnyCPUBuildableAndDeployable();
 			SetDefaultConfiguration();
+		}
+
+		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
+		{
+			_targetPath = replacementsDictionary["$destinationdirectory$"];
+
+			if (runKind == WizardRunKind.AsMultiProject)
+			{
+				_dte = (DTE2)automationObject;
+			}
+		}
+
+		public bool ShouldAddProjectItem(string filePath) => true;
+
+		public Project[] GetAllProjects()
+		{
+			var list = new List<Project>();
+			if (_dte != null)
+			{
+				var projects = _dte.Solution.Projects;
+				var item = projects.GetEnumerator();
+				while (item.MoveNext())
+				{
+					var project = item.Current as Project;
+					if (project == null)
+					{
+						continue;
+					}
+
+					if (project.Kind == ProjectKinds_vsProjectKindSolutionFolder)
+					{
+						list.AddRange(GetSolutionFolderProjects(project));
+					}
+					else
+					{
+						list.Add(project);
+					}
+				}
+			}
+
+			return list.ToArray();
 		}
 
 		private void OpenWelcomePage()
@@ -105,7 +159,6 @@ namespace UnoSolutionTemplate.Wizard
 			}
 		}
 
-
 		private void SetDefaultConfiguration()
 		{
 			if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
@@ -126,50 +179,6 @@ namespace UnoSolutionTemplate.Wizard
 			{
 				throw new InvalidOperationException();
 			}
-		}
-
-		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
-		{
-			_targetPath = replacementsDictionary["$destinationdirectory$"];
-
-			if (runKind == WizardRunKind.AsMultiProject)
-			{
-				_dte = (DTE2)automationObject;
-			}
-		}
-
-		public bool ShouldAddProjectItem(string filePath)
-		{
-			return true;
-		}
-
-		public Project[] GetAllProjects()
-		{
-			var list = new List<Project>();
-			if (_dte != null)
-			{
-				var projects = _dte.Solution.Projects;
-				var item = projects.GetEnumerator();
-				while (item.MoveNext())
-				{
-					var project = item.Current as Project;
-					if (project == null)
-					{
-						continue;
-					}
-
-					if (project.Kind == ProjectKinds_vsProjectKindSolutionFolder)
-					{
-						list.AddRange(GetSolutionFolderProjects(project));
-					}
-					else
-					{
-						list.Add(project);
-					}
-				}
-			}
-
-			return list.ToArray();
 		}
 
 		private Project[] GetSolutionFolderProjects(Project solutionFolder)

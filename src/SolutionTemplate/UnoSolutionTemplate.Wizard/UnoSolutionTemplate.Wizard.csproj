@@ -53,12 +53,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NetCoreUnoSolutionWizard.cs" />
     <Compile Include="UnoSolutionWizard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XamarinUnoSolutionWizard.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include=".vsconfig" />
     <None Include="key.snk" />
+    <EmbeddedResource Include="NuGet-netcore.config" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Build">
