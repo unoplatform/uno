@@ -690,7 +690,12 @@ namespace Windows.UI.Xaml.Controls
 			ViewportHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
 			ViewportWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
 
-			if(Content is FrameworkElement fe)
+			if (_presenter?.CustomContentExtent is { } customExtent)
+			{
+				ExtentHeight = customExtent.Height;
+				ExtentWidth = customExtent.Width;
+			}
+			else if (Content is FrameworkElement fe)
 			{
 				var explicitHeight = fe.Height;
 				if (explicitHeight.IsFinite())
@@ -933,7 +938,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
 			base.OnContentChanged(oldValue, newValue);
@@ -1020,9 +1025,9 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
-#endregion
+		#endregion
 
-#region Managed scroll bars support
+		#region Managed scroll bars support
 		private bool _isTemplateApplied;
 		private ScrollBar? _verticalScrollbar;
 		private ScrollBar? _horizontalScrollbar;
@@ -1187,7 +1192,7 @@ namespace Windows.UI.Xaml.Controls
 				disableAnimation: immediate,
 				shouldSnap: true);
 		}
-#endregion
+		#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
@@ -1206,12 +1211,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				Update(isIntermediate);
 
-				if(!isIntermediate)
+				if (!isIntermediate)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
 						|| VerticalSnapPointsType != SnapPointsType.None)
 					{
-						if(_snapPointsTimer == null)
+						if (_snapPointsTimer == null)
 						{
 							_snapPointsTimer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 							_snapPointsTimer.IsRepeating = false;
@@ -1332,7 +1337,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"ChangeView(horizontalOffset={horizontalOffset}, verticalOffset={verticalOffset}, zoomFactor={zoomFactor}, disableAnimation={disableAnimation})");
 			}
 
-			if(horizontalOffset == null && verticalOffset == null && zoomFactor == null)
+			if (horizontalOffset == null && verticalOffset == null && zoomFactor == null)
 			{
 				return true; // nothing to do
 			}

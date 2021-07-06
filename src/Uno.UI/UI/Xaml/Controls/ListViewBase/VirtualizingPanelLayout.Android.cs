@@ -504,11 +504,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal int HorizontalScrollRange { get; private set; }
+		internal int VerticalScrollRange { get; private set; }
 		public override int ComputeHorizontalScrollRange(RecyclerView.State state)
 		{
 			try
 			{
-				return ComputeScrollRange(state);
+				return HorizontalScrollRange = ComputeScrollRange(state);
 			}
 			catch (Exception e)
 			{
@@ -547,7 +549,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				return ComputeScrollRange(state);
+				return VerticalScrollRange = ComputeScrollRange(state);
 			}
 			catch (Exception e)
 			{
