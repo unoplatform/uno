@@ -1103,20 +1103,8 @@ $(function () {
       scrollIfAnchor(window.location.hash);
     }
 
-    /**
-     * If the click event's target was an anchor, fix the scroll position.
-     */
-    function delegateAnchors(e) {
-      var elem = e.target;
-
-      if (scrollIfAnchor(elem.getAttribute('href'), true)) {
-        e.preventDefault();
-      }
-    }
-
     $(window).on('hashchange', scrollToCurrent);
     // Exclude tabbed content case
-    $('a:not([data-tab])').click(delegateAnchors);
     scrollToCurrent();
 
     $(document).ready(function(){
