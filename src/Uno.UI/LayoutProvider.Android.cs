@@ -53,6 +53,9 @@ namespace Uno.UI
 		{
 			if (view?.WindowToken != null)
 			{
+				// making sure to stop before starting new ones.
+				Stop();
+
 				_adjustResizeLayoutProvider.Start(view);
 				_adjustNothingLayoutProvider.Start(view);				
 			}
