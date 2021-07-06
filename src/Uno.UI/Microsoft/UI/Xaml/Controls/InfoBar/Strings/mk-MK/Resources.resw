@@ -133,8 +133,40 @@
     <value>Лента со информации</value>
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
+  <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
+    <value>Икона за грешка</value>
+    <comment>Automation name used to announce the severity error icon.</comment>
+  </data>
+  <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
+    <value>Информативна икона</value>
+    <comment>Automation name used to announce the severity informational icon.</comment>
+  </data>
+  <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
+    <value>Икона за успех</value>
+    <comment>Automation name used to announce the severity success icon.</comment>
+  </data>
+  <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
+    <value>Икона на предупредување</value>
+    <comment>Automation name used to announce the severity warning icon.</comment>
+  </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">
-    <value>%1!s! %2!s!</value>
-    <comment>The formatted string read by narrator when the InfoBar opens: "{Title} {Message}"</comment>
+    <value>%1!s! %2!s! %3!s!</value>
+    <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
+  </data>
+  <data name="InfoBarSeverityErrorName" xml:space="preserve">
+    <value>Информативна порака, сериозност: грешка</value>
+    <comment>Name used to announce severity error to users.</comment>
+  </data>
+  <data name="InfoBarSeverityInformationalName" xml:space="preserve">
+    <value>Информативна порака, сериозност: информативно</value>
+    <comment>Name used to announce severity informational to users.</comment>
+  </data>
+  <data name="InfoBarSeveritySuccessName" xml:space="preserve">
+    <value>Информативна порака, сериозност: успех</value>
+    <comment>Name used to announce severity success to users.</comment>
+  </data>
+  <data name="InfoBarSeverityWarningName" xml:space="preserve">
+    <value>Информативна порака, сериозност: предупредување</value>
+    <comment>Name used to announce severity warning to users.</comment>
   </data>
 </root>
