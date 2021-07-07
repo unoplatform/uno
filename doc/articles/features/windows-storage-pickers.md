@@ -152,26 +152,37 @@ In case the **File System Access API** is not available in the browser, Uno Plat
 
 For the upload picker, the browser triggers a file picker dialog and Uno Platform then copies the selected files into temporary storage of the app. The `StorageFile` instance you receive is private for your application and the changes are not reflected in the original file. To save the changes, you need to trigger the "download picker".
 
-For the download picker, the experience requires the use of [`CachedFileManager`](https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.CachedFileManager):
+For the download picker, the experience requires the use of [`CachedFileManager`](https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.CachedFileManager). Triggering `PickSaveFileAsync` does not actually show the download picker to the user. Instead, only a temporary file is created to allow you to write any content. Afterwards, calling `CompleteUpdatesAsync` opens the download dialog which allows the user to save the file.
+
+The `CachedFileManager` class works transparently with both the **Download picker** and the **File System Access API**, which means you can write a single snippet of code that handles both scenarios correctly:
 
 ```c#
 var savePicker = new FileSavePicker():
 savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 savePicker.FileTypeChoices.Add("Text file", new List<string>() { ".txt" });
 savePicker.SuggestedFileName = "New Document";
-// for download picker, no dialog is actually triggered here
+
+// For download picker, no dialog is actually triggered here
 // and a temporary file is returned immediately.
+// For Fil System Access API, this triggers the picker to allow
+// user to select a local file.
 var file = await savePicker.PickSaveFileAsync();
+
 CachedFileManager.DeferUpdates(file);
-// write the file
+
+// Write some content to the file
 await FileIO.WriteTextAsync(file, "Hello, world!");
-// this starts the download process of the browser
+
+// For download picker this starts the download process of the browser
+// and triggers the save dialog for the user.
+// For File System Access API, this is a no-op and immediately
+// completes.
 await CachedFileManager.CompleteUpdatesAsync(file);
 ```
 
 ### Checking the source of opened file
 
-To know how the file needs to be handled, you need to check the type of pickers it comes from. To do this, access the `Provider` property of the file:
+To know how the file needs to be handled, you need to check the type of storage provider it comes from. To do this, access the `Provider` property of the file:
 
 ```c#
 if (file.Provider.Id == "jsfileaccessapi")
