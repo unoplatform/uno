@@ -9,7 +9,7 @@ namespace Windows.Storage
 	/// Lets apps manage real-time updates to files.
 	/// </summary>
 	public static partial class CachedFileManager
-    {
+	{
 		/// <summary>
 		/// Lets apps defer real-time updates for a specified file.
 		/// </summary>
