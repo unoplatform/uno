@@ -101,6 +101,7 @@ jobs:
         **/bin/**/*.xml
         **/bin/**/*.xbf
         **/bin/**/*.xaml
+        **/bin/**/*.aar
       TargetFolder: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
       OverWrite: false

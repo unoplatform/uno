@@ -289,7 +289,7 @@
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Xaml.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.BindingHelper.Android.dll" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.BindingHelper.Android.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.BindingHelper.Android.aar" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.BindingHelper.Android\Bin\Release\net6.0-android\Uno.UI.BindingHelper.Android.aar" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\bin\Uno.UI.net6\Release\net6.0-android\*.xml" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-android\Uno.UI.FluentTheme.dll" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-android\Uno.UI.FluentTheme.pdb" target="lib\net6.0-android30.0" />
