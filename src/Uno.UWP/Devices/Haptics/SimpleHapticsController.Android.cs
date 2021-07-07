@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using Android.App;
 using Android.Views;
+using Android.Provider;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
+using PhoneVibrationDevice = Windows.Phone.Devices.Notification.VibrationDevice;
 
 namespace Windows.Devices.Haptics
 {
@@ -33,7 +35,16 @@ namespace Windows.Devices.Haptics
 			{
 				var activity = (Activity)ContextHelper.Current;
 				var androidFeedback = FeedbackToAndroidFeedback(feedback);
-				activity.Window?.DecorView.PerformHapticFeedback(androidFeedback);
+				bool hapticFeedbackEnabled = Settings.System.GetInt(activity.ContentResolver, Settings.System.HapticFeedbackEnabled, 0) != 0;
+				if (hapticFeedbackEnabled)
+				{
+					var executed = activity.Window?.DecorView.PerformHapticFeedback(androidFeedback) ?? false;
+					if (!executed && PhoneVibrationDevice.GetDefault() is { } vibrationDevice)
+					{
+						// Fall back to VibrationDevice
+						vibrationDevice.Vibrate(feedback.Duration);
+					}
+				}
 			}
 			catch (Exception ex)
 			{
