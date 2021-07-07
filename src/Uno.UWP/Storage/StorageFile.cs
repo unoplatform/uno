@@ -41,7 +41,12 @@ namespace Windows.Storage
 
 		internal ImplementationBase Implementation { get; }
 
-		public StorageProvider Provider => Implementation.Provider;
+		/// <summary>
+		/// Allows internal Uno implementations to override the storage provider.
+		/// </summary>
+		internal StorageProvider? ProviderOverride { get; set; }
+
+		public StorageProvider Provider => ProviderOverride ?? Implementation.Provider;
 
 		public string Path => Implementation.Path;
 

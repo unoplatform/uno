@@ -39,7 +39,7 @@ namespace Windows.Storage
 				_parent = parent;
 			}
 
-			public override StorageProvider Provider => StorageProviders.NativeWasm;
+			public override StorageProvider Provider => StorageProviders.WasmNative;
 
 			public override string Name => _fileName;
 

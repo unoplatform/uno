@@ -129,7 +129,7 @@
   <data name="StorageProviderLocalDisplayName" xml:space="preserve">
     <value>This PC</value>
   </data>
-  <data name="StorageProviderNativeWasmDisplayName" xml:space="preserve">
+  <data name="StorageProviderWasmNativeDisplayName" xml:space="preserve">
     <value>JS File Access API</value>
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
@@ -140,5 +140,8 @@
   </data>
   <data name="UIA_FLIPVIEW_NEXT" xml:space="preserve">
     <value>Next</value>
+  </data>
+  <data name="StorageProviderWasmDownloadPickerName" xml:space="preserve">
+    <value>WASM Download picker</value>
   </data>
 </root>

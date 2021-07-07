@@ -129,7 +129,10 @@
   <data name="StorageProviderLocalDisplayName" xml:space="preserve">
     <value>Tento počítač</value>
   </data>
-  <data name="StorageProviderNativeWasmDisplayName" xml:space="preserve">
+  <data name="StorageProviderWasmDownloadPickerName" xml:space="preserve">
+    <value>WASM dialog pro stažení</value>
+  </data>
+  <data name="StorageProviderWasmNativeDisplayName" xml:space="preserve">
     <value>JS File Access API</value>
   </data>
 </root>
