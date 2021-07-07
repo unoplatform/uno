@@ -428,6 +428,8 @@
           href: uno-development\creating-runtime-tests.md
         - name: UI tests with Uno.UITest
           href: uno-development\creating-ui-tests.md
+    - name: Debugging Solution Templates
+      href: uno-development\debugging-templates.md
     - name: Conventional Commits format
       href: uno-development\git-conventional-commits.md
     - name: Guidelines for pull-requests
