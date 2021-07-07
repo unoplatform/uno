@@ -13,7 +13,7 @@ namespace Uno.UI.Xaml.Core
 {
 	internal class CoreServices
 	{
-		private static Lazy<CoreServices> _instance = new Lazy<CoreServices>();
+		private static Lazy<CoreServices> _instance = new Lazy<CoreServices>(() => new CoreServices());
 
 		private VisualTree? _mainVisualTree = null;
 

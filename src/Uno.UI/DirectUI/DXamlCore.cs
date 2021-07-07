@@ -14,7 +14,7 @@ namespace DirectUI
 {
 	internal class DXamlCore
 	{
-		private static readonly Lazy<DXamlCore> _current = new Lazy<DXamlCore>();
+		private static readonly Lazy<DXamlCore> _current = new Lazy<DXamlCore>(() => new DXamlCore());
 
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
