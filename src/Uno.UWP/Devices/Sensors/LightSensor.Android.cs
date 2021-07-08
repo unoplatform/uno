@@ -1,24 +1,23 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Android.App;
-using Android.Content;
+using System.Threading.Tasks;
 using Android.Hardware;
 using Android.Runtime;
 using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
-	public partial class Barometer
+	public partial class LightSensor
 	{
 		private readonly Sensor _sensor;
-		private BarometerListener _listener;
+		private LightSensorListener _listener;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
-		private Barometer(Sensor barometerSensor)
+		private LightSensor(Sensor lightSensorSensor) : this()
 		{
-			_sensor = barometerSensor;
+			_sensor = lightSensorSensor;
 		}
 
 		public uint ReportInterval
@@ -26,11 +25,11 @@ namespace Windows.Devices.Sensors
 			get => _reportInterval;
 			set
 			{
-				lock (_syncLock)
+				lock (_readingChangedWrapper.SyncLock)
 				{
 					_reportInterval = value;
 
-					if (_readingChanged != null)
+					if (_readingChangedWrapper.Event != null)
 					{
 						//restart reading to apply interval
 						StopReading();
@@ -40,20 +39,20 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		private static Barometer TryCreateInstance()
+		private static LightSensor TryCreateInstance()
 		{
 			var sensorManager = SensorHelpers.GetSensorManager();
-			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Pressure);
+			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Light);
 			if (sensor != null)
 			{
-				return new Barometer(sensor);
+				return new LightSensor(sensor);
 			}
 			return null;
 		}
 
 		private void StartReading()
 		{
-			_listener = new BarometerListener(this);
+			_listener = new LightSensorListener(this);
 			SensorHelpers.GetSensorManager().RegisterListener(
 				_listener,
 				_sensor,
@@ -62,7 +61,7 @@ namespace Windows.Devices.Sensors
 
 		private void StopReading()
 		{
-			if ( _listener != null)
+			if (_listener != null)
 			{
 				SensorHelpers.GetSensorManager().UnregisterListener(_listener, _sensor);
 				_listener.Dispose();
@@ -70,29 +69,26 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		private class BarometerListener : Java.Lang.Object, ISensorEventListener, IDisposable
+		private class LightSensorListener : Java.Lang.Object, ISensorEventListener, IDisposable
 		{
-			private readonly Barometer _barometer;
+			private readonly LightSensor _lightSensor;
 
-			public BarometerListener(Barometer barometer)
+			public LightSensorListener(LightSensor lightSensor)
 			{
-				_barometer = barometer;
+				_lightSensor = lightSensor;
 			}
 
-			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum]SensorStatus accuracy)
+			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
 			{
 			}
 
 			void ISensorEventListener.OnSensorChanged(SensorEvent e)
 			{
-				var barometerReading = new BarometerReading(
+				var reading = new LightSensorReading(
 					e.Values[0],
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
-				_barometer._readingChanged?.Invoke(
-					_barometer,
-					new BarometerReadingChangedEventArgs(barometerReading));
+				LightSensor.OnReadingChanged(reading);
 			}
 		}
 	}
 }
-#endif

@@ -26,6 +26,16 @@ namespace Windows.Devices.Sensors
 			add => _readingChangedWrapper.AddHandler(value);
 			remove => _readingChangedWrapper.RemoveHandler(value);
 		}
+
+		internal static void OnReadingChanged(LightSensorReading reading)
+		{
+			var eventArgs = new LightSensorReadingChangedEventArgs(reading);
+
+			if (_instance.Value is { } sensor)
+			{
+				sensor._readingChangedWrapper.Event?.Invoke(sensor, eventArgs);
+			}
+		}
 	}
 }
 #endif

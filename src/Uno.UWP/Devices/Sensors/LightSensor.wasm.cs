@@ -36,13 +36,7 @@ namespace Windows.Devices.Sensors
 		public static int DispatchReading(float lux)
 		{
 			var reading = new LightSensorReading(lux, DateTimeOffset.UtcNow);
-			var eventArgs = new LightSensorReadingChangedEventArgs(reading);
-
-			var sensor = _instance.Value;
-			if (sensor != null)
-			{
-				sensor._readingChangedWrapper.Event?.Invoke(sensor, eventArgs);
-			}
+			LightSensor.OnReadingChanged(reading);
 
 			return 0;
 		}
