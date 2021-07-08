@@ -23,7 +23,7 @@ namespace Windows.Storage
 			var fileName = global::System.IO.Path.GetFileNameWithoutExtension(path);
 			var fileExtension = global::System.IO.Path.GetExtension(path);
 
-			if (!string.IsNullOrEmpty(directoryName))
+			if (directoryName != null)
 			{
 				var resourcePathname = NSBundle.MainBundle.PathForResource(global::System.IO.Path.Combine(directoryName, fileName), fileExtension.Substring(1));
 
