@@ -175,6 +175,7 @@ namespace Windows.UI.Input
 				if (_recognizer._manipulation == this)
 				{
 					_recognizer._manipulation = null;
+					_recognizer.TryCancelHapticFeedbackTimer();
 				}
 			}
 
@@ -211,8 +212,8 @@ namespace Windows.UI.Input
 							_recognizer,
 							new DraggingEventArgs(_currents.Pointer1, DraggingState.Started));
 						break;
-					
-					case ManipulationState.Starting when pointerAdded: 
+
+					case ManipulationState.Starting when pointerAdded:
 						_state = ManipulationState.Started;
 						_sumOfPublishedDelta = cumulative;
 
@@ -366,6 +367,7 @@ namespace Windows.UI.Input
 						{
 							// The pointer moved out of range while in the hold phase, so we completely disable the drag manipulation
 							_isDraggingEnable = false;
+							_recognizer.TryCancelHapticFeedbackTimer();
 							return false;
 						}
 						else

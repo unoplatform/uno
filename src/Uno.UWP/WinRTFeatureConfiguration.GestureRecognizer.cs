@@ -38,6 +38,10 @@ namespace Uno
 			public static bool InterpretForceTouchAsRightTap { get; set; } = _defaultInterpretForceTouchAsRightTap;
 #endif
 
+			/// <summary>
+			/// Sets whether haptic feedback is provided when a touch-initiated drag is ready to begin. The default is true.
+			/// </summary>
+			public static bool ShouldProvideHapticFeedback { get; set; } = true;
 		}
 
 	}
