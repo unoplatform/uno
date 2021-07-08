@@ -43,7 +43,7 @@ $(function () {
     const wpNavBar = document.getElementById('menu-menu-principal');
     const items = wpNavBar.getElementsByTagName('a');
     for(let i = 0; i < items.length; i++) {
-      
+
       if(items[i].href.includes(docsUrl) && path.includes(docsUrl) && !items[i].href.includes('#')){
         $(items[i]).addClass('activepath');
       }
