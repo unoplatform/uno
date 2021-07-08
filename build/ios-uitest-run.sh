@@ -115,6 +115,9 @@ else
 	echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
 fi
 
+echo Response file:
+cat $UNO_TESTS_RESPONSE_FILE
+
 ## Run NUnit tests
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
     @$UNO_TESTS_RESPONSE_FILE \
