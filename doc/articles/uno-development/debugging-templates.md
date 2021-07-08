@@ -13,7 +13,7 @@ VSIX templates are using the Visual Studio extensibility model, and run with a s
 To make modifications to those templates and test the result:
 - In Visual Studio, open the solution using the [Uno.UI-Wasm-hotreload-vsix-only.slnf filters](building-uno-ui.md)
 - Right click on the `UnoSolutionTemplate.VISX` project then debug
-- A new isolated testing instance of visual studio will open, allowing you to create projects using modified templatest
+- A new isolated testing instance of visual studio will open, allowing you to create projects using modified templates
 
 ## dotnet new templates
 
@@ -24,6 +24,6 @@ To make modifications to those templates and test the result:
 - Right click on the `Uno.ProjectTemplates.Dotnet` project, select `Pack`
 - This will create a `Uno.ProjectTemplates.Dotnet.255.255.255.255.nupkg` file
 - Install this file using `dotnet new -i C:\[your_path]\bin\Debug\Uno.ProjectTemplates.Dotnet.255.255.255.255.nupkg`
-- In another temporary folder, create a new application using the update templates with `dotnet new unoapp -o MyTestUnoApp01`
+- In another temporary folder, create a new application using the updated templates with `dotnet new unoapp -o MyTestUnoApp01`
 
 Ensure that the application runs properly by building it in Visual Studio and running it on all targets.
