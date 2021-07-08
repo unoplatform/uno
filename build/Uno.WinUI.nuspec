@@ -17,7 +17,7 @@
 	<dependencies>
 	  
 	  <!-- net6.0-android30.0 -->
-	  <group targetFramework="net6.0-android30.030">
+	  <group targetFramework="net6.0-android30.0">
 		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0.7-net6preview02.4535000" />
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.2.0.7-net6preview02.4535000" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0.8-net6preview02.4535000" />
