@@ -39,6 +39,7 @@ document.addEventListener(
                         unoMenuReq.responseText
                     );
                     wordpressMenuHasLoaded = true;
+                    $(document).trigger("wordpressMenuHasLoaded");
                 }
             };
             unoMenuReq.onerror = function (e) {};

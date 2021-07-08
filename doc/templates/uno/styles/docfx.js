@@ -37,6 +37,19 @@ $(function () {
     renderTabs();
   }
 
+  $(document).on('wordpressMenuHasLoaded', function() {
+    const path = window.location.pathname;
+    const docsUrl = '/docs/articles/';
+    const wpNavBar = document.getElementById('menu-menu-principal');
+    const items = wpNavBar.getElementsByTagName('a');
+    for(let i = 0; i < items.length; i++) {
+
+      if(items[i].href.includes(docsUrl) && path.includes(docsUrl)){
+        $(items[i]).addClass('activepath');
+      }
+    }
+  });
+
   // Add this event listener when needed
   // window.addEventListener('content-update', contentUpdate);
 

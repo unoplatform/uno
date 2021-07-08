@@ -468,6 +468,10 @@ h3 {
             transition: color 0.2s ease-in-out,
             background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
         }
+        
+        .activepath {
+            border-bottom: 2px solid $purple;
+        }
 
         a:hover,
         .docs a {
