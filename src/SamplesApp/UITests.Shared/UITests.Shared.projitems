@@ -1805,7 +1805,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\ToolTip_DynamicContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\ToolTip_Long_Text.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\ToolTip_CollapsedHost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5406,8 +5414,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\TimePicker_Flyout_Automated.xaml.cs">
       <DependentUpon>TimePicker_Flyout_Automated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\ToolTip_DynamicContent.xaml.cs">
+      <DependentUpon>ToolTip_DynamicContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\ToolTip_Long_Text.xaml.cs">
       <DependentUpon>ToolTip_Long_Text.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\ToolTip_CollapsedHost.xaml.cs">
+      <DependentUpon>ToolTip_CollapsedHost.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\UIElementCollectionTests\UIElementCollection_Insert.xaml.cs">
       <DependentUpon>UIElementCollection_Insert.xaml</DependentUpon>
