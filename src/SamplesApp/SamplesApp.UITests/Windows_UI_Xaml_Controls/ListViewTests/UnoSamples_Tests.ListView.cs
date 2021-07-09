@@ -477,5 +477,32 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		{
 			_app.Marked("CheckBox").AtIndex(i).Tap();
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_ListView_Shrinking()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Shrinking");
+
+			_app.WaitForElement(_app.Marked("theListView"));
+			var theListView = _app.Marked("theListView");
+			var addButton = _app.Marked("addButton");
+			var removeButton = _app.Marked("removeButton");
+			var heightStack = _app.Marked("heightStack");
+
+			addButton.FastTap();
+			addButton.FastTap();
+			addButton.FastTap();
+
+			float listHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			removeButton.FastTap();
+			removeButton.FastTap();
+			removeButton.FastTap();
+
+			float newListHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			Assert.AreNotEqual(listHeight, newListHeight);
+		}
 	}
 }
