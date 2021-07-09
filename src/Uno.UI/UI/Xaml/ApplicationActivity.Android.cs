@@ -1,4 +1,3 @@
-﻿#if XAMARIN_ANDROID
 using System;
 using Android.App;
 using Android.Content;
@@ -284,4 +283,3 @@ namespace Windows.UI.Xaml
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
 	}
 }
-#endif
