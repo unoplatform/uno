@@ -66,5 +66,17 @@ namespace Windows.UI.Xaml.Media
 #endif
 
 		#endregion
+
+		private protected override Rect ComputeBounds()
+		{
+			if(Transform is { } transform)
+			{
+				return transform.TransformBounds(Rect);
+			}
+			else
+			{
+				return Rect;
+			}
+		}
 	}
 }

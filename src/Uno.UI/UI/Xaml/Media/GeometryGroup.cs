@@ -1,4 +1,6 @@
+using Windows.Foundation;
 using Windows.UI.Xaml.Markup;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -51,5 +53,34 @@ namespace Windows.UI.Xaml.Media
 			);
 
 		#endregion
+
+		private protected override Rect ComputeBounds()
+		{
+			Rect? bounds = default;
+
+			foreach(var geometry in Children)
+			{
+				if(bounds is { } b)
+				{
+					bounds = b.UnionWith(geometry.Bounds);
+				}
+				else
+				{
+					bounds = geometry.Bounds;
+				}
+			}
+
+			if(bounds is { } result)
+			{
+				if(Transform is { } t)
+				{
+					return t.TransformBounds(result);
+				}
+
+				return result;
+			}
+
+			return default;
+		}
 	}
 }
