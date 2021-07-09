@@ -7,7 +7,9 @@ namespace Uno.Storage.Internal
 		public static StorageProvider Local { get; } = new StorageProvider("computer", "StorageProviderLocalDisplayName");
 
 #if __WASM__
-		public static StorageProvider NativeWasm { get; } = new StorageProvider("jsfileaccessapi", "StorageProviderNativeWasmDisplayName");
+		public static StorageProvider WasmDownloadPicker { get; } = new StorageProvider("wasmdownloadpicker", "StorageProviderWasmDownloadPickerName");
+
+		public static StorageProvider WasmNative { get; } = new StorageProvider("jsfileaccessapi", "StorageProviderWasmNativeDisplayName");
 #endif
 
 #if __ANDROID__

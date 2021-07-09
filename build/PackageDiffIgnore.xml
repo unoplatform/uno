@@ -3802,6 +3802,10 @@
 			<Member
 				fullName="AppKit.NSView Windows.UI.Xaml.Input.FocusManager.InnerFindNextFocusableElement(Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)"
 				reason="Should not be public" />
+
+			<Member
+				fullName="System.Void Windows.Storage.CachedFileManager..ctor()"
+				reason="Should not be public" />
 		</Methods>
 		<Fields>
 		</Fields>
