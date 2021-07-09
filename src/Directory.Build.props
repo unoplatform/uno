@@ -40,12 +40,6 @@
 	<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
 	<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
 
-	<!-- temporary for net6 telemetry initialization issue -->
-	<UnoPlatformTelemetryOptOut>true</UnoPlatformTelemetryOptOut>
-	<!--<UnoSourceGeneratorUnsecureBinLogEnabled>true</UnoSourceGeneratorUnsecureBinLogEnabled>-->
-	<!--<BuildingInsideUnoSourceGenerator>true</BuildingInsideUnoSourceGenerator>-->
-	<!--<UnoSourceGeneratorCaptureGenerationHostOutput>true</UnoSourceGeneratorCaptureGenerationHostOutput>-->
-
   </PropertyGroup>
 
   <PropertyGroup>
