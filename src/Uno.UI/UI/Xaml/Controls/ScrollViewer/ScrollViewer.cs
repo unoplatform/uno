@@ -727,7 +727,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				// TODO: fallback on native values (.ContentSize on iOS, for example)
 				ExtentHeight = 0;
 				ExtentWidth = 0;
 			}

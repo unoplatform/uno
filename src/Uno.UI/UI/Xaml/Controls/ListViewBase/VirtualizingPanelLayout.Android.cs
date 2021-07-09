@@ -1157,6 +1157,13 @@ namespace Windows.UI.Xaml.Controls
 				UpdateBuffers(recycler, state);
 				AssertValidState();
 			}
+
+			if (!isMeasure)
+			{
+				// Update HorizontalScrollRange and VerticalScrollRange because they're used by the ScrollViewer to get ExtentWidth and ExtentHeight.
+				ComputeHorizontalScrollRange(state);
+				ComputeVerticalScrollRange(state);
+			}
 		}
 
 		/// <summary>
