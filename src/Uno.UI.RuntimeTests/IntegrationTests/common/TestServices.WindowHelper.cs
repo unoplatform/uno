@@ -100,7 +100,7 @@ namespace Private.Infrastructure
 						return false;
 					}
 
-					if (element is Control control && control.FindFirstChild<UIElement>(includeCurrent: false) == null)
+					if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
 					{
 						return false;
 					}

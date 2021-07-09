@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras">
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid11.0;xamarinmac20;uap10.0.17763</TargetFrameworks>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;xamarinios10;monoandroid11.0;xamarinmac20;uap10.0.17763</TargetFrameworks>
 		
-    <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
+
+		<NoWarn>$(NoWarn);CS0168;CS0219;CS0067;CS0162</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -100,13 +102,13 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
+		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">
-	    <SubType>Designer</SubType>
-	  </Page>
+		<Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">
+			<SubType>Designer</SubType>
+		</Page>
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
