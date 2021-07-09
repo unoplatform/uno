@@ -37,22 +37,24 @@ namespace Windows.UI
 
 		public override string ToString() => ToString(null, null);
 
-		public string ToString(string format, IFormatProvider provider)
-		{
-			var sb = new StringBuilder();
-
-			sb.AppendFormat(provider, "#{0:X2}", A);
-			sb.AppendFormat(provider, "{0:X2}", R);
-			sb.AppendFormat(provider, "{0:X2}", G);
-			sb.AppendFormat(provider, "{0:X2}", B);
-
-			return sb.ToString();
-		}
-
 		public static bool operator ==(Color color1, Color color2) => color1.Equals(color2);
 
 		public static bool operator !=(Color color1, Color color2) => !color1.Equals(color2);
 
 		internal Color WithOpacity(double opacity) => new Color((byte)(A * opacity), R, G, B);
+
+		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format, formatProvider);
+
+		private string ToString(string format, IFormatProvider formatProvider)
+		{
+			var sb = new StringBuilder();
+
+			sb.AppendFormat(formatProvider, "#{0:X2}", A);
+			sb.AppendFormat(formatProvider, "{0:X2}", R);
+			sb.AppendFormat(formatProvider, "{0:X2}", G);
+			sb.AppendFormat(formatProvider, "{0:X2}", B);
+
+			return sb.ToString();
+		}
 	}
 }
