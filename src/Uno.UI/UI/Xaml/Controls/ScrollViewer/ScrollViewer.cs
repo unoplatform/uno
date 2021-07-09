@@ -47,6 +47,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
+		private bool m_isInConstantVelocityPan = false;
+
 		private static class Parts
 		{
 			public static class Uwp
@@ -871,6 +873,12 @@ namespace Windows.UI.Xaml.Controls
 
 			_isTemplateApplied = _presenter != null;
 
+#if __WASM__
+			if (_presenter != null && ForceChangeToCurrentView)
+			{
+				_presenter.ForceChangeToCurrentView = ForceChangeToCurrentView;
+			}
+#endif
 			// Load new template
 			_verticalScrollbar = null;
 			_isVerticalScrollBarMaterialized = false;
@@ -1369,10 +1377,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Scroll indicators visual states (Managed scroll bars only)
+
 		private static readonly TimeSpan _indicatorResetDelay = FeatureConfiguration.ScrollViewer.DefaultAutoHideDelay ?? TimeSpan.FromSeconds(4);
 		private static readonly bool _indicatorResetDisabled = _indicatorResetDelay == TimeSpan.MaxValue;
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
+		//private bool m_isInIntermediateViewChangedMode;
+		//private bool m_isViewChangedRaisedInIntermediateMode;
+		//private bool m_isDraggingThumb;
 
 		private void PrepareScrollIndicator() // OnApplyTemplate
 		{
@@ -1472,5 +1484,38 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endregion
+
+		public void ScrollToHorizontalOffset(double offset)
+		{
+			_ = ChangeView(offset, null, null, false);
+		}
+
+		public void ScrollToVerticalOffset(double offset)
+		{
+			_ = ChangeView(null, offset, null, false);
+		}
+
+		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
+		public bool ArePointerWheelEventsIgnored { get; set; } = false;
+
+		internal bool BringIntoViewport(Rect bounds,
+			bool skipDuringTouchContact,
+			bool skipAnimationWhileRunning,
+			bool animate)
+		{
+#if __WASM__
+			return ChangeView(bounds.X, bounds.Y, null, true);
+#else
+			return ChangeView(bounds.X, bounds.Y, null, !animate);
+#endif
+		}
+
+		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
+
+		/// <summary>
+		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
+		/// </summary>		
+		internal bool ForceChangeToCurrentView { get; set; } = false;
+
 	}
 }

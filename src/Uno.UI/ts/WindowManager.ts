@@ -1039,6 +1039,7 @@ namespace Uno.UI {
 				const result = this.dispatchEvent(element, eventName, eventPayload);
 				if (result & HtmlEventDispatchResult.StopPropagation) {
 					event.stopPropagation();
+					event.preventDefault();
 				}
 				if (result & HtmlEventDispatchResult.PreventDefault) {
 					event.preventDefault();

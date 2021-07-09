@@ -3,7 +3,7 @@
 
 $blue: #159bff;
 $purple: #7a67f8;
-$turquoise: #66e4a8;
+$turquoise: #67e5ad;
 $dgray: #242424;
 $lgray: #c4c4c4;
 
@@ -32,6 +32,9 @@ body {
         color: $dgray;
         padding: 26px 16px;
         transition: transform .2s;
+    }
+
+    .alert-hover {
         &:hover {
             transform: scale(1.05);
             border-color: $blue;
@@ -125,19 +128,17 @@ h3 {
     position: absolute;
     margin:5px 0 0 0;
     width:560px;
+    max-height: calc(100vh - 250px);
     border: 1px solid rgba(0,0,0,0.15);
     border-radius: 10px;
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
     z-index: 1;
-
+    overflow-y: auto;
+    
     .sr-items {
       a {
         color: black;
-        &:first-child {
-          border-radius: 10px 10px 0 0;
-        }
         &:last-child {
-          border-radius: 0 0 10px 10px;
           margin-bottom: 0;
         }
       }
@@ -467,6 +468,10 @@ h3 {
             transition: color 0.2s ease-in-out,
             background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
         }
+        
+        .activepath {
+            border-bottom: 2px solid $purple;
+        }
 
         a:hover,
         .docs a {
@@ -476,11 +481,9 @@ h3 {
 
         .get-started-btn a,
         a[title="Get Started"] {
-            background-color: rgb(122, 103, 248);
             border: 0;
             border-radius: 8px;
             box-sizing: content-box;
-            color: rgb(255, 255, 255);
             cursor: pointer;
             display: inline-block;
             font-family: 'Open Sans', sans-serif;
@@ -497,14 +500,18 @@ h3 {
             padding-top: 8px;
             text-align: center;
             text-transform: none;
-            transition-delay: 0s, 0s, 0s;
-            transition-duration: 0.2s, 0.2s, 0.2s;
-            transition-property: color, background-color, border-color;
-            transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
             width: auto;
 
+            color: black;
+            background-color: $turquoise;
+            background: linear-gradient(to top, $blue 50%, $turquoise 50%);
+            background-size: 100% 200%;
+            background-position:left top;
+            transition:all 0.5s cubic-bezier(.69,.04,.9,.65);
+
             &:hover {
-                background: darken($purple, 5);
+                color: white;
+                background-position:bottom left;
             }
         }
     }

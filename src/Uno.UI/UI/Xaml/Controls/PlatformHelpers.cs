@@ -1,20 +1,15 @@
 ﻿using Uno;
 using Windows.System;
-using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
 	internal static class PlatformHelpers
 	{
+		//TODO Uno: Should be implemented for proper keyboard handling.
 		[NotImplemented]
-		public static VirtualKeyModifiers GetKeyboardModifiers()
-		{
-			return VirtualKeyModifiers.None;
-		}
+		public static VirtualKeyModifiers GetKeyboardModifiers() => VirtualKeyModifiers.None;
 
-		public static void RequestInteractionSoundForElement(ElementSoundKind soundToPlay, DependencyObject element)
-		{
+		public static void RequestInteractionSoundForElement(ElementSoundKind soundToPlay, DependencyObject element) =>
 			ElementSoundPlayer.RequestInteractionSoundForElement(soundToPlay, element);
-		}
 	}
 }

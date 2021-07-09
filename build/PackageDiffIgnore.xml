@@ -3729,7 +3729,8 @@
 			
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.UIElement.DispatchEvent(System.Int32 handle, System.String eventName, System.String eventArgs)"
-				reason="Public only for marshaling purposes, need to change return value" />
+				reason="Public only for marshaling purposes, need to change return value" />			
+
 		</Methods>
 		<Fields>
 			<Member
@@ -3742,10 +3743,69 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>	
-	<IgnoreSet baseVersion="3.8.6">
+	<IgnoreSet baseVersion="3.8.11">
 		<Types>
 		</Types>
 		<Methods>
+			<!-- Focus management -->
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.FocusDisengagedEventArgs..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.FocusEngagedEventArgs..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Control.RequestFocus(Windows.UI.Xaml.FocusState state)"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.NoFocusCandidateFoundEventArgs..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.LosingFocusEventArgs..ctor()"
+				reason="Should not be public" />		
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.GettingFocusEventArgs..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.FocusMovementResult..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.FocusManagerLostFocusEventArgs..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.FocusManager..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.ExecuteRequestedEventArgs..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.CharacterReceivedRoutedEventArgs..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.UIElement.OnVisibilityChanged(Windows.UI.Xaml.Visibility oldValue, Windows.UI.Xaml.Visibility newValue)"
+				reason="Should not be public" />
+			<Member
+				fullName="Android.Views.View Windows.UI.Xaml.Input.FocusManager.InnerFindNextFocusableElement(Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)"
+				reason="Should not be public" />
+			<Member
+				fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Input.FocusManager.InnerFindNextFocusableElement(Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)"
+				reason="Should not be public" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyObject Windows.UI.Xaml.Input.FocusManager.InnerFindFirstFocusableElement(Windows.UI.Xaml.DependencyObject searchScope)"
+				reason="Should not be public" />
+			<Member
+				fullName="UIKit.UIView Windows.UI.Xaml.Input.FocusManager.InnerFindNextFocusableElement(Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)"
+				reason="Should not be public" />
+			<Member
+				fullName="AppKit.NSView Windows.UI.Xaml.Input.FocusManager.InnerFindNextFocusableElement(Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)"
+				reason="Should not be public" />
+
+			<Member
+				fullName="System.Void Windows.Storage.CachedFileManager..ctor()"
+				reason="Should not be public" />
 		</Methods>
 		<Fields>
 		</Fields>

@@ -79,9 +79,9 @@ namespace Windows.UI.Xaml
 		public ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
 
 		/// <summary>
-		/// Does not have any effect in Uno yet.
+		/// Specifies the visual feedback used to indicate the UI element
+		/// with focus when navigating with a keyboard or gamepad.
 		/// </summary>
-		[NotImplemented]
 		public FocusVisualKind FocusVisualKind { get; set; } = FocusVisualKind.HighVisibility;
 
 		public ApplicationTheme RequestedTheme

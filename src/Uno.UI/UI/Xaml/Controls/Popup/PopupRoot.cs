@@ -17,7 +17,6 @@ namespace Windows.UI.Xaml.Controls
 			base.OnChildrenChanged();
 		}
 
-
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			Size size = default;

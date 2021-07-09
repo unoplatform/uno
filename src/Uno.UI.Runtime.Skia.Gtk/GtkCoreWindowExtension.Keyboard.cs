@@ -33,11 +33,11 @@ namespace Uno.UI.Runtime.Skia
 
 		private int OnKeySnoop(Widget grab_widget, EventKey e)
 		{
-			if(e.Type == EventType.KeyPress)
+			if (e.Type == EventType.KeyPress)
 			{
 				OnKeyPressEvent(e);
 			}
-			else if(e.Type == EventType.KeyRelease)
+			else if (e.Type == EventType.KeyRelease)
 			{
 				OnKeyReleaseEvent(e);
 			}
@@ -93,7 +93,7 @@ namespace Uno.UI.Runtime.Skia
 							RepeatCount = 1,
 						}));
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			}
@@ -116,6 +116,8 @@ namespace Uno.UI.Runtime.Skia
 				// Gdk.Key.XButton2 => VirtualKey.XButton2,
 				Gdk.Key.BackSpace => VirtualKey.Back,
 				Gdk.Key.Tab => VirtualKey.Tab,
+				Gdk.Key.ISO_Left_Tab => VirtualKey.Tab,
+				Gdk.Key.KP_Tab => VirtualKey.Tab,
 				Gdk.Key.Clear => VirtualKey.Clear,
 				Gdk.Key.Return => VirtualKey.Enter,
 				// Gdk.Key.Shift => VirtualKey.Shift,

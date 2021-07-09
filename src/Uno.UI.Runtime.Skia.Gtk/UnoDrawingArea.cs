@@ -3,12 +3,15 @@ using System.IO;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI.Xaml.Core;
+using Windows.UI.Xaml.Input;
 using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia
 {
 	internal class UnoDrawingArea : Gtk.DrawingArea
 	{
+		private FocusManager _focusManager;
 		private SKBitmap bitmap;
 		private int renderCount;
 
@@ -17,8 +20,19 @@ namespace Uno.UI.Runtime.Skia
 			WUX.Window.InvalidateRender
 				+= () =>
 				{
+					// TODO Uno: Make this invalidation less often if possible.
+					InvalidateFocusVisual();
 					Invalidate();
 				};
+		}
+
+		private void InvalidateFocusVisual()
+		{
+			if (_focusManager == null)
+			{
+				_focusManager = VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
+			}
+			_focusManager?.FocusRectManager?.RedrawFocusVisual();
 		}
 
 		private void Invalidate()

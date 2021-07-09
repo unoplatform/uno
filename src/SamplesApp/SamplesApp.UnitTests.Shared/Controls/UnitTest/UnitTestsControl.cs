@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SampleControl.Presentation;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests;
@@ -55,7 +56,13 @@ namespace Uno.UI.Samples.Tests
 
 			DataContext = null;
 
-			Unloaded += (snd, evt) => StopRunningTests();
+			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
+		}
+
+		private void OnSampleChanging(object sender, EventArgs e)
+		{
+			StopRunningTests();
+			SampleChooserViewModel.Instance.SampleChanging -= OnSampleChanging;
 		}
 
 		public string NUnitTestResultsDocument
@@ -171,7 +178,8 @@ namespace Uno.UI.Samples.Tests
 		private void ReportTestResult(string testName, TimeSpan duration, TestResult testResult, Exception error = null, string message = null, string console = null)
 		{
 			_testCases.Add(
-				new TestCase {
+				new TestCase
+				{
 					TestName = testName,
 					Duration = duration,
 					TestResult = testResult,
@@ -570,35 +578,35 @@ namespace Uno.UI.Samples.Tests
 
 						var sw = new Stopwatch();
 
-					try
-					{
-						if (requiresFullWindow)
+						try
 						{
-							await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+							if (requiresFullWindow)
 							{
-								Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
-								Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
-							});
-						}
+								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								{
+									Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
+									Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
+								});
+							}
 
-						object returnValue = null;
-						if (runsOnUIThread)
-						{
-							await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+							object returnValue = null;
+							if (runsOnUIThread)
+							{
+								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								{
+									sw.Start();
+									testClassInfo.Initialize?.Invoke(instance, new object[0]);
+									returnValue = testMethod.Invoke(instance, parameters);
+									sw.Stop();
+								});
+							}
+							else
 							{
 								sw.Start();
 								testClassInfo.Initialize?.Invoke(instance, new object[0]);
 								returnValue = testMethod.Invoke(instance, parameters);
 								sw.Stop();
-							});
-						}
-						else
-						{
-							sw.Start();
-							testClassInfo.Initialize?.Invoke(instance, new object[0]);
-							returnValue = testMethod.Invoke(instance, parameters);
-							sw.Stop();
-						}
+							}
 
 							if (testMethod.ReturnType == typeof(Task))
 							{
@@ -664,6 +672,17 @@ namespace Uno.UI.Samples.Tests
 							{
 								_currentRun.Succeeded++;
 								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, e, console: console);
+							}
+						}
+						finally
+						{
+							if (requiresFullWindow)
+							{
+								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								{
+									Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
+									Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
+								});
 							}
 						}
 					}

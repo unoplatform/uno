@@ -26,6 +26,10 @@ using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
+using Uno.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 
 #if __IOS__
 using UIKit;
@@ -72,11 +76,18 @@ namespace Windows.UI.Xaml
 			this.RegisterDefaultValueProvider(OnGetDefaultValue);
 		}
 
+		private protected virtual bool IsTabStopDefaultValue => false;
+
 		private bool OnGetDefaultValue(DependencyProperty property, out object defaultValue)
 		{
 			if (property == KeyboardAcceleratorsProperty)
 			{
 				defaultValue = new List<KeyboardAccelerator>(0);
+				return true;
+			}
+			else if (property == IsTabStopProperty)
+			{
+				defaultValue = IsTabStopDefaultValue;
 				return true;
 			}
 
@@ -233,8 +244,56 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+		/// <summary>
+		/// Attempts to set the focus on the UIElement.
+		/// </summary>
+		/// <param name="value">Specifies how focus was set, as a value of the enumeration.</param>
+		/// <returns>True if focus was set to the UIElement, or focus was already on the UIElement. False if the UIElement is not focusable.</returns>
+		public bool Focus(FocusState value) => FocusImpl(value);
+
+		internal void Unfocus()
+		{
+			var hasFocus = FocusProperties.HasFocusedElement(this);
+			if (hasFocus)
+			{
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+
+				// Set the focus on the next focusable control.
+				// If we are trying to set focus in a changing focus event handler, we will end up leaving focus on the disabled control.
+				// As a result, we fail fast here. This is being tracked by Bug 9840123
+				focusManager?.ClearFocus();
+			}
+		}
+
 		public GeneralTransform TransformToVisual(UIElement visual)
 			=> new MatrixTransform { Matrix = new Matrix(GetTransform(from: this, to: visual)) };
+
+		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
+		{
+			OnVisibilityChangedPartial(oldValue, newVisibility);
+
+			// Part of the logic from MUX uielement.cpp VisibilityState
+			if (newVisibility != Visibility.Visible)
+			{
+				var hasFocus = FocusProperties.HasFocusedElement(this);
+				if (hasFocus)
+				{
+					var focusManager = VisualTree.GetFocusManagerForElement(this);
+
+					// Set the focus on the next focusable control.
+					// If we are trying to set focus in a changing focus event handler, we will end up leaving focus on the disabled control.
+					// As a result, we fail fast here. This is being tracked by Bug 9840123
+					focusManager?.SetFocusOnNextFocusableElement(focusManager.GetRealFocusStateForFocusedElement(), true);
+				}
+			}
+		}
+
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newVisibility);
+
+		[NotImplemented]
+		protected virtual AutomationPeer OnCreateAutomationPeer() => new AutomationPeer();
+
+		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
@@ -808,48 +867,58 @@ namespace Windows.UI.Xaml
 			return Math.Round(x);
 		}
 
-#if HAS_UNO_WINUI
-#region FocusState DependencyProperty
-
-		public FocusState FocusState
+		public XYFocusKeyboardNavigationMode XYFocusKeyboardNavigation
 		{
-			get { return (FocusState)GetValue(FocusStateProperty); }
-			internal set { SetValue(FocusStateProperty, value); }
+			get => GetXYFocusKeyboardNavigationValue();
+			set => SetXYFocusKeyboardNavigationValue(value);
 		}
 
-		public static DependencyProperty FocusStateProperty { get; } =
-			DependencyProperty.Register(
-				"FocusState",
-				typeof(FocusState),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(
-					(FocusState)FocusState.Unfocused
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = default(XYFocusKeyboardNavigationMode), Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty XYFocusKeyboardNavigationProperty { get; } = CreateXYFocusKeyboardNavigationProperty();
 
-#endregion
-
-#region IsTabStop DependencyProperty
-
-		public bool IsTabStop
+		public XYFocusNavigationStrategy XYFocusDownNavigationStrategy
 		{
-			get { return (bool)GetValue(IsTabStopProperty); }
-			set { SetValue(IsTabStopProperty, value); }
+			get => GetXYFocusDownNavigationStrategyValue();
+			set => SetXYFocusDownNavigationStrategyValue(value);
 		}
 
-		public static DependencyProperty IsTabStopProperty { get; } =
-			DependencyProperty.Register(
-				"IsTabStop",
-				typeof(bool),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(
-					(bool)true,
-					(s, e) => ((Control)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
-				)
-			);
-#endregion
+		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
+		public static DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = CreateXYFocusDownNavigationStrategyProperty();
 
-		private protected virtual void OnIsTabStopChanged(bool oldValue, bool newValue) { }
-#endif
+		public XYFocusNavigationStrategy XYFocusLeftNavigationStrategy
+		{
+			get => GetXYFocusLeftNavigationStrategyValue();
+			set => SetXYFocusLeftNavigationStrategyValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
+		public static DependencyProperty XYFocusLeftNavigationStrategyProperty { get; } = CreateXYFocusLeftNavigationStrategyProperty();
+
+		public XYFocusNavigationStrategy XYFocusRightNavigationStrategy
+		{
+			get => GetXYFocusRightNavigationStrategyValue();
+			set => SetXYFocusRightNavigationStrategyValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
+		public static DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = CreateXYFocusRightNavigationStrategyProperty();
+
+		public XYFocusNavigationStrategy XYFocusUpNavigationStrategy
+		{
+			get => GetXYFocusUpNavigationStrategyValue();
+			set => SetXYFocusUpNavigationStrategyValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
+		public static DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = CreateXYFocusUpNavigationStrategyProperty();
+
+		public KeyboardNavigationMode TabFocusNavigation
+		{
+			get => GetTabFocusNavigationValue();
+			set => SetTabFocusNavigationValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = default(KeyboardNavigationMode))]
+		public static DependencyProperty TabFocusNavigationProperty { get; } = CreateTabFocusNavigationProperty();
 	}
 }

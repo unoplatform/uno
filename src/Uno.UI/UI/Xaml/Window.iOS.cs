@@ -13,6 +13,7 @@ using System.Drawing;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml
 {
@@ -21,9 +22,8 @@ namespace Windows.UI.Xaml
 		private Uno.UI.Controls.Window _window;
 
 		private static Window _current;
-		private Grid _main;
+		private RootVisual _rootVisual;
 		private Border _rootBorder;
-		private Border _fullWindow;
 		private RootViewController _mainController;
 		private UIElement _content;
 		private NSObject _orientationRegistration;
@@ -86,40 +86,31 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement value)
 		{
-			if (_main == null)
+			if (_rootVisual == null)
 			{
 				_rootBorder = new Border();
-				_fullWindow = new Border()
-				{
-					VerticalAlignment = VerticalAlignment.Stretch,
-					HorizontalAlignment = HorizontalAlignment.Stretch,
-					Visibility = Visibility.Collapsed
-				};
-				FocusVisualLayer = new Canvas();
+				var coreServices = Uno.UI.Xaml.Core.CoreServices.Instance;
+				coreServices.PutVisualRoot(_rootBorder);
+				_rootVisual = coreServices.MainRootVisual;
 
-				_main = new Grid()
+				if (_rootVisual == null)
 				{
-					IsVisualTreeRoot = true,
-					Children =
-					{
-						_rootBorder,
-						_fullWindow,
-						FocusVisualLayer
-					}
-				};
-				
-				_mainController.View.AddSubview(_main);
-				_main.Frame = _mainController.View.Bounds;
-				_main.AutoresizingMask = UIViewAutoresizing.All;
+					throw new InvalidOperationException("The root visual could not be created.");
+				}
+
+				_mainController.View.AddSubview(_rootVisual);
+				_rootVisual.Frame = _mainController.View.Bounds;
+				_rootVisual.AutoresizingMask = UIViewAutoresizing.All;
 			}
 
 			_rootBorder.Child?.RemoveFromSuperview();
+			_rootBorder.Child = null;
 			_rootBorder.Child = _content = value;
 		}
 
 		private UIElement InternalGetContent() => _content;
 
-		private UIElement InternalGetRootElement() => _main;
+		private UIElement InternalGetRootElement() => _rootVisual;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -153,15 +144,15 @@ namespace Windows.UI.Xaml
 		{
 			if (element == null)
 			{
-				_fullWindow.Child = null;
+				FullWindowMediaRoot.Child = null;
 				_rootBorder.Opacity = 1;
-				_fullWindow.Visibility = Visibility.Collapsed;
+				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
 			}
 			else
 			{
-				_fullWindow.Visibility = Visibility.Visible;
+				FullWindowMediaRoot.Visibility = Visibility.Visible;
 				_rootBorder.Opacity = 0;
-				_fullWindow.Child = element;
+				FullWindowMediaRoot.Child = element;
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml.FocusManager.Focus_FocusState"
+﻿<UserControl x:Class="UITests.Windows_UI_Xaml.FocusTests.Focus_FocusState"
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:converters="using:UITests.ValueConverters"

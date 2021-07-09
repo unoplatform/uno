@@ -14,7 +14,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[AutoRetry]
 		public void Test_FocusState_Interactive()
 		{
-			Run("UITests.Windows_UI_Xaml.FocusManager.Focus_FocusState");
+			Run("UITests.Windows_UI_Xaml.FocusTests.Focus_FocusState");
 
 			_app.WaitForElement("YeButton");
 

@@ -12,6 +12,18 @@ namespace Uno.UI.Tests
 	[TestClass]
 	public class DependencyProperty_Owner
 	{
+		private readonly (string owner, string propertyName)[] _ignoreList = new (string, string)[]
+		{
+			("Control", "TabFocusNavigation"),
+			("Control", "TabIndex"),
+			("Control", "FocusState"),
+			("Control", "IsTabStop"),
+			("Control", "XYFocusUp"),
+			("Control", "XYFocusDown"),
+			("Control", "XYFocusLeft"),
+			("Control", "XYFocusRight"),
+			("Control", "UseSystemFocusVisuals")
+		};
 
 		[TestMethod]
 		public void Check_All_DP_Owners()
@@ -37,16 +49,32 @@ namespace Uno.UI.Tests
 				foreach (var dpInfo in dependencyProperties)
 				{
 					var dp = (DependencyProperty)dpInfo.GetValue(null);
-					var owner = getOwnerType(dp);
-					Assert.AreEqual(dependencyObject.AsType(), owner);
+
+					CheckOwner(dp, dependencyObject.AsType());
 				}
 
 				foreach (var dpInfo in dependencyPropertyFields)
 				{
 					var dp = (DependencyProperty)dpInfo.GetValue(null);
-					var owner = getOwnerType(dp);
-					Assert.AreEqual(dependencyObject.AsType(), owner);
+
+					CheckOwner(dp, dependencyObject.AsType());
 				}
+			}
+
+			void CheckOwner(DependencyProperty dp, Type expectedOwner)
+			{
+				var owner = getOwnerType(dp);
+
+				if (_ignoreList.Any(ignore => ignore.owner == expectedOwner.Name && ignore.propertyName == dp.Name))
+				{
+					return;
+				}
+
+				Assert.AreEqual(
+					expectedOwner,
+					owner,
+					$"Dependency property {dp.Name} should have owner " +
+					$"{expectedOwner}, but has {owner} instead.");
 			}
 		}
 

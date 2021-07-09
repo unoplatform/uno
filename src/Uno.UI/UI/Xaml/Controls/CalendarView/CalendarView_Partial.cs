@@ -2126,8 +2126,7 @@ namespace Windows.UI.Xaml.Controls
 
 						//A control must be focused before we can set Engagement on it, attempt to set focus first
 						bool focused = false;
-						//focused = FocusManager.SetFocusedElement(spScrollViewer, FocusState.Keyboard, false /*animateIfBringintoView*/);
-						focused = FocusManager.SetFocusedElement(spScrollViewer, FocusNavigationDirection.None, FocusState.Keyboard);
+						focused = FocusManager.SetFocusedElementWithDirection(spScrollViewer, FocusState.Keyboard, false /*animateIfBringintoView*/, false, FocusNavigationDirection.None);
 						if (focused)
 						{
 							FocusManager.SetEngagedControl(spScrollViewer);

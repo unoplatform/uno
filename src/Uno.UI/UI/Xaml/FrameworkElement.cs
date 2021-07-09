@@ -488,9 +488,6 @@ namespace Windows.UI.Xaml
 
 		private static Thickness GetFocusVisualPrimaryThicknessDefaultValue() => new Thickness(2);
 
-		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
-		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } = CreateFocusVisualPrimaryBrushProperty();
-
 		public Brush FocusVisualPrimaryBrush
 		{
 			get
@@ -501,8 +498,8 @@ namespace Windows.UI.Xaml
 			set => SetFocusVisualPrimaryBrushValue(value);
 		}
 
-		[GeneratedDependencyProperty]
-		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
+		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } = CreateFocusVisualPrimaryBrushProperty();
 
 		public Thickness FocusVisualMargin
 		{
@@ -511,6 +508,9 @@ namespace Windows.UI.Xaml
 		}
 
 		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty]
+		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
 
 		private bool _focusVisualBrushesInitialized = false;
 
@@ -526,6 +526,36 @@ namespace Windows.UI.Xaml
 
 			_focusVisualBrushesInitialized = true;
 		}
+
+		/// <summary>
+		/// Gets or sets whether a disabled control can receive focus.
+		/// </summary>
+		public bool AllowFocusWhenDisabled
+		{
+			get => GetAllowFocusWhenDisabledValue();
+			set => SetAllowFocusWhenDisabledValue(value);
+		}
+
+		/// <summary>
+		/// Identifies the AllowFocusWhenDisabled  dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = false, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
+		/// </summary>
+		public bool AllowFocusOnInteraction
+		{
+			get => GetAllowFocusOnInteractionValue();
+			set => SetAllowFocusOnInteractionValue(value);
+		}
+
+		/// <summary>
+		/// Identifies for the AllowFocusOnInteraction dependency property.
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined

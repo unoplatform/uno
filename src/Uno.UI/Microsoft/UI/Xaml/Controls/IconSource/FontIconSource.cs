@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference FontIconSource.cpp, commit 083796a
+
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -8,10 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FontIconSource : IconSource
 	{
-		public FontIconSource()
-		{
-		}
-
 		public bool MirroredWhenRightToLeft
 		{
 			get => (bool)GetValue(MirroredWhenRightToLeftProperty);
@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
-			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new PropertyMetadata(false));
+			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new PropertyMetadata(false, OnPropertyChanged));
 
 		public bool IsTextScaleFactorEnabled
 		{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new PropertyMetadata(true));
+			DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new PropertyMetadata(true, OnPropertyChanged));
 
 		public string Glyph
 		{
@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty GlyphProperty { get; } =
-			DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(FontIconSource), new PropertyMetadata(default(string)));
+			DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(FontIconSource), new PropertyMetadata(default(string), OnPropertyChanged));
 
 		public FontWeight FontWeight
 		{
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontWeightProperty { get; } =
-			DependencyProperty.Register(nameof(FontWeight), typeof(FontWeight), typeof(FontIconSource), new PropertyMetadata(new FontWeight(400)));
+			DependencyProperty.Register(nameof(FontWeight), typeof(FontWeight), typeof(FontIconSource), new PropertyMetadata(new FontWeight(400), OnPropertyChanged));
 
 		public FontStyle FontStyle
 		{
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontStyleProperty { get; } =
-			DependencyProperty.Register(nameof(FontStyle), typeof(FontStyle), typeof(FontIconSource), new PropertyMetadata(FontStyle.Normal));
+			DependencyProperty.Register(nameof(FontStyle), typeof(FontStyle), typeof(FontIconSource), new PropertyMetadata(FontStyle.Normal, OnPropertyChanged));
 
 		public double FontSize
 		{
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
-			DependencyProperty.Register(nameof(FontSize), typeof(double), typeof(FontIconSource), new PropertyMetadata(20.0));
+			DependencyProperty.Register(nameof(FontSize), typeof(double), typeof(FontIconSource), new PropertyMetadata(20.0, OnPropertyChanged));
 
 		public FontFamily FontFamily
 		{
@@ -73,10 +73,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontFamilyProperty { get; } =
-			DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new PropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont)));
+			DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new PropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont), OnPropertyChanged));
 
 		/// <inheritdoc />
-		public override IconElement CreateIconElement()
+		private protected override IconElement CreateIconElementCore()
 		{
 			var fontIcon = new FontIcon()
 			{
@@ -99,6 +99,40 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return fontIcon;
+		}
+
+		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		{
+			if (sourceProperty == FontFamilyProperty)
+			{
+				return FontIcon.FontFamilyProperty;
+			}
+			else if (sourceProperty == FontSizeProperty)
+			{
+				return FontIcon.FontSizeProperty;
+			}
+			else if (sourceProperty == FontStyleProperty)
+			{
+				return FontIcon.FontStyleProperty;
+			}
+			else if (sourceProperty == FontWeightProperty)
+			{
+				return FontIcon.FontWeightProperty;
+			}
+			else if (sourceProperty == GlyphProperty)
+			{
+				return FontIcon.GlyphProperty;
+			}
+			else if (sourceProperty == IsTextScaleFactorEnabledProperty)
+			{
+				return FontIcon.IsTextScaleFactorEnabledProperty;
+			}
+			else if (sourceProperty == MirroredWhenRightToLeftProperty)
+			{
+				return FontIcon.MirroredWhenRightToLeftProperty;
+			}
+
+			return base.GetIconElementPropertyCore(sourceProperty);
 		}
 	}
 }

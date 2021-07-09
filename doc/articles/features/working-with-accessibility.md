@@ -65,6 +65,25 @@ Setting this property does the following:
 
 This property is generally used alongside [Uno.UITest](https://github.com/unoplatform/Uno.UITest) to create UI Tests, and is particularly useful to select items using databound identifiers.
 
+## Windows.UI.ViewManagement.AccessibilitySettings
+
+Some external libraries or UI toolkits may depend on the `AccessibilitySettings` class to check for high contrast settings. As Uno Platform targets cannot check for this via accessible APIs, the properties only return predefined defaults, unless you override them manually via `WinRTFeatureConfiguration.Accessibility`:
+
+```
+var accessibilitySettings = new AccessibilitySettings();
+accessibilitySettings.HighContrast; // default - false
+accessibilitySettings.HighContrastScheme; // default - High Contrast Black
+
+// Override the defaults
+WinRTFeatureConfiguration.Accessibility.HighContrast = true;
+WinRTFeatureConfiguration.Accessibility.HighContrastScheme = "High Contrast White";
+
+accessibilitySettings.HighContrast; // true
+accessibilitySettings.HighContrastScheme; // High Contrast White
+```
+
+When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is changed, the `AccessibilitySettings.HighContrastChanged` event is raised.
+
 ## Known issues
 
 - `Hyperlink` in `TextBlock` is not supported.

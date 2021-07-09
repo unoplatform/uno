@@ -28,7 +28,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 
 		private void ChangeTestFrameVisibility(Visibility visibility)
 		{
-			//TODO: MZ: Do we need this?
+			//TODO Uno: Add support for TestFrame in MUX test pages
 			//var testFrame = Window.Current.Content as TestFrame;
 			//testFrame.ChangeBarVisibility(visibility);
 		}

@@ -1,4 +1,4 @@
-﻿// MUX reference InfoBar.cpp, commit 3125489
+﻿// MUX reference InfoBar.cpp, commit 1f7779d
 
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
@@ -14,6 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class InfoBar : Control
 	{
 		private const string c_closeButtonName = "CloseButton";
+		private const string c_iconTextBlockName = "StandardIcon";
 		private const string c_contentRootName = "ContentRoot";
 
 		private readonly long _foregroundChangedCallbackRegistration;
@@ -21,6 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_applyTemplateCalled = false;
 		private bool m_notifyOpen = false;
 		private bool m_isVisible = false;
+		private FrameworkElement m_standardIconTextBlock = null;
 		private InfoBarCloseReason m_lastCloseReason = InfoBarCloseReason.Programmatic;
 
 		public InfoBar()
@@ -60,6 +62,13 @@ namespace Microsoft.UI.Xaml.Controls
 				var closeButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_InfoBarCloseButtonTooltip);
 				tooltip.Content = closeButtonTooltipText;
 				ToolTipService.SetToolTip(closeButton, tooltip);
+			}
+
+			var iconTextblock = GetTemplateChild<FrameworkElement>(c_iconTextBlockName);
+			if (iconTextblock != null)
+			{
+				m_standardIconTextBlock = iconTextblock;
+				AutomationProperties.SetName(iconTextblock, ResourceAccessor.GetLocalizedStringResource(GetIconSeverityLevelResourceName(Severity)));
 			}
 
 			var contentRootGrid = GetTemplateChild<Button>(c_contentRootName);
@@ -166,6 +175,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							var notificationString = StringUtil.FormatString(
 								ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_InfoBarOpenedNotification),
+								ResourceAccessor.GetLocalizedStringResource(GetIconSeverityLevelResourceName(Severity)),
 								Title,
 								Message);
 
@@ -199,10 +209,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 			switch (Severity)
 			{
-				case InfoBarSeverity.Success: severityState = "Success"; break;
-				case InfoBarSeverity.Warning: severityState = "Warning"; break;
-				case InfoBarSeverity.Error: severityState = "Error"; break;
+				case InfoBarSeverity.Success:
+					severityState = "Success";
+					break;
+				case InfoBarSeverity.Warning:
+					severityState = "Warning";
+					break;
+				case InfoBarSeverity.Error:
+					severityState = "Error";
+					break;
 			};
+
+			if (m_standardIconTextBlock is FrameworkElement iconTextblock)
+			{
+				AutomationProperties.SetName(iconTextblock, ResourceAccessor.GetLocalizedStringResource(GetIconSeverityLevelResourceName(Severity)));
+			}
 
 			VisualStateManager.GoToState(this, severityState, false);
 		}
@@ -241,6 +262,28 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// If Foreground is set, then change Title and Message Foreground to match.
 			VisualStateManager.GoToState(this, ReadLocalValue(Control.ForegroundProperty) == DependencyProperty.UnsetValue ? "ForegroundNotSet" : "ForegroundSet", false);
+		}
+
+		string GetSeverityLevelResourceName(InfoBarSeverity severity)
+		{
+			switch (severity)
+			{
+				case InfoBarSeverity.Success: return "InfoBarSeveritySuccessName";
+				case InfoBarSeverity.Warning: return "InfoBarSeverityWarningName";
+				case InfoBarSeverity.Error: return "InfoBarSeverityErrorName";
+			};
+			return "InfoBarSeverityInformationalName";
+		}
+
+		string GetIconSeverityLevelResourceName(InfoBarSeverity severity)
+		{
+			switch (severity)
+			{
+				case InfoBarSeverity.Success: return "InfoBarIconSeveritySuccessName";
+				case InfoBarSeverity.Warning: return "InfoBarIconSeverityWarningName";
+				case InfoBarSeverity.Error: return "InfoBarIconSeverityErrorName";
+			};
+			return "InfoBarIconSeverityInformationalName";
 		}
 	}
 }

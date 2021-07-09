@@ -136,5 +136,7 @@ namespace Windows.UI.Xaml.Controls
 					return uniformToFillScale;
 			}
 		}
+
+		internal override bool CanHaveChildren() => true;
 	}
 }

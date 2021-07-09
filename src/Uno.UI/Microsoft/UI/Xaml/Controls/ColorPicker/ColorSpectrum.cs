@@ -213,6 +213,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			ColorPickerHsvChannel incrementChannel = ColorPickerHsvChannel.Hue;
 
+			bool isSaturationValue = false;
+
 			if (args.Key == VirtualKey.Left ||
 				args.Key == VirtualKey.Right)
 			{
@@ -223,8 +225,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						incrementChannel = ColorPickerHsvChannel.Hue;
 						break;
 
-					case ColorSpectrumComponents.SaturationHue:
 					case ColorSpectrumComponents.SaturationValue:
+						isSaturationValue = true;
+						goto case ColorSpectrumComponents.SaturationHue; // fallthrough is explicitly wanted
+					case ColorSpectrumComponents.SaturationHue:
 						incrementChannel = ColorPickerHsvChannel.Saturation;
 						break;
 
@@ -249,8 +253,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						incrementChannel = ColorPickerHsvChannel.Saturation;
 						break;
 
-					case ColorSpectrumComponents.HueValue:
 					case ColorSpectrumComponents.SaturationValue:
+						isSaturationValue = true;
+						goto case ColorSpectrumComponents.HueValue; // fallthrough is explicitly wanted
+					case ColorSpectrumComponents.HueValue:
 						incrementChannel = ColorPickerHsvChannel.Value;
 						break;
 				}
@@ -285,6 +291,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				(incrementChannel != ColorPickerHsvChannel.Hue && (args.Key == VirtualKey.Right || args.Key == VirtualKey.Down)) ?
 				ColorHelpers.IncrementDirection.Lower :
 				ColorHelpers.IncrementDirection.Higher;
+
+			// Image is flipped in RightToLeft, so we need to invert direction in that case.
+			// The combination saturation and value is also flipped, so we need to invert in that case too.
+			// If both are false, we don't need to invert.
+			// If both are true, we would invert twice, so not invert at all.
+			if ((FlowDirection == FlowDirection.RightToLeft) != isSaturationValue &&
+				(args.Key == VirtualKey.Left || args.Key == VirtualKey.Right))
+			{
+				if (direction == ColorHelpers.IncrementDirection.Higher)
+				{
+					direction = ColorHelpers.IncrementDirection.Lower;
+				}
+				else
+				{
+					direction = ColorHelpers.IncrementDirection.Higher;
+				}
+			}
 
 			ColorHelpers.IncrementAmount amount = isControlDown ? ColorHelpers.IncrementAmount.Large : ColorHelpers.IncrementAmount.Small;
 
@@ -801,7 +824,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// we inverted the direction of that axis in order to put more hue on the outside of the ring,
 				// so we need to do similarly here when positioning the ellipse.
 				if (m_componentsFromLastBitmapCreation == ColorSpectrumComponents.HueSaturation ||
-					m_componentsFromLastBitmapCreation == ColorSpectrumComponents.ValueHue)
+					m_componentsFromLastBitmapCreation == ColorSpectrumComponents.SaturationHue)
 				{
 					sThetaValue = 360 - sThetaValue;
 					sRValue = -sRValue - 1;

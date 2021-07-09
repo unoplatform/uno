@@ -98,6 +98,7 @@ namespace Windows.Storage.Pickers
 				// The mime type is chosen by the extension, and we cannot reliably send multiple mime type in the browser
 				var fileName = SuggestedFileName + extension;
 				SuggestedSaveFile = await temporaryFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+				SuggestedSaveFile.ProviderOverride = StorageProviders.WasmDownloadPicker;
 			}
 			return SuggestedSaveFile;
 		}

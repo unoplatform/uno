@@ -5,7 +5,7 @@ using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class ManipulationStartedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public partial class ManipulationStartedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly GestureRecognizer _recognizer;
 

@@ -517,14 +517,14 @@ namespace Uno.UWPSyncGenerator
 				var isDefinedInClass = ownerType.GetMembers().OfType<IMethodSymbol>().Any(m =>
 						m.Name == method.Name
 						&& m.DeclaredAccessibility == Accessibility.Public
-						&& m.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString()))
-						&& m.ReturnType.ToString() == method.ReturnType.ToString()
+						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
+						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
 					);
 
 				var isAlreadyGenerated = writtenSymbols.OfType<IMethodSymbol>().Any(m => m.Name == method.Name
 						&& m.DeclaredAccessibility == Accessibility.Public
-						&& m.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString()))
-						&& m.ReturnType.ToDisplayString() == method.ReturnType.ToDisplayString()
+						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
+						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
 					);
 
 				if (
@@ -1538,10 +1538,10 @@ namespace Uno.UWPSyncGenerator
 					{
 						var sourceParams = sourceMethod
 							.Parameters
-							.Select(p => p.Type.ToDisplayString());
+							.Select(p => p.Type.ToDisplayString(NullableFlowState.None));
 						var targetParams = m
 								.Parameters
-								.Select(p => p.Type.ToDisplayString());
+								.Select(p => p.Type.ToDisplayString(NullableFlowState.None));
 						return sourceParams.SequenceEqual(targetParams);
 					}
 					);

@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 					spParentCalendarView.OnSelectMonthYearItem(this, FocusState.Pointer);
 					pArgs.Handled = true;
 
-					ElementSoundPlayerService soundPlayerService = DXamlCore.GetCurrent().GetElementSoundPlayerServiceNoRef();
+					var soundPlayerService = DXamlCore.Current.GetElementSoundPlayerServiceNoRef();
 					soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 				}
 			}
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 						// we still want to show a keyboard focus border before that happens (in case later we have an animation to change the display mode).
 						SetIsKeyboardFocused(true);
 
-						ElementSoundPlayerService soundPlayerService = DXamlCore.GetCurrent().GetElementSoundPlayerServiceNoRef();
+						var soundPlayerService = DXamlCore.Current.GetElementSoundPlayerServiceNoRef();
 						soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 					}
 					else
