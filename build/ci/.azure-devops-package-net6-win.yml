@@ -33,7 +33,7 @@ jobs:
     DotNetVersion: 6.0.100-preview.4.21255.9
     MauiCheck.Version: 0.4.2
     DotNet.Cli.Telemetry.OptOut: true
-    MauiCheck.Manifest: https://raw.githubusercontent.com/Redth/dotnet-maui-check/main/manifests/maui-dev.manifest.json
+    MauiCheck.Manifest: https://raw.githubusercontent.com/Redth/dotnet-maui-check/d40ada53aa6a3b94740c86ca55fc27e62bb63d1b/manifests/maui-dev.manifest.json
 
   steps:
   - checkout: self
