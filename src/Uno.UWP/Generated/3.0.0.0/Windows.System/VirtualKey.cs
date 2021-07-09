@@ -23,16 +23,12 @@ namespace Windows.System
 		// Skipping already declared field Windows.System.VirtualKey.CapitalLock
 		// Skipping already declared field Windows.System.VirtualKey.Kana
 		// Skipping already declared field Windows.System.VirtualKey.Hangul
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ImeOn = 22,
-		#endif
+		// Skipping already declared field Windows.System.VirtualKey.ImeOn
 		// Skipping already declared field Windows.System.VirtualKey.Junja
 		// Skipping already declared field Windows.System.VirtualKey.Final
 		// Skipping already declared field Windows.System.VirtualKey.Hanja
 		// Skipping already declared field Windows.System.VirtualKey.Kanji
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ImeOff = 26,
-		#endif
+		// Skipping already declared field Windows.System.VirtualKey.ImeOff
 		// Skipping already declared field Windows.System.VirtualKey.Escape
 		// Skipping already declared field Windows.System.VirtualKey.Convert
 		// Skipping already declared field Windows.System.VirtualKey.NonConvert

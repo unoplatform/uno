@@ -4480,7 +4480,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var fontWeights = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.FontWeights);
 
-			if (fontWeights.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
+			if (fontWeights.GetProperties().Any(p => p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
 			{
 				return "FontWeights." + memberValue;
 			}
@@ -4553,9 +4553,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string BuildColor(string memberValue)
 		{
 			var colorsSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
-			if (colorsSymbol.FindField(_colorSymbol, memberValue, StringComparison.OrdinalIgnoreCase) is IFieldSymbol field)
+
+			if (colorsSymbol.GetProperties().FirstOrDefault(p =>
+				SymbolEqualityComparer.Default.Equals(p.Type, _colorSymbol) &&
+					p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)) is IPropertySymbol property)
 			{
-				return $"{GlobalPrefix}{XamlConstants.Types.Colors}.{field.Name}";
+				return $"{GlobalPrefix}{XamlConstants.Types.Colors}.{property.Name}";
 			}
 			else
 			{
