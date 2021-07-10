@@ -1,4 +1,4 @@
-﻿#if !NET6_0
+﻿#if !NET6_0 // Revalidate when https://github.com/unoplatform/uno/issues/5873 gets updated
 using System;
 using System.Threading;
 using Android.Animation;
