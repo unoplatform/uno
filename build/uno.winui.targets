@@ -228,11 +228,16 @@
   <Target Name="ValidateUnoUIAndroid" BeforeTargets="Build" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
 
 	<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'&gt;='6.0'">
+	  <_NETCoreAppMaximumVersion>$(NETCoreAppMaximumVersion)</_NETCoreAppMaximumVersion>
+	  <_NETCoreAppMaximumVersion Condition="'$(NETCoreAppMaximumVersion)'==''">0.0</_NETCoreAppMaximumVersion>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(_NETCoreAppMaximumVersion)'&gt;='6.0'">
 	  <UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
 	  <_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'==''">
+	<PropertyGroup Condition="'$(_NETCoreAppMaximumVersion)'==''">
 	  <UnoUIMinAndroidSDKVersion>10.0</UnoUIMinAndroidSDKVersion>
 	  <_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
 	</PropertyGroup>
