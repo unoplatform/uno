@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 				return; // ToolTips are disabled
 			}
 
-			if (!(dependencyobject is FrameworkElement element))
+			if (!(dependencyobject is FrameworkElement owner))
 			{
 				return;
 			}
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (e.NewValue is ToolTip newToolTip)
 			{
-				var previousToolTip = GetToolTipReference(element);
+				var previousToolTip = GetToolTipReference(owner);
 
 				// dispose the previous tooltip
 				if (previousToolTip != null && newToolTip != previousToolTip)
@@ -82,35 +82,41 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				var previousTooltip = GetToolTipReference(element);
-				if (previousTooltip != null)
+				var previousToolTip = GetToolTipReference(owner);
+				if (e.OldValue is ToolTip oldPrevious && oldPrevious == previousToolTip)
+				{
+					// dispose and setup a new tooltip
+					// to avoid corrupting previous tooltip's content with new value
+					DisposePreviousToolTip(previousToolTip);
+					SetupToolTip(new ToolTip { Content = e.NewValue });
+				}
+				else if (previousToolTip != null)
 				{
 					// update the old tooltip with new content
-					previousTooltip.Content = e.NewValue;
+					previousToolTip.Content = e.NewValue;
 				}
 				else
 				{
 					// setup a new tooltip
-					previousTooltip = new ToolTip { Content = e.NewValue };
-					SetupToolTip(previousTooltip);
+					SetupToolTip(new ToolTip { Content = e.NewValue });
 				}
 			}
 
-			void SetupToolTip(ToolTip tooltip)
+			void SetupToolTip(ToolTip toolTip)
 			{
-				tooltip.Placement = GetPlacement(tooltip);
-				tooltip.SetAnchor(GetPlacementTarget(element) ?? element);
+				toolTip.Placement = GetPlacement(toolTip);
+				toolTip.SetAnchor(GetPlacementTarget(owner) ?? owner);
 
-				SetToolTipReference(element, tooltip);
-				tooltip._pointerEventSubscriptions = SubscribeToEvents(element, tooltip);
+				SetToolTipReference(owner, toolTip);
+				toolTip.OwnerEventSubscriptions = SubscribeToEvents(owner, toolTip);
 			}
-			void DisposePreviousToolTip(ToolTip tooltip = null)
+			void DisposePreviousToolTip(ToolTip toolTip = null)
 			{
-				tooltip ??= GetToolTipReference(element);
+				toolTip ??= GetToolTipReference(owner);
 
-				SetToolTipReference(element, null);
-				tooltip._pointerEventSubscriptions?.Dispose();
-				tooltip._pointerEventSubscriptions = null;
+				toolTip.OwnerEventSubscriptions?.Dispose();
+				toolTip.OwnerEventSubscriptions = null;
+				SetToolTipReference(owner, null);
 			}
 		}
 
@@ -127,60 +133,93 @@ namespace Windows.UI.Xaml.Controls
 			// event subscriptions
 			if (control.IsLoaded)
 			{
-				SubscribeToPointerEvents(control, null);
+				OnOwnerLoaded(control, null);
 			}
-			control.Loaded += SubscribeToPointerEvents;
-			control.Unloaded += UnsubscribeToPointerEvents;
-
-			void SubscribeToPointerEvents(object sender, RoutedEventArgs e)
-			{
-				control.PointerEntered += OnPointerEntered;
-				control.PointerExited += OnPointerExited;
-			}
-			void UnsubscribeToPointerEvents(object sender, RoutedEventArgs e)
-			{
-				control.PointerEntered -= OnPointerEntered;
-				control.PointerExited -= OnPointerExited;
-			}
+			control.Loaded += OnOwnerLoaded;
+			control.Unloaded += OnOwnerUnloaded;
 
 			return Disposable.Create(() =>
 			{
-				control.Loaded -= SubscribeToPointerEvents;
-				control.Unloaded -= UnsubscribeToPointerEvents;
-				UnsubscribeToPointerEvents(control, null);
+				control.Loaded -= OnOwnerLoaded;
+				control.Unloaded -= OnOwnerUnloaded;
+				OnOwnerUnloaded(control, null);
 
 				tooltip.IsOpen = false;
 				tooltip.CurrentHoverId++;
 			});
+		}
 
-			// pointer event handlers
-			async void OnPointerEntered(object snd, PointerRoutedEventArgs evt)
+		private static void OnOwnerVisibilityChanged(DependencyObject sender, DependencyProperty dp)
+		{
+			if (sender is FrameworkElement owner && owner.Visibility != Visibility.Visible)
 			{
-				await HoverTask(++tooltip.CurrentHoverId).ConfigureAwait(false);
-			}
-			void OnPointerExited(object snd, PointerRoutedEventArgs evt)
-			{
-				tooltip.CurrentHoverId++;
-				tooltip.IsOpen = false;
-			}
-			async Task HoverTask(long hoverId)
-			{
-				await Task.Delay(FeatureConfiguration.ToolTip.ShowDelay).ConfigureAwait(false);
-				if (tooltip.CurrentHoverId != hoverId)
+				if (GetToolTipReference(owner) is { } toolTip)
 				{
-					return;
+					toolTip.IsOpen = false;
+					toolTip.CurrentHoverId++;
 				}
+			}
+		}
 
-				if (control.IsLoaded)
+		private static void OnOwnerLoaded(object sender, RoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				owner.PointerEntered += OnPointerEntered;
+				owner.PointerExited += OnPointerExited;
+				var token = owner.RegisterPropertyChangedCallback(UIElement.VisibilityProperty, OnOwnerVisibilityChanged);
+				toolTip.OwnerVisibilitySubscription = Disposable.Create(() =>
 				{
-					tooltip.IsOpen = true;
+					owner.UnregisterPropertyChangedCallback(UIElement.VisibilityProperty, token);
+				});
+			}
+		}
 
-					await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration).ConfigureAwait(false);
-					if (tooltip.CurrentHoverId == hoverId)
+		private static void OnOwnerUnloaded(object sender, RoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				toolTip.IsOpen = false;
+				owner.PointerEntered -= OnPointerEntered;
+				owner.PointerExited -= OnPointerExited;
+				toolTip.OwnerVisibilitySubscription?.Dispose();
+				toolTip.OwnerVisibilitySubscription = null;
+			}
+		}
+
+		private static void OnPointerEntered(object sender, PointerRoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				_ = HoverTask(++toolTip.CurrentHoverId);
+				async Task HoverTask(long hoverId)
+				{
+					await Task.Delay(FeatureConfiguration.ToolTip.ShowDelay);
+					if (toolTip.CurrentHoverId != hoverId)
 					{
-						tooltip.IsOpen = false;
+						return;
+					}
+
+					if (owner.IsLoaded)
+					{
+						toolTip.IsOpen = true;
+
+						await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
+						if (toolTip.CurrentHoverId == hoverId)
+						{
+							toolTip.IsOpen = false;
+						}
 					}
 				}
+			}
+		}
+
+		private static void OnPointerExited(object sender, PointerRoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				toolTip.IsOpen = false;
+				toolTip.CurrentHoverId++;
 			}
 		}
 	}
