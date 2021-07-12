@@ -225,15 +225,21 @@
              ContinueOnError="true" />
 	</Target>
 
-	<Target Name="ValidateUnoUIAndroid" BeforeTargets="Build" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
-	  <PropertyGroup>
-		<UnoUIMinAndroidSDKVersion>10.0</UnoUIMinAndroidSDKVersion>
-		<_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
-	  </PropertyGroup>
+  <Target Name="ValidateUnoUIAndroid" BeforeTargets="Build" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
 
-	  <Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno.UI. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
-				   Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
-	</Target>
+	<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
+	  <UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
+	  <_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(TargetFramework.ToLowerInvariant().StartsWith('monoandroid')) or '$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
+	  <UnoUIMinAndroidSDKVersion>10.0</UnoUIMinAndroidSDKVersion>
+	  <_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
+	</PropertyGroup>
+
+	<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno.UI. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
+				 Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
+  </Target>
 
   <Import Project="uno.winui.cross-runtime.targets" />
 

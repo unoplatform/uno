@@ -20,7 +20,7 @@ namespace Windows.Web.Http
 		/// <param name="domain">The domain for which the HttpCookie is valid.</param>
 		/// <param name="path">The URIs to which the HttpCookie applies.</param>
 		/// <remarks>
-		/// For parameter value limitations <see cref="https://docs.microsoft.com/en-us/uwp/api/windows.web.http.httpcookie.-ctor?view=winrt-19041#remarks">UWP docs.</see>
+		/// For parameter value limitations https://docs.microsoft.com/en-us/uwp/api/windows.web.http.httpcookie.-ctor?view=winrt-19041#remarks UWP docs.
 		/// </remarks>
 		public HttpCookie(string name, string domain, string path)
 		{

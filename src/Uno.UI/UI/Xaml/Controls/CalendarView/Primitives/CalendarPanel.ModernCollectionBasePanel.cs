@@ -329,7 +329,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private class CacheEntryComparer : IComparer<CacheEntry>
 		{
 			public static CacheEntryComparer Instance { get; } = new CacheEntryComparer();
-			public int Compare(CacheEntry x, CacheEntry y) => x.Index.CompareTo(y.Index);
+			public int Compare(CacheEntry? x, CacheEntry? y) => x != null && y != null ? x.Index.CompareTo(y.Index) : -1;
 		}
 
 		private enum CacheEntryKind

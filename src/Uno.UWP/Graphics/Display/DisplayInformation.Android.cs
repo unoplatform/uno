@@ -43,7 +43,7 @@ namespace Windows.Graphics.Display
 
 		
 		/// <summary>
-		//// Gets the native orientation of the display monitor, 
+		/// Gets the native orientation of the display monitor, 
 		///  which is typically the orientation where the buttons
 		///  on the device match the orientation of the monitor.
 		/// </summary>
@@ -167,10 +167,9 @@ namespace Windows.Graphics.Display
 		/// <summary>
 		/// Sets the NativeOrientation property
 		/// </summary>
-		/// <param name="windowManager">Window manager</param>
 		/// <remarks>
 		/// Based on responses in
-		/// <see cref="https://stackoverflow.com/questions/4553650/how-to-check-device-natural-default-orientation-on-android-i-e-get-landscape">this SO question</see>
+		/// https://stackoverflow.com/questions/4553650/how-to-check-device-natural-default-orientation-on-android-i-e-get-landscape this SO question
 		/// </remarks>
 		private DisplayOrientations GetNativeOrientation()
 		{
@@ -201,10 +200,9 @@ namespace Windows.Graphics.Display
 		/// <summary>
 		/// Sets the CurrentOrientation property
 		/// </summary>
-		/// <param name="windowManager">Window manager</param>
 		/// <remarks>
 		/// Again quite complicated to do on Android, based on accepted solution at
-		/// <see cref="https://stackoverflow.com/questions/10380989/how-do-i-get-the-current-orientation-activityinfo-screen-orientation-of-an-a">this SO question</see>
+		/// https://stackoverflow.com/questions/10380989/how-do-i-get-the-current-orientation-activityinfo-screen-orientation-of-an-a this SO question
 		/// </remarks>
 		private DisplayOrientations GetCurrentOrientation()
 		{

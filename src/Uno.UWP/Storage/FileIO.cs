@@ -44,7 +44,7 @@ namespace Windows.Storage
 		/// </summary>
 		/// <param name="file">The file to read.</param>
 		/// <returns>When this method completes successfully, it returns the contents of the file as a list
-		/// (type <see cref="IList{string}" />) of lines of text. Each line of text in the list is represented
+		/// (type <see cref="IList{T}" />) of lines of text. Each line of text in the list is represented
 		/// by a <see cref="string"/> object.</returns>
 		public static IAsyncOperation<IList<string>> ReadLinesAsync(IStorageFile file) =>
 			AsyncOperation.FromTask(cancellationToken => ReadLinesTaskAsync(file, cancellationToken));
@@ -55,7 +55,7 @@ namespace Windows.Storage
 		/// <param name="file">The file to read.</param>
 		/// <param name="encoding">The character encoding to use.</param>
 		/// <returns>When this method completes successfully, it returns the contents of the file as a list
-		/// (type <see cref="IList{string}" />) of lines of text. Each line of text in the list is represented
+		/// (type <see cref="IList{T}" />) of lines of text. Each line of text in the list is represented
 		/// by a <see cref="string"/> object.</returns>
 		public static IAsyncOperation<IList<string>> ReadLinesAsync(IStorageFile file, UwpUnicodeEncoding encoding) =>
 			AsyncOperation.FromTask(cancellationToken => ReadLinesTaskAsync(file, cancellationToken, encoding));

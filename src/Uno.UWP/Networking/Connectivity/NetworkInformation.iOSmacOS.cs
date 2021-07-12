@@ -5,6 +5,8 @@ using CoreTelephony;
 #endif
 using Uno.Networking.Connectivity.Internal;
 
+#pragma warning disable BI1234 // 'CTCellularDataRestrictedState' is obsolete: 'Starting with ios14.0 Use the 'CallKit' API instead.'
+
 namespace Windows.Networking.Connectivity
 {
 	public partial class NetworkInformation

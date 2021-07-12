@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { ((Func<View>)template).Method.DeclaringType.ToString() });
+					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { ((Func<View>)template).Method.DeclaringType?.ToString() });
 				}
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml
 
 		private List<TemplateEntry> GetTemplatePool(FrameworkTemplate template)
 		{
-			List<TemplateEntry> instances;
+			List<TemplateEntry>? instances;
 
 			if (!_pooledInstances.TryGetValue(template, out instances))
 			{

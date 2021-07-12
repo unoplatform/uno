@@ -60,6 +60,7 @@ namespace Windows.UI.Xaml.Controls
 			return 1;
 		}
 
+#if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void DraggingEnded(UIScrollView scrollView, bool willDecelerate)
 		{
 			try
@@ -84,6 +85,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateCurrentPage(scrollView);
 		}
+#endif
 
 		private void UpdateCurrentPage(UIScrollView scrollView)
 		{

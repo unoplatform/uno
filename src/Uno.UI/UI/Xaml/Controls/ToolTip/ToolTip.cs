@@ -691,7 +691,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void OnPopupOpened(
-				object pUnused1,
+				object? pUnused1,
 				object pUnused2)
 		{
 			//OnOpened();

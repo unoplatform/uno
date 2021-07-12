@@ -180,12 +180,12 @@ namespace Windows.UI.Xaml.Controls
 			IsDropDownOpen = false;
 		}
 
-		private void OnPopupOpened(object sender, object e)
+		private void OnPopupOpened(object? sender, object e)
 		{
 			IsDropDownOpen = true;
 		}
 
-		private void OnPopupClosed(object sender, object e)
+		private void OnPopupClosed(object? sender, object e)
 		{
 			IsDropDownOpen = false;
 		}

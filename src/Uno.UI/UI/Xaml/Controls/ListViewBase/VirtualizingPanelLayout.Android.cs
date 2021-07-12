@@ -244,7 +244,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Apply a requested ScrollToPosition during layouting by calling <see cref="ScrollByInner(int, RecyclerView.Recycler, RecyclerView.State)>"/>
+		/// Apply a requested ScrollToPosition during layouting by calling <see cref="ScrollByInner(int, RecyclerView.Recycler, RecyclerView.State)"/>
 		/// until the requested item is visible.
 		/// </summary>
 		private void ApplyScrollToPosition(int targetPosition, ScrollIntoViewAlignment alignment, RecyclerView.Recycler recycler, RecyclerView.State state)

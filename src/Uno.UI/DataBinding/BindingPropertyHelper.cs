@@ -127,7 +127,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, precedence, allowPrivateMembers);
 
-			ValueGetterHandler result;
+			ValueGetterHandler? result;
 
 			lock (_getValueGetter)
 			{
@@ -149,7 +149,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, convert, precedence);
 
-			ValueSetterHandler result;
+			ValueSetterHandler? result;
 
 			lock (_getValueSetter)
 			{
@@ -166,7 +166,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, precedence);
 
-			ValueGetterHandler result;
+			ValueGetterHandler? result;
 
 			lock (_getPrecedenceSpecificValueGetter)
 			{
@@ -183,7 +183,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, precedence);
 
-			ValueGetterHandler result;
+			ValueGetterHandler? result;
 
 			lock (_getSubstituteValueGetter)
 			{
@@ -205,7 +205,7 @@ namespace Uno.UI.DataBinding
 		{
 			var key = CachedTuple.Create(type, property, precedence);
 
-			ValueUnsetterHandler result;
+			ValueUnsetterHandler? result;
 
 			lock (_getValueUnsetter)
 			{
@@ -369,7 +369,7 @@ namespace Uno.UI.DataBinding
 					return info;
 				}
 
-				type = type.BaseType;
+				type = type.BaseType!;
 			}
 			while (type != null);
 
@@ -394,7 +394,7 @@ namespace Uno.UI.DataBinding
 					return info;
 				}
 
-				type = type.BaseType;
+				type = type.BaseType!;
 			}
 			while (type != null);
 
@@ -1036,7 +1036,7 @@ namespace Uno.UI.DataBinding
 			return null;
 		}
 
-		private static MethodInfo GetAttachedPropertyGetter(Type type, string property)
+		private static MethodInfo? GetAttachedPropertyGetter(Type type, string property)
 		{
 			var propertyInfo = DependencyPropertyDescriptor.Parse(property);
 

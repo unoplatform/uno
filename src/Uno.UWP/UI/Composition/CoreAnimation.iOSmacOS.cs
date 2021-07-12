@@ -212,7 +212,7 @@ namespace Windows.UI.Composition
 
 			return handler;
 
-			void Handler(object sender, EventArgs _)
+			void Handler(object? sender, EventArgs _)
 			{
 				// Note: The sender is usually not the same managed instance of the started animation
 				//		 (even the sender.Handle is not the same). So we cannot rely on it to determine
@@ -247,7 +247,7 @@ namespace Windows.UI.Composition
 
 			return handler;
 
-			void Handler(object sender, CAAnimationStateEventArgs args)
+			void Handler(object? sender, CAAnimationStateEventArgs args)
 			{
 				// Note: The sender is usually not the same managed instance of the started animation
 				//		 (even the sender.Handle is not the same). So we cannot rely on it to determine

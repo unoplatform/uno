@@ -41,7 +41,15 @@ variables:
   XamarinSDKVersion_iOS_UITests: 6_10_0
 
 jobs:
-- template: build/ci/.azure-devops-windows.yml
+- template: build/ci/.azure-devops-package-generic.yml
+  parameters:
+    poolName: '$(windowsScaledPool)'
+
+- template: build/ci/.azure-devops-package-net6-win.yml
+  parameters:
+    poolName: '$(windowsScaledPool)'
+
+- template: build/ci/.azure-devops-package.yml
   parameters:
     poolName: '$(windowsScaledPool)'
 

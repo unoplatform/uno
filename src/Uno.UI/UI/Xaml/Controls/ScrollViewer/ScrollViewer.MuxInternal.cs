@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 				WeakReferencePool.ReturnWeakReference(this, weakHandler);
 			});
 
-			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+			void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
 			{
 				if (args.IsIntermediate)
 				{

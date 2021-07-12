@@ -355,7 +355,7 @@ namespace Windows.UI.Xaml
 
 		public IEnumerator<object?> GetEnumerator()
 		{
-			return _stack.Cast<object?>().GetEnumerator();
+			return Stack.Cast<object?>().GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

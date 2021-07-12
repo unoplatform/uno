@@ -380,7 +380,7 @@
 
   <Target Name="_UnoUIValidateLongPathSupport"
 		  BeforeTargets="CoreCompile"
-		  Condition="$([MSBuild]::IsOsPlatform(Windows)) and ( ('$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(EmitCompilerGeneratedFiles)'=='true') or '$(MSBuildThisFileDirectory.Length)' &gt; 64)">
+		  Condition="'$(MSBuildRuntimeType)'!='Core' and $([MSBuild]::IsOsPlatform(Windows)) and ( ('$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(EmitCompilerGeneratedFiles)'=='true') or '$(MSBuildThisFileDirectory.Length)' &gt; 64)">
 	<!---
 	Validation for LongPath support (source https://github.com/dotnet/roslyn/blob/c8eecdb9563127988b3cb564a493eae9ef254a88/eng/build.ps1#L607)
 	https://docs.microsoft.com/en-us/archive/blogs/jeremykuhne/net-4-6-2-and-long-paths-on-windows-10#enabling-win32-long-path-support

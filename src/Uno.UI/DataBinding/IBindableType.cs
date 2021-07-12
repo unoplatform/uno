@@ -47,13 +47,13 @@ namespace Uno.UI.DataBinding
 		IBindableProperty? GetProperty(string name);
 
 		/// <summary>
-		/// Returns a function that can be called to get the indexer value. Func<instance, name, value>
+		/// Returns a function that can be called to get the indexer value.
 		/// </summary>
 		/// <returns>A bindable property instance, otherwise null.</returns>
 		StringIndexerGetterDelegate? GetIndexerGetter();
 
 		/// <summary>
-		/// Returns an action that can be called to set the indexer value. Action<instance, name, value>
+		/// Returns an action that can be called to set the indexer value.
 		/// </summary>
 		/// <returns></returns>
 		StringIndexerSetterDelegate? GetIndexerSetter();

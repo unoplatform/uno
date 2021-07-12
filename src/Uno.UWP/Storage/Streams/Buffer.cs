@@ -120,7 +120,7 @@ namespace Windows.Storage.Streams
 		}
 
 		/// <summary>
-		/// Gets a <see cref="ReadOnlyMemory{byte}"/> of the current buffer
+		/// Gets a <see cref="ReadOnlyMemory{T}"/> of the current buffer
 		/// </summary>
 		internal ReadOnlyMemory<byte> AsReadOnlyMemory()
 			=> _data.Slice(0, (int)Length);

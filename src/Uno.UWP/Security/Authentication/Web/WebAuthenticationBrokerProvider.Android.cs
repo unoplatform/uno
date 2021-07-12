@@ -102,7 +102,7 @@ namespace Uno.AuthenticationBroker
 
 			var result = await tcs!.Task;
 
-			if(Interlocked.CompareExchange(ref _completionSource, null, tcs) == tcs)
+			if(Interlocked.CompareExchange(ref _completionSource, null!, tcs) == tcs)
 			{
 				_waitingForCallbackUri = null;
 			}
