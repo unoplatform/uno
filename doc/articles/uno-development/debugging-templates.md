@@ -27,3 +27,9 @@ To make modifications to those templates and test the result:
 - In another temporary folder, create a new application using the updated templates with `dotnet new unoapp -o MyTestUnoApp01`
 
 Ensure that the application runs properly by building it in Visual Studio and running it on all targets.
+
+Once you're done with debugging the templates, you can go back to the official templates with:
+
+```
+dotnet new -i Uno.ProjectTemplates.Dotnet
+```
