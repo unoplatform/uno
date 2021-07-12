@@ -22,25 +22,25 @@
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.2.0.7-net6preview02.4535000" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0.8-net6preview02.4535000" />
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.3.0.1-net6preview02.4535000" />
-		<dependency id="Uno.SourceGenerationTasks" version="3.1.0-dev.4" />
-		<dependency id="Uno.Core" version="2.4.0-dev.2" />
-		<dependency id="Uno.Core.Build" version="2.4.0-dev.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.1.0" />
+		<dependency id="Uno.Core" version="2.4.0" />
+		<dependency id="Uno.Core.Build" version="2.4.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
 	  <!-- net6.0-ios -->
 	  <group targetFramework="net6.0-ios">
-		<dependency id="Uno.SourceGenerationTasks" version="3.1.0-dev.4" />
-		<dependency id="Uno.Core" version="2.4.0-dev.2" />
-		<dependency id="Uno.Core.Build" version="2.4.0-dev.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.1.0" />
+		<dependency id="Uno.Core" version="2.4.0" />
+		<dependency id="Uno.Core.Build" version="2.4.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
 	  <!-- net6.0-maccatalyst -->
 	  <group targetFramework="net6.0-maccatalyst">
-		<dependency id="Uno.SourceGenerationTasks" version="3.1.0-dev.4" />
-		<dependency id="Uno.Core" version="2.4.0-dev.2" />
-		<dependency id="Uno.Core.Build" version="2.4.0-dev.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="3.1.0" />
+		<dependency id="Uno.Core" version="2.4.0" />
+		<dependency id="Uno.Core.Build" version="2.4.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="1.0.4" />
 	  </group>
 
