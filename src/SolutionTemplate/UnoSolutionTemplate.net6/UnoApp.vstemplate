@@ -36,7 +36,6 @@
 		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf.Host" CopyParameters="true">Skia.Wpf.Host\SkiaWpfHost.vstemplate</ProjectTemplateLink>
 		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf" CopyParameters="true">Skia.Wpf\SkiaWpf.vstemplate</ProjectTemplateLink>
 		<ProjectTemplateLink ProjectName="$projectname$.Skia.Gtk" CopyParameters="true">Skia.Gtk\SkiaGtk.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Tizen" CopyParameters="true">Skia.Tizen\SkiaTizen.vstemplate</ProjectTemplateLink>
 	  </SolutionFolder>
 	</ProjectCollection>
   </TemplateContent>

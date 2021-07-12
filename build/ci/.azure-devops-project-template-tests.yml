@@ -28,6 +28,36 @@ jobs:
     displayName: Run Project Templates Tests
     env:
       NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.config
+      BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
+
+- job: Dotnet_Template_Tests_Net6
+  displayName: 'dotnet new net6 Templates Tests'
+
+  pool:
+    vmImage: ${{ parameters.vmImageWindows }}
+
+  dependsOn: Generate_Packages
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: NugetPackages
+
+  - template: templates/gitversion.yml
+
+  - template: templates/dotnet6-install-windows.yml
+
+  - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+    displayName: Copy Artifacts to PackageCache
+
+  - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
+    displayName: Install Project Templates
+
+  - powershell: build\run-net6-template-tests.ps1
+    displayName: Run Project Templates Tests
+    env:
+      NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.net6.config
+      BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
 
 - job: Dotnet_Template_Tests_Linux
   displayName: 'dotnet new Templates Tests - Linux'

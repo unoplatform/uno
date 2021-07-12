@@ -12,7 +12,7 @@ VSIX templates are using the Visual Studio extensibility model, and run with a s
 
 To make modifications to those templates and test the result:
 - In Visual Studio, open the solution using the [Uno.UI-Wasm-hotreload-vsix-only.slnf filters](building-uno-ui.md)
-- Right click on the `UnoSolutionTemplate.VISX` project then debug
+- Right click on the `UnoSolutionTemplate.VSIX.2022` or `UnoSolutionTemplate.VSIX.2019` project then debug
 - A new isolated testing instance of visual studio will open, allowing you to create projects using modified templates
 
 ## dotnet new templates

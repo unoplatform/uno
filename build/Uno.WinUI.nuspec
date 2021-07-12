@@ -401,7 +401,15 @@
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-android30.0" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-catalyst" />
-	
+
+	<file src="uno.winui.single-project.targets" target="buildTransitive\MonoAndroid" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\xamarinios10" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\xamarinmac20" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\netstandard2.0" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-android30.0" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-ios" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-catalyst" />
+
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\MonoAndroid" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinios10" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinmac20" />
