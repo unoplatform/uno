@@ -37,7 +37,7 @@
 		<PackageReference Include="SkiaSharp.Views">
 			<Version>2.80.2</Version>
 		</PackageReference>
-		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.2" />
+		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.3" />
 	</ItemGroup>
 
 	<ItemGroup>
