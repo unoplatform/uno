@@ -1,17 +1,18 @@
-﻿namespace Windows.Networking.Connectivity
+﻿using Uno.Foundation.Extensibility;
+
+namespace Windows.Networking.Connectivity
 {
 	public partial class ConnectionProfile
     {
+		private IConnectionProfileExtension _connectionProfileExtension;
+
 		internal static ConnectionProfile GetInternetConnectionProfile() =>
 			new ConnectionProfile();
 
-		private ConnectionProfile()
-		{
-		}
+		private ConnectionProfile() =>
+			ApiExtensibility.CreateInstance(this, out _connectionProfileExtension);
 
-		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
-		{
-			return NetworkConnectivityLevel.None;
-		}
+		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl() =>
+			_connectionProfileExtension?.GetNetworkConnectivityLevel() ?? NetworkConnectivityLevel.None;
 	}
 }
