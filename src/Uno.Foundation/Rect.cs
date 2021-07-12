@@ -244,9 +244,9 @@ namespace Windows.Foundation
 		public void Union(Rect rect)
 		{
 			var left = Math.Min(Left, rect.Left);
-			var right = Math.Max(left + Width, rect.Right);
+			var right = Math.Max(Left + Width, rect.Right);
 			var top = Math.Min(Top, rect.Top);
-			var bottom = Math.Max(top + Height, rect.Bottom);
+			var bottom = Math.Max(Top + Height, rect.Bottom);
 			this = new Rect(left, top, right - left, bottom - top);
 		}
 

@@ -3726,10 +3726,10 @@
 			<Member
 				fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnIsEnabledChanged(System.Boolean oldValue, System.Boolean newValue)"
 				reason="Internal method which is not part of the UWP API" />
-			
+
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.UIElement.DispatchEvent(System.Int32 handle, System.String eventName, System.String eventArgs)"
-				reason="Public only for marshaling purposes, need to change return value" />			
+				reason="Public only for marshaling purposes, need to change return value" />
 
 		</Methods>
 		<Fields>
@@ -3742,7 +3742,7 @@
 		</Fields>
 		<Properties>
 		</Properties>
-	</IgnoreSet>	
+	</IgnoreSet>
 	<IgnoreSet baseVersion="3.8.11">
 		<Types>
 		</Types>
@@ -3762,7 +3762,7 @@
 				reason="Should not be public" />
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Input.LosingFocusEventArgs..ctor()"
-				reason="Should not be public" />		
+				reason="Should not be public" />
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Input.GettingFocusEventArgs..ctor()"
 				reason="Should not be public" />
@@ -3806,12 +3806,16 @@
 			<Member
 				fullName="System.Void Windows.Storage.CachedFileManager..ctor()"
 				reason="Should not be public" />
+
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Geometry..ctor()"
+				reason="Not part of the UWP API" />
 		</Methods>
 		<Fields>
 		</Fields>
 		<Properties>
 		</Properties>
-	</IgnoreSet>	
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>

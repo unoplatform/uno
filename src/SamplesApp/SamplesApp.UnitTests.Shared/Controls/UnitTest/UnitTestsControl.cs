@@ -508,7 +508,16 @@ namespace Uno.UI.Samples.Tests
 			IDisposable consoleRegistration = default;
 			CustomConsoleOutput testConsoleOutput = default;
 
-			if (consoleOutput.IsChecked ?? false)
+			bool isConsoleOutput = false;
+			bool isRunningIgnored = false;
+
+			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				isConsoleOutput = consoleOutput.IsChecked ?? false;
+				isRunningIgnored = runIgnored.IsChecked ?? false;
+			});
+
+			if (isConsoleOutput)
 			{
 				var previousOutput = Console.Out;
 
@@ -521,7 +530,7 @@ namespace Uno.UI.Samples.Tests
 
 			try
 			{
-				var shouldRunIgnored = runIgnored.IsChecked ?? false;
+				var shouldRunIgnored = isRunningIgnored;
 
 				foreach (var testMethod in tests)
 				{
