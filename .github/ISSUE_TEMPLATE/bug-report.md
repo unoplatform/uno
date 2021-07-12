@@ -24,7 +24,7 @@ Please provide a **MINIMAL REPRO PROJECT** and the **STEPS TO REPRODUCE**
 
 To create a minimal reproduction project:
  - Create an Uno app through:
-   - `dotnet new unoapp --install Uno.ProjectTemplates.Dotnet` and `dotnet new unoapp`
+   - `dotnet new --install Uno.ProjectTemplates.Dotnet` and `dotnet new unoapp`
    - or through the [Visual Studio extension](https://platform.uno/docs/articles/get-started-vs.html)
  - Make sure to add the least code possible to demonstrate the issue
  - Keep all project heads, even if the platforms are seemingly not relevant to your issue
