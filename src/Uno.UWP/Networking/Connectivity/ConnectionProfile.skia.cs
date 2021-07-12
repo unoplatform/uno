@@ -1,4 +1,6 @@
-﻿using Uno.Foundation.Extensibility;
+﻿#nullable enable
+
+using Uno.Foundation.Extensibility;
 
 namespace Windows.Networking.Connectivity
 {

@@ -1,16 +1,20 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Runtime.InteropServices;
 using Windows.Networking.Connectivity;
 
 namespace Uno.Extensions.Networking.Connectivity
 {
-	internal class ConnectionProfileExtension : IConnectionProfileExtension
+	internal class WindowsConnectionProfileExtension : IConnectionProfileExtension
 	{
 		private readonly object _connectionProfile;
-		public ConnectionProfileExtension(object owner)
+		public WindowsConnectionProfileExtension(object owner)
 		{
 			if (!(owner is ConnectionProfile connectionProfile))
-				throw new InvalidOperationException($"Owner of {nameof(ConnectionProfileExtension)} must be a {nameof(ConnectionProfile)}.");
+			{
+				throw new InvalidOperationException($"Owner of {nameof(WindowsConnectionProfileExtension)} must be a {nameof(ConnectionProfile)}.");
+			}
 
 			_connectionProfile = connectionProfile;
 		}
