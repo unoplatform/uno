@@ -152,6 +152,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
+                    <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
                     <ContentPresenter
                         x:Name="ContentPresenter"
                         Background="{TemplateBinding Background}"
@@ -160,6 +161,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         Content="{TemplateBinding Content}"
                         ContentTemplate="{TemplateBinding ContentTemplate}"
+                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                         ContentTransitions="{TemplateBinding ContentTransitions}"
                         contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                         contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"

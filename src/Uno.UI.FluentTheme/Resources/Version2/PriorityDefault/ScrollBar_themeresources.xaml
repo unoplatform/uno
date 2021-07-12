@@ -2,6 +2,7 @@
 <ResourceDictionary
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)">
@@ -222,8 +223,11 @@
         <Setter Property="Foreground" Value="{ThemeResource ScrollBarForeground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource ScrollBarBorderBrush}" />
         <Setter Property="IsTabStop" Value="False" />
-        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ScrollBarCornerRadius}" />
-        <Setter Property="Template">
+        <Setter Property="CornerRadius" Value="{ThemeResource ScrollBarCornerRadius}" />
+        <!-- UNO TODO: Doesn't appear in ScrollViewer because default visual states are incompatible with Uno fixed-orientation optimizations
+             for performance. As of WinUI 2.5, seems visually very similar to previous ScrollBar template anyway. If this is restored, the 
+             modifications made to the base UWP style on performance grounds should also be made here. -->
+        <win:Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollBar">
                     <Grid x:Name="Root">
@@ -802,6 +806,6 @@
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
-        </Setter>
+        </win:Setter>
     </Style>
 </ResourceDictionary>

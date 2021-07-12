@@ -7,6 +7,8 @@
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:local="using:Microsoft.UI.Xaml.Controls"
+    xmlns:uno="using:Uno.UI.Xaml.Controls"
+	xmlns:ios="http://platform.uno/ios"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives">
 
     <Style TargetType="local:TabView" BasedOn="{StaticResource DefaultTabViewStyle}" />
@@ -138,19 +140,20 @@
                         <ScrollViewer x:Name="ScrollViewer"
                             Grid.Column="1"
                             AutomationProperties.AccessibilityView="Raw"
-                            BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                            HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                            IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                            IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-                            IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
-                            IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                            IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+                            BringIntoViewOnFocusChange="True"
+                            HorizontalScrollBarVisibility="Auto"
+                            HorizontalScrollMode="Enabled"
+                            IsDeferredScrollingEnabled="False"
+                            IsHorizontalRailEnabled="False"
+                            IsHorizontalScrollChainingEnabled="False"
+                            IsVerticalRailEnabled="False"
+                            IsVerticalScrollChainingEnabled="False"
                             TabNavigation="{TemplateBinding TabNavigation}"
-                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                            VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                            VerticalScrollBarVisibility="Disabled"
+                            VerticalScrollMode="Disabled"
+                            ZoomMode="Disabled"
                             Style="{StaticResource TabScrollViewerStyle}">
+							<!-- TODO: Uno specific: Original template uses attached property template bindings (issue #4259) -->
 
                             <ItemsPresenter x:Name="TabsItemsPresenter"
                                 Padding="{TemplateBinding Padding}" />
@@ -163,6 +166,9 @@
     </Style>
 
     <Style x:Name="TabScrollViewerStyle" TargetType="ScrollViewer">
+        <!--Uno workaround: ScrollBars are deliberately omitted from the style because they shouldn't appear-->
+		<Setter Property="uno:ScrollViewer.ShouldFallBackToNativeScrollBars"
+				Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">
@@ -275,7 +281,7 @@
     <Style x:Name="TabViewButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource TabViewButtonBackground}"/>
         <Setter Property="Foreground" Value="{ThemeResource TabViewButtonForeground}"/>
-        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
+        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
         <Setter Property="FontSize" Value="{ThemeResource TabViewItemAddButtonFontSize}"/>
         <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
         <Setter Property="Width" Value="{ThemeResource TabViewItemAddButtonWidth}"/>
@@ -343,7 +349,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="MinHeight" Value="{ThemeResource TabViewItemMinHeight}"/>
-        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+        <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
         <Setter Property="BorderThickness" Value="{ThemeResource TabViewItemBorderThickness}" />
         <Setter Property="BorderBrush" Value="{ThemeResource TabViewItemBorderBrush}" />
         <Setter Property="Template">

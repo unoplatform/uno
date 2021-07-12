@@ -56,7 +56,10 @@
             <StaticResource x:Key="TextControlButtonForegroundPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
             <StaticResource x:Key="TextControlButtonForegroundPressed" ResourceKey="TextFillColorTertiaryBrush" />
 
-            <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2">
+            <!-- TODO Uno: Cannot use LinearGradientBrush for border -->
+            <SolidColorBrush x:Key="TextControlElevationBorderBrush" Color="#50FFFFFF" />
+            <SolidColorBrush x:Key="TextControlElevationBorderFocusedBrush" Color="{ThemeResource SystemAccentColorLight2}" />
+            <!-- <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2">
                 <LinearGradientBrush.RelativeTransform>
                     <ScaleTransform ScaleY="-1" CenterY="0.5"/>
                 </LinearGradientBrush.RelativeTransform>
@@ -74,7 +77,7 @@
                     <GradientStop Offset="1.0" Color="{ThemeResource SystemAccentColorLight2}"/>
                     <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}"/>
                 </LinearGradientBrush.GradientStops>
-            </LinearGradientBrush>
+            </LinearGradientBrush> -->
         </ResourceDictionary>
         
         <ResourceDictionary x:Key="HighContrast">
@@ -106,7 +109,10 @@
             <StaticResource x:Key="TextControlForegroundFocused" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="TextControlPlaceholderForegroundFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
 
-            <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2">
+            <!-- TODO Uno: Cannot use LinearGradientBrush for border -->
+            <SolidColorBrush x:Key="TextControlElevationBorderBrush" Color="{StaticResource ControlStrokeColorDefault}" />
+            <SolidColorBrush x:Key="TextControlElevationBorderFocusedBrush" Color="{ThemeResource SystemAccentColorLight2}" />
+            <!--<LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2">
                 <LinearGradientBrush.RelativeTransform>
                     <ScaleTransform ScaleY="-1" CenterY="0.5"/>
                 </LinearGradientBrush.RelativeTransform>
@@ -124,7 +130,7 @@
                     <GradientStop Offset="1.0" Color="{ThemeResource SystemAccentColorLight2}"/>
                     <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}"/>
                 </LinearGradientBrush.GradientStops>
-            </LinearGradientBrush>
+            </LinearGradientBrush>-->
         </ResourceDictionary>
         
         <ResourceDictionary x:Key="Light">
@@ -176,7 +182,10 @@
             <StaticResource x:Key="TextControlButtonForegroundPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
             <StaticResource x:Key="TextControlButtonForegroundPressed" ResourceKey="TextFillColorTertiaryBrush" />
 
-            <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2">
+            <!-- TODO Uno: Cannot use LinearGradientBrush for border -->
+            <SolidColorBrush x:Key="TextControlElevationBorderBrush" Color="#50000000" />
+            <SolidColorBrush x:Key="TextControlElevationBorderFocusedBrush" Color="{ThemeResource SystemAccentColorDark1}" />
+            <!--<LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2">
                 <LinearGradientBrush.RelativeTransform>
                     <ScaleTransform ScaleY="-1" CenterY="0.5"/>
                 </LinearGradientBrush.RelativeTransform>
@@ -194,7 +203,7 @@
                     <GradientStop Offset="1.0" Color="{ThemeResource SystemAccentColorDark1}"/>
                     <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}"/>
                 </LinearGradientBrush.GradientStops>
-            </LinearGradientBrush>
+            </LinearGradientBrush>-->
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -205,6 +214,8 @@
     <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
 
     <Style x:Key="DefaultTextBoxStyle" TargetType="TextBox">
+        <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+        <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
@@ -220,11 +231,12 @@
         <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}" />
         <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
         <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}" />
-        <contract6Present:Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
-        <contract7Present:Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />
-        <contract7Present:Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
-        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
-        <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
+        <Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
+        <!--UNO TODO: TextCommandBarFlyout isn't implemented but ContextFlyout is mapped to long-press on some platforms, causing an undismissable invisible popup to appear-->
+        <!--<Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />-->        
+        <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
+        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+        <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
@@ -320,8 +332,9 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <contract5NotPresent:DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundDisabled}" />
-                                            <contract5Present:DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" />
+                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+                                            <!-- <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" /> -->
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundDisabled}" />                                            
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -336,8 +349,9 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <contract5NotPresent:DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundPointerOver}" />
-                                            <contract5Present:DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" />
+                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+                                            <!-- <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" /> -->
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundPointerOver}" />
@@ -348,8 +362,9 @@
 
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <contract5NotPresent:DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundFocused}" />
-                                            <contract5Present:DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundFocused}}" />
+                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+                                            <!-- <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundFocused}}" /> -->
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundFocused}" />                                            
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />

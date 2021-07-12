@@ -15104,8 +15104,6 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <wasm:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
-  <skia:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
   <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" />
   <Style x:Key="DefaultFlyoutPresenterStyle" TargetType="FlyoutPresenter">
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -18224,6 +18222,8 @@
     </Style.Setters>
   </Style>
   <Style x:Key="NumberBoxTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}">
+    <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+    <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="TextBox">

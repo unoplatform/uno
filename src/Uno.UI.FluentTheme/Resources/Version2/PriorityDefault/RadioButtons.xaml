@@ -25,9 +25,11 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
+                        <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
                         <ContentPresenter x:Name="HeaderContentPresenter"
                             Content="{TemplateBinding Header}"
                             ContentTemplate="{TemplateBinding HeaderTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                             Foreground="{ThemeResource RadioButtonsHeaderForeground}"
                             Margin="{ThemeResource RadioButtonsTopHeaderMargin}"/>
                         <local:ItemsRepeater x:Name="InnerRepeater">

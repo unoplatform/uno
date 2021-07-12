@@ -214,8 +214,9 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Thumb">
+                                            <!-- TODO Uno: WinUI uses Margin -1, which causes clipping for us -->
                                             <Border
-                                                Margin="-1"
+                                                Margin="0"
                                                 Background="{ThemeResource SliderOuterThumbBackground}"
                                                 BorderBrush="{ThemeResource SliderThumbBorderBrush}"
                                                 BorderThickness="{TemplateBinding BorderThickness}"

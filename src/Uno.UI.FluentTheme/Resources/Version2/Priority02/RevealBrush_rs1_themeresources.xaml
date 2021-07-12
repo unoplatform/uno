@@ -646,7 +646,8 @@
         <Setter Property="Width" Value="Auto" />
     </Style>
     <Style TargetType="ListViewItem" x:Key="ListViewItemRevealStyle" />
-    <Style TargetType="GridViewItem" x:Key="GridViewItemRevealStyle" />
+    <!--UNO TODO: ListViewItemPresenter isn't supported https://github.com/unoplatform/uno/issues/1444-->
+    <!-- <Style TargetType="GridViewItem" x:Key="GridViewItemRevealStyle" /> -->
     <Style TargetType="ComboBoxItem" x:Key="ComboBoxItemRevealStyle" />
     <Style TargetType="SemanticZoom" x:Key="SemanticZoomRevealStyle"/>
     <Style TargetType="controls:DropDownButton" x:Key="DropDownButtonRevealStyle"/>

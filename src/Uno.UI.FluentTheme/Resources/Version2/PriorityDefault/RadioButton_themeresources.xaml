@@ -393,7 +393,8 @@
                             <Border x:Name="PressedCheckGlyph" Width="4" Height="4" CornerRadius="6" UseLayoutRounding="False" Opacity="0" Background="{ThemeResource RadioButtonCheckGlyphFill}" contract7Present:BackgroundSizing="OuterBorderEdge" BorderBrush="{ThemeResource RadioButtonCheckGlyphStroke}">
                             </Border>
                         </Grid>
-                        <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Foreground="{TemplateBinding Foreground}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Grid.Column="1" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
+                        <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
+                        <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Foreground="{TemplateBinding Foreground}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Grid.Column="1" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

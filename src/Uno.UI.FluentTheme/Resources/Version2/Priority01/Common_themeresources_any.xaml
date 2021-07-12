@@ -54,6 +54,8 @@
 
             <Color x:Key="ControlStrokeColorDefault">#12FFFFFF</Color>
             <Color x:Key="ControlStrokeColorSecondary">#18FFFFFF</Color>
+            <!-- Uno specific: "Average" of Default and Secondary for border purposes -->
+            <Color x:Key="ControlStrokeColorAverage">#15FFFFFF</Color>
             <Color x:Key="ControlStrokeColorOnAccentDefault">#14FFFFFF</Color>
             <Color x:Key="ControlStrokeColorOnAccentSecondary">#23000000</Color>
             <Color x:Key="ControlStrokeColorOnAccentTertiary">#37000000</Color>
@@ -222,8 +224,13 @@
             <SolidColorBrush x:Key="SystemColorGrayTextColorBrush" Color="#FF00FF" />
 
             <!-- Elevation border brushes-->
+            <!-- TODO Uno: LinearGradientBrush as border is not supported well -->
 
-            <LinearGradientBrush x:Key="ControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3">
+            <SolidColorBrush x:Key="ControlElevationBorderBrush" Color="{StaticResource ControlStrokeColorAverage}" />
+            <SolidColorBrush x:Key="CircleElevationBorderBrush" Color="{StaticResource ControlStrokeColorAverage}" />
+            <SolidColorBrush x:Key="AccentControlElevationBorderBrush" Color="{StaticResource ControlStrokeColorOnAccentDefault}" />
+
+            <!-- <LinearGradientBrush x:Key="ControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3">
                 <LinearGradientBrush.GradientStops>
                     <GradientStop Offset="0.33" Color="{StaticResource ControlStrokeColorSecondary}"/>
                     <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}"/>
@@ -245,7 +252,7 @@
                     <GradientStop Offset="0.33" Color="{StaticResource ControlStrokeColorOnAccentSecondary}"/>
                     <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorOnAccentDefault}"/>
                 </LinearGradientBrush.GradientStops>
-            </LinearGradientBrush>
+            </LinearGradientBrush> -->
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Light">
@@ -298,6 +305,8 @@
 
             <Color x:Key="ControlStrokeColorDefault">#0F000000</Color>
             <Color x:Key="ControlStrokeColorSecondary">#29000000</Color>
+            <!-- Uno specific: "Average" of Default and Secondary for border purposes -->
+            <Color x:Key="ControlStrokeColorAverage">#15000000</Color>
             <Color x:Key="ControlStrokeColorOnAccentDefault">#14FFFFFF</Color>
             <Color x:Key="ControlStrokeColorOnAccentSecondary">#66000000</Color>
             <Color x:Key="ControlStrokeColorOnAccentTertiary">#37000000</Color>
@@ -457,6 +466,12 @@
 
             <!-- Elevation border brushes-->
 
+            <!-- TODO Uno: LinearGradientBrush as border is not supported well -->
+            <SolidColorBrush x:Key="ControlElevationBorderBrush" Color="{StaticResource ControlStrokeColorAverage}" />
+            <SolidColorBrush x:Key="CircleElevationBorderBrush" Color="{StaticResource ControlStrokeColorAverage}" />
+            <SolidColorBrush x:Key="AccentControlElevationBorderBrush" Color="{StaticResource ControlStrokeColorOnAccentDefault}" />
+            
+            <!-- 
             <LinearGradientBrush x:Key="ControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3">
                 <LinearGradientBrush.RelativeTransform>
                     <ScaleTransform ScaleY="-1" CenterY="0.5"/>
@@ -482,7 +497,7 @@
                     <GradientStop Offset="0.33" Color="{StaticResource ControlStrokeColorOnAccentSecondary}"/>
                     <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorOnAccentDefault}"/>
                 </LinearGradientBrush.GradientStops>
-            </LinearGradientBrush>
+            </LinearGradientBrush> -->
 
             <!-- Duplication from HighContrast colors to match keys, set to magenta to show these should not be used  -->
             <SolidColorBrush x:Key="SystemColorWindowTextColorBrush" Color="#FF00FF" />
@@ -645,6 +660,8 @@
             <Color x:Key="ControlOnImageFillColorDisabled">#FF0000</Color>
             <Color x:Key="ControlStrokeColorDefault">#FF0000</Color>
             <Color x:Key="ControlStrokeColorSecondary">#FF0000</Color>
+            <!-- Uno specific: "Average" of Default and Secondary for border purposes -->
+            <Color x:Key="ControlStrokeColorAverage">#FF0000</Color>
             <Color x:Key="ControlStrokeColorOnAccentDefault">#FF0000</Color>
             <Color x:Key="ControlStrokeColorOnAccentSecondary">#FF0000</Color>
             <Color x:Key="ControlStrokeColorOnAccentTertiary">#FF0000</Color>

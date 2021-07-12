@@ -169,7 +169,9 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}" />
+    <!--UNO TODO: ListViewItemPresenter isn't supported https://github.com/unoplatform/uno/issues/1444-->
+    <!-- <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}" /> -->
+    <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}" />
 
     <Style x:Key="DefaultListViewItemStyle" TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -648,9 +650,11 @@
                             <Grid.RenderTransform>
                                 <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
                             </Grid.RenderTransform>
+                            <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
                             <ContentPresenter x:Name="ContentPresenter"
                                 ContentTransitions="{TemplateBinding ContentTransitions}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                 Content="{TemplateBinding Content}"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"

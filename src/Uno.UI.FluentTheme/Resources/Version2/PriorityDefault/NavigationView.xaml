@@ -196,75 +196,7 @@
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-
-                        <!-- Button grid -->
-                        <Grid
-                            x:Name="PaneToggleButtonGrid"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Canvas.ZIndex="100">
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid x:Name="TogglePaneTopPadding"
-                                  Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPadding}"/>
-
-                            <Grid x:Name="ButtonHolderGrid" Grid.Row="1" Margin="{ThemeResource NavigationViewButtonHolderGridMargin}">
-                                <Button
-                                    x:Name="NavigationViewBackButton"
-                                    Style="{StaticResource NavigationBackButtonNormalStyle}"
-                                    Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.SmallerPaneToggleButtonWidth}"
-                                    VerticalAlignment="Top"
-                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.BackButtonVisibility}"
-                                    IsEnabled="{TemplateBinding IsBackEnabled}">
-                                    <ToolTipService.ToolTip>
-                                        <ToolTip x:Name="NavigationViewBackButtonToolTip"/>
-                                    </ToolTipService.ToolTip>
-                                </Button>
-                                <Button 
-                                    x:Name="NavigationViewCloseButton"
-                                    Style="{StaticResource NavigationBackButtonNormalStyle}"
-                                    VerticalAlignment="Top">
-                                    <ToolTipService.ToolTip>
-                                        <ToolTip x:Name="NavigationViewCloseButtonToolTip"/>
-                                    </ToolTipService.ToolTip>
-                                </Button>
-                                <Button
-                                    x:Name="TogglePaneButton"
-                                    Style="{TemplateBinding PaneToggleButtonStyle}"
-                                    AutomationProperties.LandmarkType="Navigation"
-                                    HorizontalAlignment="Center"
-                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.PaneToggleButtonVisibility}"
-                                    VerticalAlignment="Top"
-                                    MinWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.SmallerPaneToggleButtonWidth}"
-                                    FocusVisualMargin="0">
-                                    <TextBlock
-                                        x:Name="PaneTitleTextBlock"
-                                        Grid.Column="0"
-                                        Margin="0,-2,0,0"
-                                        Text="{TemplateBinding PaneTitle}"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Style="{StaticResource NavigationViewItemHeaderTextStyle}"/>
-                                    </Button>
-
-                                    <Grid
-                                    x:Name="PaneTitleHolder"
-                                    Height="40"
-                                    Visibility="Collapsed">
-                                    <ContentControl
-                                        x:Name="PaneTitlePresenter"
-                                        Margin="{ThemeResource NavigationViewPaneTitlePresenterMargin}"
-                                        IsTabStop="False"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"/>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        </VisualStateManager.VisualStateGroups>                        
                         
                         <!-- Content layouts -->
                         <Grid>
@@ -688,6 +620,76 @@
                                 </Grid.RenderTransform>
                             </Grid>
 
+                        </Grid>
+
+                        <!-- Button grid -->
+                        <!-- TODO: Uno Specific: Canvas.ZIndex is not implemented, so the
+						button Grid is moved below the content SplitView in the template -->
+                        <Grid
+                            x:Name="PaneToggleButtonGrid"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Canvas.ZIndex="100">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid x:Name="TogglePaneTopPadding"
+                                  Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPadding}"/>
+
+                            <Grid x:Name="ButtonHolderGrid" Grid.Row="1" Margin="{ThemeResource NavigationViewButtonHolderGridMargin}">
+                                <Button
+                                    x:Name="NavigationViewBackButton"
+                                    Style="{StaticResource NavigationBackButtonNormalStyle}"
+                                    Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.SmallerPaneToggleButtonWidth}"
+                                    VerticalAlignment="Top"
+                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.BackButtonVisibility}"
+                                    IsEnabled="{TemplateBinding IsBackEnabled}">
+                                    <ToolTipService.ToolTip>
+                                        <ToolTip x:Name="NavigationViewBackButtonToolTip"/>
+                                    </ToolTipService.ToolTip>
+                                </Button>
+                                <Button 
+                                    x:Name="NavigationViewCloseButton"
+                                    Style="{StaticResource NavigationBackButtonNormalStyle}"
+                                    VerticalAlignment="Top">
+                                    <ToolTipService.ToolTip>
+                                        <ToolTip x:Name="NavigationViewCloseButtonToolTip"/>
+                                    </ToolTipService.ToolTip>
+                                </Button>
+                                <Button
+                                    x:Name="TogglePaneButton"
+                                    Style="{TemplateBinding PaneToggleButtonStyle}"
+                                    AutomationProperties.LandmarkType="Navigation"
+                                    HorizontalAlignment="Center"
+                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.PaneToggleButtonVisibility}"
+                                    VerticalAlignment="Top"
+                                    MinWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.SmallerPaneToggleButtonWidth}"
+                                    FocusVisualMargin="0">
+                                    <TextBlock
+                                        x:Name="PaneTitleTextBlock"
+                                        Grid.Column="0"
+                                        Margin="0,-2,0,0"
+                                        Text="{TemplateBinding PaneTitle}"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource NavigationViewItemHeaderTextStyle}"/>
+                                    </Button>
+
+                                    <Grid
+                                    x:Name="PaneTitleHolder"
+                                    Height="40"
+                                    Visibility="Collapsed">
+                                    <ContentControl
+                                        x:Name="PaneTitlePresenter"
+                                        Margin="{ThemeResource NavigationViewPaneTitlePresenterMargin}"
+                                        IsTabStop="False"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Stretch"/>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </ControlTemplate>

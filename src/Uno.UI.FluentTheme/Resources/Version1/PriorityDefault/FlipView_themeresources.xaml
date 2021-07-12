@@ -365,8 +365,4 @@
         </Setter>
     </Style>
 
-	<!-- UNO TODO Currently only style using native flip view control is supported on Android and iOS-->
-	<wasm:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
-	<skia:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
-
 </ResourceDictionary>

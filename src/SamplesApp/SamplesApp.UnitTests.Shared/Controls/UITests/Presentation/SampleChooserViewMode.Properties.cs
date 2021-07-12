@@ -409,9 +409,11 @@ namespace SampleControl.Presentation
 				{
 					Application.Current.Resources.MergedDictionaries.Remove(_fluentResources);
 				}
+#if HAS_UNO
 				Application.Current.Resources?.UpdateThemeBindings();
 				Uno.UI.ResourceResolver.UpdateSystemThemeBindings();
 				Application.PropagateThemeChanged(Windows.UI.Xaml.Window.Current.Content);
+#endif
 				RaisePropertyChanged();
 			}
 		}
