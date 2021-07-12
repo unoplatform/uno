@@ -37,6 +37,19 @@ $(function () {
     renderTabs();
   }
 
+  $(document).on('wordpressMenuHasLoaded', function() {
+    const path = window.location.pathname;
+    const docsUrl = '/docs/articles/';
+    const wpNavBar = document.getElementById('menu-menu-principal');
+    const items = wpNavBar.getElementsByTagName('a');
+    for(let i = 0; i < items.length; i++) {
+
+      if(items[i].href.includes(docsUrl) && path.includes(docsUrl)){
+        $(items[i]).addClass('activepath');
+      }
+    }
+  });
+
   // Add this event listener when needed
   // window.addEventListener('content-update', contentUpdate);
 
@@ -1103,20 +1116,8 @@ $(function () {
       scrollIfAnchor(window.location.hash);
     }
 
-    /**
-     * If the click event's target was an anchor, fix the scroll position.
-     */
-    function delegateAnchors(e) {
-      var elem = e.target;
-
-      if (scrollIfAnchor(elem.getAttribute('href'), true)) {
-        e.preventDefault();
-      }
-    }
-
     $(window).on('hashchange', scrollToCurrent);
     // Exclude tabbed content case
-    $('a:not([data-tab])').click(delegateAnchors);
     scrollToCurrent();
 
     $(document).ready(function(){

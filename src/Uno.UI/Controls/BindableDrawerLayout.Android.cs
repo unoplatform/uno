@@ -247,6 +247,7 @@ namespace Uno.UI.Controls
 			else if (newValue == null && _rightPane.Parent == this)
 			{
 				RemoveView(_rightPane);
+				_rightPane.SetParent(null);
 			}
 
 			_rightPane.Child = newValue;
@@ -370,6 +371,7 @@ namespace Uno.UI.Controls
 			else if (newValue == null && _leftPane.Parent == this)
 			{
 				RemoveView(_leftPane);
+				_leftPane.SetParent(null);
 			}
 
 			_leftPane.Child = newValue;

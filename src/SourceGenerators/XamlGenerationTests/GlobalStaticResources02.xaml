@@ -113,5 +113,5 @@
 
 		<x:Double x:Key="MyHeightNonLocal">33</x:Double>
 		<x:Boolean x:Key="MyAcceptsReturnNonLocal">true</x:Boolean>
-
+	<Duration x:Key="MaterialTextBoxAnimationDuration">0:0:0.25</Duration>
 </ResourceDictionary>
