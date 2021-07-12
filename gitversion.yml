@@ -16,7 +16,7 @@ branches:
 
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     tag: 'PullRequest'
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     increment: Inherit
