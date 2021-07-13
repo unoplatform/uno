@@ -1,6 +1,6 @@
 # Create a new WinUI 3 and Uno Platform app
 
-Uno Platform apps can be created in both UWP-compatible (`Windows.UI.Xaml`, also known as _WUX_) and WinUI 3-compatible (`Microsoft.UI.Xaml`, also known as _MUX_) flavors. In the latter case, you can use the latest features of .NET 5 and [Project Reunion](https://docs.microsoft.com/en-us/windows/apps/project-reunion/) for WinUI 3 Desktop apps. This article takes you through the steps of creating a WinUI 3-flavored Uno Platform app and running the app with Project Reunion for Desktop.
+Uno Platform apps can be created in both UWP-compatible (`Windows.UI.Xaml`, also known as _WUX_) and WinUI 3-compatible (`Microsoft.UI.Xaml`, also known as _MUX_) flavors. In the latter case, you can use the latest features of .NET 5 and [WindowsAppSDK] (https://docs.microsoft.com/en-us/windows/apps/windows-app-sdk/) (formerly known as "Project Reunion") for WinUI 3 Desktop apps. This article takes you through the steps of creating a WinUI 3-flavored Uno Platform app and running the app with WindowsAppSDK for Desktop.
 
 ## Prerequisites
 
