@@ -21,26 +21,27 @@ namespace Windows.Devices.Sensors {
 		public static initialize(): boolean {
 			try {
 				if (typeof window.AmbientLightSensor === "function") {
-					this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.LightSensor:DispatchReading");
-					let AmbientLightSensorClass: any = window.AmbientLightSensor;
+					LightSensor.dispatchReading = (<any>Module).mono_bind_static_method(
+						"[Uno] Windows.Devices.Sensors.LightSensor:DispatchReading");
+					const AmbientLightSensorClass: any = window.AmbientLightSensor;
 					LightSensor.ambientLightSensor = new AmbientLightSensorClass();
 					return true;
 				}
 			} catch (error) {
-				//sensor not available
-				console.log("AmbientLightSensor could not be initialized.");
+				// Sensor not available
+				console.error("AmbientLightSensor could not be initialized.");
 			}
 			return false;
 		}
 
 		public static startReading() {
-			this.ambientLightSensor.addEventListener("reading", LightSensor.readingChangedHandler);
-			this.ambientLightSensor.start();
+			LightSensor.ambientLightSensor.addEventListener("reading", LightSensor.readingChangedHandler);
+			LightSensor.ambientLightSensor.start();
 		}
 
 		public static stopReading() {
-			this.ambientLightSensor.removeEventListener("reading", LightSensor.readingChangedHandler);
-			this.ambientLightSensor.stop();
+			LightSensor.ambientLightSensor.removeEventListener("reading", LightSensor.readingChangedHandler);
+			LightSensor.ambientLightSensor.stop();
 		}
 
 		private static readingChangedHandler(event: any) {

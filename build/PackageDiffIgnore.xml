@@ -3810,6 +3810,10 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Media.Geometry..ctor()"
 				reason="Not part of the UWP API" />
+
+			<Member 
+				fullName="System.Void Windows.Devices.Sensors.LightSensor..ctor()"
+                reason="Parameter-less ctor does not exist in UWP"/>
 		</Methods>
 		<Fields>
 		</Fields>

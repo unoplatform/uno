@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#nullable enable
+
+using System;
 using Android.Hardware;
 using Android.Runtime;
 using Uno.Devices.Sensors.Helpers;
@@ -11,15 +9,13 @@ namespace Windows.Devices.Sensors
 {
 	public partial class LightSensor
 	{
-		private readonly Sensor _sensor;
-		private LightSensorListener _listener;
+		private Sensor _sensor = null!;
+		private LightSensorListener? _listener;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
-		private LightSensor(Sensor lightSensorSensor) : this()
-		{
-			_sensor = lightSensorSensor;
-		}
-
+		/// <summary>
+		/// Gets or sets the current report interval for the ambient light sensor.
+		/// </summary>
 		public uint ReportInterval
 		{
 			get => _reportInterval;
@@ -39,13 +35,16 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		private static LightSensor TryCreateInstance()
+		private static LightSensor? TryCreateInstance()
 		{
 			var sensorManager = SensorHelpers.GetSensorManager();
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Light);
 			if (sensor != null)
 			{
-				return new LightSensor(sensor);
+				return new LightSensor()
+				{
+					_sensor = sensor
+				};
 			}
 			return null;
 		}
@@ -78,16 +77,19 @@ namespace Windows.Devices.Sensors
 				_lightSensor = lightSensor;
 			}
 
-			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
+			void ISensorEventListener.OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
 			{
 			}
 
-			void ISensorEventListener.OnSensorChanged(SensorEvent e)
+			void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 			{
-				var reading = new LightSensorReading(
-					e.Values[0],
-					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
-				LightSensor.OnReadingChanged(reading);
+				if (e?.Values != null)
+				{
+					var reading = new LightSensorReading(
+						e.Values[0],
+						SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
+					OnReadingChanged(reading);
+				}
 			}
 		}
 	}
