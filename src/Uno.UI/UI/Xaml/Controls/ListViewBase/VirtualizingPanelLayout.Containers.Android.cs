@@ -4,6 +4,7 @@ using System.Text;
 using Uno.UI;
 using System.Linq;
 using Windows.UI.Xaml.Controls.Primitives;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -12,6 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// A row or column.
 		/// </summary>
+		[DebuggerDisplay("{DebugDisplay,nq}")]
 		protected class Line
 		{
 			public int NumberOfViews { get; set; }
@@ -46,6 +48,20 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+
+			public override string ToString()
+			{
+				if (FirstItem == LastItem)
+				{
+					return $"Line:{FirstItem}";
+				}
+				else
+				{
+					return $"Line:{FirstItem}-{LastItem}";
+				}
+			}
+
+			private string DebugDisplay => ToString();
 		}
 
 		/// <summary>
