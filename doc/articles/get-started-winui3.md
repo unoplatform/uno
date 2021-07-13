@@ -21,7 +21,7 @@ Uno Platform apps can be created in both UWP-compatible (`Windows.UI.Xaml`, also
 1. Create a folder for your app.
 2. From a command-line prompt at that folder location, run the following command:
     ```shell
-    dotnet new unoapp-winui
+    dotnet new unoapp-winui -o MyUnoApp
     ```
 3. Open the solution file you created.
 4. UI Tooling features (Live Visual Tree, Live Property Explorer, and Hot Reload) for WinUI 3 need to be enabled in Visual Studio as a Preview Feature. Navigate to `Tools -> Options -> Environment -> Preview Features` and toggle "Enable UI Debugging Tooling for WinUI 3 Projects".
