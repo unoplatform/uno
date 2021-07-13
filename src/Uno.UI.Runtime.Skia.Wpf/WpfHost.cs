@@ -19,12 +19,14 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
 using Windows.System;
+using Windows.Networking.Connectivity;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using WinUI = Windows.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
 using Uno.Extensions.System;
+using Uno.Extensions.Networking.Connectivity;
 using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
@@ -58,6 +60,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
 			ApiExtensibility.Register(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 			ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
+			ApiExtensibility.Register(typeof(IConnectionProfileExtension), o => new WindowsConnectionProfileExtension(o));
 			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 		}
