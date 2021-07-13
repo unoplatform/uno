@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Logging;
 
 namespace Uno.Foundation.Interop
 {
@@ -89,7 +90,35 @@ namespace Uno.Foundation.Interop
 				var methods = _type
 					.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 					.Where(method => method.GetParameters().None(p => p.ParameterType != typeof(string))) // we support only string parameters for now
-					.ToArray();
+					.ToList();
+
+				// When multiple methods have the same name, we cannot determine which is the right one to call.
+				// This happens for example for classes derived from Control, where the Focus-related properties use
+				// new keyword to hide their UIElement version, and therefore their generated get_* methods show up twice.
+				var duplicateMethods = methods.GroupBy(m => m.Name).Where(g => g.Count() > 1).SelectMany(g => g).ToList();
+				if (duplicateMethods.Count > 0)
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+					{
+						// We log only methods, which are not declared by Uno/WinUI directly.
+						var reportMethods = duplicateMethods
+							.Where(m =>
+								!m.DeclaringType.FullName.StartsWith("Windows.UI.Xaml") &&
+								!m.DeclaringType.FullName.StartsWith("Microsoft.UI.Xaml") &&
+								!m.DeclaringType.FullName.StartsWith("Uno"))
+							.Select(m => m.Name)
+							.Distinct();
+
+						this.Log().Warn(
+							$"The following methods have multiple overloads, " +
+							$"so they cannot be called directly: {string.Join(",", reportMethods)}");
+					}
+				}
+
+				foreach (var methodToRemove in duplicateMethods)
+				{
+					methods.Remove(methodToRemove);
+				}
 
 				// Cache the methods for the InvokeManaged method
 				_methods = methods.ToDictionary(m => m.Name, m => m);
