@@ -290,7 +290,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private void Native_MenuItemClick(object sender, Toolbar.MenuItemClickEventArgs e)
+		private void Native_MenuItemClick(object? sender, Toolbar.MenuItemClickEventArgs e)
 		{
 			CloseKeyboard();
 
@@ -303,7 +303,7 @@ namespace Uno.UI.Controls
 			appBarButton?.RaiseClick();
 		}
 
-		private void Native_NavigationClick(object sender, Toolbar.NavigationClickEventArgs e)
+		private void Native_NavigationClick(object? sender, Toolbar.NavigationClickEventArgs e)
 		{
 			CloseKeyboard();
 

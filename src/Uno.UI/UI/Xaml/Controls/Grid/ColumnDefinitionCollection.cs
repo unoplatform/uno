@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 		public bool IsReadOnly => false;
 
 		/// <summary>
-		/// The inner list is exposed in order to get the struct enumerable exposed by List<T> to avoid allocations.
+		/// The inner list is exposed in order to get the struct enumerable exposed by <see cref="List{T}"/> to avoid allocations.
 		/// </summary>
 		internal List<ColumnDefinition> InnerList => _inner.Items;
 

@@ -2,9 +2,14 @@ parameters:
   poolName: ''
 
 jobs:
-- job: VS_Latest
-  displayName: 'NuGet Packages'
+- job: Generate_Packages
+  displayName: 'Pack NuGet'
   timeoutInMinutes: 90
+
+  dependsOn:
+  - generic_win_build
+  - net6_win_build
+  # - net6_mac_build
 
   pool: ${{ parameters.poolName }}
 
@@ -12,9 +17,11 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP 
 
       WinUI:
         UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI 
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -61,19 +68,33 @@ jobs:
     condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
     displayName: Convert source tree to WinUI 3 structure
 
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: NugetPackages-Artifacts
+      downloadPath: '$(Agent.WorkFolder)' 
+
+  - task: ExtractFiles@1
+    displayName: Restore binaries structure
+    inputs:
+      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts/*-bin-$(XAML_FLAVOR_BUILD).zip' 
+      destinationFolder: $(build.sourcesdirectory)
+      cleanDestinationFolder: false
+      overwriteExistingFiles: true
+
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
+      msbuildArguments: /r /m /t:GeneratePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-packages.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
 
   - task: CopyFiles@2
+    displayName: Copy built packages
     condition: always()
     inputs:
       SourceFolder: $(build.sourcesdirectory)/Build
@@ -81,6 +102,30 @@ jobs:
       TargetFolder: $(build.artifactstagingdirectory)\vslatest
       CleanTargetFolder: false
       OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    displayName: Copy generic build packages
+    condition: always()
+    inputs:
+      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-generic
+      Contents: |
+        *.nupkg
+        *.vsix
+      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    displayName: Copy net6 build packages
+    condition: always()
+    inputs:
+      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-net6
+      Contents: '*.nupkg'
+      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      CleanTargetFolder: false
+      OverWrite: true
       flattenFolders: false
 
   - task: PowerShell@2
@@ -102,29 +147,18 @@ jobs:
       ArtifactName: NugetPackages
       ArtifactType: Container
 
-  - task: PublishBuildArtifacts@1
-    displayName: Publish Skia Artifacts
-    condition: always()
-    inputs:
-      PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
-      ArtifactName: uno-skia-artifacts
-      ArtifactType: Container
-  
-  - task: PublishBuildArtifacts@1
-    displayName: Publish Tizen Artifacts
-    condition: always()
-    inputs:
-      PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Tizen\bin\Release\tizen50
-      ArtifactName: uno-tizen-artifacts
-      ArtifactType: Container
-
-  # Publish PR packages to local feed to enable canary testing from PR artifacts
-  # Temporarily disabled for quota considerations
-  #- task: NuGetCommand@2
-  #  condition: and(eq(variables['System.PullRequest.IsFork'], 'False'), eq(variables['Build.Reason'], 'PullRequest'))
-  #  inputs:
-  #    command: 'push'
-  #    packagesToPush: '$(build.artifactstagingdirectory)/vslatest/**/*.nupkg'
-  #    nuGetFeedType: 'internal'
-  #    publishVstsFeed: '1dd81cbd-cb35-41de-a570-b0df3571a196/a70dae92-4e3d-4540-bf93-9b22ec98d19d'
-  #    allowPackageConflicts: true
+  # - task: PublishBuildArtifacts@1
+  #   displayName: Publish Skia Artifacts
+  #   condition: always()
+  #   inputs:
+  #     PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
+  #     ArtifactName: uno-skia-artifacts
+  #     ArtifactType: Container
+  # 
+  # - task: PublishBuildArtifacts@1
+  #   displayName: Publish Tizen Artifacts
+  #   condition: always()
+  #   inputs:
+  #     PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Tizen\bin\Release\tizen50
+  #     ArtifactName: uno-tizen-artifacts
+  #     ArtifactType: Container

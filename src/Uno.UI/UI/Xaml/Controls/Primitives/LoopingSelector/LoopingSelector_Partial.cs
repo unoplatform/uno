@@ -1467,11 +1467,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					Balance(false /* isOnSnapPoint */);
 				}
 
-
-				if (returnValue != null)
-				{
-					returnValue.Width = widthToReturn;
-				}
+				returnValue.Width = widthToReturn;
 
 				return returnValue;
 			}

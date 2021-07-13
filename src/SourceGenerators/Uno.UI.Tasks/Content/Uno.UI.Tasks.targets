@@ -23,7 +23,7 @@
                   DependsOnTargets="ResolveProjectReferences"
 				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
 
-    <CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln'" />
+    <CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
 
     <!-- String resources -->
     <PropertyGroup>

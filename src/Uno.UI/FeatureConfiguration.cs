@@ -198,7 +198,7 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>
 			/// This setting impacts significantly the loading performance of controls on Android.
-			/// Setting it to <see cref="true"/> avoids the use of costly Java->C# interop.
+			/// Setting it to true avoids the use of costly Java->C# interop.
 			/// </remarks>
 			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
 #endif
@@ -210,7 +210,7 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>
 			/// This setting impacts significantly the loading performance of controls on Web Assembly.
-			/// Setting it to <see cref="true"/> avoids the use of costly JavaScript->C# interop.
+			/// Setting it to true avoids the use of costly JavaScript->C# interop.
 			/// </remarks>
 			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
 		}

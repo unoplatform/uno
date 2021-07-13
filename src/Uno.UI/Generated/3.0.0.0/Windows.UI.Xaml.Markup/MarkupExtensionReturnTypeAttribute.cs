@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Markup
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MarkupExtensionReturnTypeAttribute : global::System.Attribute
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public MarkupExtensionReturnTypeAttribute() : base()
 		{
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Markup
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Markup.MarkupExtensionReturnTypeAttribute.MarkupExtensionReturnTypeAttribute()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		public  global::System.Type ReturnType;
 		#endif
 	}

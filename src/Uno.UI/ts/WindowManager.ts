@@ -111,9 +111,12 @@ namespace Uno.UI {
 				const UNO_BOOTSTRAP_APP_BASE = config.environmentVariables["UNO_BOOTSTRAP_APP_BASE"] || "";
 				const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
 
-				const fullImagePath = UNO_BOOTSTRAP_APP_BASE !== ''
-					? `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`
-					: String(UnoAppManifest.splashScreenImage);
+				let fullImagePath = String(UnoAppManifest.splashScreenImage);
+
+				// If the splashScreenImage image already points to the app base path, use it, otherwise we build it.
+				if (UNO_BOOTSTRAP_APP_BASE !== '' && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
+					fullImagePath = `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`;
+				}
 
 				img.src = fullImagePath;
 

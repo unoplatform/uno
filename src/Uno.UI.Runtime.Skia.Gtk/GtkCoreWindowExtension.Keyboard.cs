@@ -120,6 +120,7 @@ namespace Uno.UI.Runtime.Skia
 				Gdk.Key.KP_Tab => VirtualKey.Tab,
 				Gdk.Key.Clear => VirtualKey.Clear,
 				Gdk.Key.Return => VirtualKey.Enter,
+				Gdk.Key.KP_Enter => VirtualKey.Enter,
 				// Gdk.Key.Shift => VirtualKey.Shift,
 				// Gdk.Key.Control => VirtualKey.Control,
 				Gdk.Key.Menu => VirtualKey.Menu,

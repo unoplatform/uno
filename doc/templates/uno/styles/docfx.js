@@ -44,10 +44,18 @@ $(function () {
     const items = wpNavBar.getElementsByTagName('a');
     for(let i = 0; i < items.length; i++) {
 
-      if(items[i].href.includes(docsUrl) && path.includes(docsUrl)){
+      if(items[i].href.includes(docsUrl) && path.includes(docsUrl) && !items[i].href.includes('#')){
         $(items[i]).addClass('activepath');
       }
     }
+
+    const queryString = window.location.search;
+    if(queryString){
+      const queryStringComponents = queryString.split('=');
+      const searchParam = queryStringComponents.slice(-1)[0];
+      $('#search-query').val(decodeURI(searchParam));
+    }
+
   });
 
   // Add this event listener when needed

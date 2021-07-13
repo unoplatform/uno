@@ -1323,9 +1323,9 @@ namespace Windows.UI.Xaml.Input
 		/// <param name="secondObject"></param>
 		/// <returns></returns>
 		/// <remarks>
-		/// Return +1 if control1 > control2
+		/// Return +1 if control1 &gt; control2
 		/// Return = if control1 = control2
-		/// Return -1 if control1<control2
+		/// Return -1 if control1 &lt; control2
 		/// </remarks>
 		private int CompareTabIndex(DependencyObject? firstObject, DependencyObject? secondObject)
 		{
@@ -1653,7 +1653,7 @@ namespace Windows.UI.Xaml.Input
 		/// <returns></returns>
 		/// <remarks>
 		/// We have two ways (FocusMovementResult.GetHResult() and FocusMovementResult.WasMoved) to report success and failure.
-		/// This is because it is possible that the given pNewFocus could not actually take focus for </remarks>
+		/// This is because it is possible that the given pNewFocus could not actually take focus for
 		/// innocent reasons. (Currently in disabled state, etc.) This is not an important failure and GetHResult()
 		/// return S_OK even though WasMoved() is false.
 		/// 

@@ -515,9 +515,10 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Updates the current TextBlock layout to use the provided width and height.
 			/// </summary>
+			/// <remarks>
 			/// Specifies if the provided width must be used for the new layout, and 
 			/// not "at most" of the widh.
-			/// </param>
+			/// </remarks>
 			/// <returns>The size of the new layout</returns>
 			private Size UpdateLayout(Size availableSize, bool exactWidth = false)
 			{

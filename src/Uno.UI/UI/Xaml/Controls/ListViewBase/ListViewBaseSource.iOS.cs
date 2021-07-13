@@ -391,6 +391,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void SetIsAnimatedScrolling() => _isInAnimatedScroll = true;
 
+#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void Scrolled(UIScrollView scrollView)
 		{
 			InvokeOnScroll();
@@ -430,6 +431,7 @@ namespace Windows.UI.Xaml.Controls
 			// obvious what it would be in the case of a list).
 			Owner.XamlParent?.ScrollViewer?.OnZoomInternal((float)Owner.ZoomScale);
 		}
+#endif
 
 		private void OnAnimatedScrollEnded()
 		{
@@ -447,6 +449,7 @@ namespace Windows.UI.Xaml.Controls
 			Owner.XamlParent?.ScrollViewer?.OnScrollInternal(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
 
+#if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void WillEndDragging(UIScrollView scrollView, CGPoint velocity, ref CGPoint targetContentOffset)
 		{
 			// If snap points are enabled, override the target offset with the calculated snap point.
@@ -456,6 +459,7 @@ namespace Windows.UI.Xaml.Controls
 				targetContentOffset = snapTo.Value;
 			}
 		}
+#endif
 
 		#endregion
 

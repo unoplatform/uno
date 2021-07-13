@@ -26,20 +26,35 @@
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
         <dependency id="System.Json" version="4.7.1" />
 	  </group>
+	  <group targetFramework="net6.0-ios">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+		<dependency id="System.Json" version="4.7.1" />
+	  </group>
+	  <group targetFramework="net6.0-catalyst">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+		<dependency id="System.Json" version="4.7.1" />
+	  </group>
 	  <group targetFramework="xamarinios10">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
-        <dependency id="System.Json" version="4.7.1" />
+		<dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="xamarinmac20">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
         <dependency id="System.Json" version="4.7.1" />
 	  </group>
+	  <group targetFramework="net6.0-android">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+		<dependency id="Newtonsoft.Json" version="9.0.1" />
+	  </group>
 	  <group targetFramework="MonoAndroid11.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
-        <dependency id="Newtonsoft.Json" version="9.0.1" />
+		<dependency id="Newtonsoft.Json" version="9.0.1" />
 	  </group>
 	  <group targetFramework="MonoAndroid10.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -50,7 +65,15 @@
 	</dependencies>
 
 	<references>
-	  <!-- .NET Standard 2.0 -->
+	  <group targetFramework="net6.0-ios">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <group targetFramework="net6.0-maccatalyst">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <group targetFramework="net6.0-android">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
 	  <group targetFramework="netstandard2.0">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
@@ -75,6 +98,10 @@
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinmac20\Uno.UI.Lottie.dll" target="lib\xamarinmac20" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid11.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid10.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid10.0" />
+	
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.net6\Release\net6.0-android\Uno.UI.Lottie.dll" target="lib\net6.0-android" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.net6\Release\net6.0-ios\Uno.UI.Lottie.dll" target="lib\net6.0-ios" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.net6\Release\net6.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net6.0-maccatalyst" />
 
 	<!-- Build targets -->
 	<file src="..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />

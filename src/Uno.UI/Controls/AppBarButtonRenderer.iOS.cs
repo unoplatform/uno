@@ -179,7 +179,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private void OnNativeClicked(object sender, EventArgs e) => Element.RaiseClick();
+		private void OnNativeClicked(object? sender, EventArgs e) => Element.RaiseClick();
 	}
 
 	/// <summary>

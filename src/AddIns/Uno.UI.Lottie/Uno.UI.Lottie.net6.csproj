@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
+		<TargetFrameworksCI>net6.0-android;net6.0-ios</TargetFrameworksCI>
+
+		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworksCI>$(TargetFrameworks);net6.0-maccatalyst</TargetFrameworksCI>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<Deterministic>true</Deterministic>
+		<Nullable>enable</Nullable>
+		<AssemblyName>Uno.UI.Lottie</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="buildTransitive\Uno.UI.Lottie.targets" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="buildTransitive\Uno.UI.Lottie.targets">
+	    <PackagePath>build</PackagePath>
+	    <Pack>true</Pack>
+	  </Content>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="System.Json" />
+	</ItemGroup>
+
+	<Import Project="..\..\Common.targets" />
+	<Import Project="..\..\Uno.CrossTargetting.props" />
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.net6.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
+		<!--<PackageReference Include="Com.Airbnb.Android.Lottie" Version="3.0.4" PrivateAssets="none" />-->
+		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-ios'">
+		<!--<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.11" PrivateAssets="none" />-->
+		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">
+		<!--<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.11" PrivateAssets="none" />-->
+		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+	</ItemGroup>
+
+	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)**" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
+
+</Project>

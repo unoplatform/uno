@@ -12,7 +12,7 @@ namespace Windows.UI.Composition
 
 		internal CompositionObject()
 		{
-			ApiInformation.TryRaiseNotImplemented(GetType().FullName ?? "", "The compositor constructor is not available, as the type is not implemented");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName!, "The compositor constructor is not available, as the type is not implemented");
 			Compositor = new Compositor();
 		}
 

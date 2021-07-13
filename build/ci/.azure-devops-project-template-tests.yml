@@ -9,7 +9,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImageWindows }}
 
-  dependsOn: VS_Latest
+  dependsOn: Generate_Packages
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -37,7 +37,7 @@ jobs:
 
   container: unoplatform/wasm-build:2.3
 
-  dependsOn: VS_Latest
+  dependsOn: Generate_Packages
 
   steps:
   - task: DownloadBuildArtifacts@0

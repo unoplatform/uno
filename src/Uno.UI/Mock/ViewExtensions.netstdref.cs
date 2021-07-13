@@ -18,7 +18,12 @@ namespace Uno.UI
 
 		internal static FrameworkElement GetTopLevelParent(this UIElement view) => throw new NotImplementedException();
 
-		internal static T FindFirstChild<T>(this FrameworkElement root, bool includeCurrent) where T : FrameworkElement
+		internal static T FindFirstChild<T>(this FrameworkElement root, bool includeCurrent = true) where T : FrameworkElement
+		{
+			throw new NotImplementedException();
+		}
+
+		internal static T FindFirstChild<T>(this FrameworkElement root, Func<T, bool> selector, bool includeCurrent = true) where T : FrameworkElement
 		{
 			throw new NotImplementedException();
 		}

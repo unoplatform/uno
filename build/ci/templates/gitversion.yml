@@ -1,13 +1,15 @@
+parameters:
+  dotnetInstallationPath: ''
 
 steps:
 
   # This step changes the PR version ID so that produced nuget packages can be tied
   # to specific builds. This can be used to create canaries from PR artifacts.
   - powershell: |
-      $PR_VERSION="PullRequest-$env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER-$env:BUILD_BUILDID-$env:SYSTEM_JOBATTEMPT-"
+      $PR_VERSION="PullRequest-$env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER-$env:BUILD_BUILDID-"
       echo "Updating PR Version Tag in GitVersion to $PR_VERSION"
       (Get-Content gitversion.yml).replace("'PullRequest'", "$PR_VERSION") | Set-Content gitversion.yml
-
+  
     condition: eq(variables['Build.Reason'], 'PullRequest')
     displayName: Update GitVersion file for PullRequests
 
@@ -16,12 +18,14 @@ steps:
     inputs:
       packageType: runtime
       version: 5.0.3
+      installationPath: '${{parameters.dotnetInstallationPath}}'
 
   - task: UseDotNet@2
     displayName: 'Use .Net Core runtime 3.1.12'
     inputs:
       packageType: runtime
       version: 3.1.12
+      installationPath: '${{parameters.dotnetInstallationPath}}'
 
   # Restore nuget.org to the list of existing sources, .NET 6 Pre 2 may somehow remove it
   - powershell: |
@@ -39,3 +43,15 @@ steps:
       useConfigFile: true
       configFilePath: gitversion.yml
     displayName: Use GitVersion
+
+  - powershell: |
+      $PR_VERSION="$(GITVERSION.SemVer)"
+      $PR_VERSION=$PR_VERSION.replace('.$(GitVersion.PreReleaseNumber)','')
+
+      ## Updating the semver value is required to avoid race conditions with multiple
+      ## jobs creating packages, and update pushed to the main branch.
+      echo "Updating PR Version from [$(GITVERSION.SemVer)] to [$PR_VERSION]"
+      echo "##vso[task.setvariable variable=GITVERSION.SemVer]$PR_VERSION"
+
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    displayName: Update GITVERSION.SemVer for PullRequests

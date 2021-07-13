@@ -61,7 +61,7 @@ namespace Uno.UI.Controls
 		}
 
 		/// <summary>
-		/// Provides the <see cref="View.MeasuredHeight" and <see cref="View.MeasuredWidth"/> in a single fast call.
+		/// Provides the <see cref="View.MeasuredHeight"/> and <see cref="View.MeasuredWidth"/> in a single fast call.
 		/// </summary>
 		/// <remarks>
 		/// This method exists to avoid having to call twice the View
