@@ -1,0 +1,32 @@
+parameters:
+  DotNetVersion: '6.0.0-preview.6.21352.12'
+  MauiCheck_Version: '0.6.1'
+  MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/main/manifests/maui-preview.manifest.json'
+  Dotnet_Root: '/usr/local/share/dotnet/'
+  Dotnet_Tools: '~/.dotnet/tools'
+
+steps:
+  - task: UseDotNet@2
+    displayName: install .NET 5
+    inputs:
+      version: 5.x
+      installationPath: ${{ parameters.Dotnet_Root }}
+
+  - task: UseDotNet@2
+    displayName: install .NET 3.1
+    inputs:
+      version: 3.1.x
+      installationPath: ${{ parameters.Dotnet_Root }}
+
+  - bash: |
+      export PATH="${{ parameters.Dotnet_Root }}:${{ parameters.Dotnet_Tools }}:$PATH"
+      curl -L https://raw.githubusercontent.com/dotnet/install-scripts/7a9d5dcab92cf131fc2d8977052f8c2c2d540e22/src/dotnet-install.sh > dotnet-install.sh
+      sh dotnet-install.sh --version ${{ parameters.DotNetVersion }} --install-dir $DOTNET_ROOT --verbose
+      dotnet --list-sdks
+      echo "##vso[task.setvariable variable=PATH]$PATH"
+    displayName: install .NET ${{ parameters.DotNetVersion }}
+
+  - bash: |
+      dotnet tool update --global redth.net.maui.check --version ${{ parameters.MauiCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --manifest ${{ parameters.MauiCheck_Manifest }}
+    displayName: Install .NET Workloads

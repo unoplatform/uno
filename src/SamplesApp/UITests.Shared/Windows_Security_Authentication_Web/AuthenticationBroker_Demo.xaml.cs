@@ -70,6 +70,11 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 
 			}
 		}
+#else
+		public AuthenticationBroker_Demo()
+		{
+
+		}
 #endif
 
 		private async void SignIn_Clicked(object sender, RoutedEventArgs e)

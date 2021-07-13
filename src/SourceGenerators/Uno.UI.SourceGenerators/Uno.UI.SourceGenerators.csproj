@@ -108,6 +108,7 @@
 			<Project>{1627740a-19d2-4d21-a0b2-66667038daf6}</Project>
 			<Name>Uno.Xaml</Name>
 			<Aliases>__uno</Aliases>
+			<SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
 		</ProjectReference>
 	</ItemGroup>
 
