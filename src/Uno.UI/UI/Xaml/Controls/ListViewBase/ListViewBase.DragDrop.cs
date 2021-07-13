@@ -13,6 +13,7 @@ using Uno.Extensions.Specialized;
 using Uno.Logging;
 using Uno.UI;
 using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -149,6 +150,10 @@ namespace Windows.UI.Xaml.Controls
 					that.DragOver += OnReorderUpdated;
 					that.DragLeave += OnReorderUpdated;
 					that.Drop += OnReorderCompleted;
+
+					that.m_tpPrimaryDraggedContainer = sender as SelectorItem;
+
+					that.ChangeSelectorItemsVisualState(true);
 				}
 			}
 		}
@@ -187,12 +192,21 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			that.UpdateReordering(dragEventArgs.GetPosition(that), container, item);
+			var position = dragEventArgs.GetPosition(that);
+			that.UpdateReordering(position, container, item);
+
+			// See what our edge scrolling action should be...
+			var panVelocity = that.ComputeEdgeScrollVelocity(position);
+			// And request it.
+			that.SetPendingAutoPanVelocity(panVelocity);
 		}
 
 		private static void OnReorderCompleted(object sender, _DragEventArgs dragEventArgs)
 		{
 			var that = sender as ListView;
+
+			that?.SetPendingAutoPanVelocity(PanVelocity.Stationary);
+
 			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
 			var item = dragEventArgs.DataView.FindRawData(ReorderItemFormatId);
 			var container = dragEventArgs.DataView.FindRawData(ReorderContainerFormatId) as FrameworkElement; // TODO: This might have changed/been recycled if scrolled 
@@ -204,6 +218,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var updatedIndex = that.CompleteReordering(container, item);
+
+			that.m_tpPrimaryDraggedContainer = null;
+
+			that.ChangeSelectorItemsVisualState(true);
 
 			if (that.IsGrouping
 				|| !updatedIndex.HasValue
