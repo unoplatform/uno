@@ -13,6 +13,7 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Composition;
 using Windows.UI.Core;
@@ -985,7 +986,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				m_selectionModelSource[1] = dataSource; //TODO MZ: Do we need to check if item 1 exists?
+				m_selectionModelSource[1] = dataSource;
 			}
 
 			if (IsTopNavigationView())
@@ -1484,7 +1485,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (IsTopNavigationView() && IsTopPrimaryListVisible())
 			{
-				if (availableSize.Width == double.PositiveInfinity) //TODO: MZ: Or use max value?
+				if (availableSize.Width == double.PositiveInfinity)
 				{
 					// We have infinite space, so move all items to primary list
 					m_topDataProvider.MoveAllItemsToPrimaryList();
@@ -5095,10 +5096,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (m_shadowCaster is { } shadowCaster)
 				{
-					//TODO MZ: Check if shadow is supported on this target
-					if (shadowCaster is { } shadowCaster_uiElement10)
+					// Uno specific: Instead for UIElement10 we check for ThemeShadow support
+					if (IsThemeShadowSupported())
 					{
-						shadowCaster_uiElement10.Shadow = new ThemeShadow();
+						shadowCaster.Shadow = new ThemeShadow();
 					}
 				}
 			}
@@ -5124,12 +5125,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ShadowCasterEaseOutStoryboard_Completed(Grid shadowCaster)
 		{
-			//TODO MZ: Check if shadow is available on this target
-			if (shadowCaster is { } shadowCaster_uiElement10)
+			// Uno specific: Instead for UIElement10 we check for ThemeShadow support
+			if (IsThemeShadowSupported())
 			{
-				if (shadowCaster_uiElement10.Shadow != null)
+				if (shadowCaster.Shadow != null)
 				{
-					shadowCaster_uiElement10.Shadow = null;
+					shadowCaster.Shadow = null;
 				}
 			}
 		}
@@ -5970,6 +5971,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		private bool IsThemeShadowSupported() => ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
+
+		#endregion
 	}
 }
