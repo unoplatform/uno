@@ -95,5 +95,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 			ImageAssert.AreNotEqual(before, upperToolTip, upperRect); // Mouse is close to top of button, ToolTip should extend above Button bounds
 			ImageAssert.AreNotEqual(before, upperToolTip, buttonRect);
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Only WASM supports mouse-based tests for now
+		public void ToolTip_WhenHostCollapsed_Test()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_CollapsedHost");
+			var hideToggle = _app.Marked("ToggleHide"); // ToggleButton "Hide" that will hide itself
+			var tooltipText = _app.Marked("TooltipText"); // TextBlock within ToggleHide's Tooltip
+			const int TooltipShowDelay = 1000; // FeatureConfiguration.ToolTip.ShowDelay (in ms)
+
+			_app.WaitForElement(hideToggle);
+
+			hideToggle.Tap();
+
+			// normally, as the cursor enter hideToggle's hitbox to press it,
+			// the tooltip will start to appears after 1s (TooltipShowDelay)
+			// and, it will remain visible for another 1s.
+			// (moving within the hitbox will reset the remaining duration back to 1s again, but we are not)
+			_app.Wait(TimeSpan.FromMilliseconds(TooltipShowDelay + 300));
+
+			// however, since we made the host control to disappear (Visibility=Collapsed),
+			// its tooltip should disappear as well.
+			tooltipText.ShouldNotBeVisible();
+		}
 	}
 }
