@@ -28,6 +28,10 @@ using UIKit;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
+	#if NET6_0 && __ANDROID__
+	[Ignore("Disabled until https://github.com/dotnet/runtime/pull/55681 is released. See https://github.com/unoplatform/uno/issues/5873")]
+	#endif
+
 	[TestClass]
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_And_Leak
