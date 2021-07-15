@@ -35,13 +35,8 @@ namespace Windows.UI.Xaml.Controls
 		// At 0 px from the edge, the speed is LISTVIEWBASE_EDGE_SCROLL_MAX_SPEED.
 		// At LISTVIEWBASE_EDGE_SCROLL_EDGE_WIDTH_PX from the edge, the speed is
 		// LISTVIEWBASE_EDGE_SCROLL_MIN_SPEED.
-		//const double LISTVIEWBASE_EDGE_SCROLL_MIN_SPEED = (150.0 /* px/sec */);
-		//const double LISTVIEWBASE_EDGE_SCROLL_MAX_SPEED = (1500.0 /* px/sec */);
-#if !DEBUG
-#error
-#endif
-		const double LISTVIEWBASE_EDGE_SCROLL_MIN_SPEED = (15.0 /* px/sec */);
-		const double LISTVIEWBASE_EDGE_SCROLL_MAX_SPEED = (150.0 /* px/sec */);
+		const double LISTVIEWBASE_EDGE_SCROLL_MIN_SPEED = (150.0 /* px/sec */);
+		const double LISTVIEWBASE_EDGE_SCROLL_MAX_SPEED = (1500.0 /* px/sec */);
 
 		// The delay time before going playing the live reorder
 		const int LISTVIEW_LIVEREORDER_TIMER = 200;
