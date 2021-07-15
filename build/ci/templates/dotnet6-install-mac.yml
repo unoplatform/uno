@@ -1,5 +1,5 @@
 parameters:
-  DotNetVersion: '6.0.0-preview.6.21352.12'
+  DotNetVersion: '6.0.100-preview.6.21355.2'
   MauiCheck_Version: '0.6.1'
   MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/main/manifests/maui-preview.manifest.json'
   Dotnet_Root: '/usr/local/share/dotnet/'
