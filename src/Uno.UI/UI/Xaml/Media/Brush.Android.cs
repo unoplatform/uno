@@ -164,13 +164,9 @@ namespace Windows.UI.Xaml.Media
 
 			if (maskingPath == null)
 			{
-				if (background is SolidColorBrush solidBrush)
+				if (Brush.GetColorWithOpacity(background) is { } color)
 				{
-					return new ColorDrawable(solidBrush.ColorWithOpacity);
-				}
-				else if (background is AcrylicBrush acrylicBrush)
-				{
-					return new ColorDrawable(acrylicBrush.FallbackColorWithOpacity);
+					return new ColorDrawable(color);
 				}
 
 				if (fillPaint != null)
