@@ -131,6 +131,62 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.DependencyObject XYFocusUp
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusUpProperty);
+			}
+			set
+			{
+				this.SetValue(XYFocusUpProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.DependencyObject XYFocusRight
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusRightProperty);
+			}
+			set
+			{
+				this.SetValue(XYFocusRightProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.DependencyObject XYFocusLeft
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusLeftProperty);
+			}
+			set
+			{
+				this.SetValue(XYFocusLeftProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.DependencyObject XYFocusDown
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusDownProperty);
+			}
+			set
+			{
+				this.SetValue(XYFocusDownProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowedScriptNotifyUrisProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AllowedScriptNotifyUris), typeof(global::System.Collections.Generic.IList<global::System.Uri>), 
@@ -212,6 +268,38 @@ namespace Windows.UI.Xaml.Controls
 				throw new global::System.NotImplementedException("The member WebViewExecutionMode WebView.DefaultExecutionMode is not implemented in Uno.");
 			}
 		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(XYFocusDown), typeof(global::Windows.UI.Xaml.DependencyObject), 
+			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty XYFocusLeftProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(XYFocusLeft), typeof(global::Windows.UI.Xaml.DependencyObject), 
+			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(XYFocusRight), typeof(global::Windows.UI.Xaml.DependencyObject), 
+			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(XYFocusUp), typeof(global::Windows.UI.Xaml.DependencyObject), 
+			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
