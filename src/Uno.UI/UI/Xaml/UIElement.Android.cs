@@ -79,7 +79,14 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+			var physicalRect = rect.LogicalToPhysicalPixels();
+			if (FrameRoundingAdjustment is { } fra)
+			{
+				physicalRect.Width += fra.Width;
+				physicalRect.Height += fra.Height;
+			}
+
+			ViewCompat.SetClipBounds(this, physicalRect);
 
 			SetClipChildren(NeedsClipToSlot);
 		}
@@ -372,6 +379,11 @@ namespace Windows.UI.Xaml
 		}
 
 		internal Rect? ArrangeLogicalSize { get; set; } // Used to keep "double" precision of arrange phase
+
+		/// <summary>
+		/// The difference between the physical layout width and height taking the origin into account, and the physical width and height that would've been calculated for an origin of (0,0). The difference may be -1,0, or +1 pixels due to different roundings. (Eg, consider a Grid that is 31 logical pixels high, with 3 children with alignment Stretch in successive Star-sized rows. Each child will be measured with a logical height of 10.3, and logical origins of 0, 10.3, and 20.6.  Assume the device scale is 1. The child origins will be converted to 0, 10, and 21 respectively in integer pixel values; this will give heights of 10, 11, and 10 pixels. The FrameRoundingAdjustment values will be (0,0), (0,1), and (0,0) respectively.
+		/// </summary>
+		internal Size? FrameRoundingAdjustment { get; set; }
 
 #if DEBUG
 		public static Predicate<View> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";

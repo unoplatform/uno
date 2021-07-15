@@ -121,6 +121,12 @@ namespace Windows.UI.Xaml.Controls
 			var physicalBorderThickness = borderThickness.LogicalToPhysicalPixels();
 			if (cornerRadius != 0)
 			{
+				if (view is UIElement uiElement && uiElement.FrameRoundingAdjustment is { } fra)
+				{
+					drawArea.Height += fra.Height;
+					drawArea.Width += fra.Width;
+				}
+
 				var adjustedArea = drawArea.DeflateBy(physicalBorderThickness);
 
 				using (var backgroundPath = cornerRadius.GetOutlinePath(adjustedArea.ToRectF()))
