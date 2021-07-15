@@ -1388,22 +1388,6 @@ namespace Uno.UWPSyncGenerator
 
 		private bool SkipProperty(IPropertySymbol property)
 		{
-			if (property.ContainingType.Name == "WebView")
-			{
-				switch (property.Name)
-				{
-					case "XYFocusRight":
-					case "XYFocusLeft":
-					case "XYFocusDown":
-					case "XYFocusUp":
-					case "XYFocusRightProperty":
-					case "XYFocusLeftProperty":
-					case "XYFocusDownProperty":
-					case "XYFocusUpProperty":
-						return true;
-				}
-			}
-
 			if (property.ContainingType.Name == "WebView2")
 			{
 				switch (property.Name)
