@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿extern alias __uno;
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
 using Uno.UI.Xaml;
 using System.Drawing;
+using __uno::Uno.Xaml;
+using Microsoft.CodeAnalysis.Text;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -48,6 +51,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
 		private readonly RoslynMetadataHelper _metadataHelper;
+
+		internal const string Title = "XAML Generation Failed";
+		internal const string MessageFormat = "{0}";
+		internal const string Description = "XAML Generation Failed";
+		internal const string Category = "XAML";
+
+		internal static DiagnosticDescriptor GenericXamlErrroRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+			"UXAML0001",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+			Title,
+			MessageFormat,
+			Category,
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true,
+			description: Description
+		);
 
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
@@ -316,13 +336,85 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				TrackGenerationFailed(e, stopwatch.Elapsed);
 
+#if NETFRAMEWORK
 				throw;
+#else
+				return ProcessParsingException(e);
+#endif
 			}
 			finally
 			{
 				_telemetry.Flush();
 				_telemetry.Dispose();
 			}
+		}
+
+		private KeyValuePair<string, string>[] ProcessParsingException(Exception e)
+		{
+			IEnumerable<Exception> Flatten(Exception ex)
+			{
+				if (ex is AggregateException agg)
+				{
+					foreach (var inner in agg.InnerExceptions)
+					{
+						foreach (var inner2 in Flatten(inner))
+						{
+							yield return inner2;
+						}
+					}
+				}
+				else
+				{
+					if (ex.InnerException != null)
+					{
+						foreach (var inner2 in Flatten(ex.InnerException))
+						{
+							yield return inner2;
+						}
+					}
+
+					yield return ex;
+				}
+			}
+
+			foreach (var exception in Flatten(e))
+			{
+				var diagnostic = Diagnostic.Create(
+					GenericXamlErrroRule,
+					GetExceptionFileLocation(exception),
+					exception.Message);
+
+				_generatorContext.ReportDiagnostic(diagnostic);
+			}
+
+			return new KeyValuePair<string, string>[0];
+		}
+
+		private Location? GetExceptionFileLocation(Exception exception)
+		{
+			if (exception is XamlParsingException xamlParsingException)
+			{
+				var xamlFile = _generatorContext.AdditionalFiles.FirstOrDefault(f => f.Path == xamlParsingException.FilePath);
+
+				if (xamlFile != null
+					&& xamlFile.GetText() is { } xamlText
+					&& xamlParsingException.LineNumber.HasValue
+					&& xamlParsingException.LinePosition.HasValue)
+				{
+					var linePosition = new LinePosition(
+						Math.Max(0, xamlParsingException.LineNumber.Value - 1),
+						Math.Max(0, xamlParsingException.LinePosition.Value - 1)
+					);
+
+					return Location.Create(
+						xamlFile.Path,
+						xamlText.Lines.ElementAtOrDefault(xamlParsingException.LineNumber.Value-1).Span,
+						new LinePositionSpan(linePosition, linePosition)
+					);
+				}
+			}
+
+			return null;
 		}
 
 		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links)

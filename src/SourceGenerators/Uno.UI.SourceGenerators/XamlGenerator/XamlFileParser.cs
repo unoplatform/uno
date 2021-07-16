@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿extern alias __uno;
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -70,9 +71,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				return null;
 			}
+			catch (__uno::Uno.Xaml.XamlParseException e)
+			{
+				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);
+			}
+			catch (XmlException e)
+			{
+				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);
+			}
 			catch (Exception e)
 			{
-				throw new InvalidOperationException($"Failed to parse file {file}", e);
+				throw new XamlParsingException($"Failed to parse file", e, 1, 1, file);
 			}
 		}
 
