@@ -178,6 +178,15 @@
     {
       "modifiers": [
         {
+          "copyOnly": [
+            "**/*.png",
+            "**/*.jpg",
+            "**/*.gif",
+            "**/*.woff",
+            "**/*.ttf"
+          ]
+        },
+        {
           "condition": "(!Mobile)",
           "exclude": [
             "UnoWinUIQuickStart.Mobile/**/*"

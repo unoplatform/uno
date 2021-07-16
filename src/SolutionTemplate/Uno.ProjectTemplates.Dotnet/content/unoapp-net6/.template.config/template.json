@@ -157,6 +157,15 @@
     {
       "modifiers": [
         {
+          "copyOnly": [
+            "**/*.png",
+            "**/*.jpg",
+            "**/*.gif",
+            "**/*.woff",
+            "**/*.ttf"
+          ]
+        },
+        {
           "condition": "(!mobile)",
           "exclude": [
             "UnoQuickStart.Mobile/**/*"
