@@ -36,6 +36,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected enum ViewType { Item, GroupHeader, Header, Footer }
 
+		/// <summary>
+		/// Stores the layout state of materialized items. All layout coordinates are relative to the viewport, in physical pixels.
+		/// </summary>
 		private readonly Deque<Group> _groups = new Deque<Group>();
 		private bool _isInitialGroupHeaderCreated;
 		private bool _areHeaderAndFooterCreated;
@@ -725,6 +728,10 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Update the internal state of the layout, as well as 'floating' views like group headers, when the scrolled offset changes.
 		/// </summary>
+		/// <remarks>
+		/// This is called in conjunction with <see cref="OffsetChildrenVertical(int)"/> (or Horizontal), which actually moves the views
+		/// themselves; this method applies the same adjustment to the Uno-side state to keep it in sync with the actual view positions.
+		/// </remarks>
 		private void ApplyOffset(int delta)
 		{
 			ContentOffset -= delta;
@@ -1041,6 +1048,8 @@ namespace Windows.UI.Xaml.Controls
 				appliedOffset += consumptionIncrement;
 				actualOffset = ScrollByInner(appliedOffset, recycler, state);
 			}
+
+			// Apply the residual after consumption-increment-sized blocks have been applied
 			actualOffset = ScrollByInner(offset, recycler, state);
 
 			UpdateBuffers(recycler, state);
@@ -1071,6 +1080,9 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Materialize and dematerialize views corresponding to their visibility after the requested scroll offset.
 		/// </summary>
+		/// <remarks>
+		/// In essence: fill the window that <paramref name="offset"/> is attempting to make visible, and unfill views outside of that window.
+		/// </remarks>
 		/// <returns>The actual scroll offset (which may be less than requested if the end of the list is reached).</returns>
 		private int ScrollByInner(int offset, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
@@ -2360,6 +2372,11 @@ namespace Windows.UI.Xaml.Controls
 			return ChildCount - 1;
 		}
 
+		/// <summary>
+		/// Returns the index of the item on the far leading edge for direction <paramref name="fillDirection"/>. Ie, if scrolling/filling towards
+		/// the end of the list, this will return the bottom-most materialized item, and if scrolling/filling towards the beginning of the list, this will
+		/// return the top-most item.
+		/// </summary>
 		private Uno.UI.IndexPath? GetLeadingMaterializedItem(GeneratorDirection fillDirection)
 		{
 			var group = GetLeadingNonEmptyGroup(fillDirection);
