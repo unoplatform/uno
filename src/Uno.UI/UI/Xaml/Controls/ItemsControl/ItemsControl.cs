@@ -1490,5 +1490,16 @@ namespace Windows.UI.Xaml.Controls
 		/// Resets internal cached state of the collection.
 		/// </summary>
 		private protected virtual void Refresh() { }
+
+		private protected void ChangeSelectorItemsVisualState(bool useTransitions)
+		{
+			foreach (var child in GetItemsPanelChildren())
+			{
+				if (child is SelectorItem selectorItem)
+				{
+					selectorItem.UpdateVisualState(useTransitions);
+				}
+			}
+		}
 	}
 }
