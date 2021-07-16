@@ -45,6 +45,6 @@
   </TemplateContent>
   <WizardExtension>
 	<Assembly>UnoSolutionTemplate.Wizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=edd9d20ca5dec34b</Assembly>
-	<FullClassName>UnoSolutionTemplate.Wizard.UnoSolutionWizard</FullClassName>
+	<FullClassName>UnoSolutionTemplate.Wizard.XamarinUnoSolutionWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>

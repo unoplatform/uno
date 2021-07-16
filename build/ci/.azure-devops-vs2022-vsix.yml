@@ -1,0 +1,57 @@
+﻿parameters:
+  vmImage: ''
+
+jobs:
+- job: VS2022_VSIX
+  displayName: 'VS 2022 Extension build'
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - powershell: |
+      Invoke-WebRequest https://aka.ms/vs/17/pre/vs_enterprise.exe -O $env:TEMP\vs_enterprise.exe
+    displayName: VS17 installer download
+
+  - powershell: |
+      $exitCode = & "$env:TEMP\vs_enterprise.exe" --quiet --norestart --wait `
+          --installPath C:\VS2022 `
+          --add Microsoft.VisualStudio.Workload.NetCrossPlat `
+          --add Microsoft.VisualStudio.Workload.NetCoreTools `
+          --add Microsoft.VisualStudio.Workload.ManagedDesktop `
+          --add Microsoft.VisualStudio.Workload.Universal `
+          --add Microsoft.VisualStudio.Component.VSSDK	`
+          | Out-Null
+
+      Write-Output $exitCode
+      Write-Host "##vso[task.setvariable variable=PATH;]${env:PATH};C:\VS2022\MSBuild\Current\Bin"
+    displayName: VS17 install
+
+  - template: templates/gitversion.yml
+
+  - task: MSBuild@1
+    displayName: ≥ Build 2022 VSIX
+    inputs:
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: location
+      msbuildLocation: C:\VS2022\MSBuild\Current\Bin
+      msbuildArguments: /r /m /t:Build2022VSIX "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-vsix2022.binlog
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages
+      ArtifactType: Container
+

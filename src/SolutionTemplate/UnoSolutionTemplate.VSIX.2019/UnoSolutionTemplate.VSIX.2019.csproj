@@ -32,7 +32,8 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -72,19 +73,8 @@
     <DeployExtension>false</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnoStaticGlobalPropertiesProvider.cs" />
-    <Compile Include="UnoPlatformPackage.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Key.snk" />
-    <None Include="Readme.md" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="uno-fluentui-assets.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -127,20 +117,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="logo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Resources\UnoPlatformPackage.ico" />
-    <Content Include="Resources\VSPackage1.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="VSPackage.resx">
-      <MergeWithCTO>true</MergeWithCTO>
-      <ManifestResourceName>VSPackage</ManifestResourceName>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
@@ -167,11 +143,9 @@
     <PackageReference Include="Microsoft.VisualStudio.ImageCatalog" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Imaging" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" version="14.3.26931" />
-    <PackageReference Include="Microsoft.VisualStudio.OLE.Interop" version="7.10.6071" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
       <Version>16.0.374-pre</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" version="15.0.16" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop" version="7.10.6073" />
@@ -184,7 +158,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.8.0" version="8.0.50728" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.9.0" version="9.0.30730" />
     <PackageReference Include="Microsoft.VisualStudio.Text.Data" version="15.6.27740" />
-    <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop" version="7.10.6071" />
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.8.0" version="8.0.50728" />
     <PackageReference Include="Microsoft.VisualStudio.Utilities" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" version="16.8.33" />
@@ -193,7 +166,9 @@
     <PackageReference Include="stdole" version="7.0.3303" />
     <PackageReference Include="StreamJsonRpc" version="2.8.21" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
@@ -207,4 +182,5 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
+  <Import Project="..\UnoSolutionTemplate.VSIX\UnoSolutionTemplate.VSIX.projitems" Label="Shared" />
 </Project>

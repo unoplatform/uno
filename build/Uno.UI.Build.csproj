@@ -53,7 +53,7 @@
 
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 
-		<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
+		<CallTarget Targets="PublishVSIX2019" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 	</Target>
 
 	<Target Name="BuildNet6" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
@@ -72,6 +72,18 @@
 
 		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 	</Target>
+	
+	<Target Name="Build2022VSIX" Condition="'$(BuildingInsideVisualStudio)'==''">
+		<CallTarget Targets="UpdateFileVersions" Condition="$(_isWindows)" />
+		
+		<MSBuild Properties="Configuration=Release"
+             Projects="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\UnoSolutionTemplate.VSIX.2022.csproj"
+             Targets="Restore;Build"
+             RebaseOutputs="false"
+             BuildInParallel="true" />
+
+		<CallTarget Targets="PublishVSIX2022" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
+	</Target>
 
 	<Target Name="UpdateFileVersions">
 		<PropertyGroup>
@@ -83,7 +95,12 @@
 			</MSBuildDeveloperNamespace>
 		</PropertyGroup>
 
-		<XmlPoke XmlInputPath="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\source.extension.vsixmanifest"
+		<ItemGroup>
+			<_VSIXInput Include="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2019\source.extension.vsixmanifest" />
+			<_VSIXInput Include="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\source.extension.vsixmanifest" />
+		</ItemGroup>
+
+		<XmlPoke XmlInputPath="%(_VSIXInput.Identity)"
 							 Query="/x:PackageManifest/x:Metadata/x:Identity/@Version"
 							 Value="$(GITVERSION_MajorMinorPatch).$(GITVERSION_CommitsSinceVersionSource)"
 							 Namespaces="$(VSXNamespace)"
@@ -99,6 +116,7 @@
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.macOS.csproj"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Wpf.Host.csproj"/>
 
+			<_sdkProject Include="..\src\SolutionTemplate\**\*.Mobile.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Skia.*.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
@@ -218,9 +236,14 @@
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
 
-	<Target Name="PublishVisx" Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.VSIX.vsix"
-					DestinationFiles="$(OutputDir)\vslatest-generic\UnoPlatform-$(GITVERSION_SemVer).vsix" />
+	<Target Name="PublishVSIX2019" Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2019\bin\Release\UnoSolutionTemplate.VSIX.vsix"
+					DestinationFiles="$(OutputDir)\vslatest-generic\UnoPlatform-$(GITVERSION_SemVer).x86.vsix" />
+	</Target>
+	
+	<Target Name="PublishVSIX2022">
+		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\bin\Release\UnoSolutionTemplate.VSIX.2022.vsix"
+					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_SemVer).x64.vsix" />
 	</Target>
 
 	<Target Name="PrepareNuGetPackage">
