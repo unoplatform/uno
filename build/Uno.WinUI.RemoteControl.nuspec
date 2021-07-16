@@ -58,6 +58,13 @@
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
 	  </group>
 
+	  <!-- net6.0-macos -->
+	  <group targetFramework="net6.0-macos">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+	  </group>
+
 	  <!-- net6.0-android -->
 	  <group targetFramework="net6.0-android">
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
@@ -138,6 +145,9 @@
 
 	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net6.0-maccatalyst" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net6.0-maccatalyst" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-macos\Uno.UI.RemoteControl.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net6.0-macos" />
 
 	<!-- Processors -->
 	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.dll" target="tools\rc\processors" />
