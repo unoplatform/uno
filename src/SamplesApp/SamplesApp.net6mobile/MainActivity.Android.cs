@@ -11,6 +11,7 @@ namespace SamplesApp.Droid
 {
 	[Activity(
 			MainLauncher = true,
+			Exported = true,
 			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]

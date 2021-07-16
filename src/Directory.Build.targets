@@ -6,7 +6,7 @@
 	<Product>$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
   </PropertyGroup>
 
-  <Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid)">
+  <Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android'">
 	<MakeDir Directories="obj\$(TargetFramework)\Resources" />
 	<WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
   </Target>

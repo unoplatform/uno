@@ -29,12 +29,6 @@ jobs:
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
-    # net6 related
-    DotNetVersion: 6.0.100-preview.4.21255.9
-    MauiCheck.Version: 0.4.2
-    DotNet.Cli.Telemetry.OptOut: true
-    MauiCheck.Manifest: https://raw.githubusercontent.com/Redth/dotnet-maui-check/d40ada53aa6a3b94740c86ca55fc27e62bb63d1b/manifests/maui-dev.manifest.json
-
   steps:
   - checkout: self
     clean: true
@@ -44,22 +38,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
-
-  ## Required until .NET 6 installs properly on Windows using UseDotnet
-  - powershell: |
-      $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
-      & .\dotnet-install.ps1 -Version $(DotNetVersion) -InstallDir "$env:ProgramFiles\dotnet\" -Verbose
-      & dotnet --list-sdks
-    displayName: install .NET $(DotNetVersion)
-    errorActionPreference: stop
-
-  - powershell: |
-      & dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version) --add-source https://api.nuget.org/v3/index.json
-      & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --manifest $(MauiCheck.Manifest)
-    displayName: Install .NET 6 Workloads
-    errorActionPreference: stop
-
+  - template: templates/dotnet6-install-windows.yml
   - template: templates/install-windows-sdk.yml
 
   - powershell: |

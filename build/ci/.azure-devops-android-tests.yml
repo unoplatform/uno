@@ -6,6 +6,48 @@ parameters:
 
 jobs:
 
+- job: Android_Build_Net6_For_Tests
+  displayName: 'Android UI Tests (Net6 Build)'
+
+  pool:
+    vmImage: ${{ parameters.vmMacOSImage }}
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/dotnet6-install-mac.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - bash: |
+      cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.net6mobile
+      dotnet publish -f net6.0-android -c Release
+    displayName: Build Android samples app
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.net6mobile/bin/Release/net6.0-android/publish
+      Contents: 'uno.platform.unosampleapp-Signed.apk'
+      TargetFolder: $(build.artifactstagingdirectory)/android
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-android-net6-build
+      ArtifactType: Container
+
 - job: Android_Build_For_Tests
   displayName: 'Android UI Tests (Build)'
 
@@ -60,6 +102,7 @@ jobs:
   displayName: 'Android UI Tests (Run)'
   dependsOn:
   - Android_Build_For_Tests
+  - Android_Build_Net6_For_Tests
   - SamplesApp_UITests_Build
 
   timeoutInMinutes: 120
@@ -82,26 +125,49 @@ jobs:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 1 ## Note: Align with UNO_UITEST_BUCKET_COUNT
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
 
       Android_9.0_Group_02:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 2 ## Note: Align with UNO_UITEST_BUCKET_COUNT
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
 
       Android_9.0_Group_03:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 3 ## Note: Align with UNO_UITEST_BUCKET_COUNT
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
 
       Android_9.0_Snapshots:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshots
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
 
       Android_9.0_RuntimeTests:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
+
+      Android_9.0_RuntimeTests_Net6:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-net6-build
+        TARGETPLATFORM_NAME: net6
+        FAILBUILD_ON_FAILURE: false # false until https://github.com/unoplatform/uno/issues/5873 and https://github.com/dotnet/runtime/pull/55681 are released 
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
       # Android_10.0:
@@ -114,7 +180,7 @@ jobs:
 
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: uitests-android-build
+        artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
@@ -149,22 +215,24 @@ jobs:
       ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
       UITEST_TEST_MODE_NAME: "$(UITEST_TEST_MODE_NAME)"
       UNO_UITEST_BUCKET_ID: "$(UNO_UITEST_BUCKET_ID)"
+      SAMPLEAPP_ARTIFACT_NAME: "$(SAMPLEAPP_ARTIFACT_NAME)"
+      TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
  
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID) Test Run'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      failTaskOnFailedTests: true
+      failTaskOnFailedTests: $(FAILBUILD_ON_FAILURE)
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) Runtime Tests Run'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(TARGETPLATFORM_NAME) Runtime Tests Run'
       testResultsFormat: 'NUnit'
-      failTaskOnFailedTests: true
+      failTaskOnFailedTests: $(FAILBUILD_ON_FAILURE)
 
   - task: PublishBuildArtifacts@1
     condition: always()

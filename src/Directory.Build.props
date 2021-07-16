@@ -57,6 +57,11 @@
 	restore issues in the lottie project when building on .NET 5+
 	-->
 	<UnoUIUseRoslynSourceGenerators Condition="'$(MSBuildRuntimeType)'=='Core'">true</UnoUIUseRoslynSourceGenerators>
+  
+	<!--
+	Force the compilation using Roslyn Generators on net6.0 and later
+	-->
+	<UnoUIUseRoslynSourceGenerators Condition="$(TargetFramework.StartsWith('net6'))">true</UnoUIUseRoslynSourceGenerators>
   </PropertyGroup>
 
   <!--
