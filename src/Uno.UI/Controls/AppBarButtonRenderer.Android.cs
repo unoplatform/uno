@@ -168,7 +168,7 @@ namespace Uno.UI.Controls
 			}
 
 			// Background
-			var backgroundColor = (element.Background as SolidColorBrush)?.ColorWithOpacity;
+			var backgroundColor = Brush.GetColorWithOpacity(element.Background);
 			if (backgroundColor != null)
 			{
 				_appBarButtonWrapper.SetBackgroundColor((Android.Graphics.Color)backgroundColor);

@@ -87,17 +87,17 @@ namespace Windows.UI.Xaml.Media
 
 			void OnStretchChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
 			{
-				SetPreserveAspectRatio();
+				preserveAspectRatio = SetPreserveAspectRatio();
 			}
 
 			void OnAlignmentChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
 			{
-				SetPreserveAspectRatio();
+				preserveAspectRatio = SetPreserveAspectRatio();
 			}
 
 			void OnTargetLayoutUpdated(object sender, object e)
 			{
-				SetPreserveAspectRatio();
+				preserveAspectRatio = SetPreserveAspectRatio();
 			}
 
 			subscriptionDisposable.Disposable = ImageSource?.Subscribe(OnSourceOpened);
@@ -120,8 +120,13 @@ namespace Windows.UI.Xaml.Media
 							("height", "100%"),
 							("preserveAspectRatio", preserveAspectRatio),
 							("href", _imageUri)
-
 						);
+
+						// Clear any previous image, if any
+						foreach(var previousChild in pattern.GetChildren())
+						{
+							pattern.RemoveChild(previousChild);
+						}
 
 						pattern.AddChild(image);
 

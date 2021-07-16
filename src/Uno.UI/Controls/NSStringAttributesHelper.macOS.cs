@@ -77,7 +77,7 @@ namespace Uno.UI
 			var font = NSFontHelper.TryGetFont((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontFamily, tuple.preferredBodyFontSize);
 			var attributes = new NSStringAttributes()
 			{
-				ForegroundColor = (tuple.foreground as SolidColorBrush)?.ColorWithOpacity,
+				ForegroundColor = Brush.GetColorWithOpacity(tuple.foreground),
 				Font = font,
 				BaselineOffset = GetBaselineOffset(),
 				UnderlineStyle = (int)((tuple.textDecorations & TextDecorations.Underline) == TextDecorations.Underline
