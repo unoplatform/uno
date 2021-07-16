@@ -63,7 +63,7 @@ $dotnetBuildNet6Configurations =
     @("Wasm", ""),
     @("Skia.Gtk", ""),
     @("Skia.Linux.FrameBuffer", ""),
-    @("Windows.Desktop", ""),
+    # @("Windows.Desktop", ""), # Disabled because of https://github.com/microsoft/microsoft-ui-xaml/issues/5143
     @("Skia.WPF.Host", "")
 )
 
