@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
-		private CALayer _shapeLayer;
+		private CAShapeLayer _shapeLayer;
 
 		public Shape()
 		{
@@ -53,14 +53,21 @@ namespace Windows.UI.Xaml.Shapes
 			Layer.AddSublayer(_shapeLayer);
 		}
 
-		private CALayer CreateLayer(CGPath path)
+		private void UpdateRender()
 		{
-			var pathLayer = new CAShapeLayer()
+			if (_shapeLayer is null)
 			{
-				Path = path,
-				StrokeColor = (Stroke as SolidColorBrush)?.ColorWithOpacity ?? Colors.Transparent,
-				LineWidth = (nfloat)ActualStrokeThickness,
-			};
+				// layer needs to be created
+				InvalidateArrange();
+				return;
+			}
+
+			SetFillAndStroke(_shapeLayer);
+		}
+
+		private void SetFillAndStroke(CAShapeLayer pathLayer)
+		{
+			RemoveSublayers();
 
 			switch (Fill)
 			{
@@ -68,15 +75,15 @@ namespace Windows.UI.Xaml.Shapes
 					pathLayer.FillColor = colorFill.ColorWithOpacity;
 					break;
 
-				case ImageBrush imageFill when TryCreateImageBrushLayers(imageFill, GetFillMask(path), out var imageLayer):
+				case ImageBrush imageFill when TryCreateImageBrushLayers(imageFill, GetFillMask(pathLayer.Path), out var imageLayer):
 					pathLayer.FillColor = Colors.Transparent;
 					pathLayer.AddSublayer(imageLayer);
 					break;
 
-				case LinearGradientBrush gradientFill:
+				case GradientBrush gradientFill:
 					var gradientLayer = gradientFill.GetLayer(Frame.Size);
 					gradientLayer.Frame = Bounds;
-					gradientLayer.Mask = GetFillMask(path);
+					gradientLayer.Mask ??= GetFillMask(pathLayer.Path);
 					gradientLayer.MasksToBounds = true;
 
 					pathLayer.FillColor = Colors.Transparent;
@@ -93,24 +100,45 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 			}
 
-			if (StrokeDashArray != null)
+			pathLayer.StrokeColor = Brush.GetColorWithOpacity(Stroke, Colors.Transparent);
+			pathLayer.LineWidth = (nfloat)ActualStrokeThickness;
+
+			if (StrokeDashArray is { } sda)
 			{
-				var pattern = StrokeDashArray.Select(d => (global::Foundation.NSNumber)d).ToArray();
+				var pattern = sda.Select(d => (global::Foundation.NSNumber)d).ToArray();
 
 				pathLayer.LineDashPhase = 0; // Starting position of the pattern
 				pathLayer.LineDashPattern = pattern;
 			}
-
-			return pathLayer;
+			else if (pathLayer.LineDashPattern is { })
+			{
+				pathLayer.LineDashPattern = null;
+			}
 
 			CAShapeLayer GetFillMask(CGPath mask)
-				=> new CAShapeLayer
+			{
+				return new CAShapeLayer
 				{
 					Path = mask,
 					Frame = Bounds,
 					// We only use the fill color to create the mask area
 					FillColor = _Color.White.CGColor,
 				};
+			}
+
+			void RemoveSublayers()
+			{
+				pathLayer.Sublayers = null;
+			}
+		}
+
+		private CAShapeLayer CreateLayer(CGPath path)
+		{
+			var pathLayer = new CAShapeLayer() { Path = path };
+
+			SetFillAndStroke(pathLayer);
+
+			return pathLayer;
 		}
 
 		private bool TryCreateImageBrushLayers(ImageBrush imageBrush, CAShapeLayer fillMask, out CALayer imageContainerLayer)
