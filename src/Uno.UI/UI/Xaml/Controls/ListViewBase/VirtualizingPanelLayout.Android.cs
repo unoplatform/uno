@@ -517,7 +517,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				return HorizontalScrollRange = ComputeScrollRange(state);
+				return HorizontalScrollRange = ComputeScrollRange(state, Orientation.Horizontal);
 			}
 			catch (Exception e)
 			{
@@ -556,7 +556,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				return VerticalScrollRange = ComputeScrollRange(state);
+				return VerticalScrollRange = ComputeScrollRange(state, Orientation.Vertical);
 			}
 			catch (Exception e)
 			{
@@ -687,8 +687,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The total range of all content (necessarily an estimate since we can't measure non-materialized items.)
 		/// </summary>
-		private int ComputeScrollRange(RecyclerView.State state)
+		private int ComputeScrollRange(RecyclerView.State state, Orientation orientation)
 		{
+			if (orientation != ScrollOrientation)
+			{
+				return Breadth;
+			}
+
 			//Assume as a dirt-simple heuristic that all items are uniform. Could refine this to only estimate for unmaterialized content.
 			var leadingGroup = GetLeadingNonEmptyGroup(GeneratorDirection.Forward);
 			var leadingLine = leadingGroup?.GetLeadingLine(GeneratorDirection.Forward);
