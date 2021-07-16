@@ -134,7 +134,8 @@ namespace Windows.UI.Xaml.Controls
 
 				if (horizontalDelta >= 1 || verticalDelta >= 1 || horizontalDelta <= 1 || verticalDelta <= 1)
 				{
-					parent.ChangeView(parent.HorizontalOffset + horizontalDelta, parent.VerticalOffset + verticalDelta, zoomFactor: null, disableAnimation: true);
+					// Clamp target offset to be >=0, to simplify layout calculations for dragging ListView
+					parent.ChangeView(MathEx.Max(0, parent.HorizontalOffset + horizontalDelta), MathEx.Max(0, parent.VerticalOffset + verticalDelta), zoomFactor: null, disableAnimation: true);
 					_previousTick = currentTick;
 				}
 				// else wait until a larger delta accumulates
