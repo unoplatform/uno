@@ -78,45 +78,49 @@ namespace Windows.Storage.Pickers
 
 		private NativeFilePickerAcceptType[] BuildFileTypesMap()
 		{
-			var acceptTypes = new List<NativeFilePickerAcceptType>();
+			var allExtensions = FileTypeFilter.Except(new[] { "*" });
 
-			var mimeTypeGroups = FileTypeFilter
-				.Except(new[] { "*" })
-				.GroupBy(f => MimeTypeService.GetFromExtension(f))
-				.ToArray();
+			var acceptTypes = allExtensions
+				.Select(fileType => BuildNativeFilePickerAcceptType(fileType))
+				.ToList();
 
-			var allAccepts = new List<NativeFilePickerAcceptTypeItem>();
-
-			foreach (var mimeTypeGroup in mimeTypeGroups)
+			if (!FileTypeFilter.Contains("*"))
 			{
-				var extensions = mimeTypeGroup.ToArray();
-
-				var acceptType = new NativeFilePickerAcceptType();
-				acceptType.Description = extensions.Length > 1 ? string.Empty : extensions.First();
-
-				var acceptItem = new NativeFilePickerAcceptTypeItem()
+				var fullAcceptItem = new NativeFilePickerAcceptTypeItem
 				{
-					MimeType = mimeTypeGroup.Key,
-					Extensions = extensions
+					MimeType = "*/*",
+					Extensions = allExtensions.ToArray()
 				};
-				allAccepts.Add(acceptItem);
 
-				acceptType.Accept = new[] { acceptItem };
-				acceptTypes.Add(acceptType);
-			}
-
-			if (allAccepts.Count > 1)
-			{
 				var fullAcceptType = new NativeFilePickerAcceptType()
 				{
 					Description = "All",
-					Accept = allAccepts.ToArray()
+					Accept = new[] { fullAcceptItem }
 				};
 
 				acceptTypes.Insert(0, fullAcceptType);
 			}
 
 			return acceptTypes.ToArray();
+		}
+
+		private NativeFilePickerAcceptType BuildNativeFilePickerAcceptType(string fileType)
+		{
+			var acceptItem = new NativeFilePickerAcceptTypeItem
+			{
+				// This generic MIME type prevents unrelated
+				// extensions from showing up in some browsers.
+				MimeType = "*/*",
+				Extensions = new[] { fileType }
+			};
+			return new NativeFilePickerAcceptType
+			{
+				// An empty string is consistent with UWP implementation.
+				// However, some browsers show a generic description when 
+				// this string is empty.
+				Description = string.Empty,
+				Accept = new[] { acceptItem }
+			};
 		}
 
 		private async Task<FilePickerSelectedFilesArray> UploadPickerPickFilesAsync(bool multiple, CancellationToken token)
