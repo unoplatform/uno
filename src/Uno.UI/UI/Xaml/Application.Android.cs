@@ -40,6 +40,8 @@ namespace Windows.UI.Xaml
 			Suspending?.Invoke(this, new Windows.ApplicationModel.SuspendingEventArgs(new Windows.ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
 		}
 
+		protected virtual void OnBackgroundActivated(BackgroundActivatedEventArgs args) { }
+
 		public void Exit()
 		{
 			Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
