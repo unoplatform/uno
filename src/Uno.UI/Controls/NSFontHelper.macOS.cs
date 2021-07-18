@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,8 +20,8 @@ namespace Windows.UI
 	{
 		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, NSFont> _tryGetFont;
 
-		private const int DefaultNSFontPreferredBodyFontSize = 17;
-		private static float? DefaultPreferredBodyFontSize = (float)NSFont.SystemFontSize;
+		private const int DefaultNSFontPreferredBodyFontSize = 13;
+		private static readonly float DefaultPreferredBodyFontSize = (float)NSFont.SystemFontSize;
 
 		static NSFontHelper()
 		{
@@ -40,7 +41,7 @@ namespace Windows.UI
 		/// <returns>Scaled font size</returns>
 		internal static nfloat GetScaledFontSize(nfloat size, float? preferredBodyFontSize = null)
 		{
-			return GetScaledFontSize(size, preferredBodyFontSize ?? DefaultPreferredBodyFontSize);
+			return GetScaledFontSize(size, (nfloat)(preferredBodyFontSize ?? DefaultPreferredBodyFontSize));
 		}
 
 		/// <summary>
@@ -59,7 +60,7 @@ namespace Windows.UI
 
 		private static NSFont InternalTryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, nfloat? basePreferredSize)
 		{
-			NSFont font = null;
+			NSFont? font = null;
 
 			size = GetScaledFontSize(size, basePreferredSize);
 
@@ -68,7 +69,9 @@ namespace Windows.UI
 				var fontFamilyName = FontFamilyHelper.RemoveUri(requestedFamily.Source);
 
 				// If there's a ".", we assume there's an extension and that it's a font file path.
-				font = fontFamilyName.Contains(".") ? GetCustomFont(size, fontFamilyName, fontWeight, fontStyle) : GetSystemFont(size, fontWeight, fontStyle, fontFamilyName);
+				font = fontFamilyName.Contains(".")
+					? GetCustomFont(size, fontFamilyName, fontWeight, fontStyle)
+					: GetSystemFont(size, fontWeight, fontStyle, fontFamilyName);
 			}
 
 			return font ?? GetDefaultFont(size, fontWeight, fontStyle);
@@ -76,14 +79,13 @@ namespace Windows.UI
 
 		private static NSFont GetDefaultFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle)
 		{
-
 			return ApplyStyle(NSFont.SystemFontOfSize(size, fontWeight.ToNSFontWeight()), size, fontStyle);
 		}
 
 		#region Load Custom Font
 		private static NSFont GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle)
 		{
-			NSFont font;
+			NSFont? font;
 			//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
 			if (fontPath.Contains("#"))
 			{
@@ -133,7 +135,7 @@ namespace Windows.UI
 			//}
 			//else if (
 			//	fontWeight.Weight != FontWeights.SemiBold.Weight && // For some reason, when we load a Semibold font, we must keep the native Bold flag.
-			//	fontWeight.Weight < FontWeights.Bold.Weight && 
+			//	fontWeight.Weight < FontWeights.Bold.Weight &&
 			//	font.FontDescriptor.SymbolicTraits.HasFlag(NSFontDescriptorSymbolicTraits.Bold))
 			//{
 			//	var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits & ~NSFontDescriptorSymbolicTraits.Bold);
@@ -181,7 +183,7 @@ namespace Windows.UI
 			return font;
 		}
 
-		private static NSFont GetFontFromFamilyName(nfloat size, string familyName)
+		private static NSFont? GetFontFromFamilyName(nfloat size, string familyName)
 		{
 			// TODO
 			////If only one font exists for this family name, use it. Otherwise we will need to inspect the file for the right font name
@@ -190,10 +192,10 @@ namespace Windows.UI
 			return null;
 		}
 
-		private static NSFont GetFontFromFile(nfloat size, string file)
+		private static NSFont? GetFontFromFile(nfloat size, string file)
 		{
 			var fileName = Path.GetFileNameWithoutExtension(file);
-			var fileExtension = Path.GetExtension(file)?.Replace(".", "");
+			var fileExtension = Path.GetExtension(file)?.Replace(".", "") ?? "";
 
 			var url = NSBundle
 				.MainBundle
@@ -215,18 +217,15 @@ namespace Windows.UI
 			}
 
 			//iOS loads NSFonts based on the PostScriptName of the font file
-			using (var fontProvider = new CGDataProvider(fontData))
-			{
-				using (var font = CGFont.CreateFromProvider(fontProvider))
-				{
-					return font != null ? NSFont.FromFontName(font.PostScriptName, size) : null;
-				}
-			}
+			using var fontProvider = new CGDataProvider(fontData);
+			using var font = CGFont.CreateFromProvider(fontProvider);
+
+			return font != null ? NSFont.FromFontName(font.PostScriptName, size) : null;
 		}
 		#endregion
 
 		#region Load System Font
-		private static NSFont GetSystemFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, string fontFamilyName)
+		private static NSFont? GetSystemFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, string fontFamilyName)
 		{
 			//based on Fonts available @ http://iosfonts.com/
 			//for Windows parity feature, we will not support FontFamily="HelveticaNeue-Bold" (will ignore Bold and must be set by FontWeight property instead)

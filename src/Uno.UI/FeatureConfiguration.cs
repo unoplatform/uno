@@ -471,7 +471,7 @@ namespace Uno.UI
 
 			/// <summary>
 			/// [WebAssembly Only] Enables the assignation of properties from the XAML visual tree as DOM attributes: Height -> "xamlheight",
-			/// HorizontalAlignment -> "xamlhorizontalalignment" etc. 
+			/// HorizontalAlignment -> "xamlhorizontalalignment" etc.
 			/// </summary>
 			/// <remarks>
 			/// This should only be enabled for debug builds, but can greatly aid layout debugging.
@@ -484,7 +484,7 @@ namespace Uno.UI
 #if __ANDROID__
 			/// <summary>
 			/// When this is set, non-UIElements will always be clipped to their bounds (<see cref="Android.Views.ViewGroup.ClipChildren"/> will
-			/// always be set to true on their parent). 
+			/// always be set to true on their parent).
 			/// </summary>
 			/// <remarks>
 			/// This is true by default as most native views assume that they will be clipped, and can display incorrectly otherwise.

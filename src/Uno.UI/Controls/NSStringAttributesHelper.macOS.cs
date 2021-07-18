@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Foundation;
 using Windows.UI;
 using Windows.UI.Text;
@@ -11,7 +12,7 @@ namespace Uno.UI
 {
 	internal static class NSStringAttributesHelper
 	{
-		private static Func<
+		private static readonly Func<
 			(
 				FontWeight fontWeight,
 				FontStyle fontStyle,
@@ -20,8 +21,7 @@ namespace Uno.UI
 				double fontSize,
 				int characterSpacing,
 				BaseLineAlignment baseLineAlignment,
-				TextDecorations textDecorations,
-				float? preferredBodyFontSize
+				TextDecorations textDecorations
 			),
 			NSStringAttributes
 		> _getAttributes;
@@ -43,7 +43,7 @@ namespace Uno.UI
 			TextDecorations textDecorations
 		)
 		{
-			return _getAttributes((fontWeight, fontStyle, fontFamily, foreground, fontSize, characterSpacing, baseLineAlignment, textDecorations, 12.0f /* macOS TODO */));
+			return _getAttributes((fontWeight, fontStyle, fontFamily, foreground, fontSize, characterSpacing, baseLineAlignment, textDecorations));
 		}
 
 		private static NSStringAttributes InternalGetAttributes((
@@ -54,8 +54,7 @@ namespace Uno.UI
 			double fontSize,
 			int characterSpacing,
 			BaseLineAlignment baseLineAlignment,
-			TextDecorations textDecorations,
-			float? preferredBodyFontSize) tuple
+			TextDecorations textDecorations) tuple
 		)
 		{
 			float? GetBaselineOffset()
@@ -74,7 +73,7 @@ namespace Uno.UI
 				}
 			}
 
-			var font = NSFontHelper.TryGetFont((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontFamily, tuple.preferredBodyFontSize);
+			var font = NSFontHelper.TryGetFont((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontFamily);
 			var attributes = new NSStringAttributes()
 			{
 				ForegroundColor = Brush.GetColorWithOpacity(tuple.foreground),
@@ -85,7 +84,7 @@ namespace Uno.UI
 					: NSUnderlineStyle.None),
 				StrikethroughStyle = (int)((tuple.textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough
 					? NSUnderlineStyle.Single
-					: NSUnderlineStyle.None),			
+					: NSUnderlineStyle.None),
 			};
 
 			if (tuple.characterSpacing != 0f)

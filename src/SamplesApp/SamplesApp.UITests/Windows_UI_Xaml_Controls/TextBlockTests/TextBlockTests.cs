@@ -345,7 +345,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			var stackTextBlockName = "stackTextBlock";
 			var maxLineSlider = _app.Marked("slider");
-			
+
 			_app.WaitForElement(maxLineSlider);
 
 			var numberOfLines = 1;
@@ -506,6 +506,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 				ImageAssert.AreEqual(snapshotTextHidden, r, snapshot, r);
 			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_TextSize_Then_RelativeSize()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_RelativeTextSize");
+
+			var textBlockHeight = _app.GetLogicalRect("textBlock").Height;
+			var textBoxHeight = _app.GetLogicalRect("textBox").Height;
+
+			using var _ = new AssertionScope();
+
+			const float expectedHeight = 164f;
+			const float precision = 20f; // On iOS he result is 148 and MacOS it's 146
+			textBlockHeight.Should().BeApproximately(expectedHeight, precision);
+			textBoxHeight.Should().BeApproximately(expectedHeight, precision);
 		}
 	}
 }

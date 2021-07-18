@@ -15,7 +15,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
 	{
-
 		private bool _measureInvalidated;
 		private Size? _previousAvailableSize;
 		private Size _previousDesiredSize;
