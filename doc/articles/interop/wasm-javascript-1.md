@@ -182,7 +182,15 @@ await MyControl.ExecuteJavascriptAsync("element.requestFullScreen();"); // async
 * Any Promise _rejected_ result will get translated into an `ApplicationException` exception.
 * Remember to always use `InvariantCulture` when generating JavaScript for numbers. There's also a helper in [`Uno.Core`](https://www.nuget.org/packages/Uno.Core) called `.ToStringInvariant()`: this dependency is already present in any Uno projects in the namespace `Uno.Extensions`.
 * Calling the javascript `document.getElementById()` with the element's `HtmlId` will only work when the element is actually loaded in the DOM. So it's better to call the extensions `<element>.ExecuteJavascript()` or `<element>.ExecuteJavascriptAsync()`: they will work all the time.
-
+* If trying to invoke JavaScript code from an Uno Platform **Library** project (rather than an Uno Platform **Application** project), the following needs to be added to the library project's `.csproj` file in order to enable support of WASM functionality within that library.
+```xml
+<!-- .csproj file -->
+<ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard2.')) ">
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+    <PackageReference Include="Uno.UI.WebAssembly" Version="3.3.0" />
+</ItemGroup>
+```
 ## Invoke C# code From JavaScipt
 
 There's 2 ways to _callback_ to managed C# code from JavaScript:
