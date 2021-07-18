@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml
 
 				foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
 				{
-					if (element != null && (state?.Setters.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
+					if (element != null && (state?.Setters.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Local, element)) ?? false))
 					{
 						// PERF: We clear the value of the current setter only if there isn't any setter in the target state
 						// which changes the same target property.
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
 					{
-						setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+						setter.ApplyValue(DependencyPropertyValuePrecedences.Local, element);
 					}
 				}
 
