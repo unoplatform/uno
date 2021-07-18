@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Appointments
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppointmentStore 
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Appointments
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentStore.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAppointmentsAsync( global::System.DateTimeOffset rangeStart,  global::System.TimeSpan rangeLength,  global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions options)
 		{
