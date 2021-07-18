@@ -784,6 +784,27 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+declare class AmbientLightSensor {
+    constructor(config: any);
+    addEventListener(type: "reading", listener: (this: this, ev: Event) => any): void;
+    removeEventListener(type: "reading", listener: (this: this, ev: Event) => any): void;
+    start(): void;
+    stop(): void;
+    illuminance: number;
+}
+interface Window {
+    AmbientLightSensor: AmbientLightSensor;
+}
+declare namespace Windows.Devices.Sensors {
+    class LightSensor {
+        private static dispatchReading;
+        private static ambientLightSensor;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
 declare class Magnetometer {
     constructor(config: any);
     addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
