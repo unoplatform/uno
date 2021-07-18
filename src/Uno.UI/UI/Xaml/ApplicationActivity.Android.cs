@@ -233,8 +233,6 @@ namespace Windows.UI.Xaml
 		{
 			base.OnPause();
 
-			VisualTreeHelper.CloseAllPopups();
-
 			DismissKeyboard();
 		}
 
