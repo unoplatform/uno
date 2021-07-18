@@ -1,4 +1,6 @@
-﻿// MUX Reference NavigationViewItemPresenter.properties.cpp, commit de78834
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference NavigationViewItemPresenter.properties.cpp, commit 2343eed
 
 using Windows.UI.Xaml;
 
@@ -78,6 +80,21 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(PaneToggleButtonVisibility), typeof(Visibility), typeof(NavigationViewTemplateSettings), new PropertyMetadata(Visibility.Visible));
 
 		/// <summary>
+		/// Gets the pane toggle button width.
+		/// </summary>
+		public double PaneToggleButtonWidth
+		{
+			get => (double)GetValue(PaneToggleButtonWidthProperty);
+			internal set => SetValue(PaneToggleButtonWidthProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the PaneToggleButtonWidth dependency property.
+		/// </summary>
+		public static DependencyProperty PaneToggleButtonWidthProperty { get; } =
+			DependencyProperty.Register(nameof(PaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new PropertyMetadata(0.0));
+
+		/// <summary>
 		/// Gets the SelectionFollowsFocus value.
 		/// </summary>
 		public bool SingleSelectionFollowsFocus
@@ -91,6 +108,22 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public static DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
 			DependencyProperty.Register(nameof(SingleSelectionFollowsFocus), typeof(bool), typeof(NavigationViewTemplateSettings), new PropertyMetadata(false));
+
+		/// <summary>
+		/// Gets the smaller pane toggle button width.
+		/// </summary>
+		public double SmallerPaneToggleButtonWidth
+		{
+			get => (double)GetValue(SmallerPaneToggleButtonWidthProperty);
+			internal set => SetValue(SmallerPaneToggleButtonWidthProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the SmallerPaneToggleButtonWidth dependency property.
+		/// </summary>
+		public static DependencyProperty SmallerPaneToggleButtonWidthProperty { get; } =
+			DependencyProperty.Register(nameof(SmallerPaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new PropertyMetadata(0.0));
+
 
 		/// <summary>
 		/// Gets the padding value of the top pane.

@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX reference NavigationView_rs2_themeresources.xaml, commit 088ffb4 -->
+<!-- MUX reference NavigationView_rs2_themeresources_v1.xaml, commit ff50c6e -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,7 +8,7 @@
     xmlns:media="using:Microsoft.UI.Xaml.Media">
 
     <ResourceDictionary.ThemeDictionaries>
-        <ResourceDictionary x:Key="Default">
+        <ResourceDictionary x:Key="Default">        
             <!-- TODO Uno Specific: These two resources differ, as the brushes are not yet here -->
             <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlAcrylicElementBrush" />
             <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicElementMediumBrush" />
@@ -42,10 +42,12 @@
             <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
             <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-
+            <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+            <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Light">
+            <!-- TODO Uno Specific: These two resources differ, as the brushes are not yet here -->
             <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlAcrylicElementBrush" />
             <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicElementMediumBrush" />
 
@@ -78,9 +80,12 @@
             <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
             <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
+            <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+            <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="HighContrast">
+            <!-- TODO Uno Specific: These two resources differ, as the brushes are not yet here -->
             <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlAcrylicElementBrush" />
             <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicElementMediumBrush" />
 
@@ -113,6 +118,8 @@
             <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
             <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
+            <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
+            <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPressed" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
