@@ -3807,6 +3807,10 @@
 				fullName="System.Void Windows.Storage.CachedFileManager..ctor()"
 				reason="Should not be public" />
 
+      		<Member
+				fullName="System.String Windows.UI.Color.ToString(System.String format, System.IFormatProvider provider)"
+				reason="Should not be public" />
+      
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Media.Geometry..ctor()"
 				reason="Not part of the UWP API" />
