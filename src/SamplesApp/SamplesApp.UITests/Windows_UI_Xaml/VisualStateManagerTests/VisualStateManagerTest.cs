@@ -28,9 +28,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.VisualStateManagerTests
 
 			_app.FastTap(changeState);
 
-			_app.WaitForDependencyPropertyValue(border01_bound, "Background", "[SolidColorBrush [#FFFF0000]]");
-			_app.WaitForDependencyPropertyValue(border02, "Background", "[SolidColorBrush [#FF800080]]");
-			_app.WaitForDependencyPropertyValue(border03, "Background", "[SolidColorBrush [#FFFFA500]]");
+			_app.WaitForDependencyPropertyValue(border01_bound, "Background", "[SolidColorBrush #FFFF0000]");
+			_app.WaitForDependencyPropertyValue(border02, "Background", "[SolidColorBrush #FF800080]");
+			_app.WaitForDependencyPropertyValue(border03, "Background", "[SolidColorBrush #FFFFA500]");
 		}
 	}
 }

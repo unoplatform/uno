@@ -45,16 +45,6 @@ namespace Windows.UI
 
 		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format, formatProvider);
 
-		private string ToString(string format, IFormatProvider formatProvider)
-		{
-			var sb = new StringBuilder();
-
-			sb.AppendFormat(formatProvider, "#{0:X2}", A);
-			sb.AppendFormat(formatProvider, "{0:X2}", R);
-			sb.AppendFormat(formatProvider, "{0:X2}", G);
-			sb.AppendFormat(formatProvider, "{0:X2}", B);
-
-			return sb.ToString();
-		}
+		private string ToString(string format, IFormatProvider formatProvider) => string.Format(formatProvider, "#{0:X2}{1:X2}{2:X2}{3:X2}", A, R, G, B);
 	}
 }
