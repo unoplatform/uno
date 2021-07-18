@@ -182,5 +182,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
+  <ItemGroup>
+		<Content Include="logo.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<IncludeInVSIX>true</IncludeInVSIX>
+		</Content>
+  </ItemGroup>
   <Import Project="..\UnoSolutionTemplate.VSIX\UnoSolutionTemplate.VSIX.projitems" Label="Shared" />
 </Project>

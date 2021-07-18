@@ -6,7 +6,7 @@
         <Description xml:space="preserve">Solution templates for Uno Platform enabled projects</Description>
         <MoreInfo>https://github.com/unoplatform/uno</MoreInfo>
         <GettingStartedGuide>https://github.com/unoplatform/uno/blob/master/doc/index.md</GettingStartedGuide>
-        <Icon>..\UnoSolutionTemplate.VSIX\logo.png</Icon>
+        <Icon>logo.png</Icon>
     </Metadata>
     <Installation>
 	  <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,17.0)"/>
