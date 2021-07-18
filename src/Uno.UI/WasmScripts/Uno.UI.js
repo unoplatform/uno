@@ -2557,6 +2557,76 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
+    var Gaming;
+    (function (Gaming) {
+        var Input;
+        (function (Input) {
+            class Gamepad {
+                static getConnectedGamepadIds() {
+                    const gamepads = navigator.getGamepads();
+                    const separator = ";";
+                    var result = '';
+                    for (var i = 0; i < gamepads.length; i++) {
+                        if (gamepads[i]) {
+                            result += gamepads[i].index + separator;
+                        }
+                    }
+                    return result;
+                }
+                static getReading(id) {
+                    var gamepad = navigator.getGamepads()[id];
+                    if (!gamepad) {
+                        return "";
+                    }
+                    var result = "";
+                    result += gamepad.timestamp;
+                    result += '*';
+                    for (var axisId = 0; axisId < gamepad.axes.length; axisId++) {
+                        if (axisId != 0) {
+                            result += '|';
+                        }
+                        result += gamepad.axes[axisId];
+                    }
+                    result += '*';
+                    for (var buttonId = 0; buttonId < gamepad.buttons.length; buttonId++) {
+                        if (buttonId != 0) {
+                            result += '|';
+                        }
+                        result += gamepad.buttons[buttonId].value;
+                    }
+                    return result;
+                }
+                static startGamepadAdded() {
+                    window.addEventListener("gamepadconnected", Gamepad.onGamepadConnected);
+                }
+                static endGamepadAdded() {
+                    window.removeEventListener("gamepadconnected", Gamepad.onGamepadConnected);
+                }
+                static startGamepadRemoved() {
+                    window.addEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
+                }
+                static endGamepadRemoved() {
+                    window.removeEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
+                }
+                static onGamepadConnected(e) {
+                    if (!Gamepad.dispatchGamepadAdded) {
+                        Gamepad.dispatchGamepadAdded = Module.mono_bind_static_method("[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadAdded");
+                    }
+                    Gamepad.dispatchGamepadAdded(e.gamepad.index.toString());
+                }
+                static onGamepadDisconnected(e) {
+                    if (!Gamepad.dispatchGamepadRemoved) {
+                        Gamepad.dispatchGamepadRemoved = Module.mono_bind_static_method("[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadRemoved");
+                    }
+                    Gamepad.dispatchGamepadRemoved(e.gamepad.index.toString());
+                }
+            }
+            Input.Gamepad = Gamepad;
+        })(Input = Gaming.Input || (Gaming.Input = {}));
+    })(Gaming = Windows.Gaming || (Windows.Gaming = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
     var Graphics;
     (function (Graphics) {
         var Display;

@@ -801,6 +801,20 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+declare namespace Windows.Gaming.Input {
+    class Gamepad {
+        private static dispatchGamepadAdded;
+        private static dispatchGamepadRemoved;
+        static getConnectedGamepadIds(): string;
+        static getReading(id: number): string;
+        static startGamepadAdded(): void;
+        static endGamepadAdded(): void;
+        static startGamepadRemoved(): void;
+        static endGamepadRemoved(): void;
+        private static onGamepadConnected;
+        private static onGamepadDisconnected;
+    }
+}
 declare namespace Windows.Graphics.Display {
     class DisplayInformation {
         private static readonly DpiCheckInterval;
