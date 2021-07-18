@@ -38,8 +38,17 @@ namespace Windows.UI.Xaml.Controls
 				// Issue: https://github.com/unoplatform/uno/issues/2879
 			}
 
+			if (view.IsLayoutRequested && view.Parent is View parent && !parent.IsLayoutRequested)
+			{
+				// If a view has requested layout but its Parent hasn't, then the tree is in a broken state, because RequestLayout() calls
+				// cannot bubble up from below the view, and remeasures cannot bubble down from above the parent. This can arise, eg, when
+				// ForceLayout() is used. To fix this state, call RequestLayout() on the parent. Since MeasureChildOverride() is called
+				// from the top down, we should be able to assume that the tree above the parent is already in a good state.
+				parent.RequestLayout();
+			}
+
 			MeasureChild(view, widthSpec, heightSpec);
-			
+
 			var ret = Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view)
 				.PhysicalToLogicalPixels();
 
