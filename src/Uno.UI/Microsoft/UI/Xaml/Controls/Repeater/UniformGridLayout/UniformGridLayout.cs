@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// UniformGridLayout.cpp, commit 1c07867
 
 using System;
 using System.Collections.Specialized;
+using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -105,7 +106,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var gridState = GetAsGridState(context.LayoutState);
 			return new Size(
-				(float)(gridState.EffectiveItemWidth()),(float)(gridState.EffectiveItemHeight())
+				(float)(gridState.EffectiveItemWidth()), (float)(gridState.EffectiveItemHeight())
 			);
 		}
 
@@ -114,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var gridState = GetAsGridState(context.LayoutState);
 			return new Size(
-				(float)(gridState.EffectiveItemWidth()),(float)(gridState.EffectiveItemHeight())
+				(float)(gridState.EffectiveItemWidth()), (float)(gridState.EffectiveItemHeight())
 			);
 		}
 
@@ -124,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		FlowLayoutAnchorInfo IFlowLayoutAlgorithmDelegates.Algorithm_GetAnchorForRealizationRect(
-			Size availableSize, 
+			Size availableSize,
 			VirtualizingLayoutContext context)
 		{
 			Rect bounds = new Rect(
@@ -138,9 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var gridState = GetAsGridState(context.LayoutState);
 				var lastExtent = gridState.FlowAlgorithm().LastExtent;
-				uint itemsPerLine = Math.Min( // note use of uint s
-					Math.Max(1u, (uint)(Minor(availableSize) / GetMinorSizeWithSpacing(context))),
-					Math.Max(1u, m_maximumRowsOrColumns));
+				uint itemsPerLine = GetItemsPerLine(availableSize, context);
 				double majorSize = (itemsCount / itemsPerLine) * (double)(GetMajorSizeWithSpacing(context));
 				double realizationWindowStartWithinExtent =
 					(double)(MajorStart(realizationRect) - MajorStart(lastExtent));
@@ -163,8 +162,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		FlowLayoutAnchorInfo IFlowLayoutAlgorithmDelegates.Algorithm_GetAnchorForTargetElement(
-			int targetIndex, 
-			Size availableSize, 
+			int targetIndex,
+			Size availableSize,
 			VirtualizingLayoutContext context)
 		{
 			int index = -1;
@@ -172,9 +171,7 @@ namespace Microsoft.UI.Xaml.Controls
 			int count = context.ItemCount;
 			if (targetIndex >= 0 & targetIndex < count)
 			{
-				uint itemsPerLine = Math.Min( // note use of uint s
-					Math.Max(1u, (uint)(Minor(availableSize) / GetMinorSizeWithSpacing(context))),
-					Math.Max(1u, m_maximumRowsOrColumns));
+				uint itemsPerLine = GetItemsPerLine(availableSize, context);
 				var indexOfFirstInLine = (targetIndex / itemsPerLine) * itemsPerLine;
 				index = (int)indexOfFirstInLine;
 				var state = GetAsGridState(context.LayoutState);
@@ -190,12 +187,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		Rect IFlowLayoutAlgorithmDelegates.Algorithm_GetExtent(
-			Size availableSize, 
-			VirtualizingLayoutContext context, 
-			UIElement firstRealized, 
+			Size availableSize,
+			VirtualizingLayoutContext context,
+			UIElement firstRealized,
 			int firstRealizedItemIndex,
-			Rect firstRealizedLayoutBounds, 
-			UIElement lastRealized, 
+			Rect firstRealizedLayoutBounds,
+			UIElement lastRealized,
 			int lastRealizedItemIndex,
 			Rect lastRealizedLayoutBounds)
 		{
@@ -210,7 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 			uint itemsPerLine =
 				Math.Min( // note use of uint s
 					Math.Max(1u, availableSizeMinor.IsFinite()
-						? (uint)(availableSizeMinor / GetMinorSizeWithSpacing(context))
+						? (uint)((availableSizeMinor + MinItemSpacing()) / GetMinorSizeWithSpacing(context))
 						: itemsCount),
 					Math.Max(1u, m_maximumRowsOrColumns));
 			float lineSize = GetMajorSizeWithSpacing(context);
@@ -321,6 +318,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region private helpers
 
+		private uint GetItemsPerLine(Size availableSize, VirtualizingLayoutContext context)
+		{
+			uint itemsPerLine = Math.Min( // note use of unsigned ints
+				Math.Max(1u, (uint)((Minor(availableSize) + MinItemSpacing()) / GetMinorSizeWithSpacing(context))),
+				Math.Max(1u, m_maximumRowsOrColumns));
+
+			return itemsPerLine;
+		}
+
 		float GetMinorSizeWithSpacing(VirtualizingLayoutContext context)
 		{
 			var minItemSpacing = MinItemSpacing();
@@ -340,14 +346,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		Rect GetLayoutRectForDataIndex(
-			Size availableSize, 
+			Size availableSize,
 			uint index,
-			Rect lastExtent, 
+			Rect lastExtent,
 			VirtualizingLayoutContext context)
 		{
-			uint itemsPerLine = Math.Min( //note use of uint s
-				Math.Max(1u, (uint)(Minor(availableSize) / GetMinorSizeWithSpacing(context))),
-				Math.Max(1u, m_maximumRowsOrColumns));
+			uint itemsPerLine = GetItemsPerLine(availableSize, context);
 			uint rowIndex = index / itemsPerLine;
 			uint indexInRow = index - (rowIndex * itemsPerLine);
 
