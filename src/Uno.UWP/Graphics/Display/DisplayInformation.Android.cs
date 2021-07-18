@@ -173,29 +173,49 @@ namespace Windows.Graphics.Display
 		/// </remarks>
 		private DisplayOrientations GetNativeOrientation()
 		{
-			using (var windowManager = CreateWindowManager())
+			var orientation = ContextHelper.Current.Resources.Configuration.Orientation;
+			if (orientation == Android.Content.Res.Orientation.Undefined)
 			{
-				var orientation = ContextHelper.Current.Resources.Configuration.Orientation;
-				if (orientation == Android.Content.Res.Orientation.Undefined)
-				{
-					return DisplayOrientations.None;
-				}
-
-				var rotation = windowManager.DefaultDisplay.Rotation;
-				bool isLandscape;
-				switch (rotation)
-				{
-					case SurfaceOrientation.Rotation0:
-					case SurfaceOrientation.Rotation180:
-						isLandscape = orientation == Android.Content.Res.Orientation.Landscape;
-						break;
-					default:
-						isLandscape = orientation == Android.Content.Res.Orientation.Portrait;
-						break;
-				}
-				return isLandscape ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
+				return DisplayOrientations.None;
 			}
+
+			SurfaceOrientation rotation;
+
+			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.Q)
+			{
+				using var windowManager = CreateWindowManager();
+#pragma warning disable 618
+				// WindowManager.DefaultDisplay adeprecated in API30
+				rotation = windowManager.DefaultDisplay.Rotation;
+#pragma warning restore 618
+			}
+			else
+			{
+				using var display = ContextHelper.Current.Display;
+				if (display is null)
+				{
+					return DisplayOrientations.Portrait;
+				}
+				// Display.GetRealMetrics is deprecated in API31, but now we have API30 :)
+				// GetRealMetrics is Added in API level 17, 4.2, we can assume we have this method available
+				rotation = display.Rotation;
+			}
+
+			bool isLandscape;
+			switch (rotation)
+			{
+				case SurfaceOrientation.Rotation0:
+				case SurfaceOrientation.Rotation180:
+					isLandscape = orientation == Android.Content.Res.Orientation.Landscape;
+					break;
+				default:
+					isLandscape = orientation == Android.Content.Res.Orientation.Portrait;
+					break;
+			}
+			return isLandscape ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
+
 		}
+
 
 		/// <summary>
 		/// Sets the CurrentOrientation property
@@ -206,66 +226,88 @@ namespace Windows.Graphics.Display
 		/// </remarks>
 		private DisplayOrientations GetCurrentOrientation()
 		{
-			using (var windowManager = CreateWindowManager())
+			SurfaceOrientation rotation;
+			int width;
+			int height;
+
+			using (var displayMetrics = new DisplayMetrics())
 			{
-				var rotation = windowManager.DefaultDisplay.Rotation;
-				using (var displayMetrics = new DisplayMetrics())
+
+				if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.Q)
 				{
+					using var windowManager = CreateWindowManager();
 #pragma warning disable 618
-					windowManager.DefaultDisplay.GetMetrics(displayMetrics);
+						// WindowManager.DefaultDisplay and Display.GetMetrics: deprecated in API30
+						windowManager.DefaultDisplay.GetMetrics(displayMetrics);
+						rotation = windowManager.DefaultDisplay.Rotation;
 #pragma warning restore 618
-
-					int width = displayMetrics.WidthPixels;
-					int height = displayMetrics.HeightPixels;
-
-					if (width == height)
+				}
+				else
+				{
+					using var display = ContextHelper.Current.Display;
+					if (display is null)
 					{
-						//square device, can't tell orientation
 						return DisplayOrientations.None;
 					}
+					// Display.GetRealMetrics is deprecated in API31, but now we have API30 :)
+					// GetRealMetrics is Added in API level 17, 4.2, we can assume we have this method available
+					display.GetRealMetrics(displayMetrics);
+					rotation = display.Rotation;
+				}
 
-					if (NativeOrientation == DisplayOrientations.Portrait)
-					{
-						switch (rotation)
-						{
-							case SurfaceOrientation.Rotation0:
-								return DisplayOrientations.Portrait;
-							case SurfaceOrientation.Rotation90:
-								return DisplayOrientations.Landscape;
-							case SurfaceOrientation.Rotation180:
-								return DisplayOrientations.PortraitFlipped;
-							case SurfaceOrientation.Rotation270:
-								return DisplayOrientations.LandscapeFlipped;
-							default:
-								//invalid rotation
-								return DisplayOrientations.None;
-						}
-					}
-					else if (NativeOrientation == DisplayOrientations.Landscape)
-					{
-						//device is landscape or square
-						switch (rotation)
-						{
-							case SurfaceOrientation.Rotation0:
-								return DisplayOrientations.Landscape;
-							case SurfaceOrientation.Rotation90:
-								return DisplayOrientations.Portrait;
-							case SurfaceOrientation.Rotation180:
-								return DisplayOrientations.LandscapeFlipped;
-							case SurfaceOrientation.Rotation270:
-								return DisplayOrientations.PortraitFlipped;
-							default:
-								//invalid rotation
-								return DisplayOrientations.None;
-						}
-					}
-					else
-					{
-						//fallback
+				width = displayMetrics.WidthPixels;
+				height = displayMetrics.HeightPixels;
+
+			}
+
+			if (width == height)
+			{
+				//square device, can't tell orientation
+				return DisplayOrientations.None;
+			}
+
+			if (NativeOrientation == DisplayOrientations.Portrait)
+			{
+				switch (rotation)
+				{
+					case SurfaceOrientation.Rotation0:
+						return DisplayOrientations.Portrait;
+					case SurfaceOrientation.Rotation90:
+						return DisplayOrientations.Landscape;
+					case SurfaceOrientation.Rotation180:
+						return DisplayOrientations.PortraitFlipped;
+					case SurfaceOrientation.Rotation270:
+						return DisplayOrientations.LandscapeFlipped;
+					default:
+						//invalid rotation
 						return DisplayOrientations.None;
-					}
 				}
 			}
+			else if (NativeOrientation == DisplayOrientations.Landscape)
+			{
+				//device is landscape or square
+				switch (rotation)
+				{
+					case SurfaceOrientation.Rotation0:
+						return DisplayOrientations.Landscape;
+					case SurfaceOrientation.Rotation90:
+						return DisplayOrientations.Portrait;
+					case SurfaceOrientation.Rotation180:
+						return DisplayOrientations.LandscapeFlipped;
+					case SurfaceOrientation.Rotation270:
+						return DisplayOrientations.PortraitFlipped;
+					default:
+						//invalid rotation
+						return DisplayOrientations.None;
+				}
+			}
+			else
+			{
+				//fallback
+				return DisplayOrientations.None;
+			}
+
+
 		}
 
 		private IWindowManager CreateWindowManager()
@@ -275,11 +317,30 @@ namespace Windows.Graphics.Display
 
 		private DisplayMetrics CreateRealDisplayMetrics()
 		{
+			// Display.GetRealMetrics is deprecated in API31, but now we have API30 :)
+			// GetRealMetrics is Added in API level 17, 4.2, we can assume we have this method available
+
 			var displayMetrics = new DisplayMetrics();
-			using (var windowManager = CreateWindowManager())
+
+			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.Q)
 			{
+				using var windowManager = CreateWindowManager();
+#pragma warning disable 618
+				// WindowManager.DefaultDisplay and Display.GetMetrics: deprecated in API30
 				windowManager.DefaultDisplay.GetRealMetrics(displayMetrics);
+#pragma warning restore 618
 			}
+			else
+			{
+				using var display = ContextHelper.Current.Display;
+				if (display != null)
+				{
+				// Display.GetRealMetrics is deprecated in API31, but now we have API30 :)
+				// GetRealMetrics is Added in API level 17, 4.2, we can assume we have this method available
+				display.GetRealMetrics(displayMetrics);
+				}
+			}
+
 			return displayMetrics;
 		}
 
