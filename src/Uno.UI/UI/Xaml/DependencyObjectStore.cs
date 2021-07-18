@@ -1629,10 +1629,10 @@ namespace Windows.UI.Xaml
 				uiElt.OnPropertyChanged2(eventArgs);
 			}
 
+			OnDependencyPropertyChanged(propertyDetails, eventArgs);
+
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
 			propertyDetails.CallbackManager.RaisePropertyChanged(actualInstanceAlias, eventArgs);
-
-			OnDependencyPropertyChanged(propertyDetails, eventArgs);
 
 			// Raise the property change for generic handlers
 			for (var callbackIndex = 0; callbackIndex < _genericCallbacks.Data.Length; callbackIndex++)
