@@ -1,5 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// ElementManager.cpp, commit 864c068
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -463,7 +465,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// to insert items.
 			int lastRealizedDataIndex = m_firstRealizedDataIndex + GetRealizedElementCount - 1;
 			int newStartingIndex = index;
-			if (newStartingIndex > m_firstRealizedDataIndex &&
+			if (newStartingIndex >= m_firstRealizedDataIndex &&
 				newStartingIndex <= lastRealizedDataIndex)
 			{
 				// Inserted within the realized range

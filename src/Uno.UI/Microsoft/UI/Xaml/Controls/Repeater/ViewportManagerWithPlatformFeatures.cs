@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// ItemsRepeater.h, ItemsRepeater.cpp, commit 1cf9f1c
 
 using System;
 using System.Diagnostics;
@@ -15,7 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class ViewportManagerWithPlatformFeatures : ViewportManager
 	{
-
 		// Pixel delta by which to inflate the cache buffer on each side.  Rather than fill the entire
 		// cache buffer all at once, we chunk the work to make the UI thread more responsive.  We inflate
 		// the cache buffer from 0 to a max value determined by the Maximum[Horizontal,Vertical]CacheLength
@@ -145,6 +145,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		public override Rect GetLayoutExtent() => m_layoutExtent;
+
 		public override Point GetOrigin() => new Point(m_layoutExtent.X, m_layoutExtent.Y);
 
 		Rect GetLayoutVisibleWindowDiscardAnchor()
@@ -164,12 +166,18 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var visibleWindow = m_visibleWindow;
 
-			if (m_makeAnchorElement != null)
+			if (m_makeAnchorElement != null && m_isAnchorOutsideRealizedRange)
 			{
 				// The anchor is not necessarily laid out yet. Its position should default
 				// to zero and the layout origin is expected to change once layout is done.
 				// Until then, we need a window that's going to protect the anchor from
 				// getting recycled.
+
+				// Also, we only want to mess with the realization rect iff the anchor is not inside it.
+				// If we fiddle with an anchor that is already inside the realization rect,
+				// shifting the realization rect results in repeater, layout and scroller thinking that it needs to act upon StartBringIntoView.
+				// We do NOT want that!
+
 				visibleWindow.X = 0.0f;
 				visibleWindow.Y = 0.0f;
 			}

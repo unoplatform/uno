@@ -1,29 +1,36 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// ItemsRepeater.cpp, commit 1cf9f1c
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Uno;
+using Uno.Disposables;
+using Uno.UI;
+using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Uno;
-using Uno.Disposables;
-using Uno.UI;
-using Uno.UI.Helpers.WinUI;
-using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(ItemTemplate))]
 	public partial class ItemsRepeater : FrameworkElement, IPanel
 	{
+		// StackLayout measurements are shortcut when m_stackLayoutMeasureCounter reaches this value
+		// to prevent a layout cycle exception.
+		// The XAML Framework's iteration limit is 250, but that limit has been reached in practice
+		// with this value as small as 61. It was never reached with 60. 
+		private const uint MaxStackLayoutIterations = 60u;
+
 		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
 
 		internal object LayoutState
@@ -71,17 +78,17 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool IsProcessingCollectionChange => m_processingItemsSourceChange != null;
 
 		AnimationManager m_animationManager;
-		ViewManager m_viewManager ;
-		ViewportManager m_viewportManager ;
+		ViewManager m_viewManager;
+		ViewportManager m_viewportManager;
 
-		ItemsSourceView m_itemsSourceView ;
+		ItemsSourceView m_itemsSourceView;
 
-		Microsoft.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper ;
+		Microsoft.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper;
 
-		VirtualizingLayoutContext m_layoutContext ;
-		object m_layoutState ;
+		VirtualizingLayoutContext m_layoutContext;
+		object m_layoutState;
 		// Value is different from null only while we are on the OnItemsSourceChanged call stack.
-		NotifyCollectionChangedEventArgs m_processingItemsSourceChange ;
+		NotifyCollectionChangedEventArgs m_processingItemsSourceChange;
 
 		Size m_lastAvailableSize;
 		bool m_isLayoutInProgress;
@@ -94,6 +101,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// events. We keep these counters to detect out-of-sync unloaded events and take action to rectify.
 		int _loadedCounter;
 		int _unloadedCounter;
+
+		// Used to avoid layout cycles with StackLayout layouts where variable sized children prevent
+		// the ItemsRepeater's layout to settle.
+		uint _stackLayoutMeasureCounter = 0u;
 
 		// Bug in framework's reference tracking causes crash during
 		// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
@@ -132,6 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Loaded += OnLoaded;
 			Unloaded += OnUnloaded;
+			LayoutUpdated += OnLayoutUpdated;
 
 			// Initialize the cached layout to the default value
 			var layout = Layout as VirtualizingLayout;
@@ -185,6 +197,23 @@ namespace Microsoft.UI.Xaml.Controls
 				throw new InvalidOperationException("Cannot run layout in the middle of a collection change.");
 			}
 
+			var layout = Layout;
+
+			if (layout != null)
+			{
+				var stackLayout = layout as StackLayout;
+
+				if (stackLayout != null && ++_stackLayoutMeasureCounter >= MaxStackLayoutIterations)
+				{
+					REPEATER_TRACE_INFO("MeasureOverride shortcut - %d\n", _stackLayoutMeasureCounter);
+					// Shortcut the apparent layout cycle by returning the previous desired size.
+					// This can occur when children have variable sizes that prevent the ItemsPresenter's desired size from settling.
+					Rect layoutExtent = m_viewportManager.GetLayoutExtent();
+					var localDesiredSize = new Size(layoutExtent.Width - layoutExtent.X, layoutExtent.Height - layoutExtent.Y);
+					return localDesiredSize;
+				}
+			}
+
 			m_viewportManager.OnOwnerMeasuring();
 
 			m_isLayoutInProgress = true;
@@ -194,14 +223,13 @@ namespace Microsoft.UI.Xaml.Controls
 			Rect extent = default;
 			Size desiredSize = default;
 
-			var layout = Layout;
 			if (layout != null)
 			{
 				var layoutContext = GetLayoutContext();
 
 				// Expensive operation, do it only in debug builds.
 #if DEBUG
-				var virtualContext = (VirtualizingLayoutContext) layoutContext;
+				var virtualContext = (VirtualizingLayoutContext)layoutContext;
 				virtualContext.Indent = Indent();
 #endif
 
@@ -240,7 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
-		protected  override Size ArrangeOverride(Size finalSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
 			if (m_isLayoutInProgress)
 			{
@@ -361,7 +389,7 @@ namespace Microsoft.UI.Xaml.Controls
 		int GetElementIndexImpl(UIElement element)
 		{
 			// Verify that element is actually a child of this ItemsRepeater
-			var  parent  = VisualTreeHelper.GetParent(element);
+			var parent = VisualTreeHelper.GetParent(element);
 			if (parent == this)
 			{
 				var virtInfo = TryGetVirtualizationInfo(element);
@@ -391,6 +419,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		UIElement GetOrCreateElementImpl(int index)
 		{
+			if (ItemsSourceView == null)
+			{
+				throw new InvalidOperationException("ItemSource doesn't have a value");
+			}
+
 			if (index >= 0 && index >= ItemsSourceView.Count)
 			{
 				throw new ArgumentException(nameof(index), "Argument index is invalid.");
@@ -583,12 +616,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnUnloaded(object sender, RoutedEventArgs args)
 		{
+			_stackLayoutMeasureCounter = 0u;
 			++_unloadedCounter;
 			// Only reset the scrollers if this unload event is in-sync.
 			if (_unloadedCounter == _loadedCounter)
 			{
 				m_viewportManager.ResetScrollers();
 			}
+		}
+
+		private void OnLayoutUpdated(object sender, object e)
+		{
+			// Now that the layout has settled, reset the measure counter to detect the next potential StackLayout layout cycle.
+			_stackLayoutMeasureCounter = 0u;
 		}
 
 		private void OnDataSourcePropertyChanged(ItemsSourceView oldValue, ItemsSourceView newValue)
@@ -613,7 +653,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var layout = Layout;
 			if (layout != null)
 			{
-				var args  = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+				var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 				using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
 				m_processingItemsSourceChange = args;
 
@@ -693,7 +733,16 @@ namespace Microsoft.UI.Xaml.Controls
 				if (newValue is DataTemplate dataTemplate) // Implements IElementFactory but not IElementFactoryShim
 				{
 					m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-					if (!(dataTemplate.LoadContent() is FrameworkElement))
+					if (dataTemplate.LoadContent() is FrameworkElement content)
+					{
+						// Due to bug https://github.com/microsoft/microsoft-ui-xaml/issues/3057, we need to get the framework
+						// to take ownership of the extra implicit ref that was returned by LoadContent. The simplest way to do
+						// this is to add it to a Children collection and immediately remove it.						
+						var children = Children;
+						children.Add(content);
+						children.RemoveAt(children.Count - 1);
+					}
+					else
 					{
 						// We have a DataTemplate which is empty, so we need to set it to true
 						m_isItemTemplateEmpty = true;
@@ -725,8 +774,9 @@ namespace Microsoft.UI.Xaml.Controls
 			if (oldValue != null)
 			{
 				oldValue.UninitializeForContext(GetLayoutContext());
-				newValue.MeasureInvalidated -= InvalidateMeasureForLayout;
-				newValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
+				oldValue.MeasureInvalidated -= InvalidateMeasureForLayout;
+				oldValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
+				_stackLayoutMeasureCounter = 0u;
 
 				// Walk through all the elements and make sure they are cleared
 				var children = Children;
