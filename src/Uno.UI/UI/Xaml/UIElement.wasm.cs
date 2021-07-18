@@ -52,6 +52,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		public Size MeasureContainerView(Size containerSize, Size availableSize)
+		{
+			return Uno.UI.Xaml.WindowManagerInterop.MeasureContainerView(HtmlId, containerSize, availableSize);
+		}
+
 		public Size MeasureView(Size availableSize)
 		{
 			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize);

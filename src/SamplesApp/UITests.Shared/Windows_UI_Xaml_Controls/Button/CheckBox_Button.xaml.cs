@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Button", "CheckBox_Button", typeof(ButtonTestsViewModel))]
+	[Sample("Button", ViewModelType = typeof(ButtonTestsViewModel))]
 	public sealed partial class CheckBox_Button : UserControl
 	{
 		public CheckBox_Button()
