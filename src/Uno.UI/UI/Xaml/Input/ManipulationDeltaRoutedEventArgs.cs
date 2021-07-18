@@ -22,6 +22,7 @@ namespace Windows.UI.Xaml.Input
 			Position = args.Position;
 			Delta = args.Delta;
 			Cumulative = args.Cumulative;
+			Velocities = args.Velocities;
 			IsInertial = args.IsInertial;
 		}
 
@@ -32,6 +33,7 @@ namespace Windows.UI.Xaml.Input
 		public Point Position { get; }
 		public ManipulationDelta Delta { get; }
 		public ManipulationDelta Cumulative { get; }
+		public ManipulationVelocities Velocities { get; }
 		public bool IsInertial { get; }
 
 		public void Complete()

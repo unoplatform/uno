@@ -16,6 +16,7 @@ namespace Windows.UI.Xaml.Input
 			PointerDeviceType = args.PointerDeviceType;
 			Position = args.Position;
 			Cumulative = args.Cumulative;
+			Velocities = args.Velocities;
 			IsInertial = args.IsInertial;
 		}
 
@@ -26,6 +27,7 @@ namespace Windows.UI.Xaml.Input
 		public PointerDeviceType PointerDeviceType { get; }
 		public Point Position { get; }
 		public ManipulationDelta Cumulative { get; }
+		public ManipulationVelocities Velocities { get; }
 		public bool IsInertial { get; }
 	}
 }

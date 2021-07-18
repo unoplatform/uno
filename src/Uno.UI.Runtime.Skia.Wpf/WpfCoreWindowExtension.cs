@@ -129,7 +129,7 @@ namespace Uno.UI.Skia.Platform
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
-							timestamp: (uint)args.Timestamp,
+							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
 							device: GetPointerDevice(args),
 							pointerId: 1,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
@@ -159,7 +159,7 @@ namespace Uno.UI.Skia.Platform
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
-							timestamp: (uint)args.Timestamp,
+							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
 							device: GetPointerDevice(args),
 							pointerId: 1,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
@@ -189,7 +189,7 @@ namespace Uno.UI.Skia.Platform
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
-							timestamp: (uint)args.Timestamp,
+							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
 							device: GetPointerDevice(args),
 							pointerId: 1,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
@@ -219,7 +219,7 @@ namespace Uno.UI.Skia.Platform
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
-							timestamp: (uint)args.Timestamp,
+							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
 							device: GetPointerDevice(args),
 							pointerId: 1,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
@@ -249,7 +249,7 @@ namespace Uno.UI.Skia.Platform
 					new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
-							timestamp: (uint)args.Timestamp,
+							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
 							device: GetPointerDevice(args),
 							pointerId: 1,
 							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
@@ -318,7 +318,7 @@ namespace Uno.UI.Skia.Platform
 						new PointerEventArgs(
 							new Windows.UI.Input.PointerPoint(
 								frameId: GetNextFrameId(),
-								timestamp: (uint)Environment.TickCount,
+								timestamp: (ulong)Environment.TickCount,
 								device: PointerDevice.For(PointerDeviceType.Mouse),
 								pointerId: 1,
 								rawPosition: position,

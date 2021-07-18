@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
+using DateTimeOffset = System.DateTimeOffset;
 
 namespace Windows.System
 {
@@ -17,7 +18,6 @@ namespace Windows.System
 
 		private int _state = States.Idle;
 		private TimeSpan _interval;
-		private DateTimeOffset _lastTick;
 
 		public event TypedEventHandler<DispatcherQueueTimer, object> Tick;
 
@@ -47,6 +47,35 @@ namespace Windows.System
 		public bool IsRepeating { get; set; } = true;
 
 		/// <summary>
+		/// Gets a timestamp of the last start (or restart) of this timer.
+		/// </summary>
+		internal DateTimeOffset StartTimestamp { get; private set; }
+
+		/// <summary>
+		/// The absolute date at which the last tick event have been raised by this timer.
+		/// NOTE:
+		///		This is updated **BEFORE** the event is being raised.
+		///		It can safely be used to get the absolute time in the Tick event handler.
+		/// </summary>
+		internal DateTimeOffset LastTickTimestamp { get; private set; }
+
+		/// <summary>
+		/// Gets the difference between <see cref="LastTickTimestamp"/> and <see cref="StartTimestamp"/>.
+		/// WARNING: This is not protected from overflow! You must not access it before first Tick!
+		/// </summary>
+		internal TimeSpan LastTickElapsed
+		{
+			get
+			{
+				var elapsed = LastTickTimestamp - StartTimestamp;
+
+				return elapsed > TimeSpan.Zero
+					? elapsed
+					: TimeSpan.Zero;
+			}
+		}
+
+		/// <summary>
 		/// An internal state that can be used to store a value in order to prevent a closure in the click handler.
 		/// </summary>
 		internal object State { get; set; }
@@ -60,6 +89,8 @@ namespace Windows.System
 
 		public void Start()
 		{
+			StartTimestamp = DateTimeOffset.UtcNow;
+
 			if (Interlocked.CompareExchange(ref _state, States.Running, States.Idle) == States.Idle)
 			{
 				StartNative(Interval);
@@ -92,12 +123,12 @@ namespace Windows.System
 		 */
 		private void Restart(TimeSpan interval)
 		{
-			var now = DateTimeOffset.Now;
+			StartTimestamp = DateTimeOffset.UtcNow;
 
 			// First be sure to stop the pending timer
 			StopNative();
 
-			var elapsed = now - _lastTick;
+			var elapsed = StartTimestamp - LastTickTimestamp;
 			if (elapsed >= interval)
 			{
 				RaiseTick(isTickForRestart: true);
@@ -126,7 +157,7 @@ namespace Windows.System
 
 				if (isRunning)
 				{
-					_lastTick = DateTimeOffset.UtcNow;
+					LastTickTimestamp = DateTimeOffset.UtcNow;
 
 					Tick?.Invoke(this, null);
 				}
