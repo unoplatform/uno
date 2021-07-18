@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Shapes
 				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.NewValue)
 #else
-				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsArrange,
+				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild,
 				propertyChangedCallback: (s, e) => ((Shape)s)._brushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => ((Shape)s).InvalidateForFillChanged(), imageBrushCallback: () => ((Shape)s).InvalidateForFillChanged())
 #endif
 			)
@@ -74,7 +74,11 @@ namespace Windows.UI.Xaml.Shapes
 			try
 #endif
 			{
-				InvalidateArrange();
+#if __ANDROID__
+				Invalidate();
+#elif __IOS__ || __MACOS__ || __SKIA__
+				UpdateRender();
+#endif
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY
 			catch (Exception e)
@@ -85,9 +89,9 @@ namespace Windows.UI.Xaml.Shapes
 				}
 			}
 #endif
-		}
+			}
 
-		#region Stroke Dependency Property
+#region Stroke Dependency Property
 		public Brush Stroke
 		{
 			get => (Brush)this.GetValue(StrokeProperty);
@@ -107,9 +111,9 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			)
 		);
-		#endregion
+#endregion
 
-		#region StrokeThickness Dependency Property
+#region StrokeThickness Dependency Property
 		public double StrokeThickness
 		{
 			get => (double)this.GetValue(StrokeThicknessProperty);
@@ -128,9 +132,9 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			)
 		);
-		#endregion
+#endregion
 
-		#region Stretch Dependency Property
+#region Stretch Dependency Property
 		public Stretch Stretch
 		{
 			get => (Stretch)this.GetValue(StretchProperty);
@@ -150,9 +154,9 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			)
 		);
-		#endregion
+#endregion
 
-		#region StrokeDashArray Dependency Property
+#region StrokeDashArray Dependency Property
 		public DoubleCollection StrokeDashArray
 		{
 			get => (DoubleCollection)this.GetValue(StrokeDashArrayProperty);
@@ -172,7 +176,7 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			)
 		);
-		#endregion
+#endregion
 
 #if LEGACY_SHAPE_MEASURE
 		protected virtual void OnFillChanged(Brush newValue)

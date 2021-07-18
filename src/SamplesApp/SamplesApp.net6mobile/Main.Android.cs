@@ -10,10 +10,16 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Windows.UI.Xaml.Media;
-
-#if !NET6_0
 using Com.Nostra13.Universalimageloader.Core;
-#endif
+
+[assembly: UsesPermission("android.permission.ACCESS_COARSE_LOCATION")]
+[assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
+[assembly: UsesPermission("android.permission.VIBRATE")]
+[assembly: UsesPermission("android.permission.ACTIVITY_RECOGNITION")]
+[assembly: UsesPermission("android.permission.ACCESS_NETWORK_STATE")]
+[assembly: UsesPermission("android.permission.SET_WALLPAPER")]
+[assembly: UsesPermission("android.permission.READ_CONTACTS")]
+[assembly: UsesPermission("android.permission.INTERNET")]
 
 namespace SamplesApp.Droid
 {
@@ -33,7 +39,6 @@ namespace SamplesApp.Droid
 
 		private void ConfigureUniversalImageLoader()
 		{
-#if !NET6_0
 			// Create global configuration and initialize ImageLoader with this config
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration
 				.Builder(Context)
@@ -42,7 +47,6 @@ namespace SamplesApp.Droid
 			ImageLoader.Instance.Init(config);
 
 			ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
-#endif
 		}
 	}
 }

@@ -1,4 +1,6 @@
-﻿// MUX Reference NavigationView.idl, commit 52e7fc4
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference NavigationView.idl, commit 2343eed
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -6,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Defines constants that specify how the pane is shown in a NavigationView.
 	/// </summary>
 	public enum NavigationViewDisplayMode
-    {
+	{
 		/// <summary>
 		/// Only the menu button remains fixed. The pane shows and hides as needed.
 		/// </summary>
@@ -21,5 +23,5 @@ namespace Microsoft.UI.Xaml.Controls
 		/// The pane stays open alongside the content.
 		/// </summary>
 		Expanded = 2,
-    }
+	}
 }

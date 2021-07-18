@@ -140,6 +140,15 @@
     {
       "modifiers": [
         {
+          "copyOnly": [
+            "**/*.png",
+            "**/*.jpg",
+            "**/*.gif",
+            "**/*.woff",
+            "**/*.ttf"
+          ]
+        },
+        {
           "condition": "(!Android)",
           "exclude": [ "BlankApp/BlankApp.Android/**/*" ]
         },

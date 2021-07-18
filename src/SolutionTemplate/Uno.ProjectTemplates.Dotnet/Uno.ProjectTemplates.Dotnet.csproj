@@ -56,6 +56,10 @@
 			<PackagePath>content\unoapp</PackagePath>
 			<Pack>true</Pack>
 		</Content>
+		<Content Include="content\unoapp-net6\**">
+			<PackagePath>content\unoapp-net6</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 		<Content Include="content\unolib\**">
 			<PackagePath>content\unolib</PackagePath>
 			<Pack>true</Pack>
@@ -68,6 +72,10 @@
 			<PackagePath>content\unoapp-winui</PackagePath>
 			<Pack>true</Pack>
 		</Content>
+		<Content Include="content\unoapp-winui-net6\**">
+			<PackagePath>content\unoapp-winui-net6</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 		<Content Include="content\unoapp\UnoWinUIQuickStart\**">
 			<PackagePath>content\unoapp</PackagePath>
 			<Pack>true</Pack>
@@ -77,7 +85,7 @@
 			<Pack>true</Pack>
 		</Content>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\*.vstemplate" />
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\__*.png" />
@@ -90,6 +98,17 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\*.vstemplate" />
+		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\__*.png" />
+		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\obj\**" />
+		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\bin\**" />
+		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\Properties\**" />
+		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\UnoSolutionTemplate.csproj" />
+
+		<_UnoAppnet6TemplateFiles Include="..\UnoSolutionTemplate.net6\**" Exclude="@(_UnoAppnet6TemplateFilesExclude)" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\*.vstemplate" />
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\__*.png" />
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\obj\**" />
@@ -98,6 +117,14 @@
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\UnoLibraryTemplate.csproj" />
 
 		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="content\unoapp-net6\NuGet.config" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="content\unoapp-net6\NuGet.config" />
 	</ItemGroup>
 
 	<Target Name="CopyUnoAppTemplate" BeforeTargets="Build">
@@ -115,6 +142,25 @@
 			<Content Include="$(IntermediateTemplatePath)/**/*.*">
 				<Pack>true</Pack>
 				<PackagePath>content/unoapp</PackagePath>
+			</Content>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="CopyUnoAppNet6Template" BeforeTargets="Build">
+		<PropertyGroup>
+			<IntermediateTemplatePath>$(IntermediateOutputPath)\UnoQuickStartNet6</IntermediateTemplatePath>
+		</PropertyGroup>
+
+		<RemoveDir Directories="$(IntermediateTemplatePath)" />
+
+		<Copy SourceFiles="@(_UnoAppnet6TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+
+		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="False" />
+
+		<ItemGroup>
+			<Content Include="$(IntermediateTemplatePath)/**/*.*">
+				<Pack>true</Pack>
+				<PackagePath>content/unoapp-net6</PackagePath>
 			</Content>
 		</ItemGroup>
 	</Target>
@@ -154,6 +200,26 @@
 			<Content Include="$(IntermediateTemplatePath)/**/*.*">
 				<Pack>true</Pack>
 				<PackagePath>content/unoapp-winui</PackagePath>
+			</Content>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="CopyUnoAppWinUINet6Template" BeforeTargets="Build">
+		<PropertyGroup>
+			<IntermediateTemplatePath>$(IntermediateOutputPath)\unoapp-winui-net6</IntermediateTemplatePath>
+		</PropertyGroup>
+
+		<RemoveDir Directories="$(IntermediateTemplatePath)" />
+
+		<Copy SourceFiles="@(_UnoAppnet6TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+
+		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="True" />
+		<RenameSolution SourcePath="$(IntermediateTemplatePath)" SourceName="UnoQuickStart" TargetName="UnoWinUIQuickStart" />
+
+		<ItemGroup>
+			<Content Include="$(IntermediateTemplatePath)/**/*.*">
+				<Pack>true</Pack>
+				<PackagePath>content/unoapp-winui-net6</PackagePath>
 			</Content>
 		</ItemGroup>
 	</Target>
@@ -241,7 +307,7 @@
 
 					}
 
-					var platforms = new string[] { "iOS", "UWP", "Wasm", "Droid", "macOS", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
+					var platforms = new string[] { "iOS", "UWP", "Wasm", "Droid", "macOS", "Mobile", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
 
 					foreach(var platform in platforms)
 					{

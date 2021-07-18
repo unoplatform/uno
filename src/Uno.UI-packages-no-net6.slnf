@@ -12,7 +12,7 @@
       "ResourceConverter\\ResourceConverter.csproj",
       "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
       "SolutionTemplate\\UnoLibraryTemplate\\UnoLibraryTemplate.csproj",
-      "SolutionTemplate\\UnoSolutionTemplate.VISX\\UnoSolutionTemplate.VISX.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.VSIX.2019\\UnoSolutionTemplate.VSIX.2019.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.Wizard\\UnoSolutionTemplate.Wizard.csproj",
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
       "SourceGenerators\\System.Xaml.Tests.MS\\System.Xaml.Tests.MS.csproj",

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
+		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.UI.Skia.Wpf" Version="3.1.0-dev.568" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="3.1.0-dev.568" Condition="'$(Configuration)'=='Debug'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$.Skia.WPF\$ext_safeprojectname$.Skia.WPF.csproj" />
+	</ItemGroup>
+
+</Project>

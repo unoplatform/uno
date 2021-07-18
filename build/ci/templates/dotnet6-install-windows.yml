@@ -1,0 +1,22 @@
+parameters:
+  DotNetVersion: '6.0.100-preview.6.21355.2'
+  MauiCheck_Version: '0.6.1'
+  MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/main/manifests/maui-preview.manifest.json'
+
+steps:
+
+  ## Required until .NET 6 installs properly on Windows using UseDotnet
+  - powershell: |
+      $ProgressPreference = 'SilentlyContinue'
+      Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
+      & .\dotnet-install.ps1 -Version ${{ parameters.DotNetVersion }} -InstallDir "$env:ProgramFiles\dotnet\" -Verbose
+      & dotnet --list-sdks
+    displayName: install .NET $(DotNetVersion)
+    errorActionPreference: stop
+
+  - powershell: |
+      & dotnet tool update --global redth.net.maui.check --version ${{ parameters.MauiCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --manifest ${{ parameters.MauiCheck_Manifest }}
+    displayName: Install .NET 6 Workloads
+    errorActionPreference: continue
+    ignoreLASTEXITCODE: true

@@ -2269,6 +2269,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (Exception e)
 			{
+#if NETFRAMEWORK
 				throw new InvalidOperationException(
 					"An error occurred when processing {0} at line {1}:{2} ({3}) : {4}"
 					.InvariantCultureFormat(
@@ -2280,6 +2281,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					)
 					, e
 				);
+#else
+				throw new XamlParsingException(
+					$"An error was found in {topLevelControl.Type.Name}"
+					, e
+					, topLevelControl.LineNumber
+					, topLevelControl.LinePosition
+					, _fileDefinition.FilePath
+				);
+#endif
 			}
 		}
 

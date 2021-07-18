@@ -242,5 +242,6 @@
   </Target>
 
   <Import Project="uno.winui.cross-runtime.targets" />
+  <Import Project="uno.winui.single-project.targets" />
 
 </Project>

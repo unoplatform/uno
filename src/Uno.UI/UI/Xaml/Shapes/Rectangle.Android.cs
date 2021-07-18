@@ -3,6 +3,9 @@ using Windows.Foundation;
 using Windows.Graphics;
 using Android.Graphics;
 using Uno.UI;
+using System;
+using Rect = Windows.Foundation.Rect;
+using Android.Views;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -30,12 +33,21 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (renderingArea.Width > 0 && renderingArea.Height > 0)
 			{
-				var rx = ViewHelper.LogicalToPhysicalPixels(RadiusX);
-				var ry = ViewHelper.LogicalToPhysicalPixels(RadiusY);
-
 				path = new Android.Graphics.Path();
-				path.AddRoundRect(renderingArea.ToRectF(), rx, ry, Android.Graphics.Path.Direction.Cw);
 
+			//Android's path rendering logic rounds values down to the nearest int, make sure we round up here instead using the ViewHelper scaling logic. However we only want to round the height and width, not the frame offsets.
+			var physicalRenderingArea = renderingArea.LogicalToPhysicalPixels();
+			if (FrameRoundingAdjustment is { } fra)
+			{
+				physicalRenderingArea.Height += fra.Height;
+				physicalRenderingArea.Width += fra.Width;
+			}
+
+			var logicalRenderingArea = physicalRenderingArea.PhysicalToLogicalPixels();
+			logicalRenderingArea.X = renderingArea.X;
+			logicalRenderingArea.Y = renderingArea.Y;
+
+			path.AddRoundRect(logicalRenderingArea.ToRectF(), (float)RadiusX, (float)RadiusY, Android.Graphics.Path.Direction.Cw);
 			}
 			else
 			{

@@ -1,4 +1,6 @@
-﻿// MUX Reference NavigationViewItemPresenter.h, commit 8811c96
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference NavigationViewItemPresenter.h, commit 6bdf738
 
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;

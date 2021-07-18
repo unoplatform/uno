@@ -1,4 +1,6 @@
-﻿// MUX reference NavigationView.h, commit acf949a
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationView.h, commit f2df41d
 
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -6,6 +8,7 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -49,7 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 		//private ColumnDefinition m_paneToggleButtonIconGridColumn;
 		private FrameworkElement m_paneTitleHolderFrameworkElement;
 		private FrameworkElement m_paneTitleFrameworkElement;
-		private FrameworkElement m_visualItemsSeparator;
 		private Button m_paneSearchButton;
 		private Button m_backButton;
 		private Button m_closeButton;
@@ -61,6 +63,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private ItemsRepeater m_topNavRepeaterOverflowView;
 		private Grid m_topNavGrid;
 		private Border m_topNavContentOverlayAreaGrid;
+		private Grid m_shadowCaster;		
+		private Storyboard m_shadowCasterEaseOutStoryboard;
 
 		// Indicator animations
 		private UIElement m_prevIndicator;
@@ -90,6 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ColumnDefinition m_paneHeaderCloseButtonColumn;
 		private ColumnDefinition m_paneHeaderToggleButtonColumn;
 		private RowDefinition m_paneHeaderContentBorderRow;
+		private FrameworkElement m_itemsContainer;
 
 		private NavigationViewItem m_lastItemExpandedIntoFlyout;
 
@@ -145,6 +150,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly SerialDisposable m_flyoutClosingRevoker = new SerialDisposable();
 
+		private readonly SerialDisposable m_shadowCasterEaseOutStoryboardRevoker = new SerialDisposable();
+
 		private bool m_wasForceClosed = false;
 		private bool m_isClosedCompact = false;
 		private bool m_blockNextClosingEvent = false;
@@ -194,6 +201,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_OrientationChangedPendingAnimation = false;
 
 		private bool m_TabKeyPrecedesFocusChange = false;
+
+		private bool m_isLeftPaneTitleEmpty = false;
 
 		#region Uno specific
 

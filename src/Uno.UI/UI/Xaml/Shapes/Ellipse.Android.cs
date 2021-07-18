@@ -30,8 +30,21 @@ namespace Windows.UI.Xaml.Shapes
 		private Android.Graphics.Path GetPath(Rect availableSize)
 		{
 			var output = new Android.Graphics.Path();
+
+			//Android's path rendering logic rounds values down to the nearest int, make sure we round up here instead using the ViewHelper scaling logic
+			var physicalRenderingArea = availableSize.LogicalToPhysicalPixels();
+			if (FrameRoundingAdjustment is { } fra)
+			{
+				physicalRenderingArea.Height += fra.Height;
+				physicalRenderingArea.Width += fra.Width;
+			}
+
+			var logicalRenderingArea = physicalRenderingArea.PhysicalToLogicalPixels();
+			logicalRenderingArea.X = availableSize.X;
+			logicalRenderingArea.Y = availableSize.Y;
+
 			output.AddOval(
-				availableSize.ToRectF(),
+				logicalRenderingArea.ToRectF(),
 				Android.Graphics.Path.Direction.Cw);
 
 			return output;

@@ -41,7 +41,6 @@
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" Condition="!$(_IsNetCore)" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core.Build" />
-		<PackageReference Include="System.Json" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />

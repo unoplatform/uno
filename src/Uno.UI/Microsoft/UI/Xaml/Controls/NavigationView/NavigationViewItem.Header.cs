@@ -1,4 +1,4 @@
-﻿// MUX reference NavigationViewItem.h, commit 4fe1fd5
+﻿// MUX reference NavigationViewItem.h, commit 574e5ed
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		internal SerialDisposable EventRevoker { get; } = new SerialDisposable();
 
-		internal ItemsRepeater GetRepeater() { return m_repeater; }
+		internal ItemsRepeater GetRepeater() => m_repeater;
 
 		private readonly SerialDisposable m_splitViewIsPaneOpenChangedRevoker = new SerialDisposable();
 		private readonly SerialDisposable m_splitViewDisplayModeChangedRevoker = new SerialDisposable();

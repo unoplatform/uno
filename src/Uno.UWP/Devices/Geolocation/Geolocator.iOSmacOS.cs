@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CoreLocation;
+using Foundation;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -122,15 +123,23 @@ namespace Windows.Devices.Geolocation
 
 				try
 				{
-					GeolocationAccessStatus accessStatus;
-					var cts = new TaskCompletionSource<CLAuthorizationStatus>();
+					var accessStatus = default(GeolocationAccessStatus);
+					var tsc = new TaskCompletionSource<CLAuthorizationStatus>();
 
+#if __IOS__
+					// Workaround for a bug in Xamarin.iOS https://github.com/unoplatform/uno/issues/4853
+					var @delegate = new CLLocationManagerDelegate();
+
+					mgr.Delegate = @delegate;
+
+					@delegate.AuthorizationChanged += (s, e) =>
+#else
 					mgr.AuthorizationChanged += (s, e) =>
+#endif
 					{
-
 						if (e.Status != CLAuthorizationStatus.NotDetermined)
 						{
-							cts.TrySetResult(e.Status);
+							tsc.TrySetResult(e.Status);
 						}
 					};
 
@@ -143,7 +152,7 @@ namespace Windows.Devices.Geolocation
 						accessStatus = TranslateStatus(CLLocationManager.Status);
 					}
 
-					var cLAuthorizationStatus = await cts.Task;
+					var cLAuthorizationStatus = await tsc.Task;
 
 					accessStatus = TranslateStatus(cLAuthorizationStatus);
 
@@ -196,6 +205,19 @@ namespace Windows.Devices.Geolocation
 					return GeolocationAccessStatus.Denied;
 			}
 		}
+		
+#if __IOS__
+		private class CLLocationManagerDelegate : NSObject, ICLLocationManagerDelegate
+		{
+			public event EventHandler<CLAuthorizationChangedEventArgs> AuthorizationChanged;
+
+			[Export("locationManager:didChangeAuthorizationStatus:")]
+			public void DidChangeAuthorizationStatus(CLLocationManager manager, CLAuthorizationStatus status)
+			{
+				AuthorizationChanged?.Invoke(manager, new CLAuthorizationChangedEventArgs(status));
+			}
+		}
+#endif
 	}
 }
 #endif

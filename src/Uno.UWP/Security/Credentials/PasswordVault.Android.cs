@@ -2,8 +2,12 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Android.OS;
 using Android.Runtime;
+using Android.Security;
 using Android.Security.Keystore;
+using Java.IO;
+using Java.Nio.Charset;
 using Java.Security;
 using Javax.Crypto;
 using Javax.Crypto.Spec;
@@ -14,12 +18,12 @@ namespace Windows.Security.Credentials
 	sealed partial class PasswordVault
 	{
 		public PasswordVault()
-			: this(new KeyStorePersister())
+			: this(Build.VERSION.SdkInt > BuildVersionCodes.LollipopMr1 ? new KeyStorePersister() : (IPersister)new UnSecureKeyStorePersister())
 		{
 		}
 
 		public PasswordVault(string filePath)
-			: this(new KeyStorePersister(filePath))
+			: this(Build.VERSION.SdkInt > BuildVersionCodes.LollipopMr1 ? new KeyStorePersister() : (IPersister)new UnSecureKeyStorePersister())
 		{
 		}
 
@@ -47,7 +51,7 @@ This usually means that the device is using an API older than 18 (4.3). More det
 				{
 					store = KeyStore.GetInstance(_provider);
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					throw new NotSupportedException(_notSupported, e);
 				}
@@ -81,7 +85,7 @@ This usually means that the device is using an API older than 18 (4.3). More det
 			{
 				var cipher = Cipher.GetInstance(_fullTransform);
 				var iv = new IvParameterSpec(_iv, 0, cipher.BlockSize);
-				
+
 				cipher.Init(CipherMode.EncryptMode, _key, iv);
 
 				return new CipherStreamAdapter(new CipherOutputStream(outputStream, cipher));
@@ -160,5 +164,36 @@ This usually means that the device is using an API older than 18 (4.3). More det
 					=> _adapter.Write(buffer, offset, count);
 			}
 		}
+
+		/// <summary>
+		/// Persister for devices bellow Android level 23.
+		/// RSA/ECB/PKCS1Padding only is supported and is not considered secure.
+		/// </summary>
+		private sealed class UnSecureKeyStorePersister : FilePersister
+		{
+			private const string _notSupported = @"RSA/ECB/PKCS1Padding with asymetric key is considered not secure and will not  be supported for device under API level 23";
+
+			private const string _lowLevelDeviceTransform = "RSA/ECB/PKCS1Padding";
+			private const string _provider = "AndroidKeyStore";
+			private const string _alias = "uno_passwordvault";
+
+
+			public UnSecureKeyStorePersister(string filePath = null)
+				: base(filePath)
+			{
+				throw new NotSupportedException(_notSupported);
+			}
+
+			protected override Stream Decrypt(Stream inputStream)
+			{
+				throw new NotSupportedException(_notSupported);
+			}
+
+			protected override Stream Encrypt(Stream outputStream)
+			{
+				throw new NotSupportedException(_notSupported);
+			}
+		}
+
 	}
 }
