@@ -77,7 +77,7 @@ Prior to the `1.0` release, the initialization of Material resources was require
 Control|Resource Key
 -|-
 `AppBarButton`|MaterialAppBarButton
-`Button`|MaterialContainedButtonStyle<br>MaterialContainedSecondaryButtonStyle<br>MaterialFabStyle<br>MaterialOutlinedButtonStyle<br>MaterialOutlinedSecondaryButtonStyle<br>MaterialPaneBackArrowToggleButtonStyle<br>MaterialPaneToggleButtonStyle<br>MaterialPrimaryInvertedFabStyle<br>MaterialSecondaryFabStyle<br>MaterialSecondaryInvertedFabStyle<br>MaterialSmallFabStyle<br>MaterialTextButtonStyle<br>MaterialTextSecondaryButtonStyle
+`Button`|MaterialContainedButtonStyle<br>MaterialContainedSecondaryButtonStyle<br>MaterialFabStyle<br>MaterialOutlinedButtonStyle<br>MaterialOutlinedSecondaryButtonStyle<br>MaterialPaneBackArrowToggleButtonStyle<br>MaterialPaneToggleButtonStyle<br>MaterialPrimaryInvertedFabStyle<br>MaterialSecondaryFabStyle<br>MaterialSecondaryInvertedFabStyle<br>MaterialSmallFabStyle<br>MaterialTextButtonStyle<br>MaterialTextSecondaryButtonStyle<br>
 `CheckBox`|MaterialCheckBoxStyle<br>MaterialSecondaryCheckBoxStyle
 `ComboBox`|MaterialComboBoxStyle
 `ComboBoxItem`|MaterialComboBoxItemStyle
@@ -114,6 +114,19 @@ Control|Resource Key
 
 ### Customizable Color Theme
 The colors used in the material styles are part of the color palette system, which can be customized to suit the theme of your application. Since this is decoupled from the styles, the application theme can be changed, without having to make a copy of every style and edit each of them.
+
+### Leading Icon for Button Control
+Many of the styles* above for the `Button` control support specifying an icon that is displayed adjacent to standard content: 
+```xml
+xmlns:extensions="using:Uno.Material.Extensions"
+...
+<Button Content="DO WORK" Style="{StaticResource MaterialContainedButtonStyle}">
+   <extensions:ControlExtensions.Icon>
+      <FontIcon Glyph="&#xE9F5;" />
+   </extensions:ControlExtensions.Icon>
+</Button>
+```
+*Certain specialized `Button` types (ex: FAB, Pane) have styles which do not leverage this attached property because standard text content is not included
 
 ## Additional Resources
 - Official Material Design site: https://material.io/design
