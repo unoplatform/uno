@@ -154,6 +154,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// If a (managed) drag is ready to start, call <see cref="IViewParent.RequestDisallowInterceptTouchEvent(bool)"/> to ensure that native
+		/// ancestors (eg scroll views, RecyclerView) don't intercept the interaction before us.
+		/// </summary>
+		partial void TryPreventInterceptOnDragPartial() => (this as View).Parent.RequestDisallowInterceptTouchEvent(true);
+
 		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 			=> IsNativeMotionEventsInterceptForbidden = newMode == ManipulationModes.None;
 

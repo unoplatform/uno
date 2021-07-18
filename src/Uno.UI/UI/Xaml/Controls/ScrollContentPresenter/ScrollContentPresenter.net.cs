@@ -17,6 +17,8 @@ namespace Windows.UI.Xaml.Controls
 		public bool CanHorizontallyScroll { get; set; }
 		public bool CanVerticallyScroll { get; set; }
 
+		Size? IScrollContentPresenter.CustomContentExtent => null;
+
 		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue) { }
 
 		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue) { }

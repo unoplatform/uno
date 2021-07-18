@@ -175,6 +175,7 @@ namespace Windows.UI.Input
 				if (_recognizer._manipulation == this)
 				{
 					_recognizer._manipulation = null;
+					_recognizer.TryCancelHapticFeedbackTimer();
 				}
 			}
 
@@ -211,8 +212,8 @@ namespace Windows.UI.Input
 							_recognizer,
 							new DraggingEventArgs(_currents.Pointer1, DraggingState.Started));
 						break;
-					
-					case ManipulationState.Starting when pointerAdded: 
+
+					case ManipulationState.Starting when pointerAdded:
 						_state = ManipulationState.Started;
 						_sumOfPublishedDelta = cumulative;
 
@@ -317,6 +318,22 @@ namespace Windows.UI.Input
 				};
 			}
 
+			/// <summary>
+			/// Is this manipulation (a) valid to become a drag and (b) held for long enough to count as a drag?
+			/// </summary>
+			internal bool IsHeldLongEnoughToDrag()
+			{
+				if (!_isDraggingEnable)
+				{
+					return false;
+				}
+
+				var down = _origins.Pointer1;
+				var current = _currents.Pointer1; // For current to be current, this should be called after TryUpdate()
+				var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayTicks;
+				return !isInHoldPhase;
+			}
+
 			// For pen and mouse this only means down -> * moves out of tap range;
 			// For touch it means down -> * moves close to origin for DragUsingFingerMinDelayTicks -> * moves far from the origin 
 			private bool IsBeginningOfDragManipulation()
@@ -350,6 +367,7 @@ namespace Windows.UI.Input
 						{
 							// The pointer moved out of range while in the hold phase, so we completely disable the drag manipulation
 							_isDraggingEnable = false;
+							_recognizer.TryCancelHapticFeedbackTimer();
 							return false;
 						}
 						else

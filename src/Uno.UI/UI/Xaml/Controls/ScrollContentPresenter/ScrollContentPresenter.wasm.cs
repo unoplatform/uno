@@ -161,6 +161,8 @@ namespace Windows.UI.Xaml.Controls
 			set { }
 		}
 
+		Size? IScrollContentPresenter.CustomContentExtent => null;
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();

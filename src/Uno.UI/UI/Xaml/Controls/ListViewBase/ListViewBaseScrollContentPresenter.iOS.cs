@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml.Controls
 			set => NativePanel.ContentInset = value;
 		}
 
+		Size? IScrollContentPresenter.CustomContentExtent => NativePanel?.ContentSize;
+
 		public void SetContentOffset(CGPoint contentOffset, bool animated)
 		{
 			NativePanel?.SetContentOffset(contentOffset, animated);

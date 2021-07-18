@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (ShouldInsertReorderingView(extentOffset))
 			{
-				nextVisibleItem = GetReorderingIndex().Value;
+				nextVisibleItem = GetAndUpdateReorderingIndex().Value;
 			}
 
 			var item = GetFlatItemIndex(nextVisibleItem);

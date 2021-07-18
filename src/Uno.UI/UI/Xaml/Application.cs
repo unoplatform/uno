@@ -55,6 +55,8 @@ namespace Windows.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
 
+			Uno.DispatcherTimerHelper.SetDispatcherTimerGetter(() => new DispatcherTimer());
+
 			InitializePartialStatic();
 		}
 

@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno;
+using Windows.Devices.Haptics;
 
 namespace Windows.UI.Input
 {
@@ -30,6 +32,9 @@ namespace Windows.UI.Input
 		private Manipulation _manipulation;
 		private GestureSettings _gestureSettings;
 		private bool _isManipulationOrDragEnabled;
+		private bool _isDragEnabled;
+
+		private SerialDisposable _hapticFeedbackSubscription;
 
 		public GestureSettings GestureSettings
 		{
@@ -38,6 +43,7 @@ namespace Windows.UI.Input
 			{
 				_gestureSettings = value;
 				_isManipulationOrDragEnabled = (value & (GestureSettingsHelper.Manipulations | GestureSettingsHelper.DragAndDrop)) != 0;
+				_isDragEnabled = (value & GestureSettingsHelper.DragAndDrop) != 0;
 			}
 		}
 
@@ -94,6 +100,7 @@ namespace Windows.UI.Input
 				if (_manipulation == null)
 				{
 					_manipulation = new Manipulation(this, value);
+					TryStartHapticFeedbackTimer(value);
 				}
 				else
 				{
@@ -168,6 +175,8 @@ namespace Windows.UI.Input
 			}
 
 			_manipulation?.Complete();
+
+			TryCancelHapticFeedbackTimer();
 		}
 
 		internal void PreventHolding(uint pointerId)
@@ -175,6 +184,51 @@ namespace Windows.UI.Input
 			if (_gestures.TryGetValue(pointerId, out var gesture))
 			{
 				gesture.PreventHolding();
+			}
+		}
+
+		private void TryStartHapticFeedbackTimer(PointerPoint value)
+		{
+			if (_isDragEnabled && WinRTFeatureConfiguration.GestureRecognizer.ShouldProvideHapticFeedback && value.PointerDevice?.PointerDeviceType == PointerDeviceType.Touch)
+			{
+				var timer = DispatcherTimerHelper.GetDispatcherTimer();
+				timer.Interval = new TimeSpan(DragWithTouchMinDelayTicks);
+				timer.Tick += TrySendHapticFeedback;
+				_hapticFeedbackSubscription ??= new SerialDisposable();
+				_hapticFeedbackSubscription.Disposable = Disposable.Create(() =>
+				{
+					timer.Tick -= TrySendHapticFeedback;
+					timer.Stop();
+				});
+				timer.Start();
+			}
+		}
+
+		private void TryCancelHapticFeedbackTimer()
+		{
+			if (_hapticFeedbackSubscription != null)
+			{
+				_hapticFeedbackSubscription.Disposable = null;
+			}
+		}
+
+		private async void TrySendHapticFeedback(object sender, object args)
+		{
+			TryCancelHapticFeedbackTimer(); // Stop timer
+
+			//Console.WriteLine("***BBZZZZZZTTT***");
+			if (await VibrationDevice.RequestAccessAsync() != VibrationAccessStatus.Allowed)
+			{
+				return;
+			}
+
+			var vibrationDevice = await VibrationDevice.GetDefaultAsync();
+
+			var controller = vibrationDevice.SimpleHapticsController;
+			var feedback = controller.SupportedFeedback.FirstOrDefault(f => f.Waveform == KnownSimpleHapticsControllerWaveforms.Press);
+			if (feedback != null)
+			{
+				controller.SendHapticFeedback(feedback);
 			}
 		}
 

@@ -27,6 +27,25 @@ namespace Windows.UI.Xaml.Controls
 			public Uno.UI.IndexPath FirstItem { get; set; }
 
 			public Uno.UI.IndexPath LastItem { get; set; }
+
+			public bool Contains(Uno.UI.IndexPath index) => index >= FirstItem && index <= LastItem;
+
+			public IEnumerable<Uno.UI.IndexPath> Indices
+			{
+				get
+				{
+					if (FirstItem.Section != LastItem.Section)
+					{
+						throw new InvalidOperationException("All items in a line must be in the same section.");
+					}
+					var current = FirstItem;
+					while (current <= LastItem)
+					{
+						yield return current;
+						current = Uno.UI.IndexPath.FromRowSection(current.Row + 1, current.Section);
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -87,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 			public int ItemsExtentOffset => RelativeHeaderPlacement == RelativeHeaderPlacement.Inline ? HeaderExtent : 0;
 
 			public int ItemsBreadthOffset => RelativeHeaderPlacement == RelativeHeaderPlacement.Adjacent ? HeaderBreadth : 0;
-			
+
 			public Line GetTrailingLine(GeneratorDirection fillDirection)
 			{
 				return fillDirection == GeneratorDirection.Forward ?

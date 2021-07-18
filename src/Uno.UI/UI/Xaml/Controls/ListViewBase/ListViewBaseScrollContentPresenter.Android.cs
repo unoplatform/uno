@@ -23,6 +23,20 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public bool BringIntoViewOnFocusChange { get; set; }
 
+		Size? IScrollContentPresenter.CustomContentExtent
+		{
+			get
+			{
+				if (NativePanel?.NativeLayout is { } layouter)
+				{
+					var physicalExtent = new Size(layouter.HorizontalScrollRange, layouter.VerticalScrollRange);
+					return physicalExtent.PhysicalToLogicalPixels();
+				}
+
+				return null;
+			}
+		}
+
 		public override void ScrollTo(int x, int y)
 		{
 			NativePanel?.ScrollTo(x, y);

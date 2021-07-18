@@ -53,6 +53,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		public Foundation.Size? CustomContentExtent => null;
+
 		partial void OnContentChanged(View previousView, View newView);
 
 		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue)
