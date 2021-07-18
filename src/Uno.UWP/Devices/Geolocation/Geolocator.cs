@@ -24,7 +24,9 @@ namespace Windows.Devices.Geolocation
 		private TypedEventHandler<Geolocator, PositionChangedEventArgs> _positionChanged;			
 
 		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
+
 		private uint? _desiredAccuracyInMeters = DefaultAccuracyInMeters;
+
 		private uint _actualDesiredAccuracyInMeters = DefaultAccuracyInMeters;
 
 		/// <summary>
@@ -59,6 +61,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
+#if !__ANDROID__
 		/// <summary>
 		/// Setting overwrites <see cref="_actualDesiredAccuracyInMeters"/> but does not overwrite <see cref="DesiredAccuracy"/> directly.
 		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see> 
@@ -81,7 +84,9 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		internal uint ActualDesiredAccuracyInMeters
+#endif
+	
+	internal uint ActualDesiredAccuracyInMeters
 		{
 			get => _actualDesiredAccuracyInMeters;
 			private set

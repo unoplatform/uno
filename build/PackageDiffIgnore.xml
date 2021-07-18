@@ -3077,6 +3077,18 @@
 				fullName="System.Void Windows.System.UserProfile.UserProfilePersonalizationSettings..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
+              fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnStatusChanged(System.String provider, Android.Locations.Availability status, Android.OS.Bundle extras)"
+			  reason="removed empty method"/>
+			<Member
+              fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnProviderEnabled(System.String provider)"
+			  reason="removed empty method"/>
+			<Member
+				fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnProviderDisabled(System.String provider)"
+				reason="removed empty method"/>
+        	<Member
+				fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnLocationChanged(Android.Locations.Location location)"
+				reason="removed empty method"/>
+			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
