@@ -1620,6 +1620,8 @@ namespace Windows.UI.Xaml
 			// dependency property value through the cache.
 			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
 
+			OnDependencyPropertyChanged(propertyDetails, eventArgs);
+
 			// Raise the changes for the callback register to the property itself
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
@@ -1631,8 +1633,6 @@ namespace Windows.UI.Xaml
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
 			propertyDetails.CallbackManager.RaisePropertyChanged(actualInstanceAlias, eventArgs);
-
-			OnDependencyPropertyChanged(propertyDetails, eventArgs);
 
 			// Raise the property change for generic handlers
 			for (var callbackIndex = 0; callbackIndex < _genericCallbacks.Data.Length; callbackIndex++)
