@@ -204,18 +204,34 @@ namespace Uno.UI {
 			* 
 			*/
 		static findLaunchArguments(): string {
-			if (typeof URLSearchParams === "function") {
-				return new URLSearchParams(window.location.search).toString();
-			}
-			else {
-				const queryIndex = document.location.search.indexOf('?');
+			/*
+			* Concatenate the query/search with any url fragments into one string
+			*/
+			const searchAndHash = window.location.search + window.location.hash;
+			
+			/*
+			* Look for the presence of ? for the querystring, if found return
+			* everything after it, which will include a fragment if also present
+			* since fragments always proceed querystring params if they exist
+			*/
+			const queryIndex = document.location.search.indexOf('?');
 
-				if (queryIndex !== -1) {
-					return document.location.search.substring(queryIndex + 1);
+			if (queryIndex !== -1) {
+				return document.location.search.substring(queryIndex + 1);
+			} else {
+				/*
+				* Fall back to trying a url fragment if no querystring args were found
+				* since there may still be a url fragment we want to include
+				*/
+				const fragmentIndex = document.location.search.indexOf('#');
+					
+				if (fragmentIndex !== -1) {
+					return document.location.search.substring(fragmentIndex + 1);
 				}
-
-				return "";
 			}
+
+			// Return probably an empty string
+			return searchAndHash;
 		}
 
 		/**
