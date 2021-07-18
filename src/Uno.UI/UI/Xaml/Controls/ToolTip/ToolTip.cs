@@ -46,6 +46,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal long CurrentHoverId { get; set; }
+
+		internal IDisposable? OwnerEventSubscriptions { get; set; }
+
+		internal IDisposable? OwnerVisibilitySubscription { get; set; }
+
 #pragma warning disable CS0649
 #pragma warning disable CS0169
 #pragma warning disable CS0414
