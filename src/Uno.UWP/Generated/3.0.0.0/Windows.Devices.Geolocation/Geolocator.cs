@@ -112,7 +112,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.set
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.LocationStatus.get
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if __ANDROID__ || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync()
 		{
