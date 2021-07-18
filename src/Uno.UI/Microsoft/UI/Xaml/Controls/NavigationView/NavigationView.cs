@@ -2070,7 +2070,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool ShouldShowBackOrCloseButton()
 		{
 			var visibility = IsBackButtonVisible;
-			return (visibility == NavigationViewBackButtonVisible.Visible || (visibility == NavigationViewBackButtonVisible.Auto && !SharedHelpers.IsOnXbox()));
+			// Uno specific: When Auto, we hide the back button on Android as per the Android
+			// design guidelines.
+			bool isAndroid = AnalyticsInfo.VersionInfo.DeviceFamily.StartsWith("Android", StringComparison.InvariantCultureIgnoreCase);
+			return (visibility == NavigationViewBackButtonVisible.Visible || (visibility == NavigationViewBackButtonVisible.Auto && (!SharedHelpers.IsOnXbox() && !isAndroid)));
 		}
 
 		// The automation name and tooltip for the pane toggle button changes depending on whether it is open or closed
