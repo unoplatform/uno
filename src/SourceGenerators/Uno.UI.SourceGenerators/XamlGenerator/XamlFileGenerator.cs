@@ -4278,6 +4278,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case "Windows.Foundation.Point":
 						return "new Windows.Foundation.Point(" + memberValue + ")";
 
+					case "System.Numerics.Vector3":
+						return "new global::System.Numerics.Vector3(" + memberValue + ")";
+
 					case "Windows.UI.Xaml.Input.InputScope":
 						return "new global::Windows.UI.Xaml.Input.InputScope { Names = { new global::Windows.UI.Xaml.Input.InputScopeName { NameValue = global::Windows.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";
 

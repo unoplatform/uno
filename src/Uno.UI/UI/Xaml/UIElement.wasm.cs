@@ -689,5 +689,10 @@ namespace Windows.UI.Xaml
 				return Assembly.Load(UnoUIRuntimeWebAssemblyName);
 			}
 		}
+
+		partial void UpdateShadowPartial()
+		{
+
+		}
 	}
 }
