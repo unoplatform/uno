@@ -6,8 +6,8 @@
 		.Namespace("Windows.UI.Xaml.Controls")
 
 			.Class("Control")
-				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)")
-				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)")				
+				.Property("HorizontalContentAlignment", "HorizontalAlignment", "HorizontalAlignment.Left")
+				.Property("VerticalContentAlignment", "VerticalAlignment", "VerticalAlignment.Top")
 			.Class("PopupBase")
 				.Property("IsOpen", "bool", "false")
 				.Property("Child", "UIElement", "null", frameworkPropertyOption: "ValueInheritsDataContext")
