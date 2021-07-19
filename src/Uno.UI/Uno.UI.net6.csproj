@@ -4,8 +4,8 @@
 		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
 		<TargetFrameworksCI>net6.0-android;net6.0-ios</TargetFrameworksCI>
 
-		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworksCI>$(TargetFrameworks);net6.0-maccatalyst</TargetFrameworksCI>
+		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
+		<TargetFrameworksCI>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -125,8 +125,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" Version="2.0.0" />
-		<PackageReference Include="Uno.Core.Build" Version="2.0.0" />
+		<PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
