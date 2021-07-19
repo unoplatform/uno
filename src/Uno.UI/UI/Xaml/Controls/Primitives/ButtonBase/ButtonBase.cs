@@ -319,6 +319,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			Click?.Invoke(this, new RoutedEventArgs(args?.OriginalSource ?? this));
 
+			InvokeCommand();
+		}
+
+		internal void InvokeCommand()
+		{
 			try
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
