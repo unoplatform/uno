@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AndroidX.RecyclerView.Widget;
-using Android.Views;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Extensions

@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 	partial class ScrollViewer
 	{
 
-		private ConstantVelocityScroller _constantVelocityScroller;
+		private ConstantVelocityScroller? _constantVelocityScroller;
 		internal void SetConstantVelocities(float horizontalVelocity, float verticalVelocity)
 		{
 			_constantVelocityScroller ??= new ConstantVelocityScroller(this);

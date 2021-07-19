@@ -139,72 +139,70 @@ namespace Windows.UI.Xaml.Controls
 
 				isVerticalScrollAllowed = verticalScrollMode != ScrollMode.Disabled;
 				isHorizontalScrollAllowed = horizontalScrollMode != ScrollMode.Disabled;
+
+				if (isHorizontalScrollAllowed)
+				{
+					double offset = 0.0;
+					double bound = 0.0;
+
+					offset = (m_tpScrollViewer.HorizontalOffset);
+
+					// Try scrolling left.
+					velocity.HorizontalVelocity = ComputeEdgeScrollVelocityFromEdgeDistance(dragPoint.X);
+					if (velocity.IsStationary())
+					{
+						// Try scrolling right.
+						double width = ActualWidth;
+						velocity.HorizontalVelocity = -ComputeEdgeScrollVelocityFromEdgeDistance(width - dragPoint.X);
+						bound = (m_tpScrollViewer.ScrollableWidth);
+					}
+					else
+					{
+						// We're scrolling to the left.
+						// The minimum horizontal offset obtained here accounts for the presence of the
+						// sentinel offset values in the left padding and/or header case. For instance,
+						// with no header or padding this will return exactly 2.0.
+						bound = (m_tpScrollViewer.MinHorizontalOffset);
+					}
+
+					// Disallow edge scrolling if we're right up against the edge.
+					if (DoubleUtil.AreWithinTolerance(bound, offset, /*ScrollViewerScrollRoundingTolerance*/0.05))
+					{
+						velocity.Clear();
+					}
+				}
+
+				if (isVerticalScrollAllowed && velocity.IsStationary() /* only allow vertical edge scrolling if there is no horizontal edge scrolling */)
+				{
+					double offset = 0.0;
+					double bound = 0.0;
+					offset = m_tpScrollViewer.VerticalOffset;
+
+					// Try scrolling up.
+					velocity.VerticalVelocity = ComputeEdgeScrollVelocityFromEdgeDistance(dragPoint.Y);
+					if (velocity.IsStationary())
+					{
+						// Try scrolling down.
+						double height = ActualHeight;
+						velocity.VerticalVelocity = -ComputeEdgeScrollVelocityFromEdgeDistance(height - dragPoint.Y);
+						bound = (m_tpScrollViewer.ScrollableHeight);
+					}
+					else
+					{
+						// We're scrolling up.
+						// The minimum vertical offset obtained here accounts for the presence of the
+						// sentinel offset values in the top padding and/or header case. For instance,
+						// with no header or padding this will return exactly 2.0.
+						bound = m_tpScrollViewer.MinVerticalOffset;
+					}
+
+					// Disallow edge scrolling if we're right up against the edge.
+					if (DoubleUtil.AreWithinTolerance(bound, offset, /*ScrollViewerScrollRoundingTolerance*/0.05))
+					{
+						velocity.Clear();
+					}
+				}
 			}
-
-			if (isHorizontalScrollAllowed)
-			{
-				double offset = 0.0;
-				double bound = 0.0;
-
-				offset = (m_tpScrollViewer.HorizontalOffset);
-
-				// Try scrolling left.
-				velocity.HorizontalVelocity = ComputeEdgeScrollVelocityFromEdgeDistance(dragPoint.X);
-				if (velocity.IsStationary())
-				{
-					// Try scrolling right.
-					double width = ActualWidth;
-					velocity.HorizontalVelocity = -ComputeEdgeScrollVelocityFromEdgeDistance(width - dragPoint.X);
-					bound = (m_tpScrollViewer.ScrollableWidth);
-				}
-				else
-				{
-					// We're scrolling to the left.
-					// The minimum horizontal offset obtained here accounts for the presence of the
-					// sentinel offset values in the left padding and/or header case. For instance,
-					// with no header or padding this will return exactly 2.0.
-					bound = (m_tpScrollViewer.MinHorizontalOffset);
-				}
-
-				// Disallow edge scrolling if we're right up against the edge.
-				if (DoubleUtil.AreWithinTolerance(bound, offset, /*ScrollViewerScrollRoundingTolerance*/0.05))
-				{
-					velocity.Clear();
-				}
-			}
-
-			if (isVerticalScrollAllowed && velocity.IsStationary() /* only allow vertical edge scrolling if there is no horizontal edge scrolling */)
-			{
-				double offset = 0.0;
-				double bound = 0.0;
-				offset = m_tpScrollViewer.VerticalOffset;
-
-				// Try scrolling up.
-				velocity.VerticalVelocity = ComputeEdgeScrollVelocityFromEdgeDistance(dragPoint.Y);
-				if (velocity.IsStationary())
-				{
-					// Try scrolling down.
-					double height = ActualHeight;
-					velocity.VerticalVelocity = -ComputeEdgeScrollVelocityFromEdgeDistance(height - dragPoint.Y);
-					bound = (m_tpScrollViewer.ScrollableHeight);
-				}
-				else
-				{
-					// We're scrolling up.
-					// The minimum vertical offset obtained here accounts for the presence of the
-					// sentinel offset values in the top padding and/or header case. For instance,
-					// with no header or padding this will return exactly 2.0.
-					bound = m_tpScrollViewer.MinVerticalOffset;
-				}
-
-				// Disallow edge scrolling if we're right up against the edge.
-				if (DoubleUtil.AreWithinTolerance(bound, offset, /*ScrollViewerScrollRoundingTolerance*/0.05))
-				{
-					velocity.Clear();
-				}
-			}
-
-			Console.WriteLine($"Computed velocity HorizontalVelocity={velocity.HorizontalVelocity} VerticalVelocity={velocity.VerticalVelocity}");
 
 			return velocity;
 		}
