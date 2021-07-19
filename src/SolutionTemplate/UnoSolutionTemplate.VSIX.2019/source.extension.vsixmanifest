@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="UnoSolutionTemplate.b8e0806a-a194-4442-8634-474e089e479e" Version="1.43.0.657" Language="en-US" Publisher="nventive" />
+        <Identity Id="UnoSolutionTemplate.b8e0806a-a194-4442-8634-474e089e479e"
+				  Version="1.0"
+				  Language="en-US"
+				  Publisher="unoplatform" />
         <DisplayName>Uno Platform Solution Templates</DisplayName>
         <Description xml:space="preserve">Solution templates for Uno Platform enabled projects</Description>
         <MoreInfo>https://github.com/unoplatform/uno</MoreInfo>
