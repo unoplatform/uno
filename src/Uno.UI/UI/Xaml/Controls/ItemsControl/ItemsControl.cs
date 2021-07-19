@@ -60,6 +60,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private int[] _groupCounts;
 
+		internal ScrollViewer ScrollViewer { get; private set; }
+
 		/// <summary>
 		/// This template is stored here in order to allow for 
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
@@ -863,6 +865,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
+
+			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
 			_isReady = true;
 

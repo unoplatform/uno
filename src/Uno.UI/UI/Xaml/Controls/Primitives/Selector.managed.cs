@@ -19,8 +19,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class Selector
 	{
-		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
-
 		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
 
 		partial void RefreshPartial()

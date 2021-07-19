@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private protected ScrollViewer m_tpScrollViewer;
 
+		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
+
 		private protected int m_iFocusedIndex;
 
 		private protected bool m_skipScrollIntoView;
