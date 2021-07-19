@@ -2072,7 +2072,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var visibility = IsBackButtonVisible;
 			// Uno specific: When Auto, we hide the back button on Android as per the Android
-			// design guidelines.
+			// design guidelines - see first paragraph of https://developer.android.com/guide/navigation/navigation-custom-back
 			bool isAndroid = AnalyticsInfo.VersionInfo.DeviceFamily.StartsWith("Android", StringComparison.InvariantCultureIgnoreCase);
 			return (visibility == NavigationViewBackButtonVisible.Visible || (visibility == NavigationViewBackButtonVisible.Auto && (!SharedHelpers.IsOnXbox() && !isAndroid)));
 		}
