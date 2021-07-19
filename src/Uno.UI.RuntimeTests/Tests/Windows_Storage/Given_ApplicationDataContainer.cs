@@ -188,6 +188,25 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		public void When_EnumerateOverValues()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			SUT.Values.Add("enumerate_over_values_one", "11");
+			SUT.Values.Add("enumerate_over_values_two", "22");
+			SUT.Values.Add("enumerate_over_values_three", "33");
+
+			List<string> keysPresent = SUT.Values.Keys.ToList();
+
+			foreach(var value in SUT.Values)
+			{
+				keysPresent.Remove(value.Key);
+			}
+
+			Assert.AreEqual(0, keysPresent.Count);
+		}
+
+		[TestMethod]
 		public void When_NullValueSetViaIndexer()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
