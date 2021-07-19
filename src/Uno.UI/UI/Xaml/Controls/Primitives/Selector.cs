@@ -794,7 +794,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 
 		/// <summary>
-		/// Is the ListView.managed implementation used on this platform?
+		/// Is the managed implementation for virtualized lists (ItemsStackPanel, ItemsWrapGrid, CarouselPanel etc) used on this platform?
 		/// </summary>
 		internal const bool UsesManagedLayouting =
 #if __IOS__ || __ANDROID__
