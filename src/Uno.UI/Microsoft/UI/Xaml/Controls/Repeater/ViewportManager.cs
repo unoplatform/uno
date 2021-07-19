@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// ItemsRepeater.cpp, commit 1cf9f1c
+
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
@@ -18,6 +22,8 @@ namespace Microsoft.UI.Xaml.Controls
 		public abstract Rect GetLayoutRealizationWindow();
 
 		public abstract void SetLayoutExtent(Rect extent);
+
+		public abstract Rect GetLayoutExtent();
 
 		public abstract Point GetOrigin();
 
