@@ -26,9 +26,24 @@ namespace Windows.UI.Xaml
 	public partial class ElementStub : FrameworkElement
     {
 #if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-		[Weak]
-#endif
+		ManagedWeakReference _contentReference;
+
+		private View _content
+		{
+			get => _contentReference?.Target as View;
+			set
+			{
+				if (_contentReference != null)
+				{
+					WeakReferencePool.ReturnWeakReference(this, _contentReference);
+				}
+
+				_contentReference = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
+#else
 		private View _content;
+#endif
 
 		/// <summary>
 		/// A delegate used to raise materialization changes in <see cref="ElementStub.MaterializationChanged"/>

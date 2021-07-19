@@ -11,7 +11,7 @@
 	<_IsIOS Condition="$(IsXamarinIOS) or '$(TargetFramework)'=='net6.0-ios' or '$(TargetFramework)'=='net6.0-maccatalyst'">true</_IsIOS>
 
 	<_IsMacOS>false</_IsMacOS>
-    <_IsMacOS Condition="'$(TargetFramework)'=='xamarinmac20'">true</_IsMacOS>
+    <_IsMacOS Condition="'$(TargetFramework)'=='xamarinmac20' or '$(TargetFramework)'=='net6.0-macos'">true</_IsMacOS>
 
     <_IsNet>false</_IsNet>
     <_IsNet Condition="'$(TargetFramework)'=='net461'">true</_IsNet>

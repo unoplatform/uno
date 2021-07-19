@@ -26,6 +26,7 @@
           net6.0-ios (.NET 6 iOS) - Uno.UI-net6-only.slnf
           net6.0-android (.NET 6 Android) - Uno.UI-net6-only.slnf
           net6.0-maccatalyst (.NET 6 macOS Catalyst) - Uno.UI-net6-only.slnf
+          net6.0-macos (.NET 6 macOS AppKit) - Uno.UI-net6-only.slnf
           xamarinmac20 (macOS) - Uno.UI-macOS-only.slnf (Visual Studio for Windows), Uno.UI-vs4mac-macOS-only.sln (Visual Studio for Mac)
           net461 (Uno.UI.Tests) - Uno.UI-UnitTests-only.slnf
 
