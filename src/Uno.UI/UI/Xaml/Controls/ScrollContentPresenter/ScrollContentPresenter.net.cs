@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Drawing;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {

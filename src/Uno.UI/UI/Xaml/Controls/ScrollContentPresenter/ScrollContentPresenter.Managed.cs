@@ -88,6 +88,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Size ScrollBarSize => new Size(0, 0);
 
+		internal Size? CustomContentExtent => null;
+
 		public ScrollContentPresenter()
 		{
 #if __SKIA__

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Drawing;
+using Windows.Foundation;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public Foundation.Size? CustomContentExtent => null;
+		public Size? CustomContentExtent => null;
 
 		partial void OnContentChanged(View previousView, View newView);
 

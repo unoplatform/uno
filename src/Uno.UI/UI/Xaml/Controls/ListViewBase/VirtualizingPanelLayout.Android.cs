@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// State of a drag-to-reorder operation in flight.
 		/// </summary>
-		private (double offset, double extent, object item, IndexPath? index)? _pendingReorder;
+		private (double offset, double extent, object item, Uno.UI.IndexPath? index)? _pendingReorder;
 
 		public VirtualizingPanelLayout()
 		{
@@ -1987,7 +1987,7 @@ namespace Windows.UI.Xaml.Controls
 			return offsetStart <= availableExtent && offsetEnd >= 0;
 		}
 
-		internal void UpdateReorderingItem(Foundation.Point location, FrameworkElement element, object item)
+		internal void UpdateReorderingItem(Windows.Foundation.Point location, FrameworkElement element, object item)
 		{
 			var logicalOffset = ViewHelper.PhysicalToLogicalPixels(ContentOffset);
 			_pendingReorder = ScrollOrientation == Orientation.Horizontal
@@ -2024,7 +2024,6 @@ namespace Windows.UI.Xaml.Controls
 			// ignoring the temp location of the dragged / reordered item.
 			RecycleLayout();
 
-			Console.WriteLine($"{GetLogPrefix()} updatedIndex{updatedIndex?.ToString() ?? "[null]"}");
 			return updatedIndex;
 		}
 
