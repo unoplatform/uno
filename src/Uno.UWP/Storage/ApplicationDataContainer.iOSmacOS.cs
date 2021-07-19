@@ -99,7 +99,12 @@ namespace Windows.Storage
 				=> throw new NotSupportedException();
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-				=> throw new NotSupportedException();
+			{
+				return NSUserDefaults.StandardUserDefaults
+					.ToDictionary()
+					.Select(k => new KeyValuePair<string, object>(k.Key.ToString(), DataTypeSerializer.Deserialize(k.Key.ToString())))
+					.GetEnumerator();
+			}
 
 			public bool Remove(string key)
 			{
@@ -123,7 +128,7 @@ namespace Windows.Storage
 				return false;
 			}
 
-			IEnumerator IEnumerable.GetEnumerator() => throw new NotSupportedException();
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 	}
 }
