@@ -446,6 +446,15 @@
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-macos" />
 
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\MonoAndroid" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\xamarinios10" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\xamarinmac20" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\netstandard2.0" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-android30.0" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-ios" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-maccatalyst" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-macos" />
+
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\MonoAndroid" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinios10" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinmac20" />
@@ -457,8 +466,13 @@
 
 	<!-- Force UAP to ignore netstandard 2.0 -->
 	<file src="uno.winui.uap.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.16299" />
+	
 	<file src="uno.winui.uap.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.17763" />
+	
 	<file src="uno.winui.uap.targets" target="buildTransitive\net5.0-windows\uno.winui.targets" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
   </files>
