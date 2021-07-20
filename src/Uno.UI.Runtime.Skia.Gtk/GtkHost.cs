@@ -18,6 +18,8 @@ using Uno.UI.Runtime.Skia.GTK.Extensions.System;
 using Uno.UI.Runtime.Skia.GTK.UI.Core;
 using Uno.Extensions.Storage.Pickers;
 using Windows.Storage.Pickers;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -59,6 +61,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
+			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");

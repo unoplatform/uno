@@ -31,6 +31,10 @@ using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
+using Uno.UI.Xaml;
+using Uno.UI.Runtime.Skia.Wpf;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.Extensions.ApplicationModel.DataTransfer;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -63,6 +67,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(IConnectionProfileExtension), o => new WindowsConnectionProfileExtension(o));
 			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
+			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 		}
 
 		public static WpfHost Current => _current;
