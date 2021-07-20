@@ -78,9 +78,21 @@
   </ItemGroup>
 
   <!-- IDE capabilities -->
+  
+  <!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
+  <PropertyGroup>
+	<!-- Required - Enable Launch Profiles for .NET 6 iOS/Android -->
+	<_KeepLaunchProfiles>true</_KeepLaunchProfiles>
+  </PropertyGroup>
+
   <ItemGroup Condition=" '$(SingleProject)' == 'true' ">
 	<ProjectCapability Include="MauiSingleProject" />
 	<ProjectCapability Include="LaunchProfiles" />
+
+	<!-- Optional - Enables a list of TFM's and device categories in the debug menu -->
+	<!-- This allows easily toggling of debug target TFM by selecting the platform -->
+	<!-- If removed, Top level debug targets show as a list of devices for the selected TFM -->
+	<ProjectCapability Include="XamarinStaticLaunchProfiles" />
   </ItemGroup>
 
 
