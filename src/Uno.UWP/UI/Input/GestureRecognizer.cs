@@ -192,6 +192,11 @@ namespace Windows.UI.Input
 			if (_isDragEnabled && WinRTFeatureConfiguration.GestureRecognizer.ShouldProvideHapticFeedback && value.PointerDevice?.PointerDeviceType == PointerDeviceType.Touch)
 			{
 				var timer = DispatcherTimerHelper.GetDispatcherTimer();
+				if (timer == null)
+				{
+					// This may occur if app initialization did not occur, eg in unit tests.
+					return;
+				}
 				timer.Interval = new TimeSpan(DragWithTouchMinDelayTicks);
 				timer.Tick += TrySendHapticFeedback;
 				_hapticFeedbackSubscription ??= new SerialDisposable();
