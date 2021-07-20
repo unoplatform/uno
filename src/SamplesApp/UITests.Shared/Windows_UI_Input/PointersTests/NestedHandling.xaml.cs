@@ -18,7 +18,8 @@ namespace UITests.Windows_UI_Input.PointersTests
 {
 	[Sample(
 		"Pointers",
-		Description = "Press the pink square, move a bit and release while remaining on the pink square.")]
+		Description = "Press the pink square, move a bit and release while remaining on the pink square.",
+		IgnoreInSnapshotTests = true)]
 	public sealed partial class NestedHandling : Page
 	{
 		public NestedHandling()
