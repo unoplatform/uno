@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit 263622f
+// MUX Reference NavigationView.cpp, commit 996c2e5
 
 using System;
 using System.Collections.Generic;
@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (isFromDestructor)
 			{
 				m_selectionChangedRevoker.Disposable = null;
-				m_autoSuggestBoxSuggestionChosenRevoker.Disposable = null;
+				m_autoSuggestBoxQuerySubmittedRevoker.Disposable = null;
 			}
 		}
 
@@ -4250,12 +4250,12 @@ namespace Microsoft.UI.Xaml.Controls
 				InvalidateTopNavPrimaryLayout();
 				if (args.OldValue != null)
 				{
-					m_autoSuggestBoxSuggestionChosenRevoker.Disposable = null;
+					m_autoSuggestBoxQuerySubmittedRevoker.Disposable = null;
 				}
 				if (args.NewValue is AutoSuggestBox newAutoSuggestBox)
 				{
-					newAutoSuggestBox.SuggestionChosen += OnAutoSuggestBoxSuggestionChosen;
-					m_autoSuggestBoxSuggestionChosenRevoker.Disposable = Disposable.Create(() => newAutoSuggestBox.SuggestionChosen -= OnAutoSuggestBoxSuggestionChosen);
+					newAutoSuggestBox.QuerySubmitted += OnAutoSuggestBoxQuerySubmitted;
+					m_autoSuggestBoxQuerySubmittedRevoker.Disposable = Disposable.Create(() => newAutoSuggestBox.QuerySubmitted -= OnAutoSuggestBoxQuerySubmitted);
 				}
 				UpdateVisualState(false);
 			}
@@ -5041,10 +5041,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnAutoSuggestBoxSuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+		private void OnAutoSuggestBoxQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
-			// When in compact or minimal, we want to close pane when an item gets selected.
-			if (DisplayMode != NavigationViewDisplayMode.Expanded && args.SelectedItem != null)
+			// When in compact or minimal, we want to close pane when an item gets chosen.
+			if (DisplayMode != NavigationViewDisplayMode.Expanded && args.ChosenSuggestion != null)
 			{
 				ClosePane();
 			}
