@@ -63,9 +63,9 @@ namespace UITests.Windows_UI_Xaml_Controls.ListView
 		}
 
 		// not using ViewModelBase because it would fire the same event twice, once as $"{propertyName}" and once as $"Item[{propertyName}]"...
-		private class CustomViewModel : INotifyPropertyChanged
+		private class CustomViewModel : global::System.ComponentModel.INotifyPropertyChanged
 		{
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public string[] Source { get; } = Enumerable.Range(0, 5).Select(x => $"Item_{x}").ToArray();
 
@@ -99,7 +99,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ListView
 				if (!EqualityComparer<T>.Default.Equals(backingField, value))
 				{
 					backingField = value;
-					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+					PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(propertyName));
 				}
 			}
 		}
