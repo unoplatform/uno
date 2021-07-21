@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 				typeof(IList<VisualStateGroup>),
 				typeof(VisualStateManager),
 				new FrameworkPropertyMetadata(
-					defaultValue: null,
+					defaultValue: new VisualStateGroup[0],
 					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
 					propertyChangedCallback: OnVisualStateGroupsChanged
 				)

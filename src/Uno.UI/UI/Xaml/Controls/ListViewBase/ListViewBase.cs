@@ -33,6 +33,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ListViewBase : Selector
 	{
 		internal ScrollViewer ScrollViewer { get; private set; }
+		IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
 		/// <summary>
 		/// When this flag is set, the ListViewBase will process every notification from <see cref="INotifyCollectionChanged"/> as if it 

@@ -398,7 +398,7 @@ namespace Windows.UI.Xaml.Controls
 			FillForward();
 
 			// Make sure that the reorder item has been rendered
-			if (GetReorderingIndex() is { } reorderIndex && _materializedLines.None(line => line.Contains(reorderIndex)))
+			if (GetAndUpdateReorderingIndex() is { } reorderIndex && _materializedLines.None(line => line.Contains(reorderIndex)))
 			{
 				AddLine(Forward, reorderIndex);
 			}
@@ -724,7 +724,7 @@ namespace Windows.UI.Xaml.Controls
 		private void ScrapLayout()
 		{
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
-			if (GetReorderingIndex() is { } reorderIndex && reorderIndex == firstVisibleItem)
+			if (GetAndUpdateReorderingIndex() is { } reorderIndex && reorderIndex == firstVisibleItem)
 			{
 				firstVisibleItem = _materializedLines.SelectMany(line => line.Items).Skip(1).FirstOrDefault().index;
 			}
@@ -998,10 +998,10 @@ namespace Windows.UI.Xaml.Controls
 		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
 #endif
 
-		private (double offset, double breadth, object item, Uno.UI.IndexPath? index)? _pendingReorder;
+		private (double offset, double extent, object item, Uno.UI.IndexPath? index)? _pendingReorder;
 		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
 		{
-			_pendingReorder = Orientation == Orientation.Horizontal
+			_pendingReorder = ScrollOrientation == Orientation.Horizontal
 				? (location.X + ScrollOffset, element.ActualWidth, item, default(Uno.UI.IndexPath?))
 				: (location.Y + ScrollOffset, element.ActualHeight, item, default(Uno.UI.IndexPath?));
 
@@ -1033,9 +1033,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected bool ShouldInsertReorderingView(double extentOffset)
-			=> _pendingReorder is { } reorder && reorder.offset > extentOffset && reorder.offset <= extentOffset + reorder.breadth;
+			=> _pendingReorder is { } reorder && reorder.offset > extentOffset && reorder.offset <= extentOffset + reorder.extent;
 
-		protected Uno.UI.IndexPath? GetReorderingIndex()
+		protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex()
 		{
 			if (_pendingReorder is { } reorder)
 			{
@@ -1055,7 +1055,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_pendingReorder is { } reorder)
 			{
-				_pendingReorder = (reorder.offset, reorder.breadth, reorder.item, null);
+				_pendingReorder = (reorder.offset, reorder.extent, reorder.item, null);
 			}
 		}
 

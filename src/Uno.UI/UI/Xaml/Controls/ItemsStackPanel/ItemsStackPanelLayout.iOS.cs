@@ -67,18 +67,6 @@ namespace Windows.UI.Xaml.Controls
 			return measuredBreadth;
 		}
 
-		private void SetExtentStart(ref CGRect frame, nfloat extentStart)
-		{
-			if (ScrollOrientation == Orientation.Vertical)
-			{
-				frame.Y = extentStart;
-			}
-			else
-			{
-				frame.X = extentStart;
-			}
-		}
-
 		private protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem, bool shouldRecurse)
 		{
 			while (updatingItem != null)

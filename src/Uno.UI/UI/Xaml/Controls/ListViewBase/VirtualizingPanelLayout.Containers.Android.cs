@@ -4,6 +4,7 @@ using System.Text;
 using Uno.UI;
 using System.Linq;
 using Windows.UI.Xaml.Controls.Primitives;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -12,6 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// A row or column.
 		/// </summary>
+		[DebuggerDisplay("{DebugDisplay,nq}")]
 		protected class Line
 		{
 			public int NumberOfViews { get; set; }
@@ -27,6 +29,39 @@ namespace Windows.UI.Xaml.Controls
 			public Uno.UI.IndexPath FirstItem { get; set; }
 
 			public Uno.UI.IndexPath LastItem { get; set; }
+
+			public bool Contains(Uno.UI.IndexPath index) => index >= FirstItem && index <= LastItem;
+
+			public IEnumerable<Uno.UI.IndexPath> Indices
+			{
+				get
+				{
+					if (FirstItem.Section != LastItem.Section)
+					{
+						throw new InvalidOperationException("All items in a line must be in the same section.");
+					}
+					var current = FirstItem;
+					while (current <= LastItem)
+					{
+						yield return current;
+						current = Uno.UI.IndexPath.FromRowSection(current.Row + 1, current.Section);
+					}
+				}
+			}
+
+			public override string ToString()
+			{
+				if (FirstItem == LastItem)
+				{
+					return $"Line:{FirstItem}";
+				}
+				else
+				{
+					return $"Line:{FirstItem}-{LastItem}";
+				}
+			}
+
+			private string DebugDisplay => ToString();
 		}
 
 		/// <summary>
@@ -87,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 			public int ItemsExtentOffset => RelativeHeaderPlacement == RelativeHeaderPlacement.Inline ? HeaderExtent : 0;
 
 			public int ItemsBreadthOffset => RelativeHeaderPlacement == RelativeHeaderPlacement.Adjacent ? HeaderBreadth : 0;
-			
+
 			public Line GetTrailingLine(GeneratorDirection fillDirection)
 			{
 				return fillDirection == GeneratorDirection.Forward ?

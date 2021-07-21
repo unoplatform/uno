@@ -769,15 +769,33 @@ namespace Windows.UI.Xaml
 
 			if (_gestures.IsValueCreated)
 			{
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
-				if (_gestures.Value.IsDragging)
+				var gestures = _gestures.Value;
+				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
+				if (gestures.IsDragging)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
 				}
+				TryPreventInterceptOnDrag(args, isOver);
 			}
 
 			return handledInManaged;
 		}
+
+		/// <summary>
+		/// If a drag is beginning, ensure that native scroll handlers don't intercept the gesture.
+		/// </summary>
+		private void TryPreventInterceptOnDrag(PointerRoutedEventArgs args, bool isInView)
+		{
+			if (isInView && args.Pointer.PointerDeviceType == PointerDeviceType.Touch && CanDrag)
+			{
+				if (_gestures.IsValueCreated && (_gestures.Value.PendingManipulation?.IsHeldLongEnoughToDrag() ?? false))
+				{
+					TryPreventInterceptOnDragPartial();
+				}
+			}
+		}
+
+		partial void TryPreventInterceptOnDragPartial();
 
 		private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args);
 

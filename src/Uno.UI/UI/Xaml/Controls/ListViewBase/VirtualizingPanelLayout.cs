@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// We consider the pending reorder item as non materializable and we ignore it while filling the layout.
 			// It's then the responsibility of the layout to render it at the appropriate slot
-			if (index is {} && GetReorderingIndex() is {} reorderIndex && index == reorderIndex)
+			if (index is {} && GetAndUpdateReorderingIndex() is {} reorderIndex && index == reorderIndex)
 			{
 				index = XamlParent?.GetNextItemIndex(index, direction);
 			}
