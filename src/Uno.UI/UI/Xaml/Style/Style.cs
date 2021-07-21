@@ -59,28 +59,28 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			using (DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence))
-			{
-				var flattenedSetters = CreateSetterMap();
-#if !HAS_EXPENSIVE_TRYFINALLY
-				try
-#endif
-				{
-					ResourceResolver.PushNewScope(_xamlScope);
-					foreach (var pair in flattenedSetters)
-					{
-						pair.Value(o);
-					}
+			var localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
 
-					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-					(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(isThemeChangedUpdate: false);
-				}
+			var flattenedSetters = CreateSetterMap();
 #if !HAS_EXPENSIVE_TRYFINALLY
-				finally
+			try
 #endif
+			{
+				ResourceResolver.PushNewScope(_xamlScope);
+				foreach (var pair in flattenedSetters)
 				{
-					ResourceResolver.PopScope();
+					pair.Value(o);
 				}
+
+				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
+				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(isThemeChangedUpdate: false);
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				ResourceResolver.PopScope();
+				localPrecedenceDisposable?.Dispose();
 			}
 		}
 
