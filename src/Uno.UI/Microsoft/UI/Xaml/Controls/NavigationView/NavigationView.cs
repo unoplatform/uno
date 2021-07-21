@@ -2157,7 +2157,10 @@ namespace Microsoft.UI.Xaml.Controls
 						third();
 					}
 
-					paneTitleTopPane.Visibility = third != null && paneTitleSize != 0 ? Visibility.Visible : Visibility.Collapsed;
+					if (paneTitleTopPane != null)
+					{
+						paneTitleTopPane.Visibility = third != null && paneTitleSize != 0 ? Visibility.Visible : Visibility.Collapsed;
+					}
 				}
 			}
 		}
