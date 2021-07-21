@@ -1618,9 +1618,7 @@ namespace Windows.UI.Xaml
 			// Raise the callback for backing fields update before PropertyChanged to get
 			// the backingfield updated, in case the PropertyChanged handler reads the
 			// dependency property value through the cache.
-			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
-
-			OnDependencyPropertyChanged(propertyDetails, eventArgs);
+			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);			
 
 			// Raise the changes for the callback register to the property itself
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
