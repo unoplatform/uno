@@ -40,6 +40,7 @@ else
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests' or \
+			class = 'SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests.DragDrop_ListViewReorder_Automated' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests'
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '2' ];
