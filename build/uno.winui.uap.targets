@@ -12,4 +12,6 @@
 	</ItemGroup>
   </Target>
 
+  <Import Project="uno.winui.runtime-replace.targets" />
+
 </Project>

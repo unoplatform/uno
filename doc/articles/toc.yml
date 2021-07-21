@@ -31,6 +31,8 @@
       href: get-started-next-steps.md
     - name: Common issues
       href: get-started-wizard.md
+    - name: Get Started on Visual Studio 2022 (Preview)
+      href: get-started-vs-2022.md
 - name: How-tos and tutorials
   items:
     - name: Overview
