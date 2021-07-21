@@ -24,6 +24,15 @@ using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 using Uno.Disposables;
 
+using Microsoft.CodeAnalysis.Text;
+
+#if NETFRAMEWORK
+using Microsoft.Build.Execution;
+using Uno.SourceGeneration;
+using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
+#endif
+
+
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlFileGenerator
@@ -93,6 +102,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// True if the generator is currently creating the inner singleton class associated with a top-level resource dictionary
 		/// </summary>
 		private bool _isInSingletonInstance = false;
+
+		/// <summary>
+		/// Context to report diagnostics to
+		/// </summary>
+		/// <returns></returns>
+		private readonly GeneratorExecutionContext _generatorContext;
 
 		/// <summary>
 		/// The current DefaultBindMode for x:Bind bindings, as set by app code for the current Xaml subtree.
@@ -197,7 +212,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
 			bool isUnoAssembly,
-			bool isLazyVisualStateManagerEnabled
+			bool isLazyVisualStateManagerEnabled,
+			GeneratorExecutionContext generatorContext
 		)
 		{
 			_fileDefinition = file;
@@ -217,6 +233,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
+			_generatorContext = generatorContext;
 
 			InitCaches();
 
@@ -301,6 +318,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private void TryGenerateWarningForInconsistentBaseType(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		{
+			var xamlDefinedBaseType  = GetType(topLevelControl.Type);
+			var fullClassName        = _className.ns + "." + _className.className;
+			var classDefinedBaseType = FindType(fullClassName)?.BaseType;
+
+			if (!SymbolEqualityComparer.Default.Equals(xamlDefinedBaseType, classDefinedBaseType))
+			{
+				var locations = FindType(fullClassName)?.Locations;
+				if (locations != null)
+				{
+					var diagnostic = Diagnostic.Create(XamlCodeGeneration.GenericXamlErrorRule,
+					                                   locations.Value.First(),
+					                                   $"{fullClassName} does not explicitly define the {xamlDefinedBaseType} base type in code behind.");
+					_generatorContext.ReportDiagnostic(diagnostic);
+				}
+				else
+				{
+					writer.AppendLineInvariant($"#warning {fullClassName} does not explicitly define the {xamlDefinedBaseType} base type in code behind.");
+				}
+			}
+		}
+
 		private string InnerGenerateFile()
 		{
 			var writer = new IndentedStringBuilder();
@@ -360,6 +400,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (writer.BlockInvariant("namespace {0}", _className.ns))
 				{
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
+					TryGenerateWarningForInconsistentBaseType(writer, topLevelControl);
 
 					var controlBaseType = GetType(topLevelControl.Type);
 
@@ -465,7 +506,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			GenerateResourceLoader(writer);
 			writer.AppendLine();
-			ApplyLiteralProperties(); // 
+			ApplyLiteralProperties(); //
 			writer.AppendLine();
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
@@ -2526,7 +2567,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Whether this resource should be lazily initialized. 
+		/// Whether this resource should be lazily initialized.
 		/// </summary>
 		private bool ShouldLazyInitializeResource(XamlObjectDefinition resource)
 		{
@@ -2614,7 +2655,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new Exception("Each dictionary entry must have an associated key.");
 				}
 
-				var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null. 
+				var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null.
 				if (isDict)
 				{
 					_themeDictionaryCurrentlyBuilding = key;

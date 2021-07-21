@@ -57,7 +57,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal const string Description = "XAML Generation Failed";
 		internal const string Category = "XAML";
 
-		internal static DiagnosticDescriptor GenericXamlErrroRule = new DiagnosticDescriptor(
+		internal static DiagnosticDescriptor GenericXamlErrorRule = new DiagnosticDescriptor(
 #pragma warning disable RS2008 // Enable analyzer release tracking
 			"UXAML0001",
 #pragma warning restore RS2008 // Enable analyzer release tracking
@@ -65,6 +65,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			MessageFormat,
 			Category,
 			DiagnosticSeverity.Error,
+			isEnabledByDefault: true,
+			description: Description
+		);
+
+		internal static DiagnosticDescriptor GenericXamlWarningRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+			"UXAML0002",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+			Title,
+			MessageFormat,
+			Category,
+			DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,
 			description: Description
 		);
@@ -294,7 +306,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					filesToProcess = filesToProcess
 						.WithDegreeOfParallelism(1);
 				}
-
 				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
 
 							file.UniqueID,
@@ -317,7 +328,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 									isUnoAssembly: IsUnoAssembly,
-									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled
+									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
+									generatorContext: _generatorContext
 								)
 								.GenerateFile()
 						)
@@ -380,7 +392,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var exception in Flatten(e))
 			{
 				var diagnostic = Diagnostic.Create(
-					GenericXamlErrroRule,
+					GenericXamlErrorRule,
 					GetExceptionFileLocation(exception),
 					exception.Message);
 
