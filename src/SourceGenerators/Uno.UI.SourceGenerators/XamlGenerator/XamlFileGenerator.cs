@@ -23,6 +23,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.SourceGenerators.BindableTypeProviders;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -85,6 +86,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// True if VisualStateManager children can be set lazily
 		/// </summary>
 		private readonly bool _isLazyVisualStateManagerEnabled;
+
+		/// <summary>
+		/// True if XAML resource trimming is enabled
+		/// </summary>
+		private readonly bool _xamlResourcesTrimming;
+
 		/// <summary>
 		/// True if the generator is currently creating child subclasses (for templates, etc)
 		/// </summary>
@@ -197,7 +204,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
 			bool isUnoAssembly,
-			bool isLazyVisualStateManagerEnabled
+			bool isLazyVisualStateManagerEnabled,
+			bool xamlResourcesTrimming
 		)
 		{
 			_fileDefinition = file;
@@ -217,6 +225,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
+			_xamlResourcesTrimming = xamlResourcesTrimming;
 
 			InitCaches();
 
@@ -1273,11 +1282,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
 						var isNativeStyle = style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string == "True";
-						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
-										implicitKey,
-										SingletonInstanceAccess,
-										isNativeStyle.ToString().ToLowerInvariant()
-									);
+
+						using (TrySingleLineIfForLinkerHint(writer, style))
+						{
+							writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
+											implicitKey,
+											SingletonInstanceAccess,
+											isNativeStyle.ToString().ToLowerInvariant()
+										);
+						}
 					}
 					else
 					{
@@ -2475,11 +2488,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (isInInitializer)
 					{
-						writer.AppendLineInvariant("[{0}] = ", wrappedKey);
+						writer.AppendLineInvariant("[");
+						using (TryTernaryForLinkerHint(writer, resource))
+						{
+							writer.AppendLineInvariant(wrappedKey);
+						}
+						writer.AppendLineInvariant("] = ", wrappedKey);
 					}
 					else
 					{
-						writer.AppendLineInvariant("{0}[{1}] = ", dictIdentifier, wrappedKey);
+						writer.AppendLineInvariant("{0}[", dictIdentifier);
+						using (TryTernaryForLinkerHint(writer, resource))
+						{
+							writer.AppendLineInvariant(wrappedKey);
+						}
+						writer.AppendLineInvariant("] = ");
 					}
 
 					if (resource.Type.Name == "StaticResource")
@@ -2500,14 +2523,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						&& !_isInChildSubclass
 						&& GetResourceDictionaryInitializerName(key) is string initializerName)
 					{
-						//
-						writer.AppendLineInvariant("new global::Uno.UI.Xaml.WeakResourceInitializer(this, {0})", initializerName);
+						using (TryTernaryForLinkerHint(writer, resource))
+						{
+							writer.AppendLineInvariant("new global::Uno.UI.Xaml.WeakResourceInitializer(this, {0})", initializerName);
+						}
 					}
 					else
 					{
-						using (BuildLazyResourceInitializer(writer))
+						using (TryTernaryForLinkerHint(writer, resource))
 						{
-							BuildChild(writer, null, resource);
+							using (BuildLazyResourceInitializer(writer))
+							{
+								BuildChild(writer, null, resource);
+							}
 						}
 					}
 
@@ -2523,6 +2551,55 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					_namedResources.Add(name, resource);
 				}
 			}
+		}
+
+		private IDisposable TryTernaryForLinkerHint(IIndentedStringBuilder writer, XamlObjectDefinition resource)
+			=> TryLinkerHint(
+				resource,
+				s => writer.AppendLineInvariant($"{s} ? ("),
+				() => writer.AppendLineInvariant("): null")
+			);
+
+		private IDisposable TrySingleLineIfForLinkerHint(IIndentedStringBuilder writer, XamlObjectDefinition resource)
+			=> TryLinkerHint(
+				resource,
+				s => writer.AppendLineInvariant($"if({s})"),
+				() => { }
+			);
+
+		private IDisposable TryLinkerHint(XamlObjectDefinition resource, Action<string> prefix, Action suffix)
+		{
+			var hintEnabled = false;
+
+			if (_xamlResourcesTrimming)
+			{
+				var styleTargetType = resource.Type.Name == "Style"
+						? resource.Members.FirstOrDefault(m => m.Member.Name == "TargetType")?.Value as string
+						: null;
+
+				if (styleTargetType != null)
+				{
+					var symbol = GetType(styleTargetType);
+
+					if (symbol.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+					{
+						var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(symbol.GetFullMetadataName());
+						var linkerHintClass = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
+
+						prefix($"global::{linkerHintClass}.{safeTypeName}");
+
+						hintEnabled = true;
+					}
+				}
+			}
+
+			return Disposable.Create(() =>
+			{
+				if (hintEnabled)
+				{
+					suffix();
+				}
+			});
 		}
 
 		/// <summary>

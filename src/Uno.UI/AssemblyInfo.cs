@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Uno.UI.DualScreen")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
@@ -15,3 +16,5 @@
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
+
+[assembly: AssemblyMetadata("IsTrimmable", "True")]
