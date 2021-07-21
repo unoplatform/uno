@@ -1315,7 +1315,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task ZXC_When_Selection_Events()
+		public async Task When_Selection_Events()
 		{
 			var list = new ListView
 			{
@@ -1352,9 +1352,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : INotifyPropertyChanged
+		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : global::System.ComponentModel.INotifyPropertyChanged
 		{
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public string[] MyItems { get; } = new[] { "Red beans", "Rice" };
 
@@ -1368,15 +1368,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					_mySelection = value;
 					if (changing)
 					{
-						PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MySelection)));
+						PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(nameof(MySelection)));
 					}
 				}
 			}
 		}
 
-		private class When_Selection_Events_DataContext : INotifyPropertyChanged
+		private class When_Selection_Events_DataContext : global::System.ComponentModel.INotifyPropertyChanged
 		{
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			#region SelectedItem
 			private object _selectedItem;
@@ -1409,7 +1409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				if (!EqualityComparer<T>.Default.Equals(backingField, value))
 				{
 					backingField = value;
-					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+					PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(propertyName));
 				}
 			}
 		}

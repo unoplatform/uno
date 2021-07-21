@@ -1623,13 +1623,16 @@ namespace Windows.UI.Xaml
 			// Raise the changes for the callback register to the property itself
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
+			// Ensure binding is propagated
+			OnDependencyPropertyChanged(propertyDetails, eventArgs);
+
 			// Raise the common property change callback of WinUI
+			// This is raised *after* the data bound properties are updated
+			// but before the registered property callbacks
 			if (actualInstanceAlias is UIElement uiElt)
 			{
 				uiElt.OnPropertyChanged2(eventArgs);
 			}
-
-			OnDependencyPropertyChanged(propertyDetails, eventArgs);
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
 			propertyDetails.CallbackManager.RaisePropertyChanged(actualInstanceAlias, eventArgs);
