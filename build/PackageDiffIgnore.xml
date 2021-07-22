@@ -3742,7 +3742,7 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>	
-	<IgnoreSet baseVersion="3.8.11">
+	<IgnoreSet baseVersion="3.8.13">
 		<Types>
 			<Member
 				fullName="Windows.UI.Xaml.Controls.Popup"
@@ -3834,6 +3834,43 @@
 			<Member
 				fullName="System.Void Windows.Devices.Enumeration.DeviceThumbnail.set_Size(System.UInt64 value)"
 				reason="Align Properties" />
+
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Windows.UI.Xaml.Controls.Panel.get_Padding()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_Padding(Windows.UI.Xaml.Thickness value)"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel.get_PaddingProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Windows.UI.Xaml.Controls.Panel.get_BorderThickness()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_BorderThickness(Windows.UI.Xaml.Thickness value)"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel.get_BorderThicknessProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.Media.Brush Windows.UI.Xaml.Controls.Panel.get_BorderBrush()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_BorderBrush(Windows.UI.Xaml.Media.Brush value)"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel.get_BorderBrushProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel.get_CornerRadiusProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.CornerRadius Windows.UI.Xaml.Controls.Panel.get_CornerRadius()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_CornerRadius(Windows.UI.Xaml.CornerRadius value)"
+				reason="Align Panel DPs" />
 		</Methods>
 		<Events>
 			<Member
@@ -4833,6 +4870,31 @@
 			<Member
 				fullName="System.UInt16 Windows.UI.Text.FontWeight::Weight()"
 				reason="Align Properties" />
+
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Windows.UI.Xaml.Controls.Panel::Padding()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel::PaddingProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Windows.UI.Xaml.Controls.Panel::BorderThickness()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel::BorderThicknessProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.Media.Brush Windows.UI.Xaml.Controls.Panel::BorderBrush()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel::BorderBrushProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel::CornerRadiusProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.CornerRadius Windows.UI.Xaml.Controls.Panel::CornerRadius()"
+				reason="Align Panel DPs" />
 		</Properties>
 	</IgnoreSet>
 	<!--

@@ -17,7 +17,8 @@ jobs:
     - iOS_Snaphot_Tests_Group_02
     - iOS_Snaphot_Tests_Group_03
     - iOS_Snaphot_Tests_Group_04
-  condition: succeededOrFailed()
+
+  condition: or(succeeded(), and(failed(), ge(variables['System.StageAttempt'], 5)))
 
   pool:
     vmImage: ${{ parameters.vmImage }}

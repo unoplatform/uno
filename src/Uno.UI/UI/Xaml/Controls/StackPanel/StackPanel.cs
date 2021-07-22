@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using Uno.Extensions;
 using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI.Xaml;
+using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 #if XAMARIN_ANDROID
 using Android.Views;
 #elif XAMARIN_IOS
@@ -20,6 +23,101 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class StackPanel : Panel
 	{
+		#region BorderBrush DependencyProperty
+
+		public Brush BorderBrush
+		{
+			get => GetBorderBrushValue();
+			set => SetBorderBrushValue(value);
+		}
+
+		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
+
+		private void OnBorderBrushPropertyChanged(Brush oldValue, Brush newValue)
+		{
+			BorderBrushInternal = newValue;
+			OnBorderBrushChanged(oldValue, newValue);
+		}
+
+		#endregion
+
+		#region BorderThickness DependencyProperty
+
+		public Thickness BorderThickness
+		{
+			get => GetBorderThicknessValue();
+			set => SetBorderThicknessValue(value);
+		}
+
+		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged))]
+		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
+
+		private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
+		{
+			BorderThicknessInternal = newValue;
+			OnBorderThicknessChanged(oldValue, newValue);
+		}
+
+		private Size BorderAndPaddingSize
+		{
+			get
+			{
+				var border = BorderThickness;
+				var padding = Padding;
+				var width = border.Left + border.Right + padding.Left + padding.Right;
+				var height = border.Top + border.Bottom + padding.Top + padding.Bottom;
+				return new Size(width, height);
+			}
+		}
+
+		#endregion
+
+		#region Padding DependencyProperty
+
+		public Thickness Padding
+		{
+			get => GetPaddingValue();
+			set => SetPaddingValue(value);
+		}
+
+		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged))]
+		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
+
+		private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
+		{
+			PaddingInternal = newValue;
+			OnPaddingChanged(oldValue, newValue);
+		}
+
+		#endregion
+
+		#region CornerRadius DependencyProperty
+
+		public CornerRadius CornerRadius
+		{
+			get => GetCornerRadiusValue();
+			set => SetCornerRadiusValue(value);
+		}
+
+		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
+
+		private void OnCornerRadiusPropertyChanged(CornerRadius oldValue, CornerRadius newValue)
+		{
+			CornerRadiusInternal = newValue;
+			OnCornerRadiusChanged(oldValue, newValue);
+		}
+
+		#endregion
 
 		#region Orientation DependencyProperty
 
