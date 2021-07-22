@@ -106,7 +106,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Context to report diagnostics to
 		/// </summary>
-		/// <returns></returns>
 		private readonly GeneratorExecutionContext _generatorContext;
 
 		/// <summary>
