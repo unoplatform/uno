@@ -1,12 +1,11 @@
 parameters:
-  vmImage: ''
+  poolName: ''
 
 jobs:
 - job: Documentation
   displayName: 'Documentation WebSite'
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU

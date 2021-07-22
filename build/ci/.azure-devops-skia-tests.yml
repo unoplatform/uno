@@ -1,13 +1,12 @@
 parameters:
-  vmImage: ''
+  poolName: ''
 
 jobs:
 - job: Skia_UI_Tests
   displayName: 'Skia Samples App Unit Tests'
   timeoutInMinutes: 60
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -18,11 +17,12 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
   steps:
-   
-  - task: MSBuild@1
-    inputs:
-      solution: src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj
-      msbuildArguments: /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+ 
+  - template: templates/gitversion.yml
+  - template: templates/dotnet-install.yml
+
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+    displayName: Build GTK Head
 
   - powershell: |
         $source = "$(GTK_RUNTIME_URL)"
