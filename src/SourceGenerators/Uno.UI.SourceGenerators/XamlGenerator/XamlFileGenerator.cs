@@ -327,10 +327,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (!SymbolEqualityComparer.Default.Equals(xamlDefinedBaseType, classDefinedBaseType))
 			{
 				var locations = FindType(fullClassName)?.Locations;
-				if (locations != null)
+				if (locations != null && locations.Value.Length > 0)
 				{
 					var diagnostic = Diagnostic.Create(XamlCodeGenerationDiagnostics.GenericXamlWarningRule,
-					                                   locations.Value.First(),
+					                                   locations.Value[0],
 					                                   $"{fullClassName} does not explicitly define the {xamlDefinedBaseType} base type in code behind.");
 					_generatorContext.ReportDiagnostic(diagnostic);
 				}
