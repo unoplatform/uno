@@ -43,9 +43,9 @@ namespace Windows.UI.Xaml.Controls
 				_borderRenderer.UpdateLayer(
 					this,
 					Background,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
+					BorderThicknessInternal,
+					BorderBrushInternal,
+					CornerRadiusInternal,
 					null
 				);
 			}
@@ -103,6 +103,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

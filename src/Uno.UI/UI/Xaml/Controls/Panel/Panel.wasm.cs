@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush);
+			SetBorder(BorderThicknessInternal, BorderBrushInternal);
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -91,6 +91,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }
