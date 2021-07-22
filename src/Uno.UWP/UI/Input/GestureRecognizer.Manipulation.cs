@@ -57,7 +57,7 @@ namespace Windows.UI.Input
 			private Points _origins;
 			private Points _currents;
 			private (ushort onStart, ushort current) _contacts;
-			private (ManipulationDelta sumOfDelta, ulong timestamp, ushort contacts) _lastPublishedState = (ManipulationDelta.Empty, 0, 0); // Note: not maintained for dragging manipulation
+			private (ManipulationDelta sumOfDelta, ulong timestamp, ushort contacts) _lastPublishedState = (ManipulationDelta.Empty, 0, 1); // Note: not maintained for dragging manipulation
 			private ManipulationVelocities _lastRelevantVelocities;
 			private InertiaProcessor? _inertia;
 

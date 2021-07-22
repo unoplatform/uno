@@ -20,6 +20,14 @@ namespace Uno.UI.Tests.Windows_UI_Input
 	[TestClass]
 	public class Given_GestureRecognizer
 	{
+		private const GestureSettings ManipulationsWithoutInertia = GestureSettings.ManipulationTranslateX
+			| GestureSettings.ManipulationTranslateY
+			| GestureSettings.ManipulationTranslateRailsX
+			| GestureSettings.ManipulationTranslateRailsY
+			| GestureSettings.ManipulationRotate
+			| GestureSettings.ManipulationScale
+			| GestureSettings.ManipulationMultipleFingerPanning; // Not supported by ManipulationMode
+
 		[TestMethod]
 		public void Tapped()
 		{
@@ -294,7 +302,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Begin()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX;
 
@@ -312,7 +320,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Begin_MultiPointer()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 
 			sut.ProcessDownEvent(25, 25, id: 1);
@@ -327,7 +335,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Begin_WithAnotherDevice()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 
 			sut.ProcessDownEvent(25, 25, id: 1);
@@ -341,7 +349,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Delta()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
@@ -362,7 +370,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_End()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
@@ -381,7 +389,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_End_2()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
@@ -736,7 +744,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Mixed()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 
 			sut.ProcessDownEvent(50, 50, id: 1); // 1.
@@ -976,6 +984,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			recognizer.ManipulationStarted += (snd, e) => _result.Add((snd, e));
 			recognizer.ManipulationUpdated += (snd, e) => _result.Add((snd, e));
 			recognizer.ManipulationCompleted += (snd, e) => _result.Add((snd, e));
+			//recognizer.ManipulationInertiaStarting += (snd, e) => _result.Add((snd, e));
 		}
 
 		public void ShouldBe(params Func<EmptyValidator, Validator>[] expected)
@@ -1329,7 +1338,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			=> new HoldingEventArgs(ptId ?? 1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
 
 		public static DraggingEventArgs Drag(PointerPoint point, DraggingState state)
-			=> new DraggingEventArgs(point, state);
+			=> new DraggingEventArgs(point, state, 1);
 
 		public static PointerPoint ProcessDownEvent(
 			this GestureRecognizer sut,
