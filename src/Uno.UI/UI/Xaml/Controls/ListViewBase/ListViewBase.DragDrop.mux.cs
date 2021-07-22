@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 		// The edge scroll timer calls this function when it's time
 		// to do our pending edge scroll action.
 		void StartEdgeScrollTimerTick(
-			object pUnused1,
+			object? pUnused1,
 			object pUnused2)
 		{
 			DestroyStartEdgeScrollTimer();

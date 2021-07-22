@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 				_isStarted = shouldStart;
 			}
 
-			private void UpdateScrollPosition(object sender, object e)
+			private void UpdateScrollPosition(object? sender, object e)
 			{
 				var currentTick = DateTimeOffset.Now.Ticks;
 				if (!(_previousTick is { } previousTick))

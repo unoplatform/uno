@@ -42,6 +42,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// If there is a drag and drop in progress, this is the number of
 		// items being dragged. Outside of a drag, the value is undefined.
+#pragma warning disable CS0649 // Field is never assigned to
 		int m_dragItemsCount;
 
 		// A reference to the item the user is physically dragging (as
@@ -53,6 +54,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// The item that should be in a DragOver state
 		SelectorItem m_tpDragOverItem;
+#pragma warning restore CS0649 // Field is never assigned to
 
 
 		// Edge scrolling begins after a delay. This is the velocity we will take after

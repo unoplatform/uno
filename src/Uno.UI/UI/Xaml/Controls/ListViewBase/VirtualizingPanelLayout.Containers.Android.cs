@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 					GetFirstLine();
 			}
 
-			public Line GetLeadingLine(GeneratorDirection fillDirection, Func<IndexPath, bool> condition)
+			public Line GetLeadingLine(GeneratorDirection fillDirection, Func<Uno.UI.IndexPath, bool> condition)
 			{
 				return fillDirection == GeneratorDirection.Forward ?
 					GetLastLine(condition) :
@@ -210,7 +210,7 @@ namespace Windows.UI.Xaml.Controls
 				return _lines[_lines.Count - 1];
 			}
 
-			private Line GetFirstLine(Func<IndexPath, bool> condition)
+			private Line GetFirstLine(Func<Uno.UI.IndexPath, bool> condition)
 			{
 				for (int i = 0; i < _lines.Count; i++)
 				{
@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			private Line GetLastLine(Func<IndexPath, bool> condition)
+			private Line GetLastLine(Func<Uno.UI.IndexPath, bool> condition)
 			{
 				for (int i = _lines.Count - 1; i >= 0; i--)
 				{

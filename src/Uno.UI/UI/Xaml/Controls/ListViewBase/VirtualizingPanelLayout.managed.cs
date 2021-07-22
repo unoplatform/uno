@@ -652,7 +652,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double CalculatePanelMeasureBreadth() => _materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
 #if __WASM__
-			+ GetBreadth(XamlParent.ScrollViewer.ScrollBarSize)
+			+ GetBreadth(XamlParent?.ScrollViewer.ScrollBarSize ?? default)
 #endif
 				;
 
