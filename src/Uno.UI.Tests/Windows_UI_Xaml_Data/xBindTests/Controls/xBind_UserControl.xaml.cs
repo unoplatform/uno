@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -17,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
+	[SuppressMessage("XAML", "UXAML0002", Justification = "Intentionally left out")]
 	public sealed partial class xBind_UserControl /* : UserControl: Don't specify the base type so x:Bind generator lookups uses the XAML control type */
 	{
 		public xBind_UserControl()
