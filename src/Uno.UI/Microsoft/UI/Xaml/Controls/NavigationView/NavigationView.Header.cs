@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationView.h, commit f2df41d
+// MUX reference NavigationView.h, commit 996c2e5
 
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -115,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable m_accessKeyInvokedRevoker = new SerialDisposable();
 		private readonly SerialDisposable m_paneTitleHolderFrameworkElementSizeChangedRevoker = new SerialDisposable();
 		private readonly SerialDisposable m_itemsContainerSizeChangedRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_autoSuggestBoxSuggestionChosenRevoker = new SerialDisposable();
+		private readonly SerialDisposable m_autoSuggestBoxQuerySubmittedRevoker = new SerialDisposable();
 
 		private readonly SerialDisposable m_leftNavItemsRepeaterElementPreparedRevoker = new SerialDisposable();
 		private readonly SerialDisposable m_leftNavItemsRepeaterElementClearingRevoker = new SerialDisposable();
