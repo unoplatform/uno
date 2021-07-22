@@ -1,0 +1,23 @@
+﻿<Page
+	x:Class="UITests.Windows_UI_Input.PointersTests.NestedHandling"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:UITests.Windows_UI_Input.PointersTests"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<Border Width="300" Height="300" Background="DeepSkyBlue" x:Name="_container">
+			<Border Width="200" Height="200" Background="DeepPink" x:Name="_nested">
+				
+			</Border>
+		</Border>
+
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Result: " />
+			<TextBlock Text="**not run**" x:Name="_result" />
+		</StackPanel>
+	</Grid>
+</Page>
