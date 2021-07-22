@@ -52,35 +52,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _outputSourceComments = true;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
-		internal const string Title = "XAML Generation Failed";
-		internal const string MessageFormat = "{0}";
-		internal const string Description = "XAML Generation Failed";
-		internal const string Category = "XAML";
-
-		internal static DiagnosticDescriptor GenericXamlErrorRule = new DiagnosticDescriptor(
-#pragma warning disable RS2008 // Enable analyzer release tracking
-			"UXAML0001",
-#pragma warning restore RS2008 // Enable analyzer release tracking
-			Title,
-			MessageFormat,
-			Category,
-			DiagnosticSeverity.Error,
-			isEnabledByDefault: true,
-			description: Description
-		);
-
-		internal static DiagnosticDescriptor GenericXamlWarningRule = new DiagnosticDescriptor(
-#pragma warning disable RS2008 // Enable analyzer release tracking
-			"UXAML0002",
-#pragma warning restore RS2008 // Enable analyzer release tracking
-			Title,
-			MessageFormat,
-			Category,
-			DiagnosticSeverity.Warning,
-			isEnabledByDefault: true,
-			description: Description
-		);
-
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
 		/// </summary>
@@ -392,7 +363,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var exception in Flatten(e))
 			{
 				var diagnostic = Diagnostic.Create(
-					GenericXamlErrorRule,
+				    XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 					GetExceptionFileLocation(exception),
 					exception.Message);
 

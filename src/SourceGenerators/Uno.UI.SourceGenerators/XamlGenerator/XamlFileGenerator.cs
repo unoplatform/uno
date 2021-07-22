@@ -329,7 +329,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var locations = FindType(fullClassName)?.Locations;
 				if (locations != null)
 				{
-					var diagnostic = Diagnostic.Create(XamlCodeGeneration.GenericXamlWarningRule,
+					var diagnostic = Diagnostic.Create(XamlCodeGenerationDiagnostics.GenericXamlWarningRule,
 					                                   locations.Value.First(),
 					                                   $"{fullClassName} does not explicitly define the {xamlDefinedBaseType} base type in code behind.");
 					_generatorContext.ReportDiagnostic(diagnostic);
