@@ -55,28 +55,29 @@ jobs:
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:
-    vmImageWindows: '$(windowsHostedVMImage)'
+    poolNameWindows: '$(windowsScaledPool)'
     vmImageLinux: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml
   parameters:
+    # Keep using hosted agents until scaled pool builds on 16.10 or later
     vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-unit-tests.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-skia-tests.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-docs.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-samplesapp-uitests-build.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-wasm-uitests.yml
   parameters:
@@ -94,7 +95,7 @@ jobs:
 
 - template: build/ci/.azure-devops-android-tests.yml
   parameters:
-    vmWindowsImage: '$(windowsHostedVMImage)'
+    vmWindowsImage: '$(windowsScaledPool)'
     vmMacOSImage: '$(macOSVMImage)'
     xCodeRoot: '$(xCodeRoot)'
     XamarinSDKVersion: '$(XamarinSDKVersion)'
@@ -109,8 +110,9 @@ jobs:
 
 - template: build/ci/.azure-devops-screenshot-compare.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-vs2022-vsix.yml
   parameters:
+    # Keep using hosted agents until scaled pool builds on 16.10 or later
     vmImage: '$(windowsHostedVMImage)'
