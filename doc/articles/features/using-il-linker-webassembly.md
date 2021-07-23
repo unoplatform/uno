@@ -22,7 +22,7 @@ When parts of an application fail to work, you can:
 As a troubleshooting step to determine if the linker is causing your code to break, you can also disable the linker completely by adding the following to your `csproj` file:
 ```xml
 <PropertyGroup>
-  <WasmShellILLinkerEnabled>true</WasmShellILLinkerEnabled>
+  <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 </PropertyGroup>
 ```
 Note that disabling the linker is not recommended as it can force the compiler to generate very large WebAssembly modules AOT process, and go over the browser's size limits.
