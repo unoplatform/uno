@@ -75,21 +75,7 @@ jobs:
       logProjectEvents: false
       createLogFile: false
 
-  - task: CopyFiles@2
-    condition: always()
-    inputs:
-      SourceFolder: $(build.sourcesdirectory)
-      Contents: |
-        **/bin/**/*.dll
-        **/bin/**/*.pdb
-        **/bin/**/*.xml
-        **/bin/**/*.xbf
-        **/bin/**/*.xaml
-        **/bin/**/*.vsix
-      TargetFolder: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
+  - template: templates/copy-package-assets.yml
 
   - task: ArchiveFiles@2
     inputs:
