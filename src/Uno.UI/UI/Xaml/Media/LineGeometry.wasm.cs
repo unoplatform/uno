@@ -12,9 +12,12 @@ namespace Windows.UI.Xaml.Media
 		partial void InitPartials()
 		{
 			this.RegisterDisposablePropertyChangedCallback(OnPropertyChanged);
+#if DEBUG
+			_svgElement.SetAttribute("uno-geometry-type", "LineGeometry");
+#endif
 		}
 
-		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+			private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 		{
 			if (property == StartPointProperty)
 			{

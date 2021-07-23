@@ -12,6 +12,9 @@ namespace Windows.UI.Xaml.Media
 		partial void InitPartials()
 		{
 			this.RegisterDisposablePropertyChangedCallback(OnPropertyChanged);
+#if DEBUG
+			_svgElement.SetAttribute("uno-geometry-type", "RectangleGeometry");
+#endif
 		}
 
 		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)

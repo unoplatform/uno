@@ -18,6 +18,9 @@ namespace Windows.UI.Xaml.Media
 			this.RegisterDisposablePropertyChangedCallback(OnPropertyChanged);
 
 			_svgElement.SetAttribute("fill-rule", "evenodd");
+#if DEBUG
+			_svgElement.SetAttribute("uno-geometry-type", "PathGeometry");
+#endif
 		}
 
 		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
