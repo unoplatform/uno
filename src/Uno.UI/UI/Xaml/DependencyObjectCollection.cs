@@ -47,7 +47,6 @@ namespace Windows.UI.Xaml
 		public DependencyObjectCollection()
 		{
 			Initialize();
-			UpdateParent(this.GetParent());
 		}
 
 		internal DependencyObjectCollection(DependencyObject parent, bool isAutoPropertyInheritanceEnabled = true)
@@ -56,7 +55,6 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			this.SetParent(parent);
-			UpdateParent(parent);
 		}
 
 		private void Initialize()
@@ -73,7 +71,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal List<T> Items => _list;
 
-		private void UpdateParent(object parent)
+		internal void UpdateParent(object parent)
 		{
 			var actualParent = parent ?? this;
 

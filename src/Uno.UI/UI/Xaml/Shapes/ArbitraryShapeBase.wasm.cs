@@ -25,13 +25,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			// We make sure to invoke native methods while not in the visual tree
-			// (For instance getBBox will fail on FF)
-			if (Parent == null)
-			{
-				return new Size();
-			}
-
 			InvalidateShape();
 
 			var measurements = GetMeasurements(availableSize);

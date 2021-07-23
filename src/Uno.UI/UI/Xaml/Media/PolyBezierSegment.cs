@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Media
 {
-	public  partial class PolyBezierSegment : PathSegment
+	public partial class PolyBezierSegment : PathSegment
 	{
 		public PolyBezierSegment()
 		{
@@ -21,10 +21,28 @@ namespace Windows.UI.Xaml.Media
 				typeof(PointCollection), 
 				typeof(PolyBezierSegment), 
 				new FrameworkPropertyMetadata(
-					defaultValue: null, 
+					defaultValue: null,
+					propertyChangedCallback: OnPointsChanged,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
+
+		private static void OnPointsChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyobject is PolyBezierSegment segment)
+			{
+				if (args.OldValue is PointCollection oldCollection)
+				{
+					oldCollection.UnRegisterChangedListener(segment.OnPointsChanged);
+				}
+				if (args.NewValue is PointCollection newCollection)
+				{
+					newCollection.RegisterChangedListener(segment.OnPointsChanged);
+				}
+			}
+		}
+
+		private void OnPointsChanged() => this.InvalidateMeasure();
 
 		#endregion
 	}

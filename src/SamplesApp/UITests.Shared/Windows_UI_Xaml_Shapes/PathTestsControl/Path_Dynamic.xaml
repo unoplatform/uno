@@ -34,6 +34,7 @@
 		  </PathGeometry>
 		</Path.Data>
 	  </Path>
+
 	  <!-- Progress -->
 	  <Path x:Name="ProgressPath"
 			Fill="Transparent"
@@ -66,7 +67,7 @@
 			ValueChanged="Value_Changed"
 			Value="0"
 			Minimum="0"
-			Maximum="100" />
+			Maximum="225" />
 
   </StackPanel>
 

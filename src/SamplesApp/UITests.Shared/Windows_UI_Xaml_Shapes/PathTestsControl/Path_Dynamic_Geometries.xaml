@@ -1,0 +1,56 @@
+﻿<Page
+	x:Class="UITests.Windows_UI_Xaml_Shapes.PathTestsControl.Path_Dynamic_Geometries"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:UITests.Windows_UI_Xaml_Shapes.PathTestsControl"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.Resources>
+		<local:ValueToPointConverter x:Key="toPoint" />
+	</Page.Resources>
+
+	<ScrollViewer>
+		<StackPanel Spacing="8" Margin="20">
+
+			<StackPanel Orientation="Horizontal" Spacing="4">
+				<Border Background="Yellow" Width="80" Height="80">
+					<Path x:Name="path1" Stroke="Red">
+						<Path.Data>
+							<EllipseGeometry
+								Center="40,40"
+								RadiusX="{Binding Value, ElementName=ellipseRadiusX}"
+								RadiusY="{Binding Value, ElementName=ellipseRadiusY}"/>
+						</Path.Data>
+					</Path>
+				</Border>
+				<StackPanel>
+					<TextBlock FontWeight="Bold">Ellipse Geometry</TextBlock>
+					<Slider Header="RadiusX" x:Name="ellipseRadiusX" Minimum="10" Maximum="100" Value="40" />
+					<Slider Header="RadiusY" x:Name="ellipseRadiusY" Minimum="10" Maximum="100" Value="40" />
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal" Spacing="4">
+				<Border Background="Yellow" Width="80" Height="80">
+					<Path x:Name="path1" Stroke="Red">
+						<Path.Data>
+							<LineGeometry
+								RadiusX="{Binding Value, ElementName=lineStart, Converter={StaticResource toPoint}}"
+								RadiusY="{Binding Value, ElementName=lineEnd, Converter={StaticResource toPoint}}"/>
+						</Path.Data>
+					</Path>
+				</Border>
+				<StackPanel>
+					<TextBlock FontWeight="Bold">Line Geometry</TextBlock>
+					<Slider Header="Start" x:Name="lineStart" Minimum="10" Maximum="100" Value="20" />
+					<Slider Header="End" x:Name="lineEnd" Minimum="10" Maximum="100" Value="60" />
+				</StackPanel>
+			</StackPanel>
+			
+			
+		</StackPanel>
+	</ScrollViewer>
+</Page>

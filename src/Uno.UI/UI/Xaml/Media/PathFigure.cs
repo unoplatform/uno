@@ -1,3 +1,4 @@
+using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Markup;
 
@@ -10,7 +11,11 @@ namespace Windows.UI.Xaml.Media
 		{
 			// This is done here to ensure that the Parent is set properly on the new PathFigureCollection.
 			Segments = new PathSegmentCollection();
+
+			InitPartials();
 		}
+
+		partial void InitPartials();
 
 		#region StartPoint
 
@@ -48,9 +53,19 @@ namespace Windows.UI.Xaml.Media
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
+					propertyChangedCallback: OnSegmentsChanged,
 					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext  | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
+
+		private static void OnSegmentsChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyobject is PathFigure pf && args.NewValue is PathSegmentCollection collection)
+			{
+				// Ensure parent is set to allow Measure invalidation to pass through
+				collection.SetParent(pf);
+			}
+		}
 
 		#endregion
 

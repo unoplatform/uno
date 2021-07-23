@@ -52,7 +52,6 @@ namespace Uno.Media
 		}
 #endif
 
-
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
 		public override UIImage ToNativeImage ()
 		{

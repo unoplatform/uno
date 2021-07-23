@@ -18,7 +18,7 @@ namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 		private void Value_Changed(object sender, RangeBaseValueChangedEventArgs e)
 		{
 			var percentage = e.NewValue / 100d;
-			var angle = 2 * PI * percentage;
+			var angle = (2d * PI * percentage) % (PI * 2d);
 			var thickness = 10;
 			var sweepDirection = SweepDirection.Clockwise;
 			var size = new Size(45, 45);

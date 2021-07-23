@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
+using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class PointCollection : IEnumerable<Point>, IList<Point>
 	{
 		private readonly List<Point> _points;
-		private readonly List<Action> _changedCallbacks = new List<Action>();
+		private readonly List<Action> _changedCallbacks = new List<Action>(1);
 
 		public PointCollection()
 		{
@@ -122,23 +123,22 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			//Are they all readable as floats?
-			bool succesfulConversion = true;
+			bool succesfullConversion = true;
 
 			var values = fields
-				.Select(strVal =>
+				.SelectToArray(strVal =>
 				{
-					succesfulConversion &= float.TryParse(strVal, out var v);
+					succesfullConversion &= float.TryParse(strVal, out var v);
 					return v;
-				})
-				.ToArray();
+				});
 
-			if (!succesfulConversion)
+			if (!succesfullConversion)
 			{
 				return null;
 			}
 
 			// Construct PointCollection
-			var points = new List<Point>();
+			var points = new List<Point>(values.Length);
 
 			for (int i = 0; i < values.Length; i += 2)
 			{
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml.Media
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			sb.Append("[");
 			foreach (Point p in _points)
