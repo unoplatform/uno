@@ -12,6 +12,14 @@
 	</ItemGroup>
   </Target>
 
+  <!--
+  List of packages that provide an uno-runtime folder. Needed for WPF target.
+  -->
+  <ItemGroup Condition="'$(UseWPF)'=='True'">
+	<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="'$(MSBuildThisFile)'=='uno.ui.targets'" />
+	<UnoRuntimeEnabledPackage Include="Uno.WinUI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="'$(MSBuildThisFile)'=='uno.winui.targets'" />
+  </ItemGroup>
+
   <Import Project="uno.winui.runtime-replace.targets" />
 
 </Project>
