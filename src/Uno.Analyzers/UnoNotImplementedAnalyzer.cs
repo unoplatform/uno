@@ -1,17 +1,16 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace Uno.Analyzers
 {
@@ -40,66 +39,74 @@ namespace Uno.Analyzers
 			context.EnableConcurrentExecution();
 			context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 
-			context.RegisterCompilationStartAction(csa => {
+			context.RegisterCompilationStartAction(context =>
+			{
+				var notImplementedSymbol = context.Compilation.GetTypeByMetadataName("Uno.NotImplementedAttribute");
+				if (notImplementedSymbol is null)
+				{
+					return;
+				}
 
-				var notImplementedSymbol = csa.Compilation.GetTypeByMetadataName("Uno.NotImplementedAttribute");
-
-				csa.RegisterSyntaxNodeAction(c => OnMemberAccessExpression(c, notImplementedSymbol), SyntaxKind.SimpleMemberAccessExpression);
-				csa.RegisterSyntaxNodeAction(c => OnObjectCreationExpression(c, notImplementedSymbol), SyntaxKind.ObjectCreationExpression);
-			}
-			);
+				context.RegisterOperationAction(c => AnalyzeOperation(c, notImplementedSymbol), OperationKind.Invocation, OperationKind.ObjectCreation, OperationKind.FieldReference, OperationKind.PropertyReference);
+			});
 		}
 
-		private void OnObjectCreationExpression(SyntaxNodeAnalysisContext contextAnalysis, INamedTypeSymbol notImplementedSymbol)
+		private void AnalyzeOperation(OperationAnalysisContext context, INamedTypeSymbol notImplementedSymbol)
 		{
-			if (IsBindableMetadata(contextAnalysis))
+			if (IsBindableMetadata(context))
 			{
 				return;
 			}
 
-			var objectCreation = contextAnalysis.Node as ObjectCreationExpressionSyntax;
-
-			if (objectCreation != null)
+			var symbol = GetUnoSymbolFromOperation(context.Operation);
+			if (symbol != null)
 			{
-				var symbol = contextAnalysis.SemanticModel.GetSymbolInfo(objectCreation.Type);
+				var directives = GetDirectives(context.Operation.Syntax.SyntaxTree, context.CancellationToken);
 
-				var namedSymbol = symbol.Symbol as INamedTypeSymbol;
-
-				if (namedSymbol != null && IsUnoSymbol(symbol))
+				if (HasNotImplementedAttribute(notImplementedSymbol, symbol, directives) ||
+					(symbol.ContainingSymbol != null && HasNotImplementedAttribute(notImplementedSymbol, symbol.ContainingSymbol, directives)))
 				{
-					var directives = GetDirectives(contextAnalysis);
-
-					if (HasNotImplementedAttribute(notImplementedSymbol, namedSymbol, directives))
-					{
-						var diagnostic = Diagnostic.Create(
-							SupportedDiagnostics.First(),
-							contextAnalysis.Node.GetLocation(),
-							symbol.Symbol.ToDisplayString()
-						);
-						contextAnalysis.ReportDiagnostic(diagnostic);
-					}
+					var diagnostic = Diagnostic.Create(
+						Rule,
+						context.Operation.Syntax.GetLocation(),
+						symbol.ToDisplayString()
+					);
+					context.ReportDiagnostic(diagnostic);
 				}
 			}
 		}
 
-		private string[] GetDirectives(SyntaxNodeAnalysisContext contextAnalysis)
+		private ISymbol? GetUnoSymbolFromOperation(IOperation operation)
 		{
-			var directives = contextAnalysis.Node.GetLocation()?.SourceTree.Options.PreprocessorSymbolNames.ToArray() ?? new string[0];
+			
+			ISymbol symbol = operation switch
+			{
+				IInvocationOperation invocationOperation => invocationOperation.TargetMethod,
+				IObjectCreationOperation objectCreation => objectCreation.Type,
+				IFieldReferenceOperation fieldReferenceOperation => fieldReferenceOperation.Field,
+				IPropertyReferenceOperation propertyReferenceOperation => propertyReferenceOperation.Property,
+				_ => throw new InvalidOperationException("This code path is unreachable.")
+			};
+
+
+			if (IsUnoSymbol(symbol))
+			{
+				return symbol;
+			}
+
+			return null;
+		}
+
+		private string[] GetDirectives(SyntaxTree tree, CancellationToken cancellationToken)
+		{
+			var directives = tree.Options.PreprocessorSymbolNames.ToArray() ?? Array.Empty<string>();
 
 			if (directives.Length == 0)
 			{
 				// This case is only used during tests where explicit #define statements are
 				// present at the top of the file. In common cases, PreprocessorSymbolNames is
 				// not empty.
-
-				var directive = contextAnalysis
-					.Node
-					.GetLocation()
-					?.SourceTree
-					.GetRoot()
-					.GetFirstDirective() as DefineDirectiveTriviaSyntax;
-
-				if (directive != null)
+				if (tree.GetRoot(cancellationToken).GetFirstDirective() is DefineDirectiveTriviaSyntax directive)
 				{
 					directives = new[] { directive.Name.Text };
 				}
@@ -110,7 +117,7 @@ namespace Uno.Analyzers
 
 		private static bool HasNotImplementedAttribute(INamedTypeSymbol notImplementedSymbol, ISymbol namedSymbol, string[] directives)
 		{
-			if(namedSymbol.GetAttributes().FirstOrDefault(a => Equals(a.AttributeClass, notImplementedSymbol)) is AttributeData data)
+			if (namedSymbol.GetAttributes().FirstOrDefault(a => Equals(a.AttributeClass, notImplementedSymbol)) is AttributeData data)
 			{
 				if (
 					data.ConstructorArguments.FirstOrDefault() is TypedConstant constant
@@ -128,7 +135,7 @@ namespace Uno.Analyzers
 						// is implementer for either __SKIA__ or __WASM__, the member is considered
 						// implemented. The code may be running in either environments, and we cannot
 						// statically determine if a member will be available.
-						return notImplementedPlatforms.Any(p => p  ==  "__SKIA__")
+						return notImplementedPlatforms.Any(p => p == "__SKIA__")
 							&& notImplementedPlatforms.Any(p => p == "__WASM__");
 					}
 					else
@@ -145,44 +152,14 @@ namespace Uno.Analyzers
 			return false;
 		}
 
-		private void OnMemberAccessExpression(SyntaxNodeAnalysisContext contextAnalysis, INamedTypeSymbol notImplementedSymbol)
+		private static bool IsUnoSymbol(ISymbol symbol)
 		{
-			if (IsBindableMetadata(contextAnalysis))
-			{
-				return;
-			}
-
-			var memberAccess = contextAnalysis.Node as MemberAccessExpressionSyntax;
-
-			var member = contextAnalysis.SemanticModel.GetSymbolInfo(memberAccess);
-
-			if (member.Symbol != null && IsUnoSymbol(member))
-			{
-				var directives = GetDirectives(contextAnalysis);
-
-				var isMemberNotImplemented = HasNotImplementedAttribute(notImplementedSymbol, member.Symbol, directives);
-				var isMemberOwnerNotImplemented = HasNotImplementedAttribute(notImplementedSymbol, member.Symbol.ContainingSymbol, directives);
-
-				if (isMemberNotImplemented || isMemberOwnerNotImplemented)
-				{
-					var diagnostic = Diagnostic.Create(
-						SupportedDiagnostics.First(),
-						contextAnalysis.Node.GetLocation(),
-						member.Symbol.ToDisplayString()
-					);
-					contextAnalysis.ReportDiagnostic(diagnostic);
-				}
-			}
-		}
-
-		private static bool IsUnoSymbol(SymbolInfo member)
-		{
-			string name = member.Symbol?.ContainingAssembly?.Name ?? "";
+			string name = symbol?.ContainingAssembly?.Name ?? "";
 
 			return name.StartsWith("Uno", StringComparison.Ordinal) || name.Equals("TestProject", StringComparison.Ordinal);
 		}
 
-		private static bool IsBindableMetadata(SyntaxNodeAnalysisContext contextAnalysis)
-			=> Path.GetFileName(contextAnalysis.Node?.GetLocation()?.SourceTree?.FilePath) == "BindableMetadata.g.cs";
+		private static bool IsBindableMetadata(OperationAnalysisContext context)
+			=> Path.GetFileName(context.Operation.Syntax.SyntaxTree.FilePath) == "BindableMetadata.g.cs";
 	}
 }

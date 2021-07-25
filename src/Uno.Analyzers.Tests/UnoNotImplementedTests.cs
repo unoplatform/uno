@@ -308,19 +308,32 @@ namespace Uno.Analyzers.Tests
                         public TypeName()
                         {
                            var a = new Uno.TestClass().Test;
+                           var b = new Uno.TestClass()?.Test;
                         }
                     }
                 }
 
 			" + UnoNotImplementedAtribute;
 
-			var expected = new DiagnosticResult
+			var expected = new DiagnosticResult[]
 			{
-				Id = UnoNotImplementedAnalyzer.Rule.Id,
-				Severity = DiagnosticSeverity.Warning,
-				Message = string.Format(UnoNotImplementedAnalyzer.MessageFormat, "Uno.TestClass.Test"),
-				Locations = new[] {
-					new DiagnosticResultLocation("Test0.cs", 20, 36)
+				new DiagnosticResult
+				{
+					Id = UnoNotImplementedAnalyzer.Rule.Id,
+					Severity = DiagnosticSeverity.Warning,
+					Message = string.Format(UnoNotImplementedAnalyzer.MessageFormat, "Uno.TestClass.Test"),
+					Locations = new[] {
+						new DiagnosticResultLocation("Test0.cs", 20, 36)
+					}
+				},
+				new DiagnosticResult
+				{
+					Id = UnoNotImplementedAnalyzer.Rule.Id,
+					Severity = DiagnosticSeverity.Warning,
+					Message = string.Format(UnoNotImplementedAnalyzer.MessageFormat, "Uno.TestClass.Test"),
+					Locations = new[] {
+						new DiagnosticResultLocation("Test0.cs", 21, 56)
+					}
 				}
 			};
 
