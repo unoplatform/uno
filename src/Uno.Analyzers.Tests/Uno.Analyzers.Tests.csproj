@@ -28,8 +28,8 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
 			<Version>3.3.1</Version>
 		</PackageReference>
-		<PackageReference Include="RoslynTester">
-			<Version>1.6.3</Version>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest">
+			<Version>1.1.0</Version>
 		</PackageReference>
 	</ItemGroup>
 	
