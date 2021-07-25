@@ -48,8 +48,8 @@
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.0.1" />
 		<PackageReference Include="Uno.UI.WebAssembly" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="2.1.0" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="2.1.0" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="3.0.0-dev.101" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="3.0.0-dev.101" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
