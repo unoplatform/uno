@@ -29,5 +29,9 @@ namespace Uno.Helpers.Theming
 			}
 			return SystemTheme.Light;
 		}
+
+		static partial void ObserveThemeChangesPartial()
+		{
+		}
 	}
 }

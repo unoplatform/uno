@@ -217,6 +217,12 @@ namespace Windows.UI.Xaml
 #endif
 				CoreWindow.OnActivated(coreWindowActivatedEventArgs);
 				Activated?.Invoke(this, activatedEventArgs);
+
+				if (state != CoreWindowActivationState.Deactivated)
+				{
+					// Ensure theme is refreshed when the window was activated
+					Application.Current.RefreshRequestedTheme();
+				}
 			}
 		}
 
@@ -234,6 +240,12 @@ namespace Windows.UI.Xaml
 				var args = new VisibilityChangedEventArgs();
 				CoreWindow.OnVisibilityChanged(args);
 				VisibilityChanged?.Invoke(this, args);
+
+				if (newVisibility)
+				{
+					// Ensure theme is refreshed when window becomes visible
+					Application.Current?.OnSystemThemeChanged();
+				}
 			}
 		}
 

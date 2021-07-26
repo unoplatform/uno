@@ -49,7 +49,31 @@ public static partial class CoreApplication
 	/// Occurs when the app is shutting down.
 	/// </summary>
 	public static event EventHandler<object> Exiting;
-	#endif
+#endif
+
+	public static CoreApplicationView MainView => _currentView;
+
+	public static IReadOnlyList<CoreApplicationView> Views => _views ??= new List<CoreApplicationView>() { _currentView };
+
+	/// <summary>
+	/// This property is kept in sync with the Application.RequestedTheme to enable
+	/// native UI elements in non Uno.UWP to resolve the currently set Application theme.
+	/// </summary>
+	internal static SystemTheme RequestedTheme { get; set; }
+
+	public static CoreApplicationView GetCurrentView() => _currentView;
+
+#if __ANDROID__ || __SKIA__ || __MACOS__
+	/// <summary>
+	/// Shuts down the app.
+	/// </summary>
+	public static void Exit()
+	{
+		Exiting?.Invoke(null, null);
+
+		ExitPlatform();
+	}
+#endif
 
 	/// <summary>
 	/// Raises the <see cref="Resuming"/> event.
@@ -74,27 +98,4 @@ public static partial class CoreApplication
 	/// <param name="args">Leaving background event args.</param>
 	internal static void RaiseLeavingBackground(LeavingBackgroundEventArgs args) => LeavingBackground?.Invoke(null, args);
 
-	public static CoreApplicationView GetCurrentView() => _currentView;
-
-	#if __ANDROID__ || __SKIA__ || __MACOS__
-	/// <summary>
-	/// Shuts down the app.
-	/// </summary>
-	public static void Exit()
-	{
-		Exiting?.Invoke(null, null);
-
-		ExitPlatform();
-	}
-	#endif
-
-	public static CoreApplicationView MainView => _currentView;
-
-	public static IReadOnlyList<CoreApplicationView> Views => _views ??= new List<CoreApplicationView>() { _currentView };
-
-	/// <summary>
-	/// This property is kept in sync with the Application.RequestedTheme to enable
-	/// native UI elements in non Uno.UWP to resolve the currently set Application theme.
-	/// </summary>
-	internal static SystemTheme RequestedTheme { get; set; }
 }

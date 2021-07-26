@@ -42,5 +42,10 @@ namespace Uno.Helpers.Theming
 			}
 			return SystemTheme.Light;
 		}
+
+		static partial void ObserveThemeChangesPartial()
+		{
+			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
+		}
 	}
 }
