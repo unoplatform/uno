@@ -94,7 +94,7 @@ namespace Windows.Storage.Pickers
 
 				var fullAcceptType = new NativeFilePickerAcceptType()
 				{
-					Description = "All",
+					Description = "All files",
 					Accept = new[] { fullAcceptItem }
 				};
 
