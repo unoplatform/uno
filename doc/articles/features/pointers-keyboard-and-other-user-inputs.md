@@ -25,7 +25,7 @@ User inputs are usually propagated using `RoutedEvents`. See Uno's [routed event
 | `ManipulationStarting`        | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarting) |
 | `ManipulationStarted`         | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarted) |
 | `ManipulationDelta`           | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationedelta) |
-| `ManipulationInertiaStarting` | No      | No      | No      | No    | No       | No       | No    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationinertiastarting) |
+| `ManipulationInertiaStarting` | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationinertiastarting) |
 | `ManipulationCompleted`       | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationcompleted) |
 | **_gesture events_**
 | `Tapped`                      | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
@@ -140,9 +140,6 @@ Without this key the current version of iPadOS reports mouse interaction as norm
 ## Manipulation Events
 
 They are generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`) and are bubbling in managed only.
-
-Currently there is no inertia support, so the `IsInertial` will always be `false` and the `UIElement.ManipulationInertiaStarting` event 
-will never be fired. The `Velocities` properties of event args are not implemented either.
 
 ## Gesture Events
 
