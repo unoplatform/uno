@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -222,6 +222,11 @@ namespace Windows.UI.Input
 				}
 			}
 
+#if NET461
+			public void RunInertiaSync()
+				=> _inertia?.RunSync();
+#endif
+
 			private bool TryUpdate(PointerPoint point)
 			{
 				if (_deviceType != point.PointerDevice.PointerDeviceType)
@@ -343,17 +348,43 @@ namespace Windows.UI.Input
 				translateY *= -1;
 #endif
 
-				double rotate;
+				double rotation;
 				float scale, expansion;
 				if (_currents.HasPointer2)
 				{
-					rotate = _isRotateEnabled ? _currents.Angle - _origins.Angle : 0;
+					rotation = _isRotateEnabled ? MathEx.ToDegree(_currents.Angle - _origins.Angle) : 0;
 					scale = _isScaleEnabled ? _currents.Distance / _origins.Distance : 1;
 					expansion = _isScaleEnabled ? _currents.Distance - _origins.Distance : 0;
+
+					// The 'rotation' only contains the current angle compared to the 'origins'.
+					// But user might have broke his wrist and made a 360° (2π) rotation, the cumulative must reflect it.
+					// Also, the Math.ATan2 method used to compute that angle is not linear when changing to/from second from/to third quadrant,
+					// which means that we might have a delta close to 2π while user actually moved only few degrees.
+					// (https://docs.microsoft.com/en-us/dotnet/api/system.math.atan2?view=net-5.0)
+					// So here, as long as possible, we try:
+					//	1. to minimize the angle compared to the last known rotation;
+					//	2. append that normalized rotation to that last known value in order to have a linear result which also includes the possible "more than 2π rotation".
+					// Note: That correction is fairly important to properly compute the velocities (and then inertia)!
+					var previousRotation = _lastPublishedState.sumOfDelta.Rotation;
+					var rotationNormalizedDelta = (rotation - previousRotation) % 360; // Note: the '% 2π' is for safety only here
+					if (rotationNormalizedDelta > 180) // π
+					{
+						// The angle gone from quadrant 3 to quadrant 2, i.e. the computed angle gone from -(π + α) to (π + β),
+						// which means that the 'rotationDelta' is (2π + α + β) and we have to limit it to (α + β).
+						rotationNormalizedDelta -= 360;
+					}
+					else if (rotationNormalizedDelta < -180) // -π
+					{
+						// The angle gone from quadrant 2 to quadrant 3, i.e. the computed angle gone from (π + α) to -(π + β),
+						// which means that the 'rotationDelta' is (-2π + α + β) ane we have to limit it to (α + β).
+						rotationNormalizedDelta += 360;
+					}
+
+					rotation = previousRotation + rotationNormalizedDelta;
 				}
 				else
 				{
-					rotate = 0;
+					rotation = 0;
 					scale = 1;
 					expansion = 0;
 				}
@@ -361,7 +392,7 @@ namespace Windows.UI.Input
 				return new ManipulationDelta
 				{
 					Translation = new Point(translateX, translateY),
-					Rotation = (float)MathEx.ToDegreeNormalized(rotate),
+					Rotation = (float)rotation,
 					Scale = scale,
 					Expansion = expansion
 				};
@@ -381,13 +412,12 @@ namespace Windows.UI.Input
 				return new ManipulationDelta
 				{
 					Translation = new Point(translateX, translateY),
-					Rotation = (float)MathEx.NormalizeDegree(rotate),
+					Rotation = rotate,
 					Scale = scale,
 					Expansion = expansion
 				};
 			}
 
-			[Pure]
 			private ManipulationVelocities GetVelocities(ManipulationDelta delta)
 			{
 				// The _currents.Timestamp is not updated once inertia as started, we must get the elapsed duration from the inertia processor
@@ -585,6 +615,10 @@ namespace Windows.UI.Input
 
 						Center = new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
 						Distance = Vector2.Distance(p1.ToVector(), p2.ToVector());
+
+						// As long as possible we try to keep the angle close to the previous value.
+						// According to the doc, if angles goes from the second to the third quadrant the computed angle 
+
 						Angle = Math.Atan2(p1.Y - p2.Y, p1.X - p2.X);
 					}
 				}

@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 		internal bool IsSignificant(GestureRecognizer.Manipulation.Thresholds thresholds)
 			=> Math.Abs(Translation.X) >= thresholds.TranslateX
 			|| Math.Abs(Translation.Y) >= thresholds.TranslateY
-			|| Rotation >= thresholds.Rotate // We used the ToDegreeNormalized, no need to check for negative angles
+			|| Math.Abs(Rotation) >= thresholds.Rotate
 			|| Math.Abs(Expansion) >= thresholds.Expansion;
 
 		/// <inheritdoc />

@@ -160,6 +160,14 @@ namespace Windows.UI.Input
 			_manipulation?.Remove(value);
 		}
 
+#if NET461
+		/// <summary>
+		/// For test purposes only!
+		/// </summary>
+		internal void RunInertiaSync()
+			=> _manipulation?.RunInertiaSync();
+#endif
+
 		public void CompleteGesture()
 		{
 			// Capture the list in order to avoid alteration while enumerating

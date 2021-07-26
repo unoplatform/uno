@@ -26,7 +26,7 @@ namespace Windows.UI.Input
 		internal bool IsAnyAbove(GestureRecognizer.Manipulation.Thresholds thresholds)
 			=> Math.Abs(Linear.X) > thresholds.TranslateX
 				|| Math.Abs(Linear.Y) > thresholds.TranslateY
-				|| Angular > thresholds.Rotate // We used the ToDegreeNormalized, no need to check for negative angles
+				|| Math.Abs(Angular) > thresholds.Rotate
 				|| Math.Abs(Expansion) > thresholds.Expansion;
 	}
 }

@@ -52,10 +52,12 @@ namespace Windows.UI.Input
 						&& Abs(velocities.Linear.Y) > _owner._inertiaThresholds.TranslateY;
 					_isRotateInertiaEnabled = _owner._isRotateEnabled
 						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationRotateInertia)
-						&& velocities.Angular > _owner._inertiaThresholds.Rotate;
+						&& Abs(velocities.Angular) > _owner._inertiaThresholds.Rotate;
 					_isScaleInertiaEnabled = _owner._isScaleEnabled
 						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationScaleInertia)
 						&& Abs(velocities.Expansion) > _owner._inertiaThresholds.Expansion;
+
+					global::System.Diagnostics.Debug.Assert(_isTranslateInertiaXEnabled || _isTranslateInertiaYEnabled || _isRotateInertiaEnabled || _isScaleInertiaEnabled);
 
 					// For better experience, as soon inertia kicked-in on an axis, we bypass threshold on the second axis.
 					_isTranslateInertiaXEnabled |= _isTranslateInertiaYEnabled && _owner._isTranslateXEnabled;
@@ -64,7 +66,7 @@ namespace Windows.UI.Input
 					_timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
 					_timer.Interval = TimeSpan.FromMilliseconds(1000d / _framesPerSecond);
 					_timer.IsRepeating = true;
-					_timer.Tick += OnTick;
+					_timer.Tick += (snd, e) => Process(snd.LastTickElapsed.TotalMilliseconds);
 				}
 
 				public bool IsRunning => _timer.IsRunning;
@@ -112,16 +114,9 @@ namespace Windows.UI.Input
 					_timer.Start();
 				}
 
-				/// <summary>
-				/// Gets the cumulative delta, including the manipulation cumulative when this processor was started
-				/// </summary>
-				public ManipulationDelta GetCumulative()
-					=> _cumulative0.Add(_inertiaCumulative);
-
-				private void OnTick(DispatcherQueueTimer sender, object args)
+				private void Process(double t)
 				{
 					// First we update the internal state (i.e. the current cumulative manip delta for the current time)
-					var t = _timer.LastTickElapsed.TotalMilliseconds;
 					var previous = _inertiaCumulative;
 					var current = GetInertiaCumulative(t, previous);
 
@@ -140,6 +135,12 @@ namespace Windows.UI.Input
 						_owner.NotifyUpdate();
 					}
 				}
+
+				/// <summary>
+				/// Gets the cumulative delta, including the manipulation cumulative when this processor was started
+				/// </summary>
+				public ManipulationDelta GetCumulative()
+					=> _cumulative0.Add(_inertiaCumulative);
 
 				private ManipulationDelta GetInertiaCumulative(double t, ManipulationDelta previousCumulative)
 				{
@@ -184,6 +185,22 @@ namespace Windows.UI.Input
 				/// <inheritdoc />
 				public void Dispose()
 					=> _timer.Stop();
+
+#if NET461
+				/// <summary>
+				/// For test purposes only!
+				/// </summary>
+				public void RunSync()
+				{
+					var frameDuration = 1000 / _framesPerSecond;
+					var time = frameDuration;
+					while (IsRunning)
+					{
+						Process(time);
+						time += frameDuration;
+					}
+				}
+#endif
 			}
 		}
 	}
