@@ -31,6 +31,7 @@ namespace Uno.UI.Xaml.Core
 
 			PointerPressed += RootVisual_PointerPressed;
 			PointerReleased += RootVisual_PointerReleased;
+			PointerCanceled += RootVisual_PointerCanceled;
 		}
 
 		/// <summary>
@@ -137,6 +138,16 @@ namespace Uno.UI.Xaml.Core
 					e.Handled = true;
 				}
 			}
+		}
+
+
+		private void RootVisual_PointerCanceled(object sender, PointerRoutedEventArgs e)
+		{
+			if (e.Handled)
+			{
+				return;
+			}
+			_isLeftButtonPressed = false;
 		}
 #endif
 	}
