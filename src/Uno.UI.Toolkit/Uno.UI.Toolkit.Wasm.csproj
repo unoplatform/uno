@@ -14,7 +14,9 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	

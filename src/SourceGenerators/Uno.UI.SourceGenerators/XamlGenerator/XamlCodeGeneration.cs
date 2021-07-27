@@ -50,6 +50,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
+		private readonly bool _xamlResourcesTrimming;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
 		internal const string Title = "XAML Generation Failed";
@@ -187,6 +188,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			}
 
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out var xamlResourcesTrimming))
+			{
+				_xamlResourcesTrimming = xamlResourcesTrimming;
+			}
+
 			_targetPath = Path.Combine(
 				_projectDirectory,
 				context.GetMSBuildPropertyValue("IntermediateOutputPath")
@@ -317,7 +323,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 									isUnoAssembly: IsUnoAssembly,
-									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled
+									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
+									xamlResourcesTrimming: _xamlResourcesTrimming
 								)
 								.GenerateFile()
 						)

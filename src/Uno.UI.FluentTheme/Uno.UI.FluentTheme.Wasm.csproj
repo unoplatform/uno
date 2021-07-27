@@ -14,7 +14,8 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 	
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
@@ -32,5 +33,7 @@
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="FluentMerge.targets" />
+
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 </Project>
