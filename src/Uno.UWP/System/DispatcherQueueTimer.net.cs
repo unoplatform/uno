@@ -11,17 +11,14 @@ namespace Windows.System
 	{
 		private void StartNative(TimeSpan interval)
 		{
-			throw new NotImplementedException("DispatcherQueueTimer not supported on .net");
 		}
 
 		private void StartNative(TimeSpan dueTime, TimeSpan interval)
 		{
-			throw new NotImplementedException("DispatcherQueueTimer not supported on .net");
 		}
 
 		private void StopNative()
 		{
-			throw new NotImplementedException("DispatcherQueueTimer not supported on .net");
 		}
 	}
 }

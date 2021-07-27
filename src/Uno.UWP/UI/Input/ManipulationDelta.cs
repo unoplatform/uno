@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using Windows.Foundation;
 
 namespace Windows.UI.Input
@@ -22,10 +23,9 @@ namespace Windows.UI.Input
 		public float Rotation;
 		public float Expansion;
 
-		/// <inheritdoc />
-		public override string ToString()
-			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
+		internal bool IsEmpty => Translation == Point.Zero && Rotation == 0 && Scale == 1 && Expansion == 0;
 
+		[Pure]
 		internal ManipulationDelta Add(ManipulationDelta right) => Add(this, right);
 		internal static ManipulationDelta Add(ManipulationDelta left, ManipulationDelta right)
 			=> new ManipulationDelta
@@ -39,10 +39,17 @@ namespace Windows.UI.Input
 			};
 
 		// Note: We should apply a velocity factor to thresholds to determine if isSignificant
+		[Pure]
 		internal bool IsSignificant(GestureRecognizer.Manipulation.Thresholds thresholds)
 			=> Math.Abs(Translation.X) >= thresholds.TranslateX
 			|| Math.Abs(Translation.Y) >= thresholds.TranslateY
-			|| Rotation >= thresholds.Rotate // We used the ToDegreeNormalized, no need to check for negative angles
+			|| Math.Abs(Rotation) >= thresholds.Rotate
 			|| Math.Abs(Expansion) >= thresholds.Expansion;
+
+		/// <inheritdoc />
+		[Pure]
+		public override string ToString()
+			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
+
 	}
 }

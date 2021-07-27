@@ -1,19 +1,23 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.UI.Input
 {
 	public partial class GestureRecognizer
 	{
 		// Note: this is also responsible to handle "Drag manipulations"
-		internal class Manipulation
+		internal partial class Manipulation
 		{
 			internal static readonly Thresholds StartTouch = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
 			internal static readonly Thresholds StartPen = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
@@ -23,16 +27,22 @@ namespace Windows.UI.Input
 			internal static readonly Thresholds DeltaPen = new Thresholds { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
 			internal static readonly Thresholds DeltaMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
 
+			// Inertia thresholds are expressed in 'unit / millisecond' (unit being either 'logical px' or 'degree')
+			internal static readonly Thresholds InertiaTouch = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
+			internal static readonly Thresholds InertiaPen = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
+			internal static readonly Thresholds InertiaMouse = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
+
 			private enum ManipulationState
 			{
 				Starting = 1,
 				Started = 2,
-				// Inertia = 3 // Not supported yet
+				Inertia = 3,
 				Completed = 4,
 			}
 
 			private readonly GestureRecognizer _recognizer;
 			private readonly PointerDeviceType _deviceType;
+			private readonly GestureSettings _settings;
 			private bool _isDraggingEnable; // Note: This might get disabled if user moves out of range while initial hold delay with finger
 			private readonly bool _isTranslateXEnabled;
 			private readonly bool _isTranslateYEnabled;
@@ -41,11 +51,15 @@ namespace Windows.UI.Input
 
 			private readonly Thresholds _startThresholds;
 			private readonly Thresholds _deltaThresholds;
+			private readonly Thresholds _inertiaThresholds;
 
 			private ManipulationState _state = ManipulationState.Starting;
 			private Points _origins;
 			private Points _currents;
-			private ManipulationDelta _sumOfPublishedDelta = ManipulationDelta.Empty; // Note: not maintained for dragging manipulation
+			private (ushort onStart, ushort current) _contacts;
+			private (ManipulationDelta sumOfDelta, ulong timestamp, ushort contacts) _lastPublishedState = (ManipulationDelta.Empty, 0, 1); // Note: not maintained for dragging manipulation
+			private ManipulationVelocities _lastRelevantVelocities;
+			private InertiaProcessor? _inertia;
 
 			public bool IsDragManipulation { get; private set; }
 
@@ -55,41 +69,45 @@ namespace Windows.UI.Input
 				_deviceType = pointer1.PointerDevice.PointerDeviceType;
 
 				_origins = _currents = pointer1;
+				_contacts = (0, 1);
 
 				switch (_deviceType)
 				{
 					case PointerDeviceType.Mouse:
 						_startThresholds = StartMouse;
 						_deltaThresholds = DeltaMouse;
+						_inertiaThresholds = InertiaMouse;
 						break;
 
 					case PointerDeviceType.Pen:
 						_startThresholds = StartPen;
 						_deltaThresholds = DeltaPen;
+						_inertiaThresholds = InertiaPen;
 						break;
 
 					default:
 					case PointerDeviceType.Touch:
 						_startThresholds = StartTouch;
 						_deltaThresholds = DeltaTouch;
+						_inertiaThresholds = InertiaTouch;
 						break;
 				}
 
 				var args = new ManipulationStartingEventArgs(_recognizer._gestureSettings);
 				_recognizer.ManipulationStarting?.Invoke(_recognizer, args);
+				_settings = args.Settings;
 
-				var settings = args.Settings;
-				if ((settings & (GestureSettingsHelper.Manipulations | GestureSettingsHelper.DragAndDrop)) == 0)
+				if ((_settings & (GestureSettingsHelper.Manipulations | GestureSettingsHelper.DragAndDrop)) == 0)
 				{
 					_state = ManipulationState.Completed;
 				}
 				else
 				{
-					_isDraggingEnable = (settings & GestureSettings.Drag) != 0;
-					_isTranslateXEnabled = (settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
-					_isTranslateYEnabled = (settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
-					_isRotateEnabled = (settings & (GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia)) != 0;
-					_isScaleEnabled = (settings & (GestureSettings.ManipulationScale | GestureSettings.ManipulationScaleInertia)) != 0;
+					_isDraggingEnable = (_settings & GestureSettings.Drag) != 0;
+					_isTranslateXEnabled = (_settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
+					_isTranslateYEnabled = (_settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
+					_isRotateEnabled = (_settings & GestureSettings.ManipulationRotate) != 0;
+					_isScaleEnabled = (_settings & GestureSettings.ManipulationScale) != 0;
 				}
 			}
 
@@ -98,26 +116,38 @@ namespace Windows.UI.Input
 					&& _deviceType == type
 					&& _origins.ContainsPointer(id);
 
-			public void Add(PointerPoint point)
+			public bool TryAdd(PointerPoint point)
 			{
-				if (_state == ManipulationState.Completed
-					|| point.PointerDevice.PointerDeviceType != _deviceType
+				if (_state >= ManipulationState.Inertia)
+				{
+					// A new manipulation has to be started
+					return false;
+				}
+				else if (point.PointerDevice.PointerDeviceType != _deviceType
 					|| _currents.HasPointer2)
 				{
-					return;
+					// A manipulation is already active, but cannot handle this new pointer.
+					// We don't support multiple active manipulation on a single element / gesture recognizer,
+					// so even if we don't effectively add the given pointer to the active manipulation,
+					// we return true to make sure that the current manipulation is not Completed.
+					return true;
 				}
 
 				_origins.SetPointer2(point);
 				_currents.SetPointer2(point);
+				_contacts.current++;
 
 				// We force to start the manipulation (or update it) as soon as a second pointer is pressed
-				NotifyUpdate(pointerAdded: true);
+				NotifyUpdate();
+
+				return true;
 			}
 
 			public void Update(IList<PointerPoint> updated)
 			{
-				if (_state == ManipulationState.Completed)
+				if (_state >= ManipulationState.Inertia)
 				{
+					// We no longer track pointers (even pointer2) once inertia has started
 					return;
 				}
 
@@ -135,12 +165,17 @@ namespace Windows.UI.Input
 
 			public void Remove(PointerPoint removed)
 			{
+				if (_state >= ManipulationState.Inertia)
+				{
+					// We no longer track pointers (even pointer2) once inertia has started
+					return;
+				}
+
 				if (TryUpdate(removed))
 				{
-					// For now we complete the Manipulation as soon as a pointer was removed.
-					// This is not the UWP behavior where for instance you can scale multiple times by releasing only one finger.
-					// It's however the right behavior in case of drag conflicting with manipulation (which is not supported by Uno).
-					Complete();
+					_contacts.current--;
+
+					NotifyUpdate();
 				}
 			}
 
@@ -150,22 +185,30 @@ namespace Windows.UI.Input
 				switch (_state)
 				{
 					case ManipulationState.Started when IsDragManipulation:
+						_inertia?.Dispose(); // Safety, inertia should never been started when IsDragManipulation, especially if _state is ManipulationState.Started ^^
 						_state = ManipulationState.Completed;
 
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
-							new DraggingEventArgs(_currents.Pointer1, DraggingState.Completed));
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Completed, _contacts.onStart));
 						break;
 
 					case ManipulationState.Started:
+					case ManipulationState.Inertia:
+						_inertia?.Dispose();
 						_state = ManipulationState.Completed;
+
+						var cumulative = GetCumulative();
+						var delta = GetDelta(cumulative);
+						var velocities = GetVelocities(delta);
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
-							new ManipulationCompletedEventArgs(_deviceType, _currents.Center, GetCumulative(), isInertial: false));
+							new ManipulationCompletedEventArgs(_deviceType, _currents.Center, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
 						break;
 
 					default:
+						_inertia?.Dispose();
 						_state = ManipulationState.Completed;
 						break;
 				}
@@ -179,6 +222,11 @@ namespace Windows.UI.Input
 				}
 			}
 
+#if NET461
+			public void RunInertiaSync()
+				=> _inertia?.RunSync();
+#endif
+
 			private bool TryUpdate(PointerPoint point)
 			{
 				if (_deviceType != point.PointerDevice.PointerDeviceType)
@@ -189,12 +237,16 @@ namespace Windows.UI.Input
 				return _currents.TryUpdate(point);
 			}
 
-			private void NotifyUpdate(bool pointerAdded = false)
+			private void NotifyUpdate()
 			{
 				// Note: Make sure to update the _sumOfPublishedDelta before raising the event, so if an exception is raised
 				//		 or if the manipulation is Completed, the Complete event args can use the updated _sumOfPublishedDelta.
 
 				var cumulative = GetCumulative();
+				var delta = GetDelta(cumulative);
+				var velocities = GetVelocities(delta);
+				var pointerAdded = _contacts.current > _lastPublishedState.contacts;
+				var pointerRemoved = _contacts.current < _lastPublishedState.contacts;
 
 				switch (_state)
 				{
@@ -206,68 +258,89 @@ namespace Windows.UI.Input
 						// On Uno, as allowing both Manipulations and drop on the same element is really a stretch case (and is bugish on UWP),
 						// we accept as a known limitation that once dragging started no manipulation event would be fired.
 						_state = ManipulationState.Started;
+						_contacts.onStart = _contacts.current;
 						IsDragManipulation = true;
 
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
-							new DraggingEventArgs(_currents.Pointer1, DraggingState.Started));
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Started, _contacts.onStart));
 						break;
 
 					case ManipulationState.Starting when pointerAdded:
 						_state = ManipulationState.Started;
-						_sumOfPublishedDelta = cumulative;
+						_contacts.onStart = _contacts.current;
 
+						UpdatePublishedState(cumulative);
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative));
-
+							new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative, _contacts.onStart));
 						// No needs to publish an update when we start the manipulation due to an additional pointer as cumulative will be empty.
-
 						break;
 
 					case ManipulationState.Starting when cumulative.IsSignificant(_startThresholds):
 						_state = ManipulationState.Started;
-						_sumOfPublishedDelta = cumulative;
+						_contacts.onStart = _contacts.current;
 
 						// Note: We first start with an empty delta, then invoke Update.
 						//		 This is required to patch a common issue in applications that are using only the
 						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
 						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
 						//		 but there is no side effect to use the same behavior for all pointer types.
+
+						UpdatePublishedState(cumulative);
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationStartedEventArgs(_deviceType, _origins.Center, ManipulationDelta.Empty));
+							new ManipulationStartedEventArgs(_deviceType, _origins.Center, ManipulationDelta.Empty, _contacts.onStart));
 						_recognizer.ManipulationUpdated?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, cumulative, cumulative, isInertial: false));
-
+							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, cumulative, cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
 						break;
 
 					case ManipulationState.Started when IsDragManipulation:
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
-							new DraggingEventArgs(_currents.Pointer1, DraggingState.Continuing));
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Continuing, _contacts.onStart));
 						break;
 
-					case ManipulationState.Started:
-						// Even if Scale and Angle are expected to be default when we add a pointer (i.e. forceUpdate == true),
-						// the 'delta' and 'cumulative' might still contains some TranslateX|Y compared to the previous Pointer1 location.
-						var delta = GetDelta(cumulative);
+					case ManipulationState.Started when pointerRemoved && ShouldStartInertia(velocities):
+						_state = ManipulationState.Inertia;
+						_inertia = new InertiaProcessor(this, cumulative, velocities);
 
-						if (pointerAdded || delta.IsSignificant(_deltaThresholds))
-						{
-							_sumOfPublishedDelta = _sumOfPublishedDelta.Add(delta);
+						UpdatePublishedState(delta);
+						_recognizer.ManipulationInertiaStarting?.Invoke(
+							_recognizer,
+							new ManipulationInertiaStartingEventArgs(_deviceType, _currents.Center, delta, cumulative, velocities, _contacts.onStart, _inertia));
 
-							_recognizer.ManipulationUpdated?.Invoke(
-								_recognizer,
-								new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, delta, cumulative, isInertial: false));
-						}
+						_inertia.Start();
+						break;
+
+					case ManipulationState.Started when pointerRemoved:
+					// For now we complete the Manipulation as soon as a pointer was removed.
+					// This is not the UWP behavior where for instance you can scale multiple times by releasing only one finger.
+					// It's however the right behavior in case of drag conflicting with manipulation (which is not supported by Uno).
+					case ManipulationState.Inertia when !_inertia!.IsRunning:
+						Complete();
+						break;
+
+					case ManipulationState.Started when pointerAdded:
+					case ManipulationState.Started when delta.IsSignificant(_deltaThresholds):
+					case ManipulationState.Inertia: // No significant check for inertia, we prefer smooth animations!
+						UpdatePublishedState(delta);
+						_recognizer.ManipulationUpdated?.Invoke(
+							_recognizer,
+							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, delta, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
 						break;
 				}
 			}
 
+			[Pure]
 			private ManipulationDelta GetCumulative()
 			{
+				if (_inertia is { } inertia)
+				{
+					return inertia.GetCumulative();
+				}
+
 				var translateX = _isTranslateXEnabled ? _currents.Center.X - _origins.Center.X : 0;
 				var translateY = _isTranslateYEnabled ? _currents.Center.Y - _origins.Center.Y : 0;
 #if __MACOS__
@@ -275,52 +348,121 @@ namespace Windows.UI.Input
 				translateY *= -1;
 #endif
 
-				double rotate;
+				double rotation;
 				float scale, expansion;
-				if (!_currents.HasPointer2)
+				if (_currents.HasPointer2)
 				{
-					rotate = 0;
-					scale = 1;
-					expansion = 0;
+					rotation = _isRotateEnabled ? MathEx.ToDegree(_currents.Angle - _origins.Angle) : 0;
+					scale = _isScaleEnabled ? _currents.Distance / _origins.Distance : 1;
+					expansion = _isScaleEnabled ? _currents.Distance - _origins.Distance : 0;
+
+					// The 'rotation' only contains the current angle compared to the 'origins'.
+					// But user might have broke his wrist and made a 360° (2π) rotation, the cumulative must reflect it.
+					// Also, the Math.ATan2 method used to compute that angle is not linear when changing to/from second from/to third quadrant,
+					// which means that we might have a delta close to 2π while user actually moved only few degrees.
+					// (https://docs.microsoft.com/en-us/dotnet/api/system.math.atan2?view=net-5.0)
+					// So here, as long as possible, we try:
+					//	1. to minimize the angle compared to the last known rotation;
+					//	2. append that normalized rotation to that last known value in order to have a linear result which also includes the possible "more than 2π rotation".
+					// Note: That correction is fairly important to properly compute the velocities (and then inertia)!
+					var previousRotation = _lastPublishedState.sumOfDelta.Rotation;
+					var rotationNormalizedDelta = (rotation - previousRotation) % 360; // Note: the '% 2π' is for safety only here
+					if (rotationNormalizedDelta > 180) // π
+					{
+						// The angle gone from quadrant 3 to quadrant 2, i.e. the computed angle gone from -(π + α) to (π + β),
+						// which means that the 'rotationDelta' is (2π + α + β) and we have to limit it to (α + β).
+						rotationNormalizedDelta -= 360;
+					}
+					else if (rotationNormalizedDelta < -180) // -π
+					{
+						// The angle gone from quadrant 2 to quadrant 3, i.e. the computed angle gone from (π + α) to -(π + β),
+						// which means that the 'rotationDelta' is (-2π + α + β) ane we have to limit it to (α + β).
+						rotationNormalizedDelta += 360;
+					}
+
+					rotation = previousRotation + rotationNormalizedDelta;
 				}
 				else
 				{
-					rotate = _isRotateEnabled ? _currents.Angle - _origins.Angle : 0;
-					scale = _isScaleEnabled ? _currents.Distance / _origins.Distance : 1;
-					expansion = _isScaleEnabled ? _currents.Distance - _origins.Distance : 0;
+					rotation = 0;
+					scale = 1;
+					expansion = 0;
 				}
 
 				return new ManipulationDelta
 				{
 					Translation = new Point(translateX, translateY),
-					Rotation = (float)MathEx.ToDegreeNormalized(rotate),
+					Rotation = (float)rotation,
 					Scale = scale,
 					Expansion = expansion
 				};
 			}
 
+			[Pure]
 			private ManipulationDelta GetDelta(ManipulationDelta cumulative)
 			{
-				var deltaSum = _sumOfPublishedDelta;
+				var deltaSum = _lastPublishedState.sumOfDelta;
 
 				var translateX = _isTranslateXEnabled ? cumulative.Translation.X - deltaSum.Translation.X : 0;
 				var translateY = _isTranslateYEnabled ? cumulative.Translation.Y - deltaSum.Translation.Y : 0;
-				var rotate = _isRotateEnabled ? cumulative.Rotation - deltaSum.Rotation : 0;
+				var rotation = _isRotateEnabled ? cumulative.Rotation - deltaSum.Rotation : 0;
 				var scale = _isScaleEnabled ? cumulative.Scale / deltaSum.Scale : 1;
 				var expansion = _isScaleEnabled ? cumulative.Expansion - deltaSum.Expansion : 0;
 
 				return new ManipulationDelta
 				{
 					Translation = new Point(translateX, translateY),
-					Rotation = (float)MathEx.NormalizeDegree(rotate),
+					Rotation = rotation,
 					Scale = scale,
 					Expansion = expansion
 				};
 			}
 
+			private ManipulationVelocities GetVelocities(ManipulationDelta delta)
+			{
+				// The _currents.Timestamp is not updated once inertia as started, we must get the elapsed duration from the inertia processor
+				// (and not compare it to PointerPoint.Timestamp in any way, cf. remarks on InertiaProcessor.Elapsed)
+				var elapsedTicks = _inertia?.Elapsed ?? (double)_currents.Timestamp - _lastPublishedState.timestamp;
+				var elapsedMs = elapsedTicks / TimeSpan.TicksPerMillisecond;
+
+				// With uno a single native event might produce multiple managed pointer events.
+				// In that case we would get an empty velocities ... which is often not relevant!
+				// When we detect that case, we prefer to replay the last known velocities.
+				if (delta.IsEmpty || elapsedMs == 0)
+				{
+					return _lastRelevantVelocities;
+				}
+
+				var linearX = delta.Translation.X / elapsedMs;
+				var linearY = delta.Translation.Y / elapsedMs;
+				var angular = delta.Rotation / elapsedMs;
+				var expansion = delta.Expansion / elapsedMs;
+
+				var velocities = new ManipulationVelocities
+				{
+					Linear = new Point(linearX, linearY),
+					Angular = (float)angular,
+					Expansion = (float)expansion
+				};
+
+				if (velocities.IsAnyAbove(default))
+				{
+					_lastRelevantVelocities = velocities;
+				}
+
+				return _lastRelevantVelocities;
+			}
+
+			// This has to be invoked before any event being raised, it will update the internal that is used to compute delta and velocities.
+			private void UpdatePublishedState(ManipulationDelta delta)
+			{
+				_lastPublishedState = (_lastPublishedState.sumOfDelta.Add(delta), _currents.Timestamp, _contacts.current);
+			}
+
 			/// <summary>
 			/// Is this manipulation (a) valid to become a drag and (b) held for long enough to count as a drag?
 			/// </summary>
+			[Pure]
 			internal bool IsHeldLongEnoughToDrag()
 			{
 				if (!_isDraggingEnable)
@@ -336,6 +478,7 @@ namespace Windows.UI.Input
 
 			// For pen and mouse this only means down -> * moves out of tap range;
 			// For touch it means down -> * moves close to origin for DragUsingFingerMinDelayTicks -> * moves far from the origin 
+			[Pure]
 			private bool IsBeginningOfDragManipulation()
 			{
 				if (!_isDraggingEnable)
@@ -378,10 +521,17 @@ namespace Windows.UI.Input
 				}
 			}
 
+			[Pure]
+			private bool ShouldStartInertia(ManipulationVelocities velocities)
+				=> _inertia is null
+					&& !IsDragManipulation
+					&& (_settings & GestureSettingsHelper.Inertia) != 0
+					&& velocities.IsAnyAbove(_inertiaThresholds);
+
 			internal struct Thresholds
 			{
-				public int TranslateX;
-				public int TranslateY;
+				public double TranslateX;
+				public double TranslateY;
 				public double Rotate; // Degrees
 				public double Expansion;
 			}
@@ -392,6 +542,7 @@ namespace Windows.UI.Input
 				public PointerPoint Pointer1;
 				private PointerPoint? _pointer2;
 
+				public ulong Timestamp;
 				public Point Center; // This is the center in ** absolute ** coordinates spaces (i.e. relative to the screen)
 				public float Distance;
 				public double Angle;
@@ -403,6 +554,7 @@ namespace Windows.UI.Input
 					Pointer1 = point;
 					_pointer2 = default;
 
+					Timestamp = point.Timestamp;
 					Center = point.RawPosition; // RawPosition => cf. Note in UpdateComputedValues().
 					Distance = 0;
 					Angle = 0;
@@ -423,6 +575,8 @@ namespace Windows.UI.Input
 					if (Pointer1.PointerId == point.PointerId)
 					{
 						Pointer1 = point;
+						Timestamp = point.Timestamp;
+
 						UpdateComputedValues();
 
 						return true;
@@ -430,6 +584,8 @@ namespace Windows.UI.Input
 					else if (_pointer2 != null && _pointer2.PointerId == point.PointerId)
 					{
 						_pointer2 = point;
+						Timestamp = point.Timestamp;
+
 						UpdateComputedValues();
 
 						return true;

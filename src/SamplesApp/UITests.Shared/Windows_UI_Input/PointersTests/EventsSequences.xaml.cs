@@ -158,7 +158,9 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
 						&& args.One(PointerReleasedEvent)
-						&& args.Some(ManipulationCompletedEvent)
+						&& args.MaybeOne(ManipulationInertiaStartingEvent)
+						&& args.MaybeSome(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(PointerExitedEvent)
 						&& args.End();
@@ -174,8 +176,11 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
 						&& args.One(PointerReleasedEvent)
-						&& args.Some(ManipulationCompletedEvent)
-						&& args.One(PointerExitedEvent)
+						&& args.MaybeOne(ManipulationInertiaStartingEvent)
+						&& args.MaybeOne(PointerExitedEvent)
+						&& args.MaybeSome(ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
+						&& args.MaybeOne(PointerExitedEvent) // If no inertia
 						&& args.End();
 					break;
 			}
@@ -203,7 +208,9 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Click()
 						&& args.One(PointerCaptureLostEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.Some(ManipulationCompletedEvent)
+						&& args.MaybeOne(ManipulationInertiaStartingEvent)
+						&& args.MaybeSome(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(PointerExitedEvent)
 						&& args.End();
@@ -219,8 +226,11 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Click()
 						&& args.One(PointerCaptureLostEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.Some(ManipulationCompletedEvent)
-						&& args.One(PointerExitedEvent)
+						&& args.MaybeOne(ManipulationInertiaStartingEvent)
+						&& args.MaybeOne(PointerExitedEvent)
+						&& args.MaybeSome(ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
+						&& args.MaybeOne(PointerExitedEvent) // If no inertia
 						&& args.End();
 					break;
 			}

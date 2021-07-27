@@ -20,6 +20,14 @@ namespace Uno.UI.Tests.Windows_UI_Input
 	[TestClass]
 	public class Given_GestureRecognizer
 	{
+		private const GestureSettings ManipulationsWithoutInertia = GestureSettings.ManipulationTranslateX
+			| GestureSettings.ManipulationTranslateY
+			| GestureSettings.ManipulationTranslateRailsX
+			| GestureSettings.ManipulationTranslateRailsY
+			| GestureSettings.ManipulationRotate
+			| GestureSettings.ManipulationScale
+			| GestureSettings.ManipulationMultipleFingerPanning; // Not supported by ManipulationMode
+
 		[TestMethod]
 		public void Tapped()
 		{
@@ -294,7 +302,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Begin()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX;
 
@@ -312,7 +320,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Begin_MultiPointer()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 
 			sut.ProcessDownEvent(25, 25, id: 1);
@@ -327,7 +335,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Begin_WithAnotherDevice()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 
 			sut.ProcessDownEvent(25, 25, id: 1);
@@ -341,7 +349,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Delta()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
@@ -362,7 +370,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_End()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
@@ -381,7 +389,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_End_2()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
 			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
@@ -547,8 +555,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
-				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 315),
-				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 270)
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -45),
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -90)
 			);
 		}
 
@@ -567,8 +575,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
-				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 315),
-				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 270)
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -45),
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -90)
 			);
 		}
 
@@ -587,8 +595,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
-				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 315),
-				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 270)
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -45),
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -90)
 			);
 		}
 
@@ -607,8 +615,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			result.ShouldBe(
 				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
-				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 315),
-				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 270)
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -45),
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -90)
 			);
 		}
 
@@ -694,6 +702,166 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+		public void Manipulation_RotateOnly_Trigonometric_MultipleTurns()
+		{
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+
+			// Performs 3 trigonometric 360°
+
+			sut.ProcessDownEvent(50, 50, id: 1);
+			sut.ProcessDownEvent(50, 200, id: 2);
+
+			// Turn 1
+			sut.ProcessMoveEvent(200, 200, id: 2);
+			sut.ProcessMoveEvent(50, 200, id: 1);
+			sut.ProcessMoveEvent(200, 50, id: 2);
+			sut.ProcessMoveEvent(200, 200, id: 1);
+			sut.ProcessMoveEvent(50, 50, id: 2);
+			sut.ProcessMoveEvent(200, 50, id: 1);
+			sut.ProcessMoveEvent(50, 200, id: 2);
+			sut.ProcessMoveEvent(50, 50, id: 1);
+
+			// Turn 2
+			sut.ProcessMoveEvent(200, 200, id: 2);
+			sut.ProcessMoveEvent(50, 200, id: 1);
+			sut.ProcessMoveEvent(200, 50, id: 2);
+			sut.ProcessMoveEvent(200, 200, id: 1);
+			sut.ProcessMoveEvent(50, 50, id: 2);
+			sut.ProcessMoveEvent(200, 50, id: 1);
+			sut.ProcessMoveEvent(50, 200, id: 2);
+			sut.ProcessMoveEvent(50, 50, id: 1);
+
+			// Turn 3
+			sut.ProcessMoveEvent(200, 200, id: 2);
+			sut.ProcessMoveEvent(50, 200, id: 1);
+			sut.ProcessMoveEvent(200, 50, id: 2);
+			sut.ProcessMoveEvent(200, 200, id: 1);
+			sut.ProcessMoveEvent(50, 50, id: 2);
+			sut.ProcessMoveEvent(200, 50, id: 1);
+			sut.ProcessMoveEvent(50, 200, id: 2);
+			sut.ProcessMoveEvent(50, 50, id: 1);
+
+			var s = (float)Math.Sqrt(2);
+			var e = (float)((Math.Sqrt(2) - 1) * 150);
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(),
+
+				// Turn 1
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -45, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: 75, angle: -90, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -135, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 150, tY: 0, angle: -180, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -225, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: -75, angle: -270, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -315, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 0, tY: 0, angle: -360, scale: 1, exp: 0),
+
+				// Turn 2
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -360 - 45, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: 75, angle: -360 - 90, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -360 - 135, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 150, tY: 0, angle: -360 - 180, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -360 - 225, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: -75, angle: -360 - 270, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -360 - 315, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 0, tY: 0, angle: -360 - 360, scale: 1, exp: 0),
+
+				// Turn 3
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -720 - 45, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: 75, angle: -720 - 90, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -720 - 135, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 150, tY: 0, angle: -720 - 180, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -720 - 225, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: -75, angle: -720 - 270, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: -45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: -720 - 315, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: -45, scale: 1 / s, exp: -e).WithCumulative(tX: 0, tY: 0, angle: -720 - 360, scale: 1, exp: 0)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_RotateOnly_AntiTrigonometric_MultipleTurns()
+		{
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+
+			// Performs 3 trigonometric 360°
+
+			sut.ProcessDownEvent(50, 50, id: 1);
+			sut.ProcessDownEvent(50, 200, id: 2);
+
+			// Turn 1
+			sut.ProcessMoveEvent(200, 50, id: 1);
+			sut.ProcessMoveEvent(50, 50, id: 2);
+			sut.ProcessMoveEvent(200, 200, id: 1);
+			sut.ProcessMoveEvent(200, 50, id: 2);
+			sut.ProcessMoveEvent(50, 200, id: 1);
+			sut.ProcessMoveEvent(200, 200, id: 2);
+			sut.ProcessMoveEvent(50, 50, id: 1);
+			sut.ProcessMoveEvent(50, 200, id: 2);
+
+			// Turn 2
+			sut.ProcessMoveEvent(200, 50, id: 1);
+			sut.ProcessMoveEvent(50, 50, id: 2);
+			sut.ProcessMoveEvent(200, 200, id: 1);
+			sut.ProcessMoveEvent(200, 50, id: 2);
+			sut.ProcessMoveEvent(50, 200, id: 1);
+			sut.ProcessMoveEvent(200, 200, id: 2);
+			sut.ProcessMoveEvent(50, 50, id: 1);
+			sut.ProcessMoveEvent(50, 200, id: 2);
+
+			// Turn 3
+			sut.ProcessMoveEvent(200, 50, id: 1);
+			sut.ProcessMoveEvent(50, 50, id: 2);
+			sut.ProcessMoveEvent(200, 200, id: 1);
+			sut.ProcessMoveEvent(200, 50, id: 2);
+			sut.ProcessMoveEvent(50, 200, id: 1);
+			sut.ProcessMoveEvent(200, 200, id: 2);
+			sut.ProcessMoveEvent(50, 50, id: 1);
+			sut.ProcessMoveEvent(50, 200, id: 2);
+
+			var s = (float)Math.Sqrt(2);
+			var e = (float)((Math.Sqrt(2) - 1) * 150);
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(),
+
+				// Turn 1
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 45, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: -75, angle: 90, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 135, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 150, tY: 0, angle: 180, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 225, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: 75, angle: 270, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 315, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 0, tY: 0, angle: 360, scale: 1, exp: 0),
+
+				// Turn 2
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 360 + 45, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: -75, angle: 360 + 90, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 360 + 135, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 150, tY: 0, angle: 360 + 180, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 360 + 225, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: 75, angle: 360 + 270, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 360 + 315, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 0, tY: 0, angle: 360 + 360, scale: 1, exp: 0),
+
+				// Turn 3
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 720 + 45, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: -75, angle: 720 + 90, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 720 + 135, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 75, tY: 0, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 150, tY: 0, angle: 720 + 180, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 720 + 225, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: 0, tY: 75, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 75, tY: 75, angle: 720 + 270, scale: 1, exp: 0),
+				v => v.Delta().WithDelta(tX: 0, tY: -75, angle: 45, scale: s, exp: e).WithCumulative(tX: 75, tY: 0, angle: 720 + 315, scale: s, exp: e),
+				v => v.Delta().WithDelta(tX: -75, tY: 0, angle: 45, scale: 1 / s, exp: -e).WithCumulative(tX: 0, tY: 0, angle: 720 + 360, scale: 1, exp: 0)
+			);
+		}
+
+		[TestMethod]
 		public void Manipulation_ScaleOnly()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationScale };
@@ -736,8 +904,10 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Manipulation_Mixed()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
+
+			// Performs a trigonometric 360° .. and completes by setting pt 1 and pt 2 at same location (which is physically impossible)
 
 			sut.ProcessDownEvent(50, 50, id: 1); // 1.
 			sut.ProcessDownEvent(50, 200, id: 2); // 2.
@@ -771,57 +941,485 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				// 3.
 				v => v.Delta()
 					.At(125, 125)
-					.WithDelta(tX: 75, tY: 0, angle: 315, scale: s, exp: e)
-					.WithCumulative(tX: 75, tY: 0, angle: 315, scale: s, exp: e),
+					.WithDelta(tX: 75, tY: 0, angle: -45, scale: s, exp: e)
+					.WithCumulative(tX: 75, tY: 0, angle: -45, scale: s, exp: e),
 
 				// 4.
 				v => v.Delta()
 					.At(125, 200)
-					.WithDelta(tX: 0, tY: 75, angle: 315, scale: 1/s, exp: -e)
-					.WithCumulative(tX: 75, tY: 75, angle: 270, scale: 1, exp: 0),
+					.WithDelta(tX: 0, tY: 75, angle: -45, scale: 1/s, exp: -e)
+					.WithCumulative(tX: 75, tY: 75, angle: -90, scale: 1, exp: 0),
 
 				// 5.
 				v => v.Delta()
 					.At(125, 125)
-					.WithDelta(tX: 0, tY: -75, angle: 315, scale: s, exp: e)
-					.WithCumulative(tX: 75, tY: 0, angle: 225, scale: s, exp: e),
+					.WithDelta(tX: 0, tY: -75, angle: -45, scale: s, exp: e)
+					.WithCumulative(tX: 75, tY: 0, angle: -135, scale: s, exp: e),
 
 				// 6.
 				v => v.Delta()
 					.At(200, 125)
-					.WithDelta(tX: 75, tY: 0, angle: 315, scale: 1 / s, exp: -e)
-					.WithCumulative(tX: 150, tY: 0, angle: 180, scale: 1, exp: 0),
+					.WithDelta(tX: 75, tY: 0, angle: -45, scale: 1 / s, exp: -e)
+					.WithCumulative(tX: 150, tY: 0, angle: -180, scale: 1, exp: 0),
 
 				// 7.
 				v => v.Delta()
 					.At(125, 125)
-					.WithDelta(tX: -75, tY: 0, angle: 315, scale: s, exp: e)
-					.WithCumulative(tX: 75, tY: 0, angle: 135, scale: s, exp: e),
+					.WithDelta(tX: -75, tY: 0, angle: -45, scale: s, exp: e)
+					.WithCumulative(tX: 75, tY: 0, angle: -225, scale: s, exp: e),
 
 				// 8.
 				v => v.Delta()
 					.At(125, 50)
-					.WithDelta(tX: 0, tY: -75, angle: 315, scale: 1 / s, exp: -e)
-					.WithCumulative(tX: 75, tY: -75, angle: 90, scale: 1, exp: 0),
+					.WithDelta(tX: 0, tY: -75, angle: -45, scale: 1 / s, exp: -e)
+					.WithCumulative(tX: 75, tY: -75, angle: -270, scale: 1, exp: 0),
 
 				// 9.
 				v => v.Delta()
 					.At(125, 125)
-					.WithDelta(tX: 0, tY: 75, angle: 315, scale: s, exp: e)
-					.WithCumulative(tX: 75, tY: 0, angle: 45, scale: s, exp: e),
+					.WithDelta(tX: 0, tY: 75, angle: -45, scale: s, exp: e)
+					.WithCumulative(tX: 75, tY: 0, angle: -315, scale: s, exp: e),
 
 				// 10.
 				v => v.Delta()
 					.At(50, 125)
-					.WithDelta(tX: -75, tY: 0, angle: 315, scale: 1 / s, exp: -e)
-					.WithCumulative(tX: 0, tY: 0, angle: 0, scale: 1, exp: 0),
+					.WithDelta(tX: -75, tY: 0, angle: -45, scale: 1 / s, exp: -e)
+					.WithCumulative(tX: 0, tY: 0, angle: -360, scale: 1, exp: 0),
 
 				// 11.
 				v => v.Delta()
 					.At(50, 50)
 					.WithDelta(tX: 0, tY: -75, angle: 90 /* ??? */, scale: 0, exp: -150F)
-					.WithCumulative(tX: 0, tY: -75, angle: 90 /* ??? */, scale: 0, exp: -150F)
+					.WithCumulative(tX: 0, tY: -75, angle: -270 /* ??? */, scale: 0, exp: -150F)
 			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_Translate()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var result = new ManipulationRecorder(sut);
+
+			// flick at 2 px/ms
+			sut.ProcessDownEvent(10, 10, ts: 0);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(scale: 1),
+				v => v.Delta().WithDelta(tX: 90, tY: 90).WithCumulative(tX: 90, tY: 90),
+				v => v.Inertia(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial().WithCumulative(tX: 1090.40002441406, tY: 1090.40002441406),
+				v => v.End().WithCumulative(tX: 1090.40002441406, tY: 1090.40002441406)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_TranslateXOnly()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			// flick at 2 px/ms
+			sut.ProcessDownEvent(10, 10, ts: 0);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(scale: 1),
+				v => v.Delta().WithDelta(tX: 90, tY: 0).WithCumulative(tX: 90, tY: 0),
+				v => v.Inertia(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial().WithCumulative(tX: 1090.40002441406, tY: 0),
+				v => v.End().WithCumulative(tX: 1090.40002441406, tY: 0)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_TranslateYOnly()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			// flick at 2 px/ms
+			sut.ProcessDownEvent(10, 10, ts: 0);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(scale: 1),
+				v => v.Delta().WithDelta(tX: 0, tY: 90).WithCumulative(tX: 0, tY: 90),
+				v => v.Inertia(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial().WithCumulative(tX: 0, tY: 1090.40002441406),
+				v => v.End().WithCumulative(tX: 0, tY: 1090.40002441406)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_Translate_Negative()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
+			var result = new ManipulationRecorder(sut);
+
+			// flick at 2 px/ms
+			sut.ProcessDownEvent(10, 10, ts: 0);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessUpEvent(98, 98, ts: 101 * TimeSpan.TicksPerMillisecond);
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(scale: 1),
+				v => v.Delta().WithDelta(tX: 90, tY: 90).WithCumulative(tX: 90, tY: 90),
+				v => v.Inertia(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial().WithCumulative(tX: -910.40002441406, tY: -910.40002441406),
+				v => v.End().WithCumulative(tX: -910.40002441406, tY: -910.40002441406)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_RotateOnly_Trigonometric_InFirstQuadrant()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			sut.ProcessDownEvent(25, -25, id: 1, ts: 0);
+
+			// Rotate of pi/2 in a quarter of second
+			sut.ProcessDownEvent(50, -25, id: 2, ts: 1); // Angle = 0
+			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(25, -50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(angle: 0),
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -45),
+				v => v.Inertia().WithDelta(angle: -45).WithCumulative(angle: -90).WithSpeed(angle: -0.09f),
+
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+
+				v => v.Delta().IsInertial().WithCumulative(angle: -110.240005f),
+				v => v.End().WithCumulative(angle: -110.240005f)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_RotateOnly_Trigonometric_InSecondQuadrant()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			sut.ProcessDownEvent(-25, -25, id: 1, ts: 0);
+
+			// Rotate of Pi/4 in a quarter of second
+			sut.ProcessDownEvent(-25, -50, id: 2, ts: 1); // Angle = 0
+			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-50, -25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(angle: 0),
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -45),
+				v => v.Inertia().WithDelta(angle: -45).WithCumulative(angle: -90).WithSpeed(angle: -0.09f),
+
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+
+				v => v.Delta().IsInertial().WithCumulative(angle: -110.240005f),
+				v => v.End().WithCumulative(angle: -110.240005f)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_RotateOnly_Trigonometric_InThirdQuadrant()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			sut.ProcessDownEvent(-25, 25, id: 1, ts: 0);
+
+			// Rotate of pi/2 in a quarter of second
+			sut.ProcessDownEvent(-50, 25, id: 2, ts: 1); // Angle = 0
+			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-25, 50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(angle: 0),
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -45),
+				v => v.Inertia().WithDelta(angle: -45).WithCumulative(angle: -90).WithSpeed(angle: -0.09f),
+
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+
+				v => v.Delta().IsInertial().WithCumulative(angle: -110.240005f),
+				v => v.End().WithCumulative(angle: -110.240005f)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_RotateOnly_Trigonometric_InForthQuadrant()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			sut.ProcessDownEvent(25, 25, id: 1, ts: 0);
+
+			// Rotate of pi/2 in a quarter of second
+			sut.ProcessDownEvent(25, 50, id: 2, ts: 1); // Angle = 0
+			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(50, 25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(angle: 0),
+				v => v.Delta().WithDelta(angle: -45).WithCumulative(angle: -45),
+				v => v.Inertia().WithDelta(angle: -45).WithCumulative(angle: -90).WithSpeed(angle: -0.09f),
+
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+
+				v => v.Delta().IsInertial().WithCumulative(angle: -110.240005f),
+				v => v.End().WithCumulative(angle: -110.240005f)
+			);
+		}
+
+
+		[TestMethod]
+		public void Manipulation_Inertia_RotateOnly_AntiTrigonometric_InFirstQuadrant()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			sut.ProcessDownEvent(25, -25, id: 1, ts: 0);
+
+			sut.ProcessDownEvent(25, -50, id: 2, ts: 1); // Angle = 0
+			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(50, -25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(angle: 0),
+				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 45),
+				v => v.Inertia().WithDelta(angle: 45).WithCumulative(angle: 90).WithSpeed(angle: 0.09f),
+
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+
+				v => v.Delta().IsInertial().WithCumulative(angle: 110.240005f),
+				v => v.End().WithCumulative(angle: 110.240005f)
+			);
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_RotateOnly_AntiTrigonometric_InSecondQuadrant()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			sut.ProcessDownEvent(-25, -25, id: 1, ts: 0);
+
+			sut.ProcessDownEvent(-50, -25, id: 2, ts: 1); // Angle = 0
+			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-25, -50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(angle: 0),
+				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 45),
+				v => v.Inertia().WithDelta(angle: 45).WithCumulative(angle: 90).WithSpeed(angle: 0.09f),
+
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+
+				v => v.Delta().IsInertial().WithCumulative(angle: 110.240005f),
+				v => v.End().WithCumulative(angle: 110.240005f)
+			);
+
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_RotateOnly_AntiTrigonometric_InThirdQuadrant()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			sut.ProcessDownEvent(-25, 25, id: 1, ts: 0);
+
+			sut.ProcessDownEvent(-25, 50, id: 2, ts: 1); // Angle = 0
+			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-50, 25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(angle: 0),
+				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 45),
+				v => v.Inertia().WithDelta(angle: 45).WithCumulative(angle: 90).WithSpeed(angle: 0.09f),
+
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+
+				v => v.Delta().IsInertial().WithCumulative(angle: 110.240005f),
+				v => v.End().WithCumulative(angle: 110.240005f)
+			);
+
+		}
+
+		[TestMethod]
+		public void Manipulation_Inertia_RotateOnly_AntiTrigonometric_InForthQuadrant()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia };
+			var result = new ManipulationRecorder(sut);
+
+			sut.ProcessDownEvent(25, 25, id: 1, ts: 0);
+
+			sut.ProcessDownEvent(50, 25, id: 2, ts: 1); // Angle = 0
+			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(25, 50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+
+			sut.RunInertiaSync();
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().WithCumulative(angle: 0),
+				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 45),
+				v => v.Inertia().WithDelta(angle: 45).WithCumulative(angle: 90).WithSpeed(angle: 0.09f),
+
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(), v => v.Delta().IsInertial(),
+				v => v.Delta().IsInertial(),
+
+				v => v.Delta().IsInertial().WithCumulative(angle: 110.240005f),
+				v => v.End().WithCumulative(angle: 110.240005f)
+			);
+
 		}
 
 		[TestMethod]
@@ -976,6 +1574,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			recognizer.ManipulationStarted += (snd, e) => _result.Add((snd, e));
 			recognizer.ManipulationUpdated += (snd, e) => _result.Add((snd, e));
 			recognizer.ManipulationCompleted += (snd, e) => _result.Add((snd, e));
+			recognizer.ManipulationInertiaStarting += (snd, e) => _result.Add((snd, e));
 		}
 
 		public void ShouldBe(params Func<EmptyValidator, Validator>[] expected)
@@ -1061,6 +1660,18 @@ namespace Uno.UI.Tests.Windows_UI_Input
 					_pendingAssertResult.Add((name, expected.Value, actual));
 			}
 
+			protected void AreEquals(string name, PointerDeviceType? expected, PointerDeviceType actual)
+			{
+				if (expected.HasValue && expected.Value != actual)
+					_pendingAssertResult.Add((name, expected.Value, actual));
+			}
+
+			protected void AreEquals(string name, uint? expected, uint actual)
+			{
+				if (expected.HasValue && expected.Value != actual)
+					_pendingAssertResult.Add((name, expected.Value, actual));
+			}
+
 			protected void AreEquals(string name, ManipulationDelta? expected, ManipulationDelta actual)
 			{
 				if (!expected.HasValue)
@@ -1070,10 +1681,10 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 				var e = expected.Value;
 
-				if (e.Translation.X != actual.Translation.X)
+				if (Math.Abs(e.Translation.X - actual.Translation.X) > .00001)
 					_pendingAssertResult.Add((name + ".Translation.X", expected.Value.Translation.X, actual.Translation.X));
 
-				if (e.Translation.Y != actual.Translation.Y)
+				if (Math.Abs(e.Translation.Y - actual.Translation.Y) > .00001)
 					_pendingAssertResult.Add((name + ".Translation.Y", expected.Value.Translation.Y, actual.Translation.Y));
 
 				if (Math.Abs(e.Rotation - actual.Rotation) > .00001)
@@ -1081,6 +1692,28 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 				if (Math.Abs(e.Scale - actual.Scale) > .00001)
 					_pendingAssertResult.Add((name + ".Scale", expected.Value.Scale, actual.Scale));
+
+				if (Math.Abs(e.Expansion - actual.Expansion) > .00001)
+					_pendingAssertResult.Add((name + ".Expansion", expected.Value.Expansion, actual.Expansion));
+			}
+
+			protected void AreEquals(string name, ManipulationVelocities? expected, ManipulationVelocities actual)
+			{
+				if (!expected.HasValue)
+				{
+					return;
+				}
+
+				var e = expected.Value;
+
+				if (e.Linear.X != actual.Linear.X)
+					_pendingAssertResult.Add((name + ".Linear.X", expected.Value.Linear.X, actual.Linear.X));
+
+				if (e.Linear.Y != actual.Linear.Y)
+					_pendingAssertResult.Add((name + ".Linear.Y", expected.Value.Linear.Y, actual.Linear.Y));
+
+				if (Math.Abs(e.Angular - actual.Angular) > .00001)
+					_pendingAssertResult.Add((name + ".Angular", expected.Value.Angular, actual.Angular));
 
 				if (Math.Abs(e.Expansion - actual.Expansion) > .00001)
 					_pendingAssertResult.Add((name + ".Expansion", expected.Value.Expansion, actual.Expansion));
@@ -1097,6 +1730,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			public StartedValidator Started() => new StartedValidator();
 			public DeltaValidator Delta() => new DeltaValidator();
 			public EndValidator End() => new EndValidator();
+			public InertiaValidator Inertia() => new InertiaValidator();
 
 			internal override void Assert(object args, string identifier)
 				=> throw new AssertionFailedException($"Expected of {identifier} is not configured");
@@ -1240,6 +1874,79 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				AreEquals(nameof(args.IsInertial), _isInertial, args.IsInertial);
 			}
 		}
+
+		public class InertiaValidator : Validator<ManipulationInertiaStartingEventArgs>
+		{
+			private Point? _position;
+			private ManipulationDelta? _delta;
+			private ManipulationDelta? _cumulative;
+			private ManipulationVelocities? _velocities;
+			private PointerDeviceType? _pointer;
+			private uint? _contactCount;
+
+			public InertiaValidator At(double x, double y)
+			{
+				_position = new Point(x, y);
+				return this;
+			}
+
+			public InertiaValidator WithDelta(double tX = 0, double tY = 0, float angle = 0, float scale = 1, float exp = 0)
+			{
+				_delta = new ManipulationDelta
+				{
+					Translation = new Point(tX, tY),
+					Rotation = angle,
+					Scale = scale,
+					Expansion = exp,
+				};
+				return this;
+			}
+
+			public InertiaValidator WithCumulative(double tX = 0, double tY = 0, float angle = 0, float scale = 1, float exp = 0)
+			{
+				_cumulative = new ManipulationDelta
+				{
+					Translation = new Point(tX, tY),
+					Rotation = angle,
+					Scale = scale,
+					Expansion = exp,
+				};
+				return this;
+			}
+
+			public InertiaValidator WithSpeed(double tX = 0, double tY = 0, float angle = 0, float exp = 0)
+			{
+				_velocities = new ManipulationVelocities
+				{
+					Linear = new Point(tX, tY),
+					Angular = angle,
+					Expansion = exp
+				};
+				return this;
+			}
+
+			public InertiaValidator WithPointer(PointerDeviceType pointer)
+			{
+				_pointer = pointer;
+				return this;
+			}
+
+			public InertiaValidator WithContacts(uint contactCount)
+			{
+				_contactCount = contactCount;
+				return this;
+			}
+
+			protected override void Assert(ManipulationInertiaStartingEventArgs args)
+			{
+				AreEquals(nameof(args.Position), _position, args.Position);
+				AreEquals(nameof(args.Delta), _delta, args.Delta);
+				AreEquals(nameof(args.Cumulative), _cumulative, args.Cumulative);
+				AreEquals(nameof(args.Velocities), _velocities, args.Velocities);
+				AreEquals(nameof(args.PointerDeviceType), _pointer, args.PointerDeviceType);
+				AreEquals(nameof(args.ContactCount), _contactCount, args.ContactCount);
+			}
+		}
 	}
 
 	internal static class GestureRecognizerTestExtensions
@@ -1329,7 +2036,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			=> new HoldingEventArgs(ptId ?? 1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
 
 		public static DraggingEventArgs Drag(PointerPoint point, DraggingState state)
-			=> new DraggingEventArgs(point, state);
+			=> new DraggingEventArgs(point, state, 1);
 
 		public static PointerPoint ProcessDownEvent(
 			this GestureRecognizer sut,
