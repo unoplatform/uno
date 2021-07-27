@@ -2075,10 +2075,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant($"{setterPrefix}Color = {BuildColor(content)}");
 							}
 						}
-						else if (IsLinearGradientBrush(topLevelControl.Type))
-						{
-							BuildCollection(writer, isInline, setterPrefix + "GradientStops", implicitContentChild);
-						}
 						else if (IsInitializableCollection(topLevelControl))
 						{
 							var elementType = FindType(topLevelControl.Type);
