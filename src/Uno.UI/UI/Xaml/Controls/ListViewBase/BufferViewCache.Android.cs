@@ -39,6 +39,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private Dictionary<UnoViewHolder, List<Action>> _onRecycled = new Dictionary<UnoViewHolder, List<Action>>(); //Used by Phase binding
 
+		private int? _reorderingItem;
+
 		//Inclusive
 		private int TrailingBufferTargetStart => Math.Max(ConvertIndexToDisplayPosition(0), TrailingBufferTargetEnd - CacheHalfLength);
 		// Exclusive
@@ -157,6 +159,10 @@ namespace Windows.UI.Xaml.Controls
 			Layout.TryDetachView(view);
 			SendToIntermediateCache(recycler, record);
 		}
+
+		public void SetReorderingItem(int itemIndex) => _reorderingItem = itemIndex;
+
+		public void RemoveReorderingItem() => _reorderingItem = null;
 
 		/// <summary>
 		/// Remove all views not in the target range from the buffer.
@@ -457,7 +463,7 @@ namespace Windows.UI.Xaml.Controls
 				for (int i = views.Count - 1; i >= 0; i--)
 				{
 					var view = views[i];
-					if (!IsInTargetRange(view.LayoutPosition))
+					if (!IsImmediatelyReusable(view.LayoutPosition))
 					{
 						result = view;
 						views.RemoveAt(i);
@@ -718,8 +724,15 @@ namespace Windows.UI.Xaml.Controls
 			actions.Add(action);
 		}
 
-		private bool IsInTargetRange(int position)
+		private bool IsImmediatelyReusable(int position)
 		{
+			if (position == _reorderingItem)
+			{
+				// View being reordered shouldn't be reused for other items
+				return true;
+			}
+
+			// View is in the buffer target range, may be reusable
 			return (TrailingBufferTargetStart <= position && TrailingBufferTargetEnd > position) ||
 				(LeadingBufferTargetStart <= position && LeadingBufferTargetEnd > position);
 		}
