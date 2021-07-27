@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Diagnostics.Contracts;
 using Windows.Foundation;
 
 namespace Windows.UI.Input
@@ -28,5 +29,10 @@ namespace Windows.UI.Input
 				|| Math.Abs(Linear.Y) > thresholds.TranslateY
 				|| Math.Abs(Angular) > thresholds.Rotate
 				|| Math.Abs(Expansion) > thresholds.Expansion;
+
+		/// <inheritdoc />
+		[Pure]
+		public override string ToString()
+			=> $"x:{Linear.X:N0};y:{Linear.Y:N0};θ:{Angular};e:{Expansion:F2}";
 	}
 }
