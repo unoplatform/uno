@@ -110,7 +110,7 @@ namespace SamplesApp.UITests
 			{
 				Platform.Android => rect,
 				Platform.iOS => rect.ApplyScale(app.GetDisplayScreenScaling()),
-				Platform.Browser => rect,
+				Platform.Browser => rect.ApplyScale(app.GetDisplayScreenScaling()),
 				_ => throw new InvalidOperationException("Unknown current platform.")
 			};
 		}
@@ -121,7 +121,7 @@ namespace SamplesApp.UITests
 			{
 				Platform.Android => rect.UnapplyScale(app.GetDisplayScreenScaling()),
 				Platform.iOS => rect,
-				Platform.Browser => rect,
+				Platform.Browser => rect.UnapplyScale(app.GetDisplayScreenScaling()),
 				_ => throw new InvalidOperationException("Unknown current platform.")
 			};
 		}
