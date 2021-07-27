@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Uno.Analyzers.Tests.Verifiers
 {
+	// This class is a copy from https://github.com/dotnet/roslyn-sdk/tree/main/src/VisualStudio.Roslyn.SDK/Roslyn.SDK/ProjectTemplates/CSharp/Diagnostic/Test/Verifiers
 	internal static class CSharpVerifierHelper
 	{
 		/// <summary>

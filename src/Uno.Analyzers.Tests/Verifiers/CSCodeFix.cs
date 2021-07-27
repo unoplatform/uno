@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Uno.Analyzers.Tests.Verifiers
 {
+	// This class is a copy from https://github.com/dotnet/roslyn-sdk/tree/main/src/VisualStudio.Roslyn.SDK/Roslyn.SDK/ProjectTemplates/CSharp/Diagnostic/Test/Verifiers
 	public static partial class CSharpCodeFixVerifier<TAnalyzer, TCodeFix>
 		where TAnalyzer : DiagnosticAnalyzer, new()
 		where TCodeFix : CodeFixProvider, new()
