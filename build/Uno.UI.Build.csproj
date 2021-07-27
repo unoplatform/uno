@@ -166,10 +166,9 @@
 	<Target Name="UpdateTasksSHA">
 
 		<ItemGroup>
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\**\*.cs" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
-			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Assets\RetargetAssets.cs" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" />
-			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourcesGenerationTask.cs" />
 		</ItemGroup>
 
     <WriteLinesToFile

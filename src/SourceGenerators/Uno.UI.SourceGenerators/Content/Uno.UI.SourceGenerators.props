@@ -60,6 +60,9 @@
 		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
 		<CompilerVisibleProperty Include="LegacyTypesProperty" />
+		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
+		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
+		<CompilerVisibleProperty Include="AssemblyName"/>
 
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />

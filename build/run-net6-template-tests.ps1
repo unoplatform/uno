@@ -81,3 +81,8 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
 }
 
 popd
+
+# XAML Trimming build smoke test
+dotnet new unoapp-net6 -n MyAppXamlTrim
+& dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
+Assert-ExitCodeIsZero
