@@ -637,7 +637,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal double MinHorizontalOffset => 0;
 
-		public double MinVerticalOffset => 0;
+		internal double MinVerticalOffset => 0;
 
 		protected override Size MeasureOverride(Size availableSize)
 		{

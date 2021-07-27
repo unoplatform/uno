@@ -1,5 +1,5 @@
 ﻿#if NET461
-#pragma warning disable CS0067
+#pragma warning disable CS0067 // This event is never used
 #endif
 
 #nullable enable
@@ -89,6 +89,10 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			/// <summary>
+			/// Custom value. The exact value is not too important here, the idea is just to update the scroll frequently, but still give the
+			/// layouting enough time to update.
+			/// </summary>
 			private const int FrameIntervalMS = 1000 / 40;
 
 			public ConstantVelocityScroller(ScrollViewer _parent)
