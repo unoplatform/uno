@@ -70,6 +70,8 @@ namespace Windows.UI.Xaml
 		}
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
+		private bool _hadNativeMove;
+
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
 		{
 			if (IsPointersSuspended)
@@ -97,6 +99,7 @@ namespace Windows.UI.Xaml
 			try
 			{
 				NotifyParentTouchesManagersManipulationStarted();
+				_hadNativeMove = false;
 
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
@@ -142,6 +145,8 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
+				_hadNativeMove = true;
+
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
@@ -175,6 +180,18 @@ namespace Windows.UI.Xaml
 				{
 					var id = NativePointer.Get(this, touch);
 					var args = new PointerRoutedEventArgs(id.Id, touch, evt, this);
+
+					if (!_hadNativeMove)
+					{
+						// On iOS if the gesture is really fast (like a swipe), we can get only 'down' and 'up'.
+						// But on UWP it seems that we always have a least one move, and even internally,
+						// the manipulation events are requiring at least one move to kick-in.
+						// Here we are just making sure to raise that event with the final location.
+						// Note: In case of multi-touch we might raise it unnecessarily, but it won't have any negative impact.
+						// Note: We do not consider the result of that move for the 'isHandledOrBubblingInManaged'
+						//		 as it's kind of un-related to the 'up' itself.
+						OnNativePointerMove(args);
+					}
 
 					isHandledOrBubblingInManaged |= OnNativePointerUp(args);
 					isHandledOrBubblingInManaged |= OnNativePointerExited(args);

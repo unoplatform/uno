@@ -93,6 +93,7 @@ namespace Windows.UI.Input
 						break;
 				}
 
+				UpdatePublishedState(default);
 				var args = new ManipulationStartingEventArgs(_recognizer._gestureSettings);
 				_recognizer.ManipulationStarting?.Invoke(_recognizer, args);
 				_settings = args.Settings;
