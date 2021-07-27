@@ -94,16 +94,31 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize, Size maxSize)
+		private Rect? GetAnchorRect()
 		{
+#if __ANDROID__ || __IOS__
+			if (NativeAnchor != null)
+			{
+				return NativeAnchor.GetBoundsRectRelativeTo(this);
+			}
+#endif
 			var anchor = AnchorControl;
 			if (anchor == null)
 			{
 				return default;
 			}
 
+			return anchor.GetBoundsRectRelativeTo(this);
+		}
+
+		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize, Size maxSize)
+		{
+			if (!(GetAnchorRect() is { } anchorRect))
+			{
+				return default;
+			}
+
 			var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-			var anchorRect = anchor.GetBoundsRectRelativeTo(this);
 
 			// Make sure the desiredSize fits in the panel
 			desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
