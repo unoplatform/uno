@@ -256,11 +256,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, XamlConstants.Types.Panel);
 		}
 
-		private bool IsLinearGradientBrush(XamlType xamlType)
-		{
-			return IsType(xamlType, XamlConstants.Types.LinearGradientBrush);
-		}
-
 		private bool IsFrameworkElement(XamlType xamlType)
 		{
 			return IsType(xamlType, XamlConstants.Types.FrameworkElement);
