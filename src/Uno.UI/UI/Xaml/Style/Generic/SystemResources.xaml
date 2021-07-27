@@ -1294,6 +1294,14 @@
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
 
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.Thumb -->
+			<StaticResource x:Key="ThumbBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="ThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<StaticResource x:Key="ThumbBackgroundPressed" ResourceKey="SystemControlHighlightBaseMediumBrush" />
+			<StaticResource x:Key="ThumbBorderBrush" ResourceKey="SystemControlHighlightTransparentBrush" />
+			<StaticResource x:Key="ThumbBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
+			<StaticResource x:Key="ThumbBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
+
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<Color x:Key="SystemChromeMediumHighColor">#FF323232</Color>
@@ -2576,6 +2584,14 @@
 			<StaticResource x:Key="CalendarViewCalendarItemRevealBorderBrush" ResourceKey="SystemControlTransparentRevealBorderBrush" />
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
+
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.Thumb -->
+			<StaticResource x:Key="ThumbBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="ThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<StaticResource x:Key="ThumbBackgroundPressed" ResourceKey="SystemControlHighlightBaseMediumBrush" />
+			<StaticResource x:Key="ThumbBorderBrush" ResourceKey="SystemControlHighlightTransparentBrush" />
+			<StaticResource x:Key="ThumbBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
+			<StaticResource x:Key="ThumbBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
@@ -3868,6 +3884,14 @@
 			<StaticResource x:Key="CalendarViewCalendarItemRevealBorderBrush" ResourceKey="SystemControlTransparentRevealBorderBrush" />
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
+
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.Thumb -->
+			<StaticResource x:Key="ThumbBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="ThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<StaticResource x:Key="ThumbBackgroundPressed" ResourceKey="SystemControlHighlightBaseMediumBrush" />
+			<StaticResource x:Key="ThumbBorderBrush" ResourceKey="SystemControlHighlightTransparentBrush" />
+			<StaticResource x:Key="ThumbBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
+			<StaticResource x:Key="ThumbBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
