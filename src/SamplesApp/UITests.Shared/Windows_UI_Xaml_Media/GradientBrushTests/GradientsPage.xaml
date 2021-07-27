@@ -94,14 +94,12 @@
 				<Border Width="100" Height="100" BorderThickness="40" Background="DarkGray">
 					<Border.BorderBrush>
 						<media:RadialGradientBrush FallbackColor="Red">
-							<GradientStopCollection>
-								<GradientStop Color="Blue" Offset="0.0" />
-								<GradientStop Color="Yellow" Offset="0.2" />
-								<GradientStop Color="LimeGreen" Offset="0.4" />
-								<GradientStop Color="LightBlue" Offset="0.6" />
-								<GradientStop Color="Blue" Offset="0.8" />
-								<GradientStop Color="LightGray" Offset="1" />
-							</GradientStopCollection>
+							<GradientStop Color="Blue" Offset="0.0" />
+							<GradientStop Color="Yellow" Offset="0.2" />
+							<GradientStop Color="LimeGreen" Offset="0.4" />
+							<GradientStop Color="LightBlue" Offset="0.6" />
+							<GradientStop Color="Blue" Offset="0.8" />
+							<GradientStop Color="LightGray" Offset="1" />
 						</media:RadialGradientBrush>
 					</Border.BorderBrush>
 				</Border>
@@ -123,14 +121,12 @@
 					<Ellipse.Stroke>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<media:RadialGradientBrush.GradientStops>
-								<GradientStopCollection>
-									<GradientStop Color="Blue" Offset="0.0" />
-									<GradientStop Color="Yellow" Offset="0.2" />
-									<GradientStop Color="LimeGreen" Offset="0.4" />
-									<GradientStop Color="LightBlue" Offset="0.6" />
-									<GradientStop Color="Blue" Offset="0.8" />
-									<GradientStop Color="LightGray" Offset="1" />
-								</GradientStopCollection>
+								<GradientStop Color="Blue" Offset="0.0" />
+								<GradientStop Color="Yellow" Offset="0.2" />
+								<GradientStop Color="LimeGreen" Offset="0.4" />
+								<GradientStop Color="LightBlue" Offset="0.6" />
+								<GradientStop Color="Blue" Offset="0.8" />
+								<GradientStop Color="LightGray" Offset="1" />
 							</media:RadialGradientBrush.GradientStops>
 						</media:RadialGradientBrush>
 					</Ellipse.Stroke>
