@@ -405,14 +405,14 @@ namespace Windows.UI.Input
 
 				var translateX = _isTranslateXEnabled ? cumulative.Translation.X - deltaSum.Translation.X : 0;
 				var translateY = _isTranslateYEnabled ? cumulative.Translation.Y - deltaSum.Translation.Y : 0;
-				var rotate = _isRotateEnabled ? cumulative.Rotation - deltaSum.Rotation : 0;
+				var rotation = _isRotateEnabled ? cumulative.Rotation - deltaSum.Rotation : 0;
 				var scale = _isScaleEnabled ? cumulative.Scale / deltaSum.Scale : 1;
 				var expansion = _isScaleEnabled ? cumulative.Expansion - deltaSum.Expansion : 0;
 
 				return new ManipulationDelta
 				{
 					Translation = new Point(translateX, translateY),
-					Rotation = rotate,
+					Rotation = rotation,
 					Scale = scale,
 					Expansion = expansion
 				};
@@ -426,7 +426,7 @@ namespace Windows.UI.Input
 				var elapsedMs = elapsedTicks / TimeSpan.TicksPerMillisecond;
 
 				// With uno a single native event might produce multiple managed pointer events.
-				// In that case we would get en empty velocities ... which is often not relevant!
+				// In that case we would get an empty velocities ... which is often not relevant!
 				// When we detect that case, we prefer to replay the last known velocities.
 				if (delta.IsEmpty || elapsedMs == 0)
 				{
@@ -615,10 +615,6 @@ namespace Windows.UI.Input
 
 						Center = new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
 						Distance = Vector2.Distance(p1.ToVector(), p2.ToVector());
-
-						// As long as possible we try to keep the angle close to the previous value.
-						// According to the doc, if angles goes from the second to the third quadrant the computed angle 
-
 						Angle = Math.Atan2(p1.Y - p2.Y, p1.X - p2.X);
 					}
 				}
