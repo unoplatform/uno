@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
 using Uno.RoslynHelpers;
 using Uno.SourceGeneration;
 
@@ -25,8 +24,10 @@ namespace Uno.Samples.UITest.Generator
 #if DEBUG
 			// Debugger.Launch();
 #endif
-
-			GenerateTests(context, "Uno.UI.Samples");
+			if (context.Compilation.Assembly.Name == "SamplesApp.UITests")
+			{
+				GenerateTests(context, "Uno.UI.Samples");
+			}
 		}
 
 		private void GenerateTests(SourceGeneratorContext context, string assembly)

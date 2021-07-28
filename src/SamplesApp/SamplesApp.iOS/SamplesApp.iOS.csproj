@@ -197,7 +197,8 @@
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
-  <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
+	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
   <Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences">

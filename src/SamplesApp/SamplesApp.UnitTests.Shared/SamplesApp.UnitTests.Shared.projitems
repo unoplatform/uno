@@ -114,4 +114,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)SamplesApp.UnitTests.targets" />
+  </ItemGroup>
 </Project>

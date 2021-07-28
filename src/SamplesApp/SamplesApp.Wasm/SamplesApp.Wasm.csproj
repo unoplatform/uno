@@ -121,4 +121,6 @@
 
 	<Import Project="..\..\..\build\*.WebAssembly.props" />
 	<Import Project="..\..\..\build\*.WebAssembly.targets" />
+
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 </Project>

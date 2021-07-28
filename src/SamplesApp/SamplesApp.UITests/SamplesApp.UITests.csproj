@@ -20,7 +20,7 @@
 	</ItemGroup> 
 	  
 	<ItemGroup>
-		<SourceGenerator Include="..\SamplesApp.UITests.Generator\Bin\$(Configuration)\net47\Uno.Samples.UITest.Generator.dll" />
+		<SourceGenerator Include="..\SamplesApp.UITests.Generator\bin\$(Configuration)\Uno.Samples.UITest.Generator.dll" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
