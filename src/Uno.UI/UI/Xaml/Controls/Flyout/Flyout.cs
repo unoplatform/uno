@@ -7,6 +7,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls;
 
 #if XAMARIN_IOS
 using View = UIKit.UIView;
@@ -84,6 +85,21 @@ namespace Windows.UI.Xaml.Controls
 
 				flyout._presenter.Content = args.NewValue;
 			}
+
+			flyout.SynchronizeNamescope();
+
+			if(args.OldValue is DependencyObject oldDO)
+			{
+				oldDO.ClearValue(NameScope.NameScopeProperty);
+			}
+		}
+
+		private void SynchronizeNamescope()
+		{
+			if (NameScope.GetNameScope(this) is { } scope && Content is DependencyObject content)
+			{
+				NameScope.SetNameScope(content, scope);
+			}
 		}
 		#endregion
 
@@ -118,6 +134,8 @@ namespace Windows.UI.Xaml.Controls
 			_presenter = new FlyoutPresenter();
 			SetPresenterStyle();
 			_presenter.Content = Content;
+
+			SynchronizeNamescope();
 
 			return _presenter;
 		}

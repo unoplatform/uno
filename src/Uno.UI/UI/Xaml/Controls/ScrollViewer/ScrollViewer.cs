@@ -634,6 +634,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal bool ComputedIsVerticalScrollEnabled { get; private set; } = false;
 
+
+		internal double MinHorizontalOffset => 0;
+
+		internal double MinVerticalOffset => 0;
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			ViewportMeasureSize = availableSize;

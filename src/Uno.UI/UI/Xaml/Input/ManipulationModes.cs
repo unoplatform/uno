@@ -29,13 +29,10 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>Permit manipulation actions that scale the target.</summary>
 		Scale = 32U,
 		/// <summary>Apply inertia to translate actions.</summary>
-		[global::Uno.NotImplemented]
 		TranslateInertia = 64U,
 		/// <summary>Apply inertia to rotate actions.</summary>
-		[global::Uno.NotImplemented]
 		RotateInertia = 128U,
 		/// <summary>Apply inertia to scale actions.</summary>
-		[global::Uno.NotImplemented]
 		ScaleInertia = 256U,
 		/// <summary>Enable all manipulation interaction modes except those supported through Direct Manipulation</summary>
 		All = 65535U,

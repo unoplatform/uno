@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared property IsInertial
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Input.ManipulationVelocities Velocities
 		{

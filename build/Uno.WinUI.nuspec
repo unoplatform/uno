@@ -419,6 +419,8 @@
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="buildTransitive\Uno.UI.Tasks" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="buildTransitive\Uno.UI.Tasks" />
 
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\external\linker\*.*" target="tools\linker" />
+
 	<file src="Uno.WinUI.targets" target="buildTransitive\MonoAndroid" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\xamarinios10" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\xamarinmac20" />
@@ -465,13 +467,13 @@
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-macos" />
 
 	<!-- Force UAP to ignore netstandard 2.0 -->
-	<file src="uno.winui.uap.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
+	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.16299" />
 	
-	<file src="uno.winui.uap.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
+	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.17763" />
 	
-	<file src="uno.winui.uap.targets" target="buildTransitive\net5.0-windows\uno.winui.targets" />
+	<file src="uno.winui.win.targets" target="buildTransitive\net5.0-windows\uno.winui.targets" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />

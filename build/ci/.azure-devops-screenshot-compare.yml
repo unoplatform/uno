@@ -17,11 +17,10 @@ jobs:
     - iOS_Snaphot_Tests_Group_02
     - iOS_Snaphot_Tests_Group_03
     - iOS_Snaphot_Tests_Group_04
-  condition: succeededOrFailed()
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  condition: or(succeeded(), and(failed(), ge(variables['System.StageAttempt'], 5)))
 
+  pool: ${{ parameters.poolName }}
 
   variables:
     COMPARE_WORKDIR: $(Build.SourcesDirectory)\snapshot-compare

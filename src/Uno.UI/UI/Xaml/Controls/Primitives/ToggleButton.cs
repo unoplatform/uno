@@ -124,7 +124,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void AutomationPeerToggle()
 		{
+			var oldValue = IsChecked;
 			OnToggle();
+			var newValue = IsChecked;
+
+			if ((!oldValue.HasValue || !oldValue.Value) && newValue == true)
+			{
+				InvokeCommand();
+			}
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()

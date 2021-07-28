@@ -7927,4 +7927,77 @@
 			</Setter.Value>
 		</Setter>
 	</netstdref:Style>
+
+	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.Thumb -->
+    <Style TargetType="Thumb">
+        <Setter Property="Background" Value="{ThemeResource ThumbBackground}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="BorderBrush" Value="{ThemeResource ThumbBorderBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Grid>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+
+                                <VisualState x:Name="PointerOver">
+
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0"
+                        To="1"
+                        Storyboard.TargetProperty="Opacity"
+                        Storyboard.TargetName="BackgroundPointerOver" />
+                                        <DoubleAnimation Duration="0"
+                        To="0"
+                        Storyboard.TargetProperty="Opacity"
+                        Storyboard.TargetName="Background" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Pressed">
+
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0"
+                        To="1"
+                        Storyboard.TargetProperty="Opacity"
+                        Storyboard.TargetName="BackgroundPressed" />
+                                        <DoubleAnimation Duration="0"
+                        To="0"
+                        Storyboard.TargetProperty="Opacity"
+                        Storyboard.TargetName="Background" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled" />
+
+                            </VisualStateGroup>
+
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="Background"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}" />
+                        <Border x:Name="BackgroundPointerOver"
+                Background="{ThemeResource ThumbBackgroundPointerOver}"
+                BorderBrush="{ThemeResource ThumbBorderBrushPointerOver}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Opacity="0" />
+                        <Border x:Name="BackgroundPressed"
+                Background="{ThemeResource ThumbBackgroundPressed}"
+                BorderBrush="{ThemeResource ThumbBorderBrushPressed}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Opacity="0" />
+
+                    </Grid>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

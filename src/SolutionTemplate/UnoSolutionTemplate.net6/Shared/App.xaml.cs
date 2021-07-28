@@ -59,7 +59,7 @@ namespace $ext_safeprojectname$
             }
 #endif
 
-#if NET5_0 && WINDOWS
+#if NET6_0_OR_GREATER && WINDOWS
             _window = new Window();
             _window.Activate();
 #else
@@ -86,7 +86,7 @@ namespace $ext_safeprojectname$
                 _window.Content = rootFrame;
             }
 
-#if !(NET5_0 && WINDOWS)
+#if !(NET6_0_OR_GREATER && WINDOWS)
             if (e.PrelaunchActivated == false)
 #endif
             {

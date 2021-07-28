@@ -102,9 +102,10 @@ namespace Windows.UI.Input
 					_manipulation = new Manipulation(this, value);
 					TryStartHapticFeedbackTimer(value);
 				}
-				else
+				else if (!_manipulation.TryAdd(value))
 				{
-					_manipulation.Add(value);
+					_manipulation.Complete();
+					_manipulation = new Manipulation(this, value);
 				}
 			}
 		}
@@ -158,6 +159,14 @@ namespace Windows.UI.Input
 
 			_manipulation?.Remove(value);
 		}
+
+#if NET461
+		/// <summary>
+		/// For test purposes only!
+		/// </summary>
+		internal void RunInertiaSync()
+			=> _manipulation?.RunInertiaSync();
+#endif
 
 		public void CompleteGesture()
 		{
@@ -240,9 +249,7 @@ namespace Windows.UI.Input
 		#region Manipulations
 		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> ManipulationStarting; // This is not on the public API!
 		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
-#pragma warning disable  // Event not raised: inertia is not supported yet
 		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting;
-#pragma warning restore 67
 		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
 		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
 

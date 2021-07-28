@@ -13,6 +13,7 @@ using Uno.Extensions.Specialized;
 using Uno.Logging;
 using Uno.UI;
 using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -105,9 +106,9 @@ namespace Windows.UI.Xaml.Controls
 			itemContainer.DragStarting -= OnItemContainerDragStarting;
 			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
 
-			itemContainer.DragEnter -= OnReorderUpdated;
-			itemContainer.DragOver -= OnReorderUpdated;
-			itemContainer.DragLeave -= OnReorderUpdated;
+			itemContainer.DragEnter -= OnReorderDragUpdated;
+			itemContainer.DragOver -= OnReorderDragUpdated;
+			itemContainer.DragLeave -= OnReorderDragLeave;
 			itemContainer.Drop -= OnReorderCompleted;
 		}
 
@@ -140,15 +141,19 @@ namespace Windows.UI.Xaml.Controls
 					args.Data.SetData(ReorderContainerFormatId, sender);
 
 					// For safety only, avoids double subscription
-					that.DragEnter -= OnReorderUpdated;
-					that.DragOver -= OnReorderUpdated;
-					that.DragLeave -= OnReorderUpdated;
+					that.DragEnter -= OnReorderDragUpdated;
+					that.DragOver -= OnReorderDragUpdated;
+					that.DragLeave -= OnReorderDragLeave;
 					that.Drop -= OnReorderCompleted;
 
-					that.DragEnter += OnReorderUpdated;
-					that.DragOver += OnReorderUpdated;
-					that.DragLeave += OnReorderUpdated;
+					that.DragEnter += OnReorderDragUpdated;
+					that.DragOver += OnReorderDragUpdated;
+					that.DragLeave += OnReorderDragLeave;
 					that.Drop += OnReorderCompleted;
+
+					that.m_tpPrimaryDraggedContainer = sender as SelectorItem;
+
+					that.ChangeSelectorItemsVisualState(true);
 				}
 			}
 		}
@@ -159,9 +164,9 @@ namespace Windows.UI.Xaml.Controls
 
 			if (ItemsControlFromItemContainer(sender) is ListViewBase that)
 			{
-				that.DragEnter -= OnReorderUpdated;
-				that.DragOver -= OnReorderUpdated;
-				that.DragLeave -= OnReorderCompleted;
+				that.DragEnter -= OnReorderDragUpdated;
+				that.DragOver -= OnReorderDragUpdated;
+				that.DragLeave -= OnReorderDragLeave;
 				that.Drop -= OnReorderCompleted;
 
 				if (that.CanDragItems)
@@ -174,7 +179,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static void OnReorderUpdated(object sender, _DragEventArgs dragEventArgs)
+		private static void OnReorderDragUpdated(object sender, _DragEventArgs dragEventArgs) => OnReorderUpdated(sender, dragEventArgs, setVelocity: true);
+		private static void OnReorderDragLeave(object sender, _DragEventArgs dragEventArgs) => OnReorderUpdated(sender, dragEventArgs, setVelocity: false);
+
+		private static void OnReorderUpdated(object sender, _DragEventArgs dragEventArgs, bool setVelocity)
 		{
 			var that = sender as ListView;
 			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
@@ -187,12 +195,28 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			that.UpdateReordering(dragEventArgs.GetPosition(that), container, item);
+			var position = dragEventArgs.GetPosition(that);
+			that.UpdateReordering(position, container, item);
+
+			if (setVelocity)
+			{
+				// See what our edge scrolling action should be...
+				var panVelocity = that.ComputeEdgeScrollVelocity(position);
+				// And request it.
+				that.SetPendingAutoPanVelocity(panVelocity);
+			}
+			else
+			{
+				that.SetPendingAutoPanVelocity(PanVelocity.Stationary);
+			}
 		}
 
 		private static void OnReorderCompleted(object sender, _DragEventArgs dragEventArgs)
 		{
 			var that = sender as ListView;
+
+			that?.SetPendingAutoPanVelocity(PanVelocity.Stationary);
+
 			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
 			var item = dragEventArgs.DataView.FindRawData(ReorderItemFormatId);
 			var container = dragEventArgs.DataView.FindRawData(ReorderContainerFormatId) as FrameworkElement; // TODO: This might have changed/been recycled if scrolled 
@@ -204,6 +228,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var updatedIndex = that.CompleteReordering(container, item);
+
+			that.m_tpPrimaryDraggedContainer = null;
+
+			that.ChangeSelectorItemsVisualState(true);
 
 			if (that.IsGrouping
 				|| !updatedIndex.HasValue

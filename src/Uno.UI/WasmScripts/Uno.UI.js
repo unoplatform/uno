@@ -2523,6 +2523,44 @@ var Windows;
     (function (Devices) {
         var Sensors;
         (function (Sensors) {
+            class LightSensor {
+                static initialize() {
+                    try {
+                        if (typeof window.AmbientLightSensor === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.LightSensor:DispatchReading");
+                            let AmbientLightSensorClass = window.AmbientLightSensor;
+                            LightSensor.ambientLightSensor = new AmbientLightSensorClass();
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log("AmbientLightSensor could not be initialized.");
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.ambientLightSensor.addEventListener("reading", LightSensor.readingChangedHandler);
+                    this.ambientLightSensor.start();
+                }
+                static stopReading() {
+                    this.ambientLightSensor.removeEventListener("reading", LightSensor.readingChangedHandler);
+                    this.ambientLightSensor.stop();
+                }
+                static readingChangedHandler(event) {
+                    LightSensor.dispatchReading(LightSensor.ambientLightSensor.illuminance);
+                }
+            }
+            Sensors.LightSensor = LightSensor;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
             class Magnetometer {
                 static initialize() {
                     try {

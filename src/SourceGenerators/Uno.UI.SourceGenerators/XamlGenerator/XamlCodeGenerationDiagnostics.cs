@@ -9,7 +9,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal const string Description   = "XAML Generation Failed";
 		internal const string Category      = "XAML";
 
-		public static DiagnosticDescriptor GenericXamlErrorRule = new DiagnosticDescriptor(
+		public static readonly DiagnosticDescriptor GenericXamlErrorRule = new DiagnosticDescriptor(
 #pragma warning disable RS2008 // Enable analyzer release tracking
 		                                                                                   "UXAML0001",
 #pragma warning restore RS2008 // Enable analyzer release tracking
@@ -21,7 +21,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		                                                                                   description: Description
 		                                                                                  );
 
-		public static DiagnosticDescriptor GenericXamlWarningRule = new DiagnosticDescriptor(
+		public static readonly DiagnosticDescriptor GenericXamlWarningRule = new DiagnosticDescriptor(
 #pragma warning disable RS2008 // Enable analyzer release tracking
 		                                                                                     "UXAML0002",
 #pragma warning restore RS2008 // Enable analyzer release tracking

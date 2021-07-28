@@ -50,7 +50,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
-		private readonly RoslynMetadataHelper _metadataHelper;
+		private readonly bool _xamlResourcesTrimming;		private readonly RoslynMetadataHelper _metadataHelper;
 
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
@@ -170,6 +170,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			}
 
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out var xamlResourcesTrimming))
+			{
+				_xamlResourcesTrimming = xamlResourcesTrimming;
+			}
+
 			_targetPath = Path.Combine(
 				_projectDirectory,
 				context.GetMSBuildPropertyValue("IntermediateOutputPath")
@@ -277,6 +282,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					filesToProcess = filesToProcess
 						.WithDegreeOfParallelism(1);
 				}
+
 				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
 
 							file.UniqueID,
@@ -300,8 +306,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 									isUnoAssembly: IsUnoAssembly,
 									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
-									generatorContext: _generatorContext
-								)
+									generatorContext: _generatorContext,
+									xamlResourcesTrimming: _xamlResourcesTrimming								)
 								.GenerateFile()
 						)
 					)
@@ -363,7 +369,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var exception in Flatten(e))
 			{
 				var diagnostic = Diagnostic.Create(
-				    XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+					XamlCodeGenerationDiagnostics.GenericXamlErrroRule,
 					GetExceptionFileLocation(exception),
 					exception.Message);
 

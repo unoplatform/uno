@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 			bool isNewGroup
 		)
 		{
-			if (ShouldInsertReorderingView(extentOffset))
+			if (ShouldInsertReorderingView(direction, extentOffset))
 			{
 				nextVisibleItem = GetAndUpdateReorderingIndex().Value;
 			}

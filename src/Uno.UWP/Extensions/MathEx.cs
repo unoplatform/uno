@@ -97,5 +97,18 @@ namespace Uno.Extensions
 		/// <returns>True if the difference is less than the permitted error, false otherwise</returns>
 		public static bool ApproxEqual(double value1, double value2, double delta = 1e-9)
 			=> Math.Abs(value1 - value2) < delta;
+
+		/// <summary>
+		/// Returns the maximum of two nullable doubles if both have values. Returns null if either or both are null.
+		/// </summary>
+		public static double? Max(double? val1, double? val2)
+		{
+			if (val1 is { } v1 && val2 is { } v2)
+			{
+				return Math.Max(v1, v2);
+			}
+
+			return null;
+		}
 	}
 }
