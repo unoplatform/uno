@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			Container = container;
 
+			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
 			Delta = args.Delta;
 			Cumulative = args.Cumulative;
@@ -22,6 +23,13 @@ namespace Windows.UI.Xaml.Input
 			RotationBehavior = new InertiaRotationBehavior(args.Processor);
 			ExpansionBehavior = new InertiaExpansionBehavior(args.Processor);
 		}
+
+		/// <summary>
+		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).
+		/// </summary>
+		/// <remarks>This collection might contains pointers that has been released.</remarks>
+		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
+		internal PointerIdentifier[] Pointers { get; }
 
 		public bool Handled { get; set; }
 

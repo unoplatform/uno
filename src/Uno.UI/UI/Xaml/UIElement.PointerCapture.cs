@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.Devices.Input;
 using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
@@ -20,7 +21,7 @@ namespace Windows.UI.Xaml
 		 */
 
 		[Flags]
-		private enum PointerCaptureKind : byte
+		private protected enum PointerCaptureKind : byte
 		{
 			None = 0,
 
@@ -30,21 +31,24 @@ namespace Windows.UI.Xaml
 			Any = Explicit | Implicit,
 		}
 
-		private class PointerCapture
+		private protected class PointerCapture
 		{
-			private static readonly IDictionary<Pointer, PointerCapture> _actives = new Dictionary<Pointer, PointerCapture>(EqualityComparer<Pointer>.Default);
+			private static readonly IDictionary<PointerIdentifier, PointerCapture> _actives = new Dictionary<PointerIdentifier, PointerCapture>(EqualityComparer<PointerIdentifier>.Default);
 
 			/// <summary>
 			/// Current currently active pointer capture for the given pointer, or creates a new one.
 			/// </summary>
 			/// <param name="pointer">The pointer to capture</param>
 			public static PointerCapture GetOrCreate(Pointer pointer)
-				=> _actives.TryGetValue(pointer, out var capture)
+				=> _actives.TryGetValue(pointer.UniqueId, out var capture)
 					? capture
 					: new PointerCapture(pointer); // The capture will be added to the _actives only when a target is added to it.
 
-			public static bool TryGet(Pointer pointer, out PointerCapture capture)
+			public static bool TryGet(PointerIdentifier pointer, out PointerCapture capture)
 				=> _actives.TryGetValue(pointer, out capture);
+
+			public static bool TryGet(Pointer pointer, out PointerCapture capture)
+				=> _actives.TryGetValue(pointer.UniqueId, out capture);
 
 			public static bool Any(out List<PointerCapture> cloneOfAllCaptures)
 			{
@@ -89,6 +93,11 @@ namespace Windows.UI.Xaml
 			public bool IsTarget(UIElement element, PointerCaptureKind kinds)
 				=> _targets.TryGetValue(element, out var target)
 					&& (target.Kind & kinds) != PointerCaptureKind.None;
+
+			public IEnumerable<PointerCaptureTarget> GetTargets(PointerCaptureKind kinds)
+				=> _targets
+					.Values
+					.Where(target => (target.Kind & kinds) != PointerCaptureKind.None);
 
 			public bool TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
 			{
@@ -277,7 +286,7 @@ namespace Windows.UI.Xaml
 				{
 					// We have some target, self enable us
 
-					if (_actives.TryGetValue(Pointer, out var capture))
+					if (_actives.TryGetValue(Pointer.UniqueId, out var capture))
 					{
 						if (capture != this)
 						{
@@ -287,7 +296,7 @@ namespace Windows.UI.Xaml
 					else
 					{
 						// This is what makes this capture active
-						_actives.Add(Pointer, this);
+						_actives.Add(Pointer.UniqueId, this);
 					}
 
 					if (_nativeCaptureElement == null)
@@ -322,16 +331,16 @@ namespace Windows.UI.Xaml
 						_nativeCaptureElement = null;
 					}
 
-					if (_actives.TryGetValue(Pointer, out var capture) && capture == this)
+					if (_actives.TryGetValue(Pointer.UniqueId, out var capture) && capture == this)
 					{
 						// This is what makes this capture inactive
-						_actives.Remove(Pointer);
+						_actives.Remove(Pointer.UniqueId);
 					}
 				}
 			}
 		}
 
-		private class PointerCaptureTarget
+		private protected class PointerCaptureTarget
 		{
 			public PointerCaptureTarget(UIElement element, PointerCaptureKind kind)
 			{

@@ -112,6 +112,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_positionWhenCaptured = new Vector2((float)_transform.X, (float)_transform.Y);
+
+			// As soon as manipulation starts, we make sure to abort any pending explicit pointer capture,
+			// so button nested (or containing) this SwipeControl won't fire their commands.
+			// It's not the common behavior for buttons, but this has been observed in SwipeControl on UWP as of 2021-07-27.
+			foreach (var pointer in e.Pointers)
+			{
+				if (PointerCapture.TryGet(pointer, out var capture))
+				{
+					var targets = capture.GetTargets(PointerCaptureKind.Explicit).ToList();
+					global::System.Diagnostics.Debug.Assert(targets.Count <= 1);
+					foreach (var target in targets)
+					{
+						target.Element.ReleasePointerCapture(capture.Pointer);
+					}
+				}
+			}
 		}
 
 		private void OnSwipeManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)

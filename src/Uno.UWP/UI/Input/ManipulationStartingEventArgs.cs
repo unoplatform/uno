@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Windows.Devices.Input;
 
 namespace Windows.UI.Input
 {
@@ -7,10 +8,16 @@ namespace Windows.UI.Input
 	{
 		// Be aware that this class is not part of the UWP contract
 
-		internal ManipulationStartingEventArgs(GestureSettings settings)
+		internal ManipulationStartingEventArgs(PointerIdentifier pointer, GestureSettings settings)
 		{
+			Pointer = pointer;
 			Settings = settings;
 		}
+
+		/// <summary>
+		/// Gets identifier of the first pointer for which a manipulation is considered
+		/// </summary>
+		internal PointerIdentifier Pointer { get; }
 
 		public GestureSettings Settings { get; set; }
 	}

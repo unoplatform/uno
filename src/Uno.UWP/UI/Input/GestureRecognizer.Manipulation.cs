@@ -94,7 +94,7 @@ namespace Windows.UI.Input
 				}
 
 				UpdatePublishedState(default);
-				var args = new ManipulationStartingEventArgs(_recognizer._gestureSettings);
+				var args = new ManipulationStartingEventArgs(pointer1.Pointer, _recognizer._gestureSettings);
 				_recognizer.ManipulationStarting?.Invoke(_recognizer, args);
 				_settings = args.Settings;
 
@@ -205,7 +205,7 @@ namespace Windows.UI.Input
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
-							new ManipulationCompletedEventArgs(_deviceType, _currents.Center, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
+							new ManipulationCompletedEventArgs(_currents.Identifiers, _currents.Center, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
 						break;
 
 					default:
@@ -274,7 +274,7 @@ namespace Windows.UI.Input
 						UpdatePublishedState(cumulative);
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative, _contacts.onStart));
+							new ManipulationStartedEventArgs(_currents.Identifiers, _currents.Center, cumulative, _contacts.onStart));
 						// No needs to publish an update when we start the manipulation due to an additional pointer as cumulative will be empty.
 						break;
 
@@ -291,10 +291,10 @@ namespace Windows.UI.Input
 						UpdatePublishedState(cumulative);
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationStartedEventArgs(_deviceType, _origins.Center, ManipulationDelta.Empty, _contacts.onStart));
+							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.Center, ManipulationDelta.Empty, _contacts.onStart));
 						_recognizer.ManipulationUpdated?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, cumulative, cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
+							new ManipulationUpdatedEventArgs(_currents.Identifiers, _currents.Center, cumulative, cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
 						break;
 
 					case ManipulationState.Started when IsDragManipulation:
@@ -310,7 +310,7 @@ namespace Windows.UI.Input
 						UpdatePublishedState(delta);
 						_recognizer.ManipulationInertiaStarting?.Invoke(
 							_recognizer,
-							new ManipulationInertiaStartingEventArgs(_deviceType, _currents.Center, delta, cumulative, velocities, _contacts.onStart, _inertia));
+							new ManipulationInertiaStartingEventArgs(_currents.Identifiers, _currents.Center, delta, cumulative, velocities, _contacts.onStart, _inertia));
 
 						_inertia.Start();
 						break;
@@ -329,7 +329,7 @@ namespace Windows.UI.Input
 						UpdatePublishedState(delta);
 						_recognizer.ManipulationUpdated?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, delta, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
+							new ManipulationUpdatedEventArgs(_currents.Identifiers, _currents.Center, delta, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
 						break;
 				}
 			}
@@ -550,11 +550,14 @@ namespace Windows.UI.Input
 
 				public bool HasPointer2 => _pointer2 != null;
 
+				public PointerIdentifier[] Identifiers;
+
 				public Points(PointerPoint point)
 				{
 					Pointer1 = point;
 					_pointer2 = default;
 
+					Identifiers = new[] {point.Pointer};
 					Timestamp = point.Timestamp;
 					Center = point.RawPosition; // RawPosition => cf. Note in UpdateComputedValues().
 					Distance = 0;
@@ -568,6 +571,7 @@ namespace Windows.UI.Input
 				public void SetPointer2(PointerPoint point)
 				{
 					_pointer2 = point;
+					Identifiers = new[] {Pointer1.Pointer, _pointer2.Pointer};
 					UpdateComputedValues();
 				}
 

@@ -13,12 +13,21 @@ namespace Windows.UI.Xaml.Input
 			: base(container)
 		{
 			Container = container;
+
+			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
 			Position = args.Position;
 			Cumulative = args.Cumulative;
 			Velocities = args.Velocities;
 			IsInertial = args.IsInertial;
 		}
+
+		/// <summary>
+		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).
+		/// </summary>
+		/// <remarks>This collection might contains pointers that has been released.</remarks>
+		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
+		internal PointerIdentifier[] Pointers { get; set; }
 
 		public bool Handled { get; set; }
 
