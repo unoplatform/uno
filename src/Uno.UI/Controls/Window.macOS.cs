@@ -129,11 +129,9 @@ namespace Uno.UI.Controls
 					case NSEventType.ScrollWheel:
 						CoreWindowEvents?.RaisePointerWheelChanged(ToPointerArgs(evt, posInWindow));
 						break;
-
-					default:
-						base.SendEvent(evt);
-						break;
 				}
+
+				base.SendEvent(evt);
 			}
 			catch (Exception e)
 			{
