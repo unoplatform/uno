@@ -210,5 +210,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			_app.TapCoordinates(10, 100);
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
+		public void Flyout_Namescope()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_Namescope");
+
+			var button01 = _app.Marked("Control1");
+			var result1 = _app.Marked("result1");
+			var result2 = _app.Marked("result2");
+			var closeButton = _app.Marked("closeButton");
+
+			_app.FastTap(button01);
+			_app.WaitForElement(closeButton);
+
+			_app.WaitForDependencyPropertyValue(result1, "Text", "Top");
+			_app.WaitForDependencyPropertyValue(result2, "Text", "Control1_Tag");
+
+			_app.FastTap(closeButton);
+		}
 	}
 }
