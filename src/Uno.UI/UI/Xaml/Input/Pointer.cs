@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Input
 			PointerId = id;
 			PointerDeviceType = type;
 
-			UniqueId = (long)PointerDeviceType << 32 | PointerId;
+			UniqueId = new PointerIdentifier(type, id);
 		}
 #endif
 

@@ -183,8 +183,8 @@ namespace Windows.UI.Xaml
 
 					if (!_hadNativeMove)
 					{
-						// On iOS if the gesture is really fast (like a swipe), we can get only 'down' and 'up'.
-						// But on UWP it seems that we always have a least one move, and even internally,
+						// On iOS if the gesture is really fast (like a flick), we can get only 'down' and 'up'.
+						// But on UWP it seems that we always have a least one move (for fingers and pen!), and even internally,
 						// the manipulation events are requiring at least one move to kick-in.
 						// Here we are just making sure to raise that event with the final location.
 						// Note: In case of multi-touch we might raise it unnecessarily, but it won't have any negative impact.
