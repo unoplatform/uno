@@ -5,6 +5,9 @@ using System.Linq;
 using Uno;
 using Windows.Foundation.Collections;
 using Windows.Storage.Streams;
+using Uno.Logging;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 
 namespace Windows.ApplicationModel.Contacts
 {
@@ -66,50 +69,122 @@ namespace Windows.ApplicationModel.Contacts
 		/// </summary>
 		public IList<ContactPhone> Phones { get; internal set; } = new NonNullList<ContactPhone>();
 
+		private string _firstName = "";
 		/// <summary>
 		/// Gets and sets the first name for a contact.
 		/// </summary>
-		public string FirstName { get; set; } = "";
+		public string FirstName
+		{
+			get => _firstName;
+			set
+			{
+				_firstName = value;
+				LogWarningIfLenExceedsUWPLimit(value, 64, "FirstName");
+			}
+		}
 
+		private string _middleName = "";
 		/// <summary>
 		/// Gets and sets the middle name for a contact.
 		/// </summary>
-		public string MiddleName { get; set; } = "";
+		public string MiddleName
+		{
+			get => _middleName;
+			set
+			{
+				_middleName = value;
+				LogWarningIfLenExceedsUWPLimit(value, 64, "MiddleName");
+			}
+		}
 
+		private string _lastName = "";
 		/// <summary>
 		/// Gets and sets the last name for a contact.
 		/// </summary>
-		public string LastName { get; set; } = "";
+		public string LastName
+		{
+			get => _lastName;
+			set
+			{
+				_lastName = value;
+				LogWarningIfLenExceedsUWPLimit(value, 64, "LastName");
+			}
+		}
 
+		private string _honorificNamePrefix = "";
 		/// <summary>
 		/// Gets and sets the honorific prefix for the name for a contact.
 		/// </summary>
-		public string HonorificNamePrefix { get; set; } = "";
+		public string HonorificNamePrefix
+		{
+			get => _honorificNamePrefix;
+			set
+			{
+				_honorificNamePrefix = value;
+				LogWarningIfLenExceedsUWPLimit(value, 64, "HonorificNamePrefix");
+			}
+		}
 
+		private string _honorificNameSuffix = "";
 		/// <summary>
 		/// Gets and sets the honorific suffix for the name for a contact.
 		/// </summary>
-		public string HonorificNameSuffix { get; set; } = "";
+		public string HonorificNameSuffix
+		{
+			get => _honorificNameSuffix;
+			set
+			{
+				_honorificNameSuffix = value;
+				LogWarningIfLenExceedsUWPLimit(value, 64, "HonorificNameSuffix");
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the nickname for the Contact.
 		/// </summary>
 		public string Nickname { get; set; } = "";
 
+		private string _notes = "";
 		/// <summary>
 		/// Gets and sets notes for a contact.
 		/// </summary>
-		public string Notes { get; set; } = "";
+		public string Notes
+		{
+			get => _notes;
+			set
+			{
+				_notes = value;
+				LogWarningIfLenExceedsUWPLimit(value, 4096, "Notes");
+			}
+		}
 
+		private string _yomiGivenName = "";
 		/// <summary>
 		/// Gets the Yomi (phonetic Japanese equivalent) given name for a contact.
 		/// </summary>
-		public string YomiGivenName { get; set; } = "";
+		public string YomiGivenName
+		{
+			get => _yomiGivenName;
+			set
+			{
+				_yomiGivenName = value;
+				LogWarningIfLenExceedsUWPLimit(value, 120, "YomiGivenName");
+			}
+		}
 
+		private string _yomiFamilyName = "";
 		/// <summary>
 		/// Gets the Yomi (phonetic Japanese equivalent) family name for a contact.
 		/// </summary>
-		public string YomiFamilyName { get; set; } = "";
+		public string YomiFamilyName
+		{
+			get => _yomiFamilyName;
+			set
+			{
+				_yomiFamilyName = value;
+				LogWarningIfLenExceedsUWPLimit(value, 120, "YomiFamilyName");
+			}
+		}
 
 		[NotImplemented]
 		public IRandomAccessStreamReference? Thumbnail { get; set; }
@@ -122,5 +197,20 @@ namespace Windows.ApplicationModel.Contacts
 
 		[NotImplemented]
 		public IRandomAccessStreamReference? SourceDisplayPicture { get; set; }
+
+		private void LogWarningIfLenExceedsUWPLimit(string value, int lenLimit, string variableName)
+		{
+			if (value.Length > lenLimit)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning($"Windows.ApplicationModel.Contacts.Contact.{variableName} is set to string longer than UWP limit ({lenLimit} chars)");
+				}
+			}
+		}
+
+
+
+
 	}
 }
