@@ -236,7 +236,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public void Cancel() => _adaptee.Cancel();
 
 		/// <inheritdoc />
-		public void SetDuration(long duration) => _adaptee.SetDuration(duration);
+		public void SetDuration(long duration) => _adaptee.SetDuration(Math.Max(0, duration)); // Setting a value below 0 will crash!
 
 		/// <inheritdoc />
 		public void SetEasingFunction(IEasingFunction function)
