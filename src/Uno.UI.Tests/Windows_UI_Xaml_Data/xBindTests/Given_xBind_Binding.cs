@@ -945,6 +945,45 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_xLoad_FallbackValue()
+		{
+			var SUT = new Binding_xLoad_FallbackValue();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(Visibility.Collapsed, SUT.topLevelContent.Visibility);
+
+			SUT.Model = new Binding_xLoad_FallbackValue_Model();
+
+			Assert.AreEqual(Visibility.Collapsed, SUT.topLevelContent.Visibility);
+
+			SUT.Model.Visible = true;
+
+			Assert.AreEqual(Visibility.Visible, SUT.topLevelContent.Visibility);
+		}
+
+		[TestMethod]
+		public void When_xLoad_FallbackValue_Converter()
+		{
+			var SUT = new Binding_xLoad_FallbackValue_Converter();
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT.topLevelContent);
+			Assert.IsNull(SUT.innerTextBlock);
+
+			SUT.Model = new Binding_xLoad_FallbackValue_Model();
+
+			Assert.IsNotNull(SUT.topLevelContent);
+			Assert.IsNotNull(SUT.innerTextBlock);
+
+			SUT.Model = null;
+
+			AssertIsNullAsync(() => SUT.topLevelContent);
+			AssertIsNullAsync(() => SUT.innerTextBlock);
+		}
+
+		[TestMethod]
 		public void When_PropertyChanged_Empty()
 		{
 			var SUT = new Binding_PropertyChangedAll();

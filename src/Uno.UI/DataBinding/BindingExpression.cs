@@ -321,13 +321,13 @@ namespace Windows.UI.Xaml.Data
 			}
 		}
 
-		private void ApplyFallbackValue()
+		private void ApplyFallbackValue(bool useTypeDefaultValue = true)
 		{
 			if (ParentBinding.FallbackValue != null)
 			{
 				SetTargetValue(ConvertToBoundPropertyType(ParentBinding.FallbackValue));
 			}
-			else if (TargetPropertyDetails != null)
+			else if (useTypeDefaultValue && TargetPropertyDetails != null)
 			{
 				SetTargetValue(TargetPropertyDetails.Property.GetMetadata(_view.Target?.GetType()).DefaultValue);
 			}
@@ -518,6 +518,17 @@ namespace Windows.UI.Xaml.Data
 					if (canSetTarget)
 					{
 						SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+					}
+					else
+					{
+						// x:Bind failed bindings don't change the target value
+						// if no FallbackValue was specified.
+						ApplyFallbackValue(useTypeDefaultValue: false);
+
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
+						}
 					}
 				}
 				catch (Exception e)
