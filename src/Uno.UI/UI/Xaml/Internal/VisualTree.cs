@@ -782,9 +782,9 @@ namespace Uno.UI.Xaml.Core
 
 		private static void VisualTreeNotFoundWarning()
 		{
-			if (typeof(VisualTree).Log().IsEnabled(LogLevel.Warning))
+			if (typeof(VisualTree).Log().IsEnabled(LogLevel.Debug))
 			{
-				typeof(VisualTree).Log().LogWarning("Visual Tree was not found.");
+				typeof(VisualTree).Log().LogDebug("Visual Tree was not found.");
 			}
 		}
 	}
