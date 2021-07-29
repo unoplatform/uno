@@ -117,17 +117,6 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
-  - task: CopyFiles@2
-    displayName: Copy net6 build packages
-    condition: always()
-    inputs:
-      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-net6
-      Contents: '*.nupkg'
-      TargetFolder: $(build.artifactstagingdirectory)\vslatest
-      CleanTargetFolder: false
-      OverWrite: true
-      flattenFolders: false
-
   - task: PowerShell@2
     displayName: Authenticode Sign Packages
     inputs:

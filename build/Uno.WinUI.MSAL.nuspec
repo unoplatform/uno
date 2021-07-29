@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="5.0">
+	<id>Uno.WinUI.MSAL</id>
+	<version>0.0.1</version>
+	<authors>nventive</authors>
+	<icon>uno.png</icon>
+	<projectUrl>https://github.com/unoplatform/uno</projectUrl>
+	<license type="expression">Apache-2.0</license>
+	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
+	<description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</description>
+	<copyright>nventive</copyright>
+	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+	<dependencies>
+	  <group targetFramework="MonoAndroid10.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework="MonoAndroid11.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework="Xamarin.iOS1.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework="Xamarin.Mac2.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework=".NETStandard2.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework="UAP10.0.17763">
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework="net6.0-android30.0">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework="net6.0-ios13.6">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework="net6.0-maccatalyst13.5">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	  <group targetFramework="net6.0-macos10.15">
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+	  </group>
+	</dependencies>
+	<frameworkAssemblies>
+	  <frameworkAssembly assemblyName="Java.Interop" targetFramework="MonoAndroid11.0, MonoAndroid10.0" />
+	</frameworkAssemblies>
+  </metadata>
+
+  <files>
+	<file src="..\src\Common\uno.png" target="/" />
+	
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\netstandard2.0\Uno.UI.MSAL.*" target="lib\netstandard2.0" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\xamarinios10\Uno.UI.MSAL.*" target="lib\xamarinios10" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\xamarinmac20\Uno.UI.MSAL.*" target="lib\xamarinmac20" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\MonoAndroid11.0\Uno.UI.MSAL.*" target="lib\MonoAndroid11.0" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\MonoAndroid10.0\Uno.UI.MSAL.*" target="lib\MonoAndroid10.0" />
+
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\uap10.0.17763\Uno.UI.MSAL.*" target="lib\uap10.0.17763" />
+
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.net6\Release\net6.0-android\Uno.UI.MSAL.*" target="lib\net6.0-android" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.net6\Release\net6.0-ios\Uno.UI.MSAL.*" target="lib\net6.0-ios" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.net6\Release\net6.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.net6\Release\net6.0-macos\Uno.UI.MSAL.*" target="lib\net6.0-macos" />
+
+	<!-- Build targets -->
+	<file src="..\src\AddIns\Uno.UI.MSAL\buildTransitive\*" target="buildTransitive" />
+
+	<!-- netstandard2.0 WebAssembly -->
+	<file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\netstandard2.0\Uno.UI.MSAL.*" target="uno-runtime\webassembly" />
+
+	<!-- netstandard2.0 Skia -->
+	<file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\netstandard2.0\Uno.UI.MSAL.*" target="uno-runtime\skia" />
+
+  </files>
+
+</package>
