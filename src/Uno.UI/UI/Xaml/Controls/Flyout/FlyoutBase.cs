@@ -35,7 +35,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected internal Windows.UI.Xaml.Controls.Popup _popup;
 		private bool _isLightDismissEnabled = true;
-		private Point? _popupPositionInTarget;
+		private FlyoutShowOptions _showOptions;
+
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
 		protected FlyoutBase()
@@ -100,12 +101,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (_popup.Child is FrameworkElement child)
 			{
-				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target, _popupPositionInTarget);
+				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target, default);
 
 				child.SizeChanged += handler;
-
-				_sizeChangedDisposable.Disposable = Disposable
-					.Create(() => child.SizeChanged -= handler);
+				_sizeChangedDisposable.Disposable = Disposable.Create(() =>
+					child.SizeChanged -= handler
+				);
 			}
 		}
 
@@ -197,10 +198,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public FrameworkElement Target { get; private set; }
 
-		/// <summary>
-		/// Defines an optional position of the popup in the <see cref="Target"/> element.
-		/// </summary>
-		internal Point? PopupPositionInTarget => _popupPositionInTarget;
+		internal FlyoutShowOptions ShowOptions => _showOptions;
 
 		public void Hide()
 		{
@@ -263,10 +261,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
-
+			_showOptions = showOptions;
 			if (showOptions != null)
 			{
-				_popupPositionInTarget = showOptions.Position;
+				Placement = showOptions.Placement;
 			}
 
 			OnOpening();
@@ -317,7 +315,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			EnsurePopupCreated();
 
-			SetPopupPositionPartial(Target, _popupPositionInTarget);
+			SetPopupPositionPartial(Target, default);
 
 			_popup.IsOpen = true;
 		}
@@ -330,7 +328,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		private void SynchronizeDataContext() =>
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout. 
+			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
 			_popup?.SetValue(Popup.DataContextProperty, this.DataContext, precedence: DependencyPropertyValuePrecedences.Local);
 
 		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e)
@@ -387,6 +385,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			switch (placement)
 			{
 				case FlyoutPlacementMode.Full:
+				case FlyoutPlacementMode.Auto:
 				case FlyoutPlacementMode.Top:
 				case FlyoutPlacementMode.Bottom:
 				case FlyoutPlacementMode.Left:
@@ -419,6 +418,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				case FlyoutPlacementMode.Full:
 					return MajorPlacementMode.Full;
+				case FlyoutPlacementMode.Auto:
 				case FlyoutPlacementMode.Top:
 				case FlyoutPlacementMode.TopEdgeAlignedLeft:
 				case FlyoutPlacementMode.TopEdgeAlignedRight:

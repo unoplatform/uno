@@ -30,8 +30,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override Point? PositionInAnchorControl => null;
-
 		protected override FrameworkElement AnchorControl => _toolTip.Popup.Anchor as FrameworkElement;
 	}
 }
