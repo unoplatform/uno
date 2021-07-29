@@ -138,7 +138,11 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (Visibility == Visibility.Collapsed || finalRect == default)
+			if (Visibility == Visibility.Collapsed
+				// If the layout is clipped, and the arranged size is empty, we can skip arranging children
+				// This scenario is particularly important for the Canvas which always sets its desired size
+				// zero, even after measuring its children.
+				|| (finalRect == default && (this is ICustomClippingElement clipElement ? clipElement.AllowClippingToLayoutSlot : true)))
 			{
 				LayoutInformation.SetLayoutSlot(this, finalRect);
 				HideVisual();
