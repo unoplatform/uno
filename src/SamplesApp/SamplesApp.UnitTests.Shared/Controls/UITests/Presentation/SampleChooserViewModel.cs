@@ -577,15 +577,10 @@ namespace SampleControl.Presentation
 		private List<SampleChooserCategory> GetSamples()
 		{
 			var categories =
-#if !__WASM__
-				from assembly in GetAllAssembies().AsParallel()
-#else
-				from assembly in GetAllAssembies()
-#endif
-				from type in FindDefinedAssemblies(assembly)
-				let sampleAttribute = FindSampleAttribute(type)
+				from type in _allSamples
+				let sampleAttribute = FindSampleAttribute(type.GetTypeInfo())
 				where sampleAttribute != null
-				let content = GetContent(type, sampleAttribute)
+				let content = GetContent(type.GetTypeInfo(), sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
 				orderby contentByCategory.Key.ToLower(CultureInfo.CurrentUICulture)

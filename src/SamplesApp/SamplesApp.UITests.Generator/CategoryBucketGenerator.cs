@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
 using Uno.RoslynHelpers;
 using Uno.SourceGeneration;
 
@@ -29,7 +28,8 @@ namespace Uno.Samples.UITest.Generator
 
 		private void GenerateTests(SourceGeneratorContext context)
 		{
-			if(int.TryParse(Environment.GetEnvironmentVariable("UNO_UITEST_BUCKET_COUNT"), out var bucketCount))
+			if (context.Compilation.Assembly.Name == "SamplesApp.UITests"
+				&& int.TryParse(Environment.GetEnvironmentVariable("UNO_UITEST_BUCKET_COUNT"), out var bucketCount))
 			{
 				_testAttribute = context.Compilation.GetTypeByMetadataName("NUnit.Framework.TestAttribute");
 
