@@ -31,6 +31,7 @@ using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
+using Windows.UI.ViewManagement;
 using Uno.UI.Xaml;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.ApplicationModel.DataTransfer;
@@ -133,6 +134,13 @@ namespace Uno.UI.Skia.Platform
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
 			WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
+
+			Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+			if (preferredWindowSize != Windows.Foundation.Size.Empty)
+			{
+				WpfApplication.Current.MainWindow.Width = (int)preferredWindowSize.Width;
+				WpfApplication.Current.MainWindow.Height = (int)preferredWindowSize.Height;
+			}
 
 			SizeChanged += WpfHost_SizeChanged;
 			Loaded += WpfHost_Loaded;

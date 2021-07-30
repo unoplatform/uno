@@ -48,5 +48,10 @@ namespace UITests.Windows_UI_ViewManagement
 					WidthInput.Value,
 					HeightInput.Value));
 		}
+
+		void SetPreferredLaunchViewSize_Click(System.Object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		{
+			ApplicationView.PreferredLaunchViewSize = new Size(WidthInput.Value, HeightInput.Value);
+		}
 	}
 }

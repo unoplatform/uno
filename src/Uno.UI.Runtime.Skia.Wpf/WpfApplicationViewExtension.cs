@@ -29,6 +29,19 @@ namespace Uno.UI.Skia.Platform
 		private bool _isFullScreen = false;
 		private (WindowStyle WindowStyle, WindowState WindowState) _previousModes;
 
+		public void SetPreferredMinSize(Windows.Foundation.Size size)
+		{
+			_mainWpfWindow.MinWidth = size.Width;
+			_mainWpfWindow.MinHeight = size.Height;
+		}
+
+		public bool TryResizeView(Windows.Foundation.Size size)
+		{
+			_mainWpfWindow.Width = size.Width;
+			_mainWpfWindow.Height = size.Height;
+			return true;
+		}
+
 		public bool TryEnterFullScreenMode()
 		{
 			if (_isFullScreen || _mainWpfWindow.WindowStyle == WindowStyle.None)
