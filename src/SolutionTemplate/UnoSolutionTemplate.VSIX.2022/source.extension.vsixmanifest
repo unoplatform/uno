@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="UnoSolutionTemplate.VSIX.47605a66-fc91-4695-a86b-3478d4ec2788" Version="1.0" Language="en-US" Publisher="Jerome Laban" />
+        <Identity Id="UnoSolutionTemplate.VSIX.47605a66-fc91-4695-a86b-3478d4ec2788" Version="1.0" Language="en-US" Publisher="Uno Platform" />
         <DisplayName>Uno Platform Solution Templates</DisplayName>
         <Description xml:space="preserve">Solution templates for Uno Platform enabled projects</Description>
         <MoreInfo>https://github.com/unoplatform/uno</MoreInfo>
