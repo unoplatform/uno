@@ -13,7 +13,6 @@ using Windows.UI.Composition;
 using Uno.Disposables;
 using System.IO.Compression;
 using SkiaSharp;
-using Windows.Devices.Usb;
 using System.Numerics;
 
 namespace Windows.UI.Xaml.Shapes
@@ -81,15 +80,8 @@ namespace Windows.UI.Xaml.Shapes
 
 				_pathSpriteShape.FillBrush = null;
 
-				switch(Fill)
-				{
-					case SolidColorBrush scb:
-						_fillSubscription.Disposable =
-							Brush.AssignAndObserveBrush(scb, c => _pathSpriteShape.FillBrush = Visual.Compositor.CreateColorBrush(c));
-						break;
-					case GradientBrush gb:
-						break;
-				}
+				_fillSubscription.Disposable =
+							Brush.AssignAndObserveBrush(Fill, Visual.Compositor, compositionBrush => _pathSpriteShape.FillBrush = compositionBrush);
 			}
 		}
 
@@ -103,12 +95,14 @@ namespace Windows.UI.Xaml.Shapes
 
 		private void UpdateStroke()
 		{
-			var brush = Stroke as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
-
 			if (_pathSpriteShape != null)
 			{
+				_strokeSubscription.Disposable = null;
+
+				_pathSpriteShape.StrokeBrush = null;
+
 				_strokeSubscription.Disposable =
-					Brush.AssignAndObserveBrush(brush, c => _pathSpriteShape.StrokeBrush = Visual.Compositor.CreateColorBrush(c));
+							Brush.AssignAndObserveBrush(Stroke, Visual.Compositor, compositionBrush => _pathSpriteShape.StrokeBrush = compositionBrush);
 			}
 		}
 	}
