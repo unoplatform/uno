@@ -112,7 +112,7 @@ This article covers how to add a splash screen to your application.
     ```
  1. Make sure `splash.xml` is added as an AndroidResource in the Droid project file.
     This is not always done automatically, especially if `splash.xml` is created and added outside the IDE.
-    ```
+    ```xml
     <ItemGroup>
       <AndroidResource Include="Resources\drawable\splash.xml" />
     </ItemGroup>
