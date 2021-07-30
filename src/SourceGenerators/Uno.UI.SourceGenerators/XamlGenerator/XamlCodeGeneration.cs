@@ -369,7 +369,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var exception in Flatten(e))
 			{
 				var diagnostic = Diagnostic.Create(
-					XamlCodeGenerationDiagnostics.GenericXamlErrroRule,
+					XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 					GetExceptionFileLocation(exception),
 					exception.Message);
 

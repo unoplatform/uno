@@ -23,6 +23,11 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.SourceGenerators.BindableTypeProviders;
+
+#if NETFRAMEWORK
+using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
+#endif
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -503,7 +508,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			GenerateResourceLoader(writer);
 			writer.AppendLine();
-			ApplyLiteralProperties(); // 
+			ApplyLiteralProperties(); //
 			writer.AppendLine();
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
@@ -1311,7 +1316,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
 						var isNativeStyle = style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string == "True";
-						
+
 						using (TrySingleLineIfForLinkerHint(writer, style))
 						{
 							writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
@@ -2117,10 +2122,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant($"{setterPrefix}Color = {BuildColor(content)}");
 							}
 						}
-						else if (IsLinearGradientBrush(topLevelControl.Type))
-						{
-							BuildCollection(writer, isInline, setterPrefix + "GradientStops", implicitContentChild);
-						}
 						else if (IsInitializableCollection(topLevelControl))
 						{
 							var elementType = FindType(topLevelControl.Type);
@@ -2631,7 +2632,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Whether this resource should be lazily initialized. 
+		/// Whether this resource should be lazily initialized.
 		/// </summary>
 		private bool ShouldLazyInitializeResource(XamlObjectDefinition resource)
 		{
@@ -2719,7 +2720,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new Exception("Each dictionary entry must have an associated key.");
 				}
 
-				var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null. 
+				var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null.
 				if (isDict)
 				{
 					_themeDictionaryCurrentlyBuilding = key;
