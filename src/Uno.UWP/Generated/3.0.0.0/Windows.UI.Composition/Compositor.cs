@@ -261,21 +261,21 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member CompositionBackdropBrush Compositor.CreateHostBackdropBrush() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionColorGradientStop CreateColorGradientStop()
 		{
 			throw new global::System.NotImplementedException("The member CompositionColorGradientStop Compositor.CreateColorGradientStop() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionColorGradientStop CreateColorGradientStop( float offset,  global::Windows.UI.Color color)
 		{
 			throw new global::System.NotImplementedException("The member CompositionColorGradientStop Compositor.CreateColorGradientStop(float offset, Color color) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionLinearGradientBrush CreateLinearGradientBrush()
 		{
@@ -335,14 +335,14 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member CompositionContainerShape Compositor.CreateContainerShape() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionEllipseGeometry CreateEllipseGeometry()
 		{
 			throw new global::System.NotImplementedException("The member CompositionEllipseGeometry Compositor.CreateEllipseGeometry() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionLineGeometry CreateLineGeometry()
 		{
@@ -358,14 +358,14 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member PathKeyFrameAnimation Compositor.CreatePathKeyFrameAnimation() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionRectangleGeometry CreateRectangleGeometry()
 		{
 			throw new global::System.NotImplementedException("The member CompositionRectangleGeometry Compositor.CreateRectangleGeometry() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionRoundedRectangleGeometry CreateRoundedRectangleGeometry()
 		{
@@ -431,7 +431,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member CompositionProjectedShadowReceiver Compositor.CreateProjectedShadowReceiver() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionRadialGradientBrush CreateRadialGradientBrush()
 		{

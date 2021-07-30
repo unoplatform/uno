@@ -1,7 +1,6 @@
 #nullable enable
 
 using SkiaSharp;
-using System;
 
 namespace Windows.UI.Composition
 {
@@ -12,65 +11,72 @@ namespace Windows.UI.Composition
 
 		internal override void Render(SKSurface surface, SKImageInfo info)
 		{
-			if (Geometry is CompositionPathGeometry cpg)
+			SkiaGeometrySource2D? geometrySource = Geometry?.BuildGeometry() as SkiaGeometrySource2D;
+
+			SKPath? geometry = geometrySource?.Geometry;
+			if (geometry == null)
 			{
-				if (cpg.Path?.GeometrySource is SkiaGeometrySource2D geometrySource)
+				return;
+			}
+
+			if (FillBrush != null)
+			{
+				var fillPaint = TryCreateAndClearFillPaint();
+
+				FillBrush.UpdatePaint(fillPaint, geometry.Bounds);
+
+				surface.Canvas.DrawPath(geometry, fillPaint);
+			}
+
+			if (StrokeBrush != null && StrokeThickness > 0)
+			{
+				var fillPaint = TryCreateAndClearFillPaint();
+				var strokePaint = TryCreateAndClearStrokePaint();
+
+				// Set stroke thickness
+				strokePaint.StrokeWidth = StrokeThickness;
+				// TODO: Add support for dashes here
+				// strokePaint.PathEffect = SKPathEffect.CreateDash();
+
+				// Generate stroke geometry for bounds that will be passed to a brush.
+				// - [Future]: This generated geometry should also be used for hit testing.
+				using (var strokeGeometry = strokePaint.GetFillPath(geometry))
 				{
-					if(FillBrush != null)
-					{
-						FillBrush.UpdatePaint(TryCreateFillPaint());
+					StrokeBrush.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
-						surface.Canvas.DrawPath(geometrySource.Geometry, _fillPaint);
-					}
-
-					if (StrokeBrush != null && StrokeThickness > 0)
-					{
-						var strokePaint = TryCreateStrokePaint();
-
-						if (StrokeBrush is CompositionColorBrush stroke)
-						{
-							strokePaint.StrokeWidth = StrokeThickness;
-							strokePaint.Color = stroke.Color.ToSKColor(Compositor.CurrentOpacity);
-						}
-
-						surface.Canvas.DrawPath(geometrySource.Geometry, _strokePaint);
-					}
-				}
-				else if(cpg.Path?.GeometrySource is null)
-				{
-
-				}
-				else
-				{
-					throw new InvalidOperationException($"CompositionPath does not support the {cpg.Path?.GeometrySource} geometry source");
+					surface.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
 			}
 		}
 
+		private SKPaint TryCreateAndClearStrokePaint() => TryCreateAndClearPaint(ref _strokePaint, true);
 
-		private SKPaint TryCreateStrokePaint()
+		private SKPaint TryCreateAndClearFillPaint() => TryCreateAndClearPaint(ref _fillPaint, false);
+
+		private SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke)
 		{
-			if (_strokePaint == null)
+			if (paint == null)
 			{
-				_strokePaint = new SKPaint();
-				_strokePaint.IsStroke = true;
-				_strokePaint.IsAntialias = true;
-				_strokePaint.IsAutohinted = true;
+				// Initialization
+				paint = new SKPaint();
+				paint.IsStroke = isStroke;
+				paint.IsAntialias = true;
+				paint.IsAutohinted = true;
 			}
-
-			return _strokePaint;
-		}
-		private SKPaint TryCreateFillPaint()
-		{
-			if (_fillPaint == null)
+			else
 			{
-				_fillPaint = new SKPaint();
-				_fillPaint.IsStroke = false;
-				_fillPaint.IsAntialias = true;
-				_fillPaint.IsAutohinted = true;
+				// Cleanup
+				// - Brushes can change, we cant leave color and shader garbage
+				//	 from last rendering around for the next pass.
+				paint.Color = SKColors.White;	// Transparent color wouldnt draw anything
+				if (paint.Shader != null)
+				{
+					paint.Shader.Dispose();
+					paint.Shader = null;
+				}
 			}
-
-			return _fillPaint;
+			
+			return paint;
 		}
 	}
 }

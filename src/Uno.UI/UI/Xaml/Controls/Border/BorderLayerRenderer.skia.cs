@@ -117,45 +117,19 @@ namespace Windows.UI.Xaml.Shapes
 				var backgroundShape = compositor.CreateSpriteShape();
 				var outerShape = compositor.CreateSpriteShape();
 
-				Brush.AssignAndObserveBrush(borderBrush, color => borderShape.FillBrush = compositor.CreateColorBrush(color))
-					.DisposeWith(disposables);
-
-				if (background is GradientBrush gradientBackground)
-				{
-					//var fillMask = new CAShapeLayer()
-					//{
-					//	Path = path,
-					//	Frame = area,
-					//	// We only use the fill color to create the mask area
-					//	FillColor = _Color.White.CGColor,
-					//};
-					//// We reduce the adjustedArea again so that the gradient is inside the border (like in Windows)
-					//adjustedArea = adjustedArea.Shrink((float)adjustedStrokeThicknessOffset);
-
-					//CreateGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
-				}
-				else if (background is SolidColorBrush scbBackground)
-				{
-					Brush.AssignAndObserveBrush(scbBackground, color => backgroundShape.FillBrush = compositor.CreateColorBrush(color))
+				// Border brush
+				Brush.AssignAndObserveBrush(borderBrush, compositor, brush => borderShape.FillBrush = brush)
 						.DisposeWith(disposables);
-				}
-				else if (background is ImageBrush imgBackground)
+
+				// Background brush
+				if (background is ImageBrush imgBackground)
 				{
 					adjustedArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
 				}
-				else if (background is AcrylicBrush acrylicBrush)
-				{
-					Brush.AssignAndObserveBrush(acrylicBrush, color => backgroundShape.FillBrush = compositor.CreateColorBrush(color))
-						.DisposeWith(disposables);
-				}
-				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
-				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundShape.FillBrush = compositor.CreateColorBrush(color))
-						.DisposeWith(disposables);
-				}
 				else
 				{
-					backgroundShape.FillBrush = null;
+					Brush.AssignAndObserveBrush(background, compositor, brush => backgroundShape.FillBrush = brush)
+						.DisposeWith(disposables);
 				}
 
 				var borderPath = GetRoundedRect(cornerRadius, innerCornerRadius, area, adjustedArea);
@@ -190,54 +164,20 @@ namespace Windows.UI.Xaml.Shapes
 
 				var backgroundArea = area;
 
-				if (background is GradientBrush gradientBackground)
-				{
-					var fullArea = new Rect(
-						area.X + borderThickness.Left,
-						area.Y + borderThickness.Top,
-						area.Width - borderThickness.Left - borderThickness.Right,
-						area.Height - borderThickness.Top - borderThickness.Bottom);
-
-					var insideArea = new Rect(default, fullArea.Size);
-					// var insertionIndex = 0;
-
-					// CreateGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
-				}
-				else if (background is SolidColorBrush scbBackground)
-				{
-					Brush.AssignAndObserveBrush(scbBackground, c => backgroundShape.FillBrush = compositor.CreateColorBrush(c))
-						.DisposeWith(disposables);
-
-					// This is required because changing the CornerRadius changes the background drawing 
-					// implementation and we don't want a rectangular background behind a rounded background.
-					Disposable.Create(() => backgroundShape.FillBrush = null)
-						.DisposeWith(disposables);
-				}
-				else if (background is ImageBrush imgBackground)
+				// Background brush
+				if (background is ImageBrush imgBackground)
 				{
 					backgroundArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, backgroundArea, imgBackground);
 				}
-				else if (background is AcrylicBrush acrylicBrush)
+				else 
 				{
-					Brush.AssignAndObserveBrush(acrylicBrush, c => backgroundShape.FillBrush = compositor.CreateColorBrush(c))
-						.DisposeWith(disposables);
-
-					Disposable.Create(() => backgroundShape.FillBrush = null)
-						.DisposeWith(disposables);
-				}
-				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
-				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, c => backgroundShape.FillBrush = compositor.CreateColorBrush(c))
+					Brush.AssignAndObserveBrush(background, compositor, brush => backgroundShape.FillBrush = brush)
 						.DisposeWith(disposables);
 
 					// This is required because changing the CornerRadius changes the background drawing 
 					// implementation and we don't want a rectangular background behind a rounded background.
 					Disposable.Create(() => backgroundShape.FillBrush = null)
 						.DisposeWith(disposables);
-				}
-				else
-				{
-					backgroundShape.FillBrush = null;
 				}
 
 				var geometrySource = new SkiaGeometrySource2D();
@@ -251,13 +191,14 @@ namespace Windows.UI.Xaml.Shapes
 
 				if (borderThickness != Thickness.Empty)
 				{
-					Action<Action<CompositionSpriteShape, SkiaSharp.SKPath>> createLayer = builder =>
+					Action<Action<CompositionSpriteShape, SKPath>> createLayer = builder =>
 					{
 						var spriteShape = compositor.CreateSpriteShape();
 						var geometry = new SkiaGeometrySource2D();
 
-						Brush.AssignAndObserveBrush(borderBrush, c => spriteShape.StrokeBrush = compositor.CreateColorBrush(c))
-							.DisposeWith(disposables);
+						// Border brush
+						Brush.AssignAndObserveBrush(borderBrush, compositor, brush => spriteShape.StrokeBrush = brush)
+								.DisposeWith(disposables);
 
 						builder(spriteShape, geometry.Geometry);
 						spriteShape.Geometry = compositor.CreatePathGeometry(new CompositionPath(geometry));

@@ -8,7 +8,7 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush
 	{
-		internal override void UpdatePaint(SKPaint fillPaint)
+		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
 		{
 			if (Surface is SkiaCompositionSurface scs)
 			{
