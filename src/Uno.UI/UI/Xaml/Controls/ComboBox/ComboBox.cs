@@ -407,6 +407,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnPointerReleased(PointerRoutedEventArgs e)
 		{
 			IsDropDownOpen = true;
+			e.Handled = true;
 		}
 
 		/// <summary>
