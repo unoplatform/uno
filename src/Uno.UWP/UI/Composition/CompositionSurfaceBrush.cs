@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Numerics;
 
 namespace Windows.UI.Composition
@@ -19,134 +18,93 @@ namespace Windows.UI.Composition
 		private float _horizontalAlignmentRatio;
 		private bool _snapToPixels;
 		private float _verticalAlignmentRatio;
-		private CompositionBitmapInterpolationMode bitmapInterpolationMode;
+		private CompositionBitmapInterpolationMode _bitmapInterpolationMode;
 
-		internal event Action? PropertyChanged;
-
-		public CompositionSurfaceBrush(Compositor compositor) : base(compositor)
+		internal CompositionSurfaceBrush(Compositor compositor) : base(compositor)
 		{
 		}
 
-		public CompositionSurfaceBrush(Compositor compositor, ICompositionSurface surface) : base(compositor)
+		internal CompositionSurfaceBrush(Compositor compositor, ICompositionSurface surface) : base(compositor)
 		{
 			Surface = surface;
 		}
 
 		public float VerticalAlignmentRatio
 		{
-			get => _verticalAlignmentRatio; set
-			{
-				_verticalAlignmentRatio = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _verticalAlignmentRatio;
+			set => SetProperty(ref _verticalAlignmentRatio, value);
 		}
 
 		public ICompositionSurface? Surface
 		{
-			get => _surface; set
-			{
-				_surface = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _surface;
+			set => SetProperty(ref _surface, value);
 		}
 
 		public CompositionStretch Stretch
 		{
-			get => _stretch; set
-			{
-				_stretch = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _stretch;
+			set => SetProperty(ref _stretch, value);
 		}
 
 		public float HorizontalAlignmentRatio
 		{
-			get => _horizontalAlignmentRatio; set
-			{
-				_horizontalAlignmentRatio = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _horizontalAlignmentRatio;
+			set => SetProperty(ref _horizontalAlignmentRatio, value);
 		}
 
 		public CompositionBitmapInterpolationMode BitmapInterpolationMode
 		{
-			get => bitmapInterpolationMode; set
-			{
-				bitmapInterpolationMode = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _bitmapInterpolationMode;
+			set => SetProperty(ref _bitmapInterpolationMode, value);
 		}
 
 		public Matrix3x2 TransformMatrix
 		{
-			get => _transformMatrix; set
-			{
-				_transformMatrix = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _transformMatrix;
+			set => SetProperty(ref _transformMatrix, value);
 		}
 
 		public Vector2 Scale
 		{
-			get => _scale; set
-			{
-				_scale = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _scale;
+			set => SetProperty(ref _scale, value);
 		}
 
 		public float RotationAngleInDegrees
 		{
-			get => _rotationAngleInDegrees; set
-			{
-				_rotationAngleInDegrees = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _rotationAngleInDegrees;
+			set => SetProperty(ref _rotationAngleInDegrees, value);
 		}
 
 		public float RotationAngle
 		{
-			get => _rotationAngle; set
-			{
-				_rotationAngle = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _rotationAngle;
+			set => SetProperty(ref _rotationAngle, value);
 		}
 
 		public Vector2 Offset
 		{
-			get => _offset; set
-			{
-				_offset = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _offset;
+			set => SetProperty(ref _offset, value);
 		}
 
 		public Vector2 CenterPoint
 		{
-			get => _centerPoint; set
-			{
-				_centerPoint = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _centerPoint;
+			set => SetProperty(ref _centerPoint, value);
 		}
 
 		public Vector2 AnchorPoint
 		{
-			get => _anchorPoint; set
-			{
-				_anchorPoint = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _anchorPoint;
+			set => SetProperty(ref _anchorPoint, value);
 		}
 
 		public bool SnapToPixels
 		{
-			get => _snapToPixels; set
-			{
-				_snapToPixels = value;
-				PropertyChanged?.Invoke();
-			}
+			get => _snapToPixels;
+			set => SetProperty(ref _snapToPixels, value);
 		}
 	}
 }

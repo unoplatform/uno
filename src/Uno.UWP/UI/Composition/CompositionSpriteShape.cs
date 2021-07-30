@@ -24,110 +24,74 @@ namespace Windows.UI.Composition
 
 		public float StrokeThickness
 		{
-			get => _strokeThickness; set
-			{
-				_strokeThickness = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeThickness;
+			set => SetProperty(ref _strokeThickness, value);
 		}
 
 		public CompositionStrokeCap StrokeStartCap
 		{
-			get => _strokeStartCap; set
-			{
-				_strokeStartCap = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeStartCap;
+			set => SetProperty(ref _strokeStartCap, value);
 		}
 
 		public float StrokeMiterLimit
 		{
-			get => _strokeMiterLimit; set
-			{
-				_strokeMiterLimit = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeMiterLimit;
+			set => SetProperty(ref _strokeMiterLimit, value);
 		}
 
 		public CompositionStrokeLineJoin StrokeLineJoin
 		{
-			get => _strokeLineJoin; set
-			{
-				_strokeLineJoin = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeLineJoin;
+			set => SetProperty(ref _strokeLineJoin, value);
 		}
 
 		public CompositionStrokeCap StrokeEndCap
 		{
-			get => _strokeEndCap; set
-			{
-				_strokeEndCap = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeEndCap;
+			set => SetProperty(ref _strokeEndCap, value);
 		}
 
 		public float StrokeDashOffset
 		{
-			get => _strokeDashOffset; set
-			{
-				_strokeDashOffset = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeDashOffset;
+			set => SetProperty(ref _strokeDashOffset, value);
 		}
 
 		public CompositionStrokeCap StrokeDashCap
 		{
-			get => _strokeDashCap; set
-			{
-				_strokeDashCap = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeDashCap;
+			set => SetProperty(ref _strokeDashCap, value);
 		}
 
 		public CompositionBrush? StrokeBrush
 		{
-			get => _strokeBrush; set
-			{
-				_strokeBrush = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeBrush;
+			set => SetProperty(ref _strokeBrush, value);
 		}
 
 		public bool IsStrokeNonScaling
 		{
-			get => _isStrokeNonScaling; set
-			{
-				_isStrokeNonScaling = value;
-				Compositor.InvalidateRender();
-			}
+			get => _isStrokeNonScaling;
+			set => SetProperty(ref _isStrokeNonScaling, value);
 		}
 
 		public CompositionGeometry? Geometry
 		{
-			get => _geometry; set
-			{
-				_geometry = value;
-				Compositor.InvalidateRender();
-			}
+			get => _geometry;
+			set => SetProperty(ref _geometry, value);
 		}
 
 		public CompositionBrush? FillBrush
 		{
-			get => _fillBrush; set
-			{
-				_fillBrush = value;
-				Compositor.InvalidateRender();
-			}
+			get => _fillBrush;
+			set => SetProperty(ref _fillBrush, value);
 		}
 
 		public CompositionStrokeDashArray? StrokeDashArray
 		{
-			get => _strokeDashArray; set
-			{
-				_strokeDashArray = value;
-				Compositor.InvalidateRender();
-			}
+			get => _strokeDashArray;
+			set => SetProperty(ref _strokeDashArray, value);
 		}
 	}
 }

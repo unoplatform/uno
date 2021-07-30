@@ -4,7 +4,7 @@ using System;
 
 namespace Windows.UI.Composition
 {
-	public partial class ContainerVisual : global::Windows.UI.Composition.Visual
+	public partial class ContainerVisual : Visual
 	{
 		internal ContainerVisual() : base(null!) => throw new NotSupportedException("Use the ctor with Compositor");
 
