@@ -409,9 +409,11 @@ var Uno;
                     img.onerror = loadingDone;
                     const UNO_BOOTSTRAP_APP_BASE = config.environmentVariables["UNO_BOOTSTRAP_APP_BASE"] || "";
                     const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
-                    const fullImagePath = UNO_BOOTSTRAP_APP_BASE !== ''
-                        ? `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`
-                        : String(UnoAppManifest.splashScreenImage);
+                    let fullImagePath = String(UnoAppManifest.splashScreenImage);
+                    // If the splashScreenImage image already points to the app base path, use it, otherwise we build it.
+                    if (UNO_BOOTSTRAP_APP_BASE !== '' && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
+                        fullImagePath = `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`;
+                    }
                     img.src = fullImagePath;
                     // If there's no response, skip the loading
                     setTimeout(loadingDone, 2000);
@@ -1121,7 +1123,6 @@ var Uno;
                     const result = this.dispatchEvent(element, eventName, eventPayload);
                     if (result & UI.HtmlEventDispatchResult.StopPropagation) {
                         event.stopPropagation();
-                        event.preventDefault();
                     }
                     if (result & UI.HtmlEventDispatchResult.PreventDefault) {
                         event.preventDefault();
@@ -2527,25 +2528,25 @@ var Windows;
                 static initialize() {
                     try {
                         if (typeof window.AmbientLightSensor === "function") {
-                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.LightSensor:DispatchReading");
-                            let AmbientLightSensorClass = window.AmbientLightSensor;
+                            LightSensor.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.LightSensor:DispatchReading");
+                            const AmbientLightSensorClass = window.AmbientLightSensor;
                             LightSensor.ambientLightSensor = new AmbientLightSensorClass();
                             return true;
                         }
                     }
                     catch (error) {
-                        //sensor not available
-                        console.log("AmbientLightSensor could not be initialized.");
+                        // Sensor not available
+                        console.error("AmbientLightSensor could not be initialized.");
                     }
                     return false;
                 }
                 static startReading() {
-                    this.ambientLightSensor.addEventListener("reading", LightSensor.readingChangedHandler);
-                    this.ambientLightSensor.start();
+                    LightSensor.ambientLightSensor.addEventListener("reading", LightSensor.readingChangedHandler);
+                    LightSensor.ambientLightSensor.start();
                 }
                 static stopReading() {
-                    this.ambientLightSensor.removeEventListener("reading", LightSensor.readingChangedHandler);
-                    this.ambientLightSensor.stop();
+                    LightSensor.ambientLightSensor.removeEventListener("reading", LightSensor.readingChangedHandler);
+                    LightSensor.ambientLightSensor.stop();
                 }
                 static readingChangedHandler(event) {
                     LightSensor.dispatchReading(LightSensor.ambientLightSensor.illuminance);
