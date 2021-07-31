@@ -66,11 +66,11 @@ namespace Windows.UI.Xaml.Media
 					)
 				.DisposeWith(disposables);
 
-				//gradientBrush.RegisterDisposablePropertyChangedCallback(
-				//		GradientBrush.OpacityProperty,
-				//		(s, e) => compositionBrush.Opacity = e.NewValue
-				//	)
-				//.DisposeWith(disposables);
+				gradientBrush.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.OpacityProperty,
+						(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
+					)
+				.DisposeWith(disposables);
 
 				gradientBrush.RegisterDisposablePropertyChangedCallback(
 						GradientBrush.SpreadMethodProperty,
@@ -194,7 +194,11 @@ namespace Windows.UI.Xaml.Media
 
 			gradientBrush.RegisterDisposablePropertyChangedCallback(
 					GradientBrush.GradientStopsProperty,
-					(s, e) => ConvertGradientColorStops(compositionBrush.Compositor, compositionBrush, (GradientStopCollection)e.NewValue)
+					(s, e) => ConvertGradientColorStops(
+						compositionBrush.Compositor,
+						compositionBrush,
+						(GradientStopCollection)e.NewValue,
+						((GradientBrush)s).Opacity)
 				)
 			.DisposeWith(disposables);
 
@@ -204,11 +208,15 @@ namespace Windows.UI.Xaml.Media
 				)
 			.DisposeWith(disposables);
 
-			//gradientBrush.RegisterDisposablePropertyChangedCallback(
-			//		GradientBrush.OpacityProperty,
-			//		(s, e) => compositionBrush.Opacity = e.NewValue
-			//	)
-			//.DisposeWith(disposables);
+			gradientBrush.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.OpacityProperty,
+					(s, e) => ConvertGradientColorStops(
+						compositionBrush.Compositor,
+						compositionBrush,
+						((GradientBrush)s).GradientStops,
+						(double)e.NewValue)
+				)
+			.DisposeWith(disposables);
 
 			gradientBrush.RegisterDisposablePropertyChangedCallback(
 					GradientBrush.SpreadMethodProperty,
@@ -297,18 +305,18 @@ namespace Windows.UI.Xaml.Media
 			compositionBrush.RelativeTransformMatrix = gradientBrush.RelativeTransform?.MatrixCore ?? Matrix3x2.Identity; 
 			compositionBrush.ExtendMode = ConvertGradientExtendMode(gradientBrush.SpreadMethod);
 			compositionBrush.MappingMode = ConvertBrushMappingMode(gradientBrush.MappingMode);
-			ConvertGradientColorStops(compositor, compositionBrush, gradientBrush.GradientStops);
+			ConvertGradientColorStops(compositor, compositionBrush, gradientBrush.GradientStops, gradientBrush.Opacity);
 
 			return compositionBrush;
 		}
 
-		private static void ConvertGradientColorStops(Compositor compositor, CompositionGradientBrush compositionBrush, GradientStopCollection gradientStops)
+		private static void ConvertGradientColorStops(Compositor compositor, CompositionGradientBrush compositionBrush, GradientStopCollection gradientStops, double opacity)
 		{
 			compositionBrush.ColorStops.Clear();
 
 			foreach (var stop in gradientStops)
 			{
-				compositionBrush.ColorStops.Add(compositor.CreateColorGradientStop((float)stop.Offset, stop.Color));
+				compositionBrush.ColorStops.Add(compositor.CreateColorGradientStop((float)stop.Offset, stop.Color.WithOpacity(opacity)));
 			}
 		}
 
