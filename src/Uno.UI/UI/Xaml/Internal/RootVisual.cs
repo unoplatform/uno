@@ -113,21 +113,12 @@ namespace Uno.UI.Xaml.Core
 
 		private void RootVisual_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
 		{
-			if (e.Handled)
-			{
-				return;
-			}
-
 			var point = e.GetCurrentPoint(this);
 			_isLeftButtonPressed = point.Properties.IsLeftButtonPressed;
 		}
 
 		private void RootVisual_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
 		{
-			if (e.Handled)
-			{
-				return;
-			}
 			if (_isLeftButtonPressed)
 			{
 				_isLeftButtonPressed = false;
@@ -143,10 +134,6 @@ namespace Uno.UI.Xaml.Core
 
 		private void RootVisual_PointerCanceled(object sender, PointerRoutedEventArgs e)
 		{
-			if (e.Handled)
-			{
-				return;
-			}
 			_isLeftButtonPressed = false;
 		}
 #endif
