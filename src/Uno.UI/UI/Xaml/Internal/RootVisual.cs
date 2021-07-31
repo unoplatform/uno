@@ -10,6 +10,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core
 {
@@ -27,6 +28,10 @@ namespace Uno.UI.Xaml.Core
 			_coreServices = coreServices ?? throw new System.ArgumentNullException(nameof(coreServices));
 			//Uno specific - flag as VisualTreeRoot for interop with existing logic
 			IsVisualTreeRoot = true;
+
+			PointerPressed += RootVisual_PointerPressed;
+			PointerReleased += RootVisual_PointerReleased;
+			PointerCanceled += RootVisual_PointerCanceled;
 		}
 
 		/// <summary>
@@ -98,5 +103,39 @@ namespace Uno.UI.Xaml.Core
 
 			return finalSize;
 		}
+
+
+#if HAS_UNO
+		// Uno specific: To ensure focus is properly lost when clicking "outside" app's content,
+		// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
+		// but Uno does not have it on all targets yet.
+		private bool _isLeftButtonPressed = false;
+
+		private void RootVisual_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+		{
+			var point = e.GetCurrentPoint(this);
+			_isLeftButtonPressed = point.Properties.IsLeftButtonPressed;
+		}
+
+		private void RootVisual_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+		{
+			if (_isLeftButtonPressed)
+			{
+				_isLeftButtonPressed = false;
+				var element = FocusManager.GetFocusedElement();
+				if (element is UIElement uiElement)
+				{
+					uiElement.Unfocus();
+					e.Handled = true;
+				}
+			}
+		}
+
+
+		private void RootVisual_PointerCanceled(object sender, PointerRoutedEventArgs e)
+		{
+			_isLeftButtonPressed = false;
+		}
+#endif
 	}
 }
