@@ -242,8 +242,8 @@ In the constructor of your wrapper control, add the following:
 Background = new SolidColorBrush(Colors.Transparent);
 ```
 
-### TextBlock content is not visible in browsers with the dark theme
-TextBlock defaults the text color as White correctly but StackPanel background needs theme info.
+### `TextBlock` content is not visible in browsers with the dark theme
+`TextBlock` defaults the text color as White correctly but `StackPanel` background needs to be set correctly.
 ```
 <StackPanel Spacing="10" Padding="20" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 ```
