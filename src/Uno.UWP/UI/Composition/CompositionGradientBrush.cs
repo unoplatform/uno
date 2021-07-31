@@ -52,13 +52,21 @@ namespace Windows.UI.Composition
 		public float RotationAngleInDegrees
 		{
 			get => _rotationAngleInDegrees;
-			set { _rotationAngle = value * (float)(Math.PI / 180); SetProperty(ref _rotationAngleInDegrees, value); }
+			set
+			{
+				_rotationAngle = value * (float)(Math.PI / 180);
+				SetProperty(ref _rotationAngleInDegrees, value);
+			}
 		}
 
 		public float RotationAngle
 		{
 			get => _rotationAngle;
-			set { _rotationAngleInDegrees = value * 180 / (float)Math.PI; SetProperty(ref _rotationAngle, value); }
+			set
+			{
+				_rotationAngleInDegrees = value * 180 / (float)Math.PI;
+				SetProperty(ref _rotationAngle, value);
+			}
 		}
 
 		public Vector2 Offset
