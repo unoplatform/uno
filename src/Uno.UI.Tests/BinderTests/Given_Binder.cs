@@ -918,7 +918,6 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(42, SUT.Property2);
 		}
 
-
 		[TestMethod]
 		public void When_Parent_Collected()
 		{
@@ -950,6 +949,52 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.SetParent(null);
 
 			Assert.AreEqual(2, parentChanged);
+		}
+
+		[TestMethod]
+		public void When_NonUI_DependencyObject_NonUISub_Content()
+		{
+			var SUT = new NonUIDependencyObject();
+			SUT.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			var SUT2 = new NonUIDependencyObject();
+			SUT2.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			var model = new NonUIDependencyObject_Model();
+
+			Assert.AreEqual(-1, SUT2.MyValue);
+			Assert.AreEqual(-1, SUT.MyValue);
+
+			SUT.SubProperty = SUT2;
+
+			Assert.AreEqual(-1, SUT2.MyValue);
+			Assert.AreEqual(-1, SUT.MyValue);
+
+			SUT.DataContext = model;
+
+			Assert.AreEqual(0, SUT2.MyValue);
+			Assert.AreEqual(0, SUT.MyValue);
+		}
+
+		[TestMethod]
+		public void When_UI_DependencyObject_NonUISub_Content()
+		{
+			var SUT = new UIDependencyObject();
+			SUT.SetBinding(UIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			var SUT2 = new NonUIDependencyObject();
+			SUT2.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			var model = new NonUIDependencyObject_Model();
+
+			Assert.AreEqual(-1, SUT2.MyValue);
+			Assert.AreEqual(-1, SUT.MyValue);
+
+			SUT.SubProperty = SUT2;
+
+			Assert.AreEqual(-1, SUT2.MyValue);
+			Assert.AreEqual(-1, SUT.MyValue);
+
+			SUT.DataContext = model;
+
+			Assert.AreEqual(0, SUT2.MyValue);
+			Assert.AreEqual(0, SUT.MyValue);
 		}
 
 		public partial class BaseTarget : DependencyObject
@@ -1354,6 +1399,68 @@ namespace Uno.UI.Tests.BinderTests
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
+		}
+	}
+
+	public partial class UIDependencyObject : FrameworkElement
+	{
+		public DependencyObject SubProperty
+		{
+			get { return (DependencyObject)GetValue(SubPropertyProperty); }
+			set { SetValue(SubPropertyProperty, value); }
+		}
+
+		public static readonly DependencyProperty SubPropertyProperty =
+			DependencyProperty.Register("SubProperty", typeof(DependencyObject), typeof(UIDependencyObject), new PropertyMetadata(null));
+
+		public int MyValue
+		{
+			get { return (int)GetValue(MyValueProperty); }
+			set { SetValue(MyValueProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyValue.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyValueProperty =
+			DependencyProperty.Register("MyValue", typeof(int), typeof(UIDependencyObject), new PropertyMetadata(-1));
+
+	}
+
+	public partial class NonUIDependencyObject : DependencyObject
+	{
+		public DependencyObject SubProperty
+		{
+			get { return (DependencyObject)GetValue(SubPropertyProperty); }
+			set { SetValue(SubPropertyProperty, value); }
+		}
+
+		public static readonly DependencyProperty SubPropertyProperty =
+			DependencyProperty.Register("SubProperty", typeof(DependencyObject), typeof(NonUIDependencyObject), new PropertyMetadata(null));
+
+		public int MyValue
+		{
+			get { return (int)GetValue(MyValueProperty); }
+			set { SetValue(MyValueProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyValue.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyValueProperty =
+			DependencyProperty.Register("MyValue", typeof(int), typeof(NonUIDependencyObject), new PropertyMetadata(-1));
+
+	}
+
+	public class NonUIDependencyObject_Model : System.ComponentModel.INotifyPropertyChanged
+	{
+		private int myModelValue;
+
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+		public int MyModelValue
+		{
+			get => myModelValue; set
+			{
+				myModelValue = value;
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyModelValue)));
+			}
 		}
 	}
 }
