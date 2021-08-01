@@ -8,7 +8,10 @@
 		public static async nativePickFilesAsync(
 			multiple: boolean,
 			showAllEntry: boolean,
-			fileTypesJson: string): Promise<string> {
+			fileTypesJson: string,
+			id: string,
+			startIn: StartInDirectory
+		): Promise<string> {
 
 			if (!FileOpenPicker.isNativeSupported()) {
 				return JSON.stringify([]);
@@ -18,6 +21,8 @@
 				excludeAcceptAllOption: !showAllEntry,
 				multiple: multiple,
 				types: [],
+				id: id,
+				startIn: startIn
 			};
 
 			const acceptTypes = <Uno.Storage.Pickers.NativeFilePickerAcceptType[]>JSON.parse(fileTypesJson);

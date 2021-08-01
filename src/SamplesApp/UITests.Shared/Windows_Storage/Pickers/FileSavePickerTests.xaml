@@ -23,6 +23,7 @@
 			<TextBox Header="Settings identifier" Text="{x:Bind ViewModel.SettingsIdentifier, Mode=TwoWay}" />
             <TextBox Header="Commit button text" Text="{x:Bind ViewModel.CommitButtonText, Mode=TwoWay}" />
 
+            <TextBox Header="Suggested file name" Text="{x:Bind ViewModel.SuggestedFileName, Mode=TwoWay}" />
             <StackPanel Orientation="Horizontal" Spacing="4">
                 <Button Click="{x:Bind ViewModel.PickSuggestedSaveFile}" Content="Pick suggested save file" />
                 <Button Click="{x:Bind ViewModel.PickSuggestedSaveFile}" Content="Clear" />

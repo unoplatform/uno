@@ -5,7 +5,7 @@
 			return typeof showSaveFilePicker === "function";
 		}
 
-		public static async nativePickSaveFileAsync(showAllEntry: boolean, fileTypesJson: string): Promise<string> {
+		public static async nativePickSaveFileAsync(showAllEntry: boolean, fileTypesJson: string, suggestedFileName: string, id: string, startIn: StartInDirectory): Promise<string> {
 
 			if (!FileSavePicker.isNativeSupported()) {
 				return null;
@@ -14,7 +14,13 @@
 			const options: SaveFilePickerOptions = {
 				excludeAcceptAllOption: !showAllEntry,
 				types: [],
+				id: id,
+				startIn: startIn
 			};
+
+			if (suggestedFileName != "") {
+				options.suggestedName = suggestedFileName;
+			}
 
 			const acceptTypes = <Uno.Storage.Pickers.NativeFilePickerAcceptType[]>JSON.parse(fileTypesJson);
 
