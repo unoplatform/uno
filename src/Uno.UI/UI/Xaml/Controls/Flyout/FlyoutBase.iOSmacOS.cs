@@ -5,14 +5,18 @@ using CoreGraphics;
 using Uno.UI;
 #if __IOS__
 using UIKit;
+using View = UIKit.UIView;
 #else
 using AppKit;
+using View = AppKit.NSView;
 #endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
-{ 
+{
 	public partial class FlyoutBase
-    {
+	{
+		internal virtual View NativeTarget => null;
+
 		partial void InitializePopupPanelPartial()
 		{
 			_popup.PopupPanel = new FlyoutBasePopupPanel(this)
