@@ -35,11 +35,11 @@
 
 			<StackPanel Orientation="Horizontal" Spacing="4">
 				<Border Background="Yellow" Width="80" Height="80">
-					<Path x:Name="path1" Stroke="Red">
+					<Path x:Name="path2" Stroke="Red">
 						<Path.Data>
 							<LineGeometry
-								RadiusX="{Binding Value, ElementName=lineStart, Converter={StaticResource toPoint}}"
-								RadiusY="{Binding Value, ElementName=lineEnd, Converter={StaticResource toPoint}}"/>
+								StartPoint="{Binding Value, ElementName=lineStart, Converter={StaticResource toPoint}}"
+								EndPoint="{Binding Value, ElementName=lineEnd, Converter={StaticResource toPoint}}"/>
 						</Path.Data>
 					</Path>
 				</Border>

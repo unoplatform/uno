@@ -123,16 +123,16 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			//Are they all readable as floats?
-			bool succesfullConversion = true;
+			bool successfulConversion = true;
 
 			var values = fields
 				.SelectToArray(strVal =>
 				{
-					succesfullConversion &= float.TryParse(strVal, out var v);
+					successfulConversion &= float.TryParse(strVal, out var v);
 					return v;
 				});
 
-			if (!succesfullConversion)
+			if (!successfulConversion)
 			{
 				return null;
 			}
