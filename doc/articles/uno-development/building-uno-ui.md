@@ -4,7 +4,7 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 
 ## Prerequisites
 
-- Visual Studio 2019 (16.6 or later)
+- Visual Studio 2019 (16.6 or later) or 2022 (17.0 Preview 2 or later)
     - `Mobile Development with .NET` (Xamarin) development
     - `Visual Studio extensions development` (for the VSIX projects)
     - `ASP.NET and Web Development`
@@ -24,14 +24,17 @@ The step by step process is:
 
 1. Clone the Uno.UI repository locally, and ensure using a short target path, e.g. _D:\uno_ etc.  
 This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
-2. Make sure you don't have the Uno.UI solution open in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed.)
-3. Make a copy of the [src/crosstargeting_override.props.sample](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
-4. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
-5. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for. (Identifiers for each platform are listed in the file.) Save the file.
-6. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf`, and open it.
-7. To confirm that everything works:
-  - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'. 
-  - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf]` project in the Solution Explorer and 'Build'.
+1. Make sure you don't have the Uno.UI solution open in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed.)
+1. Make a copy of the [src/crosstargeting_override.props.sample](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
+1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
+1. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for. (Identifiers for each platform are listed in the file.) Save the file.
+1. If you are debugging for `net6.0-XX` targets (`ios`, `android`, `maccatalyst` or `macos`)
+   - Ensure that you are running VS 2022 Preview 2 or later
+   - Replace the contents of the `global.json` file with the contents of `global-net6.json`
+1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf`, and open it.
+1. To confirm that everything works:
+   - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'. 
+   - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf]` project in the Solution Explorer and 'Build'.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
 
