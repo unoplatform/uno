@@ -62,6 +62,46 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 		}
 
 		[TestMethod]
+		public void When_ElementName_In_Template_ItemsControl_NonUINested()
+		{
+			var SUT = new Binding_ElementName_In_Template_ItemsControl_NonUINested();
+
+			SUT.PrimaryActionsList.ItemsSource = new[] { "test" };
+
+			SUT.ForceLoaded();
+
+			var button = SUT.FindName("button") as Windows.UI.Xaml.Controls.Button;
+
+			Assert.AreEqual(SUT.PrimaryActionsList.Tag, button.Tag);
+			 
+			var nestedDO = Binding_ElementName_In_Template_ItemsControl_NonUINested_Attached.GetNonUIObject(button);
+
+			Assert.IsNotNull(nestedDO);
+			Assert.AreEqual(nestedDO.InnerProperty, button.Tag);
+		}
+
+		[TestMethod]
+		public void When_ElementName_NonUINested_GlobalResources()
+		{
+			var SUT = new Binding_ElementName_NonUINested_GlobalResources();
+
+			var primaryActionsList = SUT.FindName("PrimaryActionsList") as Windows.UI.Xaml.Controls.ItemsControl;
+
+			primaryActionsList.ItemsSource = new[] { "test" };
+
+			SUT.ForceLoaded();
+
+			var button = SUT.FindName("button") as Windows.UI.Xaml.Controls.Button;
+
+			Assert.AreEqual(primaryActionsList.Tag, button.Tag);
+
+			var nestedDO = Binding_ElementName_NonUINested_GlobalResources_Attached.GetNonUIObject(button);
+
+			Assert.IsNotNull(nestedDO);
+			Assert.AreEqual(nestedDO.InnerProperty, button.Tag);
+		}
+
+		[TestMethod]
 		public void When_ElementName_In_Template_In_Template()
 		{
 			var SUT = new Binding_ElementName_In_Template_In_Template();
