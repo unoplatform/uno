@@ -6,18 +6,13 @@ using Uno.MsBuildTasks.Utils.XamlPathParser;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
-using System.Threading;
 using Uno;
-using Uno.Equality;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
@@ -406,7 +401,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var controlBaseType = GetType(topLevelControl.Type);
 
-					using (writer.BlockInvariant("public partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
+					using (writer.BlockInvariant("partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
 					{
 						var isDirectUserControlChild = _skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type, checkInheritance: false);
 
