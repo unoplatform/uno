@@ -74,6 +74,11 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+				if (trimmed.EndsWith("px"))
+				{
+					trimmed = trimmed.Substring(0, trimmed.Length - 2);
+				}
+
 				if (double.TryParse(trimmed, NumberStyles.Any & ~NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var value))
 				{
 					return new GridLength(value, GridUnitType.Pixel);
