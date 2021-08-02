@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI;
 using Uno.UI.Extensions;
+using System.Text.RegularExpressions;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -486,10 +487,9 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(Windows.UI.Xaml.Media.Matrix))
 			{
-				var fields = input
-					.Split(new[] { ',' })
-					?.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
-					?.ToArray();
+				var fields = Split(input)
+					.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
+					.ToArray();
 
 				output = new Windows.UI.Xaml.Media.Matrix(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5]);
 				return true;
@@ -502,10 +502,9 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(System.Drawing.PointF))
 			{
-				var fields = input
-					.Split(new[] { ',' })
-					?.Select(v => float.Parse(v, CultureInfo.InvariantCulture))
-					?.ToArray();
+				var fields = Split(input)
+					.Select(v => float.Parse(v, CultureInfo.InvariantCulture))
+					.ToArray();
 
 				if (fields?.Length == 2)
 				{
@@ -527,10 +526,9 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(Windows.Foundation.Point))
 			{
-				var fields = input
-					.Split(new[] { ',' })
-					?.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
-					?.ToArray();
+				var fields = Split(input)
+					.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
+					.ToArray();
 
 				if (fields?.Length == 2)
 				{
@@ -997,6 +995,9 @@ namespace Uno.UI.DataBinding
 				return false;
 			}
 		}
+
+		static string[] Split(string value)
+			=> Regex.Split(value, @"(\s*?,\s*|\s+)");
 	}
 }
 #endif

@@ -4373,16 +4373,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "new System.Drawing.PointF(" + AppendFloatSuffix(GetMemberValue()) + ")";
 
 					case "System.Drawing.Size":
-						return "new System.Drawing.Size(" + memberValue + ")";
+						return "new System.Drawing.Size(" + splitAndJoin(memberValue) + ")";
 
 					case "Windows.Foundation.Size":
-						return "new Windows.Foundation.Size(" + memberValue + ")";
+						return "new Windows.Foundation.Size(" + splitAndJoin(memberValue) + ")";
 
 					case "Windows.UI.Xaml.Media.Matrix":
-						return "new Windows.UI.Xaml.Media.Matrix(" + memberValue + ")";
+						return "new Windows.UI.Xaml.Media.Matrix(" + splitAndJoin(memberValue) + ")";
 
 					case "Windows.Foundation.Point":
-						return "new Windows.Foundation.Point(" + memberValue + ")";
+						return "new Windows.Foundation.Point(" + splitAndJoin(memberValue) + ")";
 
 					case "Windows.UI.Xaml.Input.InputScope":
 						return "new global::Windows.UI.Xaml.Input.InputScope { Names = { new global::Windows.UI.Xaml.Input.InputScopeName { NameValue = global::Windows.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";
@@ -4442,6 +4442,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
+
+				static string? splitAndJoin(string? value)
+					=> value == null ? null : string.Join(", ", Regex.Split(value, @"(\s*?,\s*|\s+)"));
 			}
 		}
 
