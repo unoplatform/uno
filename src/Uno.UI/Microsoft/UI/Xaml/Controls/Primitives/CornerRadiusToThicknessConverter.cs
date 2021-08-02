@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty MultiplierProperty { get; } =
-			DependencyProperty.Register(nameof(Multiplier), typeof(double), typeof(CornerRadiusToThicknessConverter), new PropertyMetadata(1.0));
+			DependencyProperty.Register(nameof(Multiplier), typeof(double), typeof(CornerRadiusToThicknessConverter), new FrameworkPropertyMetadata(1.0));
 
 		public CornerRadiusToThicknessConverterKind ConversionKind
 		{

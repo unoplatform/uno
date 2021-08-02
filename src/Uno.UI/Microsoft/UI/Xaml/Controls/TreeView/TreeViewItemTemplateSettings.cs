@@ -52,24 +52,24 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the CollapsedGlyphVisibility dependency property.
 		/// </summary>
 		public static DependencyProperty CollapsedGlyphVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(CollapsedGlyphVisibility), typeof(Visibility), typeof(TreeViewItemTemplateSettings), new PropertyMetadata(Visibility.Collapsed));
+			DependencyProperty.Register(nameof(CollapsedGlyphVisibility), typeof(Visibility), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(Visibility.Collapsed));
 
 		/// <summary>
 		/// Identifies the DragItemsCount dependency property.
 		/// </summary>
 		public static DependencyProperty DragItemsCountProperty { get; } =
-			DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new PropertyMetadata(0));
+			DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(0));
 
 		/// <summary>
 		/// Identifies the ExpandedGlyphVisibility dependency property.
 		/// </summary>
 		public static DependencyProperty ExpandedGlyphVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(ExpandedGlyphVisibility), typeof(Visibility), typeof(TreeViewItemTemplateSettings), new PropertyMetadata(Visibility.Collapsed));
+			DependencyProperty.Register(nameof(ExpandedGlyphVisibility), typeof(Visibility), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(Visibility.Collapsed));
 
 		/// <summary>
 		/// Identifies the Indentation dependency property.
 		/// </summary>
 		public static DependencyProperty IndentationProperty { get; } =
-			DependencyProperty.Register(nameof(Indentation), typeof(Thickness), typeof(TreeViewItemTemplateSettings), new PropertyMetadata(default(Thickness)));
+			DependencyProperty.Register(nameof(Indentation), typeof(Thickness), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(default(Thickness)));
 	}
 }

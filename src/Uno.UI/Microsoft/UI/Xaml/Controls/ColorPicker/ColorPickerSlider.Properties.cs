@@ -15,6 +15,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(ColorChannel),
 				typeof(ColorPickerHsvChannel),
 				typeof(ColorPickerSlider),
-				new PropertyMetadata(ColorPickerHsvChannel.Value));
+				new FrameworkPropertyMetadata(ColorPickerHsvChannel.Value));
 	}
 }

@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsSelected dependency property.
 		/// </summary>
 		public static DependencyProperty IsSelectedProperty { get; } =
-			DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(NavigationViewItemBase), new PropertyMetadata(false, OnIsSelectedPropertyChanged));
+			DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(NavigationViewItemBase), new FrameworkPropertyMetadata(false, OnIsSelectedPropertyChanged));
 
 		private static void OnIsSelectedPropertyChanged(
 			DependencyObject sender,

@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PagesProperty { get; } =
-			DependencyProperty.Register(nameof(Pages), typeof(IList<object>), typeof(PagerControlTemplateSettings), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(Pages), typeof(IList<object>), typeof(PagerControlTemplateSettings), new FrameworkPropertyMetadata(null));
 
 		public IList<object> NumberPanelItems
 		{
@@ -27,6 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NumberPanelItemsProperty { get; } =
-			DependencyProperty.Register(nameof(NumberPanelItems), typeof(IList<object>), typeof(PagerControlTemplateSettings), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(NumberPanelItems), typeof(IList<object>), typeof(PagerControlTemplateSettings), new FrameworkPropertyMetadata(null));
 	}
 }

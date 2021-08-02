@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static void SetHorizontalOrientationMargin(DependencyObject obj, Thickness value) => obj.SetValue(HorizontalOrientationMarginProperty, value);
 
 		public static DependencyProperty HorizontalOrientationMarginProperty { get; } =
-			DependencyProperty.RegisterAttached("HorizontalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new PropertyMetadata(default(Thickness)));
+			DependencyProperty.RegisterAttached("HorizontalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
 
 		public Thickness HorizontalOrientationPadding
 		{
@@ -20,14 +20,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HorizontalOrientationPaddingProperty { get; } =
-			DependencyProperty.Register(nameof(HorizontalOrientationPadding), typeof(Thickness), typeof(InfoBarPanel), new PropertyMetadata(default(Thickness)));
+			DependencyProperty.Register(nameof(HorizontalOrientationPadding), typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
 
 		public static Thickness GetVerticalOrientationMargin(DependencyObject obj) => (Thickness)obj.GetValue(VerticalOrientationMarginProperty);
 
 		public static void SetVerticalOrientationMargin(DependencyObject obj, Thickness value) => obj.SetValue(VerticalOrientationMarginProperty, value);
 
 		public static DependencyProperty VerticalOrientationMarginProperty { get; } =
-			DependencyProperty.RegisterAttached("VerticalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new PropertyMetadata(default(Thickness)));
+			DependencyProperty.RegisterAttached("VerticalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
 
 		public Thickness VerticalOrientationPadding
 		{
@@ -36,6 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty VerticalOrientationPaddingProperty { get; } =
-			DependencyProperty.Register(nameof(VerticalOrientationPadding), typeof(Thickness), typeof(InfoBarPanel), new PropertyMetadata(default(Thickness)));
+			DependencyProperty.Register(nameof(VerticalOrientationPadding), typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
 	}
 }

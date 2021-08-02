@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private void CheckThread() => CoreDispatcher.CheckThreadAccess();
 
 		internal static readonly DependencyProperty CacheLengthProperty = DependencyProperty.Register(
-			"CacheLength", typeof(double), typeof(CalendarPanel), new PropertyMetadata(default(double)));
+			"CacheLength", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(double)));
 
 		internal double CacheLength
 		{
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty ColsProperty = DependencyProperty.Register(
-			"Cols", typeof(int), typeof(CalendarPanel), new PropertyMetadata(default(int)));
+			"Cols", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(int)));
 
 		internal int Cols
 		{
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 
 		internal static readonly DependencyProperty ItemMinHeightProperty = DependencyProperty.Register(
-			"ItemMinHeight", typeof(double), typeof(CalendarPanel), new PropertyMetadata(default(double)));
+			"ItemMinHeight", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(double)));
 
 		internal double ItemMinHeight
 		{
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty ItemMinWidthProperty = DependencyProperty.Register(
-			"ItemMinWidth", typeof(double), typeof(CalendarPanel), new PropertyMetadata(default(double)));
+			"ItemMinWidth", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(double)));
 
 		internal double ItemMinWidth
 		{
@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty OrientationProperty = DependencyProperty.Register(
-			"Orientation", typeof(Orientation), typeof(CalendarPanel), new PropertyMetadata(default(Orientation)));
+			"Orientation", typeof(Orientation), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(Orientation)));
 
 		internal Orientation Orientation
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty RowsProperty = DependencyProperty.Register(
-			"Rows", typeof(int), typeof(CalendarPanel), new PropertyMetadata(default(int)));
+			"Rows", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(int)));
 
 		internal int Rows
 		{
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty StartIndexProperty = DependencyProperty.Register(
-			"StartIndex", typeof(int), typeof(CalendarPanel), new PropertyMetadata(default(int)));
+			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(int)));
 
 		internal int StartIndex
 		{

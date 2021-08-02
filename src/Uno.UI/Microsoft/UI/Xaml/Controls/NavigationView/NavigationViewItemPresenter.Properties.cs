@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Identifies the Icon dependency property.
 		/// </summary>
 		public static DependencyProperty IconProperty { get; } =
-			DependencyProperty.Register(nameof(Icon), typeof(IconElement), typeof(NavigationViewItemPresenter), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(Icon), typeof(IconElement), typeof(NavigationViewItemPresenter), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets the template settings.
@@ -37,6 +37,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Identifies the TemplateSettings dependency property.
 		/// </summary>
 		public static DependencyProperty TemplateSettingsProperty { get; } =
-			DependencyProperty.Register(nameof(TemplateSettings), typeof(NavigationViewItemPresenterTemplateSettings), typeof(NavigationViewItemPresenter), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TemplateSettings), typeof(NavigationViewItemPresenterTemplateSettings), typeof(NavigationViewItemPresenter), new FrameworkPropertyMetadata(null));
 	}
 }

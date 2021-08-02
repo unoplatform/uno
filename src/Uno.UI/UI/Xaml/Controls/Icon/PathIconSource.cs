@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DataProperty { get; } =
-			DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new FrameworkPropertyMetadata(null));
 
 		public override IconElement CreateIconElement()
 		{

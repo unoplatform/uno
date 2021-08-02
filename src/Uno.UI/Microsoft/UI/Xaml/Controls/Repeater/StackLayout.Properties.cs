@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Orientation - DP with common callback
 		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
-			"Orientation", typeof(Orientation), typeof(StackLayout), new PropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
+			"Orientation", typeof(Orientation), typeof(StackLayout), new FrameworkPropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
 
 		public Orientation Orientation
 		{
@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Spacing - DP with common callback
 		public static DependencyProperty SpacingProperty = DependencyProperty.Register(
-			"Spacing", typeof(double), typeof(StackLayout), new PropertyMetadata(default(double), OnDependencyPropertyChanged));
+			"Spacing", typeof(double), typeof(StackLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
 
 		public double Spacing
 		{
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region DisableVirtualization
 		public static DependencyProperty DisableVirtualizationProperty = DependencyProperty.Register(
-			"DisableVirtualization ", typeof(bool), typeof(StackLayout), new PropertyMetadata(default(bool), OnDependencyPropertyChanged));
+			"DisableVirtualization ", typeof(bool), typeof(StackLayout), new FrameworkPropertyMetadata(default(bool), OnDependencyPropertyChanged));
 
 		public bool DisableVirtualization
 		{

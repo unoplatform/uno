@@ -493,7 +493,7 @@ namespace Windows.UI.Xaml.Controls
 				"ComputedHorizontalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new PropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
+				new FrameworkPropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
 
 		public Visibility ComputedHorizontalScrollBarVisibility
 		{
@@ -508,7 +508,7 @@ namespace Windows.UI.Xaml.Controls
 				"ComputedVerticalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new PropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
+				new FrameworkPropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
 
 		public Visibility ComputedVerticalScrollBarVisibility
 		{

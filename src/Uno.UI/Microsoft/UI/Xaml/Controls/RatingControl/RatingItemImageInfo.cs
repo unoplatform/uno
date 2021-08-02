@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the DisabledImage dependency property.
 		/// </summary>
 		public static DependencyProperty DisabledImageProperty { get; } =
-			DependencyProperty.Register(nameof(DisabledImage), typeof(ImageSource), typeof(RatingItemImageInfo), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(DisabledImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets an image that represents a rating element that has been set by the user.
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Image dependency property.
 		/// </summary>
 		public static DependencyProperty ImageProperty { get; } =
-			DependencyProperty.Register(nameof(Image), typeof(ImageSource), typeof(RatingItemImageInfo), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(Image), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets an image that represents a rating element that is showing a placeholder value.
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PlaceholderImage dependency property.
 		/// </summary>
 		public static DependencyProperty PlaceholderImageProperty { get; } =
-			DependencyProperty.Register(nameof(PlaceholderImage), typeof(ImageSource), typeof(RatingItemImageInfo), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(PlaceholderImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets an image that represents a rating element that has the pointer over it.
@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PointerOverImage dependency property.
 		/// </summary>
 		public static DependencyProperty PointerOverImageProperty { get; } =
-			DependencyProperty.Register(nameof(PointerOverImage), typeof(ImageSource), typeof(RatingItemImageInfo), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(PointerOverImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets an image that represents a rating element showing a placeholder value with the pointer over it.
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PointerOverPlaceholderImage dependency property.
 		/// </summary>
 		public static DependencyProperty PointerOverPlaceholderImageProperty { get; } =
-			DependencyProperty.Register(nameof(PointerOverPlaceholderImage), typeof(ImageSource), typeof(RatingItemImageInfo), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(PointerOverPlaceholderImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets an image that represents a rating element that has not been set.
@@ -105,6 +105,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the UnsetImage dependency property.
 		/// </summary>
 		public static DependencyProperty UnsetImageProperty { get; } =
-			DependencyProperty.Register(nameof(UnsetImage), typeof(ImageSource), typeof(RatingItemImageInfo), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(UnsetImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
 	}
 }

@@ -95,55 +95,55 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the CollapsedGlyph dependency property.
 		/// </summary>
 		public static DependencyProperty CollapsedGlyphProperty { get; } =
-			DependencyProperty.Register(nameof(CollapsedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE76C"));
+			DependencyProperty.Register(nameof(CollapsedGlyph), typeof(string), typeof(TreeViewItem), new FrameworkPropertyMetadata("\uE76C"));
 
 		/// <summary>
 		/// Identifies the ExpandedGlyph dependency property.
 		/// </summary>
 		public static DependencyProperty ExpandedGlyphProperty { get; } =
-			DependencyProperty.Register(nameof(ExpandedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE70D"));
+			DependencyProperty.Register(nameof(ExpandedGlyph), typeof(string), typeof(TreeViewItem), new FrameworkPropertyMetadata("\uE70D"));
 
 		/// <summary>
 		/// Identifies the GlyphBrush dependency property.
 		/// </summary>
 		public static DependencyProperty GlyphBrushProperty { get; } =
-			DependencyProperty.Register(nameof(GlyphBrush), typeof(Brush), typeof(TreeViewItem), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(GlyphBrush), typeof(Brush), typeof(TreeViewItem), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Identifies the GlyphOpacity dependency property.
 		/// </summary>
 		public static DependencyProperty GlyphOpacityProperty { get; } =
-			DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new PropertyMetadata(1.0));
+			DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new FrameworkPropertyMetadata(1.0));
 
 		/// <summary>
 		/// Identifies the GlyphSize dependency property.
 		/// </summary>
 		public static DependencyProperty GlyphSizeProperty { get; } =
-			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new PropertyMetadata(12.0));
+			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new FrameworkPropertyMetadata(12.0));
 
 		/// <summary>
 		/// Identifies the HasUnrealizedChildren dependency property.
 		/// </summary>
 		public static DependencyProperty HasUnrealizedChildrenProperty { get; } =
-			DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false, OnHasUnrealizedChildrenPropertyChanged));
+			DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(false, OnHasUnrealizedChildrenPropertyChanged));
 
 		/// <summary>
 		/// Identifies the IsExpanded dependency property.
 		/// </summary>
 		public static DependencyProperty IsExpandedProperty { get; } =
-			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false, OnIsExpandedPropertyChanged));
+			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(false, OnIsExpandedPropertyChanged));
 
 		/// <summary>
 		/// Identifies the ItemsSource dependency property.
 		/// </summary>
 		public static DependencyProperty ItemsSourceProperty { get; } =
-			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeViewItem), new PropertyMetadata(null, OnItemsSourcePropertyChanged));
+			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeViewItem), new FrameworkPropertyMetadata(null, OnItemsSourcePropertyChanged));
 
 		/// <summary>
 		/// Identifies the TreeViewItemTemplateSettings dependency property.
 		/// </summary>
 		public static DependencyProperty TreeViewItemTemplateSettingsProperty { get; } =
-			DependencyProperty.Register(nameof(TreeViewItemTemplateSettings), typeof(TreeViewItemTemplateSettings), typeof(TreeViewItem), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TreeViewItemTemplateSettings), typeof(TreeViewItemTemplateSettings), typeof(TreeViewItem), new FrameworkPropertyMetadata(null));
 
 		private static void OnHasUnrealizedChildrenPropertyChanged(
 			DependencyObject sender,

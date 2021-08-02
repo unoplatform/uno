@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ImageSourceProperty { get; } =
-			DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(ImageIconSource), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(ImageIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		private protected override IconElement CreateIconElementCore()
 		{

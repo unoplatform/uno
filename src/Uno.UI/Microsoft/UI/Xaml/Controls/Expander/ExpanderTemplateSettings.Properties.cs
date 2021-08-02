@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(ContentHeight),
 				typeof(double),
 				typeof(ExpanderTemplateSettings),
-				new PropertyMetadata(0.0));
+				new FrameworkPropertyMetadata(0.0));
 
 		public double NegativeContentHeight
 		{
@@ -28,6 +28,6 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(NegativeContentHeight),
 				typeof(double),
 				typeof(ExpanderTemplateSettings),
-				new PropertyMetadata(0.0));
+				new FrameworkPropertyMetadata(0.0));
 	}
 }

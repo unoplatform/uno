@@ -30,6 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.2" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)\BannedSymbols.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<Compile Remove="$(MSBuildThisFileDirectory)Mixins\**\*.cs"/>
 	<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.cs" />
 	<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.tt" />

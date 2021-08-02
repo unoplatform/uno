@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		public static DependencyProperty ItemsJustificationProperty { get; } = DependencyProperty.Register(
 			"ItemsJustification", typeof(UniformGridLayoutItemsJustification), typeof(UniformGridLayout),
-			new PropertyMetadata(UniformGridLayoutItemsJustification.Start));
+			new FrameworkPropertyMetadata(UniformGridLayoutItemsJustification.Start));
 
 		public UniformGridLayoutItemsJustification ItemsJustification
 		{
@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty ItemsStretchProperty { get; } = DependencyProperty.Register(
 			"ItemsStretch", typeof(UniformGridLayoutItemsStretch), typeof(UniformGridLayout),
-			new PropertyMetadata(UniformGridLayoutItemsStretch.None));
+			new FrameworkPropertyMetadata(UniformGridLayoutItemsStretch.None));
 
 		public UniformGridLayoutItemsStretch ItemsStretch
 		{
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaximumRowsOrColumnsProperty { get; } = DependencyProperty.Register(
-			"MaximumRowsOrColumns", typeof(int), typeof(UniformGridLayout), new PropertyMetadata(-1));
+			"MaximumRowsOrColumns", typeof(int), typeof(UniformGridLayout), new FrameworkPropertyMetadata(-1));
 
 		public int MaximumRowsOrColumns
 		{
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MinColumnSpacingProperty { get; } = DependencyProperty.Register(
-			"MinColumnSpacing", typeof(double), typeof(UniformGridLayout), new PropertyMetadata(0d));
+			"MinColumnSpacing", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(0d));
 
 		public double MinColumnSpacing
 		{
@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MinItemHeightProperty { get; } = DependencyProperty.Register(
-			"MinItemHeight", typeof(double), typeof(UniformGridLayout), new PropertyMetadata(0d));
+			"MinItemHeight", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(0d));
 
 		public double MinItemHeight
 		{
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MinItemWidthProperty { get; } = DependencyProperty.Register(
-			"MinItemWidth", typeof(double), typeof(UniformGridLayout), new PropertyMetadata(0d));
+			"MinItemWidth", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(0d));
 
 		public double MinItemWidth
 		{
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MinRowSpacingProperty { get; } = DependencyProperty.Register(
-			"MinRowSpacing", typeof(double), typeof(UniformGridLayout), new PropertyMetadata(0d));
+			"MinRowSpacing", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(0d));
 
 		public double MinRowSpacing
 		{
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
 			"Orientation", typeof(Orientation), typeof(UniformGridLayout),
-			new PropertyMetadata(Orientation.Horizontal));
+			new FrameworkPropertyMetadata(Orientation.Horizontal));
 
 		public Orientation Orientation
 		{

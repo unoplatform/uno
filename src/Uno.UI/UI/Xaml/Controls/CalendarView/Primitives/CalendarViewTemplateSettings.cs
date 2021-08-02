@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"MinViewWidth",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(default(double)));
 
 		/// <summary>Gets the text of the header.</summary>
 		/// <returns>The text of the header.</returns>
@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"HeaderText",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>Gets the first day of the week.</summary>
 		/// <returns>The first day of the week.</returns>
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay1",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>Gets the second day of the week.</summary>
 		/// <returns>The second day of the week.</returns>
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay2",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>Gets the third day of the week.</summary>
 		/// <returns>The third day of the week.</returns>
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay3",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>Gets the fourth day of the week.</summary>
 		/// <returns>The fourth day of the week.</returns>
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay4",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>Gets the fifth day of the week.</summary>
 		/// <returns>The fifth day of the week.</returns>
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay5",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>Gets the sixth day of the week.</summary>
 		/// <returns>The sixth day of the week.</returns>
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay6",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>Gets the seventh day of the week.</summary>
 		/// <returns>The seventh day of the week.</returns>
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay7",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>Gets a value that indicates whether the CalendarView has more content after the displayed content.</summary>
 		/// <returns>**true** if the CalendarView has more content after the displayed content; otherwise, **false**.</returns>
@@ -146,7 +146,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"HasMoreContentAfter",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(default(bool)));
 
 		/// <summary>Gets a value that indicates whether the CalendarView has more content before the displayed content.</summary>
 		/// <returns>**true** if the CalendarView has more content after the displayed content; otherwise, **false**.</returns>
@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"HasMoreContentBefore",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(default(bool)));
 
 		/// <summary>Gets a value that indicates whether the CalendarView has more views (like year or decade) that can be shown.</summary>
 		/// <returns>**true** if the CalendarView has more views (like year or decade) that can be shown; otherwise, **false**.</returns>
@@ -174,7 +174,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"HasMoreViews",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(default(bool)));
 
 		/// <summary>Gets the rectangle used to clip the CalendarView.</summary>
 		/// <returns>The rectangle used to clip the CalendarView.</returns>
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"ClipRect",
 			typeof(Rect),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(Rect)));
+			new FrameworkPropertyMetadata(default(Rect)));
 
 		/// <summary>Gets the X coordinate of the CalendarView 's center point.</summary>
 		/// <returns>The X coordinate of the CalendarView 's center point.</returns>
@@ -202,7 +202,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"CenterX",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(default(double)));
 
 		/// <summary>Gets the Y coordinate of the CalendarView 's center point.</summary>
 		/// <returns>The Y coordinate of the CalendarView 's center point.</returns>
@@ -216,6 +216,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"CenterY",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new PropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(default(double)));
 	}
 }

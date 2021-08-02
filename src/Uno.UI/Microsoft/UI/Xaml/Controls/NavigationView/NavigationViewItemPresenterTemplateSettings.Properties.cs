@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Identifies the IconWidth dependency property.
 		/// </summary>
 		public static DependencyProperty IconWidthProperty { get; } =
-			DependencyProperty.Register(nameof(IconWidth), typeof(double), typeof(NavigationViewItemPresenterTemplateSettings), new PropertyMetadata(0.0));
+			DependencyProperty.Register(nameof(IconWidth), typeof(double), typeof(NavigationViewItemPresenterTemplateSettings), new FrameworkPropertyMetadata(0.0));
 
 		/// <summary>
 		/// Gets the width of the smaller icon.
@@ -36,6 +36,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Identifies the SmallerIconWidth dependency property.
 		/// </summary>
 		public static DependencyProperty SmallerIconWidthProperty { get; } =
-			DependencyProperty.Register(nameof(SmallerIconWidth), typeof(double), typeof(NavigationViewItemPresenterTemplateSettings), new PropertyMetadata(0.0));
+			DependencyProperty.Register(nameof(SmallerIconWidth), typeof(double), typeof(NavigationViewItemPresenterTemplateSettings), new FrameworkPropertyMetadata(0.0));
 	}
 }

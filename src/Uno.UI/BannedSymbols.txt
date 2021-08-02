@@ -1,0 +1,1 @@
+M:Windows.UI.Xaml.DependencyProperty.Register(System.String,System.Type,System.Type,Windows.UI.Xaml.PropertyMetadata);Use FrameworkPropertyMetadata instead.

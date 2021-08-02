@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		[NotImplemented]
 		public static DependencyProperty UseCompactResourcesProperty { get; } =
-			DependencyProperty.Register(nameof(UseCompactResources), typeof(bool), typeof(XamlControlsResources), new PropertyMetadata(false));
+			DependencyProperty.Register(nameof(UseCompactResources), typeof(bool), typeof(XamlControlsResources), new FrameworkPropertyMetadata(false));
 
 		[NotImplemented]
 		public ControlsResourcesVersion ControlsResourcesVersion
@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		[NotImplemented]
 		public static DependencyProperty ControlsResourcesVersionProperty { get; } =
-			DependencyProperty.Register(nameof(ControlsResourcesVersion), typeof(ControlsResourcesVersion), typeof(XamlControlsResources), new PropertyMetadata(ControlsResourcesVersion.Version1));
+			DependencyProperty.Register(nameof(ControlsResourcesVersion), typeof(ControlsResourcesVersion), typeof(XamlControlsResources), new FrameworkPropertyMetadata(ControlsResourcesVersion.Version1));
 
 		[NotImplemented]
 		internal static bool IsUsingResourcesVersion2() => false;

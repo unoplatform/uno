@@ -30,7 +30,7 @@ namespace Uno.UI.Xaml.Controls
 				nameof(FocusedElement),
 				typeof(UIElement),
 				typeof(SystemFocusVisual),
-				new PropertyMetadata(default, OnFocusedElementChanged));
+				new FrameworkPropertyMetadata(default, OnFocusedElementChanged));
 
 		internal void Redraw() => SetLayoutProperties();
 
