@@ -60,5 +60,5 @@ Make sure to configure the server that hosts the file accordingly.
 
 For all targets except WebAssembly, the `CachedFileManager` does not provide any functionality and its methods immediately return. This allows to easily write code which requires deferring updates on UWP and sharing it across all targets.
 
-In case of WebAssembly, the behavior of `CachedFileManager` depends on whether the app uses the **File System Access API** or **Download picker**. This is described in detail in [file pickers documentation](windows-storage-pickers.md#WebAssembly).
+In case of WebAssembly, the behavior of `CachedFileManager` depends on whether the app uses the **File System Access API** or **Download picker**. This is described in detail in [file pickers documentation](windows-storage-pickers.md#webassembly).
 
