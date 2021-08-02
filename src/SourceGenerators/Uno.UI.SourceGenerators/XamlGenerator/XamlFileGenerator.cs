@@ -24,6 +24,7 @@ using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.SourceGenerators.BindableTypeProviders;
+using Microsoft.CodeAnalysis.CSharp;
 
 #if NETFRAMEWORK
 using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
@@ -2288,7 +2289,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											&& implicitValue.HasValueTrimmed()
 										)
 										{
-											writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = \"" + implicitValue + "\"");
+											writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = " + SyntaxFactory.Literal(implicitValue).ToString());
 
 											if (isInline)
 											{
