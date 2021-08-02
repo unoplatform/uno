@@ -997,7 +997,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		static string[] Split(string value)
-			=> Regex.Split(value, @"(\s*?,\s*|\s+)");
+			=> Regex.Split(value, @"(\s*,\s*|\s+)");
 	}
 }
 #endif

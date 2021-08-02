@@ -4444,7 +4444,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
 
 				static string? splitAndJoin(string? value)
-					=> value == null ? null : string.Join(", ", Regex.Split(value, @"(\s*?,\s*|\s+)"));
+					=> value == null ? null : Regex.Replace(value, @"(\s*,\s*|\s+)", ", "));
 			}
 		}
 
