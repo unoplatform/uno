@@ -1,13 +1,12 @@
 # Guidelines for issue triage
 
-
 ## Purpose
 
 Speed up issue management.
 
-The detailed list of labels can be found at https://github.com/unoplatform/uno/labels.
+The detailed list of labels can be found at <https://github.com/unoplatform/uno/labels>.
 
-While working on triaging issues you may not have the privilege to assign a specific label and in that case add a comment in the issue with your findings.
+While working on triaging issues, you may not have the privilege to assign a specific label and in that case add a comment in the issue with your findings.
 
 Here are a few predetermined searches on issues for convenience:
 
@@ -16,19 +15,17 @@ Here are a few predetermined searches on issues for convenience:
 * [Busy untriaged issues](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+sort%3Acomments-desc) (sorted by number of comments)
 * [Issues that need more attention](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+sort%3Acomments-asc)
 
-
-
 ## Scope
 
 These guidelines serves as a primary document for triaging incoming issues to Uno. Maintainers and contributors are encouraged to either use these guidelines, or use this as a starting point if necessary.
 
 ## Security
 
-Security related matters should be disclosed in private [as per our policy on GitHub](https://github.com/unoplatform/uno/security/policy). If a security matter is raised as an issue, please capture the relevant information, [delete the GitHub issue](https://help.github.com/en/articles/deleting-an-issue) and follow up via email. This [tool can be used to find](https://emailaddress.github.io/) (almost) any GitHub user's email address.
+Security related matters should be disclosed in private [as per our policy on GitHub](https://github.com/unoplatform/uno/security/policy). If a security matter is raised as an issue, please capture the relevant information, [delete the GitHub issue](https://docs.github.com/issues/tracking-your-work-with-issues/deleting-an-issue) and follow up via email. This [tool can be used to find](https://emailaddress.github.io/) (almost) any GitHub user's email address.
 
 ## Support requests
 
-These issues should be labeled with `triage/support`, directed to our support structures (see below) and then closed _but_ before doing so consider why the support request was raised.
+These issues should be directed to our support structures (see below) and then closed _but_ before doing so consider why the support request was raised.
 
 Is something unclear? Do we need to improve our documentation or samples?
 
@@ -41,10 +38,9 @@ Community support requests should be directed to:
 
 Organizations that want a deeper level of support beyond community support, should be directed to [contact unoplatform](https://platform.uno/contact/) to discuss obtaining professional support.
 
-
 ## Validate if the issue is a bug
 
-Confirm if the problem is a bug by reproducing it. If a test case has not been supplied ask the reporter to supply one. If reproducible, move to the next step of defining priority. You may need to contact the issue reporter in the following cases:
+Confirm if the problem is a bug by reproducing it. If a test case has not been supplied, ask the reporter to supply one. You may need to contact the issue reporter in the following cases:
 
 * Do a quick duplicate search to see if the issue has been reported already. If a duplicate is found, let the issue reporter know it by marking it duplicate. Label such issues as `triage/duplicate`.
 * If you can not reproduce the issue, label it as a `triage/not-reproducible`. Contact the issue reporter with your findings and close the issue if both the parties agree that it could not be reproduced.
@@ -52,33 +48,13 @@ Confirm if the problem is a bug by reproducing it. If a test case has not been s
 
 In all cases, if you do not get a response in 20 days then close the issue with an appropriate comment.
 
-## Define priority
-
-We use GitHub issue labels for prioritization. The absence of a priority label means the bug has not been reviewed and prioritized yet.
-
-We try to apply these priority labels consistently across the entire project, but if you notice an issue that you believe to be incorrectly prioritized, please do let us know and we will evaluate your counter-proposal.
-
-If you want an issue resolved faster, please tell the maintainers that you are willing to send in a pull-request and we'll do everything we can to bring you up to speed with becoming a contributor.
-
-* `priority/critical-urgent`: Must be actively worked on as someone's top priority right now. Stuff is burning. If it's not being actively worked on, someone is expected to drop what they're doing immediately to work on it. Team leaders are responsible for making sure that all the issues, labeled with this priority, are being actively worked on. Examples include time-sensitive hotfixes, broken builds or tests and critical security issues.
-
-* `priority/important-soon`: Must be staffed and worked on either currently, or very soon, ideally in time for the next release.
-
-* `priority/important-longterm`: Important over the long term, but may not be currently staffed and/or may require multiple releases to complete.
-
-* `priority/backlog`: There appears to be general agreement that this would be good to have, but we may not have anyone available to work on it right now or in the immediate future. Community contributions would be most welcome in the meantime (although it might take a while to get them reviewed if reviewers are fully occupied with higher priority issues, for example immediately before a release).
-
-* `priority/awaiting-more-evidence`: Possibly useful, but not yet enough support to actually get it done. These are mostly place-holders for potentially good ideas, so that they don't get completely forgotten, and can be referenced or deduped every time they come up.
-
 ## Closing issues
 
 Issues that are identified as a support request, duplicate, not-reproducible or lacks enough information from reporter should be closed using the following guidelines explained in this file. Also, any issues that can not be resolved because of any particular reason should be closed. These issues should have one or more of following self-readable labels:
 
-* `triage/support`: Indicates an issues is not a bug but a support request.
 * `triage/duplicate`: Indicates an issue is a duplicate of other open issue.
 * `triage/not-reproducible`: Indicates an issue can not be reproduced as described.
 * `triage/needs-information`: Indicates an issue needs more information in order to work on it.
-* `triage/unresolved`: Indicates an issue that can not be resolved.
 
 ## Help Wanted issues
 
@@ -192,5 +168,3 @@ When commenting on an issue or pull request, there's a [feature in GitHub](https
 ## Acknowledgements
 
 - This document was based off the [Kubernetes community sig guidelines](https://github.com/kubernetes/community/blob/e4eabb7c3c26ce4463f1ab89e0ad94a7a7671b08/contributors/guide/issue-triage.md).
-
-
