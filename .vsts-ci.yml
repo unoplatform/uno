@@ -41,25 +41,28 @@ jobs:
   parameters:
     poolName: '$(windowsScaledPool)'
 
-- template: build/ci/.azure-devops-project-template-tests.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+# Disabled as not working on 16.10 for source generator issues
+# - template: build/ci/.azure-devops-project-template-tests.yml
+#   parameters:
+#     vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-uap.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+# Disabled as not working on 16.10 for source generator issues
+# - template: build/ci/.azure-devops-uap.yml
+#   parameters:
+#     vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-unit-tests.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
-- template: build/ci/.azure-devops-skia-tests.yml
+# Disabled as not working on 16.10 for source generator issues
+#- template: build/ci/.azure-devops-skia-tests.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
+
+- template: build/ci/.azure-devops-docs.yml
   parameters:
     vmImage: '$(windowsHostedVMImage)'
-
-- template: build/ci/.azure-devops-docs.yml	
-  parameters:	
-    vmImage: '$(windowsHostedVMImage)'	
 
 - template: build/ci/.azure-devops-wasm-uitests.yml
   parameters:
