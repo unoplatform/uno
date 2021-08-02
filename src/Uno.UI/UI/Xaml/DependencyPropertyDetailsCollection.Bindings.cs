@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml
 		/// Gets the DataContext <see cref="Binding"/> instance, if any
 		/// </summary>
 		/// <returns></returns>
-		internal BindingExpression FindDataContextBinding() => DataContextPropertyDetails.GetLastBinding();
+		internal BindingExpression FindDataContextBinding() => DataContextPropertyDetails.GetBinding();
 
 		/// <summary>
 		/// Sets the specified <paramref name="binding"/> on the <paramref name="target"/> instance.
@@ -126,6 +126,9 @@ namespace Windows.UI.Xaml
 		{
 			if (GetPropertyDetails(dependencyProperty) is DependencyPropertyDetails details)
 			{
+				// Clear previous binding, to avoid erroneously pushing two-way value to it
+				details.ClearBinding();
+
 				var bindingExpression =
 					new BindingExpression(
 						viewReference: target,
@@ -211,7 +214,7 @@ namespace Windows.UI.Xaml
 		{
 			if (GetPropertyDetails(dependencyProperty) is DependencyPropertyDetails details)
 			{
-				return details.GetLastBinding();
+				return details.GetBinding();
 			}
 
 			return null;

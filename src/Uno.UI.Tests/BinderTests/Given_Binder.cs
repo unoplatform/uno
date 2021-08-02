@@ -997,6 +997,57 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(0, SUT.MyValue);
 		}
 
+		[TestMethod]
+		public void When_Binding_OneWay_Overwritten_By_Binding()
+		{
+			var previousDC = new MyBindingSource { IntValue = 45 };
+			var replacementDC = new MyBindingSource { IntValue = 22 };
+			var slider = new Slider();
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyBindingSource.IntValue)), Mode = BindingMode.OneWay, Source = previousDC });
+
+			Assert.AreEqual(45, slider.Value);
+
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyBindingSource.IntValue)), Mode = BindingMode.OneWay, Source = replacementDC });
+
+			Assert.AreEqual(22, slider.Value);
+
+			previousDC.IntValue = 14;
+
+			Assert.AreEqual(22, slider.Value);
+		}
+
+		[TestMethod]
+		[Ignore("Activate this test when bindings are correctly cleared by setting local value")]
+		public void When_Binding_OneWay_Overwritten_By_Local()
+		{
+			var dc = new MyBindingSource { IntValue = 45 };
+			var slider = new Slider() { DataContext = dc };
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyBindingSource.IntValue)), Mode = BindingMode.OneWay });
+
+			Assert.AreEqual(45, slider.Value);
+
+			slider.Value = 22; // Setting local value should clear one-way binding
+			dc.IntValue = 14;
+
+			Assert.AreEqual(22, slider.Value);
+		}
+
+		[TestMethod]
+		[Ignore("Activate this test when bindings are correctly cleared by setting local value")]
+		public void When_Binding_OneWay_Overwritten_By_Local_Explicit_Source()
+		{
+			var dc = new MyBindingSource { IntValue = 45 };
+			var slider = new Slider();
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyBindingSource.IntValue)), Mode = BindingMode.OneWay, Source = dc });
+
+			Assert.AreEqual(45, slider.Value);
+
+			slider.Value = 22; // Setting local value should clear one-way binding
+			dc.IntValue = 14;
+
+			Assert.AreEqual(22, slider.Value);
+		}
+
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();
