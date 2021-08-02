@@ -1,8 +1,8 @@
 ﻿<Page
-    x:Class="UITests.Shared.Windows_UI_Core.SystemNavigationManagerTests.HardwareBackButton"
+    x:Class="UITests.Windows_UI_Core.SystemNavigationManagerTests.HardwareBackButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Shared.Windows_UI_Core.SystemNavigationManagerTests"
+    xmlns:local="using:UITests.Windows_UI_Core.SystemNavigationManagerTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -11,7 +11,7 @@
 	<StackPanel>
 		<Button Tapped="Enable" Content="Enable" />
 		<Button Tapped="Disable" Content="Disable" />
-		<CheckBox IsThreeState="False" IsChecked="False" Content="Handle event" x:Name="_handle" />
-		<TextBlock x:Name="_output" />
+		<CheckBox IsThreeState="False" IsChecked="False" Content="Handle event" x:Name="HandleCheckBox" />
+		<TextBlock x:Name="OutputTextBlock" />
 	</StackPanel>
 </Page>
