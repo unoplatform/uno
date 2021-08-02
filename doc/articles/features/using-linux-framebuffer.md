@@ -4,8 +4,8 @@ Uno supports the [Linux Framebuffer](https://www.kernel.org/doc/html/latest/fb/f
 
 There are restrictions for the support for the Framebuffer:
 - The `TextBox` control is not supported. If you need text input, you will need to implement an on-screen keyboard manually using the Keyboard and Pointer events that Uno provides (in the `CoreWindow` class).
-- The mouse is supported through pointer events, but uno does not show the pointer for your app. You'll need to display one using the pointer events provided by Uno (also in the `CoreWindow` class).
-- It is only supported on linux where `/dev/fbXX` is available.
+- The mouse is supported through pointer events, but Uno does not show the pointer for your app. You'll need to display one using the pointer events provided by Uno (also in the `CoreWindow` class).
+- It is only supported on Linux where `/dev/fbXX` is available.
 
 ## Get started with the Framebuffer
 - Follow the [getting started guide for linux](../get-started-with-linux.md)
