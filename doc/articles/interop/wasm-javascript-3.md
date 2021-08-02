@@ -146,7 +146,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        mc:Ignorable="d">
    
-       <StackPanel Spacing="10" Padding="20">
+       <StackPanel Spacing="10" Padding="20" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
          <TextBlock FontSize="15">
    		   Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
             <LineBreak />Picked Date/Time: <Run FontSize="20" FontWeight="Bold" Text="{Binding SelectedDateTime, ElementName=picker}" />
@@ -240,6 +240,12 @@ In the constructor of your wrapper control, add the following:
 // Uno reproduces this behavior, so we must set it here even if we're not using the background.
 // Not doing this will lead to a `pointer-events: none` CSS style on the control.
 Background = new SolidColorBrush(Colors.Transparent);
+```
+
+### `TextBlock` content is not visible in browsers with the dark theme
+`TextBlock` defaults the text color as White correctly but `StackPanel` background needs to be set correctly.
+```
+<StackPanel Spacing="10" Padding="20" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 ```
 
 ## 🔬 Going further
