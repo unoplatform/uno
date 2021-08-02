@@ -37,7 +37,7 @@
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">
 		<!--<PackageReference Include="Xamarin.Google.Android.Material" Version="1.3.0.1-net6preview01" />-->
 		<!--TODO: Xamarin.AndroidX.Arch.Core.Runtime should be transitive dependency and not needed-->
-		<PackageReference Include="Xamarin.AndroidX.Arch.Core.Runtime" Version="2.1.0.8-net6preview02.4535000" />
+		<PackageReference Include="Xamarin.AndroidX.Arch.Core.Runtime" Version="2.1.0.9" />
 		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.3.0.1-net6preview03.4680155" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.35" />
 	</ItemGroup>
