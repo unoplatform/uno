@@ -214,7 +214,7 @@ namespace Uno.UI.Tests.BinderTests
 				MyValue = value;
 			}
 
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 		}
 	}
 }
