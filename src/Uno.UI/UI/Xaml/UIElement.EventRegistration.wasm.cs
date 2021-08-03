@@ -319,7 +319,7 @@ namespace Windows.UI.Xaml
 			/// <summary>
 			/// The event has not been dispatch.
 			/// WARNING: This must not be used by application.
-			/// It only indicates that there is no active listener for that event and it should not be raised enymore.
+			/// It only indicates that there is no active listener for that event and it should not be raised anymore.
 			/// It should not in anyway indicates an error in event processing.
 			/// </summary>
 			NotDispatched = 128

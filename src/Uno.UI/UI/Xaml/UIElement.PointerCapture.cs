@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml
 {
@@ -154,16 +155,8 @@ namespace Windows.UI.Xaml
 			/// </summary>
 			public PointerCaptureKind RemoveTarget(UIElement element, PointerCaptureKind kinds, out PointerRoutedEventArgs lastDispatched)
 			{
-				if (_targets.TryGetValue(element, out var target))
-				{
-					// Validate if any of the requested kinds is handled
-					if ((target.Kind & kinds) == 0)
-					{
-						lastDispatched = default;
-						return PointerCaptureKind.None;
-					}
-				}
-				else
+				if (!_targets.TryGetValue(element, out var target)
+					|| (target.Kind & kinds) == 0) // Validate if any of the requested kinds is handled
 				{
 					lastDispatched = default;
 					return PointerCaptureKind.None;
@@ -193,7 +186,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{
-					this.Log().Info($"{target.Element}: Releasing ({kinds}) capture of pointer {Pointer}");
+					this.Log().Info($"{target.Element.GetDebugName()}: Releasing ({kinds}) capture of pointer {Pointer}");
 				}
 
 				// If we remove an explicit capture, we update the _localExplicitCaptures of the target element

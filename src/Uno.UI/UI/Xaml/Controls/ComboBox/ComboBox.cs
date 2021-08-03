@@ -127,16 +127,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if __ANDROID__
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
-		{
-			base.OnPointerPressed(args);
-
-			// For some reasons, PointerReleased is not raised unless PointerPressed is Handled.
-			args.Handled = true;
-		}
-#endif
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -404,10 +394,22 @@ namespace Windows.UI.Xaml.Controls
 			UpdateDropDownState();
 		}
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs e)
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
+			base.OnPointerPressed(args);
+
+			// On UWP ComboBox does handle the pressed event ... but does not capture it!
+			args.Handled = true;
+		}
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			base.OnPointerReleased(args);
+
 			IsDropDownOpen = true;
-			e.Handled = true;
+
+			// On UWP ComboBox does handle the released event.
+			args.Handled = true;
 		}
 
 		/// <summary>
