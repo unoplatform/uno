@@ -48,7 +48,7 @@ namespace $ext_safeprojectname$
             _window = new Window();
             _window.Activate();
 #else
-			_window = Window.Current;
+			_window = Windows.UI.Xaml.Window.Current;
 #endif
 
             var rootFrame = _window.Content as Frame;
