@@ -43,7 +43,9 @@ namespace UITests.Windows_UI_Core.SystemNavigationManagerTests
 		private void OnBackRequested(object sender, BackRequestedEventArgs args)
 		{
 			OutputTextBlock.Text += "Back requested\r\n";
-			args.Handled = HandleCheckBox.IsChecked.GetValueOrDefault();
+			var handled = HandleCheckBox.IsChecked.GetValueOrDefault();
+			HandleCheckBox.IsChecked = false;
+			args.Handled = handled;
 		}
 	}
 }
