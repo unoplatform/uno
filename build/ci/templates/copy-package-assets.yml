@@ -10,6 +10,7 @@ steps:
         **/bin/**/*.xml
         **/bin/**/*.xbf
         **/bin/**/*.xaml
+        **/bin/**/*.pri
         **/bin/**/*.aar
         **/bin/**/*.vsix
         **/bin/**/*.json
