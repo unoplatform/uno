@@ -74,7 +74,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				if (trimmed.EndsWith("px"))
+				if (trimmed.EndsWith("px", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("cm", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("in", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("pt", StringComparison.OrdinalIgnoreCase))
 				{
 					trimmed = trimmed.Substring(0, trimmed.Length - 2);
 				}
