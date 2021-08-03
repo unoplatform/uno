@@ -28,7 +28,7 @@ namespace $ext_safeprojectname$.Droid
 			ConfigureUniversalImageLoader();
 		}
 
-		private void ConfigureUniversalImageLoader()
+		private static void ConfigureUniversalImageLoader()
 		{
 			// Create global configuration and initialize ImageLoader with this config
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration
