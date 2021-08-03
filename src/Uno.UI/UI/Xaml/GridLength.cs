@@ -74,6 +74,14 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+				if (trimmed.EndsWith("px", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("cm", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("in", StringComparison.OrdinalIgnoreCase) ||
+					trimmed.EndsWith("pt", StringComparison.OrdinalIgnoreCase))
+				{
+					trimmed = trimmed.Substring(0, trimmed.Length - 2);
+				}
+
 				if (double.TryParse(trimmed, NumberStyles.Any & ~NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var value))
 				{
 					return new GridLength(value, GridUnitType.Pixel);
