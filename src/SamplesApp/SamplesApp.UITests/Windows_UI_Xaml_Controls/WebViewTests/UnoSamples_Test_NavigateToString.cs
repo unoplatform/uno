@@ -43,7 +43,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		// [ActivePlatforms(Platform.Android, Platform.iOS)]
+		[Ignore("Fixed in later uno builds")]
 		public void WebView_NavigateToAnchor()
 		{
 			Run("Uno.UI.Samples.Content.UITests.WebView.WebView_AnchorNavigation");
