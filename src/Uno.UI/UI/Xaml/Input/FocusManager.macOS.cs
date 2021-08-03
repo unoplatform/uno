@@ -10,6 +10,12 @@ namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{
-		private static void FocusNative(UIElement control) => control?.BecomeFirstResponder();
+		private static void FocusNative(UIElement control)
+		{
+			if (control?.CanBecomeFirstResponder == true)
+			{
+				control.BecomeFirstResponder();
+			}
+		}
 	}
 }
