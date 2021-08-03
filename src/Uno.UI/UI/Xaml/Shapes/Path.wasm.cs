@@ -30,6 +30,8 @@ namespace Windows.UI.Xaml.Shapes
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
+			base.OnPropertyChanged2(args);
+
 			var property = args.Property;
 
 			if(property == DataProperty)
