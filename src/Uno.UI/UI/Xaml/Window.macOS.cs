@@ -87,9 +87,13 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException("The root visual could not be created.");
 				}
 
+				UIElement.LoadingRootElement(_rootVisual);
+
 				_mainController.View = _rootVisual;
 				_rootVisual.Frame = _window.Frame;
 				_rootVisual.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+
+				UIElement.RootElementLoaded(_rootVisual);
 			}
 
 			_rootBorder.Child?.RemoveFromSuperview();

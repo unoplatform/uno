@@ -109,6 +109,12 @@ namespace Windows.UI.Xaml
 		public override bool AcceptsFirstResponder()
 			=> true; // This is required to receive the KeyDown / KeyUp. Note: Key events are then bubble in managed.
 
+
+		internal static void LoadingRootElement(UIElement visualTreeRoot) { }
+
+		internal static void RootElementLoaded(UIElement visualTreeRoot) =>
+			visualTreeRoot.SetHitTestVisibilityForRoot();
+
 		private protected override void OnNativeKeyDown(NSEvent evt)
 		{
 			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))

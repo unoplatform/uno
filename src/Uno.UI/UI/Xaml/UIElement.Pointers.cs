@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal HitTestability GetHitTestVisibility()
 		{
-#if __WASM__ || __SKIA__
+#if __WASM__ || __SKIA__ || __MACOS__
 			return HitTestVisibility;
 #else
 			// This is a coalesced HitTestVisible and should be unified with it
