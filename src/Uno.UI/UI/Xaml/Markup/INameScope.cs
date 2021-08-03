@@ -12,6 +12,11 @@ namespace Windows.UI.Xaml.Markup
 	public interface INameScope
 	{
 		/// <summary>
+		/// Returns the top-level <see cref="DependencyObject"/> that defined this namescope
+		/// </summary>
+		DependencyObject Owner { get; }
+
+		/// <summary>
 		/// Returns an object that has the provided identifying name.
 		/// </summary>
 		/// <param name="name">The name identifier for the object being requested.</param>

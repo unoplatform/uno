@@ -793,6 +793,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)", kvp.Value.ReturnType))
 										{
 											writer.AppendLineInvariant("global::Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
+											writer.AppendLineInvariant("nameScope.Owner = d;");
 											writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
 										}
 
@@ -1005,9 +1006,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
-
-		private bool IsDependencyObject(XamlObjectDefinition component)
-			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol));
 
 		private string BuildControlInitializerDeclaration(string className, XamlObjectDefinition topLevelControl)
 		{
@@ -3240,9 +3238,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition))
 					{
 						writer.AppendLineInvariant($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
-						if (!_isTopLevelDictionary)
+						var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
+						if (!_isTopLevelDictionary || isInsideFrameworkTemplate)
 						{
 							writer.AppendLineInvariant($"this._component_{CurrentScope.ComponentCount} = {closureName};");
+
+							if (HasMarkupExtensionNeedingComponent(objectDefinition)
+								&& IsDependencyObject(objectDefinition)
+								&& !IsUIElement(objectDefinition)
+								&& isInsideFrameworkTemplate)
+							{
+								// Ensure that the namescope is property propagated to instances
+								// that are not UIElements in order for ElementName to resolve properly
+								writer.AppendLineInvariant($"global::Windows.UI.Xaml.NameScope.SetNameScope(this._component_{CurrentScope.ComponentCount}, nameScope);");
+							}
+
 							CurrentScope.Components.Add(objectDefinition);
 						}
 						else if (isFrameworkElement && HasMarkupExtensionNeedingComponent(objectDefinition))
@@ -5549,7 +5559,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									members.Add(GenerateBinding("Visibility", visibilityMember, definition));
 								}
 
-								if (!_isTopLevelDictionary
+								if ( (!_isTopLevelDictionary || IsMemberInsideFrameworkTemplate(definition).isInside)
 									&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
 								{
 									var componentName = $"_component_{ CurrentScope.ComponentCount}";

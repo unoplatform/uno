@@ -281,6 +281,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, _appKitViewSymbol);
 		}
 
+		private bool IsDependencyObject(XamlObjectDefinition component)
+			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol));
+
+		private bool IsUIElement(XamlObjectDefinition component)
+			=> IsType(component.Type, _uiElementSymbol);
+
 		/// <summary>
 		/// Is the type derived from the native view type on a Xamarin platform?
 		/// </summary>

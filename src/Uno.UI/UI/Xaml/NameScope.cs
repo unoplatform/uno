@@ -13,9 +13,24 @@ namespace Windows.UI.Xaml
 	public class NameScope : INameScope
 	{
 		private Dictionary<string, ManagedWeakReference> _names = new Dictionary<string, ManagedWeakReference>();
+		private ManagedWeakReference _ownerRef;
 
 		public NameScope()
 		{
+		}
+
+		public DependencyObject Owner
+		{
+			get => _ownerRef?.Target as DependencyObject;
+			set
+			{
+				if (_ownerRef is { })
+				{
+					WeakReferencePool.ReturnWeakReference(this, _ownerRef);
+				}
+
+				_ownerRef = WeakReferencePool.RentWeakReference(this, value);
+			}
 		}
 
 		public object FindName(string name)
@@ -65,7 +80,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Identifies the NameScope attached property.
 		/// </summary>
-		public static DependencyProperty NameScopeProperty { get ; } =
+		public static DependencyProperty NameScopeProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"NameScope",
 				typeof(INameScope),
@@ -97,7 +112,23 @@ namespace Windows.UI.Xaml
 					return target;
 				}
 
-				parent = parent.GetParent() as DependencyObject;
+				var newParent = parent.GetParent() as DependencyObject;
+
+				if(newParent is null && !(parent is UIElement))
+				{
+					// This case is about handling ElementName Bindings on non-UIElement
+					// dependency objects (e.g. XAML Behaviors triggers). Those objects
+					// cannot have a parent set, and in order to find ancestor scopes
+					// (DataTemplate inside a DataTemplate) we need to find a known ancestor
+					// through the NameScope owner.
+
+					if(scope?.Owner is DependencyObject owner)
+					{
+						return FindInNamescopes(owner, name);
+					}
+				}
+
+				parent = newParent;
 			}
 
 			return null;
