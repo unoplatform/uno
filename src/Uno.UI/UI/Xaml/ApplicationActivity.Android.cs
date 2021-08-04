@@ -103,49 +103,52 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+		public override bool DispatchKeyEvent(KeyEvent e)
 		{
-			base.OnKeyDown(keyCode, e);
+			var handled = false;
 			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
 			{
 				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
-				if (focusHandler == null)
+				if (focusHandler != null && e.Action == KeyEventActions.Down)
 				{
-					return false;
-				}
-
-				if (e.KeyCode == Keycode.Tab)
-				{
-					var shift = e.Modifiers.HasFlag(MetaKeyStates.ShiftLeftOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftRightOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftOn);
-					return focusHandler.TryHandleTabFocus(shift);
-				}
-				else if (
-					e.KeyCode == Keycode.DpadUp ||
-					e.KeyCode == Keycode.SystemNavigationUp)
-				{
-					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Up);
-				}
-				else if (
-					e.KeyCode == Keycode.DpadDown ||
-					e.KeyCode == Keycode.SystemNavigationDown)
-				{
-					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Down);
-				}
-				else if (
-					e.KeyCode == Keycode.DpadRight ||
-					e.KeyCode == Keycode.SystemNavigationRight)
-				{
-					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Right);
-				}
-				else if (
-					e.KeyCode == Keycode.DpadLeft ||
-					e.KeyCode == Keycode.SystemNavigationLeft)
-				{
-					return focusHandler.TryHandleDirectionalFocus(VirtualKey.Left);
+					if (e.KeyCode == Keycode.Tab)
+					{
+						var shift = e.Modifiers.HasFlag(MetaKeyStates.ShiftLeftOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftRightOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftOn);
+						handled = focusHandler.TryHandleTabFocus(shift);
+					}
+					else if (
+						e.KeyCode == Keycode.DpadUp ||
+						e.KeyCode == Keycode.SystemNavigationUp)
+					{
+						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Up);
+					}
+					else if (
+						e.KeyCode == Keycode.DpadDown ||
+						e.KeyCode == Keycode.SystemNavigationDown)
+					{
+						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Down);
+					}
+					else if (
+						e.KeyCode == Keycode.DpadRight ||
+						e.KeyCode == Keycode.SystemNavigationRight)
+					{
+						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Right);
+					}
+					else if (
+						e.KeyCode == Keycode.DpadLeft ||
+						e.KeyCode == Keycode.SystemNavigationLeft)
+					{
+						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Left);
+					}
 				}
 			}
 
-			return false;
+			if (!handled)
+			{
+				return base.DispatchKeyEvent(e);
+			}
+
+			return true;
 		}
 
 		public void SetOrientation(ScreenOrientation orientation)
