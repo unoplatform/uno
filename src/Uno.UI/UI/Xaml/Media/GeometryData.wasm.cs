@@ -27,7 +27,14 @@ namespace Windows.UI.Xaml.Media
 				Data = data;
 			}
 
-			_svgElement.SetAttribute("d", data);
+			_svgElement.SetAttribute("d", Data);
+			var rule = FillRule switch
+			{
+				FillRule.EvenOdd => "evenodd",
+				FillRule.Nonzero => "nonzero",
+				_ => "evenodd"
+			};
+			_svgElement.SetAttribute("fill-rule", rule);
 		}
 
 		internal override SvgElement GetSvgElement() => _svgElement;
