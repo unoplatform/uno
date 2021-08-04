@@ -1,6 +1,6 @@
 # Create a Single Page App with Uno Platform
 
-[Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-1)  
+[Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial)  
 -- Estimated time to complete: 10 minutes --
 
 In this tutorial you will learn how to:
