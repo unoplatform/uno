@@ -22,15 +22,15 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
-		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
-		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
-		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
-		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -38,6 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Issue5054.xaml" />
 	  <None Remove="NamedColorsTest.xaml" />
 	  <None Remove="NonDPAssignableTest.xaml" />
 	  <None Remove="StoryboardTargetTest.xaml" />

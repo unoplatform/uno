@@ -20,6 +20,7 @@ using Uno.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.SourceGenerators.BindableTypeProviders;
 using Microsoft.CodeAnalysis.CSharp;
+using System.Diagnostics;
 
 #if NETFRAMEWORK
 using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
@@ -650,7 +651,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			using (TrySetDefaultBindMode(topLevelControl))
 			{
 				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
-				BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild);
+				BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild, useBase: true);
 
 				writer.AppendLineInvariant(";");
 
@@ -1982,7 +1983,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private bool BuildProperties(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInline = true, bool returnsContent = false, string? closureName = null)
+		private bool BuildProperties(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInline = true, bool returnsContent = false, string? closureName = null, bool useBase = false)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			try
@@ -2169,9 +2170,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										if (IsInitializableProperty(contentProperty))
 										{
+											string contentPropertyName = useBase ? $"base.{contentProperty.Name}" : contentProperty.Name;
 											if (isInline)
 											{
-												using (writer.BlockInvariant(contentProperty.Name + " = "))
+												using (writer.BlockInvariant($"{contentPropertyName} = "))
 												{
 													foreach (var child in implicitContentChild.Objects)
 													{
@@ -2184,7 +2186,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											{
 												foreach (var inner in implicitContentChild.Objects)
 												{
-													writer.AppendLine($"{contentProperty.Name}.Add(");
+													writer.AppendLine($"{contentPropertyName}.Add(");
 
 													BuildChild(writer, implicitContentChild, inner);
 
@@ -2259,7 +2261,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
 											!isLocalized)
 										{
-											writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = ");
+											// At the time of writing, if useBase is true, setterPrefix will be empty.
+											// This assertion serves as reminder to re-evaluate the logic if setterPrefix becomes a non-null.
+											Debug.Assert(!useBase || setterPrefix.Length == 0);
+											writer.AppendLineInvariant((useBase ? "base." : string.Empty) + setterPrefix + contentProperty.Name + " = ");
 
 											if (implicitContentChild.Objects.Count > 1)
 											{
@@ -5326,8 +5331,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			if (HasIsParsing(objectDefinition.Type))
 			{
-				writer.AppendLineInvariant("IsParsing = true");
-				writer.AppendLineInvariant(isInitializer ? "," : ";");
+				// Append [base.]IsParsing = true(, or ;)
+				writer.AppendLineInvariant($"{(!isInitializer ? "base." : string.Empty)}IsParsing = true{(isInitializer ? "," : ";")}");
 			}
 		}
 
