@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 {
-	public class ComboBox_Pointers : SampleControlUITestBase
+	public partial class ComboBox_Pointers : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

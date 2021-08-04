@@ -1,4 +1,4 @@
-﻿#define TRACE_ROUTED_EVENT_BUBBLING
+﻿// #define TRACE_ROUTED_EVENT_BUBBLING
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
