@@ -9,7 +9,7 @@ using Windows.Storage;
 namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 {
 	/// <summary>
-	/// Tests are based on <see cref="https://docs.microsoft.com/en-us/windows/uwp/app-resources/uri-schemes#ms-appdata" />.
+	/// Tests are based on <see href="https://docs.microsoft.com/en-us/windows/uwp/app-resources/uri-schemes#ms-appdata" />.
 	/// </summary>
 	[TestClass]
 	public class Given_AppDataUriEvaluator

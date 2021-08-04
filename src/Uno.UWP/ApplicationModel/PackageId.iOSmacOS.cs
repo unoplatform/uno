@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel
 		public string Name => NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey].ToString();
 
 		/// <summary>
-		/// Implementation based on <see cref="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleversion"/>.
+		/// Implementation based on <see href="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleversion"/>.
 		/// </summary>
 		public PackageVersion Version
 		{

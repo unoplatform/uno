@@ -1507,7 +1507,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (basedOnNode != null)
 				{
-					writer.AppendLineInvariant("BasedOn = (global::Windows.UI.Xaml.Style){0},", BuildBindingOption(basedOnNode, _styleSymbol, prependCastToType: false));
+					writer.AppendLineInvariant("BasedOn = (global::Windows.UI.Xaml.Style){0},", BuildBindingOption(basedOnNode, _styleSymbol));
 				}
 
 				using (writer.BlockInvariant("Setters = ", fullTargetType))
@@ -1679,7 +1679,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						if (HasMarkupExtension(valueNode))
 						{
 							TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "NonResourceMarkupValueDP" : "MarkupValuePOCO");
-							writer.AppendLineInvariant(BuildBindingOption(valueNode, propertyType, prependCastToType: true));
+							writer.AppendLineInvariant(BuildBindingOption(valueNode, propertyType));
 						}
 						else
 						{
@@ -4031,7 +4031,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return "{0} = {1}".InvariantCultureFormat(
 					m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name,
-					BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true));
+					BuildBindingOption(m, FindPropertyType(m.Member)));
 			}
 		}
 
@@ -4687,7 +4687,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol? propertyType, bool prependCastToType)
+		private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol? propertyType)
 		{
 			// The default member is Path
 			var memberName = m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name;

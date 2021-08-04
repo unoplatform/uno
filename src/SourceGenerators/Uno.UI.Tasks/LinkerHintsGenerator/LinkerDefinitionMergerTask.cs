@@ -31,8 +31,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			= MessageImportance.Low;
 #endif
 
-		private string[]? _referencePaths;
-
 		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? DefinitionFiles { get; set; }
 

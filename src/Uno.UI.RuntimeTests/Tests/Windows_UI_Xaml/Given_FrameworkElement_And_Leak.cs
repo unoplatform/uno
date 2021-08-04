@@ -166,6 +166,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, activeControls, retainedMessage);
 #endif
 
+#if NET5_0 || __IOS__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
 				if(p.Key is FrameworkElement fe)
@@ -177,6 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					return p.Key?.ToString();
 				}
 			}
+#endif
 
 			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
 			{

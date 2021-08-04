@@ -83,7 +83,7 @@ namespace SamplesApp.UITests.TestFramework
 
 				return new ExpectedPixels(Name, Location, rect.Location, colors, Tolerance);
 			}
-			catch (Exception ex)
+			catch
 			{
 				throw new InvalidOperationException($"Unable to create a pixel array of {rect.Width}x{rect.Height} (bitmap is {source.Width}x{source.Height}).");
 			}

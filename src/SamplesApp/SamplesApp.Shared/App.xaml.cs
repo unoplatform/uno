@@ -69,7 +69,7 @@ namespace SamplesApp
 		/// <summary>
 		/// Assert that ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on all platforms.
 		/// </summary>
-		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
+		/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
 		{
 #if !__SKIA__ // SKIA TODO

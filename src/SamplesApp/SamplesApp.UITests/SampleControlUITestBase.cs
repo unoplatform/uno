@@ -18,11 +18,6 @@ namespace SamplesApp.UITests
 	{
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
-		private float? _scaling;
-
-		public SampleControlUITestBase()
-		{
-		}
 
 		[OneTimeSetUp]
 		public void SingleSetup()
@@ -138,7 +133,7 @@ namespace SamplesApp.UITests
 					: null
 			);
 
-		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions? options)
+		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions options)
 		{
 			if(_app == null)
 			{

@@ -48,7 +48,7 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 		}
 
 		/// <summary>
-		/// ToColor method from the Windows Community Toolkit <see cref="https://github.com/windows-toolkit/WindowsCommunityToolkit/blob/master/Microsoft.Toolkit.Uwp/Helpers/ColorHelper.cs"/>
+		/// ToColor method from the Windows Community Toolkit <see href="https://github.com/windows-toolkit/WindowsCommunityToolkit/blob/master/Microsoft.Toolkit.Uwp/Helpers/ColorHelper.cs"/>
 		/// </summary>
 		/// <param name="colorString">Color string</param>
 		/// <returns>Windows Color</returns>

@@ -8,7 +8,7 @@ namespace Uno.Helpers.Theming
 	internal static partial class SystemThemeHelper
 	{
 		/// <summary>
-		/// Based on <see cref="https://forums.developer.apple.com/thread/118974" />
+		/// Based on <see href="https://forums.developer.apple.com/thread/118974" />
 		/// </summary>
 		/// <returns>System theme</returns>
 		private static SystemTheme GetSystemTheme()

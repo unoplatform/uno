@@ -88,7 +88,7 @@ namespace SamplesApp.UITests.TestFramework
 		private static void AreEqualImpl(
 			ScreenshotInfo expected,
 			Rectangle expectedRect,
-			ScreenshotInfo actual,
+			ScreenshotInfo? actual,
 			Bitmap actualBitmap,
 			Rectangle actualRect,
 			double expectedToActualScale,
@@ -115,7 +115,7 @@ namespace SamplesApp.UITests.TestFramework
 		private static (bool areEqual, string context) EqualityCheck(
 			ScreenshotInfo expected,
 			Rectangle expectedRect,
-			ScreenshotInfo actual,
+			ScreenshotInfo? actual,
 			Bitmap actualBitmap,
 			Rectangle actualRect,
 			double expectedToActualScale,
@@ -244,7 +244,7 @@ namespace SamplesApp.UITests.TestFramework
 				));
 			}
 
-			string WithContext(string message = null, Action<StringBuilder> builder = null)
+			string WithContext(string? message = null, Action<StringBuilder>? builder = null)
 			{
 				return new StringBuilder()
 					.AppendLine($"ImageAssert.HasColorAt @ line {line}")
@@ -284,7 +284,7 @@ namespace SamplesApp.UITests.TestFramework
 				));
 			}
 
-			string WithContext(string message = null, Action<StringBuilder> builder = null)
+			string WithContext(string? message = null, Action<StringBuilder>? builder = null)
 			{
 				return new StringBuilder()
 					.AppendLine($"ImageAssert.DoesNotHaveColorAt @ line {line}")
@@ -324,7 +324,7 @@ namespace SamplesApp.UITests.TestFramework
 		#region Validation core (ExpectedPixels)
 		private static bool Validate(ExpectedPixels expectation, Bitmap actualBitmap, double expectedToActualScale, StringBuilder report)
 		{
-			report?.AppendLine($"{expectation.Name}:");
+			report.AppendLine($"{expectation.Name}:");
 
 			bool isSuccess;
 			switch (expectation.Tolerance.OffsetKind)
@@ -393,7 +393,7 @@ namespace SamplesApp.UITests.TestFramework
 			double expectedToActualScale,
 			Point pixel,
 			(int x, int y) offset,
-			StringBuilder report = null)
+			StringBuilder report)
 		{
 			var expectedColor = expectation.Values[pixel.Y, pixel.X];
 			if (expectedColor.IsEmpty)
