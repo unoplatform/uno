@@ -2,6 +2,7 @@
 using System.Numerics;
 using Uno.Disposables;
 using Windows.UI.Composition;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Media
 {
