@@ -41,12 +41,29 @@ namespace Windows.UI.Xaml.Media
 				"MappingMode",
 				typeof(BrushMappingMode),
 				typeof(GradientBrush),
-				new FrameworkPropertyMetadata(BrushMappingMode.RelativeToBoundingBox));
+				new FrameworkPropertyMetadata(
+					defaultValue: BrushMappingMode.RelativeToBoundingBox,
+					options: FrameworkPropertyMetadataOptions.AffectsRender));
 
 		public BrushMappingMode MappingMode
 		{
 			get => (BrushMappingMode)GetValue(MappingModeProperty);
 			set => SetValue(MappingModeProperty, value);
+		}
+
+		public static DependencyProperty SpreadMethodProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SpreadMethod),
+				typeof(GradientSpreadMethod),
+				typeof(GradientBrush),
+				new FrameworkPropertyMetadata(
+					defaultValue: GradientSpreadMethod.Pad,
+					options: FrameworkPropertyMetadataOptions.AffectsRender));
+
+		public GradientSpreadMethod SpreadMethod
+		{
+			get => (GradientSpreadMethod)GetValue(SpreadMethodProperty);
+			set => SetValue(SpreadMethodProperty, value);
 		}
 
 		internal Color FallbackColorWithOpacity => GetColorWithOpacity(FallbackColor);
