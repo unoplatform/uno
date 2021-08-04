@@ -33,16 +33,16 @@ namespace Windows.UI.Xaml.Media
 			{
 				if (args.OldValue is PointCollection oldCollection)
 				{
-					oldCollection.UnRegisterChangedListener(segment.OnPointsChanged);
+					oldCollection.UnRegisterChangedListener(segment.OnPointCollectionChanged);
 				}
 				if (args.NewValue is PointCollection newCollection)
 				{
-					newCollection.RegisterChangedListener(segment.OnPointsChanged);
+					newCollection.RegisterChangedListener(segment.OnPointCollectionChanged);
 				}
 			}
 		}
 
-		private void OnPointsChanged() => this.InvalidateMeasure();
+		private void OnPointCollectionChanged() => this.InvalidateMeasure();
 
 		#endregion
 	}
