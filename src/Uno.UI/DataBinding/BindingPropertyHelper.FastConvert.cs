@@ -996,7 +996,7 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		private static readonly Regex _splitRegex = new Regex(@"(\s*,\s*|\s+)");
+		private static readonly Regex _splitRegex = new Regex(@"\s*,\s*|\s+");
 
 		static string[] Split(string value)
 			=> _splitRegex.Split(value);

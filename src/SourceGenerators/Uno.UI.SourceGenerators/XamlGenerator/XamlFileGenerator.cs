@@ -154,7 +154,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// If set, code generated from XAML will be annotated with the source method and line # in this file, for easier debugging.
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml;
-		private static readonly Regex splitRegex = new Regex(@"(\s*,\s*|\s+)");
+		private static readonly Regex splitRegex = new Regex(@"\s*,\s*|\s+");
 
 		private string ParseContextPropertyAccess =>
 			 (_isTopLevelDictionary, _isInSingletonInstance) switch
