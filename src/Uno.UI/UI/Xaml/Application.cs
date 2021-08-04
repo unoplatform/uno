@@ -151,11 +151,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal ElementTheme ActualElementTheme => (_themeSetExplicitly, RequestedTheme) switch
+		internal ElementTheme ActualElementTheme => RequestedTheme switch
 		{
-			(true, ApplicationTheme.Light) => ElementTheme.Light,
-			(true, ApplicationTheme.Dark) => ElementTheme.Dark,
-			_ => ElementTheme.Default
+			ApplicationTheme.Light => ElementTheme.Light,
+			ApplicationTheme.Dark => ElementTheme.Dark,
+			_ => throw new InvalidOperationException("Application's RequestedTheme is invalid."),
 		};
 
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)

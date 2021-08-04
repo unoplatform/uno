@@ -627,7 +627,7 @@ namespace Windows.UI.Xaml
 		#endif
 		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Unloaded
 		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Loading
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, object> ActualThemeChanged
 		{
