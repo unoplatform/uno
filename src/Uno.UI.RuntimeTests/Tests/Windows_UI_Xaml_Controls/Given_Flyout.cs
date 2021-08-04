@@ -241,6 +241,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(FlyoutPlacementMode.Top, HorizontalPosition.Center, VerticalPosition.BeyondTop)]
+		[DataRow(FlyoutPlacementMode.Bottom, HorizontalPosition.Center, VerticalPosition.BeyondBottom)]
+		[DataRow(FlyoutPlacementMode.Left, HorizontalPosition.BeyondLeft, VerticalPosition.Center)]
+		[DataRow(FlyoutPlacementMode.Right, HorizontalPosition.BeyondRight, VerticalPosition.Center)]
+		[DataRow(FlyoutPlacementMode.TopEdgeAlignedLeft, HorizontalPosition.LeftFlush, VerticalPosition.BeyondTop)]
+		[DataRow(FlyoutPlacementMode.TopEdgeAlignedRight, HorizontalPosition.RightFlush, VerticalPosition.BeyondTop)]
+		[DataRow(FlyoutPlacementMode.BottomEdgeAlignedLeft, HorizontalPosition.LeftFlush, VerticalPosition.BeyondBottom)]
+		[DataRow(FlyoutPlacementMode.BottomEdgeAlignedRight, HorizontalPosition.RightFlush, VerticalPosition.BeyondBottom)]
+		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedTop, HorizontalPosition.BeyondLeft, VerticalPosition.TopFlush)]
+		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedBottom, HorizontalPosition.BeyondLeft, VerticalPosition.BottomFlush)]
+		[DataRow(FlyoutPlacementMode.RightEdgeAlignedTop, HorizontalPosition.BeyondRight, VerticalPosition.TopFlush)]
+		[DataRow(FlyoutPlacementMode.RightEdgeAlignedBottom, HorizontalPosition.BeyondRight, VerticalPosition.BottomFlush)]
+		public async Task Check_Placement_All_WithPosition(
+			FlyoutPlacementMode placementMode,
+			HorizontalPosition horizontalPosition,
+			VerticalPosition verticalPosition)
+		{
+			var (flyout, content) = CreateFlyout();
+			var position = new Windows.Foundation.Point(50, 50);
+			var options = new FlyoutShowOptions
+			{
+				Placement = placementMode,
+				Position = position,
+			};
+
+			const double MarginValue = 97;
+			const int TargetWidth = 88;
+			var target = new Border
+			{
+				Margin = new Thickness(MarginValue),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Width = TargetWidth,
+				Height = 23,
+				Background = new SolidColorBrush(Colors.Red)
+			};
+
+			TestServices.WindowHelper.WindowContent = target;
+
+			await TestServices.WindowHelper.WaitForLoaded(target);
+			await TestServices.WindowHelper.WaitFor(() => target.ActualWidth == TargetWidth); // For some reason target is initially stretched on iOS
+
+			try
+			{
+				flyout.ShowAt(target, options);
+
+				await TestServices.WindowHelper.WaitForLoaded(content);
+
+				VerifyRelativeContentPosition(position, horizontalPosition, verticalPosition, content, MarginValue, target);
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
 #if __ANDROID__
 		[Ignore("Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?")]
 #endif
@@ -450,6 +507,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		private static void VerifyRelativeContentPosition(Windows.Foundation.Point position, HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
+		{
+			var contentScreenBounds = content.GetOnScreenBounds();
+			var contentCenter = contentScreenBounds.GetCenter();
+			var targetScreenBounds = target.GetOnScreenBounds();
+			var targetCenter = targetScreenBounds.GetCenter();
+			var anchorPoint = new Windows.Foundation.Point(targetScreenBounds.X + position.X, targetScreenBounds.Y + position.Y);
+
+			Assert.IsTrue(targetCenter.X > minimumTargetOffset);
+			Assert.IsTrue(targetCenter.Y > minimumTargetOffset);
+			switch (horizontalPosition)
+			{
+				case HorizontalPosition.BeyondLeft:
+					NumberAssert.GreaterOrEqual(anchorPoint.X, contentScreenBounds.Right);
+					break;
+				case HorizontalPosition.LeftFlush:
+					Assert.AreEqual(anchorPoint.X, contentScreenBounds.Left, delta: 2);
+					break;
+				case HorizontalPosition.Center:
+					Assert.AreEqual(anchorPoint.X, contentCenter.X, delta: 2);
+					break;
+				case HorizontalPosition.RightFlush:
+					Assert.AreEqual(anchorPoint.X, contentScreenBounds.Right, delta: 2);
+					break;
+				case HorizontalPosition.BeyondRight:
+					NumberAssert.LessOrEqual(anchorPoint.X, contentScreenBounds.Left);
+					break;
+			}
+
+			switch (verticalPosition)
+			{
+				case VerticalPosition.BeyondTop:
+					NumberAssert.GreaterOrEqual(anchorPoint.Y, contentScreenBounds.Bottom);
+					break;
+				case VerticalPosition.TopFlush:
+					Assert.AreEqual(anchorPoint.Y, contentScreenBounds.Top, delta: 2);
+					break;
+				case VerticalPosition.Center:
+					Assert.AreEqual(anchorPoint.Y, contentCenter.Y, delta: 2);
+					break;
+				case VerticalPosition.BottomFlush:
+					Assert.AreEqual(anchorPoint.Y, contentScreenBounds.Bottom, delta: 2);
+					break;
+				case VerticalPosition.BeyondBottom:
+					NumberAssert.LessOrEqual(anchorPoint.Y, contentScreenBounds.Top);
+					break;
+			}
+		}
+
 		private (Flyout Flyout, FrameworkElement Content) CreateFlyout()
 		{
 			var content = new Grid { Height = 64, Width = 64, Background = new SolidColorBrush(Colors.Green) };
@@ -528,6 +634,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						new Setter(FlyoutPresenter.PaddingProperty, new Thickness(0)),
 						new Setter(FlyoutPresenter.MinWidthProperty, 0d),
 						new Setter(FlyoutPresenter.MinHeightProperty, 0d),
+						new Setter(FlyoutPresenter.BorderThicknessProperty, new Thickness(0)),
 					}
 		};
 
