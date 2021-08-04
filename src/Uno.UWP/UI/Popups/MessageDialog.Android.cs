@@ -45,6 +45,7 @@ namespace Windows.UI.Popups
 						.SetTitle(Title ?? "")
 						.SetMessage(Content ?? "")
 						.SetOnCancelListener(new DialogListener(this, invokedCommand))
+						.SetCancelable(false)
 						.Create(),
 					(alertDialog, commandInfo) =>
 					{

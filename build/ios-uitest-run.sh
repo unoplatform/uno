@@ -41,7 +41,8 @@ else
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests' or \
 			class = 'SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests.DragDrop_ListViewReorder_Automated' or \
-			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests'
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests' or \
+			namespace = 'SamplesApp.UITests.MessageDialogTests'
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '2' ];
 	then
