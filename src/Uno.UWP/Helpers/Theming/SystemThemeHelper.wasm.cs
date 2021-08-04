@@ -18,7 +18,7 @@ namespace Uno.Helpers.Theming
 
         private static SystemTheme GetSystemTheme()
 		{
-			var serializedTheme = WebAssemblyRuntime.InvokeJS(BaseUIXamlNamespace + ".Application.getDefaultSystemTheme()");
+			var serializedTheme = WebAssemblyRuntime.InvokeJS($"{BaseUIXamlNamespace}.Application.getDefaultSystemTheme()");
 
 			if (serializedTheme != null)
 			{
@@ -45,7 +45,7 @@ namespace Uno.Helpers.Theming
 
 		static partial void ObserveThemeChangesPartial()
 		{
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
+			WebAssemblyRuntime.InvokeJS($"{BaseUIXamlNamespace}.Application.observeSystemTheme()");
 		}
 	}
 }

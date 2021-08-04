@@ -217,12 +217,6 @@ namespace Windows.UI.Xaml
 #endif
 				CoreWindow.OnActivated(coreWindowActivatedEventArgs);
 				Activated?.Invoke(this, activatedEventArgs);
-
-				if (state != CoreWindowActivationState.Deactivated)
-				{
-					// Ensure theme is refreshed when the window was activated
-					Application.Current.RefreshRequestedTheme();
-				}
 			}
 		}
 
