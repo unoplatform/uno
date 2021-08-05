@@ -99,11 +99,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			SUT.SelectionChanged += (s, e) =>
 			{
 				selectionChanged++;
-				Assert.AreEqual(item, SUT.SelectedItem);
 
-				// In windows, when programmatically changed, the bindings are updated *after*
-				// the event is raised, but *before* when the SelectedItem is changed from the UI.
-				Assert.IsNull(model.SelectedItem);
+				Assert.AreEqual(item, SUT.SelectedItem);
+				Assert.AreEqual(item, model.SelectedItem);
 			};
 
 			SUT.SelectedIndex = 0;

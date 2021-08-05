@@ -1581,6 +1581,61 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_Callback_And_Changed_With_Binding()
+		{
+			var source = new ChangedCallbackOrderElement();
+			var target = new ChangedCallbackOrderElement();
+			var binding = new Binding()
+			{
+				Source = target,
+				Path = new PropertyPath("Test"),
+				Mode = BindingMode.TwoWay
+			};
+			source.SetBinding(ChangedCallbackOrderElement.TestProperty, binding);
+
+			int order = 0;
+
+			void OnSourceChanged(object s, object e)
+			{
+				order++;
+				Assert.AreEqual(true, source.Test);
+				Assert.AreEqual(false, target.Test);
+				Assert.AreEqual(1, order);
+			}
+
+			void OnTargetChanged(object s, object e)
+			{
+				order++;
+				Assert.AreEqual(true, source.Test);
+				Assert.AreEqual(true, target.Test);
+				Assert.AreEqual(2, order);
+			}
+
+			void OnTargetCallback(object s, object e)
+			{
+				order++;
+				Assert.AreEqual(true, source.Test);
+				Assert.AreEqual(true, target.Test);
+				Assert.AreEqual(3, order);
+			}
+
+			void OnSourceCallback(object s, object e)
+			{
+				order++;
+				Assert.AreEqual(true, source.Test);
+				Assert.AreEqual(true, target.Test);
+				Assert.AreEqual(4, order);
+			}
+
+			source.TestCallback += OnSourceCallback;
+			target.TestCallback += OnTargetCallback;
+			source.TestChanged += OnSourceChanged;
+			target.TestChanged += OnTargetChanged;
+
+			source.Test = true;
+		}
+
+		[TestMethod]
 		public void When_Set_With_Both_Style_And_LocalValue()
 		{
 			var style = new Style { TargetType = typeof(MyDependencyObject) };
@@ -1827,6 +1882,41 @@ namespace Uno.UI.Tests.BinderTests
 		public static readonly DependencyProperty MyPropertyProperty =
 			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyDependencyObjectWithDefaultValueOverride), new PropertyMetadata(0));
 
+	}
+
+	public class ChangedCallbackOrderElement : FrameworkElement
+	{
+		public ChangedCallbackOrderElement()
+		{
+			this.RegisterPropertyChangedCallback(TestProperty, OnTestCallback);
+		}
+
+		public event EventHandler TestChanged;
+		public event EventHandler TestCallback;
+
+		public bool Test
+		{
+			get => (bool)GetValue(TestProperty);
+			set => SetValue(TestProperty, value);
+		}
+
+		public static readonly DependencyProperty TestProperty =
+			DependencyProperty.Register(
+				nameof(Test),
+				typeof(bool),
+				typeof(ChangedCallbackOrderElement),
+				new PropertyMetadata(false, OnTestChanged));
+
+		private static void OnTestChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var custom = (ChangedCallbackOrderElement)d;
+			custom.TestChanged?.Invoke(custom, null);
+		}
+
+		private void OnTestCallback(DependencyObject sender, DependencyProperty dp)
+		{
+			TestCallback?.Invoke(this, null);
+		}
 	}
 
 

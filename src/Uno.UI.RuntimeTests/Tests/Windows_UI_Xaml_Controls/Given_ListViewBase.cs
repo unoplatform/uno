@@ -28,6 +28,8 @@ using FluentAssertions.Execution;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1312,11 +1314,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(null, list.SelectedItem);
 		}
 
+		[TestMethod]
+		public async Task When_Selection_Events()
+		{
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate
+			};
+
+			var items = Enumerable.Range(0, 4).Select(x => "Item_" + x).ToArray();
+			list.ItemsSource = items;
+			list.SelectedIndex = 0;
+
+			var model = new When_Selection_Events_DataContext();
+			list.DataContext = model;
+			list.SetBinding(Selector.SelectedIndexProperty, new Binding { Path = new PropertyPath(nameof(model.SelectedIndex)), Mode = BindingMode.TwoWay });
+			list.SetBinding(Selector.SelectedItemProperty, new Binding { Path = new PropertyPath(nameof(model.SelectedItem)), Mode = BindingMode.TwoWay });
+			list.SetBinding(Selector.SelectedValueProperty, new Binding { Path = new PropertyPath(nameof(model.SelectedValue)), Mode = BindingMode.TwoWay });
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+
+			list.SelectionChanged += (s, e) =>
+			{
+				Assert.AreEqual(list.SelectedItem, "Item_1");
+				Assert.AreEqual(list.SelectedValue, "Item_1");
+				Assert.AreEqual(model.SelectedIndex, 1);
+				Assert.AreEqual(model.SelectedItem, "Item_1");
+				Assert.AreEqual(model.SelectedValue, "Item_1");
+			};
+
+			// update selection
+			list.SelectedIndex = 1;
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : INotifyPropertyChanged
+		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : global::System.ComponentModel.INotifyPropertyChanged
 		{
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public string[] MyItems { get; } = new[] { "Red beans", "Rice" };
 
@@ -1330,8 +1368,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					_mySelection = value;
 					if (changing)
 					{
-						PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MySelection)));
+						PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(nameof(MySelection)));
 					}
+				}
+			}
+		}
+
+		private class When_Selection_Events_DataContext : global::System.ComponentModel.INotifyPropertyChanged
+		{
+			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+			#region SelectedItem
+			private object _selectedItem;
+			public object SelectedItem
+			{
+				get => _selectedItem;
+				set => RaiseAndSetIfChanged(ref _selectedItem, value);
+			}
+			#endregion
+			#region SelectedValue
+			private object _selectedValue;
+			public object SelectedValue
+			{
+				get => _selectedValue;
+				set => RaiseAndSetIfChanged(ref _selectedValue, value);
+			}
+			#endregion
+			#region SelectedIndex
+			private int _selectedIndex;
+
+			public int SelectedIndex
+			{
+				get => _selectedIndex;
+				set => RaiseAndSetIfChanged(ref _selectedIndex, value);
+			}
+			#endregion
+
+			protected void RaiseAndSetIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
+			{
+				if (!EqualityComparer<T>.Default.Equals(backingField, value))
+				{
+					backingField = value;
+					PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(propertyName));
 				}
 			}
 		}

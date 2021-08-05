@@ -53,6 +53,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		}
 
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+
+			if (args.Property == SelectedItemProperty)
+			{
+				OnSelectedItemChanged(args.OldValue, args.NewValue, updateItemSelectedState: true);
+			}
+			else if (args.Property == SelectedIndexProperty)
+			{
+				OnSelectedIndexChanged((int)args.OldValue, (int)args.NewValue);
+			}
+		}
 
 		protected override void OnApplyTemplate()
 		{
@@ -65,10 +78,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"SelectedItem",
 			typeof(object),
 			typeof(Selector),
-			new FrameworkPropertyMetadata(
-				defaultValue: null,
-				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue, updateItemSelectedState: true)
-			)
+			new FrameworkPropertyMetadata(defaultValue: null)
 		);
 
 		public object SelectedItem
@@ -223,10 +233,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		// Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
 		public static DependencyProperty SelectedIndexProperty { get; } =
-			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new FrameworkPropertyMetadata(-1,
-				(s, e) => (s as Selector).OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue)
-			)
-		);
+			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new FrameworkPropertyMetadata(-1));
 
 		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{

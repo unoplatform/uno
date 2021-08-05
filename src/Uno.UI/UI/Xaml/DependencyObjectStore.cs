@@ -1618,12 +1618,17 @@ namespace Windows.UI.Xaml
 			// Raise the callback for backing fields update before PropertyChanged to get
 			// the backingfield updated, in case the PropertyChanged handler reads the
 			// dependency property value through the cache.
-			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
+			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);			
 
 			// Raise the changes for the callback register to the property itself
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
+			// Ensure binding is propagated
+			OnDependencyPropertyChanged(propertyDetails, eventArgs);
+
 			// Raise the common property change callback of WinUI
+			// This is raised *after* the data bound properties are updated
+			// but before the registered property callbacks
 			if (actualInstanceAlias is UIElement uiElt)
 			{
 				uiElt.OnPropertyChanged2(eventArgs);
@@ -1631,8 +1636,6 @@ namespace Windows.UI.Xaml
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
 			propertyDetails.CallbackManager.RaisePropertyChanged(actualInstanceAlias, eventArgs);
-
-			OnDependencyPropertyChanged(propertyDetails, eventArgs);
 
 			// Raise the property change for generic handlers
 			for (var callbackIndex = 0; callbackIndex < _genericCallbacks.Data.Length; callbackIndex++)
