@@ -618,7 +618,7 @@ namespace Windows.UI.Xaml
 		internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingContext ctx = default)
 		{
 #if TRACE_ROUTED_EVENT_BUBBLING
-			Debug.Write(new string('\t', Depth) + $"[{routedEvent.Name.Trim().ToUpperInvariant()}] {this.GetDebugName()}\r\n");
+			Debug.Write($"{this.GetDebugIdentifier()} - [{routedEvent.Name.TrimEnd("Event")}] (ctx: {ctx})\r\n");
 #endif
 
 			if (routedEvent.Flag == RoutedEventFlag.None)
@@ -805,6 +805,9 @@ namespace Windows.UI.Xaml
 				Root = Root,
 				IsInternal = IsInternal
 			};
+
+			public override string ToString()
+				=> $"{Mode}{(IsInternal?" *internal*":"")}{(Root is { } r ? $" up to {Root.GetDebugName()}":"")}";
 		}
 
 		/// <summary>

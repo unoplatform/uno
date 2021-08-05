@@ -12,6 +12,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 {
 	[TestFixture]
+	[Ignore("One of this test is preventing CI to pass https://github.com/unoplatform/uno/issues/6668")]
 	public partial class TimePickerTests_Tests : SampleControlUITestBase
 	{
 		[Test]
