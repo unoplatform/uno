@@ -15,15 +15,26 @@ namespace Windows.UI.Xaml.Input
 		private readonly UITouch _nativeTouch;
 		private readonly UIEvent _nativeEvent;
 
+		private readonly PointerPointProperties _properties;
+
 		/// <summary>
-		/// DO NOT USE - LEGACY SUPPORT - Will be removed soon
+		/// Creates an hybrid event args which reports the <paramref name="current"/> position, time and original source,
+		/// while reporting the state of the <paramref name="previous"/> args (pressed buttons, key modifiers, etc.).
 		/// </summary>
-		internal PointerRoutedEventArgs(UIElement receiver) : this()
+		/// <remarks>
+		/// This has a very specific usage and should be used cautiously!
+		/// </remarks>
+		internal PointerRoutedEventArgs(PointerRoutedEventArgs previous, PointerRoutedEventArgs current)
 		{
-			Pointer = new Pointer(0, PointerDeviceType.Touch, true, isInRange: true);
-			KeyModifiers = VirtualKeyModifiers.None;
-			OriginalSource = receiver;
-			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
+			_nativeTouch = current._nativeTouch;
+			_nativeEvent = current._nativeEvent;
+
+			FrameId = current.FrameId;
+			Pointer = previous.Pointer;
+			KeyModifiers = previous.KeyModifiers;
+			OriginalSource = current.OriginalSource;
+
+			_properties = previous._properties;
 		}
 
 		internal PointerRoutedEventArgs(uint pointerId, UITouch nativeTouch, UIEvent nativeEvent, UIElement receiver) : this()
@@ -32,7 +43,6 @@ namespace Windows.UI.Xaml.Input
 			_nativeEvent = nativeEvent;
 
 			var deviceType = GetPointerDeviceType(nativeTouch.Type);
-						
 			var isInContact = _nativeTouch.Phase == UITouchPhase.Began
 				|| _nativeTouch.Phase == UITouchPhase.Moved
 				|| _nativeTouch.Phase == UITouchPhase.Stationary;
@@ -41,6 +51,8 @@ namespace Windows.UI.Xaml.Input
 			Pointer = new Pointer(pointerId, deviceType, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = FindOriginalSource(_nativeTouch) ?? receiver;
+
+			_properties = GetProperties(); // Make sure to capture the properties state so we can re-use them in "mixed" ctor
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
@@ -51,9 +63,8 @@ namespace Windows.UI.Xaml.Input
 			var position = relativeTo == null
 				? rawPosition
 				: (Point)_nativeTouch.GetPreciseLocation(relativeTo);
-			var properties = GetProperties();
 
-			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
+			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);
 		}
 
 		private PointerDeviceType GetPointerDeviceType(UITouchType touchType) =>

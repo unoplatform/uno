@@ -28,6 +28,10 @@ namespace Windows.UI.Xaml
 
 			public uint LastManagedOnlyFrameId { get; set; }
 
+			public PointerRoutedEventArgs DownArgs { get; set; }
+
+			public bool HadMove { get; set; }
+
 			private TransientNativePointer(IntPtr nativeId)
 			{
 				_nativeId = nativeId;
@@ -70,8 +74,6 @@ namespace Windows.UI.Xaml
 		}
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
-		private bool _hadNativeMove;
-
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
 		{
 			if (IsPointersSuspended)
@@ -99,13 +101,14 @@ namespace Windows.UI.Xaml
 			try
 			{
 				NotifyParentTouchesManagersManipulationStarted();
-				_hadNativeMove = false;
 
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
 					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
+
+					pt.DownArgs = args;
 
 					if (pt.LastManagedOnlyFrameId >= args.FrameId)
 					{
@@ -145,14 +148,14 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				_hadNativeMove = true;
-
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
 					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
 					var isPointerOver = touch.IsTouchInView(this);
+
+					pt.HadMove = true;
 
 					// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
 					// Note: Entered / Exited are raised *before* the Move (Checked using the args timestamp)
@@ -181,7 +184,7 @@ namespace Windows.UI.Xaml
 					var pt = TransientNativePointer.Get(this, touch);
 					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
 
-					if (!_hadNativeMove)
+					if (!pt.HadMove)
 					{
 						// On iOS if the gesture is really fast (like a flick), we can get only 'down' and 'up'.
 						// But on UWP it seems that we always have a least one move (for fingers and pen!), and even internally,
@@ -190,7 +193,8 @@ namespace Windows.UI.Xaml
 						// Note: In case of multi-touch we might raise it unnecessarily, but it won't have any negative impact.
 						// Note: We do not consider the result of that move for the 'isHandledOrBubblingInManaged'
 						//		 as it's kind of un-related to the 'up' itself.
-						OnNativePointerMove(args);
+						var mixedArgs = new PointerRoutedEventArgs(previous: pt.DownArgs, current: args);
+						OnNativePointerMove(mixedArgs);
 					}
 
 					isHandledOrBubblingInManaged |= OnNativePointerUp(args);
