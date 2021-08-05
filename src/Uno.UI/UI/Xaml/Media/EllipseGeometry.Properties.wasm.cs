@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -6,10 +7,10 @@ namespace Windows.UI.Xaml.Media
 	{
 		public static DependencyProperty CenterProperty { get; } =
 			DependencyProperty.Register(
-				nameof(Center), typeof(Foundation.Point),
+				nameof(Center), typeof(Point),
 				typeof(EllipseGeometry),
 				new FrameworkPropertyMetadata(
-					default(Foundation.Point),
+					default(Point),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public static DependencyProperty RadiusXProperty { get; } =
@@ -27,9 +28,9 @@ namespace Windows.UI.Xaml.Media
 					default(double),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-		public Foundation.Point Center
+		public Point Center
 		{
-			get => (Foundation.Point)GetValue(CenterProperty);
+			get => (Point)GetValue(CenterProperty);
 			set => SetValue(CenterProperty, value);
 		}
 		public double RadiusX
