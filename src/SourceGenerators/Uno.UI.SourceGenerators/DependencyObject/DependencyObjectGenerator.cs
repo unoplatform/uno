@@ -3,16 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
-using Uno.Roslyn;
-using System.Diagnostics;
-using System.Reflection;
-using System.IO;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;

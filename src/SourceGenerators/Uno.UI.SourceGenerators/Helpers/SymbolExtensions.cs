@@ -6,14 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Microsoft.CodeAnalysis
 {
-    /// <summary>
-    /// Roslyn symbol extensions
-    /// </summary>
-    internal static class SymbolExtensions
+	/// <summary>
+	/// Roslyn symbol extensions
+	/// </summary>
+	internal static class SymbolExtensions
 	{
 		private static bool IsRoslyn34OrEalier { get; }
 			= typeof(INamedTypeSymbol).Assembly.GetVersionNumber() <= new Version("3.4");
@@ -84,7 +83,7 @@ namespace Microsoft.CodeAnalysis
 		}
 
 		public static IEnumerable<IEventSymbol> GetEvents(INamedTypeSymbol? symbol)
-			=> symbol?.GetMembers().OfType<IEventSymbol>() ?? Enumerable.Empty<IEventSymbol>(); 
+			=> symbol?.GetMembers().OfType<IEventSymbol>() ?? Enumerable.Empty<IEventSymbol>();
 
 		/// <summary>
 		/// Determines if the symbol inherits from the specified type.
@@ -324,8 +323,7 @@ namespace Microsoft.CodeAnalysis
 
 		public static string? GetFullName(this INamespaceOrTypeSymbol? type)
 		{
-			var arrayType = type as IArrayTypeSymbol;
-			if (arrayType != null)
+			if (type is IArrayTypeSymbol arrayType)
 			{
 				return $"{arrayType.ElementType.GetFullName()}[]";
 			}
@@ -381,8 +379,9 @@ namespace Microsoft.CodeAnalysis
 
 		private static bool IsRootNamespace(ISymbol s)
 		{
-			return s is INamespaceSymbol && ((INamespaceSymbol)s).IsGlobalNamespace;
+			return s is INamespaceSymbol { IsGlobalNamespace: true };
 		}
+
 		/// <summary>
 		/// Return attributes on the current type and all its ancestors
 		/// </summary>
@@ -480,7 +479,7 @@ namespace Microsoft.CodeAnalysis
 											typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
 											genericsOptions: SymbolDisplayGenericsOptions.None,
 											miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers));
-	
+
 					return typeName + "<" + string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetFullyQualifiedType)) + ">";
 				}
 			}

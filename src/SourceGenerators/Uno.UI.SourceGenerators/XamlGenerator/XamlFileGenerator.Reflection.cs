@@ -835,9 +835,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// Search first using the default namespace
 					foreach (var clrNamespace in _clrNamespaces)
 					{
-						var type = _metadataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
-
-						if (type != null)
+						if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + name) is INamedTypeSymbol type)
 						{
 							return type;
 						}

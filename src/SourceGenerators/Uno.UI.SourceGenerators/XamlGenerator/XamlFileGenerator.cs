@@ -281,8 +281,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			this.Log().Info("Processing file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
 
-			var partialFileName = Path.GetFileNameWithoutExtension(_fileDefinition.FilePath);
-
 			// Check for the Roslyn generator's output location
 			var outputFile = Path.Combine(
 				_targetPath,
@@ -410,7 +408,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (Scope(_className.ns, _className.className))
 						{
-							using (writer.BlockInvariant(BuildControlInitializerDeclaration(_className.className, topLevelControl)))
+							using (writer.BlockInvariant(BuildControlInitializerDeclaration(topLevelControl)))
 							{
 								if (IsApplication(topLevelControl.Type))
 								{
@@ -659,9 +657,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant("");
 				writer.AppendLineInvariant(isDirectUserControlChild ? "content" : "this");
 
-				string closure;
 
-				using (var blockWriter = CreateApplyBlock(writer, null, out closure))
+				using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
 				{
 					blockWriter.AppendLineInvariant(
 						"// Source {0} (Line {1}:{2})",
@@ -1009,7 +1006,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string BuildControlInitializerDeclaration(string className, XamlObjectDefinition topLevelControl)
+		private string BuildControlInitializerDeclaration(XamlObjectDefinition topLevelControl)
 		{
 			if (IsPage(topLevelControl.Type))
 			{
@@ -1165,7 +1162,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				index++;
-				var propertyName = GetInitializerNameForResourceKey(key, index);
+				var propertyName = GetInitializerNameForResourceKey(index);
 				if (_topLevelQualifiedKeys.ContainsKey((theme, key)))
 				{
 					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
@@ -1200,7 +1197,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					var initializerName = GetInitializerNameForResourceKey(key, _dictionaryPropertyIndex);
+					var initializerName = GetInitializerNameForResourceKey(_dictionaryPropertyIndex);
 					if (_topLevelQualifiedKeys[(theme, key)] != initializerName)
 					{
 						throw new InvalidOperationException($"Method name was not created correctly for {key} (theme={theme}).");
@@ -1226,14 +1223,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Get name to use for initializer associated with a resource.
 		/// </summary>
-		/// <param name="key">The resource key</param>
 		/// <param name="index">An index associated with the property.</param>
 		/// <remarks>
 		/// We don't use the unqualified resource key because there may be multiple dictionary definitions (merged dictionaries, themed
 		/// dictionaries) in the same switch block, and it's possible (probable actually, in the case of theme dictionaries) to have
 		/// duplicate resource keys.
 		/// </remarks>
-		private string GetInitializerNameForResourceKey(string key, int index)
+		private string GetInitializerNameForResourceKey(int index)
 		{
 			return "Get_{0}_{1}".InvariantCultureFormat(_fileDefinition.ShortId, index);
 		}
@@ -1523,7 +1519,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"The property 'Setters' is set more than once at line {style.LineNumber}:{style.LinePosition} ({_fileDefinition.FilePath}).");
 					}
 
-					contentNode = contentNode ?? settersNode;
+					contentNode ??= settersNode;
 
 					if (contentNode != null)
 					{
@@ -1560,7 +1556,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildPropertySetter(IIndentedStringBuilder writer, string fullTargetType, string lineEnding, string property, XamlMemberDefinition valueNode, string? targetInstance = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			targetInstance = targetInstance ?? "o";
+			targetInstance ??= "o";
 
 			property = property.Trim('(', ')');
 
@@ -2167,8 +2163,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									if (IsCollectionOrListType(contentProperty.Type as INamedTypeSymbol))
 									{
-										string? newableTypeName;
-
 										if (IsInitializableProperty(contentProperty))
 										{
 											string contentPropertyName = useBase ? $"base.{contentProperty.Name}" : contentProperty.Name;
@@ -2195,7 +2189,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												}
 											}
 										}
-										else if (IsNewableProperty(contentProperty, out newableTypeName))
+										else if (IsNewableProperty(contentProperty, out var newableTypeName))
 										{
 											if (string.IsNullOrWhiteSpace(newableTypeName))
 											{
@@ -2375,31 +2369,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					"<{0}>".InvariantCultureFormat(propertyType.TypeArguments.Select(ts => GetFullGenericTypeName(ts as INamedTypeSymbol)).JoinBy(",")) :
 					string.Empty
 				);
-		}
-
-		private void BuildCollection(IIndentedStringBuilder writer, bool isInline, string name, XamlMemberDefinition implicitContentChild)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-			if (isInline)
-			{
-				using (writer.BlockInvariant(name + " = "))
-				{
-					foreach (var child in implicitContentChild.Objects)
-					{
-						BuildChild(writer, implicitContentChild, child);
-						writer.AppendLineInvariant(",");
-					}
-				}
-			}
-			else
-			{
-				foreach (var child in implicitContentChild.Objects)
-				{
-					writer.AppendLineInvariant(name + ".Add(");
-					BuildChild(writer, implicitContentChild, child);
-					writer.AppendLineInvariant(");");
-				}
-			}
 		}
 
 		private bool IsPage(XamlType xamlType) => IsType(xamlType, XamlConstants.Types.NativePage);
@@ -3716,7 +3685,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					TryAnnotateWithGeneratorSource(writer, suffix: "HasBindingOptions");
 					var isAttachedProperty = IsDependencyProperty(member.Member);
 					var isBindingType = SymbolEqualityComparer.Default.Equals(FindPropertyType(member.Member), _dataBindingSymbol);
-					var isOwnerDependencyObject = member.Owner != null ? GetType(member.Owner.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)) : false;
+					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol));
 
 					var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
 
@@ -4074,9 +4043,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var propertyType = markupType.GetAllPropertiesWithName(m.Member.Name)?
 					 .FirstOrDefault()?.Type as INamedTypeSymbol;
 					var resourceName = GetSimpleStaticResourceRetrieval(m, propertyType);
-					var value = resourceName != null
-						? resourceName
-						: BuildLiteralValue(m, propertyType: propertyType, owner: member);
+					var value = resourceName ?? BuildLiteralValue(m, propertyType: propertyType, owner: member);
 
 					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
 				})
