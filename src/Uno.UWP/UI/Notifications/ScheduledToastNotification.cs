@@ -11,6 +11,7 @@ namespace Windows.UI.Notifications
 
 	public partial class ScheduledToastNotification
 	{
+
 		public ScheduledToastNotification(XmlDocument content, DateTimeOffset deliveryTime)
 		{
 			if(content is null)
@@ -25,7 +26,7 @@ namespace Windows.UI.Notifications
 		public XmlDocument Content { get; internal set; }
 		public DateTimeOffset DeliveryTime { get; internal set; }
 
-		private string _tag;
+		private string _tag = "";
 
 		public string Tag
 		{
