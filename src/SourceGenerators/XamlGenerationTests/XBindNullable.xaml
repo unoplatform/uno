@@ -10,5 +10,6 @@
 
     <Grid>
         <ComboBox SelectedItem="{x:Bind TestProperty, Mode=TwoWay}" />
+        <ComboBox IsSynchronizedWithCurrentItem="{x:Bind TestProperty2, Mode=TwoWay}" />
     </Grid>
 </Page>

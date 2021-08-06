@@ -25,5 +25,6 @@ namespace XamlGenerationTests
 		}
 
 		public string? TestProperty { get; set; } = null;
+		public bool? TestProperty2 { get; set; } = null;
 	}
 }
