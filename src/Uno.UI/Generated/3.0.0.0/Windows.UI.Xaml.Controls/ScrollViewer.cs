@@ -769,22 +769,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.GetBringIntoViewOnFocusChange(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.SetBringIntoViewOnFocusChange(Windows.UI.Xaml.DependencyObject, bool)
 		// Skipping already declared event Windows.UI.Xaml.Controls.ScrollViewer.ViewChanged
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::System.EventHandler<global::Windows.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs> ViewChanging
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollViewer", "event EventHandler<ScrollViewerViewChangingEventArgs> ScrollViewer.ViewChanging");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollViewer", "event EventHandler<ScrollViewerViewChangingEventArgs> ScrollViewer.ViewChanging");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.ScrollViewer.ViewChanging
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::System.EventHandler<object> DirectManipulationCompleted
