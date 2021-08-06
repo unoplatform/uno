@@ -5331,8 +5331,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			if (HasIsParsing(objectDefinition.Type))
 			{
-				// Append [base.]IsParsing = true(, or ;)
-				writer.AppendLineInvariant($"{(!isInitializer ? "base." : string.Empty)}IsParsing = true{(isInitializer ? "," : ";")}");
+				var basePrefix = !isInitializer ? "base." : string.Empty;
+				var initializerSuffix = isInitializer ? "," : ";";
+				writer.AppendLineInvariant($"{basePrefix}IsParsing = true{initializerSuffix}");
 			}
 		}
 
