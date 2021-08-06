@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Logging;
 using Uno.UI.Xaml.Core;
 using Microsoft.Extensions.Logging;
