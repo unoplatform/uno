@@ -1,3 +1,5 @@
+#nullable enable
+
 using Uno.Logging;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
@@ -11,6 +13,11 @@ namespace Windows.UI.Notifications
 	{
 		public ScheduledToastNotification(XmlDocument content, DateTimeOffset deliveryTime)
 		{
+			if(content is null)
+            {
+				// yes, UWP throws here ArgumentException, and not ArgumentNullException
+				throw new ArgumentException("ScheduledToastNotification constructor: XmlDocument content cannot be null");
+            }
 			Content = content;
 			DeliveryTime = deliveryTime;
 		}
@@ -28,6 +35,10 @@ namespace Windows.UI.Notifications
 			}
 			set
 			{
+				if(value is null)
+                {
+					throw new ArgumentNullException("ScheduledToastNotification.Tag cannot be null");
+				}
 				_tag = value;
 				if (_tag.Length > 64)
 				{
