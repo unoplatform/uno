@@ -12,7 +12,7 @@ namespace SamplesApp.UITests.MessageDialogTests
 		[AutoRetry]
 		public void When_Click_Outside_Dialog_Expect_No_Dismiss()
 		{
-			Run("UITests.MessageDialog.MessageDialogTest");
+			Run("UITests.MessageDialogTests.MessageDialogTest");
 			var button = _app.Marked("showDialogBtn");
 			_app.WaitForElement(button);
 			button.FastTap();
