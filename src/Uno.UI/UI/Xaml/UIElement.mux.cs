@@ -10,6 +10,7 @@ using Uno.UI.Xaml.Input;
 using DirectUI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
