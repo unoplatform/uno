@@ -5,16 +5,17 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Windows.Foundation;
-using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
 using Uno;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.Core.Internal;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
+using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 
 #if __IOS__
 using UIKit;
@@ -626,6 +627,11 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException($"Flag not defined for routed event {routedEvent.Name}.");
 			}
 
+			if (routedEvent.IsKeyEvent)
+			{
+				TrackKeyState(routedEvent, args);
+			}
+
 			// [3] Any local handlers?
 			var isHandled = IsHandled(args);
 			if (!ctx.Mode.HasFlag(BubblingMode.IgnoreElement)
@@ -696,6 +702,21 @@ namespace Windows.UI.Xaml
 
 			// [13] Raise on parent
 			return RaiseOnParent(routedEvent, args, parent, ctx);
+		}
+
+		private static void TrackKeyState(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			if (args is KeyRoutedEventArgs keyArgs)
+			{
+				if (routedEvent == KeyDownEvent)
+				{
+					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
+				}
+				else if (routedEvent == KeyUpEvent)
+				{
+					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
+				}
+			}
 		}
 
 		// This method is a workaround for https://github.com/mono/mono/issues/12981
@@ -807,7 +828,7 @@ namespace Windows.UI.Xaml
 			};
 
 			public override string ToString()
-				=> $"{Mode}{(IsInternal?" *internal*":"")}{(Root is { } r ? $" up to {Root.GetDebugName()}":"")}";
+				=> $"{Mode}{(IsInternal ? " *internal*" : "")}{(Root is { } r ? $" up to {Root.GetDebugName()}" : "")}";
 		}
 
 		/// <summary>
