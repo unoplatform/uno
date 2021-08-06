@@ -25,17 +25,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 			var sutRect = _app.Query(sut).Single().Rect;
 
-			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.Right - 10, sutRect.CenterY);
+			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.Right - 10, sutRect.CenterY - 20);
 
-			var result = output.GetDependencyPropertyValue<string>("Text");
-
-			Assert.AreEqual("Left_1", result);
+			_app.WaitForDependencyPropertyValue(output, "Text", "Left_1");
 		}
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS | Platform.Android)]
-		public void When_MultipleItems()
+		public async Task When_MultipleItems()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_Automated");
 
@@ -44,11 +42,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 			var sutRect = _app.Query(sut).Single().Rect;
 
-			_app.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.X + 10, sutRect.CenterY);
+			_app.DragCoordinates(sutRect.Right - 10, sutRect.CenterY, sutRect.X + 10, sutRect.CenterY);
 
 			var result = output.GetDependencyPropertyValue<string>("Text");
 
-			Assert.IsTrue(string.IsNullOrWhiteSpace(result));
+			await Task.Delay(1000); // We cannot detect the animation ...
+
+			Assert.AreEqual("** none **", result);
 
 			_app.TapCoordinates(sutRect.Right - 10, sutRect.CenterY);
 

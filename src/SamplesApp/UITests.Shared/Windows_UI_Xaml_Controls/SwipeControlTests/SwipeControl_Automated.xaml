@@ -13,10 +13,10 @@
 	</Page.Resources>
 
 	<Grid>
-		<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
-			<TextBlock Text="Last invoked: " />
-			<TextBlock x:Name="Output" />
-		</StackPanel>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
 
 		<StackPanel HorizontalAlignment="Center">
 			<SwipeControl Width="400" Height="75" x:Name="SUT">
@@ -39,6 +39,11 @@
 						VerticalAlignment="Center"/>
 				</Border>
 			</SwipeControl>
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal" Margin="0,20"  VerticalAlignment="Top" Grid.Row="1">
+			<TextBlock Text="Last invoked: " />
+			<TextBlock x:Name="Output" Text="** none **" />
 		</StackPanel>
 
 	</Grid>

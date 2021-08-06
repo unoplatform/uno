@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			return Duration.Type switch
 			{
 				DurationType.Forever => TimeSpan.MaxValue,
-				DurationType.TimeSpan => Duration.TimeSpan,
+				DurationType.TimeSpan when Duration.TimeSpan > TimeSpan.Zero => Duration.TimeSpan,
 				DurationType.Automatic => TimeSpan.Zero, // this is overriden in xxxUsingKeyFrames implementations
 				_ => TimeSpan.Zero
 			};

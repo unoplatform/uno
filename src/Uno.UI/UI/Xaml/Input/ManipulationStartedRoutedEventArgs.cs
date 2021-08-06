@@ -18,11 +18,17 @@ namespace Windows.UI.Xaml.Input
 
 			_recognizer = recognizer;
 
+			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
 			Position = args.Position;
 			Cumulative = args.Cumulative;
 		}
 
+		/// <summary>
+		/// Gets identifiers of all pointer that has been involved in that manipulation.
+		/// </summary>
+		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
+		internal PointerIdentifier[] Pointers { get; }
 
 		public bool Handled { get; set; }
 

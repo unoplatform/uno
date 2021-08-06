@@ -40,6 +40,8 @@ namespace Windows.UI.Input
 				IsInContact,
 				Properties);
 
+		internal PointerIdentifier Pointer => new PointerIdentifier(PointerDevice.PointerDeviceType, PointerId);
+
 		public uint FrameId { get; }
 
 		public ulong Timestamp { get; }

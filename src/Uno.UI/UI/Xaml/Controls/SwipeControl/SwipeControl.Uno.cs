@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
+using Windows.UI.Core;
+using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -16,10 +18,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeControl
 	{
-		private const int MovementCount = 3;
-		private readonly LinkedList<MoveUpdate> _lastMoves = new LinkedList<MoveUpdate>(); // Used to calculate the drawer's speed when releasing.
-		private readonly Stopwatch _grabbedTimer = new Stopwatch(); // Used to calculate the drawer's speed when releasing.
-
 		private TranslateTransform _transform = null;
 		private TranslateTransform _swipeStackPaneltransform = null;
 		private Vector2 _positionWhenCaptured = Vector2.Zero;
@@ -114,8 +112,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_positionWhenCaptured = new Vector2((float)_transform.X, (float)_transform.Y);
-			_grabbedTimer.Start();
-			_lastMoves.Clear();
+
+			// As soon as manipulation starts, we make sure to abort any pending explicit pointer capture,
+			// so button nested (or containing) this SwipeControl won't fire their commands.
+			// It's not the common behavior for buttons, but this has been observed in SwipeControl on UWP as of 2021-07-27.
+			foreach (var pointer in e.Pointers)
+			{
+				if (PointerCapture.TryGet(pointer, out var capture))
+				{
+					var targets = capture.GetTargets(PointerCaptureKind.Explicit).ToList();
+					global::System.Diagnostics.Debug.Assert(targets.Count <= 1);
+					foreach (var target in targets)
+					{
+						target.Element.ReleasePointerCapture(capture.Pointer);
+					}
+				}
+			}
 		}
 
 		private void OnSwipeManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -129,7 +141,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-			RecordMovements(e);
 			UpdateDesiredPosition(e);
 			UpdateStackPanelDesiredPosition();
 
@@ -180,23 +191,6 @@ namespace Windows.UI.Xaml.Controls
 			UpdateThresholdReached(value);
 
 			UpdateTransforms();
-
-			void RecordMovements(ManipulationDeltaRoutedEventArgs e)
-			{
-				// Record the last movements to calculate the speed when releasing.
-				_lastMoves.AddLast(new MoveUpdate
-				{
-					DeltaX = e.Delta.Translation.X,
-					DeltaY = e.Delta.Translation.Y,
-					DeltaT = _grabbedTimer.Elapsed.TotalSeconds
-				});
-				_grabbedTimer.Restart();
-				if (_lastMoves.Count > MovementCount)
-				{
-					// Only keep the last N movements.
-					_lastMoves.RemoveFirst();
-				}
-			}
 		}
 
 		private void UpdateDesiredPosition(ManipulationDeltaRoutedEventArgs e)
@@ -261,9 +255,7 @@ namespace Windows.UI.Xaml.Controls
 					return;
 				}
 #endif
-				_grabbedTimer.Stop();
-
-				await SimulateInertia();
+				await SimulateInertia(e?.Velocities ?? default);
 
 				m_isInteracting = false;
 				UpdateIsOpen(_desiredPosition != Vector2.Zero);
@@ -314,27 +306,33 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private async Task SimulateInertia()
+		private async Task SimulateInertia(ManipulationVelocities v)
 		{
-			const float speedThreshold = 500f; // pixel/s
+			float speedThreshold = (float)GestureRecognizer.Manipulation.InertiaTouch.TranslateX * 1000; // pixel/s
 			const float simulatedInertiaDuration = 0.5f; // in seconds.
 
 			var unit = m_isHorizontal ? Vector2.UnitX : Vector2.UnitY;
-			var estimatedSpeed = m_isHorizontal ? GetSpeed().X : GetSpeed().Y;
+			var estimatedSpeed = (float)(m_isHorizontal ? v.Linear.X : v.Linear.Y) * 1000;
 			var useAfterInertiaPosition = false;
 			var estimatedPositionAfterInertia = _desiredPosition;
 
 			if (Math.Abs(estimatedSpeed) > speedThreshold) 
 			{
+				// If the stackpanel IsMeasureDirty or IsArrangeDirty are true, it means we can't use its ActualSize, so we close the content.
+				// This solves a problem when the user swipes the content from one side to the other quickly and the stackpanel doesn't have time to measure and arrange itself before the inertia starts.
+				// When that happens, the content can open using the previous stackpanel size, causing an invalid behavior.
+				if (m_swipeContentStackPanel.IsMeasureDirty || m_swipeContentStackPanel.IsArrangeDirty)
+				{
+					await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SimulateInertia(v));
+					return;
+				}
+
 				estimatedPositionAfterInertia = _desiredPosition + unit * estimatedSpeed * simulatedInertiaDuration; // What would be the position if we let the movement go at the current speed during 'simulatedInertiaDuration'.
 				estimatedPositionAfterInertia = GetClampedPosition(estimatedPositionAfterInertia);
 
 				// If inertia would flip sign of the transform, we close instead.
 				var flickToOppositeSideCheck = _desiredPosition * estimatedPositionAfterInertia;
-				// If the stackpanel IsMeasureDirty or IsArrangeDirty are true, it means we can't use its ActualSize, so we close the content.
-				// This solves a problem when the user swipes the content from one side to the other quickly and the stackpanel doesn't have time to measure and arrange itself before the inertia starts.
-				// When that happens, the content can open using the previous stackpanel size, causing an invalid behavior.
-				if (m_swipeContentStackPanel.IsMeasureDirty || m_swipeContentStackPanel.IsArrangeDirty || (m_isHorizontal ? flickToOppositeSideCheck.X < 0 : flickToOppositeSideCheck.Y < 0))
+				if ((m_isHorizontal ? flickToOppositeSideCheck.X < 0 : flickToOppositeSideCheck.Y < 0))
 				{
 					CloseWithoutAnimation();
 					return;
@@ -424,17 +422,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private Vector2 GetSpeed()
-		{
-			if (_lastMoves.Any())
-			{
-				var totalDelta = _lastMoves.Aggregate((sum, item) => sum + item);
-				var speed = totalDelta.DeltaXY / (float)totalDelta.DeltaT;
-				return speed;
-			}
-
-			return Vector2.Zero;
-		}
 
 		private void ConfigurePositionInertiaRestingValues() { }
 
@@ -526,27 +513,6 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				return desiredPosition;
-			}
-		}
-
-		private struct MoveUpdate
-		{
-			public double DeltaX { get; set; }
-
-			public double DeltaY { get; set; }
-
-			public double DeltaT { get; set; }
-
-			public Vector2 DeltaXY => new Vector2((float)DeltaX, (float)DeltaY);
-
-			public static MoveUpdate operator +(MoveUpdate left, MoveUpdate right)
-			{
-				return new MoveUpdate()
-				{
-					DeltaX = left.DeltaX + right.DeltaX,
-					DeltaY = left.DeltaY + right.DeltaY,
-					DeltaT = left.DeltaT + right.DeltaT
-				};
 			}
 		}
 	}

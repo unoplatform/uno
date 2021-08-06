@@ -1,3 +1,4 @@
+using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
 
@@ -6,7 +7,7 @@ namespace Windows.UI.Input
 	public partial class ManipulationInertiaStartingEventArgs 
 	{
 		internal ManipulationInertiaStartingEventArgs(
-			PointerDeviceType pointerDeviceType,
+			PointerIdentifier[] pointers,
 			Point position,
 			ManipulationDelta delta,
 			ManipulationDelta cumulative,
@@ -14,7 +15,10 @@ namespace Windows.UI.Input
 			uint contactCount,
 			GestureRecognizer.Manipulation.InertiaProcessor processor)
 		{
-			PointerDeviceType = pointerDeviceType;
+			global::System.Diagnostics.Debug.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
+
+			Pointers = pointers;
+			PointerDeviceType = pointers[0].Type;
 			Position = position;
 			Delta = delta;
 			Cumulative = cumulative;
@@ -22,6 +26,13 @@ namespace Windows.UI.Input
 			ContactCount = contactCount;
 			Processor = processor;
 		}
+
+		/// <summary>
+		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).
+		/// </summary>
+		/// <remarks>This collection might contains pointers that has been released. <see cref="ContactCount"/> gives the actual number of active pointers.</remarks>
+		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
+		internal PointerIdentifier[] Pointers { get; }
 
 		public PointerDeviceType PointerDeviceType { get; }
 		public Point Position { get; }

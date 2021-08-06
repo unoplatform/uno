@@ -96,7 +96,6 @@ namespace Windows.UI.Xaml.Controls
 					//Uno workaround:
 					m_isInteracting = true;
 					_desiredPosition = Vector2.Zero;
-					_lastMoves.Clear(); // Clears inertia.
 					UpdateStackPanelDesiredPosition();
 
 					// This delay is to allow users to see the fully open state before it closes back.

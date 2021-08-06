@@ -20,22 +20,23 @@ namespace Windows.UI.Xaml.Input
 			IsInContact = isInContact;
 			IsInRange = isInRange;
 
-			UniqueId = (long)PointerDeviceType << 32 | PointerId;
+			UniqueId = new PointerIdentifier(type, id);
 		}
-
 
 #if __WASM__
 		internal Pointer(uint id, PointerDeviceType type)
 		{
 			PointerId = id;
 			PointerDeviceType = type;
+
+			UniqueId = new PointerIdentifier(type, id);
 		}
 #endif
 
 		/// <summary>
 		/// A unique identifier which contains <see cref="PointerDeviceType"/> and <see cref="PointerId"/>.
 		/// </summary>
-		internal long UniqueId { get; }
+		internal PointerIdentifier UniqueId { get; }
 
 		public uint PointerId { get; }
 

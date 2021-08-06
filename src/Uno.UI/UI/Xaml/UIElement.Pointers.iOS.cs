@@ -16,9 +16,9 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
-		private class NativePointer
+		private class TransientNativePointer
 		{
-			private static readonly Dictionary<IntPtr, NativePointer> _instances = new Dictionary<IntPtr, NativePointer>();
+			private static readonly Dictionary<IntPtr, TransientNativePointer> _instances = new Dictionary<IntPtr, TransientNativePointer>();
 			private static uint _nextAvailablePointerId;
 
 			private readonly IntPtr _nativeId;
@@ -28,17 +28,21 @@ namespace Windows.UI.Xaml
 
 			public uint LastManagedOnlyFrameId { get; set; }
 
-			private NativePointer(IntPtr nativeId)
+			public PointerRoutedEventArgs DownArgs { get; set; }
+
+			public bool HadMove { get; set; }
+
+			private TransientNativePointer(IntPtr nativeId)
 			{
 				_nativeId = nativeId;
 				Id = _nextAvailablePointerId++;
 			}
 
-			public static NativePointer Get(UIElement element, UITouch touch)
+			public static TransientNativePointer Get(UIElement element, UITouch touch)
 			{
 				if (!_instances.TryGetValue(touch.Handle, out var id))
 				{
-					_instances[touch.Handle] = id = new NativePointer(touch.Handle);
+					_instances[touch.Handle] = id = new TransientNativePointer(touch.Handle);
 				}
 
 				id._leases.Add(element);
@@ -101,10 +105,12 @@ namespace Windows.UI.Xaml
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var id = NativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(id.Id, touch, evt, this);
+					var pt = TransientNativePointer.Get(this, touch);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
 
-					if (id.LastManagedOnlyFrameId >= args.FrameId)
+					pt.DownArgs = args;
+
+					if (pt.LastManagedOnlyFrameId >= args.FrameId)
 					{
 						continue;
 					}
@@ -114,7 +120,7 @@ namespace Windows.UI.Xaml
 
 					if (isHandledOrBubblingInManaged)
 					{
-						id.LastManagedOnlyFrameId = args.FrameId;
+						pt.LastManagedOnlyFrameId = args.FrameId;
 					}
 				}
 
@@ -145,9 +151,11 @@ namespace Windows.UI.Xaml
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var id = NativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(id.Id, touch, evt, this);
+					var pt = TransientNativePointer.Get(this, touch);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
 					var isPointerOver = touch.IsTouchInView(this);
+
+					pt.HadMove = true;
 
 					// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
 					// Note: Entered / Exited are raised *before* the Move (Checked using the args timestamp)
@@ -173,13 +181,26 @@ namespace Windows.UI.Xaml
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var id = NativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(id.Id, touch, evt, this);
+					var pt = TransientNativePointer.Get(this, touch);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
+
+					if (!pt.HadMove)
+					{
+						// On iOS if the gesture is really fast (like a flick), we can get only 'down' and 'up'.
+						// But on UWP it seems that we always have a least one move (for fingers and pen!), and even internally,
+						// the manipulation events are requiring at least one move to kick-in.
+						// Here we are just making sure to raise that event with the final location.
+						// Note: In case of multi-touch we might raise it unnecessarily, but it won't have any negative impact.
+						// Note: We do not consider the result of that move for the 'isHandledOrBubblingInManaged'
+						//		 as it's kind of un-related to the 'up' itself.
+						var mixedArgs = new PointerRoutedEventArgs(previous: pt.DownArgs, current: args);
+						OnNativePointerMove(mixedArgs);
+					}
 
 					isHandledOrBubblingInManaged |= OnNativePointerUp(args);
 					isHandledOrBubblingInManaged |= OnNativePointerExited(args);
 
-					id.Release(this);
+					pt.Release(this);
 				}
 
 				if (!isHandledOrBubblingInManaged)
@@ -203,8 +224,8 @@ namespace Windows.UI.Xaml
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var id = NativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(id.Id, touch, evt, this);
+					var pt = TransientNativePointer.Get(this, touch);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
 
 					// Note: We should have raise either PointerCaptureLost or PointerCancelled here depending of the reason which
 					//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
@@ -213,7 +234,7 @@ namespace Windows.UI.Xaml
 
 					isHandledOrBubblingInManaged |= OnNativePointerCancel(args, isSwallowedBySystem: true);
 
-					id.Release(this);
+					pt.Release(this);
 				}
 
 				if (!isHandledOrBubblingInManaged)
