@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 			if (buttonRef != null)
 			{
 				var thisRef = (this as IWeakReferenceProvider).WeakReference;
-				buttonRef.Command = new DelegateCommand(() => (thisRef.Target as TextBox)?.DeleteText());
+				buttonRef.Command = new DelegateCommand(() => (thisRef.Target as TextBox)?.DeleteButtonClick());
 			}
 
 			InitializePropertiesPartial();
@@ -724,17 +724,20 @@ namespace Windows.UI.Xaml.Controls
 			return Text; //This may have been modified by BeforeTextChanging, TextChanging, DP callback, etc
 		}
 
-		private void DeleteText()
+		private void DeleteButtonClick()
 		{
 			Text = string.Empty;
-			OnTextClearedPartial();
+			OnDeleteButtonClickPartial();
 		}
 
-		partial void OnTextClearedPartial();
+		partial void OnDeleteButtonClickPartial();
 
 		internal void OnSelectionChanged() => SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
 
-		public void OnTemplateRecycled() => DeleteText();
+		public void OnTemplateRecycled()
+		{
+			Text = string.Empty;
+		}
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);
 
