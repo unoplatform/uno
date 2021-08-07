@@ -3953,6 +3953,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_CornerRadius(Windows.UI.Xaml.CornerRadius value)"
 				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.set_IsIntermediate(System.Boolean value)"
+				reason="Aligned visibility with UWP" />
 		</Methods>
 		<Events>
 			<Member
