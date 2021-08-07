@@ -265,12 +265,23 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty WidthProperty { get ; } = CreateWidthProperty();
+		public static DependencyProperty WidthProperty { get; } = CreateWidthProperty();
 
 		public double Width
 		{
 			get => GetWidthValue();
 			set => SetWidthValue(value);
+		}
+		#endregion
+
+		#region FlowDirection Dependency Property
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, ChangedCallback = true)]
+		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
+
+		public FlowDirection FlowDirection
+		{
+			get => GetFlowDirectionValue();
+			set => SetFlowDirectionValue(value);
 		}
 		#endregion
 
@@ -369,6 +380,51 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		partial void OnFlowDirectionChanged(DependencyPropertyChangedEventArgs args)
+		{
+			var direction = FlowDirection;
+			if (direction == FlowDirection.RightToLeft)
+			{
+				// If there are no children, e.g, 'TextBlock', do nothing.
+				// This will be handled when setting text-alignment by UIElement.SetTextAlignment
+				if (_children.Count == 0)
+				{
+					return;
+				}
+
+				// If there are children, e.g, 'Grid' mirror the element, and mirror back each
+				// child element with reversed text-align.
+				SetStyle(("transform", "scaleX(-1)"));
+				foreach (var child in _children)
+				{
+					child.SetStyle(("transform", "scaleX(-1)"));
+					var alignment = GetAlignment(child);
+					if (alignment != null)
+					{
+						child.SetStyle(("text-align", alignment));
+					}
+				}
+			}
+
+			// Feels like a hacky approach.
+			static string GetAlignment(View element)
+			{
+				if (element is TextBlock textBlock)
+				{
+					if (textBlock.TextAlignment == TextAlignment.Left)
+					{
+						return "right";
+					}
+					else if (textBlock.TextAlignment == TextAlignment.Right)
+					{
+						return "left";
+					}
+				}
+
+				return null;
+			}
+		}
+
 		/// <summary>
 		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
 		/// </summary>
@@ -390,6 +446,7 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
 				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
+				UpdateDOMXamlProperty(nameof(FlowDirection), FlowDirection);
 
 				if (this.TryGetPadding(out var padding))
 				{

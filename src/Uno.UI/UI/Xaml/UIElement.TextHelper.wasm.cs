@@ -257,16 +257,17 @@ namespace Windows.UI.Xaml
 			else
 			{
 				var value = (TextAlignment)localValue;
+				var isRtl = this is FrameworkElement { FlowDirection: FlowDirection.RightToLeft };
 				switch (value)
 				{
 					case TextAlignment.Left:
-						this.SetStyle("text-align", "left");
+						this.SetStyle("text-align", isRtl ? "right" : "left");
 						break;
 					case TextAlignment.Center:
 						this.SetStyle("text-align", "center");
 						break;
 					case TextAlignment.Right:
-						this.SetStyle("text-align", "right");
+						this.SetStyle("text-align", isRtl ? "left" : "right");
 						break;
 					case TextAlignment.Justify:
 						this.SetStyle("text-align", "justify");

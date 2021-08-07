@@ -371,6 +371,8 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
+		partial void OnFlowDirectionChanged(DependencyPropertyChangedEventArgs args);
+
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
 			if (!IsParsing) // Style will be applied once element has completed parsing
