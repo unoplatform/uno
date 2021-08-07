@@ -81,7 +81,7 @@ For a larger example and features demo:
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
     * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.AdaptiveTrigger)
 * Platform Specific:
-    * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files)
+    * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
     * Any of the existing Xamarin iOS/Android libraries available
 * Xamarin.Forms Renderers:
     * [Uno Platform WebAssembly Renderers for Xamarin.Forms](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform)
