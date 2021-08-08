@@ -280,7 +280,19 @@ namespace Windows.UI.Xaml
 
 		public FlowDirection FlowDirection
 		{
-			get => GetFlowDirectionValue();
+			get
+			{
+				var value = ReadLocalValue(FlowDirectionProperty);
+				if (value == DependencyProperty.UnsetValue)
+				{
+					return (Parent as FrameworkElement)?.FlowDirection ?? FlowDirection.LeftToRight;
+				}
+
+				return (FlowDirection)value;
+
+				// Workaround source generator error when this statement is missing.
+				_ = GetFlowDirectionValue();
+			}
 			set => SetFlowDirectionValue(value);
 		}
 		#endregion
