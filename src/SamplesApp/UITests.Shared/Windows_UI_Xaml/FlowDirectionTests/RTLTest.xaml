@@ -9,9 +9,13 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel>
-        <TextBlock Text="Hello, world" />
-        <TextBlock Text="Hello, world" FlowDirection="RightToLeft" />
-        <TextBlock Text="Hello, world" FlowDirection="RightToLeft" TextAlignment="Left"/>
-        <TextBlock Text="Hello, world" FlowDirection="RightToLeft" TextAlignment="Right"/>
+        <TextBlock Text="English عربي" Foreground="Green" />
+        <TextBlock Text="English عربي" FlowDirection="RightToLeft" Foreground="Red" />
+        <TextBlock Text="English عربي" FlowDirection="RightToLeft" TextAlignment="Left" Foreground="Red" />
+        <TextBlock Text="English عربي" FlowDirection="RightToLeft" TextAlignment="Right" Foreground="Green" />
+
+        <TextBlock Text="عربي English" FlowDirection="RightToLeft" Foreground="Red" />
+        <TextBlock Text="عربي English" FlowDirection="RightToLeft" TextAlignment="Left" Foreground="Red" />
+        <TextBlock Text="عربي English" FlowDirection="RightToLeft" TextAlignment="Right" Foreground="Green" />
     </StackPanel>
 </Page>

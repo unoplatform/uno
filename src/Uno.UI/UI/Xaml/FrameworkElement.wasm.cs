@@ -406,22 +406,21 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			// Feels like a hacky approach.
 			static string GetAlignment(View element)
 			{
-				if (element is TextBlock textBlock)
+				TextAlignment? alignment = element switch
 				{
-					if (textBlock.TextAlignment == TextAlignment.Left)
-					{
-						return "right";
-					}
-					else if (textBlock.TextAlignment == TextAlignment.Right)
-					{
-						return "left";
-					}
-				}
+					TextBlock textBlock => textBlock.TextAlignment,
+					TextBox textBox => textBox.TextAlignment,
+					_ => null
+				};
 
-				return null;
+				return alignment switch
+				{
+					TextAlignment.Left => "right",
+					TextAlignment.Right => "left",
+					_ => null
+				};
 			}
 		}
 
