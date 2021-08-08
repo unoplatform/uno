@@ -275,24 +275,12 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region FlowDirection Dependency Property
-		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, ChangedCallback = true)]
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
 
 		public FlowDirection FlowDirection
 		{
-			get
-			{
-				var value = ReadLocalValue(FlowDirectionProperty);
-				if (value == DependencyProperty.UnsetValue)
-				{
-					return (Parent as FrameworkElement)?.FlowDirection ?? FlowDirection.LeftToRight;
-				}
-
-				return (FlowDirection)value;
-
-				// Workaround source generator error when this statement is missing.
-				_ = GetFlowDirectionValue();
-			}
+			get => GetFlowDirectionValue();
 			set => SetFlowDirectionValue(value);
 		}
 		#endregion
