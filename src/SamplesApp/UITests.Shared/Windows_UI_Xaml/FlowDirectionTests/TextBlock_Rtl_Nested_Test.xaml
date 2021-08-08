@@ -1,0 +1,21 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.FlowDirectionTests.TextBlock_Rtl_Nested_Test"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml.FlowDirectionTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel FlowDirection="RightToLeft">
+        <TextBlock Text="English عربي" Foreground="Green" />
+        <TextBlock Text="English عربي" FlowDirection="RightToLeft" Foreground="Red" />
+        <TextBlock Text="English عربي" FlowDirection="RightToLeft" TextAlignment="Left" Foreground="Red" />
+        <TextBlock Text="English عربي" FlowDirection="RightToLeft" TextAlignment="Right" Foreground="Green" />
+
+        <TextBlock Text="عربي English" FlowDirection="RightToLeft" Foreground="Red" />
+        <TextBlock Text="عربي English" FlowDirection="RightToLeft" TextAlignment="Left" Foreground="Red" />
+        <TextBlock Text="عربي English" FlowDirection="RightToLeft" TextAlignment="Right" Foreground="Green" />
+    </StackPanel>
+</Page>

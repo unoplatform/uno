@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="UITests.Windows_UI_Xaml.FlowDirectionTests.RTLTest"
+    x:Class="UITests.Windows_UI_Xaml.FlowDirectionTests.TextBlock_Rtl_Test"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Windows_UI_Xaml.FlowDirectionTests"

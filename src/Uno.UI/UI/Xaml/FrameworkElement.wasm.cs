@@ -397,11 +397,11 @@ namespace Windows.UI.Xaml
 				SetStyle(("transform", "scaleX(-1)"));
 				foreach (var child in _children)
 				{
-					child.SetStyle(("transform", "scaleX(-1)"));
+					child.SetStyle("transform", "scaleX(-1)");
 					var alignment = GetAlignment(child);
 					if (alignment != null)
 					{
-						child.SetStyle(("text-align", alignment));
+						child.SetStyle("text-align", alignment);
 					}
 				}
 			}
@@ -445,7 +445,6 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
 				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
-				UpdateDOMXamlProperty(nameof(FlowDirection), FlowDirection);
 
 				if (this.TryGetPadding(out var padding))
 				{

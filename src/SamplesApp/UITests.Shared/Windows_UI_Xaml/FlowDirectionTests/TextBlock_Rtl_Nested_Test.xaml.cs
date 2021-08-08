@@ -18,10 +18,10 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.FlowDirectionTests
 {
-    [Sample("FlowDirectionTests", "RTLTest")]
-    public sealed partial class RTLTest : Page
+    [Sample("FlowDirectionTests", "TextBlock_Rtl_Nested_Test")]
+    public sealed partial class TextBlock_Rtl_Nested_Test : Page
     {
-        public RTLTest()
+        public TextBlock_Rtl_Nested_Test()
         {
             this.InitializeComponent();
         }
