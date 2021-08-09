@@ -5559,42 +5559,51 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									members.Add(GenerateBinding("Visibility", visibilityMember, definition));
 								}
 
-								if ( (!_isTopLevelDictionary || IsMemberInsideFrameworkTemplate(definition).isInside)
+								var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(definition).isInside;
+
+								if ( (!_isTopLevelDictionary || isInsideFrameworkTemplate)
 									&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
 								{
 									var componentName = $"_component_{ CurrentScope.ComponentCount}";
 									writer.AppendLineInvariant($"this.{componentName} = {closureName};");
 
-									writer.AppendLineInvariant($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
-
-									if (nameMember != null)
+									if (!isInsideFrameworkTemplate)
 									{
-										writer.AppendLineInvariant($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
-									}
+										writer.AppendLineInvariant($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
-									using (writer.BlockInvariant($"void {componentName}_update(global::Windows.UI.Xaml.ElementStub sender)"))
-									{
-										using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_className.className} that)"))
+										if (nameMember != null)
 										{
+											writer.AppendLineInvariant($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
+										}
 
-											using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
+										using (writer.BlockInvariant($"void {componentName}_update(global::Windows.UI.Xaml.ElementStub sender)"))
+										{
+											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_className.className} that)"))
 											{
-												writer.AppendLineInvariant($"that.Bindings.UpdateResources();");
+
+												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
+												{
+													writer.AppendLineInvariant($"that.Bindings.UpdateResources();");
+												}
 											}
 										}
+
+										writer.AppendLineInvariant($"{closureName}.MaterializationChanged += {componentName}_update;");
+
+										using (writer.BlockInvariant($"void {componentName}_unloaded(object sender, RoutedEventArgs e)"))
+										{
+											// Refresh the bindings when the ElementStub is unloaded. This assumes that
+											// ElementStub will be unloaded **after** the stubbed control has been created
+											// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
+											writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
+										}
+
+										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_unloaded;");
 									}
-
-									writer.AppendLineInvariant($"{closureName}.MaterializationChanged += {componentName}_update;");
-
-									using (writer.BlockInvariant($"void {componentName}_unloaded(object sender, RoutedEventArgs e)"))
+									else
 									{
-										// Refresh the bindings when the ElementStub is unloaded. This assumes that
-										// ElementStub will be unloaded **after** the stubbed control has been created
-										// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
-										writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
+										// TODO for https://github.com/unoplatform/uno/issues/6700
 									}
-
-									writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_unloaded;");
 
 									var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
 									xamlObjectDef.Members.AddRange(members);

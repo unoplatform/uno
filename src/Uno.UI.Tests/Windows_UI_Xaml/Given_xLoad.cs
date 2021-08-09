@@ -154,5 +154,36 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var borders = SUT.EnumerateAllChildren().OfType<Border>();
 			Assert.AreEqual(0, borders.Count());
 		}
+
+		[TestMethod]
+		public void When_xLoad_DataTemplate_In_ResDict()
+		{
+			var SUT = new When_xLoad_DataTemplate_In_ResDict();
+
+			SUT.ForceLoaded();
+
+			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			Assert.AreEqual(1, stubs.Count());
+
+			var tb02 = SUT.FindName("tb02") as TextBlock;
+			Assert.IsNotNull(tb02);
+
+			var model = new When_xLoad_DataTemplate_In_ResDict_Model();
+			SUT.DataContext = model;
+
+			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			Assert.AreEqual(1, stubs.Count());
+
+			model.Visible = true;
+
+			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			Assert.AreEqual(0, stubs.Count());
+
+			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb02.Foreground?.ToString());
+
+			var tb01 = SUT.FindName("tb01") as TextBlock;
+			// This assertion is incorrect because of https://github.com/unoplatform/uno/issues/6700
+			Assert.AreEqual("[SolidColorBrush #FF000000]", tb01.Foreground?.ToString());
+		}
 	}
 }
