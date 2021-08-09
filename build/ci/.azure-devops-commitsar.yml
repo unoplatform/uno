@@ -5,10 +5,6 @@ jobs:
 - job: Commitsar
   displayName: 'Conventional Commits Validation'
 
-  container:
-    image: aevea/commitsar:0.16.0
-    options: -it
-
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -16,4 +12,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - bash: commitsar
+  - bash: |
+     curl -L -O https://github.com/aevea/commitsar/releases/download/v0.16.0/commitsar_0.16.0_Linux_arm64.tar.gz
+     tar -xzf commitsar_0.16.0_Linux_arm64.tar.gz
+     ./commitsar
