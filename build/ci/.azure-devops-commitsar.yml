@@ -7,7 +7,7 @@ jobs:
 
   container:
     image: aevea/commitsar:0.16.0
-    options: -i
+    options: -it
 
   pool:
     vmImage: ${{ parameters.vmImage }}
