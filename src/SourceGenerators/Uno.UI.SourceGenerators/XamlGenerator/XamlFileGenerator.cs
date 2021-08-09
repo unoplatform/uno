@@ -320,8 +320,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TryGenerateWarningForInconsistentBaseType(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
-			var xamlDefinedBaseType  = GetType(topLevelControl.Type);
-			var fullClassName        = _className.ns + "." + _className.className;
+			var xamlDefinedBaseType = GetType(topLevelControl.Type);
+			var fullClassName = _className.ns + "." + _className.className;
 			var classDefinedBaseType = FindType(fullClassName)?.BaseType;
 
 			if (!SymbolEqualityComparer.Default.Equals(xamlDefinedBaseType, classDefinedBaseType))
@@ -330,8 +330,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (locations != null && locations.Value.Length > 0)
 				{
 					var diagnostic = Diagnostic.Create(XamlCodeGenerationDiagnostics.GenericXamlWarningRule,
-					                                   locations.Value[0],
-					                                   $"{fullClassName} does not explicitly define the {xamlDefinedBaseType} base type in code behind.");
+													   locations.Value[0],
+													   $"{fullClassName} does not explicitly define the {xamlDefinedBaseType} base type in code behind.");
 					_generatorContext.ReportDiagnostic(diagnostic);
 				}
 				else
@@ -1493,7 +1493,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			var targetTypeNode = GetMember(style, "TargetType");
 
-			if(targetTypeNode.Value == null)
+			if (targetTypeNode.Value == null)
 			{
 				throw new InvalidOperationException("TargetType cannot be empty");
 			}
@@ -2554,7 +2554,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						using (TryTernaryForLinkerHint(writer, resource))
 						{
 							writer.AppendLineInvariant("new global::Uno.UI.Xaml.WeakResourceInitializer(this, {0})", initializerName);
-						}					}
+						}
+					}
 					else
 					{
 						using (TryTernaryForLinkerHint(writer, resource))
@@ -3065,7 +3066,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								nameMember = member;
 								var value = member.Value?.ToString();
 
-								if(value == null)
+								if (value == null)
 								{
 									throw new InvalidOperationException("The Name property cannot be empty");
 								}
@@ -3128,7 +3129,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								member.Member.DeclaringType?.Name == "Storyboard"
 							)
 							{
-								if(member.Value == null)
+								if (member.Value == null)
 								{
 									throw new InvalidOperationException($"The TargetName property cannot be empty");
 								}
@@ -3158,7 +3159,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								member.Member.DeclaringType?.Name == "Storyboard"
 							)
 							{
-								if(member.Value == null)
+								if (member.Value == null)
 								{
 									throw new InvalidOperationException($"The TargetProperty property cannot be empty");
 								}
@@ -3381,7 +3382,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									var parts = eventTarget.Split('.');
 
-									for (var i = 0; i < parts.Length-1; i++)
+									for (var i = 0; i < parts.Length - 1; i++)
 									{
 										var next = currentType.GetAllMembersWithName(parts[i]).FirstOrDefault();
 
@@ -3410,7 +3411,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								var dataTypeObject = FindMember(isInsideDataTemplate.xamlObject!, "DataType", XamlConstants.XamlXmlNamespace);
 
-								if(dataTypeObject?.Value == null)
+								if (dataTypeObject?.Value == null)
 								{
 									throw new Exception($"Unable to find x:DataType in enclosing DataTemplate for x:Bind event");
 								}
@@ -3737,7 +3738,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (IsAttachedProperty(member))
 					{
-						if(closureName == null)
+						if (closureName == null)
 						{
 							throw new InvalidOperationException("A closure name is required for attached properties");
 						}
@@ -4047,7 +4048,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.FirstOrDefault(o => IsCustomMarkupExtensionType(o.Type));
 			var markupType = GetMarkupExtensionType(markupTypeDef?.Type);
 
-			if(markupType == null || markupTypeDef == null)
+			if (markupType == null || markupTypeDef == null)
 			{
 				throw new InvalidOperationException($"Unable to find markup extension type for ");
 			}
@@ -4285,24 +4286,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				propertyType = FindUnderlyingType(propertyType);
+				switch (propertyType.SpecialType)
+				{
+					case SpecialType.System_Int32:
+					case SpecialType.System_Int64:
+					case SpecialType.System_Int16:
+					case SpecialType.System_Byte:
+						return GetMemberValue();
+					case SpecialType.System_Single:
+					case SpecialType.System_Double:
+						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner);
+					case SpecialType.System_String:
+						return "\"" + DoubleEscape(memberValue) + "\"";
+					case SpecialType.System_Boolean:
+						return bool.Parse(GetMemberValue()).ToString().ToLowerInvariant();
+				}
+
 				switch (propertyType.ToDisplayString())
 				{
-					case "int":
-					case "long":
-					case "short":
-					case "byte":
-						return GetMemberValue();
-
-					case "float":
-					case "double":
-						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner);
-
-					case "string":
-						return "\"" + DoubleEscape(memberValue) + "\"";
-
-					case "bool":
-						return Boolean.Parse(GetMemberValue()).ToString().ToLowerInvariant();
-
 					case XamlConstants.Types.Brush:
 					case XamlConstants.Types.SolidColorBrush:
 						return BuildBrush(GetMemberValue());
@@ -4736,7 +4737,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else if (memberName == "ElementName")
 				{
-					if(m.Value == null)
+					if (m.Value == null)
 					{
 						throw new InvalidOperationException($"The property ElementName cannot be empty");
 					}
@@ -5155,7 +5156,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					|| typeName == "TemplateBinding"
 					)
 				{
-					if(owner == null)
+					if (owner == null)
 					{
 						throw new InvalidOperationException($"An owner is required for {typeName}");
 					}
@@ -5288,7 +5289,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var propertyType = FindType(xamlObjectDefinition.Type);
 						var implicitContent = FindImplicitContentMember(xamlObjectDefinition);
-						if(implicitContent == null)
+						if (implicitContent == null)
 						{
 							throw new InvalidOperationException($"Unable to find content value on {xamlObjectDefinition}");
 						}
@@ -5558,8 +5559,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(definition).isInside;
-
-								if ( (!_isTopLevelDictionary || isInsideFrameworkTemplate)
+								if ((!_isTopLevelDictionary || isInsideFrameworkTemplate)
 									&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
 								{
 									var componentName = $"_component_{ CurrentScope.ComponentCount}";
@@ -5793,7 +5793,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (xamlObjectDefinition.Type.Name == "Double" || xamlObjectDefinition.Type.Name == "Single")
 				{
-					if(initializer.Value == null)
+					if (initializer.Value == null)
 					{
 						throw new InvalidOperationException($"Initializer value for {xamlObjectDefinition.Type.Name} cannot be empty");
 					}
