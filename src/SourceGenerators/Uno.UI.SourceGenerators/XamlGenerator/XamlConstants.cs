@@ -125,7 +125,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// MarkupExtension
 			public const string MarkupExtension = Markup + ".MarkupExtension";
 			public const string IMarkupExtensionOverrides = Markup + ".IMarkupExtensionOverrides";
-			public const string MarkupExtensionReturnTypeAttribute = Markup + ".MarkupExtensionReturnTypeAttribute";
 		}
 	}
 }
