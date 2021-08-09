@@ -374,9 +374,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("using _View = UIKit.UIView;");
 			writer.AppendLineInvariant("#elif __MACOS__");
 			writer.AppendLineInvariant("using _View = AppKit.NSView;");
-			writer.AppendLineInvariant("#elif UNO_REFERENCE_API");
-			writer.AppendLineInvariant("using _View = Windows.UI.Xaml.UIElement;");
-			writer.AppendLineInvariant("#elif NET461");
+			writer.AppendLineInvariant("#elif UNO_REFERENCE_API || NET461");
 			writer.AppendLineInvariant("using _View = Windows.UI.Xaml.UIElement;");
 			writer.AppendLineInvariant("#endif");
 
