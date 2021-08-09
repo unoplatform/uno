@@ -8,7 +8,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Uno.UI.RuntimeTests.Tests.System
+namespace Uno.UI.RuntimeTests.Tests.Windows_System
 {
 	[TestClass]
 	public class Given_DispatcherQueueTimer
