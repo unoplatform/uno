@@ -8,6 +8,8 @@
 			public int Ignored { get; set; }
 			public int Succeeded { get; set; }
 			public int Failed { get; set; }
+
+			public int CurrentRepeatCount { get; set; }
 		}
 	}
 }
