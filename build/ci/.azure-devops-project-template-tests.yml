@@ -11,6 +11,10 @@ jobs:
 
   dependsOn: Generate_Packages
 
+  variables:
+    # Force disable .NET Native for all samples validation
+    UseDotNetNativeToolchain: false
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:

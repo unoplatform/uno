@@ -47,7 +47,7 @@ $default = @('/ds', '/r', "/p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '/p:Packa
 
 $debug = $default + '/p:Configuration=Debug'
 
-$release = $default + '/p:AotAssemblies=false' + '/p:Configuration=Release'
+$release = $default + '/p:AotAssemblies=false' + '/p:UseDotNetNativeToolchain=false' + '/p:Configuration=Release'
 $releaseX64 = $release + '/p:Platform=x64'
 $releaseIPhone = $release + '/p:Platform=iPhone'
 $releaseIPhoneSimulator = $release + '/p:Platform=iPhoneSimulator'
