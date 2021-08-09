@@ -18,16 +18,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 	{
 		[Test]
 		[AutoRetry]
-		[Timeout(5000)]
-		public void Draw_polyline2()
-		{
-			Console.WriteLine("Draw_polyline2");
-			System.Threading.Thread.Sleep(10000);
-		}
-
-
-		[Test]
-		[AutoRetry]
 		public void Draw_polyline()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage");
