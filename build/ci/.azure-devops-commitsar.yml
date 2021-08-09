@@ -4,8 +4,9 @@ parameters:
 jobs:
 - job: Commitsar
   displayName: 'Conventional Commits Validation'
-  container: 
-    - image: aevea/commitsar:0.16.0
+
+  container:
+    image: aevea/commitsar:0.16.0
 
   pool:
     vmImage: ${{ parameters.vmImage }}
