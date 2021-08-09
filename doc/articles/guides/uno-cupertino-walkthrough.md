@@ -5,7 +5,7 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [UnoCupertinoSample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoCupertinoSample)
 
-> [!Tip]
+> [!TIP]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
 ## Step-by-steps
@@ -91,7 +91,7 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
     <Page>
     ```
 
-> [TIP!]
+> [!TIP]
 > You can find the style names using these methods:
 > - "Feature" section of Uno.Themes README: https://github.com/unoplatform/Uno.Themes#features
 > - Going through the source code of control styles: https://github.com/unoplatform/Uno.Themes/tree/master/src/library/Uno.Cupertino/Styles/Controls
