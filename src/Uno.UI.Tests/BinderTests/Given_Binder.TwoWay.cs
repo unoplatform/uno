@@ -204,7 +204,7 @@ namespace Uno.UI.Tests.BinderTests
 					if (value != _value)
 					{
 						_value = value;
-						PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyValue)));
+						PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyValue)));
 					}
 				}
 			}

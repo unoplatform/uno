@@ -1381,9 +1381,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : global::System.ComponentModel.INotifyPropertyChanged
+		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
-			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public string[] MyItems { get; } = new[] { "Red beans", "Rice" };
 
@@ -1443,11 +1443,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		private class When_DisplayMemberPath_Property_Changed_DataContext : INotifyPropertyChanged
+		private class When_DisplayMemberPath_Property_Changed_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
 			private string _display;
 
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public string Display
 			{
@@ -1457,7 +1457,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					if (value != _display)
 					{
 						_display = value;
-						PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Display)));
+						PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Display)));
 					}
 				}
 			}
