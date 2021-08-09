@@ -6,6 +6,8 @@ jobs:
   displayName: 'WebAssembly UI Tests (Build)'
   container: nv-bionic-wasm
 
+  dependsOn: Commitsar
+
   pool:
     vmImage: ${{ parameters.vmImage }}
 

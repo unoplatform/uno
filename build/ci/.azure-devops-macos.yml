@@ -13,6 +13,8 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     XCODE_ROOT: /Applications/Xcode_10.3.app
+    
+  dependsOn: Commitsar
 
   pool:
     vmImage: ${{ parameters.vmImage }}

@@ -5,6 +5,8 @@ jobs:
 - job: generic_win_build
   displayName: 'Build Generic Binaries'
   timeoutInMinutes: 90
+  
+  dependsOn: Commitsar
 
   pool: ${{ parameters.poolName }}
 

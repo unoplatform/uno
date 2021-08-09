@@ -15,6 +15,7 @@ jobs:
   dependsOn:
   - iOS_Build
   - SamplesApp_UITests_Build
+  - Commitsar
   displayName: ${{ parameters.JobDisplayName }}
 
   pool:

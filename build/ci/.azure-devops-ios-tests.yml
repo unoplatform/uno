@@ -9,6 +9,8 @@ jobs:
 - job: iOS_Build
   displayName: 'iOS Samples App UI Tests (Build)'
 
+  dependsOn: Commitsar
+
   pool:
     vmImage: ${{ parameters.vmImage }}
 

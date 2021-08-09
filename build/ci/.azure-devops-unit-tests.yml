@@ -9,6 +9,8 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
+  dependsOn: Commitsar
+
   strategy:
     matrix:
       Default_Compiler:

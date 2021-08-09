@@ -1,0 +1,17 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: Commitsar
+  displayName: 'Conventional Commits Validation'
+  container: 
+    - image: aevea/commitsar:0.16.0
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - bash: commitsar
