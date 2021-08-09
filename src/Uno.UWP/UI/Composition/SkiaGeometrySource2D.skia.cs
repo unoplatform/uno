@@ -15,12 +15,7 @@ namespace Windows.UI.Composition
 
 		public SkiaGeometrySource2D(SKPath source)
 		{
-			if (source == null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
-
-			Geometry = source;
+			Geometry = source ?? throw new ArgumentNullException(nameof(source));
 		}
 
 		public SKPath Geometry { get; }
