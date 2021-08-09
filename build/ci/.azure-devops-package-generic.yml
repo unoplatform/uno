@@ -26,6 +26,9 @@ jobs:
     # Build validation is performed on other jobs
     UnoUIDisableNetCoreBuild: true
 
+    # Force disable .NET Native for all samples validation
+    UseDotNetNativeToolchain: false
+
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
