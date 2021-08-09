@@ -56,6 +56,8 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
+  dependsOn: Commitsar
+
   variables:
     CI_Build: true
     SourceLinkEnabled: false
