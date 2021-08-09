@@ -41,6 +41,10 @@ variables:
   XamarinSDKVersion_iOS_UITests: 6_10_0
 
 jobs:
+- template: build/ci/.azure-devops-commitsar.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - template: build/ci/.azure-devops-package-generic.yml
   parameters:
     poolName: '$(windowsScaledPool)'
