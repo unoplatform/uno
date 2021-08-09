@@ -313,5 +313,37 @@ namespace Uno.Analyzers.Tests
 
 			await Verify.VerifyAnalyzerAsync(test);
 		}
+
+		[TestMethod]
+		public async Task When_Using_Object_Initializer_Syntax_Included()
+		{
+			var test = @"
+                #define UNO_REFERENCE_API
+
+				using System;
+
+				namespace Uno
+				{
+					public class TestClass {
+						[NotImplemented(""__SKIA__"", ""__IOS__"", ""__WASM__"")]
+						public int Test { get; set; }
+					}
+				}
+
+                namespace ConsoleApplication1
+                {
+                    class TypeName
+                    {
+                        public TypeName()
+                        {
+                           var x = new Uno.TestClass { [|Test|] = 0 };
+                        }
+                    }
+                }
+
+			" + UnoNotImplementedAtribute;
+
+			await Verify.VerifyAnalyzerAsync(test);
+		}
 	}
 }
