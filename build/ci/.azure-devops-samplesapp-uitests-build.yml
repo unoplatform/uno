@@ -1,11 +1,12 @@
 parameters:
-  poolName: ''
+  vmImage: ''
 
 jobs:
 - job: SamplesApp_UITests_Build
   displayName: 'SamplesApp UI Tests (Build)'
   
-  pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
