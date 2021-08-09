@@ -38,6 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_Template_Recycled()
 		{
@@ -52,7 +53,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(textBox);
 
 				FocusManager.GettingFocus += OnGettingFocus;
-
 				textBox.OnTemplateRecycled();
 			}
 			finally
@@ -65,6 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Fail("Focus should not move");
 			}
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_Fluent_And_Theme_Changed()
