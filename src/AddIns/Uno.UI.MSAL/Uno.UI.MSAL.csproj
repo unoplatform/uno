@@ -35,10 +35,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive/*">
+		<None Include="buildTransitive/*">
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
-		</Content>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
