@@ -207,13 +207,14 @@ namespace Windows.UI.Input
 						_inertia?.Dispose();
 						_state = ManipulationState.Completed;
 
+						var position = GetPosition();
 						var cumulative = GetCumulative();
 						var delta = GetDelta(cumulative);
 						var velocities = GetVelocities(delta);
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
-							new ManipulationCompletedEventArgs(_currents.Identifiers, _currents.Center, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
+							new ManipulationCompletedEventArgs(_currents.Identifiers, position, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
 						break;
 
 					default:
@@ -251,6 +252,7 @@ namespace Windows.UI.Input
 				// Note: Make sure to update the _sumOfPublishedDelta before raising the event, so if an exception is raised
 				//		 or if the manipulation is Completed, the Complete event args can use the updated _sumOfPublishedDelta.
 
+				var position = GetPosition();
 				var cumulative = GetCumulative();
 				var delta = GetDelta(cumulative);
 				var velocities = GetVelocities(delta);
@@ -282,7 +284,7 @@ namespace Windows.UI.Input
 						UpdatePublishedState(cumulative);
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationStartedEventArgs(_currents.Identifiers, _currents.Center, cumulative, _contacts.onStart));
+							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.Center, cumulative, _contacts.onStart));
 						// No needs to publish an update when we start the manipulation due to an additional pointer as cumulative will be empty.
 						break;
 
@@ -302,7 +304,7 @@ namespace Windows.UI.Input
 							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.Center, ManipulationDelta.Empty, _contacts.onStart));
 						_recognizer.ManipulationUpdated?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(_currents.Identifiers, _currents.Center, cumulative, cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
+							new ManipulationUpdatedEventArgs(_currents.Identifiers, position, cumulative, cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
 						break;
 
 					case ManipulationState.Started when IsDragManipulation:
@@ -313,12 +315,12 @@ namespace Windows.UI.Input
 
 					case ManipulationState.Started when pointerRemoved && ShouldStartInertia(velocities):
 						_state = ManipulationState.Inertia;
-						_inertia = new InertiaProcessor(this, cumulative, velocities);
+						_inertia = new InertiaProcessor(this, position, cumulative, velocities);
 
 						UpdatePublishedState(delta);
 						_recognizer.ManipulationInertiaStarting?.Invoke(
 							_recognizer,
-							new ManipulationInertiaStartingEventArgs(_currents.Identifiers, _currents.Center, delta, cumulative, velocities, _contacts.onStart, _inertia));
+							new ManipulationInertiaStartingEventArgs(_currents.Identifiers, position, delta, cumulative, velocities, _contacts.onStart, _inertia));
 
 						_inertia.Start();
 						break;
@@ -337,9 +339,15 @@ namespace Windows.UI.Input
 						UpdatePublishedState(delta);
 						_recognizer.ManipulationUpdated?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(_currents.Identifiers, _currents.Center, delta, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
+							new ManipulationUpdatedEventArgs(_currents.Identifiers, position, delta, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
 						break;
 				}
+			}
+
+			[Pure]
+			private Point GetPosition()
+			{
+				return _inertia?.GetPosition() ?? _currents.Center;
 			}
 
 			[Pure]
