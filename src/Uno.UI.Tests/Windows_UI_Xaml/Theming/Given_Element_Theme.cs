@@ -8,11 +8,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 	[TestClass]
 	public partial class Given_Element_Theme
 	{
+		[TestInitialize]
+		public void Initialize()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void RequestedTheme_Default()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var border = new Border();
 			Assert.AreEqual(ElementTheme.Default, border.RequestedTheme);
 		}
@@ -20,9 +24,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		[TestMethod]
 		public void ActualTheme_Matching_App_Theme()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
-			var initialTheme = app.RequestedTheme == ApplicationTheme.Dark ?
+			var initialTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ?
 				ElementTheme.Dark : ElementTheme.Light;
 
 			var border = new Border();
@@ -30,7 +32,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			SwapSystemTheme();
 
-			var updatedTheme = app.RequestedTheme == ApplicationTheme.Dark ?
+			var updatedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ?
 				ElementTheme.Dark : ElementTheme.Light;
 
 			Assert.AreEqual(updatedTheme, border.ActualTheme);
@@ -39,9 +41,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		[TestMethod]
 		public void ActualTheme_With_Explicit_RequestedTheme()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
-			app.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 
 			var border = new Border();
 			Assert.AreEqual(ElementTheme.Dark, border.ActualTheme);
@@ -56,9 +56,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		[TestMethod]
 		public void ActualThemeChanged_Called_With_RequestedTheme()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
-			app.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 
 			int callCounter = 0;
 			var border = new Border();
