@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
@@ -14,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // EvenOdd fill not working on Android and iOS - https://github.com/unoplatform/uno/issues/6703
 		public void Test_FillRule()
 		{
 			Run("UITests.Windows_UI_Xaml_Shapes.PathTestsControl.Path_FillRule");
