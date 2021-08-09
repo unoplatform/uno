@@ -736,7 +736,7 @@
 * Add support for `Windows.Foundation.UniversalApiContract` in `IsApiContractPresent`
 * Add support for ContentProperty on UserControl
 * Add `DelegateCommand<T>`
-* #131258 Added support for _RoutedEvents_. See [routed-events.md documentation](../articles/routed-events.md).
+* #131258 Added support for _RoutedEvents_. See [routed-events.md documentation](../articles/features/routed-events.md).
 * [WASM] #234 Support virtualization in ListView
 
 ### Breaking changes
