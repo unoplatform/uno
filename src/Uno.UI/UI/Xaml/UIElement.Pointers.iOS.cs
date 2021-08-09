@@ -9,6 +9,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Foundation;
 using UIKit;
+using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI.Extensions;
 using WebKit;
 
@@ -108,7 +110,8 @@ namespace Windows.UI.Xaml
 					var pt = TransientNativePointer.Get(this, touch);
 					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
 
-					pt.DownArgs = args;
+					// We set the DownArgs only for the top most element (a.k.a. OriginalSource)
+					pt.DownArgs ??= args;
 
 					if (pt.LastManagedOnlyFrameId >= args.FrameId)
 					{
@@ -155,6 +158,8 @@ namespace Windows.UI.Xaml
 					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
 					var isPointerOver = touch.IsTouchInView(this);
 
+					// This is acceptable to keep that flag in a kind-of static way, since iOS do "implicit captures",
+					// a potential move will be dispatched to all elements "registered" on this "TransientNativePointer".
 					pt.HadMove = true;
 
 					// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
