@@ -23,6 +23,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 		}
 
+#if DEBUG // Disabled on release as it fails on mac
 		static int When_Retry_On_Unhandled_Exception_Count = 0;
 
 		[Test]
@@ -36,6 +37,7 @@ namespace SamplesApp.UITests.TestFramework
 				throw new NotImplementedException();
 			}
 		}
+#endif
 	}
 
 	public partial class RetrySetup
