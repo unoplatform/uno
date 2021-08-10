@@ -413,7 +413,7 @@
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.WebAssembly.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 	</Target>
 
-	<Target Name="ValidatePackage" AfterTargets="UnoBuild" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UNO_UWP_BUILD)'=='true'">
+	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UNO_UWP_BUILD)'=='true'">
 		<PropertyGroup>
 			<PackageNamePrefix>Uno.WinUI</PackageNamePrefix>
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
@@ -423,7 +423,7 @@
 		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_SemVer).md" />
 	</Target>
 	
-	<Target Name="ValidatePackageReferenceAPI" AfterTargets="UnoBuild">
+	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">
 		<PropertyGroup>
 			<PackageNamePrefix>Uno.WinUI</PackageNamePrefix>
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
