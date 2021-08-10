@@ -20,51 +20,54 @@ cd $BUILD_SOURCESDIRECTORY/build
 # wget -nv https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android-d16-2/49/Azure/processDownloadRequest/xamarin-android/xamarin-android/bin/BuildRelease/Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg
 # sudo installer -verbose -pkg Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg -target /
 
-# Install AVD files
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;28.0.3' | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'system-images;android-28;google_apis_playstore;x86' | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" | tr '\r' '\n' | uniq
-
-if [[ -f $ANDROID_HOME/platform-tools/platform-tools/adb ]]
-then
-	# It appears that the platform-tools 29.0.6 are extracting into an incorrect path
-    mv $ANDROID_HOME/platform-tools/platform-tools/* $ANDROID_HOME/platform-tools
-fi
-
 AVD_NAME=xamarin_android_emulator
+AVD_CONFIG_FILE=~/.android/avd/$AVD_NAME.avd/config.ini
 
-# Create emulator
-echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n "$AVD_NAME" --abi "x86" -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" --sdcard 128M --force
+if [[ ! -f $AVD_CONFIG_FILE ]];
+then
+	# Install AVD files
+	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;28.0.3' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'system-images;android-28;google_apis_playstore;x86' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" | tr '\r' '\n' | uniq
 
-echo "hw.cpu.ncore=2" >> ~/.android/avd/$AVD_NAME.avd/config.ini
+	if [[ -f $ANDROID_HOME/platform-tools/platform-tools/adb ]]
+	then
+		# It appears that the platform-tools 29.0.6 are extracting into an incorrect path
+		mv $ANDROID_HOME/platform-tools/platform-tools/* $ANDROID_HOME/platform-tools
+	fi
 
-echo $ANDROID_HOME/emulator/emulator -list-avds
+	# Create emulator
+	echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n "$AVD_NAME" --abi "x86" -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" --sdcard 128M --force
 
-echo "Checking for hardware acceleration"
-$ANDROID_HOME/emulator/emulator -accel-check
+	echo "hw.cpu.ncore=2" >> $AVD_CONFIG_FILE
 
-echo "Starting emulator"
+	echo $ANDROID_HOME/emulator/emulator -list-avds
 
-# kickstart ADB
-$ANDROID_HOME/platform-tools/adb devices
+	echo "Checking for hardware acceleration"
+	$ANDROID_HOME/emulator/emulator -accel-check
 
-# Start emulator in background
-nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
+	echo "Starting emulator"
 
-export IsUiAutomationMappingEnabled=true
+	# kickstart ADB
+	$ANDROID_HOME/platform-tools/adb devices
 
-# Wait for the emulator to finish booting
-source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+	# Start emulator in background
+	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
 
-## Restart the emulator to avoid running first-time tasks
-#$ANDROID_HOME/platform-tools/adb reboot
-#
-## Wait for the emulator to finish booting
-#source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+	# Wait for the emulator to finish booting
+	source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+else
+then
+	# Restart the emulator to avoid running first-time tasks
+	$ANDROID_HOME/platform-tools/adb reboot
+
+	# Wait for the emulator to finish booting
+	source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+fi
 
 # list active devices
 $ANDROID_HOME/platform-tools/adb devices
@@ -101,6 +104,7 @@ fi
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
+export IsUiAutomationMappingEnabled=true
 
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$TARGETPLATFORM_NAME.txt
