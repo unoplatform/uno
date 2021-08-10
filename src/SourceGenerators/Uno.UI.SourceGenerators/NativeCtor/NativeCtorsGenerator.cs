@@ -190,17 +190,18 @@ namespace {0}
 			private bool NeedsExplicitDefaultCtor(INamedTypeSymbol typeSymbol)
 			{
 				var hasExplicitConstructor = typeSymbol
-					.GetMethods()
-					.Where(m => m.MethodKind == MethodKind.Constructor && m.Parameters.Length == 0 && !m.IsImplicitlyDeclared)
-					.Any();
+					.GetMembers(WellKnownMemberNames.InstanceConstructorName)
+					.Any(m => m is IMethodSymbol { IsImplicitlyDeclared: false, Parameters: { Length: 0 } });
+				if (hasExplicitConstructor)
+				{
+					return false;
+				}
 
 				var baseHasDefaultCtor = typeSymbol
 					.BaseType?
-					.GetMethods()
-					.Where(m => m.MethodKind == MethodKind.Constructor && m.Parameters.Length == 0)
-					.Any() ?? false;
-
-				return !hasExplicitConstructor && baseHasDefaultCtor;
+					.GetMembers(WellKnownMemberNames.InstanceConstructorName)
+					.Any(m => m is IMethodSymbol { Parameters: { Length: 0 } }) ?? false;
+				return baseHasDefaultCtor;
 			}
 		}
 	}
