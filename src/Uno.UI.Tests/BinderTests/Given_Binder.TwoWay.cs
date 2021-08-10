@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.BinderTests
@@ -123,6 +125,33 @@ namespace Uno.UI.Tests.BinderTests
 			}
 		}
 
+		[TestMethod]
+		public void When_TwoWay_Binding_Overwritten()
+		{
+
+			var oldDC = new MyDC(3);
+			var newDC = new MyDC(7);
+
+			var slider = new Slider();
+
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyDC.MyValue)), Mode = BindingMode.TwoWay, Source = oldDC });
+
+			Assert.AreEqual(3, slider.Value);
+
+			// Should remove previous binding
+			slider.SetBinding(Slider.ValueProperty, new Binding { Path = new PropertyPath(nameof(MyDC.MyValue)), Mode = BindingMode.TwoWay, Source = newDC });
+
+			Assert.AreEqual(7, slider.Value);
+
+			Assert.AreEqual(3, oldDC.MyValue);
+			Assert.AreEqual(7, newDC.MyValue);
+
+			slider.Value = 12;
+
+			Assert.AreEqual(3, oldDC.MyValue);
+			Assert.AreEqual(12, newDC.MyValue);
+		}
+
 
 		public partial class MyDP : DependencyObject
 		{
@@ -161,6 +190,31 @@ namespace Uno.UI.Tests.BinderTests
 
 				return value;
 			}
+		}
+
+		public class MyDC : System.ComponentModel.INotifyPropertyChanged
+		{
+			private int _value;
+
+			public int MyValue
+			{
+				get => _value;
+				set
+				{
+					if (value != _value)
+					{
+						_value = value;
+						PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyValue)));
+					}
+				}
+			}
+
+			public MyDC(int value)
+			{
+				MyValue = value;
+			}
+
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 		}
 	}
 }

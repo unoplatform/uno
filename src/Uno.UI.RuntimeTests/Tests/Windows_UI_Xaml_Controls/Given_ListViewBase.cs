@@ -1350,11 +1350,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.SelectedIndex = 1;
 		}
 
+		[TestMethod]
+		public async Task When_DisplayMemberPath_Property_Changed()
+		{
+			var itemsSource = (new[] { "aaa", "bbb", "ccc", "ddd" }).Select(s => new When_DisplayMemberPath_Property_Changed_DataContext { Display = s }).ToArray();
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				DisplayMemberPath = "Display",
+				ItemsSource = itemsSource
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var secondContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(1) as ListViewItem);
+			await WindowHelper.WaitForLoaded(secondContainer);
+
+			var tb = secondContainer.FindFirstChild<TextBlock>();
+			Assert.AreEqual("bbb", tb.Text);
+
+			foreach (var item in itemsSource)
+			{
+				item.Display = item.Display.ToUpperInvariant();
+			}
+
+			await WindowHelper.WaitForResultEqual("BBB", () => tb.Text);
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : global::System.ComponentModel.INotifyPropertyChanged
+		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
-			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public string[] MyItems { get; } = new[] { "Red beans", "Rice" };
 
@@ -1410,6 +1439,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					backingField = value;
 					PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(propertyName));
+				}
+			}
+		}
+
+		private class When_DisplayMemberPath_Property_Changed_DataContext : System.ComponentModel.INotifyPropertyChanged
+		{
+			private string _display;
+
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+			public string Display
+			{
+				get => _display;
+				set
+				{
+					if (value != _display)
+					{
+						_display = value;
+						PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Display)));
+					}
 				}
 			}
 		}

@@ -1046,18 +1046,20 @@ namespace Windows.UI.Xaml.Controls
 
 			var styleFromItemsControl = ItemContainerStyle ?? ItemContainerStyleSelector?.SelectStyle(item, element);
 
-			object GetContent()
+			void SetContent(UIElement container, DependencyProperty contentProperty)
 			{
 				var displayMemberPath = DisplayMemberPath;
 				if (string.IsNullOrEmpty(displayMemberPath))
 				{
-					return item;
+					container.SetValue(contentProperty, item);
 				}
 				else
 				{
-					// TODO: Cache the BindingPath
-					var b = new BindingPath(displayMemberPath, item) { DataContext = item };
-					return b.Value;
+					container.SetBinding(contentProperty, new Binding
+					{
+						Path = displayMemberPath,
+						Source = item
+					});
 				}
 			}
 
@@ -1078,7 +1080,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!isOwnContainer)
 				{
-					containerAsContentPresenter.Content = GetContent();
+					SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
 				}
 			}
 			else if (element is ContentControl containerAsContentControl)
@@ -1101,7 +1103,7 @@ namespace Windows.UI.Xaml.Controls
 					// Set the datacontext first, then the binding.
 					// This avoids the inner content to go through a partial content being
 					// the result of the fallback value of the binding set below.
-					containerAsContentControl.DataContext = GetContent();
+					SetContent(containerAsContentControl, ContentControl.DataContextProperty);
 
 					if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{

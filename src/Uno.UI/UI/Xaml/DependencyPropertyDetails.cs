@@ -20,12 +20,11 @@ namespace Windows.UI.Xaml
 		private DependencyPropertyValuePrecedences _highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
 		private readonly Type _dependencyObjectType;
 		private object? _fastLocalValue;
-		private BindingExpression? _lastBindings;
+		private BindingExpression? _binding;
 		private static readonly ArrayPool<object?> _pool = ArrayPool<object?>.Create(_stackLength, 100);
 		private object?[]? _stack;
 		private PropertyMetadata? _metadata;
 		private object? _defaultValue;
-		private List<BindingExpression>? _bindings;
 		private Flags _flags;
 		private DependencyPropertyCallbackManager? _callbackManager;
 
@@ -40,10 +39,6 @@ namespace Windows.UI.Xaml
 				_unsetStack[i] = DependencyProperty.UnsetValue;
 			}
 		}
-
-		private List<BindingExpression> Bindings => _bindings ??= new List<BindingExpression>();
-
-		private bool HasBindingsList => _bindings != null;
 
 		public void Dispose()
 		{
@@ -190,25 +185,21 @@ namespace Windows.UI.Xaml
 			_flags |= Flags.DefaultValueSet;
 		}
 
-		internal BindingExpression? GetLastBinding()
-			=> _lastBindings;
+		internal BindingExpression? GetBinding()
+			=> _binding;
 
 		internal void SetBinding(BindingExpression bindingExpression)
 		{
-			Bindings.Add(bindingExpression);
-			_lastBindings = bindingExpression;
+			_binding = bindingExpression;
 		}
 
-		internal void SetSourceValue(object value)
+		internal void ClearBinding()
 		{
-			if (HasBindingsList)
-			{
-				for (int i = 0; i < Bindings.Count; i++)
-				{
-					Bindings[i].SetSourceValue(value);
-				}
-			}
+			_binding?.Dispose();
+			_binding = null;
 		}
+
+		internal void SetSourceValue(object value) => _binding?.SetSourceValue(value);
 
 		/// <summary>
 		/// Gets the value at the current highest precedence level

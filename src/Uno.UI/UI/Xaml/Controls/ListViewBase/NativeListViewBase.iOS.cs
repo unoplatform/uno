@@ -180,7 +180,7 @@ namespace Windows.UI.Xaml.Controls
 
 			DelaysContentTouches = true;
 			TouchesManager = UIElement.TouchesManager.GetOrCreate(this);
-			
+
 			ShowsHorizontalScrollIndicator = true;
 			ShowsVerticalScrollIndicator = true;
 
@@ -467,17 +467,16 @@ namespace Windows.UI.Xaml.Controls
 				);
 				var actualItem = unoCell.Content?.DataContext;
 
-				if (!XamlParent.IsItemItsOwnContainer(expectedItem))
+				if (!XamlParent.IsItemItsOwnContainer(expectedItem)
+					// This check is present for the support of explicit ListViewItem 
+					// through the Items property. The DataContext may be set to some
+					// user defined object.
+					&& XamlParent.ItemsSource != null
+					// The view's DataContext generally will differ from the source item when DisplayMemberPath is set
+					&& XamlParent.DisplayMemberPath.IsNullOrEmpty())
 				{
 					var areMatching = Object.Equals(expectedItem, actualItem);
-					if (
-						// This check is present for the support of explicit ListViewItem 
-						// through the Items property. The DataContext may be set to some
-						// user defined object.
-						XamlParent.ItemsSource != null
-
-						&& !areMatching
-					)
+					if (!areMatching)
 					{
 						// This is a failsafe for in-place collection changes which leave the list in an inconsistent state, for exact reasons known only to UICollectionView.
 						if (this.Log().IsEnabled(LogLevel.Warning))
