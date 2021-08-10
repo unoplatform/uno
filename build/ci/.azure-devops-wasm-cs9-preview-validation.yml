@@ -9,6 +9,8 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
+  dependsOn: Commitsar
+
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 

@@ -1,14 +1,19 @@
 parameters:
-  poolNameWindows: ''
+  vmImageWindows: ''
   vmImageLinux: ''
 
 jobs:
 - job: Dotnet_Template_Tests
   displayName: 'dotnet new Templates Tests'
 
-  pool: ${{ parameters.poolNameWindows }}
+  pool:
+    vmImage: ${{ parameters.vmImageWindows }}
 
   dependsOn: Generate_Packages
+
+  variables:
+    # Force disable .NET Native for all samples validation
+    UseDotNetNativeToolchain: false
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -32,7 +37,8 @@ jobs:
 - job: Dotnet_Template_Tests_Net6
   displayName: 'dotnet new net6 Templates Tests'
 
-  pool: ${{ parameters.poolNameWindows }}
+  pool:
+    vmImage: ${{ parameters.vmImageWindows }}
 
   dependsOn: Generate_Packages
 

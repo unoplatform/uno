@@ -3,11 +3,12 @@
 echo ""
 echo "[Waiting for device to boot]"
 
+
 if [ $ANDROID_SIMULATOR_APILEVEL -gt 25 ];
 then 
-$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82'
 else
-$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
+$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82'
 fi
 
 # Wait for com.android.systemui to become available,
@@ -15,11 +16,11 @@ fi
 # See: https://stackoverflow.com/questions/52410440/error-system-ui-isnt-responding-while-running-aosp-build-on-emulator
 #
 
-echo ""
+echo "boot_completed after $SECONDS"
 echo "[Waiting for launcher to start]"
 LAUNCHER_READY=
-START_TIME=$SECONDS
 MAX_START_TIME=300
+START_TIME=$SECONDS
 while [[ -z ${LAUNCHER_READY} ]]; do
 
     if [ $ANDROID_SIMULATOR_APILEVEL -ge 29 ];
@@ -36,7 +37,7 @@ while [[ -z ${LAUNCHER_READY} ]]; do
         exit 1
     fi
 
-    echo "(DEBUG) Current focus: ${UI_FOCUS}"
+    echo "(DEBUG $SECONDS) Current focus: ${UI_FOCUS}"
 
     case $UI_FOCUS in
     *"Launcher"*)

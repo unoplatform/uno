@@ -1,12 +1,15 @@
 parameters:
-  poolName: ''
+  vmImage: ''
 
 jobs:
 - job: Unit_Tests
   displayName: 'Unit Tests'
   timeoutInMinutes: 90
 
-  pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: Commitsar
 
   strategy:
     matrix:

@@ -1,11 +1,13 @@
 parameters:
-  poolName: ''
+  vmImage: ''
 
 jobs:
 - job: Documentation
   displayName: 'Documentation WebSite'
+  dependsOn: Commitsar
 
-  pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     CombinedConfiguration: Release|Any CPU

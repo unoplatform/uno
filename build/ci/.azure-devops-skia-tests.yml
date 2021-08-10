@@ -1,12 +1,15 @@
 parameters:
-  poolName: ''
+  vmImage: ''
 
 jobs:
 - job: Skia_UI_Tests
   displayName: 'Skia Samples App Unit Tests'
   timeoutInMinutes: 60
 
-  pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: Commitsar
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -17,7 +20,7 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
   steps:
- 
+   
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 

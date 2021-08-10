@@ -53,7 +53,7 @@ echo "Starting emulator"
 $ANDROID_HOME/platform-tools/adb devices
 
 # Start emulator in background
-nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-audio -no-snapshot -no-window -qemu > /dev/null 2>&1 &
+nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
 
 export IsUiAutomationMappingEnabled=true
 
