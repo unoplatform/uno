@@ -8,9 +8,9 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionColorBrush
 	{
-		internal override void UpdatePaint(SKPaint fillPaint)
+		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
-			fillPaint.Color = Color.ToSKColor(Compositor.CurrentOpacity);
+			paint.Color = Color.ToSKColor(Compositor.CurrentOpacity);
 		}
 	}
 }

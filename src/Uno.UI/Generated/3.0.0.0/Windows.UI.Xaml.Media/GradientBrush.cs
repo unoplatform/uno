@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class GradientBrush : global::Windows.UI.Xaml.Media.Brush
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.GradientSpreadMethod SpreadMethod
 		{
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media
 		#endif
 		// Skipping already declared property GradientStopsProperty
 		// Skipping already declared property MappingModeProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty SpreadMethodProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

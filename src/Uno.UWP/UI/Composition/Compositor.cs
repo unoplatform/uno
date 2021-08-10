@@ -50,6 +50,18 @@ namespace Windows.UI.Composition
 		public CompositionPathGeometry CreatePathGeometry(CompositionPath path)
 			=> new CompositionPathGeometry(this, path);
 
+		public CompositionEllipseGeometry CreateEllipseGeometry()
+			=> new CompositionEllipseGeometry(this);
+
+		public CompositionLineGeometry CreateLineGeometry()
+			=> new CompositionLineGeometry(this);
+
+		public CompositionRectangleGeometry CreateRectangleGeometry()
+			=> new CompositionRectangleGeometry(this);
+
+		public CompositionRoundedRectangleGeometry CreateRoundedRectangleGeometry()
+			=> new CompositionRoundedRectangleGeometry(this);
+
 		public CompositionSurfaceBrush CreateSurfaceBrush()
 			=> new CompositionSurfaceBrush(this);
 
@@ -74,6 +86,21 @@ namespace Windows.UI.Composition
 				TopInset = topInset,
 				RightInset = rightInset,
 				BottomInset = bottomInset
+			};
+
+		public CompositionLinearGradientBrush CreateLinearGradientBrush()
+			=> new CompositionLinearGradientBrush(this);
+
+		public CompositionRadialGradientBrush CreateRadialGradientBrush()
+			=> new CompositionRadialGradientBrush(this);
+
+		public CompositionColorGradientStop CreateColorGradientStop()
+			=> new CompositionColorGradientStop(this);
+
+		public CompositionColorGradientStop CreateColorGradientStop(float offset, Color color)
+			=> new CompositionColorGradientStop(this) {
+				Offset = offset,
+				Color = color
 			};
 
 		internal void InvalidateRender() => InvalidateRenderPartial();

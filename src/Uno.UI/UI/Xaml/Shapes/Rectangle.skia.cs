@@ -10,6 +10,7 @@ using Uno.UI;
 using Windows.UI.Composition;
 using Windows.Foundation;
 using Windows.Graphics;
+using System.Numerics;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -51,17 +52,30 @@ namespace Windows.UI.Xaml.Shapes
 
 		private SkiaGeometrySource2D GetGeometry(Size finalSize)
 		{
-			var area = new Rect(0, 0, finalSize.Width, finalSize.Height);
+			var strokeThickness = StrokeThickness;
+			var radiusX = RadiusX;
+			var radiusY = RadiusY;
 
-			var geometry = new SkiaGeometrySource2D();
-
-			if (Math.Max(RadiusX, RadiusY) > 0)
+			var offset = new Vector2((float)(strokeThickness * 0.5), (float)(strokeThickness * 0.5));
+			var size = new Vector2((float)finalSize.Width, (float)finalSize.Height);
+			
+			SkiaGeometrySource2D geometry;
+			if (radiusX == 0 || radiusY == 0)
 			{
-				geometry.Geometry.AddRoundRect(area.ToSKRect(), (float)RadiusX, (float)RadiusY);
+				// Simple rectangle
+				geometry = new SkiaGeometrySource2D(
+					CompositionGeometry.BuildRectangleGeometry(
+						offset,
+						size));
 			}
 			else
 			{
-				geometry.Geometry.AddRect(area.ToSKRect());
+				// Complex rectangle
+				geometry = new SkiaGeometrySource2D(
+					CompositionGeometry.BuildRoundedRectangleGeometry(
+						offset,
+						size,
+						new Vector2((float)radiusX, (float)radiusY)));
 			}
 
 			return geometry;

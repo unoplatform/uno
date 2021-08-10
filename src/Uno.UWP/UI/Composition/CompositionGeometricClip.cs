@@ -2,20 +2,26 @@
 
 namespace Windows.UI.Composition
 {
-	public partial class CompositionGeometricClip : global::Windows.UI.Composition.CompositionClip
+	public partial class CompositionGeometricClip : CompositionClip
 	{
+		private CompositionViewBox? _viewBox;
+		private CompositionGeometry? _geometry;
+
 		public CompositionGeometricClip(Compositor compositor) : base(compositor)
 		{
 
 		}
+
 		public CompositionViewBox? ViewBox
 		{
-			get; set;
+			get => _viewBox;
+			set => SetProperty(ref _viewBox, value);
 		}
 
 		public CompositionGeometry? Geometry
 		{
-			get; set;
+			get => _geometry;
+			set => SetProperty(ref _geometry, value);
 		}
 	}
 }

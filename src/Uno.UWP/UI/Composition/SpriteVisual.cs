@@ -1,7 +1,5 @@
 #nullable enable
 
-using System;
-
 namespace Windows.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
@@ -15,18 +13,22 @@ namespace Windows.UI.Composition
 
 		public CompositionBrush? Brush
 		{
-			get
+			get => _brush;
+			set => SetProperty(ref _brush, value);
+		}
+
+		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+		{
+			// Call base implementation - Visual calls Compositor.InvalidateRender().
+			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+
+			switch (propertyName)
 			{
-				return _brush;
-			}
-			set
-			{
-				var previousBrush = _brush;
-				if (_brush != value)
-				{
-					_brush = value;
-					OnBrushChangedPartial(_brush);
-				}
+				case nameof(Brush):
+					OnBrushChangedPartial(Brush);
+					break;
+				default:
+					break;
 			}
 		}
 

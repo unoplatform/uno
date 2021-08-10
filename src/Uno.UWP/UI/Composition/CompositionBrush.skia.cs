@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionBrush
 	{
-		internal virtual void UpdatePaint(SKPaint fillPaint)
+		internal virtual void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
 		}
 	}
