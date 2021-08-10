@@ -60,8 +60,8 @@ then
 
 	# Wait for the emulator to finish booting
 	source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+
 else
-then
 	# Restart the emulator to avoid running first-time tasks
 	$ANDROID_HOME/platform-tools/adb reboot
 

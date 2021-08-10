@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.TestFramework
 		static int When_Retry_On_Unhandled_Exception_Count = 0;
 
 		[Test]
-		[Timeout(2000)]
+		[AutoRetry]
 		public void When_Retry_On_Unhandled_Exception()
 		{
 			Console.WriteLine($"When_Retry_On_Unhandled_Exception {++When_Retry_On_Unhandled_Exception_Count}");
