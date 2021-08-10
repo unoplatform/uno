@@ -103,6 +103,8 @@ namespace SamplesApp.UITests.TestFramework
 					{
 						context.CurrentResult = context.CurrentTest.MakeTestResult();
 						context.CurrentRepeatCount++; // increment Retry count for next iteration. will only happen if we are guaranteed another iteration
+
+						Console.WriteLine($"Test {context.CurrentTest.FullName} failed, retrying ({count} left)");
 					}
 				}
 
