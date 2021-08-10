@@ -58,9 +58,9 @@ namespace {0}
 	partial class {1}
 	{{
 #if {2}
-        /// <summary>
-        /// Initializes a new instance of the <see cref=""{4}""/> class.
-        /// </summary>
+		/// <summary>
+		/// Initializes a new instance of the <see cref=""{4}""/> class.
+		/// </summary>
 		public {3}() {{ }}
 #endif
 
