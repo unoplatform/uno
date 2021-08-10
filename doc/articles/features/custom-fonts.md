@@ -98,8 +98,8 @@ The fonts location path   **must** then be specified in the `info.plist` file as
 <string>Fonts</string>
 ```
 
-> **IMPORTANT** \
- Please note that unlike iOS, for macOS only the path is specified. There is no need to list each font independently.
+> [!IMPORTANT]
+> Please note that unlike iOS, for macOS only the path is specified. There is no need to list each font independently.
 
 The format is the same as Windows, as follows:
 
