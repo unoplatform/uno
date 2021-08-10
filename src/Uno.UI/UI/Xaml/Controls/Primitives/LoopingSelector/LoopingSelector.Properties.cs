@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ItemTemplate), typeof(DataTemplate),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(DataTemplate)));
+				new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 
 		public static DependencyProperty ItemWidthProperty { get; } =

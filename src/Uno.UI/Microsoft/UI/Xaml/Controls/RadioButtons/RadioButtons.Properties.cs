@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(RadioButtons), new FrameworkPropertyMetadata(default(DataTemplate), OnPropertyChanged));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(RadioButtons), new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		public IList<object> Items
 		{

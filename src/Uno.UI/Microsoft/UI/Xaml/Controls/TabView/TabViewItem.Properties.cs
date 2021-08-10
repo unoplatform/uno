@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(TabViewItem), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(TabViewItem), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public IconSource IconSource
 		{

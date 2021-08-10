@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(HeaderTemplate),
 				typeof(DataTemplate),
 				typeof(Expander),
-				new FrameworkPropertyMetadata(null));
+				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public DataTemplateSelector HeaderTemplateSelector
 		{

@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CalendarViewStyleProperty { get; } = DependencyProperty.Register(
-			"CalendarViewStyle", typeof(Style), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(Style)));
+			"CalendarViewStyle", typeof(Style), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public Style CalendarViewStyle
 		{
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } = DependencyProperty.Register(
-			"HeaderTemplate", typeof(DataTemplate), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DataTemplate)));
+			"HeaderTemplate", typeof(DataTemplate), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public DataTemplate HeaderTemplate
 		{

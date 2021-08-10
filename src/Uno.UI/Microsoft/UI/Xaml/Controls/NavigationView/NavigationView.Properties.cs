@@ -185,7 +185,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the HeaderTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(NavigationView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the back button is enabled or disabled.
@@ -305,7 +305,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the MenuItemContainerStyle dependency property.
 		/// </summary>
 		public static DependencyProperty MenuItemContainerStyleProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItemContainerStyle), typeof(Style), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItemContainerStyle), typeof(Style), typeof(NavigationView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a reference to a custom StyleSelector logic class. The StyleSelector returns different Style values
@@ -366,7 +366,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the MenuItemTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty MenuItemTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItemTemplate), typeof(DataTemplate), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItemTemplate), typeof(DataTemplate), typeof(NavigationView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a reference to a custom DataTemplateSelector logic class. The DataTemplateSelector referenced by this property returns
@@ -507,7 +507,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneToggleButtonStyle dependency property.
 		/// </summary>
 		public static DependencyProperty PaneToggleButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(PaneToggleButtonStyle), typeof(Style), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PaneToggleButtonStyle), typeof(Style), typeof(NavigationView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the selected item.

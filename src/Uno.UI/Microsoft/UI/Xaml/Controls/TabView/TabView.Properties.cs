@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabItemTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(TabItemTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabItemTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public DataTemplateSelector TabItemTemplateSelector
 		{
@@ -166,7 +166,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabStripFooterTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(TabStripFooterTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabStripFooterTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public object TabStripHeader
 		{
@@ -184,7 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabStripHeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(TabStripHeaderTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabStripHeaderTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public TabViewWidthMode TabWidthMode
 		{

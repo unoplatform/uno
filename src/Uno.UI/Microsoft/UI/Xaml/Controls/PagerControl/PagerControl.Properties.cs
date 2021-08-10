@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(FirstButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(FirstButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 		public PagerControlButtonVisibility FirstButtonVisibility
 		{
 			get => (PagerControlButtonVisibility)GetValue(FirstButtonVisibilityProperty);
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LastButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(LastButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(LastButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		public PagerControlButtonVisibility LastButtonVisibility
 		{
@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(NextButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		public PagerControlButtonVisibility NextButtonVisibility
 		{
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreviousButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(PreviousButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PreviousButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		public PagerControlButtonVisibility PreviousButtonVisibility
 		{

@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 			name: "HeaderTemplate",
 			propertyType: typeof(DataTemplate),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(default(DataTemplate)));
+			typeMetadata: new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public object Header
 		{

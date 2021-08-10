@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the ItemContainerStyle dependency property.
 		/// </summary>
 		public static DependencyProperty ItemContainerStyleProperty { get; } =
-			DependencyProperty.Register(nameof(ItemContainerStyle), typeof(Style), typeof(TreeView), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(ItemContainerStyle), typeof(Style), typeof(TreeView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		/// <summary>
 		/// Identifies the ItemContainerStyleSelector dependency property.
@@ -143,7 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the ItemTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty ItemTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(TreeView), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(TreeView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		/// <summary>
 		/// Identifies the ItemTemplateSelector dependency property.

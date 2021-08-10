@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CloseButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(CloseButtonStyle), typeof(Style), typeof(InfoBar), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(CloseButtonStyle), typeof(Style), typeof(InfoBar), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public object Content
 		{
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContentTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(ContentTemplate), typeof(DataTemplate), typeof(InfoBar), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(ContentTemplate), typeof(DataTemplate), typeof(InfoBar), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public IconSource IconSource
 		{

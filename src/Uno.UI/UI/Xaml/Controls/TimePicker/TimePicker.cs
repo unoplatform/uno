@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(HeaderTemplate), typeof(DataTemplate),
 				typeof(TimePicker),
-				new FrameworkPropertyMetadata(null));
+				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 #endregion
 
