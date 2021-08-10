@@ -1,9 +1,12 @@
 ﻿using System;
+using Windows.UI.Xaml.Wasm;
 
 namespace Windows.UI.Xaml.Media
 {
 	public class GeometryData : Geometry
 	{
+		private readonly SvgElement _svgElement = new SvgElement("path");
+
 		public string Data { get; }
 
 		public FillRule FillRule { get; } = FillRule.EvenOdd;
@@ -23,6 +26,17 @@ namespace Windows.UI.Xaml.Media
 			{
 				Data = data;
 			}
+
+			_svgElement.SetAttribute("d", Data);
+			var rule = FillRule switch
+			{
+				FillRule.EvenOdd => "evenodd",
+				FillRule.Nonzero => "nonzero",
+				_ => "evenodd"
+			};
+			_svgElement.SetAttribute("fill-rule", rule);
 		}
+
+		internal override SvgElement GetSvgElement() => _svgElement;
 	}
 }

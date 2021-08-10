@@ -10,7 +10,11 @@ namespace Windows.UI.Xaml.Media
 		public GeometryGroup()
 		{
 			Children = new GeometryCollection();
+
+			InitPartials();
 		}
+
+		partial void InitPartials();
 
 		#region FillRule
 
@@ -22,16 +26,19 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty FillRuleProperty { get; } =
 			DependencyProperty.Register(
-				nameof(FillRule), 
+				nameof(FillRule),
 				typeof(FillRule),
 				typeof(GeometryGroup),
 				new FrameworkPropertyMetadata(
 					defaultValue: FillRule.EvenOdd,
-					options: FrameworkPropertyMetadataOptions.AffectsRender
+					options: FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (o, v) => OnPropertyChanged(o, v)
 				)
 			);
 
 		#endregion
+
+		static partial void OnPropertyChanged(DependencyObject dependencyObject, object newValue);
 
 		#region Children
 

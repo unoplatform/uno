@@ -1435,7 +1435,37 @@ namespace Uno.UI {
 		}
 
 		private getBBoxInternal(elementId: number): any {
-			return (<any>this.getView(elementId)).getBBox();
+
+			const element = this.getView(elementId) as SVGGraphicsElement;
+			let unconnectedRoot: HTMLElement = null;
+
+			let cleanupUnconnectedRoot = (owner: HTMLDivElement) => {
+				if (unconnectedRoot !== null) {
+					owner.removeChild(unconnectedRoot);
+				}
+			}
+
+			try {
+
+				// On FireFox, the element needs to be connected to the DOM
+				// or the getBBox() will crash.
+				if (!element.isConnected) {
+
+					while (unconnectedRoot.parentElement) {
+						// Need to find the top most "unconnected" parent
+						// of this element
+						unconnectedRoot = unconnectedRoot.parentElement as HTMLElement;
+					}
+
+					this.containerElement.appendChild(unconnectedRoot);
+				}
+
+				return element.getBBox();
+			}
+			finally {
+				cleanupUnconnectedRoot(this.containerElement);
+			}
+
 		}
 
 		public setSvgElementRect(pParams: number): boolean {
