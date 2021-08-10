@@ -8,6 +8,8 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
+  condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
+
   steps:
   - checkout: self
     clean: true
