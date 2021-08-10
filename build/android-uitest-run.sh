@@ -60,11 +60,11 @@ export IsUiAutomationMappingEnabled=true
 # Wait for the emulator to finish booting
 source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
-# Restart the emulator to avoid running first-time tasks
-$ANDROID_HOME/platform-tools/adb reboot
-
-# Wait for the emulator to finish booting
-source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+## Restart the emulator to avoid running first-time tasks
+#$ANDROID_HOME/platform-tools/adb reboot
+#
+## Wait for the emulator to finish booting
+#source $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
 # list active devices
 $ANDROID_HOME/platform-tools/adb devices
@@ -111,7 +111,7 @@ cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-export NUNIT_VERSION=3.11.1
+export NUNIT_VERSION=3.12.0
 mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
