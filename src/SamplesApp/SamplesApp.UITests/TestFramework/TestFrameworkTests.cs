@@ -13,13 +13,13 @@ namespace SamplesApp.UITests.TestFramework
 
 		[Test]
 		[AutoRetry]
-		[Timeout(500)]
+		[Timeout(100)]
 		public void When_Retry_On_Timeout()
 		{
 			Console.WriteLine($"Draw_polyline2: {++When_Retry_On_Timeout_Count}");
 			if (When_Retry_On_Timeout_Count < 3)
 			{
-				System.Threading.Thread.Sleep(1000);
+				System.Threading.Thread.Sleep(2000);
 			}
 		}
 
