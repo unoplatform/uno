@@ -45,75 +45,75 @@ jobs:
   parameters:
     vmImage: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-package-generic.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
+#- template: build/ci/.azure-devops-package-generic.yml
+#  parameters:
+#    poolName: '$(windowsScaledPool)'
 
-- template: build/ci/.azure-devops-package-net6-win.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
+#- template: build/ci/.azure-devops-package-net6-win.yml
+#  parameters:
+#    poolName: '$(windowsScaledPool)'
 
-- template: build/ci/.azure-devops-package.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
+#- template: build/ci/.azure-devops-package.yml
+#  parameters:
+#    poolName: '$(windowsScaledPool)'
 
-- template: build/ci/.azure-devops-project-template-tests.yml
-  parameters:
-    vmImageWindows: '$(windowsHostedVMImage)'
-    vmImageLinux: '$(linuxVMImage)'
+#- template: build/ci/.azure-devops-project-template-tests.yml
+#  parameters:
+#    vmImageWindows: '$(windowsHostedVMImage)'
+#    vmImageLinux: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-uap.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+#- template: build/ci/.azure-devops-uap.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-unit-tests.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+#- template: build/ci/.azure-devops-unit-tests.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-skia-tests.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+#- template: build/ci/.azure-devops-skia-tests.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+#- template: build/ci/.azure-devops-docs.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-samplesapp-uitests-build.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+#- template: build/ci/.azure-devops-samplesapp-uitests-build.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-wasm-uitests.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
+#- template: build/ci/.azure-devops-wasm-uitests.yml
+#  parameters:
+#    vmImage: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-wasm-cs9-preview-validation.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
+#- template: build/ci/.azure-devops-wasm-cs9-preview-validation.yml
+#  parameters:
+#    vmImage: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-macos.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
+#- template: build/ci/.azure-devops-macos.yml
+#  parameters:
+#    vmImage: '$(macOSVMImage)'
+#    xCodeRoot: '$(xCodeRoot)'
+#    XamarinSDKVersion: '$(XamarinSDKVersion)'
 
-- template: build/ci/.azure-devops-android-tests.yml
-  parameters:
-    vmWindowsImage: '$(windowsHostedVMImage)'
-    vmMacOSImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
+#- template: build/ci/.azure-devops-android-tests.yml
+#  parameters:
+#    vmWindowsImage: '$(windowsHostedVMImage)'
+#    vmMacOSImage: '$(macOSVMImage)'
+#    xCodeRoot: '$(xCodeRoot)'
+#    XamarinSDKVersion: '$(XamarinSDKVersion)'
 
-- template: build/ci/.azure-devops-ios-tests.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    xCodeRootBuild: '$(xCodeRoot)'
-    XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
-    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
+#- template: build/ci/.azure-devops-ios-tests.yml
+#  parameters:
+#    vmImage: '$(macOSVMImage)'
+#    xCodeRootBuild: '$(xCodeRoot)'
+#    XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
+#    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+#    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
-- template: build/ci/.azure-devops-screenshot-compare.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+#- template: build/ci/.azure-devops-screenshot-compare.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-vs2022-vsix.yml
   parameters:
