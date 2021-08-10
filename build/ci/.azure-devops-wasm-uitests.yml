@@ -72,7 +72,7 @@ jobs:
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    SITE_SUFFIX: 'netstandard2.0'
+    SITE_SUFFIX: 'net5.0'
 
   steps:
   - checkout: self
@@ -97,8 +97,9 @@ jobs:
   - bash: |
       set -euo pipefail
       IFS=$'\n\t'
-      cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-netstandard2.0
-      python server.py &
+      dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools
+      export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
+      dotnet serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net5.0" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
