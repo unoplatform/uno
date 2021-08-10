@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Controls
 {
@@ -87,7 +88,7 @@ namespace Uno.UI.Controls
 				{
 					case BitmapIcon bitmap:
 						native.Image = UIImageHelper.FromUri(bitmap.UriSource);
-						native.CustomView = null;
+						native.ClearCustomView();
 						native.Title = null;
 						break;
 
@@ -97,7 +98,7 @@ namespace Uno.UI.Controls
 					default:
 						this.Log().WarnIfEnabled(() => $"{GetType().Name ?? "FontIcon, PathIcon and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
 						native.Image = null;
-						native.CustomView = null;
+						native.ClearCustomView();
 						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set. 
 						// We default to an empty string to ensure it is added.
 						native.Title = string.Empty;
@@ -110,7 +111,7 @@ namespace Uno.UI.Controls
 				{
 					case string text:
 						native.Image = null;
-						native.CustomView = null;
+						native.ClearCustomView();
 						native.Title = text;
 						break;
 
@@ -132,7 +133,7 @@ namespace Uno.UI.Controls
 
 					default:
 						native.Image = null;
-						native.CustomView = null;
+						native.ClearCustomView();
 						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set. 
 						// We default to an empty string to ensure it is added.
 						native.Title = string.Empty;
