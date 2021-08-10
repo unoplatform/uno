@@ -8,8 +8,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
-
   steps:
   - checkout: self
     clean: true
@@ -18,3 +16,6 @@ jobs:
      curl -L -O https://github.com/aevea/commitsar/releases/download/v0.16.0/commitsar_0.16.0_Linux_x86_64.tar.gz
      tar -xzf commitsar_0.16.0_Linux_x86_64.tar.gz
      ./commitsar
+
+  condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
+
