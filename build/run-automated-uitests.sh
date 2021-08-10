@@ -8,7 +8,7 @@ npm i chromedriver@86.0.0
 npm i puppeteer@5.3.1
 
 # install dotnet serve
-dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools
+dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
 export UNO_UITEST_TARGETURI=http://localhost:8000

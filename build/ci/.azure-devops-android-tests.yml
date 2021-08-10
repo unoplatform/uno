@@ -208,6 +208,7 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
+  ## First tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
       $(build.sourcesdirectory)/build/android-uitest-run.sh
 
@@ -228,7 +229,33 @@ jobs:
       testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+      # don't fail on failed tests, second run will do it
+      # see https://github.com/unoplatform/uno/issues/6714
+      failTaskOnFailedTests: false
+
+  ## Second tests run (https://github.com/unoplatform/uno/issues/6714)
+  - bash: |
+      $(build.sourcesdirectory)/build/android-uitest-run.sh
+
+    displayName: Run Android Tests
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
+      UITEST_TEST_MODE_NAME: "$(UITEST_TEST_MODE_NAME)"
+      UNO_UITEST_BUCKET_ID: "$(UNO_UITEST_BUCKET_ID)"
+      SAMPLEAPP_ARTIFACT_NAME: "$(SAMPLEAPP_ARTIFACT_NAME)"
+      TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
+ 
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test ReRun'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       failTaskOnFailedTests: $(FAILBUILD_ON_FAILURE)
+  ## end second run
 
   - task: PublishTestResults@2
     condition: always()
