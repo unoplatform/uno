@@ -509,7 +509,7 @@ namespace Windows.UI.Xaml
 			return focusUpdated;
 		}
 
-		protected virtual IEnumerable<DependencyObject> GetChildrenInTabFocusOrder()
+		protected virtual IEnumerable<DependencyObject>? GetChildrenInTabFocusOrder()
 		{
 			var children = FocusProperties.GetFocusChildren(this);
 			if (children != null && /*!children->IsLeaving() && */children.Length > 0)
@@ -519,7 +519,7 @@ namespace Windows.UI.Xaml
 			return Array.Empty<DependencyObject>();
 		}
 
-		internal IEnumerable<DependencyObject> GetChildrenInTabFocusOrderInternal() => GetChildrenInTabFocusOrder();
+		internal IEnumerable<DependencyObject>? GetChildrenInTabFocusOrderInternal() => GetChildrenInTabFocusOrder();
 
 		internal bool IsOccluded(UIElement? childElement, Rect elementBounds)
 		{
