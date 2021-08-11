@@ -301,9 +301,8 @@ namespace Uno.UI.Controls
 				return false;
 			}
 
-			var superViews = view.FindSuperviews().ToList();
+			var superViews = view.FindSuperviews().Trim().ToList();
 			superViews.Insert(0, view);
-
 			return superViews.Any(superView => _attachedProperties.GetValue(superView, NeedsKeyboardAttachedPropertyKey, () => default(bool?)).GetValueOrDefault());
 		}
 
