@@ -325,6 +325,7 @@ namespace Windows.UI.Input
 						_inertia.Start();
 						break;
 
+					case ManipulationState.Starting when pointerRemoved:
 					case ManipulationState.Started when pointerRemoved:
 					// For now we complete the Manipulation as soon as a pointer was removed.
 					// This is not the UWP behavior where for instance you can scale multiple times by releasing only one finger.
