@@ -100,11 +100,10 @@ namespace Windows.UI.ViewManagement
 			get
 			{
 				if (ApplicationData.Current.LocalSettings.Values.TryGetValue(PreferredLaunchViewWidthKey, out var widthObject) &&
-					ApplicationData.Current.LocalSettings.Values.TryGetValue(PreferredLaunchViewHeightKey, out var heightObject))
+					ApplicationData.Current.LocalSettings.Values.TryGetValue(PreferredLaunchViewHeightKey, out var heightObject) &&
+					widthObject is double width &&
+					heightObject is double height)
 				{
-					double width = (double)widthObject;
-					double height = (double)heightObject;
-
 					return new Size(width, height);
 				}
 				return Size.Empty;
