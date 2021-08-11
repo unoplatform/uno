@@ -1,14 +1,29 @@
 #!/usr/bin/env bash
 
+retry() {
+    local -r -i max_attempts="$1"; shift
+    local -i attempt_num=1
+    until "$@"
+    do
+        if ((attempt_num==max_attempts))
+        then
+            echo "Last attempt $attempt_num failed, exiting."
+            return 1
+        else
+            echo "Attempt $attempt_num failed! Waiting $attempt_num seconds..."
+            sleep $((attempt_num++))
+        fi
+    done
+}
+
 echo ""
 echo "[Waiting for device to boot]"
 
-
 if [ $ANDROID_SIMULATOR_APILEVEL -gt 25 ];
 then 
-$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82'
+retry 3 $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82'
 else
-$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82'
+retry 3 $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82'
 fi
 
 # Wait for com.android.systemui to become available,
