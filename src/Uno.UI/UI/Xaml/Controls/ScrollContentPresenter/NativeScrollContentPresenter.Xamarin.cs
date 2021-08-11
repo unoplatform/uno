@@ -25,7 +25,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class NativeScrollContentPresenter : IScrollContentPresenter
+	internal sealed partial class NativeScrollContentPresenter : IScrollContentPresenter
 	{
 		private View _content;
 

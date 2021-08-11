@@ -15,6 +15,7 @@ using UIKit;
 using CoreGraphics;
 using Uno.Logging;
 using Windows.Foundation;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -50,6 +51,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				GetParentScrollViewer()?.UpdateDimensionProperties();
 			};
+
+			// The UIScrollView mutes all touch events on super views ...
+			AddGestureRecognizer(new PassThroughPseudoGestureRecognizer(this));
 		}
 
 		public NativeScrollContentPresenter()
