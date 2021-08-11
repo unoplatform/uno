@@ -4067,24 +4067,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var markupTypeFullName = GetGlobalizedTypeName(markupType.GetFullName()!);
 			var xamlMarkupFullName = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides);
 
-			// Get the attribute from the custom markup extension class then get the return type specifed with MarkupExtensionReturnTypeAttribute
-			var attributeData = markupType.FindAttribute(XamlConstants.Types.MarkupExtensionReturnTypeAttribute);
-			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "ReturnType").Value.Value;
-			var cast = string.Empty;
 			var provideValue = $"(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
-
-			if (returnType != null)
+			string cast;
+			// Don't use the value from MarkupExtensionReturnType to match UWP behavior.
+			if (FindPropertyType(member.Member) is INamedTypeSymbol propertyType)
 			{
-				// A MarkupExtensionReturnType was specified, simply get type to cast against ProvideValue()
-				cast = $"({returnType})";
-			}
-			else if (FindPropertyType(member.Member) is INamedTypeSymbol propertyType)
-			{
-				// MarkupExtensionReturnType wasn't specified...
-
 				if (IsImplementingInterface(propertyType, _iConvertibleSymbol))
 				{
-					// ... and the target property implements IConvertible, therefore
+					// The target property implements IConvertible, therefore
 					// cast ProvideValue() using Convert.ChangeType
 					var targetTypeDisplay = propertyType.ToDisplayString();
 					var targetType = $"typeof({targetTypeDisplay})";
@@ -4095,14 +4085,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					// ... and the target property is not an IConvertible, we cast
+					// The target property is not an IConvertible, we cast
 					// ProvideValue() using the type of the target property
 					cast = GetCastString(propertyType, null);
 				}
 			}
 			else
 			{
-				this.Log().Error($"Unable to determine the return type needed for the markup extension (a MarkupExtensionReturnType attribute is not available, and {member.Member} cannot be found).");
+				this.Log().Error($"Unable to determine the return type needed for the markup extension ('{member.Member}' cannot be found).");
 				return string.Empty;
 			}
 
