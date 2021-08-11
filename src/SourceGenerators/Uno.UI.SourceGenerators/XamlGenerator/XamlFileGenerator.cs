@@ -151,6 +151,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// If set, code generated from XAML will be annotated with the source method and line # in this file, for easier debugging.
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml;
+		private static readonly Regex splitRegex = new Regex(@"\s*,\s*|\s+");
 
 		private string ParseContextPropertyAccess =>
 			 (_isTopLevelDictionary, _isInSingletonInstance) switch
@@ -4372,16 +4373,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "new System.Drawing.PointF(" + AppendFloatSuffix(GetMemberValue()) + ")";
 
 					case "System.Drawing.Size":
-						return "new System.Drawing.Size(" + memberValue + ")";
+						return "new System.Drawing.Size(" + SplitAndJoin(memberValue) + ")";
 
 					case "Windows.Foundation.Size":
-						return "new Windows.Foundation.Size(" + memberValue + ")";
+						return "new Windows.Foundation.Size(" + SplitAndJoin(memberValue) + ")";
 
 					case "Windows.UI.Xaml.Media.Matrix":
-						return "new Windows.UI.Xaml.Media.Matrix(" + memberValue + ")";
+						return "new Windows.UI.Xaml.Media.Matrix(" + SplitAndJoin(memberValue) + ")";
 
 					case "Windows.Foundation.Point":
-						return "new Windows.Foundation.Point(" + memberValue + ")";
+						return "new Windows.Foundation.Point(" + SplitAndJoin(memberValue) + ")";
 
 					case "Windows.UI.Xaml.Input.InputScope":
 						return "new global::Windows.UI.Xaml.Input.InputScope { Names = { new global::Windows.UI.Xaml.Input.InputScopeName { NameValue = global::Windows.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";
@@ -4441,6 +4442,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
+
+				static string? SplitAndJoin(string? value)
+					=> value == null ? null : splitRegex.Replace(value, ", ");
 			}
 		}
 
