@@ -627,6 +627,9 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException($"Flag not defined for routed event {routedEvent.Name}.");
 			}
 
+			// TODO: This is just temporary workaround before proper
+			// keyboard event infrastructure is implemented everywhere
+			// (issue #6074)
 			if (routedEvent.IsKeyEvent)
 			{
 				TrackKeyState(routedEvent, args);
