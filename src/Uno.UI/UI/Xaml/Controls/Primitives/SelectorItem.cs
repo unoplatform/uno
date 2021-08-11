@@ -253,6 +253,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 
 			UpdateCommonStates();
+
+			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
 			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
 			VisualStateManager.GoToState(this, state, true);
 		}

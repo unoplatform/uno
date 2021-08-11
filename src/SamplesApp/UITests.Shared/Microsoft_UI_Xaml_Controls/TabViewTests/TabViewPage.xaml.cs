@@ -23,6 +23,7 @@ using Windows.ApplicationModel.DataTransfer;
 using MUXControlsTestApp.Utilities;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
+using System.Linq;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
@@ -42,7 +43,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		public TabViewPage()
 		{
 			this.InitializeComponent();
-
+			Loaded += TabViewPage_Loaded;
 			_iconSource = new SymbolIconSource();
 			_iconSource.Symbol = Symbol.Placeholder;
 
@@ -56,6 +57,17 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				itemSource.Add(item);
 			}
 			DataBindingTabView.TabItemsSource = itemSource;
+		}
+
+		private void TabViewPage_Loaded(object sender, RoutedEventArgs e)
+		{
+			var layoutRoot = (Grid)VisualTreeHelper.GetChild(DisabledTab, 0);
+			VisualStateManager.GetVisualStateGroups(layoutRoot).Single(s => s.Name == "DisabledStates").CurrentStateChanged += CurrentStateChanged;
+		}
+
+		private void CurrentStateChanged(object sender, VisualStateChangedEventArgs e)
+		{
+			DisabledTabStateText.Text = "Disabled tab state: " + e.NewState.Name;
 		}
 
 		protected

@@ -367,6 +367,14 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 		[Test]
 		[AutoRetry]
+		public void VerifyDisabledTabHasCorrectVisualState()
+		{
+			var disabledTabStateText = _app.Marked("DisabledTabStateText");
+			Assert.AreEqual("Disabled tab state: Disabled", disabledTabStateText.GetText());
+		}
+
+		[Test]
+		[AutoRetry]
 		public void VerifySizingBehaviorOnTabCloseComingFromNonScroll()
 		{
 			int pixelTolerance = 10;

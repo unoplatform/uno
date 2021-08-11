@@ -265,7 +265,7 @@
 										<controls:SymbolIconSource Symbol="Placeholder"/>
 									</controls:TabViewItem.IconSource>
 
-									<TextBlock Padding="16">Content</TextBlock>
+									<TextBlock Padding="16" x:Name="DisabledTabStateText">Disabled tab state:</TextBlock>
 								</controls:TabViewItem>
 
 							</controls:TabView.TabItems>
