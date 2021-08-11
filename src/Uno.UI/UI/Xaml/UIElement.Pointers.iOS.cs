@@ -191,6 +191,9 @@ namespace Windows.UI.Xaml
 
 					if (!pt.HadMove)
 					{
+						// The event will bubble in managed, so as this flag is "pseudo static", make sure to raise it only once.
+						pt.HadMove = true;
+
 						// On iOS if the gesture is really fast (like a flick), we can get only 'down' and 'up'.
 						// But on UWP it seems that we always have a least one move (for fingers and pen!), and even internally,
 						// the manipulation events are requiring at least one move to kick-in.
