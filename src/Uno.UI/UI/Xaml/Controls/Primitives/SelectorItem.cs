@@ -253,6 +253,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 
 			UpdateCommonStates();
+			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
+			VisualStateManager.GoToState(this, state, true);
 		}
 
 #if __IOS__
