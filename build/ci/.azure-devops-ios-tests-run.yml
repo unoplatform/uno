@@ -68,6 +68,7 @@ jobs:
     # https://github.com/actions/virtual-environments/issues/1932
     displayName: Apply workaround for Azure Devops issue 1932
 
+  ## First UI Tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
       $(build.sourcesdirectory)/build/ios-uitest-run.sh
 
@@ -87,6 +88,33 @@ jobs:
       testRunTitle: 'iOS Test Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+
+      # don't fail on failed tests, second run will do it
+      # see https://github.com/unoplatform/uno/issues/6714
+      failTaskOnFailedTests: false
+
+  ## Second UI Tests run (https://github.com/unoplatform/uno/issues/6714)
+  - bash: |
+      $(build.sourcesdirectory)/build/ios-uitest-run.sh
+
+    displayName: Run iOS Simulator Tests (re-run)
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
+      UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
+      UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'iOS Test Run ($(Agent.JobName))'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
+      # Second run needs to fail tests
+      # see https://github.com/unoplatform/uno/issues/6714
       failTaskOnFailedTests: true
 
   - task: PublishTestResults@2

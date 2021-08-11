@@ -10,7 +10,7 @@ xcrun simctl list devices --json
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-export NUNIT_VERSION=3.11.1
+export NUNIT_VERSION=3.12.0
 mono nuget/nuget.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
 
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
@@ -94,7 +94,7 @@ cd $UNO_UITEST_SCREENSHOT_PATH
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
-export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll
+export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/SamplesApp.UITests.dll
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
@@ -111,7 +111,7 @@ fi
 
 if [ -f "$UNO_TESTS_LOCAL_TESTS_FILE" ]; then
 	# used for local tests builds using the local-ios-uitest-run.sh script
-	echo "$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+	echo "$UNO_TESTS_LOCAL_TESTS_FILE" >> $UNO_TESTS_RESPONSE_FILE
 else
 	echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
 fi
