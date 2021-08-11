@@ -23,18 +23,13 @@ namespace $ext_safeprojectname$
     /// </summary>
     public sealed partial class App : Application
     {
-#if NET5_0 && WINDOWS
         private Window _window;
 
-#else
-        private Windows.UI.Xaml.Window _window;
-#endif
-
-	/// <summary>
-	/// Initializes the singleton application object.  This is the first line of authored code
-	/// executed, and as such is the logical equivalent of main() or WinMain().
-	/// </summary>
-	public App()
+        /// <summary>
+        /// Initializes the singleton application object.  This is the first line of authored code
+        /// executed, and as such is the logical equivalent of main() or WinMain().
+        /// </summary>
+        public App()
         {
             InitializeLogging();
 
@@ -49,8 +44,8 @@ namespace $ext_safeprojectname$
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        /// <param name="args">Details about the launch request and process.</param>
+        protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -77,9 +72,9 @@ namespace $ext_safeprojectname$
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Load state from previously suspended application
+                    // TODO: Load state from previously suspended application
                 }
 
                 // Place the frame in the current Window
@@ -87,7 +82,7 @@ namespace $ext_safeprojectname$
             }
 
 #if !(NET5_0 && WINDOWS)
-            if (e.PrelaunchActivated == false)
+            if (args.PrelaunchActivated == false)
 #endif
             {
                 if (rootFrame.Content == null)
@@ -95,7 +90,7 @@ namespace $ext_safeprojectname$
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    rootFrame.Navigate(typeof(MainPage), args.Arguments);
                 }
                 // Ensure the current window is active
                 _window.Activate();
@@ -109,7 +104,7 @@ namespace $ext_safeprojectname$
         /// <param name="e">Details about the navigation failure</param>
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            throw new Exception($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
+            throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
         }
 
         /// <summary>
@@ -122,7 +117,7 @@ namespace $ext_safeprojectname$
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
+            // TODO: Save application state and stop any background activity
             deferral.Complete();
         }
 

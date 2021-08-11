@@ -289,8 +289,8 @@
 							{
 								s = s
 									.Replace("Include=\"Uno.UI", "Include=\"Uno.WinUI")
-									.Replace("e.PreviousExecutionState", "e.UWPLaunchActivatedEventArgs.PreviousExecutionState")
-									.Replace("e.PrelaunchActivated", "e.UWPLaunchActivatedEventArgs.PrelaunchActivated")
+									.Replace("args.PreviousExecutionState", "args.UWPLaunchActivatedEventArgs.PreviousExecutionState")
+									.Replace("args.PrelaunchActivated", "args.UWPLaunchActivatedEventArgs.PrelaunchActivated")
 									.Replace("OnLaunched(LaunchActivatedEventArgs", "OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs")
 									.Replace("Windows.UI.Xaml", "Microsoft.UI.Xaml");
 									
