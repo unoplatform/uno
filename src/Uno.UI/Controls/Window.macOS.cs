@@ -278,7 +278,7 @@ namespace Uno.UI.Controls
 		}
 
 		/// <summary>
-		/// Taken from <see cref="https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/src/AppKit/NSEvent.cs#L127" />
+		/// Taken from <see href="https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/src/AppKit/NSEvent.cs#L127" />
 		/// </summary>
 		/// <param name="nativeEvent">Native event</param>
 		/// <returns>Value indicating whether the event is recognized as a "mouse" event.</returns>
@@ -305,7 +305,7 @@ namespace Uno.UI.Controls
 		}
 
 		/// <summary>
-		/// Inspiration from <see cref="https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/src/AppKit/NSEvent.cs#L148"/>
+		/// Inspiration from <see href="https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/src/AppKit/NSEvent.cs#L148"/>
 		/// with some modifications.
 		/// </summary>
 		/// <param name="nativeEvent">Native event</param>

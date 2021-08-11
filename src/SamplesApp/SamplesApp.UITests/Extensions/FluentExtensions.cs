@@ -17,7 +17,7 @@ namespace SamplesApp.UITests
 			return target;
 		}
 
-		public static T ApplyIf<T>(this T target, bool condition, Action<T> action)
+		public static T ApplyIf<T>(this T target, bool condition, Action<T>? action)
 		{
 			if (condition)
 			{

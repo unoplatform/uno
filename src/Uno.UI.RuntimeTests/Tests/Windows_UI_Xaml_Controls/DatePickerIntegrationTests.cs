@@ -607,7 +607,6 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			ColumnDefinition monthColumn = default;
 			ColumnDefinition yearColumn = default;
 			Grid flyoutButtonContentGrid = default;
-			uint columnIndex = 0;
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
