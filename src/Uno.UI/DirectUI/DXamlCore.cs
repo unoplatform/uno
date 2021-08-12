@@ -5,10 +5,13 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using Uno.Foundation.Collections;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
 
 namespace DirectUI
 {
@@ -56,5 +59,17 @@ namespace DirectUI
 
 		public ElementSoundPlayerService GetElementSoundPlayerServiceNoRef()
 			=> ElementSoundPlayerService.Instance;
+
+		private NullableKeyDictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName = null;
+
+		internal NullableKeyDictionary<string, List<WeakReference<RadioButton>>>? GetRadioButtonGroupsByName(bool ensure)
+		{
+			if (_radioButtonGroupsByName == null && ensure)
+			{
+				_radioButtonGroupsByName = new NullableKeyDictionary<string, List<WeakReference<RadioButton>>>();
+			}
+
+			return _radioButtonGroupsByName;
+		}
 	}
 }

@@ -4,11 +4,12 @@
 
 using System;
 using System.Collections.Generic;
+using DirectUI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using DirectUI;
 using Windows.Foundation;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -106,6 +107,51 @@ namespace Windows.UI.Xaml
 			}
 
 			return true;
+		}
+
+		private protected AutomationPeer? GetOrCreateAutomationPeer()
+		{
+			bool isPopupOpen = true;
+
+			if (this is Popup popup)
+			{
+				isPopupOpen = popup.IsOpen;
+			}
+
+			// this condition checks that if Control is visible and if it's popup then it must be open
+			if (Visibility != Visibility.Collapsed && isPopupOpen)
+			{
+				// TODO Uno: Our simplified version just returns new automation peer
+				return OnCreateAutomationPeerInternal();
+				//if (!m_tpAP)
+				//{
+				//	ctl::ComPtr<xaml_automation_peers::IAutomationPeer> spAP;
+				//	if (FAILED(UIElementGenerated::OnCreateAutomationPeerProtected(&spAP)))
+				//	{
+				//		RRETURN(E_FAIL);
+				//	}
+				//	else if (!spAP)
+				//	{
+				//		RRETURN(S_FALSE);
+				//	}
+
+				//	// This FX peer gains state when the AutomationPeer is stored in m_tpAP, so mark as
+				//	// having state. Otherwise, a stateless FX peer will be released, which will
+				//	// release the automation peer.
+				//	IFC(MarkHasState());
+
+				//	SetPtrValue(m_tpAP, spAP.Get());
+				//}
+			}
+			else
+			{
+				return null;
+				//if (m_tpAP)
+				//{
+				//	m_tpAP.Clear();
+				//}
+				//RRETURN(S_FALSE);
+			}
 		}
 
 		//TODO:MZ: Implement all these in appropriate places :-)

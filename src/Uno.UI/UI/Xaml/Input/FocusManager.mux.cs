@@ -799,7 +799,7 @@ namespace Windows.UI.Xaml.Input
 		/// Gets next tab stop, includes the full logic with special case handling
 		/// Calls internal version of the method which contains further logic
 		/// </remarks>
-		private DependencyObject? GetNextTabStop(DependencyObject? pCurrentTabStop = null, bool bIgnoreCurrentTabStopScope = false)
+		internal DependencyObject? GetNextTabStop(DependencyObject? pCurrentTabStop = null, bool bIgnoreCurrentTabStopScope = false)
 		{
 			DependencyObject? pNewTabStop = null;
 			DependencyObject? pFocused = pCurrentTabStop ?? _focusedElement;
@@ -1053,7 +1053,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="pCurrentTabStop">Current tab stop</param>
 		/// <returns>Previous tab stop.</returns>
-		private DependencyObject? GetPreviousTabStop(DependencyObject? pCurrentTabStop = null)
+		internal DependencyObject? GetPreviousTabStop(DependencyObject? pCurrentTabStop = null)
 		{
 			DependencyObject? pFocused = pCurrentTabStop ?? _focusedElement;
 			DependencyObject? pNewTabStop = null;

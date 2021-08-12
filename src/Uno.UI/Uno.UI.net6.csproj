@@ -87,31 +87,11 @@
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
 		</None>
-		<None Include="Mixins\Android\VisualStatesMixins.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		</None>
 		<None Include="Mixins\iOS\FrameworkElementMixins.g.cs">
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
 		</None>
-		<None Include="Mixins\iOS\VisualStatesMixins.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		</None>
 		<None Include="Mixins\macOS\FrameworkElementMixins.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		</None>
-		<None Include="Mixins\macOS\VisualStatesMixins.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		</None>
-		<None Include="Mixins\net461\VisualStatesMixins.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		</None>
-		<None Include="Mixins\Wasm\VisualStatesMixins.g.cs">
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
 		</None>
@@ -207,26 +187,11 @@
 	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
 	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
 	  </None>
-	  <None Update="Mixins\Android\VisualStatesMixins.tt">
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
 	  <None Update="Mixins\iOS\FrameworkElementMixins.tt">
 	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
 	  </None>
-	  <None Update="Mixins\iOS\VisualStatesMixins.tt">
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
 	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
 	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\macOS\VisualStatesMixins.tt">
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\net461\VisualStatesMixins.tt">
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 	  </None>
 	</ItemGroup>
 

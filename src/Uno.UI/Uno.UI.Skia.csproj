@@ -114,16 +114,5 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="Mixins\Wasm\VisualStatesMixins.g.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>VisualStatesMixins.tt</DependentUpon>
-	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
 	</ItemGroup>
 </Project>

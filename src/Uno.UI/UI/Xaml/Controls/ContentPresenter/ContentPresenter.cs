@@ -60,6 +60,8 @@ namespace Windows.UI.Xaml.Controls
 		/// <remarks>Clear this flag to let the control nested directly under this ContentPresenter to inherit the correct templated parent</remarks>
 		internal bool SynchronizeContentWithOuterTemplatedParent { get; set; } = true;
 
+		internal bool IsUsingDefaultTemplate { get; set; } = false;
+
 		/// <summary>
 		/// Determines if the current ContentPresenter is hosting a native control.
 		/// </summary>
@@ -837,6 +839,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_dataTemplateUsedLastUpdate = dataTemplate;
 				ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+				if (ContentTemplateRoot != null)
+				{
+					IsUsingDefaultTemplate = false;
+				}
 			}
 
 			if (Content != null
@@ -852,6 +858,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// No template and Content is a View, set it directly as root
 				ContentTemplateRoot = contentView as View;
+				IsUsingDefaultTemplate = false;
 			}
 		}
 
@@ -883,6 +890,7 @@ namespace Windows.UI.Xaml.Controls
 			setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
 
 			ContentTemplateRoot = textBlock;
+			IsUsingDefaultTemplate = true;
 		}
 
 		private bool _isBoundImplicitelyToContent;
