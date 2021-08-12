@@ -292,7 +292,7 @@ namespace Uno.UI.Xaml.Input
 		{
 			if (parent is UIElement uiElement)
 			{
-				return uiElement.GetChildrenInTabFocusOrderInternal();
+				return uiElement.GetChildrenInTabFocusOrderInternal() ?? Array.Empty<DependencyObject>();
 			}
 
 			return GetFocusChildren(parent);
