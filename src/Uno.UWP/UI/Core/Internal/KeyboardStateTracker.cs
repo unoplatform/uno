@@ -2,7 +2,7 @@
 using Windows.System;
 using Windows.UI.Core;
 
-namespace Uno.UI.Core.Internal
+namespace Uno.UI.Core
 {
 	/// <summary>
 	/// Tracks keyboard key state.
@@ -38,17 +38,16 @@ namespace Uno.UI.Core.Internal
 				// The first key press should not cause Locked state.
 				_keyStates[key] = CoreVirtualKeyStates.Down;
 			}
+
+			if (!_keyStates[key].HasFlag(CoreVirtualKeyStates.Locked))
+			{
+				_keyStates[key] = CoreVirtualKeyStates.Down | CoreVirtualKeyStates.Locked;
+			}
 			else
 			{
-				if (!_keyStates[key].HasFlag(CoreVirtualKeyStates.Locked))
-				{
-					_keyStates[key] = CoreVirtualKeyStates.Down | CoreVirtualKeyStates.Locked;
-				}
-				else
-				{
-					_keyStates[key] = CoreVirtualKeyStates.Down;
-				}
+				_keyStates[key] = CoreVirtualKeyStates.Down;
 			}
+
 			SetStateOnNonSideKeys(key);
 		}
 
@@ -59,16 +58,14 @@ namespace Uno.UI.Core.Internal
 				// Edge case - key is released without previous press.
 				_keyStates[key] = CoreVirtualKeyStates.None;
 			}
+
+			if (_keyStates[key].HasFlag(CoreVirtualKeyStates.Locked))
+			{
+				_keyStates[key] = CoreVirtualKeyStates.None | CoreVirtualKeyStates.Locked;
+			}
 			else
 			{
-				if (_keyStates[key].HasFlag(CoreVirtualKeyStates.Locked))
-				{
-					_keyStates[key] = CoreVirtualKeyStates.None | CoreVirtualKeyStates.Locked;
-				}
-				else
-				{
-					_keyStates[key] = CoreVirtualKeyStates.None;
-				}
+				_keyStates[key] = CoreVirtualKeyStates.None;
 			}
 
 			SetStateOnNonSideKeys(key);

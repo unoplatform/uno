@@ -10,7 +10,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
-using Uno.UI.Core.Internal;
+using Uno.UI.Core;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;

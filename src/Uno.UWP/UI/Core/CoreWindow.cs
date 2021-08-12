@@ -3,7 +3,7 @@
 using System;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
-using Uno.UI.Core.Internal;
+using Uno.UI.Core;
 using Windows.Foundation;
 using Windows.UI.Input;
 
