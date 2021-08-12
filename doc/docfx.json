@@ -40,7 +40,7 @@
         "cleanupCacheHistory": false,
         "disableGitFeatures": false,
         "globalMetadata": {
-            "_appLogoPath": "images/UnoLogoSmall.png",
+            "_appLogoPath": "images/uno-logo.png",
             "_enableSearch": "true",
             "_appFaviconPath": "images/UnoLogoSmall.png"
         }

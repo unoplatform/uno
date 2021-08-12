@@ -37,6 +37,10 @@ $(function () {
     renderTabs();
   }
 
+  $(window).resize(function() {
+    updateLogo();
+  });
+
   $(document).on('wordpressMenuHasLoaded', function() {
     const path = window.location.pathname;
     const docsUrl = '/docs/articles/';
@@ -56,7 +60,18 @@ $(function () {
       $('#search-query').val(decodeURI(searchParam));
     }
 
+    updateLogo();
   });
+
+  function updateLogo(){
+    var curWidth = window.innerWidth;
+    if(curWidth < 980) {
+      $('#logo').attr('src', '../../../images/UnoLogoSmall.png');
+    }
+    else {
+      $('#logo').attr('src', '../../../images/uno-logo.png');
+    }
+  }
 
   // Add this event listener when needed
   // window.addEventListener('content-update', contentUpdate);
