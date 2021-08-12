@@ -8,6 +8,8 @@ using System.Linq;
 using System.Numerics;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
+using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
@@ -53,6 +55,8 @@ namespace Windows.UI.Input
 			private readonly Thresholds _deltaThresholds;
 			private readonly Thresholds _inertiaThresholds;
 
+			private DispatcherQueueTimer? _dragHoldTimer;
+
 			private ManipulationState _state = ManipulationState.Starting;
 			private Points _origins;
 			private Points _currents;
@@ -61,7 +65,17 @@ namespace Windows.UI.Input
 			private ManipulationVelocities _lastRelevantVelocities;
 			private InertiaProcessor? _inertia;
 
+			/// <summary>
+			/// Indicates that this manipulation **has started** and is for drag-and-drop.
+			/// (i.e. raises Drag event instead of Manipulation<Started|Delta|Completed> events).
+			/// </summary>
 			public bool IsDragManipulation { get; private set; }
+
+			public GestureSettings Settings => _settings;
+			public bool IsTranslateXEnabled => _isTranslateXEnabled;
+			public bool IsTranslateYEnabled => _isTranslateYEnabled;
+			public bool IsRotateEnabled	  => _isRotateEnabled;
+			public bool IsScaleEnabled	  => _isScaleEnabled;
 
 			public Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
@@ -110,6 +124,9 @@ namespace Windows.UI.Input
 					_isRotateEnabled = (_settings & GestureSettings.ManipulationRotate) != 0;
 					_isScaleEnabled = (_settings & GestureSettings.ManipulationScale) != 0;
 				}
+
+				_recognizer.ManipulationConfigured?.Invoke(_recognizer, this);
+				StartDragTimer();
 			}
 
 			public bool IsActive(PointerDeviceType type, uint id)
@@ -190,6 +207,8 @@ namespace Windows.UI.Input
 
 			public void Complete()
 			{
+				StopDragTimer();
+
 				// If the manipulation was not started, we just abort the manipulation without any event
 				switch (_state)
 				{
@@ -220,6 +239,8 @@ namespace Windows.UI.Input
 					default:
 						_inertia?.Dispose();
 						_state = ManipulationState.Completed;
+
+						_recognizer.ManipulationAborted?.Invoke(_recognizer, this);
 						break;
 				}
 
@@ -228,7 +249,6 @@ namespace Windows.UI.Input
 				if (_recognizer._manipulation == this)
 				{
 					_recognizer._manipulation = null;
-					_recognizer.TryCancelHapticFeedbackTimer();
 				}
 			}
 
@@ -477,26 +497,35 @@ namespace Windows.UI.Input
 				_lastPublishedState = (_lastPublishedState.sumOfDelta.Add(delta), _currents.Timestamp, _contacts.current);
 			}
 
-			/// <summary>
-			/// Is this manipulation (a) valid to become a drag and (b) held for long enough to count as a drag?
-			/// </summary>
-			[Pure]
-			internal bool IsHeldLongEnoughToDrag()
+			private void StartDragTimer()
 			{
-				if (!_isDraggingEnable)
+				if (_isDraggingEnable && _deviceType == PointerDeviceType.Touch)
 				{
-					return false;
-				}
+					_dragHoldTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+					_dragHoldTimer.Interval = new TimeSpan(DragWithTouchMinDelayTicks);
+					_dragHoldTimer.IsRepeating = false;
+					_dragHoldTimer.Tick += TouchDragMightStart;
+					_dragHoldTimer.Start();
 
-				var down = _origins.Pointer1;
-				var current = _currents.Pointer1; // For current to be current, this should be called after TryUpdate()
-				var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayTicks;
-				return !isInHoldPhase;
+					void TouchDragMightStart(DispatcherQueueTimer sender, object o)
+					{
+						sender.Tick -= TouchDragMightStart;
+						sender.Stop();
+
+						if (_isDraggingEnable) // Sanity only, the timer should have been stopped by the IsBeginningOfDragManipulation()
+						{
+							_recognizer.DragReady?.Invoke(_recognizer, this);
+						}
+					}
+				}
 			}
 
+			private void StopDragTimer()
+			{
+				_dragHoldTimer?.Stop();
+			}
 			// For pen and mouse this only means down -> * moves out of tap range;
 			// For touch it means down -> * moves close to origin for DragUsingFingerMinDelayTicks -> * moves far from the origin 
-			[Pure]
 			private bool IsBeginningOfDragManipulation()
 			{
 				if (!_isDraggingEnable)
@@ -528,7 +557,7 @@ namespace Windows.UI.Input
 						{
 							// The pointer moved out of range while in the hold phase, so we completely disable the drag manipulation
 							_isDraggingEnable = false;
-							_recognizer.TryCancelHapticFeedbackTimer();
+							StopDragTimer();
 							return false;
 						}
 						else

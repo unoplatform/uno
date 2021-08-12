@@ -32,9 +32,6 @@ namespace Windows.UI.Input
 		private Manipulation _manipulation;
 		private GestureSettings _gestureSettings;
 		private bool _isManipulationOrDragEnabled;
-		private bool _isDragEnabled;
-
-		private SerialDisposable _hapticFeedbackSubscription;
 
 		public GestureSettings GestureSettings
 		{
@@ -43,7 +40,6 @@ namespace Windows.UI.Input
 			{
 				_gestureSettings = value;
 				_isManipulationOrDragEnabled = (value & (GestureSettingsHelper.Manipulations | GestureSettingsHelper.DragAndDrop)) != 0;
-				_isDragEnabled = (value & GestureSettingsHelper.DragAndDrop) != 0;
 			}
 		}
 
@@ -100,7 +96,6 @@ namespace Windows.UI.Input
 				if (_manipulation == null)
 				{
 					_manipulation = new Manipulation(this, value);
-					TryStartHapticFeedbackTimer(value);
 				}
 				else if (!_manipulation.TryAdd(value))
 				{
@@ -184,8 +179,6 @@ namespace Windows.UI.Input
 			}
 
 			_manipulation?.Complete();
-
-			TryCancelHapticFeedbackTimer();
 		}
 
 		internal void PreventHolding(uint pointerId)
@@ -196,63 +189,14 @@ namespace Windows.UI.Input
 			}
 		}
 
-		private void TryStartHapticFeedbackTimer(PointerPoint value)
-		{
-			if (_isDragEnabled && WinRTFeatureConfiguration.GestureRecognizer.ShouldProvideHapticFeedback && value.PointerDevice?.PointerDeviceType == PointerDeviceType.Touch)
-			{
-				var timer = DispatcherTimerHelper.GetDispatcherTimer();
-				if (timer == null)
-				{
-					// This may occur if app initialization did not occur, eg in unit tests.
-					return;
-				}
-				timer.Interval = new TimeSpan(DragWithTouchMinDelayTicks);
-				timer.Tick += TrySendHapticFeedback;
-				_hapticFeedbackSubscription ??= new SerialDisposable();
-				_hapticFeedbackSubscription.Disposable = Disposable.Create(() =>
-				{
-					timer.Tick -= TrySendHapticFeedback;
-					timer.Stop();
-				});
-				timer.Start();
-			}
-		}
-
-		private void TryCancelHapticFeedbackTimer()
-		{
-			if (_hapticFeedbackSubscription != null)
-			{
-				_hapticFeedbackSubscription.Disposable = null;
-			}
-		}
-
-		private async void TrySendHapticFeedback(object sender, object args)
-		{
-			TryCancelHapticFeedbackTimer(); // Stop timer
-
-			//Console.WriteLine("***BBZZZZZZTTT***");
-			if (await VibrationDevice.RequestAccessAsync() != VibrationAccessStatus.Allowed)
-			{
-				return;
-			}
-
-			var vibrationDevice = await VibrationDevice.GetDefaultAsync();
-
-			var controller = vibrationDevice.SimpleHapticsController;
-			var feedback = controller.SupportedFeedback.FirstOrDefault(f => f.Waveform == KnownSimpleHapticsControllerWaveforms.Press);
-			if (feedback != null)
-			{
-				controller.SendHapticFeedback(feedback);
-			}
-		}
-
 		#region Manipulations
 		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> ManipulationStarting; // This is not on the public API!
+		internal event TypedEventHandler<GestureRecognizer, Manipulation> ManipulationConfigured; // Right after the ManipulationStarting, once application has configured settings
+		internal event TypedEventHandler<GestureRecognizer, Manipulation> ManipulationAborted; // The manipulation has been aborted while in starting state
 		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
 		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting;
 		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
 		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
-
 
 		internal Manipulation PendingManipulation => _manipulation;
 		#endregion
@@ -269,6 +213,10 @@ namespace Windows.UI.Input
 		#endregion
 
 		#region Dragging
+		/// <summary>
+		/// This is being raised for touch only, when the pointer remained long enough at the same location so the drag can start.
+		/// </summary>
+		internal event TypedEventHandler<GestureRecognizer, Manipulation> DragReady;
 		public event TypedEventHandler<GestureRecognizer, DraggingEventArgs> Dragging;
 		#endregion
 

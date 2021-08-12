@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
+using Windows.Devices.Haptics;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -107,8 +108,11 @@ namespace Windows.UI.Xaml
 			if (snd is UIElement elt && args.NewValue is bool canDrag)
 			{
 				elt.UpdateDragAndDrop(canDrag);
+				elt.OnCanDragChanged(args.OldValue is bool oldCanDrag && oldCanDrag, canDrag);
 			}
 		}
+
+		partial void OnCanDragChanged(bool oldValue, bool newValue);
 
 		public bool CanDrag
 		{
@@ -319,6 +323,10 @@ namespace Windows.UI.Xaml
 		{
 			var recognizer = new GestureRecognizer(this);
 
+			// Allow partial parts to subscribe to pointer events (WASM)
+			// or to subscribe to events for platform specific needs (iOS)
+			OnGestureRecognizerInitialized(recognizer);
+
 			recognizer.ManipulationStarting += OnRecognizerManipulationStarting;
 			recognizer.ManipulationStarted += OnRecognizerManipulationStarted;
 			recognizer.ManipulationUpdated += OnRecognizerManipulationUpdated;
@@ -329,13 +337,43 @@ namespace Windows.UI.Xaml
 			recognizer.Holding += OnRecognizerHolding;
 			recognizer.Dragging += OnRecognizerDragging;
 
-			// Allow partial parts to subscribe to pointer events (WASM)
-			OnGestureRecognizerInitialized(recognizer);
+			if (Uno.WinRTFeatureConfiguration.GestureRecognizer.ShouldProvideHapticFeedback)
+			{
+				recognizer.DragReady += HapticFeedbackWhenReadyToDrag;
+			}
 
 			return recognizer;
 		}
 
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer);
+
+		private async void HapticFeedbackWhenReadyToDrag(GestureRecognizer sender, GestureRecognizer.Manipulation args)
+		{
+			try
+			{
+				if (await VibrationDevice.RequestAccessAsync() != VibrationAccessStatus.Allowed)
+				{
+					return;
+				}
+
+				var vibrationDevice = await VibrationDevice.GetDefaultAsync();
+				if (vibrationDevice is null)
+				{
+					return;
+				}
+
+				var controller = vibrationDevice.SimpleHapticsController;
+				var feedback = controller.SupportedFeedback.FirstOrDefault(f => f.Waveform == KnownSimpleHapticsControllerWaveforms.Press);
+				if (feedback != null)
+				{
+					controller.SendHapticFeedback(feedback);
+				}
+			}
+			catch (Exception error)
+			{
+				this.Log().Error("Haptic feedback for drag failed", error);
+			}
+		}
 		#endregion
 
 		#region Manipulations (recognizer settings / custom bubbling)
@@ -775,27 +813,10 @@ namespace Windows.UI.Xaml
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
 				}
-				TryPreventInterceptOnDrag(args, isOver);
 			}
 
 			return handledInManaged;
 		}
-
-		/// <summary>
-		/// If a drag is beginning, ensure that native scroll handlers don't intercept the gesture.
-		/// </summary>
-		private void TryPreventInterceptOnDrag(PointerRoutedEventArgs args, bool isInView)
-		{
-			if (isInView && args.Pointer.PointerDeviceType == PointerDeviceType.Touch && CanDrag)
-			{
-				if (_gestures.IsValueCreated && (_gestures.Value.PendingManipulation?.IsHeldLongEnoughToDrag() ?? false))
-				{
-					TryPreventInterceptOnDragPartial();
-				}
-			}
-		}
-
-		partial void TryPreventInterceptOnDragPartial();
 
 		private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args);
 

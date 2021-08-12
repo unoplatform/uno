@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml
 		partial void InitializePointersPartial()
 		{
 			MultipleTouchEnabled = true;
-			RegisterLoadActions(PrepareParentTouchesManagers, ReleaseParentTouchesManager);
+			RegisterLoadActions(OnLoadedForPointers, OnUnloadedForPointers);
 		}
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
@@ -102,7 +102,11 @@ namespace Windows.UI.Xaml
 
 			try
 			{
-				NotifyParentTouchesManagersManipulationStarted();
+				if (ManipulationMode == ManipulationModes.None)
+				{
+					// If manipulation mode is None, we make sure to disable scrollers directly on pointer pressed
+					NotifyParentTouchesManagersManipulationStarted();
+				}
 
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
@@ -217,7 +221,7 @@ namespace Windows.UI.Xaml
 					base.TouchesEnded(touches, evt);
 				}
 
-				NotifyParentTouchesManagersTouchEndedOrCancelled();
+				NotifyParentTouchesManagersManipulationEnded();
 			}
 			catch (Exception e)
 			{
@@ -251,7 +255,7 @@ namespace Windows.UI.Xaml
 					base.TouchesCancelled(touches, evt);
 				}
 
-				NotifyParentTouchesManagersTouchEndedOrCancelled();
+				NotifyParentTouchesManagersManipulationEnded();
 			}
 			catch (Exception e)
 			{
@@ -263,17 +267,24 @@ namespace Windows.UI.Xaml
 		#region TouchesManager (Alter the parents native scroll view to make sure to receive all touches)
 		partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
 			// As we have to walk the tree and this method may be invoked too early, we don't try to track the state between the old and the new mode
-			=> PrepareParentTouchesManagers(newMode);
+			=> PrepareParentTouchesManagers(newMode, CanDrag);
 
-		// Loaded
-		private void PrepareParentTouchesManagers() => PrepareParentTouchesManagers(ManipulationMode);
-		private void PrepareParentTouchesManagers(ManipulationModes mode)
+		partial void OnCanDragChanged(bool _, bool newValue)
+			=> PrepareParentTouchesManagers(ManipulationMode, newValue);
+
+		private void OnLoadedForPointers()
+			=> PrepareParentTouchesManagers(ManipulationMode, CanDrag);
+
+		private void OnUnloadedForPointers()
+			=> ReleaseParentTouchesManager();
+
+		private void PrepareParentTouchesManagers(ManipulationModes mode, bool canDrag)
 		{
 			// 1. Make sure to end any pending manipulation
 			ReleaseParentTouchesManager();
 
 			// 2. If this control can  Walk the tree to detect all ScrollView and register our self as a manipulation listener
-			if (mode == ManipulationModes.None)
+			if (mode != ManipulationModes.System || canDrag)
 			{
 				_parentsTouchesManager = TouchesManager.GetAllParents(this).ToList();
 
@@ -284,7 +295,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		// Unloaded
 		private void ReleaseParentTouchesManager()
 		{
 			// 1. Make sure to end any pending manipulation
@@ -302,6 +312,43 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer)
+		{
+			recognizer.ManipulationConfigured += (snd, manip) => NotifyParentTouchesManagersManipulationStarting(manip);
+			recognizer.ManipulationStarted += (snd, args) => NotifyParentTouchesManagersManipulationStarted();
+
+			// The manipulation can be aborted by the user before the pointer up, so the auto release on pointer up is not enough
+			recognizer.ManipulationCompleted += (snd, args) => NotifyParentTouchesManagersManipulationEnded();
+			recognizer.ManipulationAborted += (snd, args) => NotifyParentTouchesManagersManipulationEnded();
+
+			// This event means that the touch was long enough and any move will actually start the manipulation,
+			// so we use "Started" instead of "Starting"
+			recognizer.DragReady += (snd, manip) => NotifyParentTouchesManagersManipulationStarted();
+			recognizer.Dragging += (snd, args) =>
+			{
+				switch (args.DraggingState)
+				{
+					case DraggingState.Started:
+						NotifyParentTouchesManagersManipulationStarted(); // Still usefull for mouse and pen
+						break;
+					case DraggingState.Completed:
+						NotifyParentTouchesManagersManipulationEnded();
+						break;
+				}
+			};
+		}
+
+		private void NotifyParentTouchesManagersManipulationStarting(GestureRecognizer.Manipulation manip)
+		{
+			if (!_isManipulating && (_parentsTouchesManager?.Any() ?? false))
+			{
+				foreach (var manager in _parentsTouchesManager)
+				{
+					_isManipulating |= manager.ManipulationStarting(manip);
+				}
+			}
+		}
+
 		private void NotifyParentTouchesManagersManipulationStarted()
 		{
 			if (!_isManipulating && (_parentsTouchesManager?.Any() ?? false))
@@ -314,16 +361,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void NotifyParentTouchesManagersTouchEndedOrCancelled()
-		{
-			NotifyParentTouchesManagersManipulationEnded();
-			if (ManipulationMode != ManipulationModes.None)
-			{
-				// If we were registered to parent TouchesManagers and it wasn't for ManipulationMode, then it was for a drag which is now over
-				ReleaseParentTouchesManager();
-			}
-		}
-
 		private void NotifyParentTouchesManagersManipulationEnded()
 		{
 			if (_isManipulating && (_parentsTouchesManager?.Any() ?? false))
@@ -333,16 +370,6 @@ namespace Windows.UI.Xaml
 				{
 					manager.ManipulationEnded();
 				}
-			}
-		}
-
-		partial void TryPreventInterceptOnDragPartial()
-		{
-			if (_parentsTouchesManager == null)
-			{
-				// Activate TouchesManagers in hierarchy to ensure drag isn't intercepted
-				PrepareParentTouchesManagers(ManipulationModes.None);
-				NotifyParentTouchesManagersManipulationStarted();
 			}
 		}
 
@@ -477,6 +504,24 @@ namespace Windows.UI.Xaml
 			}
 
 			/// <summary>
+			/// Indicates that a child listener is starting to track a manipulation
+			/// (so the owner should try to not cancel the touches propagation for interactions that are supported by the given manipulation object)
+			/// </summary>
+			/// <remarks>If this method returns true, the caller MUST also call <see cref="ManipulationEnded"/> once completed (or cancelled).</remarks>
+			public bool ManipulationStarting(GestureRecognizer.Manipulation manipulation)
+			{
+				if (CanConflict(manipulation))
+				{
+					ManipulationStarted();
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+			/// <summary>
 			/// Indicates that a child listener has started to track a manipulation
 			/// (so the owner should not cancel the touches propagation)
 			/// </summary>
@@ -500,6 +545,8 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+			protected abstract bool CanConflict(GestureRecognizer.Manipulation manipulation);
+
 			protected abstract void SetCanDelay(bool canDelay);
 
 			protected abstract void SetCanCancel(bool canCancel);
@@ -513,6 +560,12 @@ namespace Windows.UI.Xaml
 			{
 				_scrollView = scrollView;
 			}
+
+			/// <inheritdoc />
+			protected override bool CanConflict(GestureRecognizer.Manipulation manipulation)
+				=> manipulation.IsTranslateXEnabled
+					|| manipulation.IsTranslateYEnabled
+					|| manipulation.IsDragManipulation; // This will actually always be false when CanConflict is being invoked in current setup.
 
 			/// <inheritdoc />
 			protected override void SetCanDelay(bool canDelay)
