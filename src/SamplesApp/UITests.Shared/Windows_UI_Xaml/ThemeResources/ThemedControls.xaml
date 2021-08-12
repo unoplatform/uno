@@ -1,0 +1,27 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.ThemeResources.ThemedControls"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml.ThemeResources"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+	<Grid x:Name="RootGrid" RequestedTheme="Light" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<StackPanel>
+			<ToggleSwitch x:Name="ThemeToggle" IsOn="True" OffContent="Dark theme" OnContent="Light theme" Toggled="ToggleSwitch_Toggled" />
+			<Button Content="Button with flyout">
+				<Button.Flyout>
+					<Flyout>
+						<TextBlock Text="This is a flyout" />
+					</Flyout>
+				</Button.Flyout>
+			</Button>
+			<ToggleButton>ToggleButton</ToggleButton>
+			<TextBlock>TextBlock</TextBlock>
+			<Slider />
+			<CheckBox Content="CheckBox" />
+			<RadioButton Content="RadioButton" />
+		</StackPanel>
+    </Grid>
+</Page>

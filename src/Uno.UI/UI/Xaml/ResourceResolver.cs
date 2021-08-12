@@ -94,7 +94,7 @@ namespace Uno.UI
 		/// </remarks>
 		internal static T ResolveTopLevelResource<T>(object key, T fallbackValue = default)
 		{
-			if (TryTopLevelRetrieval(key, context: null, out var value) && value is T tValue)
+			if (TryTopLevelRetrieval(key, context: null, out var value, ElementTheme.Default) && value is T tValue)
 			{
 				return tValue;
 			}
@@ -214,13 +214,13 @@ namespace Uno.UI
 			{
 				var dictionary = (source.Target as FrameworkElement)?.Resources
 					?? source.Target as ResourceDictionary;
-				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false, ElementTheme.Default))
 				{
 					return true;
 				}
 			}
 
-			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value);
+			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value, ElementTheme.Default);
 			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
 			{
 				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
@@ -234,19 +234,19 @@ namespace Uno.UI
 		/// <param name="resourceKey">The resource key</param>
 		/// <param name="value">Out parameter to which the retrieved resource is assigned.</param>
 		/// <returns>True if the resource was found, false if not.</returns>
-		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		internal static bool TryTopLevelRetrieval(object resourceKey, object context, out object value, ElementTheme elementTheme)
 		{
 			value = null;
-			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false) ||
-				TryAssemblyResourceRetrieval(resourceKey, context, out value) ||
-				TrySystemResourceRetrieval(resourceKey, out value);
+			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false, elementTheme) ?? false) ||
+				TryAssemblyResourceRetrieval(resourceKey, context, out value, elementTheme) ||
+				TrySystemResourceRetrieval(resourceKey, out value, elementTheme);
 		}
 
 		/// <summary>
 		/// Tries to retrieve a resource from the same assembly as the retrieving context. Used when parsing third-party libraries
 		/// (ie not application XAML, and not Uno.UI XAML)
 		/// </summary>
-		private static bool TryAssemblyResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		private static bool TryAssemblyResourceRetrieval(object resourceKey, object context, out object value, ElementTheme elementTheme)
 		{
 			value = null;
 			if (!(context is XamlParseContext parseContext))
@@ -264,7 +264,7 @@ namespace Uno.UI
 				foreach (var kvp in assemblyDict)
 				{
 					var rd = kvp.Value as ResourceDictionary;
-					if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false, elementTheme))
 					{
 						return true;
 					}
@@ -277,9 +277,10 @@ namespace Uno.UI
 		/// <summary>
 		/// Try to retrieve a resource value from system-level resources.
 		/// </summary>
-		internal static bool TrySystemResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value) => MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false);
+		internal static bool TrySystemResourceRetrieval(object resourceKey, out object value, ElementTheme elementTheme) =>
+			MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false, elementTheme);
 
-		internal static bool ContainsKeySystem(in SpecializedResourceDictionary.ResourceKey resourceKey) => MasterDictionary.ContainsKey(resourceKey, shouldCheckSystem: false);
+		internal static bool ContainsKeySystem(object resourceKey) => MasterDictionary.ContainsKey(resourceKey, shouldCheckSystem: false, ElementTheme.Default);
 
 		/// <summary>
 		/// Get a system-level resource with the given key.
@@ -290,7 +291,7 @@ namespace Uno.UI
 		/// </remarks>
 		internal static T GetSystemResource<T>(object key)
 		{
-			if (MasterDictionary.TryGetValue(key, out var value, shouldCheckSystem: false) && value is T t)
+			if (MasterDictionary.TryGetValue(key, out var value, shouldCheckSystem: false, ElementTheme.Default) && value is T t)
 			{
 				return t;
 			}
@@ -428,7 +429,4 @@ namespace Uno.UI
 
 		internal static void UpdateSystemThemeBindings() => MasterDictionary.UpdateThemeBindings();
 	}
-
-
-
 }

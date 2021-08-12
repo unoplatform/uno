@@ -23,16 +23,20 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;	
 using UIKit;
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;	
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml
@@ -117,6 +121,8 @@ namespace Windows.UI.Xaml
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
+
+			UpdateActualTheme(ElementTheme.Default);
 		}
 
 		public
@@ -321,6 +327,11 @@ namespace Windows.UI.Xaml
 		{
 			ApplyStyle();
 			ApplyDefaultStyle();
+
+			if (this.GetVisualTreeParent() is FrameworkElement fe)
+			{
+				PropagateThemeScope(this, fe.ActualTheme);
+			}
 		}
 
 		/// <summary>
@@ -434,24 +445,99 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new PropertyMetadata(
 					ElementTheme.Default,
-					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
+					OnRequestedThemePropertyChanged));
 
-		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
+		private static void OnRequestedThemePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (IsWindowRoot) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			PropagateThemeScope(dependencyObject, ElementTheme.Default);
+		}
+
+		internal static void PropagateThemeScope(object instance, ElementTheme theme)
+		{
+			// Update ThemeResource references that have changed
+			if (instance is FrameworkElement fe)
 			{
-				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
-				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
-				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
+				fe.UpdateActualTheme(theme);
+				theme = fe.ActualTheme;
+				fe.UpdateThemeBindings();
+			}
+
+			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
+			if (instance is Controls.Panel p)
+			{
+				foreach (object o in p.Children)
+				{
+					PropagateThemeScope(o, theme);
+				}
+			}
+			else if (instance is ViewGroup g)
+			{
+				foreach (object o in g.GetChildren())
+				{
+					PropagateThemeScope(o, theme);
+				}
 			}
 		}
 
+		#endregion
+
+		#region Actual theme dependency property
+
+		public ElementTheme ActualTheme => (ElementTheme)GetValue(ActualThemeProperty);
+
+		public static DependencyProperty ActualThemeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(ActualTheme),
+				typeof(ElementTheme),
+				typeof(FrameworkElement),
+				new PropertyMetadata(
+					ElementTheme.Default,
+					OnActualThemePropertyChanged));
+
+		private static void OnActualThemePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (args.NewPrecedence < DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				throw new InvalidOperationException($"{nameof(ActualThemeProperty)} is read-only.");
+			}
+			var frameworkElement = (FrameworkElement)dependencyObject;
+			frameworkElement.ActualThemeChanged?.Invoke(frameworkElement, null);
+		}
 
 		#endregion
 
-		public ElementTheme ActualTheme => IsWindowRoot ?
-			Application.Current?.ActualElementTheme ?? ElementTheme.Default
-			: ElementTheme.Default;
+		/// <summary>
+		/// Updates the Actual theme.
+		/// </summary>
+		/// <param name="parentTheme">Parent actual theme or default.</param>
+		internal void UpdateActualTheme(ElementTheme parentTheme)
+		{
+			if (RequestedTheme != ElementTheme.Default)
+			{
+				this.SetValue(
+					ActualThemeProperty,
+					RequestedTheme,
+					DependencyPropertyValuePrecedences.DefaultValue);
+			}
+			else if (parentTheme != ElementTheme.Default)
+			{
+				this.SetValue(
+					ActualThemeProperty,
+					parentTheme,
+					DependencyPropertyValuePrecedences.DefaultValue);
+			}
+			else
+			{
+				// Set application theme as actual
+				this.SetValue(
+					ActualThemeProperty,
+					Application.Current?.RequestedTheme == ApplicationTheme.Dark ?
+						ElementTheme.Dark : ElementTheme.Light,
+					DependencyPropertyValuePrecedences.DefaultValue);
+			}
+		}
+
+		public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged;
 
 		[GeneratedDependencyProperty]
 		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = CreateFocusVisualSecondaryThicknessProperty();
@@ -853,7 +939,7 @@ namespace Windows.UI.Xaml
 		internal virtual void UpdateThemeBindings()
 		{
 			Resources?.UpdateThemeBindings();
-			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
+			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true, ActualTheme);
 
 			// After theme change, the focus visual brushes may not reflect the correct settings
 			_focusVisualBrushesInitialized = false;

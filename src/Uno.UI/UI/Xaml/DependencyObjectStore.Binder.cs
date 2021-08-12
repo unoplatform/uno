@@ -177,7 +177,17 @@ namespace Windows.UI.Xaml
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		public void ApplyCompiledBindings()
-			=> _properties.ApplyCompiledBindings();
+		{
+			_properties.ApplyCompiledBindings();
+			InvokeCompiledBindingsCallbacks();
+			
+			var theme = ElementTheme.Default;
+			if (ActualInstance is FrameworkElement frameworkElement)
+			{
+				theme = frameworkElement.ActualTheme;
+			}
+			UpdateResourceBindings(isThemeChangedUpdate: false, theme);
+		}
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
@@ -353,6 +363,12 @@ namespace Windows.UI.Xaml
 			{
 				throw new NotSupportedException($"Target {target?.GetType()} must be a DependencyObject");
 			}
+		}
+
+		public void SetResourceBinding(DependencyProperty dependencyProperty, object resourceKey, bool isTheme, object context)
+		{
+			var binding = new ResourceBinding(resourceKey, isTheme, context, _precedenceOverride ?? DependencyPropertyValuePrecedences.Local);
+			SetBinding(dependencyProperty, binding);
 		}
 
 		/// <summary>
