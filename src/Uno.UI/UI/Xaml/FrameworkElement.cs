@@ -451,15 +451,18 @@ namespace Windows.UI.Xaml
 				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
 			}
 
-			var actualThemeChanged =
-				// 1. Previously was default, and new explicit value differs from application theme
-				(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
-				//2. Previously was explicit, and new ActualTheme is different
-				(oldValue != ElementTheme.Default && oldValue != ActualTheme);
-
-			if (actualThemeChanged)
+			if (ActualThemeChanged != null)
 			{
-				ActualThemeChanged?.Invoke(this, null);
+				var actualThemeChanged =
+					// 1. Previously was default, and new explicit value differs from application theme
+					(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
+					// 2. Previously was explicit, and new ActualTheme is different
+					(oldValue != ElementTheme.Default && oldValue != ActualTheme);
+
+				if (actualThemeChanged)
+				{
+					ActualThemeChanged?.Invoke(this, null);
+				}
 			}
 		}
 
@@ -890,7 +893,7 @@ namespace Windows.UI.Xaml
 			_focusVisualBrushesInitialized = false;
 
 			// Trigger ActualThemeChanged if relevant
-			if (RequestedTheme == ElementTheme.Default)
+			if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
 			{
 				ActualThemeChanged?.Invoke(this, null);
 			}
