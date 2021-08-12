@@ -67,7 +67,7 @@ namespace Windows.UI.Input
 
 			/// <summary>
 			/// Indicates that this manipulation **has started** and is for drag-and-drop.
-			/// (i.e. raises Drag event instead of Manipulation<Started|Delta|Completed> events).
+			/// (i.e. raises Drag event instead of Manipulation&lt;Started Delta Completed&gt; events).
 			/// </summary>
 			public bool IsDragManipulation { get; private set; }
 
