@@ -70,5 +70,55 @@ namespace Uno.UI.Tests.ComboBoxTests
 			Assert.IsNotNull(comboBox.InternalItemsPanelRoot);
 			Assert.IsNotNull(comboBox.ItemsPanelRoot);
 		}
-    }
+
+		[TestMethod]
+		public void When_New_Item_Is_Inserted_Before_SelectedIndex()
+		{
+			var comboBox = new ComboBox();
+			string[] items = new string[] { "string1", "string2", "string3", "string4" };
+			foreach (string item in items.Reverse())
+			{
+				ComboBoxItem ni = new ComboBoxItem { Content = item, IsSelected = item == "string3" };
+				comboBox.Items.Insert(0, ni);
+			}
+
+			Assert.AreEqual<int>(2, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_Item_Is_Removed_Before_SelectedIndex()
+		{
+			var comboBox = new ComboBox();
+			string[] items = new string[] { "string1", "string2", "string3", "string4" };
+			foreach (string item in items)
+			{
+				ComboBoxItem ni = new ComboBoxItem { Content = item, IsSelected = item == "string3" };
+				comboBox.Items.Add(ni);
+			}
+
+			Assert.AreEqual<int>(2, comboBox.SelectedIndex);
+
+
+			comboBox.Items.RemoveAt(0);
+			Assert.AreEqual<int>(1, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_Removed_Item_Is_The_SelectedIndex()
+		{
+			var comboBox = new ComboBox();
+			string[] items = new string[] { "string1", "string2", "string3", "string4" };
+			foreach (string item in items)
+			{
+				ComboBoxItem ni = new ComboBoxItem { Content = item, IsSelected = item == "string3" };
+				comboBox.Items.Add(ni);
+			}
+
+			Assert.AreEqual<int>(2, comboBox.SelectedIndex);
+
+
+			comboBox.Items.RemoveAt(2);
+			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
+		}
+	}
 }
