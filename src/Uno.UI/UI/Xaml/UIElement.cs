@@ -288,7 +288,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newVisibility);
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
 
 		[NotImplemented]
 		protected virtual AutomationPeer OnCreateAutomationPeer() => new AutomationPeer();

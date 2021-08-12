@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnUnloadedPartial() => TrySetNativeAnimating();
 	
-		partial void OnIsActiveChangedPartial(bool _) => TrySetNativeAnimating();
+		partial void OnIsActiveChangedPartial(bool isActive) => TrySetNativeAnimating();
 
 		partial void TrySetNativeAnimating()
 		{

@@ -309,9 +309,9 @@ namespace Windows.UI.Xaml.Controls
 		[Obsolete("https://github.com/unoplatform/uno/pull/1591")]
 		public static bool MustUseWebKitWebView() => true;
 
-		partial void OnScrollEnabledChangedPartial(bool isScrollingEnabled)
+		partial void OnScrollEnabledChangedPartial(bool scrollingEnabled)
 		{
-			_nativeWebView.SetScrollingEnabled(isScrollingEnabled);
+			_nativeWebView.SetScrollingEnabled(scrollingEnabled);
 		}
 
 		private bool VerifyNativeWebViewAvailability()

@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnUnloadedPartial();
 
-		partial void OnIsActiveChangedPartial(bool newValue);
+		partial void OnIsActiveChangedPartial(bool isActive);
 
 #if !UNO_REFERENCE_API && !__MACOS__ && !__NETSTD_REFERENCE__
 
