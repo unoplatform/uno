@@ -462,7 +462,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
 		{
 			return value is string
-				&& xamlObject.Type.Name == "TextBlock"
+				&& (xamlObject.Type.Name == "TextBlock" || xamlObject.Type.Name == "Span")
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
 
