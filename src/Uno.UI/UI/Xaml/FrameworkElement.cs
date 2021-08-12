@@ -421,6 +421,11 @@ namespace Windows.UI.Xaml
 
 		#region Requested theme dependency property
 
+		// TODO Uno: ActualTheme should always be initialized with Application.Current.RequestedTheme,
+		// and should trigger ActualThemeChanged, when the element enters the visual tree, where some
+		// higher-level element has explicitly changed its RequestedTheme. This may could start working
+		// automatically when the RequestedTheme property supports inheritance.
+
 		public ElementTheme RequestedTheme
 		{
 			get => (ElementTheme)GetValue(RequestedThemeProperty);
@@ -442,16 +447,45 @@ namespace Windows.UI.Xaml
 			{
 				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
 				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+				// This will also explicitly change the Application.Current.RequestedTheme, which does not happen in case of UWP.
 				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
+			}
+
+			if (ActualThemeChanged != null)
+			{
+				var actualThemeChanged =
+					// 1. Previously was default, and new explicit value differs from application theme
+					(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
+					// 2. Previously was explicit, and new ActualTheme is different
+					(oldValue != ElementTheme.Default && oldValue != ActualTheme);
+
+				if (actualThemeChanged)
+				{
+					ActualThemeChanged?.Invoke(this, null);
+				}
 			}
 		}
 
 
 		#endregion
 
-		public ElementTheme ActualTheme => IsWindowRoot ?
-			Application.Current?.ActualElementTheme ?? ElementTheme.Default
-			: ElementTheme.Default;
+		/// <summary>
+		/// Gets or sets a value that determines the light-dark
+		/// preference for the overall theme of an app.
+		/// </summary>
+		/// <remarks>
+		/// This is always either Dark or Light. By default the color matches Application.Current.RequestedTheme.
+		/// When the FrameworkElement.RequestedTheme has non-default value, it has precedence.
+		/// When the value changes ActualThemeChanged event is triggered.
+		/// </remarks>
+		public ElementTheme ActualTheme => RequestedTheme == ElementTheme.Default ?
+			(Application.Current?.ActualElementTheme ?? ElementTheme.Light) :
+			RequestedTheme;
+
+		/// <summary>
+		/// Occurs when the ActualTheme property value has changed.
+		/// </summary>
+		public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged;
 
 		[GeneratedDependencyProperty]
 		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = CreateFocusVisualSecondaryThicknessProperty();
@@ -857,6 +891,12 @@ namespace Windows.UI.Xaml
 
 			// After theme change, the focus visual brushes may not reflect the correct settings
 			_focusVisualBrushesInitialized = false;
+
+			// Trigger ActualThemeChanged if relevant
+			if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
+			{
+				ActualThemeChanged?.Invoke(this, null);
+			}
 		}
 
 		/// <summary>
