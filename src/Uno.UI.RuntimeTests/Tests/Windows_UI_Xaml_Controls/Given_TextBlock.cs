@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var span = (Span)((TextBlock)panel.Children.Single()).Inlines.Single();
 			var inlines = span.Inlines;
 			Assert.AreEqual(3, inlines.Count);
-			Assert.AreEqual("where ", ((Run)inlines[0]).Text);
+			Assert.AreEqual("Where ", ((Run)inlines[0]).Text);
 			Assert.AreEqual("did", ((Run)((Italic)inlines[1]).Inlines.Single()).Text);
 			Assert.AreEqual(" my text go?", ((Run)inlines[2]).Text);
 		}
