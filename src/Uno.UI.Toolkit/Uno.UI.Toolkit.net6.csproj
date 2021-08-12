@@ -44,11 +44,6 @@
 		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
-  <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
-		<Reference Include="System.Numerics" />
-		<Reference Include="System.Numerics.Vectors" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.net6.csproj">
 			<Name>Uno.UI</Name>
@@ -71,6 +66,12 @@
 	<ItemGroup>
 		<Page Remove="Themes\Generic.xaml" />
 		<Page Include="Themes\Generic.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="LinkerDefinition.net6.0.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

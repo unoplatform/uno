@@ -1,0 +1,10 @@
+﻿<linker>
+  <assembly fullname="Uno.UI">
+	<type fullname="Windows.UI.Xaml.ApplicationActivity">
+	  <method name="GetTypeAssemblyFullName" />
+	</type>
+	<type fullname="Windows.UI.Xaml.NativeApplication">
+	  <method name="GetTypeAssemblyFullName" />
+	</type>
+  </assembly>
+</linker>
