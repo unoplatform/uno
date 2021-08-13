@@ -84,6 +84,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+
+		partial void OnFlowDirectionChanged(DependencyPropertyChangedEventArgs args)
+		{
+			this.LayoutDirection = FlowDirection == FlowDirection.RightToLeft ? LayoutDirection.Rtl : LayoutDirection.Ltr;
+		}
+
 		internal void PerformOnUnloaded()
 		{
 			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)

@@ -274,17 +274,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region FlowDirection Dependency Property
-		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
-
-		public FlowDirection FlowDirection
-		{
-			get => GetFlowDirectionValue();
-			set => SetFlowDirectionValue(value);
-		}
-		#endregion
-
 		#region Height Dependency Property
 		[GeneratedDependencyProperty(
 			DefaultValue = double.NaN,
