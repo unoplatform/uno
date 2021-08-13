@@ -103,6 +103,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private int _pendingReorderScrollAdjustment = 0;
 
+		private bool IsReordering => GetAndUpdateReorderingIndex() != null;
+
 		public VirtualizingPanelLayout()
 		{
 			ResetLayoutInfo();
@@ -1216,7 +1218,12 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void UpdateScrollPositionForPaddingChanges(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
-			if (XamlParent?.NativePanel != null && XamlParent.NativePanel.ChildCount > 0)
+			if (
+				XamlParent?.NativePanel != null &&
+				XamlParent.NativePanel.ChildCount > 0 &&
+				// Skip this correction when reordering, since we rely on the assumption while reordering that only dragging will cause a scroll
+				!IsReordering
+			)
 			{
 				var gapToStart = GetContentStart();
 				if (gapToStart > 0)
@@ -1316,7 +1323,17 @@ namespace Windows.UI.Xaml.Controls
 
 			AssertValidState();
 
-			var nextItemPath = GetNextUnmaterializedItem(direction, _dynamicSeedIndex ?? GetLeadingMaterializedItem(direction));
+			Uno.UI.IndexPath? GetLeading()
+			{
+				var leading = GetLeadingMaterializedItem(direction);
+				if (_pendingReorder?.index is { } reorderingIndex && reorderingIndex == leading)
+				{
+					// Don't count the currently reordering item when getting the leading item, since the reordering item is generally out of order
+					leading = GetLeadingMaterializedItem(direction, i => i != reorderingIndex);
+				}
+				return leading;
+			}
+			var nextItemPath = GetNextUnmaterializedItem(direction, _dynamicSeedIndex ?? GetLeading());
 			while (nextItemPath != null)
 			{
 				//Handle the case there are no groups, this may happen during a lightweight rebuild of the layout.
@@ -1619,7 +1636,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </remarks>
 		private void TryTrimReorderingView(GeneratorDirection fillDirection, RecyclerView.Recycler recycler)
 		{
-			if (GetAndUpdateReorderingIndex() is { } reorderingIndex)
+			if (IsReordering)
 			{
 				// Keep at least one item materialized as a seed
 				while (ItemViewCount > 1)
@@ -2383,10 +2400,10 @@ namespace Windows.UI.Xaml.Controls
 		/// return the top-most item.
 		/// </summary>
 		private Uno.UI.IndexPath? GetLeadingMaterializedItem(GeneratorDirection fillDirection)
-		{
-			var group = GetLeadingNonEmptyGroup(fillDirection);
-			return group?.GetLeadingMaterializedItem(fillDirection);
-		}
+			=> GetLeadingNonEmptyGroup(fillDirection)?.GetLeadingMaterializedItem(fillDirection);
+
+		private Uno.UI.IndexPath? GetLeadingMaterializedItem(GeneratorDirection fillDirection, Func<Uno.UI.IndexPath, bool> condition)
+			=> GetLeadingNonEmptyGroup(fillDirection)?.GetLeadingMaterializedItem(fillDirection, condition);
 
 		private View GetLeadingItemView(GeneratorDirection fillDirection)
 		{

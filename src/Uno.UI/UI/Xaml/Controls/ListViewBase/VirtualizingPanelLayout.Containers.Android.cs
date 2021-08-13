@@ -5,6 +5,7 @@ using Uno.UI;
 using System.Linq;
 using Windows.UI.Xaml.Controls.Primitives;
 using System.Diagnostics;
+using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -146,6 +147,7 @@ namespace Windows.UI.Xaml.Controls
 
 			public void AddLine(Line newLine, GeneratorDirection fillDirection)
 			{
+				Debug.Assert(_lines.None(l => l.FirstItem == newLine.FirstItem), "Duplicate line detected");
 				if (fillDirection == GeneratorDirection.Forward)
 				{
 					_lines.AddToBack(newLine);
@@ -183,6 +185,13 @@ namespace Windows.UI.Xaml.Controls
 				return fillDirection == GeneratorDirection.Forward ?
 					GetLastLine().LastItem :
 					GetFirstLine().FirstItem;
+			}
+
+			public Uno.UI.IndexPath GetLeadingMaterializedItem(GeneratorDirection fillDirection, Func<Uno.UI.IndexPath, bool> condition)
+			{
+				return fillDirection == GeneratorDirection.Forward ?
+					GetLastLine(condition).LastItem :
+					GetFirstLine(condition).FirstItem;
 			}
 
 			public Uno.UI.IndexPath GetTrailingMaterializedItem(GeneratorDirection fillDirection)
