@@ -518,6 +518,24 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					{
 						ChangeSelectedItem(selectorItem, false, true);
 					}
+					// If the item is inserted before the currently selected one, increase the selected index.
+					else if (iVCE.CollectionChange == CollectionChange.ItemInserted && (int)iVCE.Index <= SelectedIndex)
+					{
+						SelectedIndex++;
+					}
+				}
+				else if (iVCE.CollectionChange == CollectionChange.ItemRemoved)
+				{
+					// If the removed item is the currently selected one, Set SelectedIndex to -1
+					if ((int)iVCE.Index == SelectedIndex)
+					{
+						SelectedIndex = -1;
+					}
+					// But if it's before the currently selected one, decrement SelectedIndex
+					else if ((int)iVCE.Index < SelectedIndex)
+					{
+						SelectedIndex--;
+					}
 				}
 			}
 		}
