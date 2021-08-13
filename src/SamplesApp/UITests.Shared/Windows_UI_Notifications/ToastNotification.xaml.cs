@@ -20,56 +20,47 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Notifications
 {
-	[SampleControlInfo("Windows.UI.Notifications")]
-	[ActivePlatforms(Platform.Android)]
+	[SampleControlInfo("Windows.UI.Notifications", "Toast")]
 	public sealed partial class ToastNotification : Page
-    {
-        public ToastNotification()
-        {
-            this.InitializeComponent();
-        }
-
-
-		public sealed partial class BadgeNotificationTests : Page
+	{
+		public ToastNotification()
 		{
-			public BadgeNotificationTests()
+			this.InitializeComponent();
+		}
+
+
+		private void sendToast_Click(object sender, RoutedEventArgs e)
+		{
+			string toastLine1 = uiToastLine1.Text;
+			string toastLine2 = uiToastLine2.Text;
+
+			if (string.IsNullOrEmpty(toastLine1))
 			{
-				this.InitializeComponent();
+				uiErrorMsg.Text = "First string cannot be empty!";
+				return;
 			}
 
-			private void sendToast_Click(object sender, RoutedEventArgs e)
+			var sXml = "<visual><binding template='ToastGeneric'><text>" + toastLine1;
+			if (!string.IsNullOrEmpty(toastLine2))
 			{
-				string toastLine1 = toastLine1.Text;
-				string toastLine2 = toastLine2.Text;
+				sXml = sXml + "</text><text>" + toastLine2;
+			}
+			sXml = sXml + "</text></binding></visual>";
+			var oXml = new Windows.Data.Xml.Dom.XmlDocument();
+			oXml.LoadXml("<toast>" + sXml + "</toast>");
 
-				if (string.IsNullOrEmpty(toastLine1))
-				{
-					errorMsg.Text = "First string cannot be empty!";
-					return;
-				}
-
-				var sXml = "<visual><binding template='ToastGeneric'><text>" + toastLine1;
-				if (!string.IsNullOrEmpty(toastLine2))
-				{
-					sXml = sXml + "</text><text>" + toastLine2;
-				}
-				sXml = sXml + "</text></binding></visual>";
-				var oXml = new Windows.Data.Xml.Dom.XmlDocument();
-				oXml.LoadXml("<toast>" + sXml + "</toast>");
-
-				try
-				{
-					var oToast = new Windows.UI.Notifications.ToastNotification(oXml);
-					Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier().Show(oToast);
-				}
-				catch (Exception ex)
-				{
-					errorMsg.Text = "Catched exception: " + ex.Message;
-				}
-
+			try
+			{
+				var oToast = new Windows.UI.Notifications.ToastNotification(oXml);
+				Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier().Show(oToast);
+			}
+			catch (Exception ex)
+			{
+				uiErrorMsg.Text = "Caught exception: " + ex.Message;
 			}
 
 		}
 
 	}
+
 }

@@ -11,7 +11,7 @@ namespace Windows.UI.Notifications
 {
 	public partial class ToastNotifier
 	{
-		private string _channelID = "PlatformUno"; 
+		private string _channelID = "PlatformUno";
 		private Android.App.NotificationManager _notificationManager;
 
 		public ToastNotifier()
@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 			_notificationManager = Android.App.NotificationManager.FromContext(Android.App.Application.Context);
 
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
-			{	// none of this strings would be visible for user
+			{   // none of this strings would be visible for user
 				var channel = new Android.App.NotificationChannel(_channelID, "PlatformUnoChannel", Android.App.NotificationImportance.Default); ; // deprecated: Android.App.NotificationManager.ImportanceDefault
 				_notificationManager.CreateNotificationChannel(channel);
 			}
@@ -36,8 +36,8 @@ namespace Windows.UI.Notifications
 
 			toasttext = toasttext.Substring(12); // skipping prefix "ms-resource:"
 			var retVal = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()?.GetString(toasttext);
-			if(retVal is null)
-			{	// we have no such string
+			if (retVal is null)
+			{   // we have no such string
 				return toasttext;
 			}
 			return retVal;
@@ -52,7 +52,7 @@ namespace Windows.UI.Notifications
 			}
 
 #pragma warning disable CS0618 // Type or member is obsolete - compilation is for newer SDK, but runtime is on older SDK
-				return new Android.App.Notification.Builder(Android.App.Application.Context);
+			return new Android.App.Notification.Builder(Android.App.Application.Context);
 #pragma warning restore CS0618
 
 		}
@@ -75,31 +75,18 @@ namespace Windows.UI.Notifications
 				iconId = resolveInfo.IconResource;
 			}
 
+			// iconId == null means error, but we throw exception in Show method - logic would be more readable
 			return iconId;
 
 		}
 
-
-		public void Show(ToastNotification notification)
+		private void SetToastTexts(Android.App.Notification.Builder builder, XmlDocument xmlDoc)
 		{
-			var androidNotification = new Android.App.Notification();
-			androidNotification.Category = Android.App.Notification.CategoryMessage;
-
-			Android.App.Notification.Builder builder = GetToastBuilder();
-
-			#region "setting Toast texts"
-			// extract <text> nodes from XML
-
 			string toastTitleText = "";
 			string toastText = "";
 
-			// we use XmlDocument for retrieving text items and launch attribute (many lines below)
-			// Windows.Data.Xml.Dom is almost not implemented, so we have to use System.Xml
-			var xmlDoc = new XmlDocument();
-			xmlDoc.LoadXml(notification.Content.GetXml());  
-
 			var childToast = xmlDoc.GetElementsByTagName("text");
-			if(childToast.Count > 0)
+			if (childToast.Count > 0)
 			{
 				// first text - bigger text (title)
 				toastTitleText = ConvertToastTextToString(childToast.Item(0).InnerText);
@@ -109,7 +96,7 @@ namespace Windows.UI.Notifications
 					toastText = ConvertToastTextToString(childToast.Item(1).InnerText);
 
 					for (int loopCnt = 2; loopCnt < childToast.Count; loopCnt++)
-					{	// in most scenarios, this loop will never iterate
+					{   // in most scenarios, this loop will never iterate
 						// separate lines with space and \n: \n as line splitting for newer Android, space - for older
 						toastText = toastText + " \n" + ConvertToastTextToString(childToast.Item(loopCnt).InnerText);
 					}
@@ -152,7 +139,7 @@ namespace Windows.UI.Notifications
 						{
 							// between 2 and 6 lines - use InboxStyle
 							var inboxToast = new Android.App.Notification.InboxStyle();
-							foreach(var oneLine in msgLines)
+							foreach (var oneLine in msgLines)
 							{
 								inboxToast.AddLine(oneLine.Trim());
 							}
@@ -164,23 +151,11 @@ namespace Windows.UI.Notifications
 
 				builder.SetContentText(toastText);
 			}
-			#endregion
+		}
 
-
-			// we have to set icon ("This is the only user-visible content that's required", says doc).
-			string packageName = Android.App.Application.Context.PackageName;
-
-			int iconId = GetIconId(packageName);
-			if(iconId == 0)
-			{
-				throw new ArgumentException("ToastNotifier: cannot get iconId, probably you didn't set icon in Android manifest file");
-			}
-
-			builder.SetSmallIcon(iconId);
-
-
+		private void SetToastPriority(Android.App.Notification.Builder builder)
+		{
 			// for somewhat older Android, we need to set Priority (deprecated in API26 - in newer Android priorities are defined in channels)
-
 			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.O)
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -188,31 +163,22 @@ namespace Windows.UI.Notifications
 #pragma warning restore CS0618 // Type or member is obsolete
 			}
 
+		}
 
-			// mirroring / bridging of notification
-			builder.SetLocalOnly((notification.NotificationMirroring == NotificationMirroring.Disabled));
-
-			// expiration time
-			if((notification.ExpirationTime != null) && (notification.ExpirationTime.HasValue) )
+		private void SetToastTimeout(Android.App.Notification.Builder builder, DateTimeOffset? expirationTime)
+		{
+			if ((expirationTime != null) && (expirationTime.HasValue))
 			{
-				int seconds = (int)(notification.ExpirationTime.Value - DateTime.Now).TotalSeconds;
-				if(seconds > 0)
+				int seconds = (int)(expirationTime.Value - DateTime.Now).TotalSeconds;
+				if (seconds > 0)
 				{
 					builder.SetTimeoutAfter(seconds * 1000);
 				}
-
 			}
+		}
 
-			// we want notification time to be shown
-			// "For apps targeting Build.VERSION_CODES.N and above, this time is not shown anymore by default and must be opted into by using setShowWhen(boolean)"
-			// but SetShowWhen is since API 17...
-			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.M)
-			{
-				builder.SetShowWhen(true);
-			}
-
-
-			// action - opening app from tap on Toast (App.OnActivated)
+		private Android.App.PendingIntent CreateToastIntent(string packageName, XmlDocument xmlDoc)
+		{
 			var intentAction = Android.App.Application.Context.PackageManager.GetLaunchIntentForPackage(packageName);
 			intentAction.SetPackage(packageName);
 			// according to doc:
@@ -221,7 +187,7 @@ namespace Windows.UI.Notifications
 			intentAction.PutExtra("Uno.internal.IntentType", (double)ApplicationModel.Activation.ActivationKind.ToastNotification);
 
 			string toastArgument = "";
-			childToast = xmlDoc.GetElementsByTagName("toast");
+			var childToast = xmlDoc.GetElementsByTagName("toast");
 			if (childToast.Count == 1)
 			{
 				var childLaunch = childToast.Item(0)?.Attributes?.GetNamedItem("launch");
@@ -240,14 +206,62 @@ namespace Windows.UI.Notifications
 			intentAction.SetData(data);
 
 			// 12345: arbitrary number, it can be any value (as it is not used in Uno code anywhere)
-			var pendingIntent = Android.App.PendingIntent.GetActivity(Android.App.Application.Context, 12345, intentAction, 0); // 12345=requestCode
+			return Android.App.PendingIntent.GetActivity(Android.App.Application.Context, 12345, intentAction, 0); // 12345=requestCode
+
+		}
+
+
+		public void Show(ToastNotification notification)
+		{
+			var androidNotification = new Android.App.Notification();
+			androidNotification.Category = Android.App.Notification.CategoryMessage;
+
+			Android.App.Notification.Builder builder = GetToastBuilder();
+
+			// we use XmlDocument for retrieving text items and launch attribute
+			var xmlDoc = new XmlDocument();
+			xmlDoc.LoadXml(notification.Content.GetXml());
+
+			// packageName is used in GetIconId and to create launch intent
+			string packageName = Android.App.Application.Context.PackageName;
+
+			// extract <text> nodes from XML 
+			SetToastTexts(builder, xmlDoc);
+
+			// we have to set icon ("This is the only user-visible content that's required", says doc).
+			int iconId = GetIconId(packageName);
+			if (iconId == 0)
+			{
+				throw new ArgumentException("ToastNotifier: cannot get iconId, probably you didn't set icon in Android manifest file");
+			}
+			builder.SetSmallIcon(iconId);
+
+			// for somewhat older Android, we need to set Priority(deprecated in API26 - in newer Android priorities are defined in channels)
+			SetToastPriority(builder);
+
+			// mirroring / bridging of notification
+			builder.SetLocalOnly((notification.NotificationMirroring == NotificationMirroring.Disabled));
+
+			// expiration time
+			SetToastTimeout(builder, notification.ExpirationTime);
+
+			// we want notification time to be shown
+			// "For apps targeting Build.VERSION_CODES.N and above, this time is not shown anymore by default and must be opted into by using setShowWhen(boolean)"
+			// but SetShowWhen is since API 17...
+			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.M)
+			{
+				builder.SetShowWhen(true);
+			}
+
+
+			// action - opening app from tap on Toast (App.OnActivated)
+			var pendingIntent = CreateToastIntent(packageName, xmlDoc);
 			builder.SetContentIntent(pendingIntent);
 
 			builder.SetAutoCancel(true);
 
 
 			// another 'must' - uniq Tag/id pair
-
 			string notifTag = notification.Tag;
 			if (string.IsNullOrEmpty(notifTag))
 			{
@@ -257,7 +271,7 @@ namespace Windows.UI.Notifications
 			// everything ready, show notification
 			// but, it will disappear when app will be closed
 
-			_notificationManager.Notify(notifTag, 12345, builder.Build());	// 12345: arbitrary number
+			_notificationManager.Notify(notifTag, 12345, builder.Build());  // 12345: arbitrary number
 		}
 
 	}
