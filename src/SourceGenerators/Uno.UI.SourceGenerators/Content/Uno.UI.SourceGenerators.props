@@ -63,6 +63,7 @@
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
+		<CompilerVisibleProperty Include="SolutionFileName"/>
 
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
