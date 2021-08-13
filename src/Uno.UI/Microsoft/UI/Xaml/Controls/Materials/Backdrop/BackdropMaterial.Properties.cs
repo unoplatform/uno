@@ -33,6 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 				"ApplyToRootOrPageBackground",
 				typeof(bool),
 				typeof(BackdropMaterial),
-				new PropertyMetadata(false, OnApplyToRootOrPageBackgroundChanged));
+				new FrameworkPropertyMetadata(false, OnApplyToRootOrPageBackgroundChanged));
 	}
 }
