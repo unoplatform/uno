@@ -3,20 +3,24 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace Uno.UI.DataBinding
 {
     /// <summary>
     /// Provides a centralized garbage collection controlled for IBinder implementation used through mixins.
     /// </summary>
-    internal static class BinderCollector
+	/// <remarks>This API is public because it's used from generated code. It's not expected to be called by application code.</remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+    public static class BinderCollector
     {
         private static bool _collectRequested;
 
         /// <summary>
         /// Requests a garbage collection to ensure that subviews for the currently collected view will also be reclaimed.
         /// </summary>
-        internal static void RequestCollect()
+		[EditorBrowsable(EditorBrowsableState.Never)]
+        public static void RequestCollect()
         {
             if (!_collectRequested)
             {
