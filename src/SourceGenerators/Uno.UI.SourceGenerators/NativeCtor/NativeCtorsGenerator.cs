@@ -59,7 +59,7 @@ namespace {0}
 	{{
 #if {2}
 		/// <summary>
-		/// Initializes a new instance of the <see cref=""{4}""/> class.
+		/// Initializes a new instance of the class.
 		/// </summary>
 		public {3}() {{ }}
 #endif
@@ -154,8 +154,7 @@ namespace {0}
 								typeSymbol.ContainingNamespace,
 								smallSymbolName,
 								NeedsExplicitDefaultCtor(typeSymbol),
-								SyntaxFacts.GetKeywordKind(typeSymbol.Name) == SyntaxKind.None ? typeSymbol.Name : "@" + typeSymbol.Name,
-								DocumentationCommentId.CreateReferenceId(typeSymbol)
+								SyntaxFacts.GetKeywordKind(typeSymbol.Name) == SyntaxKind.None ? typeSymbol.Name : "@" + typeSymbol.Name
 							)
 						);
 					}
@@ -180,8 +179,7 @@ namespace {0}
 								typeSymbol.ContainingNamespace,
 								smallSymbolName,
 								NeedsExplicitDefaultCtor(typeSymbol),
-								SyntaxFacts.GetKeywordKind(typeSymbol.Name) == SyntaxKind.None ? typeSymbol.Name : "@" + typeSymbol.Name,
-								DocumentationCommentId.CreateReferenceId(typeSymbol)
+								SyntaxFacts.GetKeywordKind(typeSymbol.Name) == SyntaxKind.None ? typeSymbol.Name : "@" + typeSymbol.Name
 							)
 						);
 					}
