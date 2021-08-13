@@ -163,10 +163,7 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								if (target is FrameworkElement targetTheme)
 								{
-									// TODO Uno specific: ActualTheme always returns Default now, which is invalid
-									// this specific needs to be reverted when #3302 is implemented.
-									return Application.Current?.RequestedTheme == ApplicationTheme.Light ? ElementTheme.Light : ElementTheme.Dark;
-									//return targetTheme.ActualTheme;
+									return targetTheme.ActualTheme;
 								}
 							}
 
