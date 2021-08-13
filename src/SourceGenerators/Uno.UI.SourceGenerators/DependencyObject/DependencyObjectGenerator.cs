@@ -161,7 +161,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 						using (GenerateNestingContainers(builder, typeSymbol))
 						{
-							using (builder.BlockInvariant($"{typeSymbol.GetAccessibilityAsCodeString()} partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider"))
+							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider"))
 							{
 								GenerateDependencyObjectImplementation(builder);
 								GenerateIBinderImplementation(typeSymbol, builder);
