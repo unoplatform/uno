@@ -103,10 +103,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
+				if (typeSymbol.TypeKind != TypeKind.Class)
+				{
+					return;
+				}
+
 				var isDependencyObject = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol))
 					&& (typeSymbol.BaseType?.GetAllInterfaces().None(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol)) ?? true);
 
-				if (isDependencyObject && typeSymbol.TypeKind == TypeKind.Class)
+				if (isDependencyObject)
 				{
 					if (_context.GetMSBuildPropertyValue("SolutionFileName") != "Uno.UI.sln")
 					{
