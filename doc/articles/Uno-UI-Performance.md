@@ -10,7 +10,8 @@ Here's what to look for:
 	`Visibility="{Binding [IsAvailable], Converter={StaticResource boolToVisibility}, FallbackValue=Collapsed, TargetNullValue=Collapsed}"`
 - Collapsed elements are not considered when measuring and arranging the visual tree, which makes them almost costless.
 - When binding or animating (via visual state setters) the visibility property, make sure to enable lazy loading:
-	`x:DeferLoadStrategy="Lazy"` or `xamarin:DeferLoadStrategy="Lazy"` if visibility is set via bindings (which UWP does not support).
+	`x:Load="False"`.
+- Use `x:Load={x:Bind MyVisibility}` where appropriate as toggling to from true false effectively removes a part of the visual tree from memory. Note that setting back to true re-creates the visual tree.
 - ListView and GridView
 	- Don't use template selectors inside the ItemTemplate, prefer using the ItemTemplateSelector on ListView/GridView.
 	- The default [ListViewItem and GridViewItem styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
@@ -21,6 +22,13 @@ Here's what to look for:
 	- Prefer Storyboard setters to `ObjectAnimationUsingKeyFrames` if there is only one key frame.
 	- Prefer changing the properties of a visual element instead of switching opacity or visibility of an element.
         - Manually created `Storyboard` instances do not stop automatically. Make sure that if you invoke `Storyboard.Begin()`, invoke `Storyboard.Stop()` when the animated content is unloaded, otherwise resources may be spent animating invisible content.
+		- `ProgressRing` and `ProgressBar` controls indeterminate mode generally consume rendering time. Make sure to set those to determinate modes when not visible.
+		- Troubleshooting of animations can be done by enabling the following logger:
+			```csharp
+			builder.AddFilter("Windows.UI.Xaml.Media.Animation", LogLevel.Debug);
+			```
+			The logger will provide all the changes done to animated properties, with element names.
+		
 - Image Assets
 	- Try using an image that is appropriate for the DPI and screen size.
     - Whenever possible, specify and explicit Width and Height on `Image`.
@@ -32,6 +40,7 @@ Here's what to look for:
 - Bindings
 	- Prefer bindings with short paths.
 	- To shorten paths, use the `DataContext` property on containers, such as `StackPanel` or `Grid`.
+	- As of Uno 3.9, adding a control to loaded `Panel` or `ContentControl` does propagate the parent's DataContext immediately. If the new control has its `DataContext` immediately overriden to something else, ensure to set the DataContext before adding the control to its parent.T his will avoid having bindings be refreshed twice needlessly.
 	- Add the `Windows.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
 		- When data binding to classes not inheriting from DependencyObject, in Debug configuration only, the following message may appear:
 			```
@@ -54,7 +63,6 @@ Here's what to look for:
         </TextBlock.Foreground>
     </TextBlock>
     ```
-
 
 ## Advanced performance Tracing
 
