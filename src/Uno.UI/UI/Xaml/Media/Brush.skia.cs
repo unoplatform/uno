@@ -85,9 +85,12 @@ namespace Windows.UI.Xaml.Media
 					)
 				.DisposeWith(disposables);
 			}
-			//else if (b is ImageBrush imageBrush)
-			//{
-			//}
+			else if (brush is ImageBrush imageBrush)
+			{
+				imageBrush
+					.Subscribe(_ => colorSetter(SolidColorBrushHelper.Transparent.Color))
+					.DisposeWith(disposables);
+			}
 			else if (brush is AcrylicBrush acrylicBrush)
 			{
 				acrylicBrush.RegisterDisposablePropertyChangedCallback(
@@ -125,14 +128,10 @@ namespace Windows.UI.Xaml.Media
 			{
 				return AssignAndObserveGradientBrush(gradientBrush, compositor, brushSetter);
 			}
-			//else if (b is ImageBrush imageBrush)
-			//{
-			//	Action<_Image> action = _ => colorSetter(SolidColorBrushHelper.Transparent.Color);
-
-			//	imageBrush.ImageChanged += action;
-
-			//	disposables.Add(() => imageBrush.ImageChanged -= action);
-			//}
+			else if (brush is ImageBrush imageBrush)
+			{
+				return AsssignAndObserveImageBrush(imageBrush, compositor, brushSetter);
+			}
 			else if (brush is AcrylicBrush acrylicBrush)
 			{
 				return AssignAndObserveAcrylicBrush(acrylicBrush, compositor, brushSetter);
@@ -150,7 +149,7 @@ namespace Windows.UI.Xaml.Media
 		private static IDisposable AssignAndObserveSolidColorBrush(SolidColorBrush brush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			var disposables = new CompositeDisposable();
-			
+
 			var compositionBrush = compositor.CreateColorBrush(brush.ColorWithOpacity);
 
 			brush.RegisterDisposablePropertyChangedCallback(
@@ -236,6 +235,22 @@ namespace Windows.UI.Xaml.Media
 			return disposables;
 		}
 
+		private static IDisposable AsssignAndObserveImageBrush(ImageBrush brush, Compositor compositor, BrushSetterHandler brushSetter)
+		{
+			var disposables = new CompositeDisposable();
+
+			var surfaceBrush = compositor.CreateSurfaceBrush();
+
+			brush.Subscribe(data =>
+			{
+				surfaceBrush.Surface = data.Value;
+			}).DisposeWith(disposables);
+
+			brushSetter(surfaceBrush);
+
+			return disposables;
+		}
+
 		private static IDisposable AssignAndObserveAcrylicBrush(AcrylicBrush acrylicBrush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			var disposables = new CompositeDisposable();
@@ -303,7 +318,7 @@ namespace Windows.UI.Xaml.Media
 				return null;
 			}
 
-			compositionBrush.RelativeTransformMatrix = gradientBrush.RelativeTransform?.MatrixCore ?? Matrix3x2.Identity; 
+			compositionBrush.RelativeTransformMatrix = gradientBrush.RelativeTransform?.MatrixCore ?? Matrix3x2.Identity;
 			compositionBrush.ExtendMode = ConvertGradientExtendMode(gradientBrush.SpreadMethod);
 			compositionBrush.MappingMode = ConvertBrushMappingMode(gradientBrush.MappingMode);
 			ConvertGradientColorStops(compositor, compositionBrush, gradientBrush.GradientStops, gradientBrush.Opacity);
