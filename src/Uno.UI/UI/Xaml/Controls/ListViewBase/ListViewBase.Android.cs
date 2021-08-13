@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void RemoveGroupItems(int groupIndex, int count)
+		partial void RemoveGroupItems(int groupIndex, int groupCount)
 		{
 			var adapter = NativePanel?.CurrentAdapter;
 			if (adapter == null)
@@ -87,9 +87,9 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (count > 0)
+			if (groupCount > 0)
 			{
-				adapter.NotifyItemRangeRemoved(GetDisplayIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(0, groupIndex)), count);
+				adapter.NotifyItemRangeRemoved(GetDisplayIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(0, groupIndex)), groupCount);
 				NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 			}
 		}
@@ -182,11 +182,11 @@ namespace Windows.UI.Xaml.Controls
 			return base.IndexFromContainerInner(container);
 		}
 
-		partial void PrepareNativeLayout(VirtualizingPanelLayout layouter)
+		partial void PrepareNativeLayout(VirtualizingPanelLayout layout)
 		{
-			layouter.XamlParent = this;
+			layout.XamlParent = this;
 			var disposables = new CompositeDisposable();
-			PropertyChangedCallback headerFooterCallback = (_, __) => layouter.UpdateHeaderAndFooter();
+			PropertyChangedCallback headerFooterCallback = (_, __) => layout.UpdateHeaderAndFooter();
 			this.RegisterDisposablePropertyChangedCallback(HeaderProperty, headerFooterCallback).DisposeWith(disposables);
 			this.RegisterDisposablePropertyChangedCallback(FooterProperty, headerFooterCallback).DisposeWith(disposables);
 			this.RegisterDisposablePropertyChangedCallback(HeaderTemplateProperty, headerFooterCallback).DisposeWith(disposables);

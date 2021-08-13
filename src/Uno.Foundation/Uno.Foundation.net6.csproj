@@ -31,6 +31,12 @@
 		<PackageReference Include="Uno.Diagnostics.Eventing" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<EmbeddedResource Include="LinkerDefinition.net6.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
 	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
 		<PackageReference Include="System.Memory" />
 	</ItemGroup>

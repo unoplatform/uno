@@ -160,9 +160,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnAreStickyGroupHeadersEnabledChangedPartialNative(bool oldValue, bool newValue)
+		partial void OnAreStickyGroupHeadersEnabledChangedPartialNative(bool oldAreStickyGroupHeadersEnabled, bool newAreStickyGroupHeadersEnabled)
 		{
-			if (newValue != oldValue)
+			if (newAreStickyGroupHeadersEnabled != oldAreStickyGroupHeadersEnabled)
 			{
 				InvalidateLayout();
 			}

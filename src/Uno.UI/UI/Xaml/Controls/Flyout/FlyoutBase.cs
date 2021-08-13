@@ -320,7 +320,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_popup.IsOpen = true;
 		}
 
-		partial void SetPopupPositionPartial(UIElement placementTarget, Point? absolutePosition);
+		partial void SetPopupPositionPartial(UIElement placementTarget, Point? positionInTarget);
 
 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
 		{

@@ -87,12 +87,12 @@
 
   <ItemGroup Condition=" '$(SingleProject)' == 'true' ">
 	<ProjectCapability Include="MauiSingleProject" />
+	
 	<ProjectCapability Include="LaunchProfiles" />
-
-	<!-- Optional - Enables a list of TFM's and device categories in the debug menu -->
-	<!-- This allows easily toggling of debug target TFM by selecting the platform -->
-	<!-- If removed, Top level debug targets show as a list of devices for the selected TFM -->
-	<ProjectCapability Include="XamarinStaticLaunchProfiles" />
+	<!-- If VS is older than Dev17 -->
+	<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
+	<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
+	<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
   </ItemGroup>
 
 

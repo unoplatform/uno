@@ -177,7 +177,7 @@ namespace Uno.UI
 
 		partial void InnerCreate(Android.OS.Bundle bundle) => SetAsCurrent();
 
-		partial void InnerCreateWithPersistedState(Android.OS.Bundle bundle, PersistableBundle persistentState) => SetAsCurrent();
+		partial void InnerCreateWithPersistedState(Bundle savedInstanceState, PersistableBundle persistentState) => SetAsCurrent();
 
 		partial void InnerStart()
 		{

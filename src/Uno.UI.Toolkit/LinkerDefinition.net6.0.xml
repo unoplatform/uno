@@ -1,0 +1,9 @@
+﻿<linker>
+  <assembly fullname="Uno.UI.Toolkit">
+	<type fullname="Uno.UI.Toolkit.CommandBarExtensions"/>
+	<type fullname="Uno.UI.Toolkit.MenuFlyoutItemExtensions"/>
+	<type fullname="Uno.UI.Toolkit.UIElementExtensions"/>
+	<type fullname="Uno.UI.Toolkit.MenuFlyoutExtensions"/>
+	<type fullname="Uno.UI.Toolkit.SplitViewExtensions"/>
+  </assembly>
+</linker>

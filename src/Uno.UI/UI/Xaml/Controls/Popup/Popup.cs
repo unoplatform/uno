@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			ApplyLightDismissOverlayMode();
 		}
 
-		partial void OnPopupPanelChangedPartial(PopupPanel oldHost, PopupPanel newHost);
+		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel);
 
 		protected override void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
 		{

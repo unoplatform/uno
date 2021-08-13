@@ -155,6 +155,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="LinkerDefinition.$(TargetFramework).xml" Condition="exists('LinkerDefinition.$(TargetFramework).xml')">
+		  <LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
 		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
 	</ItemGroup>
 
