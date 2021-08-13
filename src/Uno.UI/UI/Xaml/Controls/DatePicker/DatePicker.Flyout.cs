@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 			"UseNativeStyle",
 			typeof(bool),
 			typeof(DatePicker),
-			new PropertyMetadata(DEFAULT_NATIVE_STYLE));
+			new FrameworkPropertyMetadata(DEFAULT_NATIVE_STYLE));
 
 		/// <summary>
 		/// If we should use the native picker for the platform.

@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
-			"Background", typeof(Brush), typeof(SwipeItem), new PropertyMetadata(default(Brush), OnBackgroundPropertyChanged));
+			"Background", typeof(Brush), typeof(SwipeItem), new FrameworkPropertyMetadata(default(Brush), OnBackgroundPropertyChanged));
 
 		public Brush Background
 		{
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty BehaviorOnInvokedProperty { get; } = DependencyProperty.Register(
-			"BehaviorOnInvoked", typeof(SwipeBehaviorOnInvoked), typeof(SwipeItem), new PropertyMetadata(default(SwipeBehaviorOnInvoked), OnBehaviorOnInvokedPropertyChanged));
+			"BehaviorOnInvoked", typeof(SwipeBehaviorOnInvoked), typeof(SwipeItem), new FrameworkPropertyMetadata(default(SwipeBehaviorOnInvoked), OnBehaviorOnInvokedPropertyChanged));
 
 		public SwipeBehaviorOnInvoked BehaviorOnInvoked
 		{
@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty CommandProperty { get; } = DependencyProperty.Register(
-			"Command", typeof(ICommand), typeof(SwipeItem), new PropertyMetadata(default(ICommand), OnCommandPropertyChanged));
+			"Command", typeof(ICommand), typeof(SwipeItem), new FrameworkPropertyMetadata(default(ICommand), OnCommandPropertyChanged));
 
 		public ICommand Command
 		{
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty CommandParameterProperty { get; } = DependencyProperty.Register(
-			"CommandParameter", typeof(object), typeof(SwipeItem), new PropertyMetadata(default(object), OnCommandParameterPropertyChanged));
+			"CommandParameter", typeof(object), typeof(SwipeItem), new FrameworkPropertyMetadata(default(object), OnCommandParameterPropertyChanged));
 
 		public object CommandParameter
 		{
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty ForegroundProperty { get; } = DependencyProperty.Register(
-			"Foreground", typeof(Brush), typeof(SwipeItem), new PropertyMetadata(default(Brush), OnForegroundPropertyChanged));
+			"Foreground", typeof(Brush), typeof(SwipeItem), new FrameworkPropertyMetadata(default(Brush), OnForegroundPropertyChanged));
 
 		public Brush Foreground
 		{
@@ -287,7 +287,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty IconSourceProperty { get; } = DependencyProperty.Register(
-			"IconSource", typeof(IconSource), typeof(SwipeItem), new PropertyMetadata(default(IconSource), OnIconSourcePropertyChanged));
+			"IconSource", typeof(IconSource), typeof(SwipeItem), new FrameworkPropertyMetadata(default(IconSource), OnIconSourcePropertyChanged));
 
 		public IconSource IconSource
 		{
@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty TextProperty { get; } = DependencyProperty.Register(
-			"Text", typeof(string), typeof(SwipeItem), new PropertyMetadata(default(string), OnTextPropertyChanged));
+			"Text", typeof(string), typeof(SwipeItem), new FrameworkPropertyMetadata(default(string), OnTextPropertyChanged));
 
 		public string Text
 		{

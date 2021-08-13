@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Background (DP) => Commented out as FwElt already has it ...
 		//public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
-		//	"Background", typeof(Brush), typeof(ItemsRepeater), new PropertyMetadata(default(Brush)));
+		//	"Background", typeof(Brush), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(Brush)));
 
 		//public Brush Background
 		//{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ItemsSource (DP - With default callback)
 		public static DependencyProperty ItemsSourceProperty { get; } = DependencyProperty.Register(
-			"ItemsSource", typeof(object), typeof(ItemsRepeater), new PropertyMetadata(default(object), OnPropertyChanged));
+			"ItemsSource", typeof(object), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(object), OnPropertyChanged));
 
 		public object ItemsSource
 		{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ItemTemplate (DP - With default callback)
 		public static DependencyProperty ItemTemplateProperty { get; } = DependencyProperty.Register(
-			"ItemTemplate", typeof(object), typeof(ItemsRepeater), new PropertyMetadata(default(object), OnPropertyChanged));
+			"ItemTemplate", typeof(object), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(object), OnPropertyChanged));
 
 		public object ItemTemplate
 		{
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Animator (DP - With default callback)
 		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
-			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new PropertyMetadata(default(ElementAnimator), OnPropertyChanged));
+			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ElementAnimator), OnPropertyChanged));
 
 #if __MACOS__
 		public new ElementAnimator Animator
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #region HorizontalCacheLength (DP - With default callback)
 		public static DependencyProperty HorizontalCacheLengthProperty { get; } = DependencyProperty.Register(
-			"HorizontalCacheLength", typeof(double), typeof(ItemsRepeater), new PropertyMetadata(2.0, OnPropertyChanged));
+			"HorizontalCacheLength", typeof(double), typeof(ItemsRepeater), new FrameworkPropertyMetadata(2.0, OnPropertyChanged));
 
 		public double HorizontalCacheLength
 		{
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #region VerticalCacheLength (DP - With default callback)
 		public static DependencyProperty VerticalCacheLengthProperty { get; } = DependencyProperty.Register(
-			"VerticalCacheLength", typeof(double), typeof(ItemsRepeater), new PropertyMetadata(2.0, OnPropertyChanged));
+			"VerticalCacheLength", typeof(double), typeof(ItemsRepeater), new FrameworkPropertyMetadata(2.0, OnPropertyChanged));
 
 		public double VerticalCacheLength
 		{
@@ -99,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #region VirtualizationInfo (DP - private attached)
 		private static readonly DependencyProperty VirtualizationInfoProperty = DependencyProperty.RegisterAttached(
-			"VirtualizationInfo", typeof(VirtualizationInfo), typeof(ItemsRepeater), new PropertyMetadata(default(VirtualizationInfo))); 
+			"VirtualizationInfo", typeof(VirtualizationInfo), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(VirtualizationInfo))); 
 #endregion
 	}
 }

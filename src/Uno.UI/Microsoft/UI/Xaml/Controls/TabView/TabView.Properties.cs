@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty AddTabButtonCommandProperty { get; } =
-			DependencyProperty.Register(nameof(AddTabButtonCommand), typeof(ICommand), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(AddTabButtonCommand), typeof(ICommand), typeof(TabView), new FrameworkPropertyMetadata(null));
 
 		public object AddTabButtonCommandParameter
 		{
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty AddTabButtonCommandParameterProperty { get; } =
-			DependencyProperty.Register(nameof(AddTabButtonCommandParameter), typeof(object), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(AddTabButtonCommandParameter), typeof(object), typeof(TabView), new FrameworkPropertyMetadata(null));
 
 		public bool AllowDropTabs
 		{
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty AllowDropTabsProperty { get; } =
-			DependencyProperty.Register(nameof(AllowDropTabs), typeof(bool), typeof(TabView), new PropertyMetadata(true));
+			DependencyProperty.Register(nameof(AllowDropTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(true));
 
 		public bool CanDragTabs
 		{
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CanDragTabsProperty { get; } =
-			DependencyProperty.Register(nameof(CanDragTabs), typeof(bool), typeof(TabView), new PropertyMetadata(false));
+			DependencyProperty.Register(nameof(CanDragTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(false));
 
 		public bool CanReorderTabs
 		{
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CanReorderTabsProperty { get; } =
-			DependencyProperty.Register(nameof(CanReorderTabs), typeof(bool), typeof(TabView), new PropertyMetadata(true));
+			DependencyProperty.Register(nameof(CanReorderTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(true));
 
 		public TabViewCloseButtonOverlayMode CloseButtonOverlayMode
 		{
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CloseButtonOverlayModeProperty { get; } =
-			DependencyProperty.Register(nameof(CloseButtonOverlayMode), typeof(TabViewCloseButtonOverlayMode), typeof(TabView), new PropertyMetadata(TabViewCloseButtonOverlayMode.Auto, OnCloseButtonOverlayModePropertyChanged));
+			DependencyProperty.Register(nameof(CloseButtonOverlayMode), typeof(TabViewCloseButtonOverlayMode), typeof(TabView), new FrameworkPropertyMetadata(TabViewCloseButtonOverlayMode.Auto, OnCloseButtonOverlayModePropertyChanged));
 
 		private static void OnCloseButtonOverlayModePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsAddTabButtonVisibleProperty { get; } =
-			DependencyProperty.Register(nameof(IsAddTabButtonVisible), typeof(bool), typeof(TabView), new PropertyMetadata(true));
+			DependencyProperty.Register(nameof(IsAddTabButtonVisible), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(true));
 
 		public int SelectedIndex
 		{
@@ -85,7 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(TabView), new PropertyMetadata(0, OnSelectedIndexPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(TabView), new FrameworkPropertyMetadata(0, OnSelectedIndexPropertyChanged));
 
 		private static void OnSelectedIndexPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -100,7 +100,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedItemProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(TabView), new PropertyMetadata(null, OnSelectedItemPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(TabView), new FrameworkPropertyMetadata(null, OnSelectedItemPropertyChanged));
 
 		private static void OnSelectedItemPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -115,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabItemsProperty { get; } =
-			DependencyProperty.Register(nameof(TabItems), typeof(IList<object>), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabItems), typeof(IList<object>), typeof(TabView), new FrameworkPropertyMetadata(null));
 
 		public object TabItemsSource
 		{
@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabItemsSourceProperty { get; } =
-			DependencyProperty.Register(nameof(TabItemsSource), typeof(object), typeof(TabView), new PropertyMetadata(null, OnTabItemsSourcePropertyChanged));
+			DependencyProperty.Register(nameof(TabItemsSource), typeof(object), typeof(TabView), new FrameworkPropertyMetadata(null, OnTabItemsSourcePropertyChanged));
 
 		private static void OnTabItemsSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabItemTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(TabItemTemplate), typeof(DataTemplate), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabItemTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public DataTemplateSelector TabItemTemplateSelector
 		{
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabItemTemplateSelectorProperty { get; } =
-			DependencyProperty.Register(nameof(TabItemTemplateSelector), typeof(DataTemplateSelector), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabItemTemplateSelector), typeof(DataTemplateSelector), typeof(TabView), new FrameworkPropertyMetadata(null));
 
 		public object TabStripFooter
 		{
@@ -157,7 +157,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabStripFooterProperty { get; } =
-			DependencyProperty.Register(nameof(TabStripFooter), typeof(object), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabStripFooter), typeof(object), typeof(TabView), new FrameworkPropertyMetadata(null));
 
 		public DataTemplate TabStripFooterTemplate
 		{
@@ -166,7 +166,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabStripFooterTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(TabStripFooterTemplate), typeof(DataTemplate), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabStripFooterTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public object TabStripHeader
 		{
@@ -175,7 +175,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabStripHeaderProperty { get; } =
-			DependencyProperty.Register(nameof(TabStripHeader), typeof(object), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabStripHeader), typeof(object), typeof(TabView), new FrameworkPropertyMetadata(null));
 
 		public DataTemplate TabStripHeaderTemplate
 		{
@@ -184,7 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabStripHeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(TabStripHeaderTemplate), typeof(DataTemplate), typeof(TabView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabStripHeaderTemplate), typeof(DataTemplate), typeof(TabView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public TabViewWidthMode TabWidthMode
 		{
@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabWidthModeProperty { get; } =
-			DependencyProperty.Register(nameof(TabWidthMode), typeof(TabViewWidthMode), typeof(TabView), new PropertyMetadata(TabViewWidthMode.Equal, OnTabWidthModePropertyChanged));
+			DependencyProperty.Register(nameof(TabWidthMode), typeof(TabViewWidthMode), typeof(TabView), new FrameworkPropertyMetadata(TabViewWidthMode.Equal, OnTabWidthModePropertyChanged));
 
 		private static void OnTabWidthModePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

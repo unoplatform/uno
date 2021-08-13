@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 	partial class CalendarDatePicker
 	{
 		public static DependencyProperty CalendarIdentifierProperty { get; } = DependencyProperty.Register(
-			"CalendarIdentifier", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata("GregorianCalendar"));
+			"CalendarIdentifier", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata("GregorianCalendar"));
 
 		public string CalendarIdentifier
 		{
@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CalendarViewStyleProperty { get; } = DependencyProperty.Register(
-			"CalendarViewStyle", typeof(Style), typeof(CalendarDatePicker), new PropertyMetadata(default(Style)));
+			"CalendarViewStyle", typeof(Style), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public Style CalendarViewStyle
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DateProperty { get; } = DependencyProperty.Register(
-			"Date", typeof(DateTimeOffset?), typeof(CalendarDatePicker), new PropertyMetadata(default(DateTimeOffset?)));
+			"Date", typeof(DateTimeOffset?), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DateTimeOffset?)));
 
 		public DateTimeOffset? Date
 		{
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DateFormatProperty { get; } = DependencyProperty.Register(
-			"DateFormat", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
+			"DateFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
 
 		public string DateFormat
 		{
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DayOfWeekFormatProperty { get; } = DependencyProperty.Register(
-			"DayOfWeekFormat", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
+			"DayOfWeekFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
 
 		public string DayOfWeekFormat
 		{
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DescriptionProperty { get; } = DependencyProperty.Register(
-			"Description", typeof(object), typeof(CalendarDatePicker), new PropertyMetadata(default(object)));
+			"Description", typeof(object), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(object)));
 
 #if __IOS__ || __MACOS__
 		public new // .Description already exists on NSObject (both macOS & iOS)
@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DisplayModeProperty { get; } = DependencyProperty.Register(
-			"DisplayMode", typeof(CalendarViewDisplayMode), typeof(CalendarDatePicker), new PropertyMetadata(default(CalendarViewDisplayMode)));
+			"DisplayMode", typeof(CalendarViewDisplayMode), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(CalendarViewDisplayMode)));
 
 		public CalendarViewDisplayMode DisplayMode
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstDayOfWeekProperty { get; } = DependencyProperty.Register(
-			"FirstDayOfWeek", typeof(DayOfWeek), typeof(CalendarDatePicker), new PropertyMetadata(default(DayOfWeek)));
+			"FirstDayOfWeek", typeof(DayOfWeek), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DayOfWeek)));
 
 		public DayOfWeek FirstDayOfWeek
 		{
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderProperty { get; } = DependencyProperty.Register(
-			"Header", typeof(object), typeof(CalendarDatePicker), new PropertyMetadata(default(object)));
+			"Header", typeof(object), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(object)));
 
 		public object Header
 		{
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } = DependencyProperty.Register(
-			"HeaderTemplate", typeof(DataTemplate), typeof(CalendarDatePicker), new PropertyMetadata(default(DataTemplate)));
+			"HeaderTemplate", typeof(DataTemplate), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public DataTemplate HeaderTemplate
 		{
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsCalendarOpenProperty { get; } = DependencyProperty.Register(
-			"IsCalendarOpen", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(default(bool)));
+			"IsCalendarOpen", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(bool)));
 
 		public bool IsCalendarOpen
 		{
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsGroupLabelVisibleProperty { get; } = DependencyProperty.Register(
-			"IsGroupLabelVisible", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(default(bool)));
+			"IsGroupLabelVisible", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(bool)));
 
 		public bool IsGroupLabelVisible
 		{
@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsOutOfScopeEnabledProperty { get; } = DependencyProperty.Register(
-			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(defaultValue: true));
+			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: true));
 
 		public bool IsOutOfScopeEnabled
 		{
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsTodayHighlightedProperty { get; } = DependencyProperty.Register(
-			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new PropertyMetadata(defaultValue: true));
+			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: true));
 
 		public bool IsTodayHighlighted
 		{
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LightDismissOverlayModeProperty { get; } = DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(LightDismissOverlayMode), typeof(CalendarDatePicker), new PropertyMetadata(default(LightDismissOverlayMode)));
+			"LightDismissOverlayMode", typeof(LightDismissOverlayMode), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaxDateProperty { get; } = DependencyProperty.Register(
-			"MaxDate", typeof(DateTimeOffset), typeof(CalendarDatePicker), new PropertyMetadata(default(DateTimeOffset)));
+			"MaxDate", typeof(DateTimeOffset), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DateTimeOffset)));
 
 		public DateTimeOffset MaxDate
 		{
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MinDateProperty { get; } = DependencyProperty.Register(
-			"MinDate", typeof(DateTimeOffset), typeof(CalendarDatePicker), new PropertyMetadata(default(DateTimeOffset)));
+			"MinDate", typeof(DateTimeOffset), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DateTimeOffset)));
 
 		public DateTimeOffset MinDate
 		{
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PlaceholderTextProperty { get; } = DependencyProperty.Register(
-			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new PropertyMetadata(default(string)));
+			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
 
 		public string PlaceholderText
 		{

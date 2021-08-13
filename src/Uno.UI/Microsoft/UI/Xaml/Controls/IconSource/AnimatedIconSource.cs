@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FallbackIconSourceProperty { get; } =
-			DependencyProperty.Register(nameof(FallbackIconSource), typeof(IconSource), typeof(AnimatedIconSource), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(FallbackIconSource), typeof(IconSource), typeof(AnimatedIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		public bool MirroredWhenRightToLeft
 		{
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
-			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(AnimatedIconSource), new PropertyMetadata(false, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(AnimatedIconSource), new FrameworkPropertyMetadata(false, OnPropertyChanged));
 
 		public IAnimatedVisualSource2 Source
 		{
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SourceProperty { get; } =
-			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIconSource), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		private protected override IconElement CreateIconElementCore()
 		{

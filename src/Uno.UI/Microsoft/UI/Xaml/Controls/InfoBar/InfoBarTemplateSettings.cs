@@ -18,6 +18,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty IconElementProperty =
-			DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(InfoBarTemplateSettings), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(InfoBarTemplateSettings), new FrameworkPropertyMetadata(null));
 	}
 }

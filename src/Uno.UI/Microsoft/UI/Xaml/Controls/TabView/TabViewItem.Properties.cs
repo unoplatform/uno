@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderProperty { get; } =
-			DependencyProperty.Register(nameof(Header), typeof(object), typeof(TabViewItem), new PropertyMetadata(null, OnHeaderPropertyChanged));
+			DependencyProperty.Register(nameof(Header), typeof(object), typeof(TabViewItem), new FrameworkPropertyMetadata(null, OnHeaderPropertyChanged));
 
 		private static void OnHeaderPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(TabViewItem), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(TabViewItem), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public IconSource IconSource
 		{
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IconSourceProperty { get; } =
-			DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(TabViewItem), new PropertyMetadata(null, OnIconSourcePropertyChanged));
+			DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(TabViewItem), new FrameworkPropertyMetadata(null, OnIconSourcePropertyChanged));
 
 		private static void OnIconSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsClosableProperty { get; } =
-			DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(TabViewItem), new PropertyMetadata(false, OnIsClosablePropertyChanged));
+			DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(TabViewItem), new FrameworkPropertyMetadata(false, OnIsClosablePropertyChanged));
 
 		private static void OnIsClosablePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -68,6 +68,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TabViewTemplateSettingsProperty { get; } =
-			DependencyProperty.Register(nameof(TabViewTemplateSettings), typeof(TabViewItemTemplateSettings), typeof(TabViewItem), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TabViewTemplateSettings), typeof(TabViewItemTemplateSettings), typeof(TabViewItem), new FrameworkPropertyMetadata(null));
 	}
 }

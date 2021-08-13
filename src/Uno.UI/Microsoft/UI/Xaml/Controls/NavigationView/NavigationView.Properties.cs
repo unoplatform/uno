@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the AlwaysShowHeader dependency property.
 		/// </summary>
 		public static DependencyProperty AlwaysShowHeaderProperty { get; } =
-			DependencyProperty.Register(nameof(AlwaysShowHeader), typeof(bool), typeof(NavigationView), new PropertyMetadata(true, OnPropertyChanged));
+			DependencyProperty.Register(nameof(AlwaysShowHeader), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets an AutoSuggestBox to be displayed in the NavigationView.
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the AutoSuggestBox dependency property.
 		/// </summary>
 		public static DependencyProperty AutoSuggestBoxProperty { get; } =
-			DependencyProperty.Register(nameof(AutoSuggestBox), typeof(AutoSuggestBox), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(AutoSuggestBox), typeof(AutoSuggestBox), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the minimum window width at which the NavigationView enters Compact display mode.
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the CompactModeThresholdWidth dependency property.
 		/// </summary>
 		public static DependencyProperty CompactModeThresholdWidthProperty { get; } =
-			DependencyProperty.Register(nameof(CompactModeThresholdWidth), typeof(double), typeof(NavigationView), new PropertyMetadata(641.0, OnCompactModeThresholdWidthPropertyChanged));
+			DependencyProperty.Register(nameof(CompactModeThresholdWidth), typeof(double), typeof(NavigationView), new FrameworkPropertyMetadata(641.0, OnCompactModeThresholdWidthPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the width of the NavigationView pane in its compact display mode.
@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the CompactPaneLength dependency property.
 		/// </summary>
 		public static DependencyProperty CompactPaneLengthProperty { get; } =
-			DependencyProperty.Register(nameof(CompactPaneLength), typeof(double), typeof(NavigationView), new PropertyMetadata(48.0, OnCompactPaneLengthPropertyChanged));
+			DependencyProperty.Register(nameof(CompactPaneLength), typeof(double), typeof(NavigationView), new FrameworkPropertyMetadata(48.0, OnCompactPaneLengthPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a UI element that is shown at the top of the control, below the pane if PaneDisplayMode is Top.
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the ContentOverlay dependency property.
 		/// </summary>
 		public static DependencyProperty ContentOverlayProperty { get; } =
-			DependencyProperty.Register(nameof(ContentOverlay), typeof(UIElement), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(ContentOverlay), typeof(UIElement), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets a value that specifies how the pane and content areas of a NavigationView are being shown.
@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the DisplayMode dependency property.
 		/// </summary>
 		public static DependencyProperty DisplayModeProperty { get; } =
-			DependencyProperty.Register(nameof(DisplayMode), typeof(NavigationViewDisplayMode), typeof(NavigationView), new PropertyMetadata(NavigationViewDisplayMode.Minimal, OnPropertyChanged));
+			DependencyProperty.Register(nameof(DisplayMode), typeof(NavigationViewDisplayMode), typeof(NavigationView), new FrameworkPropertyMetadata(NavigationViewDisplayMode.Minimal, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the minimum window width at which the NavigationView enters Expanded display mode.
@@ -125,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the ExpandedModeThresholdWidth dependency property.
 		/// </summary>
 		public static DependencyProperty ExpandedModeThresholdWidthProperty { get; } =
-			DependencyProperty.Register(nameof(ExpandedModeThresholdWidth), typeof(double), typeof(NavigationView), new PropertyMetadata(1008.0, OnExpandedModeThresholdWidthPropertyChanged));
+			DependencyProperty.Register(nameof(ExpandedModeThresholdWidth), typeof(double), typeof(NavigationView), new FrameworkPropertyMetadata(1008.0, OnExpandedModeThresholdWidthPropertyChanged));
 
 		/// <summary>
 		/// Gets the footer menu items.
@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the FooterMenuItems dependency property.
 		/// </summary>
 		public static DependencyProperty FooterMenuItemsProperty { get; } =
-			DependencyProperty.Register(nameof(FooterMenuItems), typeof(IList<object>), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(FooterMenuItems), typeof(IList<object>), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the footer menu items data source.
@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the FooterMenuItemsSource dependency property.
 		/// </summary>
 		public static DependencyProperty FooterMenuItemsSourceProperty { get; } =
-			DependencyProperty.Register(nameof(FooterMenuItemsSource), typeof(object), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(FooterMenuItemsSource), typeof(object), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the header content.
@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Header dependency property.
 		/// </summary>
 		public static DependencyProperty HeaderProperty { get; } =
-			DependencyProperty.Register(nameof(Header), typeof(object), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(Header), typeof(object), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the DataTemplate used to display the control's header.
@@ -185,7 +185,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the HeaderTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(NavigationView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the back button is enabled or disabled.
@@ -200,7 +200,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsBackButtonVisible dependency property.
 		/// </summary>
 		public static DependencyProperty IsBackButtonVisibleProperty { get; } =
-			DependencyProperty.Register(nameof(IsBackButtonVisible), typeof(NavigationViewBackButtonVisible), typeof(NavigationView), new PropertyMetadata(NavigationViewBackButtonVisible.Auto, OnPropertyChanged));
+			DependencyProperty.Register(nameof(IsBackButtonVisible), typeof(NavigationViewBackButtonVisible), typeof(NavigationView), new FrameworkPropertyMetadata(NavigationViewBackButtonVisible.Auto, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the back button is enabled or disabled.
@@ -215,7 +215,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsBackEnabled dependency property.
 		/// </summary>
 		public static DependencyProperty IsBackEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsBackEnabled), typeof(bool), typeof(NavigationView), new PropertyMetadata(false, OnPropertyChanged));
+			DependencyProperty.Register(nameof(IsBackEnabled), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(false, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that specifies whether the NavigationView pane is expanded to its full width.
@@ -230,7 +230,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsPaneOpen dependency property.
 		/// </summary>
 		public static DependencyProperty IsPaneOpenProperty { get; } =
-			DependencyProperty.Register(nameof(IsPaneOpen), typeof(bool), typeof(NavigationView), new PropertyMetadata(true, OnPropertyChanged));
+			DependencyProperty.Register(nameof(IsPaneOpen), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the menu toggle button is shown.
@@ -245,7 +245,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsPaneToggleButtonVisible dependency property.
 		/// </summary>
 		public static DependencyProperty IsPaneToggleButtonVisibleProperty { get; } =
-			DependencyProperty.Register(nameof(IsPaneToggleButtonVisible), typeof(bool), typeof(NavigationView), new PropertyMetadata(true, OnPropertyChanged));
+			DependencyProperty.Register(nameof(IsPaneToggleButtonVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that determines whether the pane is shown.
@@ -260,7 +260,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsPaneVisible dependency property.
 		/// </summary>
 		public static DependencyProperty IsPaneVisibleProperty { get; } =
-			DependencyProperty.Register(nameof(IsPaneVisible), typeof(bool), typeof(NavigationView), new PropertyMetadata(true, OnPropertyChanged));
+			DependencyProperty.Register(nameof(IsPaneVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the settings button is shown.
@@ -275,7 +275,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsSettingsVisible dependency property.
 		/// </summary>
 		public static DependencyProperty IsSettingsVisibleProperty { get; } =
-			DependencyProperty.Register(nameof(IsSettingsVisible), typeof(bool), typeof(NavigationView), new PropertyMetadata(true, OnPropertyChanged));
+			DependencyProperty.Register(nameof(IsSettingsVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether top padding is added to the navigation view's header when used with a custom title bar.
@@ -290,7 +290,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsTitleBarAutoPaddingEnabled dependency property.
 		/// </summary>
 		public static DependencyProperty IsTitleBarAutoPaddingEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsTitleBarAutoPaddingEnabled), typeof(bool), typeof(NavigationView), new PropertyMetadata(true, OnPropertyChanged));
+			DependencyProperty.Register(nameof(IsTitleBarAutoPaddingEnabled), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the style that is used when rendering the menu item containers.
@@ -305,7 +305,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the MenuItemContainerStyle dependency property.
 		/// </summary>
 		public static DependencyProperty MenuItemContainerStyleProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItemContainerStyle), typeof(Style), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItemContainerStyle), typeof(Style), typeof(NavigationView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a reference to a custom StyleSelector logic class. The StyleSelector returns different Style values
@@ -321,7 +321,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the MenuItemContainerStyleSelector dependency property.
 		/// </summary>
 		public static DependencyProperty MenuItemContainerStyleSelectorProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItemContainerStyleSelector), typeof(StyleSelector), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItemContainerStyleSelector), typeof(StyleSelector), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets the collection of menu items displayed in the NavigationView.
@@ -336,7 +336,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the MenuItems dependency property.
 		/// </summary>
 		public static DependencyProperty MenuItemsProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItems), typeof(IList<object>), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItems), typeof(IList<object>), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets an object source used to generate the content of the NavigationView menu.
@@ -351,7 +351,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the MenuItemsSource dependency property.
 		/// </summary>
 		public static DependencyProperty MenuItemsSourceProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItemsSource), typeof(object), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItemsSource), typeof(object), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the DataTemplate used to display each menu item.
@@ -366,7 +366,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the MenuItemTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty MenuItemTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItemTemplate), typeof(DataTemplate), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItemTemplate), typeof(DataTemplate), typeof(NavigationView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a reference to a custom DataTemplateSelector logic class. The DataTemplateSelector referenced by this property returns
@@ -382,7 +382,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the MenuItemTemplateSelector dependency property.
 		/// </summary>
 		public static DependencyProperty MenuItemTemplateSelectorProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItemTemplateSelector), typeof(DataTemplateSelector), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItemTemplateSelector), typeof(DataTemplateSelector), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the width of the NavigationView pane when it's fully expanded.
@@ -402,7 +402,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the OpenPaneLength dependency property.
 		/// </summary>
 		public static DependencyProperty OpenPaneLengthProperty { get; } =
-			DependencyProperty.Register(nameof(OpenPaneLength), typeof(double), typeof(NavigationView), new PropertyMetadata(320.0, OnOpenPaneLengthPropertyChanged));
+			DependencyProperty.Register(nameof(OpenPaneLength), typeof(double), typeof(NavigationView), new FrameworkPropertyMetadata(320.0, OnOpenPaneLengthPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates what text label is shown for the overflow menu.
@@ -417,7 +417,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the OverflowLabelMode dependency property.
 		/// </summary>
 		public static DependencyProperty OverflowLabelModeProperty { get; } =
-			DependencyProperty.Register(nameof(OverflowLabelMode), typeof(NavigationViewOverflowLabelMode), typeof(NavigationView), new PropertyMetadata(NavigationViewOverflowLabelMode.MoreLabel, OnPropertyChanged));
+			DependencyProperty.Register(nameof(OverflowLabelMode), typeof(NavigationViewOverflowLabelMode), typeof(NavigationView), new FrameworkPropertyMetadata(NavigationViewOverflowLabelMode.MoreLabel, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a UI element that is shown in the NavigationView pane.
@@ -432,7 +432,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneCustomContent dependency property.
 		/// </summary>
 		public static DependencyProperty PaneCustomContentProperty { get; } =
-			DependencyProperty.Register(nameof(PaneCustomContent), typeof(UIElement), typeof(NavigationView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(PaneCustomContent), typeof(UIElement), typeof(NavigationView), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets a value that indicates how and where the NavigationView pane is shown.
@@ -447,7 +447,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneDisplayMode dependency property.
 		/// </summary>
 		public static DependencyProperty PaneDisplayModeProperty { get; } =
-			DependencyProperty.Register(nameof(PaneDisplayMode), typeof(NavigationViewPaneDisplayMode), typeof(NavigationView), new PropertyMetadata(NavigationViewPaneDisplayMode.Auto, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PaneDisplayMode), typeof(NavigationViewPaneDisplayMode), typeof(NavigationView), new FrameworkPropertyMetadata(NavigationViewPaneDisplayMode.Auto, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the content for the pane footer.
@@ -462,7 +462,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneFooter dependency property.
 		/// </summary>
 		public static DependencyProperty PaneFooterProperty { get; } =
-			DependencyProperty.Register(nameof(PaneFooter), typeof(UIElement), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PaneFooter), typeof(UIElement), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the content for the pane header.
@@ -477,7 +477,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneHeader dependency property.
 		/// </summary>
 		public static DependencyProperty PaneHeaderProperty { get; } =
-			DependencyProperty.Register(nameof(PaneHeader), typeof(UIElement), typeof(NavigationView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(PaneHeader), typeof(UIElement), typeof(NavigationView), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets the label adjacent to the menu icon when the NavigationView pane is open.
@@ -492,7 +492,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneTitle dependency property.
 		/// </summary>
 		public static readonly DependencyProperty PaneTitleProperty =
-			DependencyProperty.Register(nameof(PaneTitle), typeof(string), typeof(NavigationView), new PropertyMetadata(string.Empty, OnPropertyChanged)); //TODO: Empty string or null?
+			DependencyProperty.Register(nameof(PaneTitle), typeof(string), typeof(NavigationView), new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged)); //TODO: Empty string or null?
 
 		/// <summary>
 		/// Gets or sets the Style that defines the look of the menu toggle button.
@@ -507,7 +507,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneToggleButtonStyle dependency property.
 		/// </summary>
 		public static DependencyProperty PaneToggleButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(PaneToggleButtonStyle), typeof(Style), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PaneToggleButtonStyle), typeof(Style), typeof(NavigationView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the selected item.
@@ -522,7 +522,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the SelectedItem dependency property.
 		/// </summary>
 		public static DependencyProperty SelectedItemProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether item selection changes when keyboard focus changes.
@@ -537,7 +537,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the SelectionFollowsFocus dependency property.
 		/// </summary>
 		public static DependencyProperty SelectionFollowsFocusProperty { get; } =
-			DependencyProperty.Register(nameof(SelectionFollowsFocus), typeof(NavigationViewSelectionFollowsFocus), typeof(NavigationView), new PropertyMetadata(NavigationViewSelectionFollowsFocus.Disabled, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectionFollowsFocus), typeof(NavigationViewSelectionFollowsFocus), typeof(NavigationView), new FrameworkPropertyMetadata(NavigationViewSelectionFollowsFocus.Disabled, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets the navigation item that represents the entry point to app settings.
@@ -552,7 +552,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the SettingsItem dependency property.
 		/// </summary>
 		public static DependencyProperty SettingsItemProperty { get; } =
-			DependencyProperty.Register(nameof(SettingsItem), typeof(object), typeof(NavigationView), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SettingsItem), typeof(object), typeof(NavigationView), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates when gamepad bumpers can be used to navigate the top-level navigation items in a NavigationView.
@@ -567,7 +567,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the ShoulderNavigationEnabled dependency property.
 		/// </summary>
 		public static DependencyProperty ShoulderNavigationEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(ShoulderNavigationEnabled), typeof(NavigationViewShoulderNavigationEnabled), typeof(NavigationView), new PropertyMetadata(NavigationViewShoulderNavigationEnabled.Never, OnPropertyChanged));
+			DependencyProperty.Register(nameof(ShoulderNavigationEnabled), typeof(NavigationViewShoulderNavigationEnabled), typeof(NavigationView), new FrameworkPropertyMetadata(NavigationViewShoulderNavigationEnabled.Never, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets an object that provides calculated values that can be referenced as TemplateBinding sources when defining templates for a NavigationView control.
@@ -582,7 +582,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the TemplateSettings dependency property.
 		/// </summary>
 		public static DependencyProperty TemplateSettingsProperty { get; } =
-			DependencyProperty.Register(nameof(TemplateSettings), typeof(NavigationViewTemplateSettings), typeof(NavigationView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TemplateSettings), typeof(NavigationViewTemplateSettings), typeof(NavigationView), new FrameworkPropertyMetadata(null));
 
 		private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

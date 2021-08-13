@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 				name: "Date",
 				propertyType: typeof(DateTimeOffset),
 				ownerType: typeof(DatePicker),
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: DateTimeOffset.MinValue,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnDatePropertyChanged((DateTimeOffset)e.NewValue, (DateTimeOffset)e.OldValue)));
 
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 				name: "DayVisible",
 				propertyType: typeof(bool),
 				ownerType: typeof(DatePicker),
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnDayVisibleChangedPartial()));
 
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 				name: "MonthVisible",
 				propertyType: typeof(bool),
 				ownerType: typeof(DatePicker),
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnMonthVisibleChangedPartial()));
 
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 				name: "YearVisible",
 				propertyType: typeof(bool),
 				ownerType: typeof(DatePicker),
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: true,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnYearVisibleChangedPartial()));
 
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 				name: "MaxYear",
 				propertyType: typeof(DateTimeOffset),
 				ownerType: typeof(DatePicker),
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: DateTimeOffset.MaxValue,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnMaxYearChangedPartial()));
 
@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 				name: "MinYear",
 				propertyType: typeof(DateTimeOffset),
 				ownerType: typeof(DatePicker),
-				typeMetadata: new PropertyMetadata(
+				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: DateTimeOffset.MinValue,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnMinYearChangedPartial()));
 
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 			name: "HeaderTemplate",
 			propertyType: typeof(DataTemplate),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(default(DataTemplate)));
+			typeMetadata: new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public object Header
 		{

@@ -437,7 +437,7 @@ namespace Windows.UI.Xaml
 				nameof(RequestedTheme),
 				typeof(ElementTheme),
 				typeof(FrameworkElement),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					ElementTheme.Default,
 					(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
 

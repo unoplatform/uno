@@ -107,61 +107,61 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the CanDragItems dependency property.
 		/// </summary>
 		public static DependencyProperty CanDragItemsProperty { get; } =
-			DependencyProperty.Register(nameof(CanDragItems), typeof(bool), typeof(TreeView), new PropertyMetadata(true));
+			DependencyProperty.Register(nameof(CanDragItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(true));
 
 		/// <summary>
 		/// Identifies the CanReorderItems dependency property.
 		/// </summary>
 		public static DependencyProperty CanReorderItemsProperty { get; } =
-			DependencyProperty.Register(nameof(CanReorderItems), typeof(bool), typeof(TreeView), new PropertyMetadata(true));
+			DependencyProperty.Register(nameof(CanReorderItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(true));
 
 		/// <summary>
 		/// Identifies the ItemContainerStyle dependency property.
 		/// </summary>
 		public static DependencyProperty ItemContainerStyleProperty { get; } =
-			DependencyProperty.Register(nameof(ItemContainerStyle), typeof(Style), typeof(TreeView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(ItemContainerStyle), typeof(Style), typeof(TreeView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		/// <summary>
 		/// Identifies the ItemContainerStyleSelector dependency property.
 		/// </summary>
 		public static DependencyProperty ItemContainerStyleSelectorProperty { get; } =
-			DependencyProperty.Register(nameof(ItemContainerStyleSelector), typeof(StyleSelector), typeof(TreeView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(ItemContainerStyleSelector), typeof(StyleSelector), typeof(TreeView), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Identifies the ItemContainerTransitions dependency property.
 		/// </summary>
 		public static DependencyProperty ItemContainerTransitionsProperty { get; } =
-			DependencyProperty.Register(nameof(ItemContainerTransitions), typeof(TransitionCollection), typeof(TreeView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(ItemContainerTransitions), typeof(TransitionCollection), typeof(TreeView), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Identifies the ItemsSource dependency property.
 		/// </summary>
 		public static DependencyProperty ItemsSourceProperty { get; } =
-			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeView), new PropertyMetadata(null, OnItemsSourcePropertyChanged));
+			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeView), new FrameworkPropertyMetadata(null, OnItemsSourcePropertyChanged));
 
 		/// <summary>
 		/// Identifies the ItemTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty ItemTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(TreeView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(TreeView), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		/// <summary>
 		/// Identifies the ItemTemplateSelector dependency property.
 		/// </summary>
 		public static DependencyProperty ItemTemplateSelectorProperty { get; } =
-			DependencyProperty.Register(nameof(ItemTemplateSelector), typeof(DataTemplateSelector), typeof(TreeView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(ItemTemplateSelector), typeof(DataTemplateSelector), typeof(TreeView), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Identifies the SelectedItem dependency property.
 		/// </summary>
 		public static DependencyProperty SelectedItemProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(TreeView), new PropertyMetadata(null, OnSelectedItemPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(TreeView), new FrameworkPropertyMetadata(null, OnSelectedItemPropertyChanged));
 
 		/// <summary>
 		/// Identifies the SelectionMode dependency property.
 		/// </summary>
 		public static DependencyProperty SelectionModeProperty { get; } =
-			DependencyProperty.Register(nameof(SelectionMode), typeof(TreeViewSelectionMode), typeof(TreeView), new PropertyMetadata(TreeViewSelectionMode.Single, OnSelectionModePropertyChanged));
+			DependencyProperty.Register(nameof(SelectionMode), typeof(TreeViewSelectionMode), typeof(TreeView), new FrameworkPropertyMetadata(TreeViewSelectionMode.Single, OnSelectionModePropertyChanged));
 
 		private static void OnItemsSourcePropertyChanged(
 			DependencyObject sender,

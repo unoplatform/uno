@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty UriSourceProperty { get; } =
-			DependencyProperty.Register(nameof(UriSource), typeof(Uri), typeof(BitmapIconSource), new PropertyMetadata(default(Uri), OnPropertyChanged));
+			DependencyProperty.Register(nameof(UriSource), typeof(Uri), typeof(BitmapIconSource), new FrameworkPropertyMetadata(default(Uri), OnPropertyChanged));
 
 		public bool ShowAsMonochrome
 		{
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ShowAsMonochromeProperty { get; } =
-			DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new PropertyMetadata(true, OnPropertyChanged));
+			DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 		private protected override IconElement CreateIconElementCore()
 		{

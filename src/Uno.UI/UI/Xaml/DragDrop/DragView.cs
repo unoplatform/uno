@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml
 	{
 		#region Glyph
 		public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register(
-			"Glyph", typeof(string), typeof(DragView), new PropertyMetadata(default(string)));
+			"Glyph", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(default(string)));
 
 		public string Glyph
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml
 
 		#region GlyphVisibility
 		public static readonly DependencyProperty GlyphVisibilityProperty = DependencyProperty.Register(
-			"GlyphVisibility", typeof(Visibility), typeof(DragView), new PropertyMetadata(default(Visibility)));
+			"GlyphVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
 
 		public Visibility GlyphVisibility
 		{
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml
 
 		#region Caption
 		public static readonly DependencyProperty CaptionProperty = DependencyProperty.Register(
-			"Caption", typeof(string), typeof(DragView), new PropertyMetadata(default(string)));
+			"Caption", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(default(string)));
 
 		public string Caption
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml
 
 		#region CaptionVisibility
 		public static readonly DependencyProperty CaptionVisibilityProperty = DependencyProperty.Register(
-			"CaptionVisibility", typeof(Visibility), typeof(DragView), new PropertyMetadata(default(Visibility)));
+			"CaptionVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
 
 		public Visibility CaptionVisibility
 		{
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml
 
 		#region Content
 		public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
-			"Content", typeof(ImageSource), typeof(DragView), new PropertyMetadata(default(ImageSource)));
+			"Content", typeof(ImageSource), typeof(DragView), new FrameworkPropertyMetadata(default(ImageSource)));
 
 		public ImageSource? Content
 		{
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 
 		#region ContentVisibility
 		public static readonly DependencyProperty ContentVisibilityProperty = DependencyProperty.Register(
-			"ContentVisibility", typeof(Visibility), typeof(DragView), new PropertyMetadata(default(Visibility)));
+			"ContentVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
 
 		public Visibility ContentVisibility
 		{
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml
 
 		#region TooltipVisibility
 		public static readonly DependencyProperty TooltipVisibilityProperty = DependencyProperty.Register(
-			"TooltipVisibility", typeof(Visibility), typeof(DragView), new PropertyMetadata(default(Visibility)));
+			"TooltipVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
 
 		public Visibility TooltipVisibility
 		{

@@ -14,6 +14,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IconElementProperty { get; } =
-			DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(TabViewItemTemplateSettings), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(TabViewItemTemplateSettings), new FrameworkPropertyMetadata(null));
 	}
 }

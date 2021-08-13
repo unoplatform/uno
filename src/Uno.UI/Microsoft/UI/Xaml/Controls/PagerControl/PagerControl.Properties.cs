@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ButtonPanelAlwaysShowFirstLastPageIndexProperty { get; } =
-			DependencyProperty.Register(nameof(ButtonPanelAlwaysShowFirstLastPageIndex), typeof(bool), typeof(PagerControl), new PropertyMetadata(true, OnPropertyChanged));
+			DependencyProperty.Register(nameof(ButtonPanelAlwaysShowFirstLastPageIndex), typeof(bool), typeof(PagerControl), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 		public PagerControlDisplayMode DisplayMode
 		{
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DisplayModeProperty { get; } =
-			DependencyProperty.Register(nameof(DisplayMode), typeof(PagerControlDisplayMode), typeof(PagerControl), new PropertyMetadata(default(PagerControlDisplayMode), OnPropertyChanged));
+			DependencyProperty.Register(nameof(DisplayMode), typeof(PagerControlDisplayMode), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlDisplayMode), OnPropertyChanged));
 
 		public ICommand FirstButtonCommand
 		{
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstButtonCommandProperty { get; } =
-			DependencyProperty.Register(nameof(FirstButtonCommand), typeof(ICommand), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(FirstButtonCommand), typeof(ICommand), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 		public Style FirstButtonStyle
 		{
 			get => (Style)GetValue(FirstButtonStyleProperty);
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(FirstButtonStyle), typeof(Style), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(FirstButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 		public PagerControlButtonVisibility FirstButtonVisibility
 		{
 			get => (PagerControlButtonVisibility)GetValue(FirstButtonVisibilityProperty);
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(FirstButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new PropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
+			DependencyProperty.Register(nameof(FirstButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
 
 		public ICommand LastButtonCommand
 		{
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LastButtonCommandProperty { get; } =
-			DependencyProperty.Register(nameof(LastButtonCommand), typeof(ICommand), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(LastButtonCommand), typeof(ICommand), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		public Style LastButtonStyle
 		{
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LastButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(LastButtonStyle), typeof(Style), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(LastButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		public PagerControlButtonVisibility LastButtonVisibility
 		{
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LastButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(LastButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new PropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
+			DependencyProperty.Register(nameof(LastButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
 
 		public ICommand NextButtonCommand
 		{
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonCommandProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonCommand), typeof(ICommand), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(NextButtonCommand), typeof(ICommand), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		public Style NextButtonStyle
 		{
@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonStyle), typeof(Style), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(NextButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		public PagerControlButtonVisibility NextButtonVisibility
 		{
@@ -105,7 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new PropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
+			DependencyProperty.Register(nameof(NextButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
 
 		public int NumberOfPages
 		{
@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NumberOfPagesProperty { get; } =
-			DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new PropertyMetadata(0, OnPropertyChanged));
+			DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(0, OnPropertyChanged));
 
 		public string PrefixText
 		{
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PrefixTextProperty { get; } =
-			DependencyProperty.Register(nameof(PrefixText), typeof(string), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PrefixText), typeof(string), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		public ICommand PreviousButtonCommand
 		{
@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreviousButtonCommandProperty { get; } =
-			DependencyProperty.Register(nameof(PreviousButtonCommand), typeof(ICommand), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PreviousButtonCommand), typeof(ICommand), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		public Style PreviousButtonStyle
 		{
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreviousButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(PreviousButtonStyle), typeof(Style), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PreviousButtonStyle), typeof(Style), typeof(PagerControl), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		public PagerControlButtonVisibility PreviousButtonVisibility
 		{
@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreviousButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(PreviousButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new PropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
+			DependencyProperty.Register(nameof(PreviousButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
 
 		public int SelectedPageIndex
 		{
@@ -159,7 +159,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedPageIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new PropertyMetadata(0, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(0, OnPropertyChanged));
 
 		public string SuffixText
 		{
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SuffixTextProperty { get; } =
-			DependencyProperty.Register(nameof(SuffixText), typeof(string), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SuffixText), typeof(string), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		public PagerControlTemplateSettings TemplateSettings
 		{
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TemplateSettingsProperty { get; } =
-			DependencyProperty.Register(nameof(TemplateSettings), typeof(PagerControlTemplateSettings), typeof(PagerControl), new PropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(TemplateSettings), typeof(PagerControlTemplateSettings), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

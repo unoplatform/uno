@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CompactPaneLengthProperty { get; } =
-			DependencyProperty.Register(nameof(CompactPaneLength), typeof(double), typeof(NavigationViewItem), new PropertyMetadata(48.0));
+			DependencyProperty.Register(nameof(CompactPaneLength), typeof(double), typeof(NavigationViewItem), new FrameworkPropertyMetadata(48.0));
 
 		public bool HasUnrealizedChildren
 		{
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HasUnrealizedChildrenProperty { get; } =
-			DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(NavigationViewItem), new PropertyMetadata(false, OnHasUnrealizedChildrenPropertyChanged));
+			DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(false, OnHasUnrealizedChildrenPropertyChanged));
 
 		public IconElement Icon
 		{
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IconProperty { get; } =
-			DependencyProperty.Register(nameof(Icon), typeof(IconElement), typeof(NavigationViewItem), new PropertyMetadata(null, OnIconPropertyChanged));
+			DependencyProperty.Register(nameof(Icon), typeof(IconElement), typeof(NavigationViewItem), new FrameworkPropertyMetadata(null, OnIconPropertyChanged));
 
 		public bool IsChildSelected
 		{
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsChildSelectedProperty { get; } =
-			DependencyProperty.Register(nameof(IsChildSelected), typeof(bool), typeof(NavigationViewItem), new PropertyMetadata(false));
+			DependencyProperty.Register(nameof(IsChildSelected), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(false));
 
 		public bool IsExpanded
 		{
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsExpandedProperty { get; } =
-			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(NavigationViewItem), new PropertyMetadata(false, OnIsExpandedPropertyChanged));
+			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(false, OnIsExpandedPropertyChanged));
 
 		public IList<object> MenuItems
 		{
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MenuItemsProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItems), typeof(IList<object>), typeof(NavigationViewItem), new PropertyMetadata(null, OnMenuItemsPropertyChanged));
+			DependencyProperty.Register(nameof(MenuItems), typeof(IList<object>), typeof(NavigationViewItem), new FrameworkPropertyMetadata(null, OnMenuItemsPropertyChanged));
 
 		public object MenuItemsSource
 		{
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MenuItemsSourceProperty { get; } =
-			DependencyProperty.Register(nameof(MenuItemsSource), typeof(object), typeof(NavigationViewItem), new PropertyMetadata(null, OnMenuItemsSourcePropertyChanged));
+			DependencyProperty.Register(nameof(MenuItemsSource), typeof(object), typeof(NavigationViewItem), new FrameworkPropertyMetadata(null, OnMenuItemsSourcePropertyChanged));
 
 		public bool SelectsOnInvoked
 		{
@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectsOnInvokedProperty { get; } =
-			DependencyProperty.Register(nameof(SelectsOnInvoked), typeof(bool), typeof(NavigationViewItem), new PropertyMetadata(true));
+			DependencyProperty.Register(nameof(SelectsOnInvoked), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(true));
 		
 		private static void OnHasUnrealizedChildrenPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

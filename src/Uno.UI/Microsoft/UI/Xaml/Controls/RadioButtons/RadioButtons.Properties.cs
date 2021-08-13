@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderProperty { get; } =
-			DependencyProperty.Register(nameof(Header), typeof(object), typeof(RadioButtons), new PropertyMetadata(default(object), OnPropertyChanged));
+			DependencyProperty.Register(nameof(Header), typeof(object), typeof(RadioButtons), new FrameworkPropertyMetadata(default(object), OnPropertyChanged));
 
 		public DataTemplate HeaderTemplate
 		{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(RadioButtons), new PropertyMetadata(default(DataTemplate), OnPropertyChanged));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(RadioButtons), new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, OnPropertyChanged));
 
 		public IList<object> Items
 		{
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ItemsProperty { get; } =
-			DependencyProperty.Register(nameof(Items), typeof(IList<object>), typeof(RadioButtons), new PropertyMetadata(default(IList<object>), OnPropertyChanged));
+			DependencyProperty.Register(nameof(Items), typeof(IList<object>), typeof(RadioButtons), new FrameworkPropertyMetadata(default(IList<object>), OnPropertyChanged));
 
 		public object ItemsSource
 		{
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ItemsSourceProperty { get; } =
-			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(RadioButtons), new PropertyMetadata(default(object), OnPropertyChanged));
+			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(RadioButtons), new FrameworkPropertyMetadata(default(object), OnPropertyChanged));
 
 		public object ItemTemplate
 		{
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ItemTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(ItemTemplate), typeof(object), typeof(RadioButtons), new PropertyMetadata(default(object), OnPropertyChanged));
+			DependencyProperty.Register(nameof(ItemTemplate), typeof(object), typeof(RadioButtons), new FrameworkPropertyMetadata(default(object), OnPropertyChanged));
 
 		public int MaxColumns
 		{
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaxColumnsProperty { get; } =
-			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(RadioButtons), new PropertyMetadata(1, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(1, OnPropertyChanged));
 
 		public int SelectedIndex
 		{
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(RadioButtons), new PropertyMetadata(-1, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(-1, OnPropertyChanged));
 
 		public object SelectedItem
 		{
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedItemProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(RadioButtons), new PropertyMetadata(default(object), OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedItem), typeof(object), typeof(RadioButtons), new FrameworkPropertyMetadata(default(object), OnPropertyChanged));
 
 		public event SelectionChangedEventHandler SelectionChanged;
 

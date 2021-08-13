@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region LineAlignment - DP with common callback
 		public static DependencyProperty LineAlignmentProperty { get; } = DependencyProperty.Register(
-			"LineAlignment", typeof(FlowLayoutLineAlignment), typeof(FlowLayout), new PropertyMetadata(default(FlowLayoutLineAlignment), OnDependencyPropertyChanged));
+			"LineAlignment", typeof(FlowLayoutLineAlignment), typeof(FlowLayout), new FrameworkPropertyMetadata(default(FlowLayoutLineAlignment), OnDependencyPropertyChanged));
 
 		public FlowLayoutLineAlignment LineAlignment
 		{
@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region MinColumnSpacing - DP with common callback
 		public static DependencyProperty MinColumnSpacingProperty { get; } = DependencyProperty.Register(
-			"MinColumnSpacing", typeof(double), typeof(FlowLayout), new PropertyMetadata(default(double), OnDependencyPropertyChanged));
+			"MinColumnSpacing", typeof(double), typeof(FlowLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
 
 		public double MinColumnSpacing
 		{
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region MinRowSpacing - DP with common callback
 		public static DependencyProperty MinRowSpacingProperty { get; } = DependencyProperty.Register(
-			"MinRowSpacing", typeof(double), typeof(FlowLayout), new PropertyMetadata(default(double), OnDependencyPropertyChanged));
+			"MinRowSpacing", typeof(double), typeof(FlowLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
 
 		public double MinRowSpacing
 		{
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Orientation - DP with common callback
 		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
-			"Orientation", typeof(Orientation), typeof(FlowLayout), new PropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
+			"Orientation", typeof(Orientation), typeof(FlowLayout), new FrameworkPropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
 
 		public Orientation Orientation
 		{

@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static readonly DependencyProperty ColumnSpacingProperty =
-			DependencyProperty.Register(nameof(ColumnSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new PropertyMetadata(default(double), OnColumnSpacingPropertyChanged));
+			DependencyProperty.Register(nameof(ColumnSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(default(double), OnColumnSpacingPropertyChanged));
 
 		public int MaxColumns
 		{
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static readonly DependencyProperty MaxColumnsProperty =
-			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(ColumnMajorUniformToLargestGridLayout), new PropertyMetadata(default(int), OnMaxColumnsPropertyChanged));
+			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(default(int), OnMaxColumnsPropertyChanged));
 
 		public double RowSpacing
 		{
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static readonly DependencyProperty RowSpacingProperty =
-			DependencyProperty.Register(nameof(RowSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new PropertyMetadata(default(double), OnRowSpacingPropertyChanged));
+			DependencyProperty.Register(nameof(RowSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(default(double), OnRowSpacingPropertyChanged));
 
 		private static void OnColumnSpacingPropertyChanged(
 			DependencyObject sender,

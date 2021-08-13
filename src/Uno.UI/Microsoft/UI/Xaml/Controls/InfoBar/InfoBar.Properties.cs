@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ActionButtonProperty { get; } =
-			DependencyProperty.Register(nameof(ActionButton), typeof(ButtonBase), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(ActionButton), typeof(ButtonBase), typeof(InfoBar), new FrameworkPropertyMetadata(null));
 
 		public ICommand CloseButtonCommand
 		{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CloseButtonCommandProperty { get; } =
-			DependencyProperty.Register(nameof(CloseButtonCommand), typeof(ICommand), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(CloseButtonCommand), typeof(ICommand), typeof(InfoBar), new FrameworkPropertyMetadata(null));
 
 		public object CloseButtonCommandParameter
 		{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CloseButtonCommandParameterProperty { get; } =
-			DependencyProperty.Register(nameof(CloseButtonCommandParameter), typeof(object), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(CloseButtonCommandParameter), typeof(object), typeof(InfoBar), new FrameworkPropertyMetadata(null));
 
 		public Style CloseButtonStyle
 		{
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty CloseButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(CloseButtonStyle), typeof(Style), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(CloseButtonStyle), typeof(Style), typeof(InfoBar), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public object Content
 		{
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContentProperty { get; } =
-			DependencyProperty.Register(nameof(Content), typeof(object), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(Content), typeof(object), typeof(InfoBar), new FrameworkPropertyMetadata(null));
 
 		public DataTemplate ContentTemplate
 		{
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContentTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(ContentTemplate), typeof(DataTemplate), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(ContentTemplate), typeof(DataTemplate), typeof(InfoBar), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public IconSource IconSource
 		{
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IconSourceProperty { get; } =
-			DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(InfoBar), new PropertyMetadata(null, OnIconSourcePropertyChanged));
+			DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(InfoBar), new FrameworkPropertyMetadata(null, OnIconSourcePropertyChanged));
 
 		public bool IsClosable
 		{
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsClosableProperty { get; } =
-			DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(InfoBar), new PropertyMetadata(true, OnIsClosablePropertyChanged));
+			DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(true, OnIsClosablePropertyChanged));
 
 		public bool IsIconVisible
 		{
@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsIconVisibleProperty { get; } =
-			DependencyProperty.Register(nameof(IsIconVisible), typeof(bool), typeof(InfoBar), new PropertyMetadata(true, OnIsIconVisiblePropertyChanged));
+			DependencyProperty.Register(nameof(IsIconVisible), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(true, OnIsIconVisiblePropertyChanged));
 
 		public bool IsOpen
 		{
@@ -105,7 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsOpenProperty { get; } =
-			DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(InfoBar), new PropertyMetadata(false, OnIsOpenPropertyChanged));
+			DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(false, OnIsOpenPropertyChanged));
 
 		public string Message
 		{
@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MessageProperty { get; } =
-			DependencyProperty.Register(nameof(Message), typeof(string), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(Message), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(null));
 
 		public InfoBarSeverity Severity
 		{
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SeverityProperty { get; } =
-			DependencyProperty.Register(nameof(Severity), typeof(InfoBarSeverity), typeof(InfoBar), new PropertyMetadata(InfoBarSeverity.Informational, OnSeverityPropertyChanged));
+			DependencyProperty.Register(nameof(Severity), typeof(InfoBarSeverity), typeof(InfoBar), new FrameworkPropertyMetadata(InfoBarSeverity.Informational, OnSeverityPropertyChanged));
 
 		public InfoBarTemplateSettings TemplateSettings
 		{
@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TemplateSettingsProperty { get; } =
-			DependencyProperty.Register(nameof(TemplateSettings), typeof(InfoBarTemplateSettings), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(TemplateSettings), typeof(InfoBarTemplateSettings), typeof(InfoBar), new FrameworkPropertyMetadata(null));
 
 		public string Title
 		{
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TitleProperty { get; } =
-			DependencyProperty.Register(nameof(Title), typeof(string), typeof(InfoBar), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(Title), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(null));
 
 		private static void OnIconSourcePropertyChanged(
 			DependencyObject sender,

@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
-			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new PropertyMetadata(false));
+			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(false));
 
 		public bool IsTextScaleFactorEnabled
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new PropertyMetadata(true));
+			DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(true));
 
 		public string Glyph
 		{
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty GlyphProperty { get; } =
-			DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(FontIconSource), new PropertyMetadata(default(string)));
+			DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(FontIconSource), new FrameworkPropertyMetadata(default(string)));
 
 		public FontWeight FontWeight
 		{
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontWeightProperty { get; } =
-			DependencyProperty.Register(nameof(FontWeight), typeof(FontWeight), typeof(FontIconSource), new PropertyMetadata(new FontWeight(400)));
+			DependencyProperty.Register(nameof(FontWeight), typeof(FontWeight), typeof(FontIconSource), new FrameworkPropertyMetadata(new FontWeight(400)));
 
 		public FontStyle FontStyle
 		{
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontStyleProperty { get; } =
-			DependencyProperty.Register(nameof(FontStyle), typeof(FontStyle), typeof(FontIconSource), new PropertyMetadata(FontStyle.Normal));
+			DependencyProperty.Register(nameof(FontStyle), typeof(FontStyle), typeof(FontIconSource), new FrameworkPropertyMetadata(FontStyle.Normal));
 
 		public double FontSize
 		{
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
-			DependencyProperty.Register(nameof(FontSize), typeof(double), typeof(FontIconSource), new PropertyMetadata(20.0));
+			DependencyProperty.Register(nameof(FontSize), typeof(double), typeof(FontIconSource), new FrameworkPropertyMetadata(20.0));
 
 		public FontFamily FontFamily
 		{
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FontFamilyProperty { get; } =
-			DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new PropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont)));
+			DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new FrameworkPropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont)));
 
 		/// <inheritdoc />
 		public override IconElement CreateIconElement()
