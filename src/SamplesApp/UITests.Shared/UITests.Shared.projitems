@@ -745,6 +745,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FlowDirectionTests\Grid_Rtl_Test.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FlowDirectionTests\TextBlock_Rtl_Nested_Complex_Test.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4739,8 +4743,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_TestPage.xaml.cs">
       <DependentUpon>DragDrop_TestPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FlowDirectionTests\Grid_Rtl_Test.xaml.cs">
+      <DependentUpon>Grid_Rtl_Test.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FlowDirectionTests\TextBlock_Rtl_Nested_Complex_Test.xaml.cs">
-      <DependentUpon>TextBlock_Rtl_Nested_Test.xaml</DependentUpon>
+      <DependentUpon>TextBlock_Rtl_Nested_Complex_Test.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FlowDirectionTests\TextBlock_Rtl_Nested_Test.xaml.cs">
       <DependentUpon>TextBlock_Rtl_Nested_Test.xaml</DependentUpon>

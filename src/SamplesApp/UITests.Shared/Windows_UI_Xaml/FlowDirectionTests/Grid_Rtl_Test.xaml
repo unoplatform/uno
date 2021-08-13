@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.FlowDirectionTests.Grid_Rtl_Test"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml.FlowDirectionTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid FlowDirection="RightToLeft">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0"><Span>Hello, </Span><Span>World! (0, 0)</Span></TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="1"><Span>Hello, </Span><Span>World! (0, 1)</Span></TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0"><Span>Hello, </Span><Span>World! (1, 0)</Span></TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="1"><Span>Hello, </Span><Span>World! (1, 1)</Span></TextBlock>
+    </Grid>
+</Page>
