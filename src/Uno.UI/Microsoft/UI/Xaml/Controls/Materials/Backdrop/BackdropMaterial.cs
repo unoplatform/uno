@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference BackdropMaterial.cpp, commit 82feccf
+
+using System;
 using System.Threading;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
