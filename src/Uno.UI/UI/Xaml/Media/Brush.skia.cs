@@ -16,97 +16,68 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		internal static IDisposable AssignAndObserveBrush(Brush brush, Action<Color> colorSetter, Action imageBrushCallback = null)
 		{
+			colorSetter(Colors.Transparent);
+
 			if (brush == null)
 			{
-				colorSetter(SolidColorBrushHelper.Transparent.Color);
-
 				return null;
 			}
 
 			var disposables = new CompositeDisposable();
+
+			void UpdateColor(object sender, DependencyPropertyChangedEventArgs e) => colorSetter(Colors.Transparent);
+			void UpdateColorWhenAnyChanged<T>(T source, params DependencyProperty[] properties) where T : DependencyObject
+			{
+				foreach (var property in properties)
+				{
+					source
+						.RegisterDisposablePropertyChangedCallback(property, UpdateColor)
+						.DisposeWith(disposables);
+				}
+			}
+
 			if (brush is SolidColorBrush colorBrush)
 			{
-				brush.RegisterDisposablePropertyChangedCallback(
+				UpdateColorWhenAnyChanged(colorBrush, new[]
+				{
 					SolidColorBrush.ColorProperty,
-					(s, colorArg) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-				)
-				.DisposeWith(disposables);
-
-				brush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.OpacityProperty,
-					(s, colorArg) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-				)
-				.DisposeWith(disposables);
+					SolidColorBrush.OpacityProperty
+				});
 			}
 			else if (brush is GradientBrush gradientBrush)
 			{
 				if (gradientBrush is LinearGradientBrush linearGradient)
 				{
-					gradientBrush.RegisterDisposablePropertyChangedCallback(
-							LinearGradientBrush.StartPointProperty,
-							(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-						)
-					.DisposeWith(disposables);
-
-					gradientBrush.RegisterDisposablePropertyChangedCallback(
-							LinearGradientBrush.EndPointProperty,
-							(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-						)
-					.DisposeWith(disposables);
+					UpdateColorWhenAnyChanged(linearGradient, new[]
+					{
+						LinearGradientBrush.StartPointProperty,
+						LinearGradientBrush.EndPointProperty,
+					});
 				}
 
-				gradientBrush.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.GradientStopsProperty,
-						(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-					)
-				.DisposeWith(disposables);
-
-				gradientBrush.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.MappingModeProperty,
-						(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-					)
-				.DisposeWith(disposables);
-
-				gradientBrush.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.OpacityProperty,
-						(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-					)
-				.DisposeWith(disposables);
-
-				gradientBrush.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.SpreadMethodProperty,
-						(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-					)
-				.DisposeWith(disposables);
-
-				gradientBrush.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.RelativeTransformProperty,
-						(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-					)
-				.DisposeWith(disposables);
+				UpdateColorWhenAnyChanged(gradientBrush, new[]
+				{
+					GradientBrush.GradientStopsProperty,
+					GradientBrush.MappingModeProperty,
+					GradientBrush.OpacityProperty,
+					GradientBrush.SpreadMethodProperty,
+					GradientBrush.RelativeTransformProperty,
+				});
 			}
 			else if (brush is ImageBrush imageBrush)
 			{
 				imageBrush
-					.Subscribe(_ => colorSetter(SolidColorBrushHelper.Transparent.Color))
+					.Subscribe(_ => colorSetter(Colors.Transparent))
 					.DisposeWith(disposables);
 			}
 			else if (brush is AcrylicBrush acrylicBrush)
 			{
-				acrylicBrush.RegisterDisposablePropertyChangedCallback(
-						AcrylicBrush.FallbackColorProperty,
-						(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-					)
-				.DisposeWith(disposables);
-
-				acrylicBrush.RegisterDisposablePropertyChangedCallback(
-						AcrylicBrush.OpacityProperty,
-						(s, e) => colorSetter(SolidColorBrushHelper.Transparent.Color)
-					)
-				.DisposeWith(disposables);
+				UpdateColorWhenAnyChanged(acrylicBrush, new[]
+				{
+					AcrylicBrush.FallbackColorProperty,
+					AcrylicBrush.OpacityProperty,
+				});
 			}
-
-			colorSetter(SolidColorBrushHelper.Transparent.Color);
 
 			return disposables;
 		}
@@ -295,7 +266,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			var disposables = new CompositeDisposable();
 
-			var compositionBrush = compositor.CreateColorBrush(SolidColorBrushHelper.Transparent.Color);
+			var compositionBrush = compositor.CreateColorBrush(Colors.Transparent);
 
 			brushSetter(compositionBrush);
 

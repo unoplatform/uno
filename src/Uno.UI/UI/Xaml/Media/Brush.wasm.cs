@@ -23,41 +23,25 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (b is SolidColorBrush colorBrush)
 			{
-				var disposables = new CompositeDisposable(2);
 				colorSetter(colorBrush.ColorWithOpacity);
 
-				colorBrush.RegisterDisposablePropertyChangedCallback(
-						SolidColorBrush.ColorProperty,
-						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
-					)
-					.DisposeWith(disposables);
-
-				colorBrush.RegisterDisposablePropertyChangedCallback(
-						SolidColorBrush.OpacityProperty,
-						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
-					)
-					.DisposeWith(disposables);
-
-				return disposables;
+				return WhenAnyChanged(new CompositeDisposable(2), colorBrush, (s, e) => colorSetter((s as SolidColorBrush).ColorWithOpacity), new[]
+				{
+					SolidColorBrush.ColorProperty,
+					SolidColorBrush.OpacityProperty,
+				});
 			}
-
-			if (b is GradientBrush gb)
+			else if (b is GradientBrush gb)
 			{
 				var disposables = new CompositeDisposable(4);
 
 				colorSetter(gb.FallbackColorWithOpacity);
 
-				gb.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.FallbackColorProperty,
-						(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
-					)
-					.DisposeWith(disposables);
-
-				gb.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.OpacityProperty,
-						(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
-					)
-					.DisposeWith(disposables);
+				WhenAnyChanged(disposables, gb, (s, e) => colorSetter((s as GradientBrush).FallbackColorWithOpacity), new[]
+				{
+					GradientBrush.FallbackColorProperty,
+					GradientBrush.OpacityProperty,
+				});
 
 				var innerDisposable = new SerialDisposable();
 				innerDisposable.Disposable = ObserveGradientBrushStops(gb.GradientStops, colorSetter);
@@ -71,45 +55,36 @@ namespace Windows.UI.Xaml.Media
 
 				return disposables;
 			}
-
-			if (b is AcrylicBrush ab)
+			else if (b is AcrylicBrush ab)
 			{
 				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException(
 					"AcrylicBrush is ** not ** supported by the AssignAndObserveBrush. "
 					+ "(Instead you have to use the AcrylicBrush.Subscribe().)"));
 				return Disposable.Empty;
 			}
-
-			if (b is ImageBrush)
+			else if (b is ImageBrush)
 			{
 				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException(
 					"ImageBrush is ** not ** supported by the AssignAndObserveBrush. "
 					+ "(Instead you have to use the ImageBrush.Subscribe().)"));
 				return Disposable.Empty;
 			}
-
-			if (b is XamlCompositionBrushBase unsupportedCompositionBrush)
+			else if (b is XamlCompositionBrushBase unsupportedCompositionBrush)
 			{
-				var disposables = new CompositeDisposable(2);
 				colorSetter(unsupportedCompositionBrush.FallbackColorWithOpacity);
 
-				unsupportedCompositionBrush.RegisterDisposablePropertyChangedCallback(
-						XamlCompositionBrushBase.FallbackColorProperty,
-						(s, colorArg) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity)
-					)
-					.DisposeWith(disposables);
-
-				unsupportedCompositionBrush.RegisterDisposablePropertyChangedCallback(
-						OpacityProperty,
-						(s, colorArg) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity)
-					)
-					.DisposeWith(disposables);
-
-				return disposables;
+				return WhenAnyChanged(new CompositeDisposable(2), unsupportedCompositionBrush, (s, e) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity), new[]
+				{
+					XamlCompositionBrushBase.FallbackColorProperty,
+					XamlCompositionBrushBase.OpacityProperty,
+				});
 			}
+			else
+			{
+				colorSetter(Colors.Transparent);
 
-			colorSetter(SolidColorBrushHelper.Transparent.Color);
-			return Disposable.Empty;
+				return Disposable.Empty;
+			}
 		}
 
 		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
@@ -142,7 +117,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private static void WhenAnyChanged<T>(CompositeDisposable disposables, T source, PropertyChangedCallback callback, params DependencyProperty[] properties) where T : DependencyObject
+		private static CompositeDisposable WhenAnyChanged<T>(CompositeDisposable disposables, T source, PropertyChangedCallback callback, params DependencyProperty[] properties) where T : DependencyObject
 		{
 			foreach (var property in properties)
 			{
@@ -150,7 +125,8 @@ namespace Windows.UI.Xaml.Media
 					.RegisterDisposablePropertyChangedCallback(property, callback)
 					.DisposeWith(disposables);
 			}
+
+			return disposables;
 		}
 	}
-
 }
