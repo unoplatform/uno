@@ -382,45 +382,10 @@ namespace Windows.UI.Xaml
 
 		partial void OnFlowDirectionChanged(DependencyPropertyChangedEventArgs args)
 		{
-			var direction = FlowDirection;
-			if (direction == FlowDirection.RightToLeft)
+			if (Parent is FrameworkElement { FlowDirection: var parentDirection } &&
+				parentDirection != FlowDirection)
 			{
-				// If there are no children, e.g, 'TextBlock', do nothing.
-				// This will be handled when setting text-alignment by UIElement.SetTextAlignment
-				if (_children.Count == 0)
-				{
-					return;
-				}
-
-				// If there are children, e.g, 'Grid' mirror the element, and mirror back each
-				// child element with reversed text-align.
-				SetStyle(("transform", "scaleX(-1)"));
-				foreach (var child in _children)
-				{
-					child.SetStyle("transform", "scaleX(-1)");
-					var alignment = GetAlignment(child);
-					if (alignment != null)
-					{
-						child.SetStyle("text-align", alignment);
-					}
-				}
-			}
-
-			static string GetAlignment(View element)
-			{
-				TextAlignment? alignment = element switch
-				{
-					TextBlock textBlock => textBlock.TextAlignment,
-					TextBox textBox => textBox.TextAlignment,
-					_ => null
-				};
-
-				return alignment switch
-				{
-					TextAlignment.Left => "right",
-					TextAlignment.Right => "left",
-					_ => null
-				};
+				SetCssClasses("uno-mirror");
 			}
 		}
 

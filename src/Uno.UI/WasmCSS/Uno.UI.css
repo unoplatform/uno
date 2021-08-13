@@ -231,3 +231,7 @@ textarea {
   resize: none;
   overflow: hidden; /* Scrolling is handled by the parent ScrollViewer */
 }
+
+.uno-mirror, .uno-mirror *:not(:first-child:last-child) {
+  transform: scaleX(-1);
+}

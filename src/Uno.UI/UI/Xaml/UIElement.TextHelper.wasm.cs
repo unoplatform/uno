@@ -259,7 +259,6 @@ namespace Windows.UI.Xaml
 				var value = (TextAlignment)localValue;
 				var isRtl = this is FrameworkElement { FlowDirection: FlowDirection.RightToLeft };
 				SetAttribute("dir", "auto");
-
 				switch (value)
 				{
 					case TextAlignment.Left:

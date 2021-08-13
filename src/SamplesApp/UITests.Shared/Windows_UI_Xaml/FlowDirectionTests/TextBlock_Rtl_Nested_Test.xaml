@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel FlowDirection="RightToLeft">
-        <TextBlock Text="English عربي" Foreground="Green" />
+        <TextBlock Text="English عربي" Foreground="Red" />
         <TextBlock Text="English عربي" FlowDirection="RightToLeft" Foreground="Red" />
         <TextBlock Text="English عربي" FlowDirection="RightToLeft" TextAlignment="Left" Foreground="Red" />
         <TextBlock Text="English عربي" FlowDirection="RightToLeft" TextAlignment="Right" Foreground="Green" />
