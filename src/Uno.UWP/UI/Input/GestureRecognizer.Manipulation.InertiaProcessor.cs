@@ -20,6 +20,7 @@ namespace Windows.UI.Input
 
 				private readonly DispatcherQueueTimer _timer;
 				private readonly Manipulation _owner;
+				private readonly Point _position0;
 				private readonly ManipulationDelta _cumulative0; // Cumulative of the whole manipulation at t=0
 				private readonly ManipulationVelocities _velocities0;
 
@@ -38,9 +39,10 @@ namespace Windows.UI.Input
 				public double DesiredExpansion = NaN;
 				public double DesiredExpansionDeceleration = NaN;
 
-				public InertiaProcessor(Manipulation owner, ManipulationDelta cumulative, ManipulationVelocities velocities)
+				public InertiaProcessor(Manipulation owner, Point position, ManipulationDelta cumulative, ManipulationVelocities velocities)
 				{
 					_owner = owner;
+					_position0 = position;
 					_cumulative0 = cumulative;
 					_velocities0 = velocities;
 
@@ -135,6 +137,9 @@ namespace Windows.UI.Input
 						_owner.NotifyUpdate();
 					}
 				}
+
+				public Point GetPosition()
+					=> _position0 + _inertiaCumulative.Translation;
 
 				/// <summary>
 				/// Gets the cumulative delta, including the manipulation cumulative when this processor was started

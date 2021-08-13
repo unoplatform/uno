@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Android.Runtime;
 using Android.Views;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml
 {
@@ -154,14 +156,71 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		/// <summary>
-		/// If a (managed) drag is ready to start, call <see cref="IViewParent.RequestDisallowInterceptTouchEvent(bool)"/> to ensure that native
-		/// ancestors (eg scroll views, RecyclerView) don't intercept the interaction before us.
-		/// </summary>
-		partial void TryPreventInterceptOnDragPartial() => (this as View).Parent.RequestDisallowInterceptTouchEvent(true);
-
 		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 			=> IsNativeMotionEventsInterceptForbidden = newMode == ManipulationModes.None;
+
+		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer)
+		{
+			recognizer.ManipulationConfigured += (snd, manip) =>
+			{
+				var scrollableDirection = this
+					.GetAllParents()
+					.Aggregate(
+						(h: false, v: false),
+						(direction, parent) =>
+							parent switch
+							{
+								ScrollContentPresenter scp => (direction.h || scp.CanHorizontallyScroll, direction.v || scp.CanVerticallyScroll),
+								IScrollContentPresenter iscp => (direction.h || iscp.CanHorizontallyScroll, direction.v || iscp.CanVerticallyScroll),
+								_ => direction
+							});
+
+				if ((scrollableDirection.h && manip.IsTranslateXEnabled)
+					|| (scrollableDirection.v && manip.IsTranslateYEnabled))
+				{
+					RequestDisallowInterceptTouchEvent(true);
+				}
+			};
+			recognizer.ManipulationStarted += (snd, args) =>
+			{
+				RequestDisallowInterceptTouchEvent(true);
+			};
+
+			// The manipulation can be aborted by the user before the pointer up, so the auto release on pointer up is not enough
+			recognizer.ManipulationCompleted += (snd, args) =>
+			{
+				if (ManipulationMode != ManipulationModes.None)
+				{
+					RequestDisallowInterceptTouchEvent(false);
+				}
+			};
+			recognizer.ManipulationAborted += (snd, args) =>
+			{
+				if (ManipulationMode != ManipulationModes.None)
+				{
+					RequestDisallowInterceptTouchEvent(false);
+				}
+			};
+
+			// This event means that the touch was long enough and any move will actually start the manipulation,
+			// so we use "Started" instead of "Starting"
+			recognizer.DragReady += (snd, manip) =>
+			{
+				RequestDisallowInterceptTouchEvent(true);
+			};
+			recognizer.Dragging += (snd, args) =>
+			{
+				switch (args.DraggingState)
+				{
+					case DraggingState.Started:
+						RequestDisallowInterceptTouchEvent(true); // Still usefull for mouse and pen
+						break;
+					case DraggingState.Completed when ManipulationMode != ManipulationModes.None:
+						RequestDisallowInterceptTouchEvent(false);
+						break;
+				}
+			};
+		}
 
 		#region Capture
 		// No needs to explicitly capture pointers on Android, they are implicitly captured

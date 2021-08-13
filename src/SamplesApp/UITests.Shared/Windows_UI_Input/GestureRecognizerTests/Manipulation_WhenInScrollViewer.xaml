@@ -13,23 +13,31 @@
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<ScrollViewer Width="300" Height="300" VerticalAlignment="Center"  HorizontalAlignment="Center" x:Name="TheScroller">
-			<Border Width="300" Height="1024" Background="DeepPink">
-				<Border
-					x:Name="TouchTarget"
-					Width="50"
-					Height="50"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Top"
-					Margin="10,240,0,0"
-					Background="DeepSkyBlue"
-					ManipulationMode="TranslateX, TranslateY"
-					ManipulationStarting="OnManipStarting"
-					ManipulationStarted="OnManipStarted"
-					ManipulationDelta="OnManipDelta"
-					ManipulationCompleted="OnManipCompleted"/>
-			</Border>
-		</ScrollViewer>
+		<StackPanel>
+			<ScrollViewer Width="300" Height="300" VerticalAlignment="Center"  HorizontalAlignment="Center" x:Name="TheScroller">
+				<Border Width="300" Height="1024" Background="DeepPink">
+					<Border
+						x:Name="TouchTarget"
+						Width="50"
+						Height="50"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						Margin="10,240,0,0"
+						Background="DeepSkyBlue"
+						ManipulationMode="TranslateX, TranslateY"
+						ManipulationStarting="OnManipStarting"
+						ManipulationStarted="OnManipStarted"
+						ManipulationDelta="OnManipDelta"
+						ManipulationCompleted="OnManipCompleted"/>
+				</Border>
+			</ScrollViewer>
+			<StackPanel Orientation="Horizontal">
+				<Button x:Name="SetNone" Content="None" Click="SetManipModeNone" />
+				<Button x:Name="SetTranslateXY" Content="X and Y" Click="SetTranslateXandY" />
+				<Button x:Name="SetTranslateX" Content="X only" Click="SetTranslateXonly" />
+				<Button x:Name="SetTranslateY" Content="Y only" Click="SetTranslateYonly" />
+			</StackPanel>
+		</StackPanel>
 		<ScrollViewer Grid.Column="1">
 			<TextBlock
 				x:Name="Output"

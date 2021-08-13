@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -129,11 +130,95 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			Assert.AreEqual(events.Last().evt.ToLowerInvariant(), "completed");
 		}
 
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationNoneAndTranslateX_ThenNoManipulation()
+			=> TestManipulationInScroller("SetNone", TranslateX, AssertNoManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationNoneAndTranslateY_ThenNoManipulation()
+			=> TestManipulationInScroller("SetNone", TranslateY, AssertNoManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationNoneAndDiagonal_ThenNoManipulation()
+			=> TestManipulationInScroller("SetNone", Diagonal, AssertNoManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationTranslateXYAndTranslateX_ThenManipulate()
+			=> TestManipulationInScroller("SetTranslateXY", TranslateX, AssertFullManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationTranslateXYAndTranslateY_ThenManipulate()
+			=> TestManipulationInScroller("SetTranslateXY", TranslateY, AssertFullManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationTranslateXYAndDiagonal_ThenManipulate()
+			=> TestManipulationInScroller("SetTranslateXY", Diagonal, AssertFullManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationTranslateXAndTranslateX_ThenManipulate()
+			=> TestManipulationInScroller("SetTranslateX", TranslateX, AssertFullManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationTranslateXAndTranslateY_ThenAbort()
+			=> TestManipulationInScroller("SetTranslateX", TranslateY, AssertAbortedManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationTranslateYAndTranslateX_ThenAbort()
+			=> TestManipulationInScroller("SetTranslateY", TranslateX, AssertAbortedManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		public void Manipulation_WhenInScrollViewerAndManipulationTranslateYAndTranslateY_ThenManipulate()
+			=> TestManipulationInScroller("SetTranslateY", TranslateY, AssertFullManipulationSequence);
+
+		private void Diagonal(IAppRect target, IAppRect scroller)
+			=> _app.DragCoordinates(target.X + 5, target.Bottom - 5, scroller.Right - 20, scroller.Y + 10);
+
+		private void TranslateX(IAppRect target, IAppRect scroller)
+			=> _app.DragCoordinates(target.X + 5, target.Bottom - 5, scroller.Right - 20, target.Bottom - 5);
+
+		private void TranslateY(IAppRect target, IAppRect scroller)
+			=> _app.DragCoordinates(target.X + 5, target.Bottom - 5, target.X + 5, scroller.Y + 10);
+
+		private void TestManipulationInScroller(QueryEx mode, Action<IAppRect, IAppRect> drag, Action<string> assert)
+		{
+			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.Manipulation_WhenInScrollViewer");
+
+			var scroller = _app.WaitForElement("TheScroller").Single().Rect;
+			var target = _app.WaitForElement("TouchTarget").Single().Rect;
+
+			_app.FastTap(mode);
+			drag(target, scroller);
+
+			var result = _app.Marked("Output").GetDependencyPropertyValue<string>("Text");
+
+			assert(result);
+		}
+
 		private static (string evt, Point position, ManipulationDelta delta, ManipulationDelta cumulative) Parse(string raw)
 		{
 			string num(string name) => $@" ?(?<{name}>-?\d{{2,3}}\.\d{{2}})";
 			var regex = new Regex(
-				@"\[(?<evt>\w+)\] "
+				@"\[(?<evt>\w+)\]\s*"
 				+ $@"@=\[{num("posX")},{num("posY")}\] "
 				+ $@"\| X=\(Σ:{num("ΣtrX")} / Δ:{num("ΔtrX")}\) "
 				+ $@"\| Y=\(Σ:{num("ΣtrY")} / Δ:{num("ΔtrY")}\) "
@@ -144,7 +229,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var values = regex.Match(raw);
 			if (!values.Success)
 			{
-				var nameOnlyRegex = new Regex(@"^\[(?<evt>\w+)\] ");
+				var nameOnlyRegex = new Regex(@"^\[(?<evt>\w+)\]\s*");
 				values = nameOnlyRegex.Match(raw);
 				if (values.Success)
 				{
@@ -175,6 +260,36 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			};
 
 			return (evt, position, delta, cumulative);
+		}
+
+		private void AssertNoManipulationSequence(string raw)
+			=> Assert.AreEqual(0, raw.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length);
+
+		private void AssertFullManipulationSequence(string raw)
+			=> AssertSequence(new[] { "starting", "started", "delta", "completed" }, raw.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(Parse).ToArray());
+
+		private void AssertAbortedManipulationSequence(string raw)
+			=> AssertSequence(new[] { "starting" }, raw.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(Parse).ToArray());
+
+		private void AssertSequence(string[] expected, (string evt, Point position, ManipulationDelta delta, ManipulationDelta cumulative)[] actual)
+		{
+			var index = 0;
+			foreach (var @event in actual)
+			{
+				if (!@event.evt.Equals(expected[index], StringComparison.OrdinalIgnoreCase))
+				{
+					index++;
+					if (index >= expected.Length)
+					{
+						Assert.Fail("Invalid event sequence: Unexpected event.");
+					}
+				}
+			}
+
+			if (index < expected.Length - 1)
+			{
+				Assert.Fail("Invalid event sequence: Didn't  get all expected events.");
+			}
 		}
 
 		private struct ManipulationDelta

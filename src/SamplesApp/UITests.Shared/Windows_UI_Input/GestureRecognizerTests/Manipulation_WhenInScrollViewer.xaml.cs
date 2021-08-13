@@ -25,6 +25,22 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 			this.InitializeComponent();
 		}
 
+		private void SetManipModeNone(object sender, RoutedEventArgs e)
+			=> SetMode(ManipulationModes.None);
+		private void SetTranslateXandY(object sender, RoutedEventArgs e)
+			=> SetMode(ManipulationModes.TranslateX | ManipulationModes.TranslateY);
+		private void SetTranslateXonly(object sender, RoutedEventArgs e)
+			=> SetMode(ManipulationModes.TranslateX);
+		private void SetTranslateYonly(object sender, RoutedEventArgs e)
+			=> SetMode(ManipulationModes.TranslateY);
+
+		private void SetMode(ManipulationModes mode)
+		{
+			Output.Text = "";
+			TheScroller.ChangeView(horizontalOffset: 0, verticalOffset: 0, null);
+			TouchTarget.ManipulationMode = mode;
+		}
+
 		private void OnManipStarting(object sender, ManipulationStartingRoutedEventArgs e)
 			=> Write("[Starting]");
 

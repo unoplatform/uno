@@ -192,7 +192,7 @@ import android.view.ViewParent;
 		}
 
 		if (isDown) {
-			// Make sure that the system won't stole the motion events if the ManipulationMode is not 'System'.
+			// Make sure that the system won't stole the motion events if the ManipulationMode is not 'None'.
 			// Note: We have to do this in native as we might not forward the ACTION_DOWN if !target.getIsNativeMotionEventsEnabled()
 			// Note: This is automatically cleared on each ACTION_UP
 			// Note: This must be done **after** invoking the super.dispatch as it will reset the **local flag** in 'resetTouchState'
