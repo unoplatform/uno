@@ -220,7 +220,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (this.ColorChannel == ColorPickerHsvChannel.Alpha)
 			{
-				return string.Format(
+				return StringUtil.FormatString(
 					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ToolTipStringAlphaSlider),
 					sliderValue);
 			}
@@ -252,8 +252,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 							throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 					}
 
-					return string.Format(
-						CultureInfo.CurrentUICulture,
+					return StringUtil.FormatString(
 						localizedString,
 						sliderValue,
 						ColorHelper.ToDisplayName(ColorConversion.ColorFromRgba(ColorConversion.HsvToRgb(currentHsv))));
@@ -276,8 +275,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 							throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 					}
 
-					return string.Format(
-						CultureInfo.CurrentUICulture,
+					return StringUtil.FormatString(
 						localizedString,
 						sliderValue);
 				}

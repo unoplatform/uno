@@ -129,14 +129,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (DownlevelHelper.ToDisplayNameExists())
 			{
-				return string.Format(
+				return StringUtil.FormatString(
 					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringColorSpectrumWithColorName),
 					ColorHelper.ToDisplayName(color),
 					hue, saturation, value);
 			}
 			else
 			{
-				return string.Format(
+				return StringUtil.FormatString(
 					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringColorSpectrumWithoutColorName),
 					hue, saturation, value);
 			}
