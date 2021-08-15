@@ -227,7 +227,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public int SelectedIndex
 		{
-			get => (int)this.GetValue(SelectedIndexProperty);
+			get
+			{
+				var value = (int)this.GetValue(SelectedIndexProperty);
+				if (value < 0  || value >= NumberOfItems)
+				{
+					return -1;
+				}
+
+				return value;
+			}
 			set => this.SetValue(SelectedIndexProperty, value);
 		}
 
@@ -518,10 +527,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					{
 						ChangeSelectedItem(selectorItem, false, true);
 					}
-					// If the item is inserted before the currently selected one, increase the selected index.
+					// If the item is inserted before the currently selected one, increase the selected index unless it will become out of bounds.
 					else if (iVCE.CollectionChange == CollectionChange.ItemInserted && (int)iVCE.Index <= SelectedIndex)
 					{
-						SelectedIndex++;
+						// This basically means that SelectedIndex was previously out of bounds (causing the property to return -1)
+						// But it's now a valid value after an item is added (causing the property to return non-negative value).
+						if (SelectedIndex == NumberOfItems - 1)
+						{
+							OnSelectedIndexChanged(-1, SelectedIndex);
+						}
+						else
+						{
+							SelectedIndex++;
+						}
 					}
 				}
 				else if (iVCE.CollectionChange == CollectionChange.ItemRemoved)
