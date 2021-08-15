@@ -5,7 +5,7 @@
 		  BeforeTargets="PrepareForBuild">
 
 	<PropertyGroup>
-	  <UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WPF</UnoDefineConstants>
+	  <UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WPF;__SKIA__</UnoDefineConstants>
 	</PropertyGroup>
 
 	<!-- Merge the UnoDefineConstants with the existing constants -->
