@@ -278,11 +278,14 @@ $(function () {
 
     function addSearchEvent() {
       $('body').on("searchEvent", function () {
+        $('#search-results>.sr-items').html('<p>No results found</p>');
+
         $('#search-query').keypress(function (e) {
           return e.which !== 13;
         });
 
         $('#search-query').on("keyup", function () {
+          $('#search-results').show();
           query = $(this).val();
           $("body").trigger("query-ready");
           $('#search-results>.search-list').text('Search Results for "' + query + '"');
@@ -337,7 +340,6 @@ $(function () {
             return itemNode;
           })
         );
-        $('#search-results').show();
         query.split(/\s+/).forEach(function (word) {
           if (word !== '') {
             word = word.replace(/\*/g, '');
