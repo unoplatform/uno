@@ -234,20 +234,18 @@ namespace Windows.Graphics.Display
 
 		private void RefreshDisplayMetricsCache()
 		{
-			var displayMetrics = new DisplayMetrics();
-			using (var windowManager = CreateWindowManager())
+			using var displayMetrics = new DisplayMetrics();
+			using var windowManager = CreateWindowManager();
+			if (windowManager.DefaultDisplay is { } defaultDisplay)
 			{
-				if (windowManager.DefaultDisplay is { } defaultDisplay)
-				{
-					defaultDisplay.GetRealMetrics(displayMetrics);
+				defaultDisplay.GetRealMetrics(displayMetrics);
 
-					_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
-					_cachedRotation = windowManager.DefaultDisplay.Rotation;
-				}
-				else
-				{
-					throw new InvalidOperationException("Failed to get the default display information");
-				}
+				_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
+				_cachedRotation = windowManager.DefaultDisplay.Rotation;
+			}
+			else
+			{
+				throw new InvalidOperationException("Failed to get the default display information");
 			}
 		}
 
@@ -265,11 +263,17 @@ namespace Windows.Graphics.Display
 			}
 
 			public float Density { get; }
+
 			public DisplayMetricsDensity DensityDpi { get; }
+
 			public int HeightPixels { get; }
+
 			public float ScaledDensity { get; }
+
 			public int WidthPixels { get; }
+
 			public float Xdpi { get; }
+
 			public float Ydpi { get; }
 		}
 	}

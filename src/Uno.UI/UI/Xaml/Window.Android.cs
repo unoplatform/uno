@@ -76,8 +76,8 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseNativeSizeChanged()
 		{
-			var display = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
-			var fullScreenMetrics = new DisplayMetrics();
+			using var display = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
+			using var fullScreenMetrics = new DisplayMetrics();
 
 #pragma warning disable 618
 			display?.GetMetrics(outMetrics: fullScreenMetrics);
