@@ -71,7 +71,8 @@ namespace Uno.UI.Runtime.Skia
 			if (preferredWindowSize != Size.Empty)
 			{ 
 				_window.SetDefaultSize((int)preferredWindowSize.Width, (int)preferredWindowSize.Height);
-			} else
+			}
+			else
 			{
 				_window.SetDefaultSize(1024, 800);
 			}
