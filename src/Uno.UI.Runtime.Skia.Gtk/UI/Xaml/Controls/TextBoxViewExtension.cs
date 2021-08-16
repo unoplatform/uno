@@ -279,8 +279,6 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			if (_currentInputWidget is Entry entry)
 			{
 				entry.Visibility = !isPassword;
-				// InputPurpose doesn't have any visual effects.
-				entry.InputPurpose = InputPurpose.Password;
 			}
 		}
 	}
