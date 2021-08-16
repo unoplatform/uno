@@ -1,4 +1,7 @@
-﻿using Windows.UI.ViewManagement;
+﻿using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Windows.Foundation;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -26,6 +29,23 @@ namespace Uno.UI.Runtime.Skia
 		public bool TryEnterFullScreenMode()
 		{
 			return true;
+		}
+
+		public bool TryResizeView(Size size)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("Resizing windows is not yet supported on Linux frame buffer.");
+			}
+			return false;
+		}
+
+		public void SetPreferredMinSize(Size minSize)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("Setting min size of windows is not yet supported on Linux frame buffer.");
+			}
 		}
 	}
 }

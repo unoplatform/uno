@@ -40,5 +40,22 @@ namespace Uno.UI.Runtime.Skia
 			}
 			return false;
 		}
+
+		public bool TryResizeView(Windows.Foundation.Size size)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("Resizing windows is not yet supported on Tizen.");
+			}
+			return false;
+		}
+
+		public void SetPreferredMinSize(Windows.Foundation.Size minSize)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("Setting min size of windows is not yet supported on Tizen.");
+			}
+		}
 	}
 }

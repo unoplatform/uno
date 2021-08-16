@@ -13,6 +13,7 @@ namespace Windows.UI.ViewManagement
     partial class ApplicationView
     {
 	    private string _title = string.Empty;
+		private Size _preferredMinSize = Size.Empty;
 
 		internal void SetCoreBounds(NSWindow keyWindow, Foundation.Rect windowBounds)
 		{
@@ -40,7 +41,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public bool IsFullScreen
+        public bool IsFullScreen
 		{
 			get
 			{
@@ -72,6 +73,10 @@ namespace Windows.UI.ViewManagement
 		{
 			VerifyKeyWindowInitialized();
 
+			if (value.Width < _preferredMinSize.Width || value.Height < _preferredMinSize.Height)
+			{
+				return false;
+			}
 			var window = NSApplication.SharedApplication.KeyWindow;
 			var frame = window.Frame;
 			frame.Size = value;
@@ -85,6 +90,7 @@ namespace Windows.UI.ViewManagement
 
 			var window = NSApplication.SharedApplication.KeyWindow;
 			window.MinSize = new CGSize(minSize.Width, minSize.Height);
+			_preferredMinSize = minSize;
 		}
 
 		internal void SyncTitleWithWindow(NSWindow window)

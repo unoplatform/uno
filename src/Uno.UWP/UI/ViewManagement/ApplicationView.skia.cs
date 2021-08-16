@@ -8,12 +8,14 @@ using System.Globalization;
 using Uno.Foundation.Extensibility;
 using Uno.Disposables;
 using Windows.ApplicationModel;
+using Windows.Storage;
 
 namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView : IApplicationViewEvents
 	{
 		private readonly IApplicationViewExtension _applicationViewExtension;
+		private Size _preferredMinSize = Size.Empty;
 
 		public ApplicationView()
 		{
@@ -32,6 +34,21 @@ namespace Windows.UI.ViewManagement
 		public bool TryEnterFullScreenMode() => _applicationViewExtension.TryEnterFullScreenMode();
 
 		public void ExitFullScreenMode() => _applicationViewExtension.ExitFullScreenMode();
+
+		public bool TryResizeView(Size value)
+		{
+			if (value.Width < _preferredMinSize.Width || value.Height < _preferredMinSize.Height)
+			{
+				return false;
+			}
+			return _applicationViewExtension.TryResizeView(value);
+		}
+
+		public void SetPreferredMinSize(Size minSize)
+		{
+			_applicationViewExtension.SetPreferredMinSize(minSize);
+			_preferredMinSize = minSize;
+		}
 	}
 
 	internal interface IApplicationViewExtension
@@ -41,6 +58,10 @@ namespace Windows.UI.ViewManagement
 		bool TryEnterFullScreenMode();
 
 		void ExitFullScreenMode();
+
+		bool TryResizeView(Size size);
+
+		void SetPreferredMinSize(Size minSize);
 	}
 
 	internal interface IApplicationViewEvents

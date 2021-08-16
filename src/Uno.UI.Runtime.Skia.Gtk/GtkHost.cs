@@ -18,6 +18,8 @@ using Uno.UI.Runtime.Skia.GTK.Extensions.System;
 using Uno.UI.Runtime.Skia.GTK.UI.Core;
 using Uno.Extensions.Storage.Pickers;
 using Windows.Storage.Pickers;
+using Windows.UI.ViewManagement;
+using Windows.Foundation;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer;
 
@@ -65,7 +67,15 @@ namespace Uno.UI.Runtime.Skia
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");
-			_window.SetDefaultSize(1024, 800);
+			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+			if (preferredWindowSize != Size.Empty)
+			{ 
+				_window.SetDefaultSize((int)preferredWindowSize.Width, (int)preferredWindowSize.Height);
+			}
+			else
+			{
+				_window.SetDefaultSize(1024, 800);
+			}
 			_window.SetPosition(Gtk.WindowPosition.Center);
 
 			_window.Realized += (s, e) =>
