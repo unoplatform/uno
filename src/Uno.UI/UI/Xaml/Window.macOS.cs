@@ -38,8 +38,8 @@ namespace Windows.UI.Xaml
 		{
 			var style = NSWindowStyle.Closable | NSWindowStyle.Resizable | NSWindowStyle.Titled | NSWindowStyle.Miniaturizable;
 
-			Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-			if (preferredWindowSize != Foundation.Size.Empty)
+			var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+			if (preferredWindowSize != Windows.Foundation.Size.Empty)
 			{
 				var rect = new CoreGraphics.CGRect(100, 100, (int)preferredWindowSize.Width, (int)preferredWindowSize.Height);
 				_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
