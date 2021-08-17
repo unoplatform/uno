@@ -21,7 +21,7 @@
 				<Grid>
 				<Border Width="150" Height="200">
 					<Border.Background>
-						<ImageBrush ImageSource="http://homepages.cae.wisc.edu/~ece533/images/fruits.png"
+							<ImageBrush ImageSource="ms-appx:///Assets/ingredient2.png"
 									Stretch="UniformToFill">
 							<ImageBrush.RelativeTransform>
 								<ScaleTransform ScaleX="1.5" ScaleY="1.5" CenterX=".5" CenterY=".5"/>

@@ -23,8 +23,8 @@ namespace Windows.UI.Xaml.Media
 
 			targetMatrix.SetValues(new[]
 			{
-				matrix.M11, matrix.M21, matrix.M31,
-				matrix.M12, matrix.M22, matrix.M32,
+				matrix.M11, matrix.M21, matrix.M31 * (float)size.Width,
+				matrix.M12, matrix.M22, matrix.M32 * (float)size.Height,
 				0, 0, 1
 			});
 

@@ -10,48 +10,54 @@ namespace Windows.UI.Xaml.Media
 	{
 		protected internal override Shader GetShader(Rect destinationRect)
 		{
-			// Android LinearGradient requires two ore more stop points.
-			//TODO: If there is only one - we should use solid color brush here
-			if (GradientStops.Count >= 2)
+			if (GradientStops.Count == 0)
 			{
-				var colors = GradientStops.SelectToArray(s => ((Android.Graphics.Color)s.Color).ToArgb());
-				var locations = GradientStops.SelectToArray(s => (float)s.Offset);
+				return null;
+			}
 
-				var width = destinationRect.Width;
-				var height = destinationRect.Height;
+			var colors = GradientStops.SelectToList(s => ((Android.Graphics.Color)s.Color).ToArgb());
+			var locations = GradientStops.SelectToList(s => (float)s.Offset);
 
-				Android.Graphics.Matrix nativeTransformMatrix = null;
-				if (RelativeTransform != null)
+			if (GradientStops.Count == 1)
+			{
+				// Android LinearGradient requires two ore more stop points.
+				// We work around this by duplicating the first gradient stop.
+				colors.Add(colors[0]);
+				locations.Add(locations[0]);
+			}
+
+			var width = destinationRect.Width;
+			var height = destinationRect.Height;
+
+			Android.Graphics.Matrix nativeTransformMatrix = null;
+			if (RelativeTransform != null)
+			{
+				var matrix = RelativeTransform.ToMatrix(Foundation.Point.Zero, new Windows.Foundation.Size(width, height));
+				matrix.M31 *= (float)width;
+				matrix.M32 *= (float)height;
+				nativeTransformMatrix = matrix.ToNative();
+			}
+
+			//Matrix .MapPoints takes an array of floats
+			var pts = MappingMode == BrushMappingMode.RelativeToBoundingBox
+				? new[]
 				{
-					var matrix = RelativeTransform.ToMatrix(Foundation.Point.Zero, new Windows.Foundation.Size(width, height));
-					matrix.M31 *= (float)width;
-					matrix.M32 *= (float)height;
-					nativeTransformMatrix = matrix.ToNative();
-				}
-
-				//Matrix .MapPoints takes an array of floats
-				var pts = MappingMode == BrushMappingMode.RelativeToBoundingBox
-					? new[]
-					{
 						(float) (StartPoint.X * width),
 						(float) (StartPoint.Y * height),
 						(float) (EndPoint.X * width),
 						(float) (EndPoint.Y * height)
-					}
-					: new[]
-					{
+				}
+				: new[]
+				{
 						(float) ViewHelper.LogicalToPhysicalPixels(StartPoint.X),
 						(float) ViewHelper.LogicalToPhysicalPixels(StartPoint.Y),
 						(float) ViewHelper.LogicalToPhysicalPixels(EndPoint.X),
 						(float) ViewHelper.LogicalToPhysicalPixels(EndPoint.Y)
-					};
+				};
 
-				nativeTransformMatrix?.MapPoints(pts);
-				nativeTransformMatrix?.Dispose();
-				return new LinearGradient(pts[0], pts[1], pts[2], pts[3], colors, locations, Shader.TileMode.Clamp);
-			}
-
-			return null;
+			nativeTransformMatrix?.MapPoints(pts);
+			nativeTransformMatrix?.Dispose();
+			return new LinearGradient(pts[0], pts[1], pts[2], pts[3], colors.ToArray(), locations.ToArray(), Shader.TileMode.Clamp);
 		}
 	}
 }

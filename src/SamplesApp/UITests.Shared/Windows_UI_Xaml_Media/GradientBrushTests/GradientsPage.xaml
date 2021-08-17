@@ -281,7 +281,7 @@
 					</Border.BorderBrush>
 				</Border>
 			</StackPanel>
-			<TextBlock FontSize="15">Linear Gradient as Border with relative transform</TextBlock>
+			<TextBlock FontSize="15">Linear Gradient as Border with relative transform / with single stop</TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Border Width="100" Height="100" BorderThickness="40" CornerRadius="8">
 					<Border.BorderBrush>
@@ -292,6 +292,15 @@
 							<LinearGradientBrush.GradientStops>
 								<GradientStop Color="Blue" Offset="1" />
 								<GradientStop Color="Red" Offset="1" />
+							</LinearGradientBrush.GradientStops>
+						</LinearGradientBrush>
+					</Border.BorderBrush>
+				</Border>
+				<Border Width="100" Height="100" BorderThickness="40" CornerRadius="8">
+					<Border.BorderBrush>
+						<LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,40">
+							<LinearGradientBrush.GradientStops>
+								<GradientStop Color="Red" Offset="0.5" />
 							</LinearGradientBrush.GradientStops>
 						</LinearGradientBrush>
 					</Border.BorderBrush>
