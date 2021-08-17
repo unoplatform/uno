@@ -280,5 +280,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(Colors.Black, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 			}
 		}
+
+		[TestMethod]
+		[Ignore] // https://github.com/unoplatform/uno/issues/4686
+		public void When_Index_Is_Out_Of_Range_And_Later_Becomes_Valid()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = 2;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(2, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
+		[Ignore] // https://github.com/unoplatform/uno/issues/4686
+		public void When_Index_Is_Explicitly_Set_To_Negative_After_Out_Of_Range_Value()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = 2;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.SelectedIndex = -1; // While SelectedIndex was already -1 (assert above), this *does* make a difference.
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex); // Will no longer become 2
+		}
 	}
 }
