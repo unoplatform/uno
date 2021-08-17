@@ -276,7 +276,7 @@ namespace Uno.UI
 			/// Sets this value to remove item animation for <see cref="UnoRecyclerView"/>. This prevents <see cref="UnoRecyclerView"/>
 			/// from crashing when pressured: Tmp detached view should be removed from RecyclerView before it can be recycled
 			/// </summary>
-			public static bool RemoveItemAnimator = true;
+			public static bool RemoveItemAnimator = false;
 		}
 #endif
 
