@@ -176,4 +176,32 @@
 						  IsExpanded="{Binding Path=IsExpanded, Mode=TwoWay}"
 						  ItemsSource="{Binding Path=Items}" />
 	</DataTemplate>
+
+	<DataTemplate x:Key="When_Item_Changes_Measure_Count_Template">
+		<local:CounterGrid MinWidth="120"
+						   Height="30"
+						   BorderBrush="DimGray"
+						   BorderThickness="1"
+						   CornerRadius="3">
+			<TextBlock Margin="3"
+					   Text="{Binding Label}"
+					   HorizontalAlignment="Left"
+					   VerticalAlignment="Center" />
+			<Border x:Name="BadgeView"
+					Width="{Binding BadgeWidth}"
+					Height="20"
+					Margin="3"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Center"
+					CornerRadius="10"
+					Background="DodgerBlue" />
+		</local:CounterGrid>
+	</DataTemplate>
+
+	<DataTemplate x:Key="When_Available_Breadth_Changes_Template">
+		<Border x:Name="ContainerBorder">
+			<TextBlock x:Name="ContentTextBlock" Text="{Binding}"
+					   TextWrapping="Wrap" />
+		</Border>
+	</DataTemplate>
 </ResourceDictionary>

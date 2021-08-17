@@ -898,25 +898,35 @@ namespace Windows.UI.Xaml.Controls
 			{
 				slotSize = new Size(double.PositiveInfinity, logicalAvailableBreadth);
 			}
-			var size = _layouter.MeasureChild(child, slotSize);
 
-			if (ShouldApplyChildStretch)
+			var previousAvailableSize = LayoutInformation.GetAvailableSize(child);
+
+			if (child.IsLayoutRequested || slotSize != previousAvailableSize)
 			{
-				size = ApplyChildStretch(size, slotSize, viewType);
-			}
+				var size = _layouter.MeasureChild(child, slotSize);
 
-			if (!child.IsInLayout)
+				if (ShouldApplyChildStretch)
+				{
+					size = ApplyChildStretch(size, slotSize, viewType);
+				}
+
+				if (!child.IsInLayout)
+				{
+					UnoViewGroup.StartLayoutingFromMeasure();
+				}
+				LayoutChild(child, direction, extentOffset, breadthOffset, size);
+
+				if (!child.IsInLayout)
+				{
+					UnoViewGroup.EndLayoutingFromMeasure();
+				}
+
+				return size;
+			}
+			else
 			{
-				UnoViewGroup.StartLayoutingFromMeasure();
+				return (child as FrameworkElement)?.AssignedActualSize ?? ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
 			}
-			LayoutChild(child, direction, extentOffset, breadthOffset, size);
-
-			if (!child.IsInLayout)
-			{
-				UnoViewGroup.EndLayoutingFromMeasure();
-			}
-
-			return size;
 		}
 
 		/// <summary>
