@@ -251,9 +251,9 @@ namespace Windows.UI.Xaml.Media.Animation
 					_scheduledFrames.Add(
 						CoreDispatcher.Main.RunAsync(
 							CoreDispatcherPriority.Normal,
-							async () =>
+							async ct =>
 							{
-								await Task.Delay(dueTime);
+								await Task.Delay(dueTime, ct);
 								update();
 							}
 						)
