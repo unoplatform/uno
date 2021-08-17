@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void SetTextNative(string text)
 		{
-			DisplayBlock.Text = text;
+			DisplayBlock.Text = new string('•', text.Length);
 			_textBoxExtension?.SetTextNative(text);
 		}
 
@@ -64,6 +64,8 @@ namespace Windows.UI.Xaml.Controls
 				DisplayBlock.Opacity = 1;
 			}
 		}
+
+		internal void SetIsPassword(bool isPassword) => _textBoxExtension?.SetIsPassword(isPassword);
 
 		internal void UpdateTextFromNative(string newText)
 		{

@@ -22,5 +22,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState) => _textBoxView?.OnFocusStateChanged(focusState);
+
+		protected void SetIsPassword(bool isPassword) => _textBoxView?.SetIsPassword(isPassword);
 	}
 }

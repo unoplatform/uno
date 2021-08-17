@@ -183,5 +183,9 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			UpdatePosition();
 		}
 
+		public void SetIsPassword(bool isPassword)
+		{
+			// No support for now.
+		}
 	}
 }
