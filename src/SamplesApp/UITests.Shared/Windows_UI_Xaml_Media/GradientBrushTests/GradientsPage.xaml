@@ -283,14 +283,14 @@
 			</StackPanel>
 			<TextBlock FontSize="15">Linear Gradient as Border with relative transform</TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<Border Width="100" Height="100" BorderThickness="40">
+				<Border Width="100" Height="100" BorderThickness="40" CornerRadius="8">
 					<Border.BorderBrush>
-						<LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2">
+						<LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,40">
 							<LinearGradientBrush.RelativeTransform>
 								<ScaleTransform ScaleY="-1" CenterY="0.5"/>
 							</LinearGradientBrush.RelativeTransform>
 							<LinearGradientBrush.GradientStops>
-								<GradientStop Color="Yellow" Offset="1" />
+								<GradientStop Color="Blue" Offset="1" />
 								<GradientStop Color="Red" Offset="1" />
 							</LinearGradientBrush.GradientStops>
 						</LinearGradientBrush>
