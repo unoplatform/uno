@@ -66,10 +66,10 @@ $(function () {
   function updateLogo(){
     var curWidth = window.innerWidth;
     if(curWidth < 980) {
-      $('#logo').attr('src', '../../../images/UnoLogoSmall.png');
+      $('#logo').attr('src', '../images/UnoLogoSmall.png');
     }
     else {
-      $('#logo').attr('src', '../../../images/uno-logo.png');
+      $('#logo').attr('src', '../images/uno-logo.png');
     }
   }
 
