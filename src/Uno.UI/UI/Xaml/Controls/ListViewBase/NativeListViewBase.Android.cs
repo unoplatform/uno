@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				return HorizontalScrollBarEnabled ? ScrollBarVisibility.Visible : ScrollBarVisibility.Hidden;
+				return HorizontalScrollBarEnabled ? ScrollBarVisibility.Visible : ScrollBarVisibility.Disabled;
 			}
 
 			set
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				return VerticalScrollBarEnabled ? ScrollBarVisibility.Visible : ScrollBarVisibility.Hidden;
+				return VerticalScrollBarEnabled ? ScrollBarVisibility.Visible : ScrollBarVisibility.Disabled;
 			}
 
 			set
