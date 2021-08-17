@@ -1,0 +1,6 @@
+name: Uno Sync
+description: Sync resources with microsoft-ui-xaml repository.
+
+runs:
+  using: docker
+  image: Dockerfile

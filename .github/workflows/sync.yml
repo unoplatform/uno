@@ -1,0 +1,40 @@
+name: 'Sync with MUX'
+
+on:
+  schedule:
+  - cron: '0 0 1 * *'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'The reason for running the workflow'
+        required: true
+        default: 'Manual run'
+
+jobs:
+  sync-mux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: uno
+    - uses: actions/checkout@v2
+      with:
+        repository: microsoft/microsoft-ui-xaml
+        path: microsoft-ui-xaml
+    - name: 'Print manual run reason'
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: |
+        echo 'Reason: ${{ github.event.inputs.reason }}'
+    - name: Sync with MUX
+      id: sync-mux
+      uses: ./uno//src/Tools/Automation
+    - name: create-pull-request
+      uses: peter-evans/create-pull-request@v3.10.0
+      with:
+        title: 'Sync with MUX'
+        commit-message: 'fix: Sync with MUX'
+        base: 'master'
+        path: uno
+        branch: 'sync-with-mux'
+        branch-suffix: 'timestamp'
