@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,9 +28,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			WindowHelper.WindowContent = page;
 			await WindowHelper.WaitForLoaded(page);
 
+			var pageBounds = page.GetOnScreenBounds();
+			var statusBarHeight = pageBounds.Y; // Non-zero on Android
 			var sut = page.SUT;
 			var bounds = sut.GetOnScreenBounds();
-			Assert.AreEqual(bounds, bounds);
+			bounds.Y -= statusBarHeight; // Status bar height is included in TransformToVisual on Android, but shouldn't be included in VisualTreeHelper.HitTest call
 			var expected = new Rect(25, 205, 80, 40);
 			RectAssert.AreEqual(expected, bounds);
 
@@ -56,6 +59,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			{
 				throw new ArgumentException($"Offset {perimeterOffset} is too large to fit inside Rect {rect}");
 			}
+
+			yield return rect.GetCenter();
+
 			var interiorXs = new[] { rect.Left + perimeterOffset, rect.Right - perimeterOffset };
 			var interiorYs = new[] { rect.Top + perimeterOffset, rect.Bottom - perimeterOffset };
 			foreach (var x in interiorXs)
