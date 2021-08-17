@@ -493,6 +493,16 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class VisualState
+		{
+			/// <summary>
+			/// When this is set, the <see cref="Windows.UI.Xaml.VisualState.Setters"/> will be applied synchronously when changing state,
+			/// unlike UWP which waits the for the end of the <see cref="VisualTransition.Storyboard"/> (if any) to apply them.
+			/// </summary>
+			/// <remarks>This flag is for backward compatibility with old versions of uno and should not be turned on.</remarks>
+			public static bool ApplySettersBeforeTransition { get; set; } = false;
+		}
+
 		public static class WebView
 		{
 #if __ANDROID__

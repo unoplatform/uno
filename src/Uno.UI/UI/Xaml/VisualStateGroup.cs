@@ -30,6 +30,11 @@ namespace Windows.UI.Xaml
 		/// The xaml scope in force at the time the VisualStateGroup was created.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
+		private (VisualState state, VisualTransition transition) _current;
+
+		public event VisualStateChangedEventHandler CurrentStateChanging;
+
+		public event VisualStateChangedEventHandler CurrentStateChanged;
 
 		public VisualStateGroup()
 		{
@@ -40,6 +45,8 @@ namespace Windows.UI.Xaml
 
 			this.RegisterParentChangedCallback(this, OnParentChanged);
 		}
+
+		public VisualState CurrentState => _current.state;
 
 		public string Name { get; set; }
 
@@ -67,7 +74,6 @@ namespace Windows.UI.Xaml
 			internal set { this.SetValue(StatesProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for States.  This enables animation, styling, binding, etc...
 		public static DependencyProperty StatesProperty { get; } =
 			DependencyProperty.Register(
 				"States",
@@ -101,16 +107,13 @@ namespace Windows.UI.Xaml
 			internal set { this.SetValue(TransitionsProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TransitionsProperty { get; } =
 			DependencyProperty.Register(
 				"Transitions",
 				typeof(IList<VisualTransition>),
 				typeof(VisualStateGroup),
 				new FrameworkPropertyMetadata(
-					defaultValue: null,
-					propertyChangedCallback: (s, e) => ((VisualStateGroup)s)?.OnTransitionsChanged(e)
-				)
+					defaultValue: null)
 			);
 
 		#endregion
@@ -137,16 +140,10 @@ namespace Windows.UI.Xaml
 			RefreshStateTriggers();
 		}
 
-		//Adds Event Handlers when collections changed
-		private void OnTransitionsChanged(DependencyPropertyChangedEventArgs e)
+		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
+			RefreshStateTriggers(force: true);
 		}
-
-		public VisualState CurrentState { get; internal set; }
-
-		public event VisualStateChangedEventHandler CurrentStateChanging;
-
-		public event VisualStateChangedEventHandler CurrentStateChanged;
 
 		internal void RaiseCurrentStateChanging(VisualState oldState, VisualState newState)
 		{
@@ -175,80 +172,60 @@ namespace Windows.UI.Xaml
 			return (this.GetParent() as FrameworkElement)?.FindFirstParent<Control>();
 		}
 
-		internal void GoToState(IFrameworkElement element, VisualState state, VisualState originalState, bool useTransitions, Action onStateChanged)
+		internal void GoToState(
+			IFrameworkElement element,
+			VisualState state,
+			bool useTransitions,
+			Action onStateChanged)
 		{
+			global::System.Diagnostics.Debug.Assert(state is null || States.Contains(state));
+
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Go to state [{0}/{1}] on [{2}]", Name, state?.Name, element);
 			}
 
-			var transition = FindTransition(originalState?.Name, state?.Name);
+			var current = _current;
+			var target = (state, transition: FindTransition(current.state?.Name, state?.Name));
 
-			EventHandler<object> onComplete = null;
-
-			onComplete = (s, a) =>
+			// Stops running animations (transition or state's storyboard)
+			// Note about animations (as of 2021-08-16 win 19043):
+			//		Any "running animation", either from the current transition or the current state's storyboard,
+			//		is being "paused" for properties that are going to be animated by the "next animation" (again transition or target state's storyboard),
+			//		and rollbacked for properties that won't be animated anymore.
+			var runningAnimation = current.transition?.Storyboard is { } currentTransition
+				&& currentTransition.State != Timeline.TimelineState.Stopped
+					? currentTransition
+					: current.state?.Storyboard;
+			var nextAnimation = target.transition?.Storyboard ?? target.state?.Storyboard;
+			if (runningAnimation != null)
 			{
-				onStateChanged();
-
-				if (state?.Storyboard == null)
+				if(nextAnimation is null)
 				{
-					return;
+					runningAnimation.Stop();
 				}
+				else
+				{
+					runningAnimation.TurnOverAnimationsTo(nextAnimation);
+				}
+			}
 
-				state.Storyboard.Completed -= onComplete;
-			};
-
-			EventHandler<object> onTransitionComplete = null;
-
-			onTransitionComplete = (s, a) =>
+			// Rollback setters that won't be re-set by the target state setters
+			// Note about setters and transition (as of 2021-08-16 win 19043):
+			//		* if current and target state have setters for the same property,
+			//		  the value of the current is kept as is and updated only once at the end of the transition
+			//		* if current has a setter which is not updated by the target state
+			//		  the value is rollbacked before the transition
+			//		* if the target has a setter for a property that was not affected by the current
+			//		  the value is applied only at the end of the transition
+			if (current.state is {} currentState)
 			{
-				if (transition?.Storyboard != null && useTransitions)
+				foreach (var setter in currentState.Setters.OfType<Setter>())
 				{
-					transition.Storyboard.Completed -= onTransitionComplete;
-
-					if (state?.Storyboard != null)
+					if (element != null && (target.state?.Setters.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
 					{
-						transition.Storyboard.TurnOverAnimationsTo(state.Storyboard);
-					}
-				}
-
-				//Starts Storyboard Animation
-				if (state?.Storyboard == null)
-				{
-					onComplete(this, null);
-				}
-				else if (state != null)
-				{
-					state.Storyboard.Completed += onComplete;
-					state.Storyboard.Begin();
-				}
-			};
-
-			//Stops Previous Storyboard Animation
-			if (originalState != null)
-			{
-				if (originalState.Storyboard != null)
-				{
-					if (transition?.Storyboard != null)
-					{
-						originalState.Storyboard.TurnOverAnimationsTo(transition.Storyboard);
-					}
-					else if (state?.Storyboard != null)
-					{
-						originalState.Storyboard.TurnOverAnimationsTo(state.Storyboard);
-					}
-					else
-					{
-						originalState.Storyboard.Stop();
-					}
-				}
-
-				foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
-				{
-					if (element != null && (state?.Setters.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
-					{
-						// PERF: We clear the value of the current setter only if there isn't any setter in the target state
-						// which changes the same target property.
+						// We clear the value of the current setter only if there isn't any setter in the target state
+						// which changes the same target property (for perf ... and UWP behavior support regarding transition animation).
 
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
@@ -262,78 +239,136 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-#if !HAS_EXPENSIVE_TRYFINALLY
-			try
-#endif
-			{
-				ResourceResolver.PushNewScope(_xamlScope);
+			_current = target;
 
-				this.CurrentState = state;
-				if (this.CurrentState != null && element != null)
+			// For backward compatibility, we may apply the setters before the end of the transition.
+			if (FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
+			{
+				ApplyTargetStateSetters();
+			}
+
+			// Finally effectively apply the target state!
+			if (useTransitions && target.transition?.Storyboard is { } transitionAnimation)
+			{
+				// Note: As of 2021-08-16 win 19043, if the transitionAnimation is Repeat=Forever, we actually never apply the state!
+
+				transitionAnimation.Completed += OnTransitionCompleted;
+				transitionAnimation.Begin();
+
+				void OnTransitionCompleted(object s, object a)
 				{
-					foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
+					transitionAnimation.Completed -= OnTransitionCompleted;
+
+					if (target.state?.Storyboard is { } stateAnimation)
+					{
+						transitionAnimation.TurnOverAnimationsTo(stateAnimation);
+					}
+
+					ApplyTargetState();
+				}
+			}
+			else
+			{
+				ApplyTargetState();
+			}
+
+			void ApplyTargetState()
+			{
+				// Apply target state setters (the right time to do it!) 
+				if (!FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
+				{
+					ApplyTargetStateSetters();
+				}
+
+				// Starts target state animation
+				if (target.state?.Storyboard is { } stateAnimation)
+				{
+					stateAnimation.Completed += OnStateStoryboardCompleted;
+					stateAnimation.Begin();
+
+					void OnStateStoryboardCompleted(object s, object a)
+					{
+						state.Storyboard.Completed -= OnStateStoryboardCompleted;
+						onStateChanged();
+					}
+				}
+				else
+				{
+					onStateChanged();
+				}
+			}
+
+			void ApplyTargetStateSetters()
+			{
+				if (target.state is null || element is null)
+				{
+					return;
+				}
+
+#if !HAS_EXPENSIVE_TRYFINALLY
+				try
+#endif
+				{
+					ResourceResolver.PushNewScope(_xamlScope);
+
+					foreach (var setter in target.state.Setters.OfType<Setter>())
 					{
 						setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
 					}
 				}
-
-				if (transition?.Storyboard == null || !useTransitions)
-				{
-					onTransitionComplete(this, null);
-				}
-				else
-				{
-					transition.Storyboard.Completed += onTransitionComplete;
-					transition.Storyboard.Begin();
-				}
-			}
 #if !HAS_EXPENSIVE_TRYFINALLY
-			finally
+				finally
 #endif
-			{
-				ResourceResolver.PopScope();
+				{
+					ResourceResolver.PopScope();
+				}
 			}
 		}
 
 		private VisualTransition FindTransition(string oldStateName, string newStateName)
 		{
-			if (oldStateName.IsNullOrEmpty() || newStateName.IsNullOrEmpty())
-			{
-				return null;
-			}
+			var hasOld = oldStateName.HasValue();
+			var hasNew = newStateName.HasValue();
 
-			var perfectMatch = Transitions.FirstOrDefault(vt =>
-				string.Equals(vt.From, oldStateName) &&
-				string.Equals(vt.To, newStateName));
-
-			if (perfectMatch != null)
+			if (hasOld && hasNew && Transitions.FirstOrDefault(Match(oldStateName, newStateName)) is { } perfectMatch)
 			{
 				return perfectMatch;
 			}
 
-			var fromMatch = Transitions.FirstOrDefault(vt =>
-				string.Equals(vt.From, oldStateName) &&
-				vt.To == null);
-
-			if (fromMatch != null)
+			if (hasOld && Transitions.FirstOrDefault(Match(oldStateName, null)) is { } fromMatch)
 			{
 				return fromMatch;
 			}
 
-			var toMatch = Transitions.FirstOrDefault(vt =>
-				vt.From == null &&
-				string.Equals(vt.To, newStateName));
+			if (hasNew && Transitions.FirstOrDefault(Match(null, newStateName)) is { } newMatch)
+			{
+				return newMatch;
+			}
 
-			return toMatch;
+			return default;
+
+			Func<VisualTransition, bool> Match(string from, string to)
+				=> tr => string.Equals(tr.From, oldStateName) && string.Equals(tr.To, newStateName);
 		}
 
 		internal void RefreshStateTriggers(bool force = false)
 		{
 			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
-			if (!force && newState == oldState)
+			if (newState == oldState)
 			{
-				return;
+				if (!force)
+				{
+					return;
+				}
+				else if (newState is null)
+				{
+					// The 'force' has no effect is both old and new states are 'null'
+					// (setting the parent for the first time in control's init)
+					// we however raise the state changed for backward compatibility.
+					OnStateChanged();
+					return;
+				}
 			}
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -347,13 +382,9 @@ namespace Windows.UI.Xaml
 			}
 
 			var parent = this.GetParent() as IFrameworkElement;
-			GoToState(parent, newState, CurrentState, false, OnStateChanged);
+			GoToState(parent, newState, false, OnStateChanged);
 		}
 
-		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
-		{
-			RefreshStateTriggers(force: true);
-		}
 
 		/// <remarks>
 		/// This method is not using LINQ for performance considerations.
@@ -416,6 +447,7 @@ namespace Windows.UI.Xaml
 			return winnerState;
 		}
 
-		public override string ToString() => Name ?? $"<unnamed group {GetHashCode()}>";
+		public override string ToString()
+			=> Name ?? $"<unnamed group {GetHashCode()}>";
 	}
 }
