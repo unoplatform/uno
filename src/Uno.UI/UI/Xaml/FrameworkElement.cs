@@ -108,6 +108,22 @@ namespace Windows.UI.Xaml
 		#endregion
 
 
+		#region BackgroundSizing Dependency Property
+
+		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext, ChangedCallback = true)]
+		internal static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+
+		internal BackgroundSizing BackgroundSizing
+		{
+			get => GetBackgroundSizingValue();
+			set => SetBackgroundSizingValue(value);
+		}
+
+		private protected virtual void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+		{
+		}
+		#endregion
+
 
 		partial void Initialize()
 		{

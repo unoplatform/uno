@@ -6,6 +6,16 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class RelativePanel
 	{
+		#region BackgroundSizing DepedencyProperty
+		public new static DependencyProperty BackgroundSizingProperty => FrameworkElement.BackgroundSizingProperty;
+
+		public new BackgroundSizing BackgroundSizing
+		{
+			get => base.BackgroundSizing;
+			set => base.BackgroundSizing = value;
+		}
+		#endregion
+
 		#region Panel Alignment relationships
 
 		public static bool GetAlignBottomWithPanel(DependencyObject view)
