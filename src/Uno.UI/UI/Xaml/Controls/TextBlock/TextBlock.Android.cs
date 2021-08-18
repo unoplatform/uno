@@ -724,15 +724,21 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					Layout = StaticLayout.Builder.Obtain(_textFormatted, 0, _textFormatted.Length(), _paint, width)
-					.SetLineSpacing(_addedSpacing = GetSpacingAdd(_paint), 1)
-					.SetMaxLines(maxLines)
-					.SetEllipsize(_ellipsize)
-					.SetEllipsizedWidth(width)
-					.SetAlignment(_layoutAlignment)
-					.SetIncludePad(true)
-					.SetJustificationMode(_justificationMode)
-					.Build();
+					var builder = StaticLayout.Builder.Obtain(_textFormatted, 0, _textFormatted.Length(), _paint, width)
+						.SetLineSpacing(_addedSpacing = GetSpacingAdd(_paint), 1)
+						.SetMaxLines(maxLines)
+						.SetEllipsize(_ellipsize)
+						.SetEllipsizedWidth(width)
+						.SetAlignment(_layoutAlignment)
+						.SetIncludePad(true);
+
+					// JustificationMode was introduced in Android 8.
+					if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+					{
+						builder.SetJustificationMode(_justificationMode);
+					}
+
+					Layout = builder.Build();
 				}
 
 
