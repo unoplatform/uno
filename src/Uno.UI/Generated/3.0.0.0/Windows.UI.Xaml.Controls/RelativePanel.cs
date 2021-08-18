@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CornerRadius
 		// Skipping already declared property BorderThickness
 		// Skipping already declared property BorderBrush
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
 		{
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property LeftOfProperty
 		// Skipping already declared property PaddingProperty
 		// Skipping already declared property RightOfProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

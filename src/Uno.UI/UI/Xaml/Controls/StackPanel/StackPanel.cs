@@ -20,6 +20,16 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class StackPanel : Panel
 	{
+		#region BackgroundSizing DepedencyProperty
+		public new static DependencyProperty BackgroundSizingProperty => FrameworkElement.BackgroundSizingProperty;
+
+		public new BackgroundSizing BackgroundSizing
+		{
+			get => base.BackgroundSizing;
+			set => base.BackgroundSizing = value;
+		}
+		#endregion
+
 
 		#region Orientation DependencyProperty
 

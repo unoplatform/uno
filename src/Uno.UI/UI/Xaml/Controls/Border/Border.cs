@@ -181,6 +181,16 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region BackgroundSizing DepedencyProperty
+		public new static DependencyProperty BackgroundSizingProperty => FrameworkElement.BackgroundSizingProperty;
+
+		public new BackgroundSizing BackgroundSizing
+		{
+			get => base.BackgroundSizing;
+			set => base.BackgroundSizing = value;
+		}
+		#endregion
+
 		#region BorderThickness DependencyProperty
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
