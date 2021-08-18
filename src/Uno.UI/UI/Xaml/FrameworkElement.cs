@@ -121,7 +121,11 @@ namespace Windows.UI.Xaml
 
 		private protected virtual void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
+			OnBackgroundSizingChangedPartial(e);
 		}
+
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs);
+
 		#endregion
 
 
