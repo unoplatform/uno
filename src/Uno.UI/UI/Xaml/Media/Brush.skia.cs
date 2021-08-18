@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media
 			var disposables = new CompositeDisposable();
 
 			void UpdateColor(object sender, DependencyPropertyChangedEventArgs e) => colorSetter(Colors.Transparent);
-			void UpdateColorWhenAnyChanged<T>(T source, params DependencyProperty[] properties) where T : DependencyObject
+			void UpdateColorWhenAnyChanged(DependencyObject source, params DependencyProperty[] properties)
 			{
 				foreach (var property in properties)
 				{

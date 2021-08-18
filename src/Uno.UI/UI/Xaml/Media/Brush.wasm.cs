@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private static CompositeDisposable WhenAnyChanged<T>(CompositeDisposable disposables, T source, PropertyChangedCallback callback, params DependencyProperty[] properties) where T : DependencyObject
+		private static CompositeDisposable WhenAnyChanged(CompositeDisposable disposables, DependencyObject source, PropertyChangedCallback callback, params DependencyProperty[] properties)
 		{
 			foreach (var property in properties)
 			{
