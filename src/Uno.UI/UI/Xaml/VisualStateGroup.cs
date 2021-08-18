@@ -325,15 +325,35 @@ namespace Windows.UI.Xaml
 					return;
 				}
 
-				foreach (var setter in target.setters.OfType<Setter>())
+#if !HAS_EXPENSIVE_TRYFINALLY
+				try
+#endif
 				{
-					setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+					// Setter.ApplyValue can resolve some theme resources.
+					// We need to invoke them using the right resource context.
+					ResourceResolver.PushNewScope(_xamlScope);
+
+					foreach (var setter in target.setters.OfType<Setter>())
+					{
+						setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+					}
 				}
+#if !HAS_EXPENSIVE_TRYFINALLY
+				finally
+#endif
+				{
+					ResourceResolver.PopScope();
+				}
+
 			}
 		}
 
 		private VisualTransition FindTransition(string oldStateName, string newStateName)
 		{
+			// Only one transition can be run when changing state.
+			// The most specific transition wins (i.e. with matching From and To),
+			// then we validate for transitions that have only From or To defined which match.
+
 			var hasOld = oldStateName.HasValue();
 			var hasNew = newStateName.HasValue();
 
