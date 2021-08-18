@@ -3832,105 +3832,110 @@
 	</IgnoreSet>
 	
 	<IgnoreSet baseVersion="3.9.7">
-	  <Types>
-	  </Types>
-	  <Methods>
-		<!-- Focus management -->
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionColorBrush..ctor(Windows.UI.Composition.Compositor compositor)"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionColorGradientStop..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.UInt32 Windows.UI.Composition.CompositionColorGradientStopCollection.get_Size()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionColorGradientStopCollection.set_Count(System.Int32 value)"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionColorGradientStopCollection.set_IsReadOnly(System.Boolean value)"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionColorGradientStopCollection..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionEllipseGeometry..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionGradientBrush.get_AnchorPoint()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionGradientBrush.set_AnchorPoint(System.Numerics.Vector2 value)"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionGradientBrush..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionLinearGradientBrush..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionLineGeometry..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionRadialGradientBrush..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionRectangleGeometry..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionRoundedRectangleGeometry..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionSurfaceBrush..ctor(Windows.UI.Composition.Compositor compositor)"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionSurfaceBrush..ctor(Windows.UI.Composition.Compositor compositor, Windows.UI.Composition.ICompositionSurface surface)"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.CompositionViewBox..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Composition.InsetClip..ctor(Windows.UI.Composition.Compositor compositor)"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Input.InertiaExpansionBehavior..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Input.InertiaRotationBehavior..ctor()"
-			reason="Should not be public" />
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Input.InertiaTranslationBehavior..ctor()"
-			reason="Should not be public" />
-		
-		<Member
-			fullName="Windows.UI.Xaml.Controls.Primitives.PlacementMode Windows.UI.Xaml.Controls.ToolTipService.GetPlacement(Windows.UI.Xaml.DependencyObject element)"
-			reason="INVALID REMOVE, TO ADJUST" />
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.ToolTipService.SetPlacement(Windows.UI.Xaml.DependencyObject element, Windows.UI.Xaml.Controls.Primitives.PlacementMode value)"
-			reason="INVALID REMOVE, TO ADJUST" />
-		<Member
-			fullName="System.Object Windows.UI.Xaml.Controls.ToolTipService.GetToolTip(Windows.UI.Xaml.DependencyObject element)"
-			reason="INVALID REMOVE, TO ADJUST" />
-		
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.ToolTipService.SetToolTip(Windows.UI.Xaml.DependencyObject element, System.Object value)"
-			reason="INVALID REMOVE, TO ADJUST" />
-		<Member
-			fullName="System.Boolean Windows.UI.Xaml.Controls.VirtualizingPanelLayout.ShouldInsertReorderingView(System.Double physicalExtentOffset)"
-			reason="INVALID REMOVE, TO ADJUST" />
+		<Methods>
+			<Member
+				fullName="Windows.UI.Xaml.Media.Animation.Timeline/TimelineState Windows.UI.Xaml.Media.Animation.Timeline.get_State()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.set_State(Windows.UI.Xaml.Media.Animation.Timeline/TimelineState value)"
+				reason="Not part of the UWP API" />
+			<!-- Focus management -->
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionColorBrush..ctor(Windows.UI.Composition.Compositor compositor)"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionColorGradientStop..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.UInt32 Windows.UI.Composition.CompositionColorGradientStopCollection.get_Size()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionColorGradientStopCollection.set_Count(System.Int32 value)"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionColorGradientStopCollection.set_IsReadOnly(System.Boolean value)"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionColorGradientStopCollection..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionEllipseGeometry..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionGradientBrush.get_AnchorPoint()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionGradientBrush.set_AnchorPoint(System.Numerics.Vector2 value)"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionGradientBrush..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionLinearGradientBrush..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionLineGeometry..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionRadialGradientBrush..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionRectangleGeometry..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionRoundedRectangleGeometry..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionSurfaceBrush..ctor(Windows.UI.Composition.Compositor compositor)"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionSurfaceBrush..ctor(Windows.UI.Composition.Compositor compositor, Windows.UI.Composition.ICompositionSurface surface)"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionViewBox..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.InsetClip..ctor(Windows.UI.Composition.Compositor compositor)"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.InertiaExpansionBehavior..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.InertiaRotationBehavior..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Input.InertiaTranslationBehavior..ctor()"
+				reason="Should not be public" />
+			
+			<Member
+				fullName="Windows.UI.Xaml.Controls.Primitives.PlacementMode Windows.UI.Xaml.Controls.ToolTipService.GetPlacement(Windows.UI.Xaml.DependencyObject element)"
+				reason="INVALID REMOVE, TO ADJUST" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ToolTipService.SetPlacement(Windows.UI.Xaml.DependencyObject element, Windows.UI.Xaml.Controls.Primitives.PlacementMode value)"
+				reason="INVALID REMOVE, TO ADJUST" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.ToolTipService.GetToolTip(Windows.UI.Xaml.DependencyObject element)"
+				reason="INVALID REMOVE, TO ADJUST" />
+			
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ToolTipService.SetToolTip(Windows.UI.Xaml.DependencyObject element, System.Object value)"
+				reason="INVALID REMOVE, TO ADJUST" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.VirtualizingPanelLayout.ShouldInsertReorderingView(System.Double physicalExtentOffset)"
+				reason="INVALID REMOVE, TO ADJUST" />
 
-	  </Methods>
-	  <Fields>
-	  </Fields>
-	  <Properties>
-		<Member
+		</Methods>
+		<Properties>
+			<Member
+				fullName=" Windows.UI.Xaml.Media.Animation.Timeline/TimelineState Windows.UI.Xaml.Media.Animation.Timeline::State()"
+				reason="Not part of the UWP API" />
+			<Member
 				fullName="System.UInt32 Windows.UI.Composition.CompositionColorGradientStopCollection::Size()"
 				reason="Method not in UWP contract" />
-		<Member
-			fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionGradientBrush::AnchorPoint()"
-			reason="Method not in UWP contract" />
-	  </Properties>
+			<Member
+				fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionGradientBrush::AnchorPoint()"
+				reason="Method not in UWP contract" />
+		</Properties>
 	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
