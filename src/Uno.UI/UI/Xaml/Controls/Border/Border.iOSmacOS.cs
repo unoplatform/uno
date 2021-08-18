@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImage);
 				}
 
-				if (_borderRenderer.UpdateLayer(this, Background, BorderThickness, BorderBrush, CornerRadius, backgroundImage)
+				if (_borderRenderer.UpdateLayer(this, Background, BackgroundSizing, BorderThickness, BorderBrush, CornerRadius, backgroundImage)
 					is CGPath updated) // UpdateLayer may return null if there is no update
 				{
 					BoundsPath = updated;

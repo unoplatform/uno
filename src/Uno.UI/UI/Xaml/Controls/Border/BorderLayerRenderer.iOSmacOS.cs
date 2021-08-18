@@ -9,6 +9,7 @@ using Windows.UI;
 using CoreImage;
 using Foundation;
 using Uno.Extensions;
+using Windows.UI.Xaml.Controls;
 
 #if __IOS__
 using UIKit;
@@ -44,6 +45,7 @@ namespace Windows.UI.Xaml.Shapes
 		public CGPath UpdateLayer(
 			_View owner,
 			Brush background,
+			BackgroundSizing backgroundSizing,
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
@@ -53,7 +55,7 @@ namespace Windows.UI.Xaml.Shapes
 			var bounds = owner.Bounds;
 			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
-			var newState = new LayoutState(area, background, borderThickness, borderBrush, cornerRadius, backgroundImage);
+			var newState = new LayoutState(area, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, backgroundImage);
 			var previousLayoutState = _currentState;
 
 			if (!newState.Equals(previousLayoutState))
@@ -292,7 +294,7 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					Action<Action<CAShapeLayer, CGPath>> createLayer = builder =>
 					{
-						CAShapeLayer layer = new CAShapeLayer();
+						var layer = new CAShapeLayer();
 						var path = new CGPath();
 
 						Brush.AssignAndObserveBrush(borderBrush, c => layer.StrokeColor = c)
@@ -464,7 +466,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="layer">The layer in which the gradient layers will be added</param>
 		/// <param name="sublayers">List of layers to keep all references</param>
 		/// <param name="insertionIndex">Where in the layer the new layers will be added</param>
-		/// <param name="linearGradientBrush">The LinearGradientBrush</param>
+		/// <param name="gradientBrush">The xxGradientBrush</param>
 		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
 		private static void CreateGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, GradientBrush gradientBrush, CAShapeLayer fillMask)
 		{
@@ -495,6 +497,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			public readonly CGRect Area;
 			public readonly Brush Background;
+			public readonly BackgroundSizing BackgroundSizing;
 			public readonly Brush BorderBrush;
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
@@ -502,17 +505,26 @@ namespace Windows.UI.Xaml.Shapes
 
 			internal CGPath BoundsPath { get; set; }
 
-			public LayoutState(CGRect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, _Image backgroundImage)
+			public LayoutState(
+				CGRect area,
+				Brush background,
+				BackgroundSizing backgroundSizing,
+				Thickness borderThickness,
+				Brush borderBrush,
+				CornerRadius cornerRadius,
+				_Image backgroundImage)
 			{
 				Area = area;
 				Background = background;
+				BackgroundSizing = backgroundSizing;
 				BorderBrush = borderBrush;
 				CornerRadius = cornerRadius;
 				BorderThickness = borderThickness;
 				BackgroundImage = backgroundImage;
 			}
 
-			public override int GetHashCode() => Background?.GetHashCode() ?? 0 + BorderBrush?.GetHashCode() ?? 0;
+			public override int GetHashCode()
+				=> (Background?.GetHashCode() ?? 0 + BorderBrush?.GetHashCode() ?? 0) + (int)BackgroundSizing;
 
 			public override bool Equals(object obj) => Equals(obj as LayoutState);
 
@@ -520,10 +532,11 @@ namespace Windows.UI.Xaml.Shapes
 				other != null
 				&& other.Area == Area
 				&& (other.Background?.Equals(Background) ?? false)
+				&& other.BackgroundSizing == BackgroundSizing
 				&& (other.BorderBrush?.Equals(BorderBrush) ?? false)
 				&& other.BorderThickness == BorderThickness
 				&& other.CornerRadius == CornerRadius
-				&& other.BackgroundImage == BackgroundImage;
+				&& ReferenceEquals(other.BackgroundImage, BackgroundImage);
 		}
 	}
 }
