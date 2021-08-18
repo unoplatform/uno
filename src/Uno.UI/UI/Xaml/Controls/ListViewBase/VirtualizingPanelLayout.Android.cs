@@ -899,6 +899,28 @@ namespace Windows.UI.Xaml.Controls
 				slotSize = new Size(double.PositiveInfinity, logicalAvailableBreadth);
 			}
 
+			var size = TryMeasureChild(child, slotSize, viewType);
+
+			if (!child.IsInLayout)
+			{
+				UnoViewGroup.StartLayoutingFromMeasure();
+			}
+			LayoutChild(child, direction, extentOffset, breadthOffset, size);
+
+			if (!child.IsInLayout)
+			{
+				UnoViewGroup.EndLayoutingFromMeasure();
+			}
+
+			return size;
+		}
+
+		/// <summary>
+		/// Measure item view if needed.
+		/// </summary>
+		/// <returns>Measured size, or cached size if no measure was necessary.</returns>
+		private Size TryMeasureChild(View child, Size slotSize, ViewType viewType)
+		{
 			var previousAvailableSize = LayoutInformation.GetAvailableSize(child);
 
 			if (child.IsLayoutRequested || slotSize != previousAvailableSize)
@@ -908,17 +930,6 @@ namespace Windows.UI.Xaml.Controls
 				if (ShouldApplyChildStretch)
 				{
 					size = ApplyChildStretch(size, slotSize, viewType);
-				}
-
-				if (!child.IsInLayout)
-				{
-					UnoViewGroup.StartLayoutingFromMeasure();
-				}
-				LayoutChild(child, direction, extentOffset, breadthOffset, size);
-
-				if (!child.IsInLayout)
-				{
-					UnoViewGroup.EndLayoutingFromMeasure();
 				}
 
 				return size;
