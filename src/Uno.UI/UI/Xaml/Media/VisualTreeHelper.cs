@@ -434,7 +434,7 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			// Validate if any child is an acceptable target
-			var children = childrenFilter is null ? element.GetChildren().OfType<UIElement>() : childrenFilter(element.GetChildren().OfType<UIElement>());
+			var children = childrenFilter is null ? GetManagedVisualChildren(element) : childrenFilter(GetManagedVisualChildren(element));
 			using var child = children.Reverse().GetEnumerator();
 			var isChildStale = isStale;
 			while (child.MoveNext())
@@ -497,7 +497,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal static UIElement SearchDownForLeaf(UIElement root, Predicate<UIElement> predicate)
 		{
-			foreach (var child in root.GetChildren().OfType<UIElement>().Reverse())
+			foreach (var child in GetManagedVisualChildren(root).Reverse())
 			{
 				if (predicate(child))
 				{
@@ -532,6 +532,32 @@ namespace Windows.UI.Xaml.Media
 				yield return enumerator.Current;
 			}
 		}
+
+#if __IOS__ || __MACOS__ || __ANDROID__
+		/// <summary>
+		/// Gets all immediate UIElement children of this <paramref name="view"/>. If any immediate subviews are native, it will descend into
+		/// them depth-first until it finds a UIElement, and return those UIElements.
+		/// </summary>
+		private static IEnumerable<UIElement> GetManagedVisualChildren(_ViewGroup view)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				if (child is UIElement uiElement)
+				{
+					yield return uiElement;
+				}
+				else if (child is _ViewGroup childVG)
+				{
+					foreach (var firstManagedChild in GetManagedVisualChildren(childVG))
+					{
+						yield return firstManagedChild;
+					}
+				}
+			}
+		}
+#else
+		private static IEnumerable<UIElement> GetManagedVisualChildren(_View view) => view.GetChildren().OfType<UIElement>();
+#endif
 		#endregion
 
 		#region HitTest tracing
@@ -584,7 +610,7 @@ namespace Windows.UI.Xaml.Media
 			}
 #endif
 		}
-		#endregion
+#endregion
 
 		internal struct Branch
 		{
