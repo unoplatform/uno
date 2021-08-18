@@ -2,7 +2,7 @@ name: 'Sync with MUX'
 
 on:
   schedule:
-  - cron: '0 0 1 * *'
+  - cron: '0 0 * * 0' # Runs weekly on Sunday.
   workflow_dispatch:
     inputs:
       reason:
@@ -33,7 +33,7 @@ jobs:
       uses: peter-evans/create-pull-request@v3.10.0
       with:
         title: 'Sync with MUX'
-        commit-message: 'fix: Sync with MUX'
+        commit-message: 'chore: Update WinUI RESW files'
         base: 'master'
         path: uno
         branch: 'sync-with-mux'

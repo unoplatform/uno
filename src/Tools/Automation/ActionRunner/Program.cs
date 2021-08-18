@@ -36,7 +36,7 @@ namespace ActionRunner
 				var unoContent = File.ReadAllText(unoPath);
 				if (muxContent != unoContent)
 				{
-					GitHubLogger.LogError($"Files '{muxPath}' and '{unoPath}' are not identical!!!");
+					GitHubLogger.LogInformation($"Files '{muxPath}' and '{unoPath}' are not identical!!!");
 					File.Copy(muxPath, unoPath, overwrite: true);
 				}
 			}
