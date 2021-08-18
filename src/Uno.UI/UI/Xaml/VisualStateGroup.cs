@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
 using Microsoft.Extensions.Logging;
+using static Windows.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -185,22 +186,41 @@ namespace Windows.UI.Xaml
 				this.Log().DebugFormat("Go to state [{0}/{1}] on [{2}]", Name, state?.Name, element);
 			}
 
-			var current = _current;
-			var target = (state, transition: FindTransition(current.state?.Name, state?.Name));
+			var currentValues = _current;
+			var targetValues = (state, transition: FindTransition(currentValues.state?.Name, state?.Name));
+
+			// As accessing to VisualState and VisualTransition properties (Storyboard ans Setters) may trigger the materialization of the VisualState,
+			// we ensure that this materialization occurs only in the right resource scope.
+			// Note: the "current" should have already been materialized.
+			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
+#if !HAS_EXPENSIVE_TRYFINALLY
+			try
+#endif
+			{
+				ResourceResolver.PushNewScope(_xamlScope);
+
+				current = (currentValues.transition?.Storyboard, currentValues.state?.Storyboard, currentValues.state?.Setters);
+				target = (targetValues.transition?.Storyboard, targetValues.state?.Storyboard, targetValues.state?.Setters);
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				ResourceResolver.PopScope();
+			}
 
 			// Stops running animations (transition or state's storyboard)
 			// Note about animations (as of 2021-08-16 win 19043):
 			//		Any "running animation", either from the current transition or the current state's storyboard,
 			//		is being "paused" for properties that are going to be animated by the "next animation" (again transition or target state's storyboard),
 			//		and rollbacked for properties that won't be animated anymore.
-			var runningAnimation = current.transition?.Storyboard is { } currentTransition
-				&& currentTransition.State != Timeline.TimelineState.Stopped
-					? currentTransition
-					: current.state?.Storyboard;
-			var nextAnimation = target.transition?.Storyboard ?? target.state?.Storyboard;
+			var runningAnimation = (current.transition?.State ?? Stopped) is Stopped
+				? current.animation
+				: current.transition;
+			var nextAnimation = target.transition ?? target.animation;
 			if (runningAnimation != null)
 			{
-				if(nextAnimation is null)
+				if (nextAnimation is null)
 				{
 					runningAnimation.Stop();
 				}
@@ -218,11 +238,11 @@ namespace Windows.UI.Xaml
 			//		  the value is rollbacked before the transition
 			//		* if the target has a setter for a property that was not affected by the current
 			//		  the value is applied only at the end of the transition
-			if (current.state is {} currentState)
+			if (current.setters is { } currentSetters)
 			{
-				foreach (var setter in currentState.Setters.OfType<Setter>())
+				foreach (var setter in currentSetters.OfType<Setter>())
 				{
-					if (element != null && (target.state?.Setters.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
+					if (element != null && (target.setters?.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
 					{
 						// We clear the value of the current setter only if there isn't any setter in the target state
 						// which changes the same target property (for perf ... and UWP behavior support regarding transition animation).
@@ -239,7 +259,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			_current = target;
+			_current = targetValues;
 
 			// For backward compatibility, we may apply the setters before the end of the transition.
 			if (FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
@@ -248,7 +268,7 @@ namespace Windows.UI.Xaml
 			}
 
 			// Finally effectively apply the target state!
-			if (useTransitions && target.transition?.Storyboard is { } transitionAnimation)
+			if (useTransitions && target.transition is { } transitionAnimation)
 			{
 				// Note: As of 2021-08-16 win 19043, if the transitionAnimation is Repeat=Forever, we actually never apply the state!
 
@@ -259,7 +279,7 @@ namespace Windows.UI.Xaml
 				{
 					transitionAnimation.Completed -= OnTransitionCompleted;
 
-					if (target.state?.Storyboard is { } stateAnimation)
+					if (target.animation is { } stateAnimation)
 					{
 						transitionAnimation.TurnOverAnimationsTo(stateAnimation);
 					}
@@ -281,7 +301,7 @@ namespace Windows.UI.Xaml
 				}
 
 				// Starts target state animation
-				if (target.state?.Storyboard is { } stateAnimation)
+				if (target.animation is { } stateAnimation)
 				{
 					stateAnimation.Completed += OnStateStoryboardCompleted;
 					stateAnimation.Begin();
@@ -300,27 +320,14 @@ namespace Windows.UI.Xaml
 
 			void ApplyTargetStateSetters()
 			{
-				if (target.state is null || element is null)
+				if (target.setters is null || element is null)
 				{
 					return;
 				}
 
-#if !HAS_EXPENSIVE_TRYFINALLY
-				try
-#endif
+				foreach (var setter in target.setters.OfType<Setter>())
 				{
-					ResourceResolver.PushNewScope(_xamlScope);
-
-					foreach (var setter in target.state.Setters.OfType<Setter>())
-					{
-						setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
-					}
-				}
-#if !HAS_EXPENSIVE_TRYFINALLY
-				finally
-#endif
-				{
-					ResourceResolver.PopScope();
+					setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
 				}
 			}
 		}
