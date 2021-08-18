@@ -1242,17 +1242,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return registrations;
-
-			void SubscribeToTextBoxEvents(TextBox target, TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> onTextChanging, RoutedEventHandler onGotFocus, RoutedEventHandler onLostFocus)
-			{
-				target.TextChanging += onTextChanging;
-				target.GotFocus += onGotFocus;
-				target.LostFocus += onLostFocus;
-
-				registrations.Add(() => target.TextChanging -= onTextChanging);
-				registrations.Add(() => target.GotFocus -= onGotFocus);
-				registrations.Add(() => target.LostFocus -= onLostFocus);
-			}
 		}
 
 		private void UpdateThirdDimensionSlider()
