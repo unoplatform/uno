@@ -238,10 +238,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			TestServices.WindowHelper.WindowContent = hostGrid;
 			await TestServices.WindowHelper.WaitForLoaded(hostGrid);
 
-			var noConstraintsAvailableSize = LayoutInformation.GetAvailableSize(noConstraintsBorder);
+			await TestServices.WindowHelper.WaitForEqual(313, () => LayoutInformation.GetAvailableSize(noConstraintsBorder).Height);
 			var maxHeightAvailableSize = LayoutInformation.GetAvailableSize(maxHeightBorder);
-
-			Assert.AreEqual(313, noConstraintsAvailableSize.Height, delta: 1);
 			Assert.AreEqual(313, maxHeightAvailableSize.Height, delta: 1); // Should return unmodified measure size, ignoring constraints like MaxHeight
 		}
 	}

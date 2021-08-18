@@ -135,11 +135,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
+			var container = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(3) as ListViewItem);
+
 			var initialMeasureCount = CounterGrid.GlobalMeasureCount;
 			var initialArrangeCount = CounterGrid.GlobalArrangeCount;
-
-			var container = SUT.ContainerFromIndex(3) as ListViewItem;
-			Assert.IsNotNull(container);
 			var counterGrid = container.FindFirstChild<CounterGrid>();
 			var badgeBorder = container.FindFirstChild<Border>(b => b.Name == "BadgeView");
 			Assert.IsNotNull(counterGrid);
