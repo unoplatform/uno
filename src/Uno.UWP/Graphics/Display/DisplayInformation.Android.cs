@@ -1,4 +1,5 @@
 #if __ANDROID__
+#nullable enable
 using System;
 using Android.App;
 using Android.Content;
@@ -11,7 +12,10 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private static DisplayInformation _instance;
+		private static DisplayInformation? _instance;
+
+		private DisplayMetricsCache _cachedDisplayMetrics;
+		private SurfaceOrientation _cachedRotation;
 
 		private static DisplayInformation InternalGetForCurrentView()
 		{
@@ -39,6 +43,11 @@ namespace Windows.Graphics.Display
 			}
 		}
 
+		partial void Initialize()
+		{
+			RefreshDisplayMetricsCache();
+		}
+
 		public DisplayOrientations CurrentOrientation => GetCurrentOrientation();
 
 		
@@ -51,61 +60,21 @@ namespace Windows.Graphics.Display
 
 
 		public uint ScreenHeightInRawPixels
-		{
-			get
-			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					return (uint)realDisplayMetrics.HeightPixels;
-				}
-			}
-		}
+			=> (uint)_cachedDisplayMetrics.HeightPixels;
 
 		public uint ScreenWidthInRawPixels
-		{
-			get
-			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					return (uint)realDisplayMetrics.WidthPixels;
-				}
-			}
-		}
-		
+			=> (uint)_cachedDisplayMetrics.WidthPixels;
+
 		public double RawPixelsPerViewPixel
-		{
-			get
-			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					return 1.0f * (int)realDisplayMetrics.DensityDpi / (int)DisplayMetricsDensity.Default;
-				}
-			}
-		}
+			=> 1.0f * (int)_cachedDisplayMetrics.DensityDpi / (int)DisplayMetricsDensity.Default;
 
 		public float LogicalDpi
-		{
-			get
-			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					// DisplayMetrics of 1.0 matches 100%, or UWP's default 96.0 DPI.
-					// https://stuff.mit.edu/afs/sipb/project/android/docs/reference/android/util/DisplayMetrics.html#density
-					return realDisplayMetrics.Density * BaseDpi;
-				}
-			}
-		}
+			// DisplayMetrics of 1.0 matches 100%, or UWP's default 96.0 DPI.
+			// https://stuff.mit.edu/afs/sipb/project/android/docs/reference/android/util/DisplayMetrics.html#density
+			=> _cachedDisplayMetrics.Density * BaseDpi;
 
 		public ResolutionScale ResolutionScale
-		{
-			get
-			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					return (ResolutionScale)(int)(realDisplayMetrics.Density * 100);
-				}
-			}
-		}
+			=> (ResolutionScale)(int)(_cachedDisplayMetrics.Density * 100);
 
 		/// <summary>
 		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
@@ -115,15 +84,7 @@ namespace Windows.Graphics.Display
 		/// defaults to 0 if not set
 		/// </remarks>
 		public float RawDpiX
-		{
-			get
-			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					return realDisplayMetrics.Xdpi;
-				}
-			}
-		}
+			=> _cachedDisplayMetrics.Xdpi;
 
 		/// <summary>
 		/// Gets the raw dots per inch (DPI) along the y axis of the display monitor.
@@ -133,15 +94,7 @@ namespace Windows.Graphics.Display
 		/// defaults to 0 if not set
 		/// </remarks>
 		public float RawDpiY
-		{
-			get
-			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					return realDisplayMetrics.Ydpi;
-				}
-			}
-		}
+			=> _cachedDisplayMetrics.Ydpi;
 
 		/// <summary>
 		/// Diagonal size of the display in inches.
@@ -154,13 +107,10 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				using (var realDisplayMetrics = CreateRealDisplayMetrics())
-				{
-					var x = Math.Pow((uint)realDisplayMetrics.WidthPixels / realDisplayMetrics.Xdpi, 2);
-					var y = Math.Pow((uint)realDisplayMetrics.HeightPixels / realDisplayMetrics.Ydpi, 2);
-					var screenInches = Math.Sqrt(x + y);
-					return screenInches;
-				}
+				var x = Math.Pow((uint)_cachedDisplayMetrics.WidthPixels / _cachedDisplayMetrics.Xdpi, 2);
+				var y = Math.Pow((uint)_cachedDisplayMetrics.HeightPixels / _cachedDisplayMetrics.Ydpi, 2);
+				var screenInches = Math.Sqrt(x + y);
+				return screenInches;
 			}
 		}
 
@@ -175,13 +125,13 @@ namespace Windows.Graphics.Display
 		{
 			using (var windowManager = CreateWindowManager())
 			{
-				var orientation = ContextHelper.Current.Resources.Configuration.Orientation;
+				var orientation = ContextHelper.Current.Resources!.Configuration!.Orientation;
 				if (orientation == Android.Content.Res.Orientation.Undefined)
 				{
 					return DisplayOrientations.None;
 				}
 
-				var rotation = windowManager.DefaultDisplay.Rotation;
+				var rotation = _cachedRotation;
 				bool isLandscape;
 				switch (rotation)
 				{
@@ -208,94 +158,123 @@ namespace Windows.Graphics.Display
 		{
 			using (var windowManager = CreateWindowManager())
 			{
-				var rotation = windowManager.DefaultDisplay.Rotation;
-				using (var displayMetrics = new DisplayMetrics())
+				int width = _cachedDisplayMetrics.WidthPixels;
+				int height = _cachedDisplayMetrics.HeightPixels;
+
+				if (width == height)
 				{
-#pragma warning disable 618
-					windowManager.DefaultDisplay.GetMetrics(displayMetrics);
-#pragma warning restore 618
+					//square device, can't tell orientation
+					return DisplayOrientations.None;
+				}
 
-					int width = displayMetrics.WidthPixels;
-					int height = displayMetrics.HeightPixels;
-
-					if (width == height)
+				if (NativeOrientation == DisplayOrientations.Portrait)
+				{
+					switch (_cachedRotation)
 					{
-						//square device, can't tell orientation
-						return DisplayOrientations.None;
+						case SurfaceOrientation.Rotation0:
+							return DisplayOrientations.Portrait;
+						case SurfaceOrientation.Rotation90:
+							return DisplayOrientations.Landscape;
+						case SurfaceOrientation.Rotation180:
+							return DisplayOrientations.PortraitFlipped;
+						case SurfaceOrientation.Rotation270:
+							return DisplayOrientations.LandscapeFlipped;
+						default:
+							//invalid rotation
+							return DisplayOrientations.None;
 					}
-
-					if (NativeOrientation == DisplayOrientations.Portrait)
+				}
+				else if (NativeOrientation == DisplayOrientations.Landscape)
+				{
+					//device is landscape or square
+					switch (_cachedRotation)
 					{
-						switch (rotation)
-						{
-							case SurfaceOrientation.Rotation0:
-								return DisplayOrientations.Portrait;
-							case SurfaceOrientation.Rotation90:
-								return DisplayOrientations.Landscape;
-							case SurfaceOrientation.Rotation180:
-								return DisplayOrientations.PortraitFlipped;
-							case SurfaceOrientation.Rotation270:
-								return DisplayOrientations.LandscapeFlipped;
-							default:
-								//invalid rotation
-								return DisplayOrientations.None;
-						}
+						case SurfaceOrientation.Rotation0:
+							return DisplayOrientations.Landscape;
+						case SurfaceOrientation.Rotation90:
+							return DisplayOrientations.Portrait;
+						case SurfaceOrientation.Rotation180:
+							return DisplayOrientations.LandscapeFlipped;
+						case SurfaceOrientation.Rotation270:
+							return DisplayOrientations.PortraitFlipped;
+						default:
+							//invalid rotation
+							return DisplayOrientations.None;
 					}
-					else if (NativeOrientation == DisplayOrientations.Landscape)
-					{
-						//device is landscape or square
-						switch (rotation)
-						{
-							case SurfaceOrientation.Rotation0:
-								return DisplayOrientations.Landscape;
-							case SurfaceOrientation.Rotation90:
-								return DisplayOrientations.Portrait;
-							case SurfaceOrientation.Rotation180:
-								return DisplayOrientations.LandscapeFlipped;
-							case SurfaceOrientation.Rotation270:
-								return DisplayOrientations.PortraitFlipped;
-							default:
-								//invalid rotation
-								return DisplayOrientations.None;
-						}
-					}
-					else
-					{
-						//fallback
-						return DisplayOrientations.None;
-					}
+				}
+				else
+				{
+					//fallback
+					return DisplayOrientations.None;
 				}
 			}
 		}
 
 		private IWindowManager CreateWindowManager()
 		{
-			return ContextHelper.Current.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
-		}
-
-		private DisplayMetrics CreateRealDisplayMetrics()
-		{
-			var displayMetrics = new DisplayMetrics();
-			using (var windowManager = CreateWindowManager())
+			if(ContextHelper.Current.GetSystemService(Context.WindowService) is { } windowService)
 			{
-				windowManager.DefaultDisplay.GetRealMetrics(displayMetrics);
+				return windowService.JavaCast<IWindowManager>();;
 			}
-			return displayMetrics;
+
+			throw new InvalidOperationException("Failed to get the system Window Service");
 		}
 
 		partial void StartOrientationChanged()
-		{
-			_lastKnownOrientation = CurrentOrientation;
-		}
+			=> _lastKnownOrientation = CurrentOrientation;
 
 		partial void StartDpiChanged()
-		{
-			_lastKnownDpi = LogicalDpi;
-		}
+			=> _lastKnownDpi = LogicalDpi;
 
 		internal void HandleConfigurationChange()
 		{
+			RefreshDisplayMetricsCache();
 			OnDisplayMetricsChanged();
+		}
+
+		private void RefreshDisplayMetricsCache()
+		{
+			using var displayMetrics = new DisplayMetrics();
+			using var windowManager = CreateWindowManager();
+			if (windowManager.DefaultDisplay is { } defaultDisplay)
+			{
+				defaultDisplay.GetRealMetrics(displayMetrics);
+
+				_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
+				_cachedRotation = windowManager.DefaultDisplay.Rotation;
+			}
+			else
+			{
+				throw new InvalidOperationException("Failed to get the default display information");
+			}
+		}
+
+		private class DisplayMetricsCache
+		{
+			public DisplayMetricsCache(DisplayMetrics displayMetric)
+			{
+				Density = displayMetric.Density;
+				DensityDpi = displayMetric.DensityDpi;
+				HeightPixels = displayMetric.HeightPixels;
+				ScaledDensity = displayMetric.ScaledDensity;
+				WidthPixels = displayMetric.WidthPixels;
+				Xdpi = displayMetric.Xdpi;
+				Ydpi = displayMetric.Ydpi;
+			}
+
+			public float Density { get; }
+
+			public DisplayMetricsDensity DensityDpi { get; }
+
+			public int HeightPixels { get; }
+
+			public float ScaledDensity { get; }
+
+			public int WidthPixels { get; }
+
+			public float Xdpi { get; }
+
+			public float Ydpi { get; }
 		}
 	}
 }

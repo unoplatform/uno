@@ -100,12 +100,11 @@ namespace Uno.UI
 
 		public static void RefreshFontScale()
 		{
-			using (Android.Util.DisplayMetrics displayMetrics = Android.App.Application.Context.Resources.DisplayMetrics)
-			{
-				AdjustScaledDensity(displayMetrics);
+			using Android.Util.DisplayMetrics displayMetrics = Android.App.Application.Context.Resources.DisplayMetrics;
 
-				_cachedScaledDensity = displayMetrics.ScaledDensity;
-			}
+			AdjustScaledDensity(displayMetrics);
+
+			_cachedScaledDensity = displayMetrics.ScaledDensity;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
