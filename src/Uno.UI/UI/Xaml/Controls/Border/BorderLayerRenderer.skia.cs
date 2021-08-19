@@ -12,6 +12,7 @@ using Windows.UI.Composition;
 using System.Numerics;
 using Uno.UI;
 using SkiaSharp;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -25,7 +26,6 @@ namespace Windows.UI.Xaml.Shapes
 		/// Updates or creates a sublayer to render a border-like shape.
 		/// </summary>
 		/// <param name="owner">The parent layer to apply the shape</param>
-		/// <param name="area">The rendering area</param>
 		/// <param name="background">The background brush</param>
 		/// <param name="borderThickness">The border thickness</param>
 		/// <param name="borderBrush">The border brush</param>
@@ -34,6 +34,7 @@ namespace Windows.UI.Xaml.Shapes
 		public void UpdateLayer(
 			FrameworkElement owner,
 			Brush background,
+			BackgroundSizing backgroundSizing,
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
@@ -43,7 +44,7 @@ namespace Windows.UI.Xaml.Shapes
 			// Bounds is captured to avoid calling twice calls below.
 			var area = new Rect(0, 0, owner.ActualWidth, owner.ActualHeight);
 
-			var newState = new LayoutState(area, background, borderThickness, borderBrush, cornerRadius, backgroundImage);
+			var newState = new LayoutState(area, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, backgroundImage);
 			var previousLayoutState = _currentState;
 
 			if (!newState.Equals(previousLayoutState))
@@ -352,15 +353,18 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			public readonly Rect Area;
 			public readonly Brush Background;
+			public readonly BackgroundSizing BackgroundSizing;
 			public readonly Brush BorderBrush;
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
 			public readonly object BackgroundImage;
 
-			public LayoutState(Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, object backgroundImage)
+			public LayoutState(Rect area, Brush background, BackgroundSizing backgroundSizing,
+				Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, object backgroundImage)
 			{
 				Area = area;
 				Background = background;
+				BackgroundSizing = backgroundSizing;
 				BorderBrush = borderBrush;
 				CornerRadius = cornerRadius;
 				BorderThickness = borderThickness;
@@ -372,6 +376,7 @@ namespace Windows.UI.Xaml.Shapes
 				return other != null
 					&& other.Area == Area
 					&& other.Background == Background
+					&& other.BackgroundSizing == BackgroundSizing
 					&& other.BorderBrush == BorderBrush
 					&& other.BorderThickness == BorderThickness
 					&& other.CornerRadius == CornerRadius
