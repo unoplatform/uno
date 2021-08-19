@@ -3927,7 +3927,7 @@
 		</Methods>
 		<Properties>
 			<Member
-				fullName=" Windows.UI.Xaml.Media.Animation.Timeline/TimelineState Windows.UI.Xaml.Media.Animation.Timeline::State()"
+				fullName="Windows.UI.Xaml.Media.Animation.Timeline/TimelineState Windows.UI.Xaml.Media.Animation.Timeline::State()"
 				reason="Not part of the UWP API" />
 			<Member
 				fullName="System.UInt32 Windows.UI.Composition.CompositionColorGradientStopCollection::Size()"
