@@ -287,6 +287,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					((ITimeline)child).Stop();
 				}
 			}
+
 			State = TimelineState.Stopped;
 		}
 

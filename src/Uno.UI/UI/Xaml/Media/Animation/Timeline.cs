@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			State = TimelineState.Stopped;
 		}
 
-		protected enum TimelineState
+		internal enum TimelineState
 		{
 			Active,
 			Filling,
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// An internally-used property which is essentially equivalent to <see cref="Storyboard.GetCurrentState"/>, except that it 
 		/// distinguishes <see cref="TimelineState.Active"/> from <see cref="TimelineState.Paused"/>.
 		/// </summary>
-		protected TimelineState State { get; set; }
+		internal TimelineState State { get; private protected set; }
 
 		public TimeSpan? BeginTime
 		{

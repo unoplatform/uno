@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -7,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 {
@@ -135,6 +137,155 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 
 			completed1Count.Should().Be(1);
 			completed2Count.Should().Be(1);
+		}
+
+		[TestMethod]
+		public void When_SetterAffectsSameProperty_Then_OriginalValueNotRestored()
+		{
+			var (control, group) = Setup();
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			Assert.IsTrue(new[] { "initial", "state1", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_NoSetter_Then_OriginalValueRestored()
+		{
+			var (control, group) = Setup();
+			group.States[1].Setters.Clear();
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			Assert.IsTrue(new[] { "initial", "state1", "initial" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_GoToStateWhileTransitionning_Then_StopTransition()
+		{
+			var (control, group) = Setup();
+			var transition = Transition(control, to: 1, frames: 5);
+			group.Transitions.Add(transition);
+
+			VisualStateManager.GoToState(control, "state1", true);
+			Assert.IsTrue(transition.Storyboard.State == Timeline.TimelineState.Active);
+
+			VisualStateManager.GoToState(control, "state2", true);
+			Assert.IsTrue(transition.Storyboard.State == Timeline.TimelineState.Stopped);
+		}
+
+		[TestMethod]
+		public void When_GoToStateWhileAnimating_Then_StopAnimation()
+		{
+			var (control, group) = Setup();
+			var animation = group.States[0].Storyboard = AnimateTag(control, "state1", 5);
+
+			VisualStateManager.GoToState(control, "state1", true);
+			Assert.IsTrue(animation.State == Timeline.TimelineState.Active);
+
+			VisualStateManager.GoToState(control, "state2", true);
+			Assert.IsTrue(animation.State == Timeline.TimelineState.Stopped);
+		}
+
+		[TestMethod]
+		public void When_TransitionAndSetter_Then_SetterAppliedAfter()
+		{
+			var (control, group) = Setup();
+			group.Transitions.Add(Transition(control, from: 1, to: 2, frames: 0));
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			Assert.IsTrue(new [] { "initial", "state1", "transition_from_state1_to_state2_frame_0", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_TransitionAndSetter_InCompatibilityMode_Then_SetterAppliedBefore()
+		{
+			try
+			{
+				FeatureConfiguration.VisualState.ApplySettersBeforeTransition = true;
+
+				var (control, group) = Setup();
+				group.Transitions.Add(Transition(control, from: 1, to: 2, frames: 0));
+
+				var tags = new List<string> { (string)control.Tag };
+				control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+				VisualStateManager.GoToState(control, "state1", true);
+				VisualStateManager.GoToState(control, "state2", true);
+
+				Assert.IsTrue(new[] { "initial", "state1", "state2", "transition_from_state1_to_state2_frame_0" }.SequenceEqual(tags));
+			}
+			finally
+			{
+				FeatureConfiguration.VisualState.ApplySettersBeforeTransition = false;
+			}
+		}
+
+		private static (Control control, VisualStateGroup states) Setup()
+		{
+			var control = new Control { Name = "control", Tag = "initial", Template = new ControlTemplate(() => new Grid()) };
+			var group = new VisualStateGroup { States = { State(1), State(2) } };
+
+			VisualStateManager.SetVisualStateGroups((FrameworkElement)control.TemplatedRoot, new List<VisualStateGroup> { group });
+
+			control.ApplyTemplate();
+
+			return (control, group);
+		}
+
+		private static VisualState State(int id)
+			=> new VisualState
+			{
+				Name = "state" + id,
+				Setters = {new Setter(new TargetPropertyPath("control", "Tag"), "state" + id)}
+			};
+
+		private static VisualTransition Transition(Control control, int? @from = null, int? to = null, params int[] frames)
+		{
+			var transition = new VisualTransition();
+			var animationName = "transition";
+
+			if (@from is int f)
+			{
+				transition.From = "state" + f;
+				animationName += "_from_state" + f;
+			}
+
+			if (to is int t)
+			{
+				transition.To = "state" + t;
+				animationName += "_to_state" + t;
+			}
+
+			transition.Storyboard = AnimateTag(control, animationName, frames);
+
+			return transition;
+		}
+
+		private static Storyboard AnimateTag(Control target, string name, params int[] frames)
+		{
+			var anim = new ObjectAnimationUsingKeyFrames();
+			Storyboard.SetTarget(anim, target);
+			Storyboard.SetTargetProperty(anim, "Tag");
+			foreach (var frame in frames)
+			{
+				anim.KeyFrames.Add(new DiscreteObjectKeyFrame { KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(frame)), Value = $"{name}_frame_{frame}" });
+			}
+
+			return new Storyboard { Children = { anim } };
 		}
 
 		private class CustomStateTrigger : StateTrigger
