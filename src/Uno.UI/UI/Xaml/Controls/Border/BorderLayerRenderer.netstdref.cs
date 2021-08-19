@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
@@ -11,6 +8,7 @@ namespace Windows.UI.Xaml.Shapes
 		public void UpdateLayer(
 			FrameworkElement owner,
 			Brush background,
+			BackgroundSizing backgroundSizing,
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
