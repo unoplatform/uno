@@ -114,6 +114,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Touch only test
+		public void Manipulation_WhenInListViewAndManipulationTranslateX_ThenAbort()
+		{
+			Run("UITests.Windows_UI_Input.GestureRecognizerTests.Manipulation_WhenInListView");
+
+			var scroller = _app.WaitForElement("ItemsSupportsTranslateX").Single().Rect;
+
+			_app.DragCoordinates(scroller.CenterX, scroller.Bottom - 5, scroller.CenterX, scroller.Y + 10);
+
+			var result = TakeScreenshot("after_scroll", ignoreInSnapshotCompare: true);
+
+			ImageAssert.DoesNotHaveColorAt(result, scroller.CenterX, scroller.Y + 10, "#FF0000");
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		[Ignore("We need to do a L manipulation to get manip started then pt cancel due to SV kick-in")]
 		public void Manipulation_WhenInScrollViewer()
