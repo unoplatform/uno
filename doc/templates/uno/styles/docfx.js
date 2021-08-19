@@ -23,6 +23,7 @@ $(function () {
 
   breakText();
   renderTabs();
+  updateLogo();
 
   window.refresh = function (article) {
     // Update markup result
@@ -60,7 +61,6 @@ $(function () {
       $('#search-query').val(decodeURI(searchParam));
     }
 
-    updateLogo();
   });
 
   function updateLogo(){
@@ -69,7 +69,7 @@ $(function () {
       $('#logo').attr('src', '../images/UnoLogoSmall.png');
     }
     else {
-      $('#logo').attr('src', '../images/uno-logo.png');
+      $('#logo').attr('src', '../images/uno-logo.svg');
     }
   }
 
