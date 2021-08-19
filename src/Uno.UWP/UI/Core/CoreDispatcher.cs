@@ -31,6 +31,11 @@ namespace Windows.UI.Core
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
+		/// <summary>
+		/// Gets the dispatcher for the main thread.
+		/// </summary>
+		internal static CoreDispatcher Main { get; } = new CoreDispatcher();
+
 		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{EA0762E9-8208-4501-B4A5-CC7ECF7BE85E}");

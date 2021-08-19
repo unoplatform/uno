@@ -11624,6 +11624,10 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.FlyoutBase.remove_Opening(System.EventHandler value)"
 				reason="Align signature with UWP" />
+
+			<Member
+				fullName="Windows.UI.Core.CoreDispatcher Windows.UI.Core.CoreDispatcher.get_Main()"
+				reason="API alignment" />
 		</Methods>
 		<Events>
 			<Member
@@ -12648,6 +12652,10 @@
 			<Member
 				fullName="Windows.UI.Xaml.CornerRadius Windows.UI.Xaml.Controls.Panel::CornerRadius()"
 				reason="Align Panel DPs" />
+
+			<Member
+				fullName="Windows.UI.Core.CoreDispatcher Windows.UI.Core.CoreDispatcher::Main()"
+				reason="API alignment" />
 		</Properties>
 	</IgnoreSet>
 	<!--
