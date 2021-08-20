@@ -39,6 +39,10 @@
 			<Border x:Name="MainTargetEvenOdd"
 					Height="91"
 					Width="91" />
+			<Border x:Name="LeftTargetEvenOdd"
+					Height="91"
+					Width="30"
+					HorizontalAlignment="Left" />
 			<Border x:Name="RightTargetEvenOdd"
 					Height="91"
 					Width="30"
@@ -61,6 +65,10 @@
 			<Border x:Name="MainTargetNonZero"
 					Height="91"
 					Width="91" />
+			<Border x:Name="LeftTargetNonZero"
+					Height="91"
+					Width="30"
+					HorizontalAlignment="Left" />
 			<Border x:Name="RightTargetNonZero"
 					Height="91"
 					Width="30"
@@ -83,6 +91,10 @@
 			<Border x:Name="MainTargetEvenOdd2"
 					Height="91"
 					Width="91" />
+			<Border x:Name="LeftTargetEvenOdd2"
+					Height="91"
+					Width="30"
+					HorizontalAlignment="Left" />
 			<Border x:Name="RightTargetEvenOdd2"
 					Height="91"
 					Width="30"
@@ -121,6 +133,10 @@
 			<Border x:Name="MainTargetNonZero2"
 					Height="91"
 					Width="91" />
+			<Border x:Name="LeftTargetNonZero2"
+					Height="91"
+					Width="30"
+					HorizontalAlignment="Left" />
 			<Border x:Name="RightTargetNonZero2"
 					Height="91"
 					Width="30"
@@ -159,6 +175,10 @@
 			<Border x:Name="MainTargetEvenOdd3"
 					Height="91"
 					Width="91" />
+			<Border x:Name="LeftTargetEvenOdd3"
+					Height="91"
+					Width="30"
+					HorizontalAlignment="Left" />
 			<Border x:Name="RightTargetEvenOdd3"
 					Height="91"
 					Width="30"
@@ -203,6 +223,10 @@
 			<Border x:Name="MainTargetNonZero3"
 					Height="91"
 					Width="91" />
+			<Border x:Name="LeftTargetNonZero3"
+					Height="91"
+					Width="30"
+					HorizontalAlignment="Left" />
 			<Border x:Name="RightTargetNonZero3"
 					Height="91"
 					Width="30"
