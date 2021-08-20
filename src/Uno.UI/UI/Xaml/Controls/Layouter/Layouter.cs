@@ -104,18 +104,18 @@ namespace Windows.UI.Xaml.Controls
 				// NaN values are accepted as input here, particularly when coming from
 				// SizeThatFits in Image or Scrollviewer. Clamp the value here as it is reused
 				// below for the clipping value.
-				availableSize = availableSize
+				var frameworkAvailableSize = availableSize
 					.NumberOrDefault(MaxSize);
 
-				var frameworkAvailableSize = availableSize
+				frameworkAvailableSize = frameworkAvailableSize
 					.Subtract(marginSize)
 					.AtLeastZero()
 					.AtMost(maxSize);
 
-				LayoutInformation.SetAvailableSize(Panel, frameworkAvailableSize);
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
+				LayoutInformation.SetAvailableSize(Panel, availableSize);
 
-				_logDebug?.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
+				_logDebug?.LogTrace($"{this}.MeasureOverride(availableSize={availableSize}); frameworkAvailableSize={frameworkAvailableSize}; desiredSize={desiredSize}");
 
 				if (
 					double.IsNaN(desiredSize.Width)

@@ -217,6 +217,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		} 
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_LayoutInformation_GetAvailableSize_Constraints()
+		{
+			var noConstraintsBorder = new Border();
+			var maxHeightBorder = new Border() { MaxHeight = 122 };
+			var hostGrid = new Grid
+			{
+				Width = 182,
+				Height = 313,
+				Children =
+				{
+					noConstraintsBorder,
+					maxHeightBorder
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = hostGrid;
+			await TestServices.WindowHelper.WaitForLoaded(hostGrid);
+
+			await TestServices.WindowHelper.WaitForEqual(313, () => LayoutInformation.GetAvailableSize(noConstraintsBorder).Height);
+			var maxHeightAvailableSize = LayoutInformation.GetAvailableSize(maxHeightBorder);
+			Assert.AreEqual(313, maxHeightAvailableSize.Height, delta: 1); // Should return unmodified measure size, ignoring constraints like MaxHeight
+		}
 	}
 
 	internal partial class When_UpdateLayout_Then_ReentrancyNotAllowed_Element : FrameworkElement

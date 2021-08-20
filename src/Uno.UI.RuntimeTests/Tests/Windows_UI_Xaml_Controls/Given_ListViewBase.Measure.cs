@@ -117,12 +117,160 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(132, SUT.ActualHeight);
 		}
 
+		[TestMethod]
+		public async Task When_Item_Changes_Measure_Count()
+		{
+			var template = (DataTemplate)_testsResources["When_Item_Changes_Measure_Count_Template"];
+			const double baseWidth = 25;
+			var itemsSource = Enumerable.Range(1, 20).Select(i => new When_Item_Changes_Measure_Count_ItemViewModel(i) { BadgeWidth = baseWidth + (2 * i) % 10 }).ToArray();
+
+			var SUT = new ListView
+			{
+				ItemsSource = itemsSource,
+				ItemTemplate = template,
+				ItemContainerStyle = BasicContainerStyle,
+				MaxHeight = 300
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var container = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(3) as ListViewItem);
+
+			var initialMeasureCount = CounterGrid.GlobalMeasureCount;
+			var initialArrangeCount = CounterGrid.GlobalArrangeCount;
+			var counterGrid = container.FindFirstChild<CounterGrid>();
+			var badgeBorder = container.FindFirstChild<Border>(b => b.Name == "BadgeView");
+			Assert.IsNotNull(counterGrid);
+			Assert.IsNotNull(badgeBorder);
+			var initialLocalMeasureCount = counterGrid.LocalMeasureCount;
+			var initialLocalArrangeCount = counterGrid.LocalArrangeCount;
+
+			itemsSource[3].BadgeWidth = 42;
+
+			await WindowHelper.WaitForEqual(42, () => badgeBorder.ActualWidth);
+
+			Assert.AreEqual(initialMeasureCount + 1, CounterGrid.GlobalMeasureCount);
+			Assert.AreEqual(initialArrangeCount + 1, CounterGrid.GlobalArrangeCount);
+
+			Assert.AreEqual(initialLocalMeasureCount + 1, counterGrid.LocalMeasureCount);
+			Assert.AreEqual(initialLocalArrangeCount + 1, counterGrid.LocalArrangeCount);
+		}
+
+		[TestMethod]
+		public async Task When_Available_Breadth_Changes()
+		{
+			var template = (DataTemplate)_testsResources["When_Available_Breadth_Changes_Template"];
+			var itemsSource = Enumerable.Range(0, 15).Select(_ => WordGenerator.GetRandomWordSequence(17, new Random(6754))).ToArray();
+			var SUT = new ListView
+			{
+				ItemTemplate = template,
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemsSource = itemsSource,
+				MaxHeight = 500
+			};
+
+			var hostGrid = new Grid
+			{
+				Width = 196,
+				Children =
+				{
+					SUT
+				}
+			};
+
+			WindowHelper.WindowContent = hostGrid;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var container = SUT.ContainerFromIndex(2) as ListViewItem;
+
+			var border = container.FindFirstChild<Border>(b => b.Name == "ContainerBorder");
+			Assert.AreEqual(196, border.ActualWidth, delta: 1);
+
+			hostGrid.Width = 244;
+			await WindowHelper.WaitForEqual(244, () => border.ActualWidth);
+		}
+
+
 		// Works around ScrollIntoView() not implemented for all platforms
 		private static void ScrollBy(ListViewBase listViewBase, double scrollBy)
 		{
 			var sv = listViewBase.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
 			sv.ChangeView(null, scrollBy, null);
+		}
+
+		public class When_Item_Changes_Measure_Count_ItemViewModel : System.ComponentModel.INotifyPropertyChanged
+		{
+
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+			public int Id { get; }
+
+			public string Label => $"Item {Id}";
+
+			private double _badgeWidth;
+			public double BadgeWidth
+			{
+				get => _badgeWidth;
+				set
+				{
+					if (value != _badgeWidth)
+					{
+						_badgeWidth = value;
+						PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(BadgeWidth)));
+					}
+				}
+			}
+
+			public When_Item_Changes_Measure_Count_ItemViewModel(int id)
+			{
+				Id = id;
+			}
+		}
+
+		private static class WordGenerator
+		{
+			private static readonly string Vowels = "aeiou";
+			private static readonly string Consonants = "bcdfghjklmnprstvwxyz";
+
+			public static string GetRandomWordSequence(int count, Random random)
+			{
+				var sb = new StringBuilder();
+				for (int i = 0; i < count; i++)
+				{
+					sb.Append(GetRandomWord(random));
+					sb.Append(" ");
+				}
+				sb.Remove(sb.Length - 1, 1);
+				return sb.ToString();
+			}
+
+			private static string GetRandomWord(Random random)
+			{
+				const double startingvowelChance = 0.2;
+				var sb = new StringBuilder();
+				if (random.NextDouble() < startingvowelChance)
+				{
+					sb.Append(GetRandom(Vowels.ToCharArray(), random));
+					sb.Append(GetRandom(Consonants.ToCharArray(), random));
+					sb.Append(GetRandom(Vowels.ToCharArray(), random));
+				}
+				else
+				{
+					sb.Append(GetRandom(Consonants.ToCharArray(), random));
+					sb.Append(GetRandom(Vowels.ToCharArray(), random));
+					sb.Append(GetRandom(Consonants.ToCharArray(), random));
+				}
+
+				return sb.ToString();
+			}
+
+			private static T GetRandom<T>(IList<T> list, Random random)
+			{
+				var i = random.Next(list.Count);
+				return list[i];
+			}
 		}
 	}
 }

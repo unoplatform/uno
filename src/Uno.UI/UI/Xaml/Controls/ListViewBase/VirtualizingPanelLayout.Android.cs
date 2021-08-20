@@ -898,12 +898,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				slotSize = new Size(double.PositiveInfinity, logicalAvailableBreadth);
 			}
-			var size = _layouter.MeasureChild(child, slotSize);
 
-			if (ShouldApplyChildStretch)
-			{
-				size = ApplyChildStretch(size, slotSize, viewType);
-			}
+			var size = TryMeasureChild(child, slotSize, viewType);
 
 			if (!child.IsInLayout)
 			{
@@ -917,6 +913,31 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return size;
+		}
+
+		/// <summary>
+		/// Measure item view if needed.
+		/// </summary>
+		/// <returns>Measured size, or cached size if no measure was necessary.</returns>
+		private Size TryMeasureChild(View child, Size slotSize, ViewType viewType)
+		{
+			var previousAvailableSize = LayoutInformation.GetAvailableSize(child);
+
+			if (child.IsLayoutRequested || slotSize != previousAvailableSize)
+			{
+				var size = _layouter.MeasureChild(child, slotSize);
+
+				if (ShouldApplyChildStretch)
+				{
+					size = ApplyChildStretch(size, slotSize, viewType);
+				}
+
+				return size;
+			}
+			else
+			{
+				return (child as FrameworkElement)?.AssignedActualSize ?? ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
+			}
 		}
 
 		/// <summary>
