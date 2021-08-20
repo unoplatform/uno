@@ -53,8 +53,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = textBox.ContentElement;
-
-			EnsureWidgetForAcceptsReturn(textBox.AcceptsReturn, isPassword: textBox is PasswordBox);
+			EnsureWidget(textBox);
 			var textInputLayer = GetWindowTextInputLayer();
 			textInputLayer.Put(_currentInputWidget!, 0, 0);
 
@@ -108,7 +107,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				return;
 			}
 
-			EnsureWidgetForAcceptsReturn(textBox.AcceptsReturn, isPassword: textBox is PasswordBox);
+			EnsureWidget(textBox);
 
 			var fontDescription = new FontDescription
 			{
@@ -173,12 +172,20 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			entry.MaxLength = textBox.MaxLength;
 		}
 
-		private void EnsureWidgetForAcceptsReturn(bool acceptsReturn, bool isPassword)
+		private void EnsureWidget(TextBox textBox)
 		{
+			var isPassword = false;
+			var isPasswordVisible = true;
+			if (textBox is PasswordBox passwordBox)
+			{
+				isPassword = true;
+				isPasswordVisible = passwordBox.PasswordRevealMode == PasswordRevealMode.Visible;
+			}
+
 			// On UWP, A PasswordBox doesn't have AcceptsReturn property.
 			// The property exists on Uno because PasswordBox incorrectly inherits TextBox.
 			// If we have PasswordBox, ignore AcceptsReturnValue and always use Gtk.Entry
-			acceptsReturn = acceptsReturn && !isPassword;
+			var acceptsReturn = textBox.AcceptsReturn && !isPassword;
 
 			var isIncompatibleInputType =
 				(acceptsReturn && !(_currentInputWidget is TextView)) ||
@@ -186,12 +193,12 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			if (isIncompatibleInputType)
 			{
 				var inputText = GetInputText();
-				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword);
+				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword, isPasswordVisible);
 				SetWidgetText(inputText ?? string.Empty);
 			}
 		}
 
-		private Widget CreateInputWidget(bool acceptsReturn, bool isPassword)
+		private Widget CreateInputWidget(bool acceptsReturn, bool isPassword, bool isPasswordVisible)
 		{
 			Debug.Assert(!acceptsReturn || !isPassword);
 			Widget widget;
@@ -208,7 +215,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				if (isPassword)
 				{
 					entry.InputPurpose = InputPurpose.Password;
-					entry.Visibility = false;
+					entry.Visibility = isPasswordVisible;
 				}
 
 				entry.Changed += WidgetTextChanged;
