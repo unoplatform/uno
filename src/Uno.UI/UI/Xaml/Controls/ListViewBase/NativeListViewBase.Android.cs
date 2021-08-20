@@ -16,9 +16,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInAnimatedScroll;
 
-		bool _shouldRecalibrateFlingVelocity;
-		float? _previousX, _previousY;
-		float? _deltaX, _deltaY;
+		private ScrollBarVisibility? _horizontalScrollBarVisibility;
+		private ScrollBarVisibility? _verticalScrollBarVisibility;
+		private bool _shouldRecalibrateFlingVelocity;
+		private float? _previousX, _previousY;
+		private float? _deltaX, _deltaY;
 
 		internal BufferViewCache ViewCache { get; }
 
@@ -125,13 +127,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollBarVisibility HorizontalScrollBarVisibility
 		{
-			get
-			{
-				return HorizontalScrollBarEnabled ? ScrollBarVisibility.Visible : ScrollBarVisibility.Hidden;
-			}
-
+			get => _horizontalScrollBarVisibility ?? (HorizontalScrollBarEnabled ? ScrollBarVisibility.Visible : ScrollBarVisibility.Disabled);
 			set
 			{
+				_horizontalScrollBarVisibility = value;
 				switch (value)
 				{
 					case ScrollBarVisibility.Disabled:
@@ -149,13 +148,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollBarVisibility VerticalScrollBarVisibility
 		{
-			get
-			{
-				return VerticalScrollBarEnabled ? ScrollBarVisibility.Visible : ScrollBarVisibility.Hidden;
-			}
-
+			get => _verticalScrollBarVisibility ?? (VerticalScrollBarEnabled ? ScrollBarVisibility.Visible : ScrollBarVisibility.Disabled);
 			set
 			{
+				_verticalScrollBarVisibility = value;
 				switch (value)
 				{
 					case ScrollBarVisibility.Disabled:
