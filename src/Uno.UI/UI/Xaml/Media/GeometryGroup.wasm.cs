@@ -45,13 +45,13 @@ namespace Windows.UI.Xaml.Media
 					oldGeometries.VectorChanged -= OnGeometriesChanged;
 				}
 
-				if(args?.NewValue is GeometryCollection newGeometries)
+				if((args?.NewValue ?? Children) is GeometryCollection newGeometries)
 				{
 					newGeometries.VectorChanged += OnGeometriesChanged;
 
 					newGeometries.SetParent(this);
 
-					foreach (var child in Children)
+					foreach (var child in newGeometries)
 					{
 						_svgElement.AddChild(child.GetSvgElement());
 					}
