@@ -1,12 +1,10 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Uno
+namespace Uno.Helpers
 {
-	internal static class DispatcherTimerHelper
+	internal static class DispatcherTimerProxy
 	{
 		private static Func<IDispatcherTimer>? _getter;
 
