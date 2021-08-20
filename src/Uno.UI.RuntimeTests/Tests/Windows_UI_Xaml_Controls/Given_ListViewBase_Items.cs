@@ -413,6 +413,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+		[TestMethod]
+		public void When_ItemsSource_ObservableCollection_Selection()
+		{
+			var itemsSource = new ObservableCollection<string>(Enumerable.Range(0, 80).Select(i => $"Item {i}"));
+			var SUT = new ListView { ItemsSource = itemsSource };
+
+			SUT.SelectedIndex = 5;
+
+			Assert.AreEqual(5, SUT.SelectedIndex);
+			Assert.AreEqual("Item 5", SUT.SelectedItem);
+
+			itemsSource.RemoveAt(2);
+
+			Assert.AreEqual(4, SUT.SelectedIndex);
+			Assert.AreEqual("Item 5", SUT.SelectedItem);
+
+			itemsSource.RemoveAt(22);
+
+			Assert.AreEqual(4, SUT.SelectedIndex);
+			Assert.AreEqual("Item 5", SUT.SelectedItem);
+
+			itemsSource.Insert(1, "Item 1.5");
+
+			Assert.AreEqual(5, SUT.SelectedIndex);
+			Assert.AreEqual("Item 5", SUT.SelectedItem);
+		}
+
 		private static ObservableCollection<GroupingObservableCollection<TKey, TElement>> GetGroupedObservable<TKey, TElement>(IEnumerable<TElement> source, Func<TElement, TKey> keySelector)
 		{
 			var observables = source.GroupBy(keySelector).Select(g => new GroupingObservableCollection<TKey, TElement>(g.Key, g));

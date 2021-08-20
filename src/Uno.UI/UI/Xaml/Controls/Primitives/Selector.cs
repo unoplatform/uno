@@ -507,10 +507,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected override void OnItemsChanged(object e)
 		{
-			if (e is IVectorChangedEventArgs iVCE)
+			if (
+				// When ItemsSource is set, we get collection changes from it directly (and it's not possible to directly modify Items)
+				ItemsSource == null &&
+				e is IVectorChangedEventArgs iVCE
+			)
 			{
 				if (iVCE.CollectionChange == CollectionChange.ItemChanged
-				    || (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
+					|| (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
 				{
 					var item = Items[(int)iVCE.Index];
 
@@ -624,7 +628,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 									  FocusState focusState,
 									  bool animateIfBringIntoView)
 		{
-			
+
 		}
 
 		protected void SetFocusedItem(int index,
@@ -711,7 +715,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void ScrollIntoView(int index, bool isGroupItemIndex, bool isHeader, bool isFooter, bool isFromPublicAPI, bool ensureContainerRealized, bool animateIfBringIntoView, ScrollIntoViewAlignment @default)
 		{
-			
+
 		}
 
 		protected void SetFocusedItem(int index,
@@ -748,7 +752,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected void SetFocusedItem(int index,
 									  bool shouldScrollIntoView)
 		{
-			
+
 		}
 
 		bool CanScrollIntoView()
