@@ -1,5 +1,7 @@
 ﻿#nullable enable
 using System;
+using System.Globalization;
+using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Wasm;
@@ -8,22 +10,22 @@ namespace Windows.UI.Xaml.Media
 {
 	partial class GeometryGroup
 	{
-		private SvgElement _svgElement = new SvgElement("g");
+		private SvgElement? _svgElement;
 
 		partial void InitPartials()
 		{
-			this.RegisterDisposablePropertyChangedCallback(OnPropertyChanged);
+			_ = this.RegisterDisposablePropertyChangedCallback(OnPropertyChanged);
 
 			Children.VectorChanged += OnGeometriesChanged;
-
-			_svgElement.SetAttribute("fill-rule", "evenodd");
-#if DEBUG
-			_svgElement.SetAttribute("uno-geometry-type", "GeometryGroup");
-#endif
 		}
 
-		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(ManagedWeakReference? instance, DependencyProperty property, DependencyPropertyChangedEventArgs? args)
 		{
+			if(_svgElement == null)
+			{
+				return;
+			}
+
 			if (property == FillRuleProperty)
 			{
 				var rule = FillRule switch
@@ -38,12 +40,12 @@ namespace Windows.UI.Xaml.Media
 			{
 				_svgElement.ClearChildren();
 
-				if(args.OldValue is GeometryCollection oldGeometries)
+				if(args?.OldValue is GeometryCollection oldGeometries)
 				{
 					oldGeometries.VectorChanged -= OnGeometriesChanged;
 				}
 
-				if(args.NewValue is GeometryCollection newGeometries)
+				if(args?.NewValue is GeometryCollection newGeometries)
 				{
 					newGeometries.VectorChanged += OnGeometriesChanged;
 
@@ -57,16 +59,61 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private void OnGeometriesChanged(IObservableVector<Geometry> sender, IVectorChangedEventArgs @event)
+		internal override void Invalidate()
 		{
-			_svgElement.ClearChildren();
-
-			foreach (var child in Children)
-			{
-				_svgElement.AddChild(child.GetSvgElement());
-			}
+			var data = RasterizePathData().ToString(null, CultureInfo.InvariantCulture);
+			GetSvgElement().SetAttribute("d", data);
 		}
 
-		internal override SvgElement GetSvgElement() => _svgElement;
+		private void OnGeometriesChanged(IObservableVector<Geometry> sender, IVectorChangedEventArgs e)
+		{
+			Invalidate();
+		}
+
+		internal override SvgElement GetSvgElement()
+		{
+			if (_svgElement == null)
+			{
+				_svgElement = new SvgElement("path");
+#if DEBUG
+				_svgElement.SetAttribute("uno-geometry-type", "GeometryGroup");
+#endif
+
+				OnPropertyChanged(null, FillRuleProperty, null);
+				OnPropertyChanged(null, ChildrenProperty, null);
+			}
+
+			return _svgElement;
+		}
+
+		private CompositeFormattable _compositeFormattable;
+
+		internal override IFormattable RasterizePathData()
+		{
+			return _compositeFormattable ??= new CompositeFormattable(this);
+		}
+
+		private class CompositeFormattable : IFormattable
+		{
+			private readonly GeometryGroup _owner;
+
+			public CompositeFormattable(GeometryGroup owner)
+			{
+				_owner = owner;
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				var sb = new StringBuilder();
+
+				foreach(var child in _owner.Children)
+				{
+					var childFormattable = child.RasterizePathData();
+					sb.Append(childFormattable.ToString(format, formatProvider));
+				}
+
+				return sb.ToString();
+			}
+		}
 	}
 }

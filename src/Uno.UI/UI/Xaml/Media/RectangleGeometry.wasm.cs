@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Wasm;
@@ -44,6 +45,13 @@ namespace Windows.UI.Xaml.Media
 				UpdateSvg();
 			}
 			return _svgElement;
+		}
+
+		internal override IFormattable RasterizePathData()
+		{
+			var rect = Rect;
+
+			return $"M{rect.Left},{rect.Top} L{rect.Right},{rect.Top} {rect.Right},{rect.Bottom} {rect.Left},{rect.Bottom} Z";
 		}
 	}
 }
