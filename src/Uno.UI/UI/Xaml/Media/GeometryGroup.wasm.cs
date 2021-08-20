@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal override void Invalidate()
 		{
-			var data = RasterizePathData().ToString(null, CultureInfo.InvariantCulture);
+			var data = ToPathData().ToString(null, CultureInfo.InvariantCulture);
 			GetSvgElement().SetAttribute("d", data);
 		}
 
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Media
 
 		private CompositeFormattable _compositeFormattable;
 
-		internal override IFormattable RasterizePathData()
+		internal override IFormattable ToPathData()
 		{
 			return _compositeFormattable ??= new CompositeFormattable(this);
 		}
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Media
 
 				foreach(var child in _owner.Children)
 				{
-					var childFormattable = child.RasterizePathData();
+					var childFormattable = child.ToPathData();
 					sb.Append(childFormattable.ToString(format, formatProvider));
 				}
 

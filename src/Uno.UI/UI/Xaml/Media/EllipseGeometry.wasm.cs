@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media
 			return _svgElement;
 		}
 
-		internal override IFormattable RasterizePathData()
+		internal override IFormattable ToPathData()
 		{
 			var cx = Center.X;
 			var cy = Center.Y;

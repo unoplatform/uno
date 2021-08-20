@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal override SvgElement GetSvgElement() => _svgElement;
 
-		// There is no .RasterizePathData() on GeometryData, because it's not possible
+		// There is no .ToPathData() on GeometryData, because it's not possible
 		// to have this in a GeometryGroup.
 	}
 }

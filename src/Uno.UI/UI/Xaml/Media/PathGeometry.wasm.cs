@@ -103,6 +103,6 @@ namespace Windows.UI.Xaml.Media
 
 		internal override SvgElement GetSvgElement() => _svgElement;
 
-		internal override IFormattable RasterizePathData() => $"{ToStreamGeometry(Figures)}";
+		internal override IFormattable ToPathData() => $"{ToStreamGeometry(Figures)}";
 	}
 }

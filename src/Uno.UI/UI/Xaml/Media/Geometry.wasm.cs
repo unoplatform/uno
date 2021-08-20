@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Media
 	{
 		internal virtual SvgElement GetSvgElement() => throw new NotSupportedException($"{nameof(GetSvgElement)} is not implemented for {this}.");
 
-		internal virtual IFormattable RasterizePathData() => throw new NotSupportedException($"{nameof(RasterizePathData)} is not implemented for {this}.");
+		internal virtual IFormattable ToPathData() => throw new NotSupportedException($"{nameof(ToPathData)} is not implemented for {this}.");
 
 		internal virtual void Invalidate() { }
 	}
