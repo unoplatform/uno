@@ -297,5 +297,37 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 			// TODO: Handle TextView..
 		}
+
+		public int GetSelectionStart()
+		{
+			if (_currentInputWidget is Entry entry)
+			{
+				entry.GetSelectionBounds(out var start, out _);
+				return start;
+			}
+			else if (_currentInputWidget is TextView textView)
+			{
+				textView.Buffer.GetSelectionBounds(out var start, out _);
+				return start.Offset; // TODO: Confirm this implementation is correct.
+			}
+
+			return 0;
+		}
+
+		public int GetSelectionLength()
+		{
+			if (_currentInputWidget is Entry entry)
+			{
+				entry.GetSelectionBounds(out var start, out var end);
+				return end - start;
+			}
+			else if (_currentInputWidget is TextView textView)
+			{
+				textView.Buffer.GetSelectionBounds(out var start, out var end);
+				return end.Offset - start.Offset;
+			}
+
+			return 0;
+		}
 	}
 }

@@ -30,6 +30,19 @@ namespace Windows.UI.Xaml.Controls
 
 		public void SelectAll() => Select(0, Text.Length);
 
+		public int SelectionStart
+		{
+			get => _textBoxView?.GetSelectionStart() ?? 0;
+			set => Select(start: value, length: SelectionLength);
+		}
+
+		public int SelectionLength
+		{
+			get => _textBoxView?.GetSelectionLength() ?? 0;
+			set => Select(SelectionStart, value);
+		}
+
+
 		protected void SetIsPassword(bool isPassword) => _textBoxView?.SetIsPassword(isPassword);
 	}
 }

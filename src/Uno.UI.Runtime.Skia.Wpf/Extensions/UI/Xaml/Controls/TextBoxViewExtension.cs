@@ -189,5 +189,9 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		}
 
 		public void Select(int start, int length) => _currentInputWidget?.Select(start, length);
+
+		public int GetSelectionStart() => _currentInputWidget?.SelectionStart ?? 0;
+
+		public int GetSelectionLength() => _currentInputWidget?.SelectionLength ?? 0;
 	}
 }

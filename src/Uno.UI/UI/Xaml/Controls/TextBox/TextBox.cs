@@ -788,7 +788,13 @@ namespace Windows.UI.Xaml.Controls
 				length = textLength - start;
 			}
 
+			if (SelectionStart == start && SelectionLength == length)
+			{
+				return;
+			}
+
 			SelectPartial(start, length);
+			OnSelectionChanged();
 		}
 
 		partial void SelectPartial(int start, int length);
