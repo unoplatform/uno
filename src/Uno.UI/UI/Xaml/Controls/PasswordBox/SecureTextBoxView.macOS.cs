@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public NSString[] ValidAttributesForMarkedText => null;
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -164,6 +164,14 @@ namespace Windows.UI.Xaml.Controls
 		public void RefreshFont()
 		{
 			UpdateFont();
+		}
+
+		public void Select(int start, int length)
+		{
+			if (CurrentEditor != null)
+			{
+				CurrentEditor.SelectedRange = new NSRange(start: start, len: length);
+			}
 		}
 
 		public override bool BecomeFirstResponder()

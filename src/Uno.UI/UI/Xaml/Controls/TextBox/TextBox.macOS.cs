@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.UI;
-using Windows.UI.Xaml.Data;
-using AppKit;
+﻿using AppKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using Uno.Client;
-using Foundation;
 using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls
@@ -65,10 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void SelectPartial(int start, int length)
 		{
-			if (_textBoxView != null)
-			{
-				_textBoxView.SelectedTextRange = _textBoxView.GetTextRange(start: start, end: start + length);
-			}
+			_textBoxView?.Select(start, length);
 		}
 
 		private void UpdateTextBoxView()

@@ -29,5 +29,9 @@ namespace Windows.UI.Xaml.Controls
 
 		Brush Foreground { get; set; }
 		void SetTextNative(string text);
+
+#if __MACOS__
+		void Select(int start, int length);
+#endif
 	}
 }
