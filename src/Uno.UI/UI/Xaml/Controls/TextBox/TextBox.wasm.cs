@@ -1,4 +1,5 @@
 ﻿using Uno.Extensions;
+using Uno.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
@@ -115,6 +116,13 @@ namespace Windows.UI.Xaml.Controls
 		private void ApplyEnabled(bool? isEnabled = null) => _textBoxView?.SetEnabled(isEnabled ?? IsEnabled);
 
 		private void ApplyIsReadonly(bool? isReadOnly = null) => _textBoxView?.SetIsReadOnly(isReadOnly ?? IsReadOnly);
+
+		partial void SelectPartial(int start, int length)
+		{
+			_textBoxView?.Select(start, length);
+		}
+
+		public void SelectAll() => Select(0, Text.Length);
 
 		public int SelectionStart
 		{

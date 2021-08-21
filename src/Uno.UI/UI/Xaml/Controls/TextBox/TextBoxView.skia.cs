@@ -63,6 +63,11 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxExtension?.SetTextNative(text);
 		}
 
+		internal void Select(int start, int length)
+		{
+			_textBoxExtension.Select(start, length);
+		}
+
 		internal void OnForegroundChanged(Brush brush) => DisplayBlock.Foreground = brush;
 
 		internal void OnFocusStateChanged(FocusState focusState)

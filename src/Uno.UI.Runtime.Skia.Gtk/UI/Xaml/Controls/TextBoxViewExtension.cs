@@ -288,5 +288,14 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				entry.Visibility = !isPassword;
 			}
 		}
+
+		public void Select(int start, int length)
+		{
+			if (_currentInputWidget is Entry entry)
+			{
+				entry.SelectRegion(start_pos: start, end_pos: start + length);
+			}
+			// TODO: Handle TextView..
+		}
 	}
 }

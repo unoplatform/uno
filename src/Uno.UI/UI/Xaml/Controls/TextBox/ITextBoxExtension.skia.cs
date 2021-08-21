@@ -17,5 +17,7 @@ namespace Uno.UI.Xaml.Controls.Extensions
 		void SetTextNative(string text);
 
 		void SetIsPassword(bool isPassword);
+
+		void Select(int start, int length);
 	}
 }

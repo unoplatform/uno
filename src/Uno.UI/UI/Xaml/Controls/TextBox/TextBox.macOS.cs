@@ -63,6 +63,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
+		partial void SelectPartial(int start, int length)
+		{
+			if (_textBoxView != null)
+			{
+				_textBoxView.SelectedTextRange = _textBoxView.GetTextRange(start: start, end: start + length);
+			}
+		}
+
 		private void UpdateTextBoxView()
 		{
 			if (_contentElement != null)
