@@ -2,7 +2,7 @@
 class WindowManagerMeasureViewParams
 {
 	/* Pack=8 */
-	public HtmlId : number;
+	public HtmlId : string;
 	public AvailableWidth : number;
 	public AvailableHeight : number;
 	public static unmarshal(pData:number) : WindowManagerMeasureViewParams
@@ -10,7 +10,16 @@ class WindowManagerMeasureViewParams
 		const ret = new WindowManagerMeasureViewParams();
 		
 		{
-			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+			const ptr = Module.getValue(pData + 0, "*");
+			if(ptr !== 0)
+			{
+				ret.HtmlId = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.HtmlId = null;
+			}
 		}
 		
 		{

@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			_isCallingFocusNative = true;
-			var command = $"Uno.UI.WindowManager.current.focusView({element.HtmlId});";
+			var command = $"Uno.UI.WindowManager.current.focusView(\"{element.HtmlId}\");";
 			WebAssemblyRuntime.InvokeJS(command);
 			_isCallingFocusNative = false;
 

@@ -7,7 +7,7 @@ class WindowManagerScrollToOptionsParams
 	public HasLeft : boolean;
 	public HasTop : boolean;
 	public DisableAnimation : boolean;
-	public HtmlId : number;
+	public HtmlId : string;
 	public static unmarshal(pData:number) : WindowManagerScrollToOptionsParams
 	{
 		const ret = new WindowManagerScrollToOptionsParams();
@@ -33,7 +33,16 @@ class WindowManagerScrollToOptionsParams
 		}
 		
 		{
-			ret.HtmlId = Number(Module.getValue(pData + 28, "*"));
+			const ptr = Module.getValue(pData + 28, "*");
+			if(ptr !== 0)
+			{
+				ret.HtmlId = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.HtmlId = null;
+			}
 		}
 		return ret;
 	}

@@ -58,7 +58,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region CreateContent
-		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
+		internal static void CreateContent(string htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
 			if (UseJavascriptEval)
 			{
@@ -95,7 +95,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerCreateContentParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string TagName;
@@ -168,7 +168,7 @@ namespace Uno.UI.Xaml
 
 		#region SetElementTransform
 
-		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
+		internal static void SetElementTransform(string htmlId, Matrix3x2 matrix)
 		{
 			if (UseJavascriptEval)
 			{
@@ -202,7 +202,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		private struct WindowManagerSetElementTransformParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public double M11;
 			public double M12;
@@ -216,13 +216,13 @@ namespace Uno.UI.Xaml
 
 		#region SetPointerEvents
 
-		internal static void SetPointerEvents(IntPtr htmlId, bool enabled)
+		internal static void SetPointerEvents(string htmlId, bool enabled)
 		{
 			if (UseJavascriptEval)
 			{
 				var enabledString = enabled ? "true" : "false";
 
-				var command = "Uno.UI.WindowManager.current.setPointerEvents(" + htmlId + ", " + enabledString + ");";
+				var command = "Uno.UI.WindowManager.current.setPointerEvents(\"" + htmlId + "\", " + enabledString + ");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
@@ -241,7 +241,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetPointerEventsParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public bool Enabled;
 		}
@@ -249,14 +249,14 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region MeasureView
-		internal static Size MeasureView(IntPtr htmlId, Size availableSize)
+		internal static Size MeasureView(string htmlId, Size availableSize)
 		{
 			if (UseJavascriptEval)
 			{
 				var w = double.IsInfinity(availableSize.Width) ? "null" : availableSize.Width.ToStringInvariant();
 				var h = double.IsInfinity(availableSize.Height) ? "null" : availableSize.Height.ToStringInvariant();
 
-				var command = "Uno.UI.WindowManager.current.measureView(" + htmlId + ", \"" + w + "\", \"" + h + "\");";
+				var command = "Uno.UI.WindowManager.current.measureView(\"" + htmlId + "\", \"" + w + "\", \"" + h + "\");";
 				var result = WebAssemblyRuntime.InvokeJS(command);
 
 				var parts = result.Split(';');
@@ -284,7 +284,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		private struct WindowManagerMeasureViewParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public double AvailableWidth;
 			public double AvailableHeight;
@@ -302,7 +302,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region SetStyleDouble
-		internal static void SetStyleDouble(IntPtr htmlId, string name, double value)
+		internal static void SetStyleDouble(string htmlId, string name, double value)
 		{
 			if (UseJavascriptEval)
 			{
@@ -325,7 +325,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetStyleDoubleParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public string Name;
 
@@ -336,7 +336,7 @@ namespace Uno.UI.Xaml
 
 		#region SetRectanglePosition
 
-		internal static void SetSvgElementRect(IntPtr htmlId, Rect rect)
+		internal static void SetSvgElementRect(string htmlId, Rect rect)
 		{
 			if (UseJavascriptEval)
 			{
@@ -374,14 +374,14 @@ namespace Uno.UI.Xaml
 			public double Width;
 			public double Height;
 
-			public IntPtr HtmlId;
+			public string HtmlId;
 		}
 
 		#endregion
 
 		#region SetStyles
 
-		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles)
+		internal static void SetStyles(string htmlId, (string name, string value)[] styles)
 		{
 			if (UseJavascriptEval)
 			{
@@ -415,7 +415,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetStylesParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public int Pairs_Length;
 
@@ -443,7 +443,7 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
-		private static void SetArrangeProperties(IntPtr htmlId)
+		private static void SetArrangeProperties(string htmlId)
 		{
 			if (!UseJavascriptEval)
 			{
@@ -456,7 +456,7 @@ namespace Uno.UI.Xaml
 		}
 
 		#region SetUnsetCssClasses
-		internal static void SetUnsetCssClasses(IntPtr htmlId, string[] cssClassesToSet, string[] cssClassesToUnset)
+		internal static void SetUnsetCssClasses(string htmlId, string[] cssClassesToSet, string[] cssClassesToUnset)
 		{
 			if (UseJavascriptEval)
 			{
@@ -476,7 +476,7 @@ namespace Uno.UI.Xaml
 							  .Select(WebAssemblyRuntime.EscapeJs)
 							  .Select(s => "\"" + s + "\""))
 						  + "]";
-				var command = "Uno.UI.WindowManager.current.setUnsetClasses(" + htmlId + ", " + setClasses + ", " + unsetClasses + ");";
+				var command = "Uno.UI.WindowManager.current.setUnsetClasses(\"" + htmlId + "\", " + setClasses + ", " + unsetClasses + ");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
@@ -498,7 +498,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetUnsetClassesParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public int CssClassesToSet_Length;
 
@@ -514,12 +514,12 @@ namespace Uno.UI.Xaml
 
 		#region SetClasses
 
-		internal static void SetClasses(IntPtr htmlId, string[] cssClasses, int index)
+		internal static void SetClasses(string htmlId, string[] cssClasses, int index)
 		{
 			if (UseJavascriptEval)
 			{
 				var classes = string.Join(", ", cssClasses.Select(s => "\"" + s + "\""));
-				var command = "Uno.UI.WindowManager.current.setClasses(" + htmlId + ", [" + classes + "], " + index + ");";
+				var command = "Uno.UI.WindowManager.current.setClasses(\"" + htmlId + "\", [" + classes + "], " + index + ");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
@@ -540,7 +540,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetClassesParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public int CssClasses_Length;
 
@@ -554,18 +554,18 @@ namespace Uno.UI.Xaml
 
 		#region AddView
 
-		internal static void AddView(IntPtr htmlId, IntPtr child, int? index = null)
+		internal static void AddView(string htmlId, string child, int? index = null)
 		{
 			if (UseJavascriptEval)
 			{
 				if (index != null)
 				{
-					var command = "Uno.UI.WindowManager.current.addView(" + htmlId + ", " + child + ", " + index.Value + ");";
+					var command = "Uno.UI.WindowManager.current.addView(\"" + htmlId + "\", \"" + child + "\", " + index.Value + ");";
 					WebAssemblyRuntime.InvokeJS(command);
 				}
 				else
 				{
-					var command = "Uno.UI.WindowManager.current.addView(" + htmlId + ", " + child + ");";
+					var command = "Uno.UI.WindowManager.current.addView(\"" + htmlId + "\", \"" + child + "\");";
 					WebAssemblyRuntime.InvokeJS(command);
 				}
 			}
@@ -586,8 +586,8 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerAddViewParams
 		{
-			public IntPtr HtmlId;
-			public IntPtr ChildView;
+			public string HtmlId;
+			public string ChildView;
 			public int Index;
 		}
 
@@ -595,7 +595,7 @@ namespace Uno.UI.Xaml
 
 		#region SetAttributes
 
-		internal static void SetAttributes(IntPtr htmlId, (string name, string value)[] attributes)
+		internal static void SetAttributes(string htmlId, (string name, string value)[] attributes)
 		{
 			if (UseJavascriptEval)
 			{
@@ -630,7 +630,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetAttributesParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public int Pairs_Length;
 
@@ -641,7 +641,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region SetAttribute
-		internal static void SetAttribute(IntPtr htmlId, string name, string value)
+		internal static void SetAttribute(string htmlId, string name, string value)
 		{
 			if (UseJavascriptEval)
 			{
@@ -668,7 +668,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetAttributeParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Name;
@@ -680,7 +680,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region GetAttribute
-		internal static string GetAttribute(IntPtr htmlId, string name)
+		internal static string GetAttribute(string htmlId, string name)
 		{
 			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + htmlId + "\", \"" + name + "\");";
 
@@ -689,7 +689,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region ClearAttribute
-		internal static void RemoveAttribute(IntPtr htmlId, string name)
+		internal static void RemoveAttribute(string htmlId, string name)
 		{
 			if (UseJavascriptEval)
 			{
@@ -712,7 +712,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerRemoveAttributeParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Name;
@@ -722,7 +722,7 @@ namespace Uno.UI.Xaml
 
 		#region SetName
 
-		internal static void SetName(IntPtr htmlId, string name)
+		internal static void SetName(string htmlId, string name)
 		{
 			if (UseJavascriptEval)
 			{
@@ -745,7 +745,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetNameParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Name;
@@ -754,7 +754,7 @@ namespace Uno.UI.Xaml
 
 		#region SetXUid
 
-		internal static void SetXUid(IntPtr htmlId, string name)
+		internal static void SetXUid(string htmlId, string name)
 		{
 			if (UseJavascriptEval)
 			{
@@ -777,7 +777,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetXUidParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Uid;
@@ -786,7 +786,7 @@ namespace Uno.UI.Xaml
 
 		#region SetVisibility
 
-		internal static void SetVisibility(IntPtr htmlId, bool visible)
+		internal static void SetVisibility(string htmlId, bool visible)
 		{
 			if (UseJavascriptEval)
 			{
@@ -809,7 +809,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetVisibilityParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public bool Visible;
 		}
@@ -817,7 +817,7 @@ namespace Uno.UI.Xaml
 
 		#region SetProperty
 
-		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)
+		internal static void SetProperty(string htmlId, (string name, string value)[] properties)
 		{
 			if (UseJavascriptEval)
 			{
@@ -852,7 +852,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetPropertyParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public int Pairs_Length;
 
@@ -864,7 +864,7 @@ namespace Uno.UI.Xaml
 
 		#region SetVisibility
 
-		internal static void SetElementColor(IntPtr htmlId, Color color)
+		internal static void SetElementColor(string htmlId, Color color)
 		{
 			var colorAsInteger = color.ToCssInteger();
 
@@ -889,18 +889,18 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetElementColorParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public uint Color;
 		}
 		#endregion
 
 		#region RemoveView
-		internal static void RemoveView(IntPtr htmlId, IntPtr childId)
+		internal static void RemoveView(string htmlId, string childId)
 		{
 			if (UseJavascriptEval)
 			{
-				var command = "Uno.UI.WindowManager.current.removeView(" + htmlId + ", " + childId + ");";
+				var command = "Uno.UI.WindowManager.current.removeView(\"" + htmlId + "\", \"" + childId + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
@@ -919,18 +919,18 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerRemoveViewParams
 		{
-			public IntPtr HtmlId;
-			public IntPtr ChildView;
+			public string HtmlId;
+			public string ChildView;
 		}
 
 		#endregion
 
 		#region DestroyView
-		internal static void DestroyView(IntPtr htmlId)
+		internal static void DestroyView(string htmlId)
 		{
 			if (UseJavascriptEval)
 			{
-				var command = "Uno.UI.WindowManager.current.destroyView(" + htmlId + ");";
+				var command = "Uno.UI.WindowManager.current.destroyView(\"" + htmlId + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
@@ -948,12 +948,12 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerDestroyViewParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 		}
 		#endregion
 
 		#region ResetStyle
-		internal static void ResetStyle(IntPtr htmlId, string[] names)
+		internal static void ResetStyle(string htmlId, string[] names)
 		{
 			if (names == null || names.Length == 0)
 			{
@@ -993,7 +993,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerResetStyleParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public int Styles_Length;
 
@@ -1003,7 +1003,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region RegisterEventOnView
-		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, int eventExtractorId)
+		internal static void RegisterEventOnView(string htmlId, string eventName, bool onCapturePhase, int eventExtractorId)
 		{
 			if (UseJavascriptEval)
 			{
@@ -1030,7 +1030,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerRegisterEventOnViewParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string EventName;
@@ -1042,7 +1042,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region registerPointerEventsOnView
-		internal static void RegisterPointerEventsOnView(IntPtr htmlId)
+		internal static void RegisterPointerEventsOnView(string htmlId)
 		{
 			var parms = new WindowManagerRegisterPointerEventsOnViewParams()
 			{
@@ -1056,17 +1056,17 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerRegisterPointerEventsOnViewParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 		}
 		#endregion
 
 		#region GetBBox
 
-		internal static Rect GetBBox(IntPtr htmlId)
+		internal static Rect GetBBox(string htmlId)
 		{
 			if (UseJavascriptEval)
 			{
-				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(" + htmlId + ");");
+				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(\"" + htmlId + "\");");
 				var sizeParts = sizeString.Split(';');
 				return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
 			}
@@ -1087,7 +1087,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerGetBBoxParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 		}
 
 
@@ -1105,13 +1105,13 @@ namespace Uno.UI.Xaml
 
 		#region SetContentHtml
 
-		internal static void SetContentHtml(IntPtr htmlId, string html)
+		internal static void SetContentHtml(string htmlId, string html)
 		{
 			if (UseJavascriptEval)
 			{
 				var escapedHtml = WebAssemblyRuntime.EscapeJs(html);
 
-				var command = "Uno.UI.WindowManager.current.setHtmlContent(" + htmlId + ", \"" + escapedHtml + "\");";
+				var command = "Uno.UI.WindowManager.current.setHtmlContent(\"" + htmlId + "\", \"" + escapedHtml + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
@@ -1130,7 +1130,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetContentHtmlParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Html;
@@ -1140,7 +1140,7 @@ namespace Uno.UI.Xaml
 
 		#region ArrangeElement
 
-		internal static void ArrangeElement(IntPtr htmlId, Rect rect, Rect? clipRect)
+		internal static void ArrangeElement(string htmlId, Rect rect, Rect? clipRect)
 		{
 			if (UseJavascriptEval)
 			{
@@ -1207,7 +1207,7 @@ namespace Uno.UI.Xaml
 			public double ClipBottom;
 			public double ClipRight;
 
-			public IntPtr HtmlId;
+			public string HtmlId;
 			public bool Clip;
 		}
 
@@ -1216,11 +1216,11 @@ namespace Uno.UI.Xaml
 
 		#region GetClientViewSize
 
-		internal static (Size clientSize, Size offsetSize) GetClientViewSize(IntPtr htmlId)
+		internal static (Size clientSize, Size offsetSize) GetClientViewSize(string htmlId)
 		{
 			if (UseJavascriptEval)
 			{
-				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getClientViewSize(" + htmlId + ");");
+				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getClientViewSize(\"" + htmlId + "\");");
 				var sizeParts = sizeString.Split(';');
 
 				return (
@@ -1248,7 +1248,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerGetClientViewSizeParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 		}
 
 
@@ -1265,7 +1265,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region ScrollTo
-		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
+		internal static void ScrollTo(string htmlId, double? left, double? top, bool disableAnimation)
 		{
 			var sanitizedTop = top.HasValue && top == double.MaxValue ? MAX_SCROLLING_OFFSET : top;
 			var sanitizedLeft = left.HasValue && left == double.MaxValue ? MAX_SCROLLING_OFFSET : left;
@@ -1293,12 +1293,12 @@ namespace Uno.UI.Xaml
 			public bool HasTop;
 			public bool DisableAnimation;
 
-			public IntPtr HtmlId;
+			public string HtmlId;
 		}
 		#endregion
 
 		#region SetElementBackgroundColor
-		internal static void SetElementBackgroundColor(IntPtr htmlId, Color color)
+		internal static void SetElementBackgroundColor(string htmlId, Color color)
 		{
 			var parms = new WindowManagerSetElementBackgroundColorParams
 			{
@@ -1313,14 +1313,14 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetElementBackgroundColorParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			public uint Color;
 		}
 		#endregion
 
 		#region SetElementBackgroundColor
-		internal static void SetElementBackgroundGradient(IntPtr htmlId, string cssGradient)
+		internal static void SetElementBackgroundGradient(string htmlId, string cssGradient)
 		{
 			var parms = new WindowManagerSetElementBackgroundGradientParams
 			{
@@ -1335,7 +1335,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetElementBackgroundGradientParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string CssGradient;
@@ -1344,7 +1344,7 @@ namespace Uno.UI.Xaml
 
 		#region SetElementBackgroundColor
 
-		internal static void ResetElementBackground(IntPtr htmlId)
+		internal static void ResetElementBackground(string htmlId)
 		{
 			var parms = new WindowManagerResetElementBackgroundParams
 			{
@@ -1358,7 +1358,7 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerResetElementBackgroundParams
 		{
-			public IntPtr HtmlId;
+			public string HtmlId;
 		}
 		#endregion
 

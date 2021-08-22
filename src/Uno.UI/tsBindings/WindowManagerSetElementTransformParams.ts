@@ -2,7 +2,7 @@
 class WindowManagerSetElementTransformParams
 {
 	/* Pack=8 */
-	public HtmlId : number;
+	public HtmlId : string;
 	public M11 : number;
 	public M12 : number;
 	public M21 : number;
@@ -14,7 +14,16 @@ class WindowManagerSetElementTransformParams
 		const ret = new WindowManagerSetElementTransformParams();
 		
 		{
-			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+			const ptr = Module.getValue(pData + 0, "*");
+			if(ptr !== 0)
+			{
+				ret.HtmlId = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.HtmlId = null;
+			}
 		}
 		
 		{

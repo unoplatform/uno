@@ -256,7 +256,7 @@ namespace Windows.UI.Xaml
 
 		partial void CapturePointerNative(Pointer pointer)
 		{
-			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
+			var command = "Uno.UI.WindowManager.current.setPointerCapture(\"" + HtmlId + "\", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
 
 			if (pointer.PointerDeviceType != PointerDeviceType.Mouse)
@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml
 
 		partial void ReleasePointerNative(Pointer pointer)
 		{
-			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
+			var command = "Uno.UI.WindowManager.current.releasePointerCapture(\"" + HtmlId + "\", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
 
 			if (pointer.PointerDeviceType != PointerDeviceType.Mouse && ManipulationMode != ManipulationModes.None)

@@ -239,7 +239,7 @@ namespace Uno.UI {
 			const params = WindowManagerCreateContentParams.unmarshal(pParams);
 
 			const def = {
-				id: this.handleToString(params.HtmlId),
+				id: params.HtmlId,
 				handle: params.Handle,
 				isFocusable: params.IsFocusable,
 				isSvg: params.IsSvg,
@@ -317,8 +317,8 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public getView(elementHandle: number): HTMLElement | SVGElement {
-			const element = this.allActiveElementsById[this.handleToString(elementHandle)];
+		public getView(elementHandle: string): HTMLElement | SVGElement {
+			const element = this.allActiveElementsById[elementHandle];
 			if (!element) {
 				throw `Element id ${elementHandle} not found.`;
 			}
@@ -330,7 +330,7 @@ namespace Uno.UI {
 			*
 			* This is mostly for diagnostic purposes.
 			*/
-		public setName(elementId: number, name: string): string {
+		public setName(elementId: string, name: string): string {
 			this.setNameInternal(elementId, name);
 			return "ok";
 		}
@@ -346,7 +346,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private setNameInternal(elementId: number, name: string): void {
+		private setNameInternal(elementId: string, name: string): void {
 			this.getView(elementId).setAttribute("xamlname", name);
 		}
 
@@ -356,7 +356,7 @@ namespace Uno.UI {
 			*
 			* This is mostly for diagnostic purposes.
 			*/
-		public setXUid(elementId: number, name: string): string {
+		public setXUid(elementId: string, name: string): string {
 			this.setXUidInternal(elementId, name);
 			return "ok";
 		}
@@ -372,14 +372,14 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private setXUidInternal(elementId: number, name: string): void {
+		private setXUidInternal(elementId: string, name: string): void {
 			this.getView(elementId).setAttribute("xuid", name);
 		}
 
 		/**
 			* Sets the visibility of the specified element
 			*/
-		public setVisibility(elementId: number, visible: boolean): string {
+		public setVisibility(elementId: string, visible: boolean): string {
 			this.setVisibilityInternal(elementId, visible);
 			return "ok";
 		}
@@ -390,7 +390,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private setVisibilityInternal(elementId: number, visible: boolean): void {
+		private setVisibilityInternal(elementId: string, visible: boolean): void {
 			const element = this.getView(elementId);
 
 			if (visible) {
@@ -404,7 +404,7 @@ namespace Uno.UI {
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttributes(elementId: number, attributes: { [name: string]: string }): string {
+		public setAttributes(elementId: string, attributes: { [name: string]: string }): string {
 			const element = this.getView(elementId);
 
 			for (const name in attributes) {
@@ -446,7 +446,7 @@ namespace Uno.UI {
 		/**
 			* Removes an attribute for an element.
 			*/
-		public removeAttribute(elementId: number, name: string): string {
+		public removeAttribute(elementId: string, name: string): string {
 			const element = this.getView(elementId);
 			element.removeAttribute(name);
 
@@ -468,7 +468,7 @@ namespace Uno.UI {
 		/**
 			* Get an attribute for an element.
 			*/
-		public getAttribute(elementId: number, name: string): any {
+		public getAttribute(elementId: string, name: string): any {
 
 			return this.getView(elementId).getAttribute(name);
 		}
@@ -476,7 +476,7 @@ namespace Uno.UI {
 		/**
 			* Set a property for an element.
 			*/
-		public setProperty(elementId: number, properties: { [name: string]: string }): string {
+		public setProperty(elementId: string, properties: { [name: string]: string }): string {
 			const element = this.getView(elementId);
 
 			for (const name in properties) {
@@ -524,7 +524,7 @@ namespace Uno.UI {
 		/**
 			* Get a property for an element.
 			*/
-		public getProperty(elementId: number, name: string): any {
+		public getProperty(elementId: string, name: string): any {
 			const element = this.getView(elementId);
 
 			return (element as any)[name] || "";
@@ -536,7 +536,7 @@ namespace Uno.UI {
 			* To remove a value, set it to empty string.
 			* @param styles A dictionary of styles to apply on html element.
 			*/
-		public setStyle(elementId: number, styles: { [name: string]: string }): string {
+		public setStyle(elementId: string, styles: { [name: string]: string }): string {
 			const element = this.getView(elementId);
 
 			for (const style in styles) {
@@ -586,7 +586,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public setArrangeProperties(elementId: number): string {
+		public setArrangeProperties(elementId: string): string {
 			const element = this.getView(elementId);
 
 			this.setAsArranged(element);
@@ -597,7 +597,7 @@ namespace Uno.UI {
 		/**
 			* Remove the CSS style of a html element.
 			*/
-		public resetStyle(elementId: number, names: string[]): string {
+		public resetStyle(elementId: string, names: string[]): string {
 			this.resetStyleInternal(elementId, names);
 			return "ok";
 		}
@@ -611,7 +611,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private resetStyleInternal(elementId: number, names: string[]): void {
+		private resetStyleInternal(elementId: string, names: string[]): void {
 			const element = this.getView(elementId);
 
 			for (const name of names) {
@@ -630,7 +630,7 @@ namespace Uno.UI {
 		 * Set + Unset CSS classes on an element
 		 */
 
-		public setUnsetClasses(elementId: number, cssClassesToSet: string[], cssClassesToUnset: string[]) {
+		public setUnsetClasses(elementId: string, cssClassesToSet: string[], cssClassesToUnset: string[]) {
 			const element = this.getView(elementId);
 
 			if (cssClassesToSet) {
@@ -654,7 +654,7 @@ namespace Uno.UI {
 		/**
 		 * Set CSS classes on an element from a specified list
 		 */
-		public setClasses(elementId: number, cssClassesList: string[], classIndex: number): string {
+		public setClasses(elementId: string, cssClassesList: string[], classIndex: number): string {
 			const element = this.getView(elementId);
 
 			for (let i = 0; i < cssClassesList.length; i++) {
@@ -719,7 +719,7 @@ namespace Uno.UI {
 		/**
 		* Sets the color property of the specified element
 		*/
-		public setElementColor(elementId: number, color: number): string {
+		public setElementColor(elementId: string, color: number): string {
 			this.setElementColorInternal(elementId, color);
 			return "ok";
 		}
@@ -730,7 +730,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private setElementColorInternal(elementId: number, color: number): void {
+		private setElementColorInternal(elementId: string, color: number): void {
 			const element = this.getView(elementId);
 
 			element.style.setProperty("color", this.numberToCssColor(color));
@@ -801,7 +801,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private setPointerEvents(htmlId: number, enabled: boolean) {
+		private setPointerEvents(htmlId: string, enabled: boolean) {
 			const element = this.getView(htmlId);
 			element.style.pointerEvents = enabled ? "auto" : "none";
 		}
@@ -859,7 +859,7 @@ namespace Uno.UI {
 			* @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
 			*/
 		public registerEventOnView(
-			elementId: number,
+			elementId: string,
 			eventName: string,
 			onCapturePhase: boolean = false,
 			eventExtractorId: number
@@ -1027,7 +1027,7 @@ namespace Uno.UI {
 			* @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
 			*/
 		private registerEventOnViewInternal(
-			elementId: number,
+			elementId: string,
 			eventName: string,
 			onCapturePhase: boolean = false,
 			eventExtractorId: number
@@ -1234,8 +1234,8 @@ namespace Uno.UI {
 		/**
 			* Set or replace the root content element.
 			*/
-		public setRootContent(elementId?: number): string {
-			if (this.rootContent && Number(this.rootContent.id) === elementId) {
+		public setRootContent(elementId?: string): string {
+			if (this.rootContent && this.rootContent.id === elementId) {
 				return null; // nothing to do
 			}
 
@@ -1282,7 +1282,7 @@ namespace Uno.UI {
 			*
 			* @param index Position in children list. Appended at end if not specified.
 			*/
-		public addView(parentId: number, childId: number, index?: number): string {
+		public addView(parentId: string, childId: string, index?: number): string {
 			this.addViewInternal(parentId, childId, index);
 			return "ok";
 		}
@@ -1306,7 +1306,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public addViewInternal(parentId: number, childId: number, index?: number): void {
+		public addViewInternal(parentId: string, childId: string, index?: number): void {
 			const parentElement = this.getView(parentId);
 			const childElement = this.getView(childId);
 
@@ -1338,7 +1338,7 @@ namespace Uno.UI {
 			*
 			* "Unloading" & "Unloaded" events will be raised if necessary.
 			*/
-		public removeView(parentId: number, childId: number): string {
+		public removeView(parentId: string, childId: string): string {
 			this.removeViewInternal(parentId, childId);
 			return "ok";
 		}
@@ -1354,7 +1354,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private removeViewInternal(parentId: number, childId: number): void {
+		private removeViewInternal(parentId: string, childId: string): void {
 			const parentElement = this.getView(parentId);
 			const childElement = this.getView(childId);
 
@@ -1378,7 +1378,7 @@ namespace Uno.UI {
 			* The element won't be available anymore. Usually indicate the managed
 			* version has been scavenged by the GC.
 			*/
-		public destroyView(elementId: number): string {
+		public destroyView(elementId: string): string {
 			this.destroyViewInternal(elementId);
 			return "ok";
 		}
@@ -1395,7 +1395,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private destroyViewInternal(elementId: number): void {
+		private destroyViewInternal(elementId: string): void {
 			const element = this.getView(elementId);
 
 			if (element.parentElement) {
@@ -1405,13 +1405,13 @@ namespace Uno.UI {
 			delete this.allActiveElementsById[elementId];
 		}
 
-		public getBoundingClientRect(elementId: number): string {
+		public getBoundingClientRect(elementId: string): string {
 
 			const bounds = (<any>this.getView(elementId)).getBoundingClientRect();
 			return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
 		}
 
-		public getBBox(elementId: number): string {
+		public getBBox(elementId: string): string {
 			const bbox = this.getBBoxInternal(elementId);
 
 			return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
@@ -1434,7 +1434,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private getBBoxInternal(elementId: number): any {
+		private getBBoxInternal(elementId: string): any {
 
 			const element = this.getView(elementId) as SVGGraphicsElement;
 			let unconnectedRoot: HTMLElement = null;
@@ -1489,7 +1489,7 @@ namespace Uno.UI {
 			*/
 		public measureView(viewId: string, maxWidth: string, maxHeight: string): string {
 
-			const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
+			const ret = this.measureViewInternal(viewId, maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
 
 			return `${ret[0]};${ret[1]}`;
 		}
@@ -1530,7 +1530,7 @@ namespace Uno.UI {
 			return [resultWidth + 1, resultHeight];
 		}
 
-		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
+		private measureViewInternal(viewId: string, maxWidth: number, maxHeight: number): [number, number] {
 			const element = this.getView(viewId) as HTMLElement;
 
 			const elementStyle = element.style;
@@ -1721,7 +1721,7 @@ namespace Uno.UI {
 		 * @param url the source image
 		 * @param color the color to apply to the monochrome pixels
 		 */
-		public setImageAsMonochrome(viewId: number, url: string, color: string): string {
+		public setImageAsMonochrome(viewId: string, url: string, color: string): string {
 			const element = this.getView(viewId);
 
 			if (element.tagName.toUpperCase() === "IMG") {
@@ -1756,19 +1756,19 @@ namespace Uno.UI {
 			}
 		}
 
-		public setPointerCapture(viewId: number, pointerId: number): string {
+		public setPointerCapture(viewId: string, pointerId: number): string {
 			this.getView(viewId).setPointerCapture(pointerId);
 
 			return "ok";
 		}
 
-		public releasePointerCapture(viewId: number, pointerId: number): string {
+		public releasePointerCapture(viewId: string, pointerId: number): string {
 			this.getView(viewId).releasePointerCapture(pointerId);
 
 			return "ok";
 		}
 
-		public focusView(elementId: number): string {
+		public focusView(elementId: string): string {
 			const element = this.getView(elementId);
 
 			if (!(element instanceof HTMLElement)) {
@@ -1786,7 +1786,7 @@ namespace Uno.UI {
 			* Those html elements won't be available as XamlElement in managed code.
 			* WARNING: you should avoid mixing this and `addView` for the same element.
 			*/
-		public setHtmlContent(viewId: number, html: string): string {
+		public setHtmlContent(viewId: string, html: string): string {
 			this.setHtmlContentInternal(viewId, html);
 			return "ok";
 		}
@@ -1804,7 +1804,7 @@ namespace Uno.UI {
 			return true;
 		}
 
-		private setHtmlContentInternal(viewId: number, html: string): void {
+		private setHtmlContentInternal(viewId: string, html: string): void {
 
 			this.getView(viewId).innerHTML = html;
 		}
@@ -1815,7 +1815,7 @@ namespace Uno.UI {
 		 * This method is used to determine the size of the scroll bars, to
 		 * mask the events coming from that zone.
 		 */
-		public getClientViewSize(elementId: number): string {
+		public getClientViewSize(elementId: string): string {
 			const element = this.getView(elementId) as HTMLElement;
 
 			return `${element.clientWidth};${element.clientHeight};${element.offsetWidth};${element.offsetHeight}`;
@@ -1848,7 +1848,7 @@ namespace Uno.UI {
 		 *
 		 * Note that the casing of this method is intentionally Pascal for platform alignment.
 		 */
-		public GetDependencyPropertyValue(elementId: number, propertyName: string): string {
+		public GetDependencyPropertyValue(elementId: string, propertyName: string): string {
 			if (!WindowManager.getDependencyPropertyValueMethod) {
 				WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
 			}
@@ -1864,7 +1864,7 @@ namespace Uno.UI {
 		 *
 		 * Note that the casing of this method is intentionally Pascal for platform alignment.
 		 */
-		public SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string): string {
+		public SetDependencyPropertyValue(elementId: string, propertyNameAndValue: string): string {
 			if (!WindowManager.setDependencyPropertyValueMethod) {
 				WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
 			}

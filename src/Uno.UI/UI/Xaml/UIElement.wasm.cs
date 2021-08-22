@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 
 		private Rect GetBoundingClientRect()
 		{
-			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
+			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(\"" + HtmlId + "\");");
 			var sizeParts = sizeString.Split(';');
 			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
 		}
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml
 			var type = GetType();
 
 			Handle = GCHandle.ToIntPtr(_gcHandle);
-			HtmlId = Handle;
+			HtmlId = $"uno-{Handle}";
 
 			Uno.UI.Xaml.WindowManagerInterop.CreateContent(
 				htmlId: HtmlId,
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml
 
 		public IntPtr Handle { get; }
 
-		public IntPtr HtmlId { get; }
+		public string HtmlId { get; }
 
 		public string HtmlTag { get; }
 
@@ -304,7 +304,7 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetAttribute(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getAttribute(" + HtmlId + ", \"" + name + "\");";
+			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + HtmlId + "\", \"" + name + "\");";
 			return WebAssemblyRuntime.InvokeJS(command);
 		}
 
@@ -323,7 +323,7 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetProperty(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getProperty(" + HtmlId + ", \"" + name + "\");";
+			var command = "Uno.UI.WindowManager.current.getProperty(\"" + HtmlId + "\", \"" + name + "\");";
 			return WebAssemblyRuntime.InvokeJS(command);
 		}
 

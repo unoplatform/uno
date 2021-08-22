@@ -2,7 +2,7 @@
 class WindowManagerSetStylesParams
 {
 	/* Pack=4 */
-	public HtmlId : number;
+	public HtmlId : string;
 	public Pairs_Length : number;
 	public Pairs : Array<string>;
 	public static unmarshal(pData:number) : WindowManagerSetStylesParams
@@ -10,7 +10,16 @@ class WindowManagerSetStylesParams
 		const ret = new WindowManagerSetStylesParams();
 		
 		{
-			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+			const ptr = Module.getValue(pData + 0, "*");
+			if(ptr !== 0)
+			{
+				ret.HtmlId = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.HtmlId = null;
+			}
 		}
 		
 		{

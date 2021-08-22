@@ -209,13 +209,13 @@ declare namespace Uno.UI {
         private createContentInternal;
         registerUIElement(typeName: string, isFrameworkElement: boolean, classNames: string[]): number;
         registerUIElementNative(pParams: number, pReturn: number): boolean;
-        getView(elementHandle: number): HTMLElement | SVGElement;
+        getView(elementHandle: string): HTMLElement | SVGElement;
         /**
             * Set a name for an element.
             *
             * This is mostly for diagnostic purposes.
             */
-        setName(elementId: number, name: string): string;
+        setName(elementId: string, name: string): string;
         /**
             * Set a name for an element.
             *
@@ -228,7 +228,7 @@ declare namespace Uno.UI {
             *
             * This is mostly for diagnostic purposes.
             */
-        setXUid(elementId: number, name: string): string;
+        setXUid(elementId: string, name: string): string;
         /**
             * Set a name for an element.
             *
@@ -239,13 +239,13 @@ declare namespace Uno.UI {
         /**
             * Sets the visibility of the specified element
             */
-        setVisibility(elementId: number, visible: boolean): string;
+        setVisibility(elementId: string, visible: boolean): string;
         setVisibilityNative(pParam: number): boolean;
         private setVisibilityInternal;
         /**
             * Set an attribute for an element.
             */
-        setAttributes(elementId: number, attributes: {
+        setAttributes(elementId: string, attributes: {
             [name: string]: string;
         }): string;
         /**
@@ -259,7 +259,7 @@ declare namespace Uno.UI {
         /**
             * Removes an attribute for an element.
             */
-        removeAttribute(elementId: number, name: string): string;
+        removeAttribute(elementId: string, name: string): string;
         /**
             * Removes an attribute for an element.
             */
@@ -267,11 +267,11 @@ declare namespace Uno.UI {
         /**
             * Get an attribute for an element.
             */
-        getAttribute(elementId: number, name: string): any;
+        getAttribute(elementId: string, name: string): any;
         /**
             * Set a property for an element.
             */
-        setProperty(elementId: number, properties: {
+        setProperty(elementId: string, properties: {
             [name: string]: string;
         }): string;
         /**
@@ -281,14 +281,14 @@ declare namespace Uno.UI {
         /**
             * Get a property for an element.
             */
-        getProperty(elementId: number, name: string): any;
+        getProperty(elementId: string, name: string): any;
         /**
             * Set the CSS style of a html element.
             *
             * To remove a value, set it to empty string.
             * @param styles A dictionary of styles to apply on html element.
             */
-        setStyle(elementId: number, styles: {
+        setStyle(elementId: string, styles: {
             [name: string]: string;
         }): string;
         /**
@@ -303,11 +303,11 @@ declare namespace Uno.UI {
         *
         */
         setStyleDoubleNative(pParams: number): boolean;
-        setArrangeProperties(elementId: number): string;
+        setArrangeProperties(elementId: string): string;
         /**
             * Remove the CSS style of a html element.
             */
-        resetStyle(elementId: number, names: string[]): string;
+        resetStyle(elementId: string, names: string[]): string;
         /**
             * Remove the CSS style of a html element.
             */
@@ -318,12 +318,12 @@ declare namespace Uno.UI {
         /**
          * Set + Unset CSS classes on an element
          */
-        setUnsetClasses(elementId: number, cssClassesToSet: string[], cssClassesToUnset: string[]): void;
+        setUnsetClasses(elementId: string, cssClassesToSet: string[], cssClassesToUnset: string[]): void;
         setUnsetClassesNative(pParams: number): boolean;
         /**
          * Set CSS classes on an element from a specified list
          */
-        setClasses(elementId: number, cssClassesList: string[], classIndex: number): string;
+        setClasses(elementId: string, cssClassesList: string[], classIndex: number): string;
         setClassesNative(pParams: number): boolean;
         /**
         * Arrange and clips a native elements
@@ -335,7 +335,7 @@ declare namespace Uno.UI {
         /**
         * Sets the color property of the specified element
         */
-        setElementColor(elementId: number, color: number): string;
+        setElementColor(elementId: string, color: number): string;
         setElementColorNative(pParam: number): boolean;
         private setElementColorInternal;
         /**
@@ -383,7 +383,7 @@ declare namespace Uno.UI {
             * @param eventName The name of the event
             * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
             */
-        registerEventOnView(elementId: number, eventName: string, onCapturePhase: boolean, eventExtractorId: number): string;
+        registerEventOnView(elementId: string, eventName: string, onCapturePhase: boolean, eventExtractorId: number): string;
         /**
             * Add an event handler to a html element.
             *
@@ -441,7 +441,7 @@ declare namespace Uno.UI {
         /**
             * Set or replace the root content element.
             */
-        setRootContent(elementId?: number): string;
+        setRootContent(elementId?: string): string;
         /**
             * Set a view as a child of another one.
             *
@@ -449,7 +449,7 @@ declare namespace Uno.UI {
             *
             * @param index Position in children list. Appended at end if not specified.
             */
-        addView(parentId: number, childId: number, index?: number): string;
+        addView(parentId: string, childId: string, index?: number): string;
         /**
             * Set a view as a child of another one.
             *
@@ -458,13 +458,13 @@ declare namespace Uno.UI {
             * @param pParams Pointer to a WindowManagerAddViewParams native structure.
             */
         addViewNative(pParams: number): boolean;
-        addViewInternal(parentId: number, childId: number, index?: number): void;
+        addViewInternal(parentId: string, childId: string, index?: number): void;
         /**
             * Remove a child from a parent element.
             *
             * "Unloading" & "Unloaded" events will be raised if necessary.
             */
-        removeView(parentId: number, childId: number): string;
+        removeView(parentId: string, childId: string): string;
         /**
             * Remove a child from a parent element.
             *
@@ -478,7 +478,7 @@ declare namespace Uno.UI {
             * The element won't be available anymore. Usually indicate the managed
             * version has been scavenged by the GC.
             */
-        destroyView(elementId: number): string;
+        destroyView(elementId: string): string;
         /**
             * Destroy a html element.
             *
@@ -487,8 +487,8 @@ declare namespace Uno.UI {
             */
         destroyViewNative(pParams: number): boolean;
         private destroyViewInternal;
-        getBoundingClientRect(elementId: number): string;
-        getBBox(elementId: number): string;
+        getBoundingClientRect(elementId: string): string;
+        getBBox(elementId: string): string;
         getBBoxNative(pParams: number, pReturn: number): boolean;
         private getBBoxInternal;
         setSvgElementRect(pParams: number): boolean;
@@ -519,17 +519,17 @@ declare namespace Uno.UI {
          * @param url the source image
          * @param color the color to apply to the monochrome pixels
          */
-        setImageAsMonochrome(viewId: number, url: string, color: string): string;
-        setPointerCapture(viewId: number, pointerId: number): string;
-        releasePointerCapture(viewId: number, pointerId: number): string;
-        focusView(elementId: number): string;
+        setImageAsMonochrome(viewId: string, url: string, color: string): string;
+        setPointerCapture(viewId: string, pointerId: number): string;
+        releasePointerCapture(viewId: string, pointerId: number): string;
+        focusView(elementId: string): string;
         /**
             * Set the Html content for an element.
             *
             * Those html elements won't be available as XamlElement in managed code.
             * WARNING: you should avoid mixing this and `addView` for the same element.
             */
-        setHtmlContent(viewId: number, html: string): string;
+        setHtmlContent(viewId: string, html: string): string;
         /**
             * Set the Html content for an element.
             *
@@ -544,7 +544,7 @@ declare namespace Uno.UI {
          * This method is used to determine the size of the scroll bars, to
          * mask the events coming from that zone.
          */
-        getClientViewSize(elementId: number): string;
+        getClientViewSize(elementId: string): string;
         /**
          * Gets the Client and Offset size of the specified element
          *
@@ -557,13 +557,13 @@ declare namespace Uno.UI {
          *
          * Note that the casing of this method is intentionally Pascal for platform alignment.
          */
-        GetDependencyPropertyValue(elementId: number, propertyName: string): string;
+        GetDependencyPropertyValue(elementId: string, propertyName: string): string;
         /**
          * Sets a dependency property value.
          *
          * Note that the casing of this method is intentionally Pascal for platform alignment.
          */
-        SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string): string;
+        SetDependencyPropertyValue(elementId: string, propertyNameAndValue: string): string;
         /**
             * Remove the loading indicator.
             *
@@ -1249,8 +1249,8 @@ declare class StorageFolderMakePersistentParams {
     static unmarshal(pData: number): StorageFolderMakePersistentParams;
 }
 declare class WindowManagerAddViewParams {
-    HtmlId: number;
-    ChildView: number;
+    HtmlId: string;
+    ChildView: string;
     Index: number;
     static unmarshal(pData: number): WindowManagerAddViewParams;
 }
@@ -1263,12 +1263,12 @@ declare class WindowManagerArrangeElementParams {
     ClipLeft: number;
     ClipBottom: number;
     ClipRight: number;
-    HtmlId: number;
+    HtmlId: string;
     Clip: boolean;
     static unmarshal(pData: number): WindowManagerArrangeElementParams;
 }
 declare class WindowManagerCreateContentParams {
-    HtmlId: number;
+    HtmlId: string;
     TagName: string;
     Handle: number;
     UIElementRegistrationId: number;
@@ -1277,11 +1277,11 @@ declare class WindowManagerCreateContentParams {
     static unmarshal(pData: number): WindowManagerCreateContentParams;
 }
 declare class WindowManagerDestroyViewParams {
-    HtmlId: number;
+    HtmlId: string;
     static unmarshal(pData: number): WindowManagerDestroyViewParams;
 }
 declare class WindowManagerGetBBoxParams {
-    HtmlId: number;
+    HtmlId: string;
     static unmarshal(pData: number): WindowManagerGetBBoxParams;
 }
 declare class WindowManagerGetBBoxReturn {
@@ -1292,7 +1292,7 @@ declare class WindowManagerGetBBoxReturn {
     marshal(pData: number): void;
 }
 declare class WindowManagerGetClientViewSizeParams {
-    HtmlId: number;
+    HtmlId: string;
     static unmarshal(pData: number): WindowManagerGetClientViewSizeParams;
 }
 declare class WindowManagerGetClientViewSizeReturn {
@@ -1308,7 +1308,7 @@ declare class WindowManagerInitParams {
     static unmarshal(pData: number): WindowManagerInitParams;
 }
 declare class WindowManagerMeasureViewParams {
-    HtmlId: number;
+    HtmlId: string;
     AvailableWidth: number;
     AvailableHeight: number;
     static unmarshal(pData: number): WindowManagerMeasureViewParams;
@@ -1319,14 +1319,14 @@ declare class WindowManagerMeasureViewReturn {
     marshal(pData: number): void;
 }
 declare class WindowManagerRegisterEventOnViewParams {
-    HtmlId: number;
+    HtmlId: string;
     EventName: string;
     OnCapturePhase: boolean;
     EventExtractorId: number;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }
 declare class WindowManagerRegisterPointerEventsOnViewParams {
-    HtmlId: number;
+    HtmlId: string;
     static unmarshal(pData: number): WindowManagerRegisterPointerEventsOnViewParams;
 }
 declare class WindowManagerRegisterUIElementParams {
@@ -1341,21 +1341,21 @@ declare class WindowManagerRegisterUIElementReturn {
     marshal(pData: number): void;
 }
 declare class WindowManagerRemoveAttributeParams {
-    HtmlId: number;
+    HtmlId: string;
     Name: string;
     static unmarshal(pData: number): WindowManagerRemoveAttributeParams;
 }
 declare class WindowManagerRemoveViewParams {
-    HtmlId: number;
-    ChildView: number;
+    HtmlId: string;
+    ChildView: string;
     static unmarshal(pData: number): WindowManagerRemoveViewParams;
 }
 declare class WindowManagerResetElementBackgroundParams {
-    HtmlId: number;
+    HtmlId: string;
     static unmarshal(pData: number): WindowManagerResetElementBackgroundParams;
 }
 declare class WindowManagerResetStyleParams {
-    HtmlId: number;
+    HtmlId: string;
     Styles_Length: number;
     Styles: Array<string>;
     static unmarshal(pData: number): WindowManagerResetStyleParams;
@@ -1366,50 +1366,50 @@ declare class WindowManagerScrollToOptionsParams {
     HasLeft: boolean;
     HasTop: boolean;
     DisableAnimation: boolean;
-    HtmlId: number;
+    HtmlId: string;
     static unmarshal(pData: number): WindowManagerScrollToOptionsParams;
 }
 declare class WindowManagerSetAttributeParams {
-    HtmlId: number;
+    HtmlId: string;
     Name: string;
     Value: string;
     static unmarshal(pData: number): WindowManagerSetAttributeParams;
 }
 declare class WindowManagerSetAttributesParams {
-    HtmlId: number;
+    HtmlId: string;
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetAttributesParams;
 }
 declare class WindowManagerSetClassesParams {
-    HtmlId: number;
+    HtmlId: string;
     CssClasses_Length: number;
     CssClasses: Array<string>;
     Index: number;
     static unmarshal(pData: number): WindowManagerSetClassesParams;
 }
 declare class WindowManagerSetContentHtmlParams {
-    HtmlId: number;
+    HtmlId: string;
     Html: string;
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
 }
 declare class WindowManagerSetElementBackgroundColorParams {
-    HtmlId: number;
+    HtmlId: string;
     Color: number;
     static unmarshal(pData: number): WindowManagerSetElementBackgroundColorParams;
 }
 declare class WindowManagerSetElementBackgroundGradientParams {
-    HtmlId: number;
+    HtmlId: string;
     CssGradient: string;
     static unmarshal(pData: number): WindowManagerSetElementBackgroundGradientParams;
 }
 declare class WindowManagerSetElementColorParams {
-    HtmlId: number;
+    HtmlId: string;
     Color: number;
     static unmarshal(pData: number): WindowManagerSetElementColorParams;
 }
 declare class WindowManagerSetElementTransformParams {
-    HtmlId: number;
+    HtmlId: string;
     M11: number;
     M12: number;
     M21: number;
@@ -1419,29 +1419,29 @@ declare class WindowManagerSetElementTransformParams {
     static unmarshal(pData: number): WindowManagerSetElementTransformParams;
 }
 declare class WindowManagerSetNameParams {
-    HtmlId: number;
+    HtmlId: string;
     Name: string;
     static unmarshal(pData: number): WindowManagerSetNameParams;
 }
 declare class WindowManagerSetPointerEventsParams {
-    HtmlId: number;
+    HtmlId: string;
     Enabled: boolean;
     static unmarshal(pData: number): WindowManagerSetPointerEventsParams;
 }
 declare class WindowManagerSetPropertyParams {
-    HtmlId: number;
+    HtmlId: string;
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetPropertyParams;
 }
 declare class WindowManagerSetStyleDoubleParams {
-    HtmlId: number;
+    HtmlId: string;
     Name: string;
     Value: number;
     static unmarshal(pData: number): WindowManagerSetStyleDoubleParams;
 }
 declare class WindowManagerSetStylesParams {
-    HtmlId: number;
+    HtmlId: string;
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
@@ -1451,11 +1451,11 @@ declare class WindowManagerSetSvgElementRectParams {
     Y: number;
     Width: number;
     Height: number;
-    HtmlId: number;
+    HtmlId: string;
     static unmarshal(pData: number): WindowManagerSetSvgElementRectParams;
 }
 declare class WindowManagerSetUnsetClassesParams {
-    HtmlId: number;
+    HtmlId: string;
     CssClassesToSet_Length: number;
     CssClassesToSet: Array<string>;
     CssClassesToUnset_Length: number;
@@ -1463,12 +1463,12 @@ declare class WindowManagerSetUnsetClassesParams {
     static unmarshal(pData: number): WindowManagerSetUnsetClassesParams;
 }
 declare class WindowManagerSetVisibilityParams {
-    HtmlId: number;
+    HtmlId: string;
     Visible: boolean;
     static unmarshal(pData: number): WindowManagerSetVisibilityParams;
 }
 declare class WindowManagerSetXUidParams {
-    HtmlId: number;
+    HtmlId: string;
     Uid: string;
     static unmarshal(pData: number): WindowManagerSetXUidParams;
 }

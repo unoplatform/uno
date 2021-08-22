@@ -2,14 +2,23 @@
 class WindowManagerSetContentHtmlParams
 {
 	/* Pack=4 */
-	public HtmlId : number;
+	public HtmlId : string;
 	public Html : string;
 	public static unmarshal(pData:number) : WindowManagerSetContentHtmlParams
 	{
 		const ret = new WindowManagerSetContentHtmlParams();
 		
 		{
-			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+			const ptr = Module.getValue(pData + 0, "*");
+			if(ptr !== 0)
+			{
+				ret.HtmlId = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.HtmlId = null;
+			}
 		}
 		
 		{

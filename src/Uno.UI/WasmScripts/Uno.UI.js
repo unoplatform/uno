@@ -487,7 +487,7 @@ var Uno;
             createContentNative(pParams) {
                 const params = WindowManagerCreateContentParams.unmarshal(pParams);
                 const def = {
-                    id: this.handleToString(params.HtmlId),
+                    id: params.HtmlId,
                     handle: params.Handle,
                     isFocusable: params.IsFocusable,
                     isSvg: params.IsSvg,
@@ -546,7 +546,7 @@ var Uno;
                 return true;
             }
             getView(elementHandle) {
-                const element = this.allActiveElementsById[this.handleToString(elementHandle)];
+                const element = this.allActiveElementsById[elementHandle];
                 if (!element) {
                     throw `Element id ${elementHandle} not found.`;
                 }
@@ -1285,7 +1285,7 @@ var Uno;
                 * Set or replace the root content element.
                 */
             setRootContent(elementId) {
-                if (this.rootContent && Number(this.rootContent.id) === elementId) {
+                if (this.rootContent && this.rootContent.id === elementId) {
                     return null; // nothing to do
                 }
                 if (this.rootContent) {
@@ -1479,7 +1479,7 @@ var Uno;
                 * @param maxHeight string containing height in pixels. Empty string means infinite.
                 */
             measureView(viewId, maxWidth, maxHeight) {
-                const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
+                const ret = this.measureViewInternal(viewId, maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
                 return `${ret[0]};${ret[1]}`;
             }
             /**
@@ -4519,10 +4519,22 @@ class WindowManagerAddViewParams {
     static unmarshal(pData) {
         const ret = new WindowManagerAddViewParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
-            ret.ChildView = Number(Module.getValue(pData + 4, "*"));
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.ChildView = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.ChildView = null;
+            }
         }
         {
             ret.Index = Number(Module.getValue(pData + 8, "i32"));
@@ -4559,7 +4571,13 @@ class WindowManagerArrangeElementParams {
             ret.ClipRight = Number(Module.getValue(pData + 56, "double"));
         }
         {
-            ret.HtmlId = Number(Module.getValue(pData + 64, "*"));
+            const ptr = Module.getValue(pData + 64, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Clip = Boolean(Module.getValue(pData + 68, "i32"));
@@ -4572,7 +4590,13 @@ class WindowManagerCreateContentParams {
     static unmarshal(pData) {
         const ret = new WindowManagerCreateContentParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
@@ -4603,7 +4627,13 @@ class WindowManagerDestroyViewParams {
     static unmarshal(pData) {
         const ret = new WindowManagerDestroyViewParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         return ret;
     }
@@ -4613,7 +4643,13 @@ class WindowManagerGetBBoxParams {
     static unmarshal(pData) {
         const ret = new WindowManagerGetBBoxParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         return ret;
     }
@@ -4632,7 +4668,13 @@ class WindowManagerGetClientViewSizeParams {
     static unmarshal(pData) {
         const ret = new WindowManagerGetClientViewSizeParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         return ret;
     }
@@ -4664,7 +4706,13 @@ class WindowManagerMeasureViewParams {
     static unmarshal(pData) {
         const ret = new WindowManagerMeasureViewParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.AvailableWidth = Number(Module.getValue(pData + 8, "double"));
@@ -4687,7 +4735,13 @@ class WindowManagerRegisterEventOnViewParams {
     static unmarshal(pData) {
         const ret = new WindowManagerRegisterEventOnViewParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
@@ -4712,7 +4766,13 @@ class WindowManagerRegisterPointerEventsOnViewParams {
     static unmarshal(pData) {
         const ret = new WindowManagerRegisterPointerEventsOnViewParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         return ret;
     }
@@ -4768,7 +4828,13 @@ class WindowManagerRemoveAttributeParams {
     static unmarshal(pData) {
         const ret = new WindowManagerRemoveAttributeParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
@@ -4787,10 +4853,22 @@ class WindowManagerRemoveViewParams {
     static unmarshal(pData) {
         const ret = new WindowManagerRemoveViewParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
-            ret.ChildView = Number(Module.getValue(pData + 4, "*"));
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.ChildView = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.ChildView = null;
+            }
         }
         return ret;
     }
@@ -4800,7 +4878,13 @@ class WindowManagerResetElementBackgroundParams {
     static unmarshal(pData) {
         const ret = new WindowManagerResetElementBackgroundParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         return ret;
     }
@@ -4810,7 +4894,13 @@ class WindowManagerResetStyleParams {
     static unmarshal(pData) {
         const ret = new WindowManagerResetStyleParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Styles_Length = Number(Module.getValue(pData + 4, "i32"));
@@ -4856,7 +4946,13 @@ class WindowManagerScrollToOptionsParams {
             ret.DisableAnimation = Boolean(Module.getValue(pData + 24, "i32"));
         }
         {
-            ret.HtmlId = Number(Module.getValue(pData + 28, "*"));
+            const ptr = Module.getValue(pData + 28, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         return ret;
     }
@@ -4866,7 +4962,13 @@ class WindowManagerSetAttributeParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetAttributeParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
@@ -4894,7 +4996,13 @@ class WindowManagerSetAttributesParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetAttributesParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
@@ -4925,7 +5033,13 @@ class WindowManagerSetClassesParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetClassesParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.CssClasses_Length = Number(Module.getValue(pData + 4, "i32"));
@@ -4959,7 +5073,13 @@ class WindowManagerSetContentHtmlParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetContentHtmlParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
@@ -4978,7 +5098,13 @@ class WindowManagerSetElementBackgroundColorParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetElementBackgroundColorParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Color = Module.HEAPU32[(pData + 4) >> 2];
@@ -4991,7 +5117,13 @@ class WindowManagerSetElementBackgroundGradientParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetElementBackgroundGradientParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
@@ -5010,7 +5142,13 @@ class WindowManagerSetElementColorParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetElementColorParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Color = Module.HEAPU32[(pData + 4) >> 2];
@@ -5023,7 +5161,13 @@ class WindowManagerSetElementTransformParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetElementTransformParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.M11 = Number(Module.getValue(pData + 8, "double"));
@@ -5051,7 +5195,13 @@ class WindowManagerSetNameParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetNameParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
@@ -5070,7 +5220,13 @@ class WindowManagerSetPointerEventsParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetPointerEventsParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Enabled = Boolean(Module.getValue(pData + 4, "i32"));
@@ -5083,7 +5239,13 @@ class WindowManagerSetPropertyParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetPropertyParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
@@ -5114,7 +5276,13 @@ class WindowManagerSetStyleDoubleParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetStyleDoubleParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");
@@ -5136,7 +5304,13 @@ class WindowManagerSetStylesParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetStylesParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
@@ -5179,7 +5353,13 @@ class WindowManagerSetSvgElementRectParams {
             ret.Height = Number(Module.getValue(pData + 24, "double"));
         }
         {
-            ret.HtmlId = Number(Module.getValue(pData + 32, "*"));
+            const ptr = Module.getValue(pData + 32, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         return ret;
     }
@@ -5189,7 +5369,13 @@ class WindowManagerSetUnsetClassesParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetUnsetClassesParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.CssClassesToSet_Length = Number(Module.getValue(pData + 4, "i32"));
@@ -5241,7 +5427,13 @@ class WindowManagerSetVisibilityParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetVisibilityParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             ret.Visible = Boolean(Module.getValue(pData + 4, "i32"));
@@ -5254,7 +5446,13 @@ class WindowManagerSetXUidParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetXUidParams();
         {
-            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.HtmlId = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.HtmlId = null;
+            }
         }
         {
             const ptr = Module.getValue(pData + 4, "*");

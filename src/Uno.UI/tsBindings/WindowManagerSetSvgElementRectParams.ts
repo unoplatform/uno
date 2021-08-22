@@ -6,7 +6,7 @@ class WindowManagerSetSvgElementRectParams
 	public Y : number;
 	public Width : number;
 	public Height : number;
-	public HtmlId : number;
+	public HtmlId : string;
 	public static unmarshal(pData:number) : WindowManagerSetSvgElementRectParams
 	{
 		const ret = new WindowManagerSetSvgElementRectParams();
@@ -28,7 +28,16 @@ class WindowManagerSetSvgElementRectParams
 		}
 		
 		{
-			ret.HtmlId = Number(Module.getValue(pData + 32, "*"));
+			const ptr = Module.getValue(pData + 32, "*");
+			if(ptr !== 0)
+			{
+				ret.HtmlId = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.HtmlId = null;
+			}
 		}
 		return ret;
 	}

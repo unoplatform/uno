@@ -10,7 +10,7 @@ class WindowManagerArrangeElementParams
 	public ClipLeft : number;
 	public ClipBottom : number;
 	public ClipRight : number;
-	public HtmlId : number;
+	public HtmlId : string;
 	public Clip : boolean;
 	public static unmarshal(pData:number) : WindowManagerArrangeElementParams
 	{
@@ -49,7 +49,16 @@ class WindowManagerArrangeElementParams
 		}
 		
 		{
-			ret.HtmlId = Number(Module.getValue(pData + 64, "*"));
+			const ptr = Module.getValue(pData + 64, "*");
+			if(ptr !== 0)
+			{
+				ret.HtmlId = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.HtmlId = null;
+			}
 		}
 		
 		{

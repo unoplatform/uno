@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml
 			var js = @$"
 (function(element) {{
 {jsCode}
-}})(Uno.UI.WindowManager.current.getView({element.HtmlId}));
+}})(Uno.UI.WindowManager.current.getView(""{element.HtmlId}""));
 ";
 			return WebAssemblyRuntime.InvokeJS(js);
 		}
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml
 (function(element) {{
 const __f = () => {asyncJsCode};
 return __f(element);
-}})(Uno.UI.WindowManager.current.getView({element.HtmlId}));
+}})(Uno.UI.WindowManager.current.getView(""{element.HtmlId}""));
 ";
 			return WebAssemblyRuntime.InvokeAsync(js);
 		}

@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml
 					UIElement.LoadingRootElement(_rootVisual);
 				}
 
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent({_rootVisual.HtmlId});");
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent(\"{_rootVisual.HtmlId}\");");
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_rootVisual.IsLoaded)
 				{
