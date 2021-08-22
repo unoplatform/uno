@@ -11,8 +11,9 @@ namespace Windows.UI.Xaml.Controls
 {
     public partial class PivotItem : ContentControl
     {
-		public PivotItem()
+		public PivotItem(Pivot owner = null)
 		{
+			Owner = owner;
 			this.HorizontalAlignment = HorizontalAlignment.Stretch;
 			this.VerticalAlignment = VerticalAlignment.Stretch;
 
@@ -27,6 +28,8 @@ namespace Windows.UI.Xaml.Controls
 			Header = header;
 		}
 
+		internal Pivot Owner { get; set; }
+
 		protected override bool CanCreateTemplateWithoutParent => true;
 
 		public object Header
@@ -37,6 +40,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty HeaderProperty { get ; } =
 			DependencyProperty.Register("Header", typeof(object), typeof(PivotItem), new FrameworkPropertyMetadata(null));
+
+		// PivotItems are lazy loaded in UWP.
+		internal override bool ShouldLoadChildOnElementLoaded() => Owner?.SelectedItem == this;
 
 #if XAMARIN_ANDROID
 		// This allows the PivotItem to fill the whole available space.

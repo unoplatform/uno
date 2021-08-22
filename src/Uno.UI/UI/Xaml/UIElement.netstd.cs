@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml
 
 		private void OnElementLoaded()
 		{
-			if (IsLoaded)
+			if (IsLoaded || !ShouldLoadChildOnElementLoaded())
 			{
 				return;
 			}
@@ -125,6 +125,8 @@ namespace Windows.UI.Xaml
 				children[i].OnElementLoaded();
 			}
 		}
+
+		internal virtual bool ShouldLoadChildOnElementLoaded() => true;
 
 		private void OnElementUnloaded()
 		{

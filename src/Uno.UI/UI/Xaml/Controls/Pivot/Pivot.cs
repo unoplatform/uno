@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 			_header = this.GetTemplateChild("Header") as PivotHeaderPanel;
 			_headerClipperGeometry = this.GetTemplateChild("HeaderClipperGeometry") as RectangleGeometry;
 			_headerClipper = this.GetTemplateChild("HeaderClipper") as ContentControl;
-			_pivotItemTemplate = new DataTemplate(() => new PivotItem());
+			_pivotItemTemplate = new DataTemplate(() => new PivotItem(this));
 
 			_isUWPTemplate = _staticHeader != null;
 
@@ -166,6 +166,7 @@ namespace Windows.UI.Xaml.Controls
 					if (item is PivotItem pivotItem)
 					{
 						headerItem.Content = pivotItem.Header;
+						pivotItem.Owner = this;
 					}
 					else
 					{
@@ -294,6 +295,13 @@ namespace Windows.UI.Xaml.Controls
 				var selectedPivotitem = items.ElementAt(selectedIndex);
 
 				SelectedItem = selectedPivotitem;
+
+				// Executing RootElementLoaded while loading will prevent Loaded event
+				// from propagating correctly to children that are not yet loaded.
+				if (!IsLoading && selectedPivotitem is PivotItem pivotItemToLoad)
+				{
+					UIElement.RootElementLoaded(pivotItemToLoad);
+				}
 
 				for (int i = 0; i < NumberOfItems; i++)
 				{
