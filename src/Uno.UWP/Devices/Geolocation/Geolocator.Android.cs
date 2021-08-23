@@ -331,7 +331,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		private void OnDesiredAccuracyInMetersChanged()
+		partial void OnDesiredAccuracyInMetersChanged()
 		{
 			// reset request for updates from Android - with new desired accuracy
 			RemoveUpdates();
