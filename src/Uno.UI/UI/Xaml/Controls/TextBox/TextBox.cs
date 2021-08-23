@@ -76,6 +76,12 @@ namespace Windows.UI.Xaml.Controls
 			this.RegisterParentChangedCallback(this, OnParentChanged);
 
 			DefaultStyleKey = typeof(TextBox);
+			SizeChanged += OnSizeChanged;
+		}
+
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			UpdateButtonStates();
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args) => UpdateFontPartial();
@@ -688,9 +694,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
-			if (CanShowButton && _isButtonEnabled
-			// TODO (https://github.com/unoplatform/uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
-			)
+			if (CanShowButton && _isButtonEnabled && ActualWidth > 70)
 			{
 				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
 			}
