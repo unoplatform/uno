@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation
 	public sealed partial class Geolocator
 	{
 		private const uint DefaultAccuracyInMeters = 500;
-		private const uint HighAccuracyInMeters = 10;		
+		private const uint HighAccuracyInMeters = 10;
 
 		private static readonly object _syncLock = new object();
 
@@ -21,7 +21,7 @@ namespace Windows.Devices.Geolocation
 		private static ConcurrentDictionary<Geolocator, byte> _statusChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
 
 		private TypedEventHandler<Geolocator, StatusChangedEventArgs> _statusChanged;
-		private TypedEventHandler<Geolocator, PositionChangedEventArgs> _positionChanged;			
+		private TypedEventHandler<Geolocator, PositionChangedEventArgs> _positionChanged;
 
 		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
 
@@ -80,15 +80,15 @@ namespace Windows.Devices.Geolocation
 				{
 					//force set DesiredAccuracy so that its ActualDesiredAccuracyInMeters rule is applied
 					DesiredAccuracy = DesiredAccuracy;
-#if __ANDROID__
+#if __ANDROID__ 
 					OnDesiredAccuracyInMetersChanged();
-#endif
+#endif 
 				}
 			}
 		}
 
-	
-	internal uint ActualDesiredAccuracyInMeters
+
+		internal uint ActualDesiredAccuracyInMeters
 		{
 			get => _actualDesiredAccuracyInMeters;
 			private set
@@ -154,7 +154,7 @@ namespace Windows.Devices.Geolocation
 				}
 			}
 		}
-			   
+
 		/// <summary>
 		/// Broadcasts status change to all subscribed Geolocator instances
 		/// </summary>
@@ -174,7 +174,7 @@ namespace Windows.Devices.Geolocation
 
 		partial void StartPositionChanged();
 
-		partial void StopPositionChanged();		
+		partial void StopPositionChanged();
 
 		partial void OnActualDesiredAccuracyInMetersChanged();
 

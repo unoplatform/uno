@@ -1,5 +1,8 @@
 #if __ANDROID__
 #pragma warning disable 67
+
+
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -28,6 +31,10 @@ namespace Windows.Devices.Geolocation
 
 		private LocationManager _locationManager;
 		private string _locationProvider;
+
+		// only locations not older than this const can be used as current
+		// (used only in GetGeopositionAsync with parameters, parameterless call can return older location)
+		private const int MAX_SECONDS_AGE = 60;
 
 		public Geolocator()
 		{
@@ -159,9 +166,9 @@ namespace Windows.Devices.Geolocation
 
 		private async Task<bool> TryWaitForGetGeopositionAsync(TimeSpan timeout)
 		{
-			var stopwatch = new Stopwatch();
-			stopwatch.Start();
-			while(stopwatch.Elapsed < timeout)
+			var stopwatch = Stopwatch.StartNew();
+
+			while (stopwatch.Elapsed < timeout)
 			{
 				await Task.Delay(250);
 				if (_locChanged)
@@ -236,12 +243,12 @@ namespace Windows.Devices.Geolocation
 			}
 
 			// wait for fix
-			if(await TryWaitForGetGeopositionAsync(timeout))
+			if (await TryWaitForGetGeopositionAsync(timeout))
 			{
-					// success
-					RemoveUpdates();
-					BroadcastStatus(PositionStatus.Ready);
-					return _location.ToGeoPosition();
+				// success
+				RemoveUpdates();
+				BroadcastStatus(PositionStatus.Ready);
+				return _location.ToGeoPosition();
 			}
 
 			// timeout
@@ -252,10 +259,10 @@ namespace Windows.Devices.Geolocation
 		}
 
 		~Geolocator()
-        {
+		{
 			RemoveUpdates();
 			_locationManager?.Dispose();
-        }
+		}
 
 		private void RemoveUpdates()
 		{
@@ -324,18 +331,18 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		public void OnDesiredAccuracyInMetersChanged()
+		private void OnDesiredAccuracyInMetersChanged()
 		{
 			// reset request for updates from Android - with new desired accuracy
 			RemoveUpdates();
 			RequestUpdates();
 		}
 
-#region Android ILocationListener
+		#region Android ILocationListener
 		public void OnLocationChanged(Location location)
 		{
 			DateTimeOffset date = DateTimeOffset.FromUnixTimeMilliseconds(location.Time);
-			if (date.AddMinutes(1) > DateTimeOffset.UtcNow)
+			if (date.AddSeconds(MAX_SECONDS_AGE) > DateTimeOffset.UtcNow)
 			{// only from last minute (we don't want to get some obsolete location)
 				_locChanged = true;
 				_location = location;
@@ -358,7 +365,7 @@ namespace Windows.Devices.Geolocation
 			// This method was deprecated in API level 29 (Android 10). This callback will never be invoked.
 		}
 
-#endregion
+		#endregion
 	}
 
 	static class Extensions
