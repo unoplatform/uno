@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Uno.UI;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media
@@ -11,9 +12,23 @@ namespace Windows.UI.Xaml.Media
 	{
 		private bool _isAnimating;
 
-		internal virtual Android.Graphics.Matrix ToNative(Android.Graphics.Matrix targetMatrix = null, Size size = new Size(), bool isBrush = false)
+		internal Android.Graphics.Matrix ToNativeMatrix(Android.Graphics.Matrix targetMatrix = null, Point origin = new Point(), Size size = new Size())
 		{
-			throw new NotImplementedException();
+			var matrix = ToMatrix(origin, size);
+
+			if (targetMatrix == null)
+			{
+				targetMatrix = new Android.Graphics.Matrix();
+			}
+
+			targetMatrix.SetValues(new[]
+			{
+				matrix.M11, matrix.M21, matrix.M31 * (float)size.Width,
+				matrix.M12, matrix.M22, matrix.M32 * (float)size.Height,
+				0, 0, 1
+			});
+
+			return targetMatrix;
 		}
 
 		// Currently we support only one view par transform.

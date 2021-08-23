@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Media
 			var width = destinationRect.Width;
 			var height = destinationRect.Height;
 
-			var transform = RelativeTransform?.ToNative(size: new Windows.Foundation.Size(width, height), isBrush: true);
+			var transform = RelativeTransform?.ToNativeMatrix(size: new Windows.Foundation.Size(width, height));
 
 			var shader = new RadialGradient(
 				(float)center.X,
