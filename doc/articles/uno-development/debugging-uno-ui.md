@@ -30,10 +30,10 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 1. Configure Uno.UI to build for the target platform you wish to debug, [as detailed here](building-uno-ui.md).
 2. Close any instances of Visual Studio with Uno.UI open.
 3. Open the solution containing the application you wish to debug.
-4. Note the NuGet version of Uno.UI (or Uno.UI.WebAssembly/Uno.UI.Skia) being used by the application (eg `3.0.17`).
+4. Note the NuGet version of Uno.UI (or Uno.UI.WebAssembly/Uno.UI.Skia) being used by the application (eg `3.10.0-dev.432`).
 5. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->`.
 6. Replace the version number with the version being used by the application you wish to debug.
-7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia). Be aware that this will **overwrite your local NuGet cache** for the nominated Uno.UI version. Any applications that you build locally will use your local build if they depend on that Uno.UI version.
+7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia). 
 
 To debug Uno.UI code in the application, follow these steps (using `FrameworkElement.MeasureOverride()` as an example):
 
@@ -46,7 +46,18 @@ To debug Uno.UI code in the application, follow these steps (using `FrameworkEle
 7. You should hit the breakpoint, opening the `FrameworkElement.cs` file, and be able to see local variable values, etc.
 8. To revert to the original Uno.UI version from NuGet, simply navigate to the NuGet cache folder (`%USERPROFILE%\.nuget\packages`) and delete the `Uno.UI` folder within it. You may need to close Visual Studio first. The original version will be automatically restored the next time the application builds.
 
+### Tips about the NuGet version override process
+
+- Be aware that setting `UnoNugetOverrideVersion` will **overwrite your local NuGet cache** for the nominated Uno.UI version. Any applications that you build locally will use your local build if they depend on that Uno.UI version.
+
+- The `Uno.UI`, `Uno.UI.WebAssembly` and `Uno.UI.Skia` are the only projects overriding the nuget cache. If you make modifications to Uno.UWP, building the Uno.UI project is still needed.
+
+- Building for Android requires the API level to match the version you specified in `UnoTargetFrameworkOverride`. A common issues is that the app being debugged uses Android10.0 and `Uno.UI` is built using Android11.0. You can change the API level in the debugged project's build properties.
+
+- The nuget override process only works on already installed versions. The best way to ensure that the override is successful is to build the debugged application once before overriding the Uno.UI version the app uses.
+
 ### Troubleshooting
+
 It may happen that the package cache for the version you're debugging is corrupted, and the override is not working as intended.
 
 If this is the case:
