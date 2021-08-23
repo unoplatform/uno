@@ -3,6 +3,8 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Rect = Windows.Foundation.Rect;
+using Point = Windows.Foundation.Point;
+using Size = Windows.Foundation.Size;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -32,7 +34,7 @@ namespace Windows.UI.Xaml.Media
 			Android.Graphics.Matrix nativeTransformMatrix = null;
 			if (RelativeTransform != null)
 			{
-				var matrix = RelativeTransform.ToMatrix(Foundation.Point.Zero, new Windows.Foundation.Size(width, height));
+				var matrix = RelativeTransform.ToMatrix(Point.Zero, new Size(width, height));
 				matrix.M31 *= (float)width;
 				matrix.M32 *= (float)height;
 				nativeTransformMatrix = matrix.ToNative();
