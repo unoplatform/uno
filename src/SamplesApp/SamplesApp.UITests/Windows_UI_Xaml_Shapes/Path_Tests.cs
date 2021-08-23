@@ -25,10 +25,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			var scrn = TakeScreenshot("Rendered", true);
 
 			AssertHasColorAtCenter("MainTargetEvenOdd", Color.Beige);
+			AssertHasColorAtCenter("LeftTargetEvenOdd", Color.Beige);
 			AssertHasColorAtCenter("RightTargetEvenOdd", Color.Green);
+			AssertHasColorAtCenter("MainTargetEvenOdd2", Color.Beige);
+			AssertHasColorAtCenter("LeftTargetEvenOdd2", Color.Beige);
+			AssertHasColorAtCenter("RightTargetEvenOdd2", Color.Green);
+			AssertHasColorAtCenter("MainTargetEvenOdd3", Color.Beige);
+			AssertHasColorAtCenter("LeftTargetEvenOdd2", Color.Beige);
+			AssertHasColorAtCenter("RightTargetEvenOdd3", Color.Green);
 
 			AssertHasColorAtCenter("MainTargetNonZero", Color.Blue);
+			AssertHasColorAtCenter("LeftTargetNonZero", Color.Beige);
 			AssertHasColorAtCenter("RightTargetNonZero", Color.Blue);
+			AssertHasColorAtCenter("MainTargetNonZero2", Color.Blue);
+			AssertHasColorAtCenter("LeftTargetNonZero2", Color.Beige);
+			AssertHasColorAtCenter("RightTargetNonZero2", Color.Blue);
+			AssertHasColorAtCenter("MainTargetNonZero3", Color.Blue);
+			AssertHasColorAtCenter("LeftTargetNonZero3", Color.Beige);
+			AssertHasColorAtCenter("RightTargetNonZero3", Color.Blue);
 
 			void AssertHasColorAtCenter(string element, Color color)
 			{

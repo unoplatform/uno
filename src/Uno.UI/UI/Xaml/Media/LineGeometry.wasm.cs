@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using System;
+using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Wasm;
@@ -7,18 +9,20 @@ namespace Windows.UI.Xaml.Media
 {
 	partial class LineGeometry
 	{
-		private readonly SvgElement _svgElement = new SvgElement("line");
+		private SvgElement? _svgElement;
 
 		partial void InitPartials()
 		{
 			this.RegisterDisposablePropertyChangedCallback(OnPropertyChanged);
-#if DEBUG
-			_svgElement.SetAttribute("uno-geometry-type", "LineGeometry");
-#endif
 		}
 
-			private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(ManagedWeakReference? instance, DependencyProperty property, DependencyPropertyChangedEventArgs? args)
 		{
+			if(_svgElement == null)
+			{
+				return;
+			}
+
 			if (property == StartPointProperty)
 			{
 				var point = StartPoint;
@@ -35,6 +39,28 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		internal override SvgElement GetSvgElement() => _svgElement;
+		internal override SvgElement GetSvgElement()
+		{
+			if (_svgElement == null)
+			{
+				_svgElement = new SvgElement("line");
+#if DEBUG
+				_svgElement.SetAttribute("uno-geometry-type", "LineGeometry");
+#endif
+
+				OnPropertyChanged(null, StartPointProperty, null);
+				OnPropertyChanged(null, EndPointProperty, null);
+			}
+
+			return _svgElement;
+		}
+
+		internal override IFormattable ToPathData()
+		{
+			var p1 = StartPoint;
+			var p2 = EndPoint;
+
+			return $"M {p1.X},{p1.Y} L {p2.X}, {p2.Y} Z";
+		}
 	}
 }

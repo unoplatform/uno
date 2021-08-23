@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Wasm;
@@ -8,18 +9,20 @@ namespace Windows.UI.Xaml.Media
 {
 	partial class EllipseGeometry
 	{
-		private readonly SvgElement _svgElement = new SvgElement("ellipse");
+		private SvgElement? _svgElement;
 
 		partial void InitPartials()
 		{
 			this.RegisterDisposablePropertyChangedCallback(OnPropertyChanged);
-#if DEBUG
-			_svgElement.SetAttribute("uno-geometry-type", "EllipseGeometry");
-#endif
 		}
 
-		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(ManagedWeakReference? instance, DependencyProperty property, DependencyPropertyChangedEventArgs? args)
 		{
+			if(_svgElement == null)
+			{
+				return;
+			}
+
 			if (property == CenterProperty)
 			{
 				var center = Center;
@@ -41,6 +44,31 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		internal override SvgElement GetSvgElement() => _svgElement;
+		internal override SvgElement GetSvgElement()
+		{
+			if (_svgElement == null)
+			{
+				_svgElement = new SvgElement("ellipse");
+#if DEBUG
+				_svgElement.SetAttribute("uno-geometry-type", "EllipseGeometry");
+#endif
+
+				OnPropertyChanged(null, CenterProperty, null);
+				OnPropertyChanged(null, RadiusXProperty, null);
+				OnPropertyChanged(null, RadiusYProperty, null);
+			}
+
+			return _svgElement;
+		}
+
+		internal override IFormattable ToPathData()
+		{
+			var cx = Center.X;
+			var cy = Center.Y;
+			var rx = RadiusX;
+			var ry = RadiusY;
+
+			return $"M{cx},{cy - ry} A{rx},{ry} 0 0 0 {cx},{cy + ry} A{rx},{ry} 0 0 0 {cx},{cy - ry} Z";
+		}
 	}
 }
