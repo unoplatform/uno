@@ -12,7 +12,8 @@ namespace Uno.MsBuildTasks.Utils.XamlPathParser
 			var context = new GeneratedStreamGeometryContext();
 			var parser = new PathMarkupParser(context);
 			parser.Parse(pathString, ref fillRule);
-			return context.Generated;
+			context.FillRule = fillRule;
+			return context.Generate();
 		}
 	}
 }

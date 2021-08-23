@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Shapes.PathTestsControl.Path_FillRule"
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Shapes.PathTestsControl.Path_FillRule"
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:local="using:UITests.Windows_UI_Xaml_Shapes.PathTestsControl"
@@ -260,4 +260,4 @@
 			</Path>
 		</Grid>
 	</Grid>
-</UserControl>
+</Page>
