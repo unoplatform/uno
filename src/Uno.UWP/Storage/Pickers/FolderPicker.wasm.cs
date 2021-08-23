@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
+using Uno.Storage.Pickers;
 
 namespace Windows.Storage.Pickers
 {
@@ -20,7 +21,10 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("Could not handle the request using any picker implementation.");
 			}
 
-			var pickedFolderJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickSingleFolderAsync()");
+			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
+			var startIn = SuggestedStartLocation.ToStartInDirectory();
+
+			var pickedFolderJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickSingleFolderAsync('{id}','{startIn}')");
 
 			if (pickedFolderJson is null)
 			{

@@ -10,6 +10,7 @@ using Uno;
 using Uno.Foundation;
 using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
+using Uno.Storage.Pickers;
 using Uno.Storage.Pickers.Internal;
 
 namespace Windows.Storage.Pickers
@@ -62,8 +63,9 @@ namespace Windows.Storage.Pickers
 			var fileTypeAcceptTypes = BuildFileTypesMap();
 			var fileTypeAcceptTypesJson = JsonHelper.Serialize(fileTypeAcceptTypes);
 			var fileTypeMapParameter = WebAssemblyRuntime.EscapeJs(fileTypeAcceptTypesJson);
-
-			var nativeStorageItemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.nativePickFilesAsync({multipleParameter},{showAllEntryParameter},'{fileTypeMapParameter}')");
+			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
+			var startIn = SuggestedStartLocation.ToStartInDirectory();
+			var nativeStorageItemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.nativePickFilesAsync({multipleParameter},{showAllEntryParameter},'{fileTypeMapParameter}','{id}','{startIn}')");
 			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson);
 
 			var results = new List<StorageFile>();

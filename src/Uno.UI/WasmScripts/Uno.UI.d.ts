@@ -1024,21 +1024,21 @@ declare namespace Windows.Storage {
 declare namespace Windows.Storage.Pickers {
     class FileOpenPicker {
         static isNativeSupported(): boolean;
-        static nativePickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypesJson: string): Promise<string>;
+        static nativePickFilesAsync(multiple: boolean, showAllEntry: boolean, fileTypesJson: string, id: string, startIn: StartInDirectory): Promise<string>;
         static uploadPickFilesAsync(multiple: boolean, targetPath: string, accept: string): Promise<string>;
     }
 }
 declare namespace Windows.Storage.Pickers {
     class FileSavePicker {
         static isNativeSupported(): boolean;
-        static nativePickSaveFileAsync(showAllEntry: boolean, fileTypesJson: string): Promise<string>;
+        static nativePickSaveFileAsync(showAllEntry: boolean, fileTypesJson: string, suggestedFileName: string, id: string, startIn: StartInDirectory): Promise<string>;
         static SaveAs(fileName: string, dataPtr: any, size: number): void;
     }
 }
 declare namespace Windows.Storage.Pickers {
     class FolderPicker {
         static isNativeSupported(): boolean;
-        static pickSingleFolderAsync(): Promise<string>;
+        static pickSingleFolderAsync(id: string, startIn: StartInDirectory): Promise<string>;
     }
 }
 declare namespace Uno.Storage.Pickers {

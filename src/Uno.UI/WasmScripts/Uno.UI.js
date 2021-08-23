@@ -3499,13 +3499,15 @@ var Windows;
                 static isNativeSupported() {
                     return typeof showOpenFilePicker === "function";
                 }
-                static async nativePickFilesAsync(multiple, showAllEntry, fileTypesJson) {
+                static async nativePickFilesAsync(multiple, showAllEntry, fileTypesJson, id, startIn) {
                     if (!FileOpenPicker.isNativeSupported()) {
                         return JSON.stringify([]);
                     }
                     const options = {
                         excludeAcceptAllOption: !showAllEntry,
+                        id: id,
                         multiple: multiple,
+                        startIn: startIn,
                         types: [],
                     };
                     const acceptTypes = JSON.parse(fileTypesJson);
@@ -3578,14 +3580,19 @@ var Windows;
                 static isNativeSupported() {
                     return typeof showSaveFilePicker === "function";
                 }
-                static async nativePickSaveFileAsync(showAllEntry, fileTypesJson) {
+                static async nativePickSaveFileAsync(showAllEntry, fileTypesJson, suggestedFileName, id, startIn) {
                     if (!FileSavePicker.isNativeSupported()) {
                         return null;
                     }
                     const options = {
                         excludeAcceptAllOption: !showAllEntry,
+                        id: id,
+                        startIn: startIn,
                         types: [],
                     };
+                    if (suggestedFileName != "") {
+                        options.suggestedName = suggestedFileName;
+                    }
                     const acceptTypes = JSON.parse(fileTypesJson);
                     for (const acceptType of acceptTypes) {
                         const pickerAcceptType = {
@@ -3637,12 +3644,16 @@ var Windows;
                 static isNativeSupported() {
                     return typeof showDirectoryPicker === "function";
                 }
-                static async pickSingleFolderAsync() {
+                static async pickSingleFolderAsync(id, startIn) {
                     if (!FolderPicker.isNativeSupported()) {
                         return null;
                     }
                     try {
-                        const selectedFolder = await showDirectoryPicker();
+                        const options = {
+                            id: id,
+                            startIn: startIn,
+                        };
+                        const selectedFolder = await showDirectoryPicker(options);
                         const info = Uno.Storage.NativeStorageItem.getInfos(selectedFolder)[0];
                         return JSON.stringify(info);
                     }

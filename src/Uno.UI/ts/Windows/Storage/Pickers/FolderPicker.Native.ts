@@ -5,13 +5,18 @@
 			return typeof showDirectoryPicker === "function";
 		}
 
-		public static async pickSingleFolderAsync(): Promise<string> {
+		public static async pickSingleFolderAsync(id: string, startIn: StartInDirectory): Promise<string> {
 			if (!FolderPicker.isNativeSupported()) {
 				return null;
 			}
 
 			try {
-				const selectedFolder = await showDirectoryPicker();
+				const options: DirectoryPickerOptions = {
+					id: id,
+					startIn: startIn,
+				};
+
+				const selectedFolder = await showDirectoryPicker(options);
 
 				const info = Uno.Storage.NativeStorageItem.getInfos(selectedFolder)[0];
 				return JSON.stringify(info);

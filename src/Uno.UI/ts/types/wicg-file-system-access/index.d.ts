@@ -28,6 +28,17 @@ declare class BaseFileSystemHandle {
 }
 
 declare global {
+
+	type WellKnownDirectory =
+		"desktop" |
+		"documents" |
+		"downloads" |
+		"music" |
+		"pictures" |
+		"videos";
+
+	type StartInDirectory = WellKnownDirectory | FileSystemHandle;
+
 	interface FilePickerAcceptType {
 		description?: string;
 		accept: Record<string, string | string[]>;
@@ -36,6 +47,8 @@ declare global {
 	interface FilePickerOptions {
 		types?: FilePickerAcceptType[];
 		excludeAcceptAllOption?: boolean;
+		id?: string;
+		startIn?: StartInDirectory;
 	}
 
 	interface OpenFilePickerOptions extends FilePickerOptions {
@@ -43,10 +56,15 @@ declare global {
 	}
 
 	// tslint:disable-next-line:no-empty-interface
-	interface SaveFilePickerOptions extends FilePickerOptions { }
+	interface SaveFilePickerOptions extends FilePickerOptions {
+		suggestedName?: string;
+	}
 
 	// tslint:disable-next-line:no-empty-interface
-	interface DirectoryPickerOptions { }
+	interface DirectoryPickerOptions {
+		id?: string;
+		startIn?: StartInDirectory;
+	}
 
 	type FileSystemPermissionMode = 'read' | 'readwrite';
 

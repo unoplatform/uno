@@ -5,18 +5,30 @@
 File pickers allow the user to pick a folder or a file on the local file system so that the application can work with it. The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
 
 Legend
-  - ✅  Supported
-  - ⏸️ Partially supported (see below for more details)
-  - 🚫 Not supported
+  - ✔️  Supported
+  - 💬 Partially supported (see below for more details)
+  - ❌ Not supported
   
-| Picker         | UWP | WebAssembly | Android | iOS | macOS | WPF | GTK |
-|----------------|-----|-------------|---------|-----|-------|-----|-----|
-| FileOpenPicker | ✅   | ✅      (1)     | ✅       | ✅   | ✅     | ✅   | ✅  |
-| FileSavePicker | ✅   | ✅  (1)         | ✅       | ✅   | ✅     | ✅   | 🚫  |
-| FolderPicker   | ✅   | ✅           | ✅       | ⏸️ (2)|✅     | 🚫  | ✅  |
+| Picker         | UWP   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
+|----------------|-------|-------------|---------|-------|-------|-----|-----|
+| FileOpenPicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
+| FileSavePicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ❌  |
+| FolderPicker   | ✔️   | ✔️          | ✔️     | 💬 (2)| ✔️   | ❌  | ✔️  |
 
-(1) - Multiple implementations supported - see WebAssembly section below
-(2) - See iOS section below
+*(1) - Multiple implementations supported - see WebAssembly section below*
+*(2) - See iOS section below*
+
+On some platforms, you can further customize the file picking experience by utilizing additional properties: 
+
+| Feature                 | UWP  | WebAssembly | Android | iOS | macOS | WPF | GTK |
+|-------------------------|------|-------------|---------|-----|-------|-----|-----|
+| SuggestedFileName       | ✔️   | ✔️         | ❌      | ❌ | ✔️   | ✔️  | ✔️ |
+| SuggestedStartLocation  | ✔️   | ✔️  (1)    | ❌      | ❌ | ✔️   | ✔️  | ✔️ |
+| SettingsIdentifier      | ✔️   | ✔️  (1)    | ✔️      | ❌ | ❌   | ❌  | ❌ |
+
+*(1) - Only for the native file pickers - see WebAssembly section below*
+
+On platforms where the additional features are not supported yet, setting them will not have any effect.
 
 ## Examples
 

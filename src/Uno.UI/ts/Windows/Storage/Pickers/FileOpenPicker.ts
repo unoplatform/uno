@@ -8,7 +8,10 @@
 		public static async nativePickFilesAsync(
 			multiple: boolean,
 			showAllEntry: boolean,
-			fileTypesJson: string): Promise<string> {
+			fileTypesJson: string,
+			id: string,
+			startIn: StartInDirectory
+		): Promise<string> {
 
 			if (!FileOpenPicker.isNativeSupported()) {
 				return JSON.stringify([]);
@@ -16,7 +19,9 @@
 
 			const options: OpenFilePickerOptions = {
 				excludeAcceptAllOption: !showAllEntry,
+				id: id,
 				multiple: multiple,
+				startIn: startIn,
 				types: [],
 			};
 
