@@ -80,13 +80,13 @@ namespace Windows.Devices.Geolocation
 				{
 					//force set DesiredAccuracy so that its ActualDesiredAccuracyInMeters rule is applied
 					DesiredAccuracy = DesiredAccuracy;
-#if __ANDROID__ 
 					OnDesiredAccuracyInMetersChanged();
-#endif 
 				}
 			}
 		}
 
+		// currently defined only for Android
+		partial void OnDesiredAccuracyInMetersChanged();
 
 		internal uint ActualDesiredAccuracyInMeters
 		{
