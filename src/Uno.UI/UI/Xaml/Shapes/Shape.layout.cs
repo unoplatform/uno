@@ -328,7 +328,7 @@ namespace Windows.UI.Xaml.Shapes
 			return size;
 		}
 
-		private protected Size ArrangeAbsoluteShape(Size finalSize, NativePath path)
+		private protected Size ArrangeAbsoluteShape(Size finalSize, NativePath path, FillRule fillRule = FillRule.EvenOdd)
 		{
 			if (path == null)
 			{
@@ -536,7 +536,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			var renderPath = new CoreGraphics.CGPath(path, renderTransform);
 
-			Render(renderPath);
+			Render(renderPath, fillRule);
 #if __IOS__
 			// If the Shape does not have size defined, and natural size of the geometry is lower than the finalSize,
 			// then we don't clip the shape!
