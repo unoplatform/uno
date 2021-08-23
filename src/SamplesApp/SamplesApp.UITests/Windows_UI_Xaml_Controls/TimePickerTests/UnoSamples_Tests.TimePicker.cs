@@ -186,7 +186,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			picker.FastTap();
 
-			TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
+			using var _ = TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
 
 			// Dismiss the flyout
 			_app.TapCoordinates(10, 10);
@@ -208,7 +208,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			// Wait for the picker to appear
 			_app.WaitForElement(x => x.Class("UIPickerView"));
 
-			TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
+			using var _ = TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
 
 			// Dismiss the flyout
 			_app.Tap(x => x.Marked("AcceptButton"));

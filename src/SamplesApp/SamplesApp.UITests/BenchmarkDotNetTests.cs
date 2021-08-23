@@ -59,7 +59,7 @@ namespace SamplesApp.UITests.Runtime
 
 			_app.WaitForElement(runButton);
 
-			TakeScreenshot("Begin", ignoreInSnapshotCompare: true);
+			using var _1 = TakeScreenshot("Begin", ignoreInSnapshotCompare: true);
 
 			_app.FastTap(runButton);
 
@@ -82,7 +82,7 @@ namespace SamplesApp.UITests.Runtime
 						Console.WriteLine($"Loop: Test changed now:{DateTimeOffset.Now} lastChange: {lastChange}");
 
 						lastChange = DateTimeOffset.Now;
-						TakeScreenshot($"Run {newValue}", ignoreInSnapshotCompare: true);
+						using var __ = TakeScreenshot($"Run {newValue}", ignoreInSnapshotCompare: true);
 					}
 				}
 				catch(Exception e)
@@ -104,7 +104,7 @@ namespace SamplesApp.UITests.Runtime
 
 			TestContext.AddTestAttachment(finalFile, "benchmark-results.zip");
 
-			TakeScreenshot("Runtime Tests Results", ignoreInSnapshotCompare: true);
+			using var _2 = TakeScreenshot("Runtime Tests Results", ignoreInSnapshotCompare: true);
 		}
 
 		private static string ArchiveResults(QueryEx benchmarkControl)

@@ -37,7 +37,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			_app.DragCoordinates(sut.Rect.X + 10, sut.Rect.Y + 110, sut.Rect.X + 10, sut.Rect.Y + 10);
 
 			validate.FastTap();
-			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			using var _ = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}
 
@@ -59,7 +59,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			_app.DragCoordinates(sut.Rect.X + 10, sut.Rect.Y + 110, sut.Rect.X + 10, sut.Rect.Y + 10);
 
 			validate.FastTap();
-			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			using var _ = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}
 
@@ -116,7 +116,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 			void AssertCurrentColor(string description, Color color)
 			{
-				var scrn = TakeScreenshot(description);
+				using var scrn = TakeScreenshot(description);
 				ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, color);
 			}
 		}

@@ -74,7 +74,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 			_app.DragCoordinates(x, srcY, x, dstY);
 
-			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			using var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			ImageAssert.HasColorAt(result, x, dstY, _items[from], tolerance: 10);
 		}

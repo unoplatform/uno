@@ -87,7 +87,7 @@ namespace SamplesApp.UITests.Runtime
 					$"{tests.Length} unit test(s) failed.\n\tFailing Tests:\n{string.Join("", tests)}\n\n---\n\tDetails:\n{details}");
 			}
 
-			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
+			using var _ = TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
 		}
 
 

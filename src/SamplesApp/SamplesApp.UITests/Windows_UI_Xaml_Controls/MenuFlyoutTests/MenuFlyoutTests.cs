@@ -23,12 +23,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 			_app.WaitForElement(_app.Marked("mfiButton"));
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			// step 1: press button to show menu
 			_app.FastTap(_app.Marked("mfiButton"));
 
-			TakeScreenshot("menuShown");
+			using var _2 = TakeScreenshot("menuShown");
 
 			// step 2: click MenuFlyoutItem
 			_app.FastTap(_app.Marked("mfiItem"));
@@ -36,7 +36,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			// step 3: check result
 			_app.WaitForText(_app.Marked("mfiResult"), "success");
 
-			TakeScreenshot("AfterSuccess");
+			using var _3 = TakeScreenshot("AfterSuccess");
 		}
 
 		[Test]
@@ -47,10 +47,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 			_app.WaitForElement(_app.Marked("Help"));
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			_app.FastTap(_app.Marked("Help"));
-			TakeScreenshot("menuShown");
+			using var _2 = TakeScreenshot("menuShown");
 
 			_app.FastTap(_app.Marked("MenuViewHelp"));
 			_app.WaitForText(_app.Marked("results"), "View Help");
@@ -72,7 +72,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.FastTap(_app.Marked("MenuAutoSave"));
 			_app.WaitForText(_app.Marked("results"), "Auto Save");
 
-			TakeScreenshot("AfterSuccess");
+			using var _3 = TakeScreenshot("AfterSuccess");
 		}
 
 		[Test]
@@ -85,13 +85,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.WaitForElement(_app.Marked("fileMenu"));
 			var result = _app.Marked("result");
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			void Validate(string topMenu, string item, string expectedResult)
 			{
 				_app.FastTap(_app.Marked(topMenu));
 
-				TakeScreenshot(item);
+				using var _ = TakeScreenshot(item);
 
 				_app.FastTap(_app.Marked(item));
 
@@ -102,7 +102,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			Validate("fileMenu", "openMenu", "click text:Open...");
 			Validate("fileMenu", "xamlUIMenu", "xamluicommand param:xamlUIMenu");
 
-			TakeScreenshot("AfterSuccess");
+			using var _2 = TakeScreenshot("AfterSuccess");
 		}
 
 		[Test]
@@ -115,13 +115,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.WaitForElement(_app.Marked("editMenu"));
 			var result = _app.Marked("result");
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			void Validate(string topMenu, string item, string expectedResult, bool initialCheckedState)
 			{
 				_app.FastTap(_app.Marked(topMenu));
 
-				TakeScreenshot(item);
+				using var _ = TakeScreenshot(item);
 
 				var itemQuery = _app.Marked(item);
 
@@ -136,7 +136,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			Validate("editMenu", "RepeatToggleMenuFlyoutItem", "click text:Repeat", false);
 			Validate("editMenu", "ShuffleToggleMenuFlyoutItem", "click text:Shuffle", false);
 
-			TakeScreenshot("AfterSuccess");
+			using var _2 = TakeScreenshot("AfterSuccess");
 		}
 
 		[Test]
@@ -149,21 +149,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.WaitForElement(_app.Marked("fileMenu"));
 			var result = _app.Marked("result");
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			_app.FastTap(_app.Marked("fileMenu"));
 
-			TakeScreenshot("fileMenu");
+			using var _2 = TakeScreenshot("fileMenu");
 
 			_app.FastTap(_app.Marked("newMenu"));
 
-			TakeScreenshot("newMenu");
+			using var _3 = TakeScreenshot("newMenu");
 
 			_app.FastTap(_app.Marked("plainTextMenu"));
 
 			_app.WaitForText(result, "command param:Plain Text");
 
-			TakeScreenshot("AfterSuccess");
+			using var _4 = TakeScreenshot("AfterSuccess");
 		}
 
 		[Test]
@@ -176,22 +176,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.WaitForElement(_app.Marked("fileMenu"));
 			var result = _app.Marked("result");
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			var fileMenu = _app.Marked("fileMenu");
 			_app.FastTap(fileMenu);
 
-			TakeScreenshot("fileMenu");
+			using var _2 = TakeScreenshot("fileMenu");
 
 			_app.FastTap(_app.Marked("disabledItem"));
 
-			TakeScreenshot("disabledItem");
+			using var _3 = TakeScreenshot("disabledItem");
 
 			Task.Delay(250);
 
 			_app.WaitForElement("disabledItem");
 
-			TakeScreenshot("AfterSuccess");
+			using var _4 = TakeScreenshot("AfterSuccess");
 
 			_app.Tap(fileMenu);
 		}
@@ -207,11 +207,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.WaitForElement(_app.Marked("fileMenu"));
 			var result = _app.Marked("result");
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			_app.Tap(fileMenu);
 
-			TakeScreenshot("fileMenu");
+			using var _2 = TakeScreenshot("fileMenu");
 
 			var exitMenu = _app.Marked("exitMenu");
 			_app.WaitForElement(exitMenu);
@@ -222,7 +222,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 			_app.WaitForNoElement("exitItem");
 
-			TakeScreenshot("AfterSuccess");
+			using var _3 = TakeScreenshot("AfterSuccess");
 		}
 
 		[Test]
@@ -238,7 +238,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			var myBorderRect = _app.Query(_app.Marked("myBorder")).First().Rect;
 			_app.TouchAndHoldCoordinates(myBorderRect.CenterX, myBorderRect.CenterY);
 
-			TakeScreenshot("opened");
+			using var _ = TakeScreenshot("opened");
 
 			_app.FastTap(_app.Marked("testItem1"));
 			Assert.AreEqual("click: test1", result.GetText());

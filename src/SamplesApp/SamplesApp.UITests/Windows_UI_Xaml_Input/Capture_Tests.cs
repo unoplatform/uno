@@ -61,7 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.WaitForElement(target);
 			act(target);
 
-			TakeScreenshot("Result");
+			using var _ = TakeScreenshot("Result");
 
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}

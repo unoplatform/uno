@@ -41,7 +41,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var primaryButton = _app.Marked("PrimaryButton");
 			_app.WaitForElement(primaryButton);
 
-			CurrentTestTakeScreenShot("Primary Button");
+			using var _ = CurrentTestTakeScreenShot("Primary Button");
 
 			_app.FastTap(primaryButton);
 
@@ -68,7 +68,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var primaryButton = _app.Marked("PrimaryButton");
 			_app.WaitForElement(primaryButton);
 
-			CurrentTestTakeScreenShot("Primary Button");
+			using var _1 = CurrentTestTakeScreenShot("Primary Button");
 
 			_app.FastTap(primaryButton);
 
@@ -79,7 +79,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var secondaryButton = _app.Marked("SecondaryButton");
 			_app.WaitForElement(secondaryButton);
 
-			CurrentTestTakeScreenShot("Secondary Button");
+			using var _2 = CurrentTestTakeScreenShot("Secondary Button");
 
 			_app.FastTap(secondaryButton);
 
@@ -106,7 +106,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var primaryButton = _app.Marked("PrimaryButton");
 			_app.WaitForElement(primaryButton);
 
-			CurrentTestTakeScreenShot("Primary Button");
+			using var _1 = CurrentTestTakeScreenShot("Primary Button");
 
 			_app.FastTap(primaryButton);
 
@@ -115,11 +115,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var secondaryButton = _app.Marked("SecondaryButton");
 			_app.WaitForElement(secondaryButton);
 
-			CurrentTestTakeScreenShot("Secondary Button");
+			using var _2 = CurrentTestTakeScreenShot("Secondary Button");
 
 			_app.FastTap(secondaryButton);
 
-			CurrentTestTakeScreenShot("Closed");
+			using var _3 = CurrentTestTakeScreenShot("Closed");
 		}
 
 		[Test]
@@ -142,7 +142,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var secondaryButton = _app.Marked("SecondaryButton");
 			_app.WaitForElement(secondaryButton);
 
-			CurrentTestTakeScreenShot("Secondary Button");
+			using var _ = CurrentTestTakeScreenShot("Secondary Button");
 
 			_app.FastTap(secondaryButton);
 
@@ -170,7 +170,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var primaryButton = _app.Marked("PrimaryButton");
 			_app.WaitForElement(primaryButton);
 
-			CurrentTestTakeScreenShot("Primary Button");
+			using var _ = CurrentTestTakeScreenShot("Primary Button");
 
 			_app.FastTap(primaryButton);
 
@@ -198,7 +198,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var closeButton = _app.Marked("CloseButton");
 			_app.WaitForElement(closeButton);
 
-			CurrentTestTakeScreenShot("Close Button");
+			using var _ = CurrentTestTakeScreenShot("Close Button");
 
 			_app.FastTap(closeButton);
 
@@ -225,7 +225,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dialogInnerButton = _app.Marked("dialogInnerButton");
 			_app.WaitForElement(dialogInnerButton);
 
-			CurrentTestTakeScreenShot("Secondary Button");
+			using var _1 = CurrentTestTakeScreenShot("Secondary Button");
 
 			_app.FastTap(dialogInnerButton);
 
@@ -239,7 +239,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dialogTextBinding = _app.Marked("dialogTextBinding");
 			_app.WaitForDependencyPropertyValue(dialogTextBinding, "Text", "This is some text");
 
-			CurrentTestTakeScreenShot("Secondary Button");
+			using var _2 = CurrentTestTakeScreenShot("Secondary Button");
 
 			var primaryButton = _app.Marked("SecondaryButton");
 			_app.FastTap(primaryButton);
@@ -390,22 +390,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			// initial state
 			_app.WaitForElement(showDialogButton);
-			var initialScreenshot = CurrentTestTakeScreenShot("0 Initial State");
+			using var initialScreenshot = CurrentTestTakeScreenShot("0 Initial State");
 
 			// open dialog
 			_app.FastTap(showDialogButton);
 			_app.WaitForElement(primaryButton);
-			var dialogOpenedScreenshot = CurrentTestTakeScreenShot("1 ContentDialog Opened");
+			using var dialogOpenedScreenshot = CurrentTestTakeScreenShot("1 ContentDialog Opened");
 
 			// tapping outside of dialog
 			var dialogRect = _app.GetRect(dialogSpace);
 			_app.TapCoordinates(dialogRect.CenterX, dialogRect.Bottom + 50);
-			var dialogStillOpenedScreenshot = CurrentTestTakeScreenShot("2 ContentDialog Still Opened");
+			using var dialogStillOpenedScreenshot = CurrentTestTakeScreenShot("2 ContentDialog Still Opened");
 
 			// close dialog
 			_app.FastTap(primaryButton);
 			_app.Wait(seconds: 1);
-			var dialogClosedScreenshot = CurrentTestTakeScreenShot("3 ContentDialog Closed");
+			using var dialogClosedScreenshot = CurrentTestTakeScreenShot("3 ContentDialog Closed");
 
 			// compare
 			var comparableRect = GetOsComparableRect();

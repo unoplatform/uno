@@ -19,14 +19,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ContentControlTests
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ContentControlNoTemplateNoContent");
 
 			_app.WaitForElement("CContentControl");
-			TakeScreenshot($"CContentControl");
-			TabWaitAndThenScreenshot("bntContentClear");
-
-			void TabWaitAndThenScreenshot(string buttonName)
-			{
-				_app.Marked(buttonName).FastTap();
-				TakeScreenshot($"ContentControlNoTemplateNoContent - {buttonName}");
-			}
+			using var _1 = TakeScreenshot($"CContentControl");
+			_app.Marked("bntContentClear").FastTap();
+			using var _2 = TakeScreenshot($"ContentControlNoTemplateNoContent - {"bntContentClear"}");
 
 		}
 	}

@@ -80,7 +80,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			_app.TapCoordinates(automatedBounds.X + 15, automatedBounds.CenterY);
 			_app.DragCoordinates(sourceBounds.CenterX, sourceBounds.CenterY, goAway ? targetBounds.Right + 10 : targetBounds.CenterX, targetBounds.CenterY);
 
-			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			using var _ = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			var raw = output.GetDependencyPropertyValue<string>("Text");
 			var logEntries = raw

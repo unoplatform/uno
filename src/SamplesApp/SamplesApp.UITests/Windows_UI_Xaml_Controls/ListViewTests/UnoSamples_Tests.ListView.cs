@@ -66,7 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			{
 				_app.Marked(buttonName).FastTap();
 				_app.Wait(TimeSpan.FromSeconds(2));
-				TakeScreenshot($"ListView_ItemPanel_HotSwap - {buttonName}");
+				using var _ = TakeScreenshot($"ListView_ItemPanel_HotSwap - {buttonName}");
 			}
 		}
 
@@ -81,7 +81,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var textResult = _app.Marked("TextResult");
 			_app.WaitForText(textResult, "Success");
 
-			TakeScreenshot($"ListView_VirtualizePanelAdaptaterIdCache");
+			using var _ = TakeScreenshot($"ListView_VirtualizePanelAdaptaterIdCache");
 		}
 
 		[Test]
@@ -105,7 +105,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("StateTextBlock", "Measured");
 
-			TakeScreenshot("before scroll");
+			using var _1 = TakeScreenshot("before scroll");
 
 			var measureTextBefore = _app.GetText("MeasureCountTextBlock");
 			var initialMeasureCount = int.Parse(measureTextBefore);
@@ -114,7 +114,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("ResultTextBlock", "Scrolled");
 
-			TakeScreenshot("after scroll");
+			using var _2 = TakeScreenshot("after scroll");
 
 			var measureTextAfter = _app.GetText("MeasureCountTextBlock");
 			var finalMeasureCount = int.Parse(measureTextAfter);
@@ -129,7 +129,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("StatusTextBlock", "Finished");
 
-			TakeScreenshot("after layout");
+			using var _ = TakeScreenshot("after layout");
 
 			var heightStr = _app.GetText("HeightTextBlock");
 			var height = float.Parse(heightStr, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
@@ -145,7 +145,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("StatusTextBlock", "Ready");
 
-			TakeScreenshot("1 item");
+			using var _1 = TakeScreenshot("1 item");
 
 			var heightStrBefore = _app.GetText("HeightTextBlock");
 			var heightBefore = float.Parse(heightStrBefore, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
@@ -154,7 +154,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("StatusTextBlock", "Finished");
 
-			TakeScreenshot("3 items");
+			using var _2 = TakeScreenshot("3 items");
 
 			var heightStrAfter = _app.GetText("HeightTextBlock");
 			var heightAfter = float.Parse(heightStrAfter, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
@@ -299,7 +299,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 				_app.WaitForText("itemsStackPanelListSelectedItem", "1");
 			}
 
-			TakeScreenshot("Both Selection Changed");
+			using var _ = TakeScreenshot("Both Selection Changed");
 		}
 
 		[Test]
@@ -469,7 +469,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			{
 				_app.FastTap(AutomateButton);
 				_app.WaitForText(StatusText, automationStep);
-				TakeScreenshot(automationStep);
+				using var _ = TakeScreenshot(automationStep);
 			}
 		}
 

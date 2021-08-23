@@ -23,7 +23,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 
 			_app.WaitForElement(_app.Marked("startButton"));
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			var startButton = _app.Marked("startButton");
 			var clickResult = _app.Marked("WebView_NavigateToStringResult");
@@ -37,7 +37,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 			_app.FastTap(startButton);
 			_app.WaitForText(clickResult, "success");   // timeout here means: bug reappear
 
-			TakeScreenshot("AfterSuccess");
+			using var _2 = TakeScreenshot("AfterSuccess");
 
 		}
 
@@ -50,7 +50,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 
 			_app.WaitForElement(_app.Marked("NavigateToAnchorButton"));
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			var navigationCompletedTextBlock = _app.Marked("NavigationCompletedTextBlock");
 			var navigateToAnchorButton = _app.Marked("NavigateToAnchorButton");
@@ -62,13 +62,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 			_app.FastTap(navigateToAnchorButton);
 			_app.WaitForText(navigationCompletedTextBlock, "https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html#section-1");
 
-			TakeScreenshot("navigate to anchor");
+			using var _2 = TakeScreenshot("navigate to anchor");
 
 			// user click in the browser itself
 			_app.FastTap(clickAnchorButton);
 			_app.WaitForText(navigationCompletedTextBlock, "https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html#page-4");
 
-			TakeScreenshot("click anchor");
+			using var _3 = TakeScreenshot("click anchor");
 		}
 	}
 }

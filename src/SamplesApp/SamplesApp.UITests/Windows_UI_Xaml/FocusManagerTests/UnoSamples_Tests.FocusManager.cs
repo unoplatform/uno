@@ -30,13 +30,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Border - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - Border - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Border - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - Border - 2 - After Selection");
 		}
 
 		[Test]
@@ -54,13 +54,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Button - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - Button - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyButton");
-			TakeScreenshot("FocusManager - GetFocusedElement - Button - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - Button - 2 - After Selection");
 		}
 
 		[Test]
@@ -78,7 +78,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - Button - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - Button - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyButton");
@@ -87,7 +87,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - Button - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - Button - 2 - Click outside");
 		}
 
 		[Test]
@@ -105,13 +105,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - CheckBox - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - CheckBox - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyCheckBox");
-			TakeScreenshot("FocusManager - GetFocusedElement - CheckBox - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - CheckBox - 2 - After Selection");
 		}
 
 		[Test]
@@ -129,7 +129,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>"); ;
-			TakeScreenshot("FocusManager - LostFocus - CheckBox - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - CheckBox - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyCheckBox");
@@ -138,7 +138,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - CheckBox - 3 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - CheckBox - 3 - Click outside");
 		}
 
 		[Test]
@@ -156,13 +156,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Grid - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - Grid - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Grid - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - Grid - 2 - After Selection");
 		}
 
 		[Test]
@@ -180,7 +180,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - HyperlinkButton - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - HyperlinkButton - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyHyperlinkButton");
@@ -189,7 +189,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - HyperlinkButton - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - HyperlinkButton - 2 - Click outside");
 		}
 
 		[Test]
@@ -207,7 +207,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - HyperlinkButton - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - HyperlinkButton - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyHyperlinkButton");
@@ -216,7 +216,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - HyperlinkButton - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - HyperlinkButton - 2 - Click outside");
 		}
 
 		[Test]
@@ -234,13 +234,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Image - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - Image - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Image - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - Image - 2 - After Selection");
 		}
 
 		[Test]
@@ -258,13 +258,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Rectangle - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - Rectangle - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - Rectangle - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - Rectangle - 2 - After Selection");
 		}
 
 		[Test]
@@ -282,13 +282,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - TextBlock - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - TextBlock - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - TextBlock - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - TextBlock - 2 - After Selection");
 		}
 
 		[Test]
@@ -306,14 +306,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - TextBoxMultiLine - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - TextBoxMultiLine - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "TextBoxMultiLine");
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "TextBoxMultiLine");
-			TakeScreenshot("FocusManager - GetFocusedElement - TextBoxMultiLine - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - TextBoxMultiLine - 2 - After Selection");
 		}
 
 		[Test]
@@ -331,7 +331,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - TextBoxMultiLine - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - TextBoxMultiLine - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "TextBoxMultiLine");
@@ -340,7 +340,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - TextBoxMultiLine - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - TextBoxMultiLine - 2 - Click outside");
 		}
 
 		[Test]
@@ -358,13 +358,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - TextBoxSingleLine - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - TextBoxSingleLine - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "TextBoxSingleLine");
-			TakeScreenshot("FocusManager - GetFocusedElement - TextBoxSingleLine - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - TextBoxSingleLine - 2 - After Selection");
 		}
 
 		[Test]
@@ -382,7 +382,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - TextBoxSingleLine - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - TextBoxSingleLine - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "TextBoxSingleLine");
@@ -391,7 +391,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - TextBoxSingleLine - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - TextBoxSingleLine - 2 - Click outside");
 		}
 
 		[Test]
@@ -409,13 +409,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - ToggleButton - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - ToggleButton - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyToggleButton");
-			TakeScreenshot("FocusManager - GetFocusedElement - ToggleButton - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - ToggleButton - 2 - After Selection");
 		}
 
 		[Test]
@@ -433,7 +433,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ToggleButton - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - ToggleButton - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyToggleButton");
@@ -442,7 +442,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ToggleButton - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - ToggleButton - 2 - Click outside");
 		}
 
 		[Test]
@@ -460,13 +460,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - ComboBox - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - ComboBox - 1 - Initial State");
 
 			combo.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
-			TakeScreenshot("FocusManager - GetFocusedElement - ComboBox - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - ComboBox - 2 - After Selection");
 
 			// Close the combo to not pollute other tests
 			_app.TapCoordinates(20, 100);
@@ -487,7 +487,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ComboBox - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - ComboBox - 1 - Initial State");
 
 			combo.FastTap();
 
@@ -498,7 +498,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ComboBox - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - ComboBox - 2 - Click outside");
 		}
 
 		[Test]
@@ -517,7 +517,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - ComboBoxItem - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - ComboBoxItem - 1 - Initial State");
 
 			comboBox.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
@@ -526,7 +526,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
-			TakeScreenshot("FocusManager - GetFocusedElement - ComboBoxItem - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - ComboBoxItem - 2 - After Selection");
 		}
 
 		[Test]
@@ -545,7 +545,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ComboBoxItem - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - ComboBoxItem - 1 - Initial State");
 
 			comboBox.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
@@ -557,7 +557,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ComboBoxItem - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - ComboBoxItem - 2 - Click outside");
 		}
 
 		[Test]
@@ -576,13 +576,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - ScrollViewer - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - ScrollViewer - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - ScrollViewer - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - ScrollViewer - 2 - After Selection");
 		}
 
 		[Test]
@@ -601,13 +601,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - ListViewItem - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - GetFocusedElement - ListViewItem - 1 - Initial State");
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyListViewItem");
-			TakeScreenshot("FocusManager - GetFocusedElement - ListViewItem - 2 - After Selection");
+			using var _2 = TakeScreenshot("FocusManager - GetFocusedElement - ListViewItem - 2 - After Selection");
 		}
 
 		[Test]
@@ -626,7 +626,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ListViewItem - 1 - Initial State");
+			using var _1 = TakeScreenshot("FocusManager - LostFocus - ListViewItem - 1 - Initial State");
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyListViewItem");
@@ -635,7 +635,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ListViewItem - 2 - Click outside");
+			using var _2 = TakeScreenshot("FocusManager - LostFocus - ListViewItem - 2 - Click outside");
 		}
 	}
 }

@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var rect = _app.WaitForElement("_thumb").Single().Rect;
 			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.X - 100, rect.Y - 100);
 
-			TakeScreenshot("Result");
+			using var _ = TakeScreenshot("Result");
 		}
 
 		[Test]

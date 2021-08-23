@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 			var icon2 = _app.Marked("icon2");
 			_app.WaitForElement(colorChange);
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			_app.FastTap(colorChange);
 
@@ -35,7 +35,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 			_app.WaitForDependencyPropertyValue(icon1, "Foreground", "[SolidColorBrush #FFFFFF00]");
 			_app.WaitForDependencyPropertyValue(icon2, "Foreground", "[SolidColorBrush #FF008000]");
 
-			TakeScreenshot("Changed");
+			using var _2 = TakeScreenshot("Changed");
 		}
 	}
 }

@@ -28,23 +28,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			_app.WaitForElement(_app.Marked("shuffleButton"));
 			_app.WaitForDependencyPropertyValue(shuffleButton, "IsChecked", false);
 
-			TakeScreenshot("Initial");
+			using var _1 = TakeScreenshot("Initial");
 
 			_app.FastTap(shuffleButton);
 			_app.WaitForDependencyPropertyValue(shuffleButton, "IsChecked", true);
 			_app.WaitForDependencyPropertyValue(clickResult, "Text", "Shuffle");
 
-			TakeScreenshot("AfterShuffle");
+			using var _2 = TakeScreenshot("AfterShuffle");
 
 			_app.FastTap(playButton);
 			_app.WaitForDependencyPropertyValue(clickResult, "Text", "Play");
 
-			TakeScreenshot("AfterPlay");
+			using var _3 = TakeScreenshot("AfterPlay");
 
 			_app.FastTap(appBarContentButton);
 			_app.WaitForDependencyPropertyValue(clickResult, "Text", "Click me");
 
-			TakeScreenshot("AfterClickMe");
+			using var _4 = TakeScreenshot("AfterClickMe");
 		}
 	}
 }

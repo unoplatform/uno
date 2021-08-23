@@ -27,18 +27,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			_app.WaitForElement(rootCanvas);
 
-			TakeScreenshot("tb01 - Initial");
+			using var _1 = TakeScreenshot("tb01 - Initial");
 
 			_app.WaitForDependencyPropertyValue(topValue, "Text", "0");
 			_app.WaitForDependencyPropertyValue(leftValue, "Text", "0");
 
-			TakeScreenshot("DragBorder01 - Step 1");
+			using var _2 = TakeScreenshot("DragBorder01 - Step 1");
 
 			var topBorderRect = _app.Query(myBorder).First().Rect;
 
 			_app.DragCoordinates(topBorderRect.CenterX, topBorderRect.CenterY, topBorderRect.CenterX + 50, topBorderRect.CenterY + 50);
 
-			TakeScreenshot("DragBorder01 - Step 2");
+			using var _3 = TakeScreenshot("DragBorder01 - Step 2");
 
 			_app.WaitForDependencyPropertyValue(topValue, "Text", "50");
 			_app.WaitForDependencyPropertyValue(leftValue, "Text", "50");

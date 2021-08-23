@@ -39,25 +39,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			_app.DragCoordinates(leftLow, leftHigh);
 			WaitForDragged();
-			TakeScreenshot("After drag on grid");
+			using var _1 = TakeScreenshot("After drag on grid");
 			Reset();
 
 			_app.DragCoordinates(centerLow, centerHigh);
 			if (GetIsTouchInteraction())
 			{
 				WaitForUndragged(); // Interaction is swallowed by ScrollViewer in touch
-				TakeScreenshot("After drag on ScrollViewer - touch");
+				using var _ = TakeScreenshot("After drag on ScrollViewer - touch");
 			}
 			else
 			{
 				WaitForDragged(); // When using mouse the ScrollViewer will not swallow the drag
-				TakeScreenshot("After drag on ScrollViewer - mouse");
+				using var _ = TakeScreenshot("After drag on ScrollViewer - mouse");
 			}
 			Reset();
 
 			_app.DragCoordinates(rightLow, rightHigh);
 			WaitForDragged(); // ScrollViewer is unscrollable, PointerMoved will be surfaced to parent (in both touch and mouse mode)
-			TakeScreenshot("After drag on non-scrolling ScrollViewer");
+			using var _2 = TakeScreenshot("After drag on non-scrolling ScrollViewer");
 
 
 			void WaitForUndragged() => _app.WaitForText("StatusTextBlock", "Not dragged");

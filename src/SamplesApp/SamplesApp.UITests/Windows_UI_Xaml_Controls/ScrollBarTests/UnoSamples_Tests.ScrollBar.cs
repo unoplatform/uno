@@ -36,11 +36,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 			_app.WaitForElement(indicatorModeCombo);
 
-			TakeScreenshot("Startup");
+			using var _1 = TakeScreenshot("Startup");
 
 			indicatorModeCombo.SetDependencyPropertyValue("SelectedValue", "MouseIndicator");
 
-			TakeScreenshot("initial indicators");
+			using var _2 = TakeScreenshot("initial indicators");
 
 			verticalScrollBarSmallDecrease.FastTap();
 
@@ -82,11 +82,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 			_app.WaitForElement(indicatorModeCombo);
 
-			TakeScreenshot("Startup");
+			using var _1 = TakeScreenshot("Startup");
 
 			indicatorModeCombo.SetDependencyPropertyValue("SelectedValue", "MouseIndicator");
 
-			TakeScreenshot("initial indicators");
+			using var _2 = TakeScreenshot("initial indicators");
 
 			horizontalScrollBarSmallDecrease.FastTap();
 
@@ -126,11 +126,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 			_app.WaitForElement(indicatorModeCombo);
 
-			TakeScreenshot("Startup");
+			using var _1 = TakeScreenshot("Startup");
 
 			indicatorModeCombo.SetDependencyPropertyValue("SelectedValue", "MouseIndicator");
 
-			TakeScreenshot("initial indicators");
+			using var _2 = TakeScreenshot("initial indicators");
 
 			var thumbResult = _app.Query(horizontalScrollBarThumb).First();
 
@@ -160,11 +160,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 			_app.WaitForElement(indicatorModeCombo);
 
-			TakeScreenshot("Startup");
+			using var _1 = TakeScreenshot("Startup");
 
 			indicatorModeCombo.SetDependencyPropertyValue("SelectedValue", "MouseIndicator");
 
-			TakeScreenshot("initial indicators");
+			using var _2 = TakeScreenshot("initial indicators");
 
 			var thumbResult = _app.Query(verticalScrollBarThumb).First();
 

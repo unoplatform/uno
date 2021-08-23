@@ -31,7 +31,7 @@ namespace SamplesApp.UITests
 			var PopupText = _app.Marked("DismissablePopupText");
 
 			// Assert initial state 
-			TakeScreenshot("Popup - Dismissable - 1 - InitialState");
+			using var _1 = TakeScreenshot("Popup - Dismissable - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
 			OpenDismissablePopupButton.FastTap();
@@ -39,13 +39,13 @@ namespace SamplesApp.UITests
 			_app.WaitForElement(PopupText, timeout: TimeSpan.FromSeconds(5));
 
 			// Assert after opening dismissable 
-			TakeScreenshot("Popup - Dismissable - 2 - Open");
+			using var _2 = TakeScreenshot("Popup - Dismissable - 2 - Open");
 			Assert.AreEqual("Test", PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.TapCoordinates(10,100);
 
 			// Assert after dismiss
-			TakeScreenshot("Popup - Dismissable - 3 - Dismissable");
+			using var _3 = TakeScreenshot("Popup - Dismissable - 3 - Dismissable");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 		}
 
@@ -64,7 +64,7 @@ namespace SamplesApp.UITests
 			var PopupText = _app.Marked("NonDismissablePopupText");
 
 			// Assert initial state 
-			TakeScreenshot("Popup - Non Dismissable - 1 - InitialState");
+			using var _1 = TakeScreenshot("Popup - Non Dismissable - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
 			OpenNonDismissablePopupButton.FastTap();
@@ -73,13 +73,13 @@ namespace SamplesApp.UITests
 			_app.WaitForElement(PopupText, timeout: TimeSpan.FromSeconds(5));
 
 			// Assert after opening dismissable 
-			TakeScreenshot("Popup - Non Dismissable - 2 - Open");
+			using var _2 = TakeScreenshot("Popup - Non Dismissable - 2 - Open");
 			Assert.AreEqual("Test", PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.TapCoordinates(10, 100);
 
 			// Assert after trying to dismiss
-			TakeScreenshot("Popup - Non Dismissable - 3 - Try Dismiss");
+			using var _3 = TakeScreenshot("Popup - Non Dismissable - 3 - Try Dismiss");
 			Assert.AreEqual("Test", PopupText.GetDependencyPropertyValue("Text")?.ToString());
 		}
 
@@ -98,7 +98,7 @@ namespace SamplesApp.UITests
 			var PopupText = _app.Marked("NoFixedHeightPopupText");
 
 			// Assert initial state 
-			TakeScreenshot("Popup - No Fixed Height - 1 - InitialState");
+			using var _1 = TakeScreenshot("Popup - No Fixed Height - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
 			OpenNoFixedHeightPopupButton.FastTap();
@@ -106,7 +106,7 @@ namespace SamplesApp.UITests
 			_app.WaitForElement(PopupText, timeout: TimeSpan.FromSeconds(5));
 
 			// Assert after opening dismissable 
-			TakeScreenshot("Popup - No Fixed Height - 2 - Open");
+			using var _2 = TakeScreenshot("Popup - No Fixed Height - 2 - Open");
 			Assert.AreEqual("Test", PopupText.GetDependencyPropertyValue("Text")?.ToString());
 		}
 	}

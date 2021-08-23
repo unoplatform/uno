@@ -24,7 +24,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 
 			var rect = _app.GetPhysicalRect("HostBorder");
 
-			var scrn = TakeScreenshot("Rendered", ignoreInSnapshotCompare: true);
+			using var scrn = TakeScreenshot("Rendered", ignoreInSnapshotCompare: true);
 
 			ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, Color.Red);
 		}
@@ -40,7 +40,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 
 			var rect = _app.GetPhysicalRect("HostBorder");
 
-			var scrn = TakeScreenshot("Rendered", ignoreInSnapshotCompare: true);
+			using var scrn = TakeScreenshot("Rendered", ignoreInSnapshotCompare: true);
 
 			ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, Color.Green);
 		}

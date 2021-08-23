@@ -37,7 +37,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			_app.WaitForDependencyPropertyValue(loadStateElement, "Text", "ImageOpened");
 
 			// Take screenshot
-			TakeScreenshot("ImageSource_PixelSize - Result");
+			using var _ = TakeScreenshot("ImageSource_PixelSize - Result");
 		}
 	}
 }

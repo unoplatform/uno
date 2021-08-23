@@ -45,17 +45,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Checked threeState01 True");
 
-			TakeScreenshot("Checked");
+			using var _1 = TakeScreenshot("Checked");
 
 			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Indeterminate threeState01 ");
 
-			TakeScreenshot("Indeterminate");
+			using var _2 = TakeScreenshot("Indeterminate");
 
 			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Unchecked threeState01 False");
 
-			TakeScreenshot("Unchecked");
+			using var _3 = TakeScreenshot("Unchecked");
 
 			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Checked threeState01 True");

@@ -22,14 +22,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage");
 			_app.WaitForElement("DPolyline");
-			TakeScreenshot($"PolylinePage");
+			using var _ = TakeScreenshot($"PolylinePage");
 			TabWaitAndThenScreenshot("ChangeShape");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).FastTap();
 				_app.WaitForElement("DPolyline");
-				TakeScreenshot($"PolylinePage - {buttonName}");
+				using var _ = TakeScreenshot($"PolylinePage - {buttonName}");
 			}
 		}
 
@@ -39,14 +39,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage");
 			_app.WaitForElement("DPolygon");
-			TakeScreenshot($"PolygonPage");
+			using var _ = TakeScreenshot($"PolygonPage");
 			TabWaitAndThenScreenshot("ChangeShape");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).FastTap();
 				_app.WaitForElement("DPolygon");
-				TakeScreenshot($"PolygonPage - {buttonName}");
+				using var _ = TakeScreenshot($"PolygonPage - {buttonName}");
 			}
 		}
 
@@ -58,7 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			_app.WaitForElement("DPolygon");
 			_app.Marked("ClearShape").FastTap();
-			TakeScreenshot($"PolygonPage - ClearShape");
+			using var _1 = TakeScreenshot($"PolygonPage - ClearShape");
 
 			_app.Marked("ChangeShape").FastTap();
 			var widthzize = _app.Query(_app.Marked("DPolygon")).First().Rect.Width;
@@ -66,7 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			if (widthzize == 0)
 				Assert.Fail("Shape not changed");
 
-			TakeScreenshot($"PolygonPage - ChangeShape-After clear");
+			using var _2 = TakeScreenshot($"PolygonPage - ChangeShape-After clear");
 		}
 
 		[Test]
@@ -77,7 +77,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			_app.WaitForElement("DPolyline");
 			_app.Marked("ClearShape").FastTap();
-			TakeScreenshot($"PolylinePage - ClearShape");
+			using var _1 = TakeScreenshot($"PolylinePage - ClearShape");
 
 			_app.Marked("ChangeShape").FastTap();
 			var widthzize = _app.Query(_app.Marked("DPolyline")).First().Rect.Width;
@@ -85,7 +85,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			if(widthzize == 0)
 				Assert.Fail("Shape not changed");
 
-			TakeScreenshot($"PolylinePage - ChangeShape-After clear");
+			using var _2 = TakeScreenshot($"PolylinePage - ChangeShape-After clear");
 		}
 
 		[Test]
@@ -115,7 +115,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.LinePage");
 			_app.WaitForElement("DLinePage");
-			TakeScreenshot($"LinePage");
+			using var _ = TakeScreenshot($"LinePage");
 		}
 
 		[Test]
@@ -126,7 +126,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			_app.WaitForText("StatusTextBlock", "Is bound");
 
-			var screenshot = TakeScreenshot("Complete");
+			using var screenshot = TakeScreenshot("Complete");
 
 			var bounds = _app.GetRect("TargetRectangle");
 
@@ -138,7 +138,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		public void Default_StrokeThickness()
 		{
 			const string red = "#FF0000";
-			string reddish = GetReddish();
+			var reddish = GetReddish();
 
 			var shapeExpectations = new[]
 		   {

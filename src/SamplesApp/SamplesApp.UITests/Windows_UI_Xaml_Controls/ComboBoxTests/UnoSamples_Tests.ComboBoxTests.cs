@@ -133,7 +133,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			var popupResult = _app.WaitForElement("PopupBorder").First();
 
-			TakeScreenshot("Opened");
+			using var _1 = TakeScreenshot("Opened");
 
 			Assert.AreEqual(popupResult.Rect.Width, sampleControlResult.Rect.Width, "The popup must stretch horizontally");
 			Assert.IsTrue(popupResult.Rect.Height < sampleControlResult.Rect.Height / 2, "The popup should not stretch to the height of the screen");
@@ -142,7 +142,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			_app.WaitForNoElement("PopupBorder");
 
-			TakeScreenshot("Closed");
+			using var _2 = TakeScreenshot("Closed");
 		}
 
 		[Test]
@@ -159,7 +159,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			_app.FastTap(values2);
 
-			TakeScreenshot("Opened");
+			using var _1 = TakeScreenshot("Opened");
 
 			var popupResult = _app.WaitForElement("PopupBorder").First();
 
@@ -170,7 +170,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			_app.WaitForNoElement("PopupBorder");
 
-			TakeScreenshot("Closed");
+			using var _2 = TakeScreenshot("Closed");
 		}
 
 		[Test]
@@ -199,7 +199,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			_app.WaitForElement(_app.Marked("DisablingComboBox"));
 			var disablingComboBox = _app.Marked("DisablingComboBox");
 
-			TakeScreenshot("ComboBox Enabled");
+			using var _1 = TakeScreenshot("ComboBox Enabled");
 
 			_app.FastTap("ToggleDisabledButton");
 
@@ -212,7 +212,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			Assert.AreEqual("Test Toggle Disabled ComboBox", headerContentPresenter.GetDependencyPropertyValue("Content"));
 
-			TakeScreenshot("ComboBox Disabled");
+			using var _2 = TakeScreenshot("ComboBox Disabled");
 		}
 
 		[Test]
@@ -234,7 +234,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			ToggleComboBox();
 			// Third time's the bug
 
-			var scrn = TakeScreenshot("ComboBox open");
+			using var scrn = TakeScreenshot("ComboBox open");
 			var rect = _app.GetPhysicalRect("ViewfinderBorder");
 
 			ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, Color.Tomato);

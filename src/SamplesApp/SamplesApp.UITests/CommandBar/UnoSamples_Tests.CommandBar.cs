@@ -28,19 +28,19 @@ namespace SamplesApp.UITests.CommandBar
 				_app.WaitForElement(_app.Marked("TextBlockWidthTest"));
 
 				// Initial state
-				TakeScreenshot("CommandBar - LongTitle - 1 - Initial State");
+				using var _1 = TakeScreenshot("CommandBar - LongTitle - 1 - Initial State");
 
 				// Set orientation Landscape
 				_app.SetOrientationLandscape();
-				TakeScreenshot("CommandBar - LongTitle - 2 - Orientation Landscape");
+				using var _2 = TakeScreenshot("CommandBar - LongTitle - 2 - Orientation Landscape");
 
 				// Set orientation Portrait
 				_app.SetOrientationPortrait();
-				TakeScreenshot("CommandBar - LongTitle - 3 - Orientation Portrait");
+				using var _3 = TakeScreenshot("CommandBar - LongTitle - 3 - Orientation Portrait");
 
 				// Set orientation Landscape (Again)
 				_app.SetOrientationLandscape();
-				TakeScreenshot("CommandBar - LongTitle - 4 - Orientation Landscape");
+				using var _4 = TakeScreenshot("CommandBar - LongTitle - 4 - Orientation Landscape");
 			}
 			finally
 			{

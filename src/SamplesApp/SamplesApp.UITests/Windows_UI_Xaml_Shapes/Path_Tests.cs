@@ -22,7 +22,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			_app.WaitForElement("MainTargetEvenOdd");
 
-			var scrn = TakeScreenshot("Rendered", true);
+			using var scrn = TakeScreenshot("Rendered", true);
 
 			AssertHasColorAtCenter("MainTargetEvenOdd", Color.Beige);
 			AssertHasColorAtCenter("LeftTargetEvenOdd", Color.Beige);

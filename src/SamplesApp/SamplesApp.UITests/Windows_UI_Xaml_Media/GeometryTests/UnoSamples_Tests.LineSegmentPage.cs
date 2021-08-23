@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 			_app.WaitForElement(path);
 
 			// Take an initial screenshot
-			TakeScreenshot("Initial State", ignoreInSnapshotCompare: true);
+			using var _ = TakeScreenshot("Initial State", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]

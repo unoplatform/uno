@@ -88,10 +88,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var tb2 = _app.Marked("tb2");
 
 			tb1.FastTap();
-			TakeScreenshot("tb1 focused", ignoreInSnapshotCompare: true);
+			using var _1 = TakeScreenshot("tb1 focused", ignoreInSnapshotCompare: true);
 
 			tb2.FastTap();
-			TakeScreenshot("tb2 focused", ignoreInSnapshotCompare: true);
+			using var _2 = TakeScreenshot("tb2 focused", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]

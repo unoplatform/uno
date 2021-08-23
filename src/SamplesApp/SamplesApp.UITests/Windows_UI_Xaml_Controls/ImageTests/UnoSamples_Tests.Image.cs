@@ -25,12 +25,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var button = _app.Marked("_update");
 			_app.WaitForElement(button);
 
-			var screenshotBefore = TakeScreenshot("WriteableBitmap_Invalidate - Before");
+			using var screenshotBefore = TakeScreenshot("WriteableBitmap_Invalidate - Before");
 
 			button.FastTap();
 
 			// Take screenshot
-			var screenshotAfter = TakeScreenshot("WriteableBitmap_Invalidate - Result");
+			using var screenshotAfter = TakeScreenshot("WriteableBitmap_Invalidate - Result");
 
 			ImageAssert.AreNotEqual(screenshotBefore, screenshotAfter);
 		}
@@ -46,12 +46,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			_app.WaitForElement(button);
 			button.FastTap();
 
-			var screenshotBefore = TakeScreenshot("WriteableBitmap_MultiInvalidate - Before");
+			using var screenshotBefore = TakeScreenshot("WriteableBitmap_MultiInvalidate - Before");
 
 			button.FastTap();
 
 			// Take screenshot
-			var screenshotAfter = TakeScreenshot("WriteableBitmap_MultiInvalidate - After");
+			using var screenshotAfter = TakeScreenshot("WriteableBitmap_MultiInvalidate - After");
 
 			ImageAssert.AreNotEqual(screenshotBefore, screenshotAfter);
 		}
@@ -149,7 +149,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 				picker.SetDependencyPropertyValue("Mode", "S" + i);
 				_app.WaitForDependencyPropertyValue(currentModeButton, "Content", (i * 16).ToString("00"));
 
-				TakeScreenshot("Mode-" + i);
+				using var _ = TakeScreenshot("Mode-" + i);
 			}
 		}
 

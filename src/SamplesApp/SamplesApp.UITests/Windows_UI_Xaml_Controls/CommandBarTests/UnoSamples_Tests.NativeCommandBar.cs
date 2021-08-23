@@ -65,7 +65,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			try
 			{
-				var firstScreenShot = TakeScreenshot("FirstOrientation");
+				using var firstScreenShot = TakeScreenshot("FirstOrientation");
 
 				var firstCommandBarRect = _app.GetRect("TheCommandBar");
 				var firstYellowBorderRect = _app.GetRect("TheBorder");
@@ -84,7 +84,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				await ToggleOrientation();
 
-				var secondScreenShot = TakeScreenshot("SecondOrientation");
+				using var secondScreenShot = TakeScreenshot("SecondOrientation");
 
 				var secondCommandBarRect = _app.GetRect("TheCommandBar");
 				var secondYellowBorderRect = _app.GetRect("TheBorder");
@@ -97,7 +97,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				await ToggleOrientation();
 
-				var thirdScreenShot = TakeScreenshot("thirdOrientation");
+				using var thirdScreenShot = TakeScreenshot("thirdOrientation");
 
 				var thirdCommandBarRect = _app.GetRect("TheCommandBar");
 				var thirdYellowBorderRect = _app.GetRect("TheBorder");
@@ -139,14 +139,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			var myCommandBarResult = _app.Query(myCommandBar).First();
 
-			TakeScreenshot("Default");
+			using var _1 = TakeScreenshot("Default");
 
 			var innerTextBoxResult = _app.Query(innerTextBox).First();
 			Assert.IsTrue(innerTextBoxResult.Rect.Width <= myCommandBarResult.Rect.Width / 2, "TextBox Width is too large");
 
 			horizontalValue.SetDependencyPropertyValue("SelectedItem", "Stretch");
 
-			TakeScreenshot("Stretch");
+			using var _2 = TakeScreenshot("Stretch");
 
 			innerTextBoxResult = _app.Query(innerTextBox).First();
 			Assert.IsTrue(innerTextBoxResult.Rect.Width > myCommandBarResult.Rect.Width * .75, "TextBox Width is not large enough");
@@ -156,7 +156,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			innerTextBoxResult = _app.Query(innerTextBox).First();
 			Assert.IsTrue(innerTextBoxResult.Rect.Width <= myCommandBarResult.Rect.Width / 2, "TextBox Width is too large");
 
-			TakeScreenshot("Left");
+			using var _3 = TakeScreenshot("Left");
 		}
 
 		[Test]
@@ -196,11 +196,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			_app.WaitForElement("Page2CommandBar");
 
-			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
+			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
 			_app.Wait(TimeSpan.FromMilliseconds(500));
 
-			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
+			using var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
 
 			ImageAssert.AreEqual(initial, final);
 		}

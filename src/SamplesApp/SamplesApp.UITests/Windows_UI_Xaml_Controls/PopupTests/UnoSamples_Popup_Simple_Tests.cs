@@ -82,25 +82,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			_app.Wait(0.25f);
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
 			_app.WaitForElement(popupContent);
-			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup opened");
+			using var _1 = TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup opened");
 
 			// 2. Tap on content should keep the popup opened
 			popupContent.FastTap();
 			_app.Wait(0.25f);
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
-			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap on content");
+			using var _2 = TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap on content");
 
 			// 2. Tap out of the popup should keep the pop opened
 			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;
 			_app.TapCoordinates(10, screenRect.Bottom - 10); // click elsewhere on the page
 			_app.Wait(0.25f);
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
-			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap out of popup");
+			using var _3 = TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap out of popup");
 
 			// 3. Close the popup (to make sure to not pollute other tests)
 			toggleButton.FastTap(); // should dismiss here
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
-			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup closed"); // We add a screen shot in order to make sure that the check of the bool IsChecked is valid!
+			using var _4 = TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup closed"); // We add a screen shot in order to make sure that the check of the bool IsChecked is valid!
 		}
 
 		[Test]

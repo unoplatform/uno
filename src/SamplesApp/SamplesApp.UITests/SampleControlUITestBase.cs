@@ -121,7 +121,7 @@ namespace SamplesApp.UITests
 				&& TestContext.CurrentContext.Result.Outcome != ResultState.Ignored
 			)
 			{
-				TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error", ignoreInSnapshotCompare: true);
+				using var _ = TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error", ignoreInSnapshotCompare: true);
 			}
 		}
 
@@ -286,7 +286,7 @@ namespace SamplesApp.UITests
 
 			if (!skipInitialScreenshot)
 			{
-				TakeScreenshot(metadataName.Replace(".", "_"));
+				using var _ = TakeScreenshot(metadataName.Replace(".", "_"));
 			}
 		}
 

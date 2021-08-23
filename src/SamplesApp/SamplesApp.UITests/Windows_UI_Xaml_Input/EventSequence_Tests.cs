@@ -70,7 +70,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			tap(target);
 			validate.FastTap();
 
-			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			using var _ = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}

@@ -67,7 +67,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			}
 
 			// Take screenshot
-			TakeScreenshot("WriteableBitmap_Invalidate - Result");
+			using var _ = TakeScreenshot("WriteableBitmap_Invalidate - Result");
 		}
 
 	}
