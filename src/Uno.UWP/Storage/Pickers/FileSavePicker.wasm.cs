@@ -50,9 +50,9 @@ namespace Windows.Storage.Pickers
 			var showAllEntryParameter = "true";
 			var fileTypeMapParameter = JsonHelper.Serialize(BuildFileTypesMap());
 
-			var suggestedFileName = string.IsNullOrEmpty(SuggestedFileName) ?
-				"" : WebAssemblyRuntime.EscapeJs(SuggestedFileName);
-			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier ?? "");
+			var suggestedFileName = SuggestedFileName != "" ? WebAssemblyRuntime.EscapeJs(SuggestedFileName) : "";
+
+			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
 
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 			var promise = $"{JsType}.nativePickSaveFileAsync({showAllEntryParameter},'{WebAssemblyRuntime.EscapeJs(fileTypeMapParameter)}','{suggestedFileName}','{id}','{startIn}')";

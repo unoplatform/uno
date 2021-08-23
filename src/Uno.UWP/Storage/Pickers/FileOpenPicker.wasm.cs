@@ -63,7 +63,7 @@ namespace Windows.Storage.Pickers
 			var fileTypeAcceptTypes = BuildFileTypesMap();
 			var fileTypeAcceptTypesJson = JsonHelper.Serialize(fileTypeAcceptTypes);
 			var fileTypeMapParameter = WebAssemblyRuntime.EscapeJs(fileTypeAcceptTypesJson);
-			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier ?? "");
+			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 			var nativeStorageItemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.nativePickFilesAsync({multipleParameter},{showAllEntryParameter},'{fileTypeMapParameter}','{id}','{startIn}')");
 			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson);

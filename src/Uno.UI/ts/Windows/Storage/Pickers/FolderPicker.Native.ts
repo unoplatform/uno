@@ -13,7 +13,7 @@
 			try {
 				const options: DirectoryPickerOptions = {
 					id: id,
-					startIn: startIn
+					startIn: startIn,
 				};
 
 				const selectedFolder = await showDirectoryPicker(options);

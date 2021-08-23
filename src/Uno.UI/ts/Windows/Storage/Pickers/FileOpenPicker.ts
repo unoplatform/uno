@@ -19,10 +19,10 @@
 
 			const options: OpenFilePickerOptions = {
 				excludeAcceptAllOption: !showAllEntry,
-				multiple: multiple,
-				types: [],
 				id: id,
-				startIn: startIn
+				multiple: multiple,
+				startIn: startIn,
+				types: [],
 			};
 
 			const acceptTypes = <Uno.Storage.Pickers.NativeFilePickerAcceptType[]>JSON.parse(fileTypesJson);

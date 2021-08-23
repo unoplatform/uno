@@ -21,7 +21,7 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("Could not handle the request using any picker implementation.");
 			}
 
-			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier ?? "");
+			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 
 			var pickedFolderJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickSingleFolderAsync('{id}','{startIn}')");

@@ -3505,10 +3505,10 @@ var Windows;
                     }
                     const options = {
                         excludeAcceptAllOption: !showAllEntry,
-                        multiple: multiple,
-                        types: [],
                         id: id,
-                        startIn: startIn
+                        multiple: multiple,
+                        startIn: startIn,
+                        types: [],
                     };
                     const acceptTypes = JSON.parse(fileTypesJson);
                     for (const acceptType of acceptTypes) {
@@ -3586,9 +3586,9 @@ var Windows;
                     }
                     const options = {
                         excludeAcceptAllOption: !showAllEntry,
-                        types: [],
                         id: id,
-                        startIn: startIn
+                        startIn: startIn,
+                        types: [],
                     };
                     if (suggestedFileName != "") {
                         options.suggestedName = suggestedFileName;
@@ -3651,7 +3651,7 @@ var Windows;
                     try {
                         const options = {
                             id: id,
-                            startIn: startIn
+                            startIn: startIn,
                         };
                         const selectedFolder = await showDirectoryPicker(options);
                         const info = Uno.Storage.NativeStorageItem.getInfos(selectedFolder)[0];
