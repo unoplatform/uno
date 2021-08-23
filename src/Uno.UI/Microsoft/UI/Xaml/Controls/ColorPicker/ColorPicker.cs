@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private ButtonBase m_moreButton;
 		private TextBlock m_moreButtonLabel;
-    
+
 		private ComboBox m_colorRepresentationComboBox;
 		private TextBox m_redTextBox;
 		private TextBox m_greenTextBox;
@@ -91,6 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private SolidColorBrush m_checkerColorBrush;
 
 		// Uno Doc: Added to dispose event handlers
+		private bool _isTemplateApplied = false;
 		private SerialDisposable _eventSubscriptions = new SerialDisposable();
 
 		public ColorPicker()
@@ -100,6 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SetDefaultStyleKey(this);
 
+			Loaded += OnLoaded; // Uno Doc: Added to re-registered disposed event handlers
 			Unloaded += OnUnloaded;
 		}
 
@@ -108,7 +110,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Uno Doc: Added to dispose event handlers
 			_eventSubscriptions.Disposable = null;
-			var registrations = new CompositeDisposable();
 
 			m_colorSpectrum = GetTemplateChild<Primitives.ColorSpectrum>("ColorSpectrum");
 
@@ -126,9 +127,9 @@ namespace Microsoft.UI.Xaml.Controls
 			m_alphaSliderCheckeredBackgroundImageBrush = GetTemplateChild<ImageBrush>("AlphaSliderCheckeredBackgroundImageBrush");
 
 			m_moreButton = GetTemplateChild<ButtonBase>("MoreButton");
-    
+
 			m_colorRepresentationComboBox = GetTemplateChild<ComboBox>("ColorRepresentationComboBox");
-    
+
 			m_redTextBox = GetTemplateChild<TextBox>("RedTextBox");
 			m_greenTextBox = GetTemplateChild<TextBox>("GreenTextBox");
 			m_blueTextBox = GetTemplateChild<TextBox>("BlueTextBox");
@@ -150,62 +151,28 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_checkerColorBrush = GetTemplateChild<SolidColorBrush>("CheckerColorBrush");
 
+			// Uno Doc: Extracted event registrations into a separate method, so they can be re-registered on reloading.
+			var registrations = SubscribeToEvents();
+
 			if (m_colorSpectrum is Primitives.ColorSpectrum colorSpectrum)
 			{
-				colorSpectrum.ColorChanged += OnColorSpectrumColorChanged;
-				colorSpectrum.SizeChanged += OnColorSpectrumSizeChanged;
-
-				registrations.Add(() => colorSpectrum.ColorChanged -= OnColorSpectrumColorChanged);
-				registrations.Add(() => colorSpectrum.SizeChanged -= OnColorSpectrumSizeChanged);
-
 				AutomationProperties.SetName(colorSpectrum, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameColorSpectrum));
-			}
-
-			if (m_colorPreviewRectangleGrid is Grid colorPreviewRectangleGrid)
-			{
-				colorPreviewRectangleGrid.SizeChanged += OnColorPreviewRectangleGridSizeChanged;
-				registrations.Add(() => colorPreviewRectangleGrid.SizeChanged -= OnColorPreviewRectangleGridSizeChanged);
 			}
 
 			if (m_thirdDimensionSlider is Primitives.ColorPickerSlider thirdDimensionSlider)
 			{
-				thirdDimensionSlider.ValueChanged += OnThirdDimensionSliderValueChanged;
-				registrations.Add(() => thirdDimensionSlider.ValueChanged -= OnThirdDimensionSliderValueChanged);
-
 				SetThirdDimensionSliderChannel();
 			}
 
 			if (m_alphaSlider is Primitives.ColorPickerSlider alphaSlider)
 			{
-				alphaSlider.ValueChanged += OnAlphaSliderValueChanged;
-				registrations.Add(() => alphaSlider.ValueChanged -= OnAlphaSliderValueChanged);
-
 				alphaSlider.ColorChannel = ColorPickerHsvChannel.Alpha;
 
 				AutomationProperties.SetName(alphaSlider, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameAlphaSlider));
 			}
 
-			if (m_alphaSliderBackgroundRectangle is Rectangle alphaSliderBackgroundRectangle)
-			{
-				alphaSliderBackgroundRectangle.SizeChanged += OnAlphaSliderBackgroundRectangleSizeChanged;
-				registrations.Add(() => alphaSliderBackgroundRectangle.SizeChanged -= OnAlphaSliderBackgroundRectangleSizeChanged);
-			}
-
 			if (m_moreButton is ButtonBase moreButton)
 			{
-				if (moreButton is ToggleButton moreButtonAsToggleButton)
-				{
-					moreButtonAsToggleButton.Checked += OnMoreButtonChecked;
-					moreButtonAsToggleButton.Unchecked += OnMoreButtonUnchecked;
-					registrations.Add(() => moreButtonAsToggleButton.Checked -= OnMoreButtonChecked);
-					registrations.Add(() => moreButtonAsToggleButton.Unchecked -= OnMoreButtonUnchecked);
-				}
-				else
-				{
-					moreButton.Click += OnMoreButtonClicked;
-					registrations.Add(() => moreButton.Click -= OnMoreButtonClicked);
-				}
-
 				AutomationProperties.SetName(moreButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameMoreButtonCollapsed));
 				AutomationProperties.SetHelpText(moreButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_HelpTextMoreButton));
 
@@ -220,113 +187,46 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_colorRepresentationComboBox is ComboBox colorRepresentationComboBox)
 			{
-				colorRepresentationComboBox.SelectionChanged += OnColorRepresentationComboBoxSelectionChanged;
-				registrations.Add(() => colorRepresentationComboBox.SelectionChanged -= OnColorRepresentationComboBoxSelectionChanged);
-
 				AutomationProperties.SetName(colorRepresentationComboBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameColorModelComboBox));
 			}
 
 			if (m_redTextBox is TextBox redTextBox)
 			{
-				redTextBox.TextChanging += OnRgbTextChanging;
-				redTextBox.GotFocus += OnTextBoxGotFocus;
-				redTextBox.LostFocus += OnTextBoxLostFocus;
-
-				registrations.Add(() => redTextBox.TextChanging -= OnRgbTextChanging);
-				registrations.Add(() => redTextBox.GotFocus -= OnTextBoxGotFocus);
-				registrations.Add(() => redTextBox.LostFocus -= OnTextBoxLostFocus);
-
 				AutomationProperties.SetName(redTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameRedTextBox));
 			}
 
 			if (m_greenTextBox is TextBox greenTextBox)
 			{
-				greenTextBox.TextChanging += OnRgbTextChanging;
-				greenTextBox.GotFocus += OnTextBoxGotFocus;
-				greenTextBox.LostFocus += OnTextBoxLostFocus;
-
-				registrations.Add(() => greenTextBox.TextChanging -= OnRgbTextChanging);
-				registrations.Add(() => greenTextBox.GotFocus -= OnTextBoxGotFocus);
-				registrations.Add(() => greenTextBox.LostFocus -= OnTextBoxLostFocus);
-
 				AutomationProperties.SetName(greenTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameGreenTextBox));
 			}
 
 			if (m_blueTextBox is TextBox blueTextBox)
 			{
-				blueTextBox.TextChanging += OnRgbTextChanging;
-				blueTextBox.GotFocus += OnTextBoxGotFocus;
-				blueTextBox.LostFocus += OnTextBoxLostFocus;
-
-				registrations.Add(() => blueTextBox.TextChanging -= OnRgbTextChanging);
-				registrations.Add(() => blueTextBox.GotFocus -= OnTextBoxGotFocus);
-				registrations.Add(() => blueTextBox.LostFocus -= OnTextBoxLostFocus);
-
 				AutomationProperties.SetName(blueTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameBlueTextBox));
 			}
 
 			if (m_hueTextBox is TextBox hueTextBox)
 			{
-				hueTextBox.TextChanging += OnHueTextChanging;
-				hueTextBox.GotFocus += OnTextBoxGotFocus;
-				hueTextBox.LostFocus += OnTextBoxLostFocus;
-
-				registrations.Add(() => hueTextBox.TextChanging -= OnHueTextChanging);
-				registrations.Add(() => hueTextBox.GotFocus -= OnTextBoxGotFocus);
-				registrations.Add(() => hueTextBox.LostFocus -= OnTextBoxLostFocus);
-
 				AutomationProperties.SetName(hueTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameHueTextBox));
 			}
 
 			if (m_saturationTextBox is TextBox saturationTextBox)
 			{
-				saturationTextBox.TextChanging += OnSaturationTextChanging;
-				saturationTextBox.GotFocus += OnTextBoxGotFocus;
-				saturationTextBox.LostFocus += OnTextBoxLostFocus;
-
-				registrations.Add(() => saturationTextBox.TextChanging -= OnSaturationTextChanging);
-				registrations.Add(() => saturationTextBox.GotFocus -= OnTextBoxGotFocus);
-				registrations.Add(() => saturationTextBox.LostFocus -= OnTextBoxLostFocus);
-
 				AutomationProperties.SetName(saturationTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameSaturationTextBox));
 			}
 
 			if (m_valueTextBox is TextBox valueTextBox)
 			{
-				valueTextBox.TextChanging += OnValueTextChanging;
-				valueTextBox.GotFocus += OnTextBoxGotFocus;
-				valueTextBox.LostFocus += OnTextBoxLostFocus;
-
-				registrations.Add(() => valueTextBox.TextChanging -= OnValueTextChanging);
-				registrations.Add(() => valueTextBox.GotFocus -= OnTextBoxGotFocus);
-				registrations.Add(() => valueTextBox.LostFocus -= OnTextBoxLostFocus);
-
 				AutomationProperties.SetName(valueTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameValueTextBox));
 			}
 
 			if (m_alphaTextBox is TextBox alphaTextBox)
 			{
-				alphaTextBox.TextChanging += OnAlphaTextChanging;
-				alphaTextBox.GotFocus += OnTextBoxGotFocus;
-				alphaTextBox.LostFocus += OnTextBoxLostFocus;
-
-				registrations.Add(() => alphaTextBox.TextChanging -= OnAlphaTextChanging);
-				registrations.Add(() => alphaTextBox.GotFocus -= OnTextBoxGotFocus);
-				registrations.Add(() => alphaTextBox.LostFocus -= OnTextBoxLostFocus);
-
 				AutomationProperties.SetName(alphaTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameAlphaTextBox));
 			}
 
 			if (m_hexTextBox is TextBox hexTextBox)
 			{
-				hexTextBox.TextChanging += OnHexTextChanging;
-				hexTextBox.GotFocus += OnTextBoxGotFocus;
-				hexTextBox.LostFocus += OnTextBoxLostFocus;
-
-				registrations.Add(() => hexTextBox.TextChanging -= OnHexTextChanging);
-				registrations.Add(() => hexTextBox.GotFocus -= OnTextBoxGotFocus);
-				registrations.Add(() => hexTextBox.LostFocus -= OnTextBoxLostFocus);
-
 				AutomationProperties.SetName(hexTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameHexTextBox));
 			}
 
@@ -388,6 +288,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Uno Doc: Added to dispose event handlers
 			_eventSubscriptions.Disposable = registrations;
+			_isTemplateApplied = true;
 		}
 
 		// Property changed handler.
@@ -803,6 +704,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			// Uno Doc: Added to re-register disposed event handlers
+			if (_isTemplateApplied && _eventSubscriptions.Disposable == null)
+			{
+				_eventSubscriptions.Disposable = SubscribeToEvents();
+			}
+		}
+
 		private void OnUnloaded(object sender, RoutedEventArgs args)
 		{
 			// If we're in the middle of creating image bitmaps while being unloaded,
@@ -956,8 +866,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// We'll respond to the text change if the user has entered a valid value.
 			// Otherwise, we'll do nothing except mark the text box's contents as invalid.
 			var componentValue = ColorConversion.TryParseInt(sender.Text);
-			if (!componentValue.HasValue || 
-				componentValue.Value < 0 || 
+			if (!componentValue.HasValue ||
+				componentValue.Value < 0 ||
 				componentValue.Value > 255)
 			{
 				m_isFocusedTextBoxValid = false;
@@ -983,7 +893,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Otherwise, we'll do nothing except mark the text box's contents as invalid.
 			var hueValue = ColorConversion.TryParseInt(m_hueTextBox.Text);
 			if (!hueValue.HasValue ||
-				hueValue.Value < (ulong)this.MinHue || 
+				hueValue.Value < (ulong)this.MinHue ||
 				hueValue.Value > (ulong)this.MaxHue)
 			{
 				m_isFocusedTextBoxValid = false;
@@ -1009,7 +919,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Otherwise, we'll do nothing except mark the text box's contents as invalid.
 			var saturationValue = ColorConversion.TryParseInt(m_saturationTextBox.Text);
 			if (!saturationValue.HasValue ||
-				saturationValue.Value < (ulong)this.MinSaturation || 
+				saturationValue.Value < (ulong)this.MinSaturation ||
 				saturationValue.Value > (ulong)this.MaxSaturation)
 			{
 				m_isFocusedTextBoxValid = false;
@@ -1182,6 +1092,156 @@ namespace Microsoft.UI.Xaml.Controls
 			hsv.V = Math.Min(Math.Max(hsv.V, minValue), maxValue);
 
 			return ColorConversion.HsvToRgb(hsv);
+		}
+
+		private CompositeDisposable SubscribeToEvents()
+		{
+			var registrations = new CompositeDisposable();
+
+			if (m_colorSpectrum is Primitives.ColorSpectrum colorSpectrum)
+			{
+				colorSpectrum.ColorChanged += OnColorSpectrumColorChanged;
+				colorSpectrum.SizeChanged += OnColorSpectrumSizeChanged;
+
+				registrations.Add(() => colorSpectrum.ColorChanged -= OnColorSpectrumColorChanged);
+				registrations.Add(() => colorSpectrum.SizeChanged -= OnColorSpectrumSizeChanged);
+			}
+
+			if (m_colorPreviewRectangleGrid is Grid colorPreviewRectangleGrid)
+			{
+				colorPreviewRectangleGrid.SizeChanged += OnColorPreviewRectangleGridSizeChanged;
+				registrations.Add(() => colorPreviewRectangleGrid.SizeChanged -= OnColorPreviewRectangleGridSizeChanged);
+			}
+
+			if (m_thirdDimensionSlider is Primitives.ColorPickerSlider thirdDimensionSlider)
+			{
+				thirdDimensionSlider.ValueChanged += OnThirdDimensionSliderValueChanged;
+				registrations.Add(() => thirdDimensionSlider.ValueChanged -= OnThirdDimensionSliderValueChanged);
+			}
+
+			if (m_alphaSlider is Primitives.ColorPickerSlider alphaSlider)
+			{
+				alphaSlider.ValueChanged += OnAlphaSliderValueChanged;
+				registrations.Add(() => alphaSlider.ValueChanged -= OnAlphaSliderValueChanged);
+			}
+
+			if (m_alphaSliderBackgroundRectangle is Rectangle alphaSliderBackgroundRectangle)
+			{
+				alphaSliderBackgroundRectangle.SizeChanged += OnAlphaSliderBackgroundRectangleSizeChanged;
+				registrations.Add(() => alphaSliderBackgroundRectangle.SizeChanged -= OnAlphaSliderBackgroundRectangleSizeChanged);
+			}
+
+			if (m_moreButton is ButtonBase moreButton)
+			{
+				if (moreButton is ToggleButton moreButtonAsToggleButton)
+				{
+					moreButtonAsToggleButton.Checked += OnMoreButtonChecked;
+					moreButtonAsToggleButton.Unchecked += OnMoreButtonUnchecked;
+					registrations.Add(() => moreButtonAsToggleButton.Checked -= OnMoreButtonChecked);
+					registrations.Add(() => moreButtonAsToggleButton.Unchecked -= OnMoreButtonUnchecked);
+				}
+				else
+				{
+					moreButton.Click += OnMoreButtonClicked;
+					registrations.Add(() => moreButton.Click -= OnMoreButtonClicked);
+				}
+			}
+
+			if (m_colorRepresentationComboBox is ComboBox colorRepresentationComboBox)
+			{
+				colorRepresentationComboBox.SelectionChanged += OnColorRepresentationComboBoxSelectionChanged;
+				registrations.Add(() => colorRepresentationComboBox.SelectionChanged -= OnColorRepresentationComboBoxSelectionChanged);
+			}
+
+			if (m_redTextBox is TextBox redTextBox)
+			{
+				redTextBox.TextChanging += OnRgbTextChanging;
+				redTextBox.GotFocus += OnTextBoxGotFocus;
+				redTextBox.LostFocus += OnTextBoxLostFocus;
+
+				registrations.Add(() => redTextBox.TextChanging -= OnRgbTextChanging);
+				registrations.Add(() => redTextBox.GotFocus -= OnTextBoxGotFocus);
+				registrations.Add(() => redTextBox.LostFocus -= OnTextBoxLostFocus);
+			}
+
+			if (m_greenTextBox is TextBox greenTextBox)
+			{
+				greenTextBox.TextChanging += OnRgbTextChanging;
+				greenTextBox.GotFocus += OnTextBoxGotFocus;
+				greenTextBox.LostFocus += OnTextBoxLostFocus;
+
+				registrations.Add(() => greenTextBox.TextChanging -= OnRgbTextChanging);
+				registrations.Add(() => greenTextBox.GotFocus -= OnTextBoxGotFocus);
+				registrations.Add(() => greenTextBox.LostFocus -= OnTextBoxLostFocus);
+			}
+
+			if (m_blueTextBox is TextBox blueTextBox)
+			{
+				blueTextBox.TextChanging += OnRgbTextChanging;
+				blueTextBox.GotFocus += OnTextBoxGotFocus;
+				blueTextBox.LostFocus += OnTextBoxLostFocus;
+
+				registrations.Add(() => blueTextBox.TextChanging -= OnRgbTextChanging);
+				registrations.Add(() => blueTextBox.GotFocus -= OnTextBoxGotFocus);
+				registrations.Add(() => blueTextBox.LostFocus -= OnTextBoxLostFocus);
+			}
+
+			if (m_hueTextBox is TextBox hueTextBox)
+			{
+				hueTextBox.TextChanging += OnHueTextChanging;
+				hueTextBox.GotFocus += OnTextBoxGotFocus;
+				hueTextBox.LostFocus += OnTextBoxLostFocus;
+
+				registrations.Add(() => hueTextBox.TextChanging -= OnHueTextChanging);
+				registrations.Add(() => hueTextBox.GotFocus -= OnTextBoxGotFocus);
+				registrations.Add(() => hueTextBox.LostFocus -= OnTextBoxLostFocus);
+			}
+
+			if (m_saturationTextBox is TextBox saturationTextBox)
+			{
+				saturationTextBox.TextChanging += OnSaturationTextChanging;
+				saturationTextBox.GotFocus += OnTextBoxGotFocus;
+				saturationTextBox.LostFocus += OnTextBoxLostFocus;
+
+				registrations.Add(() => saturationTextBox.TextChanging -= OnSaturationTextChanging);
+				registrations.Add(() => saturationTextBox.GotFocus -= OnTextBoxGotFocus);
+				registrations.Add(() => saturationTextBox.LostFocus -= OnTextBoxLostFocus);
+			}
+
+			if (m_valueTextBox is TextBox valueTextBox)
+			{
+				valueTextBox.TextChanging += OnValueTextChanging;
+				valueTextBox.GotFocus += OnTextBoxGotFocus;
+				valueTextBox.LostFocus += OnTextBoxLostFocus;
+
+				registrations.Add(() => valueTextBox.TextChanging -= OnValueTextChanging);
+				registrations.Add(() => valueTextBox.GotFocus -= OnTextBoxGotFocus);
+				registrations.Add(() => valueTextBox.LostFocus -= OnTextBoxLostFocus);
+			}
+
+			if (m_alphaTextBox is TextBox alphaTextBox)
+			{
+				alphaTextBox.TextChanging += OnAlphaTextChanging;
+				alphaTextBox.GotFocus += OnTextBoxGotFocus;
+				alphaTextBox.LostFocus += OnTextBoxLostFocus;
+
+				registrations.Add(() => alphaTextBox.TextChanging -= OnAlphaTextChanging);
+				registrations.Add(() => alphaTextBox.GotFocus -= OnTextBoxGotFocus);
+				registrations.Add(() => alphaTextBox.LostFocus -= OnTextBoxLostFocus);
+			}
+
+			if (m_hexTextBox is TextBox hexTextBox)
+			{
+				hexTextBox.TextChanging += OnHexTextChanging;
+				hexTextBox.GotFocus += OnTextBoxGotFocus;
+				hexTextBox.LostFocus += OnTextBoxLostFocus;
+
+				registrations.Add(() => hexTextBox.TextChanging -= OnHexTextChanging);
+				registrations.Add(() => hexTextBox.GotFocus -= OnTextBoxGotFocus);
+				registrations.Add(() => hexTextBox.LostFocus -= OnTextBoxLostFocus);
+			}
+
+			return registrations;
 		}
 
 		private void UpdateThirdDimensionSlider()

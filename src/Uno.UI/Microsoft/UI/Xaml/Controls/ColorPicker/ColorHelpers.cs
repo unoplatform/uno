@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// we find its bounds on the other side, and then select the color that is exactly
 			// in the middle of that color's bounds.
 			Hsv newHsv = originalHsv;
-			
+
 			string originalColorName = ColorHelper.ToDisplayName(ColorConversion.ColorFromRgba(ColorConversion.HsvToRgb(originalHsv)));
 			string newColorName = originalColorName;
 
@@ -473,7 +473,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// A new 'ArrayList' class is used to avoid an extra copy using List<T>.ToArray() here.
 			using (Stream stream = bitmap.PixelBuffer.AsStream())
 			{
-				_ = stream.WriteAsync(bgraPixelData.Array, 0, bgraPixelData.Count);
+				stream.Write(bgraPixelData.Array, 0, bgraPixelData.Count);
 			}
 
 			// Uno Doc: The following code is not supported in C# and is removed.

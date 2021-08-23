@@ -95,6 +95,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private Vector4 m_oldHsvColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
 		// Uno Doc: Added to dispose event handlers
+		private bool _isTemplateApplied = false;
 		private SerialDisposable _eventSubscriptions = new SerialDisposable();
 
 		public ColorSpectrum()
@@ -118,6 +119,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_minValueFromLastBitmapCreation = this.MinValue;
 			m_maxValueFromLastBitmapCreation = this.MaxValue;
 
+			Loaded += OnLoaded; // Uno Doc: Added to re-registered disposed event handlers
 			Unloaded += OnUnloaded;
 
 			if (SharedHelpers.IsRS1OrHigher())
@@ -137,7 +139,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			// Uno Doc: Added to dispose event handlers
 			_eventSubscriptions.Disposable = null;
-			var registrations = new CompositeDisposable();
 
 			m_layoutRoot = GetTemplateChild<Grid>("LayoutRoot");
 			m_sizingGrid = GetTemplateChild<Grid>("SizingGrid");
@@ -148,27 +149,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_inputTarget = GetTemplateChild<FrameworkElement>("InputTarget");
 			m_selectionEllipsePanel = GetTemplateChild<Panel>("SelectionEllipsePanel");
 			m_colorNameToolTip = GetTemplateChild<ToolTip>("ColorNameToolTip");
-
-			if (m_layoutRoot is Grid layoutRoot)
-			{
-				layoutRoot.SizeChanged += OnLayoutRootSizeChanged;
-				registrations.Add(() => layoutRoot.SizeChanged -= OnLayoutRootSizeChanged);
-			}
-
-			if (m_inputTarget is FrameworkElement inputTarget)
-			{
-				inputTarget.PointerEntered += OnInputTargetPointerEntered;
-				inputTarget.PointerExited += OnInputTargetPointerExited;
-				inputTarget.PointerPressed += OnInputTargetPointerPressed;
-				inputTarget.PointerMoved += OnInputTargetPointerMoved;
-				inputTarget.PointerReleased += OnInputTargetPointerReleased;
-
-				registrations.Add(() => inputTarget.PointerEntered -= OnInputTargetPointerEntered);
-				registrations.Add(() => inputTarget.PointerExited -= OnInputTargetPointerExited);
-				registrations.Add(() => inputTarget.PointerPressed -= OnInputTargetPointerPressed);
-				registrations.Add(() => inputTarget.PointerMoved -= OnInputTargetPointerMoved);
-				registrations.Add(() => inputTarget.PointerReleased -= OnInputTargetPointerReleased);
-			}
+			
+			// Uno Doc: Extracted event registrations into a separate method, so they can be re-registered on reloading.
+			var registrations = SubscribeToEvents();
 
 			if (DownlevelHelper.ToDisplayNameExists())
 			{
@@ -188,12 +171,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				CreateBitmapsAndColorMap();
 			}
-
 			UpdateEllipse();
 			UpdateVisualState(useTransitions: false);
 
 			// Uno Doc: Added to dispose event handlers
 			_eventSubscriptions.Disposable = registrations;
+			_isTemplateApplied = true;
 		}
 
 		// IControlOverrides overrides
@@ -548,6 +531,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private void OnComponentsChanged(DependencyPropertyChangedEventArgs args)
 		{
 			CreateBitmapsAndColorMap();
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			// Uno Doc: Added to re-register disposed event handlers
+			if (_isTemplateApplied && _eventSubscriptions.Disposable == null)
+			{
+				_eventSubscriptions.Disposable = SubscribeToEvents();
+			}
 		}
 
 		private void OnUnloaded(object sender, RoutedEventArgs args)
@@ -960,6 +952,34 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			UpdateEllipse();
 		}
 
+		private CompositeDisposable SubscribeToEvents()
+		{
+			var registrations = new CompositeDisposable();
+
+			if (m_layoutRoot is Grid layoutRoot)
+			{
+				layoutRoot.SizeChanged += OnLayoutRootSizeChanged;
+				registrations.Add(() => layoutRoot.SizeChanged -= OnLayoutRootSizeChanged);
+			}
+
+			if (m_inputTarget is FrameworkElement inputTarget)
+			{
+				inputTarget.PointerEntered += OnInputTargetPointerEntered;
+				inputTarget.PointerExited += OnInputTargetPointerExited;
+				inputTarget.PointerPressed += OnInputTargetPointerPressed;
+				inputTarget.PointerMoved += OnInputTargetPointerMoved;
+				inputTarget.PointerReleased += OnInputTargetPointerReleased;
+
+				registrations.Add(() => inputTarget.PointerEntered -= OnInputTargetPointerEntered);
+				registrations.Add(() => inputTarget.PointerExited -= OnInputTargetPointerExited);
+				registrations.Add(() => inputTarget.PointerPressed -= OnInputTargetPointerPressed);
+				registrations.Add(() => inputTarget.PointerMoved -= OnInputTargetPointerMoved);
+				registrations.Add(() => inputTarget.PointerReleased -= OnInputTargetPointerReleased);
+			}
+
+			return registrations;
+		}
+
 		private async void CreateBitmapsAndColorMap()
 		{
 			var layoutRoot = m_layoutRoot;
@@ -1066,7 +1086,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			newHsvValues.Capacity = pixelCount;
 
 			int minDimensionInt = (int)Math.Round(minDimension);
-			//WorkItemHandler workItemHandler = 
+			//WorkItemHandler workItemHandler =
 			//(IAsyncAction workItem) =>
 			await Task.Run(() =>
 			{
