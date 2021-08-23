@@ -29,7 +29,7 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp.Views" />
+		<PackageReference Include="SkiaSharp.Views.WPF" />
 	</ItemGroup>
 
 	<ItemGroup>
