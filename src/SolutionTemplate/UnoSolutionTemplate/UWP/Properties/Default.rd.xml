@@ -25,6 +25,8 @@
     
     
     <!-- Add your application specific runtime directives here. -->
+    <Assembly Dynamic="Required All" Name="Microsoft.Extensions.Options" />
+    <Assembly Dynamic="Required All" Name="Microsoft.Extensions.Logging" />
 
 
   </Application>
