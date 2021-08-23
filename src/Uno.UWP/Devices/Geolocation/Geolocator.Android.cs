@@ -214,9 +214,9 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 =======
 		private async Task<bool> TryWaitForGetGeopositionAsync(TimeSpan timeout)
 		{
-			var stopwatch = new Stopwatch();
-			stopwatch.Start();
-			while(stopwatch.Elapsed < timeout)
+			var stopwatch = Stopwatch.StartNew();
+
+			while (stopwatch.Elapsed < timeout)
 			{
 				await Task.Delay(250);
 				if (_locChanged)
@@ -291,12 +291,12 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 			}
 
 			// wait for fix
-			if(await TryWaitForGetGeopositionAsync(timeout))
+			if (await TryWaitForGetGeopositionAsync(timeout))
 			{
-					// success
-					RemoveUpdates();
-					BroadcastStatus(PositionStatus.Ready);
-					return _location.ToGeoPosition();
+				// success
+				RemoveUpdates();
+				BroadcastStatus(PositionStatus.Ready);
+				return _location.ToGeoPosition();
 			}
 
 			// timeout
