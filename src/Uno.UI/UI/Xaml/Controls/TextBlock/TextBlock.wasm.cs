@@ -68,21 +68,24 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SynchronizeHtmlParagraphAttributes()
 		{
-			ConditionalUpdate(ref _fontStyleChanged, () => this.SetFontStyle(FontStyle));
-			ConditionalUpdate(ref _fontWeightChanged, () => this.SetFontWeight(FontWeight));
-			ConditionalUpdate(ref _fontFamilyChanged, () => this.SetFontFamily(FontFamily));
-			ConditionalUpdate(ref _fontSizeChanged, () => this.SetFontSize(FontSize));
-			ConditionalUpdate(ref _maxLinesChanged, () => this.SetMaxLines(MaxLines));
-			ConditionalUpdate(ref _textAlignmentChanged, () => this.SetTextAlignment(TextAlignment));
-			ConditionalUpdate(ref _lineHeightChanged, () => this.SetLineHeight(LineHeight));
-			ConditionalUpdate(ref _characterSpacingChanged, () => this.SetCharacterSpacing(CharacterSpacing));
-			ConditionalUpdate(ref _textDecorationsChanged, () => this.SetTextDecorations(TextDecorations));
-			ConditionalUpdate(ref _paddingChangedChanged, () => this.SetTextPadding(Padding));
-
-			if(_textTrimmingChanged || _textWrappingChanged)
+			using (SuspendCssStyleUpdates())
 			{
-				_textTrimmingChanged = _textWrappingChanged = false;
-				this.SetTextWrappingAndTrimming(textTrimming: TextTrimming, textWrapping: TextWrapping);
+				ConditionalUpdate(ref _fontStyleChanged, () => this.SetFontStyle(FontStyle));
+				ConditionalUpdate(ref _fontWeightChanged, () => this.SetFontWeight(FontWeight));
+				ConditionalUpdate(ref _fontFamilyChanged, () => this.SetFontFamily(FontFamily));
+				ConditionalUpdate(ref _fontSizeChanged, () => this.SetFontSize(FontSize));
+				ConditionalUpdate(ref _maxLinesChanged, () => this.SetMaxLines(MaxLines));
+				ConditionalUpdate(ref _textAlignmentChanged, () => this.SetTextAlignment(TextAlignment));
+				ConditionalUpdate(ref _lineHeightChanged, () => this.SetLineHeight(LineHeight));
+				ConditionalUpdate(ref _characterSpacingChanged, () => this.SetCharacterSpacing(CharacterSpacing));
+				ConditionalUpdate(ref _textDecorationsChanged, () => this.SetTextDecorations(TextDecorations));
+				ConditionalUpdate(ref _paddingChangedChanged, () => this.SetTextPadding(Padding));
+
+				if (_textTrimmingChanged || _textWrappingChanged)
+				{
+					_textTrimmingChanged = _textWrappingChanged = false;
+					this.SetTextWrappingAndTrimming(textTrimming: TextTrimming, textWrapping: TextWrapping);
+				}
 			}
 
 			if (_textChanged)

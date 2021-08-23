@@ -27,6 +27,75 @@ namespace Windows.UI.Xaml
 		internal const string DefaultHtmlTag = "div";
 
 		private readonly GCHandle _gcHandle;
+		private bool _isCssStyleUpdatesSuspended = false;
+
+		/// <summary>
+		/// Since there is no way to apply all set and reset updates in bulk, we create them of groups and execute
+		/// each group separately to maintain the desired order.
+		/// </summary>
+		private readonly Queue<IQueuedUpdatesGroup> _queuedUpdates = new Queue<IQueuedUpdatesGroup>();
+
+		internal interface IQueuedUpdatesGroup
+		{
+			void Execute();
+		}
+
+		internal class SetStylesQueuedUpdates : IQueuedUpdatesGroup
+		{
+			private readonly UIElement _uiElement;
+			private readonly List<(string name, string value)> _styles = new List<(string name, string value)>();
+
+			public SetStylesQueuedUpdates(UIElement uiElement)
+			{
+				_uiElement = uiElement;
+			}
+
+			public void AddQueuedUpdate((string name, string value) queuedUpdate)
+				=> _styles.Add(queuedUpdate);
+
+			public void AddQueuedUpdates((string name, string value)[] queuedUpdates)
+				=> _styles.AddRange(queuedUpdates);
+
+			public void Execute() => _uiElement.SetStyle(_styles.ToArray());
+		}
+
+		internal class ResetStylesQueuedUpdates : IQueuedUpdatesGroup
+		{
+			private readonly UIElement _uiElement;
+			private readonly List<string> _styles = new List<string>();
+
+			public ResetStylesQueuedUpdates(UIElement uiElement)
+			{
+				_uiElement = uiElement;
+			}
+
+			public void AddQueuedUpdate(string queuedUpdate)
+				=> _styles.Add(queuedUpdate);
+
+			public void AddQueuedUpdates(string[] queuedUpdates)
+				=> _styles.AddRange(queuedUpdates);
+
+			public void Execute() => _uiElement.ResetStyle(_styles.ToArray());
+		}
+
+		internal class SuspendCssUpdatesHelper : IDisposable
+		{
+			private readonly UIElement _uiElement;
+
+			public SuspendCssUpdatesHelper(UIElement uiElement)
+			{
+				_uiElement = uiElement;
+			}
+
+			public void Dispose()
+			{
+				_uiElement._isCssStyleUpdatesSuspended = false;
+				while (_uiElement._queuedUpdates.Count > 0)
+				{
+					_uiElement._queuedUpdates.Dequeue().Execute();
+				}
+			}
+		}
 
 		private static class UIElementNativeRegistrar
 		{
@@ -169,11 +238,53 @@ namespace Windows.UI.Xaml
 
 		public bool HtmlTagIsSvg { get; }
 
-		protected internal void SetStyle(string name, string value)
+		protected internal IDisposable SuspendCssStyleUpdates()
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) });
+			_isCssStyleUpdatesSuspended = true;
+			return new SuspendCssUpdatesHelper(this);
 		}
 
+		private SetStylesQueuedUpdates AddOrReuseSetStylesQueuedUpdates()
+		{
+			if (_queuedUpdates.LastOrDefault() is SetStylesQueuedUpdates existingGroup)
+			{
+				return existingGroup;
+			}
+
+			var newGroup = new SetStylesQueuedUpdates(this);
+			_queuedUpdates.Enqueue(newGroup);
+			return newGroup;
+		}
+
+		private ResetStylesQueuedUpdates AddOrReuseResetStylesQueuedUpdates()
+		{
+			if (_queuedUpdates.LastOrDefault() is ResetStylesQueuedUpdates existingGroup)
+			{
+				return existingGroup;
+			}
+
+			var newGroup = new ResetStylesQueuedUpdates(this);
+			_queuedUpdates.Enqueue(newGroup);
+			return newGroup;
+		}
+
+		protected internal void SetStyle(string name, string value)
+		{
+			if (_isCssStyleUpdatesSuspended)
+			{
+				AddOrReuseSetStylesQueuedUpdates().AddQueuedUpdate((name, value));
+			}
+			else
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) });
+			}
+		}
+
+		/// <summary>
+		/// TODO: This doesn't respect _isCssUpdatesSuspended.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		protected internal void SetStyle(string name, double value)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
@@ -186,7 +297,14 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
+			if (_isCssStyleUpdatesSuspended)
+			{
+				AddOrReuseSetStylesQueuedUpdates().AddQueuedUpdates(styles);
+			}
+			else
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
+			}
 		}
 
 		/// <summary>
@@ -278,8 +396,14 @@ namespace Windows.UI.Xaml
 
 		protected internal void ResetStyle(params string[] names)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.ResetStyle(HtmlId, names);
-
+			if (_isCssStyleUpdatesSuspended)
+			{
+				AddOrReuseResetStylesQueuedUpdates().AddQueuedUpdates(names);
+			}
+			else
+			{
+				Uno.UI.Xaml.WindowManagerInterop.ResetStyle(HtmlId, names);
+			}
 		}
 
 		protected internal void SetAttribute(string name, string value)
@@ -658,7 +782,7 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
+			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) { CanBubbleNatively = true };
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
