@@ -797,7 +797,12 @@ namespace Windows.UI.Xaml.Controls
 			OnSelectionChanged();
 		}
 
+		public void SelectAll() => SelectAllPartial();
+
+
 		partial void SelectPartial(int start, int length);
+
+		partial void SelectAll();
 
 		internal override bool CanHaveChildren() => true;
 	}

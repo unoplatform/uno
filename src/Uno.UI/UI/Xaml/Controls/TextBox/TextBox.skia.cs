@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.Select(start, length);
 		}
 
-		public void SelectAll() => Select(0, Text.Length);
+		partial void SelectAllPartial() => Select(0, Text.Length);
 
 		public int SelectionStart
 		{

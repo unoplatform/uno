@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void SelectPartial(int start, int length)
 			=> _textBoxView.SetSelection(start: start, stop: start + length);
 
-		public void SelectAll() => _textBoxView.SelectAll();
+		partial void SelectAllPartial() => _textBoxView.SelectAll();
 
 		/// <summary>
 		/// Applies PreventKeyboardDisplayOnProgrammaticFocus by temporarily disabling soft input display.

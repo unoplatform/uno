@@ -61,6 +61,8 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.Select(start, length);
 		}
 
+		partial void SelectAllPartial() => Select(0, Text.Length);
+
 		private void UpdateTextBoxView()
 		{
 			if (_contentElement != null)

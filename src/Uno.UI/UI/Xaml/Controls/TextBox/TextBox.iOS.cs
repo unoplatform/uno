@@ -79,6 +79,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		partial void SelectAllPartial() => Select(0, Text.Length);
+
 		internal MultilineTextBoxView MultilineTextBox
 		{
 			get
