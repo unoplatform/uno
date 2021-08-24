@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ForegroundProperty, value); }
 		}
 
-		public static DependencyProperty ForegroundProperty { get ; } =
+		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(
 				"Foreground",
 				typeof(Brush),
@@ -232,5 +232,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateFont();
 		}
+
+		public void Select(int start, int length)
+			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
 	}
 }

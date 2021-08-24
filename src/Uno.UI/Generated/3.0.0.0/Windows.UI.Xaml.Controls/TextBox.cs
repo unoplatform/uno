@@ -463,14 +463,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.SelectionChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.ContextMenuOpening.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.ContextMenuOpening.remove
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  void Select( int start,  int length)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "void TextBox.Select(int start, int length)");
 		}
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  void SelectAll()
 		{

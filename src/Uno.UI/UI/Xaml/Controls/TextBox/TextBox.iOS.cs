@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.SelectedTextRange = _textBoxView.GetTextRange(start: start, end: start + length);
+				_textBoxView.Select(start, length);
 			}
 		}
 
