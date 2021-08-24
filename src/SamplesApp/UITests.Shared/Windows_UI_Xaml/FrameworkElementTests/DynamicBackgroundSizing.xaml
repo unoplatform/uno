@@ -53,6 +53,7 @@
 			<TextBlock Grid.Column="4">Dynamic</TextBlock>
 
 			<Border
+				x:Name="Border1"
 				Grid.Row="1"
 				Grid.Column="1"
 				Background="Green"
@@ -60,6 +61,7 @@
 				BorderThickness="15" />
 
 			<Border
+				x:Name="Border2"
 				Grid.Row="1"
 				Grid.Column="2"
 				Background="Green"
@@ -68,6 +70,7 @@
 				BackgroundSizing="InnerBorderEdge" />
 
 			<Border
+				x:Name="Border3"
 				Grid.Row="1"
 				Grid.Column="3"
 				Background="Green"
@@ -76,6 +79,7 @@
 				BackgroundSizing="OuterBorderEdge"/>
 
 			<Border
+				x:Name="Border4"
 				Grid.Row="1"
 				Grid.Column="4"
 				Background="Green"
@@ -85,6 +89,7 @@
 				BackgroundSizing="{Binding SelectedItem.Content, ElementName=dynamic}"/>
 
 			<ContentPresenter
+				x:Name="ContentPresenter1"
 				Grid.Row="2"
 				Grid.Column="1"
 				Background="Green"
@@ -92,6 +97,7 @@
 				BorderThickness="15" />
 
 			<ContentPresenter
+				x:Name="ContentPresenter2"
 				Grid.Row="2"
 				Grid.Column="2"
 				Background="Green"
@@ -100,6 +106,7 @@
 				BackgroundSizing="InnerBorderEdge" />
 
 			<ContentPresenter
+				x:Name="ContentPresenter3"
 				Grid.Row="2"
 				Grid.Column="3"
 				Background="Green"
@@ -108,6 +115,7 @@
 				BackgroundSizing="OuterBorderEdge"/>
 
 			<ContentPresenter
+				x:Name="ContentPresenter4"
 				Grid.Row="2"
 				Grid.Column="4"
 				Background="Green"
@@ -118,6 +126,7 @@
 
 
 			<Grid
+				x:Name="Grid1"
 				Grid.Row="3"
 				Grid.Column="1"
 				Background="Green"
@@ -125,6 +134,7 @@
 				BorderThickness="15" />
 
 			<Grid
+				x:Name="Grid2"
 				Grid.Row="3"
 				Grid.Column="2"
 				Background="Green"
@@ -133,6 +143,7 @@
 				BackgroundSizing="InnerBorderEdge" />
 
 			<Grid
+				x:Name="Grid3"
 				Grid.Row="3"
 				Grid.Column="3"
 				Background="Green"
@@ -141,6 +152,7 @@
 				BackgroundSizing="OuterBorderEdge"/>
 
 			<Grid
+				x:Name="Grid4"
 				Grid.Row="3"
 				Grid.Column="4"
 				Background="Green"
@@ -151,6 +163,7 @@
 
 
 			<RelativePanel
+				x:Name="RelativePanel1"
 				Grid.Row="4"
 				Grid.Column="1"
 				Background="Green"
@@ -158,6 +171,7 @@
 				BorderThickness="15" />
 
 			<RelativePanel
+				x:Name="RelativePanel2"
 				Grid.Row="4"
 				Grid.Column="2"
 				Background="Green"
@@ -166,6 +180,7 @@
 				BackgroundSizing="InnerBorderEdge" />
 
 			<RelativePanel
+				x:Name="RelativePanel3"
 				Grid.Row="4"
 				Grid.Column="3"
 				Background="Green"
@@ -174,6 +189,7 @@
 				BackgroundSizing="OuterBorderEdge"/>
 
 			<RelativePanel
+				x:Name="RelativePanel4"
 				Grid.Row="4"
 				Grid.Column="4"
 				Background="Green"
@@ -184,6 +200,7 @@
 
 
 			<StackPanel
+				x:Name="StackPanel1"
 				Grid.Row="5"
 				Grid.Column="1"
 				Background="Green"
@@ -191,6 +208,7 @@
 				BorderThickness="15" />
 
 			<StackPanel
+				x:Name="StackPanel2"
 				Grid.Row="5"
 				Grid.Column="2"
 				Background="Green"
@@ -199,6 +217,7 @@
 				BackgroundSizing="InnerBorderEdge" />
 
 			<StackPanel
+				x:Name="StackPanel3"
 				Grid.Row="5"
 				Grid.Column="3"
 				Background="Green"
@@ -207,6 +226,7 @@
 				BackgroundSizing="OuterBorderEdge"/>
 
 			<StackPanel
+				x:Name="StackPanel4"
 				Grid.Row="5"
 				Grid.Column="4"
 				Background="Green"
