@@ -98,7 +98,8 @@ namespace Windows.UI.Xaml.Media
 
 		public static void Write(this StreamGeometryContext ctx, EllipseGeometry ellipseGeometry)
 		{
-			// TODO
+			// TODO - for some reason the following code is crashing on iOS.
+			// https://github.com/unoplatform/uno/issues/6849
 
 			//var cx = ellipseGeometry.Center.X;
 			//var cy = ellipseGeometry.Center.Y;
