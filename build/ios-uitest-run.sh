@@ -2,11 +2,19 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+echo "Current system date"
+date
+
 echo "Listing iOS simulators"
 xcrun simctl list devices --json
 
 ## Preemptively start the simulator
 /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator &
+
+## Pre-build the transform tool to get early warnings
+pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
+dotnet build
+popd
 
 cd $BUILD_SOURCESDIRECTORY/build
 
@@ -123,6 +131,9 @@ cat $UNO_TESTS_RESPONSE_FILE
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
     @$UNO_TESTS_RESPONSE_FILE \
 	|| true
+
+echo "Current system date"
+date
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
