@@ -1,19 +1,32 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using System;
+using Android.App;
+using Android.Content;
+using Uno.UI;
+
 namespace Windows.System
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MemoryManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static ulong AppMemoryUsage
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member ulong MemoryManager.AppMemoryUsage is not implemented in Uno.");
+			}
+		}
+		#else
+		public static ulong AppMemoryUsage
+		{
+			get
+			{
+				return (ulong) GC.GetTotalMemory(false);
 			}
 		}
 		#endif
@@ -27,13 +40,24 @@ namespace Windows.System
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static ulong AppMemoryUsageLimit
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member ulong MemoryManager.AppMemoryUsageLimit is not implemented in Uno.");
+			}
+		}
+		#else
+		public static ulong AppMemoryUsageLimit
+		{
+			get
+			{
+				ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+				ActivityManager.FromContext(ContextHelper.Current)?.GetMemoryInfo(memoryInfo);
+
+				return AppMemoryUsage + (ulong) memoryInfo.AvailMem - (ulong) memoryInfo.Threshold;
 			}
 		}
 		#endif
