@@ -28,13 +28,19 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class Grid
 	{
-		#region BackgroundSizing DepedencyProperty
-		public new static DependencyProperty BackgroundSizingProperty => FrameworkElement.BackgroundSizingProperty;
 
-		public new BackgroundSizing BackgroundSizing
+		#region BackgroundSizing DepedencyProperty
+		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext, ChangedCallback = true)]
+		internal static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+
+		public BackgroundSizing BackgroundSizing
 		{
-			get => base.BackgroundSizing;
-			set => base.BackgroundSizing = value;
+			get => GetBackgroundSizingValue();
+			set => SetBackgroundSizingValue(value);
+		}
+		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundSizingChanged(e);
 		}
 		#endregion
 
