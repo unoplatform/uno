@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿#nullable enable
+using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
@@ -14,8 +15,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		private Android.Graphics.Path GetPath()
 		{
-			var streamGeometry = Data.ToStreamGeometry();
-			return streamGeometry?.ToPath();
+			return Data?.ToStreamGeometry()?.ToPath();
 		}
 	}
 }

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+﻿#nullable enable
 using Windows.UI.Xaml.Wasm;
-using static System.FormattableString;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -21,10 +14,7 @@ namespace Windows.UI.Xaml.Shapes
 			InitCommonShapeProperties();
 		}
 
-		protected override SvgElement GetMainSvgElement()
-		{
-			return _root;
-		}
+		protected override SvgElement GetMainSvgElement() => _root;
 
 		partial void OnDataChanged() => InvalidateMeasure();
 
@@ -37,13 +27,14 @@ namespace Windows.UI.Xaml.Shapes
 			if(property == DataProperty)
 			{
 				_root.ClearChildren();
-				_root.AddChild(Data.GetSvgElement());
+
+				if (Data is { } data)
+				{
+					_root.AddChild(data.GetSvgElement());
+				}
 			}
 		}
 
-		protected override void InvalidateShape()
-		{
-			Data?.Invalidate();
-		}
+		protected override void InvalidateShape() => Data?.Invalidate();
 	}
 }
