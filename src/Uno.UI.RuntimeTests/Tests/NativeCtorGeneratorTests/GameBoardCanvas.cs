@@ -3,7 +3,7 @@ using Android.Content;
 
 namespace Uno.UI.RuntimeTests.Tests.NativeCtorGeneratorTests
 {
-	public class MyCustomView : Android.Views.View
+	public partial class MyCustomView : Android.Views.View
 	{
 		public MyCustomView(Context context) : base(context) { }
 		public MyCustomView(Context context, Android.Util.IAttributeSet attributeSet) : base(context, attributeSet) { }
