@@ -266,5 +266,16 @@ namespace Windows.UI.Xaml.Controls
 		private protected override Thickness GetBorderThickness() => BorderThickness;
 
 		internal override bool CanHaveChildren() => true;
+
+
+		private protected void OnBackgroundSizingChangedInnerPanel(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundSizingChangedInner(e);
+
+			UpdateBorder();
+		}
+
+		partial void UpdateBorder();
+
 	}
 }

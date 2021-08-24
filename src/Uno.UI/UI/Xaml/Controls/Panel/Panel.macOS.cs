@@ -113,6 +113,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		partial void UpdateBorder()
+		{
+			UpdateBackground();
+		}
+
 		protected virtual void OnChildrenChanged()
 		{
 			InvalidateMeasure();

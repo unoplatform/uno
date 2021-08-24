@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 				_borderRenderer.UpdateLayer(
 					this,
 					Background,
-					BackgroundSizing,
+					BackgroundSizing.InnerBorderEdge,
 					Thickness.Empty,
 					null,
 					CornerRadius.None,
