@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPathAndFillRule(out var fillRule), fillRule);
 
-		private CGPath GetPathAndFillRule(out FillRule fillRule)
+		private CGPath? GetPathAndFillRule(out FillRule fillRule)
 		{
 			var streamGeometry = Data?.ToStreamGeometry();
 			fillRule = streamGeometry?.FillRule ?? FillRule.EvenOdd;

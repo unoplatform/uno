@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml.Shapes;
+﻿using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
@@ -14,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			// https://github.com/unoplatform/uno/issues/6846
 
 			// Set initial Data
-			var SUT = new Path { Data = "M0,0 L10,10 Z" };
+			var SUT = new Path { Data = new RectangleGeometry() };
 
 			// Switch back to null.  Should not throw an exception.
 			SUT.Data = null;

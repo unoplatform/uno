@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private Android.Graphics.Path GetPath()
+		private Android.Graphics.Path? GetPath()
 		{
 			return Data?.ToStreamGeometry()?.ToPath();
 		}
