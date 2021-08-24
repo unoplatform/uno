@@ -31,9 +31,10 @@ namespace Windows.UI.Xaml.Controls
 			get => GetBackgroundSizingValue();
 			set => SetBackgroundSizingValue(value);
 		}
+
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
-			base.OnBackgroundSizingChanged(e);
+			base.OnBackgroundSizingChangedInnerPanel(e);
 		}
 		#endregion
 

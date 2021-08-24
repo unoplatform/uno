@@ -94,9 +94,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		private protected override void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			// Don't call base: it's doing nothing
 			UpdateBorder();
 		}
 

@@ -192,8 +192,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
-			base.OnBackgroundSizingChanged(e);
+			OnBackgroundSizingChangedPartial(e);
+			base.OnBackgroundSizingChangedInner(e);
 		}
+
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e);
 		#endregion
 
 		#region BorderThickness DependencyProperty

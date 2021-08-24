@@ -61,6 +61,11 @@ namespace Windows.UI.Xaml.Controls
 			this.RemoveViewAndDispose(ContentTemplateRoot);
 		}
 
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			UpdateBorder();
+		}
+
 		protected override void OnDraw(Android.Graphics.Canvas canvas)
 		{
 			AdjustCornerRadius(canvas, CornerRadius);

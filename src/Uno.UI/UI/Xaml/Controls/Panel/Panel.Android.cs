@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 				_borderRenderer.UpdateLayer(
 					this,
 					Background,
-					BackgroundSizing,
+					InternalBackgroundSizing,
 					BorderThickness,
 					BorderBrush,
 					CornerRadius,
@@ -108,12 +108,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Don't call base, just update the filling color.
 			_backgroundBrushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, _ => UpdateBorder(), UpdateBorder);
-			UpdateBorder();
-		}
-
-		private protected override void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
-		{
-			// Don't call base: there's nothing there.
 			UpdateBorder();
 		}
 
