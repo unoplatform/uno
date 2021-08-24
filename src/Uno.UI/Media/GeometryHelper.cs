@@ -11,13 +11,16 @@ namespace Uno.Media
 	{
 		private static Func<(Action<StreamGeometryContext>, FillRule), StreamGeometry> _build = CachedBuild;
 
+		// Old version to preserve binary compatiblity
+		public static StreamGeometry Build(Action<StreamGeometryContext> contextAction) => Build(contextAction, FillRule.EvenOdd);
+
 		/// <summary>
 		/// Build a StreamGeometry based on the specified <paramref name="contextAction"/>. If the <paramref name="contextAction"/> 
 		/// is built from a C# lambda, then the StreamGeometry instance will be cached, allowing native paths to be reused.
 		/// </summary>
 		/// <param name="contextAction">A geometry action generation.</param>
 		/// <returns></returns>
-		public static StreamGeometry Build(Action<StreamGeometryContext> contextAction, FillRule fillRule = FillRule.EvenOdd)
+		public static StreamGeometry Build(Action<StreamGeometryContext> contextAction, FillRule fillRule)
 		{
 			// The use of AsWeakMemoized will attach the StreamGeometry instance to 
 			// "contextAction", therefore caching it for the lifetime of the app.
