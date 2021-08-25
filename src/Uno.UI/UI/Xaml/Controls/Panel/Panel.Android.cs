@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void Initialize();
 
-		private void UpdateBorder()
+		partial void UpdateBorder()
 		{
 			UpdateBorder(false);
 		}

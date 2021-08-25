@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 				_borderRenderer.UpdateLayer(
 					this,
 					Background,
-					BackgroundSizing,
+					InternalBackgroundSizing,
 					BorderThickness,
 					BorderBrush,
 					CornerRadius,
