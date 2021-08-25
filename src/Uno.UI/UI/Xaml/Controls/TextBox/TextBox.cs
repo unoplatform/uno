@@ -694,6 +694,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
+			// Minimum width for TextBox with DeleteButton visible is 5em.
 			if (CanShowButton && _isButtonEnabled && ActualWidth > FontSize * 5)
 			{
 				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
