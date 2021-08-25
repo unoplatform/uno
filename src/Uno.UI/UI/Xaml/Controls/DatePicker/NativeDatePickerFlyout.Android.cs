@@ -14,6 +14,21 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private DatePickerDialog _dialog;
 
+		public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
+			"UseNativeMinMaxDates",
+			typeof(bool),
+			typeof(NativeDatePickerFlyout),
+			new FrameworkPropertyMetadata(false));
+
+		/// <summary>
+		/// Setting this to true will interpret MinYear/MaxYear as MinDate and MaxDate.
+		/// </summary>
+		public bool UseNativeMinMaxDates
+		{
+			get => (bool)GetValue(UseNativeMinMaxDatesProperty);
+			set => SetValue(UseNativeMinMaxDatesProperty, value);
+		}
+
 		public NativeDatePickerFlyout()
 		{
 			this.RegisterPropertyChangedCallback(DateProperty, OnDateChanged);
@@ -49,13 +64,21 @@ namespace Windows.UI.Xaml.Controls
 			//Removes title that is unnecessary as it is a duplicate -> http://stackoverflow.com/questions/33486643/remove-title-from-datepickerdialog 
 			_dialog.SetTitle("");
 
-			var minYearCalendar = Calendar.Instance;
-			minYearCalendar.Set(MinYear.Year, MinYear.Month - 1, MinYear.Day, MinYear.Hour, MinYear.Minute, MinYear.Second);
-			_dialog.DatePicker.MinDate = minYearCalendar.TimeInMillis;
+			if (UseNativeMinMaxDates)
+			{
+				_dialog.DatePicker.MinDate = MinYear.ToUnixTimeMilliseconds();
+				_dialog.DatePicker.MaxDate = MaxYear.ToUnixTimeMilliseconds();
+			}
+			else
+			{
+				var minYearCalendar = Calendar.Instance;
+				minYearCalendar.Set(MinYear.Year, MinYear.Month - 1, MinYear.Day, MinYear.Hour, MinYear.Minute, MinYear.Second);
+				_dialog.DatePicker.MinDate = minYearCalendar.TimeInMillis;
 
-			var maxYearCalendar = Calendar.Instance;
-			maxYearCalendar.Set(MaxYear.Year, MaxYear.Month - 1, MaxYear.Day, MaxYear.Hour, MaxYear.Minute, MaxYear.Second);
-			_dialog.DatePicker.MaxDate = maxYearCalendar.TimeInMillis;
+				var maxYearCalendar = Calendar.Instance;
+				maxYearCalendar.Set(MaxYear.Year, MaxYear.Month - 1, MaxYear.Day, MaxYear.Hour, MaxYear.Minute, MaxYear.Second);
+				_dialog.DatePicker.MaxDate = maxYearCalendar.TimeInMillis;
+			}
 
 			_dialog.DismissEvent += OnDismiss;
 			_dialog.Show();
