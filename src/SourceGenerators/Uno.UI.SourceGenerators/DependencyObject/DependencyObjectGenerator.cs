@@ -113,7 +113,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (isDependencyObject)
 				{
-					if (_context.GetMSBuildPropertyValue("SolutionFileName") != "Uno.UI.sln")
+					if (_context.GetMSBuildPropertyValue("_IsUnoUISolution") != "true")
 					{
 						if (typeSymbol.Is(_iosViewSymbol))
 						{
