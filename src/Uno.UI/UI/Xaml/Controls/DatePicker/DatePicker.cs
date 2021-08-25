@@ -1097,6 +1097,8 @@ namespace Windows.UI.Xaml.Controls
 			 DateTimeOffset oldValue,
 			 DateTimeOffset newValue)
 		{
+			UpdateVisualState();
+
 			if (m_hasValidYearRange)
 			{
 				DateTimeOffset clampedNewDate = default;
