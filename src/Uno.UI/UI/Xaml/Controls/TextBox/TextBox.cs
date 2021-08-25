@@ -694,7 +694,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
-			if (CanShowButton && _isButtonEnabled && ActualWidth > 70)
+			if (CanShowButton && _isButtonEnabled && ActualWidth > FontSize * 5)
 			{
 				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
 			}
