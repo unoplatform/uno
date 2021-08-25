@@ -2,6 +2,7 @@
 
 
 using SkiaSharp;
+using SkiaSharp.HarfBuzz;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -86,16 +87,6 @@ namespace Windows.UI.Composition
 
 		internal Size Measure(Size availableSize)
 		{
-			if (_owner.FontFamily?.Source != null)
-			{
-				var weight = _owner.FontWeight.ToSkiaWeight();
-				//var width = _owner.FontStretch.ToSkiaWidth(); -- FontStretch not supported by Uno yet
-				var width = SKFontStyleWidth.Normal;
-				var slant = _owner.FontStyle.ToSkiaSlant();
-				var font = _getTypeFace(_owner.FontFamily.Source, weight, width, slant);
-				_paint.Typeface = font;
-			}
-
 			_paint.TextSize = (float)_owner.FontSize;
 
 			var metrics = _paint.FontMetrics;
@@ -137,11 +128,28 @@ namespace Windows.UI.Composition
 			}
 		}
 
+		private void UpdateTypeface()
+		{
+			if (_owner.FontFamily?.Source != null)
+			{
+				var weight = _owner.FontWeight.ToSkiaWeight();
+				//var width = _owner.FontStretch.ToSkiaWidth(); -- FontStretch not supported by Uno yet
+				var width = SKFontStyleWidth.Normal;
+				var slant = _owner.FontStyle.ToSkiaSlant();
+				var font = _getTypeFace(_owner.FontFamily.Source, weight, width, slant);
+				_paint.Typeface = font;
+			}
+		}
+
 		internal override void Render(SKSurface surface, SKImageInfo info)
 		{
 			if (!string.IsNullOrEmpty(_owner.Text))
 			{
 				UpdateForeground();
+				if (_paint.Typeface is null)
+				{
+					UpdateTypeface();
+				}
 
 				var metrics = _paint.FontMetrics;
 				var descent = metrics.Descent;
@@ -149,13 +157,13 @@ namespace Windows.UI.Composition
 
 				var lineHeight = descent - ascent;
 
-				_textLines ??= new[] {_owner.Text};
+				_textLines ??= new[] { _owner.Text };
 
 				var y = -ascent;
 
 				foreach (var line in _textLines)
 				{
-					surface.Canvas.DrawText(line, 0, y, _paint);
+					surface.Canvas.DrawShapedText(line, 0, y, _paint);
 					y += lineHeight;
 				}
 			}
