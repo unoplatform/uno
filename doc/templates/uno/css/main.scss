@@ -134,7 +134,7 @@ h3 {
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
     z-index: 1;
     overflow-y: auto;
-    
+
     .sr-items {
       a {
         color: black;
@@ -468,7 +468,7 @@ h3 {
             transition: color 0.2s ease-in-out,
             background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
         }
-        
+
         .activepath {
             border-bottom: 2px solid $purple;
         }

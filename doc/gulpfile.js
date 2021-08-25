@@ -1,15 +1,19 @@
-var gulp = require('gulp'),
-	autoprefixer = require('gulp-autoprefixer'),
-	notify = require('gulp-notify'),
-	sass = require('gulp-sass'),
-	gulpif = require('gulp-if'),
-	sassLint = require('gulp-sass-lint'),
-	browserSync = require('browser-sync').create(),
-	sourcemaps = require('gulp-sourcemaps'),
-	exec = require('child_process').exec;
+const gulp = require('gulp'),
+    notify = require('gulp-notify'),
+    autoprefixer = require('autoprefixer'),
+    sass = require('gulp-sass'),
+    uglify = require('gulp-uglify'),
+    rename = require('gulp-rename'),
+    postcss = require('gulp-postcss'),
+    gulpif = require('gulp-if'),
+    sassLint = require('gulp-sass-lint'),
+    browserSync = require('browser-sync').create(),
+    sourcemaps = require('gulp-sourcemaps'),
+    exec = require('child_process').exec;
 
-var debug = false;
-var assets = 'templates/uno';
+let debug = false;
+const assets = 'templates/uno';
+
 /**
  * Put relative path to your assets :
  * - Wordpress  : 'public/wp-content/themes/YOUR_THEME/assets';
@@ -17,66 +21,61 @@ var assets = 'templates/uno';
  */
 
 gulp.task('styles', function () {
-	var output = debug ? 'nested' : 'compressed';
-	return gulp
-		.src(assets + '/styles/scss/main.scss')
-		.pipe(gulpif(debug, sourcemaps.init()))
-		.pipe(gulpif(debug, sassLint()))
-		.pipe(gulpif(debug, sassLint.format()))
-		.pipe(gulpif(debug, sassLint.failOnError()))
-		.pipe(
-			sass({ includePaths: ['./node_modules/'], outputStyle: output }).on(
-				'error',
-				sass.logError
-			)
-		)
-		.pipe(autoprefixer({ browsers: ['last 2 versions', '> 5%'] }))
-		.pipe(gulpif(debug, sourcemaps.write()))
-		.pipe(gulp.dest(assets + '/styles'))
-		.pipe(notify({ message: 'CSS complete' }));
+    const output = debug ? 'nested' : 'compressed';
+    return gulp
+        .src(assets + '/css/main.scss')
+        .pipe(gulpif(debug, sourcemaps.init()))
+        .pipe(gulpif(debug, sassLint()))
+        .pipe(gulpif(debug, sassLint.format()))
+        .pipe(gulpif(debug, sassLint.failOnError()))
+        .pipe(
+            sass({includePaths: ['./node_modules/'], outputStyle: output}).on(
+                'error',
+                sass.logError
+            )
+        )
+        .pipe(postcss([autoprefixer]))
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulpif(debug, sourcemaps.write()))
+        .pipe(gulp.dest(assets + '/css'))
+        .pipe(notify({message: 'CSS complete'}));
 });
 
-gulp.task('watch', function () {
+gulp.task('scripts', function () {
+    const output = debug ? 'nested' : 'compressed';
 
-	gulp.watch(
-		[assets + '/styles/scss/**/*.scss', assets + '/styles/scss/**/*.sass'],
-		['styles', 'build']
-	).on('change', function (event) {
-		browserSync.reload();
-		console.log(
-			'File ' +
-			event.path +
-			' was ' +
-			event.type +
-			', running CSS task...'
-		);
-	});
+    return gulp.src([assets + 'public/assets/js/lib/*.js'])
+        .pipe(concat('docfx.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('public/assets/js'));
 });
 
-gulp.task('default', function () {
-	gulp.start('styles', 'watch', 'build', 'serve');
+gulp.task('watch', () => {
+    gulp.watch([assets + '/css/*.scss', assets + '/css/*.sass'], gulp.series(['styles']));
 });
+
+gulp.task('default', gulp.series('styles', 'watch'), (done) => { done(); });
 
 gulp.task('debug', function () {
-	debug = true;
-	gulp.start('styles');
+    debug = true;
+    gulp.start('styles');
 });
 
-gulp.task('serve', function() {
-	browserSync.init({
-			server: {
-					baseDir: "./_site"
-			},
-			// host: " 172.20.8.240" replace by your current ip to test on another device.
-	});
+gulp.task('serve', function () {
+    browserSync.init({
+        server: {
+            baseDir: "./_site"
+        },
+        // host: " 172.20.8.240" replace by your current ip to test on another device.
+    });
 });
 
 gulp.task('build', function (cb) {
-	exec('docfx build', function (err, stdout, stderr) {
-		console.log(stdout);
-		console.log(stderr);
-		cb(err);
-	});
+    exec('docfx build', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 });
 
 /**
@@ -84,6 +83,6 @@ gulp.task('build', function (cb) {
  * @param error
  */
 function swallowError(error) {
-	console.log(error.toString());
-	this.emit('end');
+    console.log(error.toString());
+    this.emit('end');
 }
