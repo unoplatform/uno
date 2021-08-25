@@ -116,7 +116,7 @@
 					</Border>
 					<StackPanel>
 						<TextBlock FontWeight="Bold">Path Geometry</TextBlock>
-						<Slider Header="Size" x:Name="pathPoint" Minimum="5" Maximum="60" Value="15" />
+						<Slider Header="Point" x:Name="pathPoint" Minimum="5" Maximum="60" Value="15" />
 					</StackPanel>
 				</StackPanel>
 
@@ -141,7 +141,7 @@
 					</Border>
 					<StackPanel>
 						<TextBlock FontWeight="Bold">Grouped Path Geometry</TextBlock>
-						<Slider Header="Size" x:Name="pathGroupPoint" Minimum="5" Maximum="60" Value="15" />
+						<Slider Header="Point" x:Name="pathGroupPoint" Minimum="5" Maximum="60" Value="15" />
 					</StackPanel>
 				</StackPanel>
 			</StackPanel>

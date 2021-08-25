@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Uno.Disposables;
 using Uno.Media;
 using Windows.Foundation;

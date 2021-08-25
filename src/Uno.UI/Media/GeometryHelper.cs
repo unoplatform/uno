@@ -11,7 +11,7 @@ namespace Uno.Media
 	{
 		private static Func<(Action<StreamGeometryContext>, FillRule), StreamGeometry> _build = CachedBuild;
 
-		// Old version to preserve binary compatiblity
+		// Old version to preserve binary compatibility
 		public static StreamGeometry Build(Action<StreamGeometryContext> contextAction) => Build(contextAction, FillRule.EvenOdd);
 
 		/// <summary>
