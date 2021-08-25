@@ -60,6 +60,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ResourceDictionaryWithCodeBehind\ResourceDictionaryWithCodeBehind.xaml.cs">
+      <DependentUpon>ResourceDictionaryWithCodeBehind.xaml</DependentUpon>
+    </None>
     <None Include="Uno.Neutral.Cs.TemplatedControl\CustomControl.cs" />
     <None Include="Uno.Neutral.Cs.Resw\Resources.resw">
       <SubType>Designer</SubType>
@@ -109,6 +112,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ContentDialog\ContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="ResourceDictionaryWithCodeBehind\ResourceDictionaryWithCodeBehind.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ResourceDictionaryWithCodeBehind\ResourceDictionaryWithCodeBehind.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="ResourceDictionary\ResourceDictionary.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ResourceDictionary\ResourceDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
