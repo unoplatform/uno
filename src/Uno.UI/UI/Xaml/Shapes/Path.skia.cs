@@ -5,6 +5,8 @@ using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Media;
+using SkiaSharp;
+using Uno.UI.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -18,19 +20,23 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private SkiaGeometrySource2D GetPath()
+		private SkiaGeometrySource2D GetPath() => GetSkiaGeometry(Data);
+
+		private SkiaGeometrySource2D GetSkiaGeometry(Geometry geometry)
 		{
-			switch (Data)
+			switch (geometry)
 			{
 				case PathGeometry pg:
 					return ToGeometrySource2D(pg);
+				case GeometryGroup group:
+					return ToGeometrySource2D(@group);
 				case StreamGeometry sg:
 					return sg.GetGeometrySource2D();
 			}
 
-			if (Data != null)
+			if (geometry != null)
 			{
-				throw new NotSupportedException($"Geometry {Data} is not supported");
+				throw new NotSupportedException($"Geometry {geometry} is not supported");
 			}
 
 			return null;
@@ -80,7 +86,24 @@ namespace Windows.UI.Xaml.Shapes
 				}
 			}
 
+			skiaGeometry.Geometry.FillType = geometry.FillRule.ToSkiaFillType();
+
 			return skiaGeometry;
+		}
+
+		private SkiaGeometrySource2D ToGeometrySource2D(GeometryGroup geometryGroup)
+		{
+			var path = new SKPath();
+
+			foreach (var geometry in geometryGroup.Children)
+			{
+				var geometryPath = GetSkiaGeometry(geometry);
+				path.AddPath(geometryPath.Geometry);
+			}
+
+			path.FillType = geometryGroup.FillRule.ToSkiaFillType();
+
+			return new SkiaGeometrySource2D(path);
 		}
 
 	}

@@ -7,6 +7,7 @@ using CoreGraphics;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.UI.Xaml.Media;
 using static System.Double;
 
 #if __IOS__
@@ -37,7 +38,7 @@ namespace Windows.UI.Xaml.Shapes
 
 
 		#region Rendering (Native)
-		private protected void Render(CGPath path)
+		private protected void Render(CGPath path, FillRule fillRule = FillRule.EvenOdd)
 		{
 			// Remove the old layer if any
 			_shapeLayer?.RemoveFromSuperLayer();
@@ -49,7 +50,7 @@ namespace Windows.UI.Xaml.Shapes
 				return;
 			}
 
-			_shapeLayer = CreateLayer(path);
+			_shapeLayer = CreateLayer(path, fillRule);
 			Layer.AddSublayer(_shapeLayer);
 		}
 
@@ -132,9 +133,9 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 
-		private CAShapeLayer CreateLayer(CGPath path)
+		private CAShapeLayer CreateLayer(CGPath path, FillRule fillRule)
 		{
-			var pathLayer = new CAShapeLayer() { Path = path };
+			var pathLayer = new CAShapeLayer() { Path = path, FillRule = fillRule.ToCAShapeLayerFillRule()};
 
 			SetFillAndStroke(pathLayer);
 

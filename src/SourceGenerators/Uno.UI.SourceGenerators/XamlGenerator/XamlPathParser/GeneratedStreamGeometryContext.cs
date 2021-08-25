@@ -14,69 +14,80 @@ namespace Uno.Media
 	{
 		StringBuilder _builder;
 
-		public string Generated { get { return _builder.ToString() + "})"; } }
+		private static readonly string CRLF = Environment.NewLine;
+
+		internal FillRule FillRule { get; set; }
+
+		public string Generate() => $"{_builder}}}, {FillRule.ToCode()})";
 
 		public GeneratedStreamGeometryContext()
 		{
-			_builder = new StringBuilder("global::Uno.Media.GeometryHelper.Build(c =>\n{\n");
+			_builder = new StringBuilder("global::Uno.Media.GeometryHelper.Build(c =>" + CRLF + "{" + CRLF);
 		}
 
-		public override void ArcTo(Point Point, Size Size, double rotationAngle, bool isLargeArc, SweepDirection sweepDirection, bool isStroked, bool isSmoothJoin)
+		public override void ArcTo(Point point, Size size, double rotationAngle, bool isLargeArc, SweepDirection sweepDirection, bool isStroked, bool isSmoothJoin)
 		{
-			_builder.AppendFormat("c.ArcTo({0}, {1}, {2}, {3}, {4}, true, false);\n", Point.ToCode(), Size.ToCode(), rotationAngle.ToCode(), isLargeArc.ToCode(), sweepDirection.ToCode());
+			_builder.AppendFormat("c.ArcTo({0}, {1}, {2}, {3}, {4}, true, false);" + CRLF, point.ToCode(), size.ToCode(), rotationAngle.ToCode(), isLargeArc.ToCode(), sweepDirection.ToCode());
 		}
 
 		public override void BeginFigure(Point startPoint, bool isFilled, bool isClosed)
 		{
-			_builder.AppendFormat("c.BeginFigure({0}, true, false);\n", startPoint.ToCode());
+			_builder.AppendFormat("c.BeginFigure({0}, true, false);" + CRLF, startPoint.ToCode());
 		}
 
-		public override void BezierTo(Point Point1, Point Point2, Point Point3, bool isStroked, bool isSmoothJoin)
+		public override void BezierTo(Point point1, Point point2, Point point3, bool isStroked, bool isSmoothJoin)
 		{
-			_builder.AppendFormat("c.BezierTo({0}, {1}, {2}, true, false);\n", Point1.ToCode(), Point2.ToCode(), Point3.ToCode());
+			_builder.AppendFormat("c.BezierTo({0}, {1}, {2}, true, false);" + CRLF, point1.ToCode(), point2.ToCode(), point3.ToCode());
 		}
 
-		public override void LineTo(Point Point, bool isStroked, bool isSmoothJoin)
+		public override void LineTo(Point point, bool isStroked, bool isSmoothJoin)
 		{
-			_builder.AppendFormat("c.LineTo({0}, true, false);\n", Point.ToCode());
+			_builder.AppendFormat("c.LineTo({0}, true, false);" + CRLF, point.ToCode());
 		}
 
-		public override void PolyBezierTo(IList<Point> Points, bool isStroked, bool isSmoothJoin)
+		public override void PolyBezierTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
 		{
 			throw new NotImplementedException("PolyBezierTo is not implemented");
 		}
 
-		public override void PolyLineTo(IList<Point> Points, bool isStroked, bool isSmoothJoin)
+		public override void PolyLineTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
 		{
 			throw new NotImplementedException("PolyLineTo is not implemented");
 		}
 
-		public override void PolyQuadraticBezierTo(IList<Point> Points, bool isStroked, bool isSmoothJoin)
+		public override void PolyQuadraticBezierTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
 		{
 			throw new NotImplementedException("PolyQuadraticBezierTo is not implemented");
 		}
 
-		public override void QuadraticBezierTo(Point Point1, Point Point2, bool isStroked, bool isSmoothJoin)
+		public override void QuadraticBezierTo(Point point1, Point point2, bool isStroked, bool isSmoothJoin)
 		{
-			_builder.AppendFormat("c.BezierTo({0}, {1}, true, false);\n", Point1.ToCode(), Point2.ToCode());
+			_builder.AppendFormat("c.BezierTo({0}, {1}, true, false);" + CRLF, point1.ToCode(), point2.ToCode());
 		}
 
 		public override void SetClosedState(bool closed)
 		{
-			_builder.AppendFormat("c.SetClosedState({0});\n", closed.ToString(System.Globalization.CultureInfo.InvariantCulture).ToLowerInvariant());
+			_builder.AppendFormat("c.SetClosedState({0});" + CRLF, closed.ToString(System.Globalization.CultureInfo.InvariantCulture).ToLowerInvariant());
 		}
 	}
 
 	internal static class DrawingExtensions
 	{
-		public static string ToCode(this Point Point)
+		public static string ToCode(this Point point)
 		{
-			return "new global::Windows.Foundation.Point({0}, {1})".InvariantCultureFormat(Point.X, Point.Y);
+			return "new global::Windows.Foundation.Point({0}, {1})".InvariantCultureFormat(point.X, point.Y);
 		}
 
-		public static string ToCode(this Size Size)
+		public static string ToCode(this Size size)
 		{
-			return "new global::Windows.Foundation.Size({0}, {1})".InvariantCultureFormat(Size.Width, Size.Height);
+			return "new global::Windows.Foundation.Size({0}, {1})".InvariantCultureFormat(size.Width, size.Height);
+		}
+
+		public static string ToCode(this FillRule fillRule)
+		{
+			return fillRule == FillRule.EvenOdd
+				? "global::Windows.UI.Xaml.Media.FillRule.EvenOdd"
+				: "global::Windows.UI.Xaml.Media.FillRule.Nonzero";
 		}
 
 		public static string ToCode(this SweepDirection direction)

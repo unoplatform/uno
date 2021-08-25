@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Foundation;
 using Uno.Extensions;
 using Uno.Media;
 
@@ -46,6 +47,15 @@ namespace Windows.UI.Xaml.Media
 				case PathGeometry pathGeometry:
 					ctx.Write(pathGeometry);
 					break;
+				case LineGeometry lineGeometry:
+					ctx.Write(lineGeometry);
+					break;
+				case RectangleGeometry rectangleGeometry:
+					ctx.Write(rectangleGeometry);
+					break;
+				case EllipseGeometry ellipseGeometry:
+					ctx.Write(ellipseGeometry);
+					break;
 				default:
 					break;
 			}
@@ -59,6 +69,46 @@ namespace Windows.UI.Xaml.Media
 		public static void Write(this StreamGeometryContext ctx, PathGeometry pathGeometry)
 		{
 			pathGeometry.Figures.ForEach(ctx.Write);
+		}
+
+		public static void Write(this StreamGeometryContext ctx, LineGeometry lineGeometry)
+		{
+			ctx.BeginFigure(lineGeometry.StartPoint, false, false);
+			ctx.LineTo(lineGeometry.EndPoint, true, false);
+			ctx.SetClosedState(true);
+		}
+
+		public static void Write(this StreamGeometryContext ctx, RectangleGeometry rectangleGeometry)
+		{
+			var rect = rectangleGeometry.Rect;
+
+			var topLeft = rect.Location;
+			var topRight = new Point(rect.Right, rect.Top);
+			var bottomLeft = new Point(rect.Left, rect.Bottom);
+			var bottomRight = new Point(rect.Right, rect.Bottom);
+
+			ctx.BeginFigure(topLeft, true, true);
+			ctx.LineTo(topRight, true, false);
+			ctx.LineTo(bottomRight, true, false);
+			ctx.LineTo(bottomLeft, true, false);
+			ctx.LineTo(topLeft, true, false);
+
+			ctx.SetClosedState(true);
+		}
+
+		public static void Write(this StreamGeometryContext ctx, EllipseGeometry ellipseGeometry)
+		{
+			// TODO
+
+			//var cx = ellipseGeometry.Center.X;
+			//var cy = ellipseGeometry.Center.Y;
+			//var rx = ellipseGeometry.RadiusX;
+			//var ry = ellipseGeometry.RadiusY;
+
+			//ctx.BeginFigure(new Point(cx, cy - ry), true, true);
+			//ctx.ArcTo(new Point(cx, cy + ry), new Size(rx, ry), 0, false, SweepDirection.Counterclockwise, true, false);
+			//ctx.ArcTo(new Point(cx, cy - ry), new Size(rx, ry), 0, false, SweepDirection.Counterclockwise, true, false);
+			//ctx.SetClosedState(true);
 		}
 
 		public static void Write(this StreamGeometryContext ctx, PathFigure pathFigure)
