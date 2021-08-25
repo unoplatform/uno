@@ -858,6 +858,12 @@ namespace Windows.UI.Xaml.Controls
 			_flyout.MaxYear = MaxYear;
 			_flyout.Date = SelectedDate ?? Date;
 
+			// UnoOnly
+			if (_flyout is NativeDatePickerFlyout nativeFlyout)
+			{
+				nativeFlyout.UseNativeMinMaxDates = UseNativeMinMaxDates;
+			}
+
 			ShowPickerFlyout();
 		}
 
