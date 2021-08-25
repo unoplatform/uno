@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region BackgroundSizing DepedencyProperty
 		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
-		internal static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+		public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
 
 		public BackgroundSizing BackgroundSizing
 		{
