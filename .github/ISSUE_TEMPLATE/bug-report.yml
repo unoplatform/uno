@@ -11,7 +11,7 @@ body:
     id: expected-behavior
     attributes:
       label: Expected behavior
-      description: Describe what the desired behavior would be.
+      description: Describe what the desired behavior should be.
   - type: textarea
     id: how-to-reproduce
     attributes:
@@ -81,7 +81,7 @@ body:
         - WebAssembly renderers for Xamarin.Forms
         - macOS
         - Skia (WPF)
-        - Skia (GTK) (Linux)
+        - Skia (GTK on Linux/macOS/Windows)
         - Skia (Tizen)
         - Windows
         - Build tasks
@@ -91,6 +91,7 @@ body:
     id: ide
     attributes:
       label: IDE
+      multiple: true
       options:
         - Visual Studio 2022
         - Visual Studio 2019
