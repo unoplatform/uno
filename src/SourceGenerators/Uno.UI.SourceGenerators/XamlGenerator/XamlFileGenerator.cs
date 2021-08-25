@@ -3048,13 +3048,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						else
 						{
 							var isMemberInsideResourceDictionary = IsMemberInsideResourceDictionary(objectDefinition);
+							var value = member.Value?.ToString();
 
 							if (
 								member.Member.Name == "Name"
 								&& !isMemberInsideResourceDictionary.isInside
 							)
 							{
-								writer.AppendLineInvariant($@"nameScope.RegisterName(""{member.Value}"", {closureName});");
+								ValidateName(value);
+								writer.AppendLineInvariant($@"nameScope.RegisterName(""{value}"", {closureName});");
 							}
 
 							if (
@@ -3064,12 +3066,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							)
 							{
 								nameMember = member;
-								var value = member.Value?.ToString();
-
-								if (value == null)
-								{
-									throw new InvalidOperationException("The Name property cannot be empty");
-								}
 
 								var type = useChildTypeForNamedElement ?
 									GetImplicitChildTypeDisplayString(objectDefinition) :
@@ -3081,7 +3077,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								writer.AppendLineInvariant("this.{0} = {1};", value, closureName);
-								RegisterBackingField(type, value, FindObjectFieldAccessibility(objectDefinition));
+								// value is validated as non-null in ValidateName call above.
+								RegisterBackingField(type, value!, FindObjectFieldAccessibility(objectDefinition));
 							}
 							else if (member.Member.Name == "Name"
 								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
@@ -3318,6 +3315,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					writer.AppendLine(formatted);
 				}
+			}
+		}
+
+		private void ValidateName(string? value)
+		{
+			// Nullable suppressions are due to https://github.com/dotnet/roslyn/issues/55507
+			if (!SyntaxFacts.IsValidIdentifier(value!))
+			{
+				throw new InvalidOperationException($"The value '{value}' is an invalid value for 'Name' property.");
+			}
+
+			if (!CurrentScope.DeclaredNames.Add(value!))
+			{
+				throw new InvalidOperationException($"The name '{value}' is already defined in this scope.");
 			}
 		}
 
