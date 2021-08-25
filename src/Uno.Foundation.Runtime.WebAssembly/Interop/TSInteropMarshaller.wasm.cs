@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Uno.Extensions;
 using Uno.Foundation;
 
@@ -101,6 +102,97 @@ namespace Uno.Foundation.Interop
 
 				Marshal.DestroyStructure(pReturnValue, retStructType);
 				Marshal.FreeHGlobal(pReturnValue);
+			}
+		}
+
+		public static HandleRef<T> Allocate<T>(string propertySetterName, string? propertyResetName = null)
+			where T : struct
+		{
+			var value = new HandleRef<T>(propertyResetName);
+			try
+			{
+				WebAssemblyRuntime.InvokeJSUnmarshalled(propertySetterName, value.Handle);
+			}
+			catch (Exception e)
+			{
+				value.Dispose();
+
+				if (_logger.Value.IsEnabled(LogLevel.Error))
+				{
+					_logger.Value.LogDebug($"Failed Allocate {propertySetterName}/{value.Type}: {e}");
+				}
+
+				throw;
+			}
+
+			return value;
+		}
+
+		public sealed class HandleRef<T> : IDisposable
+			where T : struct
+		{
+			private readonly string? _jsDisposeMethodName;
+
+			private int _isDisposed = 0;
+
+			public HandleRef(string? jsDisposeMethodName)
+			{
+				_jsDisposeMethodName = jsDisposeMethodName;
+				Type = typeof(T);
+				Handle = Marshal.AllocHGlobal(Marshal.SizeOf(Type));
+
+				DumpStructureLayout(Type);
+
+				// Make sure to init the allocated memory
+				Marshal.StructureToPtr(default(T), Handle, false);
+			}
+
+			public Type Type { get; }
+
+			public IntPtr Handle { get; }
+
+			public T Value
+			{
+				get
+				{
+					CheckDisposed();
+					return (T)Marshal.PtrToStructure(Handle, Type);
+				}
+				set
+				{
+					CheckDisposed();
+					Marshal.StructureToPtr(value, Handle, true);
+				}
+			}
+
+			private void CheckDisposed()
+			{
+				if (_isDisposed != 0)
+				{
+					throw new ObjectDisposedException(GetType().Name, "Marshalled object have been disposed.");
+				}
+			}
+
+			/// <inheritdoc />
+			public void Dispose()
+			{
+				if (Interlocked.CompareExchange(ref _isDisposed, 1, 0) == 0)
+				{
+					Marshal.DestroyStructure(Handle, Type);
+					Marshal.FreeHGlobal(Handle);
+
+					if (_jsDisposeMethodName.HasValue())
+					{
+						WebAssemblyRuntime.InvokeJSUnmarshalled(_jsDisposeMethodName!, Handle);
+					}
+
+					GC.SuppressFinalize(this);
+				}
+			}
+
+			~HandleRef()
+			{
+				Dispose();
 			}
 		}
 
