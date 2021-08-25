@@ -4241,6 +4241,28 @@ var Windows;
 (function (Windows) {
     var UI;
     (function (UI) {
+        var Notifications;
+        (function (Notifications) {
+            class BadgeUpdater {
+                static setNumber(value) {
+                    if (navigator.setAppBadge) {
+                        navigator.setAppBadge(value);
+                    }
+                }
+                static clear() {
+                    if (navigator.clearAppBadge) {
+                        navigator.clearAppBadge();
+                    }
+                }
+            }
+            Notifications.BadgeUpdater = BadgeUpdater;
+        })(Notifications = UI.Notifications || (UI.Notifications = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
         var ViewManagement;
         (function (ViewManagement) {
             class ApplicationView {
