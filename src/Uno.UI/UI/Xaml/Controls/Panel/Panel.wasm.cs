@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void Initialize();
 
-		public void UpdateBorder()
+		partial void UpdateBorder()
 		{
 			SetBorder(BorderThickness, BorderBrush);
 		}
