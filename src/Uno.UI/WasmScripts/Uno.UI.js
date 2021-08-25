@@ -264,6 +264,7 @@ var MonoSupport;
                     jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
                     jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
                     jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_ApplicationDataContainer", Windows.Storage.ApplicationDataContainer);
+                    jsCallDispatcher.registerScope("UnoStatic_Windows_ApplicationModel_DataTransfer_DragDrop_Core_DragDropExtension", Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension);
                     jsCallDispatcher._isUnoRegistered = true;
                 }
                 const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
@@ -2151,6 +2152,126 @@ var Windows;
                 }
             }
             DataTransfer.DataTransferManager = DataTransferManager;
+        })(DataTransfer = ApplicationModel.DataTransfer || (ApplicationModel.DataTransfer = {}));
+    })(ApplicationModel = Windows.ApplicationModel || (Windows.ApplicationModel = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var ApplicationModel;
+    (function (ApplicationModel) {
+        var DataTransfer;
+        (function (DataTransfer) {
+            var DragDrop;
+            (function (DragDrop) {
+                var Core;
+                (function (Core) {
+                    class DragDropExtension {
+                        constructor() {
+                            // Events fired on the drop target
+                            // Note: dragenter and dragover events will enable drop on the app
+                            document.addEventListener("dragenter", this.dispatchDropEvent);
+                            document.addEventListener("dragover", this.dispatchDropEvent);
+                            document.addEventListener("dragleave", this.dispatchDropEvent); // Seems to be raised also on drop?
+                            document.addEventListener("drop", this.dispatchDropEvent);
+                            // Events fired on the draggable target (the source element)
+                            //document.addEventListener("dragstart", this.dispatchDragStart);
+                            //document.addEventListener("drag", this.dispatchDrag);
+                            //document.addEventListener("dragend", this.dispatchDragEnd);
+                        }
+                        static enable(pArgs) {
+                            if (DragDropExtension._current) {
+                                throw new Error("A DragDropExtension has already been enabled");
+                            }
+                            this._dispatchDragAndDropMethod = Module.mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDragAndDrop");
+                            this._dispatchDragAndDropArgs = pArgs;
+                            this._current = new DragDropExtension();
+                        }
+                        static disable(pArgs) {
+                            if (DragDropExtension._dispatchDragAndDropArgs != pArgs) {
+                                throw new Error("The current DragDropExtension does not match the provided args");
+                            }
+                            DragDropExtension._current.dispose();
+                            DragDropExtension._current = null;
+                        }
+                        dispose() {
+                            // Events fired on the drop target
+                            // Note: dragenter and dragover events will enable drop on the app
+                            document.removeEventListener("dragenter", this.dispatchDropEvent);
+                            document.removeEventListener("dragover", this.dispatchDropEvent);
+                            document.removeEventListener("dragleave", this.dispatchDropEvent); // Seems to be raised also on drop?
+                            document.removeEventListener("drop", this.dispatchDropEvent);
+                            // Events fired on the draggable target (the source element)
+                            //document.removeEventListener("dragstart", this.dispatchDragStart);
+                            //document.removeEventListener("drag", this.dispatchDrag);
+                            //document.removeEventListener("dragend", this.dispatchDragEnd);
+                        }
+                        dispatchDropEvent(evt) {
+                            // We must keep a reference to the dataTransfer in order to be able to retrieve data items
+                            this._pendingDropData = evt.dataTransfer;
+                            // Prepare args
+                            let args = new DragDropExtensionEventArgs();
+                            args.eventName = evt.type;
+                            args.timestamp = evt.timeStamp;
+                            args.x = evt.clientX;
+                            args.y = evt.clientY;
+                            args.buttons = evt.buttons;
+                            args.shift = evt.shiftKey;
+                            args.ctrl = evt.ctrlKey;
+                            args.alt = evt.altKey;
+                            if (evt.type == "dragenter") { // We use the dataItems only for enter, no needs to copy them every times!
+                                const items = new Array();
+                                for (let itemId = 0; itemId < evt.dataTransfer.items.length; itemId++) {
+                                    const item = evt.dataTransfer.items[itemId];
+                                    items.push({ id: itemId, kind: item.kind, type: item.type });
+                                }
+                                args.dataItems = JSON.stringify(items);
+                                args.allowedOperations = evt.dataTransfer.effectAllowed;
+                            }
+                            else {
+                                // Must be set for marshaling
+                                args.dataItems = "";
+                                args.allowedOperations = "";
+                            }
+                            args.acceptedOperation = "none";
+                            // Raise the managed event
+                            args.marshal(DragDropExtension._dispatchDragAndDropArgs);
+                            DragDropExtension._dispatchDragAndDropMethod();
+                            // Read response from managed code
+                            args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragAndDropArgs);
+                            evt.dataTransfer.dropEffect = (args.acceptedOperation);
+                            // No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
+                            evt.preventDefault();
+                        }
+                        static async retrieveFiles(itemIds) {
+                            var _a;
+                            const data = (_a = DragDropExtension._current) === null || _a === void 0 ? void 0 : _a._pendingDropData;
+                            if (data == null) {
+                                throw new Error("No pending drag and drop data.");
+                            }
+                            const fileHandles = [];
+                            for (let id of itemIds) {
+                                fileHandles.push(await data.items[id].getAsFileSystemHandle());
+                            }
+                            return Uno.Storage.NativeStorageItem.getInfos(...fileHandles);
+                        }
+                        static async retrieveText(itemId) {
+                            var _a;
+                            const data = (_a = DragDropExtension._current) === null || _a === void 0 ? void 0 : _a._pendingDropData;
+                            if (data == null) {
+                                throw new Error("No pending drag and drop data.");
+                            }
+                            return new Promise((resolve, reject) => {
+                                var timeout = setTimeout(() => reject("Timeout: for security reason, you cannot access data before drop."), 15000);
+                                data.items[itemId].getAsString(str => {
+                                    clearTimeout(timeout);
+                                    resolve(str);
+                                });
+                            });
+                        }
+                    }
+                    Core.DragDropExtension = DragDropExtension;
+                })(Core = DragDrop.Core || (DragDrop.Core = {}));
+            })(DragDrop = DataTransfer.DragDrop || (DataTransfer.DragDrop = {}));
         })(DataTransfer = ApplicationModel.DataTransfer || (ApplicationModel.DataTransfer = {}));
     })(ApplicationModel = Windows.ApplicationModel || (Windows.ApplicationModel = {}));
 })(Windows || (Windows = {}));
@@ -4484,6 +4605,103 @@ class ApplicationDataContainer_TryGetValueReturn {
             Module.setValue(pData + 0, pString, "*");
         }
         Module.setValue(pData + 4, this.HasValue, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class DragDropExtensionEventArgs {
+    static unmarshal(pData) {
+        const ret = new DragDropExtensionEventArgs();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.eventName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.eventName = null;
+            }
+        }
+        {
+            ret.timestamp = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.x = Number(Module.getValue(pData + 16, "double"));
+        }
+        {
+            ret.y = Number(Module.getValue(pData + 24, "double"));
+        }
+        {
+            ret.buttons = Number(Module.getValue(pData + 32, "i32"));
+        }
+        {
+            ret.shift = Boolean(Module.getValue(pData + 40, "i32"));
+        }
+        {
+            ret.ctrl = Boolean(Module.getValue(pData + 48, "i32"));
+        }
+        {
+            ret.alt = Boolean(Module.getValue(pData + 56, "i32"));
+        }
+        {
+            const ptr = Module.getValue(pData + 64, "*");
+            if (ptr !== 0) {
+                ret.allowedOperations = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.allowedOperations = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 72, "*");
+            if (ptr !== 0) {
+                ret.acceptedOperation = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.acceptedOperation = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 80, "*");
+            if (ptr !== 0) {
+                ret.dataItems = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.dataItems = null;
+            }
+        }
+        return ret;
+    }
+    marshal(pData) {
+        {
+            const stringLength = lengthBytesUTF8(this.eventName);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.eventName, pString, stringLength + 1);
+            Module.setValue(pData + 0, pString, "*");
+        }
+        Module.setValue(pData + 8, this.timestamp, "double");
+        Module.setValue(pData + 16, this.x, "double");
+        Module.setValue(pData + 24, this.y, "double");
+        Module.setValue(pData + 32, this.buttons, "i32");
+        Module.setValue(pData + 40, this.shift, "i32");
+        Module.setValue(pData + 48, this.ctrl, "i32");
+        Module.setValue(pData + 56, this.alt, "i32");
+        {
+            const stringLength = lengthBytesUTF8(this.allowedOperations);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.allowedOperations, pString, stringLength + 1);
+            Module.setValue(pData + 64, pString, "*");
+        }
+        {
+            const stringLength = lengthBytesUTF8(this.acceptedOperation);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.acceptedOperation, pString, stringLength + 1);
+            Module.setValue(pData + 72, pString, "*");
+        }
+        {
+            const stringLength = lengthBytesUTF8(this.dataItems);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.dataItems, pString, stringLength + 1);
+            Module.setValue(pData + 80, pString, "*");
+        }
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */

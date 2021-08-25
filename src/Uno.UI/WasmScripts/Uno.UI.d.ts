@@ -700,6 +700,21 @@ declare namespace Windows.ApplicationModel.DataTransfer {
         static showShareUI(title: string, text: string, url: string): Promise<string>;
     }
 }
+declare namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core {
+    class DragDropExtension {
+        private static _dispatchDragAndDropMethod;
+        private static _dispatchDragAndDropArgs;
+        private static _current;
+        private _pendingDropData;
+        static enable(pArgs: number): void;
+        static disable(pArgs: number): void;
+        constructor();
+        dispose(): void;
+        private dispatchDropEvent;
+        static retrieveFiles(itemIds: number[]): Promise<Uno.Storage.NativeStorageItemInfo[]>;
+        static retrieveText(itemId: number): Promise<string>;
+    }
+}
 declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
     class MidiDeviceClassProvider {
         static findDevices(findInputDevices: boolean): string;
@@ -1241,6 +1256,21 @@ declare class ApplicationDataContainer_TryGetValueParams {
 declare class ApplicationDataContainer_TryGetValueReturn {
     Value: string;
     HasValue: boolean;
+    marshal(pData: number): void;
+}
+declare class DragDropExtensionEventArgs {
+    eventName: string;
+    timestamp: number;
+    x: number;
+    y: number;
+    buttons: number;
+    shift: boolean;
+    ctrl: boolean;
+    alt: boolean;
+    allowedOperations: string;
+    acceptedOperation: string;
+    dataItems: string;
+    static unmarshal(pData: number): DragDropExtensionEventArgs;
     marshal(pData: number): void;
 }
 declare class StorageFolderMakePersistentParams {

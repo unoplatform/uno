@@ -108,12 +108,12 @@ namespace Uno.UI.SourceGenerators.TSBindings
 						sb.AppendLineInvariant($"public {field.Name} : {GetTSFieldType(field.Type)};");
 					}
 
-					if (messageType.Name.EndsWith("Params"))
+					if (messageType.Name.EndsWith("Params") || messageType.Name.EndsWith("EventArgs"))
 					{
 						GenerateUnmarshaler(messageType, sb, packValue);
 					}
 
-					if (messageType.Name.EndsWith("Return"))
+					if (messageType.Name.EndsWith("Return") || messageType.Name.EndsWith("EventArgs"))
 					{
 						GenerateMarshaler(messageType, sb, packValue);
 					}

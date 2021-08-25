@@ -41,6 +41,16 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public DataPackagePropertySet Properties { get; } = new DataPackagePropertySet();
 
+		internal bool Contains(string formatId)
+		{
+			if (formatId is null)
+			{
+				throw new ArgumentNullException(nameof(formatId));
+			}
+
+			return _data.ContainsKey(formatId);
+		}
+
 		public void SetData(string formatId, object value)
 		{
 			ImmutableInterlocked.Update(ref _data, SetDataCore, (formatId, value));
