@@ -25,7 +25,7 @@ jobs:
     inputs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
-      msbuildVersion: latest
+      msbuildVersion: 17.0
       msbuildArguments: /r /m /t:Build2022VSIX "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-vsix2022.binlog
       clean: false
       restoreNugetPackages: false
