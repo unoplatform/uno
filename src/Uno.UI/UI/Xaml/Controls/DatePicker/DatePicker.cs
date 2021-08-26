@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if __IOS__ || __ANDROID__
+#define SUPPORTS_NATIVE_DATEPICKER
+#endif
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -858,11 +861,13 @@ namespace Windows.UI.Xaml.Controls
 			_flyout.MaxYear = MaxYear;
 			_flyout.Date = SelectedDate ?? Date;
 
+#if SUPPORTS_NATIVE_DATEPICKER
 			// UnoOnly
 			if (_flyout is NativeDatePickerFlyout nativeFlyout)
 			{
 				nativeFlyout.UseNativeMinMaxDates = UseNativeMinMaxDates;
 			}
+#endif
 
 			ShowPickerFlyout();
 		}
