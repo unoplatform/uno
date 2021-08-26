@@ -122,6 +122,16 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <!-- Enable all the latest CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in repo's editorconfig. -->
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3" />
+  </ItemGroup>
+
+  <PropertyGroup>
 	<IsMonoAndroid>false</IsMonoAndroid>
 	<IsMonoAndroid Condition="$(TargetFramework.ToLower().StartsWith('monoandroid')) or '$(TargetFramework)'=='net6.0-android'">true</IsMonoAndroid>
 	

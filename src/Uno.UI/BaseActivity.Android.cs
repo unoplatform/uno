@@ -175,7 +175,7 @@ namespace Uno.UI
 
 		#region Activity LifeCycle cf. https://developer.android.com/reference/android/app/Activity.html
 
-		partial void InnerCreate(Android.OS.Bundle bundle) => SetAsCurrent();
+		partial void InnerCreate(Android.OS.Bundle savedInstanceState) => SetAsCurrent();
 
 		partial void InnerCreateWithPersistedState(Bundle savedInstanceState, PersistableBundle persistentState) => SetAsCurrent();
 

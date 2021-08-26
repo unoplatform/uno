@@ -33,6 +33,10 @@ indent_style = space
 [*.md]
 indent_style = space
 
+# Workaround https://github.com/unoplatform/uno/issues/6883
+[**/Generated/**/*.cs]
+generated_code = true
+
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
 csharp_indent_block_contents = true
@@ -222,3 +226,5 @@ dotnet_style_qualification_for_method = false:suggestion
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#dotnet_style_qualification_for_property
 dotnet_style_qualification_for_property = false:suggestion
+
+dotnet_analyzer_diagnostic.category-Performance.severity = warning
