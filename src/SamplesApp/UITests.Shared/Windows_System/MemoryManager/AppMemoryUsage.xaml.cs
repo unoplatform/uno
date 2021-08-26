@@ -5,8 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_System.MemoryManager
 {
-	[SampleControlInfo("Windows.System", "MemoryManager.AppMemoryUsage",
-		description: "Shows the amount of memory used by the application")]
+	[Sample("Windows.System", "MemoryManager.AppMemoryUsage")]
 	public sealed partial class AppMemoryUsage : Page
 	{
 		public AppMemoryUsage()

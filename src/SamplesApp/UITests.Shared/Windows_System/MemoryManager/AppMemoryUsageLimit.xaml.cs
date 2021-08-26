@@ -5,8 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_System.MemoryManager
 {
-	[SampleControlInfo("Windows.System", "MemoryManager.AppMemoryUsageLimit",
-		description: "Shows the limit amount of memory that can be used by the application")]
+	[Sample("Windows.System", "MemoryManager.AppMemoryUsageLimit")]
 	public sealed partial class AppMemoryUsageLimit : Page
 	{
 		public AppMemoryUsageLimit()
