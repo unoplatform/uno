@@ -239,7 +239,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 				using var stream = await createdFile.OpenStreamForReadAsync();
 
-				while (await stream.ReadAsync(buffer, 0, 1024) > 0)
+				while (await stream.ReadAsync(buffer.AsMemory(0, 1024)) > 0)
 				{
 				}
 

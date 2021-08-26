@@ -72,7 +72,7 @@ namespace Uno.Extensions
 
 			progressCallback?.Invoke(0, length);
 
-			while ((bytesRead = await stream.ReadAsync(readBuffer, totalBytesRead, bufferSize - totalBytesRead, ct)) > 0)
+			while ((bytesRead = await stream.ReadAsync(readBuffer.AsMemory(totalBytesRead, bufferSize - totalBytesRead), ct)) > 0)
 			{
 				totalBytesRead += bytesRead;
 
@@ -81,7 +81,7 @@ namespace Uno.Extensions
 				if (totalBytesRead == bufferSize)
 				{
 					var nextBytes = new byte[1];
-					var read = await stream.ReadAsync(nextBytes, 0, 1, ct);
+					var read = await stream.ReadAsync(nextBytes.AsMemory(0, 1), ct);
 
 					if (read != 1)
 					{

@@ -130,7 +130,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			}
 
 			var raw = new byte[512];
-			var read = await stream.ReadAsync(raw, 0, raw.Length);
+			var read = await stream.ReadAsync(raw);
 			var data = Encoding.UTF8.GetString(raw, 0, read);
 
 			if (resetPos)

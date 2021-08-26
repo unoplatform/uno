@@ -92,7 +92,7 @@ namespace Windows.Storage.Streams
 
 				var buffer = new byte[Buffer.DefaultCapacity];
 				int read;
-				while ((read = await responseStream.ReadAsync(buffer, 0, Buffer.DefaultCapacity, ct)) > 0)
+				while ((read = await responseStream.ReadAsync(buffer.AsMemory(0, Buffer.DefaultCapacity), ct)) > 0)
 				{
 					await file.WriteAsync(buffer, 0, read, ct);
 					await file.FlushAsync(ct); // We make sure to write the data to the disk before allow read to access it
