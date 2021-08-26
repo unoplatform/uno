@@ -24,8 +24,6 @@ jobs:
     displayName: Build 2022 VSIX
     inputs:
       solution: Build/Uno.UI.Build.csproj
-      msbuildLocationMethod: location
-      msbuildLocation: C:\VS2022\MSBuild\Current\Bin
       msbuildArguments: /r /m /t:Build2022VSIX "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-vsix2022.binlog
       clean: false
       restoreNugetPackages: false
