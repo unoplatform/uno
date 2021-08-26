@@ -461,6 +461,8 @@ namespace Windows.UI.Xaml
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 
+					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
+
 					// Set even if they are different to make sure the value is now set on the right precedence
 					SetValueInternal(value, precedence, propertyDetails);
 
@@ -469,8 +471,6 @@ namespace Windows.UI.Xaml
 						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
 						_resourceBindings?.ClearBinding(property, precedence);
 					}
-
-					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
 
 					// Value may or may not have changed based on the precedence
 					var newValue = GetValue(propertyDetails);
