@@ -7,9 +7,9 @@ Implementing a new WinUI/WinRT API generally requires to:
 - Remove (completely or partially depending on the platforms) the implemented members in the generated file
 
 If your API implementation is for a specific platform:
-- You can use a platform suffix in the source file name (`PdfDocument.android.cs`) so the file is built only for this platform
+- You can use a platform suffix in the source file name (`PdfDocument.Android.cs`) so the file is built only for this platform
 - Remove the parts that relate to your platform in the `NotImplemented` attribute:
-    ```
+    ```csharp
     #if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public  global::Windows.Data.Pdf.PdfPageDimensions Dimensions
@@ -17,7 +17,7 @@ If your API implementation is for a specific platform:
 	#endif
     ```
     becomes
-    ```
+    ```csharp
     #if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public  global::Windows.Data.Pdf.PdfPageDimensions Dimensions
