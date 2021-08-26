@@ -11,11 +11,11 @@
 
     <StackPanel>
 		<StackPanel Orientation="Horizontal">
-			<TextBox Text="A" Width="70" x:Name="initiallySmall"/>
+			<TextBox Text="A" Width="70" FontSize="14" x:Name="initiallySmall"/>
 			<Button x:Name="makeBiggerBtn" Content="Make bigger" Click="MakeBiggerClick" />
 		</StackPanel>
 		<StackPanel Orientation="Horizontal">
-			<TextBox Text="A" Width="71" x:Name="initiallyLarge"/>
+			<TextBox Text="A" Width="71" FontSize="14" x:Name="initiallyLarge"/>
 			<Button x:Name="makeSmallerBtn" Content="Make smaller" Click="MakeSmallerClick" />
 		</StackPanel>
 		
