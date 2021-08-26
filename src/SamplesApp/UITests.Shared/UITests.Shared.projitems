@@ -481,6 +481,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_System\MemoryManager\AppMemoryUsage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_System\MemoryManager\AppMemoryUsageLimit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4593,8 +4601,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\LauncherTests.xaml.cs">
       <DependentUpon>LauncherTests.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_System\MemoryManager\MemoryManager_AppMemoryUsage.xaml.cs">
-      <DependentUpon>MemoryManager_AppMemoryUsage.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_System\MemoryManager\AppMemoryUsage.xaml.cs">
+      <DependentUpon>AppMemoryUsage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_System\MemoryManager\AppMemoryUsageLimit.xaml.cs">
+      <DependentUpon>AppMemoryUsageLimit.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml.cs">
       <DependentUpon>PowerManager.xaml</DependentUpon>
