@@ -3,8 +3,7 @@
 	export class NativeStorageFile {
 
 		public static async getBasicPropertiesAsync(guid: string): Promise<string> {
-			const handle = <FileSystemFileHandle>NativeStorageItem.getHandle(guid);
-			var file = await handle.getFile();
+			const file = await NativeStorageItem.getFile(guid);
 			var propertyString = "";
 			propertyString += file.size;
 			propertyString += "|";

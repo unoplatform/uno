@@ -11,16 +11,22 @@
 		}
 
 		public static async openAsync(streamId: string, fileId: string): Promise<string> {
-			const handle = <FileSystemFileHandle>NativeStorageItem.getHandle(fileId);
-			if (await NativeFileWriteStream.verifyPermissionAsync(handle)) {
-				const writableStream = await handle.createWritable({ keepExistingData: true });
-				const fileSize = (await handle.getFile()).size;
-				const stream = new NativeFileWriteStream(writableStream);
-				NativeFileWriteStream._streamMap.set(streamId, stream);
-				return fileSize.toString();
-			} else {
+			const item = NativeStorageItem.getItem(fileId);
+			if (item instanceof File) {
 				return "PermissionNotGranted";
 			}
+
+			const handle = <FileSystemFileHandle>item;
+			if (!await NativeFileWriteStream.verifyPermissionAsync(handle)) {
+				return "PermissionNotGranted";
+			}
+
+			const writableStream = await handle.createWritable({ keepExistingData: true });
+			const fileSize = (await handle.getFile()).size;
+			const stream = new NativeFileWriteStream(writableStream);
+			NativeFileWriteStream._streamMap.set(streamId, stream);
+
+			return fileSize.toString();
 		}
 
 		private static async verifyPermissionAsync(fileHandle: FileSystemFileHandle) {

@@ -9,7 +9,7 @@
 		 */
 		public static async createFolderAsync(parentGuid: string, folderName: string): Promise<string> {
 			try {
-				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
+				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getItem(parentGuid);
 
 				const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
 					create: true,
@@ -31,7 +31,7 @@
 		 */
 		public static async createFileAsync(parentGuid: string, fileName: string): Promise<string> {
 			try {
-				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
+				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getItem(parentGuid);
 
 				const newFileHandle = await parentHandle.getFileHandle(fileName, {
 					create: true,
@@ -53,7 +53,7 @@
 		 * @returns A GUID of the folder if found, otherwise null.
 		 */
 		public static async tryGetFolderAsync(parentGuid: string, folderName: string): Promise<string> {
-			const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
+			const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getItem(parentGuid);
 
 			let nestedDirectoryHandle: FileSystemDirectoryHandle = undefined;
 
@@ -77,7 +77,7 @@
 		* @returns A GUID of the folder if found, otherwise null.
 		*/
 		public static async tryGetFileAsync(parentGuid: string, fileName: string): Promise<string> {
-			const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
+			const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getItem(parentGuid);
 
 			let fileHandle: FileSystemFileHandle = undefined;
 
@@ -96,7 +96,7 @@
 
 		public static async deleteItemAsync(parentGuid: string, itemName: string): Promise<string> {
 			try {
-				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(parentGuid);
+				const parentHandle = <FileSystemDirectoryHandle>NativeStorageItem.getItem(parentGuid);
 
 				await parentHandle.removeEntry(itemName, { recursive: true });
 
@@ -134,7 +134,7 @@
 		}
 
 		private static async getEntriesAsync(guid: string, includeFiles: boolean, includeDirectories: boolean): Promise<string> {
-			const folderHandle = <FileSystemDirectoryHandle>NativeStorageItem.getHandle(guid);
+			const folderHandle = <FileSystemDirectoryHandle>NativeStorageItem.getItem(guid);
 
 			var entries: FileSystemHandle[] = [];
 

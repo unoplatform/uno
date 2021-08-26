@@ -10,8 +10,7 @@
 		}
 
 		public static async openAsync(streamId: string, fileId: string): Promise<string> {
-			const handle = <FileSystemFileHandle>NativeStorageItem.getHandle(fileId);
-			const file = await handle.getFile();
+			const file = await NativeStorageItem.getFile(fileId);
 			const fileSize = file.size;
 			const stream = new NativeFileReadStream(file);
 			NativeFileReadStream._streamMap.set(streamId, stream);
