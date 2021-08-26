@@ -10,7 +10,7 @@
     d:DesignWidth="400">
 
 	<StackPanel>
-	    <TextBox>
+	    <TextBox x:Name="MyTextBox">
 	        <TextBox.BorderBrush>
 				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
 					<LinearGradientBrush.GradientStops>
