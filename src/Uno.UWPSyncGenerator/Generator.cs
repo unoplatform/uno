@@ -4,14 +4,10 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.Win32.SafeHandles;
 using Uno.Extensions;
-using Uno.Logging;
 
 namespace Uno.UWPSyncGenerator
 {
@@ -44,11 +40,29 @@ namespace Uno.UWPSyncGenerator
 		private Compilation _wasmCompilation;
 		private Compilation _skiaCompilation;
 
-		private ISymbol _voidSymbol;
 		private ISymbol _dependencyPropertySymbol;
 		protected ISymbol FlagsAttributeSymbol { get; private set; }
 		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
+
+		private static readonly string[] s_unoUINamespaces = new[] {
+				"Windows.UI.Xaml",
+				"Windows.UI.Composition",
+				"Windows.UI.Dispatching",
+#if HAS_UNO_WINUI
+				"Microsoft.Foundation",
+				"Microsoft.UI.Xaml",
+				"Microsoft.UI.Composition",
+				"Microsoft.UI.Dispatching",
+				"Microsoft.UI.Text",
+				"Microsoft.UI.Windowing",
+				"Microsoft.UI.Input",
+				"Microsoft.System",
+				"Microsoft.Graphics",
+				"Microsoft.ApplicationModel.Resources",
+				"Microsoft.Web",
+#endif
+			};
 
 		static Generator()
 		{
@@ -76,12 +90,10 @@ namespace Uno.UWPSyncGenerator
 			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");
 			_macOSBaseSymbol = _macCompilation.GetTypeByMetadataName("AppKit.NSView");
 
-			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
-
 
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
@@ -105,25 +117,6 @@ namespace Uno.UWPSyncGenerator
 						  select asm;
 
 			origins = origins.ToArray();
-
-			var unoUINamespaces = new[] {
-				"Windows.UI.Xaml",
-				"Windows.UI.Composition",
-				"Windows.UI.Dispatching",
-#if HAS_UNO_WINUI
-				"Microsoft.Foundation",
-				"Microsoft.UI.Xaml",
-				"Microsoft.UI.Composition",
-				"Microsoft.UI.Dispatching",
-				"Microsoft.UI.Text",
-				"Microsoft.UI.Windowing",
-				"Microsoft.UI.Input",
-				"Microsoft.System",
-				"Microsoft.Graphics",
-				"Microsoft.ApplicationModel.Resources",
-				"Microsoft.Web",
-#endif
-			};
 
 			List<string> excludeNamespaces = new List<string>();
 			List<string> includeNamespaces = new List<string>();
@@ -154,7 +147,7 @@ namespace Uno.UWPSyncGenerator
 					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml") && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml"))
 					|| (
 						(baseName == "Uno.UI" || baseName == "Uno.UI.Dispatching" || baseName == "Uno.UI.Composition")
-						&& unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
+						&& s_unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
 					)
 					where !excludeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
 					where (includeNamespaces.Count == 0) || includeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
@@ -373,16 +366,16 @@ namespace Uno.UWPSyncGenerator
 			public string GenerateNotImplementedList()
 			{
 				var defines = new[] {
-					IsNotDefinedByUno(AndroidSymbol) ? AndroidDefine : "",
-					IsNotDefinedByUno(IOSSymbol) ? iOSDefine : "",
-					IsNotDefinedByUno(net461ymbol) ? net461Define : "",
-					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "",
-					IsNotDefinedByUno(SkiaSymbol) ? SkiaDefine : "",
-					IsNotDefinedByUno(NetStdReferenceSymbol) ? NetStdReferenceDefine : "",
-					MacOSSymbol == null ? MacDefine : "",
+					IsNotDefinedByUno(AndroidSymbol) ? $"\"{AndroidDefine}\"" : "",
+					IsNotDefinedByUno(IOSSymbol) ? $"\"{iOSDefine}\"" : "",
+					IsNotDefinedByUno(net461ymbol) ? $"\"{net461Define}\"" : "",
+					IsNotDefinedByUno(WasmSymbol) ? $"\"{WasmDefine}\"" : "",
+					IsNotDefinedByUno(SkiaSymbol) ? $"\"{SkiaDefine}\"": "",
+					IsNotDefinedByUno(NetStdReferenceSymbol) ? $"\"{NetStdReferenceDefine}\"" : "",
+					MacOSSymbol == null ? $"\"{MacDefine}\"" : "",
 				};
 
-				return defines.Where(d => !string.IsNullOrEmpty(d)).Select(d => $"\"{d}\"").JoinBy(", ");
+				return defines.Where(d => d.Length > 0).JoinBy(", ");
 			}
 
 			public bool IsNotImplementedInAllPlatforms()
@@ -578,11 +571,9 @@ namespace Uno.UWPSyncGenerator
 
 					foreach (var inner in enumerable)
 					{
-						if (!implementedInterfaces.Contains(inner))
+						if (implementedInterfaces.Add(inner))
 						{
-							implementedInterfaces.Add(inner);
-
-							BuildInterfaceImplementation(b, type, inner, iface.TypeArguments, types, writtenSymbols);
+							BuildInterfaceImplementation(b, type, inner, types, writtenSymbols);
 						}
 					}
 				}
@@ -606,7 +597,6 @@ namespace Uno.UWPSyncGenerator
 			IndentedStringBuilder b,
 			INamedTypeSymbol ownerType,
 			INamedTypeSymbol ifaceSymbol,
-			ImmutableArray<ITypeSymbol> genericParameters,
 			PlatformSymbols<INamedTypeSymbol> types,
 			List<ISymbol> writtenSymbols
 		)
@@ -622,12 +612,21 @@ namespace Uno.UWPSyncGenerator
 					|| method.MethodKind == MethodKind.EventRaise
 					;
 
-				var isDefinedInClass = ownerType.GetMembers().OfType<IMethodSymbol>().Any(m =>
-						m.Name == method.Name
-						&& m.DeclaredAccessibility == Accessibility.Public
+				if (isSpecialType)
+				{
+					continue;
+				}
+
+				var isDefinedInClass = ownerType.GetMembers(method.Name).OfType<IMethodSymbol>().Any(m =>
+						m.DeclaredAccessibility == Accessibility.Public
 						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
 						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
 					);
+
+				if (isDefinedInClass)
+				{
+					continue;
+				}
 
 				var isAlreadyGenerated = writtenSymbols.OfType<IMethodSymbol>().Any(m => m.Name == method.Name
 						&& m.DeclaredAccessibility == Accessibility.Public
@@ -635,12 +634,7 @@ namespace Uno.UWPSyncGenerator
 						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
 					);
 
-				if (
-					isSpecialType
-					|| isDefinedInClass
-					|| !IsNotUWPMapping(ownerType, method)
-					|| isAlreadyGenerated
-				)
+				if (isAlreadyGenerated || !IsNotUWPMapping(ownerType, method))
 				{
 					continue;
 				}
@@ -650,8 +644,8 @@ namespace Uno.UWPSyncGenerator
 				if (allMethods.HasUndefined)
 				{
 					allMethods.AppendIf(b);
-					var parms = string.Join(", ", method.Parameters.Select(p => $"{RefKindFormat(p)} {TransformType(ifaceSymbol, genericParameters, p.Type)} {SanitizeParameter(p.Name)}"));
-					var returnTypeName = TransformType(ifaceSymbol, genericParameters, method.ReturnType);
+					var parms = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)} {TransformType(p.Type)} {SanitizeParameter(p.Name)}"));
+					var returnTypeName = TransformType(method.ReturnType);
 					var typeAccessibility = GetMethodAccessibility(method);
 					var explicitImplementation = typeAccessibility == "" ? $"global::{ifaceSymbol.ToString()}." : "";
 
@@ -669,14 +663,13 @@ namespace Uno.UWPSyncGenerator
 
 			foreach (var property in ifaceSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
-				var propertyTypeName = TransformType(ifaceSymbol, genericParameters, property.Type);
-				var parms = string.Join(", ", property.GetMethod?.Parameters.Select(p => $"{TransformType(ifaceSymbol, genericParameters, p.Type)} {SanitizeParameter(p.Name)}") ?? new string[0]);
+				var propertyTypeName = TransformType(property.Type);
+				var parms = string.Join(", ", property.GetMethod?.Parameters.Select(p => $"{TransformType(p.Type)} {SanitizeParameter(p.Name)}") ?? Array.Empty<string>());
 
 				var allProperties = GetAllMatchingPropertyMember(types, property);
 
-				if (ownerType.GetMembers().OfType<IPropertySymbol>().Any(p =>
-					   p.Name == property.Name
-					   && p.Type.ToDisplayString() == property.Type.ToDisplayString()
+				if (ownerType.GetMembers(property.Name).OfType<IPropertySymbol>().Any(p =>
+					   p.Type.ToDisplayString() == property.Type.ToDisplayString()
 					)
 					|| !IsNotUWPMapping(ownerType, property))
 				{
@@ -725,11 +718,6 @@ namespace Uno.UWPSyncGenerator
 								.FirstOrDefault();
 		}
 
-		private static string RefKindFormat(IParameterSymbol p)
-		{
-			return (p.RefKind != RefKind.None ? p.RefKind.ToString() : "").ToLowerInvariant();
-		}
-
 		private string GetMethodAccessibility(IMethodSymbol method)
 		{
 			if (
@@ -745,9 +733,8 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
-		private string TransformType(INamedTypeSymbol ifaceSymbol, ImmutableArray<ITypeSymbol> genericParameters, ITypeSymbol typeSymbol)
+		private string TransformType(ITypeSymbol typeSymbol)
 		{
-			var originalTypeSymbol = typeSymbol;
 			var namedType = typeSymbol as INamedTypeSymbol;
 
 			if (namedType != null)
@@ -755,29 +742,12 @@ namespace Uno.UWPSyncGenerator
 				return namedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 			}
 
-			if (typeSymbol is IArrayTypeSymbol)
+			if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
 			{
-				typeSymbol = (typeSymbol as IArrayTypeSymbol).ElementType;
+				return arrayTypeSymbol.ElementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + "[]";
 			}
 
-			return typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + (originalTypeSymbol is IArrayTypeSymbol ? "[]" : "");
-		}
-
-		private string MapGenericParameters(ImmutableArray<ITypeSymbol> genericParameters, ITypeSymbol typeSymbol)
-		{
-			var typeName = typeSymbol.ToString();
-
-			foreach (var typeRef in genericParameters.Select((param, index) => new { param, index }))
-			{
-				typeName = typeName.Replace($"__helper{typeRef.index}__", SanitizeType(typeRef.param));
-			}
-
-			if (typeName.StartsWith("System."))
-			{
-				typeName = "global::" + typeName;
-			}
-
-			return typeName;
+			return typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		}
 
 		protected string BuildInterfaces(INamedTypeSymbol type)
@@ -806,15 +776,13 @@ namespace Uno.UWPSyncGenerator
 			return "";
 		}
 
-		private static bool HasValidBaseType(INamedTypeSymbol type)
-		{
-			string[] skippedTypes = new[] {
+		private static readonly string[] s_skippedTypes = new[] {
 				"object",
 				"System.Enum",
 				"System.ValueType",
 			};
 
-			string[] skipBaseTypes = new[] {
+		private static readonly string[] s_skipBaseTypes = new[] {
 
 				// skipped because of legacy mismatched hierarchy
 				BaseXamlNamespace + ".FrameworkElement",
@@ -880,8 +848,10 @@ namespace Uno.UWPSyncGenerator
 #endif
 			};
 
-			var isSkipped = skippedTypes.Contains(type.BaseType?.ToString());
-			var isBaseSkipped = skipBaseTypes.Contains(type.ToString());
+		private static bool HasValidBaseType(INamedTypeSymbol type)
+		{
+			var isSkipped = s_skippedTypes.Contains(type.BaseType?.ToString());
+			var isBaseSkipped = s_skipBaseTypes.Contains(type.ToString());
 
 			// Console.WriteLine($"Checking {type.MetadataName}: isSkipped {isSkipped}, isBaseSkipped {isBaseSkipped} ");
 
@@ -916,7 +886,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var field in type.GetMembers().OfType<IFieldSymbol>())
 			{
-				var allmembers = GetAllGetNonGeneratedMembers(types, field.Name, q => q.Where(m => m is IFieldSymbol || m is IPropertySymbol).FirstOrDefault());
+				var allmembers = GetAllGetNonGeneratedMembers(types, field.Name, q => q.FirstOrDefault(m => m.Kind == SymbolKind.Field || m.Kind == SymbolKind.Property));
 
 				if (allmembers.HasUndefined)
 				{
@@ -948,7 +918,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				if (!IsNotUWPMapping(type, eventMember) || SkipEvent(type, eventMember))
+				if (!IsNotUWPMapping(type, eventMember) || SkipEvent(eventMember))
 				{
 					continue;
 				}
@@ -968,15 +938,16 @@ namespace Uno.UWPSyncGenerator
 					}
 					else
 					{
-						b.AppendLineInvariant($"[global::Uno.NotImplemented({allMembers.GenerateNotImplementedList()})]");
+						var notImplementedList = allMembers.GenerateNotImplementedList();
+						b.AppendLineInvariant($"[global::Uno.NotImplemented({notImplementedList})]");
 						using (b.BlockInvariant($"public {declaration}"))
 						{
-							b.AppendLineInvariant($"[global::Uno.NotImplemented({allMembers.GenerateNotImplementedList()})]");
+							b.AppendLineInvariant($"[global::Uno.NotImplemented({notImplementedList})]");
 							using (b.BlockInvariant($"add"))
 							{
 								BuildNotImplementedException(b, eventMember, false);
 							}
-							b.AppendLineInvariant($"[global::Uno.NotImplemented({allMembers.GenerateNotImplementedList()})]");
+							b.AppendLineInvariant($"[global::Uno.NotImplemented({notImplementedList})]");
 							using (b.BlockInvariant($"remove"))
 							{
 								BuildNotImplementedException(b, eventMember, false);
@@ -1060,13 +1031,13 @@ namespace Uno.UWPSyncGenerator
 											.Parameters
 											.Take(ctor.Parameters.Length)
 											.Select(p => p.Type)
-											, new InheritanceTypeComparer()
+											, InheritanceTypeComparer.Instance
 									)
 								select ctor;
 
-						var baseParamString = string.Join(", ", q.FirstOrDefault()?.Parameters.Select(p => p.Name) ?? new string[0]);
+						var baseParamString = string.Join(", ", q.FirstOrDefault()?.Parameters.Select(p => p.Name) ?? Array.Empty<string>());
 
-						var baseParams = type.BaseType?.Name != "Object" && q.Any() ? $": base({baseParamString})" : "";
+						var baseParams = type.BaseType?.SpecialType != SpecialType.System_Object && q.Any() ? $": base({baseParamString})" : "";
 
 						b.AppendLineInvariant($"[global::Uno.NotImplemented({methods.GenerateNotImplementedList()})]");
 						using (b.BlockInvariant($"{visiblity} {type.Name}({parameters}) {baseParams}"))
@@ -1085,7 +1056,7 @@ namespace Uno.UWPSyncGenerator
 
 				if (
 						method.MethodKind == MethodKind.Ordinary
-						&& !SkipMethod(type, method)
+						&& !SkipMethod(method)
 						&& IsNotUWPMapping(type, method)
 						&& (
 							method.DeclaredAccessibility == Accessibility.Public
@@ -1136,7 +1107,7 @@ namespace Uno.UWPSyncGenerator
 								else
 								{
 									bool hasReturnValue =
-										!SymbolEqualityComparer.Default.Equals(method.ReturnType, _voidSymbol)
+										method.ReturnType.SpecialType != SpecialType.System_Void
 										|| method.Parameters.Any(p => p.RefKind == RefKind.Out);
 
 									BuildNotImplementedException(b, method, hasReturnValue);
@@ -1160,7 +1131,7 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
-		private bool SkipMethod(INamedTypeSymbol type, IMethodSymbol method)
+		private bool SkipMethod(IMethodSymbol method)
 		{
 			if (method.ContainingType.Name == "Grid")
 			{
@@ -1276,7 +1247,7 @@ namespace Uno.UWPSyncGenerator
 			return false;
 		}
 
-		private bool SkipEvent(INamedTypeSymbol type, IEventSymbol eventMember)
+		private bool SkipEvent(IEventSymbol eventMember)
 		{
 			if (eventMember.ContainingType.Name == "FrameworkElement")
 			{
@@ -1292,7 +1263,7 @@ namespace Uno.UWPSyncGenerator
 		}
 
 		private bool IsObjectCtor(IMethodSymbol androidMember)
-			=> androidMember?.Name == ".ctor" && androidMember?.OriginalDefinition.ContainingType.Name == "Object";
+			=> androidMember?.Name == ".ctor" && androidMember.OriginalDefinition.ContainingType.SpecialType == SpecialType.System_Object;
 
 		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? p.RefKind.ToString().ToLowerInvariant() : "";
@@ -1366,9 +1337,8 @@ namespace Uno.UWPSyncGenerator
 
 						var t3 = build();
 
-						var q = from sourceMethod in t3.GetMembers().OfType<IMethodSymbol>()
-								where sourceMethod.Name == method.Name
-								&& sourceMethod.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(method.Parameters.Select(p => p.Type.ToDisplayString()))
+						var q = from sourceMethod in t3.GetMembers(method.Name).OfType<IMethodSymbol>()
+								where sourceMethod.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(method.Parameters.Select(p => p.Type.ToDisplayString()))
 								select sourceMethod;
 
 						if (q.Any())
@@ -1394,8 +1364,8 @@ namespace Uno.UWPSyncGenerator
 
 					var t3 = type2.Construct(iface.TypeArguments.ToArray());
 
-					var q = from sourceProperty in t3.GetMembers().OfType<IPropertySymbol>()
-							where sourceProperty.Name == property.Name && SymbolEqualityComparer.Default.Equals(sourceProperty.Type, property.Type)
+					var q = from sourceProperty in t3.GetMembers(property.Name).OfType<IPropertySymbol>()
+							where SymbolEqualityComparer.Default.Equals(sourceProperty.Type, property.Type)
 							select sourceProperty;
 
 					if (q.Any())
@@ -1742,7 +1712,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			var current = symbol
 				?.GetMembers(name)
-				.Where(m => m.Locations.None(l => l.SourceTree?.FilePath?.Contains("\\Generated\\") ?? false)) ?? new ISymbol[0];
+				.Where(m => m.Locations.None(l => l.SourceTree?.FilePath?.Contains("\\Generated\\") ?? false)) ?? Array.Empty<ISymbol>();
 
 			foreach (var memberSymbol in current)
 			{
