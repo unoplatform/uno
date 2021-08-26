@@ -240,7 +240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				for (int i = 0; i < count; i++)
 				{
 					sb.Append(GetRandomWord(random));
-					sb.Append(" ");
+					sb.Append(' ');
 				}
 				sb.Remove(sb.Length - 1, 1);
 				return sb.ToString();

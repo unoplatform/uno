@@ -784,7 +784,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 				{
 					if (names.Length > 0)
 					{
-						names.Append("|");
+						names.Append('|');
 					}
 
 					names.Append(item.Content);
@@ -796,7 +796,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 				{
 					if (names.Length > 0)
 					{
-						names.Append("|");
+						names.Append('|');
 					}
 
 					names.Append(node.Content.ToString());

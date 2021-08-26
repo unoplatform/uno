@@ -41,7 +41,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			foreach (var state in _scrollStates)
 			{
 				sb.Append(state);
-				sb.Append(",");
+				sb.Append(',');
 			}
 			ScrollArgsTextBlock.Text = sb.ToString();
 		}
