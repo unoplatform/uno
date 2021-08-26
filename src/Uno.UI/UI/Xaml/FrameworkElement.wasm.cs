@@ -204,6 +204,14 @@ namespace Windows.UI.Xaml
 		protected void SetBorder(Thickness thickness, Brush brush)
 			=> BorderLayerRenderer.SetBorder(this, thickness, brush);
 
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+		{
+			if (dependencyPropertyChangedEventArgs.NewValue is BackgroundSizing sizing)
+			{
+				SetStyle("background-clip", sizing == BackgroundSizing.InnerBorderEdge ? "padding-box" : "border-box");
+			}
+		}
+
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
 		#region Margin Dependency Property

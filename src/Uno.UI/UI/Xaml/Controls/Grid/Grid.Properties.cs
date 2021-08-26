@@ -28,6 +28,23 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class Grid
 	{
+
+		#region BackgroundSizing DepedencyProperty
+		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
+		public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+
+		public BackgroundSizing BackgroundSizing
+		{
+			get => GetBackgroundSizingValue();
+			set => SetBackgroundSizingValue(value);
+		}
+
+		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundSizingChangedInnerPanel(e);
+		}
+		#endregion
+
 		#region Row Property
 		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
 		public static DependencyProperty RowProperty { get ; } = CreateRowProperty();

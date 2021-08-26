@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 				borderBrush = selectedBrush;
 			}
 
-			_borderRenderer.UpdateLayer(this, background, borderThickness, borderBrush, cornerRadius, default);
+			_borderRenderer.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
 		}
 
 		private bool IsClear(Brush brush)

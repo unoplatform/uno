@@ -181,6 +181,24 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region BackgroundSizing DepedencyProperty
+		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
+		public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+
+		public BackgroundSizing BackgroundSizing
+		{
+			get => GetBackgroundSizingValue();
+			set => SetBackgroundSizingValue(value);
+		}
+		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnBackgroundSizingChangedPartial(e);
+			base.OnBackgroundSizingChangedInner(e);
+		}
+
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e);
+		#endregion
+
 		#region BorderThickness DependencyProperty
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 

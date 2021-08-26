@@ -40,6 +40,11 @@ body {
     See WindowManager.ts on measureViewInternal() for more details.
   */
   transform: translate(0, 0);
+
+  /*
+    By default, the background of UWP controls is not drawn under the border of the control.
+  */
+  background-clip: padding-box;
 }
 
 .uno-uielement .noclip {
