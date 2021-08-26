@@ -705,14 +705,18 @@ declare namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core {
         private static _dispatchDragAndDropMethod;
         private static _dispatchDragAndDropArgs;
         private static _current;
+        private static _nextDropId;
+        private _dropHandler;
+        private _pendingDropId;
         private _pendingDropData;
         static enable(pArgs: number): void;
         static disable(pArgs: number): void;
         constructor();
         dispose(): void;
         private dispatchDropEvent;
-        static retrieveFiles(itemIds: number[]): Promise<Uno.Storage.NativeStorageItemInfo[]>;
         static retrieveText(itemId: number): Promise<string>;
+        static retrieveFiles(itemIds: number | number[]): Promise<string>;
+        private static getAsFile;
     }
 }
 declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
@@ -994,14 +998,15 @@ declare namespace Uno.Storage {
 declare namespace Uno.Storage {
     class NativeStorageItem {
         private static generateGuidBinding;
-        private static _guidToHandleMap;
-        private static _handleToGuidMap;
-        static addHandle(guid: string, handle: FileSystemHandle): void;
-        static removeHandle(guid: string): void;
-        static getHandle(guid: string): FileSystemHandle;
-        static getGuid(handle: FileSystemHandle): string;
-        static getInfos(...handles: FileSystemHandle[]): NativeStorageItemInfo[];
-        private static storeHandles;
+        private static _guidToItemMap;
+        private static _itemToGuidMap;
+        static addItem(guid: string, item: FileSystemHandle | File): void;
+        static removeItem(guid: string): void;
+        static getItem(guid: string): FileSystemHandle | File;
+        static getFile(guid: string): Promise<File>;
+        static getGuid(item: FileSystemHandle | File): string;
+        static getInfos(...items: Array<FileSystemHandle | File>): NativeStorageItemInfo[];
+        private static storeItems;
         private static generateGuids;
     }
 }
@@ -1260,16 +1265,17 @@ declare class ApplicationDataContainer_TryGetValueReturn {
 }
 declare class DragDropExtensionEventArgs {
     eventName: string;
+    allowedOperations: string;
+    acceptedOperation: string;
+    dataItems: string;
     timestamp: number;
     x: number;
     y: number;
+    id: number;
     buttons: number;
     shift: boolean;
     ctrl: boolean;
     alt: boolean;
-    allowedOperations: string;
-    acceptedOperation: string;
-    dataItems: string;
     static unmarshal(pData: number): DragDropExtensionEventArgs;
     marshal(pData: number): void;
 }

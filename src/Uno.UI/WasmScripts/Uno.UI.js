@@ -2015,11 +2015,27 @@ var Uno;
                             }
                         })
                             .catch(err => {
-                            AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                            if (typeof err == "string") {
+                                AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                            }
+                            else if (err.message && err.stack) {
+                                AsyncInteropHelper.dispatchErrorMethod(handle, err.message + "\n" + err.stack);
+                            }
+                            else {
+                                AsyncInteropHelper.dispatchErrorMethod(handle, "" + err);
+                            }
                         });
                     }
                     catch (err) {
-                        AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                        if (typeof err == "string") {
+                            AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                        }
+                        else if (err.message && err.stack) {
+                            AsyncInteropHelper.dispatchErrorMethod(handle, err.message + "\n" + err.stack);
+                        }
+                        else {
+                            AsyncInteropHelper.dispatchErrorMethod(handle, "" + err);
+                        }
                     }
                 }
             }
@@ -2169,14 +2185,16 @@ var Windows;
                         constructor() {
                             // Events fired on the drop target
                             // Note: dragenter and dragover events will enable drop on the app
-                            document.addEventListener("dragenter", this.dispatchDropEvent);
-                            document.addEventListener("dragover", this.dispatchDropEvent);
-                            document.addEventListener("dragleave", this.dispatchDropEvent); // Seems to be raised also on drop?
-                            document.addEventListener("drop", this.dispatchDropEvent);
+                            this._dropHandler = this.dispatchDropEvent.bind(this);
+                            document.addEventListener("dragenter", this._dropHandler);
+                            document.addEventListener("dragover", this._dropHandler);
+                            document.addEventListener("dragleave", this._dropHandler); // Seems to be raised also on drop?
+                            document.addEventListener("drop", this._dropHandler);
                             // Events fired on the draggable target (the source element)
-                            //document.addEventListener("dragstart", this.dispatchDragStart);
-                            //document.addEventListener("drag", this.dispatchDrag);
-                            //document.addEventListener("dragend", this.dispatchDragEnd);
+                            //this._dragHandler = this.dispatchDragEvent.bind(this);
+                            //document.addEventListener("dragstart", this._dragHandler);
+                            //document.addEventListener("drag", this._dragHandler);
+                            //document.addEventListener("dragend", this._dragHandler);
                         }
                         static enable(pArgs) {
                             if (DragDropExtension._current) {
@@ -2184,6 +2202,7 @@ var Windows;
                             }
                             this._dispatchDragAndDropMethod = Module.mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDragAndDrop");
                             this._dispatchDragAndDropArgs = pArgs;
+                            this._nextDropId = 1;
                             this._current = new DragDropExtension();
                         }
                         static disable(pArgs) {
@@ -2195,21 +2214,37 @@ var Windows;
                         }
                         dispose() {
                             // Events fired on the drop target
-                            // Note: dragenter and dragover events will enable drop on the app
-                            document.removeEventListener("dragenter", this.dispatchDropEvent);
-                            document.removeEventListener("dragover", this.dispatchDropEvent);
-                            document.removeEventListener("dragleave", this.dispatchDropEvent); // Seems to be raised also on drop?
-                            document.removeEventListener("drop", this.dispatchDropEvent);
+                            document.removeEventListener("dragenter", this._dropHandler);
+                            document.removeEventListener("dragover", this._dropHandler);
+                            document.removeEventListener("dragleave", this._dropHandler); // Seems to be raised also on drop?
+                            document.removeEventListener("drop", this._dropHandler);
                             // Events fired on the draggable target (the source element)
-                            //document.removeEventListener("dragstart", this.dispatchDragStart);
-                            //document.removeEventListener("drag", this.dispatchDrag);
-                            //document.removeEventListener("dragend", this.dispatchDragEnd);
+                            //document.removeEventListener("dragstart", this._dragHandler);
+                            //document.removeEventListener("drag", this._dragHandler);
+                            //document.removeEventListener("dragend", this._dragHandler);
                         }
                         dispatchDropEvent(evt) {
+                            if (evt.type == "dragleave"
+                                && evt.clientX > 0
+                                && evt.clientX < document.documentElement.clientWidth
+                                && evt.clientY > 0
+                                && evt.clientY < document.documentElement.clientHeight) {
+                                // We ignore all dragleave while if pointer is still over the window.
+                                // This is to mute bubbling of drag leave when crossing boundaries of any elements on the app.
+                                return;
+                            }
+                            if (evt.type == "dragenter") {
+                                if (this._pendingDropId > 0) {
+                                    // For the same reason as above, we ignore all dragenter if there is already a pending active drop
+                                    return;
+                                }
+                                this._pendingDropId = ++DragDropExtension._nextDropId;
+                            }
                             // We must keep a reference to the dataTransfer in order to be able to retrieve data items
                             this._pendingDropData = evt.dataTransfer;
                             // Prepare args
                             let args = new DragDropExtensionEventArgs();
+                            args.id = this._pendingDropId;
                             args.eventName = evt.type;
                             args.timestamp = evt.timeStamp;
                             args.x = evt.clientX;
@@ -2232,15 +2267,38 @@ var Windows;
                                 args.dataItems = "";
                                 args.allowedOperations = "";
                             }
-                            args.acceptedOperation = "none";
-                            // Raise the managed event
-                            args.marshal(DragDropExtension._dispatchDragAndDropArgs);
-                            DragDropExtension._dispatchDragAndDropMethod();
-                            // Read response from managed code
-                            args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragAndDropArgs);
-                            evt.dataTransfer.dropEffect = (args.acceptedOperation);
-                            // No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
-                            evt.preventDefault();
+                            args.acceptedOperation = evt.dataTransfer.dropEffect;
+                            try {
+                                // Raise the managed event
+                                args.marshal(DragDropExtension._dispatchDragAndDropArgs);
+                                DragDropExtension._dispatchDragAndDropMethod();
+                                // Read response from managed code
+                                args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragAndDropArgs);
+                                evt.dataTransfer.dropEffect = (args.acceptedOperation);
+                            }
+                            finally {
+                                // No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
+                                evt.preventDefault();
+                                if (evt.type == "dragleave" || evt.type == "drop") {
+                                    this._pendingDropData = null;
+                                    this._pendingDropId = 0;
+                                }
+                            }
+                        }
+                        static async retrieveText(itemId) {
+                            const current = DragDropExtension._current;
+                            const data = current === null || current === void 0 ? void 0 : current._pendingDropData;
+                            if (data == null) {
+                                throw new Error("No pending drag and drop data.");
+                            }
+                            return new Promise((resolve, reject) => {
+                                const item = data.items[itemId];
+                                const timeout = setTimeout(() => reject("Timeout: for security reason, you cannot access data before drop."), 15000);
+                                item.getAsString(str => {
+                                    clearTimeout(timeout);
+                                    resolve(str);
+                                });
+                            });
                         }
                         static async retrieveFiles(itemIds) {
                             var _a;
@@ -2249,24 +2307,24 @@ var Windows;
                                 throw new Error("No pending drag and drop data.");
                             }
                             const fileHandles = [];
-                            for (let id of itemIds) {
-                                fileHandles.push(await data.items[id].getAsFileSystemHandle());
+                            if (Array.isArray(itemIds)) {
+                                for (let id of itemIds) {
+                                    fileHandles.push(await this.getAsFile(data.items[id]));
+                                }
                             }
-                            return Uno.Storage.NativeStorageItem.getInfos(...fileHandles);
+                            else {
+                                fileHandles.push(await this.getAsFile(data.items[itemIds]));
+                            }
+                            const infos = Uno.Storage.NativeStorageItem.getInfos(...fileHandles);
+                            return JSON.stringify(infos);
                         }
-                        static async retrieveText(itemId) {
-                            var _a;
-                            const data = (_a = DragDropExtension._current) === null || _a === void 0 ? void 0 : _a._pendingDropData;
-                            if (data == null) {
-                                throw new Error("No pending drag and drop data.");
+                        static async getAsFile(item) {
+                            if (item.getAsFileSystemHandle) {
+                                return await item.getAsFileSystemHandle();
                             }
-                            return new Promise((resolve, reject) => {
-                                var timeout = setTimeout(() => reject("Timeout: for security reason, you cannot access data before drop."), 15000);
-                                data.items[itemId].getAsString(str => {
-                                    clearTimeout(timeout);
-                                    resolve(str);
-                                });
-                            });
+                            else {
+                                return item.getAsFile();
+                            }
                         }
                     }
                     Core.DragDropExtension = DragDropExtension;
@@ -3270,8 +3328,7 @@ var Uno;
     (function (Storage) {
         class NativeStorageFile {
             static async getBasicPropertiesAsync(guid) {
-                const handle = Storage.NativeStorageItem.getHandle(guid);
-                var file = await handle.getFile();
+                const file = await Storage.NativeStorageItem.getFile(guid);
                 var propertyString = "";
                 propertyString += file.size;
                 propertyString += "|";
@@ -3301,7 +3358,7 @@ var Uno;
              */
             static async createFolderAsync(parentGuid, folderName) {
                 try {
-                    const parentHandle = Storage.NativeStorageItem.getHandle(parentGuid);
+                    const parentHandle = Storage.NativeStorageItem.getItem(parentGuid);
                     const newDirectoryHandle = await parentHandle.getDirectoryHandle(folderName, {
                         create: true,
                     });
@@ -3320,7 +3377,7 @@ var Uno;
              */
             static async createFileAsync(parentGuid, fileName) {
                 try {
-                    const parentHandle = Storage.NativeStorageItem.getHandle(parentGuid);
+                    const parentHandle = Storage.NativeStorageItem.getItem(parentGuid);
                     const newFileHandle = await parentHandle.getFileHandle(fileName, {
                         create: true,
                     });
@@ -3339,7 +3396,7 @@ var Uno;
              * @returns A GUID of the folder if found, otherwise null.
              */
             static async tryGetFolderAsync(parentGuid, folderName) {
-                const parentHandle = Storage.NativeStorageItem.getHandle(parentGuid);
+                const parentHandle = Storage.NativeStorageItem.getItem(parentGuid);
                 let nestedDirectoryHandle = undefined;
                 try {
                     nestedDirectoryHandle = await parentHandle.getDirectoryHandle(folderName);
@@ -3359,7 +3416,7 @@ var Uno;
             * @returns A GUID of the folder if found, otherwise null.
             */
             static async tryGetFileAsync(parentGuid, fileName) {
-                const parentHandle = Storage.NativeStorageItem.getHandle(parentGuid);
+                const parentHandle = Storage.NativeStorageItem.getItem(parentGuid);
                 let fileHandle = undefined;
                 try {
                     fileHandle = await parentHandle.getFileHandle(fileName);
@@ -3374,7 +3431,7 @@ var Uno;
             }
             static async deleteItemAsync(parentGuid, itemName) {
                 try {
-                    const parentHandle = Storage.NativeStorageItem.getHandle(parentGuid);
+                    const parentHandle = Storage.NativeStorageItem.getItem(parentGuid);
                     await parentHandle.removeEntry(itemName, { recursive: true });
                     return "OK";
                 }
@@ -3404,7 +3461,7 @@ var Uno;
             }
             static async getEntriesAsync(guid, includeFiles, includeDirectories) {
                 var e_1, _a, e_2, _b;
-                const folderHandle = Storage.NativeStorageItem.getHandle(guid);
+                const folderHandle = Storage.NativeStorageItem.getItem(guid);
                 var entries = [];
                 // Default to "modern" implementation
                 if (folderHandle.values) {
@@ -3461,45 +3518,58 @@ var Uno;
     var Storage;
     (function (Storage) {
         class NativeStorageItem {
-            static addHandle(guid, handle) {
-                NativeStorageItem._guidToHandleMap.set(guid, handle);
-                NativeStorageItem._handleToGuidMap.set(handle, guid);
+            static addItem(guid, item) {
+                NativeStorageItem._guidToItemMap.set(guid, item);
+                NativeStorageItem._itemToGuidMap.set(item, guid);
             }
-            static removeHandle(guid) {
-                const handle = NativeStorageItem._guidToHandleMap.get(guid);
-                NativeStorageItem._guidToHandleMap.delete(guid);
-                NativeStorageItem._handleToGuidMap.delete(handle);
+            static removeItem(guid) {
+                const handle = NativeStorageItem._guidToItemMap.get(guid);
+                NativeStorageItem._guidToItemMap.delete(guid);
+                NativeStorageItem._itemToGuidMap.delete(handle);
             }
-            static getHandle(guid) {
-                return NativeStorageItem._guidToHandleMap.get(guid);
+            static getItem(guid) {
+                return NativeStorageItem._guidToItemMap.get(guid);
             }
-            static getGuid(handle) {
-                return NativeStorageItem._handleToGuidMap.get(handle);
+            static async getFile(guid) {
+                const item = this.getItem(guid);
+                if (item instanceof File) {
+                    return item;
+                }
+                if (item instanceof FileSystemFileHandle) {
+                    return await item.getFile();
+                }
+                if (item instanceof FileSystemDirectoryHandle) {
+                    throw new Error("Item " + guid + " is a directory handle. You cannot use it as a File!");
+                }
+                throw new Error("Item " + guid + " is of an unknown type. You cannot use it as a File!");
             }
-            static getInfos(...handles) {
-                var handlesWithoutGuids = [];
-                for (var handle of handles) {
-                    var guid = NativeStorageItem.getGuid(handle);
+            static getGuid(item) {
+                return NativeStorageItem._itemToGuidMap.get(item);
+            }
+            static getInfos(...items) {
+                var itemsWithoutGuids = [];
+                for (var item of items) {
+                    var guid = NativeStorageItem.getGuid(item);
                     if (!guid) {
-                        handlesWithoutGuids.push(handle);
+                        itemsWithoutGuids.push(item);
                     }
                 }
-                NativeStorageItem.storeHandles(handlesWithoutGuids);
+                NativeStorageItem.storeItems(itemsWithoutGuids);
                 var results = [];
-                for (var handle of handles) {
-                    var guid = NativeStorageItem.getGuid(handle);
+                for (var item of items) {
+                    var guid = NativeStorageItem.getGuid(item);
                     var info = new Storage.NativeStorageItemInfo();
                     info.id = guid;
-                    info.name = handle.name;
-                    info.isFile = handle.kind === "file";
+                    info.name = item.name;
+                    info.isFile = item instanceof File || item.kind === "file";
                     results.push(info);
                 }
                 return results;
             }
-            static storeHandles(handles) {
+            static storeItems(handles) {
                 var missingGuids = NativeStorageItem.generateGuids(handles.length);
                 for (var i = 0; i < handles.length; i++) {
-                    NativeStorageItem.addHandle(missingGuids[i], handles[i]);
+                    NativeStorageItem.addItem(missingGuids[i], handles[i]);
                 }
             }
             static generateGuids(count) {
@@ -3510,8 +3580,8 @@ var Uno;
                 return guids.split(";");
             }
         }
-        NativeStorageItem._guidToHandleMap = new Map();
-        NativeStorageItem._handleToGuidMap = new Map();
+        NativeStorageItem._guidToItemMap = new Map();
+        NativeStorageItem._itemToGuidMap = new Map();
         Storage.NativeStorageItem = NativeStorageItem;
     })(Storage = Uno.Storage || (Uno.Storage = {}));
 })(Uno || (Uno = {}));
@@ -3813,8 +3883,7 @@ var Uno;
                     this._file = file;
                 }
                 static async openAsync(streamId, fileId) {
-                    const handle = Storage.NativeStorageItem.getHandle(fileId);
-                    const file = await handle.getFile();
+                    const file = await Storage.NativeStorageItem.getFile(fileId);
                     const fileSize = file.size;
                     const stream = new NativeFileReadStream(file);
                     NativeFileReadStream._streamMap.set(streamId, stream);
@@ -3877,17 +3946,19 @@ var Uno;
                     this._stream = stream;
                 }
                 static async openAsync(streamId, fileId) {
-                    const handle = Storage.NativeStorageItem.getHandle(fileId);
-                    if (await NativeFileWriteStream.verifyPermissionAsync(handle)) {
-                        const writableStream = await handle.createWritable({ keepExistingData: true });
-                        const fileSize = (await handle.getFile()).size;
-                        const stream = new NativeFileWriteStream(writableStream);
-                        NativeFileWriteStream._streamMap.set(streamId, stream);
-                        return fileSize.toString();
-                    }
-                    else {
+                    const item = Storage.NativeStorageItem.getItem(fileId);
+                    if (item instanceof File) {
                         return "PermissionNotGranted";
                     }
+                    const handle = item;
+                    if (!await NativeFileWriteStream.verifyPermissionAsync(handle)) {
+                        return "PermissionNotGranted";
+                    }
+                    const writableStream = await handle.createWritable({ keepExistingData: true });
+                    const fileSize = (await handle.getFile()).size;
+                    const stream = new NativeFileWriteStream(writableStream);
+                    NativeFileWriteStream._streamMap.set(streamId, stream);
+                    return fileSize.toString();
                 }
                 static async verifyPermissionAsync(fileHandle) {
                     const options = {};
@@ -4621,28 +4692,7 @@ class DragDropExtensionEventArgs {
             }
         }
         {
-            ret.timestamp = Number(Module.getValue(pData + 8, "double"));
-        }
-        {
-            ret.x = Number(Module.getValue(pData + 16, "double"));
-        }
-        {
-            ret.y = Number(Module.getValue(pData + 24, "double"));
-        }
-        {
-            ret.buttons = Number(Module.getValue(pData + 32, "i32"));
-        }
-        {
-            ret.shift = Boolean(Module.getValue(pData + 40, "i32"));
-        }
-        {
-            ret.ctrl = Boolean(Module.getValue(pData + 48, "i32"));
-        }
-        {
-            ret.alt = Boolean(Module.getValue(pData + 56, "i32"));
-        }
-        {
-            const ptr = Module.getValue(pData + 64, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.allowedOperations = String(Module.UTF8ToString(ptr));
             }
@@ -4651,7 +4701,7 @@ class DragDropExtensionEventArgs {
             }
         }
         {
-            const ptr = Module.getValue(pData + 72, "*");
+            const ptr = Module.getValue(pData + 8, "*");
             if (ptr !== 0) {
                 ret.acceptedOperation = String(Module.UTF8ToString(ptr));
             }
@@ -4660,13 +4710,37 @@ class DragDropExtensionEventArgs {
             }
         }
         {
-            const ptr = Module.getValue(pData + 80, "*");
+            const ptr = Module.getValue(pData + 12, "*");
             if (ptr !== 0) {
                 ret.dataItems = String(Module.UTF8ToString(ptr));
             }
             else {
                 ret.dataItems = null;
             }
+        }
+        {
+            ret.timestamp = Number(Module.getValue(pData + 16, "double"));
+        }
+        {
+            ret.x = Number(Module.getValue(pData + 24, "double"));
+        }
+        {
+            ret.y = Number(Module.getValue(pData + 32, "double"));
+        }
+        {
+            ret.id = Number(Module.getValue(pData + 40, "i32"));
+        }
+        {
+            ret.buttons = Number(Module.getValue(pData + 44, "i32"));
+        }
+        {
+            ret.shift = Boolean(Module.getValue(pData + 48, "i32"));
+        }
+        {
+            ret.ctrl = Boolean(Module.getValue(pData + 52, "i32"));
+        }
+        {
+            ret.alt = Boolean(Module.getValue(pData + 56, "i32"));
         }
         return ret;
     }
@@ -4677,31 +4751,32 @@ class DragDropExtensionEventArgs {
             stringToUTF8(this.eventName, pString, stringLength + 1);
             Module.setValue(pData + 0, pString, "*");
         }
-        Module.setValue(pData + 8, this.timestamp, "double");
-        Module.setValue(pData + 16, this.x, "double");
-        Module.setValue(pData + 24, this.y, "double");
-        Module.setValue(pData + 32, this.buttons, "i32");
-        Module.setValue(pData + 40, this.shift, "i32");
-        Module.setValue(pData + 48, this.ctrl, "i32");
-        Module.setValue(pData + 56, this.alt, "i32");
         {
             const stringLength = lengthBytesUTF8(this.allowedOperations);
             const pString = Module._malloc(stringLength + 1);
             stringToUTF8(this.allowedOperations, pString, stringLength + 1);
-            Module.setValue(pData + 64, pString, "*");
+            Module.setValue(pData + 4, pString, "*");
         }
         {
             const stringLength = lengthBytesUTF8(this.acceptedOperation);
             const pString = Module._malloc(stringLength + 1);
             stringToUTF8(this.acceptedOperation, pString, stringLength + 1);
-            Module.setValue(pData + 72, pString, "*");
+            Module.setValue(pData + 8, pString, "*");
         }
         {
             const stringLength = lengthBytesUTF8(this.dataItems);
             const pString = Module._malloc(stringLength + 1);
             stringToUTF8(this.dataItems, pString, stringLength + 1);
-            Module.setValue(pData + 80, pString, "*");
+            Module.setValue(pData + 12, pString, "*");
         }
+        Module.setValue(pData + 16, this.timestamp, "double");
+        Module.setValue(pData + 24, this.x, "double");
+        Module.setValue(pData + 32, this.y, "double");
+        Module.setValue(pData + 40, this.id, "i32");
+        Module.setValue(pData + 44, this.buttons, "i32");
+        Module.setValue(pData + 48, this.shift, "i32");
+        Module.setValue(pData + 52, this.ctrl, "i32");
+        Module.setValue(pData + 56, this.alt, "i32");
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */

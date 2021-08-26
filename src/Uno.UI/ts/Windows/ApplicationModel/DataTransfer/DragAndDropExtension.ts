@@ -6,7 +6,11 @@
 		private static _dispatchDragAndDropMethod: any;
 		private static _dispatchDragAndDropArgs: number;
 		private static _current: DragDropExtension;
+		private static _nextDropId: number;
 
+		private _dropHandler: any;
+
+		private _pendingDropId: number;
 		private _pendingDropData: DataTransfer;
 
 		public static enable(pArgs: number): void {
@@ -17,6 +21,7 @@
 			this._dispatchDragAndDropMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDragAndDrop");
 			this._dispatchDragAndDropArgs = pArgs;
 
+			this._nextDropId = 1;
 			this._current = new DragDropExtension();
 		}
 
@@ -24,7 +29,7 @@
 			if (DragDropExtension._dispatchDragAndDropArgs != pArgs) {
 				throw new Error("The current DragDropExtension does not match the provided args");
 			}
-
+			
 			DragDropExtension._current.dispose();
 			DragDropExtension._current = null;
 		}
@@ -32,37 +37,58 @@
 		constructor() {
 			// Events fired on the drop target
 			// Note: dragenter and dragover events will enable drop on the app
-			document.addEventListener("dragenter", this.dispatchDropEvent);
-			document.addEventListener("dragover", this.dispatchDropEvent);
-			document.addEventListener("dragleave", this.dispatchDropEvent); // Seems to be raised also on drop?
-			document.addEventListener("drop", this.dispatchDropEvent);
+			this._dropHandler = this.dispatchDropEvent.bind(this);
+			document.addEventListener("dragenter", this._dropHandler);
+			document.addEventListener("dragover", this._dropHandler);
+			document.addEventListener("dragleave", this._dropHandler); // Seems to be raised also on drop?
+			document.addEventListener("drop", this._dropHandler);
 
 			// Events fired on the draggable target (the source element)
-			//document.addEventListener("dragstart", this.dispatchDragStart);
-			//document.addEventListener("drag", this.dispatchDrag);
-			//document.addEventListener("dragend", this.dispatchDragEnd);
+			//this._dragHandler = this.dispatchDragEvent.bind(this);
+			//document.addEventListener("dragstart", this._dragHandler);
+			//document.addEventListener("drag", this._dragHandler);
+			//document.addEventListener("dragend", this._dragHandler);
 		}
 
 		public dispose() {
 			// Events fired on the drop target
-			// Note: dragenter and dragover events will enable drop on the app
-			document.removeEventListener("dragenter", this.dispatchDropEvent);
-			document.removeEventListener("dragover", this.dispatchDropEvent);
-			document.removeEventListener("dragleave", this.dispatchDropEvent); // Seems to be raised also on drop?
-			document.removeEventListener("drop", this.dispatchDropEvent);
+			document.removeEventListener("dragenter", this._dropHandler);
+			document.removeEventListener("dragover", this._dropHandler);
+			document.removeEventListener("dragleave", this._dropHandler); // Seems to be raised also on drop?
+			document.removeEventListener("drop", this._dropHandler);
 
 			// Events fired on the draggable target (the source element)
-			//document.removeEventListener("dragstart", this.dispatchDragStart);
-			//document.removeEventListener("drag", this.dispatchDrag);
-			//document.removeEventListener("dragend", this.dispatchDragEnd);
+			//document.removeEventListener("dragstart", this._dragHandler);
+			//document.removeEventListener("drag", this._dragHandler);
+			//document.removeEventListener("dragend", this._dragHandler);
 		}
 
 		private dispatchDropEvent(evt: DragEvent): any {
+			if (evt.type == "dragleave"
+				&& evt.clientX > 0
+				&& evt.clientX < document.documentElement.clientWidth
+				&& evt.clientY > 0
+				&& evt.clientY < document.documentElement.clientHeight) {
+				// We ignore all dragleave while if pointer is still over the window.
+				// This is to mute bubbling of drag leave when crossing boundaries of any elements on the app.
+				return;
+			}
+
+			if (evt.type == "dragenter") {
+				if (this._pendingDropId > 0) {
+					// For the same reason as above, we ignore all dragenter if there is already a pending active drop
+					return;
+				}
+
+				this._pendingDropId = ++DragDropExtension._nextDropId;
+			}
+
 			// We must keep a reference to the dataTransfer in order to be able to retrieve data items
 			this._pendingDropData = evt.dataTransfer;
 
 			// Prepare args
 			let args = new DragDropExtensionEventArgs();
+			args.id = this._pendingDropId;
 			args.eventName = evt.type;
 			args.timestamp = evt.timeStamp;
 			args.x = evt.clientX;
@@ -78,57 +104,80 @@
 					items.push({ id: itemId, kind: item.kind, type: item.type });
 				}
 				args.dataItems = JSON.stringify(items);
-
 				args.allowedOperations = evt.dataTransfer.effectAllowed;
 			} else {
 				// Must be set for marshaling
 				args.dataItems = "";
 				args.allowedOperations = "";
 			}
-			args.acceptedOperation = "none";
+			args.acceptedOperation = evt.dataTransfer.dropEffect;
 
-			// Raise the managed event
-			args.marshal(DragDropExtension._dispatchDragAndDropArgs);
-			DragDropExtension._dispatchDragAndDropMethod();
+			try {
+				// Raise the managed event
+				args.marshal(DragDropExtension._dispatchDragAndDropArgs);
+				DragDropExtension._dispatchDragAndDropMethod();
 
-			// Read response from managed code
-			args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragAndDropArgs);
+				// Read response from managed code
+				args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragAndDropArgs);
 
-			evt.dataTransfer.dropEffect = ((args.acceptedOperation) as any);
+				evt.dataTransfer.dropEffect = ((args.acceptedOperation) as any);
+			} finally {
+				// No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
+				evt.preventDefault();
 
-			// No matter if the managed code handled the event, we want to prevent thee default behavior (like opening a drop link)
-			evt.preventDefault();
-		}
-
-		public static async retrieveFiles(itemIds: number[]): Promise<Uno.Storage.NativeStorageItemInfo[]> {
-
-			const data = DragDropExtension._current?._pendingDropData;
-			if (data == null) {
-				throw new Error("No pending drag and drop data.");
+				if (evt.type == "dragleave" || evt.type == "drop") {
+					this._pendingDropData = null;
+					this._pendingDropId = 0;
+				}
 			}
-
-			const fileHandles: FileSystemHandle[] = [];
-			for (let id of itemIds) {
-				fileHandles.push(await data.items[id].getAsFileSystemHandle());
-			}
-
-			return Uno.Storage.NativeStorageItem.getInfos(...fileHandles);
 		}
 
 		public static async retrieveText(itemId: number): Promise<string> {
 
-			const data = DragDropExtension._current?._pendingDropData;
+			const current = DragDropExtension._current;
+			const data = current?._pendingDropData;
 			if (data == null) {
 				throw new Error("No pending drag and drop data.");
 			}
 
 			return new Promise((resolve, reject) => {
-				var timeout = setTimeout(() => reject("Timeout: for security reason, you cannot access data before drop."), 15000);
-				data.items[itemId].getAsString(str => {
+				const item = data.items[itemId];
+				const timeout = setTimeout(() => reject("Timeout: for security reason, you cannot access data before drop."), 15000);
+
+				item.getAsString(str => {
 					clearTimeout(timeout);
 					resolve(str);
 				});
 			});
+		}
+
+		public static async retrieveFiles(itemIds: number|number[]): Promise<string> {
+
+			const data = DragDropExtension._current?._pendingDropData;
+			if (data == null) {
+				throw new Error("No pending drag and drop data.");
+			}
+
+			const fileHandles: Array<FileSystemHandle|File> = [];
+			if (Array.isArray(itemIds)) {
+				for (let id of itemIds) {
+					fileHandles.push(await this.getAsFile(data.items[id]));
+				}
+			} else {
+				fileHandles.push(await this.getAsFile(data.items[itemIds]));
+			}
+
+			const infos = Uno.Storage.NativeStorageItem.getInfos(...fileHandles);
+
+			return JSON.stringify(infos);
+		}
+
+		private static async getAsFile(item: DataTransferItem): Promise<FileSystemHandle|File> {
+			if (item.getAsFileSystemHandle) {
+				return await item.getAsFileSystemHandle();
+			} else {
+				return item.getAsFile();
+			}
 		}
 	}
 }

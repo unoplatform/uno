@@ -15,6 +15,7 @@ namespace Windows.UI.Xaml
 			VerticalAlignment = VerticalAlignment.Stretch;
 			HorizontalAlignment = HorizontalAlignment.Stretch;
 			Background = new SolidColorBrush(Colors.Transparent);
+			IsHitTestVisible = false;
 		}
 
 		public int PendingDragCount => Children.Count;

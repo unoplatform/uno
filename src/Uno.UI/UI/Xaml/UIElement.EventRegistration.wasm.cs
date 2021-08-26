@@ -263,17 +263,25 @@ namespace Windows.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static int DispatchEvent(int handle, string eventName, string eventArgs)
 		{
-			// Dispatch to right object, if we can find it
-			if (GetElementFromHandle(handle) is UIElement element)
+			try
 			{
-				return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
-			}
-			else
-			{
-				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
-			}
+				// Dispatch to right object, if we can find it
+				if (GetElementFromHandle(handle) is UIElement element)
+				{
+					return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
+				}
+				else
+				{
+					Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
+				}
 
-			return (int)HtmlEventDispatchResult.NotDispatched;
+				return (int)HtmlEventDispatchResult.NotDispatched;
+			}
+			catch (Exception error)
+			{
+				Console.Error.WriteLine("Failed to dispatch event: " + error);
+				throw;
+			}
 		}
 
 		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.OrdinalIgnoreCase);

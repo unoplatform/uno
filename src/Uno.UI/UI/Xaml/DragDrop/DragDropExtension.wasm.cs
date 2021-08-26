@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,6 +37,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 	internal class DragDropExtension : IDragDropExtension
 	{
 		private const string _jsType = "Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension";
+		private static readonly ILogger _log = typeof(DragDropExtension).Log();
 
 		private static DragDropExtension? _current;
 
@@ -50,7 +52,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			_manager = CoreDragDropManager.GetForCurrentView()
 				?? throw new InvalidOperationException("No CoreDragDropManager available for current thread.");
 
-			if (Interlocked.CompareExchange(ref _current, null, this) != null)
+			if (Interlocked.CompareExchange(ref _current, this, null) != null)
 			{
 				throw new InvalidOperationException(
 					"Multi-window (multi-threading) is not supported yet by DragDropExtension. "
@@ -88,29 +90,97 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static string OnNativeDragAndDrop()
 		{
-			if (_current?._args is {} args)
+			try
 			{
-				args.Value = _current.OnNativeDragAndDrop(args.Value);
-				return "true";
+				if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.Debug("Receiving native drop event.");
+				}
+
+				if (_current?._args is { } args)
+				{
+					args.Value = _current.OnNativeDragAndDrop(args.Value);
+					return "true";
+				}
+				else
+				{
+					if (_log.IsEnabled(LogLevel.Error))
+					{
+						_log.Error($"DragDropExtension not ready to process native drop event (current={_current} | args={_current?._args}).");
+					}
+
+					return "false";
+				}
 			}
-			else
+			catch (Exception error)
 			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error($"Failed to dispatch native drop event: {error}");
+				}
+
 				return "false";
 			}
 		}
 
 		private DragDropExtensionEventArgs OnNativeDragAndDrop(DragDropExtensionEventArgs args)
 		{
-			var acceptedOperation = DataPackageOperation.None;
+			if (_log.IsEnabled(LogLevel.Debug))
+			{
+				_log.Info($"Received native drop event: {args}");
+			}
+
+			DataPackageOperation? acceptedOperation = DataPackageOperation.None;
 			switch (args.eventName)
 			{
 				case "dragenter":
-					_pendingNativeDrop = new NativeDrop(args);
+					if (_pendingNativeDrop != null)
+					{
+						if (_pendingNativeDrop.Id == args.id)
+						{
+							_log.Error(
+								$"The native drop operation (#{_pendingNativeDrop.Id}) has already been started in managed code "
+								+ "and should have been ignored by native code. Ignoring that redundant dragenter.");
 
+							// We are ignoring that event, we don't want to change the currently accepted operation
+							acceptedOperation = default;
+
+							break;
+						}
+						else
+						{
+							_log.Error(
+								$"A native drop operation (#{_pendingNativeDrop.Id}) is already pending. "
+								+ "Only one native drop operation is supported on wasm currently."
+								+ "Aborting previous operation and beginning a new one.");
+
+							_manager.ProcessAborted(_pendingNativeDrop);
+						}
+					}
+
+					var drop = new NativeDrop(args);
 					var allowed = ToDataPackageOperation(args.allowedOperations);
 					var data = CreateDataPackage(args.dataItems);
-					var info = new CoreDragInfo(_pendingNativeDrop, data.GetView(), allowed);
+					var info = new CoreDragInfo(drop, data.GetView(), allowed);
 
+					if (_log.IsEnabled(LogLevel.Information))
+					{
+						_log.Info($"Starting new native drop operation {drop.Id}");
+					}
+
+					_pendingNativeDrop = drop;
+					info.RegisterCompletedCallback(result =>
+					{
+						if (_log.IsEnabled(LogLevel.Information))
+						{
+							_log.Info($"Completed native drop operation #{drop.Id}: {result}");
+						}
+
+						if (_pendingNativeDrop == drop)
+						{
+							_pendingNativeDrop = null;
+						}
+					});
 					_manager.DragStarted(info);
 					break;
 
@@ -132,7 +202,18 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					break;
 			}
 
-			return new DragDropExtensionEventArgs { acceptedOperation = ToNativeOperation(acceptedOperation) };
+			var result = new DragDropExtensionEventArgs
+			{
+				id = args.id,
+				eventName = "result",
+				acceptedOperation = acceptedOperation.HasValue
+					? ToNativeOperation(acceptedOperation.Value)
+					: args.acceptedOperation,
+				allowedOperations = "",
+				dataItems = "",
+			};
+
+			return result;
 		}
 
 		private DataPackage CreateDataPackage(string dataItems)
@@ -142,73 +223,52 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				throw new ArgumentNullException(nameof(dataItems), "The dataItems is full-filled only for selected events!");
 			}
 
+			// Note about images:
+			//		There is not no common types for image drag and drop in browsers.
+			//		Only FF provides a data of kind "string" ("other" when coming from the same page) and type "application/x-moz-nativeimage",
+			//		but the content marshalling doen't seems to works properly, and anyway there are no equivalent custom type for chromium :(
+			//		Consequently the only way to get a "Bitmap" data in the package is by D&Ding a file with a MIME type starting by "image/"
+			// Note about unknown types:
+			//		we don't don't support any other "kind" (we can have an "other" when D&Ding an image within the same page on FF),
+			//		as we don't have have any way to properly retrieve the data.
+			//		We however support do propagate any "string" that does not have a standard MIME type so we don't restrict too much applications.
+
 			var package = new DataPackage();
-			var entries = JsonHelper
-				.Deserialize<DataEntry[]>(dataItems)
-				.GroupBy(item => item.Kind)
-				.ToDictionary(group => group.Key);
+			var entries = JsonHelper.Deserialize<DataEntry[]>(dataItems);
 
-			if (entries.TryGetValue("file", out var files))
+			var files = entries.Where(entry => entry.kind.Equals("file", StringComparison.OrdinalIgnoreCase)).ToList();
+			var texts = entries.Where(entry => entry.kind.Equals("string", StringComparison.OrdinalIgnoreCase)).ToList();
+
+			if (files.Any())
 			{
-				entries.Remove("file"); // Remove so we can detect "other types"
-
 				var ids = files
-					.Select(item => item.Id)
+					.Select(item => item.id)
 					.ToArray();
 				package.SetDataProvider(
 					StandardDataFormats.StorageItems,
 					async ct => await RetrieveFiles(ct, ids));
 
 				// There is no kind for image, but when we drag and drop an image from a browser to another one, we sometimes get it as a file.
-				var image = files.FirstOrDefault(file => file.Type.StartsWith("image/"));
-				if (image.Type != null)
+				var image = files.FirstOrDefault(file => file.type.StartsWith("image/", StringComparison.OrdinalIgnoreCase));
+				if (image.type != null)
 				{
 					package.SetDataProvider(
 						StandardDataFormats.Bitmap,
-						async ct => RandomAccessStreamReference.CreateFromFile((IStorageFile)(await RetrieveFiles(ct, image.Id)).Single()));
+						async ct => RandomAccessStreamReference.CreateFromFile((IStorageFile)(await RetrieveFiles(ct, image.id)).Single()));
 				}
 			}
 
-			if (entries.TryGetValue("string", out var texts))
+			if (texts.Any())
 			{
-				entries.Remove("string"); // Remove so we can detect "other types"
-
 				foreach (var text in texts)
 				{
-					var (formatId, provider) = GetTextProvider(text.Id, text.Type);
+					var (formatId, provider) = GetTextProvider(text.id, text.type);
 
 					package.SetDataProvider(formatId, provider);
 				}
-
-				// There is not equivalent custom type for chromium :(
-				if (!package.Contains(StandardDataFormats.Bitmap)
-					&& texts.FirstOrDefault(text => text.Type.Equals("application/x-moz-nativeimage")) is {} textImage)
-				{
-					package.SetDataProvider(
-						StandardDataFormats.Bitmap,
-						async ct =>
-						{
-							var imageData = await RetrieveText(ct, textImage.Id);
-							var imageStream = new MemoryStream(Encoding.UTF8.GetBytes(imageData));
-
-							return RandomAccessStreamReference.CreateFromStream(imageStream.AsRandomAccessStream());
-						});
-				}
-			}
-
-			if (entries.Any() || this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Types not supported for drag and drop operations: {string.Join(", ", entries.Keys)}");
 			}
 
 			return package;
-		}
-
-		private struct DataEntry
-		{
-			public int Id;
-			public string Kind;
-			public string Type;
 		}
 
 		private static (string formatId, FuncAsync<object> provider) GetTextProvider(int id, string type)
@@ -244,7 +304,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		}
 
 		private static DataPackageOperation ToDataPackageOperation(string allowedOperations)
-			=> allowedOperations.ToLowerInvariant() switch
+			=> allowedOperations?.ToLowerInvariant() switch
 			{
 				// https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed#values
 				"none" => DataPackageOperation.None,
@@ -256,6 +316,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				"move" => DataPackageOperation.Move,
 				"all" => DataPackageOperation.Copy | DataPackageOperation.Move | DataPackageOperation.Link,
 				"uninitialized" => DataPackageOperation.Copy | DataPackageOperation.Move | DataPackageOperation.Link,
+				null => DataPackageOperation.Copy | DataPackageOperation.Move | DataPackageOperation.Link,
 				_ => DataPackageOperation.None
 			};
 
@@ -283,7 +344,6 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private class NativeDrop : IDragEventSource
 		{
-			private static long _nextId = 0;
 			private DragDropExtensionEventArgs _args;
 
 			public NativeDrop(DragDropExtensionEventArgs args)
@@ -292,7 +352,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 
 			/// <inheritdoc />
-			public long Id { get; } = Interlocked.Increment(ref _nextId);
+			public long Id => _args.id;
 
 			/// <inheritdoc />
 			public uint FrameId => PointerRoutedEventArgs.ToFrameId(_args.timestamp);
@@ -338,27 +398,91 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				=> PointerRoutedEventArgs.ToRelativePosition(new Point(_args.x, _args.y), relativeTo as UIElement);
 
 			public void Update(DragDropExtensionEventArgs args)
-				=> _args = args;
+			{
+				if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.Info($"Updating native drop operation #{Id} ({args.eventName})");
+				}
+
+				_args = args;
+			}
 		}
 
 		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public struct DragDropExtensionEventArgs
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct DragDropExtensionEventArgs
 		{
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string eventName;
-			public double timestamp;
-			public double x;
-			public double y;
-			public int buttons; // HtmlPointerButtonsState
-			public bool shift;
-			public bool ctrl;
-			public bool alt;
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string allowedOperations;
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string acceptedOperation;
 
 			// Note: This should be an array, but it's currently not supported by marshaling for return values.
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string dataItems; // Filled only for eventName == dragenter
+
+			public double timestamp;
+			public double x;
+			public double y;
+
+			public int id;
+			public int buttons; // HtmlPointerButtonsState
+
+			public bool shift;
+			public bool ctrl;
+			public bool alt;
+
+
+			/// <inheritdoc />
+			public override string ToString()
+			{
+				return $"[{eventName}] {timestamp:F0} @({x:F2},{y:F2})"
+					+ $" | buttons: {(WindowManagerInterop.HtmlPointerButtonsState)buttons}"
+					+ $" | modifiers: {string.Join(", ", GetModifiers(this))}"
+					+ $" | allowed: {allowedOperations} ({ToDataPackageOperation(allowedOperations)})"
+					+ $" | accepted: {acceptedOperation}"
+					+ $" | entries: {dataItems} ({(dataItems.HasValueTrimmed() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems)) : "")})";
+
+				IEnumerable<string> GetModifiers(DragDropExtensionEventArgs that)
+				{
+					if (that.shift)
+					{
+						yield return "shift";
+					}
+					if (that.ctrl)
+					{
+						yield return "ctrl";
+					}
+					if (that.alt)
+					{
+						yield return "alt";
+					}
+
+					if (!that.shift && !that.ctrl && !that.alt)
+					{
+						yield return "none";
+					}
+				}
+			}
+		}
+
+		[DataContract]
+		private struct DataEntry
+		{
+			[DataMember]
+			public int id;
+
+			[DataMember]
+			public string kind;
+
+			[DataMember]
+			public string type;
+
+			/// <inheritdoc />
+			public override string ToString()
+				=> $"[#{id}: {kind} {type}]";
 		}
 	}
 }
