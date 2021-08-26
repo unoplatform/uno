@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public override int Count
 		{
-			get { return _fragments.Count(); }
+			get { return _fragments.Count; }
 		}
 
 		public override Java.Lang.ICharSequence GetPageTitleFormatted(int position)

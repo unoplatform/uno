@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public int Count => _itemsSource == null ? _inner.Count : _itemsSource.Count();
+		public int Count => _itemsSource == null ? _inner.Count : _itemsSource.Count;
 
 		public uint Size => (uint)Count;
 

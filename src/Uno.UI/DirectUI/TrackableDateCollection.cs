@@ -162,7 +162,7 @@ namespace DirectUI
 			uint count = 0;
 			pCount = 0;
 
-			for (uint i = 0; i < m_vector.Count(); ++i)
+			for (uint i = 0; i < m_vector.Count; ++i)
 			{
 				if (m_areEquivalentComparer(m_vector[(int)i], value))
 				{
@@ -177,7 +177,7 @@ namespace DirectUI
 		internal void RemoveAll(DateTime value, uint? pFromHint = null)
 		{
 			int from = (int)(pFromHint.HasValue ? pFromHint : 0);
-			int i = (int)(m_vector.Count()) - 1;
+			int i = (int)(m_vector.Count) - 1;
 
 			for (; i >= from; --i)
 			{

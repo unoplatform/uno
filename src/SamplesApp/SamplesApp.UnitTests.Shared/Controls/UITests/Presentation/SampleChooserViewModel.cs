@@ -310,7 +310,7 @@ namespace SampleControl.Presentation
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"Generating tests for {tests.Count()} test in {folderName}");
+					this.Log().Debug($"Generating tests for {tests.Length} test in {folderName}");
 				}
 
 				foreach (var sample in tests)

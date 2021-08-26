@@ -555,7 +555,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			this.Log().Info(resourceKeys.Count() + " localization keys found");
+			this.Log().Info(resourceKeys.Length + " localization keys found");
 			return resourceKeys;
 		}
 

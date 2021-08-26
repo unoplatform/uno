@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Data
 
 					foreach (ICollectionViewGroup group in CollectionGroups)
 					{
-						count += group.GroupItems.Count();
+						count += group.GroupItems.Count;
 					}
 
 					return count;

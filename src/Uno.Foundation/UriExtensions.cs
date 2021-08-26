@@ -21,7 +21,7 @@ namespace Uno.Extensions
 				.OriginalString
 				.Split(new[] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries)
 				.Select(p => p.Split(new[] { '=' }))
-				.Where(parts => parts.Count() > 1)
+				.Where(parts => parts.Length > 1)
 				.ToDictionary(parts => parts[0], parts => String.Join("=", parts.Skip(1)));
 		}
 
