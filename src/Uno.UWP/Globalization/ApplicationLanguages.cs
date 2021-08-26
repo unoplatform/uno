@@ -79,7 +79,7 @@ namespace Windows.Globalization
 				Languages = languages.Distinct().ToArray();
 			}
 
-			var primaryLanguage = Languages.First();
+			var primaryLanguage = Languages[0];
 			var primaryCulture = CreateCulture(primaryLanguage);
 
 			CultureInfo.CurrentCulture = primaryCulture;
