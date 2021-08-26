@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					IsLightDismissEnabled = _isLightDismissEnabled,
 				};
 
-				SynchronizeTemplatedParent();
+				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
 
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
@@ -66,7 +66,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				InitializePopupPanel();
 
-				SynchronizeDataContext();
+				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
+				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
+				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 			}
 		}
 
@@ -178,8 +180,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Identifies the AllowFocusWhenDisabled  dependency property.
 		/// </summary>
-		[GeneratedDependencyProperty(DefaultValue = false, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(DefaultValue = false, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
 		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
+
+		private void OnAllowFocusWhenDisabledChanged(bool oldValue, bool newValue) =>
+			SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
@@ -193,8 +198,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Identifies for the AllowFocusOnInteraction dependency property.
 		/// </summary>
-		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
+
+		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
+			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 
 		public FrameworkElement Target { get; private set; }
 
@@ -322,22 +330,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void SetPopupPositionPartial(UIElement placementTarget, Point? positionInTarget);
 
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e) =>
+			SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
+
+		private void SynchronizePropertyToPopup(DependencyProperty property, object value)
 		{
-			SynchronizeDataContext();
+			// This is present to force properties to be propagated to the popup of the flyout
+			// since it is not directly a child in the visual tree of the flyout.
+			_popup?.SetValue(property, value, precedence: DependencyPropertyValuePrecedences.Local);
 		}
 
-		private void SynchronizeDataContext() =>
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
-			_popup?.SetValue(Popup.DataContextProperty, this.DataContext, precedence: DependencyPropertyValuePrecedences.Local);
-
-		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e)
-			=> SynchronizeTemplatedParent();
-
-		private void SynchronizeTemplatedParent()
-		{
-			_popup?.SetValue(Popup.TemplatedParentProperty, TemplatedParent, precedence: DependencyPropertyValuePrecedences.Local);
-		}
+		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e) =>
+			SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
 
 		public static FlyoutBase GetAttachedFlyout(FrameworkElement element)
 		{
