@@ -33,6 +33,13 @@ indent_style = space
 [*.md]
 indent_style = space
 
+# Workaround https://github.com/unoplatform/uno/issues/6883
+[**/Generated/**/*.cs]
+generated_code = true
+
+[CyclomaticComplexityWalker.cs]
+generated_code = true
+
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
 csharp_indent_block_contents = true
@@ -226,3 +233,124 @@ dotnet_style_qualification_for_property = false:suggestion
 # RS0030: Do not used banned APIs
 # https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md
 dotnet_diagnostic.RS0030.severity = error
+
+dotnet_analyzer_diagnostic.category-Performance.severity = none #error - Uncomment when all violations are fixed.
+
+dotnet_diagnostic.CA1805.severity = error
+dotnet_diagnostic.CA1061.severity = none
+dotnet_diagnostic.CA1802.severity = none
+dotnet_diagnostic.CA1014.severity = none
+dotnet_diagnostic.CA1066.severity = none
+dotnet_diagnostic.CA1063.severity = none
+dotnet_diagnostic.CA1001.severity = none
+dotnet_diagnostic.CA1052.severity = none
+dotnet_diagnostic.CA1816.severity = none
+dotnet_diagnostic.CA2225.severity = none
+dotnet_diagnostic.CA1310.severity = none
+dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA2208.severity = none
+dotnet_diagnostic.CA1305.severity = none
+dotnet_diagnostic.CA1200.severity = none
+dotnet_diagnostic.CA1010.severity = none
+dotnet_diagnostic.CA1019.severity = none
+dotnet_diagnostic.CA1813.severity = none
+dotnet_diagnostic.CA1051.severity = none
+dotnet_diagnostic.CA1715.severity = none
+dotnet_diagnostic.CA1711.severity = none
+dotnet_diagnostic.CA1720.severity = none
+dotnet_diagnostic.CA1724.severity = none
+dotnet_diagnostic.CA1307.severity = none
+dotnet_diagnostic.CA1825.severity = none
+dotnet_diagnostic.CA2000.severity = none
+dotnet_diagnostic.CA1507.severity = none
+dotnet_diagnostic.CA2215.severity = none
+dotnet_diagnostic.CA1725.severity = none
+dotnet_diagnostic.CA1065.severity = none
+dotnet_diagnostic.CA1024.severity = none
+dotnet_diagnostic.CA1801.severity = none
+dotnet_diagnostic.CA2201.severity = none
+dotnet_diagnostic.CA2241.severity = none
+dotnet_diagnostic.CA2242.severity = none
+dotnet_diagnostic.CA1823.severity = none
+dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1030.severity = none
+dotnet_diagnostic.CA1031.severity = none
+dotnet_diagnostic.CA1064.severity = none
+dotnet_diagnostic.CA1067.severity = none
+dotnet_diagnostic.CA1014.severity = none
+dotnet_diagnostic.CA1012.severity = none
+dotnet_diagnostic.CA1034.severity = none
+dotnet_diagnostic.CA1812.severity = none
+dotnet_diagnostic.CA1032.severity = none
+dotnet_diagnostic.CA1508.severity = none
+dotnet_diagnostic.CA1308.severity = none
+dotnet_diagnostic.CA1508.severity = none
+dotnet_diagnostic.CA2008.severity = none
+dotnet_diagnostic.CA1810.severity = none
+dotnet_diagnostic.CA1309.severity = none
+dotnet_diagnostic.CA1829.severity = none
+dotnet_diagnostic.CA3075.severity = none
+dotnet_diagnostic.CA1815.severity = none
+dotnet_diagnostic.CA1819.severity = none
+dotnet_diagnostic.CA1710.severity = none
+dotnet_diagnostic.CA1003.severity = none
+dotnet_diagnostic.CA2007.severity = none
+dotnet_diagnostic.CA1716.severity = none
+dotnet_diagnostic.CA2214.severity = none
+dotnet_diagnostic.CA1033.severity = none
+dotnet_diagnostic.CA2213.severity = none
+dotnet_diagnostic.CA1068.severity = none
+dotnet_diagnostic.CA1826.severity = none
+dotnet_diagnostic.CA2016.severity = none
+dotnet_diagnostic.CA1835.severity = none
+dotnet_diagnostic.CA1069.severity = none
+dotnet_diagnostic.CA1008.severity = none
+dotnet_diagnostic.CA1028.severity = none
+dotnet_diagnostic.CA2217.severity = none
+dotnet_diagnostic.CA2227.severity = none
+dotnet_diagnostic.CA1056.severity = none
+dotnet_diagnostic.CA2211.severity = none
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1721.severity = none
+dotnet_diagnostic.CA1040.severity = none
+dotnet_diagnostic.CA1002.severity = none
+dotnet_diagnostic.CA2249.severity = none
+dotnet_diagnostic.CA2245.severity = none
+dotnet_diagnostic.CA1820.severity = none
+dotnet_diagnostic.CA5350.severity = none
+dotnet_diagnostic.CA5401.severity = none
+dotnet_diagnostic.CA2234.severity = none
+dotnet_diagnostic.CA1806.severity = none
+dotnet_diagnostic.CA1834.severity = none
+dotnet_diagnostic.CA1713.severity = none
+dotnet_diagnostic.CA1054.severity = none
+dotnet_diagnostic.CA1821.severity = none
+dotnet_diagnostic.CA1055.severity = none
+dotnet_diagnostic.CA2002.severity = none
+dotnet_diagnostic.CA2109.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA2237.severity = none
+dotnet_diagnostic.CA2119.severity = none
+dotnet_diagnostic.CA1708.severity = none
+dotnet_diagnostic.CA1044.severity = none
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA5389.severity = none
+dotnet_diagnostic.CA1848.severity = none
+dotnet_diagnostic.CA1849.severity = none
+dotnet_diagnostic.CA2254.severity = none
+dotnet_diagnostic.CA1027.severity = none
+dotnet_diagnostic.CA1840.severity = none
+dotnet_diagnostic.CA1844.severity = none
+dotnet_diagnostic.CA1018.severity = none
+dotnet_diagnostic.CA1846.severity = none
+dotnet_diagnostic.CA1847.severity = none
+
+dotnet_analyzer_diagnostic.category-Design.severity = none
+dotnet_analyzer_diagnostic.category-Usage.severity = none
+dotnet_analyzer_diagnostic.category-Globalization.severity = none
+dotnet_analyzer_diagnostic.category-Maintainability.severity = none
+dotnet_analyzer_diagnostic.category-Naming.severity = none
+dotnet_analyzer_diagnostic.category-Reliability.severity = none
+dotnet_analyzer_diagnostic.category-Security.severity = none
+
+dotnet_code_quality.CA1822.api_surface = private, internal
