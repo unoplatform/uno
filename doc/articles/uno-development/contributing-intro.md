@@ -26,6 +26,10 @@ Whether you're fixing a bug or working on a new feature, [inspecting the visual 
 
 See [Uno's code conventions and common patterns here](../contributing/guidelines/code-style.md).
 
+## Implementing a new feature
+
+See how to implement a new [feature here](../contributing/guidelines/implementing-a-new winui-winrt-feature.md).
+
 ## Adding tests
 
 Uno's stability rests upon a comprehensive testing suite. A code contribution usually isn't complete without a test.

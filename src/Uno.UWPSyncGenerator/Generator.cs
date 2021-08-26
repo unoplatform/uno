@@ -139,19 +139,24 @@ namespace Uno.UWPSyncGenerator
 
 		private static void InitializeRoslyn()
 		{
-			var pi = new System.Diagnostics.ProcessStartInfo(
-				"cmd.exe",
-				@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath"
-			)
-			{
-				RedirectStandardOutput = true,
-				UseShellExecute = false,
-				CreateNoWindow = true
-			};
+			var installPath = Environment.GetEnvironmentVariable("VSINSTALLDIR");
 
-			var process = System.Diagnostics.Process.Start(pi);
-			process.WaitForExit();
-			var installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
+			if (string.IsNullOrEmpty(installPath))
+			{
+				var pi = new System.Diagnostics.ProcessStartInfo(
+					"cmd.exe",
+					@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath"
+				)
+				{
+					RedirectStandardOutput = true,
+					UseShellExecute = false,
+					CreateNoWindow = true
+				};
+
+				var process = System.Diagnostics.Process.Start(pi);
+				process.WaitForExit();
+				installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
+			}
 
 			SetupMSBuildLookupPath(installPath);
 		}

@@ -167,12 +167,36 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			_app.WaitForText(textBox2, "");
 		}
 
+		[Test]
+		[AutoRetry]
+		public void TextBox_DeleteButton_Depends_On_Width()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.Width_Affects_Delete_Button");
+
+			var initiallyLarge = _app.Marked("initiallyLarge");
+			var initiallySmall = _app.Marked("initiallySmall");
+
+			initiallyLarge.FastTap();
+			Assert.NotNull(FindDeleteButton(_app.Query(initiallyLarge).Single()));
+
+			initiallySmall.FastTap();
+			Assert.Null(FindDeleteButton(_app.Query(initiallySmall).Single()));
+
+			_app.Marked("makeSmallerBtn").FastTap();
+			initiallyLarge.FastTap();
+			Assert.Null(FindDeleteButton(_app.Query(initiallyLarge).Single()));
+
+			_app.Marked("makeBiggerBtn").FastTap();
+			initiallySmall.FastTap();
+			Assert.NotNull(FindDeleteButton(_app.Query(initiallySmall).Single()));
+		}
+
 		private Uno.UITest.IAppResult FindDeleteButton(Uno.UITest.IAppResult source)
 		{
 			var deleteButtons = _app.Marked("DeleteButton");
 			var appResult = _app.Query(deleteButtons).ToArray();
 			var deleteButton = appResult
-				.First(r =>
+				.FirstOrDefault(r =>
 					r.Rect.CenterX > source.Rect.X
 					&& r.Rect.CenterX < source.Rect.Right
 					&& r.Rect.CenterY > source.Rect.Y
