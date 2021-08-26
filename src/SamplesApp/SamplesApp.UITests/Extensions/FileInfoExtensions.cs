@@ -11,7 +11,9 @@ namespace SamplesApp.UITests
 
 		// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfullpathnamea
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+#pragma warning disable CA1838 // Avoid 'StringBuilder' parameters for P/Invokes
 		private static extern uint GetFullPathName(string lpFileName, uint nBufferLength,  StringBuilder lpBuffer, IntPtr lpFilePart);
+#pragma warning restore CA1838 // Avoid 'StringBuilder' parameters for P/Invokes
 
 
 		private static bool CheckIfNeedToNormalizeLongPaths()

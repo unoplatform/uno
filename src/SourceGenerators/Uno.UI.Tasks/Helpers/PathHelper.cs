@@ -50,8 +50,11 @@ namespace Uno.UI.Tasks.Helpers
 		private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
 		private const int FILE_ATTRIBUTE_NORMAL = 0x80;
 
+		// TODO: Address the CA1838 violation.
 		[DllImport("shlwapi.dll", SetLastError = true)]
 		private static extern int PathRelativePathTo(
+#pragma warning disable CA1838 // Avoid 'StringBuilder' parameters for P/Invokes
 			StringBuilder pszPath, string pszFrom, int dwAttrFrom, string pszTo, int dwAttrTo);
+#pragma warning restore CA1838 // Avoid 'StringBuilder' parameters for P/Invokes
 	}
 }
