@@ -75,3 +75,18 @@ The versions used are centralized in the [Directory.Build.targets](https://githu
 locations where `<PackageReference />` are used.
 
 When updating the versions of nuget packages, make sure to update all the .nuspec files in the [Build folder](https://github.com/unoplatform/uno/tree/master/build).
+
+### Running the SyncGenerator tool
+
+Uno Platform uses a tool which synchronizes all WinRT and WinUI APIs with the type implementations already present in Uno. This ensures that all APIs are present for consumers of Uno, even if some are not implemented.
+
+The synchronization process takes the APIs provided by the WinMD files referenced by the `Uno.UWPSyncGenerator.Reference` project and generates stubbed classes for types in the `Generated` folders of Uno.UI, Uno.Foundation and Uno.WinRT projects. If the generated classes have been partially implemented in Uno (in the non-Generated folders), the tool will automatically skip those implemented methods.
+
+The tool needs to be run on Windows because of its dependency on the Windows SDK WinMD files.
+
+To run the synchronization tool:
+- Open a `Developer Command Prompt for Visual Studio` (2019 or 2022)
+- Go the the `uno\build` folder (not the `uno\src\build` folder)
+- Run the `run-api-sync-tool.cmd` script; make sure to follow the instructions
+
+Note that as of Uno 3.10, the tool is manually run for the UWP part of the build and automatically run as part of the CI during the WinUI part of the build.
