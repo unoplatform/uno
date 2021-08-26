@@ -611,7 +611,7 @@ namespace SampleControl.Presentation
 			}
 			catch (Exception)
 			{
-				return new TypeInfo[0];
+				return Array.Empty<TypeInfo>();
 			}
 		}
 

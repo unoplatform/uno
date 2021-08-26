@@ -113,7 +113,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToDictionary(k => k, fullyQualifiedName => fullyQualifiedName.Split('.').Last());
 
 			_metadataHelper = new RoslynMetadataHelper("Debug", context, _legacyTypes);
-			_assemblySearchPaths = new string[0];
+			_assemblySearchPaths = Array.Empty<string>();
 
 			_configuration = context.GetMSBuildPropertyValue("Configuration")
 				?? throw new InvalidOperationException("The configuration property must be provided");
@@ -376,7 +376,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_generatorContext.ReportDiagnostic(diagnostic);
 			}
 
-			return new KeyValuePair<string, string>[0];
+			return Array.Empty<KeyValuePair<string, string>>();
 		}
 
 		private Location? GetExceptionFileLocation(Exception exception)
@@ -529,7 +529,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		//get keys of localized strings
 		private string[] GetResourceKeys()
 		{
-			string[] resourceKeys = new string[0];
+			string[] resourceKeys = Array.Empty<string>();
 
 			if (_resourceFiles != null)
 			{

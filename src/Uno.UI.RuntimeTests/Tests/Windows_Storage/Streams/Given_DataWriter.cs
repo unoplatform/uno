@@ -154,9 +154,9 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteBytes(new byte[0]);
+			dataWriter.WriteBytes(Array.Empty<byte>());
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { }, bytes);
+			CollectionAssert.AreEqual(Array.Empty<byte>(), bytes);
 		}
 
 		[TestMethod]
@@ -187,9 +187,9 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteBuffer((new byte[0]).ToBuffer());
+			dataWriter.WriteBuffer((Array.Empty<byte>()).ToBuffer());
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { }, bytes);
+			CollectionAssert.AreEqual(Array.Empty<byte>(), bytes);
 		}
 
 		[TestMethod]
@@ -200,7 +200,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
 			dataWriter.WriteString("");
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { }, bytes);
+			CollectionAssert.AreEqual(Array.Empty<byte>(), bytes);
 		}
 
 		[TestMethod]

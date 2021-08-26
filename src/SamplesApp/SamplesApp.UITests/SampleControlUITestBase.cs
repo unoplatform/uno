@@ -203,14 +203,14 @@ namespace SamplesApp.UITests
 		private static T[] GetCurrentFixtureAttributes<T>() where T : Attribute
 		{
 			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
-			return testType?.GetCustomAttributes(typeof(T), true) is T[] array ? array : new T[0];
+			return testType?.GetCustomAttributes(typeof(T), true) is T[] array ? array : Array.Empty<T>();
 		}
 
 		private static T[] GetCurrentTestAttributes<T>() where T : Attribute
 		{
 			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
 			var methodInfo = testType?.GetMethod(TestContext.CurrentContext.Test.MethodName);
-			return methodInfo?.GetCustomAttributes(typeof(T), true) is T[] array ? array : new T[0];
+			return methodInfo?.GetCustomAttributes(typeof(T), true) is T[] array ? array : Array.Empty<T>();
 		}
 
 		private IEnumerable<Platform> GetActivePlatforms()

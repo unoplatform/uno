@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml
 
 			if (propertyInfo != null)
 			{
-				var dependencyProperty = (DependencyProperty)propertyInfo.GetMethod.Invoke(null, new object[0]);
+				var dependencyProperty = (DependencyProperty)propertyInfo.GetMethod.Invoke(null, Array.Empty<object>());
 				return dependencyProperty;
 			}
 

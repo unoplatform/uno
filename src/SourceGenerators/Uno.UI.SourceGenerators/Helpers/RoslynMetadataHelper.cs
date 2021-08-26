@@ -41,7 +41,7 @@ namespace Uno.Roslyn
 
 			_findTypesByName = Funcs.Create<string, ITypeSymbol[]>(SourceFindTypesByName).AsLockedMemoized();
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol>(SourceFindTypeByFullName).AsLockedMemoized();
-			_additionalTypes = new string[0];
+			_additionalTypes = Array.Empty<string>();
 			_legacyTypes = BuildLegacyTypes(legacyTypes);
 			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(GetAllDerivingTypes).AsLockedMemoized();
 			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
@@ -126,7 +126,7 @@ namespace Uno.Roslyn
 					.Where(r => r.Kind != SymbolKind.ErrorType && r.TypeArguments.Length == 0)
 					// Apply legacy
 					.Where(r => legacyType == null || r.OriginalDefinition.Name != name || SymbolEqualityComparer.Default.Equals(r.OriginalDefinition, legacyType))
-					.ToArray() ?? new ITypeSymbol[0];
+					.ToArray() ?? Array.Empty<ITypeSymbol>();
 			}
 
 			return Array.Empty<ITypeSymbol>();

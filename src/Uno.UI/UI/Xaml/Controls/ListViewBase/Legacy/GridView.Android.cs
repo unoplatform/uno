@@ -218,13 +218,13 @@ namespace Uno.UI.Controls.Legacy
 
 				if (newMode == ListViewSelectionMode.None)
 				{
-					gridView.SelectedItems = new object[0];
+					gridView.SelectedItems = Array.Empty<object>();
 				}
 				else if (newMode == ListViewSelectionMode.Single && oldMode == ListViewSelectionMode.Multiple)
 				{
 					var firstSelection = gridView.SelectedItems.FirstOrDefault();
 
-					gridView.SelectedItems = firstSelection.SelectOrDefault(s => new[] { s }, new object[0]);
+					gridView.SelectedItems = firstSelection.SelectOrDefault(s => new[] { s }, Array.Empty<object>());
 				}
 			}
 		}

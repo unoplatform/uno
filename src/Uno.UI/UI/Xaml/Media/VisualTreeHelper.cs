@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Media
 				return GetOpenPopups(Window.Current);
 			}
 
-			return new Popup[0];
+			return Array.Empty<Popup>();
 		}
 
 

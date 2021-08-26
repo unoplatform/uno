@@ -256,7 +256,7 @@ namespace Windows.UI.Xaml
 				return _trace.WriteEventActivity(
 					startEventId,
 					stopEventId,
-					new object[] { }
+					Array.Empty<object>()
 				);
 			}
 			else

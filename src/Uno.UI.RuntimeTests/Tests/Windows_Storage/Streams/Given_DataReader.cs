@@ -127,14 +127,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		[TestMethod]
 		public void When_ReadBytes_Empty()
 		{
-			var inputBytes = new byte[] { };
+			var inputBytes = Array.Empty<byte>();
 			var buffer = inputBytes.AsBuffer();
 			var dataReader = DataReader.FromBuffer(buffer);
 			dataReader.ByteOrder = ByteOrder.LittleEndian;
 			dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
-			var bytes = new byte[0];
+			var bytes = Array.Empty<byte>();
 			dataReader.ReadBytes(bytes);
-			var expected = new byte[0];
+			var expected = Array.Empty<byte>();
 			CollectionAssert.AreEqual(expected, bytes);
 		}
 
@@ -167,7 +167,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		[TestMethod]
 		public void When_ReadString_Empty()
 		{
-			var inputBytes = new byte[] { };
+			var inputBytes = Array.Empty<byte>();
 			var buffer = inputBytes.AsBuffer();
 			var dataReader = DataReader.FromBuffer(buffer);
 			dataReader.ByteOrder = ByteOrder.LittleEndian;

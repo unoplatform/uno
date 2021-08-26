@@ -139,9 +139,9 @@ namespace Windows.UI.Core
 			}
 
 			internal CoreDispatcherImplementor(Action action)
-				: base(JNIEnv.StartCreateInstance(_class, _ctor, new JValue[0]), JniHandleOwnership.TransferLocalRef)
+				: base(JNIEnv.StartCreateInstance(_class, _ctor, Array.Empty<JValue>()), JniHandleOwnership.TransferLocalRef)
 			{
-				JNIEnv.FinishCreateInstance(base.Handle, _class, _ctor, new JValue[0]);
+				JNIEnv.FinishCreateInstance(base.Handle, _class, _ctor, Array.Empty<JValue>());
 
 				_action = action;
 			}

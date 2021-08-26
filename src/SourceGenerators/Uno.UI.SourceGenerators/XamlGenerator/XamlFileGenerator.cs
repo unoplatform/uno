@@ -1710,7 +1710,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void GenerateError(IIndentedStringBuilder writer, string message)
 		{
-			GenerateError(writer, message.Replace("{", "{{").Replace("}", "}}"), new object[0]);
+			GenerateError(writer, message.Replace("{", "{{").Replace("}", "}}"), Array.Empty<object>());
 		}
 
 		private void GenerateError(IIndentedStringBuilder writer, string message, params object?[] options)
@@ -2901,7 +2901,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						extractionTargetMembers = _uiAutomationMappings
 							?.FirstOrDefault(m => IsType(objectDefinition.Type, m.Key) || IsImplementingInterface(FindType(objectDefinition.Type), FindType(m.Key)))
 							.Value
-							?.ToArray() ?? new string[0];
+							?.ToArray() ?? Array.Empty<string>();
 					}
 
 					if (hasChildrenWithPhase)
@@ -3820,7 +3820,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Populate the property paths only if updateable bindings.
 			var propertyPaths = modeMember != "OneTime"
 				? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMember)
-				: (properties: new string[0], hasFunction: false);
+				: (properties: Array.Empty<string>(), hasFunction: false);
 
 			var formattedPaths = propertyPaths
 				.properties

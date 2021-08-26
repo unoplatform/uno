@@ -574,7 +574,7 @@ namespace Uno.UI.Samples.Tests
 					}
 					else
 					{
-						await InvokeTestMethod(new object[0]);
+						await InvokeTestMethod(Array.Empty<object>());
 					}
 
 					async Task InvokeTestMethod(object[] parameters)
@@ -614,7 +614,7 @@ namespace Uno.UI.Samples.Tests
 									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 									{
 										sw.Start();
-										testClassInfo.Initialize?.Invoke(instance, new object[0]);
+										testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
 										returnValue = testMethod.Invoke(instance, parameters);
 										sw.Stop();
 									});
@@ -622,7 +622,7 @@ namespace Uno.UI.Samples.Tests
 								else
 								{
 									sw.Start();
-									testClassInfo.Initialize?.Invoke(instance, new object[0]);
+									testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
 									returnValue = testMethod.Invoke(instance, parameters);
 									sw.Stop();
 								}
@@ -736,7 +736,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			try
 			{
-				testClassInfo.Cleanup?.Invoke(instance, new object[0]);
+				testClassInfo.Cleanup?.Invoke(instance, Array.Empty<object>());
 			}
 			catch (Exception e)
 			{
