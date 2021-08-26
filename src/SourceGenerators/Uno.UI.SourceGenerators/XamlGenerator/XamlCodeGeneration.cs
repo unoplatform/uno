@@ -182,8 +182,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_defaultLanguage = context.GetMSBuildPropertyValue("DefaultLanguage");
 
-			_analyzerSuppressions = context.GetMSBuildItems("XamlGeneratorAnalyzerSuppressions").Select(i => i.Identity).ToArray();
-
 			_uiAutomationMappings = context.GetMSBuildItems("CustomUiAutomationMemberMappingAdjusted")
 				.Select(i => new
 				{
