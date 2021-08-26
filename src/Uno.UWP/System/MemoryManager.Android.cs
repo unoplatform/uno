@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using Android.App;
 using Uno.UI;
 
@@ -27,4 +26,3 @@ namespace Windows.System
 		}
 	}
 }
-#endif

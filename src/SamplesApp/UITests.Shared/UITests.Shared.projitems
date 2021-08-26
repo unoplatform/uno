@@ -4593,6 +4593,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\LauncherTests.xaml.cs">
       <DependentUpon>LauncherTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_System\MemoryManager\MemoryManager_AppMemoryUsage.xaml.cs">
+      <DependentUpon>MemoryManager_AppMemoryUsage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml.cs">
       <DependentUpon>PowerManager.xaml</DependentUpon>
     </Compile>
