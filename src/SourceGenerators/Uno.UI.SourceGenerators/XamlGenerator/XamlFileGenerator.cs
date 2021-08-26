@@ -3055,7 +3055,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								&& !isMemberInsideResourceDictionary.isInside
 							)
 							{
-								ValidateName(value);
+								if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+								{
+									ValidateName(value);
+								}
+
 								writer.AppendLineInvariant($@"nameScope.RegisterName(""{value}"", {closureName});");
 							}
 
