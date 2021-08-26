@@ -86,9 +86,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		~NavigationViewItem()
-		{
-		}
+		//~NavigationViewItem()
+		//{
+		//}
 
 		protected override void OnApplyTemplate()
 		{

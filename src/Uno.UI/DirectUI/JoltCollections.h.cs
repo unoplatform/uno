@@ -118,10 +118,10 @@ namespace DirectUI
 			m_nCurrentIndex = 0;
 		}
 
-		~IteratorBase()
-		{
-			//IsDebuggerPresent(); // TODO UNO
-		}
+		//~IteratorBase()
+		//{
+		//	//IsDebuggerPresent(); // TODO UNO
+		//}
 
 		protected abstract T GetCurrent();
 		protected abstract void SetCurrent(T current);

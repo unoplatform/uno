@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		//void OnPointerCaptureLostImpl(PointerRoutedEventArgs e);
 
 		// private
-		~LoopingSelectorItem() { }
+		//~LoopingSelectorItem() { }
 
 		//void InitializeImpl();
 
