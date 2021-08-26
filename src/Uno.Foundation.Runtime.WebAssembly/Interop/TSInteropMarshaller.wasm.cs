@@ -156,7 +156,7 @@ namespace Uno.Foundation.Interop
 				get
 				{
 					CheckDisposed();
-					return (T)Marshal.PtrToStructure(Handle, Type);
+					return (T)(Marshal.PtrToStructure(Handle, Type)!);
 				}
 				set
 				{
