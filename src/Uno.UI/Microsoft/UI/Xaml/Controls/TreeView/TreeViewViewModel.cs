@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool m_isContentMode;
 
-		private int m_selectionTrackingCounter = 0;
+		private int m_selectionTrackingCounter;
 		private readonly List<WeakReference<object>> m_addedSelectedItems = new List<WeakReference<object>>();
 		private List<object> m_removedSelectedItems = new List<object>();
 

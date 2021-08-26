@@ -13,11 +13,11 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		internal SelectionNode SharedLeafNode => m_leafNode;
 
-		private SelectionNode m_rootNode = null;
-		private bool m_singleSelect = false;
+		private SelectionNode m_rootNode;
+		private bool m_singleSelect;
 
-		private IReadOnlyList<IndexPath> m_selectedIndicesCached = null;
-		private IReadOnlyList<object> m_selectedItemsCached = null;
+		private IReadOnlyList<IndexPath> m_selectedIndicesCached;
+		private IReadOnlyList<object> m_selectedItemsCached;
 
 		// Cached Event args to avoid creation cost every time
 		private SelectionModelChildrenRequestedEventArgs m_childrenRequestedEventArgs;

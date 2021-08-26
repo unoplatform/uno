@@ -9,7 +9,7 @@ namespace Microsoft.UI.Private.Controls
 {
 	internal class SplitButtonTestHelper
 	{
-		private bool m_simulateTouch = false;
+		private bool m_simulateTouch;
 
 		public static SplitButtonTestHelper Instance { get; } = new SplitButtonTestHelper();
 

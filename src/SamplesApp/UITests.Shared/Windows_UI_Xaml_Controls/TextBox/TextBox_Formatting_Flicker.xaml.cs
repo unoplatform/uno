@@ -29,7 +29,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 	[SampleControlInfo("TextBox", "TextBox_Formatting_Flicker", description: "Continuing to enter value past the max length specified, should not cause the text box content to be changed again.")]
 	public sealed partial class TextBox_Formatting_Flicker : UserControl
 	{
-		private int _textChangedCounter = 0;
+		private int _textChangedCounter;
 
 		public TextBox_Formatting_Flicker()
 		{
@@ -65,7 +65,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 
 		private class CustomInputFilter : Java.Lang.Object, Android.Text.IInputFilter
 		{
-			private int _counter = 0;
+			private int _counter;
 
 			public ICharSequence FilterFormatted(ICharSequence source, int start, int end, ISpanned dest, int dstart, int dend)
 			{

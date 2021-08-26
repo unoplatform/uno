@@ -109,7 +109,7 @@ namespace Uno.UI.Xaml.Core
 		// Uno specific: To ensure focus is properly lost when clicking "outside" app's content,
 		// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
 		// but Uno does not have it on all targets yet.
-		private bool _isLeftButtonPressed = false;
+		private bool _isLeftButtonPressed;
 
 		private void RootVisual_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
 		{

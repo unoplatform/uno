@@ -37,7 +37,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		private string _errorMessage = string.Empty;
 		private string _statusMessage = string.Empty;
 
-		private StorageFile[] _pickedFiles = null;
+		private StorageFile[] _pickedFiles;
 
 		public FileOpenPickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

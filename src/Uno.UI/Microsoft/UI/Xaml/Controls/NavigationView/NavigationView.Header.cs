@@ -35,10 +35,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_InitialNonForcedModeUpdate = true;
 
 		// Cache these objects for the view as they are expensive to query via GetForCurrentView() calls.
-		private ApplicationView m_applicationView = null;
-		private UIViewSettings m_uiViewSettings = null;
+		private ApplicationView m_applicationView;
+		private UIViewSettings m_uiViewSettings;
 
-		private NavigationViewItemsFactory m_navigationViewItemsFactory = null;
+		private NavigationViewItemsFactory m_navigationViewItemsFactory;
 
 		// Visual components
 
@@ -152,35 +152,35 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly SerialDisposable m_shadowCasterEaseOutStoryboardRevoker = new SerialDisposable();
 
-		private bool m_wasForceClosed = false;
-		private bool m_isClosedCompact = false;
-		private bool m_blockNextClosingEvent = false;
-		private bool m_initialListSizeStateSet = false;
+		private bool m_wasForceClosed;
+		private bool m_isClosedCompact;
+		private bool m_blockNextClosingEvent;
+		private bool m_initialListSizeStateSet;
 
 		private TopNavigationViewDataProvider m_topDataProvider;
 
 		private SelectionModel m_selectionModel = new SelectionModel();
-		private IList<object> m_selectionModelSource = null;
+		private IList<object> m_selectionModelSource;
 
-		private ItemsSourceView m_menuItemsSource = null;
-		private ItemsSourceView m_footerItemsSource = null;
+		private ItemsSourceView m_menuItemsSource;
+		private ItemsSourceView m_footerItemsSource;
 
-		private bool m_appliedTemplate = false;
+		private bool m_appliedTemplate;
 
 		// Identifies whenever a call is the result of OnApplyTemplate
-		private bool m_fromOnApplyTemplate = false;
+		private bool m_fromOnApplyTemplate;
 
 		// Used to defer updating the SplitView displaymode property
-		private bool m_updateVisualStateForDisplayModeFromOnLoaded = false;
+		private bool m_updateVisualStateForDisplayModeFromOnLoaded;
 
 		// flag is used to stop recursive call. eg:
 		// Customer select an item from SelectedItem property->ChangeSelection update ListView->LIstView raise OnSelectChange(we want stop here)->change property do do animation again.
 		// Customer clicked listview->listview raised OnSelectChange->SelectedItem property changed->ChangeSelection->Undo the selection by SelectedItem(prevItem) (we want it stop here)->ChangeSelection again ->...
-		private bool m_shouldIgnoreNextSelectionChange = false;
+		private bool m_shouldIgnoreNextSelectionChange;
 		// A flag to track that the selectionchange is caused by selection a item in topnav overflow menu
-		private bool m_selectionChangeFromOverflowMenu = false;
+		private bool m_selectionChangeFromOverflowMenu;
 		// Flag indicating whether selection change should raise item invoked. This is needed to be able to raise ItemInvoked before SelectionChanged while SelectedItem should point to the clicked item
-		private bool m_shouldRaiseItemInvokedAfterSelection = false;
+		private bool m_shouldRaiseItemInvokedAfterSelection;
 
 		private TopNavigationViewLayoutState m_topNavigationMode = TopNavigationViewLayoutState.Uninitialized;
 
@@ -192,17 +192,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// 2, customer click ToggleButton or splitView.IsPaneOpen->nav.IsPaneOpen changed because of window resize
 		// 3, customer changed PaneDisplayMode.
 		// 2 and 3 are internal implementation and will call by ClosePane/OpenPane. the flag is to indicate 1 if it's false
-		private bool m_isOpenPaneForInteraction = false;
+		private bool m_isOpenPaneForInteraction;
 
-		private bool m_moveTopNavOverflowItemOnFlyoutClose = false;
+		private bool m_moveTopNavOverflowItemOnFlyoutClose;
 
-		private bool m_shouldIgnoreUIASelectionRaiseAsExpandCollapseWillRaise = false;
+		private bool m_shouldIgnoreUIASelectionRaiseAsExpandCollapseWillRaise;
 
-		private bool m_OrientationChangedPendingAnimation = false;
+		private bool m_OrientationChangedPendingAnimation;
 
-		private bool m_TabKeyPrecedesFocusChange = false;
+		private bool m_TabKeyPrecedesFocusChange;
 
-		private bool m_isLeftPaneTitleEmpty = false;
+		private bool m_isLeftPaneTitleEmpty;
 
 		#region Uno specific
 

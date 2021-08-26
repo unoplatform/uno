@@ -77,8 +77,8 @@ namespace Windows.UI.Xaml.Controls
 		//    static int GetRemainingGroups( int referenceGroupIndex,  int totalGroups,  RelativePosition positionOfReference);
 		//    static int GetRemainingItems( int referenceItemIndex,  int totalItems,  RelativePosition positionOfReference);
 
-		protected static int c_specialGroupIndex = 0;
-		protected static int c_specialItemIndex = 0;
+		protected static int c_specialGroupIndex;
+		protected static int c_specialItemIndex;
 
 		//private:
 		// direction in which we layout out items

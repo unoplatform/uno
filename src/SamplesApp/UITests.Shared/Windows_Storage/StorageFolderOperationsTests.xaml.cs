@@ -36,7 +36,7 @@ namespace UITests.Windows_Storage
 
 	public class StorageFolderOperationsTestsViewModel : ViewModelBase
 	{
-		public StorageFolder _pickedFolder = null;
+		public StorageFolder _pickedFolder;
 		private ObservableCollection<IStorageItem> _storageItemList;
 		private string _itemNameInput;
 		private string _errorMessage;

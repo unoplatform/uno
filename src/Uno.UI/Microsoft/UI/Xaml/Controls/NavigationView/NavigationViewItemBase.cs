@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if IS_UNO
 		// TODO: Uno specific: Remove when #4689 is fixed
 
-		protected bool _fullyInitialized = false;
+		protected bool _fullyInitialized;
 
 		internal void Reinitialize()
 		{

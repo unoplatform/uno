@@ -17,8 +17,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private WeakReference<TreeViewNode> m_parentNode;
 		private bool m_HasUnrealizedChildren;
-		private object m_itemsSource = null;
-		private ItemsSourceView m_itemsDataSource = null;
+		private object m_itemsSource;
+		private ItemsSourceView m_itemsDataSource;
 
 		public TreeViewNode()
 		{

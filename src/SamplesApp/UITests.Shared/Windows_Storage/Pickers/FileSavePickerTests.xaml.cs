@@ -45,10 +45,10 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		private string _suggestedFileName = string.Empty;
 		private string _fileChoiceExtension = string.Empty;
 
-		private StorageFile _suggestedSaveFile = null;
-		private StorageFile _pickedFile = null;
+		private StorageFile _suggestedSaveFile;
+		private StorageFile _pickedFile;
 		private FileTypeChoiceViewModel _newFileTypeChoice = new FileTypeChoiceViewModel();
-		private FileTypeChoiceViewModel _selectedFileTypeChoice = null;
+		private FileTypeChoiceViewModel _selectedFileTypeChoice;
 
 		public FileSavePickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

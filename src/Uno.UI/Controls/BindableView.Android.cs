@@ -260,7 +260,7 @@ namespace Uno.UI.Controls
 			return !_shouldPreventRequestLayout;
 		}
 
-		private bool _shouldPreventRequestLayout = false;
+		private bool _shouldPreventRequestLayout;
 
 		internal IDisposable PreventRequestLayout()
 		{

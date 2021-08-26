@@ -76,7 +76,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 			}
 		}
 
-		private bool _isChecked = false;
+		private bool _isChecked;
 		public bool IsChecked
 		{
 			get { return _isChecked; }

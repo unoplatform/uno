@@ -35,7 +35,7 @@ namespace Windows.Devices.Geolocation
 		/// <summary>
 		/// Ideally should be set to true on devices without GPS capabilities, keep false as default
 		/// </summary>
-		public static bool IsDefaultGeopositionRecommended { get; private set; } = false;
+		public static bool IsDefaultGeopositionRecommended { get; private set; }
 
 		/// <summary>
 		/// Default is NotInitialized in line with UWP

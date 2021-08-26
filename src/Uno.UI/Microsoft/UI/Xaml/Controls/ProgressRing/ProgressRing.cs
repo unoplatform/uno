@@ -24,8 +24,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private AnimatedVisualPlayer? _player;
 		private Panel? _layoutRoot;
-		private double _oldValue = 0d;
-		private Uri? _currentSourceUri = null;
+		private double _oldValue;
+		private Uri? _currentSourceUri;
 
 		public static DependencyProperty IsActiveProperty { get; } = DependencyProperty.Register(
 			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsActivePropertyChanged));

@@ -34,8 +34,8 @@ namespace UITests.Shared.Windows_Devices
     [Bindable]
     public class AccelerometerTestsViewModel : ViewModelBase
     {
-        private readonly Accelerometer _accelerometer = null;
-        private bool _readingChangedAttached;
+        private readonly Accelerometer _accelerometer;
+		private bool _readingChangedAttached;
         private bool _shakenAttached;
         private double _accelerationX;
         private double _accelerationY;

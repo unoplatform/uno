@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class DisplayRegionHelper
 	{
-		private bool m_simulateDisplayRegions = false;
+		private bool m_simulateDisplayRegions;
 		private TwoPaneViewMode m_simulateMode = TwoPaneViewMode.SinglePane;
 
 		static readonly Rect m_simulateWide0 = new Rect(0, 0, 300, 400);

@@ -27,10 +27,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls
 
     public sealed partial class Buttons_Native : UserControl
     {
-		int clickActionsCounter = 0;
-		int commandActionsCounter = 0;
-		int tappedActionsCounter = 0;
-		int toggleActionsCounter = 0;
+		int clickActionsCounter;
+		int commandActionsCounter;
+		int tappedActionsCounter;
+		int toggleActionsCounter;
 
 		public Buttons_Native()
         {

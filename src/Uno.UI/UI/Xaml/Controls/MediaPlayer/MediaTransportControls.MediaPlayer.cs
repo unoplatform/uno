@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class MediaTransportControls : Control
 	{
 		private Windows.Media.Playback.MediaPlayer _mediaPlayer;
-		private bool _isScrubbing = false;
+		private bool _isScrubbing;
 		private SerialDisposable _subscriptions = new SerialDisposable();
 		
 		internal void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)

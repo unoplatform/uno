@@ -18,9 +18,9 @@ namespace MUXControlsTestApp
 	[Sample("NavigationView", "WinUI")]
     public sealed partial class NavigationViewCustomThemeResourcesPage : TestPage
 	{
-        private Style defaultPaneTitleTextBlockStyle = null;
+        private Style defaultPaneTitleTextBlockStyle;
 
-        public NavigationViewCustomThemeResourcesPage()
+		public NavigationViewCustomThemeResourcesPage()
         {
             this.InitializeComponent();
 

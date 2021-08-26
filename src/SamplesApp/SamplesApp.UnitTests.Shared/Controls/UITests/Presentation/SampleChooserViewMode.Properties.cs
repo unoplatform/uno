@@ -39,21 +39,21 @@ namespace SampleControl.Presentation
 	public partial class SampleChooserViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		private bool _categoriesSelected = true;
-		private bool _favoritesSelected = false;
-		private bool _recentsSelected = false;
-		private bool _searchSelected = false;
+		private bool _favoritesSelected;
+		private bool _recentsSelected;
+		private bool _searchSelected;
 		private bool _isSplitVisible = true;
 		private bool _categoryVisibility = true;
-		private bool _sampleVisibility = false;
-		private bool _recentsVisibility = false;
-		private bool _favoritesVisibility = false;
-		private bool _searchVisibility = false;
-		private bool _contentVisibility = false;
-		private bool _isFavoritedSample = false;
-		private bool _isAnyContentVisible = false;
+		private bool _sampleVisibility;
+		private bool _recentsVisibility;
+		private bool _favoritesVisibility;
+		private bool _searchVisibility;
+		private bool _contentVisibility;
+		private bool _isFavoritedSample;
+		private bool _isAnyContentVisible;
 		private bool _contentAttachedToWindow;
 		private bool _useFluentStyles;
-		private object _contentPhone = null;
+		private object _contentPhone;
 		private string _searchTerm = "";
 
 		private List<SampleChooserContent> _sampleContents;

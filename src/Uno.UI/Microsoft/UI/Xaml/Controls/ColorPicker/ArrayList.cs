@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public int Count { get; private set; } = 0;
+		public int Count { get; private set; }
 
 		public void Add(T item)
 		{

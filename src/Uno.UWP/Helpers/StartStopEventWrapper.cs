@@ -37,7 +37,7 @@ namespace Uno.Helpers
 			_syncLock = sharedLock ?? new object();
 		}
 
-		public TDelegate? Event { get; private set; } = null;
+		public TDelegate? Event { get; private set; }
 
 		public object SyncLock => _syncLock;
 

@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	// i.e. the node is alreay gone when we get to ItemRemoved callback.
 	internal class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
 	{
-		TreeViewViewModel m_viewModel = null;
+		TreeViewViewModel m_viewModel;
 
 		private void UpdateSelection(TreeViewNode node, TreeNodeSelectionState state)
 		{

@@ -18,11 +18,11 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SplitButton : ContentControl
 	{
-		private bool m_isKeyDown = false;
-		private bool m_isFlyoutOpen = false;
+		private bool m_isKeyDown;
+		private bool m_isFlyoutOpen;
 		private PointerDeviceType m_lastPointerDeviceType = PointerDeviceType.Mouse;
-		private Button m_primaryButton = null;
-		private Button m_secondaryButton = null;
+		private Button m_primaryButton;
+		private Button m_secondaryButton;
 
 		private long m_flyoutPlacementChangedRevoker;
 		private long m_pressedPrimaryRevoker;
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private long m_pressedSecondaryRevoker;
 		private long m_pointerOverSecondaryRevoker;
 
-		internal bool m_hasLoaded = false;
+		internal bool m_hasLoaded;
 
 		public SplitButton()
 		{

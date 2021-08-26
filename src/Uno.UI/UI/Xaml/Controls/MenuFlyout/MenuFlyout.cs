@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool m_openWindowed = true;
 
-		private bool m_openingWindowedInProgress = false;
+		private bool m_openingWindowedInProgress;
 
 		public MenuFlyout()
 		{

@@ -18,8 +18,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NumberBox : Control
 	{
-		bool m_valueUpdating = false;
-		bool m_textUpdating = false;
+		bool m_valueUpdating;
+		bool m_textUpdating;
 
 		SignificantDigitsNumberRounder m_displayRounder = new SignificantDigitsNumberRounder();
 

@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_selectionIndicator = controlProtected.GetTemplateChild(c_selectionIndicatorName) as UIElement;
 		}
 
-		private object m_owner = null;
+		private object m_owner;
 
 		private UIElement m_selectionIndicator;
 

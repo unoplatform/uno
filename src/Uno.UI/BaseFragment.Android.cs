@@ -15,7 +15,7 @@ namespace Uno.UI
 {
 	public abstract partial class BaseFragment : Fragment, DependencyObject, View.IOnTouchListener
 	{
-		private bool _isDisposed = false;
+		private bool _isDisposed;
 
 		private readonly Func<IFragmentTracker> _tracker;
 

@@ -24,7 +24,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 	{
 		ObservableCollection<string> m_stringItemCollection;
 		ObservableCollection<RadioButton> m_radioButtonItemCollection;
-		bool m_loaded = false;
+		bool m_loaded;
 
 		public RadioButtonsPage()
 		{

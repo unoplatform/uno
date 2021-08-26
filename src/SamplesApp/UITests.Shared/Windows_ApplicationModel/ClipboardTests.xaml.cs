@@ -40,7 +40,7 @@ namespace UITests.Windows_ApplicationModel
 
 	public class ClipboardTestsViewModel : ViewModelBase
 	{
-		private bool _isObservingContentChanged = false;
+		private bool _isObservingContentChanged;
 		private string _lastContentChangedDate = "";
 		private string _text = "";
 

@@ -26,7 +26,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 	[SampleControlInfo("Performance", "MarkupExtension")]
 	public sealed partial class Performance_Dopes : Page
 	{
-		volatile bool breakTest = false;
+		volatile bool breakTest;
 		const int max = 600;
 
 		public Performance_Dopes()

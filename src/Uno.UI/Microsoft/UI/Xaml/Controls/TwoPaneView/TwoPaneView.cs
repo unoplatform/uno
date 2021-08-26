@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		ViewMode m_currentMode = ViewMode.None;
 
-		bool m_loaded = false;
+		bool m_loaded;
 
 		//Control.Loaded_revoker m_pane1LoadedRevoker;
 		//Control.Loaded_revoker m_pane2LoadedRevoker;

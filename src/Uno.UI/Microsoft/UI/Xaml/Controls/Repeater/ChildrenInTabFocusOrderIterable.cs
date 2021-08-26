@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private class ChildrenInTabFocusOrderIterator : IEnumerator<DependencyObject>
 		{
 			private readonly List<KeyValuePair<int /* index */, UIElement>> m_realizedChildren;
-			private int m_index = 0;
+			private int m_index;
 
 			public ChildrenInTabFocusOrderIterator(ItemsRepeater repeater)
 			{

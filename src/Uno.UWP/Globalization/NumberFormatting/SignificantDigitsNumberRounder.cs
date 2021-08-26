@@ -5,7 +5,7 @@ namespace Windows.Globalization.NumberFormatting
 {
 	public  partial class SignificantDigitsNumberRounder : INumberRounder
 	{
-		public uint SignificantDigits { get; set; } = 0;
+		public uint SignificantDigits { get; set; }
 
 		[NotImplemented]
 		public RoundingAlgorithm RoundingAlgorithm { get; set; } = RoundingAlgorithm.RoundHalfUp;

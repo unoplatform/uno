@@ -22,8 +22,8 @@ namespace UITests.Shared.Windows_Graphics_Display
 
 	public class DisplayInformationTestsViewModel : ViewModelBase
 	{
-		private bool _dpiChangesOn = false;
-		private bool _orientationChangesOn = false;
+		private bool _dpiChangesOn;
+		private bool _orientationChangesOn;
 
 		public DisplayInformationTestsViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
 		{

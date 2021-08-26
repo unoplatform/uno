@@ -14,7 +14,7 @@ namespace Windows.Foundation
 		private AsyncActionCompletedHandler _onCompleted;
 		private Task _task;
 		private AsyncStatus _status;
-		private uint _id = 0;
+		private uint _id;
 
 		public static AsyncAction FromTask(Func<CancellationToken, Task> taskBuilder) => new AsyncAction(taskBuilder);
 

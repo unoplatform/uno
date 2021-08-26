@@ -14,7 +14,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	public class TouchViewModel : ViewModelBase
 	{
-		private int commandCount = 0;
+		private int commandCount;
 
 		public TouchViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

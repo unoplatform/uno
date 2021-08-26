@@ -19,10 +19,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly long _foregroundChangedCallbackRegistration;
 
-		private bool m_applyTemplateCalled = false;
-		private bool m_notifyOpen = false;
-		private bool m_isVisible = false;
-		private FrameworkElement m_standardIconTextBlock = null;
+		private bool m_applyTemplateCalled;
+		private bool m_notifyOpen;
+		private bool m_isVisible;
+		private FrameworkElement m_standardIconTextBlock;
 		private InfoBarCloseReason m_lastCloseReason = InfoBarCloseReason.Programmatic;
 
 		public InfoBar()

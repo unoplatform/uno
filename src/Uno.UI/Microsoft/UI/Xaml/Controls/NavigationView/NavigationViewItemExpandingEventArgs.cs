@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class NavigationViewItemExpandingEventArgs
     {
 		private readonly NavigationView? m_navigationView;
-		private object? m_expandingItem = null;
+		private object? m_expandingItem;
 
 		internal NavigationViewItemExpandingEventArgs(NavigationView? navigationView)
 		{

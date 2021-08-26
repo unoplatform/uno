@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml
 		private int _entriesLength;
 		private int _minId;
 		private int _maxId;
-		private List<DependencyObjectStore.DefaultValueProvider>? _defaultValueProviders = null;
+		private List<DependencyObjectStore.DefaultValueProvider>? _defaultValueProviders;
 
 		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
 

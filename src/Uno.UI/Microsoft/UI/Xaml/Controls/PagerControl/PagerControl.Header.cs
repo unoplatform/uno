@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class PagerControl
     {
 		private int m_lastSelectedPageIndex = -1;
-		private int m_lastNumberOfPagesCount = 0;
+		private int m_lastNumberOfPagesCount;
 
 		private ComboBox m_comboBox;
 		private NumberBox m_numberBox;

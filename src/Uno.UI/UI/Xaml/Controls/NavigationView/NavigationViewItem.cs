@@ -36,11 +36,11 @@ namespace Windows.UI.Xaml.Controls
 		NavigationViewItemPresenter m_navigationViewItemPresenter;
 		object m_suggestedToolTipContent;
 
-		bool m_isClosedCompact = false;
+		bool m_isClosedCompact;
 
-		bool m_appliedTemplate = false;
-		bool m_hasKeyboardFocus = false;
-		bool m_isContentChangeHandlingDelayedForTopNav = false;
+		bool m_appliedTemplate;
+		bool m_hasKeyboardFocus;
+		bool m_isContentChangeHandlingDelayedForTopNav;
 
 		internal void UpdateVisualStateNoTransition()
 		{

@@ -131,7 +131,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 				}
 			}
 
-			private object _isExecuting = null;
+			private object _isExecuting;
 			private static object _isExecutingNull = new object(); // this represent a null parameter when something is executing
 
 			public Command(Action<object> action, Func<object, bool> canExecute = null)

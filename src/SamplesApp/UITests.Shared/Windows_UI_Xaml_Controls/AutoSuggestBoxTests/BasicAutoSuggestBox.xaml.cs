@@ -30,12 +30,12 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 		}
 
 		private ObservableCollection<Suggestion> _suggestions = new ObservableCollection<Suggestion>();
-		int suggests = 0;
-		int querys = 0;
-		int textChangeds = 0;
-		int userInput = 0;
-		int programmatic = 0;
-		int suggestionChosen = 0;
+		int suggests;
+		int querys;
+		int textChangeds;
+		int userInput;
+		int programmatic;
+		int suggestionChosen;
 
 		public BasicAutoSuggestBox()
 		{

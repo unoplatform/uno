@@ -28,11 +28,11 @@ namespace MUXControlsTestApp
     public sealed partial class NavigationViewTopNavStorePage : TestPage
 	{
         ObservableCollection<NavigationViewItemBase> m_menuItems;
-        private TextBlock contentOverlay = null;
-        private int currentSelectedItem = 0;
-        private int suppressSelectionNextNumber = 0;
+        private TextBlock contentOverlay;
+		private int currentSelectedItem;
+		private int suppressSelectionNextNumber;
 
-        public NavigationViewTopNavStorePage()
+		public NavigationViewTopNavStorePage()
         {
             this.InitializeComponent();
 

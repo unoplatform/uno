@@ -25,12 +25,12 @@ namespace Windows.UI.Xaml.Controls
 		};
 
 		PlacementMode m_placementMode = PlacementMode.Undetermined;
-		bool m_hideInProgress = false;
-		bool m_hasPreparedContent = false;
-		bool m_isShowing = false;
+		bool m_hideInProgress;
+		bool m_hasPreparedContent;
+		bool m_isShowing;
 		Storyboard? m_layoutAdjustmentsForInputPaneStoryboard;
 
-		double m_dialogMinHeight = 0;
+		double m_dialogMinHeight;
 		#endregion
 
 		private protected override void ChangeVisualState(bool useTransitions)

@@ -30,7 +30,7 @@ namespace Uno.UI
 			return Compare(this, other);
 		}
 
-		public static IndexPath Zero { get; } = new IndexPath();
+		public static IndexPath Zero { get; }
 
 		public static bool operator <(IndexPath indexPath1, IndexPath indexPath2)
 		{

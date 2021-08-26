@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
-		private bool m_isInConstantVelocityPan = false;
+		private bool m_isInConstantVelocityPan;
 
 		private static class Parts
 		{
@@ -626,13 +626,13 @@ namespace Windows.UI.Xaml.Controls
 		/// Determines if the vertical scrolling is allowed or not.
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
-		internal bool ComputedIsHorizontalScrollEnabled { get; private set; } = false;
+		internal bool ComputedIsHorizontalScrollEnabled { get; private set; }
 
 		/// <summary>
 		/// Determines if the vertical scrolling is allowed or not.
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
-		internal bool ComputedIsVerticalScrollEnabled { get; private set; } = false;
+		internal bool ComputedIsVerticalScrollEnabled { get; private set; }
 
 
 		internal double MinHorizontalOffset => 0;
@@ -1505,7 +1505,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
-		public bool ArePointerWheelEventsIgnored { get; set; } = false;
+		public bool ArePointerWheelEventsIgnored { get; set; }
 
 		internal bool BringIntoViewport(Rect bounds,
 			bool skipDuringTouchContact,
@@ -1524,7 +1524,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
 		/// </summary>		
-		internal bool ForceChangeToCurrentView { get; set; } = false;
+		internal bool ForceChangeToCurrentView { get; set; }
 
 	}
 }

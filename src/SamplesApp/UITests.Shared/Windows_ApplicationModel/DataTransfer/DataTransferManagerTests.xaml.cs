@@ -31,13 +31,13 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 	public class DataTransferManagerTestsViewModel : ViewModelBase
 	{
 		private readonly DataTransferManager _dataTransferManager;
-		private string _title = null;
-		private string _description = null;
-		private string _text = null;
-		private string _uriText = null;
-		private string _applicationLink = null;
-		private string _webLink = null;
-		private bool? _setDarkTheme = null;
+		private string _title;
+		private string _description;
+		private string _text;
+		private string _uriText;
+		private string _applicationLink;
+		private string _webLink;
+		private bool? _setDarkTheme;
 
 		public DataTransferManagerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

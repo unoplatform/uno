@@ -55,7 +55,7 @@ outer.Loaded
 inner.Loaded";
 		}
 
-		private int recursivityLevel = 0;
+		private int recursivityLevel;
 
 		internal IDisposable Log(string s)
 		{

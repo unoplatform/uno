@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		internal readonly Popup _popup;
 		private TaskCompletionSource<ContentDialogResult> _tcs;
 		private readonly SerialDisposable _subscriptions = new SerialDisposable();
-		private bool _hiding = false;
+		private bool _hiding;
 
 		private Border m_tpBackgroundElementPart;
 		private Border m_tpButton1HostPart;

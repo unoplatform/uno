@@ -438,7 +438,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private bool _needsRefresh = false;
+		private bool _needsRefresh;
 
 		protected void SetNeedsRefresh()
 		{

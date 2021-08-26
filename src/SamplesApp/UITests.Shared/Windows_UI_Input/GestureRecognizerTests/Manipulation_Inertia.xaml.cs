@@ -18,7 +18,7 @@ namespace UITests.Windows_UI_Input.GestureRecognizerTests
 			this.InitializeComponent();
 		}
 
-		private long _inertiaStart = 0;
+		private long _inertiaStart;
 
 		private void InertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
 		{

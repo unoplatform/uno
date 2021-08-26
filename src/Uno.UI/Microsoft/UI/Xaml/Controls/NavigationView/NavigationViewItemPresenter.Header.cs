@@ -13,12 +13,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private NavigationViewItemHelper<NavigationViewItemPresenter> m_helper;
 
-		private Grid m_contentGrid = null;
-		private Grid m_expandCollapseChevron = null;
+		private Grid m_contentGrid;
+		private Grid m_expandCollapseChevron;
 
-		private double m_leftIndentation = 0;
+		private double m_leftIndentation;
 
-		private Storyboard m_chevronExpandedStoryboard = null;
-		private Storyboard m_chevronCollapsedStoryboard = null;
+		private Storyboard m_chevronExpandedStoryboard;
+		private Storyboard m_chevronCollapsedStoryboard;
 	}
 }

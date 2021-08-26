@@ -66,10 +66,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string[] _analyzerSuppressions;
 		private readonly string[] _resourceKeys;
 		private readonly bool _outputSourceComments;
-		private int _applyIndex = 0;
-		private int _collectionIndex = 0;
-		private int _subclassIndex = 0;
-		private int _dictionaryPropertyIndex = 0;
+		private int _applyIndex;
+		private int _collectionIndex;
+		private int _subclassIndex;
+		private int _dictionaryPropertyIndex;
 		private string? _themeDictionaryCurrentlyBuilding;
 		private readonly XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
 		private readonly bool _isUiAutomationMappingEnabled;
@@ -96,11 +96,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// True if the generator is currently creating child subclasses (for templates, etc)
 		/// </summary>
-		private bool _isInChildSubclass = false;
+		private bool _isInChildSubclass;
 		/// <summary>
 		/// True if the generator is currently creating the inner singleton class associated with a top-level resource dictionary
 		/// </summary>
-		private bool _isInSingletonInstance = false;
+		private bool _isInSingletonInstance;
 
 		/// <summary>
 		/// Context to report diagnostics to
@@ -273,7 +273,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Indicates if the code generation should write #error in the generated code (and break at compile time) or write a // Warning, which would be silent.
 		/// </summary>
 		/// <remarks>Initial behavior is to write // Warning, hence the default value to false, but we suggest setting this to true.</remarks>
-		public static bool ShouldWriteErrorOnInvalidXaml { get; set; } = false;
+		public static bool ShouldWriteErrorOnInvalidXaml { get; set; }
 
 		public string GenerateFile()
 		{
@@ -4203,7 +4203,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private int _staticResourceResolverOutputIndex = 0;
+		private int _staticResourceResolverOutputIndex;
 
 		/// <summary>
 		/// Returns code for simple initialization-time retrieval for StaticResource/ThemeResource markup.

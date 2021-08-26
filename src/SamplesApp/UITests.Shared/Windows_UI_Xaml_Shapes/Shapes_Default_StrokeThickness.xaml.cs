@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 	[Sample("Shapes", "Default_StrokeThickness")]
 	public sealed partial class Shapes_Default_StrokeThickness : UserControl
     {
-		public double MyStrokeThickness { get; set; } = 0d;
+		public double MyStrokeThickness { get; set; }
 
 		public Shapes_Default_StrokeThickness()
         {

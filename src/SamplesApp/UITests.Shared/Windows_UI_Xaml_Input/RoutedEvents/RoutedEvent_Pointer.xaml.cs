@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents
 			_lastEventIsMoved = false;
 		}
 
-		private bool _lastEventIsMoved = false;
+		private bool _lastEventIsMoved;
 		private void PointerMovedHandler(object sender, PointerRoutedEventArgs e)
 		{
 			if (_lastEventIsMoved)

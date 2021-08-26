@@ -24,11 +24,11 @@ namespace Windows.UI.Xaml.Media.Animation
 	internal class PanelTransitionHelper
 	{
 		readonly Panel _source;
-		Storyboard _onLoadedStoryboard = null;
-		bool _onLoadedisAnimating = false;
-		bool _onUpdatedIsAnimating = false;
+		Storyboard _onLoadedStoryboard;
+		bool _onLoadedisAnimating;
+		bool _onUpdatedIsAnimating;
 
-		Storyboard _onUpdatedStoryboard = null;
+		Storyboard _onUpdatedStoryboard;
 
 		Dictionary<View, Point> _childsInitialPositions = new Dictionary<View, Point>();
 		List<ChildWithOffset> _modifiedChildWithOffset = new List<ChildWithOffset>();

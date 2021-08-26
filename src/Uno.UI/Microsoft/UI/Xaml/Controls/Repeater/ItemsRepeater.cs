@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Used to avoid layout cycles with StackLayout layouts where variable sized children prevent
 		// the ItemsRepeater's layout to settle.
-		uint _stackLayoutMeasureCounter = 0u;
+		uint _stackLayoutMeasureCounter;
 
 		// Bug in framework's reference tracking causes crash during
 		// UIAffinityQueue cleanup. To avoid that bug, take a strong ref

@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class InfoBarPanel : Panel
 	{
-		private bool m_isVertical = false;
+		private bool m_isVertical;
 
 		protected override Size MeasureOverride(Size availableSize)
 		{

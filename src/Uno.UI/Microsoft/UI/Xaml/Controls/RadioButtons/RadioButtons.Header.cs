@@ -18,17 +18,17 @@
 
 		// This is used to guard against reentrency when calling select, since select changes
 		// the Selected Index/Item which in turn calls select.
-		private bool m_currentlySelecting = false;
+		private bool m_currentlySelecting;
 
 		// We block selection before the control has loaded.
 		// This is to ensure that we do not overwrite a provided Selected Index/Item value.
 		private bool m_blockSelecting = true;
 
-		private ItemsRepeater m_repeater = null;
+		private ItemsRepeater m_repeater;
 
-		private RadioButtonsElementFactory m_radioButtonsElementFactory = null;
+		private RadioButtonsElementFactory m_radioButtonsElementFactory;
 
-		private bool m_testHooksEnabled = false;
+		private bool m_testHooksEnabled;
 
 		private const string s_repeaterName = "InnerRepeater";
 		private const string s_childHandlersPropertyName = "ChildHandlers";

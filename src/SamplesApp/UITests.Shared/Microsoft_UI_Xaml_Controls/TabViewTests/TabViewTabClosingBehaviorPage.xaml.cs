@@ -20,7 +20,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
 	public sealed partial class TabViewTabClosingBehaviorPage : Page
 	{
-		private int _newTabNumber = 0;
+		private int _newTabNumber;
 
 		public TabViewTabClosingBehaviorPage()
 		{

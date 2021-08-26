@@ -82,20 +82,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// is in progress.
 		private ColorSpectrumShape m_shapeFromLastBitmapCreation = ColorSpectrumShape.Box;
 		private ColorSpectrumComponents m_componentsFromLastBitmapCreation = ColorSpectrumComponents.HueSaturation;
-		private double m_imageWidthFromLastBitmapCreation = 0.0;
-		private double m_imageHeightFromLastBitmapCreation = 0.0;
-		private int m_minHueFromLastBitmapCreation = 0;
-		private int m_maxHueFromLastBitmapCreation = 0;
-		private int m_minSaturationFromLastBitmapCreation = 0;
-		private int m_maxSaturationFromLastBitmapCreation = 0;
-		private int m_minValueFromLastBitmapCreation = 0;
-		private int m_maxValueFromLastBitmapCreation = 0;
+		private double m_imageWidthFromLastBitmapCreation;
+		private double m_imageHeightFromLastBitmapCreation;
+		private int m_minHueFromLastBitmapCreation;
+		private int m_maxHueFromLastBitmapCreation;
+		private int m_minSaturationFromLastBitmapCreation;
+		private int m_maxSaturationFromLastBitmapCreation;
+		private int m_minValueFromLastBitmapCreation;
+		private int m_maxValueFromLastBitmapCreation;
 
 		private Color m_oldColor = Color.FromArgb(255, 255, 255, 255);
 		private Vector4 m_oldHsvColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
 		// Uno Doc: Added to dispose event handlers
-		private bool _isTemplateApplied = false;
+		private bool _isTemplateApplied;
 		private SerialDisposable _eventSubscriptions = new SerialDisposable();
 
 		public ColorSpectrum()

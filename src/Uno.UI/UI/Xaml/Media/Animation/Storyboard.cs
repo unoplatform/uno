@@ -31,8 +31,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private DateTimeOffset _lastBeginTime;
 		private int _replayCount = 1;
-		private int _runningChildren = 0;
-		private bool _hasFillingChildren = false;
+		private int _runningChildren;
+		private bool _hasFillingChildren;
 		private Dictionary<ITimeline, IDisposable> _childrenSubscriptions = new Dictionary<ITimeline, IDisposable>();
 
 		public Storyboard()

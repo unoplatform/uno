@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		/// This should generally be left false, but may be required in cases that the image is rapidly unloaded and reloaded, or that 
 		/// OnUnloaded/OnDetachedFromWindow is improperly called when the view isn't really being removed, and performance/stability is affected.
 		/// </summary>
-		public bool PreserveStateOnUnload { get; set; } = false;
+		public bool PreserveStateOnUnload { get; set; }
 
 		private readonly static IEventProvider _imageTrace = Tracing.Get(TraceProvider.Id);
 

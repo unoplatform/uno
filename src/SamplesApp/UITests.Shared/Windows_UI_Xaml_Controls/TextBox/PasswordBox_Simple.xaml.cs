@@ -9,7 +9,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 	[SampleControlInfo("TextBox", "PasswordBox_Simple")]
 	public sealed partial class PasswordBox_Simple : UserControl
 	{
-		int currentMode = 0;
+		int currentMode;
 		public PasswordBox_Simple()
 		{
 			this.InitializeComponent();

@@ -32,7 +32,7 @@ namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 
 	internal class ValueToRectConverter : IValueConverter
 	{
-		public Point Origin { get; set; } = default;
+		public Point Origin { get; set; }
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			if (targetType == typeof(Rect))

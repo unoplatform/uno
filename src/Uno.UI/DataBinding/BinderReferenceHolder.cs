@@ -51,7 +51,7 @@ namespace Uno.UI.DataBinding
 		private readonly Dictionary<IntPtr, System.Tuple<Type, WeakReference>> _newReferences = new Dictionary<IntPtr, System.Tuple<Type, WeakReference>>();
 		private readonly IntPtr _handle;
 
-		public static bool IsEnabled { get; set; } = false;
+		public static bool IsEnabled { get; set; }
 
 		public BinderReferenceHolder(Type type, object target)
 		{

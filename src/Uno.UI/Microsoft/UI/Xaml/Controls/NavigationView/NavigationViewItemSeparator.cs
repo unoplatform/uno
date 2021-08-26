@@ -10,9 +10,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NavigationViewItemSeparator : NavigationViewItemBase
 	{
-		private bool m_appliedTemplate = false;
-		private bool m_isClosedCompact = false;
-		private Grid m_rootGrid = null;
+		private bool m_appliedTemplate;
+		private bool m_isClosedCompact;
+		private Grid m_rootGrid;
 		private long m_splitViewIsPaneOpenChangedRevoker;
 		private long m_splitViewDisplayModeChangedRevoker;
 		private const string c_rootGrid = "NavigationViewItemSeparatorRootGrid";

@@ -24,10 +24,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string SR_TabViewCloseButtonName = "TabViewCloseButtonName";
 
 		private bool m_firstTimeSettingToolTip = true;
-		private bool m_hasPointerCapture = false;
-		private bool m_isMiddlePointerButtonPressed = false;
-		private bool m_isDragging = false;
-		private bool m_isPointerOver = false;
+		private bool m_hasPointerCapture;
+		private bool m_isMiddlePointerButtonPressed;
+		private bool m_isDragging;
+		private bool m_isPointerOver;
 		private TabViewCloseButtonOverlayMode m_closeButtonOverlayMode = TabViewCloseButtonOverlayMode.Auto;
 		private TabViewWidthMode m_tabViewWidthMode = TabViewWidthMode.Equal;
 		private Button m_closeButton;

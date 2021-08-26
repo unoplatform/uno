@@ -26,7 +26,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ControlTests
 			this.InitializeComponent();
 		}
 
-		private int _count = 0;
+		private int _count;
 		private void IncrementCounter(object sender, PointerRoutedEventArgs args)
 		{
 			_count++;

@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ImageIcon : IconElement
 	{
-		private Image? m_rootImage = null;
+		private Image? m_rootImage;
 
 		public ImageIcon()
 		{

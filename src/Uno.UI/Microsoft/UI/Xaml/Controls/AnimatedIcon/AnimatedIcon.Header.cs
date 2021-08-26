@@ -24,15 +24,15 @@ namespace Microsoft.UI.Xaml.Controls
 		private string m_lastAnimationSegment = "";
 		private string m_lastAnimationSegmentStart = "";
 		private string m_lastAnimationSegmentEnd = "";
-		private bool m_isPlaying = false;
+		private bool m_isPlaying;
 		private bool m_canDisplayPrimaryContent = true;
 		private float m_previousSegmentLength = 1.0f;
 		private float m_durationMultiplier = 1.0f;
 		private float m_speedUpMultiplier = 7.0f;
-		private bool m_isSpeedUp = false;
+		private bool m_isSpeedUp;
 
-		private CompositionPropertySet m_progressPropertySet = null;
-		private CompositionScopedBatch m_batch = null;
+		private CompositionPropertySet m_progressPropertySet;
+		private CompositionScopedBatch m_batch;
 		private SerialDisposable m_batchCompletedRevoker = new SerialDisposable();
 		private SerialDisposable m_ancestorStatePropertyChangedRevoker = new SerialDisposable();
 		private SerialDisposable m_layoutUpdatedRevoker = new SerialDisposable();

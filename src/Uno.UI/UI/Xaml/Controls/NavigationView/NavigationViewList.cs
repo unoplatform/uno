@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		NavigationViewListPosition m_navigationViewListPosition = NavigationViewListPosition.LeftNav;
 		bool m_showFocusVisual = true;
-		WeakReference<NavigationView> m_navigationView = null;
+		WeakReference<NavigationView> m_navigationView;
 
 		// For topnav, like alarm application, we may only need icon and no content for NavigationViewItem. 
 		// ListView raise ItemClicked event, but it only provides the content and not the container.

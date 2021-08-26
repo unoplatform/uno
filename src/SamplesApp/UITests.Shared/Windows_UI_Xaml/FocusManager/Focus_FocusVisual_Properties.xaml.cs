@@ -50,7 +50,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 			Interval = TimeSpan.FromSeconds(1)
 		};
 
-		private bool _isCycling = false;
+		private bool _isCycling;
 
 		public FocusVisualPropertiesViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

@@ -22,7 +22,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 	[SampleControlInfo("ButtonTestsControl", nameof(Button_Opacity_Automated))]
 	public sealed partial class Button_Opacity_Automated : UserControl
 	{
-		private int increment = 0;
+		private int increment;
 
 		public Button_Opacity_Automated()
 		{

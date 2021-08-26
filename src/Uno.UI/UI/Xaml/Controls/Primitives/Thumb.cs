@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		// 0b0[All][Mouse][Pen]
 		// this assume that PointerDeviceType.Touch = 0 / Pen = 1 / Mouse = 2
-		private int _disableCapturePointers = 0b0000; 
+		private int _disableCapturePointers;
 
 		/// <summary>
 		/// Disable capture of all pointer kind

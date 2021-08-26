@@ -18,9 +18,9 @@ namespace Windows.Devices.Lights
 		private CameraManager _cameraManager;
 #pragma warning disable CS0618
 		// using deprecated API for older Android versions
-		private Android.Hardware.Camera _camera = null;
+		private Android.Hardware.Camera _camera;
 #pragma warning restore CS0618
-		private SurfaceTexture _surfaceTexture = null;
+		private SurfaceTexture _surfaceTexture;
 
 		private float _brightness;
 		private bool _isEnabled;

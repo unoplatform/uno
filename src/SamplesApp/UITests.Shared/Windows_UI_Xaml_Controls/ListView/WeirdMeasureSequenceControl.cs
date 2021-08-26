@@ -10,7 +10,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
 	public partial class WeirdMeasureSequenceControl : ContentControl
 	{
-		private bool _firstProblematicArrange = false;
+		private bool _firstProblematicArrange;
 
 		public event Action MakingProblems;
 

@@ -66,7 +66,7 @@ namespace Uno.UI
 			///
 			/// Note: This is incompatible with the way accessibility works on UWP.
 			/// </remarks>
-			public static bool UseSimpleAccessibility { get; set; } = false;
+			public static bool UseSimpleAccessibility { get; set; }
 		}
 
 		public static class ComboBox
@@ -103,7 +103,7 @@ namespace Uno.UI
 			/// It means you can put a `<ContentPresenter />` directly in the ControlTemplate and it will
 			/// be bound automatically to its TemplatedPatent's Content.
 			/// </summary>
-			public static bool UseImplicitContentFromTemplatedParent { get; set; } = false;
+			public static bool UseImplicitContentFromTemplatedParent { get; set; }
 		}
 
 		public static class Control
@@ -111,14 +111,14 @@ namespace Uno.UI
 			/// <summary>
 			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Stretch instead of Center
 			/// </summary>
-			public static bool UseLegacyContentAlignment { get; set; } = false;
+			public static bool UseLegacyContentAlignment { get; set; }
 
 			/// <summary>
 			/// Enables the lazy materialization of <see cref="Windows.UI.Xaml.Controls.Control"/> template. This behavior
 			/// is not aligned with UWP, which materializes templates immediately, making x:Name controls available
 			/// in the constructor of a control.
 			/// </summary>
-			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
+			public static bool UseLegacyLazyApplyTemplate { get; set; }
 
 			/// <summary>
 			/// If the call to "OnApplyTemplate" should be deferred to mimic UWP sequence of events.
@@ -127,9 +127,7 @@ namespace Uno.UI
 			/// Will never be deferred when .ApplyTemplate() is called explicitly.
 			/// More information there: https://github.com/unoplatform/uno/issues/3519
 			/// </remarks>
-			public static bool UseDeferredOnApplyTemplate { get; set; }
-#if __ANDROID__ || __IOS__ || __MACOS__
-				= false; // opt-in for iOS/Android/macOS
+			public static bool UseDeferredOnApplyTemplate { get; set; } // opt-in for iOS/Android/macOS
 #else
 				= true;
 #endif
@@ -142,7 +140,7 @@ namespace Uno.UI
 			/// will be made as fallback when the `SelectTemplateCore(object)` returns null.
 			/// When set to true, only `SelectTemplateCore(object)` is called (Uno's legacy mode).
 			/// </summary>
-			public static bool UseLegacyTemplateSelectorOverload { get; set; } = false;
+			public static bool UseLegacyTemplateSelectorOverload { get; set; }
 		}
 
 		public static class DependencyObject
@@ -177,7 +175,7 @@ namespace Uno.UI
 			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
 			/// </summary>
-			public static bool IgnoreTextScaleFactor { get; set; } = false;
+			public static bool IgnoreTextScaleFactor { get; set; }
 		}
 
 		public static class FrameworkElement
@@ -221,7 +219,7 @@ namespace Uno.UI
 			/// Use the old way to align iOS images, using the "ContentMode".
 			/// New way is using the Layer to better position the image according to alignments.
 			/// </summary>
-			public static bool LegacyIosAlignment { get; set; } = false;
+			public static bool LegacyIosAlignment { get; set; }
 		}
 
 		public static class Interop
@@ -231,7 +229,7 @@ namespace Uno.UI
 			/// flag to true forces the use of the Javascript eval mode, instead of binary interop.
 			/// This flag has no effect when running in hosted mode.
 			/// </summary>
-			public static bool ForceJavascriptInterop { get; set; } = false;
+			public static bool ForceJavascriptInterop { get; set; }
 		}
 
 		public static class Binding
@@ -239,7 +237,7 @@ namespace Uno.UI
 			/// <summary>
 			/// Determines if the binding engine should ignore identical references in binding paths.
 			/// </summary>
-			public static bool IgnoreINPCSameReferences { get; set; } = false;
+			public static bool IgnoreINPCSameReferences { get; set; }
 		}
 
 		public static class Popup
@@ -285,7 +283,7 @@ namespace Uno.UI
 			/// <summary>
 			/// Enables reuse of <see cref="Page"/> instances. Enabling can improve performance when using <see cref="Frame"/> navigation.
 			/// </summary>
-			public static bool IsPoolingEnabled { get; set; } = false;
+			public static bool IsPoolingEnabled { get; set; }
 		}
 
 		public static class PointerRoutedEventArgs
@@ -373,7 +371,7 @@ namespace Uno.UI
 			/// Determines if the caret is visible or not.
 			/// </summary>
 			/// <remarks>This feature is used to avoid screenshot comparisons false positives</remarks>
-			public static bool HideCaret { get; set; } = false;
+			public static bool HideCaret { get; set; }
 		}
 
 		public static class ScrollViewer
@@ -436,7 +434,7 @@ namespace Uno.UI
 			/// Determines if pages in the backstack are kept in the visual tree.
 			/// Defaults to false for performance considerations.
 			/// </summary>
-			public static bool AndroidUnloadInactivePages { get; set; } = false;
+			public static bool AndroidUnloadInactivePages { get; set; }
 #endif
 		}
 
@@ -455,14 +453,14 @@ namespace Uno.UI
 			/// <remarks>
 			/// This feature is only supported on iOS, for now.
 			/// </remarks>
-			public static bool ShowClippingBounds { get; set; } = false;
+			public static bool ShowClippingBounds { get; set; }
 
 			/// <summary>
 			/// [WebAssembly Only] Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.
 			/// </summary>
-			public static bool AssignDOMXamlName { get; set; } = false;
+			public static bool AssignDOMXamlName { get; set; }
 
 			/// <summary>
 			/// [WebAssembly Only] Enable UIElement.ToString() to return the element's unique ID
@@ -479,7 +477,7 @@ namespace Uno.UI
 			/// Note: for release builds of Uno, if the flag is set, attributes will be set on loading and *not* updated if
 			/// the values change subsequently. This restriction doesn't apply to debug Uno builds.
 			/// </remarks>
-			public static bool AssignDOMXamlProperties { get; set; } = false;
+			public static bool AssignDOMXamlProperties { get; set; }
 
 #if __ANDROID__
 			/// <summary>
@@ -500,7 +498,7 @@ namespace Uno.UI
 			/// unlike UWP which waits the for the end of the <see cref="VisualTransition.Storyboard"/> (if any) to apply them.
 			/// </summary>
 			/// <remarks>This flag is for backward compatibility with old versions of uno and should not be turned on.</remarks>
-			public static bool ApplySettersBeforeTransition { get; set; } = false;
+			public static bool ApplySettersBeforeTransition { get; set; }
 		}
 
 		public static class WebView
@@ -513,7 +511,7 @@ namespace Uno.UI
 			/// <remarks>
 			/// See this for more info: https://github.com/unoplatform/uno/blob/26c5cc5992cae3c8c25adf51eb77ca4b0dd34e93/src/Uno.UI/UI/Xaml/Controls/WebView/WebView.Android.cs#L251_L255
 			/// </remarks>
-			public static bool ForceSoftwareRendering { get; set; } = false;
+			public static bool ForceSoftwareRendering { get; set; }
 #endif
 		}
 
@@ -573,7 +571,7 @@ namespace Uno.UI
 			/// <para/>Default value is False.
 			/// </remarks>
 			/// <returns>True if this feature is on, False otherwise</returns>
-			public static bool EnableBitmapIconTint { get; set; } = false;
+			public static bool EnableBitmapIconTint { get; set; }
 #endif
 		}
 

@@ -33,17 +33,17 @@ namespace Microsoft.UI.Xaml.Controls
 			HexTextBoxChanged,
 		};
 
-		private bool m_updatingColor = false;
-		private bool m_updatingControls = false;
+		private bool m_updatingColor;
+		private bool m_updatingControls;
 		private Rgb m_currentRgb = new Rgb(1.0, 1.0, 1.0);
 		private Hsv m_currentHsv = new Hsv(0.0, 1.0, 1.0);
 		private string m_currentHex = "#FFFFFFFF";
 		private double m_currentAlpha = 1.0;
 
 		private string m_previousString = string.Empty;
-		private bool m_isFocusedTextBoxValid = false;
+		private bool m_isFocusedTextBoxValid;
 
-		private bool m_textEntryGridOpened = false;
+		private bool m_textEntryGridOpened;
 
 		// Template parts
 		private Primitives.ColorSpectrum m_colorSpectrum;
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Rectangle m_previousColorRectangle;
 		private ImageBrush m_colorPreviewRectangleCheckeredBackgroundImageBrush;
 
-		private IAsyncAction m_createColorPreviewRectangleCheckeredBackgroundBitmapAction = null;
+		private IAsyncAction m_createColorPreviewRectangleCheckeredBackgroundBitmapAction;
 
 		private Primitives.ColorPickerSlider m_thirdDimensionSlider;
 		private LinearGradientBrush m_thirdDimensionSliderGradientBrush;
@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Rectangle m_alphaSliderBackgroundRectangle;
 		private ImageBrush m_alphaSliderCheckeredBackgroundImageBrush;
 
-		private IAsyncAction m_alphaSliderCheckeredBackgroundBitmapAction = null;
+		private IAsyncAction m_alphaSliderCheckeredBackgroundBitmapAction;
 
 		private ButtonBase m_moreButton;
 		private TextBlock m_moreButtonLabel;
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private SolidColorBrush m_checkerColorBrush;
 
 		// Uno Doc: Added to dispose event handlers
-		private bool _isTemplateApplied = false;
+		private bool _isTemplateApplied;
 		private SerialDisposable _eventSubscriptions = new SerialDisposable();
 
 		public ColorPicker()

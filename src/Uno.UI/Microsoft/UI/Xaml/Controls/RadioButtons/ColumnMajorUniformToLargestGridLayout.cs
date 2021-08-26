@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private Size m_largestChildSize = Size.Empty;
 
 		//Testhooks helpers, only function while m_testHooksEnabled == true
-		private bool m_testHooksEnabled = false;
+		private bool m_testHooksEnabled;
 
 		private int m_rows = -1;
 

@@ -55,7 +55,7 @@ namespace Uno.UI
 		/// </summary>
 		public static event EventHandler<CurrentActivityChangedEventArgs> CurrentChanged;
 
-		private static int _instanceCount = 0;
+		private static int _instanceCount;
 		private static IImmutableDictionary<int, BaseActivity> _instances = ImmutableDictionary<int, BaseActivity>.Empty;
 		private static BaseActivity _current;
 

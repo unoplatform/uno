@@ -38,7 +38,7 @@ namespace UITests.Windows_ApplicationModel.Contacts
 	{
 		private string _status = "";
 		private Contact[] _pickedContacts = Array.Empty<Contact>();
-		private Contact _selectedContact = null;
+		private Contact _selectedContact;
 
 		public PickContactViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

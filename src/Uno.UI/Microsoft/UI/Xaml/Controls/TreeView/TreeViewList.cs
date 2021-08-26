@@ -22,8 +22,8 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </summary>
 	public partial class TreeViewList : ListView
 	{
-		private bool m_isMultiselectEnabled = false;
-		private bool m_itemsSourceAttached = false;
+		private bool m_isMultiselectEnabled;
+		private bool m_itemsSourceAttached;
 		private string m_dropTargetDropEffectString;
 		private UIElement m_draggedOverItem;
 		private int m_emptySlotIndex;

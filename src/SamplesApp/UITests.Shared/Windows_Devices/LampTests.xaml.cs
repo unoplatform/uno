@@ -26,7 +26,7 @@ namespace UITests.Shared.Windows_Devices
 
 	public class LampTestsViewModel : ViewModelBase
 	{
-		private Lamp _lamp = null;
+		private Lamp _lamp;
 		private string _lampStatus;
 
 		public LampTestsViewModel(CoreDispatcher dispatcher) :

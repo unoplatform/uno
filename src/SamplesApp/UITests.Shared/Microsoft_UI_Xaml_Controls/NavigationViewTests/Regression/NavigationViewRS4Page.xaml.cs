@@ -29,11 +29,11 @@ namespace MUXControlsTestApp
 	[Sample("NavigationView", "WinUI")]
     public sealed partial class NavigationViewRS4Page : TestPage
 	{
-        private int m_newItemIndex = 0;
-        private int m_closingEventsFired = 0;
-        private int m_closedEventsFired = 0;
+        private int m_newItemIndex;
+		private int m_closingEventsFired;
+		private int m_closedEventsFired;
 
-        public NavigationViewRS4Page()
+		public NavigationViewRS4Page()
         {
             this.InitializeComponent();
 

@@ -10,7 +10,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 	[SampleControlInfo("ButtonTestsControl", nameof(HyperlinkButton_IsEnabled_Automated))]
 	public sealed partial class HyperlinkButton_IsEnabled_Automated : UserControl
 	{
-		private int _clickTotal = 0;
+		private int _clickTotal;
 
 		public HyperlinkButton_IsEnabled_Automated()
 		{

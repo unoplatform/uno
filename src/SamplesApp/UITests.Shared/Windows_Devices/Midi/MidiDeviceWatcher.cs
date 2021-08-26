@@ -26,14 +26,14 @@ namespace UITests.Shared.Windows_Devices.Midi
 	/// Universal Windows Platform sample</see></remarks>
 	internal class MidiDeviceWatcher
 	{
-		private readonly DeviceWatcher _deviceWatcher = null;
-		private readonly ListView _portList = null;
+		private readonly DeviceWatcher _deviceWatcher;
+		private readonly ListView _portList;
 		private readonly ObservableCollection<string> _items;
 		private readonly string _midiSelector = string.Empty;
-		private readonly CoreDispatcher _coreDispatcher = null;
+		private readonly CoreDispatcher _coreDispatcher;
 
-		private DeviceInformationCollection _deviceInformationCollection = null;		
-		private bool _enumerationCompleted = false;
+		private DeviceInformationCollection _deviceInformationCollection;
+		private bool _enumerationCompleted;
 
 		/// <summary>
 		/// Constructor: Initialize and hook up Device Watcher events

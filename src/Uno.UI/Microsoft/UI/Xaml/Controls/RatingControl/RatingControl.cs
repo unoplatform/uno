@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private const int c_noValueSetSentinel = -1;
 
-		private static UISettings _uiSettings = null;
+		private static UISettings _uiSettings;
 
 		private DispatcherHelper m_dispatcherHelper;
 
@@ -54,13 +54,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private StackPanel m_backgroundStackPanel;
 		private StackPanel m_foregroundStackPanel;
 
-		private bool m_isPointerOver = false;
-		private bool m_isPointerDown = false;
-		private double m_mousePercentage = 0.0;
+		private bool m_isPointerOver;
+		private bool m_isPointerDown;
+		private double m_mousePercentage;
 
 		private RatingInfoType m_infoType = RatingInfoType.Font;
-		private double m_preEngagementValue = 0.0;
-		private bool m_disengagedWithA = false;
+		private double m_preEngagementValue;
+		private bool m_disengagedWithA;
 		private bool m_shouldDiscardValue = true;
 		private long m_fontFamilyChangedToken;
 

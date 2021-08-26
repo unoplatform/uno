@@ -21,17 +21,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// Constant is a temporary measure. Potentially expose using TemplateSettings.
 		protected const int c_itemIndentation = 31;
 
-		internal bool IsTopLevelItem { get; set; } = false;
+		internal bool IsTopLevelItem { get; set; }
 
 		/// <summary>
 		/// Flag to keep track of whether this item was created by the custom internal NavigationViewItemsFactory.
 		/// This is required in order to achieve proper recycling
 		/// </summary>
-		internal bool CreatedByNavigationViewItemsFactory { get; set; } = false;
+		internal bool CreatedByNavigationViewItemsFactory { get; set; }
 
-		protected NavigationView m_navigationView = null;
+		protected NavigationView m_navigationView;
 
 		private NavigationViewRepeaterPosition m_position = NavigationViewRepeaterPosition.LeftNav;
-		private int m_depth = 0;
+		private int m_depth;
 	}
 }

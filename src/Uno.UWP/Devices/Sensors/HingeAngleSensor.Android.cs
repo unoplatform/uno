@@ -13,9 +13,9 @@ namespace Windows.Devices.Sensors
 	{
 		private static readonly object _syncLock = new object();
 
-		private static bool _initializationAttempted = false;
+		private static bool _initializationAttempted;
 		private static HingeAngleSensor _instance;
-		private static INativeHingeAngleSensor _hingeAngleSensor = null;
+		private static INativeHingeAngleSensor _hingeAngleSensor;
 
 		private TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChanged;
 

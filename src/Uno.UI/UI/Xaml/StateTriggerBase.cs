@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml
 			Owner?.Owner?.RefreshStateTriggers();
 		}
 
-		internal StateTriggerPrecedence CurrentPrecedence { get; set; } = 0;
+		internal StateTriggerPrecedence CurrentPrecedence { get; set; }
 
 		internal VisualState Owner => this.GetParent() as VisualState;
 

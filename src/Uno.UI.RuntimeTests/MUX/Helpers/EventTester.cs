@@ -396,8 +396,8 @@ namespace Microsoft.UI.Xaml.Tests.Common
 
 		#region IDisposable Support
 
-		private bool disposedValue = false; // To detect redundant calls
-		private bool isDisposing = false;
+		private bool disposedValue; // To detect redundant calls
+		private bool isDisposing;
 
 		private void Dispose(bool disposing)
 		{

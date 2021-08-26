@@ -17,9 +17,9 @@ namespace MUXControlsTestApp
 	[SampleControlInfo("DropDownButton", "MUX Page")]
 	public sealed partial class DropDownButtonPage
 	{
-		private int _clickCount = 0;
-		private int _flyoutOpenedCount = 0;
-		private int _flyoutClosedCount = 0;
+		private int _clickCount;
+		private int _flyoutOpenedCount;
+		private int _flyoutClosedCount;
 
 		private Flyout _flyout;
 

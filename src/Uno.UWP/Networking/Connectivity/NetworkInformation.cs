@@ -6,7 +6,7 @@ namespace Windows.Networking.Connectivity
 	{
 		private static readonly object _syncLock = new object();
 
-		private static NetworkStatusChangedEventHandler _networkStatusChanged = null;
+		private static NetworkStatusChangedEventHandler _networkStatusChanged;
 
 		/// <summary>
 		/// Gets the connection profile associated with the internet connection currently used by the local machine.

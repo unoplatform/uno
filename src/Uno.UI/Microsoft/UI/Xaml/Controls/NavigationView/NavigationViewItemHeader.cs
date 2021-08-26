@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NavigationViewItemHeader : NavigationViewItemBase
 	{
-		private Grid m_rootGrid = null;
-		private bool m_isClosedCompact = false;
+		private Grid m_rootGrid;
+		private bool m_isClosedCompact;
 		private const string c_rootGrid = "NavigationViewItemHeaderRootGrid";
 
 		public NavigationViewItemHeader()

@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private bool _applyTemplateShouldBeInvoked = false;
+		private bool _applyTemplateShouldBeInvoked;
 
 		private protected override void OnPostLoading()
 		{
@@ -435,7 +435,7 @@ namespace Windows.UI.Xaml.Controls
 		/// The Content control uses this delayed creation as an optimization technique for layout creation, when controls
 		/// are created but not yet used.
 		/// </remarks>
-		protected virtual bool CanCreateTemplateWithoutParent { get; } = false;
+		protected virtual bool CanCreateTemplateWithoutParent { get; }
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{

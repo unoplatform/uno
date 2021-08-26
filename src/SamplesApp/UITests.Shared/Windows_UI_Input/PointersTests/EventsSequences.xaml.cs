@@ -431,7 +431,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		private class EventSequenceValidator
 		{
 			private readonly IList<(object evt, RoutedEventArgs args)> _args;
-			private int _index = 0;
+			private int _index;
 
 			public EventSequenceValidator(IList<(object evt, RoutedEventArgs args)> args)
 			{

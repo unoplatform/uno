@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_System.Display
 		description: "Demonstrates DisplayRequest class to keep screen awake. Make sure to test without debugger attached (that keeps screen on all the time).")]
 	public sealed partial class DisplayRequest : UserControl
     {
-	    private static int _currentlyActive = 0;
+	    private static int _currentlyActive;
 		private static UwpDisplayRequest _displayRequest = new UwpDisplayRequest();
 
         public DisplayRequest()

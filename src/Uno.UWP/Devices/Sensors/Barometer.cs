@@ -7,8 +7,8 @@ namespace Windows.Devices.Sensors
 	public partial class Barometer
 	{
 		private static readonly object _syncLock = new object();
-		private static bool _initializationAttempted = false;
-		private static Barometer _instance = null;	
+		private static bool _initializationAttempted;
+		private static Barometer _instance;
 
 		private TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> _readingChanged;
 

@@ -40,7 +40,7 @@ namespace UITests.Windows_Networking
 	public class NetworkInformationViewModel : ViewModelBase
 	{
 		private NetworkConnectivityLevel _networkConnectivityLevel = NetworkConnectivityLevel.None;
-		private bool _isObserving = false;
+		private bool _isObserving;
 		private string _lastUpdated = "";
 		private string _errorInfo = "";
 		private string _networkCostType;

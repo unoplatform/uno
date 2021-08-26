@@ -74,7 +74,7 @@ namespace Windows.Devices.Sensors
 		private class MagnetometerListener : Java.Lang.Object, ISensorEventListener, IDisposable
 		{
 			private readonly Magnetometer _magnetometer;
-			private SensorStatus? _lastAccuracy = null;
+			private SensorStatus? _lastAccuracy;
 
 			public MagnetometerListener(Magnetometer magnetometer)
 			{

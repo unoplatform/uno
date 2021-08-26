@@ -60,7 +60,7 @@ namespace Uno.UI.Controls.Legacy
 		private Style _itemContainerStyle;
 		private GroupStyle _groupStyle;
 		private DataTemplate _headerTemplate;
-		private bool _needsRefresh = false;
+		private bool _needsRefresh;
 		private IEnumerable _items;
 		private HeaderWrapper _headerWrapper;
 		private FooterWrapper _footerWrapper;

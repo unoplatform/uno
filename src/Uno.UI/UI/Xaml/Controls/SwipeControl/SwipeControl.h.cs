@@ -196,20 +196,20 @@ namespace Windows.UI.Xaml.Controls
 
 		private IDisposable m_acceleratorKeyActivatedRevoker;
 
-		private bool m_hasInitialLoadedEventFired = false;
+		private bool m_hasInitialLoadedEventFired;
 
-		private bool m_lastActionWasClosing = false;
-		private bool m_lastActionWasOpening = false;
-		private bool m_isInteracting = false;
+		private bool m_lastActionWasClosing;
+		private bool m_lastActionWasOpening;
+		private bool m_isInteracting;
 		private bool m_isIdle = true;
-		private bool m_isOpen = false;
+		private bool m_isOpen;
 
-		private bool m_thresholdReached = false;
+		private bool m_thresholdReached;
 
 		//Near content = left or top
 		//Far content = right or bottom
-		private bool m_blockNearContent = false;
-		private bool m_blockFarContent = false;
+		private bool m_blockNearContent;
+		private bool m_blockFarContent;
 		private bool m_isHorizontal = true;
 		private CreatedContent m_createdContent = CreatedContent.None;
 

@@ -6,7 +6,7 @@ namespace Windows.UI.Input
 {
 	public partial struct ManipulationVelocities
 	{
-		internal static ManipulationVelocities Empty { get; } = new ManipulationVelocities();
+		internal static ManipulationVelocities Empty { get; }
 
 		/// <summary>
 		/// The expansion, or scaling, velocity in device-independent pixel (DIP) per millisecond.

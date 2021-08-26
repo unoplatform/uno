@@ -54,8 +54,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly DispatcherHelper m_dispatcherHelper;
 
-		private ContentPresenter m_tabContentPresenter = null;
-		private ContentPresenter m_rightContentPresenter = null;
+		private ContentPresenter m_tabContentPresenter;
+		private ContentPresenter m_rightContentPresenter;
 		private ColumnDefinition m_leftContentColumn;
 		private ColumnDefinition m_tabColumn;
 		private ColumnDefinition m_addButtonColumn;
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ListView m_listView;
 		private Size previousAvailableSize;
 
-		private bool m_updateTabWidthOnPointerLeave = false;
+		private bool m_updateTabWidthOnPointerLeave;
 		private string m_tabCloseButtonTooltipText;
 
 		private long m_listViewCanReorderItemsPropertyChangedRevoker;

@@ -1477,7 +1477,7 @@ namespace DirectUI
 
 		// BEGIN UNO Specific
 
-		public bool IsReadOnly { get; } = false;
+		public bool IsReadOnly { get; }
 		public new T this[int index]
 		{
 			get => GetAt((uint)index);

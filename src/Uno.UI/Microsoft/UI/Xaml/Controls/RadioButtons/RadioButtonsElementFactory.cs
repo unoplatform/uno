@@ -5,8 +5,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class RadioButtonsElementFactory : ElementFactory
 	{
-		private IElementFactoryShim m_itemTemplateWrapper = null;
-		
+		private IElementFactoryShim m_itemTemplateWrapper;
+
 		internal void UserElementFactory(object newValue)
 		{
 			m_itemTemplateWrapper = newValue as IElementFactoryShim;

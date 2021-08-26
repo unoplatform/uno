@@ -20,7 +20,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 	public sealed partial class TabViewTabItemsSourcePage : Page
 	{
 		const int initialTabsCount = 3;
-		ListView innerListView = null;
+		ListView innerListView;
 		ObservableCollection<MyData> myDatas;
 
 		public TabViewTabItemsSourcePage()

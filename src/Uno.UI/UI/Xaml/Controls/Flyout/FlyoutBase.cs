@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public event EventHandler Opening;
 		public event TypedEventHandler<FlyoutBase, FlyoutBaseClosingEventArgs> Closing;
 
-		private bool _isOpen = false;
+		private bool _isOpen;
 
 		internal bool m_isPositionedAtPoint;
 

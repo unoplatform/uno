@@ -10,7 +10,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 	[SampleControlInfo("ButtonTestsControl", nameof(Button_IsEnabled_Automated))]
 	public sealed partial class Button_IsEnabled_Automated : UserControl
 	{
-		private int _clickTotal = 0;
+		private int _clickTotal;
 
 		public Button_IsEnabled_Automated()
 		{

@@ -17,10 +17,10 @@ namespace Uno.Devices.Sensors.Helpers
 
 		private DateTimeOffset _firstDirectionChangeTime = DateTimeOffset.MinValue;
 		private DateTimeOffset _lastDirectionChangeTime = DateTimeOffset.MinValue;
-		private int _directionChangeCount = 0;
-		private double _lastX = 0;
-		private double _lastY = 0;
-		private double _lastZ = 0;
+		private int _directionChangeCount;
+		private double _lastX;
+		private double _lastY;
+		private double _lastZ;
 
 		public ShakeDetector(Accelerometer accelerometer)
 		{

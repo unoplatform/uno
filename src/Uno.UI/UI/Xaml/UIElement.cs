@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
-		private XamlRoot _xamlRoot = null;
+		private XamlRoot _xamlRoot;
 		private string _uid;
 
 		//private protected virtual void PrepareState() 
@@ -663,7 +663,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal Rect LayoutSlot => ((IUIElement)this).LayoutSlot;
 
-		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
+		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; }
 
 		internal bool NeedsClipToSlot { get; set; }
 

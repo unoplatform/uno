@@ -34,16 +34,16 @@ namespace MUXControlsTestApp
 	[Sample("NavigationView", "WinUI")]
     public sealed partial class NavigationViewPage : TestPage
 	{
-        private int m_newItemIndex = 0;
-        private int m_newFooterItemIndex = 0;
-        private int m_closingEventsFired = 0;
-        private int m_closedEventsFired = 0;
-        private bool m_useFocusVisualKindReveal = false;
-        // FocusVisualKind impacts other testing, recover to setting in unload page
-        private FocusVisualKind m_focusVisualKind;
+        private int m_newItemIndex;
+		private int m_newFooterItemIndex;
+		private int m_closingEventsFired;
+		private int m_closedEventsFired;
+		private bool m_useFocusVisualKindReveal;
+		// FocusVisualKind impacts other testing, recover to setting in unload page
+		private FocusVisualKind m_focusVisualKind;
 
-        private int _selectionChangedEventsFired = 0;
-        public int m_selectionChangedEventsFired
+        private int _selectionChangedEventsFired;
+		public int m_selectionChangedEventsFired
         {
             get
             {
@@ -56,8 +56,8 @@ namespace MUXControlsTestApp
             }
         }
 
-        private int _itemInvokedEventsFired = 0;
-        public int m_itemInvokedEventsFired
+        private int _itemInvokedEventsFired;
+		public int m_itemInvokedEventsFired
         {
             get
             {

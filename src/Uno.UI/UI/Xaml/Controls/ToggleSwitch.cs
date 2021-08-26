@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 		private FrameworkElement _switchKnobBounds;
 		private TranslateTransform _knobTranslateTransform;
 
-		private double _maxDragDistance = 0;
+		private double _maxDragDistance;
 
 		public event RoutedEventHandler Toggled;
 

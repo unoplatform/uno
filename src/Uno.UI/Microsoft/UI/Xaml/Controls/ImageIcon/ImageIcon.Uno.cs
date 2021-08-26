@@ -6,8 +6,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ImageIcon
 	{
-		private bool _initialized = false;
-		private bool _applyTemplateCalled = false;
+		private bool _initialized;
+		private bool _applyTemplateCalled;
 
 		private void EnsureInitialized()
 		{

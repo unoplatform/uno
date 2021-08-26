@@ -35,7 +35,7 @@ namespace UITests.Windows_Storage.Pickers
 		private string _errorMessage = string.Empty;
 		private string _statusMessage = string.Empty;
 
-		private StorageFolder _pickedFolder = null;
+		private StorageFolder _pickedFolder;
 
 		public FolderPickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

@@ -23,9 +23,9 @@ namespace Uno.UI.Tasks.BatchMerge
             }
         }
 
-        private bool hasLoggedErrors = false;
+        private bool hasLoggedErrors;
 
-        protected void LogMessage(string message)
+		protected void LogMessage(string message)
         {
             if (BuildEngine != null)
             {

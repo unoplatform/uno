@@ -40,7 +40,7 @@ namespace UITests.Shared.Windows_Devices
 
 	public class PedometerTestsViewModel : ViewModelBase
 	{
-		private Pedometer _pedometer = null;
+		private Pedometer _pedometer;
 		private string _pedometerStatus;
 		private bool _readingChangedAttached;
 		private int _cumulativeSteps;

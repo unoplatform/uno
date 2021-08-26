@@ -31,12 +31,12 @@ namespace Uno.UI.Helpers.WinUI
 	internal class SharedHelpers
 	{
 #pragma warning disable CS0414
-		private static bool s_isOnXboxInitialized = false;
-		private static bool s_isOnXbox = false;
+		private static bool s_isOnXboxInitialized;
+		private static bool s_isOnXbox;
 #pragma warning restore CS0414
 
-		private static bool s_isMouseModeEnabledInitialized = false;
-		private static bool s_isMouseModeEnabled = false;
+		private static bool s_isMouseModeEnabledInitialized;
+		private static bool s_isMouseModeEnabled;
 
 		public static bool IsSystemDll() => false;
 
@@ -278,7 +278,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isDisplayRegionGetForCurrentViewAvailable.Value;
 		}
 
-		static bool s_areFacadesAvailable = false;
+		static bool s_areFacadesAvailable;
 		public static bool IsTranslationFacadeAvailable(UIElement element)
 		{
 			// s_areFacadesAvailable = (element.try_as<Windows.UI.Xaml.IUIElement9>() != null)
@@ -368,8 +368,8 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsIsLoadedAvailable.Value;
 		}
 
-		static bool isAPIContractVxAvailableInitialized = false;
-		static bool isAPIContractVxAvailable = false;
+		static bool isAPIContractVxAvailableInitialized;
+		static bool isAPIContractVxAvailable;
 		private static bool s_dynamicScrollbarsDirty = true;
 		private static bool s_dynamicScrollbars;
 

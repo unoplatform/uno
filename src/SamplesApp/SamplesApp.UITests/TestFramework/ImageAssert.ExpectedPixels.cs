@@ -138,7 +138,7 @@ namespace SamplesApp.UITests.TestFramework
 	public struct PixelTolerance
 	{
 		#region Fluent declaration
-		public static PixelTolerance None { get; } = new PixelTolerance();
+		public static PixelTolerance None { get; }
 
 		public static PixelTolerance Cummulative(int color)
 			=> new PixelTolerance((byte)color, ColorToleranceKind.Cumulative, default, default, default);

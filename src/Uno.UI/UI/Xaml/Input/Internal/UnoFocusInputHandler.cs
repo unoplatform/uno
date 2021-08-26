@@ -11,7 +11,7 @@ namespace Uno.UI.Xaml.Input
 	{
 		private readonly RootVisual _rootVisual;
 
-		private bool _isShiftDown = false;
+		private bool _isShiftDown;
 
 		public UnoFocusInputHandler(RootVisual rootVisual)
 		{

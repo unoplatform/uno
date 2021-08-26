@@ -13,7 +13,7 @@ namespace Windows.Storage.Streams
 		private readonly static ArrayPool<byte> _pool = ArrayPool<byte>.Create();
 		private readonly Buffer _buffer;
 
-		private int _bufferPosition = 0;
+		private int _bufferPosition;
 
 		private DataReader(IBuffer buffer)
 		{

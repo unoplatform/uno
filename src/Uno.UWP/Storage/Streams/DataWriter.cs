@@ -11,7 +11,7 @@ namespace Windows.Storage.Streams
 	/// </summary>
 	public sealed partial class DataWriter : IDataWriter, IDisposable
 	{
-		private MemoryStream _memoryStream = null;
+		private MemoryStream _memoryStream;
 
 		/// <summary>
 		/// Creates and initializes a new instance of the data writer.

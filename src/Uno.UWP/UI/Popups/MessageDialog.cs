@@ -98,7 +98,7 @@ namespace Windows.UI.Popups
 		public uint CancelCommandIndex { get; set; } = uint.MaxValue;
 		public IList<IUICommand> Commands { get; }
 		public string Content { get; set; }
-		public uint DefaultCommandIndex { get; set; } = 0;
+		public uint DefaultCommandIndex { get; set; }
 		public MessageDialogOptions Options { get; set; }
 		public string Title { get; set; }
 

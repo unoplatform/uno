@@ -30,7 +30,7 @@ namespace UITests.Windows_Storage
 
 	public class StorageFileOperationsTestsViewModel : ViewModelBase
 	{
-		public StorageFile _pickedFile = null;
+		public StorageFile _pickedFile;
 		private string _errorMessage;
 
 		public StorageFileOperationsTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)

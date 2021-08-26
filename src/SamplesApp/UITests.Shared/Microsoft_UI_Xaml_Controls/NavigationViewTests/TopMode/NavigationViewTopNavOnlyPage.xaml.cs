@@ -29,11 +29,11 @@ namespace MUXControlsTestApp
 	[Sample("NavigationView", "WinUI")]
     public sealed partial class NavigationViewTopNavOnlyPage : TestPage
 	{
-        int m_numberOfItemAdded = 0;
-        private TextBlock contentOverlay = null;
-        bool m_expectNullSelectedItemInNextInvoke = false;
+        int m_numberOfItemAdded;
+		private TextBlock contentOverlay;
+		bool m_expectNullSelectedItemInNextInvoke;
 
-        public NavigationViewTopNavOnlyPage()
+		public NavigationViewTopNavOnlyPage()
         {
             this.InitializeComponent();
 

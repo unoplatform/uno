@@ -23,7 +23,7 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static UIElement _originalWindowContent = null;
+			private static UIElement _originalWindowContent;
 
 			public static bool UseActualWindowRoot { get; set; }
 

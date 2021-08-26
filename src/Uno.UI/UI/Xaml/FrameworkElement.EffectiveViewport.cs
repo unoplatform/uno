@@ -42,8 +42,8 @@ namespace Windows.UI.Xaml
 		private IDisposable _parentViewportUpdatesSubscription;
 		private Rect _parentViewport = Rect.Empty; // WARNING: Stored in parent's coordinates on iOS, use GetParentViewport()
 		private Rect _localViewport = Rect.Empty; // i.e. the applied clipping, Empty if not clipped
-		private Rect _lastEffectiveSlot = new Rect();
-		private Rect _lastEffectiveViewport = new Rect();
+		private Rect _lastEffectiveSlot;
+		private Rect _lastEffectiveViewport;
 
 		public event TypedEventHandler<_This, EffectiveViewportChangedEventArgs> EffectiveViewportChanged
 		{

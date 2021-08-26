@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		private Rectangle _verticalDecreaseRect;
 		private Rectangle _verticalTrackRect;
 		private FrameworkElement _sliderContainer;
-		private double _horizontalInitial = 0, _verticalInitial = 0;
+		private double _horizontalInitial, _verticalInitial;
 
 		private Thumb Thumb => Orientation == Orientation.Horizontal ? _horizontalThumb : _verticalThumb;
 

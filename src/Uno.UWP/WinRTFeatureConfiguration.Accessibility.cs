@@ -6,7 +6,7 @@ namespace Uno
 	{
 		public static class Accessibility
 		{
-			private static bool _highContrast = false;
+			private static bool _highContrast;
 
 			/// <summary>
 			/// Allows overriding the value returned by <see cref="AccessibilitySettings.HighContrast"/>.

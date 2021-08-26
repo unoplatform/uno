@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		// Event tokens
 		// winrt::event_token m_dataSourceChanged { };
 		// std::function<void(const winrt::NotifyCollectionChangedEventArgs& args)> m_dataChangeCallback;
-		private double m_overflowButtonCachedWidth = 0.0;
+		private double m_overflowButtonCachedWidth;
 
 		public TopNavigationViewDataProvider(NavigationView owner)
 			: base(5)

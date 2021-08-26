@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </summary>
 	public partial class NavigationViewItemCollapsedEventArgs
 	{
-		private readonly NavigationView? m_navigationView = null;
-		private object? m_collapsedItem = null;
+		private readonly NavigationView? m_navigationView;
+		private object? m_collapsedItem;
 
 		internal NavigationViewItemCollapsedEventArgs(NavigationView? navigationView)
 		{

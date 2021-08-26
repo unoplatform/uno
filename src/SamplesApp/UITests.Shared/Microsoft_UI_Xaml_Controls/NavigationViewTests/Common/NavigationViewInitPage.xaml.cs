@@ -26,9 +26,9 @@ namespace MUXControlsTestApp
 	{
         ObservableCollection<string> m_menuItems;
         ObservableCollection<string> m_footerItems;
-        LinkedList<string> m_menuItemsEnumerable = null;
+        LinkedList<string> m_menuItemsEnumerable;
 
-        public NavigationViewInitPage()
+		public NavigationViewInitPage()
         {
             this.InitializeComponent();
 

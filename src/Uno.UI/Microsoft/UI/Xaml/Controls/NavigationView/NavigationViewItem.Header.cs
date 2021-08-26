@@ -34,27 +34,27 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable m_flyoutClosingRevoker = new SerialDisposable();
 		private readonly SerialDisposable m_isEnabledChangedRevoker = new SerialDisposable();
 
-		private ToolTip m_toolTip = null;
-		private NavigationViewItemHelper<NavigationViewItem> backing_m_helper = null;
+		private ToolTip m_toolTip;
+		private NavigationViewItemHelper<NavigationViewItem> backing_m_helper;
 		private NavigationViewItemHelper<NavigationViewItem> m_helper => backing_m_helper ??= new NavigationViewItemHelper<NavigationViewItem>(this);
 
-		private NavigationViewItemPresenter m_navigationViewItemPresenter = null;
-		private object m_suggestedToolTipContent = null;
-		private ItemsRepeater m_repeater = null;
-		private Grid m_flyoutContentGrid = null;
-		private Grid m_rootGrid = null;
+		private NavigationViewItemPresenter m_navigationViewItemPresenter;
+		private object m_suggestedToolTipContent;
+		private ItemsRepeater m_repeater;
+		private Grid m_flyoutContentGrid;
+		private Grid m_rootGrid;
 
-		private bool m_isClosedCompact = false;
+		private bool m_isClosedCompact;
 
-		private bool m_appliedTemplate = false;
-		private bool m_hasKeyboardFocus = false;
+		private bool m_appliedTemplate;
+		private bool m_hasKeyboardFocus;
 
 		// Visual state tracking
-		private Pointer m_capturedPointer = null;
-		private uint m_trackedPointerId = 0;
-		private bool m_isPressed = false;
-		private bool m_isPointerOver = false;
+		private Pointer m_capturedPointer;
+		private uint m_trackedPointerId;
+		private bool m_isPressed;
+		private bool m_isPointerOver;
 
-		private bool m_isRepeaterParentedToFlyout = false;
+		private bool m_isRepeaterParentedToFlyout;
 	}
 }

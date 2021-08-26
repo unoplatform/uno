@@ -26,7 +26,7 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
             this.InitializeComponent();
         }
 
-		int loadedCount = 0;
+		int loadedCount;
 
 		private void OnControlLoaded(object sender, object args)
 		{

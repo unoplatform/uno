@@ -36,11 +36,11 @@ namespace Windows.Media.Playback
 	{
 		private AndroidMediaPlayer _player;
 
-		private bool _isPlayRequested = false;
-		private bool _isPlayerPrepared = false;
-		private bool _hasValidHolder = false;
+		private bool _isPlayRequested;
+		private bool _isPlayerPrepared;
+		private bool _hasValidHolder;
 		private VideoStretch _currentStretch = VideoStretch.Uniform;
-		private bool _isUpdatingStretch = false;
+		private bool _isUpdatingStretch;
 
 		private IScheduledExecutorService _executorService = Executors.NewSingleThreadScheduledExecutor();
 		private IScheduledFuture _scheduledFuture;

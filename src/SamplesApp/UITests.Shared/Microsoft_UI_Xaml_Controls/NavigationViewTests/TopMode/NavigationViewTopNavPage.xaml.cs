@@ -29,12 +29,12 @@ namespace MUXControlsTestApp
 	[Sample("NavigationView", "WinUI")]
     public sealed partial class NavigationViewTopNavPage : TestPage
 	{
-        private int m_newItemIndex = 0;
-        private int m_newFooterItemIndex = 0;
-        private int m_closingEventsFired = 0;
-        private int m_closedEventsFired = 0;
-        private bool m_initializeComponentComplete = false;
-        public NavigationViewTopNavPage()
+        private int m_newItemIndex;
+		private int m_newFooterItemIndex;
+		private int m_closingEventsFired;
+		private int m_closedEventsFired;
+		private bool m_initializeComponentComplete;
+		public NavigationViewTopNavPage()
         {
             this.InitializeComponent();
             m_initializeComponentComplete = true;

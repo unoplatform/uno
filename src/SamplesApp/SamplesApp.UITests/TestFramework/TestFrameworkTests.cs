@@ -9,7 +9,7 @@ namespace SamplesApp.UITests.TestFramework
 {
 	public partial class RetryTests
 	{
-		static int When_Retry_On_Timeout_Count = 0;
+		static int When_Retry_On_Timeout_Count;
 
 		[Test]
 		[AutoRetry]
@@ -23,7 +23,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 		}
 
-		static int When_Retry_On_Unhandled_Exception_Count = 0;
+		static int When_Retry_On_Unhandled_Exception_Count;
 
 		[Test]
 		[AutoRetry]
@@ -41,7 +41,7 @@ namespace SamplesApp.UITests.TestFramework
 
 	public partial class RetrySetup
 	{
-		static int Setup_Count = 0;
+		static int Setup_Count;
 
 		[SetUp]
 		public void Setup()
@@ -64,7 +64,7 @@ namespace SamplesApp.UITests.TestFramework
 
 	public partial class RetryTearDown
 	{
-		static int TearDown_Count = 0;
+		static int TearDown_Count;
 
 		[TearDown]
 		public void TearDown()

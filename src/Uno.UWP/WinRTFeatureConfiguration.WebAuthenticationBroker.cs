@@ -18,7 +18,7 @@ namespace Uno
 			/// Set the default return Uri. If not defined (null), the default provider
 			/// will try to determine it automatically.
 			/// </summary>
-			public static Uri? DefaultReturnUri { get; set; } = null;
+			public static Uri? DefaultReturnUri { get; set; }
 
 #if __WASM__
 

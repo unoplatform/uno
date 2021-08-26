@@ -42,13 +42,13 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
-		private bool _initializationComplete = false;
+		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private bool _themeSetExplicitly = false;
+		private bool _themeSetExplicitly;
 		private ApplicationTheme? _requestedTheme;
-		private bool _systemThemeChangesObserved = false;
+		private bool _systemThemeChangesObserved;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
-		private bool _isInBackground = false;
+		private bool _isInBackground;
 
 		static Application()
 		{

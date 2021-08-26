@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class NavigationViewItemsFactory : ElementFactory
 	{
-		private IElementFactoryShim m_itemTemplateWrapper = null;
-		private NavigationViewItemBase m_settingsItem = null;
+		private IElementFactoryShim m_itemTemplateWrapper;
+		private NavigationViewItemBase m_settingsItem;
 		private List<NavigationViewItem> navigationViewItemPool;
 
 		internal void UserElementFactory(object newValue)

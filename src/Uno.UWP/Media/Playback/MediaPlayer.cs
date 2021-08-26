@@ -35,7 +35,7 @@ namespace Windows.Media.Playback
 
 		public bool AutoPlay { get; set; }
 
-		private bool _isMuted = false;
+		private bool _isMuted;
 		public bool IsMuted
 		{
 			get

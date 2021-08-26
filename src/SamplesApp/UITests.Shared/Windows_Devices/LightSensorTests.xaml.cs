@@ -18,7 +18,7 @@ namespace UITests.Windows_Devices
 	[Bindable]
 	public class LightSensorTestsViewModel : ViewModelBase
 	{
-		private readonly LightSensor _LightSensor = null;
+		private readonly LightSensor _LightSensor;
 		private bool _readingChangedAttached;
 		private string _sensorStatus;
 		private float _illuminance;

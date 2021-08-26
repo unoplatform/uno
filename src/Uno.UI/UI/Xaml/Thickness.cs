@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml
 	[TypeConverter(typeof(ThicknessConverter))]
 	public partial struct Thickness : IEquatable<Thickness>
 	{
-		public static readonly Thickness Empty = new Thickness ();
+		public static readonly Thickness Empty;
 
 		public Thickness (double uniformLength)
 			: this ()

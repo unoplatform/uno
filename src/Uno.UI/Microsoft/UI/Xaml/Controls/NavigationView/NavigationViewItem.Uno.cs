@@ -12,8 +12,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// at the begging of the scroll, or when flicking during scroll.
 		// Note: This is enabled only if flag UNO_USE_DEFERRED_VISUAL_STATES is set in NavigationViewItem.cs
 
-		private bool _uno_isDefferingOverState = false;
-		private bool _uno_isDefferingPressedState = false;
+		private bool _uno_isDefferingOverState;
+		private bool _uno_isDefferingPressedState;
 		private DispatcherQueueTimer _uno_pointerDeferring;
 
 		private void DeferUpdateVisualStateForPointer()
