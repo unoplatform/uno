@@ -76,6 +76,12 @@ namespace Windows.UI.Xaml.Controls
 			this.RegisterParentChangedCallback(this, OnParentChanged);
 
 			DefaultStyleKey = typeof(TextBox);
+			SizeChanged += OnSizeChanged;
+		}
+
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			UpdateButtonStates();
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args) => UpdateFontPartial();
@@ -688,9 +694,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
-			if (CanShowButton && _isButtonEnabled
-			// TODO (https://github.com/unoplatform/uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
-			)
+			// Minimum width for TextBox with DeleteButton visible is 5em.
+			if (CanShowButton && _isButtonEnabled && ActualWidth > FontSize * 5)
 			{
 				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
 			}
