@@ -3923,8 +3923,14 @@
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Controls.VirtualizingPanelLayout.ShouldInsertReorderingView(System.Double physicalExtentOffset)"
 				reason="INVALID REMOVE, TO ADJUST" />
+          <Member
+				fullName="System.Void Windows.Devices.Bluetooth.BluetoothClassOfDevice..ctor()"
+				reason="Doesn't exist in UWP" />
+          <Member
+				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEAppearance..ctor()"
+				reason="Doesn't exist in UWP" />
 
-		</Methods>
+        </Methods>
 		<Properties>
 			<Member
 				fullName="Windows.UI.Xaml.Media.Animation.Timeline/TimelineState Windows.UI.Xaml.Media.Animation.Timeline::State()"
