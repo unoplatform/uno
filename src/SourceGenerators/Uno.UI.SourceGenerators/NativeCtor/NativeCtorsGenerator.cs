@@ -186,7 +186,7 @@ namespace {0}
 				}
 			}
 
-			private bool NeedsExplicitDefaultCtor(INamedTypeSymbol typeSymbol)
+			private bool static NeedsExplicitDefaultCtor(INamedTypeSymbol typeSymbol)
 			{
 				var hasExplicitConstructor = typeSymbol
 					.GetMembers(WellKnownMemberNames.InstanceConstructorName)

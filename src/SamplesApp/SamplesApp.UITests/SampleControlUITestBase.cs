@@ -183,7 +183,7 @@ namespace SamplesApp.UITests
 			return new ScreenshotInfo(fileInfo, stepName) ;
 		}
 
-		public void SetOptions(FileInfo screenshot, ScreenshotOptions options)
+		public static void SetOptions(FileInfo screenshot, ScreenshotOptions options)
 		{
 			var fileName = Path
 				.Combine(screenshot.DirectoryName, Path.GetFileNameWithoutExtension(screenshot.FullName) + ".metadata")
@@ -213,7 +213,7 @@ namespace SamplesApp.UITests
 			return methodInfo?.GetCustomAttributes(typeof(T), true) is T[] array ? array : Array.Empty<T>();
 		}
 
-		private IEnumerable<Platform> GetActivePlatforms()
+		private static IEnumerable<Platform> GetActivePlatforms()
 		{
 			var currentTest = TestContext.CurrentContext.Test;
 			if (currentTest.ClassName == null)

@@ -71,7 +71,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ThumbTests
 			}
 		}
 
-		private bool IsCloseTo((double x, double y) value, double x, double y, double tolerance = 1.5)
+		private static bool IsCloseTo((double x, double y) value, double x, double y, double tolerance = 1.5)
 			=> Math.Abs(value.x - x) < tolerance
 			&& Math.Abs(value.y - y) < tolerance;
 	}

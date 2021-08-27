@@ -116,7 +116,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			}
 		}
 
-		private QueryEx QueryAll(string name)
+		private static QueryEx QueryAll(string name)
 		{
 			IAppQuery AllQuery(IAppQuery query)
 				// TODO: .All() is not yet supported for wasm.

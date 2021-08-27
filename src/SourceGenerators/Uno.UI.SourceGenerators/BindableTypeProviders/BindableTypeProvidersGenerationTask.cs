@@ -618,7 +618,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				return null;
 			}
 
-			private bool IsIgnoredType(INamedTypeSymbol typeSymbol)
+			private static bool IsIgnoredType(INamedTypeSymbol typeSymbol)
 			{
 				return typeSymbol.IsGenericType;
 			}
@@ -635,23 +635,11 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private bool IsNonBindable(IPropertySymbol property) => property.FindAttributeFlattened(_nonBindableSymbol!) != null;
 
-			private bool IsOverride(IMethodSymbol? methodDefinition)
+			private static bool IsOverride(IMethodSymbol? methodDefinition)
 			{
 				return methodDefinition != null
 					&& methodDefinition.IsOverride
 					&& !methodDefinition.IsVirtual;
-			}
-
-			private string SanitizeTypeName(string name)
-			{
-				for (int i = 0; i < 10; i++)
-				{
-					name = name.Replace("`" + i, "");
-				}
-
-				name = name.Replace("/", ".");
-
-				return name;
 			}
 
 			private void GenerateTypeTable(IndentedStringBuilder writer, IEnumerable<INamedTypeSymbol> types)

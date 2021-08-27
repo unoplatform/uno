@@ -85,7 +85,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		Exception NotImplemented ()
+		static Exception NotImplemented ()
 		{
 			return new NotImplementedException ();
 		}

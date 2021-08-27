@@ -360,13 +360,13 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			AssertIsPrettyClose((int)spacing, GetInt("SpacingTextBox"), "Assert spacing");
 		}
 
-		private void AssertIsPrettyClose(int a, int b, string info)
+		private static void AssertIsPrettyClose(int a, int b, string info)
 		{
 			// Due to MITA only reporting whole numbers, and some rounding on phone builds, just make sure widths/heights are pretty close.
 			Assert.IsTrue(a <= b + 1 && a >= b - 1, info + ": expected " + a + ", actual " + b);
 		}
 
-		private int GetInt(string textBlockName)
+		private static int GetInt(string textBlockName)
 		{
 			Query tb = q => q.All().Marked(textBlockName);
 			var documentText = new QueryEx(tb).GetText();

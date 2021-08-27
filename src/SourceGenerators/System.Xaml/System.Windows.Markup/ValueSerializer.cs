@@ -152,12 +152,12 @@ namespace System.Windows.Markup
 			throw GetConvertToException (value, typeof (string));
 		}
 
-		protected Exception GetConvertFromException (object value)
+		protected static Exception GetConvertFromException (object value)
 		{
 			return new NotSupportedException (String.Format ("Conversion from string '{0}' is not supported", value));
 		}
 
-		protected Exception GetConvertToException (object value, Type destinationType)
+		protected static Exception GetConvertToException (object value, Type destinationType)
 		{
 			return new NotSupportedException (String.Format ("Conversion from '{0}' to {1} is not supported", value != null ? value.GetType ().Name : "(null)", destinationType));
 		}

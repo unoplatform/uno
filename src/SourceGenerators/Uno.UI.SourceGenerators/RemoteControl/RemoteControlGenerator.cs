@@ -58,7 +58,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			}
 		}
 
-		private void BuildServerProcessorsPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)
+		private static void BuildServerProcessorsPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)
 		{
 			sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerProcessorsConfigurationAttribute(" +
 				$"@\"{context.GetMSBuildPropertyValue("UnoRemoteControlProcessorsPath")}\"" +
@@ -137,7 +137,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			}
 		}
 
-		private bool IsApplication(GeneratorExecutionContext context)
+		private static bool IsApplication(GeneratorExecutionContext context)
 		{
 			var isAndroidApp = context.GetMSBuildPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 			var isiOSApp = context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;

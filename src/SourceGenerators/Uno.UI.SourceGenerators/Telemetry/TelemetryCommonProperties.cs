@@ -58,7 +58,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 				{KernelVersion, GetKernelVersion()},
 			};
 
-		private string GetMachineId()
+		private static string GetMachineId()
 		{
 			try
 			{

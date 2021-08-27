@@ -194,7 +194,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		protected internal XamlValueConverter<TConverterBase> GetValueConverter<TConverterBase> (Type converterType, XamlType targetType)
+		protected static internal XamlValueConverter<TConverterBase> GetValueConverter<TConverterBase> (Type converterType, XamlType targetType)
 			where TConverterBase : class
 		{
 			return new XamlValueConverter<TConverterBase> (converterType, targetType);
@@ -288,7 +288,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		bool TypeMatches (XamlType t, string ns, string name, XamlType [] typeArgs)
+		static bool TypeMatches (XamlType t, string ns, string name, XamlType [] typeArgs)
 		{
 			if (t.PreferredXamlNamespace == ns && t.Name == name && t.TypeArguments.ListEquals (typeArgs))
 				return true;

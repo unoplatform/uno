@@ -415,7 +415,7 @@ namespace SamplesApp.UITests
 			return tb;
 		}
 
-		private string GetText(QueryEx textBlock) => textBlock.GetDependencyPropertyValue<string>("Text");
+		private static string GetText(QueryEx textBlock) => textBlock.GetDependencyPropertyValue<string>("Text");
 
 		[Test]
 		[AutoRetry]

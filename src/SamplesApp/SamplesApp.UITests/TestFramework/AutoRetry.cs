@@ -111,7 +111,7 @@ namespace SamplesApp.UITests.TestFramework
 				return context.CurrentResult;
 			}
 
-			private void TryResetTimeoutCommand(TestCommand innerCommand)
+			private static void TryResetTimeoutCommand(TestCommand innerCommand)
 			{
 				// Apply workaround for https://github.com/nunit/nunit/issues/3284
 				// Resets the command timeout flag on every new test run

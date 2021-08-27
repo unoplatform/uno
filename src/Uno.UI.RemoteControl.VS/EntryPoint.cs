@@ -354,13 +354,13 @@ namespace Uno.UI.RemoteControl.VS
 			}
 		}
 
-		private void SetGlobalProperty(Microsoft.Build.Evaluation.Project msbuildProject, string propertyName, string propertyValue)
+		private static void SetGlobalProperty(Microsoft.Build.Evaluation.Project msbuildProject, string propertyName, string propertyValue)
 		{
 			msbuildProject.SetGlobalProperty(propertyName, propertyValue);
 
 		}
 
-		private bool IsApplication(Microsoft.Build.Evaluation.Project project)
+		private static bool IsApplication(Microsoft.Build.Evaluation.Project project)
 		{
 			var isAndroidApp = project.GetPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 			var isiOSApp = project.GetPropertyValue("ProjectTypeGuids")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;

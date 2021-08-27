@@ -579,7 +579,7 @@ namespace Uno.Xaml
 		}
 
 		// returns an optional member without xml node.
-		XamlMember GetExtraMember (XamlType xt)
+		static XamlMember GetExtraMember (XamlType xt)
 		{
 			if (xt.ContentProperty != null) // e.g. Array.Items
 				return xt.ContentProperty;

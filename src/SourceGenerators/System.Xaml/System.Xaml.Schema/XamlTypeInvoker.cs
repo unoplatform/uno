@@ -121,7 +121,7 @@ namespace Uno.Xaml.Schema
 			mi.Invoke (instance, new object [] {key, item});
 		}
 		
-		MethodInfo LookupAddMethod (Type ct, Type iface)
+		static MethodInfo LookupAddMethod (Type ct, Type iface)
 		{
 			var map = ct.GetInterfaceMap (iface);
 			for (int i = 0; i < map.TargetMethods.Length; i++)

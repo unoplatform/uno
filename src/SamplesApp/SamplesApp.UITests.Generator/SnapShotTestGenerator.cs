@@ -99,7 +99,7 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private object GetAttributePropertyValue(AttributeData attr, string name)
+		private static object GetAttributePropertyValue(AttributeData attr, string name)
 			=> attr.NamedArguments.FirstOrDefault(kvp => kvp.Key == name).Value.Value;
 
 		private object GetConstructorParameterValue(AttributeData info, string name)
@@ -107,7 +107,7 @@ namespace Uno.Samples.UITest.Generator
 				? default
 				: info.ConstructorArguments.ElementAt(GetParameterIndex(info, name)).Value;
 
-		private int GetParameterIndex(AttributeData info, string name)
+		private static int GetParameterIndex(AttributeData info, string name)
 			=> info
 				.AttributeConstructor
 				.Parameters
@@ -115,7 +115,7 @@ namespace Uno.Samples.UITest.Generator
 				.Single(p => p.p.Name == name)
 				.i;
 	
-		private string AlignName(string v)
+		private static string AlignName(string v)
 			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_");
 
 		private void GenerateTests(
@@ -181,13 +181,13 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private object Sanitize(string category) 
+		private static object Sanitize(string category) 
 			=> category
 				.Replace(" ", "_")
 				.Replace("-", "_")
 				.Replace(".", "_");
 
-		private (Compilation compilation, Project project) GetCompilation(SourceGeneratorContext context, string assembly)
+		private static (Compilation compilation, Project project) GetCompilation(SourceGeneratorContext context, string assembly)
 		{
 			// Used to get the reference assemblies
 			var devEnvDir = context.GetProjectInstance().GetPropertyValue("MSBuildExtensionsPath");
@@ -228,22 +228,6 @@ namespace Uno.Samples.UITest.Generator
 			}
 
 			return project;
-		}
-
-		private IEnumerable<string> GetFrameworkPath(string devEnvDir, string path)
-		{
-			switch (Path.GetFileName(path).ToLowerInvariant())
-			{
-				case "MonoAndroid11.0":
-					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v9.0";
-					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v1.0";
-					yield break;
-				case "xamarinios10":
-					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.iOS\v1.0";
-					yield break;
-			}
-
-			throw new InvalidOperationException("Unknown framework");
 		}
 	}
 }

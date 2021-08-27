@@ -439,7 +439,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineInvariant($"#endregion");
 			}
 
-			private void ValidateInvocation(IndentedStringBuilder builder, ISymbol propertySymbol, params string[] invocations)
+			private static void ValidateInvocation(IndentedStringBuilder builder, ISymbol propertySymbol, params string[] invocations)
 			{
 				if (propertySymbol.Locations.FirstOrDefault() is Location location)
 				{
@@ -515,7 +515,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
+			private static IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
 			{
 				var disposables = new List<IDisposable>();
 

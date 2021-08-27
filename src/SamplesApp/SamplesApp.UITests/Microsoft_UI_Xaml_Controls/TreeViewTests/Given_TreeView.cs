@@ -714,7 +714,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			_app.TapCoordinates((float)(firstResult.Rect.X + x), (float)(firstResult.Rect.Y + y));
 		}
 
-		private QueryEx QueryAll(string name)
+		private static QueryEx QueryAll(string name)
 		{
 			IAppQuery AllQuery(IAppQuery query)
 				// TODO: .All() is not yet supported for wasm.

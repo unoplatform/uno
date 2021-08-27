@@ -302,7 +302,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			=> Path.GetFileName(other.ItemSpec) == Path.GetFileName(referenceAssembly.ItemSpec) && (other.GetMetadata("PathInPackage")?.StartsWith("lib/", StringComparison.OrdinalIgnoreCase) ?? false);
 
 
-		private string AlignPath(string outputPath)
+		private static string AlignPath(string outputPath)
 			=> outputPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Replace(new string(Path.DirectorySeparatorChar, 2), Path.DirectorySeparatorChar.ToString());
 
 		private (int exitCode, string output, string error) StartProcess(string executable, string parameters, string workingDirectory)

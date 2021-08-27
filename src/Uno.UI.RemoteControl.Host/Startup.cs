@@ -22,7 +22,9 @@ namespace Uno.UI.RemoteControl.Host
 
 		public IConfiguration Configuration { get; }
 
+#pragma warning disable CA1822 // Mark members as static
 		public void Configure(IApplicationBuilder app, IOptionsMonitor<RemoteControlOptions> optionsAccessor)
+#pragma warning restore CA1822 // Mark members as static
 		{
 			var provider = new ServiceLocatorAdapter(app.ApplicationServices);
 			ServiceLocator.SetLocatorProvider(() => provider);

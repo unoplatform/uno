@@ -43,7 +43,7 @@ namespace Uno.Samples.UITest.Generator
 			GenerateSamplesList(context, query);
 		}
 
-		private void GenerateSamplesList(SourceGeneratorContext context, IEnumerable<INamedTypeSymbol> query)
+		private static void GenerateSamplesList(SourceGeneratorContext context, IEnumerable<INamedTypeSymbol> query)
 		{
 			var builder = new IndentedStringBuilder();
 

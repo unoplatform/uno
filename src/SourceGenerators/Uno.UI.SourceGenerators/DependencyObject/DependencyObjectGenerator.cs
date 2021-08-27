@@ -152,7 +152,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
+			private static IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
 			{
 				var disposables = new List<IDisposable>();
 
@@ -189,7 +189,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				WriteBinderImplementation(typeSymbol, builder);
 			}
 
-			private void WriteToStringOverride(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
+			private static void WriteToStringOverride(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var hasNoToString = typeSymbol
 					.GetMethods()
@@ -673,7 +673,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private void WriteBinderImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
+			private static void WriteBinderImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";

@@ -205,7 +205,7 @@ namespace Uno.Xaml
 			return "__ReferenceID" + used_reference_ids++;
 		}
 
-		IEnumerable<XamlNodeInfo> GetMemberNodes (XamlNodeMember member, IEnumerable<XamlNodeInfo> contents)
+		static IEnumerable<XamlNodeInfo> GetMemberNodes (XamlNodeMember member, IEnumerable<XamlNodeInfo> contents)
 		{
 				yield return new XamlNodeInfo (XamlNodeType.StartMember, member);
 				foreach (var cn in contents)
@@ -314,7 +314,7 @@ namespace Uno.Xaml
 			}
 		}
 		
-		IEnumerable<XamlNodeInfo> EnumerateMixingMember (IEnumerable<XamlNodeInfo> nodes1, XamlMember m2, IEnumerable<XamlNodeInfo> nodes2)
+		static IEnumerable<XamlNodeInfo> EnumerateMixingMember (IEnumerable<XamlNodeInfo> nodes1, XamlMember m2, IEnumerable<XamlNodeInfo> nodes2)
 		{
 			if (nodes2 == null) {
 				foreach (var cn in nodes1)

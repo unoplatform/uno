@@ -75,7 +75,7 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private string Sanitize(string category)
+		private static string Sanitize(string category)
 			=> category
 				.Replace(" ", "_")
 				.Replace("-", "_")

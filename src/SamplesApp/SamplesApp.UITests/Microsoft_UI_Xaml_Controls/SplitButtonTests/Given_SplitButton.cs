@@ -39,7 +39,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			Assert.AreEqual("1", executeCountTextBlock.GetText());
 		}
 
-		public void TapPrimaryButton(QueryEx splitButton)
+		private static void TapPrimaryButton(QueryEx splitButton)
 		{
 			// This method taps the descendants and differs from MUX!
 			Console.WriteLine("Tap primary button area");

@@ -287,7 +287,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		private void AssertAbortedManipulationSequence(string raw)
 			=> AssertSequence(new[] { "starting" }, raw.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(Parse).ToArray());
 
-		private void AssertSequence(string[] expected, (string evt, Point position, ManipulationDelta delta, ManipulationDelta cumulative)[] actual)
+		private static void AssertSequence(string[] expected, (string evt, Point position, ManipulationDelta delta, ManipulationDelta cumulative)[] actual)
 		{
 			var index = 0;
 			foreach (var @event in actual)

@@ -24,7 +24,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private Telemetry.Telemetry _telemetry;
 
-		public bool IsRunningCI =>
+		public static bool IsRunningCI =>
 			Environment.GetEnvironmentVariable("TF_BUILD").HasValue() // https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?tabs=yaml&view=azure-devops#system-variables
 			|| Environment.GetEnvironmentVariable("TRAVIS").HasValue() // https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
 			|| Environment.GetEnvironmentVariable("JENKINS_URL").HasValue() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables

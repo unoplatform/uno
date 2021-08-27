@@ -146,7 +146,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private int GetStructPack(ISymbol parametersType)
+		private static int GetStructPack(ISymbol parametersType)
 		{
 			// https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/Portable/Symbols/TypeLayout.cs is not available.
 
@@ -176,7 +176,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			throw new InvalidOperationException($"Failed to get structure layout, unknown roslyn internal structure");
 		}
 
-		private bool IsMarshalledExplicitly(IFieldSymbol fieldSymbol)
+		private static bool IsMarshalledExplicitly(IFieldSymbol fieldSymbol)
 		{
 			// https://github.com/dotnet/roslyn/blob/0610c79807fa59d0815f2b89e5283cf6d630b71e/src/Compilers/CSharp/Portable/Symbols/Metadata/PE/PEFieldSymbol.cs#L133 is not available.
 
@@ -201,7 +201,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		/// </summary>
 		/// <param name="symbol"></param>
 		/// <returns></returns>
-		private object GetActualSymbol(ISymbol symbol)
+		private static object GetActualSymbol(ISymbol symbol)
 		{
 			if (symbol.GetType().GetProperty("UnderlyingSymbol", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info)
 			{
@@ -214,7 +214,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			return symbol;
 		}
 
-		private void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private static void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public marshal(pData:number)"))
 			{
@@ -265,7 +265,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private void GenerateUnmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private static void GenerateUnmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public static unmarshal(pData:number) : {parametersType.Name}"))
 			{
@@ -371,10 +371,10 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private bool CanUseEMHeapProperty(ITypeSymbol type)
+		private static bool CanUseEMHeapProperty(ITypeSymbol type)
 			=> SymbolEqualityComparer.Default.Equals(type, _uintSymbol);
 
-		private int GetNativeFieldSize(IFieldSymbol field)
+		private static int GetNativeFieldSize(IFieldSymbol field)
 		{
 			if (
 				SymbolEqualityComparer.Default.Equals(field.Type, _stringSymbol)
@@ -398,7 +398,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private int GetEMTypeShift(IFieldSymbol field)
+		private static int GetEMTypeShift(IFieldSymbol field)
 		{
 			var fieldType = field.Type;
 
@@ -488,7 +488,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private object GetEMHeapProperty(ITypeSymbol fieldType)
+		private static object GetEMHeapProperty(ITypeSymbol fieldType)
 		{
 			if (
 				SymbolEqualityComparer.Default.Equals(fieldType, _stringSymbol)

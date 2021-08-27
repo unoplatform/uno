@@ -204,7 +204,7 @@ namespace Uno.Xaml
 			}
 		}
 		
-		bool DoesAmbientPropertyApply (AmbientPropertyValue p, IEnumerable<XamlType> types, params XamlMember [] properties)
+		static bool DoesAmbientPropertyApply (AmbientPropertyValue p, IEnumerable<XamlType> types, params XamlMember [] properties)
 		{
 			if (types == null || !types.Any () || types.Any (xt => xt.UnderlyingType != null && xt.UnderlyingType.IsInstanceOfType (p.Value)))
 				if (properties == null || !properties.Any () || properties.Contains (p.RetrievedProperty))

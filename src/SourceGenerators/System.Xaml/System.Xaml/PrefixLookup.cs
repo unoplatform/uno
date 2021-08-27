@@ -71,7 +71,7 @@ namespace Uno.Xaml
 			return prefix;
 		}
 		
-		string GetAcronym (string ns)
+		static string GetAcronym (string ns)
 		{
 			int idx = ns.IndexOf (';');
 			if (idx < 0)
