@@ -1,33 +1,34 @@
-const gulp = require('gulp'),
-    notify = require('gulp-notify'),
-    autoprefixer = require('autoprefixer'),
-    sass = require('gulp-sass'),
-    uglify = require('gulp-uglify'),
-    rename = require('gulp-rename'),
-    postcss = require('gulp-postcss'),
-    gulpif = require('gulp-if'),
-    sassLint = require('gulp-sass-lint'),
-    browserSync = require('browser-sync').create(),
-    sourcemaps = require('gulp-sourcemaps'),
-    exec = require('child_process').exec;
+const {dest, src, parallel, series, watch: gulpwatch} = require('gulp');
+const notify = require('gulp-notify');
+const autoprefixer = require('autoprefixer');
+const sass = require('gulp-sass');
+const uglify = require('gulp-uglify');
+const concat = require('gulp-concat');
+const postcss = require('gulp-postcss');
+const gulpif = require('gulp-if');
+const del = require('del');
+const sassLint = require('gulp-sass-lint');
+const sourcemaps = require('gulp-sourcemaps');
+const stripImportExport = require('gulp-strip-import-export');
+const browserSync = require('browser-sync').create();
+const exec = require('child_process').exec;
 
-let debug = false;
 const assets = 'templates/uno';
 
-/**
- * Put relative path to your assets :
- * - Wordpress  : 'public/wp-content/themes/YOUR_THEME/assets';
- * - Symfony : 'public/assets/';
- */
+let isDebug = false;
+let isStrict = false;
 
-gulp.task('styles', function () {
-    const output = debug ? 'nested' : 'compressed';
-    return gulp
-        .src(assets + '/css/main.scss')
-        .pipe(gulpif(debug, sourcemaps.init()))
-        .pipe(gulpif(debug, sassLint()))
-        .pipe(gulpif(debug, sassLint.format()))
-        .pipe(gulpif(debug, sassLint.failOnError()))
+function styles(done) {
+    const output = isDebug ? 'nested' : 'compressed';
+
+    src([`${assets}/vendor/*.css`])
+        .pipe(dest(`${assets}/styles/`));
+
+    src([`${assets}/**/*.scss`, `${assets}/**/*.sass`])
+        .pipe(gulpif(isDebug, sourcemaps.init()))
+        .pipe(gulpif(isDebug, sassLint()))
+        .pipe(gulpif(isDebug, sassLint.format()))
+        .pipe(gulpif(isDebug, sassLint.failOnError()))
         .pipe(
             sass({includePaths: ['./node_modules/'], outputStyle: output}).on(
                 'error',
@@ -35,54 +36,109 @@ gulp.task('styles', function () {
             )
         )
         .pipe(postcss([autoprefixer]))
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulpif(debug, sourcemaps.write()))
-        .pipe(gulp.dest(assets + '/css'))
+        .pipe(gulpif(isDebug, sourcemaps.mapSources(function (sourcePath) {
+            return '../' + sourcePath;
+        })))
+        .pipe(concat('main.css'))
+        .pipe(gulpif(isDebug, sourcemaps.write('.', {includeContent: false, sourceRoot: '../'})))
+        .pipe(dest(`${assets}/styles/`))
         .pipe(notify({message: 'CSS complete'}));
-});
 
-gulp.task('scripts', function () {
-    const output = debug ? 'nested' : 'compressed';
+    done();
+}
 
-    return gulp.src([assets + 'public/assets/js/lib/*.js'])
-        .pipe(concat('docfx.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('public/assets/js'));
-});
+function docfx(done) {
+    exec('docfx docfx.json', (err, stdout, stderr) => {
 
-gulp.task('watch', () => {
-    gulp.watch([assets + '/css/*.scss', assets + '/css/*.sass'], gulp.series(['styles']));
-});
+        // This will print the docfx errors
+        if (isStrict) {
+            console.log(stdout);
+            console.log(stderr);
+            // This will stop the execution of the task on error
+            // At the moment there is an error on every build
+            // This a workaround
+            done(err);
+        }
+        done();
+    });
+}
 
-gulp.task('default', gulp.series('styles', 'watch'), (done) => { done(); });
+function scripts(done) {
+    src([`${assets}/main.js`])
+        .pipe(gulpif(!isDebug, uglify()))
+        .pipe(stripImportExport())
+        .pipe(dest(`${assets}/styles/`));
 
-gulp.task('debug', function () {
-    debug = true;
-    gulp.start('styles');
-});
+    src([`${assets}/vendor/*.js`])
+        .pipe(dest(`${assets}/styles/`));
 
-gulp.task('serve', function () {
+    src([`${assets}/**/*.js`,
+        `!${assets}/styles/*.js`,
+        `!${assets}/conceptual.html.primary.js`,
+        `!${assets}/main.js`,
+        `!${assets}/vendor/*.js`])
+        .pipe(gulpif(isDebug, sourcemaps.init()))
+        .pipe(gulpif(isDebug, sourcemaps.mapSources(function (sourcePath) {
+            return '../' + sourcePath;
+        })))
+        .pipe(concat('docfx.js'))
+        .pipe(gulpif(isDebug, sourcemaps.write('.', {includeContent: false, sourceRoot: '../'})))
+        .pipe(gulpif(!isDebug, uglify()))
+        .pipe(stripImportExport())
+        .pipe(dest(`${assets}/styles/`));
+
+    done();
+}
+
+function watch() {
+    // Watch .scss files
+    gulpwatch([`${assets}/**/*.scss`, `${assets}/**/*.sass`], series([styles, docfx]))
+        .on('change', browserSync.reload);
+
+    // Watch docfx files
+    gulpwatch([assets + '/**/*.tmpl', assets + '/**/*.tmpl.partial'], series([docfx]))
+        .on('change', browserSync.reload);
+
+    // Watch javascript files
+    gulpwatch([`${assets}/**/*.js`, `!${assets}/styles/*.js`], series([scripts, docfx]))
+        .on('change', browserSync.reload);
+}
+
+function serve() {
     browserSync.init({
         server: {
-            baseDir: "./_site"
-        },
-        // host: " 172.20.8.240" replace by your current ip to test on another device.
+            baseDir: "_site"
+        }
     });
-});
-
-gulp.task('build', function (cb) {
-    exec('docfx build', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
-});
-
-/**
- * Handle errors and displays them in console
- * @param error
- */
-function swallowError(error) {
-    console.log(error.toString());
-    this.emit('end');
 }
+
+async function clean(done) {
+
+    await del([`${assets}/styles/**`,
+        `!${assets}/styles`,
+        `_site/styles/**`,
+        `!_site/styles/`]);
+
+    done();
+}
+
+function useDebug(done) {
+    isDebug = true;
+    done();
+}
+
+function useStrict(done) {
+    isStrict = true;
+    done();
+}
+
+const build = series(clean, styles, scripts, docfx);
+const run = parallel(serve, watch);
+
+exports.build = build;
+
+exports.default = series(build, run);
+
+exports.debug = series(useDebug, build, run);
+
+exports.strict = series(useDebug, useStrict, build, run);

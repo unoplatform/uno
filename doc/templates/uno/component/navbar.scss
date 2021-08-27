@@ -1,0 +1,315 @@
+@import "../variables";
+
+#navbar {
+  margin: 0 0 0 auto;
+  padding: 15px 0 0;
+
+  & > .navbar-nav {
+    display: block;
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .menu,
+  .level1 {
+    align-items: center;
+
+    li {
+      padding: 0;
+      display: inline-flex;
+      vertical-align: top;
+      float: none;
+
+      &.has-children {
+        position: relative;
+
+        & > a::after {
+          display: inline-block;
+          content: "\f107";
+          font-family: 'FontAwesome', 'ui-sans-serif';
+          font-style: normal;
+          font-size: 11.2px;
+          font-weight: 400;
+          margin: 0 0 0 8px
+        }
+
+        ul {
+          text-align: left;
+        }
+
+        @media screen and(min-width: 980px) {
+          ul {
+            visibility: hidden;
+            display: block;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 778;
+            padding: 15px;
+            box-shadow: 0 8px 28px 0 rgba(0,0,0,.08);
+            background-color: #fff;
+
+            a {
+              text-transform: none;
+            }
+          }
+        }
+
+        &:hover {
+
+          ul {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    a {
+      padding: 0 15px;
+      font-weight: 600;
+      height: 28px;
+      line-height: 28px;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #3a3a3a;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s ease-in-out,
+      background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+
+    .activepath {
+      border-bottom: 2px solid $purple;
+    }
+
+    a:hover,
+    .docs a {
+      background: none;
+      border-color: $purple;
+    }
+
+    .get-started-btn a,
+    a[title="Get Started"] {
+      border: 0;
+      border-radius: 8px;
+      box-sizing: content-box;
+      cursor: pointer;
+      display: inline-block;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      height: 27px;
+      letter-spacing: 0.3px;
+      line-height: 27px;
+      margin-bottom: 0;
+      margin-left: 16px;
+      padding: 7px 32px 6px;
+      text-align: center;
+      text-transform: none;
+      width: auto;
+
+      color: black;
+      background-color: $turquoise;
+      background: linear-gradient(to top, $blue 50%, $turquoise 50%);
+      background-size: 100% 200%;
+      background-position:left top;
+      transition:all 0.5s cubic-bezier(.69,.04,.9,.65);
+
+      &:hover {
+        color: white;
+        background-position:bottom left;
+      }
+    }
+  }
+
+  @media screen and (min-width: 980px) {
+    display: inline-flex;
+  }
+
+  @media (max-width: 979px) {
+    position: fixed;
+    top: 57px;
+    left: 0;
+    background: #ffffff;
+    width: 100%;
+    margin: 0;
+    border: none;
+    padding: 0;
+    text-align: left;
+    box-shadow: none;
+
+    &.collapse {
+      display: none!important;
+    }
+    &.collapse.in {
+      display: block!important;
+    }
+
+    .menu,
+    .level1 {
+      display: block;
+      margin: 0;
+      padding: 0 0 10px 0;
+
+      li {
+        display: block;
+        padding: 0;
+
+        &.has-children {
+          position: relative;
+
+          & > a::after {
+            font-size: 16px;
+            font-weight: 700;
+            float: right;
+          }
+
+          ul {
+            max-height: 0;
+            overflow: hidden;
+            visibility: visible;
+            position: relative;
+            padding: 0;
+            transition: all .5s ease;
+
+            a {
+              padding-left: 40px;
+
+              &::before {
+                content: "-";
+                margin-right: 5px;
+              }
+            }
+          }
+
+          &.open {
+
+            & > a::after {
+              display: inline-block;
+              content: "\f106";
+            }
+
+            ul {
+              max-height: 500px;
+            }
+          }
+        }
+      }
+
+      .get-started-btn {
+        padding: 10px 25px;
+
+        a {
+          margin: 0;
+        }
+      }
+
+      a[title="Get Started"] {
+        margin: 10px 25px;
+      }
+
+      a {
+        display: block;
+        padding: 10px 25px;
+        border: none;
+        text-transform: none;
+        height: auto;
+        line-height: 1.4;
+        font-size: 16px;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.navbar-header {
+
+  @media screen and(min-width: 980px) {
+    align-self: center;
+  }
+
+  .navbar-toggle {
+    border: none;
+    height: 18px;
+    background: none;
+    padding: 0;
+    margin: 0;
+    display: none!important;
+
+    &:hover,
+    &:focus {
+      background: none;
+    }
+
+    .icon-bar {
+      background: $darkgray;
+      width: 20px;
+    }
+
+    .icon-bar + .icon-bar {
+      margin-top: 3px;
+    }
+
+    &[aria-expanded='true'] {
+      .icon-bar {
+        background: $purple;
+      }
+    }
+    @media (max-width: 979px) {
+      margin-top: 10px;
+      display: block!important;
+    }
+  }
+
+  @media (max-width: 979px) {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+  }
+}
+
+.navbar:first-child {
+  padding: 10px 15px;
+  vertical-align: middle;
+  background: #ffffff;
+  position: fixed;
+  border-bottom: 1px solid #f4f2f3;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+
+  @media screen and(min-width: 980px) {
+    height: 75px;
+    line-height: normal;
+    display: flex;
+    align-items: flex-start;
+    padding: 0 30px;
+  }
+
+
+  #logo {
+    width: 36px;
+    margin-top: 0;
+    vertical-align: middle;
+
+    @media screen and(min-width: 980px) {
+      width: 120px;
+    }
+  }
+
+  .navbar-brand {
+    height: auto;
+  }
+}
+
+.subnav {
+  position: fixed;
+  top: 75px;
+  width: 100%;
+  z-index: 999;
+
+  @media only screen and (max-width: 767px) {
+    top: 55px;
+  }
+}

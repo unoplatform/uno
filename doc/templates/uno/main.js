@@ -1,17 +1,20 @@
+// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 document.addEventListener(
     "DOMContentLoaded",
     function () {
-        var navbar = document.querySelector("header > .navbar");
+
+        const navbar = document.querySelector("header > .navbar");
         if (document.body.classList.contains("front-page")) {
-            var last_known_scroll_position = 0;
-            var ticking = false;
+            let last_known_scroll_position = 0;
+            let ticking = false;
 
             function doSomething(scroll_pos) {
                 if (scroll_pos >= 100) navbar.classList.add("scrolled");
                 else navbar.classList.remove("scrolled");
             }
 
-            window.addEventListener("scroll", function (e) {
+            window.addEventListener("scroll", function () {
                 last_known_scroll_position = window.scrollY;
 
                 if (!ticking) {
@@ -33,7 +36,7 @@ document.addEventListener(
         unoMenuReq.open("get", unoMenuEndpoint, true);
 
         if (typeof navbar !== "undefined") {
-            unoMenuReq.onload = function (e) {
+            unoMenuReq.onload = function () {
                 if (unoMenuReq.status === 200 && unoMenuReq.responseText) {
                     $navbar.innerHTML = JSON.parse(
                         unoMenuReq.responseText
