@@ -91,9 +91,9 @@ namespace Windows.UI.Xaml.Input
 		/// "first" tab.  This is deemed better than getting stuck at the end.
 		/// (Reverse "first" and "last" for Shift-Tab.)
 		/// </summary>
-		private bool _canTabOutOfPlugin
+		private const bool CanTabOutOfPlugin =
 #if !__WASM__
-;
+				false;
 #else
 				true; // For WASM it is more appropriate to let the user escape from the app to tab into the browser toolbars.
 #endif
@@ -578,7 +578,7 @@ namespace Windows.UI.Xaml.Input
 			//
 			bool internalCycleWorkaround = false;
 
-			if (_focusedElement != null && _canTabOutOfPlugin)
+			if (_focusedElement != null && CanTabOutOfPlugin)
 			{
 				// CanProcessTabStop() used to be an early-out test, but the heuristic
 				// is flawed and caused bugs like #25058.
@@ -604,7 +604,7 @@ namespace Windows.UI.Xaml.Input
 				pNewTabStop = GetNextTabStop();
 
 				// If we could not find a tab stop, see if we need to tab cycle.
-				if (pNewTabStop == null && (!_canTabOutOfPlugin || internalCycleWorkaround || queryOnly))
+				if (pNewTabStop == null && (!CanTabOutOfPlugin || internalCycleWorkaround || queryOnly))
 				{
 					pNewTabStop = GetFirstFocusableElement(activeRoot, null);
 					didCycleFocusAtRootVisualScope = true;
@@ -615,7 +615,7 @@ namespace Windows.UI.Xaml.Input
 				pNewTabStop = GetPreviousTabStop();
 
 				// If we could not find a tab stop, see if we need to tab cycle.
-				if (pNewTabStop == null && (!_canTabOutOfPlugin || internalCycleWorkaround || queryOnly))
+				if (pNewTabStop == null && (!CanTabOutOfPlugin || internalCycleWorkaround || queryOnly))
 				{
 					pNewTabStop = GetLastFocusableElement(activeRoot, null);
 					didCycleFocusAtRootVisualScope = true;

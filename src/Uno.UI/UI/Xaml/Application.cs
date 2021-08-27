@@ -46,7 +46,12 @@ namespace Windows.UI.Xaml
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private bool _themeSetExplicitly;
 		private ApplicationTheme? _requestedTheme;
-		private bool _systemThemeChangesObserved;
+
+		// TODO: This field is always false. Either assign it correctly or remove it.
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		private bool _systemThemeChangesObserved = false;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
+
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 

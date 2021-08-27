@@ -102,7 +102,7 @@ namespace Uno.Samples.UITest.Generator
 		private static object GetAttributePropertyValue(AttributeData attr, string name)
 			=> attr.NamedArguments.FirstOrDefault(kvp => kvp.Key == name).Value.Value;
 
-		private object GetConstructorParameterValue(AttributeData info, string name)
+		private static object GetConstructorParameterValue(AttributeData info, string name)
 			=> info.ConstructorArguments.IsDefaultOrEmpty
 				? default
 				: info.ConstructorArguments.ElementAt(GetParameterIndex(info, name)).Value;
@@ -118,7 +118,7 @@ namespace Uno.Samples.UITest.Generator
 		private static string AlignName(string v)
 			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_");
 
-		private void GenerateTests(
+		private static void GenerateTests(
 			string assembly,
 			SourceGeneratorContext context,
 			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests, bool isManual)> symbols)

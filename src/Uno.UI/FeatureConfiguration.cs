@@ -128,9 +128,13 @@ namespace Uno.UI
 			/// More information there: https://github.com/unoplatform/uno/issues/3519
 			/// </remarks>
 			public static bool UseDeferredOnApplyTemplate { get; set; } // opt-in for iOS/Android/macOS
+#if __ANDROID__ || __IOS__ || __MACOS__
+				// NOTE: false is already the default. Ignoring the explicit default value to satisfy CA1805 performance analyzer.
+				// = false; // opt-in for iOS/Android/macOS
 #else
 				= true;
 #endif
+
 		}
 
 		public static class DataTemplateSelector

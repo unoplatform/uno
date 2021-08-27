@@ -53,17 +53,25 @@ namespace Microsoft.UI.Xaml.Controls
 		private Rectangle m_previousColorRectangle;
 		private ImageBrush m_colorPreviewRectangleCheckeredBackgroundImageBrush;
 
-		private IAsyncAction m_createColorPreviewRectangleCheckeredBackgroundBitmapAction;
+		// TODO: This field is always null. Either assign it correctly or remove it.
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		private IAsyncAction m_createColorPreviewRectangleCheckeredBackgroundBitmapAction = null;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
 
 		private Primitives.ColorPickerSlider m_thirdDimensionSlider;
 		private LinearGradientBrush m_thirdDimensionSliderGradientBrush;
 
 		private Primitives.ColorPickerSlider m_alphaSlider;
 		private LinearGradientBrush m_alphaSliderGradientBrush;
+
 		private Rectangle m_alphaSliderBackgroundRectangle;
+
 		private ImageBrush m_alphaSliderCheckeredBackgroundImageBrush;
 
-		private IAsyncAction m_alphaSliderCheckeredBackgroundBitmapAction;
+		// TODO: This field is always null. Either assign it correctly or remove it.
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		private IAsyncAction m_alphaSliderCheckeredBackgroundBitmapAction = null;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
 
 		private ButtonBase m_moreButton;
 		private TextBlock m_moreButtonLabel;

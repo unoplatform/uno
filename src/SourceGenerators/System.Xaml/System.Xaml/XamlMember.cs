@@ -427,7 +427,7 @@ namespace Uno.Xaml
 			var a = GetCustomAttributeProvider ();
 			var ca = a != null ? a.GetCustomAttribute<TypeConverterAttribute> (false) : null;
 			if (ca != null)
-				return context.GetValueConverter<TypeConverter> (System.Type.GetType (ca.ConverterTypeName), Type);
+				return XamlSchemaContext.GetValueConverter<TypeConverter> (System.Type.GetType (ca.ConverterTypeName), Type);
 
 			return Type.TypeConverter;
 		}

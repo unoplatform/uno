@@ -25,7 +25,13 @@ namespace Windows.UI.Xaml.Controls
 		};
 
 		PlacementMode m_placementMode = PlacementMode.Undetermined;
-		bool m_hideInProgress;
+
+		// TODO: This field is always false. Either assign it correctly or remove it.
+
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		bool m_hideInProgress = false;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
+
 		bool m_hasPreparedContent;
 		bool m_isShowing;
 		Storyboard? m_layoutAdjustmentsForInputPaneStoryboard;

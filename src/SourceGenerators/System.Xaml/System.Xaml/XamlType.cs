@@ -764,15 +764,15 @@ namespace Uno.Xaml
 			var a = GetCustomAttributeProvider ();
 			var ca = a != null ? a.GetCustomAttribute<TypeConverterAttribute> (false) : null;
 			if (ca != null)
-				return SchemaContext.GetValueConverter<TypeConverter> (Type.GetType (ca.ConverterTypeName), this);
+				return XamlSchemaContext.GetValueConverter<TypeConverter> (Type.GetType (ca.ConverterTypeName), this);
 
 			if (t == typeof (object)) // This is a special case. ConverterType is null.
-				return SchemaContext.GetValueConverter<TypeConverter> (null, this);
+				return XamlSchemaContext.GetValueConverter<TypeConverter> (null, this);
 
 			// It's still not decent to check CollectionConverter.
 			var tct = t.GetTypeConverter ().GetType ();
 			if (tct != typeof (TypeConverter) && tct != typeof (CollectionConverter) && tct != typeof (ReferenceConverter))
-				return SchemaContext.GetValueConverter<TypeConverter> (tct, this);
+				return XamlSchemaContext.GetValueConverter<TypeConverter> (tct, this);
 			return null;
 		}
 

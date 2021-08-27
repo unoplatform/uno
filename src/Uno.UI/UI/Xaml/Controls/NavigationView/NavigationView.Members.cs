@@ -51,7 +51,12 @@ namespace Windows.UI.Xaml.Controls
 		Button m_paneSearchButton;
 		Button m_backButton;
 		TextBlock m_paneTitleTextBlock;
-		Grid m_buttonHolderGrid;
+
+		// TODO: This field is always null. Either assign it correctly or remove it.
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		Grid m_buttonHolderGrid = null;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
+
 		ListView m_leftNavListView;
 		ListView m_topNavListView;
 		Button m_topNavOverflowButton;

@@ -14,7 +14,11 @@ namespace Windows.Foundation
 		private AsyncActionCompletedHandler _onCompleted;
 		private Task _task;
 		private AsyncStatus _status;
-		private uint _id;
+
+		// TODO: This field is always 0. Either assign it correctly or remove it.
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		private uint _id = 0;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
 
 		public static AsyncAction FromTask(Func<CancellationToken, Task> taskBuilder) => new AsyncAction(taskBuilder);
 

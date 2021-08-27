@@ -42,7 +42,7 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private void GenerateCategories(
+		private static void GenerateCategories(
 			SourceGeneratorContext context,
 			IEnumerable<INamedTypeSymbol> symbols,
 			int bucketCount)
