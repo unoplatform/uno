@@ -124,7 +124,7 @@ namespace MUXControlsTestApp
 
 
         /* Helper functions */
-        private UIElement GetContentBox(NavigationViewItem element)
+        private static UIElement GetContentBox(NavigationViewItem element)
         {
             if(element == null)
             {

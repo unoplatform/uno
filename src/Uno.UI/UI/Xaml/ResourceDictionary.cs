@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml
 		/// If <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, replace it with the target of ResourceKey, or null if no matching resource is found.
 		/// </summary>
 		/// <returns>True if <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, false otherwise</returns>
-		private bool TryResolveAlias(ref object value)
+		private static bool TryResolveAlias(ref object value)
 		{
 			if (value is StaticResourceAliasRedirect alias)
 			{

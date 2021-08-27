@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 			return Disposable.Create(() => _textBoxView.ShowSoftInputOnFocus = before);
 		}
 
-		partial void OnForegroundColorChangedPartial(Brush newValue)
+		static partial void OnForegroundColorChangedPartial(Brush newValue)
 		{
 		}
 
@@ -346,7 +346,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateInputScope(InputScope);
 		}
 
-		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
+		static partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			//TODO : see bug #8178
 		}

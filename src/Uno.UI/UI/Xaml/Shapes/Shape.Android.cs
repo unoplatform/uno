@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 
-		private Windows.Foundation.Rect GetPathBoundingBox(Android.Graphics.Path path)
+		private static Windows.Foundation.Rect GetPathBoundingBox(Android.Graphics.Path path)
 		{
 			//There is currently a bug here, Android's ComputeBounds includes the control points of a Bezier path
 			//which can result in improper positioning when aligning paths with Bezier segments.

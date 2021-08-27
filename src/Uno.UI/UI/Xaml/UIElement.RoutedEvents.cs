@@ -968,6 +968,6 @@ namespace Windows.UI.Xaml
 
 		// Those methods are part of the internal UWP API
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool ShouldRaiseEvent(Delegate eventHandler) => eventHandler != null;
+		internal static bool ShouldRaiseEvent(Delegate eventHandler) => eventHandler != null;
 	}
 }

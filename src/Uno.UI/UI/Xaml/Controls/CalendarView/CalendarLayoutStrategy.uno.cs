@@ -20,12 +20,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void BeginMeasure()
 		{
-			_layoutStrategyImpl.BeginMeasure();
+			CalendarLayoutStrategyImpl.BeginMeasure();
 		}
 
 		internal void EndMeasure()
 		{
-			_layoutStrategyImpl.EndMeasure();
+			CalendarLayoutStrategyImpl.EndMeasure();
 		}
 
 		internal Size GetElementMeasureSize(ElementType elementType, int elementIndex, Rect windowConstraint)

@@ -348,12 +348,12 @@ namespace Microsoft.UI.Xaml.Controls
 			return GetElementFromIndexImpl(index);
 		}
 
-		internal void PinElement(UIElement element)
+		internal static void PinElement(UIElement element)
 		{
 			ViewManager.UpdatePin(element, true /* addPin */);
 		}
 
-		internal void UnpinElement(UIElement element)
+		internal static void UnpinElement(UIElement element)
 		{
 			ViewManager.UpdatePin(element, false /* addPin */);
 		}
@@ -393,7 +393,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (parent == this)
 			{
 				var virtInfo = TryGetVirtualizationInfo(element);
-				return m_viewManager.GetElementIndex(virtInfo);
+				return ViewManager.GetElementIndex(virtInfo);
 			}
 
 			return -1;

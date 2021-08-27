@@ -127,7 +127,7 @@ namespace Benchmarks.Shared.Controls
 		private static string BenchmarkResultArchiveName
 			=> Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "benchmarks-results.zip");
 
-		private async void OnDownloadResults()
+		private static async void OnDownloadResults()
 		{
 			FileSavePicker savePicker = new FileSavePicker();
 

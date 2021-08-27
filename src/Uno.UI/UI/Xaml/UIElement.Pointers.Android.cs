@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
+		static partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
 		{
 			if (remainingHandlersCount == 0)
 			{

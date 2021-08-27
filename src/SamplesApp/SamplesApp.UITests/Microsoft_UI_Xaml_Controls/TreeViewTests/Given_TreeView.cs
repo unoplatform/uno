@@ -242,7 +242,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				var ItemRoot = LabelFirstItem().FirstResult();
 
 				_app.TapCoordinates((float)(ItemRoot.Rect.X + ItemRoot.Rect.Width * .75), (float)(ItemRoot.Rect.Y + ItemRoot.Rect.Height * .5));
-				
+
 				ClickButton("GetItemCount");
 				Assert.AreEqual("4", ReadResult());
 				ClickButton("LabelItems");
@@ -653,14 +653,14 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			}
 		}
 
-		private void ClickButton(string buttonName)
+		private static void ClickButton(string buttonName)
 		{
 			var button = QueryAll(buttonName);
 			button.Tap();
 			// Wait.ForIdle();
 		}
 
-		private string ReadResult()
+		private static string ReadResult()
 		{
 			var textBlock = QueryAll("Results");
 			return textBlock.GetText();
@@ -677,7 +677,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			//Wait.ForIdle();
 		}
 
-		private void TapOutsideFlyout()
+		private static void TapOutsideFlyout()
 		{
 			var textBlock = QueryAll("Results");
 			textBlock.Tap();

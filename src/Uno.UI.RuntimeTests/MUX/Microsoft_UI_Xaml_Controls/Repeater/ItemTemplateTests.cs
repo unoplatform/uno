@@ -709,7 +709,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 #endif
 
-		private ItemsRepeaterScrollHost CreateAndInitializeRepeater(
+		private static ItemsRepeaterScrollHost CreateAndInitializeRepeater(
 			object itemsSource,
 			Layout layout,
 			object elementFactory,
@@ -733,7 +733,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			};
 		}
 
-		private List<UIElement> GetAllElementsFromPool(RecyclePool pool, string key="")
+		private static List<UIElement> GetAllElementsFromPool(RecyclePool pool, string key="")
 		{
 			List<UIElement> elements = new List<UIElement>();
 			bool poolEmpty = false;

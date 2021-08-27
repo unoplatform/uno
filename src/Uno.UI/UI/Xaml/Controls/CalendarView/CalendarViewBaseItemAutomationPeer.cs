@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 				return returnValue;
 			}
 
-			private int ColumnSpanImpl()
+			private static int ColumnSpanImpl()
 			{
 				var pValue = 1;
 				return pValue;
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 				return ppValue;
 			}
 
-			private int RowSpanImpl()
+			private static int RowSpanImpl()
 			{
 				var pValue = 1;
 				return pValue;

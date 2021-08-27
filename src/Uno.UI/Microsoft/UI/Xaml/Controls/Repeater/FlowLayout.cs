@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		double m_minColumnSpacing;
 		FlowLayoutLineAlignment m_lineAlignment = FlowLayoutLineAlignment.Start;
 
-		private FlowLayoutState GetAsFlowState(object state)
+		private static FlowLayoutState GetAsFlowState(object state)
 		{
 			return state as FlowLayoutState;
 		}

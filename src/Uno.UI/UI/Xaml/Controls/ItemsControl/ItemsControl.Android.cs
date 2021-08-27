@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsControl
 	{
-		partial void InitializePartial()
+		static partial void InitializePartial()
 		{
 
 		}
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			RequestLayout();
 		}
 
-		partial void RemoveViewPartial(View current)
+		static partial void RemoveViewPartial(View current)
 		{
 			(current.Parent as ViewGroup).RemoveViewAndDispose(current);
 		}

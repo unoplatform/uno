@@ -1288,8 +1288,8 @@ namespace Microsoft.UI.Xaml.Controls
 						maxSaturation = minSaturation;
 					}
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, minSaturation / 100.0, 1.0), 1.0);
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, maxSaturation / 100.0, 1.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, minSaturation / 100.0, 1.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, maxSaturation / 100.0, 1.0), 1.0);
 				}
 				break;
 
@@ -1310,8 +1310,8 @@ namespace Microsoft.UI.Xaml.Controls
 						maxValue = minValue;
 					}
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, m_currentHsv.S, minValue / 100.0), 1.0);
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, m_currentHsv.S, maxValue / 100.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, m_currentHsv.S, minValue / 100.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, m_currentHsv.S, maxValue / 100.0), 1.0);
 				}
 				break;
 
@@ -1335,12 +1335,12 @@ namespace Microsoft.UI.Xaml.Controls
 					double minOffset = minHue / 359.0;
 					double maxOffset = maxHue / 359.0;
 
-					// With unclamped hue values, we have six different gradient stops, corresponding to red, yellow, green, cyan, blue, and purple.
-					// However, with clamped hue values, we may not need all of those gradient stops.
-					// We know we need a gradient stop at the start and end corresponding to the min and max values for hue,
-					// and then in the middle, we'll add any gradient stops corresponding to the hue of those six pure colors that exist
-					// between the min and max hue.
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv((double)minHue, 1.0, 1.0), 1.0);
+						// With unclamped hue values, we have six different gradient stops, corresponding to red, yellow, green, cyan, blue, and purple.
+						// However, with clamped hue values, we may not need all of those gradient stops.
+						// We know we need a gradient stop at the start and end corresponding to the min and max values for hue,
+						// and then in the middle, we'll add any gradient stops corresponding to the hue of those six pure colors that exist
+						// between the min and max hue.
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv((double)minHue, 1.0, 1.0), 1.0);
 
 					for (int sextant = 1; sextant <= 5; sextant++)
 					{
@@ -1348,11 +1348,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 						if (minOffset < offset && maxOffset > offset)
 						{
-							AddGradientStop(thirdDimensionSliderGradientBrush, (offset - minOffset) / (maxOffset - minOffset), new Hsv(60.0 * sextant, 1.0, 1.0), 1.0);
+								AddGradientStop(thirdDimensionSliderGradientBrush, (offset - minOffset) / (maxOffset - minOffset), new Hsv(60.0 * sextant, 1.0, 1.0), 1.0);
 						}
 					}
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv((double)maxHue, 1.0, 1.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv((double)maxHue, 1.0, 1.0), 1.0);
 				}
 				break;
 			}
@@ -1466,7 +1466,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void AddGradientStop(LinearGradientBrush brush, double offset, Hsv hsvColor, double alpha)
+		private static void AddGradientStop(LinearGradientBrush brush, double offset, Hsv hsvColor, double alpha)
 		{
 			GradientStop stop = new GradientStop();
 

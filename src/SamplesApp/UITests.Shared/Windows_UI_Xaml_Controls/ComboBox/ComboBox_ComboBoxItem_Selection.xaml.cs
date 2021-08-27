@@ -44,7 +44,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 			var item2 = e.AddedItems.ToArray();
 		}
 
-		private string GetVisualTree(FrameworkElement element)
+		private static string GetVisualTree(FrameworkElement element)
 		{
 			IEnumerable<string> GetElements()
 			{

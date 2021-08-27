@@ -17,7 +17,7 @@ namespace UITests.Windows_UI_Xaml.Clipping
 			DumpTree();
 		}
 
-		private async void DumpTree()
+		private static async void DumpTree()
 		{
 #if UNO_REFERENCE_API
 			await Task.Delay(1200);

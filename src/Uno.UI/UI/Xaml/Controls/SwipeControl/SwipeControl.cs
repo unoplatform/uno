@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 					var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
 					if (globalTestHooks is {})
 					{
-						globalTestHooks.NotifyLastInteractedWithSwipeControlChanged();
+						SwipeTestHooks.NotifyLastInteractedWithSwipeControlChanged();
 					}
 				}
 			}
@@ -1766,7 +1766,7 @@ namespace Windows.UI.Xaml.Controls
 					var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
 					if (globalTestHooks is {})
 					{
-						globalTestHooks.NotifyOpenedStatusChanged(this);
+						SwipeTestHooks.NotifyOpenedStatusChanged(this);
 					}
 				}
 			}
@@ -1786,7 +1786,7 @@ namespace Windows.UI.Xaml.Controls
 					var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
 					if (globalTestHooks is { })
 					{
-						globalTestHooks.NotifyOpenedStatusChanged(this);
+						SwipeTestHooks.NotifyOpenedStatusChanged(this);
 					}
 				}
 			}
@@ -1847,7 +1847,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private string GetAnimationTarget(UIElement child)
+		private static string GetAnimationTarget(UIElement child)
 		{
 			if (DownlevelHelper.SetIsTranslationEnabledExists() || SharedHelpers.IsTranslationFacadeAvailable(child))
 			{
@@ -1864,7 +1864,7 @@ namespace Windows.UI.Xaml.Controls
 			return this;
 		}
 
-		private bool IsTranslationFacadeAvailableForSwipeControl(UIElement element)
+		private static bool IsTranslationFacadeAvailableForSwipeControl(UIElement element)
 		{
 			//For now Facade's are causing more issues than they are worth for swipe control. Revist this
 			//when we have a little more time.
@@ -1876,7 +1876,7 @@ namespace Windows.UI.Xaml.Controls
 			//return SharedHelpers.IsTranslationFacadeAvailable(element);
 		}
 
-		private string DirectionToInset(CreatedContent createdContent)
+		private static string DirectionToInset(CreatedContent createdContent)
 		{
 			switch (createdContent)
 			{

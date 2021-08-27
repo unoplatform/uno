@@ -11,7 +11,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 			this.InitializeComponent();
 		}
 
-		private void CapitalizePreviousTextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
+		private static void CapitalizePreviousTextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
 		{
 			if (sender.Text.Length > 2)
 			{
@@ -20,7 +20,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 			}
 		}
 
-		private void LimitLengthTextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
+		private static void LimitLengthTextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
 		{
 			const int maxLength = 15;
 			if (sender.Text.Length > maxLength)

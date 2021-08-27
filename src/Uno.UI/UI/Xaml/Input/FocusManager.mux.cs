@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml.Input
 		private void ReleaseFocusRectManagerResources()
 		{
 			// Releases references on UIElements held by CFocusRectManager
-			_focusRectManager.ReleaseResources(isDeviceLost: false, cleanupDComp: false, clearPCData: true);
+			FocusRectManager.ReleaseResources(isDeviceLost: false, cleanupDComp: false, clearPCData: true);
 		}
 
 		/// <summary>
@@ -247,7 +247,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="cleanupDComp">Cleanup.</param>
 		void CleanupDeviceRelatedResources(bool cleanupDComp) =>
-			_focusRectManager.ReleaseResources(isDeviceLost: true, cleanupDComp, clearPCData: false);
+			FocusRectManager.ReleaseResources(isDeviceLost: true, cleanupDComp, clearPCData: false);
 
 		/// <summary>
 		/// Checks whether the focused element is hidden behind full
@@ -257,7 +257,7 @@ namespace Windows.UI.Xaml.Input
 		private bool FocusedElementIsBehindFullWindowMediaRoot()
 		{
 			var visualTree = _contentRoot.VisualTree;
-			return visualTree != null && visualTree.IsBehindFullWindowMediaRoot(_focusedElement);
+			return visualTree != null && VisualTree.IsBehindFullWindowMediaRoot(_focusedElement);
 		}
 
 		/// <summary>
@@ -727,7 +727,7 @@ namespace Windows.UI.Xaml.Input
 				var pPopupRoot = _contentRoot.VisualTree.PopupRoot;
 				if (pPopupRoot != null)
 				{
-					Popup? pTopmostLightDismissPopup = pPopupRoot.GetTopmostPopup(PopupRoot.PopupFilter.LightDismissOrFlyout);
+					Popup? pTopmostLightDismissPopup = PopupRoot.GetTopmostPopup(PopupRoot.PopupFilter.LightDismissOrFlyout);
 					if (pTopmostLightDismissPopup != null)
 					{
 						pFirstFocusElement = pTopmostLightDismissPopup as UIElement;
@@ -1402,7 +1402,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="pParent">Parent.</param>
 		/// <returns>True if a focusable child exists.</returns>
-		private bool CanHaveFocusableChildren(DependencyObject? pParent) =>
+		private static bool CanHaveFocusableChildren(DependencyObject? pParent) =>
 			FocusProperties.CanHaveFocusableChildren(pParent);
 
 		/// <summary>
@@ -1441,7 +1441,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (_focusedElement != null) //&& static_cast<DependencyObject>(_focusedElement).GetContext())
 			{
-				_contentRoot.InputManager.NotifyFocusChanged(_focusedElement, bringIntoView, animateIfBringIntoView);
+				InputManager.NotifyFocusChanged(_focusedElement, bringIntoView, animateIfBringIntoView);
 			}
 		}
 
@@ -1450,7 +1450,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="dependencyObject">Dependency object.</param>
 		/// <returns>True if focusable.</returns>
-		private bool IsFocusable(DependencyObject? dependencyObject) => FocusProperties.IsFocusable(dependencyObject);
+		private static bool IsFocusable(DependencyObject? dependencyObject) => FocusProperties.IsFocusable(dependencyObject);
 
 		/// <summary>
 		/// Return the object that should be considered the parent for the purposes
@@ -1491,7 +1491,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="pObject"></param>
 		/// <returns>True if visible.</returns>
-		private bool IsVisible(DependencyObject? pObject) => FocusProperties.IsVisible(pObject);
+		private static bool IsVisible(DependencyObject? pObject) => FocusProperties.IsVisible(pObject);
 
 		/// <summary>
 		/// Gets the value set by application developer to determine the tab
@@ -1500,7 +1500,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="dependencyObject">Dependency object.</param>
 		/// <returns>Tab index or int max value.</returns>
-		private int GetTabIndex(DependencyObject? dependencyObject)
+		private static int GetTabIndex(DependencyObject? dependencyObject)
 		{
 			if (dependencyObject != null)
 			{
@@ -1525,7 +1525,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="pObject"></param>
 		/// <returns></returns>
-		private bool CanHaveChildren(DependencyObject? pObject)
+		private static bool CanHaveChildren(DependencyObject? pObject)
 		{
 			if (pObject is UIElement pUIElement) // Really INDEX_VISUAL but Visual is not in the publicly exposed hierarchy.
 			{
@@ -1569,7 +1569,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="pObject">Dependency object.</param>
 		/// <returns>Keyboard navigation mode.</returns>
-		private KeyboardNavigationMode GetTabNavigation(DependencyObject? pObject)
+		private static KeyboardNavigationMode GetTabNavigation(DependencyObject? pObject)
 		{
 			if (!(pObject is UIElement element))
 			{
@@ -1586,7 +1586,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="dependencyObject">Dependency object.</param>
 		/// <returns>True if input object is potential tab stop.</returns>
-		private bool IsPotentialTabStop(DependencyObject? dependencyObject) => FocusProperties.IsPotentialTabStop(dependencyObject);
+		private static bool IsPotentialTabStop(DependencyObject? dependencyObject) => FocusProperties.IsPotentialTabStop(dependencyObject);
 
 		/// <summary>
 		/// Allow the focus change event with the below condition
@@ -1609,7 +1609,7 @@ namespace Windows.UI.Xaml.Input
 			return bCanRaiseFocusEvent;
 		}
 
-		private bool ShouldUpdateFocus(DependencyObject? newFocus, FocusState focusState)
+		private static bool ShouldUpdateFocus(DependencyObject? newFocus, FocusState focusState)
 		{
 			bool shouldUpdateFocus = true;
 
@@ -1715,7 +1715,7 @@ namespace Windows.UI.Xaml.Input
 				return Cleanup();
 			}
 
-			if (_contentRoot.IsShuttingDown())
+			if (ContentRoot.IsShuttingDown())
 			{
 				// Don't change focus setting in case of the processing of ResetVisualTree
 				return Cleanup();
@@ -1882,7 +1882,7 @@ namespace Windows.UI.Xaml.Input
 				if (_isPrevFocusTextControl)
 				{
 					var textCore = TextCore.Instance;
-					textCore.ClearLastSelectedTextElement();
+					TextCore.ClearLastSelectedTextElement();
 					_isPrevFocusTextControl = false;
 				}
 			}
@@ -1947,13 +1947,13 @@ namespace Windows.UI.Xaml.Input
 			// Input Host Manager
 			NotifyFocusChanged(shouldBringIntoView, animateIfBringIntoView);
 
-			_contentRoot.AccessKeyExport.UpdateScope();
+			AccessKeyExport.UpdateScope();
 
 			// Request the playing sound for changing focus with the keyboard, gamepad or remote input
-			if ((coercedFocusState == FocusState.Keyboard && _contentRoot.InputManager.ShouldRequestFocusSound()) &&
+			if ((coercedFocusState == FocusState.Keyboard && InputManager.ShouldRequestFocusSound()) &&
 				(lastInputDeviceType == InputDeviceType.Keyboard || lastInputDeviceType == InputDeviceType.GamepadOrRemote))
 			{
-				ElementSoundPlayerService.Instance.RequestInteractionSoundForElement(ElementSoundKind.Focus, newFocusTarget);
+				ElementSoundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Focus, newFocusTarget);
 			}
 
 			return Cleanup();
@@ -2028,7 +2028,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="pLostFocusElement">Element which lost focus.</param>
 		/// <param name="correlationId">Correlation ID.</param>
-		private void RaiseLostFocusEvent(
+		private static void RaiseLostFocusEvent(
 			DependencyObject pLostFocusElement,
 			Guid correlationId)
 		{
@@ -2432,7 +2432,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="element">UI element.</param>
 		/// <returns>UI element.</returns>
-		private UIElement? GetFocusTargetDescendant(UIElement element)
+		private static UIElement? GetFocusTargetDescendant(UIElement element)
 		{
 			if (element is Control control)
 			{
@@ -2527,7 +2527,7 @@ namespace Windows.UI.Xaml.Input
 					var focusManager = VisualTree.GetFocusManagerForElement(focusedElement);
 					var inputManager = _contentRoot.InputManager;
 					if (inputManager.LastInputDeviceType == InputDeviceType.Keyboard &&
-						inputManager.LastInputWasNonFocusNavigationKeyFromSIP())
+						InputManager.LastInputWasNonFocusNavigationKeyFromSIP())
 					{
 						return null;
 					}
@@ -2558,20 +2558,20 @@ namespace Windows.UI.Xaml.Input
 		//TODO Uno: Send key press events here when keyboard handling is properly implemented
 		internal void OnFocusedElementKeyPressed()
 		{
-			_focusRectManager.OnFocusedElementKeyPressed();
+			FocusRectManager.OnFocusedElementKeyPressed();
 		}
 
 		//TODO Uno: Send key press events here when keyboard handling is properly implemented
 		internal void OnFocusedElementKeyReleased()
 		{
-			_focusRectManager.OnFocusedElementKeyReleased();
+			FocusRectManager.OnFocusedElementKeyReleased();
 		}
 
 		private void RenderFocusRectForElementIfNeeded(UIElement element, IContentRenderer? renderer)
 		{
 			if (element == _focusTarget)
 			{
-				_focusRectManager.RenderFocusRectForElement(element, renderer);
+				FocusRectManager.RenderFocusRectForElement(element, renderer);
 			}
 		}
 
@@ -2871,7 +2871,7 @@ namespace Windows.UI.Xaml.Input
 		// decide a good focus state based on a recently-used input device type.  This function assumes focus is
 		// actually being set, so it won't return "Unfocued" as a FocusState.
 		/*static*/
-		private FocusState GetFocusStateFromInputDeviceType(InputDeviceType inputDeviceType)
+		private static FocusState GetFocusStateFromInputDeviceType(InputDeviceType inputDeviceType)
 		{
 			switch (inputDeviceType)
 			{
@@ -2942,7 +2942,7 @@ namespace Windows.UI.Xaml.Input
 					case InputDeviceType.Keyboard:
 						// In case of non focus navigation keys from SIP, we do not want to display
 						// focus rectangle, hence setting new focus state as a Pointer.
-						if (_contentRoot.InputManager.LastInputWasNonFocusNavigationKeyFromSIP())
+						if (InputManager.LastInputWasNonFocusNavigationKeyFromSIP())
 						{
 							return FocusState.Pointer;
 						}

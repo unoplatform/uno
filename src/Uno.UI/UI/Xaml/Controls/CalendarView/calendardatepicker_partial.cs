@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 					// bad user experience because user can't scroll the outer scrollviewer until the inner scrollviewer
 					// hits the end of content.
 					// we decide to remove the scrollviewer from presenter's template and let flyoutbase not resize us.
-					m_tpFlyout.DisablePresenterResizing();
+					FlyoutBase.DisablePresenterResizing();
 
 					// Forward the value of LightDismissOverlayMode to our flyout.
 					var overlayMode = LightDismissOverlayMode.Off;
@@ -942,7 +942,7 @@ namespace Windows.UI.Xaml.Controls
 				IsCalendarOpen = true;
 
 				var soundPlayerService = DXamlCore.GetElementSoundPlayerServiceNoRef();
-				soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
+				Uno.UI.Xaml.Core.ElementSoundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 			}
 		}
 

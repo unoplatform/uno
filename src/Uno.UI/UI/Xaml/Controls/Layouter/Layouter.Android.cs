@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract void MeasureChild(View view, int widthSpec, int heightSpec);
 
-		private void SetArrangeLogicalSize(View view, Rect frame)
+		private static void SetArrangeLogicalSize(View view, Rect frame)
 		{
 			if (view is UIElement uiElement)
 			{
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void ResetArrangeLogicalSize(View view)
+		private static void ResetArrangeLogicalSize(View view)
 		{
 			if (view is UIElement uiElement)
 			{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void SetFrameRoundingAdjustment(View view, Rect frame, Rect physicalFrame)
+		private static void SetFrameRoundingAdjustment(View view, Rect frame, Rect physicalFrame)
 		{
 			if (view is UIElement uiElement)
 			{

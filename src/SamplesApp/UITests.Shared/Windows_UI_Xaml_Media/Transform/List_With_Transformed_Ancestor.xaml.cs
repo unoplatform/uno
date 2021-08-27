@@ -45,7 +45,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 			_initialPoint = e.GetCurrentPoint(null).Position;
 		}
 
-		private void SetHorizontalTransform(Border border, double x)
+		private static void SetHorizontalTransform(Border border, double x)
 		{
 			(border.RenderTransform as TranslateTransform).X = x;
 		}

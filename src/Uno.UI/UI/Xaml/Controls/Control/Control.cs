@@ -414,7 +414,7 @@ namespace Windows.UI.Xaml.Controls
 					: null;
 		}
 
-		private void CleanupView(View view)
+		private static void CleanupView(View view)
 		{
 			if (view is IDependencyObjectStoreProvider provider)
 			{

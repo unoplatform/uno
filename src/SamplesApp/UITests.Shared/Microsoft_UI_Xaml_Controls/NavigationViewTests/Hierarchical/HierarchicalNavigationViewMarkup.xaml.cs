@@ -69,7 +69,7 @@ namespace MUXControlsTestApp
             IsChildSelectedLabel.Text = itemstring;
         }
 
-        private string BuildIsChildSelectedString(IList<object> items, string itemstring)
+        private static string BuildIsChildSelectedString(IList<object> items, string itemstring)
         {
             foreach (NavigationViewItem item in items)
             {

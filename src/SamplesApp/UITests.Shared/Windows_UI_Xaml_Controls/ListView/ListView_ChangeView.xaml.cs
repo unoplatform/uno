@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 			MyListView.ItemsSource = CreateItems();
 		}
 
-		private Rectangle[] CreateItems()
+		private static Rectangle[] CreateItems()
 		{
 			var items = new List<Rectangle>();
 			var rectangle1 = new Rectangle();

@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		
 
 		// Gets the value of m_isHolding
-		internal bool GetIsHolding()
+		internal static bool GetIsHolding()
 		{
 			//return m_isHolding;
 			// Uno TODO

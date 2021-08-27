@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml
 		}
 
 		#region StatusBar properties
-		private bool IsStatusBarVisible()
+		private static bool IsStatusBarVisible()
 		{
 			var decorView = (ContextHelper.Current as Activity)?.Window?.DecorView;
 
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region NavigationBar properties
-		private bool IsNavigationBarVisible()
+		private static bool IsNavigationBarVisible()
 		{
 			var decorView = (ContextHelper.Current as Activity)?.Window?.DecorView;
 			if (decorView == null)
@@ -288,7 +288,7 @@ namespace Windows.UI.Xaml
 				|| (uiFlags & (int)SystemUiFlags.LayoutHideNavigation) == 0;
 		}
 
-		private bool IsNavigationBarTranslucent()
+		private static bool IsNavigationBarTranslucent()
 		{
 			if (!(ContextHelper.Current is Activity activity))
 			{

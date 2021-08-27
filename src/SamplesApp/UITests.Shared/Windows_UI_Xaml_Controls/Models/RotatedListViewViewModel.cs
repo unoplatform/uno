@@ -56,7 +56,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public Person[] SampleItems { get; set; }
 
-		private Person[] CreatePerson()
+		private static Person[] CreatePerson()
 		{
 			return new Person[]
 			{

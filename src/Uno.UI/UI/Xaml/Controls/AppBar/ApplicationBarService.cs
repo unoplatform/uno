@@ -12,7 +12,7 @@ namespace Uno.UI.Xaml.Controls
 	//TODO Uno: This is just a stub of the MUX class.
 	internal class ApplicationBarService
 	{
-		internal TabStopProcessingResult ProcessTabStopOverride(
+		internal static TabStopProcessingResult ProcessTabStopOverride(
 			DependencyObject? focusedElement,
 			DependencyObject? candidateTabStopElement,
 			bool isBackward)

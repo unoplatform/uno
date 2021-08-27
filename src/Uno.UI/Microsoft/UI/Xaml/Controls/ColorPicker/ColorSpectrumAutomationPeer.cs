@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private string GetValueString(Color color, Vector4 hsvColor)
+		private static string GetValueString(Color color, Vector4 hsvColor)
 		{
 			var hue = (uint)Math.Round(Hsv.GetHue(hsvColor));
 			var saturation = (uint)Math.Round(Hsv.GetSaturation(hsvColor) * 100);

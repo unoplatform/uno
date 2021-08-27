@@ -409,7 +409,7 @@ namespace Uno.UI.Xaml.Input
 			}
 		}
 
-		private double GetMaxRootBoundsDistance(
+		private static double GetMaxRootBoundsDistance(
 			IReadOnlyList<XYFocusParameters> list,
 			Rect bounds,
 			FocusNavigationDirection direction,
@@ -481,12 +481,12 @@ namespace Uno.UI.Xaml.Input
 			return null;
 		}
 
-		private bool IsHorizontalNavigationDirection(FocusNavigationDirection direction)
+		private static bool IsHorizontalNavigationDirection(FocusNavigationDirection direction)
 		{
 			return (direction == FocusNavigationDirection.Left || direction == FocusNavigationDirection.Right);
 		}
 
-		private bool IsVerticalNavigationDirection(FocusNavigationDirection direction)
+		private static bool IsVerticalNavigationDirection(FocusNavigationDirection direction)
 		{
 			return (direction == FocusNavigationDirection.Up || direction == FocusNavigationDirection.Down);
 		}
@@ -499,7 +499,7 @@ namespace Uno.UI.Xaml.Input
 
 		private void SetPercentInShadowWeight(int percentInShadowWeight) => _heuristic.SetPercentInShadowWeight(percentInShadowWeight);
 
-		private int ExploredListHash(
+		private static int ExploredListHash(
 			FocusNavigationDirection direction,
 			DependencyObject? element,
 			DependencyObject? engagedControl,

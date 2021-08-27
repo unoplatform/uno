@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Controls
 			UnsupportedUriSchemeIdentified?.Invoke(this, args);
 		}
 
-		internal bool GetIsHistoryEntryValid(string url) => !url.IsNullOrWhiteSpace() && !url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
+		internal static bool GetIsHistoryEntryValid(string url) => !url.IsNullOrWhiteSpace() && !url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
 	}
 }
 #endif

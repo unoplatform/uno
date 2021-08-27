@@ -85,7 +85,7 @@ namespace Uno.UI.Xaml.Core
 		}
 
 		[NotImplemented]
-		internal void UIARaiseFocusChangedEventOnUIAWindow(DependencyObject sender)
+		internal static void UIARaiseFocusChangedEventOnUIAWindow(DependencyObject sender)
 		{
 		}
 	}

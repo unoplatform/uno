@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Tests.Common
 			return GetTemplateChild(m_cp, childName);
 		}
 
-		internal DependencyObject GetTemplateChild(DependencyObject root, string childName)
+		internal static DependencyObject GetTemplateChild(DependencyObject root, string childName)
 		{
 			return CalendarHelper.GetTemplateChild(root, childName);
 		}

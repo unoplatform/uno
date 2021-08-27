@@ -80,7 +80,7 @@ namespace UITests.Shared.Windows_Storage.StorageFolderTests
 			}
 		}
 
-		private async Task SafeAppendToTestFile(StorageFolder folder, string text)
+		private static async Task SafeAppendToTestFile(StorageFolder folder, string text)
 		{
 			try
 			{

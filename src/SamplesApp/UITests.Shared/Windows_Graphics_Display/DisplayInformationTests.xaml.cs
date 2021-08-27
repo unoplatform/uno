@@ -129,7 +129,7 @@ namespace UITests.Shared.Windows_Graphics_Display
 			RaisePropertyChanged(nameof(Properties));
 		}
 
-		private string SafeGetValue<T>(Func<T> getter)
+		private static string SafeGetValue<T>(Func<T> getter)
 		{
 			try
 			{

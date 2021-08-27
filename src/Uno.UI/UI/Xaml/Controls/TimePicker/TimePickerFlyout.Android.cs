@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 			Hide(canCancel: false);
 		}
 
-		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime) { }
+		static partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime) { }
 
 		public class OnSetTimeListener : Java.Lang.Object, IOnTimeSetListener
 		{

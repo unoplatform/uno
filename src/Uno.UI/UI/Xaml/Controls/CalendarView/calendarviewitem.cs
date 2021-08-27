@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 					pArgs.Handled = true;
 
 					var soundPlayerService = DXamlCore.GetElementSoundPlayerServiceNoRef();
-					soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
+					Uno.UI.Xaml.Core.ElementSoundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 				}
 			}
 
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 						SetIsKeyboardFocused(true);
 
 						var soundPlayerService = DXamlCore.GetElementSoundPlayerServiceNoRef();
-						soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
+						Uno.UI.Xaml.Core.ElementSoundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 					}
 					else
 					{

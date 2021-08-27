@@ -52,7 +52,7 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
-		internal void Play(ElementSoundKind sound)
+		internal static void Play(ElementSoundKind sound)
 		{
 			//TODO Uno: Implement
 		}
@@ -104,7 +104,7 @@ namespace Uno.UI.Xaml.Core
 			return ElementSoundMode.Off;
 		}
 
-		internal void RequestInteractionSoundForElement(ElementSoundKind soundKind, DependencyObject? dependencyObject)
+		internal static void RequestInteractionSoundForElement(ElementSoundKind soundKind, DependencyObject? dependencyObject)
 		{
 			//TODO Uno: Implement
 		}

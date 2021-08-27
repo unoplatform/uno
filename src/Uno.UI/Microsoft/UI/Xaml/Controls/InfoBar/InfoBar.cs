@@ -264,7 +264,7 @@ namespace Microsoft.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, ReadLocalValue(Control.ForegroundProperty) == DependencyProperty.UnsetValue ? "ForegroundNotSet" : "ForegroundSet", false);
 		}
 
-		string GetSeverityLevelResourceName(InfoBarSeverity severity)
+		static string GetSeverityLevelResourceName(InfoBarSeverity severity)
 		{
 			switch (severity)
 			{
@@ -275,7 +275,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return "InfoBarSeverityInformationalName";
 		}
 
-		string GetIconSeverityLevelResourceName(InfoBarSeverity severity)
+		static string GetIconSeverityLevelResourceName(InfoBarSeverity severity)
 		{
 			switch (severity)
 			{

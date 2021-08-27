@@ -697,7 +697,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void OnLoaded()
+		internal static void OnLoaded()
 		{
 
 		}

@@ -56,8 +56,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return returnValue;
 		}
 
-
-		void InitializeImpl()
+		static void InitializeImpl()
 		{
 			//wrl.ComPtr<xaml_controls.ICanvasFactory> spInnerFactory;
 			//wrl.ComPtr<xaml_controls.ICanvas> spInnerInstance;

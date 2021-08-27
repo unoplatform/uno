@@ -106,11 +106,11 @@ namespace Windows.UI.Xaml
 		/// <remarks>This element is flagged with IsVisualTreeRoot.</remarks>
 		internal UIElement RootElement => InternalGetRootElement();
 
-		internal PopupRoot PopupRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainPopupRoot;
+		internal static PopupRoot PopupRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainPopupRoot;
 
-		internal FullWindowMediaRoot FullWindowMediaRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainFullWindowMediaRoot;
+		internal static FullWindowMediaRoot FullWindowMediaRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainFullWindowMediaRoot;
 
-		internal Canvas FocusVisualLayer => Uno.UI.Xaml.Core.CoreServices.Instance.MainFocusVisualRoot;
+		internal static Canvas FocusVisualLayer => Uno.UI.Xaml.Core.CoreServices.Instance.MainFocusVisualRoot;
 
 		/// <summary>
 		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.

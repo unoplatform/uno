@@ -23,15 +23,15 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 #endif
 		}
 
-		private (Action onPressed, Action onReleased) Hide(UIElement element)
+		private static (Action onPressed, Action onReleased) Hide(UIElement element)
 			=> (() => element.Visibility = Visibility.Collapsed, () => element.Visibility = Visibility.Visible);
 
 #if XAMARIN
-		private (Action onPressed, Action onReleased) Disable(FrameworkElement element)
+		private static (Action onPressed, Action onReleased) Disable(FrameworkElement element)
 			=> (() => element.IsEnabled = false, () => element.IsEnabled = true);
 #endif
 
-		private void SetupEvents(UIElement target, TextBlock result, (Action onPressed, Action onReleased) actions = default((Action, Action)))
+		private static void SetupEvents(UIElement target, TextBlock result, (Action onPressed, Action onReleased) actions = default((Action, Action)))
 		{
 			target.PointerPressed += (snd, e) =>
 			{

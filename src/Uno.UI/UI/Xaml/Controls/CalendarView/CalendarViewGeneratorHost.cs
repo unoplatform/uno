@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private ICollectionView CollectionView
+		private static ICollectionView CollectionView
 		{
 			get
 			{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private bool IsItemItsOwnContainer(
+		private static bool IsItemItsOwnContainer(
 			DependencyObject pItem)
 		{
 			// our item is DateTime, not the container
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new NotImplementedException();
 		}
 
-		private GroupStyle GetGroupStyle(
+		private static GroupStyle GetGroupStyle(
 			CollectionViewGroup pGroup,
 			uint level)
 		{
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 			return ppGroupStyle;
 		}
 
-		private void SetIsGrouping(
+		private static void SetIsGrouping(
 			bool isGrouping)
 		{
 			global::System.Diagnostics.Debug.Assert(!isGrouping);
@@ -212,14 +212,14 @@ namespace Windows.UI.Xaml.Controls
 			throw new NotImplementedException();
 		}
 
-		internal bool CanRecycleContainer(
+		internal static bool CanRecycleContainer(
 			DependencyObject pContainer)
 		{
 			var pCanRecycleContainer = true;
 			return pCanRecycleContainer;
 		}
 
-		private DependencyObject SuggestContainerForContainerFromItemLookup()
+		private static DependencyObject SuggestContainerForContainerFromItemLookup()
 		{
 			// CalendarViewGeneratorHost has no clue
 			DependencyObject ppContainer = null;

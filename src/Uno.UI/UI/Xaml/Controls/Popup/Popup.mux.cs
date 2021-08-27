@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Popup
 	{
-		internal bool OnClosing()
+		internal static bool OnClosing()
 		{
 			var cancel = false;
 

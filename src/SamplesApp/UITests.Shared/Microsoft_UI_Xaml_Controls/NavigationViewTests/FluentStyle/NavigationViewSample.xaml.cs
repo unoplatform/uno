@@ -66,7 +66,7 @@ namespace SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.Flue
 			Console.WriteLine("NavigationView_Loaded");
 		}
 
-		private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+		private static void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
 			Console.WriteLine("NavigationView_SelectionChanged");
 		}

@@ -6,10 +6,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public DataTemplateSelector ()
 		{
-			Initialize ();
+			Initialize();
 		}
 
-		void Initialize ()
+		static void Initialize ()
 		{
 		}
 

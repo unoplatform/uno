@@ -5,12 +5,12 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
-		internal void DisableOverpan()
+		internal static void DisableOverpan()
 		{
 			// TODO
 		}
 
-		internal void EnableOverpan()
+		internal static void EnableOverpan()
 		{
 			// TODO
 		}

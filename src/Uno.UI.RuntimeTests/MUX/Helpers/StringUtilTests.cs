@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			Validate_Formatting("test, 42 test2", "%1!s!, %2!u! %3!s!", "test", 42, "test2");
 		}
 
-		private void Validate_Formatting(string expected, string format, params object[] args)
+		private static void Validate_Formatting(string expected, string format, params object[] args)
 			=> Assert.AreEqual(expected, StringUtil.FormatString(format, args));
 	}
 }

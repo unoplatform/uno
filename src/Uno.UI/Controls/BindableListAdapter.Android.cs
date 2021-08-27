@@ -294,7 +294,7 @@ namespace Uno.UI.Controls
 			return view;
 		}
 
-		private View GetSectionView(object source, DataTemplate template, View convertView)
+		private static View GetSectionView(object source, DataTemplate template, View convertView)
 		{
 			var view = convertView;
 

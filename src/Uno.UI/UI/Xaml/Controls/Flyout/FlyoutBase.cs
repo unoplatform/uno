@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return ApplicationView.GetForCurrentView().VisibleBounds;
 		}
 
-		internal void SetPresenterStyle(
+		internal static void SetPresenterStyle(
 			Control pPresenter,
 			Style pStyle)
 		{

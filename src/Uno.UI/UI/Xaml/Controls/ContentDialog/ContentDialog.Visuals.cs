@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void ResetAndPrepareContent()
+		private static void ResetAndPrepareContent()
 		{
 			// Uno TODO: understand when this is applicable (seemingly while dialog is open?)
 			//if (HasValidAppliedTemplate() && m_tpCurrentAsyncOperation && m_hasPreparedContent)

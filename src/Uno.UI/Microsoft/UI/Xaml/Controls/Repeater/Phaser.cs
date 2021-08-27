@@ -188,7 +188,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/* static */
-		void ValidatePhaseOrdering(int currentPhase, int nextPhase)
+		static void ValidatePhaseOrdering(int currentPhase, int nextPhase)
 		{
 			if (nextPhase > 0 && nextPhase <= currentPhase)
 			{

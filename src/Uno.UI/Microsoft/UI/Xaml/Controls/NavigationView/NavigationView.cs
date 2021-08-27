@@ -915,7 +915,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateItemsRepeaterItemsSource(ItemsRepeater ir,
+		private static void UpdateItemsRepeaterItemsSource(ItemsRepeater ir,
 			 object itemsSource)
 		{
 			if (ir != null)
@@ -1182,7 +1182,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
-		private bool IsRootGridOfFlyout(DependencyObject element)
+		private static bool IsRootGridOfFlyout(DependencyObject element)
 		{
 			if (element is Grid grid)
 			{
@@ -1208,7 +1208,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return parentIR;
 		}
 
-		internal ItemsRepeater GetParentItemsRepeaterForContainer(NavigationViewItemBase nvib)
+		internal static ItemsRepeater GetParentItemsRepeaterForContainer(NavigationViewItemBase nvib)
 		{
 			var parent = VisualTreeHelper.GetParent(nvib);
 			if (parent != null)
@@ -2165,7 +2165,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private Action SetPaneTitleFrameworkElementParent(ContentControl parent, FrameworkElement paneTitle, bool shouldNotContainPaneTitle)
+		private static Action SetPaneTitleFrameworkElementParent(ContentControl parent, FrameworkElement paneTitle, bool shouldNotContainPaneTitle)
 		{
 			if (parent != null)
 			{
@@ -2363,7 +2363,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
-		private void PlayIndicatorNonSameLevelTopPrimaryAnimation(UIElement indicator, bool isOutgoing)
+		private static void PlayIndicatorNonSameLevelTopPrimaryAnimation(UIElement indicator, bool isOutgoing)
 		{
 			Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
 			Compositor comp = visual.Compositor;
@@ -2458,7 +2458,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_nextIndicator = null;
 		}
 
-		private void ResetElementAnimationProperties(UIElement element, float desiredOpacity)
+		private static void ResetElementAnimationProperties(UIElement element, float desiredOpacity)
 		{
 			if (element != null)
 			{
@@ -3285,7 +3285,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
-		private bool SelectSelectableItemWithOffset(int startIndex, int offset, ItemsRepeater repeater, int repeaterCollectionSize)
+		private static bool SelectSelectableItemWithOffset(int startIndex, int offset, ItemsRepeater repeater, int repeaterCollectionSize)
 		{
 			startIndex += offset;
 			while (startIndex > -1 && startIndex < repeaterCollectionSize)
@@ -3398,7 +3398,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private NavigationTransitionInfo CreateNavigationTransitionInfo(NavigationRecommendedTransitionDirection recommendedTransitionDirection)
+		private static NavigationTransitionInfo CreateNavigationTransitionInfo(NavigationRecommendedTransitionDirection recommendedTransitionDirection)
 		{
 			// In current implementation, if click is from overflow item, just recommend FromRight Slide animation.
 			if (recommendedTransitionDirection == NavigationRecommendedTransitionDirection.FromOverflow)
@@ -4085,12 +4085,12 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_topDataProvider.IndexOf(SelectedItem);
 		}
 
-		private double GetPaneToggleButtonWidth()
+		private static double GetPaneToggleButtonWidth()
 		{
 			return Convert.ToDouble(SharedHelpers.FindInApplicationResources("PaneToggleButtonWidth", c_paneToggleButtonWidth));
 		}
 
-		private double GetPaneToggleButtonHeight()
+		private static double GetPaneToggleButtonHeight()
 		{
 			return Convert.ToDouble(SharedHelpers.FindInApplicationResources("PaneToggleButtonHeight", c_paneToggleButtonHeight));
 		}
@@ -4130,7 +4130,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_topNavRepeater != null && (TemplateSettings.TopPaneVisibility == Visibility.Visible);
 		}
 
-		private void CoerceToGreaterThanZero(ref double value)
+		private static void CoerceToGreaterThanZero(ref double value)
 		{
 			// Property coercion for OpenPaneLength, CompactPaneLength, CompactModeThresholdWidth, ExpandedModeThresholdWidth
 			value = Math.Max(value, 0.0);
@@ -4552,7 +4552,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void SwapPaneHeaderContent(ContentControl newParentTrackRef, ContentControl oldParentTrackRef, string propertyPathName)
+		private static void SwapPaneHeaderContent(ContentControl newParentTrackRef, ContentControl oldParentTrackRef, string propertyPathName)
 		{
 			var newParent = newParentTrackRef;
 			if (newParent != null)
@@ -5444,7 +5444,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_navigationViewItemsFactory.RecycleElement(args);
 		}
 
-		private int GetContainerCountInRepeater(ItemsRepeater ir)
+		private static int GetContainerCountInRepeater(ItemsRepeater ir)
 		{
 			if (ir != null)
 			{
@@ -5457,7 +5457,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return -1;
 		}
 
-		private bool DoesRepeaterHaveRealizedContainers(ItemsRepeater ir)
+		private static bool DoesRepeaterHaveRealizedContainers(ItemsRepeater ir)
 		{
 			if (ir != null)
 			{
@@ -5469,7 +5469,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
-		private int GetIndexFromItem(ItemsRepeater ir, object data)
+		private static int GetIndexFromItem(ItemsRepeater ir, object data)
 		{
 			if (ir != null)
 			{
@@ -5482,7 +5482,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return -1;
 		}
 
-		private object GetItemFromIndex(ItemsRepeater ir, int index)
+		private static object GetItemFromIndex(ItemsRepeater ir, int index)
 		{
 			if (ir != null)
 			{
@@ -5607,7 +5607,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
-		private NavigationViewItemBase GetContainerForIndexPath(UIElement firstContainer, IndexPath ip, bool lastVisible)
+		private static NavigationViewItemBase GetContainerForIndexPath(UIElement firstContainer, IndexPath ip, bool lastVisible)
 		{
 			var container = firstContainer;
 			if (ip.GetSize() > 2)
@@ -5688,7 +5688,7 @@ namespace Microsoft.UI.Xaml.Controls
 			ChangeIsExpandedNavigationViewItem(item, false /*isExpanded*/);
 		}
 
-		private bool DoesNavigationViewItemHaveChildren(NavigationViewItem nvi)
+		private static bool DoesNavigationViewItemHaveChildren(NavigationViewItem nvi)
 		{
 			if (nvi.MenuItemsSource != null)
 			{
@@ -5782,7 +5782,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nviImpl.RotateExpandCollapseChevron(nvi.IsExpanded);
 		}
 
-		private object GetChildren(NavigationViewItem nvi)
+		private static object GetChildren(NavigationViewItem nvi)
 		{
 			if (nvi.MenuItems.Count > 0)
 			{
@@ -5978,7 +5978,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private bool IsThemeShadowSupported() => ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
+		private static bool IsThemeShadowSupported() => ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
 
 		#endregion
 	}

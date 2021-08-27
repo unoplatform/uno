@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register("Fill", typeof(Brush), typeof(TickBar), new FrameworkPropertyMetadata(null, (s, e) => ((TickBar)s)?.OnFillChanged(e)));
 
 
-		private void OnFillChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnFillChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}

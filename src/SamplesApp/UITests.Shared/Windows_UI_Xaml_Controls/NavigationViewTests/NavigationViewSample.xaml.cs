@@ -66,7 +66,7 @@ namespace SamplesApp.Samples.NavigationViewSample
 			Console.WriteLine("NavigationView_Loaded");
 		}
 
-		private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+		private static void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
 			Console.WriteLine("NavigationView_SelectionChanged");
 		}

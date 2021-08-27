@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private Bitmap RecolorBitmapMonochrome(Bitmap source, Color? color)
+		private static Bitmap RecolorBitmapMonochrome(Bitmap source, Color? color)
 		{
 			int width = source.Width, height = source.Height;
 

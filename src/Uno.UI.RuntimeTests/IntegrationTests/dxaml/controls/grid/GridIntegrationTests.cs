@@ -22,19 +22,19 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 		const double s_gridSize = 700.0;
 		const double s_errorMargin = 0.0001;
 
-		bool ClassSetup()
+		static bool ClassSetup()
 		{
 			TestServices.EnsureInitialized();
 			return true;
 		}
 
-		bool TestSetup()
+		static bool TestSetup()
 		{
 			// TestServices.WindowHelper.InitializeXaml(new MetadataProvider());
 			return true;
 		}
 
-		bool TestCleanup()
+		static bool TestCleanup()
 		{
 			TestServices.WindowHelper.ShutdownXaml();
 			TestServices.WindowHelper.VerifyTestCleanup();

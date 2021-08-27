@@ -237,7 +237,7 @@ namespace Uno.UI.Samples.Content.UITests
 		}
 
 
-		private Storyboard GetNewStoryBoard(DependencyObject target, string property = "Height")
+		private static Storyboard GetNewStoryBoard(DependencyObject target, string property = "Height")
 		{
 			var storyBoard = new Storyboard();
 

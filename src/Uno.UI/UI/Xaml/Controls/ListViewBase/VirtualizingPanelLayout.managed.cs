@@ -978,7 +978,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetDesiredBreadth(FrameworkElement view) => GetBreadth(view.DesiredSize);
 
-		private string GetMethodTag([CallerMemberName] string? caller = null)
+		private static string GetMethodTag([CallerMemberName] string? caller = null)
 		{
 			return $"{nameof(VirtualizingPanelLayout)}.{caller}()";
 		}

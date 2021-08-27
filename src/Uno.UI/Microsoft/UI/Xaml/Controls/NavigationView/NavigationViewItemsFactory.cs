@@ -156,7 +156,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void UnlinkElementFromParent(ElementFactoryRecycleArgs args)
+		private static void UnlinkElementFromParent(ElementFactoryRecycleArgs args)
 		{
 			// We want to unlink the containers from the parent repeater
 			// in case we are required to move it to a different repeater.

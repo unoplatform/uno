@@ -555,7 +555,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ValidateRealizedRange(repeater, 19, 26); 
 		}
 
-		private void ValidateRealizedRange(
+		private static void ValidateRealizedRange(
 			ItemsRepeater repeater,
 			int expectedFirstItemIndex,
 			int expectedLastItemIndex)

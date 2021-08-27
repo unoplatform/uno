@@ -297,7 +297,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_dataChangeCallback?.Invoke(args);
 		}
 
-		private bool IsValidWidth(double width)
+		private static bool IsValidWidth(double width)
 		{
 			return (width >= 0) && (width < double.MaxValue);
 		}

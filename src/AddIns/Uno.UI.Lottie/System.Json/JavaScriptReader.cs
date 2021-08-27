@@ -428,7 +428,7 @@ namespace System.Runtime.Serialization.Json
             }
         }
 
-        private Exception JsonError(string msg)
+        private static Exception JsonError(string msg)
         {
             return new ArgumentException("ArgumentException_MessageAt");
         }

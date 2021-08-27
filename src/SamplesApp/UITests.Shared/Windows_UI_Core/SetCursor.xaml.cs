@@ -35,7 +35,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 #endif
 		}
 
-		private void InitList()
+		private static void InitList()
 		{
 			#if NET461 || __WASM__ || __MACOS__
 			var _enumval = Enum.GetValues(typeof(Windows.UI.Core.CoreCursorType));

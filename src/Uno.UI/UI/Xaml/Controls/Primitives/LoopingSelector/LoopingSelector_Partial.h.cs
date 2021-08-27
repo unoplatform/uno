@@ -287,7 +287,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Mods negative numbers in a way that makes sense
 		// for generating an index position from an infinite
 		// sequence.
-		private uint PositiveMod(int x, int n)
+		private static uint PositiveMod(int x, int n)
 		{
 			return (uint)((x % n + n) % n);
 		}

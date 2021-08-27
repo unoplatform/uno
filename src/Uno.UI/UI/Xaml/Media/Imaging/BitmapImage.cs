@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
 
 
-		private void OnDecodePixelHeightChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnDecodePixelHeightChanged(DependencyPropertyChangedEventArgs e)
 		{
 		}
 

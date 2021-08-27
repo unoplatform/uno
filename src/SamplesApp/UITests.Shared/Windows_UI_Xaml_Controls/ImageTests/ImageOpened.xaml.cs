@@ -49,7 +49,7 @@ namespace Uno.UI.Samples.UITests.Image
 			}
 		}
 
-		private void Show(string text)
+		private static void Show(string text)
 		{
 			var unused = new Windows.UI.Popups.MessageDialog(text).ShowAsync();
 		}

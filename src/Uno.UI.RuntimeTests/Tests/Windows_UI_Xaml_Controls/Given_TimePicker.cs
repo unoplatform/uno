@@ -37,6 +37,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	class MyContext
 	{
-		public object StartTime => null;
+		public static object StartTime => null;
 	}
 }

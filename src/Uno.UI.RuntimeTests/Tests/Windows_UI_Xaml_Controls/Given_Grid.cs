@@ -266,7 +266,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			parent.Children.Add(child);
 		}
 
-		private async Task WaitForMeasure(FrameworkElement view, int timeOutMs = 1000)
+		private static async Task WaitForMeasure(FrameworkElement view, int timeOutMs = 1000)
 		{
 			var isMeasured = false;
 			var stopwatch = Stopwatch.StartNew();

@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_ApplicationModel
 			Version = SafeSet(() => $"{packageId.Version.Major}.{packageId.Version.Minor}.{packageId.Version.Revision}.{packageId.Version.Build}");
 		}
 
-		private string SafeSet(Func<object> propertyGetter)
+		private static string SafeSet(Func<object> propertyGetter)
 		{
 			try
 			{

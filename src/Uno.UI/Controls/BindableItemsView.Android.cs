@@ -166,7 +166,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private View CreateView(Android.Content.Context context, int templateId, object source)
+		private static View CreateView(Android.Content.Context context, int templateId, object source)
 		{
 			BindableView view = null;
 
@@ -201,7 +201,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private void DoExecuteCommand(View view, ICommand command)
+		private static void DoExecuteCommand(View view, ICommand command)
 		{
 			if (command == null)
 			{

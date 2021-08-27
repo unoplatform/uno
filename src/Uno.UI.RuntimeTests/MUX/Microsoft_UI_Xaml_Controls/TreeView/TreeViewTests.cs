@@ -773,7 +773,7 @@ namespace MUXControlsTestApp
 			Verify.IsFalse(treeViewNode1.IsExpanded);
 		}
 
-		private bool IsMultiSelectCheckBoxChecked(TreeView tree, TreeViewNode node)
+		private static bool IsMultiSelectCheckBoxChecked(TreeView tree, TreeViewNode node)
 		{
 			var treeViewItem = tree.ContainerFromNode(node) as TreeViewItem;
 			var checkBox = FindVisualChildByName(treeViewItem, "MultiSelectCheckBox") as CheckBox;

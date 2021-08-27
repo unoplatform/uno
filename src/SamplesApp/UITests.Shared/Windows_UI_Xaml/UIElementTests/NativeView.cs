@@ -26,7 +26,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 			this.AddChild(txt);
 		}
 
-		private string GetLongText()
+		private static string GetLongText()
 		{
 			var rnd = new Random(5847900);
 			var sb = new StringBuilder();

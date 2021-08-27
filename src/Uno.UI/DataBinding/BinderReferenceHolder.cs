@@ -386,7 +386,7 @@ namespace Uno.UI.DataBinding
 
 			public object Target { get; }
 
-			public GlobalStats GlobalStats => GlobalStats.Default;
+			public static GlobalStats GlobalStats => GlobalStats.Default;
 		}
 
 		private class BinderReference
@@ -407,7 +407,7 @@ namespace Uno.UI.DataBinding
 		{
 			public readonly static GlobalStats Default = new GlobalStats();
 
-			public object[] InactiveViewBinders
+			public static object[] InactiveViewBinders
 			{
 				get
 				{

@@ -78,7 +78,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		/// Group by first character
 		/// </summary>
 		/// <returns></returns>
-		private IEnumerable<IGrouping<string, string>> GetGroupedSampleItems()
+		private static IEnumerable<IGrouping<string, string>> GetGroupedSampleItems()
 		{
 			return _sampleItems
 				.GroupBy(s => s[0].ToString().ToUpperInvariant())
@@ -93,7 +93,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 				.Concat(new EmptyGroup<int, int>(1111111111)); //Should not appear if GroupStyle.HidesEmptyGroups is true
 		}
 
-		private int GetFirstDigit(int number)
+		private static int GetFirstDigit(int number)
 		{
 			number = Math.Abs(number);
 			while (number >= 10)

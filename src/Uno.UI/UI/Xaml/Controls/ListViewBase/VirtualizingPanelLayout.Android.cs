@@ -2080,7 +2080,7 @@ namespace Windows.UI.Xaml.Controls
 		/// True if there is a gap between the nominated leading edge and the edge of the viewport after the nominated scroll offset is applied,
 		/// false otherwise.
 		/// </summary>
-		private bool IsThereAGap(int leadingEdge, GeneratorDirection fillDirection, int offset, int availableExtent)
+		private static bool IsThereAGap(int leadingEdge, GeneratorDirection fillDirection, int offset, int availableExtent)
 		{
 			if (fillDirection == GeneratorDirection.Forward)
 			{
@@ -2108,7 +2108,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// True if the nominated group is still visible after the nominated scroll offset is applied, false otherwise.
 		/// </summary>
-		private bool IsGroupVisible(Group group, int availableExtent, int offset)
+		private static bool IsGroupVisible(Group group, int availableExtent, int offset)
 		{
 			var offsetStart = group.Start - offset;
 			var offsetEnd = group.End - offset;

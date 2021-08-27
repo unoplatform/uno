@@ -422,7 +422,7 @@ namespace Uno.UI.Xaml.Core
 
 
 		[NotImplemented]
-		private bool ResetRoots()
+		private static bool ResetRoots()
 		{
 			//TODO Uno: We currently never reset existing roots for backwards compatability
 			//with existing infrastructure. This should be adjusted later.
@@ -511,7 +511,7 @@ namespace Uno.UI.Xaml.Core
 		}
 
 		[NotImplemented]
-		internal bool IsBehindFullWindowMediaRoot(DependencyObject? focusedElement)
+		internal static bool IsBehindFullWindowMediaRoot(DependencyObject? focusedElement)
 		{
 			if (focusedElement == null)
 			{
@@ -558,7 +558,7 @@ namespace Uno.UI.Xaml.Core
 		/// in its corresponding member variable (e.g. m_popupRoot, m_publicRootVisual, etc.) 
 		/// </remarks>
 		[NotImplemented]
-		private void RemoveRoot(UIElement root)
+		private static void RemoveRoot(UIElement root)
 		{
 			// TODO Uno: Implement when multi-window support is added.
 			return;

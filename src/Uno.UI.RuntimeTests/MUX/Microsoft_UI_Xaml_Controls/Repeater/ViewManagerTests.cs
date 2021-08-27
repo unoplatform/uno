@@ -815,13 +815,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 
-		private void MoveFocusToIndex(ItemsRepeater repeater, int index)
+		private static void MoveFocusToIndex(ItemsRepeater repeater, int index)
 		{
 			var element = repeater.TryGetElement(index) as Control;
 			element.Focus(FocusState.Programmatic);
 		}
 
-		private void ValidateCurrentFocus(ItemsRepeater repeater, int expectedIndex, string expectedContent)
+		private static void ValidateCurrentFocus(ItemsRepeater repeater, int expectedIndex, string expectedContent)
 		{
 			var currentFocus = FocusManager.GetFocusedElement() as ContentControl;
 			var currentFocusedIndex = repeater.GetElementIndex(currentFocus);
@@ -842,7 +842,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return repeater;
 		}
 
-		private VirtualizingLayout CreateLayout(ItemsRepeater repeater)
+		private static VirtualizingLayout CreateLayout(ItemsRepeater repeater)
 		{
 			var layout = new MockVirtualizingLayout();
 			var children = new List<UIElement>();

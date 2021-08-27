@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
-		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyPropertyDetails propertyDetails)
+		internal static DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyPropertyDetails propertyDetails)
 		{
 			return propertyDetails.CurrentHighestValuePrecedence;
 		}
@@ -1424,7 +1424,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool HasInherits(DependencyPropertyDetails propertyDetails)
+		private static bool HasInherits(DependencyPropertyDetails propertyDetails)
 		{
 			var metadata = propertyDetails.Metadata;
 
@@ -1695,7 +1695,7 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="value">The value to set</param>
 		/// <param name="precedence">The value precedence to assign</param>
-		private void SetValueInternal(
+		private static void SetValueInternal(
 			object? value,
 			DependencyPropertyValuePrecedences precedence,
 			DependencyPropertyDetails propertyDetails

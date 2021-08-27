@@ -282,7 +282,7 @@ namespace Uno.UI.Controls
 			native.Alpha = (float)element.Opacity;
 		}
 
-		private IEnumerable<IMenuItem?> GetMenuItems(Android.Views.IMenu menu)
+		private static IEnumerable<IMenuItem?> GetMenuItems(Android.Views.IMenu menu)
 		{
 			for (int i = 0; i < menu.Size(); i++)
 			{
@@ -318,7 +318,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private void CloseKeyboard()
+		private static void CloseKeyboard()
 		{
 			if ((ContextHelper.Current as Activity)?.CurrentFocus is { } focused)
 			{

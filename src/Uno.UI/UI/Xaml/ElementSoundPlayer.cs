@@ -46,9 +46,9 @@ namespace Windows.UI.Xaml
 		}
 
 		[NotImplemented]
-		public static void Play(ElementSoundKind sound) => ElementSoundPlayerService.Instance.Play(sound);
+		public static void Play(ElementSoundKind sound) => ElementSoundPlayerService.Play(sound);
 
 		internal static void RequestInteractionSoundForElement(ElementSoundKind soundToPlay, DependencyObject element) =>
-			ElementSoundPlayerService.Instance.RequestInteractionSoundForElement(soundToPlay, element);
+			ElementSoundPlayerService.RequestInteractionSoundForElement(soundToPlay, element);
 	}
 }

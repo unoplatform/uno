@@ -1243,7 +1243,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			//});
 		}
 
-		private void FillPixelForBox(
+		private static void FillPixelForBox(
 			double x,
 			double y,
 			Hsv baseHsv,
@@ -1403,7 +1403,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			bgraMaxPixelData.Add(255); // a - ignored
 		}
 
-		private void FillPixelForRing(
+		private static void FillPixelForRing(
 			double x,
 			double y,
 			double radius,

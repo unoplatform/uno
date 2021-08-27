@@ -245,7 +245,7 @@ namespace MUXControlsTestApp
 			}
 		}
 
-		private Color GetPixelAtPoint(Point p, RenderTargetBitmap rtb, byte[] pixelArray)
+		private static Color GetPixelAtPoint(Point p, RenderTargetBitmap rtb, byte[] pixelArray)
 		{
 			Color pixelColor = new Color();
 			int x = (int)(p.X);

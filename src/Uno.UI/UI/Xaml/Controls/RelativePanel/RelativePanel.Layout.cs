@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Make sure all dependencies are valid
 		/// </summary>
-		private void ValidateDependencies(IFrameworkElement[] children, IFrameworkElement[] dependencies)
+		private static void ValidateDependencies(IFrameworkElement[] children, IFrameworkElement[] dependencies)
 		{
 			foreach (var dependency in dependencies)
 			{
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Order the child in a list so that the sibling it depends on are laid out before itself
 		/// </summary>
-		private void OrderChildBasedOnDependencies(IFrameworkElement child, IFrameworkElement[] dependencies, List<IFrameworkElement> orderedChildren)
+		private static void OrderChildBasedOnDependencies(IFrameworkElement child, IFrameworkElement[] dependencies, List<IFrameworkElement> orderedChildren)
 		{
 			if (orderedChildren.Count == 0 || dependencies.Length == 0)
 			{
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Make sure there are no relationships between Siblings that make a circular dependency (E.G. A depends on B, B depends on C, C depends on A)
 		/// </summary>
-		private void ValidateCircularReferences(List<IFrameworkElement> orderedChildren, Dictionary<IFrameworkElement, Dependency[]> childrenDependencies)
+		private static void ValidateCircularReferences(List<IFrameworkElement> orderedChildren, Dictionary<IFrameworkElement, Dependency[]> childrenDependencies)
 		{
 			var elements = new List<IFrameworkElement>();
 
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="orderedChildren">The list of all children, properly ordered and without circular dependencies</param>
 		/// <param name="childrenDependencies">The list of all given sibling dependencies</param>
-		private SiblingGraph BuildGraph(
+		private static SiblingGraph BuildGraph(
 			IFrameworkElement[] orderedChildren,
 			Dictionary<IFrameworkElement, Dependency[]> childrenDependencies
 		)

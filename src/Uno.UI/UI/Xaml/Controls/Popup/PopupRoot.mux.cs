@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		[NotImplemented]
-		internal Popup? GetTopmostPopup(PopupFilter filter)
+		internal static Popup? GetTopmostPopup(PopupFilter filter)
 		{
 			// TODO Uno: Implement
 			return null;
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		[NotImplemented]
-		internal void ClearWasOpenedDuringEngagementOnAllOpenPopups()
+		internal static void ClearWasOpenedDuringEngagementOnAllOpenPopups()
 		{
 			// TODO Uno: Implement
 			return;
@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Controls
 			var popupRoot = VisualTree.GetPopupRootForElement(element);
 
 			if (popupRoot == null ||
-				popupRoot.GetOpenPopups() is var openedPopups)
+				GetOpenPopups() is var openedPopups)
 			{
 				return new List<DependencyObject>();
 			}
@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		[NotImplemented]
-		internal Popup[] GetOpenPopups()
+		internal static Popup[] GetOpenPopups()
 		{
 			// TODO Uno: Implement
 			return Array.Empty<Popup>();

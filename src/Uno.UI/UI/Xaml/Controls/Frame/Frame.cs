@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty BackStackProperty { get ; } =
 			DependencyProperty.Register("BackStack", typeof(IList<PageStackEntry>), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnBackStackChanged(e)));
 
-		private void OnBackStackChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnBackStackChanged(DependencyPropertyChangedEventArgs e)
 		{
 		}
 
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("CacheSize", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(0, (s, e) => ((Frame)s)?.OnCacheSizeChanged(e)));
 
 
-		private void OnCacheSizeChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnCacheSizeChanged(DependencyPropertyChangedEventArgs e)
 		{
 		}
 
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(Frame), new FrameworkPropertyMetadata(false, (s, e) => ((Frame)s)?.OnCanGoBackChanged(e)));
 
 
-		private void OnCanGoBackChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnCanGoBackChanged(DependencyPropertyChangedEventArgs e)
 		{
 		}
 
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(Frame), new FrameworkPropertyMetadata(true, (s, e) => ((Frame)s)?.OnCanGoForwardChanged(e)));
 
 
-		private void OnCanGoForwardChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnCanGoForwardChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(CurrentSourcePageType), typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnCurrentSourcePageTypeChanged(e)));
 
 
-		private void OnCurrentSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnCurrentSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -178,7 +178,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("ForwardStack", typeof(IList<PageStackEntry>), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnForwardStackChanged(e)));
 
 
-		private void OnForwardStackChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnForwardStackChanged(DependencyPropertyChangedEventArgs e)
 		{
 		}
 
@@ -395,7 +395,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Return pages removed from the stack to the pool, if enabled.
 		/// </summary>
-		private void ReleasePages(IList<PageStackEntry> pageStackEntries)
+		private static void ReleasePages(IList<PageStackEntry> pageStackEntries)
 		{
 			foreach (var entry in pageStackEntries)
 			{

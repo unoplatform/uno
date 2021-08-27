@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		bool IsValidWidth(double width)
+		static bool IsValidWidth(double width)
 		{
 			return (width >= 0) && (width < double.MaxValue);
 		}

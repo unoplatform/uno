@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 				return GetSnapToAsRemainingDistance(layout, snapTo.Value);
 			}
 
-			private int[] GetSnapToAsRemainingDistance(VirtualizingPanelLayout layout, float snapTo)
+			private static int[] GetSnapToAsRemainingDistance(VirtualizingPanelLayout layout, float snapTo)
 			{
 				var diff = layout.GetSnapToAsRemainingDistance(snapTo);
 

@@ -323,10 +323,10 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 		}
 
-		private string GetRandomFilePath()
+		private static string GetRandomFilePath()
 			=> Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{Guid.NewGuid()}.txt");
 
-		private string GetRandomFolderPath()
+		private static string GetRandomFolderPath()
 		{
 			var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, Guid.NewGuid().ToString());
 			Directory.CreateDirectory(path);

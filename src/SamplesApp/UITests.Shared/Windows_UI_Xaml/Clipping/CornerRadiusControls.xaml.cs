@@ -12,8 +12,8 @@ namespace UITests.Windows_UI_Xaml.Clipping
 			this.InitializeComponent();
 		}
 
-		private CornerRadius ToRadius(double value) => new CornerRadius(value);
+		private static CornerRadius ToRadius(double value) => new CornerRadius(value);
 
-		private double Negate(double value) => -value;
+		private static double Negate(double value) => -value;
 	}
 }

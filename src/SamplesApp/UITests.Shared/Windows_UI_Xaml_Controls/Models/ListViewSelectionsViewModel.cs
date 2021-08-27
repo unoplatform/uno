@@ -28,7 +28,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		public ICommand ClearSelection => GetOrCreateCommand(() => SelectedName = "");
 
-		private string[] GetSampleNames()
+		private static string[] GetSampleNames()
 		{
 			return new[]
 			{

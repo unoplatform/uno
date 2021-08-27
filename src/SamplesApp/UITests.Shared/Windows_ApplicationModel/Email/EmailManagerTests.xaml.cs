@@ -138,7 +138,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Email
 			}
 		}
 
-		private void AddAddresses(string[] addresses, IList<EmailRecipient> target)
+		private static void AddAddresses(string[] addresses, IList<EmailRecipient> target)
 		{
 			foreach (var address in addresses)
 			{

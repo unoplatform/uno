@@ -401,7 +401,7 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 		//}
 
-		void DetachEntranceAnimationCompletedHandlers()
+		static void DetachEntranceAnimationCompletedHandlers()
 		{
 			// Marked as no longer used
 			//
@@ -556,7 +556,7 @@ namespace Windows.UI.Xaml.Controls
 			return m_containsItemsWithKeyboardAcceleratorText;
 		}
 
-		private Rect GetSubPresenterBounds(UIElement pSubPresenterAsUIE)
+		private static Rect GetSubPresenterBounds(UIElement pSubPresenterAsUIE)
 		{
 			var t = pSubPresenterAsUIE.TransformToVisual(null);
 			var r = t.TransformBounds(pSubPresenterAsUIE.LayoutSlotWithMarginsAndAlignments);
@@ -689,7 +689,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		DependencyObject GetParentMenuFlyoutSubItem(DependencyObject nativeDO)
+		static DependencyObject GetParentMenuFlyoutSubItem(DependencyObject nativeDO)
 		{
 			var spThis = nativeDO as MenuFlyoutPresenter;
 			ISubMenuOwner spResult;

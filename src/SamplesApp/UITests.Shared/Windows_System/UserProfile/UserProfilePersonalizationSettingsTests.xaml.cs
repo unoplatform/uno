@@ -74,7 +74,7 @@ namespace UITests.Windows_System.UserProfile
 			await ShowResultDialogAsync(success);
 		}
 
-		private async Task ShowResultDialogAsync(bool result)
+		private static async Task ShowResultDialogAsync(bool result)
 		{
 			var dialog = new MessageDialog(result ? "Image set successfully." : "Image could not be set.");
 			await dialog.ShowAsync();

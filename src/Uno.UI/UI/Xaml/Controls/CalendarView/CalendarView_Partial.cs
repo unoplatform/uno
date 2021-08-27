@@ -611,7 +611,7 @@ namespace Windows.UI.Xaml.Controls
 
 					for (var i = 0; i < pPanels.Length; ++i)
 					{
-						ForeachChildInPanel(pPanels[i], 
+							ForeachChildInPanel(pPanels[i], 
 							(CalendarViewBaseItem pItem) =>
 						{
 							pItem.UpdateTextBlockFontProperties();
@@ -657,7 +657,7 @@ namespace Windows.UI.Xaml.Controls
 					spStyle = args.NewValue as Style;
 					var pMonthPanel = m_tpMonthViewItemHost.Panel;
 
-					ForeachChildInPanel(
+						ForeachChildInPanel(
 						pMonthPanel, 
 						pItem =>
 						{
@@ -1637,7 +1637,7 @@ namespace Windows.UI.Xaml.Controls
 		// bring a item into view
 		// This function will scroll to the target item immediately,
 		// when target is far away from realized window, we'll not see unrealized area.
-		private void ScrollToDate(
+		private static void ScrollToDate(
 			CalendarViewGeneratorHost pHost,
 			DateTime date)
 		{
@@ -1659,7 +1659,7 @@ namespace Windows.UI.Xaml.Controls
 		// if target is not realized yet, we might see unrealized area.
 		// This only gets called in NavigationButton clicked event where
 		// the target should be less than one page away from visible window.
-		private void ScrollToDateWithAnimation(
+		private static void ScrollToDateWithAnimation(
 			CalendarViewGeneratorHost pHost,
 			DateTime date)
 		{
@@ -2583,7 +2583,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private void ForeachChildInPanel(
+		private static void ForeachChildInPanel(
 			CalendarPanel pCalendarPanel,
 			Action<CalendarViewBaseItem> func)
 		{

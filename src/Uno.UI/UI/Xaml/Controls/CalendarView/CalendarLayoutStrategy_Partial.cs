@@ -25,12 +25,12 @@ namespace Windows.UI.Xaml.Controls
 
 		void ILayoutStrategy.BeginMeasure()
 		{
-			_layoutStrategyImpl.BeginMeasure();
+			CalendarLayoutStrategyImpl.BeginMeasure();
 		}
 
 		void ILayoutStrategy.EndMeasure()
 		{
-			_layoutStrategyImpl.EndMeasure();
+			CalendarLayoutStrategyImpl.EndMeasure();
 		}
 
 		// returns the size we should use to measure a container or header with
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 		private void GetPositionOfFirstElementImpl(out Point returnValue)
 		{
 			returnValue = null;
-			returnValue = _layoutStrategyImpl.GetPositionOfFirstElement();
+			returnValue = CalendarLayoutStrategyImpl.GetPositionOfFirstElement();
 
 			return;
 		}
@@ -273,12 +273,12 @@ namespace Windows.UI.Xaml.Controls
 		#region Special elements methods
 		internal bool NeedsSpecialItem()
 		{
-			return _layoutStrategyImpl.NeedsSpecialItem();
+			return CalendarLayoutStrategyImpl.NeedsSpecialItem();
 		}
 
 		internal int GetSpecialItemIndex()
 		{
-			return _layoutStrategyImpl.GetSpecialItemIndex();
+			return CalendarLayoutStrategyImpl.GetSpecialItemIndex();
 		}
 
 		#endregion

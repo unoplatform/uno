@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private PivotAdapter _adapter;
 
-		partial void InitializePartial()
+		static partial void InitializePartial()
 		{
 		}
 

@@ -561,7 +561,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return SetupRepeater(dataSource, GetElementFactory(), ref scrollViewer, new StackLayout());
 		}
 
-		private RecyclingElementFactory GetElementFactory()
+		private static RecyclingElementFactory GetElementFactory()
 		{
 			var elementFactory = new RecyclingElementFactory();
 			elementFactory.RecyclePool = new RecyclePool();
@@ -601,7 +601,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			return repeater;
 		}
-		private int VerifyRealizedRange(ItemsRepeater repeater, CustomItemsSource dataSource)
+		private static int VerifyRealizedRange(ItemsRepeater repeater, CustomItemsSource dataSource)
 		{
 			int numRealized = 0;
 			// trace

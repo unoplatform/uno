@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 		//}
 
-		void AutoAdjustPlacement(MajorPlacementMode pPlacement)
+		static void AutoAdjustPlacement(MajorPlacementMode pPlacement)
 		{
 			// UNO TODO
 			// Rect windowRect = default;
@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void CacheInputDeviceTypeUsedToOpen(UIElement pTargetElement)
+		static void CacheInputDeviceTypeUsedToOpen(UIElement pTargetElement)
 		{
 			// UNO TODO
 			//CContentRoot* contentRoot = VisualTree.GetContentRootForElement(pTargetElement);
@@ -330,7 +330,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Callback for ShowAt() from core layer
-		void ShowAtStatic(MenuFlyout pCoreMenuFlyout,
+		static void ShowAtStatic(MenuFlyout pCoreMenuFlyout,
 			UIElement pCoreTarget,
 		   Point point)
 		{
@@ -378,7 +378,7 @@ namespace Windows.UI.Xaml.Controls
 			Hide();
 		}
 
-		bool IsWindowedPopup()
+		static bool IsWindowedPopup()
 		{
 			return false;
 

@@ -173,7 +173,7 @@ namespace UITests.Windows_Networking
 			}
 		}
 
-		private string GetStringSafe(Func<string> func)
+		private static string GetStringSafe(Func<string> func)
 		{
 			try
 			{

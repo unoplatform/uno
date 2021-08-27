@@ -322,7 +322,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		/// <param name="devInfo"></param>
 		/// <param name="propertiesList"></param>
-		private void DisplayDeviceProperties(DeviceInformation devInfo, ListView propertiesList, ObservableCollection<string> items)
+		private static void DisplayDeviceProperties(DeviceInformation devInfo, ListView propertiesList, ObservableCollection<string> items)
 		{
 			items.Clear();
 			items.Add("Id: " + devInfo.Id);

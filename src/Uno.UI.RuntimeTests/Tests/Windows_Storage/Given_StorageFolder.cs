@@ -234,7 +234,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
-		private string GetRandomFolderPath()
+		private static string GetRandomFolderPath()
 		{
 			var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, Guid.NewGuid().ToString());
 			Directory.CreateDirectory(path);

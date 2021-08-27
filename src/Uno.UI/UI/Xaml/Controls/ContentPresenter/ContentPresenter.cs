@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private DataTemplate _dataTemplateUsedLastUpdate;
 
-		private void InitializeContentPresenter()
+		private static void InitializeContentPresenter()
 		{
 		}
 
@@ -637,7 +637,7 @@ namespace Windows.UI.Xaml.Controls
 			SetUpdateTemplate();
 		}
 
-		private void OnContentTemplateSelectorChanged(DataTemplateSelector dataTemplateSelector1, DataTemplateSelector dataTemplateSelector2)
+		private static void OnContentTemplateSelectorChanged(DataTemplateSelector dataTemplateSelector1, DataTemplateSelector dataTemplateSelector2)
 		{
 		}
 
@@ -751,7 +751,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Cleanup the view from its binding references
 		/// </summary>
 		/// <param name="previousValue"></param>
-		private void CleanupView(View previousValue)
+		private static void CleanupView(View previousValue)
 		{
 			if (!(previousValue is IFrameworkElement) && previousValue is DependencyObject dependencyObject)
 			{

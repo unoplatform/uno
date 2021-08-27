@@ -39,8 +39,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private class MyContext
 		{
-			public Visibility ButtonVisibility => Visibility.Visible;
-			public string ButtonText => "Archaeopteryx";
+			public static Visibility ButtonVisibility => Visibility.Visible;
+			public static string ButtonText => "Archaeopteryx";
 		}
 	}
 }

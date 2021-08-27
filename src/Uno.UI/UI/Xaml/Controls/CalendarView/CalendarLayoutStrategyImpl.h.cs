@@ -37,8 +37,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Layout related methods
 
-		public void BeginMeasure() {}
-		public void EndMeasure() {}
+		public static void BeginMeasure() {}
+		public static void EndMeasure() {}
 
 		//// returns the size we should use to measure a container or header with
 		//// itemIndex - indicates an index of valid item or -1 for general, non-special items
@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 		//     wf.Rect windowToFill);
 
 		// CalendarPanel doesn't have a group
-		public Point GetPositionOfFirstElement() { return new Point(0, 0); }
+		public static Point GetPositionOfFirstElement() { return new Point(0, 0); }
 
 		#endregion
 
@@ -129,9 +129,9 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		// CalendarPanel don't have a special item.
-		public bool NeedsSpecialItem() { return false; }
+		public static bool NeedsSpecialItem() { return false; }
 
-		public int GetSpecialItemIndex() { return c_specialItemIndex; }
+		public static int GetSpecialItemIndex() { return c_specialItemIndex; }
 
 		//// set the viewport size and check if we need to remeasure (when item size changed).
 		//void SetViewportSize(Size size, out bool pNeedsRemeasure);

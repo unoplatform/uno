@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private string GetState(bool isEnabled, bool isSelected, bool isOver, bool isPressed)
+		private static string GetState(bool isEnabled, bool isSelected, bool isOver, bool isPressed)
 		{
 			var state = CommonStates.Normal;
 
@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
 		}
 
-		private IDisposable InterceptSetNeedsLayout()
+		private static IDisposable InterceptSetNeedsLayout()
 		{
 #if __IOS__
 			bool match(UIView view) => view is ListViewBaseInternalContainer || view is Selector;
@@ -383,7 +383,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					// Holding gesture will show drag visual
 					criteria.canDrag = spListView.CanDragItems;
 					criteria.canReorder = spListView.CanReorderItems;
-					if (spListView.GetIsHolding())
+					if (ListViewBase.GetIsHolding())
 					{
 						criteria.isHolding = true;
 						// Uno TODO

@@ -250,11 +250,11 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 
-		private ApplicationTheme GetDefaultSystemTheme() =>
+		private static ApplicationTheme GetDefaultSystemTheme() =>
 			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
 				ApplicationTheme.Light : ApplicationTheme.Dark;
 
-		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
+		private static IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
 		{
 			if (_trace.IsEnabled)
 			{

@@ -89,7 +89,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 		}
 
 #if __ANDROID__
-		private async Task<_Bitmap> CreateBitmap()
+		private static async Task<_Bitmap> CreateBitmap()
 		{
 			var size = ImageSize.LogicalToPhysicalPixels();
 			var bitmap = _Bitmap.CreateBitmap((int)size.Width, (int)size.Height, Android.Graphics.Bitmap.Config.Argb8888);
@@ -101,7 +101,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			return bitmap;
 		}
 
-		private async Task<string> StoreFile(_Bitmap bitmap)
+		private static async Task<string> StoreFile(_Bitmap bitmap)
 		{
 			var saveFolder = System.IO.Path.Combine(ContextHelper.Current.FilesDir.AbsolutePath, StoredFolderName);
 			var savePath = System.IO.Path.Combine(saveFolder, FileName);

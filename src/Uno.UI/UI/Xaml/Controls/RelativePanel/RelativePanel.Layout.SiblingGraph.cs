@@ -523,7 +523,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Returns true if the child is left aligned with Panel or has no horizontal alignment instructions
 			/// </summary>
-			private bool IsAlignLeftWithPanel(IFrameworkElement child)
+			private static bool IsAlignLeftWithPanel(IFrameworkElement child)
 			{
 				return RelativePanel.GetAlignLeftWithPanel(child) ||
 					!(
@@ -599,7 +599,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Returns true if the child is top aligned with Panel or has no vertical alignment instructions
 			/// </summary>
-			private bool IsAlignTopWithPanel(IFrameworkElement child)
+			private static bool IsAlignTopWithPanel(IFrameworkElement child)
 			{
 				return RelativePanel.GetAlignTopWithPanel(child) ||
 					!(
@@ -716,7 +716,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Gets already laid out FrameworkElements that have a given dependency type in relation to this sibling and where indeference is appropriate
 			/// </summary>
-			private SiblingDependency[] GetAvailableDependencies(Sibling element, DependencyType dependencyType, bool useInferred, IDictionary<IFrameworkElement, SiblingLayoutInfo> availableSiblings)
+			private static SiblingDependency[] GetAvailableDependencies(Sibling element, DependencyType dependencyType, bool useInferred, IDictionary<IFrameworkElement, SiblingLayoutInfo> availableSiblings)
 			{
 				return element.Dependencies
 					.Where(d => (d.Type == dependencyType) && (d.IsInferred == useInferred) && (availableSiblings.ContainsKey(d.Sibling.Element)))
@@ -729,7 +729,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <param name="availableArea">The child's available area</param>
 			/// <param name="childSize">The measured child size</param>
 			/// <param name="siblingLayoutInfo">The information about the previously laid out children</param>
-			private Rect ComputeChildArea(Rect availableArea, Size childSize, SiblingLayoutInfo siblingLayoutInfo)
+			private static Rect ComputeChildArea(Rect availableArea, Size childSize, SiblingLayoutInfo siblingLayoutInfo)
 			{
 				var location = availableArea.Location;
 
@@ -760,7 +760,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <param name="childArea">The area of the newly measured child</param>
 			/// <param name="currentFinalMeasuredSize">The current size of the panel, based on the previous children</param>
 			/// <param name="availableSize">The available size for the panel</param>
-			private Size UpdateFinalMeasuredSize(Rect childArea, Size currentFinalMeasuredSize, Size availableSize, Thickness graphPadding)
+			private static Size UpdateFinalMeasuredSize(Rect childArea, Size currentFinalMeasuredSize, Size availableSize, Thickness graphPadding)
 			{
 				return new Size(
 					double.IsPositiveInfinity(childArea.Right) ?
@@ -793,7 +793,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Executes an operation on an already existing SiblingLayoutInfo or create it before executing.
 			/// </summary>
-			private T ExecuteOnSiblingLayoutInfoIfAvailable<T>(IFrameworkElement child, Dictionary<IFrameworkElement, SiblingLayoutInfo> siblingLayoutInfos, Func<SiblingLayoutInfo, T> operation)
+			private static T ExecuteOnSiblingLayoutInfoIfAvailable<T>(IFrameworkElement child, Dictionary<IFrameworkElement, SiblingLayoutInfo> siblingLayoutInfos, Func<SiblingLayoutInfo, T> operation)
 			{
 				if (!siblingLayoutInfos.ContainsKey(child))
 				{
@@ -806,7 +806,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Gets the Dependency Type for a sibling of a particular dependency (E.G. LeftOf would return RightOf, AlignLeftWith will remain AlignLeftWith)
 			/// </summary>
-			private DependencyType GetOppositeDependency(DependencyType value)
+			private static DependencyType GetOppositeDependency(DependencyType value)
 			{
 				switch (value)
 				{

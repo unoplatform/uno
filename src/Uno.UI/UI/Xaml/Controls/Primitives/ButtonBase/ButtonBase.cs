@@ -387,7 +387,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private bool IsPressKey(VirtualKey key) =>
+		private static bool IsPressKey(VirtualKey key) =>
 				key == VirtualKey.Space ||
 				key == VirtualKey.Enter ||
 				key == VirtualKey.Execute ||

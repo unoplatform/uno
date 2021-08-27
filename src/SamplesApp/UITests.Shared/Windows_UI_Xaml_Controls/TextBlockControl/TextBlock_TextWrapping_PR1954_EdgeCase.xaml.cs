@@ -100,7 +100,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 			}
 		}
 
-		private bool? GetButtonDirection(object sender)
+		private static bool? GetButtonDirection(object sender)
 		{
 			switch ((sender as Windows.UI.Xaml.Controls.Button)?.Content)
 			{

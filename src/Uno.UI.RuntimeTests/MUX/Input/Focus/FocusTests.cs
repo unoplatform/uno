@@ -452,7 +452,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 
 		private async Task SimulateUpAsync(UIElement container) => await SimulateNavigationDirectionAsync(container, FocusNavigationDirection.Up);
 
-		private async Task SimulateNavigationDirectionAsync(UIElement container, FocusNavigationDirection direction)
+		private static async Task SimulateNavigationDirectionAsync(UIElement container, FocusNavigationDirection direction)
 		{
 			await UIExecutor.ExecuteAsync(() =>
 			{
@@ -1157,7 +1157,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 		//}
 
 		//TODO:MZ:Fails
-		private async Task FocusAsyncValidation(FocusAsyncMethod method, FocusElementType elementType, bool shouldCancel, string expectedString)
+		private static async Task FocusAsyncValidation(FocusAsyncMethod method, FocusElementType elementType, bool shouldCancel, string expectedString)
 		{
 			string rootPanelXaml = null;
 

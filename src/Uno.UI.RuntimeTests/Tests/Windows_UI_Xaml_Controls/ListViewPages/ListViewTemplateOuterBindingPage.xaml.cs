@@ -33,7 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ListViewPages
 		{
 			public int[] Items { get; } = Enumerable.Range(0, 3).ToArray();
 
-			public string TextFromOuterContext => "OuterContextText";
+			public static string TextFromOuterContext => "OuterContextText";
 		}
 	}
 }

@@ -512,7 +512,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			return staticResource;
 		}
 
-		private bool IsStaticResourceMarkupNode(XamlMemberDefinition member)
+		private static bool IsStaticResourceMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "StaticResource" || o.Type.Name == "ThemeResource");
 
 		private void ProcessBindingMarkupNode(object instance, XamlMemberDefinition member)

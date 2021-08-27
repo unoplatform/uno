@@ -50,7 +50,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			sender.TabItems.Add(item);
 		}
 
-		private void Tabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs e)
+		private static void Tabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs e)
 		{
 			sender.TabItems.Remove(e.Tab);
 		}

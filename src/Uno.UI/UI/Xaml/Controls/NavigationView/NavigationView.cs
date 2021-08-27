@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 
 		//}
 
-		void UnhookEventsAndClearFields(bool isFromDestructor = false)
+		static void UnhookEventsAndClearFields(bool isFromDestructor = false)
 		{
 		}
 
@@ -1119,7 +1119,7 @@ namespace Windows.UI.Xaml.Controls
 			m_nextIndicator = null;
 		}
 
-		void ResetElementAnimationProperties(UIElement element, float desiredOpacity)
+		static void ResetElementAnimationProperties(UIElement element, float desiredOpacity)
 		{
 			if (element != null)
 			{
@@ -1786,7 +1786,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		NavigationTransitionInfo CreateNavigationTransitionInfo(NavigationRecommendedTransitionDirection recommendedTransitionDirection)
+		static NavigationTransitionInfo CreateNavigationTransitionInfo(NavigationRecommendedTransitionDirection recommendedTransitionDirection)
 		{
 			// In current implementation, if click is from overflow item, just recommend FromRight Slide animation.
 			if (recommendedTransitionDirection == NavigationRecommendedTransitionDirection.FromOverflow)
@@ -2117,7 +2117,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void SetNavigationViewListPosition(ListView listView, NavigationViewListPosition position)
+		static void SetNavigationViewListPosition(ListView listView, NavigationViewListPosition position)
 		{
 			if (listView != null)
 			{
@@ -2158,7 +2158,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void PropagateChangeToNavigationViewList(ListView listView, Action<NavigationViewList> function)
+		static void PropagateChangeToNavigationViewList(ListView listView, Action<NavigationViewList> function)
 		{
 			if (listView != null)
 			{
@@ -2642,7 +2642,7 @@ namespace Windows.UI.Xaml.Controls
 			return m_topNavListView != null && (TemplateSettings.TopPaneVisibility == Visibility.Visible);
 		}
 
-		void CoerceToGreaterThanZero(ref double value)
+		static void CoerceToGreaterThanZero(ref double value)
 		{
 			// Property coercion for OpenPaneLength, CompactPaneLength, CompactModeThresholdWidth, ExpandedModeThresholdWidth
 			value = Math.Max(value, 0.0);
@@ -3215,7 +3215,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateListViewItemsSource(ListView listView, 
+		static void UpdateListViewItemsSource(ListView listView, 
 			object itemsSource)
 		{
 			if (listView != null)

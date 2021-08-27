@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		private StackLayoutState GetAsStackState(object state)
+		private static StackLayoutState GetAsStackState(object state)
 			=> state as StackLayoutState;
 
 		private void InvalidateLayout()

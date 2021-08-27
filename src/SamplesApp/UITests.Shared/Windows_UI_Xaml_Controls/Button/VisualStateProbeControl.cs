@@ -49,7 +49,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 			WriteLine($"{nameof(VisualStateProbeControl)}-{ProbeLabel} Setting state {CurrentState}");
 		}
 
-		private void WriteLine(string line)
+		private static void WriteLine(string line)
 		{
 #if NETFX_CORE
 			Debug.WriteLine(line);

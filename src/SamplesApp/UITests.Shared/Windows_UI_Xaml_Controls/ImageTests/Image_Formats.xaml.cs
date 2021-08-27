@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 			{"webp (bitmap)", "ms-appx:///Assets/Formats/uno-overalls.webp"}
 		};
 
-		private Dictionary<string, string> Images => Formats;
+		private static Dictionary<string, string> Images => Formats;
 
 		public Image_Formats()
 		{

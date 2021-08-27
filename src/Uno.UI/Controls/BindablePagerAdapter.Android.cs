@@ -125,7 +125,7 @@ namespace Uno.UI.Controls
 			return bindableView;
 		}
 
-		private View GetSimpleView(View convertView, object source)
+		private static View GetSimpleView(View convertView, object source)
 		{
 			return null;
 		}

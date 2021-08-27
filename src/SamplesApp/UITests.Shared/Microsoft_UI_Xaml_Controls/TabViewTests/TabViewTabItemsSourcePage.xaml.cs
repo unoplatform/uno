@@ -129,7 +129,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			}
 		}
 
-		private MyData CreateNewMyData(int index)
+		private static MyData CreateNewMyData(int index)
 		{
 			var textBlock = new TextBlock();
 			textBlock.Text = "Sample" + index;

@@ -44,13 +44,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		/// <summary>
 		/// Ensure dark theme is applied for the course of a single test.
 		/// </summary>
-		private IDisposable UseDarkTheme() => ThemeHelper.UseDarkTheme();
+		private static IDisposable UseDarkTheme() => ThemeHelper.UseDarkTheme();
 
 #if !NETFX_CORE // Disabled on UWP for now because 17763 doesn't support WinUI 2.x
 		/// <summary>
 		/// Ensure Fluent styles are available for the course of a single test.
 		/// </summary>
-		private IDisposable UseFluentStyles() => StyleHelper.UseFluentStyles();
+		private static IDisposable UseFluentStyles() => StyleHelper.UseFluentStyles();
 #endif
 	}
 

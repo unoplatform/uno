@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.Initialize(this);
 		}
 
-		void DisconnectFrameworkPeerCore()
+		static void DisconnectFrameworkPeerCore()
 		{
 			// Ensure the clean up the items whenever MenuFlyoutSubItem is disconnected
 			//if (m_tpItems.GetAsCoreDO() != null)

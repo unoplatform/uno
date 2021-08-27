@@ -487,7 +487,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		protected Thickness MarginChild(View view)
+		protected static Thickness MarginChild(View view)
 		{
 			if (view is IFrameworkElement frameworkElement)
 			{
@@ -710,7 +710,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private double GetActualSize(
+		private static double GetActualSize(
 			double frameSize,
 			bool isStretch,
 			double childMaxSize,

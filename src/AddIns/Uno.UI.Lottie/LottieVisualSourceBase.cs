@@ -281,7 +281,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			return stream.AsInputStream();
 		}
 
-		private async Task<IInputStream?> DownloadJsonFromUri(Uri uri, CancellationToken ct)
+		private static async Task<IInputStream?> DownloadJsonFromUri(Uri uri, CancellationToken ct)
 		{
 			if(uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 			{

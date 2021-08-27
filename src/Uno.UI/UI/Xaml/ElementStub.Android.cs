@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class ElementStub : FrameworkElement
 	{
-		private View SwapViews(View oldView, Func<View> newViewProvider)
+		private static View SwapViews(View oldView, Func<View> newViewProvider)
 		{
 			var parentViewGroup = oldView?.Parent as ViewGroup;
 			var currentPosition = parentViewGroup?.GetChildren().IndexOf(oldView);

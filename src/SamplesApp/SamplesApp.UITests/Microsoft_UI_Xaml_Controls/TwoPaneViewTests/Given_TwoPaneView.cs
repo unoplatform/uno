@@ -343,7 +343,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			}
 		}
 
-		private void AssertPaneSize(int paneIndex, double width, double height)
+		private static void AssertPaneSize(int paneIndex, double width, double height)
 		{
 			if (width > 0)
 			{
@@ -355,7 +355,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			}
 		}
 
-		private void AssertPaneSpacing(double spacing)
+		private static void AssertPaneSpacing(double spacing)
 		{
 			AssertIsPrettyClose((int)spacing, GetInt("SpacingTextBox"), "Assert spacing");
 		}

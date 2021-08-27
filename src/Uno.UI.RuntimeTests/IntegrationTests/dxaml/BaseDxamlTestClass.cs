@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 	public abstract class BaseDxamlTestClass
 	{
 
-		internal SafeEventRegistration<TElement, TDelegate> CreateSafeEventRegistration<TElement, TDelegate>(string eventName)
+		internal static SafeEventRegistration<TElement, TDelegate> CreateSafeEventRegistration<TElement, TDelegate>(string eventName)
 			where TElement : class
 			where TDelegate : Delegate
 		{

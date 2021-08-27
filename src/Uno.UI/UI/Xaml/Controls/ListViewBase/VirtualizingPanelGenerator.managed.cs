@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 			return id;
 		}
 
-		private string GetMethodTag([CallerMemberName] string caller = null)
+		private static string GetMethodTag([CallerMemberName] string caller = null)
 			=> $"{nameof(VirtualizingPanelGenerator)}.{caller}()";
 
 		internal void ClearIdCache()

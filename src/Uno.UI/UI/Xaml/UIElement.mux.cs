@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml
 		}
 
 		//TODO:MZ: Implement all these in appropriate places :-)
-		internal TabStopProcessingResult ProcessTabStop(
+		internal static TabStopProcessingResult ProcessTabStop(
 			DependencyObject? pFocusedElement,
 			DependencyObject? pCandidateTabStopElement,
 			bool isBackward,
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml
 				var spApplicationBarService = DXamlCore.TryGetApplicationBarService();
 				if (spApplicationBarService != null)
 				{
-					var appBarResult = spApplicationBarService.ProcessTabStopOverride(
+					var appBarResult = Uno.UI.Xaml.Controls.ApplicationBarService.ProcessTabStopOverride(
 						spFocusedTarget,
 						spCandidateTarget,
 						isBackward);
@@ -521,7 +521,7 @@ namespace Windows.UI.Xaml
 
 		internal IEnumerable<DependencyObject>? GetChildrenInTabFocusOrderInternal() => GetChildrenInTabFocusOrder();
 
-		internal bool IsOccluded(UIElement? childElement, Rect elementBounds)
+		internal static bool IsOccluded(UIElement? childElement, Rect elementBounds)
 		{
 			//TODO Uno: properly check for occlusivity.
 			return false;

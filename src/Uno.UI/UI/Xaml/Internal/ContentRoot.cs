@@ -102,7 +102,7 @@ namespace Uno.UI.Xaml.Core
 		internal AccessKeyExport AccessKeyExport { get; } = new AccessKeyExport();
 
 		//TODO Uno: This might need to be adjusted when we have proper lifetime handling
-		internal bool IsShuttingDown() => false;
+		internal static bool IsShuttingDown() => false;
 
 		internal XamlRoot GetOrCreateXamlRoot() => VisualTree.GetOrCreateXamlRoot();
 

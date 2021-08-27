@@ -644,7 +644,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <param name="list">The parameter list to populate</param>
 		/// <param name="numberOfOptions">Number of options in the list</param>
 		/// <param name="listName">The header to display to the user</param>
-		private void PopulateParameterList(NumberBox numberBox, int numberOfOptions, string listName)
+		private static void PopulateParameterList(NumberBox numberBox, int numberOfOptions, string listName)
 		{
 			numberBox.Maximum = numberOfOptions;
 
@@ -654,7 +654,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			numberBox.Visibility = Visibility.Visible;
 		}
 
-		private int GetParameterValue(NumberBox numberBox) => (int)numberBox.Value;
+		private static int GetParameterValue(NumberBox numberBox) => (int)numberBox.Value;
 #else
 		private void PopulateParameterList(TextBox numberBox, int numberOfOptions, string listName)
 		{

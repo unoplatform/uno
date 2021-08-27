@@ -13,6 +13,6 @@ namespace UITests.Windows_UI_Xaml_Media.ImageBrushTests
 			this.InitializeComponent();
 		}
 
-		private Dictionary<string, string> Images => Image_Formats.Formats;
+		private static Dictionary<string, string> Images => Image_Formats.Formats;
 	}
 }

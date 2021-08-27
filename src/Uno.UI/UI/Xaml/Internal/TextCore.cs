@@ -33,7 +33,7 @@ namespace Uno.UI.Xaml.Core
 			dependencyObject is TextBox ||
 			dependencyObject is PasswordBox;
 
-		internal void ClearLastSelectedTextElement()
+		internal static void ClearLastSelectedTextElement()
 		{
 			//TODO Uno: Implement
 		}

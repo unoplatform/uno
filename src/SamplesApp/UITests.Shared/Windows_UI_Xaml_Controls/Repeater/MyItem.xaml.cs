@@ -27,7 +27,7 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater
 			this.InitializeComponent();
 		}
 
-		private Brush GetColor(object value)
+		private static Brush GetColor(object value)
 		{
 			if (int.TryParse(value?.ToString(), out var id))
 			{

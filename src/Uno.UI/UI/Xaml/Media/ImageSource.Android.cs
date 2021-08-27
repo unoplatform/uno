@@ -275,7 +275,7 @@ namespace Windows.UI.Xaml.Media
 			return null;
 		}
 
-		private bool ValidateIfImageNeedsResize(BitmapFactory.Options options)
+		private static bool ValidateIfImageNeedsResize(BitmapFactory.Options options)
 		{
 			if (options.OutHeight > 4096 || options.OutWidth > 4096)
 			{
@@ -330,7 +330,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="resourceId"></param>
 		/// <param name="targetSize"></param>
 		/// <returns></returns>
-		private async Task<Bitmap> FetchResourceWithDownsampling(CancellationToken ct, int resourceId, global::System.Drawing.Size? targetSize)
+		private static async Task<Bitmap> FetchResourceWithDownsampling(CancellationToken ct, int resourceId, global::System.Drawing.Size? targetSize)
 		{
 			var key = Tuple.Create(resourceId, targetSize);
 

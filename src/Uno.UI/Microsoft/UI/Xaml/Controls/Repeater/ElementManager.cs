@@ -448,7 +448,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/* static */
-		bool Intersects(Rect lhs, Rect rhs, ScrollOrientation orientation)
+		static bool Intersects(Rect lhs, Rect rhs, ScrollOrientation orientation)
 		{
 			var lhsStart = orientation == ScrollOrientation.Vertical ? lhs.Y : lhs.X;
 			var lhsEnd = orientation == ScrollOrientation.Vertical ? lhs.Y + lhs.Height : lhs.X + lhs.Width;

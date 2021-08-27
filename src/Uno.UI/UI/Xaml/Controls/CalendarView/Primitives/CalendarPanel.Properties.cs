@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class CalendarPanel
 	{
-		private void CheckThread() => CoreDispatcher.CheckThreadAccess();
+		private static void CheckThread() => CoreDispatcher.CheckThreadAccess();
 
 		internal static readonly DependencyProperty CacheLengthProperty = DependencyProperty.Register(
 			"CacheLength", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(double)));

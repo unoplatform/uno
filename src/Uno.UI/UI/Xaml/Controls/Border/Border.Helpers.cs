@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 			//       element.GetUseLayoutRounding() &&
 			//       (!HasNonZeroCornerRadius(element.GetCornerRadius()));
 			return (RootScale.GetRasterizationScaleForElement(element) != 1.0f) &&
-				   element.GetUseLayoutRounding() &&
+				   GetUseLayoutRounding() &&
 				   (!HasNonZeroCornerRadius(element.GetCornerRadius()));
 		}
 
@@ -66,10 +66,10 @@ namespace Windows.UI.Xaml.Controls
 			var roundedThickness = new Thickness();
 
 			var thickness = element.GetBorderThickness();
-			roundedThickness.Left = element.LayoutRound(thickness.Left);
-			roundedThickness.Right = element.LayoutRound(thickness.Right);
-			roundedThickness.Top = element.LayoutRound(thickness.Top);
-			roundedThickness.Bottom = element.LayoutRound(thickness.Bottom);
+			roundedThickness.Left = LayoutRound(thickness.Left);
+			roundedThickness.Right = LayoutRound(thickness.Right);
+			roundedThickness.Top = LayoutRound(thickness.Top);
+			roundedThickness.Bottom = LayoutRound(thickness.Bottom);
 
 			return roundedThickness;
 		}
@@ -82,8 +82,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (UseLayoutRoundingForBorderThickness(element))
 			{
-				outerRect.Width = element.LayoutRound(outerRect.Width);
-				outerRect.Height = element.LayoutRound(outerRect.Height);
+				outerRect.Width = LayoutRound(outerRect.Width);
+				outerRect.Height = LayoutRound(outerRect.Height);
 				thickness = GetLayoutRoundedThickness(element);
 			}
 

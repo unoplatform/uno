@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//return S_OK;
 		}
 
-		internal void DisablePresenterResizing()
+		internal static void DisablePresenterResizing()
 		{
 		}
 	}

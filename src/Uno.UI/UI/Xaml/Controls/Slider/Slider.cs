@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Replace NaN with 0, because some of the children of this control sometimes have NaN dimensions,
 		/// which messes with our calculations. 
 		/// </summary>
-		private double GetSanitizedDimension(double dimensionValue)
+		private static double GetSanitizedDimension(double dimensionValue)
 		{
 			if (double.IsNaN(dimensionValue))
 			{
@@ -440,7 +440,7 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty StepFrequencyProperty { get ; } =
 			DependencyProperty.Register("StepFrequency", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(1.0, (s, e) => ((Slider)s)?.OnStepFrequencyChanged(e)));
 
-		private void OnStepFrequencyChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnStepFrequencyChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -510,7 +510,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("SnapsTo", typeof(SliderSnapsTo), typeof(Slider), new FrameworkPropertyMetadata(SliderSnapsTo.StepValues, (s, e) => ((Slider)s)?.OnSnapsToChanged(e)));
 
 
-		private void OnSnapsToChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnSnapsToChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -530,7 +530,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("IsThumbToolTipEnabled", typeof(bool), typeof(Slider), new FrameworkPropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsThumbToolTipEnabledChanged(e)));
 
 
-		private void OnIsThumbToolTipEnabledChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnIsThumbToolTipEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -550,7 +550,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("IsDirectionReversed", typeof(bool), typeof(Slider), new FrameworkPropertyMetadata(false, (s, e) => ((Slider)s)?.OnIsDirectionReversedChanged(e)));
 
 
-		private void OnIsDirectionReversedChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnIsDirectionReversedChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -570,7 +570,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("IntermediateValue", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(.5, (s, e) => ((Slider)s)?.OnIntermediateValueChanged(e)));
 
 
-		private void OnIntermediateValueChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnIntermediateValueChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -590,7 +590,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("TickPlacement", typeof(TickPlacement), typeof(Slider), new FrameworkPropertyMetadata(TickPlacement.None, (s, e) => ((Slider)s)?.OnTickPlacementChanged(e)));
 
 
-		private void OnTickPlacementChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnTickPlacementChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -610,7 +610,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("TickFrequency", typeof(double), typeof(Slider), new FrameworkPropertyMetadata(0.0, (s, e) => ((Slider)s)?.OnTickFrequencyChanged(e)));
 
 
-		private void OnTickFrequencyChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnTickFrequencyChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -630,7 +630,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("ThumbToolTipValueConverter", typeof(IValueConverter), typeof(Slider), new FrameworkPropertyMetadata(null, (s, e) => ((Slider)s)?.OnThumbToolTipValueConverterChanged(e)));
 
 
-		private void OnThumbToolTipValueConverterChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnThumbToolTipValueConverterChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}
@@ -650,7 +650,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(Slider), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Slider)s)?.OnHeaderTemplateChanged(e)));
 
 
-		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}

@@ -279,7 +279,7 @@ namespace UITests.Windows_Storage
 			}
 		}
 
-		private async Task ShowDialogAsync(string title, string text)
+		private static async Task ShowDialogAsync(string title, string text)
 		{
 			var dialog = new ContentDialog
 			{

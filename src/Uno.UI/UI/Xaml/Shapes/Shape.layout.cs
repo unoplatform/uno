@@ -585,7 +585,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		// This replicates the behavior of LayoutHelper.GetMinMax() without reading again all DependencyProperties
-		private (Size min, Size max) GetMinMax(
+		private static (Size min, Size max) GetMinMax(
 			(
 				double width, bool hasWidth, double height, bool hasHeight,
 				(double width, bool hasWidth, double height, bool hasHeight) min,

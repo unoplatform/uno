@@ -439,7 +439,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			SpyAnimatedValues();
 		}
 
-		void PerformGlyphVerification(RatingControl rc, String expectedGlyph, TextBlock resultTb, String stackPanelName, SolidColorBrush expectedColor = null)
+		static void PerformGlyphVerification(RatingControl rc, String expectedGlyph, TextBlock resultTb, String stackPanelName, SolidColorBrush expectedColor = null)
 		{
 			ContentPresenter presenter = FindVisualChildByName(rc, "ForegroundContentPresenter") as ContentPresenter;
 
@@ -467,7 +467,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			}
 		}
 
-		void PerformImageVerification(RatingControl rc, String expectedUri, TextBlock resultTb, String stackPanelName, SolidColorBrush expectedColor = null)
+		static void PerformImageVerification(RatingControl rc, String expectedUri, TextBlock resultTb, String stackPanelName, SolidColorBrush expectedColor = null)
 		{
 			ContentPresenter presenter = FindVisualChildByName(rc, "ForegroundContentPresenter") as ContentPresenter;
 
@@ -498,7 +498,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			}
 		}
 
-		SolidColorBrush ThemeResourceNameToColorBrush(String themeResource)
+		static SolidColorBrush ThemeResourceNameToColorBrush(String themeResource)
 		{
 			return Application.Current.Resources[themeResource] as SolidColorBrush;
 		}

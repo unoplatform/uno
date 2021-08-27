@@ -1461,7 +1461,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Creates a new DateTimeFormatter with the given parameters.
 
-		void CreateNewFormatter(
+		static void CreateNewFormatter(
 			 string strFormat,
 			 string strCalendarIdentifier,
 			 out DateTimeFormatter ppDateTimeFormatter)
@@ -1498,7 +1498,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Creates a new wg.Calendar, taking into account the Calendar Identifier
 		// represented by our public "Calendar" property.
-		void CreateNewCalendar(
+		static void CreateNewCalendar(
 			 string strCalendarIdentifier,
 			out Calendar ppCalendar)
 		{
@@ -1645,7 +1645,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Given two calendars, finds the difference of years between them. Note that we are counting on the two
 		// calendars will have the same system.
-		void GetYearDifference(
+		static void GetYearDifference(
 			 Calendar pStartCalendar,
 			 Calendar pEndCalendar,
 			 out int difference)
@@ -1683,7 +1683,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Clamps the given date within the range defined by the min and max dates. Note that it is caller's responsibility
 		// to feed appropriate min/max values that defines a valid date range.
-		DateTimeOffset
+		static DateTimeOffset
 		ClampDate(
 			 DateTimeOffset date,
 			 DateTimeOffset minDate,
@@ -2195,8 +2195,7 @@ namespace Windows.UI.Xaml.Controls
 			strPlainText = spFormatter.Format(date.Value);
 		}
 
-
-		void RefreshFlyoutButtonAutomationName()
+		static void RefreshFlyoutButtonAutomationName()
 		{
 			// UNO TODO
 			//if (m_tpFlyoutButton != null)

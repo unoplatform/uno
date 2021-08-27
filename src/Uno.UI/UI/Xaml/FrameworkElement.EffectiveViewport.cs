@@ -350,7 +350,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]
-		private void TRACE_EFFECTIVE_VIEWPORT(string text)
+		private static void TRACE_EFFECTIVE_VIEWPORT(string text)
 		{
 #if TRACE_EFFECTIVE_VIEWPORT
 			Debug.Write($"{this.GetDebugIdentifier()} {text}\r\n");

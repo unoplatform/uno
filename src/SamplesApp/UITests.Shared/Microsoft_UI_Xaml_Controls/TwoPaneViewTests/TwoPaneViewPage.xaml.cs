@@ -54,7 +54,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
             ConfigurationTextBlock.Text = TwoPaneView.Mode.ToString();
         }
 
-        private string ViewModeToString(TwoPaneViewMode configuration)
+        private static string ViewModeToString(TwoPaneViewMode configuration)
         {
             switch (configuration)
             {

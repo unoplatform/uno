@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			private bool IsSelectionRequiredImpl
+			private static bool IsSelectionRequiredImpl
 			{
 				get
 				{
@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			private bool IsReadOnlyImpl
+			private static bool IsReadOnlyImpl
 			{
 				get
 				{
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			private RowOrColumnMajor RowOrColumnMajorImpl
+			private static RowOrColumnMajor RowOrColumnMajorImpl
 			{
 				get
 				{
@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			private void GetRowHeadersImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
+			private static void GetRowHeadersImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
 			{
 				pReturnValueCount = 0;
 				ppReturnValue = default;

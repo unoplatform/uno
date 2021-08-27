@@ -81,7 +81,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			indexToSelectTextBlock.SetDependencyPropertyValue("Text", v.ToString(CultureInfo.InvariantCulture));
 		}
 
-		private void SetSource(RadioButtonsSourceLocation location)
+		private static void SetSource(RadioButtonsSourceLocation location)
 		{
 			var sourceComboBox = QueryAll("SourceComboBox");
 
@@ -99,7 +99,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 					break;
 			}
 		}
-		private void SetItemType(RadioButtonsSourceType type)
+		private static void SetItemType(RadioButtonsSourceType type)
 		{
 			var itemTypeComboBox = QueryAll("ItemTypeComboBox");
 

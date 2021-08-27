@@ -33,7 +33,7 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 			}
 		}
 
-		private async Task<ImageSource> CreateImageSource(Stream stream)
+		private static async Task<ImageSource> CreateImageSource(Stream stream)
 		{
 			if (stream == null)
 			{

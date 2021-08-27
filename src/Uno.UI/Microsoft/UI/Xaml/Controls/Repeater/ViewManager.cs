@@ -312,7 +312,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return focusCandidate;
 		}
 
-		public int GetElementIndex(VirtualizationInfo virtInfo)
+		public static int GetElementIndex(VirtualizationInfo virtInfo)
 		{
 			if (virtInfo == null)
 			{

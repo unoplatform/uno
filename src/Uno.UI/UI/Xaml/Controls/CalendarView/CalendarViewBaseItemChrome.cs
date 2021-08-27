@@ -318,7 +318,7 @@ namespace Windows.UI.Xaml.Controls
 			return newFinalSize;
 		}
 
-		private void CreateTextBlock(
+		private static void CreateTextBlock(
 			ref TextBlock spTextBlock)
 		{
 			object value;
@@ -444,7 +444,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private bool ShouldUseLayoutRounding()
+		private static bool ShouldUseLayoutRounding()
 		{
 			// TODO UNO
 			//// Similar to what Borders do, but we don't care about corner radius (ours is always 0).
@@ -454,12 +454,12 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
-		private uint GetIntValueOfColor(Color color)
+		private static uint GetIntValueOfColor(Color color)
 		{
 			return ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | (uint)color.B;
 		}
 
-		private void DrawDensityBar(
+		private static void DrawDensityBar(
 			IContentRenderer pContentRenderer,
 			Rect bounds
 		)
@@ -549,7 +549,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// for Selected+Today inner border.
-		private void DrawInnerBorder(
+		private static void DrawInnerBorder(
 			IContentRenderer pContentRenderer,
 			Rect bounds
 		)
@@ -1240,7 +1240,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private bool ShouldDrawDottedLinesFocusVisual()
+		private static bool ShouldDrawDottedLinesFocusVisual()
 		{
 			var shouldDrawDottedLines = false;
 

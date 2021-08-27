@@ -38,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private class MyContext
 		{
-			public string TestText => "Vampire squid";
+			public static string TestText => "Vampire squid";
 		}
 	}
 }

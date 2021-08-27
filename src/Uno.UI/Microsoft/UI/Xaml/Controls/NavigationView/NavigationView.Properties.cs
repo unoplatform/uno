@@ -598,7 +598,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var value = (double)args.NewValue;
 			var coercedValue = value;
-			owner.CoerceToGreaterThanZero(ref coercedValue);
+			CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
 				sender.SetValue(args.Property, coercedValue);
@@ -616,7 +616,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var value = (double)args.NewValue;
 			var coercedValue = value;
-			owner.CoerceToGreaterThanZero(ref coercedValue);
+			CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
 				sender.SetValue(args.Property, coercedValue);
@@ -634,7 +634,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var value = (double)args.NewValue;
 			var coercedValue = value;
-			owner.CoerceToGreaterThanZero(ref coercedValue);
+			CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
 				sender.SetValue(args.Property, coercedValue);
@@ -652,7 +652,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var value = (double)args.NewValue;
 			var coercedValue = value;
-			owner.CoerceToGreaterThanZero(ref coercedValue);
+			CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
 				sender.SetValue(args.Property, coercedValue);

@@ -355,7 +355,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private IReadOnlyList<float> CopyMotionSnapPoints(
+		private static IReadOnlyList<float> CopyMotionSnapPoints(
 			bool isForZoomSnapPoints,
 			IReadOnlyList<float> snapPoints,
 			SnapPointsAlignment alignment,

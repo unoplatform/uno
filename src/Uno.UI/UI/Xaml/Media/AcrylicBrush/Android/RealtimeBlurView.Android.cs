@@ -83,7 +83,7 @@ namespace Uno.UI.Xaml.Media
 			}
 		}
 
-		protected IBlurImpl GetBlurImplementation() => new AndroidStockBlur();
+		protected static IBlurImpl GetBlurImplementation() => new AndroidStockBlur();
 
 		private class PreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
 		{

@@ -20,7 +20,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			public string[] Items { get; set; }
 		}
 
-		private FlipViewItems[] GetSampleItems()
+		private static FlipViewItems[] GetSampleItems()
 		{
 
 			return new FlipViewItems[]

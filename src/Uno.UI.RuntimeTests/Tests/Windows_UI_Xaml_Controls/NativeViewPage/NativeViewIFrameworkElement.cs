@@ -46,9 +46,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __IOS__ || __ANDROID__ || __MACOS__
 
-		private void OnUnloaded() { }
-		private void OnLoading() { }
-		private void OnLoaded() { }
+		private static void OnUnloaded() { }
+		private static void OnLoading() { }
+		private static void OnLoaded() { }
 
 		public VerticalAlignment VerticalAlignment
 		{

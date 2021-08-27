@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// UNO: This has been customized as on WinUI the ItemsRecycler is actually a fake Panel
-		private IPanel EnsureOwnerIsPanelOrNull(UIElement owner)
+		private static IPanel EnsureOwnerIsPanelOrNull(UIElement owner)
 		{
 			IPanel ownerAsPanel = null;
 			if (owner != null)

@@ -128,7 +128,7 @@ namespace Uno.UI.Controls
 		public ICommand LongClickCommand { get; set; }
 		public object LongClickCommandParameter { get; set; }
 
-		private void ExecuteCommand(ICommand command, object parameter)
+		private static void ExecuteCommand(ICommand command, object parameter)
 		{
 			if (command == null)
 			{

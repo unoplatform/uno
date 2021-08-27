@@ -71,7 +71,7 @@ namespace UITests.Windows_UI_ViewManagement
 			}
 		}
 
-		private string GetValueSafe(Func<object> getter)
+		private static string GetValueSafe(Func<object> getter)
 		{
 			try
 			{

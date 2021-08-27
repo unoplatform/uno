@@ -39,12 +39,12 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 
-		private DateTimeOffset CreateDate(int month = 6, int day = 15, int year = 1990)
+		private static DateTimeOffset CreateDate(int month = 6, int day = 15, int year = 1990)
 		{
 			return new DateTimeOffset(year, month, day, 1, 0, 0, 0, TimeSpan.Zero);
 		}
 
-		private Calendar CreateCalendar(DateTimeOffset date)
+		private static Calendar CreateCalendar(DateTimeOffset date)
 		{
 			var calendar = new Calendar();
 			calendar.SetDateTime(date);
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			return CreateCalendar(CreateDate(month, day, year));
 		}
 
-		private bool AreClose(double a, double b, double threshold)
+		private static bool AreClose(double a, double b, double threshold)
 		{
 			return Math.Abs(a - b) <= threshold;
 		}
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			TestServices.WindowHelper.WaitForIdle();
 		}
 #endif
-		private async Task<DatePicker> SetupDatePickerTest()
+		private static async Task<DatePicker> SetupDatePickerTest()
 		{
 			DatePicker datePicker = null;
 
@@ -1031,7 +1031,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			VerifyHasPlaceholder(datePicker);
 		}
 
-		private async Task<Button> GetFlyoutButtonFromDatePicker(DatePicker datePicker)
+		private static async Task<Button> GetFlyoutButtonFromDatePicker(DatePicker datePicker)
 		{
 			Button flyoutButton = null;
 
@@ -1044,7 +1044,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			return flyoutButton;
 		}
 
-		private async Task<(TextBlock dayTextBlock, TextBlock monthTextBlock, TextBlock yearTextBlock)> GetDayMonthYearTextBlocksFromDatePicker(DatePicker datePicker)
+		private static async Task<(TextBlock dayTextBlock, TextBlock monthTextBlock, TextBlock yearTextBlock)> GetDayMonthYearTextBlocksFromDatePicker(DatePicker datePicker)
 		{
 			(TextBlock, TextBlock, TextBlock) result = default;
 
@@ -1091,12 +1091,12 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			});
 		}
 
-		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter()
+		private static DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter()
 		{
 			return FlyoutHelper.GetOpenFlyoutPresenter() as DatePickerFlyoutPresenter;
 		}
 
-		private void VerifyDatesAreEqual(Calendar expected, DateTimeOffset actual)
+		private static void VerifyDatesAreEqual(Calendar expected, DateTimeOffset actual)
 		{
 			using var _ = new AssertionScope();
 

@@ -261,7 +261,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		private ItemsRepeaterScrollHost CreateAndInitializeRepeater(
+		private static ItemsRepeaterScrollHost CreateAndInitializeRepeater(
 		   object itemsSource,
 		   VirtualizingLayout layout,
 		   object elementFactory,
@@ -290,7 +290,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			};
 		}
 
-		private DataTemplate GetDataTemplate(string content)
+		private static DataTemplate GetDataTemplate(string content)
 		{
 			return (DataTemplate)XamlReader.Load(
 					   string.Format(@"<DataTemplate  

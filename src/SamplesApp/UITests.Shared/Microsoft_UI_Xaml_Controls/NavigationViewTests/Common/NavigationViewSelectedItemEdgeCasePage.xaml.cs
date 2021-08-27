@@ -40,7 +40,7 @@ namespace MUXControlsTestApp
             NavView.SelectedItem = NavView.MenuItems[1];
         }
 
-        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        private static void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
 
         }

@@ -26,7 +26,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 			this.InitializeComponent();
 		}
 
-		private void DisableOnf_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
+		private static void DisableOnf_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
 		{
 			if (args.NewText.EndsWith("f"))
 			{

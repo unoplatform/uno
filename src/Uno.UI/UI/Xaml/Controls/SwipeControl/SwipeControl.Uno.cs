@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 				var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
 				if (globalTestHooks != null)
 				{
-					globalTestHooks.NotifyLastInteractedWithSwipeControlChanged();
+					SwipeTestHooks.NotifyLastInteractedWithSwipeControlChanged();
 				}
 			}
 
@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 					var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
 					if (globalTestHooks != null)
 					{
-						globalTestHooks.NotifyIdleStatusChanged(this);
+						SwipeTestHooks.NotifyIdleStatusChanged(this);
 					}
 				}
 			}
@@ -389,7 +389,7 @@ namespace Windows.UI.Xaml.Controls
 				var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
 				if (globalTestHooks != null)
 				{
-					globalTestHooks.NotifyIdleStatusChanged(this);
+					SwipeTestHooks.NotifyIdleStatusChanged(this);
 				}
 			}
 
@@ -423,9 +423,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 
-		private void ConfigurePositionInertiaRestingValues() { }
+		private static void ConfigurePositionInertiaRestingValues() { }
 
-		private void IdleStateEntered(object @null, object @also_null) { }
+		private static void IdleStateEntered(object @null, object @also_null) { }
 
 		private void UpdateTransforms()
 		{

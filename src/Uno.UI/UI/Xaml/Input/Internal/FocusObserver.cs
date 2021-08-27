@@ -27,7 +27,7 @@ namespace Uno.UI.Xaml.Input
 			_contentRoot = contentRoot ?? throw new ArgumentNullException(nameof(contentRoot));
 		}
 
-		private Rect GetOriginToComponent(DependencyObject? pOldFocusedElement)
+		private static Rect GetOriginToComponent(DependencyObject? pOldFocusedElement)
 		{
 			Rect focusedElementBounds = new Rect();
 

@@ -89,7 +89,7 @@ namespace MUXControlsTestApp
 
         // Click and SelectionChange would have an container. This function verify that Content == container.Content
         // If content is null, Container.tag is returned.
-        private string GetAndVerifyTheContainer(object content, NavigationViewItem container)
+        private static string GetAndVerifyTheContainer(object content, NavigationViewItem container)
         {
             if (content == null)
             {
@@ -114,7 +114,7 @@ namespace MUXControlsTestApp
             }
         }
 
-        private string RecommendedNavigationTransitionInfoToString(NavigationTransitionInfo info)
+        private static string RecommendedNavigationTransitionInfoToString(NavigationTransitionInfo info)
         {
             if ((info as EntranceNavigationTransitionInfo) != null)
             {

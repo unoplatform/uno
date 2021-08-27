@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml.Controls
 			AutomationProperties.SetName(this, automationName);
 		}
 
-		string GetLocalizedPluralBadgeItemStringResource(int numericValue)
+		static string GetLocalizedPluralBadgeItemStringResource(int numericValue)
 		{
 			int valueMod10 = numericValue % 10;
 			string value;

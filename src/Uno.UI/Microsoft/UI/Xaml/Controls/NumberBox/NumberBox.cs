@@ -256,7 +256,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextToValue();
 		}
 
-		private void ValidateNumberFormatter(INumberFormatter2 value)
+		private static void ValidateNumberFormatter(INumberFormatter2 value)
 		{
 			// NumberFormatter also needs to be an INumberParser
 			if (!(value is INumberParser))

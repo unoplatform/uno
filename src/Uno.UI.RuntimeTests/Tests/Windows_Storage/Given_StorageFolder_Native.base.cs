@@ -1097,10 +1097,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
-		private string GetRandomFolderName() => Guid.NewGuid().ToString();
+		private static string GetRandomFolderName() => Guid.NewGuid().ToString();
 
-		private string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";
+		private static string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";
 
-		private Task DeleteIfNotNullAsync(IStorageItem? item) => item != null ? item.DeleteAsync().AsTask() : Task.CompletedTask;
+		private static Task DeleteIfNotNullAsync(IStorageItem? item) => item != null ? item.DeleteAsync().AsTask() : Task.CompletedTask;
 	}
 }

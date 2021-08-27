@@ -638,9 +638,9 @@ namespace Windows.UI.Xaml.Controls
 		internal bool ComputedIsVerticalScrollEnabled { get; private set; }
 
 
-		internal double MinHorizontalOffset => 0;
+		internal static double MinHorizontalOffset => 0;
 
-		internal double MinVerticalOffset => 0;
+		internal static double MinVerticalOffset => 0;
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -1025,7 +1025,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void ClearContentTemplatedParent(object oldContent)
+		private static void ClearContentTemplatedParent(object oldContent)
 		{
 			if (oldContent is IDependencyObjectStoreProvider provider)
 			{

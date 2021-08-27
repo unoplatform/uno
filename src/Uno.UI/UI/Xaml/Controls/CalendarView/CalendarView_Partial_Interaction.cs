@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 
 						TranslateKeyToKeyNavigationAction(key, out action, out isValidKey);
 						global::System.Diagnostics.Debug.Assert(isValidKey);
-						pPanel.GetTargetIndexFromNavigationAction(
+							Primitives.CalendarPanel.GetTargetIndexFromNavigationAction(
 							lastFocusedIndex,
 							ElementType.ItemContainer,
 							action,

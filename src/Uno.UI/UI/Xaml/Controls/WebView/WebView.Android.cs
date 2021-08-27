@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			_webView.LoadUrl(uri.AbsoluteUri.Replace("file://", "file:///"));
 		}
 
-		private void CreateAndLaunchMailtoIntent(Android.Content.Context context, string url)
+		private static void CreateAndLaunchMailtoIntent(Android.Content.Context context, string url)
 		{
 			var mailto = Android.Net.MailTo.Parse(url);
 
@@ -275,7 +275,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (url.StartsWith(Uri.UriSchemeMailto, true, CultureInfo.InvariantCulture))
 				{
-					_webView.CreateAndLaunchMailtoIntent(view.Context, url);
+					CreateAndLaunchMailtoIntent(view.Context, url);
 					return true;
 				}
 
@@ -329,7 +329,7 @@ namespace Windows.UI.Xaml.Controls
 			//Matched using these two sources
 			//http://developer.xamarin.com/api/type/Android.Webkit.ClientError/
 			//https://msdn.microsoft.com/en-ca/library/windows/apps/windows.web.weberrorstatus
-			private WebErrorStatus ConvertClientError(ClientError clientError)
+			private static WebErrorStatus ConvertClientError(ClientError clientError)
 			{
 				switch (clientError)
 				{
@@ -419,7 +419,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <typeparam name="T">A BaseActivity to start</typeparam>
 			/// <param name="ct">CancellationToken</param>
 			/// <returns>The BaseActivity that just started (OnResume called)</returns>
-			private async Task<T> StartActivity<T>(CancellationToken ct) where T : BaseActivity
+			private static async Task<T> StartActivity<T>(CancellationToken ct) where T : BaseActivity
 			{
 				//Get topmost Activity
 				var currentActivity = BaseActivity.Current;

@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _collectionChangedSubscription = new SerialDisposable();
 		private readonly SerialDisposable _headerFooterSubscription = new SerialDisposable();
 
-		private void InitializeNativePanel(NativeListViewBase panel)
+		private static void InitializeNativePanel(NativeListViewBase panel)
 		{
 			panel.CurrentAdapter = new NativeListViewBaseAdapter { Owner = panel };
 		}

@@ -18,12 +18,12 @@ namespace Windows.UI.Xaml.Controls
 			return s_testHooks ?? new SwipeTestHooks();
 		}
 
-		public  SwipeControl GetLastInteractedWithSwipeControl()
+		public static SwipeControl GetLastInteractedWithSwipeControl()
 		{
 			return SwipeControl.GetLastInteractedWithSwipeControl();
 		}
 
-		public  bool GetIsOpen(SwipeControl swipeControl)
+		public static bool GetIsOpen(SwipeControl swipeControl)
 		{
 			if (swipeControl is { })
 			{
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public  bool GetIsIdle(SwipeControl swipeControl)
+		public static bool GetIsIdle(SwipeControl swipeControl)
 		{
 			if (swipeControl is {})
 			{
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public  void NotifyLastInteractedWithSwipeControlChanged()
+		public static void NotifyLastInteractedWithSwipeControlChanged()
 		{
 			var hooks = EnsureGlobalTestHooks();
 			if (hooks.m_lastInteractedWithSwipeControlChangedEventSource is {})
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public event TypedEventHandler<DependencyObject, DependencyObject> LastInteractedWithSwipeControlChanged
+		public static event TypedEventHandler<DependencyObject, DependencyObject> LastInteractedWithSwipeControlChanged
 		{
 			add
 			{
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public  void NotifyOpenedStatusChanged(SwipeControl sender)
+		public static void NotifyOpenedStatusChanged(SwipeControl sender)
 		{
 			var hooks = EnsureGlobalTestHooks();
 			if (hooks.m_openedStatusChangedEventSource is {})
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public event TypedEventHandler<SwipeControl, DependencyObject> OpenedStatusChanged
+		public static event TypedEventHandler<SwipeControl, DependencyObject> OpenedStatusChanged
 		{
 			add
 			{
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void NotifyIdleStatusChanged(SwipeControl sender)
+		public static void NotifyIdleStatusChanged(SwipeControl sender)
 		{
 			var hooks = EnsureGlobalTestHooks();
 			if (hooks.m_idleStatusChangedEventSource is {})
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public event TypedEventHandler<SwipeControl, DependencyObject> IdleStatusChanged
+		public static event TypedEventHandler<SwipeControl, DependencyObject> IdleStatusChanged
 		{
 			add
 			{

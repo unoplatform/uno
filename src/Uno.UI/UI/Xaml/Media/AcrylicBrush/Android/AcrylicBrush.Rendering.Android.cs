@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Media
 			UpdateTint(state);
 		}
 
-		private void UpdateCornerRadius()
+		private static void UpdateCornerRadius()
 		{
 			//TODO
 			//_acrylicLayer?.SetCornerRadius(ContextHelper.Current.ToPixels(MaterialFrame.CornerRadius));
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Media
 			DestroyBlur(state);
 		}
 
-		private void SetBackground(BindableView view, Drawable drawable)
+		private static void SetBackground(BindableView view, Drawable drawable)
 		{
 #pragma warning disable 618 // Using older method for compatibility with API 15
 			view.SetBackgroundDrawable(drawable);

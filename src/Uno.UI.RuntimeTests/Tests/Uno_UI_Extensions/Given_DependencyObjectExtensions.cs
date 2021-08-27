@@ -208,7 +208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Extensions
 			Validate(expected, tree.GetAllChildren(childLevelLimit, includeCurrent, mode));
 		}
 
-		private UIElement BuildTestTree()
+		private static UIElement BuildTestTree()
 		{
 			return new Border
 			{
@@ -258,7 +258,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Extensions
 			tree.Select(elt => elt.Name).Should().BeEquivalentTo(expected);
 		}
 
-		private string Dump(IEnumerable<FrameworkElement> tree)
+		private static string Dump(IEnumerable<FrameworkElement> tree)
 			=> tree.Aggregate(string.Empty, (r, elt) => $"{r}\r\n{elt.Name}");
 	}
 }

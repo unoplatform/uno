@@ -751,7 +751,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsEnabledOverride() => true;
 
-		internal bool GetUseLayoutRounding()
+		internal static bool GetUseLayoutRounding()
 		{
 #if __SKIA__
 			return true;
@@ -760,7 +760,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		internal double LayoutRound(double value)
+		internal static double LayoutRound(double value)
 		{
 #if __SKIA__
 			double scaleFactor = GetScaleFactorForLayoutRounding();
@@ -771,7 +771,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		internal Rect LayoutRound(Rect value)
+		internal static Rect LayoutRound(Rect value)
 		{
 #if __SKIA__
 			double scaleFactor = GetScaleFactorForLayoutRounding();
@@ -787,7 +787,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		internal Thickness LayoutRound(Thickness value)
+		internal static Thickness LayoutRound(Thickness value)
 		{
 #if __SKIA__
 			double scaleFactor = GetScaleFactorForLayoutRounding();
@@ -803,7 +803,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		internal Vector2 LayoutRound(Vector2 value)
+		internal static Vector2 LayoutRound(Vector2 value)
 		{
 #if __SKIA__
 			double scaleFactor = GetScaleFactorForLayoutRounding();
@@ -817,7 +817,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		internal Size LayoutRound(Size value)
+		internal static Size LayoutRound(Size value)
 		{
 #if __SKIA__
 			double scaleFactor = GetScaleFactorForLayoutRounding();
@@ -856,13 +856,13 @@ namespace Windows.UI.Xaml
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
 		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
-		internal double GetScaleFactorForLayoutRounding()
+		internal static double GetScaleFactorForLayoutRounding()
 		{
 			// TODO use actual scaling based on current transforms.
 			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f; // 100%
 		}
 
-		double XcpRound(double x)
+		static double XcpRound(double x)
 		{
 			return Math.Round(x);
 		}

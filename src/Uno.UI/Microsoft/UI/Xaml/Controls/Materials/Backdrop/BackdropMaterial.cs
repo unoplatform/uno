@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var currentWindow = Window.Current;
 
 				_micaController.Value = new MicaController();
-				if (!_micaController.Value.SetTarget(currentWindow))
+				if (!MicaController.SetTarget(currentWindow))
 				{
 					_micaController.Value = null;
 				}

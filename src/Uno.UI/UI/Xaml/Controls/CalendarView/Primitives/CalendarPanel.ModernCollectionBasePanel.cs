@@ -459,7 +459,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			=> _layoutStrategy?.GetDesiredViewportSize() ?? default;
 
 		[NotImplemented]
-		internal void GetTargetIndexFromNavigationAction(
+		internal static void GetTargetIndexFromNavigationAction(
 			int focusedIndex,
 			ElementType elementType,
 			KeyNavigationAction action,
@@ -483,11 +483,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			spLayoutStrategy.LayoutDataInfoProvider = this;
 		}
 
-		private void CacheFirstVisibleElementBeforeOrientationChange()
+		private static void CacheFirstVisibleElementBeforeOrientationChange()
 		{
 		}
 
-		private void ProcessOrientationChange()
+		private static void ProcessOrientationChange()
 		{
 		}
 

@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Owner.GetCalendarViewDayItemChangingEventSourceNoRef(out pEventSource);
 
-			if (Owner.ShouldRaiseEvent(pEventSource)) // app code hooks the event
+			if (UIElement.ShouldRaiseEvent(pEventSource)) // app code hooks the event
 			{
 				// force measure. This will be no-op since content has not been set/changed
 				// but we need it for the contenttemplateroot
@@ -226,7 +226,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Owner.GetCalendarViewDayItemChangingEventSourceNoRef(out pEventSource);
 
-			if (Owner.ShouldRaiseEvent(pEventSource))
+			if (UIElement.ShouldRaiseEvent(pEventSource))
 			{
 				bool wantCallback = false;
 

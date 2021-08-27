@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		private void OnPaneChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnPaneChanged(DependencyPropertyChangedEventArgs e)
 		{
 		}
 
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		private void OnPaneBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnPaneBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 		}
 
@@ -264,7 +264,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		private void OnTemplateSettingsPropertyChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnTemplateSettingsPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 		}
 

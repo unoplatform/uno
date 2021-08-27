@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					spCalendarLayoutStrategy = LayoutStrategy;
 
-					CacheFirstVisibleElementBeforeOrientationChange();
+						CacheFirstVisibleElementBeforeOrientationChange();
 
 					// CalendarPanel orientation is the stacking direction. Which is the opposite of the
 					// virtualization direction.
@@ -149,8 +149,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetVirtualizationDirection(Orientation.Horizontal);
 					}
 
-					// let the base know
-					ProcessOrientationChange();
+						// let the base know
+						ProcessOrientationChange();
 				}
 					break;
 
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private Orientation LogicalOrientation => Orientation;
 
 		// Physical Orientation override
-		private Orientation PhysicalOrientation
+		private static Orientation PhysicalOrientation
 		{
 			get
 			{

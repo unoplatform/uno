@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		private Rect CalculateDialogPlacement(Size desiredSize)
+		private static Rect CalculateDialogPlacement(Size desiredSize)
 		{
 			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
 

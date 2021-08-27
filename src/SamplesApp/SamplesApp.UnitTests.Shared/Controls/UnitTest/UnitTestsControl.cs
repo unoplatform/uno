@@ -334,7 +334,7 @@ namespace Uno.UI.Samples.Tests
 		}
 
 
-		private string GetTestResultIcon(TestResult testResult)
+		private static string GetTestResultIcon(TestResult testResult)
 		{
 			switch (testResult)
 			{
@@ -351,7 +351,7 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		private Color GetTestResultColor(TestResult testResult)
+		private static Color GetTestResultColor(TestResult testResult)
 		{
 			switch (testResult)
 			{
@@ -463,7 +463,7 @@ namespace Uno.UI.Samples.Tests
 			GenerateTestResults();
 		}
 
-		private MethodInfo[] FilterTests(UnitTestClassInfo testClassInfo, string[] filters)
+		private static MethodInfo[] FilterTests(UnitTestClassInfo testClassInfo, string[] filters)
 		{
 			var testClassNameContainsFilters = filters?.Any(f => testClassInfo.Type.FullName.Contains(f, StrComp)) ?? false;
 			return testClassInfo.Tests
@@ -745,10 +745,10 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		private bool HasCustomAttribute<T>(MemberInfo testMethod)
+		private static bool HasCustomAttribute<T>(MemberInfo testMethod)
 			=> testMethod.GetCustomAttribute(typeof(T)) != null;
 
-		private bool IsIgnored(MethodInfo testMethod, out string ignoreMessage)
+		private static bool IsIgnored(MethodInfo testMethod, out string ignoreMessage)
 		{
 			var ignoreAttribute = testMethod.GetCustomAttribute<IgnoreAttribute>();
 			if (ignoreAttribute == null)

@@ -38,7 +38,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
             TestTreeViewItemsSource = PrepareItemsSource();
         }
 
-        private ObservableCollection<TreeViewItemSource> PrepareItemsSource()
+        private static ObservableCollection<TreeViewItemSource> PrepareItemsSource()
         {
             var root0 = new TreeViewItemSource() { Content = "Root.0" };
             var root1 = new TreeViewItemSource() { Content = "Root.1" };

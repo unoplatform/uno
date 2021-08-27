@@ -270,7 +270,7 @@ namespace Windows.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, focusState, false /*useTransitions*/);
 		}
 
-		void UpdateVisualStateForToolTip()
+		static void UpdateVisualStateForToolTip()
 		{
 #if !IS_UNO
 			// Since RS5, ToolTip apply to NavigationViewItem directly to make Keyboard focus has tooltip too.
@@ -314,8 +314,8 @@ namespace Windows.UI.Xaml.Controls
 
 				// Backward Compatibility with RS4-, new implementation prefer IconOnLeft/IconOnly/ContentOnly
 				VisualStateManager.GoToState(this, shouldShowIcon ? "IconVisible" : "IconCollapsed", useTransitions);
-			} 
-   
+			}
+
 			UpdateVisualStateForToolTip();
 
 			UpdateVisualStateForIconAndContent(shouldShowIcon, shouldShowContent);

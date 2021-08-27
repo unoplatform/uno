@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (bAutomationListener)
 					{
-						Uno.UI.Xaml.Core.CoreServices.Instance.UIARaiseFocusChangedEventOnUIAWindow(this);
+						CoreServices.UIARaiseFocusChangedEventOnUIAWindow(this);
 					}
 				}
 			}

@@ -36,11 +36,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			SelectedItemName.Text = ((UnrealizedTreeViewSelection.SelectedItem as TreeViewNode).Content as CustomContent).ToString();
 		}
 
-		private void UnrealizedTreeViewSelection_Expanding(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewExpandingEventArgs args)
+		private static void UnrealizedTreeViewSelection_Expanding(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewExpandingEventArgs args)
 		{
 			VirtualizingDataSource.FillTreeNode(args.Node);
 		}
-		private void UnrealizedTreeViewSelection_Collapsed(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs args)
+		private static void UnrealizedTreeViewSelection_Collapsed(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs args)
 		{
 			VirtualizingDataSource.EmptyTreeNode(args.Node);
 		}

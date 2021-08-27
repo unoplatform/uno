@@ -16,7 +16,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public ListItem[] SampleItemsLarge { get; }
 
-		private ListItem[] GetSampleItemsLarge()
+		private static ListItem[] GetSampleItemsLarge()
 		{
 			IEnumerable<ListItem> items = _sampleItems;
 			for (int i = 0; i < 20; i++)

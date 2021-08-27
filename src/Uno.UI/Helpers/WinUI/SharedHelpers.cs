@@ -590,7 +590,7 @@ namespace Uno.UI.Helpers.WinUI
 			return doIntersect;
 		}
 
-		object FindResourceOrNull(string resource, ResourceDictionary resources)
+		static object FindResourceOrNull(string resource, ResourceDictionary resources)
 		{
 			object boxedResource = resource;
 			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : null;

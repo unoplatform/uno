@@ -126,10 +126,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		IList<object> WrapIterable(IEnumerable iterable)
+		static IList<object> WrapIterable(IEnumerable iterable)
 			=> iterable.Cast<object>().ToList();
 
-		IList<object> WrapIterable(IEnumerable<object> iterable)
+		static IList<object> WrapIterable(IEnumerable<object> iterable)
 			=> new List<object>(iterable);
 
 		void UnListenToCollectionChanges()

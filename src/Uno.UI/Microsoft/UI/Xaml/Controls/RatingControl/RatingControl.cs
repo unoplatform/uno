@@ -357,7 +357,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void ApplyScaleExpressionAnimation(UIElement uiElement, int starIndex)
+		private static void ApplyScaleExpressionAnimation(UIElement uiElement, int starIndex)
 		{
 			//TODO: Uno Specific - Expression animations are not supported yet
 
@@ -703,17 +703,17 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateRatingItemsAppearance();
 		}
 
-		void OnInitialSetValueChanged(DependencyPropertyChangedEventArgs args)
+		static void OnInitialSetValueChanged(DependencyPropertyChangedEventArgs args)
 		{
 
 		}
 
-		void OnIsClearEnabledChanged(DependencyPropertyChangedEventArgs args)
+		static void OnIsClearEnabledChanged(DependencyPropertyChangedEventArgs args)
 		{
 
 		}
 
-		void OnIsReadOnlyChanged(DependencyPropertyChangedEventArgs args)
+		static void OnIsReadOnlyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			// TODO: MSFT Colour changes - see spec
 		}
@@ -1083,7 +1083,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private bool ShouldEnableAnimation()
+		private static bool ShouldEnableAnimation()
 		{
 			// In ControlsResourceVersion2, animation is disabled.
 			return
@@ -1205,7 +1205,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
-		private UISettings GetUISettings()
+		private static UISettings GetUISettings()
 		{
 			_uiSettings = _uiSettings ?? new UISettings();
 			return _uiSettings;

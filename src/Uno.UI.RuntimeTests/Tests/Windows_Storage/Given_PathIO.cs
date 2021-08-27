@@ -474,9 +474,9 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 		}
 
-		private string GenerateRandomFileName() => $"{Guid.NewGuid()}.txt";
+		private static string GenerateRandomFileName() => $"{Guid.NewGuid()}.txt";
 
-		private void DeleteFile(IStorageFile file)
+		private static void DeleteFile(IStorageFile file)
 		{
 			if (file != null)
 			{

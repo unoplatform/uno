@@ -24,13 +24,13 @@ namespace Uno.UI.Xaml.Input
 		private SystemFocusVisual? _focusVisual;
 
 		[NotImplemented]
-		internal void OnFocusedElementKeyPressed()
+		internal static void OnFocusedElementKeyPressed()
 		{
 			//TODO Uno: Implement state handling
 		}
 
 		[NotImplemented]
-		internal void OnFocusedElementKeyReleased()
+		internal static void OnFocusedElementKeyReleased()
 		{
 			//TODO Uno: Implement state handling
 		}
@@ -41,7 +41,7 @@ namespace Uno.UI.Xaml.Input
 		internal static bool AreRevealFocusRectsEnabled() =>
 			Application.Current.FocusVisualKind == FocusVisualKind.Reveal;
 
-		internal void RenderFocusRectForElement(UIElement element, IContentRenderer? contentRenderer)
+		internal static void RenderFocusRectForElement(UIElement element, IContentRenderer? contentRenderer)
 		{
 			// Legacy mode only
 			if (AreHighVisibilityFocusRectsEnabled())
@@ -58,7 +58,7 @@ namespace Uno.UI.Xaml.Input
 			//}
 		}
 
-		internal void ReleaseResources(bool isDeviceLost, bool cleanupDComp, bool clearPCData)
+		internal static void ReleaseResources(bool isDeviceLost, bool cleanupDComp, bool clearPCData)
 		{
 			//TODO Uno: Implement a shorthand of the WinUI implementation, maybe removing focus visual if that is what the code does as by-product.
 		}

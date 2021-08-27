@@ -202,7 +202,7 @@ namespace Uno.UI.Controls
 				);
 		}
 
-		private int GetResourceId(string imageName)
+		private static int GetResourceId(string imageName)
 		{
 			var key = System.IO.Path.GetFileNameWithoutExtension(imageName);
 			if (_drawablesLookup == null)

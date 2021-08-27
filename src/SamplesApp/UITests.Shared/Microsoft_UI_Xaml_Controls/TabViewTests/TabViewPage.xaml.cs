@@ -263,7 +263,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		private const string DataIdentifier = "MyTabItem";
 		private const string DataTabView = "MyTabView";
 
-		private TabViewItem FindTabViewItemFromContent(TabView tabView, object content)
+		private static TabViewItem FindTabViewItemFromContent(TabView tabView, object content)
 		{
 			var numItems = tabView.TabItems.Count;
 			for (int i = 0; i < numItems; i++)

@@ -150,7 +150,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			TestServices.WindowHelper.WindowContent = null;
 		}
 
-		private void AssertHasFocus(Control control)
+		private static void AssertHasFocus(Control control)
 		{
 			control.Should().NotBeNull("control");
 			var focused = FocusManager.GetFocusedElement();

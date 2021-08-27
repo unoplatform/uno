@@ -32,7 +32,7 @@ namespace UITests.Windows_Media
 
 		public string SoundToPlay => "ms-appx:///sound.mp3";
 
-		private MediaPlaybackItem ToMediaPlaybackItem(object value)
+		private static MediaPlaybackItem ToMediaPlaybackItem(object value)
 		{
 			if (value is string uriString && Uri.TryCreate(uriString, UriKind.Absolute, out var uri))
 			{

@@ -556,7 +556,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		private (Flyout Flyout, FrameworkElement Content) CreateFlyout()
+		private static (Flyout Flyout, FrameworkElement Content) CreateFlyout()
 		{
 			var content = new Grid { Height = 64, Width = 64, Background = new SolidColorBrush(Colors.Green) };
 			var flyout = new Flyout
@@ -567,7 +567,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return (flyout, content);
 		}
 
-		private (Flyout Flyout, FrameworkElement Content) CreateFlyoutWithBinding()
+		private static (Flyout Flyout, FrameworkElement Content) CreateFlyoutWithBinding()
 		{
 
 			var flyout = new Flyout
@@ -591,7 +591,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return (flyout, content);
 		}
 
-		private (Flyout Flyout, FrameworkElement Content) CreateFlyoutWithBindingMultipleChildren()
+		private static (Flyout Flyout, FrameworkElement Content) CreateFlyoutWithBindingMultipleChildren()
 		{
 			var flyout = new Flyout
 			{
@@ -638,7 +638,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					}
 		};
 
-		private MyMenuFlyout CreateBasicMenuFlyout()
+		private static MyMenuFlyout CreateBasicMenuFlyout()
 		{
 			var flyout = new MyMenuFlyout
 			{

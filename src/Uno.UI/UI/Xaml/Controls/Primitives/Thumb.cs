@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public static DependencyProperty IsDraggingProperty { get ; } =
 			DependencyProperty.Register("IsDragging", typeof(bool), typeof(Thumb), new FrameworkPropertyMetadata(false, (s, e) => ((Thumb)s)?.OnIsDraggingChanged(e)));
 
-		private void OnIsDraggingChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnIsDraggingChanged(DependencyPropertyChangedEventArgs e)
 		{
 
 		}

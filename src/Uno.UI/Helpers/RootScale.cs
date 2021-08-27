@@ -15,7 +15,7 @@ namespace Uno.UI.Helpers
 		{
 			if(element is FrameworkElement fe)
 			{
-				return fe.GetScaleFactorForLayoutRounding();
+				return UIElement.GetScaleFactorForLayoutRounding();
 			}
 			return null;
 		}

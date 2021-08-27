@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml
 		/// This method is called from the OnDraw of elements supporting rounded corners:
 		/// Border, Rectangle, Panel...
 		/// </summary>
-		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
+		private protected static void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
 		{
 			if (cornerRadius != CornerRadius.None)
 			{

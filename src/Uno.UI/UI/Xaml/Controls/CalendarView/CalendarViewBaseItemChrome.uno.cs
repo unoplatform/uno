@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 			_borderRenderer.UpdateLayer(this, background, borderThickness, borderBrush, cornerRadius, default);
 		}
 
-		private bool IsClear(Brush brush)
+		private static bool IsClear(Brush brush)
 			=> brush is null
 				|| brush.Opacity == 0
 				|| (brush is SolidColorBrush solid && solid.Color.IsTransparent);

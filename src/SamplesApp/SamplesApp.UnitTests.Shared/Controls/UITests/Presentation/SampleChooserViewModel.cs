@@ -492,7 +492,7 @@ namespace SampleControl.Presentation
 			);
 		}
 
-		private List<SampleChooserContent> UpdateSearch(string search, List<SampleChooserCategory> categories)
+		private static List<SampleChooserContent> UpdateSearch(string search, List<SampleChooserCategory> categories)
 		{
 			if (string.IsNullOrEmpty(search))
 			{
@@ -724,7 +724,7 @@ description: {sample.Description}";
 			}
 		}
 
-		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
+		private static async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
 			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => sample.IsFavorite = isFavorite);
@@ -847,7 +847,7 @@ description: {sample.Description}";
 
 		// Simple function to convert string to Enum value since specifying
 		// CommandParameters as objects in Xaml didn't work
-		private Section ConvertSectionEnum(string value)
+		private static Section ConvertSectionEnum(string value)
 		{
 			Section section = Section.Library;
 			Enum.TryParse(value, true, out section);
@@ -923,7 +923,7 @@ description: {sample.Description}";
 			}
 		}
 
-		private async Task Set<T>(string key, T value)
+		private static async Task Set<T>(string key, T value)
 		{
 #if !UNO_REFERENCE_API
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
@@ -931,7 +931,7 @@ description: {sample.Description}";
 #endif
 		}
 
-		private async Task<T> Get<T>(string key, Func<T> d = null)
+		private static async Task<T> Get<T>(string key, Func<T> d = null)
 		{
 #if !UNO_REFERENCE_API
 			var json = (string)ApplicationData.Current.LocalSettings.Values[key];

@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override AutomationPeer OnCreateAutomationPeer()
 			=> new RepeatButtonAutomationPeer(this);
 
-		private void OnIntervalChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnIntervalChanged(DependencyPropertyChangedEventArgs e)
 		{
 			if (e.NewValue is int newValue)
 			{
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private void OnDelayChanged(DependencyPropertyChangedEventArgs e)
+		private static void OnDelayChanged(DependencyPropertyChangedEventArgs e)
 		{
 			if (e.NewValue is int newValue)
 			{

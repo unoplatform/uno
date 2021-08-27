@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool IsTemplateOwnContainer => _isTemplateOwnContainer;
 
-		private DependencyObject CreateOwnContainer()
+		private static DependencyObject CreateOwnContainer()
 		{
 			return new ListViewItem()
 			{

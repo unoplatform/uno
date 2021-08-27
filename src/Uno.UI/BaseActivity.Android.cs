@@ -197,7 +197,7 @@ namespace Uno.UI
 			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
 		}
 
-		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
+		static partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
 			Windows.UI.Xaml.Window.Current?.OnActivated(
 				isTopResumedActivity ?

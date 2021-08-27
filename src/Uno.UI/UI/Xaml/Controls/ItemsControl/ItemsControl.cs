@@ -1124,7 +1124,7 @@ namespace Windows.UI.Xaml.Controls
 		/// To force the item view to be reconnected, we set DataContext to null, so that when we set it to the item view immediately afterward,
 		/// it does something instead of nothing.
 		/// </remarks>
-		private void TryRepairContentConnection(ContentControl container, object item)
+		private static void TryRepairContentConnection(ContentControl container, object item)
 		{
 			if (item is View itemView && container.DataContext == itemView && itemView.GetVisualTreeParent() == null)
 			{

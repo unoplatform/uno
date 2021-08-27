@@ -40,7 +40,7 @@ namespace UITests.Shared.Windows_UI_Xaml.xBindTests
 			}
 		}
 
-		private string Multiply(double a, double b)
+		private static string Multiply(double a, double b)
 			=> (a * b).ToString();
 	}
 

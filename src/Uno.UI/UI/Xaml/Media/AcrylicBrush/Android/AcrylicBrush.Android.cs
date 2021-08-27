@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private void ExecuteWithNoRelayout(BindableView view, Action<BindableView> action)
+		private static void ExecuteWithNoRelayout(BindableView view, Action<BindableView> action)
 		{
 			using (view.PreventRequestLayout())
 			{

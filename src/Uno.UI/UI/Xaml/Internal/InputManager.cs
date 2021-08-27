@@ -24,18 +24,18 @@ namespace Uno.UI.Xaml.Core
 
 		internal FocusInputDeviceKind LastFocusInputDeviceKind { get; set; }
 
-		internal bool ShouldRequestFocusSound()
+		internal static bool ShouldRequestFocusSound()
 		{
 			//TODO Uno: Implement
 			return false;
 		}
 
-		internal void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
+		internal static void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
 		{
 			//TODO Uno: Implement
 		}
 
-		internal bool LastInputWasNonFocusNavigationKeyFromSIP()
+		internal static bool LastInputWasNonFocusNavigationKeyFromSIP()
 		{
 			//TODO Uno: Implement
 			return false;

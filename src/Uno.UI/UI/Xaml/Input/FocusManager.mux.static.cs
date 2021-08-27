@@ -414,7 +414,7 @@ namespace Windows.UI.Xaml.Input
 			return candidate as UIElement;
 		}
 
-		private object? FindNextFocusWithSearchRootIgnoreEngagementImpl(FocusNavigationDirection focusNavigationDirection, object? pSearchRoot)
+		private static object? FindNextFocusWithSearchRootIgnoreEngagementImpl(FocusNavigationDirection focusNavigationDirection, object? pSearchRoot)
 		{
 			object? spScope = pSearchRoot;
 			DependencyObject? spScopeDO = spScope as DependencyObject;
@@ -468,7 +468,7 @@ namespace Windows.UI.Xaml.Input
 		/// <param name="isProcessingTab">Is tab being processed?</param>
 		/// <param name="isShiftPressed">Is shift pressed?</param>
 		/// <returns>True if focus successfully transitioned.</returns>
-		private bool SetFocusedElement(
+		private static bool SetFocusedElement(
 			 DependencyObject pElement,
 			 FocusState focusState,
 			 bool animateIfBringIntoView,
@@ -793,7 +793,7 @@ namespace Windows.UI.Xaml.Input
 				throw new ArgumentNullException(nameof(xamlRoot));
 			}
 
-			var focusManager = xamlRoot.VisualTree.ContentRoot.FocusManager;
+			var focusManager = XamlRoot.VisualTree.ContentRoot.FocusManager;
 			var dependencyObject = focusManager.FocusedElement;
 
 			return dependencyObject;

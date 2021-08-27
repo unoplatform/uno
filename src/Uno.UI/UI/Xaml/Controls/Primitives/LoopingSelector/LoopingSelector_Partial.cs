@@ -1512,7 +1512,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (_tpScrollViewerPrivate is { })
 			{
-				_tpScrollViewerPrivate.EnableOverpan();
+				ScrollViewer.EnableOverpan();
 			}
 
 			_tpScrollViewer = null;
@@ -1622,7 +1622,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (_tpScrollViewerPrivate is { })
 			{
-				_tpScrollViewerPrivate.DisableOverpan();
+				ScrollViewer.DisableOverpan();
 			}
 		}
 
@@ -1921,7 +1921,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			lsp.SetSizeInPixels((float)size);
 		}
 
-		void SetPosition(UIElement pitem, double offset)
+		static void SetPosition(UIElement pitem, double offset)
 		{
 			//NT_global.System.Diagnostics.Debug.Assert(_spCanvasStatics);
 			//_spCanvasStatics.SetTop(pitem, offset);

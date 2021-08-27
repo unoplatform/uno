@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return repeater;
 		}
 
-		private VirtualizingLayout CreateLayout(ItemsRepeater repeater)
+		private static VirtualizingLayout CreateLayout(ItemsRepeater repeater)
 		{
 			var layout = new MockVirtualizingLayout();
 			var children = new List<UIElement>();

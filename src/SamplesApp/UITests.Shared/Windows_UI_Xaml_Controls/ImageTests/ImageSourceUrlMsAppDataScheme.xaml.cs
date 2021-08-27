@@ -55,7 +55,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 			RaisePropertyChanged(nameof(AppDataUri));
 		}
 
-		private async Task CopySampleImageToAppDataAsync()
+		private static async Task CopySampleImageToAppDataAsync()
 		{
 			var targetPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "ImageAppDataUriSample", "MsAppDataUriTest.png");
 			if (!File.Exists(targetPath))

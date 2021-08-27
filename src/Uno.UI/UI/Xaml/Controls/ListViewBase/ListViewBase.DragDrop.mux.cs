@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 						// The minimum horizontal offset obtained here accounts for the presence of the
 						// sentinel offset values in the left padding and/or header case. For instance,
 						// with no header or padding this will return exactly 2.0.
-						bound = (m_tpScrollViewer.MinHorizontalOffset);
+						bound = (ScrollViewer.MinHorizontalOffset);
 					}
 
 					// Disallow edge scrolling if we're right up against the edge.
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 						// The minimum vertical offset obtained here accounts for the presence of the
 						// sentinel offset values in the top padding and/or header case. For instance,
 						// with no header or padding this will return exactly 2.0.
-						bound = m_tpScrollViewer.MinVerticalOffset;
+						bound = ScrollViewer.MinVerticalOffset;
 					}
 
 					// Disallow edge scrolling if we're right up against the edge.
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Computes the speed of an edge scroll, given a distance from the edge.
-		float ComputeEdgeScrollVelocityFromEdgeDistance(
+		static float ComputeEdgeScrollVelocityFromEdgeDistance(
 			 double distanceFromEdge)
 		{
 			if (distanceFromEdge <= LISTVIEWBASE_EDGE_SCROLL_EDGE_WIDTH_PX)

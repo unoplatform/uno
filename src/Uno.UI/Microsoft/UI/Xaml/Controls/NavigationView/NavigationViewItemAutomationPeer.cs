@@ -312,7 +312,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				NavigationViewItemBase navigationViewItem = Owner as NavigationViewItemBase;
 				if (navigationViewItem != null)
 				{
-					return navview.GetParentItemsRepeaterForContainer(navigationViewItem);
+					return NavigationView.GetParentItemsRepeaterForContainer(navigationViewItem);
 				}
 			}
 			return null;

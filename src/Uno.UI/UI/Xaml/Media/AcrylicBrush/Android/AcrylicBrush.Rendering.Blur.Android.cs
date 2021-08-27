@@ -38,12 +38,12 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		public static bool ThrowStopExceptionOnDraw { get; set; }
 
-		private bool IsAndroidBlurPropertySet => AndroidBlurRadius > 0;
+		private static bool IsAndroidBlurPropertySet => AndroidBlurRadius > 0;
 
 		private double CurrentBlurRadius =>
 			IsAndroidBlurPropertySet ? AndroidBlurRadius : StyledBlurRadius;
 
-		private void LayoutBlurView(AcrylicState state, ViewGroup view)
+		private static void LayoutBlurView(AcrylicState state, ViewGroup view)
 		{
 			if (view.MeasuredWidth == 0 || view.MeasuredHeight == 0 || state.BlurView == null)
 			{
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media
 			state.BlurView.Layout(0, 0, width, height);
 		}
 
-		private void DestroyBlur(AcrylicState state)
+		private static void DestroyBlur(AcrylicState state)
 		{
 			if (!state.BlurView.IsNullOrDisposed())
 			{

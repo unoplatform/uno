@@ -71,7 +71,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 			Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
 		}
 
-		private async Task DispatchAsync(Func<Task> asyncAction)
+		private static async Task DispatchAsync(Func<Task> asyncAction)
 		{
 			var completionSource = new TaskCompletionSource<object>();
 

@@ -39,13 +39,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[ClassInitialize]
-		void ClassSetup()
+		static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		void TestCleanup()
+		static void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}
@@ -1433,7 +1433,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 		}
 
-		private void VerifyItemPositionInPanel(
+		private static void VerifyItemPositionInPanel(
 				 UIElement item, CalendarPanel panel, int col, int row)
 		{
 			Point origin = new Point(0, 0);
@@ -1452,7 +1452,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			VERIFY_IS_TRUE(CalendarHelper.AreClose(itemPos.Y, itemHeight * row, 1.0 /* rounding issue, to be fixed */));
 		}
 
-		void VerifyItemCountInViewport(CalendarPanel panel, ScrollViewer scrollViewer, int col, int row)
+		static void VerifyItemCountInViewport(CalendarPanel panel, ScrollViewer scrollViewer, int col, int row)
 		{
 			var item = panel.Children.GetAt(0); // any item, we just want the size.
 			var itemWidth = (item as FrameworkElement).ActualWidth;
@@ -3222,7 +3222,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
 		}
 
-		private async Task VerifyChangingCalendarIdentifier(CalendarViewDisplayMode displayMode)
+		private static async Task VerifyChangingCalendarIdentifier(CalendarViewDisplayMode displayMode)
 		{
 			TestCleanupWrapper cleanup;
 			Grid rootPanel = null;
@@ -3288,7 +3288,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await VerifyChangingCalendarIdentifier(CalendarViewDisplayMode.Decade);
 		}
 
-		async Task VerifyBoundaries(string cid, string panelName, CalendarViewDisplayMode
+		static async Task VerifyBoundaries(string cid, string panelName, CalendarViewDisplayMode
 			displayMode)
 		{
 			TestCleanupWrapper cleanup;
@@ -4670,7 +4670,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		// read all the timezone ids, return the one slice
-		string[] ReadTimeZoneIds(int part, int total)
+		static string[] ReadTimeZoneIds(int part, int total)
 		{
 			var zones = TimeZoneInfo.GetSystemTimeZones();
 			var chunkSize = (zones.Count / total) + 1;

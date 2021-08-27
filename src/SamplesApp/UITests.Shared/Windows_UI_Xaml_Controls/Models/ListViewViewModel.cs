@@ -125,7 +125,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 				.ToArray();
 		}
 
-		private string[] GetSampleItemsWithDuplicates()
+		private static string[] GetSampleItemsWithDuplicates()
 		{
 			return Enumerable
 				.Range(1, 10)
@@ -244,7 +244,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public string[] VariableLengthItemsLong { get; }
 		public IEnumerable<string> VariableLengthItemsLongLazy { get; }
-		private IEnumerable<string> CreateVariableLengthItemsLong()
+		private static IEnumerable<string> CreateVariableLengthItemsLong()
 		{
 			var sb = new StringBuilder();
 			const int items = 2000;

@@ -50,7 +50,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		private static async Task DumpOutputFolderName(CancellationToken ct, string folderName)
 		{
 			var fullPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), folderName);
 

@@ -182,7 +182,7 @@ namespace Uno.UI.DualScreen
 			}
 		}
 
-		private SurfaceOrientation GetOrientation()
+		private static SurfaceOrientation GetOrientation()
 		{
 			switch (DisplayInformation.GetForCurrentView().CurrentOrientation)
 			{

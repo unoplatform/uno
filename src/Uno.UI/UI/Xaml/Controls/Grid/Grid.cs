@@ -748,7 +748,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Gets the union of the length types for a given range of definitions.
-		CellUnitTypes GetLengthTypeForRange(
+		static CellUnitTypes GetLengthTypeForRange(
 			CDOCollection definitions,
 			int start,
 			int count)
@@ -779,7 +779,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Accumulates available size information for a given range of definitions.
-		XFLOAT GetAvailableSizeForRange(
+		static XFLOAT GetAvailableSizeForRange(
 			CDOCollection definitions,
 			int start,
 			int count,
@@ -804,7 +804,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Accumulates final size information for a given range of definitions.
-		XFLOAT GetFinalSizeForRange(
+		static XFLOAT GetFinalSizeForRange(
 			CDOCollection definitions,
 			int start,
 			int count,
@@ -828,7 +828,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Calculates the desired size of the Grid minus its BorderThickness and
 		// Padding assuming all the cells have already been measured.
-		XFLOAT GetDesiredInnerSize(CDOCollection definitions)
+		static XFLOAT GetDesiredInnerSize(CDOCollection definitions)
 		{
 			XFLOAT desiredSize = 0.0f;
 
@@ -1537,7 +1537,7 @@ namespace Windows.UI.Xaml.Controls
 		//                  desired Size is greater than rangeMinSize but less than rangePreferredSize.
 		//
 		//------------------------------------------------------------------------
-		void SortDefinitionsForSpanPreferredDistribution(
+		static void SortDefinitionsForSpanPreferredDistribution(
 			IList<DefinitionBase> ppDefinitions,
 			Xuint cDefinitions)
 		{
@@ -1589,7 +1589,7 @@ namespace Windows.UI.Xaml.Controls
 		//                  desired Size is greater than rangePreferredSize but less than rangeMaxSize.
 		//
 		//------------------------------------------------------------------------
-		void SortDefinitionsForSpanMaxSizeDistribution(
+		static void SortDefinitionsForSpanMaxSizeDistribution(
 			IList<DefinitionBase> ppDefinitions,
 			Xuint cDefinitions)
 		{
@@ -1642,7 +1642,7 @@ namespace Windows.UI.Xaml.Controls
 		//                 finalSize in that dimension.
 		//
 		//------------------------------------------------------------------------
-		void SortDefinitionsForOverflowSizeDistribution(
+		static void SortDefinitionsForOverflowSizeDistribution(
 			IList<DefinitionBase> ppDefinitions,
 			Xuint cDefinitions)
 		{
@@ -1675,7 +1675,7 @@ namespace Windows.UI.Xaml.Controls
 		//  Synopsis: Sort definitions for distributing star space.
 		//
 		//------------------------------------------------------------------------
-		void SortDefinitionsForStarSizeDistribution(
+		static void SortDefinitionsForStarSizeDistribution(
 				IList<DefinitionBase> ppDefinitions,
 		Xuint cDefinitions
 		)

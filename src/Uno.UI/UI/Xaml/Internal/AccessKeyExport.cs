@@ -3,7 +3,7 @@
 	internal class AccessKeyExport
 	{
 		[NotImplemented]
-		internal void UpdateScope()
+		internal static void UpdateScope()
 		{
 			//TODO Uno: Implement
 		}

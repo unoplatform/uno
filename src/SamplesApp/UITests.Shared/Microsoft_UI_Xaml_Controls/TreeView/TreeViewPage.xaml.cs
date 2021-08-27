@@ -71,7 +71,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			TestTreeView2ItemsSource = new ObservableCollection<TreeViewItemSource>() { item1, item2 };
 		}
 
-		private ObservableCollection<TreeViewItemSource> PrepareItemsSource(bool expandRootNode = false)
+		private static ObservableCollection<TreeViewItemSource> PrepareItemsSource(bool expandRootNode = false)
 		{
 			var root0 = new TreeViewItemSource() { Content = "Root.0" };
 			var root1 = new TreeViewItemSource() { Content = "Root.1" };
@@ -464,7 +464,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			}
 		}
 
-		private TreeViewNode CreateTree()
+		private static TreeViewNode CreateTree()
 		{
 			var root = new TreeViewNode() { Content = "Root" };
 			var root0 = new TreeViewNode() { Content = "Root.0" };
