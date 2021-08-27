@@ -47,8 +47,10 @@ namespace Windows.UI.ViewManagement
 		public bool AnimationsEnabled => true;
 #endif
 
+#pragma warning disable CA1822 // Mark members as static
 		public Color GetColorValue(UIColorType desiredColor)
 		{
+			// TODO: UIColorType.Complement should cause an exception per UWP docs.
 			var systemTheme = SystemThemeHelper.SystemTheme;
 			return desiredColor switch
 			{

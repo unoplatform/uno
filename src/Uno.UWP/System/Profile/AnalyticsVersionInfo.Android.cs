@@ -11,9 +11,11 @@ namespace Windows.System.Profile
 		{
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public string DeviceFamily => OsName + '.' + AnalyticsInfo.DeviceForm;
 
 		public string DeviceFamilyVersion => Build.VERSION.Release;
+#pragma warning restore CA1822 // Mark members as static
 	}
 }
 #endif

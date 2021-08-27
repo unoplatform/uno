@@ -2,7 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Input
 {
-	public  partial class KeyboardCapabilities 
+#pragma warning disable CA1822 // Mark members as static
+	// TODO: Delete and rely on UWPSyncGenerator
+	public partial class KeyboardCapabilities 
 	{
 		[global::Uno.NotImplemented]
 		public  int KeyboardPresent

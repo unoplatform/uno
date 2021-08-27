@@ -10,7 +10,9 @@ namespace Windows.UI.ViewManagement
 {
 	public partial class UISettings
 	{
+#pragma warning disable CA1822 // Mark members as static
 		public bool AnimationsEnabled
+#pragma warning restore CA1822 // Mark members as static
 		{
 			get
 			{

@@ -72,7 +72,7 @@ namespace Windows.Storage.Pickers
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		private void ValidateExtension(string extension)
+		private static void ValidateExtension(string extension)
 		{
 			if (string.IsNullOrEmpty(extension))
 			{

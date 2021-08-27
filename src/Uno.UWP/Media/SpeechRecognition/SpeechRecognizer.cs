@@ -31,7 +31,9 @@ namespace Windows.Media.SpeechRecognition
 			InitializeSpeechRecognizer();
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public IAsyncOperation<SpeechRecognitionCompilationResult> CompileConstraintsAsync()
+#pragma warning restore CA1822 // Mark members as static
 		{
 			return AsyncOperation.FromTask(async ct =>
 			{

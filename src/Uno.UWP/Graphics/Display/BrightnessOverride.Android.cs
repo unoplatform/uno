@@ -20,6 +20,7 @@ namespace Windows.Graphics.Display
 		/// </summary>
 		/// <param name="brightnessLevel"> double 0 to 1  </param>
 		/// <param name="options"></param>
+#pragma warning disable CA1822 // Mark members as static
 		public void SetBrightnessLevel(double brightnessLevel, DisplayBrightnessOverrideOptions options)
 		{
 			if (_targetBrightnessLevel != brightnessLevel)
@@ -56,6 +57,7 @@ namespace Windows.Graphics.Display
 				GetForCurrentView().IsOverrideActive = false;
 			}
 		}
+#pragma warning restore CA1822 // Mark members as static
 	}
 }
 #endif

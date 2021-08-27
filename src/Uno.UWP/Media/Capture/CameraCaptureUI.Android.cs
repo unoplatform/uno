@@ -82,7 +82,7 @@ namespace Windows.Media.Capture
 			}
 		}
 
-		private async Task ValidateRequiredPermissions(CancellationToken ct)
+		private static async Task ValidateRequiredPermissions(CancellationToken ct)
 		{
 			if (!await PermissionsHelper.TryGetWriteExternalStoragePermission(ct))
 			{

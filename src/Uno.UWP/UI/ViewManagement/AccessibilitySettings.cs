@@ -34,6 +34,7 @@ namespace Windows.UI.ViewManagement
 		/// The default is false.
 		/// </remarks>
 		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#pragma warning disable CA1822 // Mark members as static
 		public bool HighContrast => WinRTFeatureConfiguration.Accessibility.HighContrast;
 
 		/// <summary>
@@ -45,6 +46,7 @@ namespace Windows.UI.ViewManagement
 		/// </remarks>
 		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string HighContrastScheme => WinRTFeatureConfiguration.Accessibility.HighContrastScheme;
+#pragma warning restore CA1822 // Mark members as static
 
 		/// <summary>
 		/// Occurs when the system high contrast feature turns on or off.

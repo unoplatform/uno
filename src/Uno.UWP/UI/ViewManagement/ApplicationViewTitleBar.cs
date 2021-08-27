@@ -4,6 +4,8 @@ namespace Windows.UI.ViewManagement
 {
 	public  partial class ApplicationViewTitleBar 
 	{
+#pragma warning disable CA1822 // Mark members as static
+		// TODO: Delete and rely on UWPSyncGenerator
 		/// <summary>
 		/// Constructor is not public in UWP
 		/// </summary>

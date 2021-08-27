@@ -209,7 +209,8 @@ namespace Windows.Data.Xml.Dom
 		/// </summary>
 		/// <param name="node">UWP XML node.</param>
 		/// <returns>System.Xml node.</returns>
-		internal object Unwrap(object node) =>
+		internal static object Unwrap(object node) =>
+			// TODO: change signature to return SystemXmlNode and avoid casting in callers.
 			node switch
 			{
 				DtdEntity dtdEntity => dtdEntity._backingEntity,

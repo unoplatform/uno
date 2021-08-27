@@ -71,12 +71,12 @@ namespace Windows.Data.Xml.Dom
 		public XmlAttribute SetAttributeNode(XmlAttribute newAttribute) =>
 			(XmlAttribute)_owner.Wrap(
 				_backingElement.SetAttributeNode(
-					(SystemXmlAttribute)_owner.Unwrap(newAttribute)));
+					(SystemXmlAttribute)XmlDocument.Unwrap(newAttribute)));
 
 		public XmlAttribute RemoveAttributeNode(XmlAttribute attributeNode) =>
 			(XmlAttribute)_owner.Wrap(
 				_backingElement.RemoveAttributeNode(
-					(SystemXmlAttribute)_owner.Unwrap(attributeNode)));
+					(SystemXmlAttribute)XmlDocument.Unwrap(attributeNode)));
 
 		public XmlNodeList GetElementsByTagName(string tagName) => (XmlNodeList)_owner.Wrap(_backingElement.GetElementsByTagName(tagName));
 
@@ -85,24 +85,24 @@ namespace Windows.Data.Xml.Dom
 		public IXmlNode InsertBefore(IXmlNode newChild, IXmlNode referenceChild) =>
 			(IXmlNode)_owner.Wrap(
 				_backingElement.InsertBefore(
-					(SystemXmlNode)_owner.Unwrap(newChild),
-					(SystemXmlNode)_owner.Unwrap(referenceChild)));
+					(SystemXmlNode)XmlDocument.Unwrap(newChild),
+					(SystemXmlNode)XmlDocument.Unwrap(referenceChild)));
 
 		public IXmlNode ReplaceChild(IXmlNode newChild, IXmlNode referenceChild) =>
 			(IXmlNode)_owner.Wrap(
 				_backingElement.ReplaceChild(
-					(SystemXmlNode)_owner.Unwrap(newChild),
-					(SystemXmlNode)_owner.Unwrap(referenceChild)));
+					(SystemXmlNode)XmlDocument.Unwrap(newChild),
+					(SystemXmlNode)XmlDocument.Unwrap(referenceChild)));
 
 		public IXmlNode RemoveChild(IXmlNode childNode) =>
 			(IXmlNode)_owner.Wrap(
 				_backingElement.RemoveChild(
-					(SystemXmlNode)_owner.Unwrap(childNode)));
+					(SystemXmlNode)XmlDocument.Unwrap(childNode)));
 
 		public IXmlNode AppendChild(IXmlNode newChild) =>
 			(IXmlNode)_owner.Wrap(
 				_backingElement.AppendChild(
-					(SystemXmlNode)_owner.Unwrap(newChild)));
+					(SystemXmlNode)XmlDocument.Unwrap(newChild)));
 
 		public IXmlNode CloneNode(bool deep) => (IXmlNode)_owner.Wrap(_backingElement.CloneNode(deep));
 

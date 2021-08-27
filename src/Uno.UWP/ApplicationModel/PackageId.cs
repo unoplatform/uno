@@ -6,6 +6,8 @@ using ProcessorArchitecture = Windows.System.ProcessorArchitecture;
 
 namespace Windows.ApplicationModel
 {
+#pragma warning disable CA1822 // Mark members as static
+	// TODO: Delete and rely on UWPSyncGenerator
 	public partial class PackageId
 	{
 		internal PackageId() => InitializePlatform();

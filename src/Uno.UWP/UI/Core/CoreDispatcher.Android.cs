@@ -45,7 +45,7 @@ namespace Windows.UI.Core
 			_animationImplementor = new FrameCallbackImplementor(DispatchItemsToChoreographer);
 		}
 
-		private bool GetHasThreadAccess() => Looper.MyLooper() == Android.OS.Looper.MainLooper;
+		private static bool GetHasThreadAccess() => Looper.MyLooper() == Android.OS.Looper.MainLooper;
 
 		partial void EnqueueNative()
 		{

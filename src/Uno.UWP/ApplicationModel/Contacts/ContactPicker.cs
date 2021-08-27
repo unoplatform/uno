@@ -27,6 +27,7 @@ namespace Windows.ApplicationModel.Contacts
 		/// </summary>
 		/// <returns>The operation that launches the Contact Picker.</returns>
 		/// <remarks>Unsupported platforms only return null.</remarks>
+#pragma warning disable CA1822 // Mark members as static
 		public IAsyncOperation<Contact?> PickContactAsync() =>
 			AsyncOperation.FromTask(token => PickContactTaskAsync(token));
 
@@ -37,14 +38,15 @@ namespace Windows.ApplicationModel.Contacts
 		/// <remarks>Unsupported platforms only return empty array.</remarks>
 		public IAsyncOperation<IList<Contact>> PickContactsAsync() =>
 			AsyncOperation.FromTask(token => PickContactsTaskAsync(token));
+#pragma warning restore CA1822 // Mark members as static
 
-		private async Task<Contact?> PickContactTaskAsync(CancellationToken token)
+		private static async Task<Contact?> PickContactTaskAsync(CancellationToken token)
 		{
 			var contacts = await PickContactsAsync(false, token);
 			return contacts.FirstOrDefault();
 		}
 
-		private async Task<IList<Contact>> PickContactsTaskAsync(CancellationToken token) =>
+		private static async Task<IList<Contact>> PickContactsTaskAsync(CancellationToken token) =>
 			await PickContactsAsync(true, token);
 	}
 }

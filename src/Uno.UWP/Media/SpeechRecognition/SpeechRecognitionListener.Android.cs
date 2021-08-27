@@ -52,12 +52,12 @@ namespace Windows.Media.SpeechRecognition
 
 		public void OnPartialResults(Bundle bundle)
 		{
-			this.SendResults(bundle, this.PartialResults);
+			SendResults(bundle, this.PartialResults);
 		}
 
 		public void OnResults(Bundle bundle)
 		{
-			this.SendResults(bundle, this.FinalResults);
+			SendResults(bundle, this.FinalResults);
 		}
 
 		public void OnRmsChanged(float rmsdB)
@@ -65,7 +65,7 @@ namespace Windows.Media.SpeechRecognition
 			this.RmsChanged?.Invoke(rmsdB);
 		}
 
-		private void SendResults(Bundle bundle, Action<SpeechRecognitionResult> action)
+		private static void SendResults(Bundle bundle, Action<SpeechRecognitionResult> action)
 		{
 			var matches = bundle.GetStringArrayList(Android.Speech.SpeechRecognizer.ResultsRecognition);
 			var scores = bundle.GetFloatArray(Android.Speech.SpeechRecognizer.ConfidenceScores);

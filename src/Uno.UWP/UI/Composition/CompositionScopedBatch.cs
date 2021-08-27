@@ -8,6 +8,8 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionScopedBatch : global::Windows.UI.Composition.CompositionObject
 	{
+#pragma warning disable CA1822 // Mark members as static
+		// TODO: Delete and rely on UWPSyncGenerator
 		internal CompositionScopedBatch() => throw new NotSupportedException("Use the ctor with Compositor");
 
 		internal CompositionScopedBatch(Compositor compositor, CompositionBatchTypes batchType) : base(compositor)

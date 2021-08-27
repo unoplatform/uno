@@ -333,7 +333,7 @@ namespace Windows.Storage.Streams
 			}
 		}
 
-		private IDisposable RentArray(int length, out byte[] rentedArray)
+		private static IDisposable RentArray(int length, out byte[] rentedArray)
 		{
 			var poolArray = _pool.Rent(length);
 			rentedArray = poolArray;

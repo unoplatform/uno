@@ -232,7 +232,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			Assert.AreEqual(new Size(0, 343), sut.DesiredSize);
 		}
 
-		private void ConstructAndTestSingleRowGrid(double gridWidth, params (double ExpectedWidth, GridUnitType UnitType, double Size, double? MinWidth, double? MaxWidth)[] columns)
+		private static void ConstructAndTestSingleRowGrid(double gridWidth, params (double ExpectedWidth, GridUnitType UnitType, double Size, double? MinWidth, double? MaxWidth)[] columns)
 		{
 			var grid = ConstructSingleRowGrid(columns.Select(c => (c.UnitType, c.Size, c.MinWidth, c.MaxWidth)).ToArray());
 
@@ -253,7 +253,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			}
 		}
 
-		private Grid ConstructSingleRowGrid(params (GridUnitType UnitType, double Size, double? MinWidth, double? MaxWidth)[] columns)
+		private static Grid ConstructSingleRowGrid(params (GridUnitType UnitType, double Size, double? MinWidth, double? MaxWidth)[] columns)
 		{
 			return ConstructSingleRowGrid(
 				columns.Select(col =>
@@ -272,7 +272,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			);
 		}
 
-		private Grid ConstructSingleRowGrid(params (ColumnDefinition Column, double? ChildWidth)[] columns)
+		private static Grid ConstructSingleRowGrid(params (ColumnDefinition Column, double? ChildWidth)[] columns)
 		{
 			var childList = new List<FrameworkElement>();
 
@@ -304,7 +304,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			return grid;
 		}
 
-		private void ConstructAndTestSingleColumnGrid(double gridHeight, params (double ExpectedHeight, GridUnitType UnitType, double Size, double? MinHeight, double? MaxHeight)[] rows)
+		private static void ConstructAndTestSingleColumnGrid(double gridHeight, params (double ExpectedHeight, GridUnitType UnitType, double Size, double? MinHeight, double? MaxHeight)[] rows)
 		{
 			var grid = ConstructSingleColumnGrid(rows.Select(c => (c.UnitType, c.Size, c.MinHeight, c.MaxHeight)).ToArray());
 
@@ -325,7 +325,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			}
 		}
 
-		private Grid ConstructSingleColumnGrid(params (GridUnitType UnitType, double Size, double? MinHeight, double? MaxHeight)[] rows)
+		private static Grid ConstructSingleColumnGrid(params (GridUnitType UnitType, double Size, double? MinHeight, double? MaxHeight)[] rows)
 		{
 			return ConstructSingleColumnGrid(
 				rows.Select(col =>
@@ -344,7 +344,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			);
 		}
 
-		private Grid ConstructSingleColumnGrid(params (RowDefinition Row, double? ChildHeight)[] rows)
+		private static Grid ConstructSingleColumnGrid(params (RowDefinition Row, double? ChildHeight)[] rows)
 		{
 			var childList = new List<FrameworkElement>();
 

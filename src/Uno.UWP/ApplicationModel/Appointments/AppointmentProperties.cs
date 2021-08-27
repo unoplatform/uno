@@ -19,7 +19,9 @@ namespace Windows.ApplicationModel.Appointments
 
 		// TODO: Make the class static. https://github.com/unoplatform/uno/issues/6888
 		// TODO: Extract the list into static field instead of allocation everything.
+#pragma warning disable CA1822 // Mark members as static
 		public IList<string> DefaultProperties
+#pragma warning restore CA1822 // Mark members as static
 		{
 			get
 			{

@@ -95,7 +95,7 @@ namespace Windows.Storage.Pickers
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		private void ValidateFileType(string name, IList<string> extensions)
+		private static void ValidateFileType(string name, IList<string> extensions)
 		{
 			if (string.IsNullOrEmpty(name))
 			{

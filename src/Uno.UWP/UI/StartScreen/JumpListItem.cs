@@ -63,10 +63,11 @@ namespace Windows.UI.StartScreen
 		}
 
 		public string Arguments { get; }
-
+#pragma warning disable CA1822 // Mark members as static
 		public JumpListItemKind Kind => JumpListItemKind.Arguments;
 
 		public bool RemovedByUser => false;
+#pragma warning restore CA1822 // Mark members as static
 
 		public static JumpListItem CreateWithArguments(string arguments, string displayName)
 		{

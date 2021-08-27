@@ -11,13 +11,15 @@ namespace Windows.ApplicationModel
 {
 	public partial class Package
 	{
+#pragma warning disable CA1822 // Mark members as static
 		public string DisplayName =>
+#pragma warning restore CA1822 // Mark members as static
 			Application.Context.ApplicationInfo.LoadLabel(Application.Context.PackageManager);
 
-		private string GetInstalledLocation()
+		private static string GetInstalledLocation()
 			=> "assets://" + ContextHelper.Current.PackageCodePath;
 
-		private bool GetInnerIsDevelopmentMode()
+		private static bool GetInnerIsDevelopmentMode()
 		{
 			try
 			{
@@ -30,7 +32,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 
-		private DateTimeOffset GetInstallDate()
+		private static DateTimeOffset GetInstallDate()
 		{
 			var packageInfo = ContextHelper.Current.PackageManager.GetPackageInfo(ContextHelper.Current.PackageName, 0);
 

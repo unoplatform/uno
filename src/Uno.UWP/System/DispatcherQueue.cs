@@ -12,7 +12,9 @@ namespace Windows.System
 		{
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public DispatcherQueueTimer CreateTimer()
+#pragma warning restore CA1822 // Mark members as static
 			=> new DispatcherQueueTimer();
 
 		public static DispatcherQueue GetForCurrentThread()
@@ -52,7 +54,9 @@ namespace Windows.System
 		{
 			return TryEnqueue(DispatcherQueuePriority.Normal, callback);
 		}
+#pragma warning disable CA1822 // Mark members as static
 		public bool TryEnqueue(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
+#pragma warning restore CA1822 // Mark members as static
 		{
 			return TryEnqueueNative(priority, callback);
 		}

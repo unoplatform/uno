@@ -13,6 +13,7 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
+#pragma warning disable CA1822 // Mark members as static
 		public bool IsScreenCaptureEnabled
 		{
 			get
@@ -64,8 +65,9 @@ namespace Windows.UI.ViewManagement
 			CoreDispatcher.CheckThreadAccess();
 			UpdateFullScreenMode(false);
 		}
+#pragma warning restore CA1822 // Mark members as static
 
-		private void UpdateFullScreenMode(bool isFullscreen)
+		private static void UpdateFullScreenMode(bool isFullscreen)
 		{
 #pragma warning disable 618
 			var activity = ContextHelper.Current as Activity;
@@ -91,7 +93,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 
-		private Activity GetCurrentActivity([CallerMemberName]string propertyName = null)
+		private static Activity GetCurrentActivity([CallerMemberName]string propertyName = null)
 		{
 			if (!(ContextHelper.Current is Activity activity))
 			{

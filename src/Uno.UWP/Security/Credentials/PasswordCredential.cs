@@ -38,7 +38,9 @@ namespace Windows.Security.Credentials
 			set => _password = value ?? throw new ArgumentNullException(nameof(Password));
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public void RetrievePassword()
+#pragma warning restore CA1822 // Mark members as static
 		{
 			// Nothing to do, we never hide the password
 		}

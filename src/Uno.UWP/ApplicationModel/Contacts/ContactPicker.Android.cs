@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Contacts
 	{
 		private static Task<bool> IsSupportedTaskAsync(CancellationToken token) => Task.FromResult(true);
 
-		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
+		private static async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
 			if (!await PermissionsHelper.CheckReadContactsPermission(default))
 			{

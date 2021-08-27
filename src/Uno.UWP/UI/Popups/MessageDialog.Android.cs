@@ -82,7 +82,7 @@ namespace Windows.UI.Popups
 			}
 		}
 
-		private int GetDialogButtonType(int commandIndex)
+		private static int GetDialogButtonType(int commandIndex)
 		{
 			return (int)DialogButtonType.Positive - commandIndex;
 		}

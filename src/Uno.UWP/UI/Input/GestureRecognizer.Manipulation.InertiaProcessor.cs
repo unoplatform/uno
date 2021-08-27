@@ -167,7 +167,7 @@ namespace Windows.UI.Input
 					return delta;
 				}
 
-				private float GetValue(bool enabled, double v0, double d, double t, float lastValue)
+				private static float GetValue(bool enabled, double v0, double d, double t, float lastValue)
 					=> (enabled, IsCompleted(v0, d, t)) switch
 					{
 						(false, _) => 0,
@@ -176,15 +176,15 @@ namespace Windows.UI.Input
 					};
 
 				// https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#inertia-physics-overview
-				private float GetValue(double v0, double d, double t)
+				private static float GetValue(double v0, double d, double t)
 					=> v0 >= 0
 						? (float)(v0 * t - d * Pow(t, 2))
 						: -(float)(-v0 * t - d * Pow(t, 2));
 
-				private bool IsCompleted(double v0, double d, double t)
+				private static bool IsCompleted(double v0, double d, double t)
 					=> Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
 
-				private double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
+				private static double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
 					=> (v0 * durationMs - displacement) / Pow(_defaultDurationMs, 2);
 
 				/// <inheritdoc />

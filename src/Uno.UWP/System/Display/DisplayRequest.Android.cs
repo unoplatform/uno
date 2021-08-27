@@ -10,6 +10,7 @@ namespace Windows.System.Display
 {
 	public partial class DisplayRequest
 	{
+#pragma warning disable CA1822 // Mark members as static
 		partial void ActivateScreenLock()
 		{
 			var activity = GetActivity();
@@ -21,6 +22,7 @@ namespace Windows.System.Display
 			var activity = GetActivity();
 			activity.Window.ClearFlags(WindowManagerFlags.KeepScreenOn);
 		}
+#pragma warning restore CA1822 // Mark members as static
 
 		private static Activity GetActivity()
 		{

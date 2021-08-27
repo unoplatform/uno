@@ -18,6 +18,8 @@ namespace Windows.UI.Input
 
 		public uint TapCount { get; }
 
+#pragma warning disable CA1822 // Mark members as static
+		// TODO: Delete and rely on UWPSyncGenerator
 		[global::Uno.NotImplemented]
 		public uint ContactCount
 		{

@@ -28,7 +28,9 @@ namespace Windows.UI.ViewManagement
 		private IApplicationViewSpanningRects _applicationViewSpanningRects;
 
 		[global::Uno.NotImplemented]
+#pragma warning disable CA1822 // Mark members as static
 		public int Id => 1;
+#pragma warning restore CA1822 // Mark members as static
 
 		public ApplicationViewOrientation Orientation
 		{
@@ -73,7 +75,9 @@ namespace Windows.UI.ViewManagement
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
 		[global::Uno.NotImplemented]
+#pragma warning disable CA1822 // Mark members as static
 		public bool IsFullScreenMode => true;
+#pragma warning restore CA1822 // Mark members as static
 
 		public global::Windows.UI.ViewManagement.ApplicationViewTitleBar TitleBar => _titleBar;
 

@@ -26,7 +26,7 @@ namespace Windows.Data.Xml.Dom
 		public IXmlNode SetNamedItem(IXmlNode node) =>
 			(IXmlNode)_owner.Wrap(
 				_backingNamedNodeMap.SetNamedItem(
-					(SystemXmlNode)_owner.Unwrap(node)));
+					(SystemXmlNode)XmlDocument.Unwrap(node)));
 
 		public IXmlNode RemoveNamedItem(string name) => (IXmlNode)_owner.Wrap(_backingNamedNodeMap.RemoveNamedItem(name));
 

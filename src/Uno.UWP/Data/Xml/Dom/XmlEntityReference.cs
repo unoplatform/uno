@@ -61,24 +61,24 @@ namespace Windows.Data.Xml.Dom
 		public IXmlNode InsertBefore(IXmlNode newChild, IXmlNode referenceChild) =>
 			(IXmlNode)_owner.Wrap(
 				_backingEntityReference.InsertBefore(
-					(SystemXmlNode)_owner.Unwrap(newChild),
-					(SystemXmlNode)_owner.Unwrap(referenceChild)));
+					(SystemXmlNode)XmlDocument.Unwrap(newChild),
+					(SystemXmlNode)XmlDocument.Unwrap(referenceChild)));
 
 		public IXmlNode ReplaceChild(IXmlNode newChild, IXmlNode referenceChild) =>
 			(IXmlNode)_owner.Wrap(
 				_backingEntityReference.ReplaceChild(
-					(SystemXmlNode)_owner.Unwrap(newChild),
-					(SystemXmlNode)_owner.Unwrap(referenceChild)));
+					(SystemXmlNode)XmlDocument.Unwrap(newChild),
+					(SystemXmlNode)XmlDocument.Unwrap(referenceChild)));
 
 		public IXmlNode RemoveChild(IXmlNode childNode) =>
 			(IXmlNode)_owner.Wrap(
 				_backingEntityReference.RemoveChild(
-					(SystemXmlNode)_owner.Unwrap(childNode)));
+					(SystemXmlNode)XmlDocument.Unwrap(childNode)));
 
 		public IXmlNode AppendChild(IXmlNode newChild) =>
 			(IXmlNode)_owner.Wrap(
 				_backingEntityReference.AppendChild(
-					(SystemXmlNode)_owner.Unwrap(newChild)));
+					(SystemXmlNode)XmlDocument.Unwrap(newChild)));
 
 		public IXmlNode CloneNode(bool deep) => (IXmlNode)_owner.Wrap(_backingEntityReference.CloneNode(deep));
 

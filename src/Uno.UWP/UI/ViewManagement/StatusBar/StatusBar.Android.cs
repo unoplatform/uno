@@ -32,7 +32,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		private StatusBarForegroundType GetStatusBarForegroundType()
+		private static StatusBarForegroundType GetStatusBarForegroundType()
 		{
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
 			{
@@ -54,7 +54,9 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public Rect GetOccludedRect()
+#pragma warning restore CA1822 // Mark members as static
 		{
 			var activity = ContextHelper.Current as Activity;
 
@@ -77,7 +79,7 @@ namespace Windows.UI.ViewManagement
 			return occludedRect;
 		}
 
-		private double PhysicalToLogicalPixels(int physicalPixels)
+		private static double PhysicalToLogicalPixels(int physicalPixels)
 		{
 			using (DisplayMetrics displayMetrics = Application.Context.Resources.DisplayMetrics)
 			{

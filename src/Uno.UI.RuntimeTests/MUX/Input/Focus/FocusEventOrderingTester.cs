@@ -166,12 +166,12 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			return (":" + currentFocusOperationId);
 		}
 
-		private string HandledToLoggedString(bool handled)
+		private static string HandledToLoggedString(bool handled)
 		{
 			return handled ? ":Handled" : "";
 		}
 
-		private string CanceledToLoggedString(bool canceled)
+		private static string CanceledToLoggedString(bool canceled)
 		{
 			return canceled ? ":Canceled" : "";
 		}

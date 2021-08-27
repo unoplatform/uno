@@ -4,7 +4,7 @@ namespace Windows.System
 {
 	partial class DispatcherQueue
 	{
-		bool TryEnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
+		static bool TryEnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
 		{
 			var p = priority switch
 			{

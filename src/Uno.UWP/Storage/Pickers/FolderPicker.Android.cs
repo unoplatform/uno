@@ -32,7 +32,9 @@ namespace Windows.Storage.Pickers
 			return true;
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public async Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
+#pragma warning restore CA1822 // Mark members as static
 		{
 			if (!(ContextHelper.Current is Activity appActivity))
 			{

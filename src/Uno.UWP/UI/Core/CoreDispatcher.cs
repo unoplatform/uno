@@ -106,7 +106,9 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Determines if the current thread has access to this CoreDispatcher.
 		/// </summary>
+#pragma warning disable CA1822 // Mark members as static
 		public bool HasThreadAccess
+#pragma warning restore CA1822 // Mark members as static
 		{
 			get
 			{

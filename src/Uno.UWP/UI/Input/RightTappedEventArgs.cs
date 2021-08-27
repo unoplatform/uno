@@ -16,7 +16,9 @@ namespace Windows.UI.Input
 		public Point Position { get; }
 
 		[global::Uno.NotImplemented]
+#pragma warning disable CA1822 // Mark members as static
 		public uint ContactCount
+#pragma warning restore CA1822 // Mark members as static
 		{
 			get
 			{

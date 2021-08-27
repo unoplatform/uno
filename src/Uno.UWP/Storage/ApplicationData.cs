@@ -6,6 +6,8 @@ using System;
 
 namespace Windows.Storage
 {
+#pragma warning disable CA1822 // Mark members as static
+	// TODO: Delete and rely on UWPSyncGenerator
 	public sealed partial class ApplicationData 
 	{
 		public static ApplicationData Current { get; } = new ApplicationData();

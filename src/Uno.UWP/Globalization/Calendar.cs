@@ -181,7 +181,9 @@ namespace Windows.Globalization
 			=> throw new global::System.NotImplementedException("The member string Calendar.GetTimeZone() is not implemented in Uno.");
 
 		[NotImplemented]
+#pragma warning disable CA1822 // Mark members as static
 		public void ChangeTimeZone(string timeZoneId)
+#pragma warning restore CA1822 // Mark members as static
 			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "void Calendar.ChangeTimeZone(string timeZoneId)");
 		#endregion
 
@@ -309,7 +311,9 @@ namespace Windows.Globalization
 			=> _time;
 
 		[NotImplemented]
+#pragma warning disable CA1822 // Mark members as static
 		public void AddEras(int eras)
+#pragma warning restore CA1822 // Mark members as static
 			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "void Calendar.AddEras(int eras)");
 
 		public void AddYears(int years)
@@ -357,6 +361,7 @@ namespace Windows.Globalization
 		public int NumberOfDaysInThisMonth => _calendar.GetDaysInMonth(Year, Month, Era);
 		public int NumberOfPeriodsInThisDay => _clock == ClockIdentifiers.TwentyFourHour ? 1 : 2;
 		public int NumberOfHoursInThisPeriod => _clock == ClockIdentifiers.TwentyFourHour ? 24 : 12;
+#pragma warning disable CA1822 // Mark members as static - align with UWP
 		public int NumberOfMinutesInThisHour => 60;
 		public int NumberOfSecondsInThisMinute => 60;
 
@@ -377,6 +382,7 @@ namespace Windows.Globalization
 		public int LastHourInThisPeriod => _clock == ClockIdentifiers.TwentyFourHour ? 23 : 11;
 		public int LastMinuteInThisHour => 59;
 		public int LastSecondInThisMinute => 59;
+#pragma warning restore CA1822 // Mark members as static
 
 		[NotImplemented]
 		public string EraAsString()

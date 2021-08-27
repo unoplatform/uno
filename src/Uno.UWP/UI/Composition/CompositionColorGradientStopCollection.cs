@@ -133,7 +133,7 @@ namespace Windows.UI.Composition
 			_owner.InvalidateColorStops();
 		}
 
-		private void ThrowIfNull<T>(T? item, string propertyName) where T : class
+		private static void ThrowIfNull<T>(T? item, string propertyName) where T : class
 		{
 			if (item == null)
 			{

@@ -77,7 +77,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		private StatusBarForegroundType ColorToForegroundType(Color color)
+		private static StatusBarForegroundType ColorToForegroundType(Color color)
 		{
 			// Source: https://en.wikipedia.org/wiki/Luma_(video)
 			var y = 0.2126 * color.R + 0.7152 * color.G + 0.0722 * color.B;
@@ -89,6 +89,7 @@ namespace Windows.UI.ViewManagement
 
 		private enum StatusBarForegroundType { Light, Dark }
 
+#pragma warning disable CA1822 // Mark members as static
 		[global::Uno.NotImplemented]
 		public double BackgroundOpacity
 		{
@@ -117,6 +118,7 @@ namespace Windows.UI.ViewManagement
 			}
 
 		}
+#pragma warning restore CA1822 // Mark members as static
 	}
 }
 #endif

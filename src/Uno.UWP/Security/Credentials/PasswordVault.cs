@@ -57,7 +57,7 @@ namespace Windows.Security.Credentials
 		public PasswordCredential Retrieve(string resource, string userName)
 		{
 			// UWP: Retrieve is case IN-sensitive for both 'resource' and 'userName'
-			var result = _credentials.FirstOrDefault(cred => Comparer.Instance.Equals(cred, resource, userName));
+			var result = _credentials.FirstOrDefault(cred => Comparer.Equals(cred, resource, userName));
 			if (result == null)
 			{
 				throw new Exception("No match"); // UWP: Throw 'Exception' if no match
@@ -445,7 +445,7 @@ namespace Windows.Security.Credentials
 		{
 			public static readonly Comparer Instance = new Comparer();
 
-			public bool Equals(PasswordCredential obj, string resource, string userName)
+			public static bool Equals(PasswordCredential obj, string resource, string userName)
 				=> StringComparer.OrdinalIgnoreCase.Equals(obj.Resource, resource)
 					&& StringComparer.OrdinalIgnoreCase.Equals(obj.UserName, userName);
 

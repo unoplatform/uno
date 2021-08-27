@@ -5,6 +5,8 @@ using System;
 
 namespace Windows.UI.Composition
 {
+#pragma warning disable CA1822 // Mark members as static
+	// TODO: Delete and rely on UWPSyncGenerator
 	public partial class VisualCollection : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Visual>
 	{
 		partial void InsertAbovePartial(Visual newChild, Visual sibling)

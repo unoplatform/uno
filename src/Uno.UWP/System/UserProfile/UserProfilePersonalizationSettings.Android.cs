@@ -18,11 +18,13 @@ namespace Windows.System.UserProfile
 			return wallpaperManager.IsWallpaperSupported && wallpaperManager.IsSetWallpaperAllowed;
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public IAsyncOperation<bool> TrySetLockScreenImageAsync(StorageFile imageFile) =>
 			TrySetImageAsync(imageFile, WallpaperManagerFlags.Lock).AsAsyncOperation();		
 
 		public IAsyncOperation<bool> TrySetWallpaperImageAsync(StorageFile imageFile) =>
 			TrySetImageAsync(imageFile, WallpaperManagerFlags.System).AsAsyncOperation();
+#pragma warning restore CA1822 // Mark members as static
 
 		private static WallpaperManager GetWallpaperManager()
 		{
@@ -34,7 +36,7 @@ namespace Windows.System.UserProfile
 			return WallpaperManager.GetInstance(ContextHelper.Current);
 		}
 
-		private async Task<bool> TrySetImageAsync(StorageFile imageFile, WallpaperManagerFlags target)
+		private static async Task<bool> TrySetImageAsync(StorageFile imageFile, WallpaperManagerFlags target)
 		{
 			using var wallpaperManager = GetWallpaperManager();
 			using var stream = File.OpenRead(imageFile.Path);

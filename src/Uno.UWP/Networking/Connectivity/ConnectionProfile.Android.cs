@@ -191,7 +191,7 @@ namespace Windows.Networking.Connectivity
 		}
 
 #pragma warning disable CS0618 // Type or member is obsolete
-		private NetworkConnectivityLevel GetConnectivityFromNetworkInfo(NetworkInfo info)
+		private static NetworkConnectivityLevel GetConnectivityFromNetworkInfo(NetworkInfo info)
 		{
 			if (info == null || !info.IsAvailable)
 			{

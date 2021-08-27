@@ -596,7 +596,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private TreeNodeSelectionState SelectionStateBasedOnChildren(TreeViewNode node)
+		private static TreeNodeSelectionState SelectionStateBasedOnChildren(TreeViewNode node)
 		{
 			bool hasSelectedChildren = false;
 			bool hasUnSelectedChildren = false;

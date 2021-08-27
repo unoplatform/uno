@@ -24,7 +24,9 @@ namespace Windows.UI.Composition
 
 		public Compositor Compositor { get; }
 
+#pragma warning disable CA1822 // Mark members as static
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
+#pragma warning restore CA1822 // Mark members as static
 
 		public string? Comment { get; set; }
 
@@ -33,7 +35,9 @@ namespace Windows.UI.Composition
 			StartAnimationCore(propertyName, animation);
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public void StopAnimation(string propertyName)
+#pragma warning restore CA1822 // Mark members as static
 		{
 
 		}
