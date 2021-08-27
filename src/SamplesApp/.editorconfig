@@ -1,0 +1,3 @@
+[*.cs]
+# CA1822: Make member static.
+dotnet_diagnostic.CA1822.severity = silent
