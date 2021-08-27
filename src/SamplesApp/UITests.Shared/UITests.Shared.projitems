@@ -361,7 +361,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\BluetoothSelectors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+      <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4523,6 +4527,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
       <DependentUpon>GyrometerTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\BluetoothSelectors.xaml.cs">
+      <DependentUpon>BluetoothSelectors.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorTests.xaml.cs">
       <DependentUpon>GeolocatorTests.xaml</DependentUpon>
