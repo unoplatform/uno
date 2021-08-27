@@ -600,7 +600,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void ValidateCacheLength(double cacheLength)
+		static void ValidateCacheLength(double cacheLength)
 		{
 			if (cacheLength < 0.0 || double.IsInfinity(cacheLength) || double.IsInfinity(cacheLength))
 			{

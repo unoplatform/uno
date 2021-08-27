@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Input
 			return stringRepresentationLocal;
 		}
 
-		void ConcatVirtualKey(VirtualKey key, ref string keyboardAcceleratorString)
+		static void ConcatVirtualKey(VirtualKey key, ref string keyboardAcceleratorString)
 		{
 			string keyName;
 

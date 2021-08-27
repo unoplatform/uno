@@ -173,7 +173,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return Math.Max(1, (int)(effectiveColumnCount));
 		}
 
-		private void ValidateGreaterThanZero(int value)
+		private static void ValidateGreaterThanZero(int value)
 		{
 			if (value <= 0)
 			{

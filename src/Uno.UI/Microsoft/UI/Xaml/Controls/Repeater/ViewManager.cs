@@ -347,7 +347,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void UpdatePin(UIElement element, bool addPin)
+		public static void UpdatePin(UIElement element, bool addPin)
 		{
 			var parent = CachedVisualTreeHelpers.GetParent(element);
 			var child = (DependencyObject)element;

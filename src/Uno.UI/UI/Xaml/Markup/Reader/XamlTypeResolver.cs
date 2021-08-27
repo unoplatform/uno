@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Markup.Reader
         /// <summary>
         /// Determines if the provided member is an C# initializable list (where the collection already exists, and no set property is present)
         /// </summary>
-        public bool IsInitializedCollection(PropertyInfo property)
+        public static bool IsInitializedCollection(PropertyInfo property)
         {
             if (property != null && IsInitializableProperty(property))
             {
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		/// <summary>
 		/// Returns true if the property has an accessible public setter and has a parameterless constructor
 		/// </summary>
-		public bool IsNewableProperty(PropertyInfo property, out Type newableType)
+		public static bool IsNewableProperty(PropertyInfo property, out Type newableType)
 		{
 			var namedType = property.PropertyType as Type;
 
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		public DependencyProperty FindDependencyProperty(Type propertyOwner, string propertyName)
+		public static DependencyProperty FindDependencyProperty(Type propertyOwner, string propertyName)
 		{
 			var propertyDependencyPropertyQuery = GetAllProperties(propertyOwner)
 								.Where(p => p.Name == propertyName + "Property")
@@ -205,18 +205,18 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private bool IsInitializableProperty(PropertyInfo property) 
+		private static bool IsInitializableProperty(PropertyInfo property) 
             => !property.SetMethod.SelectOrDefault(m => m.IsPublic, false);
 
-        public bool IsCollectionOrListType(Type type)
+        public static bool IsCollectionOrListType(Type type)
         {
             return IsImplementingInterface(type, typeof(global::System.Collections.ICollection)) ||
-                IsImplementingInterface(type, typeof(ICollection<>)) ||
-                IsImplementingInterface(type, typeof(global::System.Collections.IList)) ||
-                IsImplementingInterface(type, typeof(global::System.Collections.Generic.IList<>));
+				IsImplementingInterface(type, typeof(ICollection<>)) ||
+				IsImplementingInterface(type, typeof(global::System.Collections.IList)) ||
+				IsImplementingInterface(type, typeof(global::System.Collections.Generic.IList<>));
         }
 
-        private bool IsImplementingInterface(Type type, Type iface) => 
+        private static bool IsImplementingInterface(Type type, Type iface) => 
             type
                 .Flatten(t => t.BaseType)
                 .Any(t => t

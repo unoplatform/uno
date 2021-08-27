@@ -350,12 +350,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void PinElement(UIElement element)
 		{
-			m_viewManager.UpdatePin(element, true /* addPin */);
+			ViewManager.UpdatePin(element, true /* addPin */);
 		}
 
 		internal void UnpinElement(UIElement element)
 		{
-			m_viewManager.UpdatePin(element, false /* addPin */);
+			ViewManager.UpdatePin(element, false /* addPin */);
 		}
 
 		public UIElement GetOrCreateElement(int index)

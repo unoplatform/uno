@@ -442,7 +442,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		private float Wcstof(string input, ref string strEnd)
+#pragma warning restore CA1822 // Mark members as static
 		{
 			for (int currentLength = input.Length; currentLength > 0; currentLength--)
 			{

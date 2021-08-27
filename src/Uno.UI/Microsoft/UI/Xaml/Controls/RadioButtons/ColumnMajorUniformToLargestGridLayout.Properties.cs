@@ -43,17 +43,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyObject sender,
 			DependencyPropertyChangedEventArgs args)
 		{
-			var owner = (ColumnMajorUniformToLargestGridLayout)sender;
-
 			var value = (int)args.NewValue;
 			var coercedValue = value;
-			owner.ValidateGreaterThanZero(coercedValue);
+			ValidateGreaterThanZero(coercedValue);
 			if (value != coercedValue)
 			{
 				sender.SetValue(args.Property, coercedValue);
 				return;
 			}
 
+			var owner = (ColumnMajorUniformToLargestGridLayout)sender;
 			owner.OnMaxColumnsPropertyChanged(args);
 		}
 

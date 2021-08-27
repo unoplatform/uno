@@ -397,11 +397,6 @@ namespace Uno.UI.Controls.Legacy
                 new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: OnGroupStyleChanged)
             );
 
-		internal void RegisterRecycledAction(View convertView, Action a)
-		{
-
-		}
-
 		public GroupStyle GroupStyle
         {
             get { return (GroupStyle)this.GetValue(GroupStyleProperty); }

@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					if (member.Objects.None())
 					{
-						if (TypeResolver.IsInitializedCollection(propertyInfo))
+						if (XamlTypeResolver.IsInitializedCollection(propertyInfo))
 						{
 							// Empty collection
 						}
@@ -364,7 +364,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void ProcessMemberElements(DependencyObject instance, XamlMemberDefinition member, DependencyProperty property)
 		{
-			if (TypeResolver.IsCollectionOrListType(property.Type))
+			if (XamlTypeResolver.IsCollectionOrListType(property.Type))
 			{
 				object BuildInstance()
 				{
@@ -392,7 +392,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void ProcessMemberElements(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo)
 		{
-			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
+			if (XamlTypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
 				if (propertyInfo.PropertyType == typeof(ResourceDictionary))
 				{
@@ -419,7 +419,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						addMethod.Invoke(propertyInstance, new[] { resourceKey ?? resourceTargetType, item });
 					}
 				}
-				else if (TypeResolver.IsNewableProperty(propertyInfo, out var collectionType))
+				else if (XamlTypeResolver.IsNewableProperty(propertyInfo, out var collectionType))
 				{
 					var collection = Activator.CreateInstance(collectionType);
 
@@ -427,7 +427,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
 				}
-				else if (TypeResolver.IsInitializedCollection(propertyInfo))
+				else if (XamlTypeResolver.IsInitializedCollection(propertyInfo))
 				{
 					var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
 
@@ -667,7 +667,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			_elementNames.Add((elementName, subject));
 		}
 
-		private bool IsBindingMarkupNode(XamlMemberDefinition member)
+		private static bool IsBindingMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "Binding" || o.Type.Name == "TemplateBinding");
 
 		private static bool IsMarkupExtension(XamlMemberDefinition member)
@@ -694,7 +694,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private object GetResourceKey(XamlObjectDefinition child) =>
+		private static object GetResourceKey(XamlObjectDefinition child) =>
 			child.Members.FirstOrDefault(m =>
 				string.Equals(m.Member.Name, "Name", StringComparison.OrdinalIgnoreCase)
 				|| string.Equals(m.Member.Name, "Key", StringComparison.OrdinalIgnoreCase)
@@ -747,7 +747,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					{
 						var propertyOwner = _styleTargetTypeStack.Peek();
 
-						if (TypeResolver.FindDependencyProperty(propertyOwner, memberValue) is DependencyProperty property)
+						if (XamlTypeResolver.FindDependencyProperty(propertyOwner, memberValue) is DependencyProperty property)
 						{
 							return property;
 						}
@@ -774,7 +774,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private object BuildLiteralValue(Type propertyType, string memberValue)
+		private static object BuildLiteralValue(Type propertyType, string memberValue)
 		{
 			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(() => propertyType, memberValue);
 		}

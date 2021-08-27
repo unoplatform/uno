@@ -240,7 +240,7 @@ namespace Uno.UI.Toolkit
 			/// </summary>
 			/// <param name="visibleBounds">The safe visible bounds of the window.</param>
 			/// <param name="controlBounds">The bounds of the control, in the window's coordinates.</param>
-			private Thickness CalculateVisibilityPadding(Rect visibleBounds, Rect controlBounds)
+			private static Thickness CalculateVisibilityPadding(Rect visibleBounds, Rect controlBounds)
 			{
 				var windowPadding = WindowPadding;
 

@@ -582,7 +582,7 @@ namespace Microsoft.UI.Xaml.Controls
 			templateSettings.Indentation = thickness;
 		}
 
-		private bool IsExpandCollapse(VirtualKey key)
+		private static bool IsExpandCollapse(VirtualKey key)
 		{
 			var ctrlState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Control);
 			bool isControlPressed = (ctrlState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
@@ -785,7 +785,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		//Setting IsExpanded changes the itemssource collection on the listview, which cannot be done during layout.
 		//We schedule it on the dispatcher so that it runs after layout pass.
-		private void UpdateNodeIsExpandedAsync(TreeViewNode node, bool isExpanded)
+		private static void UpdateNodeIsExpandedAsync(TreeViewNode node, bool isExpanded)
 		{
 			var dispatcher = Windows.UI.Xaml.Window.Current.Dispatcher;
 			var ignore = dispatcher.RunAsync(

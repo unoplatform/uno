@@ -235,3 +235,5 @@ dotnet_analyzer_diagnostic.category-Maintainability.severity = none
 dotnet_analyzer_diagnostic.category-Naming.severity = none
 dotnet_analyzer_diagnostic.category-Reliability.severity = none
 dotnet_analyzer_diagnostic.category-Security.severity = none
+
+dotnet_code_quality.CA1822.api_surface = private, internal
