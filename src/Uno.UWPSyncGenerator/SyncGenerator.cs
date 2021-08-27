@@ -75,7 +75,21 @@ namespace Uno.UWPSyncGenerator
 				else
 				{
 					allSymbols.AppendIf(b);
-					b.AppendLineInvariant($"[global::Uno.NotImplemented]");
+
+					var notImplementedList = allSymbols.GenerateNotImplementedList();
+
+					// We're at a point where the generated code wasn't correct here, and the straightforward
+					// fix (to use GenerateNotImplementedList) causes a very large diff. So we special case
+					// the addition of the attribute without specific platforms in cases where it doesn't actually matter.
+					if (string.IsNullOrEmpty(notImplementedList) || allSymbols.IsNotImplementedInAllPlatforms())
+					{
+						b.AppendLineInvariant($"[global::Uno.NotImplemented]");
+					}
+					else
+					{
+						b.AppendLineInvariant($"[global::Uno.NotImplemented({allSymbols.GenerateNotImplementedList()})]");
+					}
+
 					b.AppendLineInvariant($"#endif");
 				}
 
