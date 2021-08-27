@@ -263,8 +263,10 @@ namespace Windows.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static int DispatchEvent(int handle, string eventName, string eventArgs)
 		{
+#if DEBUG
 			try
 			{
+#endif
 				// Dispatch to right object, if we can find it
 				if (GetElementFromHandle(handle) is UIElement element)
 				{
@@ -276,12 +278,14 @@ namespace Windows.UI.Xaml
 				}
 
 				return (int)HtmlEventDispatchResult.NotDispatched;
+#if DEBUG
 			}
 			catch (Exception error)
 			{
 				Console.Error.WriteLine("Failed to dispatch event: " + error);
 				throw;
 			}
+#endif
 		}
 
 		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.OrdinalIgnoreCase);

@@ -36,6 +36,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	internal class DragDropExtension : IDragDropExtension
 	{
+		private const long _textReadTimeoutTicks = 10 * TimeSpan.TicksPerSecond;
 		private const string _jsType = "Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension";
 		private static readonly ILogger _log = typeof(DragDropExtension).Log();
 
@@ -298,7 +299,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static async Task<string> RetrieveText(CancellationToken ct, int itemId)
 		{
-			using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct, new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token);
+			using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct, new CancellationTokenSource(TimeSpan.FromTicks(_textReadTimeoutTicks)).Token);
 			var text = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveText({itemId.ToStringInvariant()})", cts.Token);
 
 			return text;
