@@ -92,9 +92,9 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		{
 			try
 			{
-				if (_log.IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Trace))
 				{
-					_log.Debug("Receiving native drop event.");
+					_log.Trace("Receiving native drop event.");
 				}
 
 				if (_current?._args is { } args)
@@ -125,9 +125,9 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private DragDropExtensionEventArgs OnNativeDragAndDrop(DragDropExtensionEventArgs args)
 		{
-			if (_log.IsEnabled(LogLevel.Debug))
+			if (_log.IsEnabled(LogLevel.Trace))
 			{
-				_log.Info($"Received native drop event: {args}");
+				_log.Trace($"Received native drop event: {args}");
 			}
 
 			DataPackageOperation? acceptedOperation = DataPackageOperation.None;
@@ -163,17 +163,17 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					var data = CreateDataPackage(args.dataItems);
 					var info = new CoreDragInfo(drop, data.GetView(), allowed);
 
-					if (_log.IsEnabled(LogLevel.Information))
+					if (_log.IsEnabled(LogLevel.Debug))
 					{
-						_log.Info($"Starting new native drop operation {drop.Id}");
+						_log.Debug($"Starting new native drop operation {drop.Id}");
 					}
 
 					_pendingNativeDrop = drop;
 					info.RegisterCompletedCallback(result =>
 					{
-						if (_log.IsEnabled(LogLevel.Information))
+						if (_log.IsEnabled(LogLevel.Debug))
 						{
-							_log.Info($"Completed native drop operation #{drop.Id}: {result}");
+							_log.Debug($"Completed native drop operation #{drop.Id}: {result}");
 						}
 
 						if (_pendingNativeDrop == drop)
@@ -224,14 +224,14 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 
 			// Note about images:
-			//		There is not no common types for image drag and drop in browsers.
-			//		Only FF provides a data of kind "string" ("other" when coming from the same page) and type "application/x-moz-nativeimage",
-			//		but the content marshalling doen't seems to works properly, and anyway there are no equivalent custom type for chromium :(
+			//		There is no common type for image drag and drop in browsers.
+			//		Only FireFox provides data of the kind "string" ("other" when coming from the same page) and type "application/x-moz-nativeimage",
+			//		but the content marshalling doesn't seem to work properly, and there are no equivalent custom type for chromium :(
 			//		Consequently the only way to get a "Bitmap" data in the package is by D&Ding a file with a MIME type starting by "image/"
 			// Note about unknown types:
-			//		we don't don't support any other "kind" (we can have an "other" when D&Ding an image within the same page on FF),
-			//		as we don't have have any way to properly retrieve the data.
-			//		We however support do propagate any "string" that does not have a standard MIME type so we don't restrict too much applications.
+			//		we don't support any other "kind" (we can have an "other" when D&Ding an image within the same page on FF),
+			//		as we don't have any way to properly retrieve the data.
+			//		We however support to propagate any "string" that does not have a standard MIME type so we don't restrict too much applications.
 
 			var package = new DataPackage();
 			var entries = JsonHelper.Deserialize<DataEntry[]>(dataItems);
@@ -288,7 +288,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static async Task<IReadOnlyList<IStorageItem>> RetrieveFiles(CancellationToken ct, params int[] itemsIds)
 		{
-			var infosRaw = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveFiles({string.Join(", ", itemsIds.Select(id => id.ToStringInvariant()))})", ct);
+			var rawItemsIds = string.Join(", ", itemsIds.Select(id => id.ToStringInvariant()));
+			var infosRaw = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveFiles({rawItemsIds})", ct);
 			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(infosRaw);
 			var items = infos.Select(StorageFile.GetFromNativeInfo).ToList();
 
@@ -399,9 +400,9 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 			public void Update(DragDropExtensionEventArgs args)
 			{
-				if (_log.IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Trace))
 				{
-					_log.Info($"Updating native drop operation #{Id} ({args.eventName})");
+					_log.Trace($"Updating native drop operation #{Id} ({args.eventName})");
 				}
 
 				_args = args;
