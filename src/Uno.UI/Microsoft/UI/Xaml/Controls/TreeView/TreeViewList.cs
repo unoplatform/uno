@@ -573,7 +573,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return index >= 0 && index < ListViewModel.Count;
 		}
 
-		internal int RemoveNodeFromParent(TreeViewNode node)
+		internal static int RemoveNodeFromParent(TreeViewNode node)
 		{
 			var children = (TreeViewNodeVector)node.Parent.Children;
 			int indexInParent = children.IndexOf(node);
@@ -617,7 +617,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return automationName;
 		}
 
-		private string BuildEffectString(string priorString, string afterString, string dragString, string dragOverString)
+		private static string BuildEffectString(string priorString, string afterString, string dragString, string dragOverString)
 		{
 			string resultString;
 			if (!string.IsNullOrEmpty(priorString) && !string.IsNullOrEmpty(afterString))
@@ -654,7 +654,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return resultString;
 		}
 
-		private int IndexInParent(TreeViewNode node)
+		private static int IndexInParent(TreeViewNode node)
 		{
 			int indexInParent = node.Parent.Children.IndexOf(node);
 			return indexInParent;

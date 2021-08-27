@@ -10,8 +10,8 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageSourceConverter : TypeConverter
 	{
-		partial void CanConvertFromPartial(Type sourceType, ref bool canConvert);
-		partial void ConvertFromPartial(object value, ref ImageSource result);
+		static partial void CanConvertFromPartial(Type sourceType, ref bool canConvert);
+		static partial void ConvertFromPartial(object value, ref ImageSource result);
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			var canConvert = sourceType == typeof(string)

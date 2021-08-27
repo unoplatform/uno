@@ -829,7 +829,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private (string bindingsInterfaceName, string bindingsClassName) GetBindingsTypeNames(string className)
+		private static (string bindingsInterfaceName, string bindingsClassName) GetBindingsTypeNames(string className)
 			=> ($"I{className}_Bindings", $"{className}_Bindings");
 
 		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, string className, INamedTypeSymbol controlBaseType)
@@ -1795,7 +1795,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Any(o => IsCustomMarkupExtensionType(o.Type));
 		}
 
-		private bool HasBindingMarkupExtension(XamlMemberDefinition valueNode)
+		private static bool HasBindingMarkupExtension(XamlMemberDefinition valueNode)
 		{
 			return valueNode
 				.Objects
@@ -1806,7 +1806,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				);
 		}
 
-		private bool HasXBindMarkupExtension(XamlObjectDefinition objectDefinition)
+		private static bool HasXBindMarkupExtension(XamlObjectDefinition objectDefinition)
 			=> objectDefinition
 				.Members
 				.Any(o => o.Objects.Any(o => o.Type.Name == "Bind"));
@@ -1932,15 +1932,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return literalValue;
 		}
 
-		private XamlMemberDefinition? FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
+		private static XamlMemberDefinition? FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
 		{
 			return xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == memberName);
 		}
 
-		private XamlMemberDefinition? FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName, string ns)
+		private static XamlMemberDefinition? FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName, string ns)
 			=> xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == memberName && m.Member.PreferredXamlNamespace == ns);
 
-		private XamlMemberDefinition GetMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
+		private static XamlMemberDefinition GetMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
 		{
 			var member = FindMember(xamlObjectDefinition, memberName);
 
@@ -1952,7 +1952,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return member;
 		}
 
-		private (string ns, string className) GetClassName(XamlObjectDefinition control)
+		private static (string ns, string className) GetClassName(XamlObjectDefinition control)
 		{
 			var classMember = FindClassName(control);
 
@@ -2408,7 +2408,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsResourceDictionarySubclass(XamlType xamlType) => xamlType.Name != "ResourceDictionary" && IsResourceDictionary(xamlType);
 
-		private XamlMemberDefinition? FindImplicitContentMember(XamlObjectDefinition topLevelControl, string memberName = "_UnknownContent")
+		private static XamlMemberDefinition? FindImplicitContentMember(XamlObjectDefinition topLevelControl, string memberName = "_UnknownContent")
 		{
 			return topLevelControl
 				.Members
@@ -3341,7 +3341,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private bool IsXLoadMember(XamlMemberDefinition member) =>
+		private static bool IsXLoadMember(XamlMemberDefinition member) =>
 			member.Member.Name == "Load"
 			&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace;
 
@@ -3575,7 +3575,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private bool IsRelativePanelSiblingProperty(string name)
+		private static bool IsRelativePanelSiblingProperty(string name)
 		{
 			return name.Equals("Above") ||
 				name.Equals("Below") ||
@@ -4106,15 +4106,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return "{0}{1}".InvariantCultureFormat(cast, provideValue);
 		}
 
-		private (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideDataTemplate(XamlObjectDefinition? xamlObject)
+		private static (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideDataTemplate(XamlObjectDefinition? xamlObject)
 			=> IsMemberInside(xamlObject, "DataTemplate");
 
-		private (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideFrameworkTemplate(XamlObjectDefinition? xamlObject) =>
+		private static (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideFrameworkTemplate(XamlObjectDefinition? xamlObject) =>
 			FrameworkTemplateTypes
 				.Select(n => IsMemberInside(xamlObject, n))
 				.FirstOrDefault(n => n.isInside);
 
-		private (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject, int? maxDepth = 1)
+		private static (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject, int? maxDepth = 1)
 			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: maxDepth);
 
 		private static (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInside(XamlObjectDefinition? xamlObject, string typeName, int? maxDepth = null)
@@ -4142,7 +4142,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Inserts explicit cast if a resource is being assigned to a property of a different type
 		/// </summary>
-		private string GetCastString(INamedTypeSymbol targetProperty, XamlObjectDefinition? targettingValue)
+		private static string GetCastString(INamedTypeSymbol targetProperty, XamlObjectDefinition? targettingValue)
 		{
 			if (targetProperty != null
 				&& targetProperty.Name != targettingValue?.Type.Name
@@ -4158,7 +4158,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		/// <param name="member">The StaticResourceExtension or ThemeResourceExtension member</param>
 		/// <returns>(Key referred to, true if ThemeResource)</returns>
-		private (string? key, bool isThemeResourceExtension) GetStaticResourceKey(XamlMemberDefinition member)
+		private static (string? key, bool isThemeResourceExtension) GetStaticResourceKey(XamlMemberDefinition member)
 		{
 			var staticResourceNode = member.Objects.FirstOrDefault(o => o.Type.Name == "StaticResource");
 			var themeResourceNode = member.Objects.FirstOrDefault(o => o.Type.Name == "ThemeResource");
@@ -4245,7 +4245,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
+		private static INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
 		{
 			return (propertyType.IsNullable(out var underlyingType) && underlyingType is INamedTypeSymbol underlyingNamedType) ? underlyingNamedType : propertyType;
 		}
@@ -4509,7 +4509,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return isLocalized;
 		}
 
-		private string ParseCacheMode(string memberValue)
+		private static string ParseCacheMode(string memberValue)
 		{
 			if (memberValue.Equals("BitmapCache", StringComparison.OrdinalIgnoreCase))
 			{
@@ -5021,7 +5021,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| SymbolEqualityComparer.Default.Equals(propertyType, _objectSymbol);
 		}
 
-		private string? GetObjectUid(XamlObjectDefinition objectDefinition)
+		private static string? GetObjectUid(XamlObjectDefinition objectDefinition)
 		{
 			string? objectUid = null;
 			var localizedObject = FindMember(objectDefinition, "Uid");
@@ -5367,7 +5367,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private bool HasNoUserControlProperties(XamlObjectDefinition objectDefinition)
+		private static bool HasNoUserControlProperties(XamlObjectDefinition objectDefinition)
 		{
 			return
 			objectDefinition
@@ -5854,7 +5854,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return "{0}{1}".InvariantCultureFormat(memberValue, isDouble ? "d" : "f");
 		}
 
-		private string ValidatePropertyType(INamedTypeSymbol propertyType, XamlMemberDefinition? owner)
+		private static string ValidatePropertyType(INamedTypeSymbol propertyType, XamlMemberDefinition? owner)
 		{
 			if (IsDouble(propertyType.ToDisplayString()) &&
 				owner != null && (

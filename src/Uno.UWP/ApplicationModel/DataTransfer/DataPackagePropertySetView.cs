@@ -94,7 +94,9 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// from clipboard data that was synced from another device for the current user.
 		/// </summary>
 		/// <remarks>Always false in Uno Platform.</remarks>
+#pragma warning disable CA1822 // Mark members as static - align with UWP
 		public bool IsFromRoamingClipboard => false;
+#pragma warning restore CA1822 // Mark members as static
 
 		/// <summary>
 		/// Gets the number of items that are contained in the property set.

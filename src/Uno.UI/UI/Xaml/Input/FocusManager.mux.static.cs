@@ -30,14 +30,14 @@ namespace Windows.UI.Xaml.Input
 			if (xyFocusOptions.ExclusionRect != null)
 			{
 				Rect exclusionRect = xyFocusOptions.ExclusionRect.Value;
-				exclusionRect = DXamlCore.Current.DipsToPhysicalPixels(scale, exclusionRect);
+				exclusionRect = DXamlCore.DipsToPhysicalPixels(scale, exclusionRect);
 				xyFocusOptions.ExclusionRect = exclusionRect;
 			}
 
 			if (xyFocusOptions.FocusHintRectangle != null)
 			{
 				Rect hintRect = xyFocusOptions.FocusHintRectangle.Value;
-				hintRect = DXamlCore.Current.DipsToPhysicalPixels(scale, hintRect);
+				hintRect = DXamlCore.DipsToPhysicalPixels(scale, hintRect);
 				xyFocusOptions.FocusHintRectangle = hintRect;
 			}
 		}
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Input
 			{
 				focusManager = VisualTree.GetFocusManagerForElement(searchRoot);
 			}
-			else if (core.GetHandle().InitializationType == InitializationType.IslandsOnly)
+			else if (DXamlCore.GetHandle().InitializationType == InitializationType.IslandsOnly)
 			{
 				// Return error if searchRoot is not valid in islands/ desktop mode
 				throw new ArgumentException("The search root must not be null.");
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Input
 			{
 				// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
 				// ContentRoot, so explicitly return the CoreWindow content root.
-				var contentRootCoordinator = core.GetHandle().ContentRootCoordinator;
+				var contentRootCoordinator = DXamlCore.GetHandle().ContentRootCoordinator;
 				var contentRoot = contentRootCoordinator?.CoreWindowContentRoot;
 
 				if (contentRoot == null)
@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Input
 
 			// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
 			// ContentRoot, so explicitly return the CoreWindow content root.
-			var contentRootCoordinator = core.GetHandle().ContentRootCoordinator;
+			var contentRootCoordinator = DXamlCore.GetHandle().ContentRootCoordinator;
 			var contentRoot = contentRootCoordinator?.CoreWindowContentRoot;
 
 			if (contentRoot == null)
@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Input
 
 			FocusManager? focusManager = null;
 			ContentRoot? contentRoot = null;
-			var contentRootCoordinator = pCore.GetHandle().ContentRootCoordinator;
+			var contentRootCoordinator = DXamlCore.GetHandle().ContentRootCoordinator;
 
 			if (options != null)
 			{
@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Input
 					}
 
 				}
-				else if (pCore.GetHandle().InitializationType == InitializationType.IslandsOnly)
+				else if (DXamlCore.GetHandle().InitializationType == InitializationType.IslandsOnly)
 				{
 					// SearchRoot must exist for islands/ desktop
 					throw new ArgumentException("The search root must not be null.");
@@ -254,7 +254,7 @@ namespace Windows.UI.Xaml.Input
 			if (focusManager == null)
 			{
 				// Return error if call is without focus navigation option in islands/ desktop
-				if (pCore.GetHandle().InitializationType == InitializationType.IslandsOnly)
+				if (DXamlCore.GetHandle().InitializationType == InitializationType.IslandsOnly)
 				{
 					throw new InvalidOperationException("Focus navigation options must be set for desktop apps.");
 				}
@@ -581,7 +581,7 @@ namespace Windows.UI.Xaml.Input
 			{
 				// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
 				// ContentRoot, so explicitly return the CoreWindow content root.
-				var contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
+				var contentRoot = DXamlCore.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
 
 				if (contentRoot == null)
 				{
@@ -614,7 +614,7 @@ namespace Windows.UI.Xaml.Input
 			{
 				// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
 				// ContentRoot, so explicitly return the CoreWindow content root.
-				var contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
+				var contentRoot = DXamlCore.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
 
 				if (contentRoot == null)
 				{
@@ -738,7 +738,7 @@ namespace Windows.UI.Xaml.Input
 			}
 			else
 			{
-				contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
+				contentRoot = DXamlCore.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
 			}
 
 			// If we are being passed in the public root visual of the XamlRoot as the SearchRoot, then override the SearchRoot to be the RootVisual.

@@ -421,6 +421,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MapControl.TrySetViewAsync(Geopoint center, double? zoomLevel, double? heading, double? desiredPitch, MapAnimationKind animation) is not implemented in Uno.");
 		}
+#pragma warning disable CA1822 // Mark members as static
 		public void StartContinuousRotate(double rateInDegreesPerSecond)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousRotate(double rateInDegreesPerSecond)");
@@ -445,6 +446,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousZoom()");
 		}
+#pragma warning restore CA1822 // Mark members as static
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRotateAsync(double degrees)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MapControl.TryRotateAsync(double degrees) is not implemented in Uno.");

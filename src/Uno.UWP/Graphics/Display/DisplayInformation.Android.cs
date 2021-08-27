@@ -210,7 +210,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-		private IWindowManager CreateWindowManager()
+		private static IWindowManager CreateWindowManager()
 		{
 			if(ContextHelper.Current.GetSystemService(Context.WindowService) is { } windowService)
 			{

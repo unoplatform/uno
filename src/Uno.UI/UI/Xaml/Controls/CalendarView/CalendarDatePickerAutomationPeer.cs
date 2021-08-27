@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		protected override string GetLocalizedControlTypeCore()
 		{
-			return DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_CALENDARDATEPICKER);
+			return DXamlCore.GetLocalizedResourceString(UIA_AP_CALENDARDATEPICKER);
 		}
 
 		public void Invoke()
@@ -72,28 +72,28 @@ namespace Windows.UI.Xaml.Automation.Peers
 			((CalendarDatePicker)(pOwner)).IsCalendarOpen = true;
 		}
 
-		private void get_IsReadOnlyImpl(out bool value)
-		{
-			value = true;
-			return;
-		}
+		//private void get_IsReadOnlyImpl(out bool value)
+		//{
+		//	value = true;
+		//	return;
+		//}
 
-		private void get_ValueImpl(out string value)
-		{
-			UIElement spOwner;
-			spOwner = Owner;
+		//private void get_ValueImpl(out string value)
+		//{
+		//	UIElement spOwner;
+		//	spOwner = Owner;
 
-			var ownerItem = spOwner as CalendarDatePicker;
-			//IFCPTR_RETURN(ownerItem);
-			if (ownerItem == null)
-			{
-				throw new ArgumentNullException();
-			}
+		//	var ownerItem = spOwner as CalendarDatePicker;
+		//	//IFCPTR_RETURN(ownerItem);
+		//	if (ownerItem == null)
+		//	{
+		//		throw new ArgumentNullException();
+		//	}
 
-			ownerItem.GetCurrentFormattedDate(out value);
+		//	ownerItem.GetCurrentFormattedDate(out value);
 
-			return;
-		}
+		//	return;
+		//}
 
 		public void SetValueImpl(string value)
 		{

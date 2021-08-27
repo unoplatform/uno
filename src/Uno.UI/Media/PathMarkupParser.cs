@@ -249,7 +249,7 @@ namespace Uno.Media
             }
         }
 
-        private Point MirrorControlPoint(Point controlPoint, Point center)
+        private static Point MirrorControlPoint(Point controlPoint, Point center)
         {
             Point dir = (controlPoint - center);
             return center - dir;
@@ -463,4 +463,3 @@ namespace Uno.Media
         }
     }
 }
- 

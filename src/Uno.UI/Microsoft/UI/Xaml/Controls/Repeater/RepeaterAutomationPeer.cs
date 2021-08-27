@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		#endregion
 
 		// Get the immediate child element of repeater under which this childPeer came from. 
-		private UIElement GetElement(AutomationPeer childPeer, ItemsRepeater repeater)
+		private static UIElement GetElement(AutomationPeer childPeer, ItemsRepeater repeater)
 		{
 			var childElement = (DependencyObject)(childPeer as FrameworkElementAutomationPeer).Owner;
 

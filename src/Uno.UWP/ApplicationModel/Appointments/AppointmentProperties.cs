@@ -16,6 +16,9 @@ namespace Windows.ApplicationModel.Appointments
 		public static string Subject => "Appointment.Subject";
 		public static string Organizer => "Appointment.Organizer";
 		public static string Details => "Appointment.Details";
+
+		// TODO: Make the class static. https://github.com/unoplatform/uno/issues/6888
+		// TODO: Extract the list into static field instead of allocation everything.
 		public IList<string> DefaultProperties
 		{
 			get
@@ -33,7 +36,6 @@ namespace Windows.ApplicationModel.Appointments
 				// "Appointment.RemoteId", "Appointment.OriginalStartTime", "Appointment.ChangeNumber"
 				// but we define only some of them, that seems to be "a must" for every platform
 			}
-
 		}
 	}
 }

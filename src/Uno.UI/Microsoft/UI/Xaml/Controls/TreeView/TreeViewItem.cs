@@ -108,7 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 								var nodeIndex = treeViewList.FlatIndex(node);
 								if (treeViewList.IsFlatIndexValid(nodeIndex))
 								{
-									treeViewList.RemoveNodeFromParent(node);
+									TreeViewList.RemoveNodeFromParent(node);
 									((TreeViewNodeVector)droppedOnNode.Children).Append(node);
 								}
 							}
@@ -798,7 +798,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool IsInContentMode => AncestorTreeView.ListControl.ListViewModel.IsContentMode;
 
-		private TreeNodeSelectionState CheckBoxSelectionState(CheckBox checkBox)
+		private static TreeNodeSelectionState CheckBoxSelectionState(CheckBox checkBox)
 		{
 			var winrtBool = checkBox.IsChecked;
 			if (winrtBool != null)

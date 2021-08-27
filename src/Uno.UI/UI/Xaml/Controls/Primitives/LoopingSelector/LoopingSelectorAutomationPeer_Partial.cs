@@ -10,38 +10,38 @@ namespace Windows.UI.Xaml.Automation.Peers
 	{
 		internal LoopingSelectorAutomationPeer(LoopingSelector pOwner) : base(pOwner)
 		{
-			InitializeImpl(pOwner);
+			//InitializeImpl(pOwner);
 		}
 
-		void InitializeImpl(LoopingSelector pOwner)
-		{
-			//FrameworkElementAutomationPeerFactory spInnerFactory;
-			//FrameworkElementAutomationPeer spInnerInstance;
-			//FrameworkElement spLoopingSelectorAsFE;
-			//var spOwner = pOwner;
-			//DependencyObject spInnerInspectable;
+		//void InitializeImpl(LoopingSelector pOwner)
+		//{
+		//	//FrameworkElementAutomationPeerFactory spInnerFactory;
+		//	//FrameworkElementAutomationPeer spInnerInstance;
+		//	//FrameworkElement spLoopingSelectorAsFE;
+		//	//var spOwner = pOwner;
+		//	//DependencyObject spInnerInspectable;
 
-			//ARG_NOTnull(pOwner, "pOwner");
+		//	//ARG_NOTnull(pOwner, "pOwner");
 
-			//LoopingSelectorAutomationPeerGenerated.InitializeImpl(pOwner);
-			//(wf.GetActivationFactory(
-			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_Peers_FrameworkElementAutomationPeer),
-			//	&spInnerFactory));
+		//	//LoopingSelectorAutomationPeerGenerated.InitializeImpl(pOwner);
+		//	//(wf.GetActivationFactory(
+		//	//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_Peers_FrameworkElementAutomationPeer),
+		//	//	&spInnerFactory));
 
-			//(((DependencyObject)(pOwner)).QueryInterface<xaml.FrameworkElement>(
-			//	&spLoopingSelectorAsFE));
-			//spLoopingSelectorAsFE = pOwner;
+		//	//(((DependencyObject)(pOwner)).QueryInterface<xaml.FrameworkElement>(
+		//	//	&spLoopingSelectorAsFE));
+		//	//spLoopingSelectorAsFE = pOwner;
 
-			//(spInnerFactory.CreateInstanceWithOwner(
-			//		spLoopingSelectorAsFE,
-			//		(ILoopingSelectorAutomationPeer)(this),
-			//		&spInnerInspectable,
-			//		&spInnerInstance));
+		//	//(spInnerFactory.CreateInstanceWithOwner(
+		//	//		spLoopingSelectorAsFE,
+		//	//		(ILoopingSelectorAutomationPeer)(this),
+		//	//		&spInnerInspectable,
+		//	//		&spInnerInstance));
 
-			//(SetComposableBasePointers(
-			//	spInnerInspectable,
-			//	spInnerFactory));
-		}
+		//	//(SetComposableBasePointers(
+		//	//	spInnerInspectable,
+		//	//	spInnerFactory));
+		//}
 
 		void GetOwnerAsInternalPtrNoRef(out LoopingSelector ppOwnerNoRef)
 		{
@@ -296,13 +296,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 			//spReturnValue.CopyTo(returnValue);
 			return spReturnValue;
-		}
-
-		void GetClassNameCoreImpl(out string returnValue)
-		{
-			//if (returnValue == null) throw new ArgumentNullException();
-			//wrl_wrappers.Hstring("LoopingSelector").CopyTo(returnValue);
-			returnValue = "LoopingSelector";
 		}
 
 		#endregion

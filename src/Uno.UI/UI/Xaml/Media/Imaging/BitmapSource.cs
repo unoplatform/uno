@@ -20,11 +20,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelHeightProperty { get ; } =
-			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelHeightChanged(e)));
+			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0/*, (s, e) => ((BitmapSource)s)?.OnPixelHeightChanged(e)*/));
 
-		private void OnPixelHeightChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+		//private void OnPixelHeightChanged(DependencyPropertyChangedEventArgs e)
+		//{
+		//}
 
 		#endregion
 
@@ -38,12 +38,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for PixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelWidthProperty { get ; } =
-			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelWidthChanged(e)));
+			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0/*, (s, e) => ((BitmapSource)s)?.OnPixelWidthChanged(e)*/));
 
 
-		private void OnPixelWidthChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+		//private void OnPixelWidthChanged(DependencyPropertyChangedEventArgs e)
+		//{
+		//}
 
 		#endregion
 

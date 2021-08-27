@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			pWorkLeft = true;
 
 			spBudget = DXamlCore.Current.GetBudgetManager();
-			timeElapsedInMS = spBudget.GetElapsedMilliSecondsSinceLastUITick();
+			timeElapsedInMS = BudgetManager.GetElapsedMilliSecondsSinceLastUITick();
 
 			if ((uint)(timeElapsedInMS) <= m_budget)
 			{
@@ -567,7 +567,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					// updates the time
-					timeElapsedInMS = spBudget.GetElapsedMilliSecondsSinceLastUITick();
+					timeElapsedInMS = BudgetManager.GetElapsedMilliSecondsSinceLastUITick();
 				}
 
 				if (processingPhase == long.MaxValue)
@@ -611,7 +611,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarViewDayItem spContainer;
 
-				timeElapsedInMS = spBudget.GetElapsedMilliSecondsSinceLastUITick();
+				timeElapsedInMS = BudgetManager.GetElapsedMilliSecondsSinceLastUITick();
 
 				if ((uint)(timeElapsedInMS) > m_budget)
 				{

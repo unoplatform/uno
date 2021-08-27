@@ -24,7 +24,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 
 		public XamlNodeType NodeType => Convert(_unoReader.NodeType);
 
-		private XamlNodeType Convert(__uno::Uno.Xaml.XamlNodeType source)
+		private static XamlNodeType Convert(__uno::Uno.Xaml.XamlNodeType source)
 			=> source switch
 			{
 				__uno::Uno.Xaml.XamlNodeType.StartObject => XamlNodeType.StartObject,

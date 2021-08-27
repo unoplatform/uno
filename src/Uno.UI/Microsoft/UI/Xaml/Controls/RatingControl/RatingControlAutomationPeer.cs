@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return owner as RatingControl;
 		}
 
-		private int DetermineFractionDigits(double value)
+		private static int DetermineFractionDigits(double value)
 		{
 			value = value * 100;
 			int intValue = (int)value;
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 		}
 
-		private int DetermineSignificantDigits(double value, int fractionDigits)
+		private static int DetermineSignificantDigits(double value, int fractionDigits)
 		{
 			int sigFigsInt = (int)value;
 			int length = 0;

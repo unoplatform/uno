@@ -64,7 +64,7 @@ namespace Windows.UI.ViewManagement
 			return true;
 		}
 
-		partial void TryShowPartial();
+		static partial void TryShowPartial();
 
 		public bool TryHide()
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.ViewManagement
 			return true;
 		}
 
-		partial void TryHidePartial();
+		static partial void TryHidePartial();
 
 		internal void OnOccludedRectChanged()
 		{

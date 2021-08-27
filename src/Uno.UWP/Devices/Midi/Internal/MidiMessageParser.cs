@@ -4,7 +4,7 @@ using Windows.Devices.Midi;
 
 namespace Uno.Devices.Midi.Internal
 {
-	internal class MidiMessageParser
+	internal static class MidiMessageParser
 	{
 		/// <summary>
 		/// Parses input byte array to MIDI messages.
@@ -16,7 +16,7 @@ namespace Uno.Devices.Midi.Internal
 		/// <param name="length">Length.</param>
 		/// <param name="timestamp">Timestamp.</param>
 		/// <returns>Parsed MIDI messages.</returns>
-		public IEnumerable<IMidiMessage> Parse(byte[] bytes, int startingOffset, int length, TimeSpan timestamp)
+		public static IEnumerable<IMidiMessage> Parse(byte[] bytes, int startingOffset, int length, TimeSpan timestamp)
 		{
 			if (bytes is null)
 			{
@@ -36,7 +36,7 @@ namespace Uno.Devices.Midi.Internal
 			}
 		}
 
-		private IMidiMessage ReadNextMessage(byte[] bytes, ref int offset, int availableLength, TimeSpan timestamp)
+		private static IMidiMessage ReadNextMessage(byte[] bytes, ref int offset, int availableLength, TimeSpan timestamp)
 		{
 			// Parsing logic based on
 			// https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message
@@ -111,7 +111,7 @@ namespace Uno.Devices.Midi.Internal
 			}
 		}
 
-		private byte[] CopySubmessage(byte[] source, ref int offset, int requestedLength, int availableLength)
+		private static byte[] CopySubmessage(byte[] source, ref int offset, int requestedLength, int availableLength)
 		{
 			if (requestedLength > availableLength)
 			{

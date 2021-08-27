@@ -82,7 +82,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _rdMap.FirstOrDefault(kvp => kvp.Value == xamlFileDefinition).Key; //TODO: this is O(n), is it an actual perf issue?
 		}
 
-		private string ConvertIdToResourceDictionaryProperty(string id) => "{0}_ResourceDictionary".InvariantCultureFormat(id);
+		private static string ConvertIdToResourceDictionaryProperty(string id) => "{0}_ResourceDictionary".InvariantCultureFormat(id);
 
 		/// <summary>
 		/// Build a map of source links to corresponding XAML files, used for ResourceDictionary.Source resolution.

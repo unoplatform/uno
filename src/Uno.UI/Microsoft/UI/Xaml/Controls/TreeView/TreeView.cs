@@ -131,20 +131,22 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Expands a given node.
 		/// </summary>
 		/// <param name="node">Node.</param>
+#pragma warning disable CA1822 // Mark members as static - public and aligning with UWP
 		public void Expand(TreeViewNode node)
+#pragma warning restore CA1822 // Mark members as static
 		{
-			var vm = ListControl.ListViewModel;
-			vm.ExpandNode(node);
+			TreeViewViewModel.ExpandNode(node);
 		}
 
 		/// <summary>
 		/// Collapses a given node.
 		/// </summary>
 		/// <param name="node">Node.</param>
+#pragma warning disable CA1822 // Mark members as static - public and aligning with UWP.
 		public void Collapse(TreeViewNode node)
+#pragma warning restore CA1822 // Mark members as static
 		{
-			var vm = ListControl.ListViewModel;
-			vm.CollapseNode(node);
+			TreeViewViewModel.CollapseNode(node);
 		}
 
 		/// <summary>

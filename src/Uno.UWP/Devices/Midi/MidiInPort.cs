@@ -17,7 +17,6 @@ namespace Windows.Devices.Midi
 			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiIn + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";		
 
 		private readonly object _syncLock = new object();
-		private readonly MidiMessageParser _parser = new MidiMessageParser();
 
 		private TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> _messageReceived;
 
@@ -116,7 +115,7 @@ namespace Windows.Devices.Midi
 			try
 			{
 				// parse message
-				var parsedMessages = _parser.Parse(message, startingOffset, length, timestamp);
+				var parsedMessages = MidiMessageParser.Parse(message, startingOffset, length, timestamp);
 				foreach (var parsedMessage in parsedMessages)
 				{
 					var eventArgs = new MidiMessageReceivedEventArgs(parsedMessage);

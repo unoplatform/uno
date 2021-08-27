@@ -353,7 +353,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return xamlFile;
 		}
 
-		private void WriteState(XamlXmlReader reader)
+		private static void WriteState(XamlXmlReader reader)
 		{
 			// Console.WriteLine(
 			//	$"{new string(' ', Math.Max(0,_depth))}{reader.NodeType} {reader.Type} {reader.Member} {reader.Value}"
@@ -459,14 +459,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return member;
 		}
 
-		private bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
+		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
 		{
 			return value is string
 				&& (xamlObject.Type.Name == "TextBlock" || xamlObject.Type.Name == "Span")
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
 
-		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader)
+		private static XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader)
 		{
 			var runType = new XamlType(
 				XamlConstants.PresentationXamlXmlNamespace,

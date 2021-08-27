@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			_itemIndex = index;
 		}
 
-		void ThrowElementNotAvailableException()
+		private static void ThrowElementNotAvailableException()
 		{
 			//return UIA_E_INVALIDOPERATION;
 			throw new InvalidOperationException();

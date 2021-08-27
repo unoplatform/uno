@@ -52,12 +52,12 @@ namespace Microsoft.UI.Xaml.Controls
 			ClearEventTokenVectors();
 		}
 
-		internal void ExpandNode(TreeViewNode value)
+		internal static void ExpandNode(TreeViewNode value)
 		{
 			value.IsExpanded = true;
 		}
 
-		internal void CollapseNode(TreeViewNode value)
+		internal static void CollapseNode(TreeViewNode value)
 		{
 			value.IsExpanded = false;
 		}
@@ -517,7 +517,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_selectedNodes.IndexOf(targetNode) > -1;
 		}
 
-		private TreeNodeSelectionState NodeSelectionState(TreeViewNode targetNode)
+		private static TreeNodeSelectionState NodeSelectionState(TreeViewNode targetNode)
 		{
 			return targetNode.SelectionState;
 		}

@@ -100,7 +100,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
-		private async Task<TResult> GetDataAsync<TResult>(string format, DataProviderHandler asyncData)
+		private static async Task<TResult> GetDataAsync<TResult>(string format, DataProviderHandler asyncData)
 		{
 			var request = new DataProviderRequest(format);
 			try

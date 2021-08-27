@@ -49,12 +49,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for DecodePixelType.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DecodePixelTypeProperty { get ; } =
-			DependencyProperty.Register("DecodePixelType", typeof(DecodePixelType), typeof(BitmapImage), new FrameworkPropertyMetadata(DecodePixelType.Physical, (s, e) => ((BitmapImage)s)?.OnDecodePixelTypeChanged(e)));
+			DependencyProperty.Register("DecodePixelType", typeof(DecodePixelType), typeof(BitmapImage), new FrameworkPropertyMetadata(DecodePixelType.Physical/*, (s, e) => ((BitmapImage)s)?.OnDecodePixelTypeChanged(e)*/));
 
 
-		private void OnDecodePixelTypeChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+		//private void OnDecodePixelTypeChanged(DependencyPropertyChangedEventArgs e)
+		//{
+		//}
 
 		#endregion
 
@@ -68,13 +68,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for DecodePixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DecodePixelWidthProperty { get ; } =
-			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
+			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0/*, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)*/));
 
 
-		private void OnDecodePixelWidthChanged(DependencyPropertyChangedEventArgs e)
-		{
-
-		}
+		//private void OnDecodePixelWidthChanged(DependencyPropertyChangedEventArgs e)
+		//{
+		//}
 
 		#endregion
 
@@ -107,12 +106,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for CreateOptions.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CreateOptionsProperty { get ; } =
-			DependencyProperty.Register("CreateOptions", typeof(BitmapCreateOptions), typeof(BitmapImage), new FrameworkPropertyMetadata(BitmapCreateOptions.None, (s, e) => ((BitmapImage)s)?.OnCreateOptionsChanged(e)));
+			DependencyProperty.Register("CreateOptions", typeof(BitmapCreateOptions), typeof(BitmapImage), new FrameworkPropertyMetadata(BitmapCreateOptions.None/*, (s, e) => ((BitmapImage)s)?.OnCreateOptionsChanged(e)*/));
 
 
-		private void OnCreateOptionsChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+		//private void OnCreateOptionsChanged(DependencyPropertyChangedEventArgs e)
+		//{
+		//}
 
 		#endregion
 

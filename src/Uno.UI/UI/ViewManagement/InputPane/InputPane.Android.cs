@@ -16,7 +16,7 @@ namespace Windows.UI.ViewManagement
 	{
 		private IDisposable _padScrollContentPresenter;
 
-		partial void TryShowPartial()
+		static partial void TryShowPartial()
 		{
 			var activity = (ContextHelper.Current as Activity);
 			var view = activity.CurrentFocus;
@@ -27,7 +27,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		partial void TryHidePartial()
+		static partial void TryHidePartial()
 		{
 			var activity = (ContextHelper.Current as Activity);
 			var view = activity.CurrentFocus;

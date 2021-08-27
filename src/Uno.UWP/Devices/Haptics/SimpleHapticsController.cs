@@ -10,6 +10,7 @@
 		partial void InitPlatform();
 
 #if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || __SKIA__
+#pragma warning disable CA1822 // Mark members as static - align with UWP
 		public bool IsIntensitySupported => false;
 
 		public bool IsPlayCountSupported => false;

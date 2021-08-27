@@ -101,13 +101,17 @@ namespace Uno.UI.DataBinding
 		}
 
 		[Java.Interop.ExportField(TemplatedParentNativeField)]
+#pragma warning disable CA1822 // Mark members as static - public :/
 		public string GetTemplatedParent()
+#pragma warning restore CA1822 // Mark members as static
 		{
 			return null;
 		}
 
 		[Java.Interop.ExportField(DependencyPropertiesNativeField)]
+#pragma warning disable CA1822 // Mark members as static - public :/
 		public Java.Lang.Object[] GetDependencyPropertiesNativeField()
+#pragma warning restore CA1822 // Mark members as static
 		{
 			return null;
 		}

@@ -22,7 +22,7 @@ namespace DirectUI
 		//END_INTERFACE_MAP(IteratorBase, ctl.WeakReferenceSource)
 
 		// UNO only
-		protected void CheckThread() => DispatcherQueue.CheckThreadAccess();
+		private static void CheckThread() => DispatcherQueue.CheckThreadAccess();
 
 		public void SetView(IVectorView<T> pView)
 		{
@@ -1232,7 +1232,7 @@ namespace DirectUI
 		}
 
 		// BEGIN UNO Specific
-		protected void CheckThread() => CoreDispatcher.CheckThreadAccess();
+		protected static void CheckThread() => CoreDispatcher.CheckThreadAccess();
 
 		public int Count => (int)Size;
 		public T this[int index] => GetAt((uint)index);
@@ -1338,7 +1338,7 @@ namespace DirectUI
 			index = 0;
 			found = false;
 
-			this.CheckThread();
+			CheckThread();
 
 			{
 				//var beginIterator = std.begin(this.m_vector);
@@ -1407,7 +1407,7 @@ namespace DirectUI
 
 		public virtual void SetAt(uint index,  T item)
 		{
-			this.CheckThread();
+			CheckThread();
 
 			// Wow! The old implmentation used to clip "index" to the actual size, possibly writing
 			// to one-beyond the end. This is bad bad bad. Let's fail instead of writing to random memory
@@ -1425,7 +1425,7 @@ namespace DirectUI
 
 		public virtual void InsertAt(uint index,  T item)
 		{
-			this.CheckThread();
+			CheckThread();
 
 			// The old std.list-based implementation used to clip "index" to the actual size
 			// The old implementation also used to not wrap the allocation in an IFCSTL
@@ -1436,7 +1436,7 @@ namespace DirectUI
 
 		public virtual void RemoveAt(uint index)
 		{
-			this.CheckThread();
+			CheckThread();
 
 			// The old std.list-based implementation used to clip "index" to the actual size
 			this.m_vector.RemoveAt((int)index);
@@ -1447,7 +1447,7 @@ namespace DirectUI
 
 		public virtual void Append( T item)
 		{
-			this.CheckThread();
+			CheckThread();
 
 			this.m_vector.Add(item);
 			RaiseVectorChanged(CollectionChange.ItemInserted, (uint) this.m_vector.Count - 1);
@@ -1465,7 +1465,7 @@ namespace DirectUI
 
 		public virtual void Clear()
 		{
-			this.CheckThread();
+			CheckThread();
 			this.ClearView();
 			RaiseVectorChanged(CollectionChange.Reset, 0);
 		}

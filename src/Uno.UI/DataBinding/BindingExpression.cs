@@ -613,7 +613,7 @@ namespace Windows.UI.Xaml.Data
 			}
 		}
 
-		private string GetCurrentCulture() => CultureInfo.CurrentCulture.ToString();
+		private static string GetCurrentCulture() => CultureInfo.CurrentCulture.ToString();
 
 
 		private object ConvertValue(object value)

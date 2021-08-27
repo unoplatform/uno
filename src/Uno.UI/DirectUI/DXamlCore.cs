@@ -27,9 +27,9 @@ namespace DirectUI
 
 		public static DXamlCore GetCurrentNoCreate() => Current;
 
-		public Uno.UI.Xaml.Core.CoreServices GetHandle() => Uno.UI.Xaml.Core.CoreServices.Instance;
+		public static Uno.UI.Xaml.Core.CoreServices GetHandle() => Uno.UI.Xaml.Core.CoreServices.Instance;
 
-		public Rect DipsToPhysicalPixels(float scale, Rect dipRect)
+		public static Rect DipsToPhysicalPixels(float scale, Rect dipRect)
 		{
 			var physicalRect = dipRect;
 			physicalRect.X = dipRect.X * scale;
@@ -40,9 +40,9 @@ namespace DirectUI
 		}
 
 		// TODO Uno: Application-wide bar is not supported yet.
-		public ApplicationBarService? TryGetApplicationBarService() => null;
+		public static ApplicationBarService? TryGetApplicationBarService() => null;
 
-		public string GetLocalizedResourceString(string key)
+		public static string GetLocalizedResourceString(string key)
 		{
 			var loader = ResourceLoader.GetForCurrentView();
 			return loader.GetString(key);
@@ -54,7 +54,7 @@ namespace DirectUI
 		public BudgetManager GetBudgetManager()
 			=> _budgetManager ??= new BudgetManager();
 
-		public ElementSoundPlayerService GetElementSoundPlayerServiceNoRef()
+		public static ElementSoundPlayerService GetElementSoundPlayerServiceNoRef()
 			=> ElementSoundPlayerService.Instance;
 	}
 }

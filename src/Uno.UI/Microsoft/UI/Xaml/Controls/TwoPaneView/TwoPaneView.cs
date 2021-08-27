@@ -272,7 +272,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return transform.TransformBounds(new Rect ( 0, 0, (float)ActualWidth, (float)ActualHeight ));
 		}
 
-		bool IsInMultipleRegions(DisplayRegionHelperInfo info, Rect rcControl)
+		static bool IsInMultipleRegions(DisplayRegionHelperInfo info, Rect rcControl)
 		{
 			bool isInMultipleRegions = false;
 

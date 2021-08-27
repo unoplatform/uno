@@ -2,7 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture
 {
-	public  partial class CameraCaptureUIPhotoCaptureSettings 
+#pragma warning disable CA1822 // Mark members as static
+	// TODO: Delete and rely on UWPSyncGenerator
+	public partial class CameraCaptureUIPhotoCaptureSettings 
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]

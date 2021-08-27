@@ -63,7 +63,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Gets the full target type, ensuring it is prefixed by "global::"
 		/// to avoid namespace conflicts
 		/// </summary>
-		private string GetGlobalizedTypeName(string? fullTargetType)
+		private static string GetGlobalizedTypeName(string? fullTargetType)
 		{
 			fullTargetType ??= "";
 
@@ -202,7 +202,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, XamlConstants.Types.Span);
 		}
 
-		private bool IsImplementingInterface(INamedTypeSymbol? symbol, INamedTypeSymbol? interfaceName)
+		private static bool IsImplementingInterface(INamedTypeSymbol? symbol, INamedTypeSymbol? interfaceName)
 		{
 			bool isSameType(INamedTypeSymbol source, INamedTypeSymbol? iface) =>
 				SymbolEqualityComparer.Default.Equals(source, iface) || SymbolEqualityComparer.Default.Equals(source.OriginalDefinition, iface);
@@ -331,7 +331,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsImplementingInterface(FindType(xamlType), _dependencyObjectParseSymbol);
 		}
 
-		private Accessibility FindObjectFieldAccessibility(XamlObjectDefinition objectDefinition)
+		private static Accessibility FindObjectFieldAccessibility(XamlObjectDefinition objectDefinition)
 		{
 			if (
 				FindMember(objectDefinition, "FieldModifier") is XamlMemberDefinition fieldModifierMember
@@ -344,7 +344,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return Accessibility.Private;
 		}
 
-		private string FormatAccessibility(Accessibility accessibility)
+		private static string FormatAccessibility(Accessibility accessibility)
 		{
 			switch (accessibility)
 			{
@@ -536,7 +536,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private bool IsRelevantNamespace(string? xamlNamespace)
+		private static bool IsRelevantNamespace(string? xamlNamespace)
 		{
 			if (XamlConstants.XmlXmlNamespace.Equals(xamlNamespace, StringComparison.OrdinalIgnoreCase))
 			{
@@ -546,7 +546,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return true;
 		}
 
-		private bool IsRelevantProperty(XamlMember? member)
+		private static bool IsRelevantProperty(XamlMember? member)
 		{
 			if (member?.Name == "Phase") // Phase is not relevant as it's not an actual property
 			{
@@ -644,7 +644,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Returns true if the property does not have a accessible setter
 		/// </summary>
-		private bool IsInitializableProperty(IPropertySymbol property)
+		private static bool IsInitializableProperty(IPropertySymbol property)
 		{
 			return !property.SetMethod.SelectOrDefault(m => m!.DeclaredAccessibility == Accessibility.Public, false);
 		}
@@ -727,12 +727,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| typeName.EndsWith(".double", StringComparison.InvariantCultureIgnoreCase);
 		}
 
-		private bool IsString(XamlObjectDefinition xamlObjectDefinition)
+		private static bool IsString(XamlObjectDefinition xamlObjectDefinition)
 		{
 			return xamlObjectDefinition.Type.Name == "String";
 		}
 
-		private bool IsPrimitive(XamlObjectDefinition xamlObjectDefinition)
+		private static bool IsPrimitive(XamlObjectDefinition xamlObjectDefinition)
 		{
 			switch (xamlObjectDefinition.Type.Name)
 			{
@@ -752,7 +752,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private bool HasInitializer(XamlObjectDefinition objectDefinition)
+		private static bool HasInitializer(XamlObjectDefinition objectDefinition)
 		{
 			return objectDefinition.Members.Any(m => m.Member.Name == "_Initialization");
 		}

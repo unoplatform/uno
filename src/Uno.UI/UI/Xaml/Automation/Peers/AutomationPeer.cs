@@ -240,7 +240,9 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[Uno.NotImplemented]
+#pragma warning disable CA1822 // Mark members as static
 		public void InvalidatePeer()
+#pragma warning restore CA1822 // Mark members as static
 		{
 		}
 

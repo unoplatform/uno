@@ -11,7 +11,9 @@ namespace Windows.Services.Store
 {
 	public sealed partial class StoreContext
 	{
+#pragma warning disable CA1822 // Mark members as static - align with UWP
 		public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
+#pragma warning restore CA1822 // Mark members as static
 		{
 			return AsyncOperation.FromTask(async ct =>
 			{

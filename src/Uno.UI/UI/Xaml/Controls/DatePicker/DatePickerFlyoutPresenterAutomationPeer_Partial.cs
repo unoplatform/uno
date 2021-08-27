@@ -4,55 +4,55 @@ namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class DatePickerFlyoutPresenterAutomationPeer
 	{
-		private const string UIA_AP_DATEPICKER_NAME = "datepicker";
+		//private const string UIA_AP_DATEPICKER_NAME = "datepicker";
 
-		void InitializeImpl(DatePickerFlyoutPresenter pOwner)
-		{
+		//void InitializeImpl(DatePickerFlyoutPresenter pOwner)
+		//{
 
-			//wrl.ComPtr<xaml.Automation.Peers.FrameworkElementAutomationPeerFactory> spInnerFactory;
-			//wrl.ComPtr<xaml.Automation.Peers.FrameworkElementAutomationPeer> spInnerInstance;
-			//wrl.ComPtr<xaml.FrameworkElement> spDatePickerFlyoutPresenterAsFE;
-			//wrl.ComPtr<xaml_controls.IDatePickerFlyoutPresenter> spOwner(pOwner);
-			//wrl.ComPtr<DependencyObject> spInnerInspectable;
+		//	//wrl.ComPtr<xaml.Automation.Peers.FrameworkElementAutomationPeerFactory> spInnerFactory;
+		//	//wrl.ComPtr<xaml.Automation.Peers.FrameworkElementAutomationPeer> spInnerInstance;
+		//	//wrl.ComPtr<xaml.FrameworkElement> spDatePickerFlyoutPresenterAsFE;
+		//	//wrl.ComPtr<xaml_controls.IDatePickerFlyoutPresenter> spOwner(pOwner);
+		//	//wrl.ComPtr<DependencyObject> spInnerInspectable;
 
-			//ARG_NOTnull(pOwner, "pOwner");
+		//	//ARG_NOTnull(pOwner, "pOwner");
 
-			//DatePickerFlyoutPresenterAutomationPeerGenerated.InitializeImpl(pOwner);
-			//(wf.GetActivationFactory(
-			//      wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_Peers_FrameworkElementAutomationPeer),
-			//      &spInnerFactory));
+		//	//DatePickerFlyoutPresenterAutomationPeerGenerated.InitializeImpl(pOwner);
+		//	//(wf.GetActivationFactory(
+		//	//      wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Automation_Peers_FrameworkElementAutomationPeer),
+		//	//      &spInnerFactory));
 
-			//(((DependencyObject)(pOwner)).QueryInterface<xaml.FrameworkElement>(
-			//    &spDatePickerFlyoutPresenterAsFE));
+		//	//(((DependencyObject)(pOwner)).QueryInterface<xaml.FrameworkElement>(
+		//	//    &spDatePickerFlyoutPresenterAsFE));
 
-			//(spInnerFactory.CreateInstanceWithOwner(
-			//        spDatePickerFlyoutPresenterAsFE,
-			//        (xaml_automation_peers.IDatePickerFlyoutPresenterAutomationPeer)(this),
-			//        &spInnerInspectable,
-			//        &spInnerInstance));
+		//	//(spInnerFactory.CreateInstanceWithOwner(
+		//	//        spDatePickerFlyoutPresenterAsFE,
+		//	//        (xaml_automation_peers.IDatePickerFlyoutPresenterAutomationPeer)(this),
+		//	//        &spInnerInspectable,
+		//	//        &spInnerInstance));
 
-			//(SetComposableBasePointers(
-			//        spInnerInspectable,
-			//        spInnerFactory));
-		}
+		//	//(SetComposableBasePointers(
+		//	//        spInnerInspectable,
+		//	//        spInnerFactory));
+		//}
 
-		#region IAutomationPeerOverrides
+		//#region IAutomationPeerOverrides
 
-		AutomationControlType GetAutomationControlTypeCoreImpl()
-		{
-			return Automation.Peers.AutomationControlType.Pane;
-		}
+		//AutomationControlType GetAutomationControlTypeCoreImpl()
+		//{
+		//	return Automation.Peers.AutomationControlType.Pane;
+		//}
 
-		string GetClassNameCoreImpl()
-		{
-			return "DatePickerFlyoutPresenter";
-		}
+		//string GetClassNameCoreImpl()
+		//{
+		//	return "DatePickerFlyoutPresenter";
+		//}
 
-		string GetNameCoreImpl()
-		{
-			return UIA_AP_DATEPICKER_NAME;
-		}
-		#endregion
+		//string GetNameCoreImpl()
+		//{
+		//	return UIA_AP_DATEPICKER_NAME;
+		//}
+		//#endregion
 
 	}
 }

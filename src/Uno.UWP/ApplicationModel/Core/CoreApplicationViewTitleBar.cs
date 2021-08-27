@@ -4,10 +4,12 @@ using System;
 
 namespace Windows.ApplicationModel.Core
 {
+#pragma warning disable CA1822 // Mark members as static
+	// TODO: Delete and rely on UWPSyncGenerator
 #if !__ANDROID__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreApplicationViewTitleBar
+	public partial class CoreApplicationViewTitleBar
 	{
 #pragma warning disable 67
 		internal event Action ExtendViewIntoTitleBarChanged;

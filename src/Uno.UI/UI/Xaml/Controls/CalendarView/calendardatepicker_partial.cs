@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls
 			// Set a default string as the PlaceholderText property value.
 			string strDefaultPlaceholderText;
 
-			strDefaultPlaceholderText = DXamlCore.Current.GetLocalizedResourceString(TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT);
+			strDefaultPlaceholderText = DXamlCore.GetLocalizedResourceString(TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT);
 
 			PlaceholderText = strDefaultPlaceholderText;
 
@@ -941,7 +941,7 @@ namespace Windows.UI.Xaml.Controls
 				m_shouldPerformActions = false;
 				IsCalendarOpen = true;
 
-				var soundPlayerService = DXamlCore.Current.GetElementSoundPlayerServiceNoRef();
+				var soundPlayerService = DXamlCore.GetElementSoundPlayerServiceNoRef();
 				soundPlayerService.RequestInteractionSoundForElement(ElementSoundKind.Invoke, this);
 			}
 		}

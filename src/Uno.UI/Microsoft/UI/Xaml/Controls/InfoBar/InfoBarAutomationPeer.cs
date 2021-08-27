@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 
 
-		private AutomationNotificationProcessing GetProcessingForSeverity(InfoBarSeverity severity)
+		private static AutomationNotificationProcessing GetProcessingForSeverity(InfoBarSeverity severity)
 		{
 			AutomationNotificationProcessing processing = AutomationNotificationProcessing.CurrentThenMostRecent;
 
