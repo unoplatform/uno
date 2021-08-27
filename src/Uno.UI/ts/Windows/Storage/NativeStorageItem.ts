@@ -21,7 +21,7 @@
 		}
 
 		public static async getFile(guid: string): Promise<File> {
-			const item = this.getItem(guid);
+			const item = NativeStorageItem.getItem(guid);
 
 			if (item instanceof File) {
 				return item as File;
@@ -41,10 +41,10 @@
 		}
 
 		public static getInfos(...items: Array<FileSystemHandle|File>): NativeStorageItemInfo[] {
-			var itemsWithoutGuids: Array<FileSystemHandle|File> = [];
+			const itemsWithoutGuids: Array<FileSystemHandle|File> = [];
 
-			for (var item of items) {
-				var guid = NativeStorageItem.getGuid(item);
+			for (const item of items) {
+				const guid = NativeStorageItem.getGuid(item);
 				if (!guid) {
 					itemsWithoutGuids.push(item);
 				}
@@ -52,11 +52,11 @@
 
 			NativeStorageItem.storeItems(itemsWithoutGuids);
 
-			var results: NativeStorageItemInfo[] = [];
+			const results: NativeStorageItemInfo[] = [];
 
-			for (var item of items) {
-				var guid = NativeStorageItem.getGuid(item);
-				var info = new NativeStorageItemInfo();
+			for (const item of items) {
+				const guid = NativeStorageItem.getGuid(item);
+				const info = new NativeStorageItemInfo();
 				info.id = guid;
 				info.name = item.name;
 				info.isFile = item instanceof File || (item as FileSystemHandle).kind === "file";
@@ -67,8 +67,8 @@
 		}
 
 		private static storeItems(handles: Array<FileSystemHandle|File>) {
-			var missingGuids = NativeStorageItem.generateGuids(handles.length);
-			for (var i = 0; i < handles.length; i++) {
+			const missingGuids = NativeStorageItem.generateGuids(handles.length);
+			for (let i = 0; i < handles.length; i++) {
 				NativeStorageItem.addItem(missingGuids[i], handles[i]);
 			}
 		}
@@ -78,7 +78,7 @@
 				NativeStorageItem.generateGuidBinding = (<any>Module).mono_bind_static_method("[Uno] Uno.Storage.NativeStorageItem:GenerateGuids");
 			}
 
-			var guids = NativeStorageItem.generateGuidBinding(count);
+			const guids = NativeStorageItem.generateGuidBinding(count);
 			return guids.split(";");
 		}
 	}

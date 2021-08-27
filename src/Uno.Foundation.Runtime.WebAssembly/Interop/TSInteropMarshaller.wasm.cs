@@ -7,13 +7,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using Uno.Extensions;
 using Uno.Foundation;
 
 namespace Uno.Foundation.Interop
 {
-	internal static class TSInteropMarshaller
+	internal static partial class TSInteropMarshaller
 	{
 		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(TSInteropMarshaller).Log());
 
@@ -105,6 +104,24 @@ namespace Uno.Foundation.Interop
 			}
 		}
 
+		/// <summary>
+		/// Allocates a shared instance of <typeparamref name="T"/> between JavaScript and managed code.
+		/// </summary>
+		/// <typeparam name="T">Type of the shared instance.</typeparam>
+		/// <param name="propertySetterName">
+		/// Javascript method name to invoke to "set" the pointer to the marshaled instance.
+		/// The method must accepts a single number argument which is the pointer.
+		/// </param>
+		/// <param name="propertyResetName">
+		/// Javascript method name to invoke to "unset" the pointer to the marshaled instance.
+		/// This will be invoked when the resulting <see cref="HandleRef{T}"/> is being disposed.
+		/// The method must accepts a single number argument which is the pointer.
+		/// </param>
+		/// <remarks>
+		/// <paramref name="propertySetterName"/> and <paramref name="propertyResetName"/> methods must use the <see cref="InvokeJS(string,object,string?)"/> syntax.
+		/// (I.e. no direct javascript code!)
+		/// </remarks>
+		/// <returns>A reference to the shared instance.</returns>
 		public static HandleRef<T> Allocate<T>(string propertySetterName, string? propertyResetName = null)
 			where T : struct
 		{
@@ -126,74 +143,6 @@ namespace Uno.Foundation.Interop
 			}
 
 			return value;
-		}
-
-		public sealed class HandleRef<T> : IDisposable
-			where T : struct
-		{
-			private readonly string? _jsDisposeMethodName;
-
-			private int _isDisposed = 0;
-
-			public HandleRef(string? jsDisposeMethodName)
-			{
-				_jsDisposeMethodName = jsDisposeMethodName;
-				Type = typeof(T);
-				Handle = Marshal.AllocHGlobal(Marshal.SizeOf(Type));
-
-				DumpStructureLayout(Type);
-
-				// Make sure to init the allocated memory
-				Marshal.StructureToPtr(default(T), Handle, false);
-			}
-
-			public Type Type { get; }
-
-			public IntPtr Handle { get; }
-
-			public T Value
-			{
-				get
-				{
-					CheckDisposed();
-					return (T)(Marshal.PtrToStructure(Handle, Type)!);
-				}
-				set
-				{
-					CheckDisposed();
-					Marshal.StructureToPtr(value, Handle, true);
-				}
-			}
-
-			private void CheckDisposed()
-			{
-				if (_isDisposed != 0)
-				{
-					throw new ObjectDisposedException(GetType().Name, "Marshalled object have been disposed.");
-				}
-			}
-
-			/// <inheritdoc />
-			public void Dispose()
-			{
-				if (Interlocked.CompareExchange(ref _isDisposed, 1, 0) == 0)
-				{
-					Marshal.DestroyStructure(Handle, Type);
-					Marshal.FreeHGlobal(Handle);
-
-					if (_jsDisposeMethodName.HasValue())
-					{
-						WebAssemblyRuntime.InvokeJSUnmarshalled(_jsDisposeMethodName!, Handle);
-					}
-
-					GC.SuppressFinalize(this);
-				}
-			}
-
-			~HandleRef()
-			{
-				Dispose();
-			}
 		}
 
 #if TRACE_MEMORY_LAYOUT

@@ -702,8 +702,8 @@ declare namespace Windows.ApplicationModel.DataTransfer {
 }
 declare namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core {
     class DragDropExtension {
-        private static _dispatchDragAndDropMethod;
-        private static _dispatchDragAndDropArgs;
+        private static _dispatchDropEventMethod;
+        private static _dispatchDragDropArgs;
         private static _current;
         private static _nextDropId;
         private _dropHandler;

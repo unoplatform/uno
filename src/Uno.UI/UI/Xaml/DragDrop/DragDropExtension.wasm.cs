@@ -88,7 +88,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static string OnNativeDragAndDrop()
+		public static string OnNativeDropEvent()
 		{
 			try
 			{
@@ -99,7 +99,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 				if (_current?._args is { } args)
 				{
-					args.Value = _current.OnNativeDragAndDrop(args.Value);
+					args.Value = _current.OnNativeDropEvent(args.Value);
 					return "true";
 				}
 				else
@@ -123,7 +123,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 
-		private DragDropExtensionEventArgs OnNativeDragAndDrop(DragDropExtensionEventArgs args)
+		private DragDropExtensionEventArgs OnNativeDropEvent(DragDropExtensionEventArgs args)
 		{
 			if (_log.IsEnabled(LogLevel.Trace))
 			{

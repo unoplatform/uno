@@ -2197,20 +2197,22 @@ var Windows;
                             //document.addEventListener("dragend", this._dragHandler);
                         }
                         static enable(pArgs) {
+                            if (!DragDropExtension._dispatchDropEventMethod) {
+                                DragDropExtension._dispatchDropEventMethod = Module.mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDropEvent");
+                            }
                             if (DragDropExtension._current) {
                                 throw new Error("A DragDropExtension has already been enabled");
                             }
-                            this._dispatchDragAndDropMethod = Module.mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDragAndDrop");
-                            this._dispatchDragAndDropArgs = pArgs;
-                            this._nextDropId = 1;
-                            this._current = new DragDropExtension();
+                            DragDropExtension._dispatchDragDropArgs = pArgs;
+                            DragDropExtension._current = new DragDropExtension();
                         }
                         static disable(pArgs) {
-                            if (DragDropExtension._dispatchDragAndDropArgs != pArgs) {
+                            if (DragDropExtension._dispatchDragDropArgs != pArgs) {
                                 throw new Error("The current DragDropExtension does not match the provided args");
                             }
                             DragDropExtension._current.dispose();
                             DragDropExtension._current = null;
+                            DragDropExtension._dispatchDragDropArgs = null;
                         }
                         dispose() {
                             // Events fired on the drop target
@@ -2218,10 +2220,6 @@ var Windows;
                             document.removeEventListener("dragover", this._dropHandler);
                             document.removeEventListener("dragleave", this._dropHandler); // Seems to be raised also on drop?
                             document.removeEventListener("drop", this._dropHandler);
-                            // Events fired on the draggable target (the source element)
-                            //document.removeEventListener("dragstart", this._dragHandler);
-                            //document.removeEventListener("drag", this._dragHandler);
-                            //document.removeEventListener("dragend", this._dragHandler);
                         }
                         dispatchDropEvent(evt) {
                             if (evt.type == "dragleave"
@@ -2253,7 +2251,7 @@ var Windows;
                             args.shift = evt.shiftKey;
                             args.ctrl = evt.ctrlKey;
                             args.alt = evt.altKey;
-                            if (evt.type == "dragenter") { // We use the dataItems only for enter, no needs to copy them every times!
+                            if (evt.type == "dragenter") { // We use the dataItems only for enter, no needs to copy them every time!
                                 const items = new Array();
                                 for (let itemId = 0; itemId < evt.dataTransfer.items.length; itemId++) {
                                     const item = evt.dataTransfer.items[itemId];
@@ -2270,10 +2268,10 @@ var Windows;
                             args.acceptedOperation = evt.dataTransfer.dropEffect;
                             try {
                                 // Raise the managed event
-                                args.marshal(DragDropExtension._dispatchDragAndDropArgs);
-                                DragDropExtension._dispatchDragAndDropMethod();
+                                args.marshal(DragDropExtension._dispatchDragDropArgs);
+                                DragDropExtension._dispatchDropEventMethod();
                                 // Read response from managed code
-                                args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragAndDropArgs);
+                                args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragDropArgs);
                                 evt.dataTransfer.dropEffect = (args.acceptedOperation);
                             }
                             finally {
@@ -2308,12 +2306,12 @@ var Windows;
                             }
                             const fileHandles = [];
                             if (Array.isArray(itemIds)) {
-                                for (let id of itemIds) {
-                                    fileHandles.push(await this.getAsFile(data.items[id]));
+                                for (const id of itemIds) {
+                                    fileHandles.push(await DragDropExtension.getAsFile(data.items[id]));
                                 }
                             }
                             else {
-                                fileHandles.push(await this.getAsFile(data.items[itemIds]));
+                                fileHandles.push(await DragDropExtension.getAsFile(data.items[itemIds]));
                             }
                             const infos = Uno.Storage.NativeStorageItem.getInfos(...fileHandles);
                             return JSON.stringify(infos);
@@ -3531,7 +3529,7 @@ var Uno;
                 return NativeStorageItem._guidToItemMap.get(guid);
             }
             static async getFile(guid) {
-                const item = this.getItem(guid);
+                const item = NativeStorageItem.getItem(guid);
                 if (item instanceof File) {
                     return item;
                 }
@@ -3547,18 +3545,18 @@ var Uno;
                 return NativeStorageItem._itemToGuidMap.get(item);
             }
             static getInfos(...items) {
-                var itemsWithoutGuids = [];
-                for (var item of items) {
-                    var guid = NativeStorageItem.getGuid(item);
+                const itemsWithoutGuids = [];
+                for (const item of items) {
+                    const guid = NativeStorageItem.getGuid(item);
                     if (!guid) {
                         itemsWithoutGuids.push(item);
                     }
                 }
                 NativeStorageItem.storeItems(itemsWithoutGuids);
-                var results = [];
-                for (var item of items) {
-                    var guid = NativeStorageItem.getGuid(item);
-                    var info = new Storage.NativeStorageItemInfo();
+                const results = [];
+                for (const item of items) {
+                    const guid = NativeStorageItem.getGuid(item);
+                    const info = new Storage.NativeStorageItemInfo();
                     info.id = guid;
                     info.name = item.name;
                     info.isFile = item instanceof File || item.kind === "file";
@@ -3567,8 +3565,8 @@ var Uno;
                 return results;
             }
             static storeItems(handles) {
-                var missingGuids = NativeStorageItem.generateGuids(handles.length);
-                for (var i = 0; i < handles.length; i++) {
+                const missingGuids = NativeStorageItem.generateGuids(handles.length);
+                for (let i = 0; i < handles.length; i++) {
                     NativeStorageItem.addItem(missingGuids[i], handles[i]);
                 }
             }
@@ -3576,7 +3574,7 @@ var Uno;
                 if (!NativeStorageItem.generateGuidBinding) {
                     NativeStorageItem.generateGuidBinding = Module.mono_bind_static_method("[Uno] Uno.Storage.NativeStorageItem:GenerateGuids");
                 }
-                var guids = NativeStorageItem.generateGuidBinding(count);
+                const guids = NativeStorageItem.generateGuidBinding(count);
                 return guids.split(";");
             }
         }

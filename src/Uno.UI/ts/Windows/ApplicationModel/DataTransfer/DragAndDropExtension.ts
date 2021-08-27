@@ -3,8 +3,8 @@
 	export class DragDropExtension {
 		// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
 
-		private static _dispatchDragAndDropMethod: any;
-		private static _dispatchDragAndDropArgs: number;
+		private static _dispatchDropEventMethod: any;
+		private static _dispatchDragDropArgs: number;
 		private static _current: DragDropExtension;
 		private static _nextDropId: number;
 
@@ -14,24 +14,27 @@
 		private _pendingDropData: DataTransfer;
 
 		public static enable(pArgs: number): void {
+			if (!DragDropExtension._dispatchDropEventMethod) {
+				DragDropExtension._dispatchDropEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDropEvent");
+			}
+
 			if (DragDropExtension._current) {
 				throw new Error("A DragDropExtension has already been enabled");
 			}
 
-			this._dispatchDragAndDropMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDragAndDrop");
-			this._dispatchDragAndDropArgs = pArgs;
-
-			this._nextDropId = 1;
-			this._current = new DragDropExtension();
+			DragDropExtension._dispatchDragDropArgs = pArgs;
+			DragDropExtension._nextDropId = 1;
+			DragDropExtension._current = new DragDropExtension();
 		}
 
 		public static disable(pArgs: number): void {
-			if (DragDropExtension._dispatchDragAndDropArgs != pArgs) {
+			if (DragDropExtension._dispatchDragDropArgs != pArgs) {
 				throw new Error("The current DragDropExtension does not match the provided args");
 			}
 			
 			DragDropExtension._current.dispose();
 			DragDropExtension._current = null;
+			DragDropExtension._dispatchDragDropArgs = null;
 		}
 
 		constructor() {
@@ -56,11 +59,6 @@
 			document.removeEventListener("dragover", this._dropHandler);
 			document.removeEventListener("dragleave", this._dropHandler); // Seems to be raised also on drop?
 			document.removeEventListener("drop", this._dropHandler);
-
-			// Events fired on the draggable target (the source element)
-			//document.removeEventListener("dragstart", this._dragHandler);
-			//document.removeEventListener("drag", this._dragHandler);
-			//document.removeEventListener("dragend", this._dragHandler);
 		}
 
 		private dispatchDropEvent(evt: DragEvent): any {
@@ -97,7 +95,7 @@
 			args.shift = evt.shiftKey;
 			args.ctrl = evt.ctrlKey;
 			args.alt = evt.altKey;
-			if (evt.type == "dragenter") { // We use the dataItems only for enter, no needs to copy them every times!
+			if (evt.type == "dragenter") { // We use the dataItems only for enter, no needs to copy them every time!
 				const items = new Array<any>();
 				for (let itemId = 0; itemId < evt.dataTransfer.items.length; itemId++) {
 					const item = evt.dataTransfer.items[itemId];
@@ -114,11 +112,11 @@
 
 			try {
 				// Raise the managed event
-				args.marshal(DragDropExtension._dispatchDragAndDropArgs);
-				DragDropExtension._dispatchDragAndDropMethod();
+				args.marshal(DragDropExtension._dispatchDragDropArgs);
+				DragDropExtension._dispatchDropEventMethod();
 
 				// Read response from managed code
-				args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragAndDropArgs);
+				args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragDropArgs);
 
 				evt.dataTransfer.dropEffect = ((args.acceptedOperation) as any);
 			} finally {
@@ -160,11 +158,11 @@
 
 			const fileHandles: Array<FileSystemHandle|File> = [];
 			if (Array.isArray(itemIds)) {
-				for (let id of itemIds) {
-					fileHandles.push(await this.getAsFile(data.items[id]));
+				for (const id of itemIds) {
+					fileHandles.push(await DragDropExtension.getAsFile(data.items[id]));
 				}
 			} else {
-				fileHandles.push(await this.getAsFile(data.items[itemIds]));
+				fileHandles.push(await DragDropExtension.getAsFile(data.items[itemIds]));
 			}
 
 			const infos = Uno.Storage.NativeStorageItem.getInfos(...fileHandles);
