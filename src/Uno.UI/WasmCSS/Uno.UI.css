@@ -236,3 +236,8 @@ textarea {
   resize: none;
   overflow: hidden; /* Scrolling is handled by the parent ScrollViewer */
 }
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
