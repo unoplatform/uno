@@ -146,7 +146,7 @@ namespace Uno.UI.Controls
 			native.AccessibilityLabel = element.Label;
 
 			// Foreground
-			if (Brush.TryGetColorWithOpacity(element.Foreground, out var foreground))
+			if (Brush.TryGetColorWithOpacity(element.Icon?.Foreground, out var foreground))
 			{
 				var color = (UIColor)foreground;
 				native.TintColor = color.ColorWithAlpha((nfloat)element.Opacity);
