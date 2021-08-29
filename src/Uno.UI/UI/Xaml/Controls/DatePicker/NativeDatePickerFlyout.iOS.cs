@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			"UseNativeMinMaxDates",
 			typeof(bool),
 			typeof(NativeDatePickerFlyout),
-			new FrameworkPropertyMetadata(false, propertyChangedCallback: OnUseNativeMinMaxDatesChanged));
+			new FrameworkPropertyMetadata(false));
 
 		/// <summary>
 		/// Setting this to true will interpret MinYear/MaxYear as MinDate and MaxDate.
@@ -49,13 +49,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get => (bool)GetValue(UseNativeMinMaxDatesProperty);
 			set => SetValue(UseNativeMinMaxDatesProperty, value);
-		}
-
-		private static void OnUseNativeMinMaxDatesChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			if (o is NativeDatePickerFlyout selector)
-			{
-			}
 		}
 
 		public NativeDatePickerFlyout()
