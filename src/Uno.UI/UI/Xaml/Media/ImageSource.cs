@@ -98,16 +98,13 @@ namespace Windows.UI.Xaml.Media
 			if (uri.IsLocalResource())
 			{
 				InitFromResource(uri);
-				return;
 			}
-
-			if (uri.IsAppData())
+			else if (uri.IsAppData())
 			{
 				var filePath = AppDataUriEvaluator.ToPath(uri);
 				InitFromFile(filePath);
 			}
-
-			if (uri.IsFile)
+			else if (uri.IsFile)
 			{
 				InitFromFile(uri.PathAndQuery);
 			}

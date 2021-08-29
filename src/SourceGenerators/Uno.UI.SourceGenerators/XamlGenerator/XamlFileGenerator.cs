@@ -261,7 +261,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_androidViewSymbol = FindType("Android.Views.View");
 			_iOSViewSymbol = FindType("UIKit.UIView");
 			_appKitViewSymbol = FindType("AppKit.NSView");
-
 			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(GetType(XamlConstants.Types.CreateFromStringAttribute)).ToList();
 
 			_isWasm = isWasm;
@@ -4401,6 +4400,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case "Windows.Media.Playback.IMediaPlaybackSource":
 						return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
+
+					case "Windows.UI.Xaml.Media.ImageSource":
+						// We have an implicit conversion from string to ImageSource.
+						// 
+						return $"\"{memberValue}\"";
 				}
 
 				var isEnum = propertyType
@@ -4715,10 +4719,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "null";
 				}
 
-				// If type specified in the binding was not found, log and return an error message
-				if (!string.IsNullOrEmpty(bindingType?.Type?.Name ?? string.Empty))
+				if (m.Member.Name == "TargetNullValue" && FindType(bindingType.Type) is INamedTypeSymbol namedTypeSymbol &&
+					m.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value is { } value)
 				{
-					var message = $"#Error // {bindingType!.Type!.Name} could not be found.";
+					return BuildLiteralValue(namedTypeSymbol, value.ToString());
+				}
+
+				// If type specified in the binding was not found, log and return an error message
+				if (!string.IsNullOrEmpty(bindingType.Type.Name))
+				{
+					var message = $"#Error // {bindingType.Type.Name} could not be found.";
 					this.Log().Error(message);
 
 					return message;
@@ -5757,16 +5767,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return true;
 				}
 
+				switch (propertyType.SpecialType)
+				{
+					case SpecialType.System_Int32:
+					case SpecialType.System_Single:
+					case SpecialType.System_Int64:
+					case SpecialType.System_Int16:
+					case SpecialType.System_Byte:
+					case SpecialType.System_Double:
+					case SpecialType.System_String:
+					case SpecialType.System_Boolean:
+						return true;
+				}
+
 				switch (propertyType.ToDisplayString())
 				{
-					case "int":
-					case "float":
-					case "long":
-					case "short":
-					case "byte":
-					case "double":
-					case "string":
-					case "bool":
 					case XamlConstants.Types.Thickness:
 					case XamlConstants.Types.FontFamily:
 					case XamlConstants.Types.FontWeight:
@@ -5777,6 +5792,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case "UIKit.UIColor":
 					case "Windows.UI.Color":
 					case "Color":
+					case "Windows.UI.Xaml.Media.ImageSource":
 						return true;
 				}
 			}

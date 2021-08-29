@@ -118,5 +118,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task TargetNullValue_Is_Correctly_Applied()
+		{
+			var SUT = new ImageSource_TargetNullValue();
+
+			var nameIsAppliedSource = SUT.NameIsApplied.Source as BitmapImage;
+
+			Assert.AreEqual("ms-appx:///mypanel", nameIsAppliedSource.UriSource.ToString());
+
+			var targetNullValueSource = SUT.TargetNullValueIsApplied.Source as BitmapImage;
+			Assert.AreEqual("ms-appx:///Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
+		}
 	}
 }
