@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml.Media
 			)
 			.DisposeWith(disposables);
 
-			brushSetter(compositionBrush);
+			//brushSetter(compositionBrush);
 
 			return disposables;
 		}
