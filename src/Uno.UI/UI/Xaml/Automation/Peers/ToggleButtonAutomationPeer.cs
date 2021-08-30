@@ -9,15 +9,9 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 		}
 
-		protected override string GetClassNameCore()
-		{
-			return "ToggleButton";
-		}
+		protected override string GetClassNameCore() => "ToggleButton";
 
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.Button;
-		}
+		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
 
 		public ToggleState ToggleState
 		{
@@ -45,9 +39,9 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		internal void RaiseToggleStatePropertyChangedEvent(object pOldValue, object pNewValue)
 		{
-			var oldValue = ToggleButtonAutomationPeer.ConvertToToggleState(pOldValue);
+			var oldValue = ConvertToToggleState(pOldValue);
 
-			var newValue = ToggleButtonAutomationPeer.ConvertToToggleState(pNewValue);
+			var newValue = ConvertToToggleState(pNewValue);
 
 			MUX_ASSERT(oldValue != ToggleState.Indeterminate);
 			MUX_ASSERT(newValue != ToggleState.Indeterminate);
@@ -59,7 +53,8 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		/// <summary>
-		/// Convert the Boolean in Inspectable to the ToggleState Enum, if the Inspectable is NULL that corresponds to Indeterminate state.
+		/// Convert the Boolean in Inspectable to the ToggleState Enum, if the Inspectable is null
+		/// that corresponds to Indeterminate state.
 		/// </summary>
 		internal static ToggleState ConvertToToggleState(object pValue)
 		{

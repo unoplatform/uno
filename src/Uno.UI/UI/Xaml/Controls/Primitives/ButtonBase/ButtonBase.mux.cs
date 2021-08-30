@@ -625,6 +625,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				var pointer = args.Pointer;
 				ReleasePointerCaptureInternal(pointer);
+
+#if HAS_UNO
+				//TODO Uno: Releasing pointer capture resets the handled status to false
+				//while this does not seem to happen in UWP for this scenario.
+				args.Handled = true;
+#endif
 			}
 
 			Cleanup();

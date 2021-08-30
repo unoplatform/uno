@@ -3,24 +3,31 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
+	/// <summary>
+	/// Exposes ToggleSwitch types to Microsoft UI Automation.
+	/// </summary>
 	public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer, Provider.IToggleProvider
 	{
+		/// <summary>
+		/// Initializes a new instance of the ToggleSwitchAutomationPeer class.
+		/// </summary>
+		/// <param name="owner"></param>
 		public ToggleSwitchAutomationPeer(ToggleSwitch owner) : base(owner)
 		{
 		}
 
-		protected override string GetClassNameCore()
-		{
-			return "ToggleSwitch";
-		}
+		protected override string GetClassNameCore() => "ToggleSwitch";
 
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.Button;
-		}
+		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
 
+		/// <summary>
+		/// Gets the toggle state of the control.
+		/// </summary>
 		public ToggleState ToggleState => ((ToggleSwitch)Owner).IsOn ? ToggleState.On : ToggleState.Off;
 
+		/// <summary>
+		/// Cycles through the toggle states of a control.
+		/// </summary>
 		public void Toggle()
 		{
 			if (IsEnabled())
