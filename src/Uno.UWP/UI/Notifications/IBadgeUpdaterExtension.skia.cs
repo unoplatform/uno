@@ -2,8 +2,8 @@
 
 namespace Uno.UI.Notifications
 {
-	public interface IBadgeUpdaterExtension
+	internal interface IBadgeUpdaterExtension
     {
-		void SetBadge(string? value);
+		void SetBadge(int? value);
     }
 }

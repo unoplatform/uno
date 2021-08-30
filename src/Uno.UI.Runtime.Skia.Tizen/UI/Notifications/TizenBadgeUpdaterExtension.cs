@@ -12,10 +12,10 @@ namespace Uno.UI.Runtime.Skia.Tizen.UI.Notifications
 		{
 		}
 
-		public void SetBadge(string? value)
+		public void SetBadge(int? value)
 		{
 			var appId = Application.Current.ApplicationInfo.ApplicationId;
-
+			
 			try
 			{
 				BadgeControl.Remove(appId);
@@ -25,13 +25,12 @@ namespace Uno.UI.Runtime.Skia.Tizen.UI.Notifications
 				// This exception is thrown when the badge does not exist.
 				// Seems there is no way to check if the badge exists.
 			}
-			if (value == null || !int.TryParse(value, out var number))
-			{
-				return;
-			}
 
-			Badge badge = new Badge(appId, number);
-			BadgeControl.Add(badge);
+			if (value != null)
+			{
+				Badge badge = new Badge(appId, value.Value);
+				BadgeControl.Add(badge);
+			}
 		}
 	}
 }

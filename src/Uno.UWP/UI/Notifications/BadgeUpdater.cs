@@ -1,13 +1,15 @@
-﻿#if __IOS__ || __MACOS__ || __SKIA__ || __WASM__ || __NETSTD_REFERENCE__
+﻿#if !__ANDROID__
 
-#nullable enable
-
+using System;
 using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications
 {
 	public partial class BadgeUpdater
 	{
+		private const string BadgeNodeXPath = "/badge";
+		private const string ValueAttribute = "value";
+
 		internal BadgeUpdater()
 		{
 			InitPlatform();
@@ -17,14 +19,19 @@ namespace Windows.UI.Notifications
 
 		public void Update(BadgeNotification notification)
 		{
-			var element = notification.Content.SelectSingleNode("/badge") as XmlElement;
-			var attributeValue = element?.GetAttribute("value");
+			if (notification is null)
+			{
+				throw new ArgumentNullException(nameof(notification));
+			}
+
+			var element = notification.Content.SelectSingleNode(BadgeNodeXPath) as XmlElement;
+			var attributeValue = element?.GetAttribute(ValueAttribute);
 			SetBadge(attributeValue);
 		}
 
 		public void Clear() => SetBadge(null);
 
-		partial void SetBadge(string? value);
+		partial void SetBadge(string value);
 	}
 }
 #endif

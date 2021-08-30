@@ -6,7 +6,7 @@ using Uno.UI.Notifications;
 namespace Windows.UI.Notifications
 {
 	public partial class BadgeUpdater
-    {
+	{
 		private IBadgeUpdaterExtension? _badgeUpdaterExtension;
 
 		partial void InitPlatform()
@@ -14,6 +14,16 @@ namespace Windows.UI.Notifications
 			ApiExtensibility.CreateInstance(this, out _badgeUpdaterExtension);
 		}
 
-		partial void SetBadge(string? value) => _badgeUpdaterExtension?.SetBadge(value);
+		partial void SetBadge(string? value)
+		{
+			if (int.TryParse(value, out var numericValue))
+			{
+				_badgeUpdaterExtension?.SetBadge(numericValue);
+			}
+			else
+			{
+				_badgeUpdaterExtension?.SetBadge(null);
+			}
+		}
 	}
 }

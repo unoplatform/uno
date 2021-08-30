@@ -10,7 +10,7 @@ namespace Windows.UI.Notifications
 
 		partial void SetBadge(string? value)
 		{
-			if (value != null && int.TryParse(value, out var number))
+			if (int.TryParse(value, out var number))
 			{
 				WebAssemblyRuntime.InvokeJS($"{JsType}.setNumber({number})");
 			}
