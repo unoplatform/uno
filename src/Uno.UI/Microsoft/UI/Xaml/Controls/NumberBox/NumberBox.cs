@@ -162,11 +162,16 @@ namespace Microsoft.UI.Xaml.Controls
 				registrations.Add(() => popupSpinUp.Click -= OnSpinUpClick);
 			}
 
+			IsEnabledChanged += OnIsEnabledChanged;
+			registrations.Add(() => IsEnabledChanged -= OnIsEnabledChanged);
+
 			// .NET rounds to 12 significant digits when displaying doubles, so we will do the same.
 			m_displayRounder.SignificantDigits = 12;
 
 			UpdateSpinButtonPlacement();
 			UpdateSpinButtonEnabled();
+
+			UpdateVisualStateForIsEnabledChange();
 
 			if (ReadLocalValue(ValueProperty) == DependencyProperty.UnsetValue
 				&& ReadLocalValue(TextProperty) != DependencyProperty.UnsetValue)
@@ -301,6 +306,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ValidateInput();
 			UpdateSpinButtonEnabled();
+		}
+
+		private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs args)
+		{
+			UpdateVisualStateForIsEnabledChange();
+		}
+
+		private void UpdateVisualStateForIsEnabledChange()
+		{
+			VisualStateManager.GoToState(this, IsEnabled ? "Normal" : "Disabled", false);
 		}
 
 		private void OnNumberBoxGotFocus(object sender, RoutedEventArgs args)

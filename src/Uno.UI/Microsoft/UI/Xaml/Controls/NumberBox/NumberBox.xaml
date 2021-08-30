@@ -16,8 +16,16 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:NumberBox">
                     <Grid>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="SpinButtonStates">
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="Disabled">
+									<VisualState.Setters>
+										<Setter Target="HeaderContentPresenter.Foreground" Value="{ThemeResource TextControlHeaderForegroundDisabled}"/>
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="SpinButtonStates">
                                 <VisualState x:Name="SpinButtonsCollapsed" />
 
                                 <VisualState x:Name="SpinButtonsVisible">
