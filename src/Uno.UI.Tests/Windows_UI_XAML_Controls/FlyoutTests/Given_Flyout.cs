@@ -54,6 +54,102 @@ namespace Uno.UI.Tests.FlyoutTests
 		}
 
 		[TestMethod]
+		public void When_Focus_Properties_Set_On_Flyout_Propagate_To_Content()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var appContent = new Grid() { Name = "test" };
+			var SUT = new Button();
+			var flyoutContent = new Grid()
+			{
+				Children =
+				{
+					SUT
+				}
+			};
+
+			var flyout = new Flyout()
+			{
+				AllowFocusOnInteraction = false,
+				AllowFocusWhenDisabled = true,
+				Content = flyoutContent
+			};
+
+			var flyoutOwner = new Button()
+			{				
+				Flyout = flyout
+			};
+
+			appContent.AddChild(flyoutOwner);
+
+			app.HostView.Children.Add(appContent);
+
+			appContent.Measure(new Size(20, 20));
+			appContent.Arrange(new Rect(0, 0, 20, 20));
+
+			flyout.ShowAt(flyoutOwner);
+
+			Assert.AreEqual(false, SUT.AllowFocusOnInteraction);
+			Assert.AreEqual(true, SUT.AllowFocusWhenDisabled);
+
+			// Change values
+			flyout.AllowFocusOnInteraction = true;
+			flyout.AllowFocusWhenDisabled = false;
+
+			Assert.AreEqual(true, SUT.AllowFocusOnInteraction);
+			Assert.AreEqual(false, SUT.AllowFocusWhenDisabled);
+		}
+
+		[TestMethod]
+		public void When_Focus_Properties_Set_On_Flyout_Propagate_To_Popup()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var appContent = new Grid() { Name = "test" };
+			var flyoutContent = new Grid()
+			{
+				Children =
+				{
+					new Button()
+				}
+			};
+
+			var flyout = new Flyout()
+			{
+				AllowFocusOnInteraction = false,
+				AllowFocusWhenDisabled = true,
+				Content = flyoutContent
+			};
+
+			var flyoutOwner = new Button()
+			{
+				Flyout = flyout
+			};
+
+			appContent.AddChild(flyoutOwner);
+
+			app.HostView.Children.Add(appContent);
+
+			appContent.Measure(new Size(20, 20));
+			appContent.Arrange(new Rect(0, 0, 20, 20));
+
+			flyout.ShowAt(flyoutOwner);
+
+			var popupPanel = flyout.GetPopupPanel();
+			var SUT = popupPanel.Popup;
+
+			Assert.AreEqual(false, SUT.AllowFocusOnInteraction);
+			Assert.AreEqual(true, SUT.AllowFocusWhenDisabled);
+
+			// Change values
+			flyout.AllowFocusOnInteraction = true;
+			flyout.AllowFocusWhenDisabled = false;
+
+			Assert.AreEqual(true, SUT.AllowFocusOnInteraction);
+			Assert.AreEqual(false, SUT.AllowFocusWhenDisabled);
+		}
+
+		[TestMethod]
 		public void When_Placement_Full()
 		{
 			var SUT = new Grid() { Name = "test" };
