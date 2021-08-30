@@ -46,7 +46,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public double Value
 		{
 			get => (double)GetValue(ValueProperty);
-			set => SetValue(ValueProperty, value);
+			set
+			{
+				if (!Value.IsNaN() || !value.IsNaN())
+				{
+					SetValue(ValueProperty, value);
+				}
+			} 
 		}
 
 		public static DependencyProperty ValueProperty { get ; } =
@@ -78,8 +84,17 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(TextProperty, value);
 		}
 
-		public static DependencyProperty TextProperty { get ; } =
+		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.Register(nameof(Text), typeof(string), typeof(NumberBox), new FrameworkPropertyMetadata("", (s, e) => (s as NumberBox)?.OnTextPropertyChanged(e)));
+
+		public new TextAlignment TextAlignment
+		{
+			get => (TextAlignment)GetValue(TextAlignmentProperty);
+			set => SetValue(TextAlignmentProperty, value);
+		}
+
+		public static DependencyProperty TextAlignmentProperty { get; } =
+			DependencyProperty.Register(nameof(TextAlignment), typeof(TextAlignment), typeof(NumberBox), new FrameworkPropertyMetadata(TextAlignment.Left));
 
 		// TextBox properties
 
@@ -100,6 +115,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
 			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(NumberBox), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => (s as NumberBox)?.OnHeaderTemplatePropertyChanged(e)));
+
+		public InputScope InputScope
+		{
+			get => (InputScope)GetValue(InputScopeProperty);
+			set => SetValue(InputScopeProperty, value);
+		}
+
+		public static DependencyProperty InputScopeProperty { get; } =
+			DependencyProperty.Register(nameof(InputScope), typeof(InputScope), typeof(NumberBox), new FrameworkPropertyMetadata(null));
 
 		public string PlaceholderText
 		{

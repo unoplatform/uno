@@ -18,53 +18,53 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 	[TestClass]
 	public class NumberBoxTests : MUXApiTestBase
 	{
-		//[TestMethod]
-		//public void VerifyTextAlignmentPropogates()
-		//{
-		//	var numberBox = SetupNumberBox();
-		//	TextBox textBox = null;
+		[TestMethod]
+		public void VerifyTextAlignmentPropogates()
+		{
+			var numberBox = SetupNumberBox();
+			TextBox textBox = null;
 
-		//	RunOnUIThread.Execute(() =>
-		//	{
-		//		Content.UpdateLayout();
+			RunOnUIThread.Execute(() =>
+			{
+				Content.UpdateLayout();
 
-		//		textBox = TestUtilities.FindDescendents<TextBox>(numberBox).Where(e => e.Name == "InputBox").Single();
-		//		Assert.AreEqual(TextAlignment.Left, textBox.TextAlignment, "The default TextAlignment should be left.");
+				textBox = TestUtilities.FindDescendents<TextBox>(numberBox).Where(e => e.Name == "InputBox").Single();
+				Assert.AreEqual(TextAlignment.Left, textBox.TextAlignment, "The default TextAlignment should be left.");
 
-		//		numberBox.TextAlignment = TextAlignment.Right;
-		//		Content.UpdateLayout();
+				numberBox.TextAlignment = TextAlignment.Right;
+				Content.UpdateLayout();
 
-		//		Assert.AreEqual(TextAlignment.Right, textBox.TextAlignment, "The TextAlignment should have been updated to Right.");
-		//	});
-		//}
+				Assert.AreEqual(TextAlignment.Right, textBox.TextAlignment, "The TextAlignment should have been updated to Right.");
+			});
+		}
 
-		//[TestMethod]
-		//public void VerifyInputScopePropogates()
-		//{
-		//	var numberBox = SetupNumberBox();
+		[TestMethod]
+		public void VerifyInputScopePropogates()
+		{
+			var numberBox = SetupNumberBox();
 
-		//	RunOnUIThread.Execute(() =>
-		//	{
-		//		Content.UpdateLayout();
-		//		var inputTextBox = TestUtilities.FindDescendents<TextBox>(numberBox).Where(e => e.Name == "InputBox").Single();
+			RunOnUIThread.Execute(() =>
+			{
+				Content.UpdateLayout();
+				var inputTextBox = TestUtilities.FindDescendents<TextBox>(numberBox).Where(e => e.Name == "InputBox").Single();
 
-		//		Assert.AreEqual(1, inputTextBox.InputScope.Names.Count);
-		//		Assert.AreEqual(InputScopeNameValue.Number, inputTextBox.InputScope.Names[0].NameValue, "The default InputScope should be 'Number'.");
+				Assert.AreEqual(1, inputTextBox.InputScope.Names.Count);
+				Assert.AreEqual(InputScopeNameValue.Number, inputTextBox.InputScope.Names[0].NameValue, "The default InputScope should be 'Number'.");
 
-		//		var scopeName = new InputScopeName();
-		//		scopeName.NameValue = InputScopeNameValue.CurrencyAmountAndSymbol;
-		//		var scope = new InputScope();
-		//		scope.Names.Add(scopeName);
+				var scopeName = new InputScopeName();
+				scopeName.NameValue = InputScopeNameValue.CurrencyAmountAndSymbol;
+				var scope = new InputScope();
+				scope.Names.Add(scopeName);
 
-		//		numberBox.InputScope = scope;
-		//		Content.UpdateLayout();
+				numberBox.InputScope = scope;
+				Content.UpdateLayout();
 
-		//		Assert.AreEqual(1, inputTextBox.InputScope.Names.Count);
-		//		Assert.AreEqual(InputScopeNameValue.CurrencyAmountAndSymbol, inputTextBox.InputScope.Names[0].NameValue, "The InputScope should be 'CurrencyAmountAndSymbol'.");
-		//	});
+				Assert.AreEqual(1, inputTextBox.InputScope.Names.Count);
+				Assert.AreEqual(InputScopeNameValue.CurrencyAmountAndSymbol, inputTextBox.InputScope.Names[0].NameValue, "The InputScope should be 'CurrencyAmountAndSymbol'.");
+			});
 
-		//	return;
-		//}
+			return;
+		}
 
 		[TestMethod]
 		public void VerifyIsEnabledChangeUpdatesVisualState()
