@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly static ThreadLocal<MicaController> _micaController = new ThreadLocal<MicaController>();
 
 		internal static DependencyProperty StateProperty { get; } =
-			DependencyProperty.RegisterAttached("State", typeof(BackdropMaterialState), typeof(BackdropMaterial), new PropertyMetadata(null));
+			DependencyProperty.RegisterAttached("State", typeof(BackdropMaterialState), typeof(BackdropMaterial), new FrameworkPropertyMetadata(null));
 
 		private static void OnApplyToRootOrPageBackgroundChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

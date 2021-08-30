@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml
 
 		// Using a DependencyProperty as the backing store for ResourceSource.  This enables animation, styling, binding, etc...
 		internal static readonly DependencyProperty ResourceSourceProperty =
-			DependencyProperty.RegisterAttached("ResourceSource", typeof(DebugResourceSource), typeof(ResourceDictionary), new PropertyMetadata(null));
+			DependencyProperty.RegisterAttached("ResourceSource", typeof(DebugResourceSource), typeof(ResourceDictionary), new FrameworkPropertyMetadata(null));
 
 
 		internal class DebugResourceSource

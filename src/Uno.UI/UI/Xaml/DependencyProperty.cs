@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal static DependencyProperty Register(string name, Type propertyType, Type ownerType, FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
-			=> Register(name, propertyType, ownerType, typeMetadata as PropertyMetadata);
+			=> Register(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
 #pragma warning restore RS0030 // Do not used banned APIs
 
 		/// <summary>
@@ -154,6 +154,24 @@ namespace Windows.UI.Xaml
 
 			return newProperty;
 		}
+
+		/// <summary>
+		/// Registers a attachable dependency property on the specified <paramref name="ownerType"/>.
+		/// </summary>
+		/// <param name="name">The name of the property.</param>
+		/// <param name="propertyType">The type of the property</param>
+		/// <param name="ownerType">The owner type of the property</param>
+		/// <param name="typeMetadata">The metadata to use when creating the property</param>
+		/// <returns>A dependency property instance</returns>
+		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
+		/// <remarks>
+		/// This method is to ensure that all uno controls defined dependency properties are using <see cref="FrameworkPropertyMetadata"/>.
+		/// This is achieved by banning the other public overload in Uno.UI directory.
+		/// </remarks>
+		internal static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, FrameworkPropertyMetadata typeMetadata)
+#pragma warning disable RS0030 // Do not used banned APIs
+			=> RegisterAttached(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
+#pragma warning restore RS0030 // Do not used banned APIs
 
 		/// <summary>
 		/// A cached value of the hash code, which can only be defined once

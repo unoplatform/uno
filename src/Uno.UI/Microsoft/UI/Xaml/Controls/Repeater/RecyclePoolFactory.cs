@@ -11,13 +11,13 @@ namespace Microsoft.UI.Xaml.Controls
 			"ReuseKey",
 			typeof(string),
 			typeof(RecyclePool),
-			new PropertyMetadata(defaultValue: "" /* defaultValue */, propertyChangedCallback: null /* propertyChangedCallback */));
+			new FrameworkPropertyMetadata(defaultValue: "" /* defaultValue */, propertyChangedCallback: null /* propertyChangedCallback */));
 
 		internal static DependencyProperty OriginTemplateProperty { get; } = DependencyProperty.RegisterAttached(
 			"OriginTemplate",
 			typeof(DataTemplate),
 			typeof(RecyclePool),
-			new PropertyMetadata(null /* defaultValue */, null /* propertyChangedCallback */));
+			new FrameworkPropertyMetadata(null /* defaultValue */, null /* propertyChangedCallback */));
 
 
 		#region IRecyclePoolStatics

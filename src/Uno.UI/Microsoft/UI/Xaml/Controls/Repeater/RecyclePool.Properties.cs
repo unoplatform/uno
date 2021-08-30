@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class RecyclePool
 	{
 		public static DependencyProperty PoolInstanceProperty { get; } = DependencyProperty.RegisterAttached(
-			"PoolInstance", typeof(RecyclePool), typeof(RecyclePool), new PropertyMetadata(default(RecyclePool)));
+			"PoolInstance", typeof(RecyclePool), typeof(RecyclePool), new FrameworkPropertyMetadata(default(RecyclePool)));
 
 		public static RecyclePool GetPoolInstance(DataTemplate dataTemplate)
 			=> (RecyclePool)dataTemplate.GetValue(PoolInstanceProperty);
