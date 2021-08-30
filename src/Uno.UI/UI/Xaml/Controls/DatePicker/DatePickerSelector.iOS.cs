@@ -14,6 +14,30 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePickerSelector
 	{
+		public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
+			"UseNativeMinMaxDates",
+			typeof(bool),
+			typeof(DatePickerSelector),
+			new FrameworkPropertyMetadata(false, propertyChangedCallback: OnUseNativeMinMaxDatesChanged));
+
+		/// <summary>
+		/// Setting this to true will interpret MinYear/MaxYear as MinDate and MaxDate.
+		/// </summary>
+		public bool UseNativeMinMaxDates
+		{
+			get => (bool)GetValue(UseNativeMinMaxDatesProperty);
+			set => SetValue(UseNativeMinMaxDatesProperty, value);
+		}
+
+		private static void OnUseNativeMinMaxDatesChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			if (o is DatePickerSelector selector)
+			{
+				selector.UpdateMinMaxYears();
+			}
+		}
+
+
 		private UIDatePicker _picker;
 		private NSDate _initialValue;
 		private NSDate _newValue;
@@ -107,8 +131,11 @@ namespace Windows.UI.Xaml.Controls
 			var calendar = new NSCalendar(NSCalendarType.Gregorian);
 
 			winCalendar.SetDateTime(MaxYear);
-			winCalendar.Month = winCalendar.LastMonthInThisYear;
-			winCalendar.Day = winCalendar.LastDayInThisMonth;
+			if (!UseNativeMinMaxDates)
+			{
+				winCalendar.Month = winCalendar.LastMonthInThisYear;
+				winCalendar.Day = winCalendar.LastDayInThisMonth;
+			}
 
 			var maximumDateComponents = new NSDateComponents
 			{
@@ -120,8 +147,11 @@ namespace Windows.UI.Xaml.Controls
 			_picker.MaximumDate = calendar.DateFromComponents(maximumDateComponents);
 
 			winCalendar.SetDateTime(MinYear);
-			winCalendar.Month = winCalendar.FirstMonthInThisYear;
-			winCalendar.Day = winCalendar.FirstDayInThisMonth;
+			if (!UseNativeMinMaxDates)
+			{
+				winCalendar.Month = winCalendar.FirstMonthInThisYear;
+				winCalendar.Day = winCalendar.FirstDayInThisMonth;
+			}
 
 			var minimumDateComponents = new NSDateComponents
 			{

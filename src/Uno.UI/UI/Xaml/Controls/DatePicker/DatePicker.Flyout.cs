@@ -12,6 +12,7 @@ namespace Windows.UI.Xaml.Controls
 		private const bool DEFAULT_NATIVE_STYLE = false;
 #endif
 
+		[UnoOnly]
 		public static DependencyProperty UseNativeStyleProperty { get; } = DependencyProperty.Register(
 			"UseNativeStyle",
 			typeof(bool),
@@ -19,15 +20,36 @@ namespace Windows.UI.Xaml.Controls
 			new FrameworkPropertyMetadata(DEFAULT_NATIVE_STYLE));
 
 		/// <summary>
-		/// If we should use the native picker for the platform.
+		/// [UnoOnly] If we should use the native picker for the platform.
 		/// IMPORTANT: must be set before the first time the picker is opened.
 		/// </summary>
+		[UnoOnly]
 		public bool UseNativeStyle
 		{
 			get => (bool)GetValue(UseNativeStyleProperty);
 			set => SetValue(UseNativeStyleProperty, value);
 		}
 
+		[UnoOnly]
+		public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
+			"UseNativeMinMaxDates",
+			typeof(bool),
+			typeof(DatePicker),
+			new FrameworkPropertyMetadata(false));
+
+		/// <summary>
+		/// [UnoOnly] When using native pickers (through the UseNativeStyle property),
+		/// setting this to true will interpret MinYear/MaxYear as MinDate and MaxDate.
+		/// </summary>
+		/// <remarks>
+		/// This property has no effect when not using native pickers.
+		/// </remarks>
+		[UnoOnly]
+		public bool UseNativeMinMaxDates
+		{
+			get => (bool)GetValue(UseNativeMinMaxDatesProperty);
+			set => SetValue(UseNativeMinMaxDatesProperty, value);
+		}
 
 		/// <summary>
 		/// FlyoutPresenterStyle is an Uno-only property to allow the styling of the DatePicker's FlyoutPresenter.
@@ -39,6 +61,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(FlyoutPresenterStyleProperty, value);
 		}
 
+		[UnoOnly]
 		public static DependencyProperty FlyoutPresenterStyleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(FlyoutPresenterStyle),

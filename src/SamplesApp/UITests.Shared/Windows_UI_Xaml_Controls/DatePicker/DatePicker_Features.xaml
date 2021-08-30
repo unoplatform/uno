@@ -41,6 +41,8 @@
 				<ComboBoxItem Tag="2020">min 2020</ComboBoxItem>
 				<ComboBoxItem Tag="2025">min 2025</ComboBoxItem>
 				<ComboBoxItem Tag="2030">min 2030</ComboBoxItem>
+				<ComboBoxItem Tag="lastweek">lastweek</ComboBoxItem>
+				<ComboBoxItem Tag="today">today</ComboBoxItem>
 			</ComboBox>
 			<ComboBox x:Name="maxYear">
 				<ComboBoxItem Tag="1980">max 1980</ComboBoxItem>
@@ -53,6 +55,8 @@
 				<ComboBoxItem Tag="2035">max 2035</ComboBoxItem>
 				<ComboBoxItem Tag="2040">max 2040</ComboBoxItem>
 				<ComboBoxItem Tag="2045">max 2045</ComboBoxItem>
+				<ComboBoxItem Tag="today">today</ComboBoxItem>
+				<ComboBoxItem Tag="nextweek">nextweek</ComboBoxItem>
 			</ComboBox>
 		</StackPanel>
 		<TextBlock FontSize="16">DatePicker</TextBlock>
@@ -126,6 +130,7 @@
 		</StackPanel>
 		<TextBlock FontSize="16">NativeDatePickerFlyout &amp; (iOS &amp; Android only)</TextBlock>
 		<StackPanel Orientation="Horizontal" Spacing="7">
+			<ToggleButton x:Name="useNativeMinMaxDates">UseNativeMinMaxDates</ToggleButton>
 			<Button x:Name="btnWithNativeFlyout">
 				<Button.Flyout>
 					<android:NativeDatePickerFlyout
@@ -133,6 +138,7 @@
 						Date="{x:Bind PickedDate, Mode=TwoWay}"
 						MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
 						MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+						UseNativeMinMaxDates="{Binding IsChecked, ElementName=useNativeMinMaxDates}"
 						CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
 						DayVisible="{Binding IsChecked, ElementName=dayVisible}"
 						MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
@@ -142,6 +148,7 @@
 						Date="{x:Bind PickedDate, Mode=TwoWay}"
 						MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
 						MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+						UseNativeMinMaxDates="{Binding IsChecked, ElementName=useNativeMinMaxDates}"
 						CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
 						DayVisible="{Binding IsChecked, ElementName=dayVisible}"
 						MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
@@ -159,6 +166,7 @@
 		<StackPanel Orientation="Horizontal" Spacing="7">
 			<DatePicker
 				xamarin:UseNativeStyle="True"
+				xamarin:UseNativeMinMaxDates="{Binding IsChecked, ElementName=useNativeMinMaxDates}"
 				x:Name="nativeDatePicker"
 				Date="{x:Bind PickedDate, Mode=TwoWay}"
 				MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
