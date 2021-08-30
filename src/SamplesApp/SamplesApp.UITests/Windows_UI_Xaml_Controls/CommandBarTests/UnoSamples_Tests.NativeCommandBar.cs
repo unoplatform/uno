@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		[ActivePlatforms(Platform.Android)] // Disabled on Wasm as there is no native command bar. Enabling for iOS tracked by https://github.com/unoplatform/uno/issues/6732
 		public void When_Foreground_Is_Set()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_With_AppBarButton_With_Foreground");
