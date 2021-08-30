@@ -124,6 +124,15 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		public void When_MissingLocalizedResource_FallbackOnRegional()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse();
+
+			CultureInfo.CurrentUICulture = new CultureInfo("es");
+			Assert.AreEqual(@"Text in 'es-MX'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
+		}
+
+		[TestMethod]
 		public void When_MissingLocalizedResource_FallbackOnDefault()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
