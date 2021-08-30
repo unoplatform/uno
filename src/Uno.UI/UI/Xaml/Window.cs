@@ -235,8 +235,10 @@ namespace Windows.UI.Xaml
 
 		private void InitDragAndDrop()
 		{
-			DragDrop = new DragDropManager(this);
-			CoreDragDropManager.SetForCurrentView(DragDrop);
+			var coreManager = CoreDragDropManager.CreateForCurrentView(); // So it's ready to be accessed by ui manager and platform extension
+			var uiManager = DragDrop = new DragDropManager(this);
+
+			coreManager.SetUIManager(uiManager);
 		}
 
 		internal IDisposable OpenDragAndDrop(DragView dragView)

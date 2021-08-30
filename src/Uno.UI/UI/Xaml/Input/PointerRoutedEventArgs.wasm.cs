@@ -104,37 +104,35 @@ namespace Windows.UI.Xaml.Input
 
 		private static ulong ToTimeStamp(double timestamp)
 		{
-			if (!_bootTime.HasValue)
-			{
-				_bootTime = (ulong)(double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()"), CultureInfo.InvariantCulture) * TimeSpan.TicksPerMillisecond);
-			}
+			_bootTime ??= (ulong)(double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()"), CultureInfo.InvariantCulture) * TimeSpan.TicksPerMillisecond);
 
 			return _bootTime.Value + (ulong)(timestamp * TimeSpan.TicksPerMillisecond);
 		}
 
-		private static uint ToFrameId(double timestamp)
-		{
+		internal static uint ToFrameId(double timestamp)
 			// Known limitation: After 49 days, we will overflow the uint and frame IDs will restart at 0.
-			return (uint)(timestamp % uint.MaxValue);
-		}
+			=> (uint)(timestamp % uint.MaxValue);
+
+		internal static Point ToRelativePosition(Point absolutePosition, UIElement relativeTo)
+			=> relativeTo == null
+				? absolutePosition
+				: relativeTo.TransformToVisual(null).Inverse.TransformPoint(absolutePosition);
 
 		private static PointerUpdateKind ToUpdateKind(WindowManagerInterop.HtmlPointerButtonUpdate update, PointerPointProperties props)
-		{
-			switch (update)
+			=> update switch
 			{
-				case WindowManagerInterop.HtmlPointerButtonUpdate.Left when props.IsLeftButtonPressed: return PointerUpdateKind.LeftButtonPressed;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.Left: return PointerUpdateKind.LeftButtonReleased;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.Middle when props.IsMiddleButtonPressed: return PointerUpdateKind.MiddleButtonPressed;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.Middle: return PointerUpdateKind.MiddleButtonReleased;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.Right when props.IsRightButtonPressed: return PointerUpdateKind.RightButtonPressed;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.Right: return PointerUpdateKind.RightButtonReleased;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.X1 when props.IsXButton1Pressed: return PointerUpdateKind.XButton1Pressed;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.X1: return PointerUpdateKind.XButton1Released;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.X2 when props.IsXButton2Pressed: return PointerUpdateKind.XButton1Pressed;
-				case WindowManagerInterop.HtmlPointerButtonUpdate.X2: return PointerUpdateKind.XButton1Released;
-				default: return PointerUpdateKind.Other;
-			}
-		}
+				WindowManagerInterop.HtmlPointerButtonUpdate.Left when props.IsLeftButtonPressed => PointerUpdateKind.LeftButtonPressed,
+				WindowManagerInterop.HtmlPointerButtonUpdate.Left => PointerUpdateKind.LeftButtonReleased,
+				WindowManagerInterop.HtmlPointerButtonUpdate.Middle when props.IsMiddleButtonPressed => PointerUpdateKind.MiddleButtonPressed,
+				WindowManagerInterop.HtmlPointerButtonUpdate.Middle => PointerUpdateKind.MiddleButtonReleased,
+				WindowManagerInterop.HtmlPointerButtonUpdate.Right when props.IsRightButtonPressed => PointerUpdateKind.RightButtonPressed,
+				WindowManagerInterop.HtmlPointerButtonUpdate.Right => PointerUpdateKind.RightButtonReleased,
+				WindowManagerInterop.HtmlPointerButtonUpdate.X1 when props.IsXButton1Pressed => PointerUpdateKind.XButton1Pressed,
+				WindowManagerInterop.HtmlPointerButtonUpdate.X1 => PointerUpdateKind.XButton1Released,
+				WindowManagerInterop.HtmlPointerButtonUpdate.X2 when props.IsXButton2Pressed => PointerUpdateKind.XButton1Pressed,
+				WindowManagerInterop.HtmlPointerButtonUpdate.X2 => PointerUpdateKind.XButton1Released,
+				_ => PointerUpdateKind.Other
+			};
 		#endregion
 	}
 }

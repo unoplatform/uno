@@ -43,6 +43,10 @@ namespace Windows.UI.Xaml
 			Current = this;
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
+			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
+				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
+				o => new global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension());
+
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 
 			ObserveApplicationVisibility();

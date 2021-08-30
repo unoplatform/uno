@@ -12,7 +12,7 @@ using Uno.Foundation;
 
 namespace Uno.Foundation.Interop
 {
-	internal static class TSInteropMarshaller
+	internal static partial class TSInteropMarshaller
 	{
 		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(TSInteropMarshaller).Log());
 
@@ -102,6 +102,47 @@ namespace Uno.Foundation.Interop
 				Marshal.DestroyStructure(pReturnValue, retStructType);
 				Marshal.FreeHGlobal(pReturnValue);
 			}
+		}
+
+		/// <summary>
+		/// Allocates a shared instance of <typeparamref name="T"/> between JavaScript and managed code.
+		/// </summary>
+		/// <typeparam name="T">Type of the shared instance.</typeparam>
+		/// <param name="propertySetterName">
+		/// Javascript method name to invoke to "set" the pointer to the marshaled instance.
+		/// The method must accepts a single number argument which is the pointer.
+		/// </param>
+		/// <param name="propertyResetName">
+		/// Javascript method name to invoke to "unset" the pointer to the marshaled instance.
+		/// This will be invoked when the resulting <see cref="HandleRef{T}"/> is being disposed.
+		/// The method must accepts a single number argument which is the pointer.
+		/// </param>
+		/// <remarks>
+		/// <paramref name="propertySetterName"/> and <paramref name="propertyResetName"/> methods must use the <see cref="InvokeJS(string,object,string?)"/> syntax.
+		/// (I.e. no direct javascript code!)
+		/// </remarks>
+		/// <returns>A reference to the shared instance.</returns>
+		public static HandleRef<T> Allocate<T>(string propertySetterName, string? propertyResetName = null)
+			where T : struct
+		{
+			var value = new HandleRef<T>(propertyResetName);
+			try
+			{
+				WebAssemblyRuntime.InvokeJSUnmarshalled(propertySetterName, value.Handle);
+			}
+			catch (Exception e)
+			{
+				value.Dispose();
+
+				if (_logger.Value.IsEnabled(LogLevel.Error))
+				{
+					_logger.Value.LogDebug($"Failed Allocate {propertySetterName}/{value.Type}: {e}");
+				}
+
+				throw;
+			}
+
+			return value;
 		}
 
 #if TRACE_MEMORY_LAYOUT

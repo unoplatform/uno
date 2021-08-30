@@ -31,6 +31,7 @@ namespace MonoSupport {
 					jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
 					jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
 					jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_ApplicationDataContainer", Windows.Storage.ApplicationDataContainer);
+					jsCallDispatcher.registerScope("UnoStatic_Windows_ApplicationModel_DataTransfer_DragDrop_Core_DragDropExtension", Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension);
 					jsCallDispatcher._isUnoRegistered = true;
 				}
 

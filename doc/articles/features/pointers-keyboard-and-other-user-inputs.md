@@ -163,14 +163,20 @@ The table and sections below describe supported functionality and limitations fo
 
 |          | From uno app to external                         | From external app to uno                        |
 | -------- | ------------------------------------------------ | ------------------------                        |
-| Android  | No _in progress_                                 | No _in progress_                                |
+| Android  | No                                               | No                                              |
 | iOS      | No                                               | No                                              |
-| Wasm     | No                                               | No                                              |
+| Wasm     | No                                               | Yes (Text, Link, Image, File, Html, Rtf)        |
 | macOS    | Yes (Text, Link, Image, Html, Rtf)               | Yes (Text, Link, Image, File, Html, Rtf)        |
 | Skia WPF | Yes (Text, Link, Image, File, Html, Rtf)         | Yes (Text, Link, Image, File, Html, Rtf)        |
 | Skia GTK | No                                               | No                                              |
 
 * "Link" may refer to WebLink, ApplicationLink or Uri formats
+
+#### Wasm Limitations
+1. When dragging content from external app to uno, you cannot retreive the content from the `DataPackage` before the `Drop` event.
+   This a limitations of web browsers.
+   Any attempt to read it before the `Drop` will result into a timeout exception after a hard coded delay of 10 seconds.
+2. When dragging some uris from external app to uno, only the first uri will be accessible throught the **WebLink** standard format ID.
 
 #### macOS Limitations
 

@@ -41,6 +41,16 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public DataPackagePropertySet Properties { get; } = new DataPackagePropertySet();
 
+		internal bool Contains(string formatId)
+		{
+			if (formatId is null)
+			{
+				throw new ArgumentNullException(nameof(formatId));
+			}
+
+			return _data.ContainsKey(formatId);
+		}
+
 		public void SetData(string formatId, object value)
 		{
 			ImmutableInterlocked.Update(ref _data, SetDataCore, (formatId, value));
@@ -63,7 +73,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				}
 				catch (Exception e)
 				{
-					this.Log().Error($"Failed to asynchronously retrieve the data for od '{formatId}'", e);
+					this.Log().Error($"Failed to asynchronously retrieve the data for id '{formatId}'", e);
 				}
 				finally
 				{

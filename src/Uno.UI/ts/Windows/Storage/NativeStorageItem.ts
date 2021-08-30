@@ -2,58 +2,74 @@
 	export class NativeStorageItem {
 
 		private static generateGuidBinding: (count: number) => string;
-		private static _guidToHandleMap: Map<string, FileSystemHandle> = new Map<string, FileSystemHandle>();
-		private static _handleToGuidMap: Map<FileSystemHandle, string> = new Map<FileSystemHandle, string>();
+		private static _guidToItemMap: Map<string, FileSystemHandle|File> = new Map<string, FileSystemHandle|File>();
+		private static _itemToGuidMap: Map<FileSystemHandle|File, string> = new Map<FileSystemHandle|File, string>();
 
-		public static addHandle(guid: string, handle: FileSystemHandle) {
-			NativeStorageItem._guidToHandleMap.set(guid, handle);
-			NativeStorageItem._handleToGuidMap.set(handle, guid);
+		public static addItem(guid: string, item: FileSystemHandle | File) {
+			NativeStorageItem._guidToItemMap.set(guid, item);
+			NativeStorageItem._itemToGuidMap.set(item, guid);
 		}
 
-		public static removeHandle(guid: string) {
-			const handle = NativeStorageItem._guidToHandleMap.get(guid);
-			NativeStorageItem._guidToHandleMap.delete(guid);
-			NativeStorageItem._handleToGuidMap.delete(handle);
+		public static removeItem(guid: string) {
+			const handle = NativeStorageItem._guidToItemMap.get(guid);
+			NativeStorageItem._guidToItemMap.delete(guid);
+			NativeStorageItem._itemToGuidMap.delete(handle);
 		}
 
-		public static getHandle(guid: string): FileSystemHandle {
-			return NativeStorageItem._guidToHandleMap.get(guid);
+		public static getItem(guid: string): FileSystemHandle|File {
+			return NativeStorageItem._guidToItemMap.get(guid);
 		}
 
-		public static getGuid(handle: FileSystemHandle): string {
-			return NativeStorageItem._handleToGuidMap.get(handle);
+		public static async getFile(guid: string): Promise<File> {
+			const item = NativeStorageItem.getItem(guid);
+
+			if (item instanceof File) {
+				return item as File;
+			}
+			if (item instanceof FileSystemFileHandle) {
+				return await (item as FileSystemFileHandle).getFile();
+			}
+			if (item instanceof FileSystemDirectoryHandle) {
+				throw new Error("Item " + guid + " is a directory handle. You cannot use it as a File!");
+			}
+
+			throw new Error("Item " + guid + " is of an unknown type. You cannot use it as a File!");
 		}
 
-		public static getInfos(... handles: FileSystemHandle[]): NativeStorageItemInfo[] {
-			var handlesWithoutGuids: FileSystemHandle[] = [];
+		public static getGuid(item: FileSystemHandle | File): string {
+			return NativeStorageItem._itemToGuidMap.get(item);
+		}
 
-			for (var handle of handles) {
-				var guid = NativeStorageItem.getGuid(handle);
+		public static getInfos(...items: Array<FileSystemHandle|File>): NativeStorageItemInfo[] {
+			const itemsWithoutGuids: Array<FileSystemHandle|File> = [];
+
+			for (const item of items) {
+				const guid = NativeStorageItem.getGuid(item);
 				if (!guid) {
-					handlesWithoutGuids.push(handle);
+					itemsWithoutGuids.push(item);
 				}
 			}
 
-			NativeStorageItem.storeHandles(handlesWithoutGuids);
+			NativeStorageItem.storeItems(itemsWithoutGuids);
 
-			var results: NativeStorageItemInfo[] = [];
+			const results: NativeStorageItemInfo[] = [];
 
-			for (var handle of handles) {
-				var guid = NativeStorageItem.getGuid(handle);
-				var info = new NativeStorageItemInfo();
+			for (const item of items) {
+				const guid = NativeStorageItem.getGuid(item);
+				const info = new NativeStorageItemInfo();
 				info.id = guid;
-				info.name = handle.name;
-				info.isFile = handle.kind === "file";
+				info.name = item.name;
+				info.isFile = item instanceof File || (item as FileSystemHandle).kind === "file";
 				results.push(info);
 			}
 
 			return results;
 		}
 
-		private static storeHandles(handles: FileSystemHandle[]) {
-			var missingGuids = NativeStorageItem.generateGuids(handles.length);
-			for (var i = 0; i < handles.length; i++) {
-				NativeStorageItem.addHandle(missingGuids[i], handles[i]);
+		private static storeItems(handles: Array<FileSystemHandle|File>) {
+			const missingGuids = NativeStorageItem.generateGuids(handles.length);
+			for (let i = 0; i < handles.length; i++) {
+				NativeStorageItem.addItem(missingGuids[i], handles[i]);
 			}
 		}
 
@@ -62,7 +78,7 @@
 				NativeStorageItem.generateGuidBinding = (<any>Module).mono_bind_static_method("[Uno] Uno.Storage.NativeStorageItem:GenerateGuids");
 			}
 
-			var guids = NativeStorageItem.generateGuidBinding(count);
+			const guids = NativeStorageItem.generateGuidBinding(count);
 			return guids.split(";");
 		}
 	}
