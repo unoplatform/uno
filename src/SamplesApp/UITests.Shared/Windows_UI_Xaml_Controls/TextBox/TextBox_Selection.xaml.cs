@@ -1,8 +1,6 @@
 ﻿using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using static Uno.UI.FeatureConfiguration;
-
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {

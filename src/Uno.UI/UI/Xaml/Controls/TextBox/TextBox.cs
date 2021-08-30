@@ -802,7 +802,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void SelectPartial(int start, int length);
 
-		partial void SelectAll();
+		partial void SelectAllPartial();
 
 		internal override bool CanHaveChildren() => true;
 	}
