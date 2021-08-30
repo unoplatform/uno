@@ -40,6 +40,19 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothAddressType.cs" />
+	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothDevice.cs" />
+	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothLEAppearance.cs" />
+	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothLEDevice.cs" />
+	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothClassOfDevice.cs" />
+	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothConnectionStatus.cs" />
+	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothMajorClass.cs" />
+	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothMinorClass.cs" />
+	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothServiceCapabilities.cs" />
+	  <UpToDateCheckInput Remove="Devices\Enumeration\DeviceInformationKind.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />

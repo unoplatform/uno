@@ -287,6 +287,8 @@
           href: features/windows-storage-pickers.md
         - name: Windows.UI.ViewManagement
           href: features/windows-ui-viewmanagement.md
+        - name: Windows.Devices.Bluetooth.BluetoothDevice
+          href: features/bluetoothdevice.md
     - name: Uno features
       items:
         - name: Uno.UI.Toolkit
