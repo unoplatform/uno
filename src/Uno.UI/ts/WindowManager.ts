@@ -2076,7 +2076,7 @@ namespace Uno.UI {
 			});
 		}
 
-		public select(elementId: number, start: number, length: number) {
+		public selectInputRange(elementId: number, start: number, length: number) {
 			(this.getView(elementId) as HTMLInputElement).setSelectionRange(start, start + length);
 		}
 
