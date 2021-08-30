@@ -14,6 +14,17 @@ Here's what to look for:
 - ListView and GridView
 	- Don't use template selectors inside the ItemTemplate, prefer using the ItemTemplateSelector on ListView/GridView.
 	- The default [ListViewItem and GridViewItem styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
+	- If items content frequently change (e.g. live data in TextBlock) on iOS and Android, ListView items rendering can require the use of the `xamarin:AreDimensionsConstrained="True"` [uno-specific property](https://github.com/unoplatform/uno/blob/7355d66f77777b57c660133d5ec011caaa810e29/src/Uno.UI/UI/Xaml/FrameworkElement.cs#L86). This attribute prevents items in a list from request their parent to be re-measured when their size is manually constrained using the `Width` or `Height` property (depending on the scrolling direction), and that the ListView is stretched horizontally and vertically. You'll need to set the property on the top-level element of your item templates, as follows:
+		```xaml
+		<ResourceDictionary xmlns:xamarin="http://uno.ui/xamarin" mc:Ignorable="d xamarin" ...>
+			<DataTemplate x:Key="MyTemplate">
+				<Grid Height="44" xamarin:AreDimensionsConstrained="True">
+					...
+				</Grid>
+			</DataTemplate>
+		```
+		Note that WinUI does not need this, and the issue is [tracked in Uno here](https://github.com/unoplatform/uno/issues/6910).
+	
 - Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
 - Animations
 	- Prefer `Opacity` animations to `Visibility` animations (this avoids some measuring performance issues).
