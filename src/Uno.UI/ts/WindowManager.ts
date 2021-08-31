@@ -1437,9 +1437,9 @@ namespace Uno.UI {
 		private getBBoxInternal(elementId: number): any {
 
 			const element = this.getView(elementId) as SVGGraphicsElement;
-			let unconnectedRoot: HTMLElement = null;
+			let unconnectedRoot: HTMLElement | SVGGraphicsElement = null;
 
-			let cleanupUnconnectedRoot = (owner: HTMLDivElement) => {
+			const cleanupUnconnectedRoot = (owner: HTMLDivElement) => {
 				if (unconnectedRoot !== null) {
 					owner.removeChild(unconnectedRoot);
 				}
@@ -1451,6 +1451,7 @@ namespace Uno.UI {
 				// or the getBBox() will crash.
 				if (!element.isConnected) {
 
+					unconnectedRoot = element;
 					while (unconnectedRoot.parentElement) {
 						// Need to find the top most "unconnected" parent
 						// of this element
