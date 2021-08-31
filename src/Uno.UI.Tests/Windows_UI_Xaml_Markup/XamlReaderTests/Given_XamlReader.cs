@@ -241,6 +241,64 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+		public void When_ThemeResource()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			if (app.Resources.ThemeDictionaries.TryGetValue("Light", out var themeDictionary)
+				&& themeDictionary is ResourceDictionary dictionary)
+			{
+				dictionary["StaticRow"] = 42;
+				dictionary["StaticWidth"] = 42.0;
+				dictionary["StaticHeight"] = 44.0;
+			}
+
+			var s = GetContent(nameof(When_ThemeResource));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			Assert.IsNotNull(r);
+
+			var panel = r.FindName("innerPanel") as StackPanel;
+			Assert.IsNotNull(panel);
+
+			Assert.AreEqual(42, Grid.GetRow(panel));
+			Assert.AreEqual(42.0, panel.Width);
+			Assert.AreEqual(44.0, panel.Height);
+
+			if (app.Resources.ThemeDictionaries.TryGetValue("Light", out var themeDictionary2)
+				&& themeDictionary is ResourceDictionary dictionary2)
+			{
+				dictionary2.Remove("StaticRow");
+				dictionary2.Remove("StaticWidth");
+				dictionary2.Remove("StaticHeight");
+			}
+		}
+
+		[TestMethod]
+		public void When_ThemeResource_Lazy()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var s = GetContent(nameof(When_ThemeResource_Lazy));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			Assert.IsNotNull(r);
+
+			var panel = r.FindName("innerPanel") as StackPanel;
+			Assert.IsNotNull(panel);
+
+			Assert.AreEqual(0, Grid.GetRow(panel));
+			Assert.AreEqual(double.NaN, panel.Width);
+			Assert.AreEqual(double.NaN, panel.Height);
+
+			r.ForceLoaded();
+
+			Assert.AreEqual(42, Grid.GetRow(panel));
+			Assert.AreEqual(42.0, panel.Width);
+			Assert.AreEqual(44.0, panel.Height);
+		}
+
+		[TestMethod]
 		public void When_TextBlock_Basic()
 		{
 			var s = GetContent(nameof(When_TextBlock_Basic));
@@ -305,6 +363,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var s = GetContent(nameof(When_Style_ControlTemplate));
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 			Assert.IsNotNull(r);
+
+			r.ForceLoaded();
 
 			var innerContent = r.Content as ContentControl;
 			Assert.IsNotNull(innerContent);
@@ -586,6 +646,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			var s = GetContent(nameof(When_StaticResource_Style_And_Binding));
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			r.ForceLoaded();
 
 			Assert.IsTrue(r.Resources.ContainsKey("test"));
 

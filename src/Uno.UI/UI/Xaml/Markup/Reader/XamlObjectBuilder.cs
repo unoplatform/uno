@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Uno.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -453,7 +454,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				ProcessBindingMarkupNode(instance, member);
 			}
-			else if (IsStaticResourceMarkupNode(member))
+			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member))
 			{
 				ProcessStaticResourceMarkupNode(instance, member);
 			}
@@ -465,25 +466,26 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 			if (resourceNode != null)
 			{
-				string keyName = resourceNode.Members.FirstOrDefault()?.Value?.ToString();
+				var keyName = resourceNode.Members.FirstOrDefault()?.Value?.ToString();
 				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
 
-				if (keyName != null && dependencyProperty != null)
+				if (keyName != null
+					&& dependencyProperty != null
+					&& instance is DependencyObject dependencyObject)
 				{
-					void ResolveResource()
+					ResourceResolver.ApplyResource(
+						dependencyObject,
+						dependencyProperty,
+						keyName,
+						isThemeResourceExtension: IsThemeResourceMarkupNode(member));
+
+					if (instance is FrameworkElement fe)
 					{
-						object staticResource = ResolveStaticResource(instance, keyName);
-
-						if (staticResource != null)
+						fe.Loading += delegate
 						{
-							instance.SetValue(
-								dependencyProperty,
-								staticResource
-							);
-						}
+							fe.UpdateResourceBindings();
+						};
 					}
-
-					_postActions.Enqueue(ResolveResource);
 				}
 				else
 				{
@@ -513,7 +515,10 @@ namespace Windows.UI.Xaml.Markup.Reader
 		}
 
 		private bool IsStaticResourceMarkupNode(XamlMemberDefinition member)
-			=> member.Objects.Any(o => o.Type.Name == "StaticResource" || o.Type.Name == "ThemeResource");
+			=> member.Objects.Any(o => o.Type.Name == "StaticResource");
+
+		private bool IsThemeResourceMarkupNode(XamlMemberDefinition member)
+			=> member.Objects.Any(o => o.Type.Name == "ThemeResource");
 
 		private void ProcessBindingMarkupNode(object instance, XamlMemberDefinition member)
 		{
