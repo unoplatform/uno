@@ -32,6 +32,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android)] // Disabled on Wasm as there is no native command bar. Enabling for iOS tracked by https://github.com/unoplatform/uno/issues/6732
+		public void When_Foreground_Is_Set()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_With_AppBarButton_With_Foreground");
+			using var screenshot = TakeScreenshot("CommandBar_Native_With_AppBarButton_With_Foreground.When_Foreground_Is_Set");
+			var rect = _app.Query("MyCommandBar").Single().Rect;
+
+			// Couldn't find a way to get the pixel at the center of the icon. Using this hacky approach:
+			var bitmap = screenshot.GetBitmap();
+			for (int x = (int)rect.Right; x > rect.CenterX; x--)
+			{
+				if (bitmap.GetPixel(x, (int)rect.CenterY) is { A: 255, R: 255, G: 0, B: 0 })
+				{
+					return;
+				}
+			}
+
+			Assert.Fail("Expected a red pixel.");
+		}
+
+		[Test]
+		[AutoRetry]
 		public async Task NativeCommandBar_Size()
 		{
 			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic");
@@ -58,7 +80,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				currentModeIsLandscape = !currentModeIsLandscape;
 
-				_app.WaitFor(()=> GetIsCurrentRotationLandscape(rootElementName) == currentModeIsLandscape);
+				_app.WaitFor(() => GetIsCurrentRotationLandscape(rootElementName) == currentModeIsLandscape);
 
 				await Task.Delay(125); // A delay ia required after rotation for the test to succeed
 			}
@@ -77,7 +99,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 				var x1 = firstCommandBarPhysicalRect.X + (firstCommandBarPhysicalRect.Width * 0.75f);
 				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarPhysicalRect.Bottom - 1, Color.Red);
 
-				if(!supportsRotation)
+				if (!supportsRotation)
 				{
 					return; // We're on a platform not supporting rotations.
 				}

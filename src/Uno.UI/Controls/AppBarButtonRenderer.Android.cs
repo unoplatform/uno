@@ -152,14 +152,14 @@ namespace Uno.UI.Controls
 			native.SetVisible(element.Visibility == Visibility.Visible);
 
 			// Foreground
-			var foreground = element.Foreground as SolidColorBrush;
-			var foregroundColor = foreground?.Color;
+			var foreground = (element.Icon?.Foreground) as SolidColorBrush;
+
 			var foregroundOpacity = foreground?.Opacity ?? 0;
 			if (native.Icon != null)
 			{
 				if (foreground != null)
 				{
-					DrawableCompat.SetTint(native.Icon, (Android.Graphics.Color)foregroundColor);
+					DrawableCompat.SetTint(native.Icon, (Android.Graphics.Color)foreground.Color);
 				}
 				else
 				{
