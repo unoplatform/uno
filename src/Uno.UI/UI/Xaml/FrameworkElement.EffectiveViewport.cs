@@ -233,7 +233,11 @@ namespace Windows.UI.Xaml
 
 				viewport = new Rect(x, y, width, height);
 
-#if !IS_NATIVE_ELEMENT // Only true-UIElement can register as scroller.
+#if !IS_NATIVE_ELEMENT && UNO_HAS_MANAGED_SCROLL_PRESENTER
+				// !IS_NATIVE_ELEMENT: Only true-UIElement can register as scroller
+				// UNO_HAS_MANAGED_SCROLL_PRESENTER: On iOS and Android, it's the ScrollViewer which is flagged as the "scroller",
+				//									 doing it here would add scroll offsets twice (parentviewport already constains them)
+
 				// This element is also acting as scroller, so we also have to apply the local scroll offsets.
 				// Note: Those offsets should probably be part of the _localViewport (Frame vs. Bounds),
 				//		 but for now we supports only the internal controls that are able to set the internal ScrollOffsets property.
@@ -250,7 +254,7 @@ namespace Windows.UI.Xaml
 
 		private Rect GetParentViewport()
 #if __IOS__
-			// On iOS the Arrange is "async": When arranged an element only arrange its direct children (set their Frame)
+			// On iOS the Arrange is "async": When arranged an element only arranges its direct children (set their Frame)
 			// which then waits for their 'LayoutSubView' to arrange their own children.
 			//
 			// The issue is that after having arrange its children, the element will also apply its clipping,

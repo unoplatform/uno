@@ -41,54 +41,35 @@ namespace Windows.UI.Xaml.Controls
 
 		private void TryRegisterEvents(ScrollBarVisibility visibility)
 		{
-
 			if (
 				!_eventsRegistered
 				&& (visibility == ScrollBarVisibility.Auto || visibility == ScrollBarVisibility.Visible))
 			{
-				// Those events are only needed when native scrollbars are used, in order to handle
-				// pointer events on the native scrolbars themselves. See HandlePointerEvent for
-				// more details.
+				// Those events are only needed when native scrollbars are used,
+				// in order to handle pointer events on the native scrollbars themselves.
+				// See HandlePointerEvent for more details.
 
 				_eventsRegistered = true;
 
-				PointerReleased += ScrollViewer_PointerReleased;
-				PointerPressed += ScrollViewer_PointerPressed;
-				PointerCanceled += ScrollContentPresenter_PointerCanceled;
-				PointerMoved += ScrollContentPresenter_PointerMoved;
-				PointerEntered += ScrollContentPresenter_PointerEntered;
-				PointerExited += ScrollContentPresenter_PointerExited;
-				PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
+				PointerReleased += HandlePointerEvent;
+				PointerPressed += HandlePointerEvent;
+				PointerCanceled += HandlePointerEvent;
+				PointerMoved += HandlePointerEvent;
+				PointerEntered += HandlePointerEvent;
+				PointerExited += HandlePointerEvent;
+				PointerWheelChanged += HandlePointerEvent;
 			}
 		}
 
-		private void ScrollContentPresenter_PointerWheelChanged(object sender, Input.PointerRoutedEventArgs e)
-			=> HandlePointerEvent(e);
-
-		private void ScrollContentPresenter_PointerExited(object sender, Input.PointerRoutedEventArgs e)
-			=> HandlePointerEvent(e);
-
-		private void ScrollContentPresenter_PointerEntered(object sender, Input.PointerRoutedEventArgs e)
-			=> HandlePointerEvent(e);
-
-		private void ScrollContentPresenter_PointerMoved(object sender, Input.PointerRoutedEventArgs e)
-			=> HandlePointerEvent(e);
-
-		private void ScrollContentPresenter_PointerCanceled(object sender, Input.PointerRoutedEventArgs e)
-			=> HandlePointerEvent(e);
-
-		private void ScrollViewer_PointerPressed(object sender, Input.PointerRoutedEventArgs e)
-			=> HandlePointerEvent(e);
-
-		private void ScrollViewer_PointerReleased(object sender, Input.PointerRoutedEventArgs e)
-			=> HandlePointerEvent(e);
+		private static void HandlePointerEvent(object sender, Input.PointerRoutedEventArgs e)
+			=> ((ScrollContentPresenter)sender).HandlePointerEvent(e);
 
 		private void HandlePointerEvent(Input.PointerRoutedEventArgs e)
 		{
 			var (clientSize, offsetSize) = WindowManagerInterop.GetClientViewSize(HtmlId);
 
-			bool hasHorizontalScroll = (offsetSize.Height - clientSize.Height) > 0;
-			bool hasVerticalScroll = (offsetSize.Width - clientSize.Width) > 0;
+			var hasHorizontalScroll = (offsetSize.Height - clientSize.Height) > 0;
+			var hasVerticalScroll = (offsetSize.Width - clientSize.Width) > 0;
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -131,6 +112,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
 		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-auto", "scroll-x-disabled", "scroll-x-hidden", "scroll-x-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.HorizontalScrollBarVisibility { get => HorizontalScrollBarVisibility; set => HorizontalScrollBarVisibility = value; }
