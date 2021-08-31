@@ -81,6 +81,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var scales = new List<ResolutionScale>()
 			{
+				(ResolutionScale)80,
 				ResolutionScale.Scale100Percent,
 				ResolutionScale.Scale150Percent,
 				ResolutionScale.Scale200Percent,
