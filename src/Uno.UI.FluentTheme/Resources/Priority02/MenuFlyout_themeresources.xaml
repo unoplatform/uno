@@ -639,21 +639,21 @@
                             Grid.Column="0"
                             HorizontalAlignment="Left"
                             Margin="0">
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8C1;" />
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C1;" />
                         </Button>
                         <Button x:Name="LanguageSwitcherSettingsPenAndInkSettingsButton"
                             Background="{ThemeResource MenuFlyoutItemBackground}"
                             Grid.Column="1"
                             HorizontalAlignment="Center"
                             Margin="0">
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;" />
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE713;" />
                         </Button>
                         <Button x:Name="LanguageSwitcherSettingsHelpButton"
                             Background="{ThemeResource MenuFlyoutItemBackground}"
                             Grid.Column="2"
                             HorizontalAlignment="Right"
                             Margin="0">
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE9CE;" />
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9CE;" />
                         </Button>
                     </Grid>
                  </ControlTemplate>

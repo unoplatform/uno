@@ -24,6 +24,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
 using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI.Xaml.Media;
+using Private.Infrastructure;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -81,6 +84,25 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				bool isChecked = (bool)toggleSplitButton.GetValue(ToggleSplitButton.IsCheckedProperty);
 				Verify.IsTrue(isChecked, "ToggleSplitButton is not checked");
 			});
+		}
+
+		[TestMethod]
+		[Description("Verifies that the TextBlock representing the Chevron glyph uses the correct font")]
+		public void VerifyFontFamilyForChevron()
+		{
+			SplitButton splitButton = null;
+			using (StyleHelper.UseFluentStyles())
+			{
+				RunOnUIThread.Execute(() =>
+				{
+					splitButton = new SplitButton();
+					TestServices.WindowHelper.WindowContent = splitButton;
+
+					var secondayButton = splitButton.GetTemplateChild("SecondaryButton");
+					var font = ((secondayButton as Button).Content as TextBlock).FontFamily;
+					Verify.AreEqual((FontFamily)Application.Current.Resources["SymbolThemeFontFamily"], font);
+				});
+			}
 		}
 	}
 

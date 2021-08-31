@@ -49,7 +49,7 @@
             FontSize="32"
             Text="&#xE734;"
             AutomationProperties.AccessibilityView="Raw"
-            FontFamily="Segoe MDL2 Assets"/>
+            FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
     </DataTemplate>
 
     <DataTemplate x:Key="ForegroundGlyphDefaultTemplate">
@@ -58,7 +58,7 @@
             FontSize="32"
             Text="&#xE735;"
             AutomationProperties.AccessibilityView="Raw"
-            FontFamily="Segoe MDL2 Assets"/>
+            FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
     </DataTemplate>
 
     <DataTemplate x:Key="BackgroundImageDefaultTemplate">

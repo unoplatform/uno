@@ -107,7 +107,7 @@
                             <TextBlock
                                 x:Name="ChevronTextBlock"
                                 Grid.Column="1"
-                                FontFamily="Segoe MDL2 Assets"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                 FontSize="12"
                                 Text="&#xE70D;"
                                 VerticalAlignment="Center"
