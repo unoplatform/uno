@@ -126,6 +126,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 					var resolutionScale = scaleOverride == null ? (int)DisplayInformation.GetForCurrentView().ResolutionScale : (int)scaleOverride;
 
+					// On Windows, the minimum scale is 100%, however, on Wasm, we can have lower scales.
+					// This condition is to allow Wasm to use the .scale-100 image when the scale is < 100%
+					if (resolutionScale < 100)
+					{
+						resolutionScale = 100;
+					}
+
+
 					for (var i = KnownScales.Length - 1; i >= 0; i--)
 					{
 						var probeScale = KnownScales[i];
