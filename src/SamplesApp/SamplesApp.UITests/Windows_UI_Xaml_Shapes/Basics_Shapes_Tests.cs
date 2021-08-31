@@ -755,5 +755,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			"Rectangle_Uniform_MinWidthSmall",
 			"Rectangle_Uniform_Unconstrained",
 		};
+
+		[Test]
+		[AutoRetry]
+		public void Validate_Offscreen_Shapes()
+		{
+			Run("UITests.Windows_UI_Xaml_Shapes.Offscreen_Shapes");
+
+			_app.WaitForElement("deferredShape6");
+
+			using var screensnot = TakeScreenshot("offscreen_shapes", ignoreInSnapshotCompare: true);
+
+			var xamlShape6 = _app.GetPhysicalRect("xamlShape6");
+			var deferredShape6 = _app.GetPhysicalRect("deferredShape6");
+
+			ImageAssert.HasColorAt(screensnot, xamlShape6.CenterX, xamlShape6.CenterY, Color.Yellow, tolerance: 5);
+			ImageAssert.HasColorAt(screensnot, deferredShape6.CenterX, xamlShape6.CenterY, Color.Yellow, tolerance: 5);
+		}
 	}
 }
