@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 				FractionDigits = 0,
 			};
 
-			// UNO TODO:
+			// UNO TODO: https://github.com/unoplatform/uno/issues/6908
 
 			//WCHAR currentLocale[LOCALE_NAME_MAX_LENGTH] = { };
 			//if (GetUserDefaultLocaleName(currentLocale, LOCALE_NAME_MAX_LENGTH) != 0)
