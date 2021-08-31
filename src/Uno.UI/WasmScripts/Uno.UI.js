@@ -385,7 +385,7 @@ var Uno;
                                 //
                                 // If the image fails to load, setup the splashScreen anyways with the
                                 // proper sample.
-                                let canvas = document.createElement('canvas');
+                                let canvas = document.createElement("canvas");
                                 canvas.width = img.width;
                                 canvas.height = img.height;
                                 let ctx = canvas.getContext("2d");
@@ -411,7 +411,7 @@ var Uno;
                     const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
                     let fullImagePath = String(UnoAppManifest.splashScreenImage);
                     // If the splashScreenImage image already points to the app base path, use it, otherwise we build it.
-                    if (UNO_BOOTSTRAP_APP_BASE !== '' && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
+                    if (UNO_BOOTSTRAP_APP_BASE !== "" && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
                         fullImagePath = `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`;
                     }
                     img.src = fullImagePath;
@@ -463,7 +463,7 @@ var Uno;
                     return new URLSearchParams(window.location.search).toString();
                 }
                 else {
-                    const queryIndex = document.location.search.indexOf('?');
+                    const queryIndex = document.location.search.indexOf("?");
                     if (queryIndex !== -1) {
                         return document.location.search.substring(queryIndex + 1);
                     }
@@ -679,7 +679,7 @@ var Uno;
                 const element = this.getView(elementId);
                 for (const name in properties) {
                     if (properties.hasOwnProperty(name)) {
-                        var setVal = properties[name];
+                        const setVal = properties[name];
                         if (setVal === "true") {
                             element[name] = true;
                         }
@@ -700,7 +700,7 @@ var Uno;
                 const params = WindowManagerSetPropertyParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
-                    var setVal = params.Pairs[i + 1];
+                    const setVal = params.Pairs[i + 1];
                     if (setVal === "true") {
                         element[params.Pairs[i]] = true;
                     }
@@ -927,7 +927,7 @@ var Uno;
             setElementTransformNative(pParams) {
                 const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
-                var style = element.style;
+                const style = element.style;
                 const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
                 style.transform = matrix;
                 this.setAsArranged(element);
@@ -1068,7 +1068,7 @@ var Uno;
                     // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
                     // It's common to get a move right after the leave with the same pointer's location,
                     // so we wait up to 3 pointer move before dropping the leave event.
-                    var attempt = 3;
+                    let attempt = 3;
                     WindowManager.current.ensurePendingLeaveEventProcessing();
                     WindowManager.current.processPendingLeaveEvent = (move) => {
                         if (!move.isOverDeep(element)) {
@@ -1197,9 +1197,9 @@ var Uno;
                 // defined in the browser settings. 
                 // https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
                 if (this._wheelLineSize == undefined) {
-                    const el = document.createElement('div');
-                    el.style.fontSize = 'initial';
-                    el.style.display = 'none';
+                    const el = document.createElement("div");
+                    el.style.fontSize = "initial";
+                    el.style.display = "none";
                     document.body.appendChild(el);
                     const fontSize = window.getComputedStyle(el).fontSize;
                     document.body.removeChild(el);
@@ -1441,7 +1441,7 @@ var Uno;
             getBBoxInternal(elementId) {
                 const element = this.getView(elementId);
                 let unconnectedRoot = null;
-                let cleanupUnconnectedRoot = (owner) => {
+                const cleanupUnconnectedRoot = (owner) => {
                     if (unconnectedRoot !== null) {
                         owner.removeChild(unconnectedRoot);
                     }
@@ -1450,6 +1450,7 @@ var Uno;
                     // On FireFox, the element needs to be connected to the DOM
                     // or the getBBox() will crash.
                     if (!element.isConnected) {
+                        unconnectedRoot = element;
                         while (unconnectedRoot.parentElement) {
                             // Need to find the top most "unconnected" parent
                             // of this element
@@ -1514,7 +1515,7 @@ var Uno;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
                 let unconnectedRoot = null;
-                let cleanupUnconnectedRoot = (owner) => {
+                const cleanupUnconnectedRoot = (owner) => {
                     if (unconnectedRoot !== null) {
                         owner.removeChild(unconnectedRoot);
                     }
@@ -1541,14 +1542,14 @@ var Uno;
                         const inputElement = element;
                         cleanupUnconnectedRoot(this.containerElement);
                         // Create a temporary element that will contain the input's content
-                        var textOnlyElement = document.createElement("p");
+                        const textOnlyElement = document.createElement("p");
                         textOnlyElement.style.cssText = unconstrainedStyleCssText;
                         textOnlyElement.innerText = inputElement.value;
                         textOnlyElement.className = elementClasses;
                         unconnectedRoot = textOnlyElement;
                         this.containerElement.appendChild(unconnectedRoot);
-                        var textSize = this.measureElement(textOnlyElement);
-                        var inputSize = this.measureElement(element);
+                        const textSize = this.measureElement(textOnlyElement);
+                        const inputSize = this.measureElement(element);
                         // Take the width of the inner text, but keep the height of the input element.
                         return [textSize[0], inputSize[1]];
                     }
@@ -1556,7 +1557,7 @@ var Uno;
                         const inputElement = element;
                         cleanupUnconnectedRoot(this.containerElement);
                         // Create a temporary element that will contain the input's content
-                        var textOnlyElement = document.createElement("p");
+                        const textOnlyElement = document.createElement("p");
                         textOnlyElement.style.cssText = unconstrainedStyleCssText;
                         // If the input is null or empty, add a no-width character to force the paragraph to take up one line height
                         // The trailing new lines are going to be ignored for measure, so we also append no-width char at the end.
@@ -1564,10 +1565,10 @@ var Uno;
                         textOnlyElement.className = elementClasses; // Note: Here we will have the uno-textBoxView class name
                         unconnectedRoot = textOnlyElement;
                         this.containerElement.appendChild(unconnectedRoot);
-                        var textSize = this.measureElement(textOnlyElement);
+                        const textSize = this.measureElement(textOnlyElement);
                         // For TextAreas, take the width and height of the inner text
                         const width = Math.min(textSize[0], maxWidth);
-                        var height = Math.min(textSize[1], maxHeight);
+                        const height = Math.min(textSize[1], maxHeight);
                         return [width, height];
                     }
                     else {
@@ -1662,20 +1663,20 @@ var Uno;
                 const element = this.getView(viewId);
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;
-                    var img = new Image();
+                    const img = new Image();
                     img.onload = buildMonochromeImage;
                     img.src = url;
                     function buildMonochromeImage() {
                         // create a colored version of img
-                        const c = document.createElement('canvas');
-                        const ctx = c.getContext('2d');
+                        const c = document.createElement("canvas");
+                        const ctx = c.getContext("2d");
                         c.width = img.width;
                         c.height = img.height;
                         ctx.drawImage(img, 0, 0);
-                        ctx.globalCompositeOperation = 'source-atop';
+                        ctx.globalCompositeOperation = "source-atop";
                         ctx.fillStyle = color;
                         ctx.fillRect(0, 0, img.width, img.height);
-                        ctx.globalCompositeOperation = 'source-over';
+                        ctx.globalCompositeOperation = "source-over";
                         imgElement.src = c.toDataURL();
                     }
                     return "ok";
@@ -1896,7 +1897,7 @@ var Uno;
                 return handle + "";
             }
             numberToCssColor(color) {
-                return "#" + color.toString(16).padStart(8, '0');
+                return "#" + color.toString(16).padStart(8, "0");
             }
             setCursor(cssCursor) {
                 const unoBody = document.getElementById(this.containerElementId);

@@ -84,7 +84,7 @@ namespace Uno.UI {
 							//
 							// If the image fails to load, setup the splashScreen anyways with the
 							// proper sample.
-							let canvas = document.createElement('canvas');
+							let canvas = document.createElement("canvas");
 							canvas.width = img.width;
 							canvas.height = img.height;
 							let ctx = canvas.getContext("2d");
@@ -114,7 +114,7 @@ namespace Uno.UI {
 				let fullImagePath = String(UnoAppManifest.splashScreenImage);
 
 				// If the splashScreenImage image already points to the app base path, use it, otherwise we build it.
-				if (UNO_BOOTSTRAP_APP_BASE !== '' && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
+				if (UNO_BOOTSTRAP_APP_BASE !== "" && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
 					fullImagePath = `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`;
 				}
 
@@ -208,7 +208,7 @@ namespace Uno.UI {
 				return new URLSearchParams(window.location.search).toString();
 			}
 			else {
-				const queryIndex = document.location.search.indexOf('?');
+				const queryIndex = document.location.search.indexOf("?");
 
 				if (queryIndex !== -1) {
 					return document.location.search.substring(queryIndex + 1);
@@ -481,7 +481,7 @@ namespace Uno.UI {
 
 			for (const name in properties) {
 				if (properties.hasOwnProperty(name)) {
-					var setVal = properties[name];
+					const setVal = properties[name];
 					if (setVal === "true") {
 						(element as any)[name] = true;
 					}
@@ -506,7 +506,7 @@ namespace Uno.UI {
 			const element = this.getView(params.HtmlId);
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				var setVal = params.Pairs[i + 1];
+				const setVal = params.Pairs[i + 1];
 				if (setVal === "true") {
 					(element as any)[params.Pairs[i]] = true;
 				}
@@ -791,7 +791,7 @@ namespace Uno.UI {
 			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
 
-			var style = element.style;
+			const style = element.style;
 
 			const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
 			style.transform = matrix;
@@ -970,7 +970,7 @@ namespace Uno.UI {
 
 				// It's common to get a move right after the leave with the same pointer's location,
 				// so we wait up to 3 pointer move before dropping the leave event.
-				var attempt = 3;
+				let attempt = 3;
 
 				WindowManager.current.ensurePendingLeaveEventProcessing();
 				WindowManager.current.processPendingLeaveEvent = (move: PointerEvent) => {
@@ -1124,9 +1124,9 @@ namespace Uno.UI {
 			// defined in the browser settings. 
 			// https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
 			if (this._wheelLineSize == undefined) {
-				const el = document.createElement('div');
-				el.style.fontSize = 'initial';
-				el.style.display = 'none';
+				const el = document.createElement("div");
+				el.style.fontSize = "initial";
+				el.style.display = "none";
 				document.body.appendChild(el);
 				const fontSize = window.getComputedStyle(el).fontSize;
 				document.body.removeChild(el);
@@ -1543,7 +1543,7 @@ namespace Uno.UI {
 			let parentElementWidthHeight: { width: string, height: string } = null;
 			let unconnectedRoot: HTMLElement = null;
 
-			let cleanupUnconnectedRoot = (owner: HTMLDivElement) => {
+			const cleanupUnconnectedRoot = (owner: HTMLDivElement) => {
 				if (unconnectedRoot !== null) {
 					owner.removeChild(unconnectedRoot);
 				}
@@ -1575,7 +1575,7 @@ namespace Uno.UI {
 					cleanupUnconnectedRoot(this.containerElement);
 
 					// Create a temporary element that will contain the input's content
-					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
+					const textOnlyElement = document.createElement("p") as HTMLParagraphElement;
 					textOnlyElement.style.cssText = unconstrainedStyleCssText;
 					textOnlyElement.innerText = inputElement.value;
 					textOnlyElement.className = elementClasses;
@@ -1583,8 +1583,8 @@ namespace Uno.UI {
 					unconnectedRoot = textOnlyElement;
 					this.containerElement.appendChild(unconnectedRoot);
 
-					var textSize = this.measureElement(textOnlyElement);
-					var inputSize = this.measureElement(element);
+					const textSize = this.measureElement(textOnlyElement);
+					const inputSize = this.measureElement(element);
 
 					// Take the width of the inner text, but keep the height of the input element.
 					return [textSize[0], inputSize[1]];
@@ -1594,7 +1594,7 @@ namespace Uno.UI {
 					cleanupUnconnectedRoot(this.containerElement);
 
 					// Create a temporary element that will contain the input's content
-					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
+					const textOnlyElement = document.createElement("p") as HTMLParagraphElement;
 					textOnlyElement.style.cssText = unconstrainedStyleCssText;
 
 					// If the input is null or empty, add a no-width character to force the paragraph to take up one line height
@@ -1605,11 +1605,11 @@ namespace Uno.UI {
 					unconnectedRoot = textOnlyElement;
 					this.containerElement.appendChild(unconnectedRoot);
 
-					var textSize = this.measureElement(textOnlyElement);
+					const textSize = this.measureElement(textOnlyElement);
 
 					// For TextAreas, take the width and height of the inner text
 					const width = Math.min(textSize[0], maxWidth);
-					var height = Math.min(textSize[1], maxHeight);
+					const height = Math.min(textSize[1], maxHeight);
 					return [width, height];
 				} else {
 					elementStyle.cssText = unconstrainedStyleCssText;
@@ -1728,24 +1728,24 @@ namespace Uno.UI {
 			if (element.tagName.toUpperCase() === "IMG") {
 
 				const imgElement = element as HTMLImageElement;
-				var img = new Image();
+				const img = new Image();
 				img.onload = buildMonochromeImage;
 				img.src = url;
 
 				function buildMonochromeImage() {
 
 					// create a colored version of img
-					const c = document.createElement('canvas');
-					const ctx = c.getContext('2d');
+					const c = document.createElement("canvas");
+					const ctx = c.getContext("2d");
 
 					c.width = img.width;
 					c.height = img.height;
 
 					ctx.drawImage(img, 0, 0);
-					ctx.globalCompositeOperation = 'source-atop';
+					ctx.globalCompositeOperation = "source-atop";
 					ctx.fillStyle = color;
 					ctx.fillRect(0, 0, img.width, img.height);
-					ctx.globalCompositeOperation = 'source-over';
+					ctx.globalCompositeOperation = "source-over";
 
 					imgElement.src = c.toDataURL();
 				}
@@ -2024,7 +2024,7 @@ namespace Uno.UI {
 		}
 
 		private numberToCssColor(color: number): string {
-			return "#" + color.toString(16).padStart(8, '0');
+			return "#" + color.toString(16).padStart(8, "0");
 		}
 
 		public setCursor(cssCursor: string): string {
