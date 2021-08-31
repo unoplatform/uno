@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 
 			flyout.SynchronizeNamescope();
 
-			if(args.OldValue is DependencyObject oldDO)
+			if (args.OldValue is DependencyObject oldDO)
 			{
 				oldDO.ClearValue(NameScope.NameScopeProperty);
 			}

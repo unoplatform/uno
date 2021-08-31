@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
-using Uno.Extensions;
-using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
-using Uno.UI;
 #if XAMARIN_IOS
 using CoreGraphics;
 using UIKit;
@@ -30,6 +25,17 @@ namespace Windows.UI.Xaml.Controls
 		/// Defines a custom layouter which overrides the default placement logic of the <see cref="PopupPanel"/>
 		/// </summary>
 		internal IDynamicPopupLayouter CustomLayouter { get; set; }
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			if (args.Property == AllowFocusOnInteractionProperty ||
+				args.Property == AllowFocusWhenDisabledProperty)
+			{
+				PropagateFocusProperties();
+			}
+
+			base.OnPropertyChanged2(args);
+		}
 
 		private protected override void OnUnloaded()
 		{
@@ -71,10 +77,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
 			}
 
 			UpdateDataContext(null);
 			UpdateTemplatedParent();
+			PropagateFocusProperties();
 
 			if (oldChild is FrameworkElement ocfe)
 			{
@@ -139,6 +148,15 @@ namespace Windows.UI.Xaml.Controls
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.SetValue(provider.Store.TemplatedParentProperty, this.TemplatedParent, DependencyPropertyValuePrecedences.Local);
+			}
+		}
+
+		private void PropagateFocusProperties()
+		{
+			if (Child is IDependencyObjectStoreProvider provider)
+			{
+				provider.Store.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction, DependencyPropertyValuePrecedences.Local);
+				provider.Store.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 

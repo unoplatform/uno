@@ -1,15 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml;
 using System.Threading;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Shapes;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -612,6 +612,51 @@ namespace Uno.UI.Tests.BinderTests
 			var coercedValue = SUT.GetValue(testProperty);
 
 			Assert.AreEqual("customValue", coercedValue);
+		}
+
+		[TestMethod]
+		public void When_CoerceValue_Reads_Property_Value()
+		{
+			var SUT = new MockDependencyObject();
+
+			var previousValue = "Previous";
+			var newValue = "New";
+
+			Action callback = null;
+
+			object Coerce(object dependencyObject, object baseValue)
+			{
+				callback?.Invoke();
+
+				return baseValue;
+			}
+
+			var property = DependencyProperty.Register(
+				nameof(When_CoerceValue_Reads_Property_Value),
+				typeof(string),
+				typeof(MockDependencyObject),
+				new PropertyMetadata(
+					"",
+					null,
+					Coerce
+				)
+			);
+
+			callback = () =>
+			{
+				var currentValue = SUT.GetValue(property);
+				Assert.AreEqual("", currentValue);
+			};
+
+			SUT.SetValue(property, previousValue);
+
+			callback = () =>
+			{
+				var currentValue = SUT.GetValue(property);
+				Assert.AreEqual(previousValue, currentValue);
+			};
+
+			SUT.SetValue(property, newValue);
 		}
 
 		[TestMethod]
@@ -1244,12 +1289,14 @@ namespace Uno.UI.Tests.BinderTests
 
 			var registration1 = SUT.RegisterPropertyChangedCallback(
 				SimpleDependencyObject1.MyPropertyProperty,
-				(s, e) => {
+				(s, e) =>
+				{
 					invocations++;
 
 					registration2 = SUT.RegisterPropertyChangedCallback(
 						SimpleDependencyObject1.MyPropertyProperty,
-						(s2, e2) => {
+						(s2, e2) =>
+						{
 							invocations2++;
 						}
 					);
@@ -1754,7 +1801,8 @@ namespace Uno.UI.Tests.BinderTests
 			DependencyProperty.Register("MyProperty", typeof(string), typeof(SimpleDependencyObject1),
 				new PropertyMetadata(
 					"default1",
-					(s, e) => {
+					(s, e) =>
+					{
 						(s as SimpleDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue);
 						(s as SimpleDependencyObject1).ChangedCallbackCount++;
 					}
@@ -1861,7 +1909,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		private bool OnProvideDefaultValue(DependencyProperty property, out object defaultValue)
 		{
-			if(property == MyPropertyProperty)
+			if (property == MyPropertyProperty)
 			{
 				defaultValue = 42;
 

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml.Input;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -17,7 +12,6 @@ using UIKit;
 #elif __MACOS__
 using AppKit;
 #else
-using Uno.UI;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -95,6 +89,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_BeforeTextChanging()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Test"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.BeforeTextChanging += (s, e) =>
+			{
+				Assert.AreEqual("Test", textBox.Text);
+			};
+
+			textBox.Text = "Something";
 		}
 	}
 }
