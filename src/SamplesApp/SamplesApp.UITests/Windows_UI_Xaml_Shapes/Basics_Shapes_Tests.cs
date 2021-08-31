@@ -769,7 +769,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			var xamlShape6 = _app.GetPhysicalRect("xamlShape6");
 			var deferredShape6 = _app.GetPhysicalRect("deferredShape6");
 
-			ImageAssert.HasColorAt(screensnot, xamlShape6.CenterX, xamlShape6.CenterY, Color.Yellow, tolerance:5);
+			ImageAssert.HasColorAt(screensnot, xamlShape6.CenterX, xamlShape6.CenterY, Color.Yellow, tolerance: 5);
 			ImageAssert.HasColorAt(screensnot, deferredShape6.CenterX, xamlShape6.CenterY, Color.Yellow, tolerance: 5);
 		}
 	}
