@@ -22,7 +22,6 @@
           xamarinios10 (iOS) - Uno.UI-iOS-only.slnf
           MonoAndroid11.0 (Android 11.0) - Uno.UI-Android-only.slnf
           netstandard2.0 (WebAssembly, Skia) - Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf
-          net5.0 (WebAssembly, Skia) - Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf
           net6.0-ios (.NET 6 iOS) - Uno.UI-net6-only.slnf
           net6.0-android (.NET 6 Android) - Uno.UI-net6-only.slnf
           net6.0-maccatalyst (.NET 6 macOS Catalyst) - Uno.UI-net6-only.slnf
