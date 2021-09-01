@@ -188,7 +188,7 @@ namespace Windows.ApplicationModel.Resources
 				// For example, if we have es and it's not found, we want to match es-MX
 				if (culture.IsNeutralCulture)
 				{
-					var specificCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Where(c => c.Parent.Equals(culture));
+					var specificCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Where(c => c.Parent.Equals(culture)).OrderByDescending(x => x.Name);
 					foreach (var specificCulture in specificCultures)
 					{
 						yield return specificCulture.IetfLanguageTag.ToLowerInvariant();
