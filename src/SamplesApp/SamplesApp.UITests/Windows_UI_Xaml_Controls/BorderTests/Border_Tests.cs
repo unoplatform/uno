@@ -154,6 +154,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
 		public void Border_LinearGradient()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_LinearGradientBrush");
