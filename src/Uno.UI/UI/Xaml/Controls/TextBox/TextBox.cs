@@ -766,12 +766,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (start < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(start), $"'{start}' cannot be negative.");
+				throw new ArgumentException($"'{start}' cannot be negative.", nameof(start));
 			}
 
 			if (length < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(length), $"'{length}' cannot be negative.");
+				throw new ArgumentException($"'{length}' cannot be negative.", nameof(length));
 			}
 
 			// TODO: Test and adjust (if needed) this logic for surrogate pairs.
