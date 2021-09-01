@@ -18,7 +18,7 @@ Here's what to look for:
 	- If items content frequently change (e.g. live data in TextBlock) on iOS and Android, ListView items rendering can require the use of the `xamarin:AreDimensionsConstrained="True"` [uno-specific property](https://github.com/unoplatform/uno/blob/7355d66f77777b57c660133d5ec011caaa810e29/src/Uno.UI/UI/Xaml/FrameworkElement.cs#L86). This attribute prevents items in a list from requesting their parent to be re-measured when their properties change. It's safe to use the `AreDimensionsConstrained` property when items always have the same size regardless of bound data, and the items and list are stretched in the non-scrolling direction. If item sizes can change when the bound data changes (eg, if they contain bound text that can wrap over multiple lines, images of undetermined size, etc), or if the list is wrapped to the items, then you shouldn't set `AreDimensionsConstrained` because the list does need to remeasure itself when item data changes in that case.
 
 	  You'll need to set the property on the top-level element of your item templates, as follows:
-		```xaml
+		```xml
 		<ResourceDictionary xmlns:xamarin="http://uno.ui/xamarin" mc:Ignorable="d xamarin" ...>
 			<DataTemplate x:Key="MyTemplate">
 				<Grid Height="44" xamarin:AreDimensionsConstrained="True">
