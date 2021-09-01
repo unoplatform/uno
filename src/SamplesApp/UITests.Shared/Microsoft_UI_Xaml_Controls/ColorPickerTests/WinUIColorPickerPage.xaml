@@ -10,17 +10,18 @@
     GotFocus="TestPage_GotFocus">
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.ColumnDefinitions>
-            <ColumnDefinition />
+		  <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <!-- Sample control -->
-        <ScrollViewer AutomationProperties.AutomationId="ColorPickerScrollViewer" Height="500">
+        <ScrollViewer AutomationProperties.AutomationId="ColorPickerScrollViewer" Height="500"
+            HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible" IsVerticalRailEnabled="True">
             <StackPanel>
-                <controls:ColorPicker x:Name="ColorPicker" Width="312" IsAlphaEnabled="True" ColorChanged="ColorPicker_ColorChanged" />
-                <TextBlock Text="Very large text block in order to allow scrolling." Height="1000" />
+                <controls:ColorPicker x:Name="ColorPicker" IsAlphaEnabled="True" ColorChanged="ColorPicker_ColorChanged" />
+                <TextBlock Text="Text"/>
             </StackPanel>
         </ScrollViewer>
         
@@ -55,10 +56,14 @@
                         <Button AutomationProperties.AutomationId="PreviousColorBlueButton" Content="Blue" Click="PreviousColorBlueButton_Click" Margin="5,0,0,0" />
                     </StackPanel>
                     <Button AutomationProperties.AutomationId="PreviousColorCurrentColorButton" Content="Current color" Click="PreviousColorCurrentColorButton_Click" Margin="0,5,0,0" />
+                    <ComboBox AutomationProperties.AutomationId="OrientationComboBox" Header="Orientation" SelectionChanged="OrientationComboBox_SelectionChanged">
+                        <ComboBoxItem AutomationProperties.AutomationId="OrientationHorizontal">Horizontal</ComboBoxItem>
+                        <ComboBoxItem AutomationProperties.AutomationId="OrientationVertical" IsSelected="True">Vertical</ComboBoxItem>
+                    </ComboBox>
                     <CheckBox AutomationProperties.AutomationId="AlphaEnabledCheckBox" Content="Is alpha enabled" IsChecked="{Binding IsAlphaEnabled, ElementName=ColorPicker, Mode=TwoWay}" />
                     <CheckBox AutomationProperties.AutomationId="ColorSpectrumVisibleCheckBox" Content="Is color spectrum visible" IsChecked="{Binding IsColorSpectrumVisible, ElementName=ColorPicker, Mode=TwoWay}" />
                     <CheckBox AutomationProperties.AutomationId="ColorPreviewVisibleCheckBox" Content="Is color preview visible" IsChecked="{Binding IsColorPreviewVisible, ElementName=ColorPicker, Mode=TwoWay}" />
-                    <CheckBox AutomationProperties.AutomationId="ColorSliderVisibleCheckBox" Content="Is color slider visible" IsChecked="{Binding IsColorSliderVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+                    <CheckBox AutomationProperties.AutomationId="ColorSliderVisibleCheckBox" Content="Is color slider visible" IsChecked="{Binding IsColorSliderVisible, ElementName=ColorPicker, Mode=TwoWay}" TabIndex="0"/>
                     <CheckBox AutomationProperties.AutomationId="AlphaSliderVisibleCheckBox" Content="Is alpha slider visible" IsChecked="{Binding IsAlphaSliderVisible, ElementName=ColorPicker, Mode=TwoWay}" />
                     <CheckBox AutomationProperties.AutomationId="MoreButtonVisibleCheckBox" Content="Is more button visible" IsChecked="{Binding IsMoreButtonVisible, ElementName=ColorPicker, Mode=TwoWay}" />
                     <CheckBox AutomationProperties.AutomationId="ColorChannelTextInputVisibleCheckBox" Content="Is color channel text input visible" IsChecked="{Binding IsColorChannelTextInputVisible, ElementName=ColorPicker, Mode=TwoWay}" />
@@ -83,7 +88,7 @@
                         <ComboBoxItem AutomationProperties.AutomationId="ColorSpectrumComponentsValueHue">(Value, Hue)</ComboBoxItem>
                         <ComboBoxItem AutomationProperties.AutomationId="ColorSpectrumComponentsValueSaturation">(Value, Saturation)</ComboBoxItem>
                     </ComboBox>
-                    <Slider AutomationProperties.AutomationId="ControlWidthSlider" Header="Control width" Minimum="312" Maximum="392" Value="{Binding Width, ElementName=ColorPicker, Mode=TwoWay}" />
+                    <Slider AutomationProperties.AutomationId="ControlWidthSlider" Header="Control width" Minimum="312" Maximum="1000" Value="{Binding Width, ElementName=ColorPicker, Mode=TwoWay}" />
                 </StackPanel>
             </ScrollViewer>
         </Grid>
@@ -215,7 +220,7 @@
                         <TextBlock Text="BorderBrush:" VerticalAlignment="Center" Margin="0,0,10,0" />
                         <TextBlock AutomationProperties.AutomationId="MoreButtonBorderBrushTextBlock" x:Name="MoreButtonBorderBrushTextBlock" />
                     </StackPanel>
-                    <CheckBox AutomationProperties.AutomationId="ColorSpectrumLoadedCheckBox" x:Name="ColorSpectrumLoadedCheckBox" IsChecked="False" Content="ColorSpectrum loaded" />
+                    <CheckBox AutomationProperties.AutomationId="ColorSpectrumLoadedCheckBox" x:Name="ColorSpectrumLoadedCheckBox" IsChecked="False" Content="ColorSpectrum loaded" TabIndex="0"/>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="ColorSpectrum width:" VerticalAlignment="Center" Margin="0,0,10,0" />
                         <TextBlock AutomationProperties.AutomationId="WidthTextBlock" x:Name="WidthTextBlock" />

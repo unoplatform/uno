@@ -1,5 +1,6 @@
 using Windows.UI;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -288,6 +289,21 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
 					null,
+					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
+
+		public Orientation Orientation
+		{
+			get => (Orientation)GetValue(OrientationProperty);
+			set => SetValue(OrientationProperty, value);
+		}
+
+		public static DependencyProperty OrientationProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Orientation),
+				typeof(Orientation),
+				typeof(ColorPicker),
+				new FrameworkPropertyMetadata(
+					Orientation.Vertical,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public event Windows.Foundation.TypedEventHandler<ColorPicker, ColorChangedEventArgs> ColorChanged;

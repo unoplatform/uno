@@ -49,12 +49,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// IControlOverrides overrides
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
-			if ((this.Orientation == Orientation.Horizontal &&
-						 args.Key != VirtualKey.Left &&
-						 args.Key != VirtualKey.Right) ||
-				(this.Orientation == Orientation.Vertical &&
-						 args.Key != VirtualKey.Up &&
-						 args.Key != VirtualKey.Down))
+			if (args.Key != VirtualKey.Left &&
+				args.Key != VirtualKey.Right &&
+				args.Key != VirtualKey.Up &&
+				args.Key != VirtualKey.Down)
 			{
 				base.OnKeyDown(args);
 				return;
@@ -111,7 +109,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ColorHelpers.IncrementDirection direction =
 				((args.Key == VirtualKey.Left && !shouldInvertHorizontalDirection) ||
 				 (args.Key == VirtualKey.Right && shouldInvertHorizontalDirection) ||
-				  args.Key == VirtualKey.Up) ?
+				  args.Key == VirtualKey.Down) ?
 				ColorHelpers.IncrementDirection.Lower :
 				ColorHelpers.IncrementDirection.Higher;
 
