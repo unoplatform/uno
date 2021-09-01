@@ -184,6 +184,17 @@ namespace Windows.ApplicationModel.Resources
 			{
 				yield return culture.IetfLanguageTag.ToLowerInvariant();
 
+				// If we have a culture that doesn't specify country/region, we want to match its specific cultures if it's not found.
+				// For example, if we have es and it's not found, we want to match es-MX
+				if (culture.IsNeutralCulture)
+				{
+					var specificCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Where(c => c.Parent.Equals(culture)).OrderByDescending(x => x.Name);
+					foreach (var specificCulture in specificCultures)
+					{
+						yield return specificCulture.IetfLanguageTag.ToLowerInvariant();
+					}
+				}
+
 				culture = culture.Parent;
 			}
 
