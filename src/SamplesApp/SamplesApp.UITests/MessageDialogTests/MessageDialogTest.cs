@@ -11,7 +11,9 @@ namespace SamplesApp.UITests.MessageDialogTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // Skipping Wasm due to: OpenQA.Selenium.UnhandledAlertException : unexpected alert open: {Alert text : Content}
+		// iOS tracked by: https://github.com/unoplatform/uno/issues/6936
+		// Skipping Wasm due to: OpenQA.Selenium.UnhandledAlertException : unexpected alert open: {Alert text : Content}
+		[ActivePlatforms(Platform.Android)]
 		public void When_Click_Outside_Dialog_Expect_No_Dismiss()
 		{
 			Run("UITests.Shared.MessageDialogTests.MessageDialogTest");
