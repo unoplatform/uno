@@ -123,6 +123,11 @@ namespace Windows.UI.Xaml.Controls
 
 			var physicalBorderThickness = borderThickness.LogicalToPhysicalPixels();
 			var isInnerBorderSizing = backgroundSizing == BackgroundSizing.InnerBorderEdge;
+			var adjustedArea =
+				isInnerBorderSizing
+					? drawArea.DeflateBy(physicalBorderThickness)
+					: drawArea;
+
 			if (cornerRadius != 0)
 			{
 				if (view is UIElement uiElement && uiElement.FrameRoundingAdjustment is { } fra)
@@ -131,12 +136,7 @@ namespace Windows.UI.Xaml.Controls
 					drawArea.Width += fra.Width;
 				}
 
-				var adjustedArea =
-					isInnerBorderSizing
-						? drawArea.DeflateBy(physicalBorderThickness)
-						: drawArea;
-
-				using (var backgroundPath = cornerRadius.GetOutlinePath(adjustedArea.ToRectF()))
+				using (var backgroundPath = cornerRadius.GetInnerOutlinePath(adjustedArea.ToRectF(), borderThickness))
 				{
 					//We only need to set a background if the drawArea is non-zero
 					if (!drawArea.HasZeroArea())
@@ -163,11 +163,13 @@ namespace Windows.UI.Xaml.Controls
 
 					if (borderThickness != Thickness.Empty && borderBrush != null && !(borderBrush is ImageBrush))
 					{
+						//TODO: Handle case when BorderBrush is an ImageBrush
+						// Related Issue: https://github.com/unoplatform/uno/issues/6893
 						using (var strokePaint = new Paint(borderBrush.GetStrokePaint(drawArea)))
 						{
 							//Create the path for the outer and inner rectangles that will become our border shape
 							var borderPath = cornerRadius.GetOutlinePath(drawArea.ToRectF());
-							borderPath.AddRoundRect(adjustedArea.ToRectF(), cornerRadius.GetRadii(), Path.Direction.Ccw);
+							borderPath.AddRoundRect(adjustedArea.ToRectF(), cornerRadius.GetInnerRadii(borderThickness), Path.Direction.Cw);
 
 							var overlay = GetOverlayDrawable(
 								strokePaint,
@@ -186,15 +188,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else // No corner radius
 			{
-				//We only need to set a background if the drawArea is non-zero
+				//We only need to set a background if the drawArea is non-zero and Thickness is empty
+				//We need to set a background and adjust the draw area if the drawArea is non-zero and Thickness isn't empty
 				if (!drawArea.HasZeroArea())
 				{
-					var adjustedArea =
-						isInnerBorderSizing
-							? drawArea.DeflateBy(physicalBorderThickness)
-							: drawArea;
+					var finalDrawArea = borderThickness != Thickness.Empty ? adjustedArea : drawArea;
 
-					var outlinePath = adjustedArea.ToPath();
+					var backgroundPath = finalDrawArea.ToPath();
 
 					if (background is ImageBrush imageBrushBackground)
 					{
@@ -203,29 +203,30 @@ namespace Windows.UI.Xaml.Controls
 					}
 					else if (background is AcrylicBrush acrylicBrush)
 					{
-						var apply = acrylicBrush.Subscribe(view, drawArea, maskingPath: null);
+						var apply = acrylicBrush.Subscribe(view, drawArea, backgroundPath);
 						disposables.Add(apply);
 					}
 					else
 					{
 						var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, outlinePath)));
+						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath)));
 					}
 					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 				}
-			}
 
-			if (borderBrush != null && !(borderBrush is ImageBrush))
-			{
-				//TODO: Handle case that BorderBrush is an ImageBrush
-				using (var strokePaint = borderBrush.GetStrokePaint(drawArea))
+				if (borderThickness != Thickness.Empty && !(borderBrush is ImageBrush))
 				{
-					var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
-
-					if (overlay != null)
+					//TODO: Handle case when BorderBrush is an ImageBrush
+					// Related Issue: https://github.com/unoplatform/uno/issues/6893
+					using (var strokePaint = borderBrush?.GetStrokePaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent })
 					{
-						overlay.SetBounds(0, 0, view.Width, view.Height);
-						SetOverlay(view, disposables, overlay);
+						var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
+
+						if (overlay != null)
+						{
+							overlay.SetBounds(0, 0, view.Width, view.Height);
+							SetOverlay(view, disposables, overlay);
+						}
 					}
 				}
 			}
