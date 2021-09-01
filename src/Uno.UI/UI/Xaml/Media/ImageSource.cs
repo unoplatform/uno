@@ -98,6 +98,8 @@ namespace Windows.UI.Xaml.Media
 			if (uri.IsLocalResource())
 			{
 				InitFromResource(uri);
+				WebUri ??= uri;
+				return;
 			}
 			else if (uri.IsAppData())
 			{
