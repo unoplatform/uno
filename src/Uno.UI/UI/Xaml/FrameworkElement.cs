@@ -108,6 +108,23 @@ namespace Windows.UI.Xaml
 		#endregion
 
 
+		#region BackgroundSizing Dependency Property (handlers)
+
+		// Actual BackgroundSizing property is define in some elements implementing it:
+		// Border, ContentPresenter, Grid, RelativePanel & StackPanel
+
+		internal BackgroundSizing InternalBackgroundSizing { get; set; }
+
+		private protected virtual void OnBackgroundSizingChangedInner(DependencyPropertyChangedEventArgs e)
+		{
+			InternalBackgroundSizing = (BackgroundSizing)e.NewValue;
+			OnBackgroundSizingChangedPartial(e);
+		}
+
+		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs);
+
+		#endregion
+
 
 		partial void Initialize()
 		{

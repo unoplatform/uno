@@ -6,6 +6,7 @@
 		.Namespace("Windows.UI.Xaml.Controls")
 
 			.Class("Control")
+				.Property("BackgroundSizing", "BackgroundSizing", "default")
 				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)")
 				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)")				
 			.Class("PopupBase")
@@ -33,7 +34,7 @@
 				.Property("IsDropDownOpen", "bool", "false")
 				.Property("MaxDropDownHeight", "double", "double.PositiveInfinity")
 			.Class("ItemsControl")
-				.Property("DisplayMemberPath", "string", "string.Empty")	
+				.Property("DisplayMemberPath", "string", "string.Empty")
 			.Class("ListViewBase")
 				.Property("Header", "object", "null")
 				.Property("HeaderTemplate", "DataTemplate", "null", frameworkPropertyOption: "ValueDoesNotInheritDataContext")

@@ -117,6 +117,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						builder.AppendLineInvariant($"using Uno.UI;");
 						builder.AppendLineInvariant($"using Uno.UI.DataBinding;");
 						builder.AppendLineInvariant($"using Windows.UI.Xaml;");
+						builder.AppendLineInvariant($"using Windows.UI.Xaml.Controls;");
 						builder.AppendLineInvariant($"using Windows.UI.Xaml.Data;");
 						builder.AppendLineInvariant($"using Uno.Diagnostics.Eventing;");
 

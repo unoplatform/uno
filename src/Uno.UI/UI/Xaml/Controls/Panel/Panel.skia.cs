@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void Initialize();
 
-		public void UpdateBorder()
+		partial void UpdateBorder()
 		{
 			// Checking for Window avoids re-creating the layer until it is actually used.
 			if (IsLoaded)
@@ -43,6 +43,7 @@ namespace Windows.UI.Xaml.Controls
 				_borderRenderer.UpdateLayer(
 					this,
 					Background,
+					InternalBackgroundSizing,
 					BorderThickness,
 					BorderBrush,
 					CornerRadius,

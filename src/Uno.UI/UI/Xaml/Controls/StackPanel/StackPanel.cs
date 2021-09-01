@@ -6,6 +6,7 @@ using Uno.Disposables;
 using System.Text;
 using Uno.Extensions;
 using System.Collections.Specialized;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using Android.Views;
 #elif XAMARIN_IOS
@@ -20,6 +21,23 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class StackPanel : Panel
 	{
+
+		#region BackgroundSizing DepedencyProperty
+		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
+		public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+
+		public BackgroundSizing BackgroundSizing
+		{
+			get => GetBackgroundSizingValue();
+			set => SetBackgroundSizingValue(value);
+		}
+
+		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundSizingChangedInnerPanel(e);
+		}
+		#endregion
+
 
 		#region Orientation DependencyProperty
 

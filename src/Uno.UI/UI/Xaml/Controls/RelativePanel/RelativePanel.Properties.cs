@@ -1,11 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class RelativePanel
 	{
+
+		#region BackgroundSizing DepedencyProperty
+		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
+		public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+
+		public BackgroundSizing BackgroundSizing
+		{
+			get => GetBackgroundSizingValue();
+			set => SetBackgroundSizingValue(value);
+		}
+
+		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundSizingChangedInnerPanel(e);
+		}
+		#endregion
+
 		#region Panel Alignment relationships
 
 		public static bool GetAlignBottomWithPanel(DependencyObject view)

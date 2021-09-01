@@ -402,7 +402,7 @@ namespace Windows.ApplicationModel.DataTransfer
 								// Thanks to: https://stackoverflow.com/questions/13305028/monomac-best-way-to-convert-bitmap-to-nsimage/13355747
 								using (var imageData = image.AsTiff())
 								{
-									var imgRep = NSBitmapImageRep.ImageRepFromData(imageData) as NSBitmapImageRep;
+									var imgRep = NSBitmapImageRep.ImageRepFromData(imageData!) as NSBitmapImageRep;
 									var data = imgRep!.RepresentationUsingTypeProperties(NSBitmapImageFileType.Png, null);
 
 									return new RandomAccessStreamReference(async ct =>
