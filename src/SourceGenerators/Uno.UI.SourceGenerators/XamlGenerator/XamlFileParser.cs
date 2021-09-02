@@ -34,18 +34,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			this._metadataHelper = roslynMetadataHelper;
 		}
 
-		public XamlFileDefinition[] ParseFiles(string[] xamlSourceFiles)
+		public XamlFileDefinition[] ParseFiles(string[] xamlSourceFiles, System.Threading.CancellationToken cancellationToken)
 		{
 			var files = new List<XamlFileDefinition>();
 
 			return xamlSourceFiles
 				.AsParallel()
-				.Select(ParseFile)
+				.WithCancellation(cancellationToken)
+				.Select(f => ParseFile(f, cancellationToken))
 				.Where(f => f != null)
 				.ToArray()!;
 		}
 
-		private XamlFileDefinition? ParseFile(string file)
+		private XamlFileDefinition? ParseFile(string file, System.Threading.CancellationToken cancellationToken)
 		{
 			try
 			{
@@ -65,6 +66,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (reader.Read())
 					{
+						cancellationToken.ThrowIfCancellationRequested();
+
 						return Visit(reader, file);
 					}
 				}
