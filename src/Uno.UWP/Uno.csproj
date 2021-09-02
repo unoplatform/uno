@@ -1,4 +1,4 @@
-<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid11.0;net461;netstandard2.0</TargetFrameworks>
@@ -42,6 +42,10 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <None Remove="System\MemoryManager.Android.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
 	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothAddressType.cs" />
 	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothDevice.cs" />
 	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothLEAppearance.cs" />
@@ -52,6 +56,7 @@
 	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothMinorClass.cs" />
 	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothServiceCapabilities.cs" />
 	  <UpToDateCheckInput Remove="Devices\Enumeration\DeviceInformationKind.cs" />
+	  <UpToDateCheckInput Remove="System\MemoryManager.Android.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
