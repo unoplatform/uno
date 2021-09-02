@@ -94,6 +94,11 @@ namespace Windows.UI.Xaml.Media
 
 			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
 			{
+				if (!uri.IsAbsoluteUri || uri.Scheme.Length == 0)
+				{
+					uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
+				}
+
 				return uri;
 			}
 
