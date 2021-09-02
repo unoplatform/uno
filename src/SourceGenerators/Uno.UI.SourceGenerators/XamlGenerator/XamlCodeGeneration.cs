@@ -278,10 +278,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var filesToProcess = filesQuery.AsParallel();
 
-#if NETSTANDARD2_0
 				filesToProcess = filesToProcess
 					.WithCancellation(_generatorContext.CancellationToken);
-#endif
 
 				if (Debugger.IsAttached)
 				{
