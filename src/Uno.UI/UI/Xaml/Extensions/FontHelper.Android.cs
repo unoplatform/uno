@@ -15,22 +15,22 @@ using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml
 {
-	internal class FontHelper
-	{
-		internal static readonly Func<FontFamily, FontWeight, TypefaceStyle, Typeface> _fontFamilyToTypeFace;
+	internal partial class FontHelper
+	{ 
 		private static bool _assetsListed;
 		private static readonly string DefaultFontFamilyName = "sans-serif";
 
-		static FontHelper()
-		{
-			_fontFamilyToTypeFace = Funcs
-				.Create<FontFamily, FontWeight, TypefaceStyle, Typeface>(InternalFontFamilyToTypeFace)
-				.AsLockedMemoized();
-		}
-
 		internal static Typeface FontFamilyToTypeFace(FontFamily fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
-		{
-			return _fontFamilyToTypeFace(fontFamily, fontWeight, style);
+		{  
+			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily.Source, fontWeight, style);
+			 
+			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry , out var typeFace))
+			{
+				typeFace = InternalFontFamilyToTypeFace(fontFamily, fontWeight, style);
+				_fontFamilyToTypeFaceDictionary.Add(entry, typeFace);
+			}
+
+			return typeFace;
 		}
 
 		internal static Typeface InternalFontFamilyToTypeFace(FontFamily fontFamily, FontWeight fontWeight, TypefaceStyle style)
