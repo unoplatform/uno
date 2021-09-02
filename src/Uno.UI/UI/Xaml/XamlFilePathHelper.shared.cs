@@ -42,7 +42,7 @@ namespace Uno.UI.Xaml
 			return absoluteTargetPath.Replace('\\', '/');
 		}
 
-		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier)
+		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.InvariantCulture)
 			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.InvariantCulture);
 
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
