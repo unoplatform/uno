@@ -580,5 +580,12 @@ namespace Microsoft.CodeAnalysis
 			=> attribute.FindNamedArg(argName) is { IsNull: false, Kind: TypedConstantKind.Enum } arg && arg.Type!.Name == typeof(T).Name
 				? (T)arg.Value!
 				: default(T?);
+		public static bool IsSameAssemblyOrHasFriendAccessTo(this IAssemblySymbol assembly, IAssemblySymbol toAssembly)
+		{
+			return
+				assembly.Equals(toAssembly, SymbolEqualityComparer.Default) ||
+				(assembly.IsInteractive && toAssembly.IsInteractive) ||
+				toAssembly.GivesAccessTo(assembly);
+		}
 	}
 }
