@@ -136,8 +136,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 				var editText = new EditText(context);
 
-				_cursorDrawableResField = textViewClass.GetDeclaredField("mCursorDrawableRes");
-				_cursorDrawableResField.Accessible = true;
+				if ((int)Build.VERSION.SdkInt < 29)
+				{
+					_cursorDrawableResField = textViewClass.GetDeclaredField("mCursorDrawableRes");
+					_cursorDrawableResField.Accessible = true;
+				}
 
 				_editorField = textViewClass.GetDeclaredField("mEditor");
 				_editorField.Accessible = true;
@@ -146,11 +149,12 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_cursorDrawableField = _editorField.Get(editText)?.Class.GetDeclaredField("mCursorDrawable");
 				}
-				else
+				else if ((int)Build.VERSION.SdkInt == 28)
 				{
-					// set differently in Android P (API 28) and higher
+					// set differently in Android P (API 28)
 					_cursorDrawableField = _editorField.Get(editText)?.Class.GetDeclaredField("mDrawableForCursor");
 				}
+				// Android versions 29+ are handled directly through SetColorFilter API
 
 				if (_cursorDrawableField != null)
 				{
@@ -167,51 +171,67 @@ namespace Windows.UI.Xaml.Controls
 						PrepareFields(editText.Context);
 					}
 
-					if (_cursorDrawableField == null || _cursorDrawableResField == null || _editorField == null || PorterDuff.Mode.SrcIn == null)
+					if (PorterDuff.Mode.SrcIn == null)
+					{
+						editText.Log().WarnIfEnabled(() => "Failed to change the cursor color. Some devices don't support this.");
+						return;
+					}
+
+					if ((int)Build.VERSION.SdkInt >= 29)
+					{
+						var drawable = editText.TextCursorDrawable;
+						if (BlendMode.SrcAtop != null)
+						{
+							drawable?.SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcAtop));
+						}
+					}
+					else if (_cursorDrawableField == null || _cursorDrawableResField == null || _editorField == null || PorterDuff.Mode.SrcIn == null)
 					{
 						// PrepareFields() failed, give up now
 						editText.Log().WarnIfEnabled(() => "Failed to change the cursor color. Some devices don't support this.");
 						return;
 					}
-
-					var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
-					var editor = _editorField.Get(editText);
+					else
+					{
+						var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
+						var editor = _editorField.Get(editText);
 
 #if __ANDROID_28__
 #pragma warning disable 618 // SetColorFilter is deprecated
-					if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
-					{
-						var drawables = new Drawable[2];
-						drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
-						drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
-						_cursorDrawableField.Set(editor, drawables);
-					}
-					else
-					{
-						var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
-						_cursorDrawableField.Set(editor, drawable);
-					}
+						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
+						{
+							var drawables = new Drawable[2];
+							drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+							drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+							drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+							drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+							_cursorDrawableField.Set(editor, drawables);
+						}
+						else
+						{
+							var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+							drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
+							_cursorDrawableField.Set(editor, drawable);
+						}
 #pragma warning restore 618 // SetColorFilter is deprecated
 #else
-					if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
-					{
-						var drawables = new Drawable[2];
-						drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawables[0].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-						drawables[1].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-						_cursorDrawableField.Set(editor, drawables);
-					}
-					else
-					{
-						var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawable.SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-						_cursorDrawableField.Set(editor, drawable);
-					}
+						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
+						{
+							var drawables = new Drawable[2];
+							drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+							drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+							drawables[0].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
+							drawables[1].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
+							_cursorDrawableField.Set(editor, drawables);
+						}
+						else
+						{
+							var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+							drawable.SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
+							_cursorDrawableField.Set(editor, drawable);
+						}
 #endif
+					}
 				}
 				catch (Exception)
 				{
