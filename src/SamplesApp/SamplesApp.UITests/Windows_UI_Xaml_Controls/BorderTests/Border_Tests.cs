@@ -57,19 +57,31 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 		[AutoRetry]
 		public void Border_CornerRadius_BorderThickness()
 		{
-			const string red = "#FF0000";
-			const string blue = "#0000FF";
+			// White Background color underneath
+			const string white = "#FFFFFF";
+
+			//Colors with 50% Opacity
+			const string red50 = "#80FF0000";
+			const string blue50 = "#800000FF";
+
+			//Same colors but with the addition of a White background color underneath
+			const string lightPink = "#FF7F7F";
+			const string lightBlue = "#7F7FFF";
 
 			var expectedColors = new[]
 			{
-				new ExpectedColor { Thicknesses = new [] { 10, 10, 10, 10 }, Colors = new [] { red, red, red, red } },
-				new ExpectedColor { Thicknesses = new [] { 10, 0, 10, 10 }, Colors = new [] { red, blue, red, red } },
-				new ExpectedColor { Thicknesses = new [] { 10, 0, 0, 10 }, Colors = new [] { red, blue, blue, red } },
-				new ExpectedColor { Thicknesses = new [] { 10, 0, 0, 0 }, Colors = new [] { red, blue, blue, blue } },
-				new ExpectedColor { Thicknesses = new [] { 0, 0, 0, 0 }, Colors = new [] { blue, blue, blue, blue } },
+				new ExpectedColor { Thicknesses = new [] { 10, 10, 10, 10 }, Colors = new [] { lightPink, lightPink, lightPink, lightPink } },
+				new ExpectedColor { Thicknesses = new [] { 10, 0, 10, 10 }, Colors = new [] { lightPink, lightBlue, lightPink, lightPink } },
+				new ExpectedColor { Thicknesses = new [] { 10, 0, 0, 10 }, Colors = new [] { lightPink, lightBlue, lightBlue, lightPink } },
+				new ExpectedColor { Thicknesses = new [] { 10, 0, 0, 0 }, Colors = new [] { lightPink, lightBlue, lightBlue, lightBlue } },
+				new ExpectedColor { Thicknesses = new [] { 0, 0, 0, 0 }, Colors = new [] { lightBlue, lightBlue, lightBlue, lightBlue } },
 			};
 
 			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_BorderThickness");
+
+			_app.WaitForElement("MyBackgroundUnderneath");
+
+			SetBorderProperty("MyBackgroundUnderneath", "Background", white);
 
 			_app.WaitForElement("MyBorder");
 
@@ -80,6 +92,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 			var centerTarget = _app.GetPhysicalRect("CenterTarget");
 
 			SetBorderProperty("MyBorder", "CornerRadius", "10");
+			SetBorderProperty("MyBorder", "BorderBrush", red50);
+			SetBorderProperty("MyBorder", "Background", blue50);
 
 			foreach (var expected in expectedColors)
 			{
@@ -108,7 +122,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 					ExpectedPixels
 						.At($"center-{expected}", centerTarget.CenterX, centerTarget.CenterY)
 						.WithPixelTolerance(1, 1)
-						.Pixel(blue)
+						.Pixel(lightBlue)
 				);
 			}
 		}
