@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml.Automation.Peers;
+﻿using Uno.UI.Helpers.WinUI;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -37,20 +38,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (progressBar.ShowError)
 			{
-				return "Error" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarErrorStatus) + name;
 			}
 			else if (progressBar.ShowPaused)
 			{
-				return "Busy" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarPausedStatus) + name;
 			}
 			else if (progressBar.IsIndeterminate)
 			{
-				return "Paused" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarIndeterminateStatus) + name;
 			}
 			return name;
 		}
 
 		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.ProgressBar;
+
 
 		public bool IsReadOnly => true;
 		public double Value => _owner.Value;
