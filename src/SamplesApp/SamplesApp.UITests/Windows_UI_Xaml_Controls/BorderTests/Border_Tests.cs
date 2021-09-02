@@ -164,10 +164,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 			using var screenshot = TakeScreenshot("Screenshot");
 
 			// The color near the end is blueish.
-			ImageAssert.HasColorAt(screenshot, (float)(textBoxRect.CenterX + 0.45 * textBoxRect.Width), textBoxRect.Y, Color.FromArgb(31, 0, 224), tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, (float)(textBoxRect.CenterX + 0.45 * textBoxRect.Width), textBoxRect.Y, Color.FromArgb(31, 0, 224), tolerance: 20);
 
 			// The color near the start is reddish.
-			ImageAssert.HasColorAt(screenshot, (float)(textBoxRect.CenterX - 0.45 * textBoxRect.Width), textBoxRect.Y, Color.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, (float)(textBoxRect.CenterX - 0.45 * textBoxRect.Width), textBoxRect.Y, Color.Red, tolerance: 20);
 		}
 
 		private void SetBorderProperty(string borderName, string propertyName, string value)
