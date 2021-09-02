@@ -4,7 +4,7 @@ The support for `Windows.Devices.Bluetooth` is not available at this point, but 
 
 ## Note for contributors of this Windows.Devices.Bluetooth
 	
-	To implement the `BluetoothDevice.GetDeviceSelectorFromClassOfDevice` method, you can use some of the information below.
+To implement the `BluetoothDevice.GetDeviceSelectorFromClassOfDevice` method, you can use some of the information below.
 
 This method should iterate all `ServiceCapabilities`, and use bits from it to construct part of query, and the method may look like:
 	
