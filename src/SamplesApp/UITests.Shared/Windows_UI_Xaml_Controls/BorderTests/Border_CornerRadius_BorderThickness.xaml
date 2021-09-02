@@ -15,13 +15,15 @@
 				  Width="200"
 				  Height="200"
 				  Background="White">
+				<!-- Using Red with 50% Opacity for the BorderBrush and Blue with 50% Opacity for the Background here -->
+				<!-- Easier to catch specific issues for the Background and Border that way compare to using opaque colors for this test -->
 				<Border Width="200"
 						Height="200"
 						x:Name="MyBorder"
 						BorderThickness="{x:Bind MyBorderThickness, Mode=TwoWay}"
 						CornerRadius="{x:Bind MyCornerRadius, Mode=TwoWay}"
-						BorderBrush="Red"
-						Background="Blue" />
+						BorderBrush="#80FF0000"
+						Background="#800000FF" />
 				<Border BorderBrush="Yellow"
 						x:Name="LeftTarget"
 						HorizontalAlignment="Left"
