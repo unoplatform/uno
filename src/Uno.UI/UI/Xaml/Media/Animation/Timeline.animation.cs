@@ -32,6 +32,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			private DateTimeOffset _lastBeginTime;
 			private int _replayCount = 1;
+			private int _autoReverseCount = 1;
 			private T? _startingValue = null;
 			private T? _endValue = null;
 
@@ -65,6 +66,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			private T? By => AnimationOwner?.By;
 			private IEasingFunction EasingFunction => AnimationOwner?.EasingFunction;
 			private bool EnableDependentAnimation => AnimationOwner?.EnableDependentAnimation ?? false;
+			private bool AutoReverse => AnimationOwner?.AutoReverse ?? false;
 			private DependencyObject Target => _owner?.Target;
 			private BindingPath PropertyInfo => _owner?.PropertyInfo;
 
@@ -212,15 +214,31 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			/// <summary>
+			/// AutoReverse this animation.
+			/// </summary>
+			private void AutoReverseAnimation()
+			{
+				_autoReverseCount++;
+
+				Play(true);
+			}
+			/// <summary>
 			/// Initializes the animator and Events
 			/// </summary>
 			private void InitializeAnimator()
+			{
+				InitializeAnimator(false);
+			}
+			/// <summary>
+			/// Initializes the animator and Events with autoReverse
+			/// </summary>
+			private void InitializeAnimator(bool _autoReverse)
 			{
 				_startingValue = ComputeFromValue();
 
 				_endValue = ComputeToValue();
 
-				_animator = AnimatorFactory.Create(_owner, _startingValue.Value, _endValue.Value);
+				_animator = AnimatorFactory.Create(_owner, _startingValue.Value, _endValue.Value, _autoReverse);
 
 				_animator.SetEasingFunction(this.EasingFunction); //Set the Easing Function of the animator
 
@@ -268,13 +286,19 @@ namespace Windows.UI.Xaml.Media.Animation
 			private void OnAnimatorAnimationPause(object sender, EventArgs e) => OnFrame();
 
 			private void OnAnimatorUpdate(object sender, EventArgs e) => OnFrame();
-
 			/// <summary>
 			/// Creates a new animator and animates the view
 			/// </summary>
 			private void Play()
 			{
-				InitializeAnimator();//Create the animator
+				Play(false);
+			}
+			/// <summary>
+			/// Creates a new animator and animates the view and autoReverse
+			/// </summary>
+			private void Play(bool _autoReverse)
+			{
+				InitializeAnimator(_autoReverse);//Create the animator
 
 				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
 				{ // Don't start the animator its a dependent animation
@@ -336,6 +360,13 @@ namespace Windows.UI.Xaml.Media.Animation
 					return;
 				}
 
+				// If autoreverse was active
+				if (NeedsAutoReverse(_lastBeginTime, _autoReverseCount))
+				{
+					AutoReverseAnimation(); // start the animation on autoReverse
+					return;
+				}
+
 				if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
 				{
 #if __IOS__ || __MACOS__
@@ -361,6 +392,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				_owner.OnCompleted();
 			}
+
+			private bool NeedsAutoReverse(DateTimeOffset lastBeginTime, int autoReverseCount) => autoReverseCount == 1 && AutoReverse;
 
 			/// <summary>
 			/// Stops the timeline when an animator failed

@@ -50,6 +50,18 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
+		public bool AutoReverse
+		{
+			get
+			{
+				return (bool)this.GetValue(AutoReverseProperty);
+			}
+			set
+			{
+				this.SetValue(AutoReverseProperty, value);
+			}
+		}
+
 		bool IAnimation<ColorOffset>.EnableDependentAnimation => EnableDependentAnimation;
 
 		public Color? By
