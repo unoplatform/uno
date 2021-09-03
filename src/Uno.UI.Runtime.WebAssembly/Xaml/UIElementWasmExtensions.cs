@@ -220,9 +220,9 @@ return __f(element);
 		/// <remarks>
 		/// Useful to implement .MeasureOverride() when the content size needs to be considered.
 		/// </remarks>
-		public static Size MeasureHtmlView(this UIElement element, Size availableSize)
+		public static Size MeasureHtmlView(this UIElement element, Size availableSize, bool measureContent = true)
 		{
-			return element.MeasureView(availableSize);
+			return element.MeasureView(availableSize, measureContent);
 		}
 
 		/// <summary>
