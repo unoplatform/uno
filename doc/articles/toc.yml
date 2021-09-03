@@ -117,6 +117,10 @@
               href: interop/wasm-javascript-2.md
             - name: Part 3
               href: interop/wasm-javascript-3.md
+    - name: Other examples
+      items:
+        - name: Uno.Samples
+          href: uno-samples.md
 - name: Development
   items:
     - name: Overview
