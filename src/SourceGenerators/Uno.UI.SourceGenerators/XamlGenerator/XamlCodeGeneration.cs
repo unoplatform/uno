@@ -256,7 +256,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
 
 				var resourceKeys = GetResourceKeys();
-				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper).ParseFiles(_xamlSourceFiles);
+				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
+					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
 				var files = filesFull
 					.Trim()
 					.OrderBy(f => f.UniqueID)
@@ -276,6 +277,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.ToArray();
 
 				var filesToProcess = filesQuery.AsParallel();
+
+				filesToProcess = filesToProcess
+					.WithCancellation(_generatorContext.CancellationToken);
 
 				if (Debugger.IsAttached)
 				{
