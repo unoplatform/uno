@@ -15,6 +15,13 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentControl
 	{
+		public ContentControl(string htmlTag) : base(htmlTag)
+		{
+			DefaultStyleKey = typeof(ContentControl);
+
+			InitializePartial();
+		}
+
 		partial void InitializePartial()
 		{
 			IFrameworkElementHelper.Initialize(this);
