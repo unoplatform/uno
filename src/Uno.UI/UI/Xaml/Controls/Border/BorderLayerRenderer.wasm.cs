@@ -90,7 +90,8 @@ namespace Windows.UI.Xaml.Shapes
 							("border-style", "solid"),
 							("border-color", ""),
 							("border-image", border),
-							("border-width", borderWidth));
+							("border-width", borderWidth),
+							("border-image-slice", "1"));
 						break;
 					case AcrylicBrush acrylicBrush:
 						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
