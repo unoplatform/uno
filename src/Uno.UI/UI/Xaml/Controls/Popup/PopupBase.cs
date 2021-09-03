@@ -78,6 +78,12 @@ namespace Windows.UI.Xaml.Controls
 						_lastFocusedElement = new WeakReference<UIElement>(focusedElement);
 						_lastFocusState = focusState;
 					}
+
+					// Give the child focus if allowed
+					if (Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
+					{
+						Focus(FocusState.Programmatic);
+					}
 				}
 
 				Opened?.Invoke(this, newIsOpen);
@@ -85,11 +91,14 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				_openPopupRegistration?.Dispose();
-				
-				if (_lastFocusedElement != null && _lastFocusedElement.TryGetTarget(out var target))
+
+				if (IsLightDismissEnabled)
 				{
-					target.Focus(_lastFocusState);
-					_lastFocusedElement = null;
+					if (_lastFocusedElement != null && _lastFocusedElement.TryGetTarget(out var target))
+					{
+						target.Focus(_lastFocusState);
+						_lastFocusedElement = null;
+					}
 				}
 
 				Closed?.Invoke(this, newIsOpen);
