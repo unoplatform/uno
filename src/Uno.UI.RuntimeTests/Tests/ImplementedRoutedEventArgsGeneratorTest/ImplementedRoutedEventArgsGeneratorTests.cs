@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests.Tests.ImplementedRoutedEventArgsGeneratorTest
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public partial class ImplementedRoutedEventArgsGeneratorTests
 	{
 		private MethodInfo GetMethod(Control control)
