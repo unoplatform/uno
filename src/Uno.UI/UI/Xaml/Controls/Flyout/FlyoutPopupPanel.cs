@@ -10,6 +10,13 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
+	/// <summary>
+	/// PopupPanel implementation for <see cref="FlyoutBase"/>.
+	/// </summary>
+	/// <remarks>
+	/// This panel is *NOT* used by types derived from <see cref="PickerFlyoutBase"/>. Pickers use a plain
+	/// <see cref="PopupPanel"/> (see <see cref="PickerFlyoutBase.InitializePopupPanel()"/>).
+	/// </remarks>
 	internal partial class FlyoutBasePopupPanel : PlacementPopupPanel
 	{
 		private readonly FlyoutBase _flyout;
@@ -23,13 +30,13 @@ namespace Windows.UI.Xaml.Controls
 			Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
 		}
 
-		protected override FlyoutPlacementMode PopupPlacement => _flyout.Placement;
+		protected override FlyoutPlacementMode PopupPlacement => _flyout.EffectivePlacement;
 
 		protected override FrameworkElement AnchorControl => _flyout.Target as FrameworkElement;
-    
+
 		protected override Point? PositionInAnchorControl => _flyout.PopupPositionInTarget;
 
-		internal FlyoutBase Flyout => _flyout;
+		internal override FlyoutBase Flyout => _flyout;
 	}
 }
 #endif

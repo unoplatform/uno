@@ -219,6 +219,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected override void OnClosed()
 		{
+			base.OnClosed();
+
 			if (_tpAcceptButton != null)
 			{
 				_tpAcceptButton.Click -= OnAcceptClick;
