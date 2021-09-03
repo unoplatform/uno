@@ -1479,9 +1479,10 @@ var Uno;
                 *
                 * @param maxWidth string containing width in pixels. Empty string means infinite.
                 * @param maxHeight string containing height in pixels. Empty string means infinite.
+                * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
                 */
-            measureView(viewId, maxWidth, maxHeight) {
-                const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
+            measureView(viewId, maxWidth, maxHeight, measureContent = true) {
+                const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN, measureContent);
                 return `${ret[0]};${ret[1]}`;
             }
             /**
@@ -1492,7 +1493,7 @@ var Uno;
                 */
             measureViewNative(pParams, pReturn) {
                 const params = WindowManagerMeasureViewParams.unmarshal(pParams);
-                const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
+                const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight, params.MeasureContent);
                 const ret2 = new WindowManagerMeasureViewReturn();
                 ret2.DesiredWidth = ret[0];
                 ret2.DesiredHeight = ret[1];
@@ -1507,7 +1508,7 @@ var Uno;
                 // +1 is added to take rounding/flooring into account
                 return [resultWidth + 1, resultHeight];
             }
-            measureViewInternal(viewId, maxWidth, maxHeight) {
+            measureViewInternal(viewId, maxWidth, maxHeight, measureContent) {
                 const element = this.getView(viewId);
                 const elementStyle = element.style;
                 const elementClasses = element.className;
@@ -1533,12 +1534,12 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    if (element instanceof HTMLImageElement) {
+                    if (measureContent && element instanceof HTMLImageElement) {
                         elementStyle.cssText = unconstrainedStyleCssText;
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
-                    else if (element instanceof HTMLInputElement) {
+                    else if (measureContent && element instanceof HTMLInputElement) {
                         elementStyle.cssText = unconstrainedStyleCssText;
                         const inputElement = element;
                         cleanupUnconnectedRoot(this.containerElement);
@@ -1554,7 +1555,7 @@ var Uno;
                         // Take the width of the inner text, but keep the height of the input element.
                         return [textSize[0], inputSize[1]];
                     }
-                    else if (element instanceof HTMLTextAreaElement) {
+                    else if (measureContent && element instanceof HTMLTextAreaElement) {
                         const inputElement = element;
                         cleanupUnconnectedRoot(this.containerElement);
                         // Create a temporary element that will contain the input's content
@@ -2205,6 +2206,7 @@ var Windows;
                                 throw new Error("A DragDropExtension has already been enabled");
                             }
                             DragDropExtension._dispatchDragDropArgs = pArgs;
+                            DragDropExtension._nextDropId = 1;
                             DragDropExtension._current = new DragDropExtension();
                         }
                         static disable(pArgs) {
@@ -4974,6 +4976,9 @@ class WindowManagerMeasureViewParams {
         }
         {
             ret.AvailableHeight = Number(Module.getValue(pData + 16, "double"));
+        }
+        {
+            ret.MeasureContent = Boolean(Module.getValue(pData + 24, "i32"));
         }
         return ret;
     }

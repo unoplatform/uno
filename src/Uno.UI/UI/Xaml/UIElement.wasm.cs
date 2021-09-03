@@ -52,9 +52,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public Size MeasureView(Size availableSize)
+		public Size MeasureView(Size availableSize, bool measureContent = true)
 		{
-			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize);
+			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize, measureContent);
 		}
 
 		internal Rect GetBBox()

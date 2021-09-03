@@ -2,6 +2,7 @@
 using Windows.UI.Xaml;
 using Uno.UI.Xaml;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Uno.Extensions;
 using Uno.Foundation;
 
@@ -212,5 +213,28 @@ return __f(element);
 
 			throw new InvalidOperationException($"The parameters {args ?? "<null>"} for invoking GenericEventHandlers.RaiseEventHandler with {d} from {sender ?? "<null>"} are incorrect");
 		}
+
+		/// <summary>
+		/// Delegate the measure phase to HTML.
+		/// </summary>
+		/// <remarks>
+		/// Useful to implement .MeasureOverride() when the content size needs to be considered.
+		/// </remarks>
+		public static Size MeasureHtmlView(this UIElement element, Size availableSize, bool measureContent = true)
+		{
+			return element.MeasureView(availableSize, measureContent);
+		}
+
+		/// <summary>
+		/// Calculate the BBox (BoundingBox) of a SVG element
+		/// </summary>
+		/// <remarks>
+		/// Will throw an exception if the element is not a Svg element
+		/// </remarks>
+		public static Rect GetSvgBBox(this UIElement svgElement)
+		{
+			return svgElement.GetBBox();
+		}
+
 	}
 }

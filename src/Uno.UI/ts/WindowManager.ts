@@ -1487,10 +1487,11 @@ namespace Uno.UI {
 			*
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
+		    * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
 			*/
-		public measureView(viewId: string, maxWidth: string, maxHeight: string): string {
+		public measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent: boolean = true): string {
 
-			const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
+			const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN, measureContent);
 
 			return `${ret[0]};${ret[1]}`;
 		}
@@ -1505,7 +1506,7 @@ namespace Uno.UI {
 
 			const params = WindowManagerMeasureViewParams.unmarshal(pParams);
 
-			const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
+			const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight, params.MeasureContent);
 
 			const ret2 = new WindowManagerMeasureViewReturn();
 			ret2.DesiredWidth = ret[0];
@@ -1531,7 +1532,7 @@ namespace Uno.UI {
 			return [resultWidth + 1, resultHeight];
 		}
 
-		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
+		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number, measureContent: boolean): [number, number] {
 			const element = this.getView(viewId) as HTMLElement;
 
 			const elementStyle = element.style;
@@ -1564,11 +1565,11 @@ namespace Uno.UI {
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
-				if (element instanceof HTMLImageElement) {
+				if (measureContent && element instanceof HTMLImageElement) {
 					elementStyle.cssText = unconstrainedStyleCssText;
 					const imgElement = element as HTMLImageElement;
 					return [imgElement.naturalWidth, imgElement.naturalHeight];
-				} else if (element instanceof HTMLInputElement) {
+				} else if (measureContent && element instanceof HTMLInputElement) {
 					elementStyle.cssText = unconstrainedStyleCssText;
 					const inputElement = element as HTMLInputElement;
 
@@ -1588,7 +1589,7 @@ namespace Uno.UI {
 
 					// Take the width of the inner text, but keep the height of the input element.
 					return [textSize[0], inputSize[1]];
-				} else if (element instanceof HTMLTextAreaElement) {
+				} else if (measureContent && element instanceof HTMLTextAreaElement) {
 					const inputElement = element;
 
 					cleanupUnconnectedRoot(this.containerElement);

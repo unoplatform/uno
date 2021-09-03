@@ -249,14 +249,15 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region MeasureView
-		internal static Size MeasureView(IntPtr htmlId, Size availableSize)
+		internal static Size MeasureView(IntPtr htmlId, Size availableSize, bool measureContent)
 		{
 			if (UseJavascriptEval)
 			{
 				var w = double.IsInfinity(availableSize.Width) ? "null" : availableSize.Width.ToStringInvariant();
 				var h = double.IsInfinity(availableSize.Height) ? "null" : availableSize.Height.ToStringInvariant();
+				var mc = measureContent ? "true" : "false";
 
-				var command = "Uno.UI.WindowManager.current.measureView(" + htmlId + ", \"" + w + "\", \"" + h + "\");";
+				var command = "Uno.UI.WindowManager.current.measureView(" + htmlId + ", \"" + w + "\", \"" + h + "\", " + mc + ");";
 				var result = WebAssemblyRuntime.InvokeJS(command);
 
 				var parts = result.Split(';');
@@ -271,7 +272,8 @@ namespace Uno.UI.Xaml
 				{
 					HtmlId = htmlId,
 					AvailableWidth = availableSize.Width,
-					AvailableHeight = availableSize.Height
+					AvailableHeight = availableSize.Height,
+					MeasureContent = measureContent
 				};
 
 				var ret = (WindowManagerMeasureViewReturn)TSInteropMarshaller.InvokeJS("Uno:measureViewNative", parms, typeof(WindowManagerMeasureViewReturn));
@@ -288,6 +290,7 @@ namespace Uno.UI.Xaml
 
 			public double AvailableWidth;
 			public double AvailableHeight;
+			public bool MeasureContent;
 		}
 
 		[TSInteropMessage]

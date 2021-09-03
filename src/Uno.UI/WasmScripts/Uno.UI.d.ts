@@ -497,8 +497,9 @@ declare namespace Uno.UI {
             *
             * @param maxWidth string containing width in pixels. Empty string means infinite.
             * @param maxHeight string containing height in pixels. Empty string means infinite.
+            * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
             */
-        measureView(viewId: string, maxWidth: string, maxHeight: string): string;
+        measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent?: boolean): string;
         /**
             * Use the Html engine to measure the element using specified constraints.
             *
@@ -1347,6 +1348,7 @@ declare class WindowManagerMeasureViewParams {
     HtmlId: number;
     AvailableWidth: number;
     AvailableHeight: number;
+    MeasureContent: boolean;
     static unmarshal(pData: number): WindowManagerMeasureViewParams;
 }
 declare class WindowManagerMeasureViewReturn {
