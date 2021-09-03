@@ -1,5 +1,7 @@
 ﻿using Windows.UI.Xaml.Markup;
 using Windows.Foundation;
+using Uno.Extensions;
+using System;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -14,6 +16,9 @@ namespace Windows.UI.Xaml.Media
 			double angle)
 		{
 			GradientStops = gradientStopCollection;
+
+			var rad = MathEx.ToRadians(angle);
+			EndPoint = new Point(Math.Cos(rad), Math.Sin(rad));
 		}
 
 		public Point StartPoint
@@ -23,7 +28,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty StartPointProperty { get ; } = DependencyProperty.Register(
-			"StartPoint",
+			nameof(StartPoint),
 			typeof(Point),
 			typeof(LinearGradientBrush),
 			new FrameworkPropertyMetadata(default(Point))
@@ -36,7 +41,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty EndPointProperty { get ; } = DependencyProperty.Register(
-			"EndPoint",
+			nameof(EndPoint),
 			typeof(Point),
 			typeof(LinearGradientBrush),
 			new FrameworkPropertyMetadata(new Point(1,1))
