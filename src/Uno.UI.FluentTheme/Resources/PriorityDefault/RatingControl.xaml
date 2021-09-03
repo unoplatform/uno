@@ -9,7 +9,7 @@
         <!-- 9794813: retire these two properties as customisation points once all resource keys available -->
         <Setter Property="Foreground" Value="{ThemeResource RatingControlCaptionForeground}"/>
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}"/>
-        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
         <Setter Property="ItemInfo" Value="{ThemeResource MUX_RatingControlDefaultFontInfo}"/>
         <!-- IsFocusEngagementEnabled means the control has to be "engaged" with 
              using the A button before it actually receives key input from gamepad. -->

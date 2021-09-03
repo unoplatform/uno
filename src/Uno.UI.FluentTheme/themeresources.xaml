@@ -5320,13 +5320,13 @@
               <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Button x:Name="LanguageSwitcherSettingsLanguageSettingsButton" Background="{ThemeResource MenuFlyoutItemBackground}" Grid.Column="0" HorizontalAlignment="Left" Margin="0">
-              <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8C1;" />
+              <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C1;" />
             </Button>
             <Button x:Name="LanguageSwitcherSettingsPenAndInkSettingsButton" Background="{ThemeResource MenuFlyoutItemBackground}" Grid.Column="1" HorizontalAlignment="Center" Margin="0">
-              <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;" />
+              <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE713;" />
             </Button>
             <Button x:Name="LanguageSwitcherSettingsHelpButton" Background="{ThemeResource MenuFlyoutItemBackground}" Grid.Column="2" HorizontalAlignment="Right" Margin="0">
-              <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE9CE;" />
+              <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9CE;" />
             </Button>
           </Grid>
         </ControlTemplate>
@@ -8493,7 +8493,7 @@
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
               <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
-              <TextBlock x:Name="ChevronTextBlock" Grid.Column="1" FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" Margin="6,0,0,0" AutomationProperties.AccessibilityView="Raw" />
+              <TextBlock x:Name="ChevronTextBlock" Grid.Column="1" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" Margin="6,0,0,0" AutomationProperties.AccessibilityView="Raw" />
             </Grid>
           </Grid>
         </ControlTemplate>
@@ -8722,7 +8722,7 @@
             <Button x:Name="PrimaryButton" Grid.Column="0" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding CommandParameter}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Padding="{TemplateBinding Padding}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw" />
             <Button x:Name="SecondaryButton" Grid.Column="2" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="0,0,9,0" IsTabStop="False" AutomationProperties.AccessibilityView="Raw">
               <Button.Content>
-                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" HorizontalAlignment="Right" AutomationProperties.AccessibilityView="Raw" />
+                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" HorizontalAlignment="Right" AutomationProperties.AccessibilityView="Raw" />
               </Button.Content>
             </Button>
           </Grid>
@@ -14896,7 +14896,7 @@
               </Grid.ColumnDefinitions>
               <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
               <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
-              <TextBlock x:Name="ChevronTextBlock" Grid.Column="1" FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" Margin="6,0,0,0" IsTextScaleFactorEnabled="False" AutomationProperties.AccessibilityView="Raw" />
+              <TextBlock x:Name="ChevronTextBlock" Grid.Column="1" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" Margin="6,0,0,0" IsTextScaleFactorEnabled="False" AutomationProperties.AccessibilityView="Raw" />
             </Grid>
           </Grid>
         </ControlTemplate>
@@ -19388,7 +19388,7 @@
     <!-- 9794813: retire these two properties as customisation points once all resource keys available -->
     <Setter Property="Foreground" Value="{ThemeResource RatingControlCaptionForeground}" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-    <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
     <Setter Property="ItemInfo" Value="{ThemeResource MUX_RatingControlDefaultFontInfo}" />
     <!-- IsFocusEngagementEnabled means the control has to be "engaged" with 
              using the A button before it actually receives key input from gamepad. -->
@@ -19459,11 +19459,11 @@
   </Style>
   <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
-    <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="32" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="Segoe MDL2 Assets" />
+    <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="32" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
   </DataTemplate>
   <DataTemplate x:Key="ForegroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
-    <TextBlock Margin="-8,-8,0,0" FontSize="32" Text="&#xE735;" AutomationProperties.AccessibilityView="Raw" FontFamily="Segoe MDL2 Assets" />
+    <TextBlock Margin="-8,-8,0,0" FontSize="32" Text="&#xE735;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
   </DataTemplate>
   <DataTemplate x:Key="BackgroundImageDefaultTemplate">
     <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw" />
@@ -20521,7 +20521,7 @@
             <Button x:Name="PrimaryButton" Grid.Column="0" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="Transparent" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding CommandParameter}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Padding="{TemplateBinding Padding}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw" />
             <Button x:Name="SecondaryButton" Grid.Column="2" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="0,0,9,0" IsTabStop="False" AutomationProperties.AccessibilityView="Raw">
               <Button.Content>
-                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" HorizontalAlignment="Right" IsTextScaleFactorEnabled="False" AutomationProperties.AccessibilityView="Raw" />
+                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" HorizontalAlignment="Right" IsTextScaleFactorEnabled="False" AutomationProperties.AccessibilityView="Raw" />
               </Button.Content>
             </Button>
           </Grid>
