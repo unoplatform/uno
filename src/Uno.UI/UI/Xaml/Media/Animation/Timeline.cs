@@ -7,6 +7,7 @@ using Uno.Logging;
 using System.Linq;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -322,9 +323,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Checks if the Timeline will repeat.
 		/// </summary>
 		/// <returns><c>true</c>, Repeat needed, <c>false</c> otherwise.</returns>
-		protected bool NeedsRepeat(DateTimeOffset lastBeginTime, int replayCount)
+		private protected bool NeedsRepeat(Stopwatch duration, int replayCount)
 		{
-			var totalTime = DateTimeOffset.Now - lastBeginTime;
+			var totalTime = duration.Elapsed;
 
 			//3 types of repeat behavors,             
 			return ((RepeatBehavior.Type == RepeatBehaviorType.Forever) // Forever: Will always repeat the Timeline

@@ -7,13 +7,14 @@ using Windows.UI.Xaml.Markup;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
 	partial class ColorAnimationUsingKeyFrames : Timeline, ITimeline
 	{
-		private DateTimeOffset _lastBeginTime;
+		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
 		private ColorOffset? _startingValue = null;
 		private ColorOffset _finalValue;
@@ -95,7 +96,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					_wasBeginScheduled = false;
 					_subscriptions.Clear(); //Dispose all and start a new
 
-					_lastBeginTime = DateTimeOffset.Now;
+					_activeDuration.Restart();
 					_replayCount = 1;
 
 					//Start the animation
@@ -351,7 +352,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private void OnEnd()
 		{
 			// If the animation was GPU based, remove the animated value
-			if (NeedsRepeat(_lastBeginTime, _replayCount))
+			if (NeedsRepeat(_activeDuration, _replayCount))
 			{
 				Replay(); // replay the animation
 				return;
