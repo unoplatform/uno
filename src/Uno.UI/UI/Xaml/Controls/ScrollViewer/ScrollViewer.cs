@@ -2,6 +2,10 @@
 #pragma warning disable CS0067
 #endif
 
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER && !__WASM__
+#define IS_SCROLL_PORT
+#endif
+
 #nullable enable
 
 using System;
@@ -119,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+#if IS_SCROLL_PORT
 			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
 			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 			// Note 2: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
@@ -633,7 +637,6 @@ namespace Windows.UI.Xaml.Controls
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
 		internal bool ComputedIsVerticalScrollEnabled { get; private set; } = false;
-
 
 		internal double MinHorizontalOffset => 0;
 
@@ -1305,7 +1308,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdatePartial(isIntermediate);
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+#if IS_SCROLL_PORT
 			// Effective viewport support
 			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
 			InvalidateViewport();
@@ -1315,6 +1318,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void UpdatePartial(bool isIntermediate);
+
+		public void ScrollToHorizontalOffset(double offset)
+			=> ChangeView(offset, null, null, false);
+
+		public void ScrollToVerticalOffset(double offset)
+			=> ChangeView(null, offset, null, false);
 
 		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
@@ -1493,38 +1502,5 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endregion
-
-		public void ScrollToHorizontalOffset(double offset)
-		{
-			_ = ChangeView(offset, null, null, false);
-		}
-
-		public void ScrollToVerticalOffset(double offset)
-		{
-			_ = ChangeView(null, offset, null, false);
-		}
-
-		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
-		public bool ArePointerWheelEventsIgnored { get; set; } = false;
-
-		internal bool BringIntoViewport(Rect bounds,
-			bool skipDuringTouchContact,
-			bool skipAnimationWhileRunning,
-			bool animate)
-		{
-#if __WASM__
-			return ChangeView(bounds.X, bounds.Y, null, true);
-#else
-			return ChangeView(bounds.X, bounds.Y, null, !animate);
-#endif
-		}
-
-		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
-
-		/// <summary>
-		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
-		/// </summary>		
-		internal bool ForceChangeToCurrentView { get; set; } = false;
-
 	}
 }

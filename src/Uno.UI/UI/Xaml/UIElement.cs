@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER && !__WASM__
 				// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
 				// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 				if (elt is ScrollViewer sv
@@ -372,7 +372,7 @@ namespace Windows.UI.Xaml
 #if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling which has already been included.
 				if (elt.IsScrollPort
 					// Don't adjust for scroll offsets if it's the scroll port itself calling TransformToVisual, only for ancestors
-					&& elt != from) // Custom scroller
+					&& elt != from) // Managed SCP or custom scroller
 				{
 					offsetX -= elt.ScrollOffsets.X;
 					offsetY -= elt.ScrollOffsets.Y;

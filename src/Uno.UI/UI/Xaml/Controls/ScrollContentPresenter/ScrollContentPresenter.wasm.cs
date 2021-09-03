@@ -37,6 +37,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollContentPresenter()
 		{
+			RegisterAsScrollPort(this);
 		}
 
 		private void TryRegisterEvents(ScrollBarVisibility visibility)
@@ -143,6 +144,10 @@ namespace Windows.UI.Xaml.Controls
 			set { }
 		}
 
+		public double HorizontalOffset { get; private set; }
+
+		public double VerticalOffset { get; private set; }
+
 		Size? IScrollContentPresenter.CustomContentExtent => null;
 
 		private protected override void OnLoaded()
@@ -248,11 +253,16 @@ namespace Windows.UI.Xaml.Controls
 			// (the SV updates mode is always sync when isIntermediate is false).
 			var isIntermediate = false;
 
-			(TemplatedParent as ScrollViewer)?.OnScrollInternal(
-				GetNativeHorizontalOffset(),
-				GetNativeVerticalOffset(),
-				isIntermediate
-			);
+			var horizontalOffset = GetNativeHorizontalOffset();
+			var verticalOffset = GetNativeVerticalOffset();
+
+			HorizontalOffset = horizontalOffset;
+			VerticalOffset = verticalOffset;
+
+			(TemplatedParent as ScrollViewer)?.OnScrollInternal(horizontalOffset, verticalOffset, isIntermediate);
+
+			ScrollOffsets = new Point(horizontalOffset, verticalOffset);
+			InvalidateViewport();
 		}
 
 		private double GetNativeHorizontalOffset()
