@@ -1,5 +1,7 @@
-﻿using System.Text;
+﻿using System.Collections.Immutable;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.SourceGenerators.ImplementedRoutedEvents;
@@ -12,7 +14,10 @@ namespace Uno.UI.SourceGenerators.Tests
 	[TestClass]
 	public class ImplementedRoutedEventsGeneratorTests
 	{
-		// TODO: Find a way to get rid of those. Possibly add a reference to Uno.UI package to the test.
+		private static readonly ReferenceAssemblies s_defaultWithUno = ReferenceAssemblies.Default.AddPackages(
+			ImmutableArray.Create(new PackageIdentity("Uno.UI", "3.9.7"))); // UPDATE with a version that has a Control.GetImplementedRoutedEvents available.
+
+		// TODO: Remove and use s_defaultWithUno when we have a version with Control.GetImplementedRoutedEvents available.
 		private const string Stub = @"
 namespace Uno.UI.Xaml
 {
@@ -69,7 +74,6 @@ namespace Uno.UI.Xaml
 		// ContextCanceled  = 1UL << 62, => Reserved for future use (even if it is not an actual standard RoutedEvent)
 	}
 }
-
 namespace Windows.UI.Xaml.Controls
 {
 	public class Control
@@ -80,64 +84,69 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-
 namespace Windows.UI.Xaml
 {
 	public class RoutedEventArgs
 	{
 	}
-
 	public sealed class DragEventArgs : RoutedEventArgs
 	{
 	}
 }
-
 namespace Windows.UI.Xaml.Input
 {
 	public sealed class PointerRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class ManipulationStartingRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class ManipulationStartedRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class ManipulationDeltaRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class ManipulationInertiaStartingRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class ManipulationCompletedRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class TappedRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class DoubleTappedRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class RightTappedRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class HoldingRoutedEventArgs : RoutedEventArgs
 	{
 	}
-
 	public sealed class KeyRoutedEventArgs : RoutedEventArgs
 	{
 	}
 }";
+
+		private async Task TestGeneratorAsync(string inputSource, string expectedGeneratedCode, string expectedFileName)
+		{
+			await new Verify.Test
+			{
+
+				//ReferenceAssemblies = s_defaultWithUno, // UNCOMMENT when we have a version with Control.GetImplementedRoutedEvents available.
+				TestState =
+				{
+					Sources = { Stub, inputSource },
+					GeneratedSources =
+					{
+						(expectedFileName, SourceText.From(expectedGeneratedCode, Encoding.UTF8)),
+					},
+				},
+			}.RunAsync();
+		}
+
 		[TestMethod]
 		public async Task Given_NonGeneric_Control_In_Global_Namespace()
 		{
@@ -157,17 +166,7 @@ partial class MyAwesomeControl
 	}
 }
 ";
-			await new Verify.Test
-			{
-				TestState =
-				{
-					Sources = { Stub, inputSource },
-					GeneratedSources =
-					{
-						(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyAwesomeControl_ImplementedRoutedEvents.g.cs", SourceText.From(expectedCode, Encoding.UTF8)),
-					},
-				},
-			}.RunAsync();
+			await TestGeneratorAsync(inputSource, expectedCode, @"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyAwesomeControl_ImplementedRoutedEvents.g.cs");
 		}
 
 		[TestMethod]
@@ -189,17 +188,7 @@ partial class MyAwesomeControl<T>
 	}
 }
 ";
-			await new Verify.Test
-			{
-				TestState =
-				{
-					Sources = { Stub, inputSource },
-					GeneratedSources =
-					{
-						(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyAwesomeControl-1[MyAwesomeControl-1.T]_ImplementedRoutedEvents.g.cs", SourceText.From(expectedCode, Encoding.UTF8)),
-					},
-				},
-			}.RunAsync();
+			await TestGeneratorAsync(inputSource, expectedCode, @"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyAwesomeControl-1[MyAwesomeControl-1.T]_ImplementedRoutedEvents.g.cs");
 		}
 
 		[TestMethod]
@@ -227,17 +216,7 @@ namespace MyControls
 	}
 }
 ";
-			await new Verify.Test
-			{
-				TestState =
-				{
-					Sources = { Stub, inputSource },
-					GeneratedSources =
-					{
-						(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyControls.MyAwesomeControl-1[MyControls.MyAwesomeControl-1.T]_ImplementedRoutedEvents.g.cs", SourceText.From(expectedCode, Encoding.UTF8)),
-					},
-				},
-			}.RunAsync();
+			await TestGeneratorAsync(inputSource, expectedCode, @"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyControls.MyAwesomeControl-1[MyControls.MyAwesomeControl-1.T]_ImplementedRoutedEvents.g.cs");
 		}
 	}
 }
