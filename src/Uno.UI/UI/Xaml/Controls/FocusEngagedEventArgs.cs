@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get => Handled;
 			set => Handled = value;
-		}		
+		}
+
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
 	}
 }

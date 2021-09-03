@@ -32,6 +32,8 @@ namespace Windows.UI.Xaml.Input
 
 		public bool Handled { get; set; }
 
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
+
 		public UIElement Container { get; set; }
 
 		public ManipulationModes Mode

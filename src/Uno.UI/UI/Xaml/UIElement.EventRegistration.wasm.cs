@@ -10,6 +10,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
@@ -185,6 +186,10 @@ namespace Windows.UI.Xaml
 						switch (handlerResult)
 						{
 							case bool isHandedInManaged when isHandedInManaged:
+								if (args is IHandleableRoutedEventArgs handleable && !handleable.ShouldPreventDefaultIfHandled)
+								{
+									return HtmlEventDispatchResult.StopPropagation;
+								}
 								return HtmlEventDispatchResult.StopPropagation | HtmlEventDispatchResult.PreventDefault;
 
 							case HtmlEventDispatchResult dispatchResult when dispatchResult.HasFlag(HtmlEventDispatchResult.StopPropagation):

@@ -44,6 +44,8 @@ namespace Windows.UI.Xaml.Input
 
 		public bool Handled { get; set; }
 
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
+
 		public VirtualKeyModifiers KeyModifiers { get; }
 
 		public Pointer Pointer { get; }

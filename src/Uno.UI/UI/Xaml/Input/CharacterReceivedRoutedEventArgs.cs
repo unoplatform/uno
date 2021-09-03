@@ -27,6 +27,8 @@ namespace Windows.UI.Xaml.Input
 			set => Handled = value;
 		}
 
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
+
 		/// <summary>
 		/// Gets the composed character associated with the UIElement.CharacterReceived event.
 		/// </summary>

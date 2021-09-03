@@ -93,6 +93,8 @@ namespace Windows.UI.Xaml.Input
 			get => Cancel;
 		}
 
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
+
 		/// <summary>
 		/// Attempts to cancel the ongoing focus action.
 		/// </summary>

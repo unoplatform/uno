@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml.Input
 
 		public bool Handled { get; set; }
 
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
+
 		public PointerDeviceType PointerDeviceType { get; }
 
 		public Point GetPosition(UIElement relativeTo)

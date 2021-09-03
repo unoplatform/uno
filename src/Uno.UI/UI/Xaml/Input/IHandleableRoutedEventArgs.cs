@@ -11,5 +11,7 @@
 		/// route from handling the same event again.
 		/// </summary>
 		bool Handled { get; set; }
+
+		bool ShouldPreventDefaultIfHandled { get; set; }
 	}
 }

@@ -21,6 +21,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.Extensions.Logging;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -666,6 +667,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
+			((IHandleableRoutedEventArgs)args).ShouldPreventDefaultIfHandled = false;
 
 			// Note: On windows only keys that are "moving the cursor" are handled
 			//		 AND ** only KeyDown ** is handled (not KeyUp)

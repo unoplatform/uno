@@ -34,6 +34,8 @@ namespace Windows.UI.Xaml.Input
 		{
 			get => Handled;
 			set => Handled = value;
-		}		
+		}
+
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
 	}
 }

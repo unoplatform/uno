@@ -39,5 +39,7 @@ namespace Windows.UI.Xaml.Input
 				return _originalSource.GetPosition(_position, relativeTo);
 			}
 		}
+
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
 	}
 }

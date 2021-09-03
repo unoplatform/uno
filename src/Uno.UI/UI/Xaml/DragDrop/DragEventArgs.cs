@@ -56,5 +56,7 @@ namespace Windows.UI.Xaml
 
 		public DragOperationDeferral GetDeferral()
 			=> Deferral ??= new DragOperationDeferral();
+
+		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
 	}
 }
