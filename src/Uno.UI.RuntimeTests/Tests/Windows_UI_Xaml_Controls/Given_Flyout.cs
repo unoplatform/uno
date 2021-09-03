@@ -18,6 +18,12 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
+#if HAS_UNO
+using Popup = Windows.UI.Xaml.Controls.Popup;
+#else
+using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -488,6 +494,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Flyout_Has_Focusable_Child()
+		{
+			var stackPanel = new StackPanel();
+			var button = new Button() { Content = "Flyout owner" };
+			stackPanel.Children.Add(button);
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var flyout = new Flyout();
+			var flyoutButton = new Button() { Content = "Flyout content" };
+			flyout.Content = flyoutButton;
+			FlyoutBase.SetAttachedFlyout(button, flyout);
+			button.Focus(FocusState.Pointer);
+
+			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+
+			FlyoutBase.ShowAttachedFlyout(button);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var focused = FocusManager.GetFocusedElement();
+			Assert.IsInstanceOfType(focused, typeof(Popup));
+
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			TestServices.WindowHelper.WindowContent = null;
 		}
