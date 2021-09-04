@@ -86,7 +86,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Note that InputScope is a class that cannot be set to a default value within the IDL.
 			var inputScopeName = new InputScopeName(InputScopeNameValue.Number);
 			var inputScope = new InputScope();
-			inputScope.Names.Append(inputScopeName);
+			inputScope.Names.Add(inputScopeName);
 			InputScope = inputScope;
 		}
 
