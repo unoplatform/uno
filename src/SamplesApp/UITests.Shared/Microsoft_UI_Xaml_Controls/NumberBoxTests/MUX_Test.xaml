@@ -261,7 +261,8 @@
 					<controls:NumberBox PlaceholderText="Number"/>
 					<TextBox PlaceholderText="Text"/>
 					<AutoSuggestBox PlaceholderText="Auto"/>
-					<RichEditBox PlaceholderText="Rich"/>
+					<!--Not yet implemented in Uno. https://github.com/unoplatform/uno/issues/3848 https://github.com/unoplatform/uno/issues/81 -->
+					<!--<RichEditBox PlaceholderText="Rich"/>-->
 				</StackPanel>
 
 				<!-- Property propagation -->

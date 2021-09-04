@@ -68,6 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 			GotFocus += OnNumberBoxGotFocus;
 			LostFocus += OnNumberBoxLostFocus;
 
+			// Uno specific.
 			Loaded += (s, e) => InitializeTemplate();
 			Unloaded += (s, e) => DisposeRegistrations();
 
@@ -81,6 +82,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SetDefaultInputScope()
 		{
+			// Sets the default value of the InputScope property.
+			// Note that InputScope is a class that cannot be set to a default value within the IDL.
 			var inputScopeName = new InputScopeName(InputScopeNameValue.Number);
 			var inputScope = new InputScope();
 			inputScope.Names.Append(inputScopeName);
@@ -130,7 +133,6 @@ namespace Microsoft.UI.Xaml.Controls
 			//return formatter;
 		}
 
-
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new NumberBoxAutomationPeer(this);
@@ -178,8 +180,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (GetTemplateChild(c_numberBoxTextBoxName) is TextBox textBox)
 			{
-				textBox.KeyDown += OnNumberBoxKeyDown;
-				registrations.Add(() => textBox.KeyDown -= OnNumberBoxKeyDown);
+				if (SharedHelpers.IsRS3OrHigher())
+				{
+					// Listen to PreviewKeyDown because textbox eats the down arrow key in some circumstances.
+					// UNO Docs: PreviewKeyDown is not implemented. Use KeyDown.
+					//textBox.PreviewKeyDown += OnNumberBoxKeyDown;
+					//registrations.Add(() => textBox.PreviewKeyDown -= OnNumberBoxKeyDown);
+					textBox.KeyDown += OnNumberBoxKeyDown;
+					registrations.Add(() => textBox.KeyDown -= OnNumberBoxKeyDown);
+				}
+				else
+				{
+					// This is better than nothing.
+					textBox.KeyDown += OnNumberBoxKeyDown;
+					registrations.Add(() => textBox.KeyDown -= OnNumberBoxKeyDown);
+				}
+
 				textBox.KeyUp += OnNumberBoxKeyUp;
 				registrations.Add(() => textBox.KeyUp -= OnNumberBoxKeyUp);
 
@@ -241,9 +257,11 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateTextToValue();
 			}
 
+			// Uno specific.
 			_eventSubscriptions.Disposable = registrations;
 		}
 
+		// Uno specific.
 		private void DisposeRegistrations()
 		{
 			_eventSubscriptions.Disposable = null;
@@ -388,12 +406,14 @@ namespace Microsoft.UI.Xaml.Controls
 				var name = AutomationProperties.GetName(this);
 				if (!string.IsNullOrEmpty(name))
 				{
+					// AutomationProperties.Name is a non empty string, we will use that value.
 					AutomationProperties.SetName(textBox, name);
 				}
 				else
 				{
 					if (Header is string headerAsString)
 					{
+						// Header is a string, we can use that as our UIA name.
 						AutomationProperties.SetName(textBox, headerAsString);
 					}
 				}
