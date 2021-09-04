@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
@@ -205,6 +206,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void Manipulation_WhenInScrollViewerAndManipulationTranslateYAndTranslateY_ThenManipulate()
 			=> TestManipulationInScroller("SetTranslateY", TranslateY, AssertFullManipulationSequence);
+
+		[Test]
+		[AutoRetry]
+		public void Manipulation_PositionShouldBeRelativeToControlBeingDragged()
+		{
+			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.ManipulationPosition");
+
+			var borderRect = _app.WaitForElement("SourceBorder").Single().Rect;
+			_app.DragCoordinates(
+				fromX: borderRect.CenterX,
+				fromY: borderRect.CenterY,
+				toX: borderRect.X,
+				toY: borderRect.Y);
+			_app.Marked("Result").GetDependencyPropertyValue("Text").Should().Be("ManipulationCompleted: 0.0, 0.0");
+		}
 
 		private void Diagonal(IAppRect target, IAppRect scroller)
 			=> _app.DragCoordinates(target.X + 5, target.Bottom - 5, scroller.Right - 20, scroller.Y + 10);

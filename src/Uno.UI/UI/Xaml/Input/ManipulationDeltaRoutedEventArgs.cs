@@ -2,6 +2,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
+using Uno.UI.UI.Xaml.Input.Internal;
 
 namespace Windows.UI.Xaml.Input
 {
@@ -20,7 +21,13 @@ namespace Windows.UI.Xaml.Input
 
 			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
-			Position = args.Position;
+
+			// ManipulationCompletedEventArgs.Position is absolute position. We want to
+			// have a relative point to the element being manipulated to match UWP
+			// NOTE: This is a workaround, and this scenario is still broken for some cases.
+			// See https://github.com/unoplatform/uno/issues/6964#issuecomment-913041138 for details.
+			Position = ManipulationEventArgsHelpers.MapPointRelativeTo(container, args.Position);
+
 			Delta = args.Delta;
 			Cumulative = args.Cumulative;
 			Velocities = args.Velocities;
