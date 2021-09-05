@@ -1753,6 +1753,17 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(42, SUT.GetValue(MyDependencyObjectWithDefaultValueOverride.MyPropertyProperty));
 		}
 
+		[TestMethod]
+		public void When_CreateDefaultValueCallback()
+		{
+			var SUT = new MockDependencyObject();
+			var testProperty = DependencyProperty.Register(nameof(When_CreateDefaultValueCallback), typeof(string), typeof(MockDependencyObject), PropertyMetadata.Create(CreateTestString));
+
+			Assert.AreEqual("TestString!", SUT.GetValue(testProperty));
+
+			string CreateTestString() => "TestString!";
+		}
+
 		private class MyDependencyObject : FrameworkElement
 		{
 			internal static readonly DependencyProperty PropAProperty = DependencyProperty.Register(

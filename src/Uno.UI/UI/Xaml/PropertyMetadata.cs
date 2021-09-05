@@ -80,6 +80,11 @@ namespace Windows.UI.Xaml
 			BackingFieldUpdateCallback = backingFieldUpdateCallback;
 		}
 
+		internal PropertyMetadata(CreateDefaultValueCallback createDefaultValueCallback)
+		{
+			CreateDefaultValueCallback = createDefaultValueCallback;
+		}
+
 		public PropertyMetadata(
 			PropertyChangedCallback propertyChangedCallback
 		)
@@ -122,11 +127,20 @@ namespace Windows.UI.Xaml
 
 		public object DefaultValue
 		{
-			get => _defaultValue;
+			get
+			{
+				if (CreateDefaultValueCallback != null)
+				{
+					return CreateDefaultValueCallback.Invoke();
+				}
+
+				return _defaultValue;
+			}
 			internal set
 			{
 				_defaultValue = value;
 				_isDefaultValueSet = true;
+				CreateDefaultValueCallback = null;
 			}
 		}
 
@@ -143,6 +157,14 @@ namespace Windows.UI.Xaml
 		}
 
 		internal BackingFieldUpdateCallback BackingFieldUpdateCallback { get; set; }
+
+		internal CreateDefaultValueCallback CreateDefaultValueCallback { get; private set; }
+
+		public static PropertyMetadata Create(CreateDefaultValueCallback createDefaultValueCallback)
+			=> new PropertyMetadata(createDefaultValueCallback: createDefaultValueCallback);
+
+		public static PropertyMetadata Create(CreateDefaultValueCallback createDefaultValueCallback, PropertyChangedCallback propertyChangedCallback)
+			=> new PropertyMetadata(createDefaultValueCallback: createDefaultValueCallback) { PropertyChangedCallback = propertyChangedCallback };
 
 		internal protected virtual void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
 		{
