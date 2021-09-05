@@ -39,6 +39,8 @@
 	
 	<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
 	<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+    <DefineConstants Condition="'$(UnoTargetFrameworkOverride)'=='MonoAndroid11.0'">$(DefineConstants);CURRENT_PLATFORM_ANDROID</DefineConstants>
+	<DefineConstants Condition="'$(UnoTargetFrameworkOverride)'=='xamarinios10'">$(DefineConstants);CURRENT_PLATFORM_IOS</DefineConstants>
 
 	<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>

@@ -15,6 +15,13 @@ namespace SamplesApp.UITests
 		public const string iOSDeviceNameOrId = "iPad Pro (12.9-inch) (4th generation)";
 
 		// Default active platform when running under Visual Studio test runner
-		public const Platform CurrentPlatform = Platform.Browser;
+		public const Platform CurrentPlatform =
+#if CURRENT_PLATFORM_ANDROID
+			Platform.Android;
+#elif CURRENT_PLATFORM_IOS
+			Platform.iOS;
+#else
+			Platform.Browser;
+#endif
 	}
 }
