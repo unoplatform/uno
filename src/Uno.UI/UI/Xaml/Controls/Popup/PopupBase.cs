@@ -1,5 +1,6 @@
 ﻿using System;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
@@ -16,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class PopupBase : FrameworkElement, IPopup
 	{
-		private WeakReference<UIElement> _lastFocusedElement = null;
+		private ManagedWeakReference _lastFocusedElement = null;
 		private FocusState _lastFocusState = FocusState.Unfocused;
 
 		private IDisposable _openPopupRegistration;
@@ -71,11 +72,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// Store last focused element
 					var focusManager = VisualTree.GetFocusManagerForElement(this);
-					var focusedElement = focusManager.FocusedElement as UIElement;
-					var focusState = focusManager.GetRealFocusStateForFocusedElement();
+					var focusedElement = focusManager?.FocusedElement as UIElement;
+					var focusState = focusManager?.GetRealFocusStateForFocusedElement() ?? FocusState.Unfocused;
 					if (focusedElement != null && focusState != FocusState.Unfocused)
 					{
-						_lastFocusedElement = new WeakReference<UIElement>(focusedElement);
+						_lastFocusedElement = WeakReferencePool.RentWeakReference(this, focusedElement);
 						_lastFocusState = focusState;
 					}
 
@@ -94,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (IsLightDismissEnabled)
 				{
-					if (_lastFocusedElement != null && _lastFocusedElement.TryGetTarget(out var target))
+					if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target)
 					{
 						target.Focus(_lastFocusState);
 						_lastFocusedElement = null;

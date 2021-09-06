@@ -88,6 +88,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_popup is PopupBase popup)
 			{
+				//TODO Uno specific: Ensures popup does not take focus when opened.
+				//This can be removed when the actual ComboBox code is fully ported
+				//from WinUI.
+				if (_popupBorder is { } border)
+				{
+					border.AllowFocusOnInteraction = false;
+				}
+
 				popup.CustomLayouter = new DropDownLayouter(this, popup);
 
 				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
@@ -406,6 +414,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerReleased(args);
 
+			Focus(FocusState.Programmatic);
 			IsDropDownOpen = true;
 
 			// On UWP ComboBox does handle the released event.
