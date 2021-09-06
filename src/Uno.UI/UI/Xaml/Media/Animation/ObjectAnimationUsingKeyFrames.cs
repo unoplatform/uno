@@ -253,8 +253,21 @@ namespace Windows.UI.Xaml.Media.Animation
 							CoreDispatcherPriority.Normal,
 							async ct =>
 							{
-								await Task.Delay(dueTime, ct);
-								update();
+								// TODO: Ensure the exception is handled in debug to avoid
+								// breaking here in Visual Studio.
+#if DEBUG
+								try
+								{
+#endif
+									await Task.Delay(dueTime, ct);
+									update();
+#if DEBUG
+								}
+								catch (TaskCanceledException)
+								{
+									// Ignored
+								}
+#endif
 							}
 						)
 					);
