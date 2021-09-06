@@ -9,6 +9,7 @@
     </ui-application>
     <shortcut-list />
     <privileges>
+        <privilege>http://tizen.org/privilege/notification</privilege>
         <privilege>http://tizen.org/privilege/contact.read</privilege>
         <privilege>http://tizen.org/privilege/appmanager.launch</privilege>
     </privileges>

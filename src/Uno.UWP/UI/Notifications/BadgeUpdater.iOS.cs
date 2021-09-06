@@ -1,16 +1,15 @@
-#if __IOS__
+#nullable enable
+
 using UIKit;
 using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications
 {
-	public partial class BadgeUpdater 
+	public partial class BadgeUpdater
 	{
-		public  void Update(BadgeNotification notification)
+		partial void SetBadge(string? value)
 		{
-			var element = notification.Content.SelectSingleNode("/badge") as XmlElement;
-			var attributeValue = element?.GetAttribute("value");
-			if (int.TryParse(attributeValue, out var badgeNumber))
+			if (value != null && int.TryParse(value, out var badgeNumber))
 			{
 				UIApplication.SharedApplication.ApplicationIconBadgeNumber = badgeNumber;
 			}
@@ -19,11 +18,5 @@ namespace Windows.UI.Notifications
 				Clear();
 			}
 		}
-
-		public  void Clear()
-		{
-			UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
-		}
 	}
 }
-#endif

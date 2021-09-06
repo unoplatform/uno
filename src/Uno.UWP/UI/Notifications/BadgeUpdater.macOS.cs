@@ -1,22 +1,15 @@
-#if __MACOS__
+#nullable enable
+
 using AppKit;
 using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications
 {
-	public partial class BadgeUpdater 
+	public partial class BadgeUpdater
 	{
-		public  void Update(BadgeNotification notification)
+		partial void SetBadge(string? value)
 		{
-			var element = notification.Content.SelectSingleNode("/badge") as XmlElement;
-			var attributeValue = element?.GetAttribute("value");
-			NSApplication.SharedApplication.DockTile.BadgeLabel = attributeValue ?? "";
-		}
-
-		public  void Clear()
-		{
-			NSApplication.SharedApplication.DockTile.BadgeLabel = "";
+			NSApplication.SharedApplication.DockTile.BadgeLabel = value ?? "";
 		}
 	}
 }
-#endif

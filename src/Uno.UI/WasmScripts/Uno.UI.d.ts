@@ -1153,6 +1153,16 @@ declare namespace Windows.UI.Core {
         private clearStack;
     }
 }
+interface Navigator {
+    setAppBadge(value: number): void;
+    clearAppBadge(): void;
+}
+declare namespace Windows.UI.Notifications {
+    class BadgeUpdater {
+        static setNumber(value: number): void;
+        static clear(): void;
+    }
+}
 declare namespace Windows.UI.ViewManagement {
     class ApplicationView {
         static setFullScreenMode(turnOn: boolean): boolean;

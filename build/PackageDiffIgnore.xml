@@ -3930,7 +3930,15 @@
 				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEAppearance..ctor()"
 				reason="Doesn't exist in UWP" />
 
-        </Methods>
+
+			<Member
+				fullName="System.Void Windows.UI.Notifications.BadgeUpdater..ctor()"
+				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.UI.Notifications.BadgeUpdateManager..ctor()"
+				reason="Should not be public" />
+
+		</Methods>
 		<Properties>
 			<Member
 				fullName="Windows.UI.Xaml.Media.Animation.Timeline/TimelineState Windows.UI.Xaml.Media.Animation.Timeline::State()"

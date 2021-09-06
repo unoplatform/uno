@@ -1,4 +1,4 @@
-#if __IOS__ || __MACOS__
+#if !__ANDROID__
 using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications
@@ -8,7 +8,7 @@ namespace Windows.UI.Notifications
 	/// This class also provides access to the XML content of the system-provided badge 
 	/// templates so that you can customize that content for use in updating your badges.
 	/// </summary>
-	public static partial class BadgeUpdateManager 
+	public static partial class BadgeUpdateManager
 	{
 		/// <summary>
 		/// Creates and initializes a new instance of the BadgeUpdater, which lets you
