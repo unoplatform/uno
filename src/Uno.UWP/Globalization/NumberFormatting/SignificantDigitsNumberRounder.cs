@@ -65,8 +65,14 @@ namespace Windows.Globalization.NumberFormatting
 			return (float)Math.Round(value, (int)SignificantDigits, MidpointRounding.AwayFromZero);
 		}
 
-		 public double RoundDouble(double value)
+		public double RoundDouble(double value)
         {
+			if (double.IsNaN(value) ||
+				double.IsInfinity(value))
+			{
+				return double.NaN;
+			}
+
             var integerPart = (int)Math.Truncate(value);
             var integerPartLength = (uint)GetIntegerLength(integerPart);
             var diffLength = SignificantDigits - integerPartLength;
