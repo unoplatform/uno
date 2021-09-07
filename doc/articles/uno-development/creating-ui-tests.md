@@ -17,12 +17,13 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 ## Running UI tests locally
 
 1. Ensure [your environment is configured](../get-started-vs.md) for the platform you want to run on.
+1. Ensure `UnoTargetFrameworkOverride` is set to `MonoAndroid11.0` or `net6.0-android` for testing on Android, `xamarinios` or `net6.0-ios` for testing on iOS, and `netstandard2.0` for testing on Wasm.
 1. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
-1. [Build and run the SamplesApp](working-with-the-samples-apps.md) at least once. 
-1. Open the [`Constants.cs`](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to run on. Only Android and WASM are supported from Visual Studio for Windows. (Running tests on iOS using a Mac is possible, see additional instructions below.)
+1. [Build and run the SamplesApp](working-with-the-samples-apps.md) at least once.
+1. Only Android and WASM are supported from Visual Studio for Windows. (Running tests on iOS using a Mac is possible, see additional instructions below.)
 1. If testing on WebAssembly, ensure that [`WebAssemblyDefaultUri`](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UITests/Constants.cs) matches Url used when the sample app was launched in the step above. Visual Studio may change the Url on demand to avoid conflicts with already running sites on the same machine.
-1. Open the [Test Explorer](https://docs.microsoft.com/en-us/visualstudio/test/run-unit-tests-with-test-explorer) in Visual Studio.
-1. UI tests are grouped under 'SamplesApp.UITests'. From the Test Explorer you can run all tests, debug a single test, etc. 
+1. Open the [Test Explorer](https://docs.microsoft.com/visualstudio/test/run-unit-tests-with-test-explorer) in Visual Studio.
+1. UI tests are grouped under 'SamplesApp.UITests'. From the Test Explorer you can run all tests, debug a single test, etc.
 
 > [!IMPORTANT]
 > Running the UI tests won't automatically rebuild the SamplesApp. If you add or modify samples, make sure to re-deploy the SamplesApp before you try to run UI tests against your modifications.
