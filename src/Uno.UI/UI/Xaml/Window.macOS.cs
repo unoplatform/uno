@@ -1,18 +1,18 @@
-using CoreGraphics;
-using Foundation;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using AppKit;
+using CoreGraphics;
+using Foundation;
+using Uno.UI;
+using Uno.UI.Controls;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
-using Uno.UI.Controls;
-using System.Drawing;
 using Windows.UI.ViewManagement;
-using Uno.UI;
 using Windows.UI.Xaml.Controls;
-using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml
 {
@@ -61,6 +61,8 @@ namespace Windows.UI.Xaml
 
 			InitializeCommon();
 		}
+
+		internal NSWindow NativeWindow => _window;
 
 		private void ObserveOrientationAndSize()
 		{

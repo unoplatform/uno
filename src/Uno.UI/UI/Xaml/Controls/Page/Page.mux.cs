@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 					this.SetFocusedElement(
 						this,
 						FocusState.Programmatic,
-						false /*animateIfBringIntoView*/);
+						animateIfBringIntoView: false);
 					return;
 				}
 
