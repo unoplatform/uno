@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
-using WS = Windows.Globalization.NumberFormatting;
 
 namespace Uno.UI.Tests.Windows_Globalization
 {
@@ -21,7 +16,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(123, (uint)5, 123)]
         public void When_UsingVariousSignificantDigits(double value, uint significantDigits, double expected)
         {
-            WS.SignificantDigitsNumberRounder rounder = new WS.SignificantDigitsNumberRounder();
+            SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
             rounder.SignificantDigits = significantDigits;
 
             var rounded = rounder.RoundDouble(value);
@@ -37,7 +32,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.23, -1.3)]
 		public void When_RoundingAlgorithm_Is_RoundAwayFromZero(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundAwayFromZero, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundAwayFromZero, expected);
 		}
 
 		[DataTestMethod]
@@ -49,7 +44,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.23, -1.2)]
 		public void When_RoundingAlgorithm_Is_RoundHalfAwayFromZero(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundHalfAwayFromZero, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfAwayFromZero, expected);
 		}
 
 		[DataTestMethod]
@@ -61,7 +56,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.23, -1.2)]
 		public void When_RoundingAlgorithm_Is_RoundUp(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundUp, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundUp, expected);
 		}
 
 		[DataTestMethod]
@@ -73,7 +68,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.23, -1.2)]
 		public void When_RoundingAlgorithm_Is_RoundHalfUp(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundHalfUp, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfUp, expected);
 		}
 
 		[DataTestMethod]
@@ -85,7 +80,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.23, -1.3)]
 		public void When_RoundingAlgorithm_Is_RoundDown(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundDown, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundDown, expected);
 		}
 
 		[DataTestMethod]
@@ -97,7 +92,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.23, -1.2)]
 		public void When_RoundingAlgorithm_Is_RoundHalfDown(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundHalfDown, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfDown, expected);
 		}
 		
 		[DataTestMethod]
@@ -109,7 +104,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.23, -1.2)]
 		public void When_RoundingAlgorithm_Is_RoundTowardsZero(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundTowardsZero, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundTowardsZero, expected);
 		}
 
 		[DataTestMethod]
@@ -121,7 +116,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.23, -1.2)]
 		public void When_RoundingAlgorithm_Is_RoundHalfTowardsZero(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundHalfTowardsZero, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfTowardsZero, expected);
 		}
 
 		[DataTestMethod]
@@ -139,7 +134,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.33, -1.3)]
 		public void When_RoundingAlgorithm_Is_RoundHalfToEven(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundHalfToEven, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfToEven, expected);
 		}
 
 		[DataTestMethod]
@@ -157,7 +152,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(-1.33, -1.3)]
 		public void When_RoundingAlgorithm_Is_RoundHalfToOdd(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundHalfToOdd, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfToOdd, expected);
 		}
 
 		[DataTestMethod]
@@ -166,12 +161,12 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(double.PositiveInfinity, double.NaN)]
 		public void When_Value_Is_Special(double value, double expected)
 		{
-			TestRoundingAlgorithm(value, RoundingAlgorithm.RoundHalfUp, expected);
+			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfUp, expected);
 		}
 
-		private void TestRoundingAlgorithm(double value, RoundingAlgorithm roundingAlgorithm, double expected)
+		private void When_UsingARoundingAlgorithmCore(double value, RoundingAlgorithm roundingAlgorithm, double expected)
         {
-            WS.SignificantDigitsNumberRounder rounder = new WS.SignificantDigitsNumberRounder();
+			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
             rounder.SignificantDigits = 2;
             rounder.RoundingAlgorithm = roundingAlgorithm;
 
@@ -183,17 +178,15 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_RoundingAlgorithm_Is_None_Then_Should_Throw()
 		{
-			WS.SignificantDigitsNumberRounder rounder = new WS.SignificantDigitsNumberRounder();
-			Assert.ThrowsException<System.ArgumentException>(() => rounder.RoundingAlgorithm = RoundingAlgorithm.None);
+			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
+			Assert.ThrowsException<ArgumentException>(() => rounder.RoundingAlgorithm = RoundingAlgorithm.None);
 		}
 
 		[TestMethod]
 		public void When_SignificantDigits_Is_Zero_Then_Should_Throw()
 		{
-			WS.SignificantDigitsNumberRounder rounder = new WS.SignificantDigitsNumberRounder();
-			Assert.ThrowsException<System.ArgumentException>(() => rounder.SignificantDigits = 0);
+			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
+			Assert.ThrowsException<ArgumentException>(() => rounder.SignificantDigits = 0);
 		}
-
-
 	}
 }

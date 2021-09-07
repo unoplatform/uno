@@ -12,6 +12,6 @@ namespace Windows.Globalization.NumberFormatting
 		RoundHalfTowardsZero,
 		RoundHalfAwayFromZero,
 		RoundHalfToEven,
-		RoundHalfToOdd,
+		RoundHalfToOdd
 	}
 }
