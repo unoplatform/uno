@@ -154,24 +154,26 @@ namespace Windows.UI.Xaml.Controls
 		private void SetHyperlinkForegroundOverrideForBackPlate()
 		{
 			// TODO Uno: BackPlate on TextBlock is not supported, terminate early
-			
-			//var contentPresenterPart = GetTemplateChild(ContentPresenterName);
 
-			//// If HyperLinkButton is not using the current template try to get the ContentPresenter by its name in TextBlockButtonStyle.
-			//// TextBlockButtonStyle isn't normally used with HyperlinkButton. Today it is sometimes used to remove the underline on the HyperlinkButton.
-			//// The style originally existed just to support some of the VS templates that shipped with Win8.
-			//if (contentPresenterPart == null)
-			//{
-			//	contentPresenterPart = GetTemplateChild(ContentPresenterLegacyName);
-			//}
+#if false
+			var contentPresenterPart = GetTemplateChild(ContentPresenterName);
 
-			//if (contentPresenterPart != null)
-			//{
-			//	if (contentPresenterPart is ContentPresenter contentPresenter)
-			//	{
-			//		SetHyperlinkForegroundOverrideForBackPlateRecursive(contentPresenter);
-			//	}
-			//}
+			// If HyperLinkButton is not using the current template try to get the ContentPresenter by its name in TextBlockButtonStyle.
+			// TextBlockButtonStyle isn't normally used with HyperlinkButton. Today it is sometimes used to remove the underline on the HyperlinkButton.
+			// The style originally existed just to support some of the VS templates that shipped with Win8.
+			if (contentPresenterPart == null)
+			{
+				contentPresenterPart = GetTemplateChild(ContentPresenterLegacyName);
+			}
+
+			if (contentPresenterPart != null)
+			{
+				if (contentPresenterPart is ContentPresenter contentPresenter)
+				{
+					SetHyperlinkForegroundOverrideForBackPlateRecursive(contentPresenter);
+				}
+			}
+#endif
 		}
 
 		//private void SetHyperlinkForegroundOverrideForBackPlateRecursive(UIElement pElement)

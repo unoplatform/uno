@@ -19,8 +19,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	public partial class ButtonBase
 	{
 		// Last known position of the pointer with respect to this button.
-		// Declared as protected so the RepeatButton can access it.
-		protected Point _pointerPosition = Point.Zero;
+		private Point _pointerPosition = Point.Zero;
 
 		// True if the SPACE or ENTER key is currently pressed, false otherwise.
 		private bool _isSpaceOrEnterKeyDown = false;
@@ -609,6 +608,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				IsPressed = false;
 				_pointerForPendingRightTapped = args.Pointer;
 			}
+			//TODO Uno: GestureFollowing is not implemented yet.
 			var gestureFollowing = args.GestureFollowing;
 			if (gestureFollowing == GestureModes.RightTapped)
 			{
