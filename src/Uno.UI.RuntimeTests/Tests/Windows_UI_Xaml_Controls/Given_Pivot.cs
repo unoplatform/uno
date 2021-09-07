@@ -92,6 +92,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			headerItem.Content.Should().Be("New text");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Changing_SelectedItem_Affects_SelectedIndex()
+		{
+			var pivotItem1 = new PivotItem { Header = "First" };
+			var pivotItem2 = new PivotItem { Header = "Second" };
+			var SUT = new Pivot
+			{
+				Items = { pivotItem1, pivotItem2 },
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectedIndex.Should().Be(0);
+			SUT.SelectedItem.Should().Be(pivotItem1);
+
+			SUT.SelectedItem = pivotItem2;
+
+			SUT.SelectedIndex.Should().Be(1);
+			SUT.SelectedItem.Should().Be(pivotItem2);
+		}
+
 		private class MyContext
 		{
 			public MyContext()
