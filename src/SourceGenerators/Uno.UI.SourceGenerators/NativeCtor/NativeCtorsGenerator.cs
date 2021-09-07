@@ -141,9 +141,9 @@ namespace {0}
 				if (isiOSView || ismacOSView)
 				{
 					Func<IMethodSymbol, bool> predicate = m => !m.Parameters.IsDefaultOrEmpty && SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, _intPtrSymbol);
-					var nativeCtor = GetNativeCtor(typeSymbol, predicate);
+					var nativeCtor = GetNativeCtor(typeSymbol, predicate, considerAllBaseTypes: false);
 
-					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate) != null)
+					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 					{
 						_context.AddSource(
 							HashBuilder.BuildIDFromSymbol(typeSymbol),
@@ -161,9 +161,9 @@ namespace {0}
 				if (isAndroidView)
 				{
 					Func<IMethodSymbol, bool> predicate = m => m.Parameters.Select(p => p.Type).SequenceEqual(_javaCtorParams ?? Array.Empty<ITypeSymbol?>());
-					var nativeCtor = GetNativeCtor(typeSymbol, predicate);
+					var nativeCtor = GetNativeCtor(typeSymbol, predicate, considerAllBaseTypes: false);
 
-					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate) != null)
+					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 					{
 						_context.AddSource(
 							HashBuilder.BuildIDFromSymbol(typeSymbol),
@@ -178,14 +178,30 @@ namespace {0}
 					}
 				}
 
-				static IMethodSymbol? GetNativeCtor(INamedTypeSymbol? type, Func<IMethodSymbol, bool> predicate)
+				static IMethodSymbol? GetNativeCtor(INamedTypeSymbol? type, Func<IMethodSymbol, bool> predicate, bool considerAllBaseTypes)
 				{
+					// Consider:
+					// Type A -> Type B -> Type C
+					// HasCtor   NoCtor    NoCtor
+					// We want to generate the ctor for both Type B and Type C
+					// But since the generator doesn't guarantee Type B is getting processed first,
+					// We need to check the inheritance hierarchy.
+					// However, assume Type B wasn't declared in source, we can't generate the ctor for it.
+					// Consequently, Type C shouldn't generate source as well.
 					if (type is null)
 					{
 						return null;
 					}
 
-					return type.GetMembers(WellKnownMemberNames.InstanceConstructorName).Cast<IMethodSymbol>().FirstOrDefault(predicate);
+					var ctor = type.GetMembers(WellKnownMemberNames.InstanceConstructorName).Cast<IMethodSymbol>().FirstOrDefault(predicate);
+					if (ctor != null || !considerAllBaseTypes || !type.Locations.Any(l => l.IsInSource))
+					{
+						return ctor;
+					}
+					else
+					{
+						return GetNativeCtor(type.BaseType, predicate, true);
+					}
 				}
 			}
 
