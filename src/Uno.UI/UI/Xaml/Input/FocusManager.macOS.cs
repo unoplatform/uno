@@ -12,9 +12,9 @@ namespace Windows.UI.Xaml.Input
 	{
 		private static void FocusNative(UIElement control)
 		{
-			if (control?.CanBecomeFirstResponder == true)
+			if (control?.AcceptsFirstResponder() == true)
 			{
-				control.BecomeFirstResponder();
+				Window.Current?.NativeWindow?.MakeFirstResponder(control);
 			}
 		}
 	}
