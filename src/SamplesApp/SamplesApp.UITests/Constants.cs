@@ -16,9 +16,9 @@ namespace SamplesApp.UITests
 
 		// Default active platform when running under Visual Studio test runner
 		public const Platform CurrentPlatform =
-#if CURRENT_PLATFORM_ANDROID
+#if TARGET_FRAMEWORK_OVERRIDE_ANDROID
 			Platform.Android;
-#elif CURRENT_PLATFORM_IOS
+#elif TARGET_FRAMEWORK_OVERRIDE_IOS
 			Platform.iOS;
 #else
 			Platform.Browser;
