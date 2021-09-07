@@ -182,12 +182,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (SharedHelpers.IsRS3OrHigher())
 				{
+#if !HAS_UNO
 					// Listen to PreviewKeyDown because textbox eats the down arrow key in some circumstances.
+					textBox.PreviewKeyDown += OnNumberBoxKeyDown;
+					registrations.Add(() => textBox.PreviewKeyDown -= OnNumberBoxKeyDown);
+#else
 					// UNO Docs: PreviewKeyDown is not implemented. Use KeyDown.
-					//textBox.PreviewKeyDown += OnNumberBoxKeyDown;
-					//registrations.Add(() => textBox.PreviewKeyDown -= OnNumberBoxKeyDown);
 					textBox.KeyDown += OnNumberBoxKeyDown;
 					registrations.Add(() => textBox.KeyDown -= OnNumberBoxKeyDown);
+#endif
 				}
 				else
 				{
