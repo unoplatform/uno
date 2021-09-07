@@ -112,7 +112,5 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-
-	<ItemGroup>
-	</ItemGroup>
+	
 </Project>

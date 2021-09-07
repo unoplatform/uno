@@ -208,6 +208,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void PrepareState()
 		{
+			//TODO Uno specific: No base implementation exists yet.
 			//base.PrepareState();
 
 			TemplateSettings = new ToggleSwitchTemplateSettings();

@@ -670,7 +670,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			var pointerDeviceType = pointerPoint.PointerDevice?.PointerDeviceType ?? PointerDeviceType.Touch;
 			if (pointerDeviceType == PointerDeviceType.Touch)
 			{
-				IsPointerOver = false;
+				//IsPointerOver = false;
 			}
 
 			using var suspender = new StateChangeSuspender(this);
