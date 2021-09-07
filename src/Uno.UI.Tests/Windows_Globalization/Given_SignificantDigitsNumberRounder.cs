@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.Windows_Globalization
         [DataRow(123.456, (uint)2, 120)]
         [DataRow(123.456, (uint)1, 100)]
         [DataRow(123, (uint)5, 123)]
-        public void Test_SignificantDigitsNumberRounder(double value, uint significantDigits, double expected)
+        public void When_UsingVariousSignificantDigits(double value, uint significantDigits, double expected)
         {
             WS.SignificantDigitsNumberRounder rounder = new WS.SignificantDigitsNumberRounder();
             rounder.SignificantDigits = significantDigits;
@@ -181,14 +181,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 
 		[TestMethod]
-		public void Should_Throw_When_RoundingAlgorithm_Is_None()
+		public void When_RoundingAlgorithm_Is_None_Then_Should_Throw()
 		{
 			WS.SignificantDigitsNumberRounder rounder = new WS.SignificantDigitsNumberRounder();
 			Assert.ThrowsException<System.ArgumentException>(() => rounder.RoundingAlgorithm = RoundingAlgorithm.None);
 		}
 
 		[TestMethod]
-		public void Should_Throw_When_SignificantDigits_Is_Zero()
+		public void When_SignificantDigits_Is_Zero_Then_Should_Throw()
 		{
 			WS.SignificantDigitsNumberRounder rounder = new WS.SignificantDigitsNumberRounder();
 			Assert.ThrowsException<System.ArgumentException>(() => rounder.SignificantDigits = 0);
