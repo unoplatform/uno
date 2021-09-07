@@ -56,7 +56,7 @@ namespace Uno.UI
 		public static event EventHandler<CurrentActivityChangedEventArgs> CurrentChanged;
 
 		private static int _instanceCount = 0;
-		private static IImmutableDictionary<int, BaseActivity> _instances = ImmutableDictionary<int, BaseActivity>.Empty;
+		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity _current;
 
 		/// <summary>
@@ -67,7 +67,8 @@ namespace Uno.UI
 		/// <summary>
 		/// Gets a list of all activities which are currently alive.
 		/// </summary>
-		public static IImmutableDictionary<int, BaseActivity> Instances => _instances;
+		public static IImmutableDictionary<int, BaseActivity> Instances
+			=> ImmutableDictionary<int, BaseActivity>.Empty.AddRange(_instances) ;
 
 		/// <summary>
 		/// Gets the currently running activity, if any.
@@ -246,37 +247,28 @@ namespace Uno.UI
 
 		private void NotifyCreatingInstance()
 		{
-			IImmutableDictionary<int, BaseActivity> capture, updated;
-			do
+			lock (_instances)
 			{
-				capture = _instances;
-				updated = capture.Add(Id, this);
-			} while (Interlocked.CompareExchange(ref _instances, updated, capture) != capture);
+				_instances.Add(Id, this);
+			}
 
-			InstancesChanged?.Invoke(null, ActivitiesCollectionChangedEventArgs.Added(Id, updated));
+			InstancesChanged?.Invoke(null, ActivitiesCollectionChangedEventArgs.Added(Id, Instances));
 		}
 
 		private void NotifyDestroyingInstance(bool isFinalizer)
 		{
 			try
 			{
-				IImmutableDictionary<int, BaseActivity> capture, updated;
-				do
+				lock (_instances)
 				{
-					capture = _instances;
-					if (!capture.ContainsKey(Id))
-					{
-						return;
-					}
-
-					updated = capture.Remove(Id);
-				} while (Interlocked.CompareExchange(ref _instances, updated, capture) != capture);
+					_instances.Remove(Id);
+				}
 
 				DispatchedHandler notify = () =>
 				{
 					try
 					{
-						InstancesChanged?.Invoke(null, ActivitiesCollectionChangedEventArgs.Removed(Id, updated));
+						InstancesChanged?.Invoke(null, ActivitiesCollectionChangedEventArgs.Removed(Id, Instances));
 					}
 					catch (Exception e)
 					{
