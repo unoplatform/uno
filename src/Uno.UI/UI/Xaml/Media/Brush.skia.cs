@@ -107,9 +107,9 @@ namespace Windows.UI.Xaml.Media
 			{
 				return AssignAndObserveAcrylicBrush(acrylicBrush, compositor, brushSetter);
 			}
-			else if (brush is XamlCompositionBrushBase xamlCompositionBrushBase)
+			else if (brush is XamlCompositionBrushBase unimplementedCompositionBrush)
 			{
-				return AssignAndObserveXamlCompositionBrush(xamlCompositionBrushBase, compositor, brushSetter);
+				return AssignAndObserveXamlCompositionBrush(unimplementedCompositionBrush, compositor, brushSetter);
 			}
 			else
 			{
@@ -245,17 +245,27 @@ namespace Windows.UI.Xaml.Media
 			return disposables;
 		}
 
+		/// <summary>
+		/// Apply fallback colour for unimplemented <see cref="XamlCompositionBrushBase"/> types. For implemented types a more specific method
+		/// should be supplied.
+		/// </summary>
 		private static IDisposable AssignAndObserveXamlCompositionBrush(XamlCompositionBrushBase brush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			var disposables = new CompositeDisposable();
 
-			var compositionBrush = brush.CompositionBrush;
+			var compositionBrush = compositor.CreateColorBrush(brush.FallbackColorWithOpacity);
 
-			//brush.RegisterDisposablePropertyChangedCallback(
-			//	XamlCompositionBrushBase.CompositionBrushProperty,
-			//	(s, e) => brushSetter(((CompositionBrush)e.NewValue))
-			//)
-			//.DisposeWith(disposables);
+			brush.RegisterDisposablePropertyChangedCallback(
+				AcrylicBrush.FallbackColorProperty,
+				(s, colorArg) => compositionBrush.Color = brush.FallbackColorWithOpacity
+			)
+			.DisposeWith(disposables);
+
+			brush.RegisterDisposablePropertyChangedCallback(
+				AcrylicBrush.OpacityProperty,
+				(s, colorArg) => compositionBrush.Color = brush.FallbackColorWithOpacity
+			)
+			.DisposeWith(disposables);
 
 			brushSetter(compositionBrush);
 
