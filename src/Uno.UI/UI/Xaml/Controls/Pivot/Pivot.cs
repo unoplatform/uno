@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				(true, true, _) => PivotHeaderItemSelectionStates.SelectedPointerOver,
 				(true, _, true) => PivotHeaderItemSelectionStates.SelectedPressed,
-				(true, _, _) => PivotHeaderItemSelectionStates.SelectedPressed,
+				(true, _, _) => PivotHeaderItemSelectionStates.Selected,
 				(false, true, _) => PivotHeaderItemSelectionStates.UnselectedPointerOver,
 				(false, _, true) => PivotHeaderItemSelectionStates.UnselectedPressed,
 				(false, _, _) => PivotHeaderItemSelectionStates.Unselected,
