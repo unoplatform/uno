@@ -165,6 +165,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (item is PivotItem pivotItem)
 					{
+						pivotItem.PivotHeaderItem = headerItem;
 						headerItem.Content = pivotItem.Header;
 					}
 					else

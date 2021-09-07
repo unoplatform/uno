@@ -11,6 +11,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -69,6 +70,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			tbs2.Should().NotBeNull();
 			tbs2.Should().HaveCount(1);
 			items[1].Content.Should().Be(tbs2.ElementAt(0).Text);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Changing_Header_Affects_UI()
+		{
+			var pivotItem = new PivotItem { Header = "Initial text" };
+			var SUT = new Pivot
+			{
+				Items = { pivotItem },
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var pivotHeaderPanel = (PivotHeaderPanel)SUT.GetTemplateChild("StaticHeader");
+			var headerItem = (PivotHeaderItem)pivotHeaderPanel.Children.Single();
+			headerItem.Content.Should().Be("Initial text");
+			pivotItem.Header = "New text";
+			headerItem.Content.Should().Be("New text");
 		}
 
 		private class MyContext
