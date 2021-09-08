@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Markup;
 using System.Threading;
 using Windows.UI.Core;
 using Uno.Disposables;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -29,7 +30,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			public const int StoryBoard_Resume = 4;
 		}
 
-		private DateTimeOffset _lastBeginTime;
+		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
 		private int _runningChildren = 0;
 		private bool _hasFillingChildren = false;
@@ -110,7 +111,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			State = TimelineState.Active;
 			_hasFillingChildren = false;
 			_replayCount = 1;
-			_lastBeginTime = DateTimeOffset.Now;
+			_activeDuration.Restart();
 
 			Play();
 		}
@@ -340,7 +341,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (_runningChildren == 0)
 			{
-				if (NeedsRepeat(_lastBeginTime, _replayCount))
+				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
 					Replay(); // replay the animation
 					return;

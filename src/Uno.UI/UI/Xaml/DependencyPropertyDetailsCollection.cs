@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 	/// </remarks>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
-		private static readonly DependencyPropertyDetails[] Empty = new DependencyPropertyDetails[0];
+		private static readonly DependencyPropertyDetails?[] Empty = new DependencyPropertyDetails?[0];
 
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
@@ -33,9 +33,9 @@ namespace Windows.UI.Xaml
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
 		private DependencyPropertyDetails? _templatedParentPropertyDetails;
 
-		private readonly static ArrayPool<DependencyPropertyDetails> _pool = ArrayPool<DependencyPropertyDetails>.Create(500, 100);
+		private readonly static ArrayPool<DependencyPropertyDetails?> _pool = ArrayPool<DependencyPropertyDetails?>.Create(500, 100);
 
-		private DependencyPropertyDetails[]? _entries;
+		private DependencyPropertyDetails?[]? _entries;
 		private int _entriesLength;
 		private int _minId;
 		private int _maxId;
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml
 			_templatedParentProperty = templatedParentProperty;
 		}
 
-		private DependencyPropertyDetails[] Entries
+		private DependencyPropertyDetails?[] Entries
 		{
 			get
 			{
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml
 				if (forceCreate)
 				{
 					int newEntriesSize;
-					DependencyPropertyDetails[] newEntries;
+					DependencyPropertyDetails?[] newEntries;
 
 					if (entryIndex < 0)
 					{
@@ -210,7 +210,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private void AssignEntries(DependencyPropertyDetails[] newEntries, int newSize)
+		private void AssignEntries(DependencyPropertyDetails?[] newEntries, int newSize)
 		{
 			ReturnEntriesToPool();
 
@@ -230,7 +230,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal IEnumerable<DependencyPropertyDetails> GetAllDetails() => Entries.Trim();
+		internal DependencyPropertyDetails?[] GetAllDetails() => Entries;
 
 		/// <summary>
 		/// Adds a default value provider.

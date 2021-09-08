@@ -1183,11 +1183,17 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
 		{
-			var propertyValues = _properties.GetAllDetails()
-				.Except(_properties.DataContextPropertyDetails, _properties.TemplatedParentPropertyDetails)
-				.Select(d => GetValue(d));
-			foreach (var propertyValue in propertyValues)
+			foreach (var propertyDetail in _properties.GetAllDetails())
 			{
+				if(propertyDetail == null
+					|| propertyDetail == _properties.DataContextPropertyDetails
+					|| propertyDetail == _properties.TemplatedParentPropertyDetails)
+				{
+					continue;
+				}
+
+				var propertyValue = GetValue(propertyDetail);
+
 				if (propertyValue is IEnumerable<DependencyObject> dependencyObjectCollection &&
 					// Try to avoid enumerating collections that shouldn't be enumerated, since we may be encountering user-defined values. This may need to be refined to somehow only consider values coming from the framework itself.
 					(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
@@ -1326,7 +1332,7 @@ namespace Windows.UI.Xaml
 			// properties.
 
 			// Ancestors is a local cache to avoid walking up the tree multiple times.
-			var ancestors = new Dictionary<object, bool>();
+			var ancestors = new AncestorsDictionary();
 
 			// This alias is used to avoid the resolution of the underlying WeakReference during the
 			// call to IsAncestor.
@@ -1374,7 +1380,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private static bool IsAncestor(DependencyObject? instance, Dictionary<object, bool> map, object ancestor)
+		private static bool IsAncestor(DependencyObject? instance, AncestorsDictionary map, object ancestor)
 		{
 #if DEBUG
 			var hashSet = new HashSet<DependencyObject>(Uno.ReferenceEqualityComparer<DependencyObject>.Default);
@@ -1417,7 +1423,7 @@ namespace Windows.UI.Xaml
 
 				}
 
-				map[ancestor] = isAncestor;
+				map.Set(ancestor, isAncestor);
 			}
 
 			return isAncestor;

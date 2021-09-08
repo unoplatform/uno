@@ -239,46 +239,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							writer.AppendLineInvariant(@"item();");
 						}
 					}
-
-					using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByFullName(string fullName)"))
-					{
-						writer.AppendLineInvariant(@"var selector = _bindableTypeCacheByFullName[fullName] as TypeBuilderDelegate;");
-
-						using (writer.BlockInvariant(@"if(selector != null)"))
-						{
-							writer.AppendLineInvariant(@"return selector();");
-						}
-						using (writer.BlockInvariant(@"else"))
-						{
-							writer.AppendLineInvariant(@"return null;");
-						}
-					}
-
-					using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByType(Type type)"))
-					{
-						writer.AppendLineInvariant(@"var selector = _bindableTypeCacheByFullName[type.FullName] as TypeBuilderDelegate;");
-
-						using (writer.BlockInvariant(@"if(selector != null)"))
-						{
-							writer.AppendLineInvariant(@"return selector();");
-						}
-
-						writer.AppendLineInvariant(@"#if DEBUG");
-						using (writer.BlockInvariant(@"else"))
-						{
-							using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
-							{
-								using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType)"))
-								{
-									writer.AppendLineInvariant(@"_knownMissingTypes.Add(type);");
-									writer.AppendLineInvariant(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
-								}
-							}
-						}
-						writer.AppendLineInvariant(@"#endif");
-
-						writer.AppendLineInvariant(@"return null;");
-					}
 				}
 			}
 
@@ -656,32 +616,61 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private void GenerateTypeTable(IndentedStringBuilder writer, IEnumerable<INamedTypeSymbol> types)
 			{
-				using (writer.BlockInvariant("static BindableMetadataProvider()"))
+				foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType))
 				{
-					foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType))
+					writer.AppendLineInvariant($"private global::Uno.UI.DataBinding.IBindableType _bindableType{type.Value.Index:000};");
+				}
+
+				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByFullName(string fullName)"))
+				{
+					using (writer.BlockInvariant(@"switch(fullName)"))
 					{
-						writer.AppendLineInvariant($"RegisterBuilder{type.Value.Index:000}();");
+						foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType))
+						{
+							var typeIndexString = $"{type.Value.Index:000}";
+
+							writer.AppendLineInvariant($"case \"{type.Key}\":");
+							using (writer.BlockInvariant($"if(_bindableType{typeIndexString} == null)"))
+							{
+								if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+								{
+									var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
+									var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
+
+									writer.AppendLineInvariant($"if(global::{linkerHintsClassName}.{safeTypeName})");
+								}
+
+								writer.AppendLineInvariant($"_bindableType{typeIndexString} = MetadataBuilder_{typeIndexString}.Build();");
+							}
+
+							writer.AppendLineInvariant($"return _bindableType{typeIndexString};");
+						}
+
+						writer.AppendLineInvariant("default:");
+						writer.AppendLineInvariant(@"return null;");
 					}
 				}
 
-				foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType))
+				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByType(Type type)"))
 				{
-					using (writer.BlockInvariant($"static void RegisterBuilder{type.Value.Index:000}()"))
+					writer.AppendLineInvariant(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
+
+					writer.AppendLineInvariant(@"#if DEBUG");
+					using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 					{
-						if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+						using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType)"))
 						{
-							var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
-							var safeTypeName =  LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
-
-							writer.AppendLineInvariant($"if(global::{linkerHintsClassName}.{safeTypeName})");
+							writer.AppendLineInvariant(@"_knownMissingTypes.Add(type);");
+							writer.AppendLineInvariant(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 						}
-
-						writer.AppendLineInvariant(
-							"_bindableTypeCacheByFullName[\"{0}\"] = CreateMemoized(MetadataBuilder_{1:000}.Build);",
-							type.Key,
-							type.Value.Index
-						);
 					}
+					writer.AppendLineInvariant(@"#endif");
+
+					writer.AppendLineInvariant(@"return bindableType;");
+				}
+
+				using (writer.BlockInvariant("public BindableMetadataProvider()"))
+				{
 				}
 			}
 

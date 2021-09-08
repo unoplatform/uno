@@ -3929,7 +3929,10 @@
           <Member
 				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEAppearance..ctor()"
 				reason="Doesn't exist in UWP" />
-
+		  
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Media.Animation.Timeline.NeedsRepeat(System.DateTimeOffset lastBeginTime, System.Int32 replayCount)"
+				reason="Doesn't exist in UWP" />
 
 			<Member
 				fullName="System.Void Windows.UI.Notifications.BadgeUpdater..ctor()"

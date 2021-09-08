@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml
 			_ownerType = ownerType;
 			_isAttached = attached;
 			_isDependencyObjectCollection = typeof(DependencyObjectCollection).IsAssignableFrom(propertyType);
-			_isTypeNullable = propertyType.IsNullableCached();
+			_isTypeNullable = GetIsTypeNullable(propertyType);
 			_uniqueId = Interlocked.Increment(ref _globalId);
 			_hasWeakStorage = (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() ?? false;
 

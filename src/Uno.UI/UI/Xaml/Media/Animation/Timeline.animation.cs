@@ -8,6 +8,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Core;
 using Uno.Logging;
 using Uno.UI.DataBinding;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -30,7 +31,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				public const int Resume = 4;
 			}
 
-			private DateTimeOffset _lastBeginTime;
+			private readonly Stopwatch _activeDuration = new Stopwatch();
 			private int _replayCount = 1;
 			private T? _startingValue = null;
 			private T? _endValue = null;
@@ -71,7 +72,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			private string[] GetTraceProperties() => _owner?.GetTraceProperties();
 			private void ClearValue() => _owner?.ClearValue();
 			private void SetValue(object value) => _owner?.SetValue(value);
-			private bool NeedsRepeat(DateTimeOffset lastBeginTime, int replayCount) => _owner?.NeedsRepeat(lastBeginTime, replayCount) ?? false;
+			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
 			private object GetValue() => _owner?.GetValue();
 
 			public void Begin()
@@ -89,7 +90,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				_subscriptions.Clear(); //Dispose all and start a new
 
-				_lastBeginTime = DateTimeOffset.Now;
+				_activeDuration.Restart();
 				_replayCount = 1;
 
 				//Start the animation
@@ -330,7 +331,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			private void OnEnd()
 			{
 				// If the animation was GPU based, remove the animated value
-				if (NeedsRepeat(_lastBeginTime, _replayCount))
+				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
 					Replay(); // replay the animation
 					return;
