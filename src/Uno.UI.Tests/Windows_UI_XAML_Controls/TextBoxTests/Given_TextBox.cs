@@ -68,7 +68,7 @@ namespace Uno.UI.Tests.TextBoxTests
 			Assert.AreEqual(7, textBox.SelectionLength);
 		}
 
-		[TestMethod]]
+		[TestMethod]
 		[Ignore("https://github.com/unoplatform/uno/issues/6993")]
 		public void Calling_Select_With_Out_Of_Range_Length()
 		{
@@ -81,7 +81,7 @@ namespace Uno.UI.Tests.TextBoxTests
 			Assert.AreEqual(10, textBox.SelectionLength);
 		}
 
-		[TestMethod]]
+		[TestMethod]
 		[Ignore("https://github.com/unoplatform/uno/issues/6993")]
 		public void Calling_Select_With_Out_Of_Range_Start()
 		{
