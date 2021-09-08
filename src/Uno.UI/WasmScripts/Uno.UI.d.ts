@@ -584,6 +584,7 @@ declare namespace Uno.UI {
         private numberToCssColor;
         setCursor(cssCursor: string): string;
         getNaturalImageSize(imageUrl: string): Promise<string>;
+        select(elementId: number, start: number, length: number): void;
     }
 }
 interface PointerEvent {

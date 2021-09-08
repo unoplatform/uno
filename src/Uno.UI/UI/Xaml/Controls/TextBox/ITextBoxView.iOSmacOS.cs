@@ -29,5 +29,6 @@ namespace Windows.UI.Xaml.Controls
 
 		Brush Foreground { get; set; }
 		void SetTextNative(string text);
+		void Select(int start, int length);
 	}
 }

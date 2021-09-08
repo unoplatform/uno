@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ImeOptionsProperty, value); }
 		}
 
-		public static DependencyProperty ImeOptionsProperty { get ; } =
+		public static DependencyProperty ImeOptionsProperty { get; } =
 			DependencyProperty.Register("ImeOptions",
 				typeof(ImeAction),
 				typeof(TextBox),
@@ -187,6 +187,11 @@ namespace Windows.UI.Xaml.Controls
 				return wantsFocus;
 			}
 		}
+
+		partial void SelectPartial(int start, int length)
+			=> _textBoxView.SetSelection(start: start, stop: start + length);
+
+		partial void SelectAllPartial() => _textBoxView.SelectAll();
 
 		/// <summary>
 		/// Applies PreventKeyboardDisplayOnProgrammaticFocus by temporarily disabling soft input display.

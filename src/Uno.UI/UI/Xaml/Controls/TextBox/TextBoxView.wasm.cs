@@ -8,6 +8,7 @@ using Uno.Logging;
 using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
+using Uno.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -104,6 +105,9 @@ namespace Windows.UI.Xaml.Controls
 
 			InvalidateMeasure();
 		}
+
+		internal void Select(int start, int length)
+			=> WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.selectInputRange({HtmlId}, {start}, {length})");
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 

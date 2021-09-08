@@ -1939,6 +1939,9 @@ var Uno;
                     this.containerElement.appendChild(img);
                 });
             }
+            select(elementId, start, length) {
+                this.getView(elementId).setSelectionRange(start, start + length);
+            }
         }
         WindowManager._isHosted = false;
         WindowManager._isLoadEventsEnabled = false;

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.UI;
-using Windows.UI.Xaml.Data;
-using AppKit;
+﻿using AppKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using Uno.Client;
-using Foundation;
 using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls
@@ -62,6 +55,13 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 		}
+
+		partial void SelectPartial(int start, int length)
+		{
+			_textBoxView?.Select(start, length);
+		}
+
+		partial void SelectAllPartial() => Select(0, Text.Length);
 
 		private void UpdateTextBoxView()
 		{

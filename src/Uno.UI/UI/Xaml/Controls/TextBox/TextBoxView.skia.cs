@@ -44,7 +44,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
+
+		internal int GetSelectionLength() => _textBoxExtension?.GetSelectionLength() ?? 0;
+
 		public TextBlock DisplayBlock { get; } = new TextBlock();
+
 
 		internal void SetTextNative(string text)
 		{
@@ -61,6 +66,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_textBoxExtension?.SetTextNative(text);
+		}
+
+		internal void Select(int start, int length)
+		{
+			_textBoxExtension.Select(start, length);
 		}
 
 		internal void OnForegroundChanged(Brush brush) => DisplayBlock.Foreground = brush;

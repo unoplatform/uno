@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using UIKit;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
@@ -198,6 +199,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateFont();
 		}
+
+		public void Select(int start, int length)
+			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
 
 		public override UITextRange SelectedTextRange
 		{

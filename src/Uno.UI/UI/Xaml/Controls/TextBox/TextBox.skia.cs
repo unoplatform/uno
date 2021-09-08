@@ -23,6 +23,26 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFocusStateChangedPartial(FocusState focusState) => _textBoxView?.OnFocusStateChanged(focusState);
 
+		partial void SelectPartial(int start, int length)
+		{
+			_textBoxView?.Select(start, length);
+		}
+
+		partial void SelectAllPartial() => Select(0, Text.Length);
+
+		public int SelectionStart
+		{
+			get => _textBoxView?.GetSelectionStart() ?? 0;
+			set => Select(start: value, length: SelectionLength);
+		}
+
+		public int SelectionLength
+		{
+			get => _textBoxView?.GetSelectionLength() ?? 0;
+			set => Select(SelectionStart, value);
+		}
+
+
 		protected void SetIsPassword(bool isPassword) => _textBoxView?.SetIsPassword(isPassword);
 	}
 }

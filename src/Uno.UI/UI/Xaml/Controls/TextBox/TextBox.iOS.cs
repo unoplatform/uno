@@ -71,6 +71,16 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.UpdateTextAlignment();
 		}
 
+		partial void SelectPartial(int start, int length)
+		{
+			if (_textBoxView != null)
+			{
+				_textBoxView.Select(start, length);
+			}
+		}
+
+		partial void SelectAllPartial() => Select(0, Text.Length);
+
 		internal MultilineTextBoxView MultilineTextBox
 		{
 			get
@@ -267,7 +277,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ReturnKeyTypeProperty, value); }
 		}
 
-		public static DependencyProperty ReturnKeyTypeProperty { get ; } =
+		public static DependencyProperty ReturnKeyTypeProperty { get; } =
 			DependencyProperty.Register(
 				"ReturnKeyType",
 				typeof(UIReturnKeyType),
@@ -304,7 +314,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(KeyboardAppearanceProperty, value); }
 		}
 
-		public static DependencyProperty KeyboardAppearanceProperty { get ; } =
+		public static DependencyProperty KeyboardAppearanceProperty { get; } =
 			DependencyProperty.Register(
 				"KeyboardAppearance",
 				typeof(UIKeyboardAppearance),

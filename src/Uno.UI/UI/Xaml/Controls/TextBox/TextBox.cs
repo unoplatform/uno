@@ -767,6 +767,48 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
 
+		public void Select(int start, int length)
+		{
+			if (start < 0)
+			{
+				throw new ArgumentException($"'{start}' cannot be negative.", nameof(start));
+			}
+
+			if (length < 0)
+			{
+				throw new ArgumentException($"'{length}' cannot be negative.", nameof(length));
+			}
+
+			// TODO: Test and adjust (if needed) this logic for surrogate pairs.
+
+			var textLength = Text.Length;
+
+			if (start >= textLength)
+			{
+				start = textLength;
+				length = 0;
+			}
+			else if (start + length > textLength)
+			{
+				length = textLength - start;
+			}
+
+			if (SelectionStart == start && SelectionLength == length)
+			{
+				return;
+			}
+
+			SelectPartial(start, length);
+			OnSelectionChanged();
+		}
+
+		public void SelectAll() => SelectAllPartial();
+
+
+		partial void SelectPartial(int start, int length);
+
+		partial void SelectAllPartial();
+
 		internal override bool CanHaveChildren() => true;
 	}
 }

@@ -10,34 +10,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property TextWrapping
 		// Skipping already declared property TextAlignment
 		// Skipping already declared property Text
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  int SelectionStart
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TextBox.SelectionStart is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "int TextBox.SelectionStart");
-			}
-		}
-		#endif
-		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  int SelectionLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TextBox.SelectionLength is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "int TextBox.SelectionLength");
-			}
-		}
-		#endif
+		// Skipping already declared property SelectionStart
+		// Skipping already declared property SelectionLength
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string SelectedText
@@ -430,7 +404,7 @@ namespace Windows.UI.Xaml.Controls
 			nameof(CanPasteClipboardContent), typeof(bool),
 			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.TextBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.TextBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.Text.get
@@ -463,20 +437,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.SelectionChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.ContextMenuOpening.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.ContextMenuOpening.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Select( int start,  int length)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "void TextBox.Select(int start, int length)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SelectAll()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "void TextBox.SelectAll()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.Select(int, int)
+		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.SelectAll()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect GetRectFromCharacterIndex( int charIndex,  bool trailingEdge)
