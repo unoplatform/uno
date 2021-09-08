@@ -113,6 +113,14 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <None Remove="Tests\Windows_UI_Xaml_Controls\HyperlinkButtonTests\HyperlinkButtonPage.xaml" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Tests\Windows_UI_Xaml_Controls\HyperlinkButtonTests\HyperlinkButtonPage.xaml" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
 	</ItemGroup>
 	
