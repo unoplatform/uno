@@ -174,6 +174,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					if (_propertyInfo != null)
 					{
 						_propertyInfo.DataContext = null;
+						_propertyInfo.Dispose();
 					}
 
 					_propertyInfo = new BindingPath(

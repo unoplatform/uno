@@ -27,29 +27,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			var container = _app.Query("Container");
 			var containerRect = container.Single().Rect.ToRectangle();
 
-			// 5 is tolerance.
-			Assert.LessOrEqual(Math.Abs(animatedRectRect.X - containerRect.X), 5);
-			Assert.LessOrEqual(Math.Abs(animatedRectRect.Y - containerRect.Y), 5);
+			const int Tolerance = 5;
+			Assert.AreEqual(animatedRectRect.X, containerRect.X, Tolerance);
+			Assert.AreEqual(animatedRectRect.Y, containerRect.Y, Tolerance);
 
 			playBtn.FastTap();
-			await Task.Delay(1000); // Wait for animation.
+
+			_app.WaitForDependencyPropertyValue(_app.Marked("AnimationState"), "Text", "Completed!");
 
 			animatedRectRect = _app.Query("AnimatedRect").Single().Rect.ToRectangle();
 
 			// The rect should move horizontally.
-			Assert.LessOrEqual(Math.Abs(animatedRectRect.Right - containerRect.Right), 5);
-			Assert.LessOrEqual(Math.Abs(animatedRectRect.Y - containerRect.Y), 5);
+			Assert.AreEqual(animatedRectRect.Right, containerRect.Right, Tolerance);
+			Assert.AreEqual(animatedRectRect.Y, containerRect.Y, Tolerance);
 
 			// Change the direction
 			_app.Marked("IsDirectionHorizontalToggle").SetDependencyPropertyValue("IsOn", "True");
 
-			await Task.Delay(1000);
+			_app.WaitForDependencyPropertyValue(_app.Marked("AnimationState"), "Text", "Completed!");
 
 			animatedRectRect = _app.Query("AnimatedRect").Single().Rect.ToRectangle();
 
 			// The rect should move vertically.
-			Assert.LessOrEqual(Math.Abs(animatedRectRect.Right - containerRect.Right), 5);
-			Assert.LessOrEqual(Math.Abs(animatedRectRect.Bottom - containerRect.Bottom), 5);
+			Assert.AreEqual(animatedRectRect.Right, containerRect.Right, Tolerance);
+			Assert.AreEqual(animatedRectRect.Bottom, containerRect.Bottom, Tolerance);
 
 			// Toggle the rect
 			var animatedRect2 = _app.Query("AnimatedRect2");
@@ -58,17 +59,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			var container2 = _app.Query("Container2");
 			var container2Rect = container2.Single().Rect.ToRectangle();
 
-			Assert.LessOrEqual(Math.Abs(animatedRect2Rect.X - container2Rect.X), 5);
-			Assert.LessOrEqual(Math.Abs(animatedRect2Rect.Y - container2Rect.Y), 5);
+			Assert.AreEqual(animatedRect2Rect.X, container2Rect.X, Tolerance);
+			Assert.AreEqual(animatedRect2Rect.Y, container2Rect.Y, Tolerance);
 
 			_app.Marked("AnimatedRectSwitch").SetDependencyPropertyValue("IsOn", "True");
 
-			await Task.Delay(1000);
+			_app.WaitForDependencyPropertyValue(_app.Marked("AnimationState"), "Text", "Completed!");
 
 			animatedRect2Rect = _app.Query("AnimatedRect2").Single().Rect.ToRectangle();
 
-			Assert.LessOrEqual(Math.Abs(animatedRect2Rect.X - container2Rect.X), 5);
-			Assert.LessOrEqual(Math.Abs(animatedRect2Rect.Bottom - container2Rect.Bottom), 5);
+			Assert.AreEqual(animatedRect2Rect.X, container2Rect.X, Tolerance);
+			Assert.AreEqual(animatedRect2Rect.Bottom, container2Rect.Bottom, Tolerance);
 		}
 	}
 }

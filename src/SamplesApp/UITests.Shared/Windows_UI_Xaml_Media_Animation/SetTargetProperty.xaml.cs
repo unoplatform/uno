@@ -79,7 +79,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Media_Animation
 			_translateAnimation.From = 0;
 			_translateAnimation.To = length;
 
+			AnimationState.Text = "Started..";
 			_storyboard.Begin();
+			_storyboard.Completed += (sender, e) => AnimationState.Text = "Completed!";
 		}
 
 		private bool StopRunningAnimation()

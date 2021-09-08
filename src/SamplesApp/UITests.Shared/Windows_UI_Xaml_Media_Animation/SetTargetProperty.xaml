@@ -16,6 +16,7 @@
 		</Grid.RowDefinitions>
 
 		<StackPanel Grid.Row="0">
+			<TextBlock x:Name="AnimationState" />
 			<Button Content="Play/Replay" x:Name="playButton" Click="{x:Bind PlayAnimation}" />
 			<ToggleSwitch x:Name="IsDirectionHorizontalToggle"
 						  Header="Direction"
