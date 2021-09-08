@@ -374,7 +374,11 @@
     - name: Supported 3rd-party libraries
       href: supported-libraries.md
     - name: Performance
-      href: Uno-UI-Performance.md
+      items:
+        - name: Performance tips
+          href: Uno-UI-Performance.md
+        - name: How to profile applications
+          href: guides/profiling-applications.md
     - name: Advanced topics
       items:
         - name: (Wasm) Handling custom HTML events
