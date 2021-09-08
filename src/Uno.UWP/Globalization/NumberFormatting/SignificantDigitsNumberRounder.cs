@@ -94,14 +94,14 @@ namespace Windows.Globalization.NumberFormatting
             return Rounder.Round(value, (int)diffLength, RoundingAlgorithm);
         }
 
-        private static int GetIntegerLength(int integerPart)
+        private static int GetIntegerLength(int input)
         {
-            if (integerPart == 0)
+            if (input == 0)
 			{
 				return 1;
 			}
 
-			return (int)Math.Floor(Math.Log10(Math.Abs(integerPart))) + 1;
+			return (int)Math.Floor(Math.Log10(Math.Abs(input))) + 1;
         }
 	}
 }
