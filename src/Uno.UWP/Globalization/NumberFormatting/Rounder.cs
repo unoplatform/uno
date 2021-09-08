@@ -109,8 +109,8 @@ namespace Windows.Globalization.NumberFormatting
 
                         if (isHalf)
                         {
-                            if (intPart % 2 == 1 && value > 0 ||
-                                intPart % 2 == 0 && value < 0)
+                            if ((intPart % 2 == 1 && value > 0) ||
+                                (intPart % 2 == 0 && value < 0))
                             {
                                 value = Math.Floor(value);
                             }

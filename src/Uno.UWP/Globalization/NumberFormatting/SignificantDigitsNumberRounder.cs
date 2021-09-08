@@ -97,9 +97,11 @@ namespace Windows.Globalization.NumberFormatting
         private static int GetIntegerLength(int integerPart)
         {
             if (integerPart == 0)
-                return 1;
+			{
+				return 1;
+			}
 
-            return (int)Math.Floor(Math.Log10(Math.Abs(integerPart))) + 1;
+			return (int)Math.Floor(Math.Log10(Math.Abs(integerPart))) + 1;
         }
 	}
 }
