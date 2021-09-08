@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Forces ContentPresenter to materialize its template.
 				contentPresenter.Measure(new Size(0, 0));
-				if (VisualTreeHelper.GetChildrenCount(contentPresenter) == 1 && VisualTreeHelper.GetChild(contentPresenter, 0) is TextBlock textBlock)
+				if (VisualTreeHelper.GetChildrenCount(contentPresenter) == 1 && VisualTreeHelper.GetChild(contentPresenter, 0) is ImplicitTextBlock textBlock)
 				{
 					textBlock.TextDecorations = Windows.UI.Text.TextDecorations.Underline;
 				}
