@@ -19,7 +19,7 @@ using Windows.UI.Popups;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
-	[SampleControlInfo("CommandBar", "Examples", ignoreInSnapshotTests: true)]
+	[SampleControlInfo("CommandBar", "Examples")]
 	public sealed partial class CommandBar_Examples : UserControl
 	{
 		public CommandBar_Examples()
