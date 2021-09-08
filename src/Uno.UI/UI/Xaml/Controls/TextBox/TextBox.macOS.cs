@@ -54,6 +54,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
+			UpdateTextBoxView();
 		}
 
 		partial void SelectPartial(int start, int length)
@@ -74,8 +75,8 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_isPassword)
 				{
-					_textBoxView = new SecureTextBoxView(this) { UsesSingleLineMode = true };
-					_revealView = new TextBoxView(this) { UsesSingleLineMode = true };
+					_textBoxView = new SecureTextBoxView(this) { UsesSingleLineMode = true, Alignment = TextAlignment.ToNativeTextAlignment() };
+					_revealView = new TextBoxView(this) { UsesSingleLineMode = true, Alignment = TextAlignment.ToNativeTextAlignment() };
 					_isSecured = true;
 				}
 				else
@@ -86,6 +87,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						UsesSingleLineMode = usesSingleLineMode,
 						LineBreakMode = textWrapping == TextWrapping.WrapWholeWords ? NSLineBreakMode.ByWordWrapping : NSLineBreakMode.CharWrapping,
+						Alignment = TextAlignment.ToNativeTextAlignment()
 					};
 				}
 
