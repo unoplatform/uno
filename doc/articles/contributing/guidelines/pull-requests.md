@@ -15,7 +15,7 @@ Pull requests should all be made to the **master** branch.
 Make sure to rebase your work on the latest default branch of the Uno repository, when working on a fork:
 - Add the official uno repository to your remotes:
 ```bash
-git remote add uno https://github.com/unoplatform/uno
+git remote add uno-origin https://github.com/unoplatform/uno
 ```
 - Fetch the official repository
 ```bash
@@ -23,7 +23,7 @@ git fetch uno-origin
 ```
 - Rebase your work on the default branch
 ```bash
-git rebase uno/master
+git rebase uno-origin/master
 ```
 - Then push your branch to your fork:
 ```bash
@@ -40,7 +40,7 @@ Make sure that:
 - Squash your commits, using interactive rebase:
    ```
    git fetch uno-origin
-   git rebase uno/master -i # Rebase your branch on top of the latest master, squash using fixups
+   git rebase uno-origin/master -i # Rebase your branch on top of the latest master, squash using fixups
    git push -f
    ```
 - If you're fixing a regression introduced by a PR that has not been released in a stable version yet, use the `reg` category. Example: `fix(reg): Fixing issue of previous PR`.
