@@ -274,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 		void IRepeaterScrollingSurface.RegisterAnchorCandidate(UIElement element) => RegisterAnchorCandidate(element);
 		internal void RegisterAnchorCandidate(UIElement element)
 		{
-			if (HorizontalAnchorRatio != double.NaN || VerticalAnchorRatio != double.NaN)
+			if (!double.IsNaN(HorizontalAnchorRatio) || !double.IsNaN(VerticalAnchorRatio))
 			{
 				if (ScrollViewer is {} scrollViewer)
 				{
