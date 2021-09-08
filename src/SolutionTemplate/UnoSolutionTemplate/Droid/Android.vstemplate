@@ -32,9 +32,27 @@
 	  </Folder>
 	  <Folder Name="Resources" TargetFolderName="Resources">
 		<ProjectItem ReplaceParameters="true" TargetFileName="AboutResources.txt">AboutResources.txt</ProjectItem>
-		<Folder Name="drawable" TargetFolderName="drawable">
-		  <ProjectItem ReplaceParameters="false" TargetFileName="Icon.png">Icon.png</ProjectItem>
+		<Folder Name="mipmap-hdpi" TargetFolderName="mipmap-hdpi">
+		  <ProjectItem ReplaceParameters="false" TargetFileName="icon.png">icon.png</ProjectItem>
 		</Folder>
+        <Folder Name="mipmap-ldpi" TargetFolderName="mipmap-ldpi">
+          <ProjectItem ReplaceParameters="false" TargetFileName="icon.png">icon.png</ProjectItem>
+        </Folder>
+        <Folder Name="mipmap-mdpi" TargetFolderName="mipmap-mdpi">
+          <ProjectItem ReplaceParameters="false" TargetFileName="icon.png">icon.png</ProjectItem>
+        </Folder>
+        <Folder Name="mipmap-tvdpi" TargetFolderName="mipmap-tvdpi">
+          <ProjectItem ReplaceParameters="false" TargetFileName="icon.png">icon.png</ProjectItem>
+        </Folder>
+        <Folder Name="mipmap-xhdpi" TargetFolderName="mipmap-xhdpi">
+          <ProjectItem ReplaceParameters="false" TargetFileName="icon.png">icon.png</ProjectItem>
+        </Folder>
+        <Folder Name="mipmap-xxhdpi" TargetFolderName="mipmap-xxhdpi">
+          <ProjectItem ReplaceParameters="false" TargetFileName="icon.png">icon.png</ProjectItem>
+        </Folder>
+        <Folder Name="mipmap-xxxhdpi" TargetFolderName="mipmap-xxxhdpi">
+          <ProjectItem ReplaceParameters="false" TargetFileName="icon.png">icon.png</ProjectItem>
+        </Folder>
 		<Folder Name="values" TargetFolderName="values">
 		  <ProjectItem ReplaceParameters="true" TargetFileName="Strings.xml">Strings.xml</ProjectItem>
 		  <ProjectItem ReplaceParameters="true" TargetFileName="Styles.xml">Styles.xml</ProjectItem>

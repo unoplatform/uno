@@ -80,7 +80,13 @@
 		<AndroidResource Include="Resources\values\Strings.xml" />
 	</ItemGroup>
 	<ItemGroup>
-		<AndroidResource Include="Resources\drawable\Icon.png" />
+		<AndroidResource Include="Resources\mipmap-hdpi\icon.png" />
+		<AndroidResource Include="Resources\mipmap-ldpi\icon.png" />
+		<AndroidResource Include="Resources\mipmap-mdpi\icon.png" />
+		<AndroidResource Include="Resources\mipmap-tvdpi\icon.png" />
+		<AndroidResource Include="Resources\mipmap-xhdpi\icon.png" />
+		<AndroidResource Include="Resources\mipmap-xxhdpi\icon.png" />
+		<AndroidResource Include="Resources\mipmap-xxxhdpi\icon.png" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="Properties\AndroidManifest.xml" />

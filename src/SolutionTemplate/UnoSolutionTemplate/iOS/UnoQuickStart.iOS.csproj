@@ -120,13 +120,19 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Contents.json" />
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024%401x.png" />
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPad-76x76%402x.png" />
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPad-84x84%402x.png" />
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-20x20%402x.png" />
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-20x20%403x.png" />
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-40x40%403x.png" />
-		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-60x60%402x.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon20.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon29.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon40.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon58.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon60.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon76.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon80.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon87.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon120.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon152.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon167.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon180.png" />
+		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon1024.png" />
 		<ImageAsset Include="Media.xcassets\LaunchImages.launchimage\Contents.json" />
 	</ItemGroup>
 	<ItemGroup>
