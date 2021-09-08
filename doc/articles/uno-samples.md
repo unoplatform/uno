@@ -19,7 +19,7 @@ This sample application demonstrates the usage  of the `WebAuthenticationBroker`
 
 [Follow the tutorial](https://platform.uno/docs/articles/guides/open-id-connect.html)
 
-### Auto Suggest  
+### Auto-Suggest  
 An implementation of the XAML `AutoSuggest` control, showing how to autofill suggestions for user input. 
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/AutoSuggestSample)
@@ -62,6 +62,12 @@ A working implementation of a folder-based save file picker for iOS. See [the 'i
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/FileSavePickeriOS)
 
+### HtmlControls
+
+This is a WASM-only sample. It is creating _native_ HTML elements that can be used directly in XAML.
+
+[Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/HtmlControls)
+
 ### Localization Samples
 A pair of samples related to localization:
 - Localization: A sample showcasing the basics of localization.  
@@ -91,7 +97,7 @@ An example of a toggle that allows you to switch between Native UI Controls and 
 ### Package Resources
 An example that demonstrates the use of package assets and how to read them from your app. 
 
-Note that for WebAssembly assets are downloaded on demand, as can be seen in the brower's network tab.
+Note that for WebAssembly assets are downloaded on demand, as can be seen in the browser's network tab.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/PackageResources)
 
