@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Size _unclippedDesiredSize;
 
-		private UIElement _elementAsUIElement;
+		private readonly UIElement _elementAsUIElement;
 
 		public IFrameworkElement Panel { get; }
 
