@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 			return anchor.GetBoundsRectRelativeTo(this);
 		}
 
-		private Rect CalculateFlyoutPlacement(Size desiredSize, Size maxSize)
+		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize, Size maxSize)
 		{
 			if (!(GetAnchorRect() is { } anchorRect))
 			{

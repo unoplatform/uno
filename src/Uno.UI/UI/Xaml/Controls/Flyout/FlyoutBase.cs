@@ -456,7 +456,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			double maxHeight = double.NaN;
 			FrameworkElement spPopupAsFE;
 			FlowDirection flowDirection = FlowDirection.LeftToRight;
-			FlowDirection targetFlowDirection = FlowDirection.LeftToRight;
+			//FlowDirection targetFlowDirection = FlowDirection.LeftToRight;
 			bool isMenuFlyout = this is MenuFlyout;
 			bool preferTopPlacement = false;
 
@@ -512,7 +512,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			preferTopPlacement = (m_inputDeviceTypeUsedToOpen == InputDeviceType.Touch) && isMenuFlyout;
 			//bool useHandednessPlacement = (m_inputDeviceTypeUsedToOpen == DirectUI.InputDeviceType.Pen) && isMenuFlyout;
-			var useHandednessPlacement = false; // Uno TODO
+			//var useHandednessPlacement = false; // Uno TODO
 
 			if (preferTopPlacement)
 			{
