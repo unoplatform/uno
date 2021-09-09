@@ -30,12 +30,21 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 
 		public DateTimeOffset DtYear(object o)
 		{
+			var now = DateTimeOffset.Now;
 			if (o is SelectorItem item && item.Tag is string tag && !string.IsNullOrEmpty(tag))
 			{
+				switch (tag)
+				{
+					case "lastweek": return now.AddDays(-7);
+					case "nextweek": return now.AddDays(7);
+					case "today": return now;
+				}
+
 				var year = Convert.ToUInt16(tag);
 				return new DateTime(year, 1, 1, 0, 0, 0);
 			}
-			return DateTimeOffset.Now;
+
+			return now;
 		}
 
 		public string DtString(object o)
