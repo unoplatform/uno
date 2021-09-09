@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Defines an optional position of the popup in the <see cref="Target"/> element.
 		/// </summary>
-		internal Point? PopupPositionInTarget => m_isPositionedAtPoint ? m_targetPoint : null;
+		internal Point? PopupPositionInTarget => m_isPositionedAtPoint ? m_targetPoint : default(Point?);
 
 		public void Hide()
 		{
