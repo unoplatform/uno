@@ -1,0 +1,33 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+
+namespace Microsoft.UI.Xaml.Controls
+{
+	public partial class InfoBadgeTemplateSettings : DependencyObject
+	{
+		public InfoBadgeTemplateSettings()
+		{
+		}
+
+		public IconElement IconElement
+		{
+			get => (IconElement)GetValue(IconElementProperty);
+			set => SetValue(IconElementProperty, value);
+		}
+
+		public static readonly DependencyProperty IconElementProperty =
+			DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(InfoBadgeTemplateSettings), new FrameworkPropertyMetadata(null));
+
+		public CornerRadius InfoBadgeCornerRadius
+		{
+			get => (CornerRadius)GetValue(InfoBadgeCornerRadiusProperty);
+			set => SetValue(InfoBadgeCornerRadiusProperty, value);
+		}
+
+		public static readonly DependencyProperty InfoBadgeCornerRadiusProperty =
+			DependencyProperty.Register(nameof(InfoBadgeCornerRadius), typeof(CornerRadius), typeof(InfoBadgeTemplateSettings), new FrameworkPropertyMetadata(null));
+	}
+}
