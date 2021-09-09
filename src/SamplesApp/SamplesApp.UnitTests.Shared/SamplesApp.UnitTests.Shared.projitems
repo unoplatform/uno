@@ -49,7 +49,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\ThicknessHelper2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\TestCase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\TestRun.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\UnitTestEngineConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\UnitTestsControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\UnitTestsControl.CustomConsoleOutput.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\UnitTestTypeInfo.cs" />
   </ItemGroup>
   <ItemGroup>

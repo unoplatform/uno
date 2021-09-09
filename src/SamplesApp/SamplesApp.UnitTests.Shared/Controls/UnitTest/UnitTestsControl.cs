@@ -98,32 +98,12 @@ namespace Uno.UI.Samples.Tests
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
-			var filter = testFilter.Text.Trim();
-			if (string.IsNullOrEmpty(filter))
-			{
-				filter = null;
-			}
-
+			var config = BuildConfig();
 			testResults.Children.Clear();
 
-			async Task DoRunTests()
-			{
-				try
-				{
-					await RunTests(_cts.Token, filter?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>());
-				}
-				finally
-				{
-					await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-					{
-						runButton.IsEnabled = true;
-						stopButton.IsEnabled = false;
-					});
-				}
-			}
-
-			_runner = Task.Run(DoRunTests);
+			_runner = Task.Run(() => RunTests(_cts.Token, config));
 		}
+
 
 		private void OnStopTests(object sender, RoutedEventArgs e)
 		{
@@ -351,6 +331,25 @@ namespace Uno.UI.Samples.Tests
 			return w.ToString();
 		}
 
+		private UnitTestEngineConfig BuildConfig()
+		{
+			var isConsoleOutput = consoleOutput.IsChecked ?? false;
+			var isRunningIgnored = runIgnored.IsChecked ?? false;
+			var attempts = (retry.IsChecked ?? true) ? _maxRepeatCount : 1;
+			var filter = testFilter.Text.Trim();
+			if (string.IsNullOrEmpty(filter))
+			{
+				filter = null;
+			}
+
+			return new UnitTestEngineConfig
+			{
+				Filters = filter?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>(),
+				IsConsoleOutputEnabled = isConsoleOutput,
+				IsRunningIgnored = isRunningIgnored,
+				Attempts = attempts,
+			};
+		}
 
 		private string GetTestResultIcon(TestResult testResult)
 		{
@@ -390,16 +389,6 @@ namespace Uno.UI.Samples.Tests
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
-			var filter = testFilter.Text.Trim();
-			if (string.IsNullOrEmpty(filter))
-			{
-				filter = null;
-			}
-
-			var filters = filter != null ?
-				filter.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) :
-				Array.Empty<string>();
-
 			testResults.Children.Clear();
 
 			try
@@ -407,18 +396,9 @@ namespace Uno.UI.Samples.Tests
 				try
 				{
 					var testTypeInfo = BuildType(testClassInstance.GetType());
+					var engineConfig = BuildConfig();
 
-					var tests = FilterTests(testTypeInfo, filters);
-
-					if (tests.Length == 0)
-					{
-						return;
-					}
-
-					ReportTestClass(testTypeInfo.Type.GetTypeInfo());
-					_ = ReportMessage($"Running {tests.Length} test methods");
-
-					await ExecuteTestsForInstance(_cts.Token, testClassInstance, testTypeInfo.Tests, testTypeInfo);
+					await ExecuteTestsForInstance(_cts.Token, testClassInstance, testTypeInfo, engineConfig);
 				}
 				catch (Exception e)
 				{
@@ -438,7 +418,7 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		public async Task RunTests(CancellationToken ct, string[] filters)
+		public async Task RunTests(CancellationToken ct, UnitTestEngineConfig config)
 		{
 			_currentRun = new TestRun();
 
@@ -450,21 +430,11 @@ namespace Uno.UI.Samples.Tests
 
 				_ = ReportMessage("Running tests...");
 
-				foreach (var type in testTypes.Where(t => t.Type != null))
+				foreach (var type in testTypes)
 				{
-					var tests = FilterTests(type, filters);
-
-					if (tests.Length == 0)
-					{
-						continue;
-					}
-
-					ReportTestClass(type.Type.GetTypeInfo());
-					_ = ReportMessage($"Running {tests.Length} test methods");
-
 					var instance = Activator.CreateInstance(type: type.Type);
 
-					await ExecuteTestsForInstance(ct, instance, tests, type);
+					await ExecuteTestsForInstance(ct, instance, type, config);
 				}
 
 				_ = ReportMessage("Tests finished running.", isRunning: false);
@@ -477,6 +447,14 @@ namespace Uno.UI.Samples.Tests
 				ReportTestResult("Runtime exception", TimeSpan.Zero, TestResult.Failed, e);
 				ReportTestsResults();
 			}
+			finally
+			{
+				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				{
+					runButton.IsEnabled = true;
+					stopButton.IsEnabled = false;
+				});
+			}
 
 			await GenerateTestResults();
 		}
@@ -486,280 +464,235 @@ namespace Uno.UI.Samples.Tests
 			var testClassNameContainsFilters = filters?.Any(f => testClassInfo.Type.FullName.Contains(f, StrComp)) ?? false;
 			return testClassInfo.Tests
 				.Where(t => (filters?.None() ?? true)
-							|| testClassNameContainsFilters
-							|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
-							|| filters.Any(f => t.Name.Contains(f, StrComp)))
+					|| testClassNameContainsFilters
+					|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
+					|| filters.Any(f => t.Name.Contains(f, StrComp)))
 				.ToArray();
-		}
-
-		private class CustomConsoleOutput : TextWriter
-		{
-			private readonly TextWriter _previousOutput;
-			private readonly List<char> _accumulator = new List<char>();
-
-			public CustomConsoleOutput(TextWriter previousOutput)
-			{
-				_previousOutput = previousOutput;
-			}
-
-			internal string GetContentAndReset()
-			{
-				var result = new string(_accumulator.ToArray());
-				Reset();
-				return result;
-			}
-
-			internal void Reset() => _accumulator.Clear();
-
-			public override Encoding Encoding { get; }
-
-			public override void Write(char value)
-			{
-				_previousOutput.Write(value);
-				_accumulator.Add(value);
-			}
 		}
 
 		private async Task ExecuteTestsForInstance(
 			CancellationToken ct,
 			object instance,
-			MethodInfo[] tests,
-			UnitTestClassInfo testClassInfo)
+			UnitTestClassInfo testClassInfo,
+			UnitTestEngineConfig config)
 		{
-			IDisposable consoleRegistration = default;
-			CustomConsoleOutput testConsoleOutput = default;
+			using var consoleRecorder = config.IsConsoleOutputEnabled
+				? ConsoleOutputRecorder.Start()
+				: default;
 
-			bool isConsoleOutput = false;
-			bool isRunningIgnored = false;
-
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			var tests = FilterTests(testClassInfo, config.Filters);
+			if (tests.None())
 			{
-				isConsoleOutput = consoleOutput.IsChecked ?? false;
-				isRunningIgnored = runIgnored.IsChecked ?? false;
-			});
-
-			if (isConsoleOutput)
-			{
-				var previousOutput = Console.Out;
-
-				testConsoleOutput = new CustomConsoleOutput(previousOutput);
-
-				consoleRegistration = Disposable.Create(() => Console.SetOut(previousOutput));
-
-				Console.SetOut(testConsoleOutput);
+				return;
 			}
 
-			try
+			ReportTestClass(testClassInfo.Type.GetTypeInfo());
+			_ = ReportMessage($"Running {tests.Length} test methods");
+
+			foreach (var testMethod in tests)
 			{
-				var shouldRunIgnored = isRunningIgnored;
+				var testName = testMethod.Name;
 
-				foreach (var testMethod in tests)
+				if (IsIgnored(testMethod, out var ignoreMessage))
 				{
-					string testName = testMethod.Name;
-
-					if (IsIgnored(testMethod, out var ignoreMessage))
+					if (config.IsRunningIgnored)
 					{
-						if (shouldRunIgnored)
-						{
-							ignoreMessage = $"\n--> [Ignored] IS BYPASSED...";
-						}
-
-						_currentRun.Ignored++;
-						ReportTestResult(testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
-
-						if (!shouldRunIgnored)
-						{
-							continue;
-						}
+						ignoreMessage = $"\n--> [Ignored] IS BYPASSED...";
 					}
 
-					var runsOnUIThread =
-						HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod) ||
-						HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
-					var requiresFullWindow =
-						HasCustomAttribute<RequiresFullWindowAttribute>(testMethod) ||
-						HasCustomAttribute<RequiresFullWindowAttribute>(testMethod.DeclaringType);
-					var expectedException = testMethod.GetCustomAttributes<ExpectedExceptionAttribute>()
-						.SingleOrDefault();
-					var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
-					if (dataRows.Any())
+					_currentRun.Ignored++;
+					ReportTestResult(testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
+
+					if (!config.IsRunningIgnored)
 					{
-						foreach (var row in dataRows)
-						{
-							var d = row.Data;
-							await InvokeTestMethod(d);
-						}
+						continue;
 					}
-					else
+				}
+
+				var runsOnUIThread =
+					HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod) ||
+					HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
+				var requiresFullWindow =
+					HasCustomAttribute<RequiresFullWindowAttribute>(testMethod) ||
+					HasCustomAttribute<RequiresFullWindowAttribute>(testMethod.DeclaringType);
+				var expectedException = testMethod
+					.GetCustomAttributes<ExpectedExceptionAttribute>()
+					.SingleOrDefault();
+				var dataRows = testMethod
+					.GetCustomAttributes<DataRowAttribute>()
+					.ToList();
+				if (dataRows.Any())
+				{
+					foreach (var row in dataRows)
 					{
-						await InvokeTestMethod(new object[0]);
+						var d = row.Data;
+						await InvokeTestMethod(d);
 					}
+				}
+				else
+				{
+					await InvokeTestMethod(Array.Empty<object>());
+				}
 
-					async Task InvokeTestMethod(object[] parameters)
+				async Task InvokeTestMethod(object[] parameters)
+				{
+					var fullTestName = $"{testName}({parameters.Select(p => p?.ToString() ?? "<null>").JoinBy(", ")})";
+
+					_currentRun.Run++;
+					_currentRun.CurrentRepeatCount = 0;
+
+					// We await this to make sure the UI is updated before running the test.
+					// This will help developpers to identify faulty tests when the app is crashing.
+					await ReportMessage($"Running test {fullTestName}");
+					ReportTestsResults();
+
+					var sw = new Stopwatch();
+					var canRetry = true;
+
+					while (canRetry)
 					{
-						var fullTestName =
-							$"{testName}({parameters.Select(p => p?.ToString() ?? "<null>").JoinBy(", ")})";
+						canRetry = false;
 
-						_currentRun.Run++;
-						_currentRun.CurrentRepeatCount = 0;
-
-						// We await this to make sure the UI is updated before running the test.
-						// This will help developpers to identify faulty tests when the app is crashing.
-						await ReportMessage($"Running test {fullTestName}");
-						ReportTestsResults();
-
-						var sw = new Stopwatch();
-						bool canRetry = true;
-
-						while (canRetry)
+						try
 						{
-							canRetry = false;
-
-							try
+							if (requiresFullWindow)
 							{
-								if (requiresFullWindow)
+								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 								{
-									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-									{
-										Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
-										Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
-									});
-								}
+									Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
+									Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
+								});
+							}
 
-								object returnValue = null;
-								if (runsOnUIThread)
-								{
-									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-									{
-										sw.Start();
-										testClassInfo.Initialize?.Invoke(instance, new object[0]);
-										returnValue = testMethod.Invoke(instance, parameters);
-										sw.Stop();
-									});
-								}
-								else
+							object returnValue = null;
+							if (runsOnUIThread)
+							{
+								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 								{
 									sw.Start();
 									testClassInfo.Initialize?.Invoke(instance, new object[0]);
 									returnValue = testMethod.Invoke(instance, parameters);
 									sw.Stop();
+								});
+							}
+							else
+							{
+								sw.Start();
+								testClassInfo.Initialize?.Invoke(instance, new object[0]);
+								returnValue = testMethod.Invoke(instance, parameters);
+								sw.Stop();
+							}
+
+							if (testMethod.ReturnType == typeof(Task))
+							{
+								var task = (Task)returnValue;
+								var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
+
+								var resultingTask = await Task.WhenAny(task, timeoutTask);
+
+								if (resultingTask == timeoutTask)
+								{
+									throw new TimeoutException(
+										$"Test execution timed out after {DefaultUnitTestTimeout}");
 								}
 
-								if (testMethod.ReturnType == typeof(Task))
+								if (resultingTask.Exception != null)
 								{
-									var task = (Task)returnValue;
-									var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
-
-									var resultingTask = await Task.WhenAny(task, timeoutTask);
-
-									if (resultingTask == timeoutTask)
-									{
-										throw new TimeoutException(
-											$"Test execution timed out after {DefaultUnitTestTimeout}");
-									}
-
-									if (resultingTask.Exception != null)
-									{
-										throw resultingTask.Exception;
-									}
+									throw resultingTask.Exception;
 								}
+							}
 
-								var console = testConsoleOutput?.GetContentAndReset();
+							var console = consoleRecorder?.GetContentAndReset();
 
-								if (expectedException == null)
+							if (expectedException == null)
+							{
+								_currentRun.Succeeded++;
+								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, console: console);
+							}
+							else
+							{
+								_currentRun.Failed++;
+								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Failed,
+									message: $"Test did not throw the excepted exception of type {expectedException.ExceptionType.Name}",
+									console: console);
+							}
+						}
+						catch (Exception e)
+						{
+							sw.Stop();
+
+							if (e is AggregateException agg)
+							{
+								e = agg.InnerExceptions.FirstOrDefault();
+							}
+
+							if (e is TargetInvocationException tie)
+							{
+								e = tie.InnerException;
+							}
+
+							var console = consoleRecorder?.GetContentAndReset();
+
+							if (e is AssertInconclusiveException inconclusiveException)
+							{
+								_currentRun.Ignored++;
+								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Skipped, message: e.Message, console: console);
+							}
+							else if (expectedException == null || !expectedException.ExceptionType.IsInstanceOfType(e))
+							{
+								if (_currentRun.CurrentRepeatCount < config.Attempts - 1 && !Debugger.IsAttached)
 								{
-									_currentRun.Succeeded++;
-									ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, console: console);
+									_currentRun.CurrentRepeatCount++;
+									canRetry = true;
+
+									RunCleanup(instance, testClassInfo, testName);
 								}
 								else
 								{
 									_currentRun.Failed++;
-									ReportTestResult(fullTestName, sw.Elapsed, TestResult.Failed,
-										message: $"Test did not throw the excepted exception of type {expectedException.ExceptionType.Name}",
-										console: console);
+									ReportTestResult(fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
 								}
 							}
-							catch (Exception e)
+							else
 							{
-								sw.Stop();
-
-								if (e is AggregateException agg)
-								{
-									e = agg.InnerExceptions.FirstOrDefault();
-								}
-
-								if (e is TargetInvocationException tie)
-								{
-									e = tie.InnerException;
-								}
-
-								var console = testConsoleOutput?.GetContentAndReset();
-
-								if (e is AssertInconclusiveException inconclusiveException)
-								{
-									_currentRun.Ignored++;
-									ReportTestResult(fullTestName, sw.Elapsed, TestResult.Skipped, message: e.Message, console: console);
-								}
-								else if (expectedException == null || !expectedException.ExceptionType.IsInstanceOfType(e))
-								{
-									if (_currentRun.CurrentRepeatCount < _maxRepeatCount && !Debugger.IsAttached)
-									{
-										_currentRun.CurrentRepeatCount++;
-										canRetry = true;
-
-										RunCleanup(instance, testClassInfo, testConsoleOutput, testName);
-									}
-									else
-									{
-										_currentRun.Failed++;
-										ReportTestResult(fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
-									}
-								}
-								else
-								{
-									_currentRun.Succeeded++;
-									ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, e, console: console);
-								}
+								_currentRun.Succeeded++;
+								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, e, console: console);
 							}
-							finally
+						}
+						finally
+						{
+							if (requiresFullWindow)
 							{
-								if (requiresFullWindow)
+								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 								{
-									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-									{
-										Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
-										Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
-									});
-								}
+									Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
+									Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
+								});
 							}
 						}
 					}
+				}
 
-					RunCleanup(instance, testClassInfo, testConsoleOutput, testName);
+				RunCleanup(instance, testClassInfo, testName);
 
-					if (ct.IsCancellationRequested)
-					{
-						_ = ReportMessage("Stopped by user.", false);
-						return; // finish processing
-					}
+				if (ct.IsCancellationRequested)
+				{
+					_ = ReportMessage("Stopped by user.", false);
+					return; // finish processing
 				}
 			}
-			finally
-			{
-				consoleRegistration?.Dispose();
-			}
-		}
 
-		private void RunCleanup(object instance, UnitTestClassInfo testClassInfo, CustomConsoleOutput testConsoleOutput, string testName)
-		{
-			try
+			void RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName)
 			{
-				testClassInfo.Cleanup?.Invoke(instance, new object[0]);
-			}
-			catch (Exception e)
-			{
-				_currentRun.Failed++;
-				ReportTestResult(testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: testConsoleOutput.GetContentAndReset());
+				try
+				{
+					testClassInfo.Cleanup?.Invoke(instance, new object[0]);
+				}
+				catch (Exception e)
+				{
+					_currentRun.Failed++;
+					ReportTestResult(testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder.GetContentAndReset());
+				}
 			}
 		}
 
@@ -798,7 +731,9 @@ namespace Uno.UI.Samples.Tests
 			return from type in types
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
 				   orderby type.Name
-				   select BuildType(type);
+				   let info = BuildType(type)
+				   where info.Type is {}
+				   select info;
 		}
 
 		private static UnitTestClassInfo BuildType(Type type)

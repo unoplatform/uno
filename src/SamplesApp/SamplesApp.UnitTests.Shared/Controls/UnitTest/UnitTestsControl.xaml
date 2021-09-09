@@ -21,24 +21,34 @@
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Row="0">
 			<StackPanel Orientation="Horizontal" Spacing="4">
-				<Button x:Name="runButton"
-						not_skia:Content="▶️ Run"
-						skia:Content="Run"
-						Click="OnRunTests" />
-				<Button x:Name="stopButton"
-						IsEnabled="False"
-						not_skia:Content="⏹️ Stop"
-						skia:Content="Stop"
-						Click="OnStopTests" />
-				<TextBox x:Name="testFilter"
-						 PlaceholderText="Enter test filter here"
-						 Width="140" />
-				<ToggleButton x:Name="consoleOutput"
-						not_skia:Content="🖥️ Console Output"
-						skia:Content="Console Output" />
-				<ToggleButton x:Name="runIgnored"
-						not_skia:Content="🚫 Run [Ignore]"
-						skia:Content="Run [Ignore]" />
+				<Button
+					x:Name="runButton"
+					not_skia:Content="▶️ Run"
+					skia:Content="Run"
+					Click="OnRunTests" />
+				<Button
+					x:Name="stopButton"
+					IsEnabled="False"
+					not_skia:Content="⏹️ Stop"
+					skia:Content="Stop"
+					Click="OnStopTests" />
+				<TextBox
+					x:Name="testFilter"
+					PlaceholderText="Enter test filter here"
+					Width="140" />
+				<ToggleButton
+					x:Name="consoleOutput"
+					not_skia:Content="🖥️ Console Output"
+					skia:Content="Console Output" />
+				<ToggleButton
+					x:Name="runIgnored"
+					not_skia:Content="🚫 Run [Ignore]"
+					skia:Content="Run [Ignore]" />
+				<ToggleButton
+					x:Name="retry"
+					IsChecked="True"
+					not_skia:Content="➰ Auto retry"
+					skia:Content="Auto retry" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
