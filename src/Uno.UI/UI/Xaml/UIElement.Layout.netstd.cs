@@ -3,6 +3,7 @@ using Windows.Foundation;
 using System;
 using System.Diagnostics;
 using Windows.UI.Xaml.Controls.Primitives;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Xaml
 {
@@ -100,20 +101,31 @@ namespace Windows.UI.Xaml
 
 			if (IsVisualTreeRoot)
 			{
-				try
-				{
-					_isLayoutingVisualTreeRoot = true;
-					DoMeasure(availableSize);
-				}
-				finally
-				{
-					_isLayoutingVisualTreeRoot = false;
-				}
+				MeasureVisualTreeRoot(availableSize);
 			}
 			else
 			{
 				// If possible we avoid the try/finally which might be costly on some platforms
 				DoMeasure(availableSize);
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void MeasureVisualTreeRoot(Size availableSize)
+		{
+			try
+			{
+				_isLayoutingVisualTreeRoot = true;
+				DoMeasure(availableSize);
+			}
+			finally
+			{
+				_isLayoutingVisualTreeRoot = false;
 			}
 		}
 
@@ -157,20 +169,30 @@ namespace Windows.UI.Xaml
 
 			if (IsVisualTreeRoot)
 			{
-				try
-				{
-					_isLayoutingVisualTreeRoot = true;
-					DoArrange(finalRect);
-				}
-				finally
-				{
-					_isLayoutingVisualTreeRoot = false;
-				}
+				ArrangeVisualTreeRoot(finalRect);
 			}
 			else
 			{
 				// If possible we avoid the try/finally which might be costly on some platforms
 				DoArrange(finalRect);
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ArrangeVisualTreeRoot(Rect finalRect)
+		{
+			try
+			{
+				_isLayoutingVisualTreeRoot = true;
+				DoArrange(finalRect);
+			}
+			finally
+			{
+				_isLayoutingVisualTreeRoot = false;
 			}
 		}
 

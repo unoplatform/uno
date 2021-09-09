@@ -1019,18 +1019,31 @@ namespace Windows.UI.Xaml
 
 					int count = _dictionary._count;
 					Entry[] entries = _dictionary._entries;
-					try
+					index = MoveKeys(index, objects, count, entries);
+				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and
+			/// can be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private static int MoveKeys(int index, object[] objects, int count, Entry[] entries)
+			{
+				try
+				{
+					for (int i = 0; i < count; i++)
 					{
-						for (int i = 0; i < count; i++)
-						{
-							if (entries![i].next >= -1) objects[index++] = entries[i].key;
-						}
-					}
-					catch (ArrayTypeMismatchException)
-					{
-						throw new ArgumentException("Argument_InvalidArrayType()");
+						if (entries![i].next >= -1) objects[index++] = entries[i].key;
 					}
 				}
+				catch (ArrayTypeMismatchException)
+				{
+					throw new ArgumentException("Argument_InvalidArrayType()");
+				}
+
+				return index;
 			}
 
 			bool ICollection.IsSynchronized => false;
@@ -1208,18 +1221,30 @@ namespace Windows.UI.Xaml
 
 					int count = _dictionary._count;
 					Entry[] entries = _dictionary._entries;
-					try
+					index = MoveValues(index, objects, count, entries);
+				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private static int MoveValues(int index, object[] objects, int count, Entry[] entries)
+			{
+				try
+				{
+					for (int i = 0; i < count; i++)
 					{
-						for (int i = 0; i < count; i++)
-						{
-							if (entries![i].next >= -1) objects[index++] = entries[i].value!;
-						}
-					}
-					catch (ArrayTypeMismatchException)
-					{
-						throw new ArgumentException("Argument_InvalidArrayType()");
+						if (entries![i].next >= -1) objects[index++] = entries[i].value!;
 					}
 				}
+				catch (ArrayTypeMismatchException)
+				{
+					throw new ArgumentException("Argument_InvalidArrayType()");
+				}
+
+				return index;
 			}
 
 			bool ICollection.IsSynchronized => false;

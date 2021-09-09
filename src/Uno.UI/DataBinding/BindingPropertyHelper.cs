@@ -18,6 +18,7 @@ using Uno.Conversion;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Data;
 using System.Dynamic;
+using System.Runtime.CompilerServices;
 
 namespace Uno.UI.DataBinding
 {
@@ -1066,21 +1067,34 @@ namespace Uno.UI.DataBinding
 					}
 					else if (t != typeof(object))
 					{
-						try
-						{
-							value = Conversion.To(value, t, CultureInfo.CurrentCulture);
-						}
-						catch (Exception)
-						{
-							// This is a temporary fallback solution.
-							// The problem is that we don't actually know which culture we must use in advance.
-							// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
-							// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
-							value = Conversion.To(value, t, CultureInfo.InvariantCulture);
-						}
+						value = ConvertWithConvertionExtension(value, t);
 					}
 				}
 			}
+			return value;
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static object ConvertWithConvertionExtension(object? value, Type? t)
+		{
+			try
+			{
+				value = Conversion.To(value, t, CultureInfo.CurrentCulture);
+			}
+			catch (Exception)
+			{
+				// This is a temporary fallback solution.
+				// The problem is that we don't actually know which culture we must use in advance.
+				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
+				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
+				value = Conversion.To(value, t, CultureInfo.InvariantCulture);
+			}
+
 			return value;
 		}
 

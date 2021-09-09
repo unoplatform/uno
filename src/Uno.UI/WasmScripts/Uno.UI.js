@@ -1939,7 +1939,7 @@ var Uno;
                     this.containerElement.appendChild(img);
                 });
             }
-            select(elementId, start, length) {
+            selectInputRange(elementId, start, length) {
                 this.getView(elementId).setSelectionRange(start, start + length);
             }
         }

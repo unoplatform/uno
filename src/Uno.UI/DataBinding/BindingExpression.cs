@@ -16,6 +16,7 @@ using Uno.UI;
 using Uno.UI.Converters;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Xaml.Data
 {
@@ -194,17 +195,7 @@ namespace Windows.UI.Xaml.Data
 
 				if (ParentBinding.XBindBack != null)
 				{
-					try
-					{
-						ParentBinding.XBindBack(DataContext, value);
-					}
-					catch (Exception exception)
-					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-						{
-							this.Log().Error($"Failed to set the source value for x:Bind path [{ParentBinding.Path}]", exception);
-						}
-					}
+					UpdateSourceOnXBindBack(value);
 				}
 				else
 				{
@@ -216,6 +207,27 @@ namespace Windows.UI.Xaml.Data
 #endif
 			{
 				_IsCurrentlyPushingTwoWay = false;
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void UpdateSourceOnXBindBack(object value)
+		{
+			try
+			{
+				ParentBinding.XBindBack(DataContext, value);
+			}
+			catch (Exception exception)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error($"Failed to set the source value for x:Bind path [{ParentBinding.Path}]", exception);
+				}
 			}
 		}
 
@@ -511,39 +523,50 @@ namespace Windows.UI.Xaml.Data
 		{
 			if (ParentBinding.XBindSelector != null)
 			{
-				try
-				{
-					var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
-
-					if (canSetTarget)
-					{
-						SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
-					}
-					else
-					{
-						// x:Bind failed bindings don't change the target value
-						// if no FallbackValue was specified.
-						ApplyFallbackValue(useTypeDefaultValue: false);
-
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					ApplyFallbackValue();
-
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-					{
-						this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
-					}
-				}
+				SetTargetValueForXBindSelector();
 			}
 			else
 			{
 				SetTargetValueSafe(o);
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetTargetValueForXBindSelector()
+		{
+			try
+			{
+				var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
+
+				if (canSetTarget)
+				{
+					SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+				}
+				else
+				{
+					// x:Bind failed bindings don't change the target value
+					// if no FallbackValue was specified.
+					ApplyFallbackValue(useTypeDefaultValue: false);
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				ApplyFallbackValue();
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+				}
 			}
 		}
 
@@ -572,29 +595,7 @@ namespace Windows.UI.Xaml.Data
 
 			try
 			{
-				if (v is UnsetValue)
-				{
-					ApplyFallbackValue();
-				}
-				else
-				{
-					_IsCurrentlyPushing = true;
-					// Get the source value and place it in the target property
-					var convertedValue = ConvertValue(v);
-
-					if (convertedValue == DependencyProperty.UnsetValue)
-					{
-						ApplyFallbackValue();
-					}
-					else if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
-					{
-						SetTargetValue(ConvertValue(ParentBinding.TargetNullValue));
-					}
-					else
-					{
-						SetTargetValue(convertedValue);
-					}
-				}
+				InnerSetTargetValueSafe(v, useTargetNullValue);
 			}
 			catch (Exception e)
 			{
@@ -610,6 +611,39 @@ namespace Windows.UI.Xaml.Data
 #endif
 			{
 				_IsCurrentlyPushing = false;
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InnerSetTargetValueSafe(object v, bool useTargetNullValue)
+		{
+			if (v is UnsetValue)
+			{
+				ApplyFallbackValue();
+			}
+			else
+			{
+				_IsCurrentlyPushing = true;
+				// Get the source value and place it in the target property
+				var convertedValue = ConvertValue(v);
+
+				if (convertedValue == DependencyProperty.UnsetValue)
+				{
+					ApplyFallbackValue();
+				}
+				else if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
+				{
+					SetTargetValue(ConvertValue(ParentBinding.TargetNullValue));
+				}
+				else
+				{
+					SetTargetValue(convertedValue);
+				}
 			}
 		}
 

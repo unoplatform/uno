@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Microsoft.Extensions.Logging;
 using Uno;
@@ -115,57 +116,7 @@ namespace Windows.UI.Xaml
 
 				try
 				{
-					_isDispatching = true;
-
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"{_owner}: Dispatching event {_eventName}");
-					}
-
-					var args = eventArgs;
-					if (_payloadConverter != null && nativeEventPayload != null)
-					{
-						args = _payloadConverter(_owner, nativeEventPayload);
-					}
-
-					var result = HtmlEventDispatchResult.Ok;
-					foreach (var invocationItem in _invocationList)
-					{
-						if (invocationItem.Handler is RawEventHandler rawHandler)
-						{
-							var handlerResult = rawHandler(_owner, nativeEventPayload);
-
-							if (handlerResult.HasFlag(HtmlEventDispatchResult.StopPropagation))
-							{
-								// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
-								return result | HtmlEventDispatchResult.StopPropagation;
-							}
-							else
-							{
-								result |= handlerResult;
-							}
-						}
-						else
-						{
-							var handlerResult = invocationItem.Invoker(invocationItem.Handler, _owner, args);
-
-							switch (handlerResult)
-							{
-								case bool isHandedInManaged when isHandedInManaged:
-									return HtmlEventDispatchResult.StopPropagation | HtmlEventDispatchResult.PreventDefault;
-
-								case HtmlEventDispatchResult dispatchResult when dispatchResult.HasFlag(HtmlEventDispatchResult.StopPropagation):
-									// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
-									return result | HtmlEventDispatchResult.StopPropagation;
-
-								case HtmlEventDispatchResult dispatchResult:
-									result |= dispatchResult;
-									break;
-							}
-						}
-					}
-
-					return HtmlEventDispatchResult.Ok; // let native bubbling in HTML
+					return InnerDispatch(eventArgs, nativeEventPayload);
 				}
 				catch (Exception e)
 				{
@@ -187,6 +138,67 @@ namespace Windows.UI.Xaml
 						_pendingInvocationList = null;
 					}
 				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and
+			/// can be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private HtmlEventDispatchResult InnerDispatch(EventArgs eventArgs, string nativeEventPayload)
+			{
+				_isDispatching = true;
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"{_owner}: Dispatching event {_eventName}");
+				}
+
+				var args = eventArgs;
+				if (_payloadConverter != null && nativeEventPayload != null)
+				{
+					args = _payloadConverter(_owner, nativeEventPayload);
+				}
+
+				var result = HtmlEventDispatchResult.Ok;
+				foreach (var invocationItem in _invocationList)
+				{
+					if (invocationItem.Handler is RawEventHandler rawHandler)
+					{
+						var handlerResult = rawHandler(_owner, nativeEventPayload);
+
+						if (handlerResult.HasFlag(HtmlEventDispatchResult.StopPropagation))
+						{
+							// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
+							return result | HtmlEventDispatchResult.StopPropagation;
+						}
+						else
+						{
+							result |= handlerResult;
+						}
+					}
+					else
+					{
+						var handlerResult = invocationItem.Invoker(invocationItem.Handler, _owner, args);
+
+						switch (handlerResult)
+						{
+							case bool isHandedInManaged when isHandedInManaged:
+								return HtmlEventDispatchResult.StopPropagation | HtmlEventDispatchResult.PreventDefault;
+
+							case HtmlEventDispatchResult dispatchResult when dispatchResult.HasFlag(HtmlEventDispatchResult.StopPropagation):
+								// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
+								return result | HtmlEventDispatchResult.StopPropagation;
+
+							case HtmlEventDispatchResult dispatchResult:
+								result |= dispatchResult;
+								break;
+						}
+					}
+				}
+
+				return HtmlEventDispatchResult.Ok; // let native bubbling in HTML
 			}
 		}
 
@@ -233,20 +245,34 @@ namespace Windows.UI.Xaml
 			var n = eventName;
 			try
 			{
-				if (_eventHandlers.TryGetValue(n, out var registration))
-				{
-					return registration.Dispatch(eventArgs, nativeEventPayload);
-				}
-
-				var registered = string.Join(", ", _eventHandlers.Keys);
-
-				this.Log().Warn(message: $"{this}-{HtmlId}: No Handler for {n}. Registered: {registered}");
+				return InternalInnerDispatchEvent(eventArgs, nativeEventPayload, n);
 			}
 			catch (Exception e)
 			{
 				this.Log().Error(message: $"{this}-{HtmlId}/{eventName}/\"{nativeEventPayload}\": Error: {e}");
 				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
+
+			return HtmlEventDispatchResult.Ok;
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private HtmlEventDispatchResult InternalInnerDispatchEvent(EventArgs eventArgs, string nativeEventPayload, string n)
+		{
+			if (_eventHandlers.TryGetValue(n, out var registration))
+			{
+				return registration.Dispatch(eventArgs, nativeEventPayload);
+			}
+
+			var registered = string.Join(", ", _eventHandlers.Keys);
+
+			this.Log().Warn(message: $"{this}-{HtmlId}: No Handler for {n}. Registered: {registered}");
+
 
 			return HtmlEventDispatchResult.Ok;
 		}

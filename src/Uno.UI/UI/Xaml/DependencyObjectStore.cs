@@ -1081,37 +1081,59 @@ namespace Windows.UI.Xaml
 
 			foreach (var (property, binding) in bindings)
 			{
-				try
-				{
-					var wasSet = false;
-					foreach (var dict in dictionariesInScope)
-					{
-						if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
-						{
-							wasSet = true;
-							SetResourceBindingValue(property, binding, value);
-							break;
-						}
-					}
-
-					if (!wasSet && isThemeChangedUpdate && binding.IsThemeResourceExtension)
-					{
-						if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
-						{
-							SetResourceBindingValue(property, binding, value);
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
-					{
-						this.Log().Warn($"Failed to update binding, target may have been disposed", e);
-					}
-				}
+				InnerUpdateResourceBindings(isThemeChangedUpdate, dictionariesInScope, property, binding);
 			}
 
 			UpdateChildResourceBindings(isThemeChangedUpdate);
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InnerUpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+		{
+			try
+			{
+				InnerUpdateResourceBindingsUnsafe(isThemeChangedUpdate, dictionariesInScope, property, binding);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn($"Failed to update binding, target may have been disposed", e);
+				}
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InnerUpdateResourceBindingsUnsafe(bool isThemeChangedUpdate, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+		{
+			var wasSet = false;
+			foreach (var dict in dictionariesInScope)
+			{
+				if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
+				{
+					wasSet = true;
+					SetResourceBindingValue(property, binding, value);
+					break;
+				}
+			}
+
+			if (!wasSet && isThemeChangedUpdate && binding.IsThemeResourceExtension)
+			{
+				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
+				{
+					SetResourceBindingValue(property, binding, value);
+				}
+			}
 		}
 
 		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
@@ -1152,14 +1174,7 @@ namespace Windows.UI.Xaml
 			{
 				try
 				{
-					_isUpdatingChildResourceBindings = true;
-					foreach (var child in GetChildrenDependencyObjects())
-					{
-						if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
-						{
-							storeProvider.Store.UpdateResourceBindings(isThemeChangedUpdate);
-						}
-					}
+					InnerUpdateChildResourceBindings(isThemeChangedUpdate);
 				}
 				finally
 				{
@@ -1170,6 +1185,24 @@ namespace Windows.UI.Xaml
 				{
 					// Call OnThemeChanged after bindings of descendants have been updated
 					themeChangeAware.OnThemeChanged();
+				}
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InnerUpdateChildResourceBindings(bool isThemeChangedUpdate)
+		{
+			_isUpdatingChildResourceBindings = true;
+			foreach (var child in GetChildrenDependencyObjects())
+			{
+				if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
+				{
+					storeProvider.Store.UpdateResourceBindings(isThemeChangedUpdate);
 				}
 			}
 		}

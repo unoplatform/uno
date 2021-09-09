@@ -30,6 +30,7 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using System.Runtime.CompilerServices;
 
 #if __IOS__
 using UIKit;
@@ -494,21 +495,38 @@ namespace Windows.UI.Xaml
 
 			try
 			{
-				_isInUpdateLayout = true;
+				InnerUpdateLayout(root);
+				return;
+			}
+			finally
+			{
+				_isInUpdateLayout = false;
+			}
+		}
 
-				// On UWP, the UpdateLayout method has an overload which accepts the desired size used by the window/app to layout the visual tree,
-				// then this overload without parameter is only using the internally cached last desired size.
-				// With Uno this method is not used for standard layouting passes, so we cannot properly internally cache the value,
-				// and we instead could use the LayoutInformation.GetLayoutSlot(root).
-				//
-				// The issue is that unlike UWP which will ends by requesting an UpdateLayout with the right window bounds,
-				// Uno instead exclusively relies on measure/arrange invalidation.
-				// So if we invoke the `UpdateLayout()` **before** the tree has been measured at least once
-				// (which is the case when using a MUX.NavigationView in the "MainPage" on iOS as OnApplyTemplate is invoked too early),
-				// then the whole tree will be measured at the last known value which is 0x0 and will never be invalidated.
-				//
-				// To avoid this we are instead using the Window Bounds as anyway they are the same as the root's slot.
-				var bounds = Windows.UI.Xaml.Window.Current.Bounds;
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void InnerUpdateLayout(UIElement root)
+		{
+			_isInUpdateLayout = true;
+
+			// On UWP, the UpdateLayout method has an overload which accepts the desired size used by the window/app to layout the visual tree,
+			// then this overload without parameter is only using the internally cached last desired size.
+			// With Uno this method is not used for standard layouting passes, so we cannot properly internally cache the value,
+			// and we instead could use the LayoutInformation.GetLayoutSlot(root).
+			//
+			// The issue is that unlike UWP which will ends by requesting an UpdateLayout with the right window bounds,
+			// Uno instead exclusively relies on measure/arrange invalidation.
+			// So if we invoke the `UpdateLayout()` **before** the tree has been measured at least once
+			// (which is the case when using a MUX.NavigationView in the "MainPage" on iOS as OnApplyTemplate is invoked too early),
+			// then the whole tree will be measured at the last known value which is 0x0 and will never be invalidated.
+			//
+			// To avoid this we are instead using the Window Bounds as anyway they are the same as the root's slot.
+			var bounds = Windows.UI.Xaml.Window.Current.Bounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 				root.Measure(bounds.Size);
@@ -528,29 +546,24 @@ namespace Windows.UI.Xaml
 					}
 				}
 #else
-				for (var i = 0; i < MaxLayoutIterations; i++)
-				{
-					if (root.IsMeasureDirty)
-					{
-						root.Measure(bounds.Size);
-					}
-					else if (root.IsArrangeDirty)
-					{
-						root.Arrange(bounds);
-					}
-					else
-					{
-						return;
-					}
-				}
-
-				throw new InvalidOperationException("Layout cycle detected.");
-#endif
-			}
-			finally
+			for (var i = 0; i < MaxLayoutIterations; i++)
 			{
-				_isInUpdateLayout = false;
+				if (root.IsMeasureDirty)
+				{
+					root.Measure(bounds.Size);
+				}
+				else if (root.IsArrangeDirty)
+				{
+					root.Arrange(bounds);
+				}
+				else
+				{
+					return;
+				}
 			}
+
+			throw new InvalidOperationException("Layout cycle detected.");
+#endif
 		}
 
 		internal void ApplyClip()
