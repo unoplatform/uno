@@ -58,6 +58,7 @@
     <x:Double x:Key="NumberBoxPopupHorizonalOffset">-21</x:Double>
     <x:Double x:Key="NumberBoxPopupVerticalOffset">-27</x:Double>
     <x:Double x:Key="NumberBoxPopupShadowDepth">16</x:Double>
+    <x:Double x:Key="NumberBoxMinWidth">120</x:Double>
 
     <Thickness x:Key="NumberBoxPopupIndicatorMargin">0,0,8,0</Thickness>
 

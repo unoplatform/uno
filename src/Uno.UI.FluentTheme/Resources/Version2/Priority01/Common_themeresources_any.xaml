@@ -54,8 +54,6 @@
 
             <Color x:Key="ControlStrokeColorDefault">#12FFFFFF</Color>
             <Color x:Key="ControlStrokeColorSecondary">#18FFFFFF</Color>
-            <!-- Uno specific: "Average" of Default and Secondary for border purposes -->
-            <Color x:Key="ControlStrokeColorAverage">#15FFFFFF</Color>
             <Color x:Key="ControlStrokeColorOnAccentDefault">#14FFFFFF</Color>
             <Color x:Key="ControlStrokeColorOnAccentSecondary">#23000000</Color>
             <Color x:Key="ControlStrokeColorOnAccentTertiary">#37000000</Color>
@@ -69,7 +67,7 @@
             <Color x:Key="ControlStrongStrokeColorDefault">#8BFFFFFF</Color>
             <Color x:Key="ControlStrongStrokeColorDisabled">#28FFFFFF</Color>
 
-            <Color x:Key="SurfaceStrokeColorDefault">#15FFFFFF</Color>
+            <Color x:Key="SurfaceStrokeColorDefault">#66757575</Color>
             <Color x:Key="SurfaceStrokeColorFlyout">#33000000</Color>
             <Color x:Key="SurfaceStrokeColorInverse">#0F000000</Color>
 
@@ -92,6 +90,7 @@
             <Color x:Key="SolidBackgroundFillColorSecondary">#1C1C1C</Color>
             <Color x:Key="SolidBackgroundFillColorTertiary">#282828</Color>
             <Color x:Key="SolidBackgroundFillColorQuarternary">#2C2C2C</Color>
+            <Color x:Key="SolidBackgroundFillColorTransparent">#00202020</Color>
 
             <Color x:Key="SystemFillColorSuccess">#6CCB5F</Color>
             <Color x:Key="SystemFillColorCaution">#FCE100</Color>
@@ -300,8 +299,7 @@
 
             <Color x:Key="ControlStrokeColorDefault">#0F000000</Color>
             <Color x:Key="ControlStrokeColorSecondary">#29000000</Color>
-            <!-- Uno specific: "Average" of Default and Secondary for border purposes -->
-            <Color x:Key="ControlStrokeColorAverage">#15000000</Color>
+
             <Color x:Key="ControlStrokeColorOnAccentDefault">#14FFFFFF</Color>
             <Color x:Key="ControlStrokeColorOnAccentSecondary">#66000000</Color>
             <Color x:Key="ControlStrokeColorOnAccentTertiary">#37000000</Color>
@@ -315,7 +313,7 @@
             <Color x:Key="ControlStrongStrokeColorDefault">#72000000</Color>
             <Color x:Key="ControlStrongStrokeColorDisabled">#37000000</Color>
 
-            <Color x:Key="SurfaceStrokeColorDefault">#0F000000</Color>
+            <Color x:Key="SurfaceStrokeColorDefault">#66757575</Color>
             <Color x:Key="SurfaceStrokeColorFlyout">#0F000000</Color>
             <Color x:Key="SurfaceStrokeColorInverse">#15FFFFFF</Color>
 
@@ -338,6 +336,7 @@
             <Color x:Key="SolidBackgroundFillColorSecondary">#EEEEEE</Color>
             <Color x:Key="SolidBackgroundFillColorTertiary">#F9F9F9</Color>
             <Color x:Key="SolidBackgroundFillColorQuarternary">#FFFFFF</Color>
+            <Color x:Key="SolidBackgroundFillColorTransparent">#00F3F3F3</Color>
 
             <Color x:Key="SystemFillColorSuccess">#0F7B0F</Color>
             <Color x:Key="SystemFillColorCaution">#9D5D00</Color>
@@ -460,7 +459,7 @@
             <SolidColorBrush x:Key="SystemFillColorSolidNeutralBackgroundBrush" Color="{StaticResource SystemFillColorSolidNeutralBackground}" />
 
             <!-- Elevation border brushes-->
- 
+
             <LinearGradientBrush x:Key="ControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,3">
                 <LinearGradientBrush.RelativeTransform>
                     <ScaleTransform ScaleY="-1" CenterY="0.5"/>
@@ -649,8 +648,6 @@
             <Color x:Key="ControlOnImageFillColorDisabled">#FF0000</Color>
             <Color x:Key="ControlStrokeColorDefault">#FF0000</Color>
             <Color x:Key="ControlStrokeColorSecondary">#FF0000</Color>
-            <!-- Uno specific: "Average" of Default and Secondary for border purposes -->
-            <Color x:Key="ControlStrokeColorAverage">#FF0000</Color>
             <Color x:Key="ControlStrokeColorOnAccentDefault">#FF0000</Color>
             <Color x:Key="ControlStrokeColorOnAccentSecondary">#FF0000</Color>
             <Color x:Key="ControlStrokeColorOnAccentTertiary">#FF0000</Color>
@@ -674,6 +671,7 @@
             <Color x:Key="SolidBackgroundFillColorSecondary">#FF0000</Color>
             <Color x:Key="SolidBackgroundFillColorTertiary">#FF0000</Color>
             <Color x:Key="SolidBackgroundFillColorQuarternary">#FF0000</Color>
+            <Color x:Key="SolidBackgroundFillColorTransparent">#FF0000</Color>
             <Color x:Key="SystemFillColorSuccess">#FF0000</Color>
             <Color x:Key="SystemFillColorCaution">#FF0000</Color>
             <Color x:Key="SystemFillColorCritical">#FF0000</Color>

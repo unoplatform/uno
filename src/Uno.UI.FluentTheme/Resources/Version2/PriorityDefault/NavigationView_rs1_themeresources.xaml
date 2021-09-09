@@ -14,7 +14,7 @@
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
             <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SolidBackgroundFillColorBaseBrush" />
-            <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SolidBackgroundFillColorTransparent" />
             <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="ControlFillColorTransparentBrush" />
             <StaticResource x:Key="NavigationViewContentBackground" ResourceKey="LayerFillColorDefaultBrush" />
 
@@ -92,7 +92,7 @@
 
         <ResourceDictionary x:Key="Light">
             <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SolidBackgroundFillColorBaseBrush" />
-            <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SolidBackgroundFillColorTransparent" />
             <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="ControlFillColorTransparentBrush" />
             <StaticResource x:Key="NavigationViewContentBackground" ResourceKey="LayerFillColorDefaultBrush" />
 
@@ -285,6 +285,7 @@
     <Thickness x:Key="NavigationViewHeaderMargin">56,44,0,0</Thickness>
     <Thickness x:Key="NavigationViewContentPresenterMargin">0</Thickness>
     <Thickness x:Key="NavigationViewContentMargin">0</Thickness>
+    <Thickness x:Key="NavigationViewMinimalContentMargin">0</Thickness>
     <Thickness x:Key="TopNavigationViewContentMargin">0</Thickness>
     <Thickness x:Key="NavigationViewPaneTitlePresenterMargin">8,4,0,0</Thickness>
     <Thickness x:Key="NavigationViewItemMargin">0</Thickness>
@@ -293,17 +294,17 @@
     <Thickness x:Key="NavigationViewCompactItemSeparatorMargin">0,3,0,4</Thickness>
     <Thickness x:Key="TopNavigationViewItemSeparatorMargin">3,0,4,0</Thickness>
     <Thickness x:Key="TopNavigationViewOverflowButtonMargin">0</Thickness>
-    <Thickness x:Key="NavigationViewItemContentPresenterMargin">4,-1,20,-1</Thickness>
+    <Thickness x:Key="NavigationViewItemContentPresenterMargin">4,-1,8,-1</Thickness>
     <Thickness x:Key="NavigationViewCompactItemContentPresenterMargin">0,0,0,0</Thickness>
     <Thickness x:Key="TopNavigationViewItemContentPresenterMargin">8,-1,12,-1</Thickness>
     <Thickness x:Key="TopNavigationViewItemContentOnlyContentPresenterMargin">12,0</Thickness>
-    <Thickness x:Key="NavigationViewItemExpandChevronMargin">0</Thickness>
+    <Thickness x:Key="NavigationViewItemExpandChevronMargin">0,0,-14,0</Thickness>
     <Thickness x:Key="TopNavigationViewItemExpandChevronMargin">-16,0,0,0</Thickness>
     <Thickness x:Key="TopNavigationViewItemIconOnlyExpandChevronMargin">0,0,0,0</Thickness>
     <Thickness x:Key="TopNavigationViewItemContentOnlyExpandChevronMargin">-12,0,0,0</Thickness>
     <Thickness x:Key="TopNavigationViewItemOnOverflowContentPresenterMargin">12,0,20,0</Thickness>
     <Thickness x:Key="TopNavigationViewItemOnOverflowNoIconContentPresenterMargin">16,0,20,0</Thickness>
-    <Thickness x:Key="TopNavigationViewItemOnOverflowExpandChevronMargin">-4,0,6,0</Thickness>
+    <Thickness x:Key="TopNavigationViewItemOnOverflowExpandChevronMargin">-4,0,-8,0</Thickness>
     <Thickness x:Key="TopNavigationViewItemOnOverflowExpandChevronPadding">12,0,12,0</Thickness>
 
     <CornerRadius x:Key="NavigationViewContentGridCornerRadius">8,0,0,0</CornerRadius>
@@ -732,10 +733,12 @@
                             <Grid
                                 x:Name="ContentGrid"
                                 MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}"
+                                Margin="0,0,14,0"
                                 HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
@@ -745,10 +748,11 @@
                                         HorizontalAlignment="Center"
                                         Margin="{ThemeResource NavigationViewItemOnLeftIconBoxMargin}">
                                         <ContentPresenter 
-                                            x:Name="Icon" 
+                                            x:Name="Icon"
                                             Content="{TemplateBinding Icon}"
                                             Foreground="{TemplateBinding Foreground}"
                                             local:AnimatedIcon.State="Normal"/>
+
                                     </Viewbox>
                                 </Border>
 
@@ -768,7 +772,7 @@
 
                                 <Grid
                                     x:Name="ExpandCollapseChevron"
-                                    Grid.Column="2"
+                                    Grid.Column="3"
                                     Visibility="Collapsed"
                                     HorizontalAlignment="Right"
                                     Width="40"
@@ -886,6 +890,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition x:Name="IconRow" Height="Auto" />
@@ -1094,10 +1099,11 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center">
                                 <ContentPresenter 
-                                    x:Name="Icon" 
+                                    x:Name="Icon"
                                     Content="{TemplateBinding Icon}"
                                     Foreground="{TemplateBinding Foreground}"
                                     local:AnimatedIcon.State="Normal"/>
+
                             </Viewbox>
                             <ContentPresenter
                                 x:Name="ContentPresenter"
@@ -1329,10 +1335,12 @@
                                 contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
                                 contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"/>
                             </Grid>
-                            <Grid x:Name="ContentGrid">
+                            <Grid x:Name="ContentGrid"
+                                Margin="0,0,14,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Viewbox 
@@ -1343,10 +1351,11 @@
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center">
                                     <ContentPresenter 
-                                        x:Name="Icon" 
+                                        x:Name="Icon"
                                         Content="{TemplateBinding Icon}"
                                         Foreground="{TemplateBinding Foreground}"
                                         local:AnimatedIcon.State="Normal" />
+
                                 </Viewbox>
                                 <ContentPresenter
                                     x:Name="ContentPresenter"
@@ -1363,7 +1372,7 @@
                                     AutomationProperties.AccessibilityView="Raw"/>
                                 <Grid
                                     x:Name="ExpandCollapseChevron"
-                                    Grid.Column="2"
+                                    Grid.Column="3"
                                     Visibility="Collapsed"
                                     HorizontalAlignment="Right"
                                     Width="40"

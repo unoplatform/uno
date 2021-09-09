@@ -42,9 +42,13 @@
             <StaticResource x:Key="MenuFlyoutPresenterBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
             <Thickness x:Key="MenuFlyoutPresenterBorderThemeThickness">1</Thickness>
 
+            <TextTrimming x:Key="MenuFlyoutItemTextTrimming">Clip</TextTrimming>
             <Thickness x:Key="MenuFlyoutItemBorderThickness">0</Thickness>
             <Thickness x:Key="MenuFlyoutSubItemBorderThickness">0</Thickness>
-            
+
+            <Thickness x:Key="MenuFlyoutItemPlaceholderThemeThickness">28,0,0,0</Thickness>
+            <Thickness x:Key="MenuFlyoutItemDoublePlaceholderThemeThickness">56,0,0,0</Thickness>
+
             <!-- Legacy resources -->
             <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
             <Thickness x:Key="ToggleMenuFlyoutItemRevealBorderThickness">1</Thickness>
@@ -125,8 +129,12 @@
             <StaticResource x:Key="MenuFlyoutPresenterBorderBrush" ResourceKey="SystemColorWindowTextColorBrush" />
             <Thickness x:Key="MenuFlyoutPresenterBorderThemeThickness">2</Thickness>
 
+            <TextTrimming x:Key="MenuFlyoutItemTextTrimming">Clip</TextTrimming>
             <Thickness x:Key="MenuFlyoutItemBorderThickness">0</Thickness>
             <Thickness x:Key="MenuFlyoutSubItemBorderThickness">0</Thickness>
+
+            <Thickness x:Key="MenuFlyoutItemPlaceholderThemeThickness">28,0,0,0</Thickness>
+            <Thickness x:Key="MenuFlyoutItemDoublePlaceholderThemeThickness">56,0,0,0</Thickness>
             
             <!-- Legacy resources -->
             <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
@@ -208,8 +216,12 @@
             <StaticResource x:Key="MenuFlyoutPresenterBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
             <Thickness x:Key="MenuFlyoutPresenterBorderThemeThickness">1</Thickness>
 
+            <TextTrimming x:Key="MenuFlyoutItemTextTrimming">Clip</TextTrimming>
             <Thickness x:Key="MenuFlyoutItemBorderThickness">0</Thickness>
             <Thickness x:Key="MenuFlyoutSubItemBorderThickness">0</Thickness>
+
+            <Thickness x:Key="MenuFlyoutItemPlaceholderThemeThickness">28,0,0,0</Thickness>
+            <Thickness x:Key="MenuFlyoutItemDoublePlaceholderThemeThickness">56,0,0,0</Thickness>
             
             <!-- Legacy resources -->
             <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
@@ -261,9 +273,7 @@
     <Thickness x:Key="MenuFlyoutPresenterThemePadding">0,2,0,2</Thickness>
     <x:Double x:Key="MenuFlyoutThemeMinHeight">32</x:Double>
     <Thickness x:Key="MenuFlyoutItemChevronMargin">24,0,0,0</Thickness>
-    <Thickness x:Key="MenuFlyoutItemPlaceholderThemeThickness">28,0,0,0</Thickness>
     <Thickness x:Key="MenuFlyoutSeparatorThemePadding">-4,1,-4,1</Thickness>
-    <Thickness x:Key="MenuFlyoutItemDoublePlaceholderThemeThickness">56,0,0,0</Thickness>
     <Thickness x:Key="MenuFlyoutItemMargin">4,2,4,2</Thickness>
     <Thickness x:Key="MenuFlyoutItemThemePadding">11,8,11,9</Thickness>
     <Thickness x:Key="MenuFlyoutItemThemePaddingNarrow">11,4,11,5</Thickness>
@@ -372,19 +382,19 @@
                                 <VisualState x:Name="NoPlaceholder" />
                                 <VisualState x:Name="CheckPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IconPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckAndIconPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemDoublePlaceholderThemeThickness}" />
-                                        <Setter Target="IconRoot.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemDoublePlaceholderThemeThickness}" />
+                                        <Setter Target="IconRoot.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
@@ -425,7 +435,7 @@
                         </Viewbox>
                         <TextBlock x:Name="TextBlock"
                             Text="{TemplateBinding Text}"
-                            TextTrimming="Clip"
+                            TextTrimming="{ThemeResource MenuFlyoutItemTextTrimming}"
                             Foreground="{TemplateBinding Foreground}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -567,7 +577,7 @@
                             x:Name="TextBlock"
                             Grid.Column="1"
                             Text="{TemplateBinding Text}"
-                            TextTrimming="Clip"
+                            TextTrimming="{ThemeResource MenuFlyoutItemTextTrimming}"
                             Foreground="{TemplateBinding Foreground}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -654,19 +664,19 @@
                                 <VisualState x:Name="NoPlaceholder" />
                                 <VisualState x:Name="CheckPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IconPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckAndIconPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemDoublePlaceholderThemeThickness}" />
-                                        <Setter Target="IconRoot.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemDoublePlaceholderThemeThickness}" />
+                                        <Setter Target="IconRoot.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
@@ -703,7 +713,7 @@
                                 Grid.Column="0"
                                 Foreground="{TemplateBinding Foreground}"
                                 Text="{TemplateBinding Text}"
-                                TextTrimming="Clip"
+                                TextTrimming="{ThemeResource MenuFlyoutItemTextTrimming}"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                             <FontIcon x:Name="SubItemChevron"
@@ -797,19 +807,19 @@
                                 <VisualState x:Name="NoPlaceholder" />
                                 <VisualState x:Name="CheckPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IconPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckAndIconPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemDoublePlaceholderThemeThickness}" />
-                                        <Setter Target="IconRoot.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemDoublePlaceholderThemeThickness}" />
+                                        <Setter Target="IconRoot.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
@@ -850,7 +860,7 @@
                         </Viewbox>
                         <TextBlock x:Name="TextBlock"
                             Text="{TemplateBinding Text}"
-                            TextTrimming="Clip"
+                            TextTrimming="{ThemeResource MenuFlyoutItemTextTrimming}"
                             Foreground="{TemplateBinding Foreground}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -936,13 +946,13 @@
                                 </VisualState>
                                 <VisualState x:Name="UncheckedWithIcon">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckedWithIcon">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                         <Setter Target="CheckGlyph.Opacity" Value="1" />
                                     </VisualState.Setters>
@@ -993,7 +1003,7 @@
                         <TextBlock x:Name="TextBlock"
                             Grid.Column="1"
                             Text="{TemplateBinding Text}"
-                            TextTrimming="Clip"
+                            TextTrimming="{ThemeResource MenuFlyoutItemTextTrimming}"
                             Foreground="{TemplateBinding Foreground}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -1083,19 +1093,19 @@
                                 <VisualState x:Name="NoPlaceholder" />
                                 <VisualState x:Name="CheckPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IconPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckAndIconPlaceholder">
                                     <VisualState.Setters>
-                                        <Setter Target="TextBlock.Margin" Value="{StaticResource MenuFlyoutItemDoublePlaceholderThemeThickness}" />
-                                        <Setter Target="IconRoot.Margin" Value="{StaticResource MenuFlyoutItemPlaceholderThemeThickness}" />
+                                        <Setter Target="TextBlock.Margin" Value="{ThemeResource MenuFlyoutItemDoublePlaceholderThemeThickness}" />
+                                        <Setter Target="IconRoot.Margin" Value="{ThemeResource MenuFlyoutItemPlaceholderThemeThickness}" />
                                         <Setter Target="IconRoot.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
@@ -1133,7 +1143,7 @@
                                 Grid.Column="0"
                                 Foreground="{TemplateBinding Foreground}"
                                 Text="{TemplateBinding Text}"
-                                TextTrimming="Clip"
+                                TextTrimming="{ThemeResource MenuFlyoutItemTextTrimming}"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                             <FontIcon x:Name="SubItemChevron"

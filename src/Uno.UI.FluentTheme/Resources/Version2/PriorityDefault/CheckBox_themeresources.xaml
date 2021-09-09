@@ -658,6 +658,7 @@
                                     </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="CheckGlyph.(local:AnimatedIcon.State)" Value="NormalIndeterminate"/>
+                                        <Setter Target="CheckGlyph.Margin" Value="0"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IndeterminatePointerOver">
@@ -691,6 +692,7 @@
                                     </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="CheckGlyph.(local:AnimatedIcon.State)" Value="PointerOverIndeterminate"/>
+                                        <Setter Target="CheckGlyph.Margin" Value="0"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IndeterminatePressed">
@@ -724,6 +726,7 @@
                                     </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="CheckGlyph.(local:AnimatedIcon.State)" Value="PressedIndeterminate"/>
+                                        <Setter Target="CheckGlyph.Margin" Value="0"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IndeterminateDisabled">
@@ -758,6 +761,7 @@
                                     <VisualState.Setters>
                                         <!-- DisabledVisual Should be handled by the control, not the animated icon. -->
                                         <Setter Target="CheckGlyph.(local:AnimatedIcon.State)" Value="NormalIndeterminate"/>
+                                        <Setter Target="CheckGlyph.Margin" Value="0"/>
                                     </VisualState.Setters>
                                 </VisualState>
 

@@ -105,7 +105,7 @@
                                 <VisualState x:Name="Updating" />
                                 <VisualState x:Name="UpdatingError">
                                     <VisualState.Setters>
-                                        <Setter Target="DeterminateProgressBarIndicator.Fill" Value="{ThemeResource ProgressBarErrorForegroundColor}" />
+                                        <Setter Target="DeterminateProgressBarIndicator.(Shape.Fill).(SolidColorBrush.Color)" Value="{ThemeResource ProgressBarErrorForegroundColor}" />
                                     </VisualState.Setters>
                                 </VisualState>
 

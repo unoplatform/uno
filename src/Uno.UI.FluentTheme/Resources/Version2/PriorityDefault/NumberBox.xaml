@@ -39,6 +39,7 @@
                                         <Setter Target="DownSpinButton.Visibility" Value="Visible" />
                                         <Setter Target="UpSpinButton.Visibility" Value="Visible" />
                                         <Setter Target="InputEater.Visibility" Value="Visible" />
+                                        <Setter Target="InputBox.MinWidth" Value="{ThemeResource NumberBoxMinWidth}" />
                                     </VisualState.Setters>
                                 </VisualState>
 

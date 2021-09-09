@@ -12,9 +12,19 @@
             <StaticResource x:Key="ContentDialogBackground" ResourceKey="SolidBackgroundFillColorBaseBrush" />
             <StaticResource x:Key="ContentDialogSmokeFill" ResourceKey="SmokeFillColorDefaultBrush" />
             <StaticResource x:Key="ContentDialogTopOverlay" ResourceKey="LayerFillColorAltBrush" />
-            <StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SurfaceStrokeColorDefault" />
+            <StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
             <StaticResource x:Key="ContentDialogSeparatorBorderBrush" ResourceKey="CardStrokeColorDefaultBrush" />
             <Thickness x:Key="ContentDialogBorderWidth">1</Thickness>
+
+            <x:Double x:Key="ContentDialogMinWidth">320</x:Double>
+            <x:Double x:Key="ContentDialogMaxWidth">548</x:Double>
+            <x:Double x:Key="ContentDialogMinHeight">184</x:Double>
+            <x:Double x:Key="ContentDialogMaxHeight">756</x:Double>
+
+            <GridLength x:Key="ContentDialogButtonSpacing">8</GridLength>
+            <Thickness x:Key="ContentDialogTitleMargin">0,0,0,12</Thickness>
+            <Thickness x:Key="ContentDialogPadding">24</Thickness>
+            <Thickness x:Key="ContentDialogSeparatorThickness">0,0,0,1</Thickness>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <StaticResource x:Key="ContentDialogForeground" ResourceKey="SystemColorWindowTextColorBrush" />
@@ -24,26 +34,37 @@
             <StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SystemColorWindowTextColorBrush" />
             <StaticResource x:Key="ContentDialogSeparatorBorderBrush" ResourceKey="SystemColorWindowTextColorBrush" />
             <Thickness x:Key="ContentDialogBorderWidth">2</Thickness>
+
+            <x:Double x:Key="ContentDialogMinWidth">320</x:Double>
+            <x:Double x:Key="ContentDialogMaxWidth">548</x:Double>
+            <x:Double x:Key="ContentDialogMinHeight">184</x:Double>
+            <x:Double x:Key="ContentDialogMaxHeight">756</x:Double>
+
+            <GridLength x:Key="ContentDialogButtonSpacing">8</GridLength>
+            <Thickness x:Key="ContentDialogTitleMargin">0,0,0,12</Thickness>
+            <Thickness x:Key="ContentDialogPadding">24</Thickness>
+            <Thickness x:Key="ContentDialogSeparatorThickness">0,0,0,1</Thickness>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <StaticResource x:Key="ContentDialogForeground" ResourceKey="TextFillColorPrimaryBrush" />
             <StaticResource x:Key="ContentDialogBackground" ResourceKey="SolidBackgroundFillColorBaseBrush" />
             <StaticResource x:Key="ContentDialogSmokeFill" ResourceKey="SmokeFillColorDefaultBrush" />
             <StaticResource x:Key="ContentDialogTopOverlay" ResourceKey="LayerFillColorAltBrush" />
-            <StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SurfaceStrokeColorDefault" />
+            <StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
             <StaticResource x:Key="ContentDialogSeparatorBorderBrush" ResourceKey="CardStrokeColorDefaultBrush" />
             <Thickness x:Key="ContentDialogBorderWidth">1</Thickness>
+
+            <x:Double x:Key="ContentDialogMinWidth">320</x:Double>
+            <x:Double x:Key="ContentDialogMaxWidth">548</x:Double>
+            <x:Double x:Key="ContentDialogMinHeight">184</x:Double>
+            <x:Double x:Key="ContentDialogMaxHeight">756</x:Double>
+
+            <GridLength x:Key="ContentDialogButtonSpacing">8</GridLength>
+            <Thickness x:Key="ContentDialogTitleMargin">0,0,0,12</Thickness>
+            <Thickness x:Key="ContentDialogPadding">24</Thickness>
+            <Thickness x:Key="ContentDialogSeparatorThickness">0,0,0,1</Thickness>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
-
-    <x:Double x:Key="ContentDialogMinWidth">320</x:Double>
-    <x:Double x:Key="ContentDialogMaxWidth">548</x:Double>
-    <x:Double x:Key="ContentDialogMinHeight">184</x:Double>
-    <x:Double x:Key="ContentDialogMaxHeight">756</x:Double>
-    <GridLength x:Key="ContentDialogButtonSpacing">8</GridLength>
-    <Thickness x:Key="ContentDialogTitleMargin">0,0,0,12</Thickness>
-    <Thickness x:Key="ContentDialogPadding">24</Thickness>
-    <Thickness x:Key="ContentDialogSeparatorThickness">0,0,0,1</Thickness>
 
     <Style TargetType="ContentDialog" BasedOn="{StaticResource DefaultContentDialogStyle}" />
 
@@ -109,12 +130,18 @@
                                 <VisualState x:Name="DialogHidden" />
                                 <VisualState x:Name="DialogShowing">
                                     <VisualState.Setters>
+                                        <Setter Target="PrimaryButton.IsTabStop" Value="True"/>
+                                        <Setter Target="SecondaryButton.IsTabStop" Value="True"/>
+                                        <Setter Target="CloseButton.IsTabStop" Value="True"/>
                                         <Setter Target="LayoutRoot.Visibility" Value="Visible" />
                                         <Setter Target="BackgroundElement.TabFocusNavigation" Value="Cycle" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="DialogShowingWithoutSmokeLayer">
                                     <VisualState.Setters>
+                                        <Setter Target="PrimaryButton.IsTabStop" Value="True"/>
+                                        <Setter Target="SecondaryButton.IsTabStop" Value="True"/>
+                                        <Setter Target="CloseButton.IsTabStop" Value="True"/>
                                         <Setter Target="LayoutRoot.Visibility" Value="Visible" />
                                         <Setter Target="LayoutRoot.Background" Value="{x:Null}" />
                                     </VisualState.Setters>
@@ -131,7 +158,7 @@
                             <VisualStateGroup x:Name="ButtonsVisibilityStates">
                                 <VisualState x:Name="AllVisible" >
                                     <VisualState.Setters>
-                                        <Setter Target="FirstSpacer.Width" Value="{StaticResource ContentDialogButtonSpacing}" />
+                                        <Setter Target="FirstSpacer.Width" Value="{ThemeResource ContentDialogButtonSpacing}" />
                                         <Setter Target="SecondaryColumn.Width" Value="*" />
                                         <Setter Target="SecondaryButton.(Grid.Column)" Value="2" />
                                     </VisualState.Setters>
@@ -215,10 +242,10 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 contract7Present:BackgroundSizing="InnerBorderEdge"
                                 contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                                MinWidth="{StaticResource ContentDialogMinWidth}"
-                                MaxWidth="{StaticResource ContentDialogMaxWidth}"
-                                MinHeight="{StaticResource ContentDialogMinHeight}"
-                                MaxHeight="{StaticResource ContentDialogMaxHeight}"
+                                MinWidth="{ThemeResource ContentDialogMinWidth}"
+                                MaxWidth="{ThemeResource ContentDialogMaxWidth}"
+                                MinHeight="{ThemeResource ContentDialogMinHeight}"
+                                MaxHeight="{ThemeResource ContentDialogMaxHeight}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 RenderTransformOrigin="0.5,0.5">
@@ -238,8 +265,8 @@
                                         IsTabStop="False">
                                         <Grid
                                             Background="{ThemeResource ContentDialogTopOverlay}"
-                                            Padding="{StaticResource ContentDialogPadding}"
-                                            BorderThickness="{StaticResource ContentDialogSeparatorThickness}"
+                                            Padding="{ThemeResource ContentDialogPadding}"
+                                            BorderThickness="{ThemeResource ContentDialogSeparatorThickness}"
                                             BorderBrush="{ThemeResource ContentDialogSeparatorBorderBrush}">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
@@ -247,7 +274,7 @@
                                             </Grid.RowDefinitions>
                                             <ContentControl
                                                 x:Name="Title"
-                                                Margin="{StaticResource ContentDialogTitleMargin}"
+                                                Margin="{ThemeResource ContentDialogTitleMargin}"
                                                 Content="{TemplateBinding Title}"
                                                 ContentTemplate="{TemplateBinding TitleTemplate}"
                                                 FontSize="20"
@@ -288,17 +315,18 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
                                         XYFocusKeyboardNavigation="Enabled"
-                                        Padding="{StaticResource ContentDialogPadding}"
+                                        Padding="{ThemeResource ContentDialogPadding}"
                                         Background="{TemplateBinding Background}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition x:Name="PrimaryColumn" Width="*" />
                                             <ColumnDefinition x:Name="FirstSpacer" Width="0" />
                                             <ColumnDefinition x:Name="SecondaryColumn" Width="0" />
-                                            <ColumnDefinition x:Name="SecondSpacer" Width="{StaticResource ContentDialogButtonSpacing}" />
+                                            <ColumnDefinition x:Name="SecondSpacer" Width="{ThemeResource ContentDialogButtonSpacing}" />
                                             <ColumnDefinition x:Name="CloseColumn" Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <Button
                                             x:Name="PrimaryButton"
+                                            IsTabStop="False"
                                             Content="{TemplateBinding PrimaryButtonText}"
                                             IsEnabled="{TemplateBinding IsPrimaryButtonEnabled}"
                                             Style="{TemplateBinding PrimaryButtonStyle}"
@@ -306,6 +334,7 @@
                                             HorizontalAlignment="Stretch" />
                                         <Button
                                             x:Name="SecondaryButton"
+                                            IsTabStop="False"
                                             Content="{TemplateBinding SecondaryButtonText}"
                                             IsEnabled="{TemplateBinding IsSecondaryButtonEnabled}"
                                             Style="{TemplateBinding SecondaryButtonStyle}"
@@ -313,6 +342,7 @@
                                             HorizontalAlignment="Stretch" />
                                         <Button
                                             x:Name="CloseButton"
+                                            IsTabStop="False"
                                             Grid.Column="4" 
                                             Content="{TemplateBinding CloseButtonText}"
                                             Style="{TemplateBinding CloseButtonStyle}"
