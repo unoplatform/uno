@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Uno;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -277,103 +278,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				_isNavigating = true;
-
-				// Navigating
-				var navigatingFromArgs = new NavigatingCancelEventArgs(
-					mode,
-					entry.NavigationTransitionInfo,
-					entry.Parameter,
-					entry.SourcePageType
-				);
-
-				Navigating?.Invoke(this, navigatingFromArgs);
-
-				if (navigatingFromArgs.Cancel)
-				{
-					// Frame canceled
-					OnNavigationStopped(entry, mode);
-					return false;
-				}
-
-				CurrentEntry?.Instance?.OnNavigatingFrom(navigatingFromArgs);
-
-				if (navigatingFromArgs.Cancel)
-				{
-					// Page canceled
-					OnNavigationStopped(entry, mode);
-					return false;
-				}
-
-				// Navigate
-				var previousEntry = CurrentEntry;
-				CurrentEntry = entry;
-
-				if (mode == NavigationMode.New)
-				{
-					// Doing this first allows CurrentEntry to reuse existing page if pooling is enabled
-					ReleasePages(ForwardStack);
-				}
-
-				if (CurrentEntry.Instance == null)
-				{
-					var page = CreatePageInstanceCached(entry.SourcePageType);
-					if (page == null)
-					{
-						return false;
-					}
-
-					page.Frame = this;
-					CurrentEntry.Instance = page;
-				}
-
-				Content = CurrentEntry.Instance;
-
-				if (IsNavigationStackEnabled)
-				{
-					switch (mode)
-					{
-						case NavigationMode.New:
-							ForwardStack.Clear();
-							if (previousEntry != null)
-							{
-								BackStack.Add(previousEntry);
-							}
-							break;
-						case NavigationMode.Back:
-							ForwardStack.Add(previousEntry);
-							BackStack.Remove(CurrentEntry);
-							break;
-						case NavigationMode.Forward:
-							BackStack.Add(previousEntry);
-							ForwardStack.Remove(CurrentEntry);
-							break;
-						case NavigationMode.Refresh:
-							break;
-					}
-				}
-
-				// Navigated
-				var navigationEvent = new NavigationEventArgs(
-					CurrentEntry.Instance,
-					mode,
-					entry.NavigationTransitionInfo,
-					entry.Parameter,
-					entry.SourcePageType,
-					null
-				);
-
-				SetValue(SourcePageTypeProperty, entry.SourcePageType);
-				SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
-
-				previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
-				CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
-
-				Navigated?.Invoke(this, navigationEvent);				
-
-				VisualTreeHelper.CloseAllPopups();
-
-				return true;
+				return InnerNavigateUnsafe(entry, mode);
 			}
 			catch (Exception exception)
 			{
@@ -390,6 +295,113 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_isNavigating = false;
 			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private bool InnerNavigateUnsafe(PageStackEntry entry, NavigationMode mode)
+		{
+			_isNavigating = true;
+
+			// Navigating
+			var navigatingFromArgs = new NavigatingCancelEventArgs(
+				mode,
+				entry.NavigationTransitionInfo,
+				entry.Parameter,
+				entry.SourcePageType
+			);
+
+			Navigating?.Invoke(this, navigatingFromArgs);
+
+			if (navigatingFromArgs.Cancel)
+			{
+				// Frame canceled
+				OnNavigationStopped(entry, mode);
+				return false;
+			}
+
+			CurrentEntry?.Instance?.OnNavigatingFrom(navigatingFromArgs);
+
+			if (navigatingFromArgs.Cancel)
+			{
+				// Page canceled
+				OnNavigationStopped(entry, mode);
+				return false;
+			}
+
+			// Navigate
+			var previousEntry = CurrentEntry;
+			CurrentEntry = entry;
+
+			if (mode == NavigationMode.New)
+			{
+				// Doing this first allows CurrentEntry to reuse existing page if pooling is enabled
+				ReleasePages(ForwardStack);
+			}
+
+			if (CurrentEntry.Instance == null)
+			{
+				var page = CreatePageInstanceCached(entry.SourcePageType);
+				if (page == null)
+				{
+					return false;
+				}
+
+				page.Frame = this;
+				CurrentEntry.Instance = page;
+			}
+
+			Content = CurrentEntry.Instance;
+
+			if (IsNavigationStackEnabled)
+			{
+				switch (mode)
+				{
+					case NavigationMode.New:
+						ForwardStack.Clear();
+						if (previousEntry != null)
+						{
+							BackStack.Add(previousEntry);
+						}
+						break;
+					case NavigationMode.Back:
+						ForwardStack.Add(previousEntry);
+						BackStack.Remove(CurrentEntry);
+						break;
+					case NavigationMode.Forward:
+						BackStack.Add(previousEntry);
+						ForwardStack.Remove(CurrentEntry);
+						break;
+					case NavigationMode.Refresh:
+						break;
+				}
+			}
+
+			// Navigated
+			var navigationEvent = new NavigationEventArgs(
+				CurrentEntry.Instance,
+				mode,
+				entry.NavigationTransitionInfo,
+				entry.Parameter,
+				entry.SourcePageType,
+				null
+			);
+
+			SetValue(SourcePageTypeProperty, entry.SourcePageType);
+			SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
+
+			previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
+			CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
+
+			Navigated?.Invoke(this, navigationEvent);
+
+			VisualTreeHelper.CloseAllPopups();
+
+			return true;
 		}
 
 		/// <summary>

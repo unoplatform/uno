@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Uno.Logging;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Core
 {
@@ -290,36 +291,7 @@ namespace Windows.UI.Core
 			{
 				if (!operation.IsCancelled)
 				{
-					IDisposable? runActivity = null;
-
-					try
-					{
-						if (_trace.IsEnabled)
-						{
-							runActivity = _trace.WriteEventActivity(
-								TraceProvider.CoreDispatcher_InvokeStart,
-								TraceProvider.CoreDispatcher_InvokeStop,
-								relatedActivity: operation.ScheduleEventActivity,
-								payload: new[] { ((int)CurrentPriority).ToString(), operation.GetDiagnosticsName() }
-							);
-						}
-
-						using (runActivity)
-						using (GetSyncContext(CurrentPriority).Apply())
-						{
-							operation.Action();
-							operation.Complete();
-						}
-					}
-					catch (Exception ex)
-					{
-						if (_trace.IsEnabled)
-						{
-							_trace.WriteEvent(TraceProvider.CoreDispatcher_Exception, EventOpcode.Send, new[] { ex.GetType().ToString(), operation.GetDiagnosticsName() });
-						}
-						operation.SetError(ex);
-						this.Log().Error("Dispatcher unhandled exception", ex);
-					}
+					InvokeOperationSafe(operation);
 				}
 				else
 				{
@@ -345,6 +317,59 @@ namespace Windows.UI.Core
 			{
 				DispatchWakeUp();
 			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InvokeOperationSafe(UIAsyncOperation operation)
+		{
+			try
+			{
+				InvokeOperation(operation);
+			}
+			catch (Exception ex)
+			{
+				if (_trace.IsEnabled)
+				{
+					_trace.WriteEvent(TraceProvider.CoreDispatcher_Exception, EventOpcode.Send, new[] { ex.GetType().ToString(), operation.GetDiagnosticsName() });
+				}
+				operation.SetError(ex);
+				this.Log().Error("Dispatcher unhandled exception", ex);
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private IDisposable? InvokeOperation(UIAsyncOperation operation)
+		{
+			IDisposable? runActivity = null;
+
+			if (_trace.IsEnabled)
+			{
+				runActivity = _trace.WriteEventActivity(
+					TraceProvider.CoreDispatcher_InvokeStart,
+					TraceProvider.CoreDispatcher_InvokeStop,
+					relatedActivity: operation.ScheduleEventActivity,
+					payload: new[] { ((int)CurrentPriority).ToString(), operation.GetDiagnosticsName() }
+				);
+			}
+
+			using (runActivity)
+			using (GetSyncContext(CurrentPriority).Apply())
+			{
+				operation.Action();
+				operation.Complete();
+			}
+
+			return runActivity;
 		}
 
 		async void DispatchWakeUp()

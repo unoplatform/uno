@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Extensions;
@@ -34,20 +35,7 @@ namespace Windows.UI.Xaml.Controls
 
 					focusManager.InitialFocus = true;
 
-					try
-					{
-						var focusUpdated = this.SetFocusedElement(
-							spFirstFocusableElementDO,
-							FocusState.Programmatic,
-							false /*animateIfBringIntoView*/);
-					}
-					catch (Exception ex)
-					{
-						if (this.Log().IsEnabled(LogLevel.Error))
-						{
-							this.Log().LogError($"Setting initial page focus failed: {ex}");
-						}
-					}
+					TrySetFocusedElement(spFirstFocusableElementDO);
 				}
 
 				if (spFirstFocusableElementCDO == null)
@@ -60,6 +48,30 @@ namespace Windows.UI.Xaml.Controls
 					{
 						Uno.UI.Xaml.Core.CoreServices.Instance.UIARaiseFocusChangedEventOnUIAWindow(this);
 					}
+				}
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void TrySetFocusedElement(DependencyObject spFirstFocusableElementDO)
+		{
+			try
+			{
+				var focusUpdated = this.SetFocusedElement(
+					spFirstFocusableElementDO,
+					FocusState.Programmatic,
+					false /*animateIfBringIntoView*/);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Setting initial page focus failed: {ex}");
 				}
 			}
 		}

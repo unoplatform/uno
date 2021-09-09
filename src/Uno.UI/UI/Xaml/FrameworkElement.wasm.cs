@@ -58,6 +58,17 @@ namespace Windows.UI.Xaml
 				(child as FrameworkElement)?.InternalDispatchEvent("loaded", args);
 			}
 
+			RaiseOnLoadedSafe();
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void RaiseOnLoadedSafe()
+		{
 			try
 			{
 				OnLoaded();
@@ -69,7 +80,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-
 		private void NativeOnUnloaded(object sender, RoutedEventArgs args)
 		{
 			base.IsLoaded = false;
@@ -79,6 +89,16 @@ namespace Windows.UI.Xaml
 				(child as FrameworkElement)?.InternalDispatchEvent("unloaded", args);
 			}
 
+			RaiseOnUnloadedSafe();
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void RaiseOnUnloadedSafe()
+		{
 			try
 			{
 				OnUnloaded();
