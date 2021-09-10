@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections.Concurrent;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -12,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class RadioMenuFlyoutItem : ToggleMenuFlyoutItem
 	{
 		[ThreadStatic]
-		private static Dictionary<string, WeakReference<RadioMenuFlyoutItem>> s_selectionMap;
+		private static ConcurrentDictionary<string, WeakReference<RadioMenuFlyoutItem>> s_selectionMap;
 
 		// Copies of IsChecked & GroupName to avoid using those dependency properties in the ~RadioMenuFlyoutItem() destructor which would lead to crashes.
 		private bool m_isChecked;
@@ -28,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (s_selectionMap == null)
 			{
 				// Ensure that this object exists
-				s_selectionMap = new Dictionary<string, WeakReference<RadioMenuFlyoutItem>>();
+				s_selectionMap = new ConcurrentDictionary<string, WeakReference<RadioMenuFlyoutItem>>();
 			}
 
 			SetDefaultStyleKey(this);
@@ -42,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (m_groupName != null)
 				{
-					s_selectionMap.Remove(m_groupName);
+					s_selectionMap.TryRemove(m_groupName, out _);
 				}
 			}
 		}
@@ -126,26 +125,6 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 						VisualStateManager.GoToState(subMenu, isAnyItemChecked ? "Checked" : "Unchecked", false);
 					};
-					/*
-					subMenu.Loaded(
-					{
-						[subMenuWeak = winrt::make_weak(subMenu)](winrt::IInspectable const& sender, auto const&)
-						{
-							if (auto subMenu = subMenuWeak.get())
-							{
-								bool isAnyItemChecked = false;
-								for (auto const& item : subMenu.Items())
-								{
-									if (auto const& radioItem = item.try_as<winrt::RadioMenuFlyoutItem>())
-									{
-										isAnyItemChecked = isAnyItemChecked || radioItem.IsChecked();
-									}
-								}
-								winrt::VisualStateManager::GoToState(subMenu, isAnyItemChecked ? L"Checked" : L"Unchecked", false);
-							}
-						}
-					});
-					 */
 				}
 			}
 		}
