@@ -510,6 +510,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static void VerifyRelativeContentPosition(Windows.Foundation.Point position, HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
+#if __ANDROID__
+			if (FeatureConfiguration.Popup.UseNativePopup)
+			{
+				// Adjust for status bar height, which is omitted from TransformToVisual() for elements inside of a native popup.
+				var rootViewBounds = ((FrameworkElement)Window.Current.Content).GetOnScreenBounds();
+				contentScreenBounds.Y += rootViewBounds.Y;
+			}
+#endif
 			var contentCenter = contentScreenBounds.GetCenter();
 			var targetScreenBounds = target.GetOnScreenBounds();
 			var targetCenter = targetScreenBounds.GetCenter();

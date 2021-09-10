@@ -116,16 +116,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
 
+					var menuBarBounds = menuBar.GetOnScreenBounds();
+
 					Assert.AreEqual(40, menuBarItemBounds.Height, 1);
 
-					Assert.AreEqual(1, flyoutItemBounds.X, 2);
-					Assert.AreEqual(43, flyoutItemBounds.Y, 2);
+					var expectedY = 43.0;
+#if __ANDROID__
+					if (!FeatureConfiguration.Popup.UseNativePopup)
+					{
+						// 
+						expectedY += menuBarItemBounds.Y;
+					}
+#endif
+
+					Assert.AreEqual(1, flyoutItemBounds.X, 3);
+					Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
 				}
 				finally
 				{
 					peer.Collapse();
-				} 
+				}
 			}
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
+		{
+			using (ConfigHelper.UseManagedPopups())
+			{
+				await Verify_MenuBarItem_Bounds();
+			}
+		}
+#endif
 	}
 }
