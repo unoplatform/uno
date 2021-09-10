@@ -16452,7 +16452,7 @@
     <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
-    <Setter Property="Padding" Value="8,4,8,4" />
+    <Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -16461,10 +16461,14 @@
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="FocusVisualMargin" Value="-3" />
     <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}">
+            <contract7Present:Grid.BackgroundTransition>
+              <contract7Present:BrushTransition Duration="0:0:0.083" />
+            </contract7Present:Grid.BackgroundTransition>
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -16473,50 +16477,70 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="InnerGrid" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="ChevronIcon.(controls:AnimatedIcon.State)" Value="PointerOver" />
+                  </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pressed">
                   <Storyboard>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="InnerGrid" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ChevronIcon" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DropDownButtonForegroundSecondaryPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="ChevronIcon.(controls:AnimatedIcon.State)" Value="Pressed" />
+                  </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Disabled">
                   <Storyboard>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="InnerGrid" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ChevronIcon" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
+                  <VisualState.Setters>
+                    <!-- DisabledVisual Should be handled by the control, not the animated icon. -->
+                    <Setter Target="ChevronIcon.(controls:AnimatedIcon.State)" Value="Normal" />
+                  </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Grid x:Name="InnerGrid" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-              </Grid.ColumnDefinitions>
-              <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
-              <TextBlock x:Name="ChevronTextBlock" Grid.Column="1" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Text="&#xE70D;" VerticalAlignment="Center" Margin="6,0,0,0" AutomationProperties.AccessibilityView="Raw" />
-            </Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
+            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
+            <controls:AnimatedIcon x:Name="ChevronIcon" Grid.Column="1" Margin="8,0,0,0" AutomationProperties.AccessibilityView="Raw" local:AnimatedIcon.State="Normal" Width="12" Height="12" Foreground="{ThemeResource DropDownButtonForegroundSecondary}" xmlns:local="using:Microsoft.UI.Xaml.Controls">
+              <animatedvisuals:AnimatedChevronDownSmallVisualSource />
+              <controls:AnimatedIcon.FallbackIconSource>
+                <controls:FontIconSource FontSize="8" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE96E;" IsTextScaleFactorEnabled="False" />
+              </controls:AnimatedIcon.FallbackIconSource>
+            </controls:AnimatedIcon>
           </Grid>
         </ControlTemplate>
       </Setter.Value>

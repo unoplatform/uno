@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private const ControlsResourcesVersion MaxSupportedResourcesVersion = ControlsResourcesVersion.Version2;
 
-		private static bool _isUsingResourcesVersion2 = false;
+		private static bool _isUsingResourcesVersion2 = true;
 
 		public XamlControlsResources()
 		{
@@ -75,7 +75,6 @@ namespace Microsoft.UI.Xaml.Controls
 			resources?.UpdateSource();
 		}
 
-		[NotImplemented]
 		internal static bool IsUsingResourcesVersion2() => _isUsingResourcesVersion2;
 	}
 }

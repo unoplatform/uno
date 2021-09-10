@@ -69,11 +69,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 				var textBlock = page.ResourceKeyThemedTextBlock;
 
-				Assert.AreEqual(Colors.Black, (textBlock.Foreground as SolidColorBrush).Color);
+				// Dark text
+				Assert.IsTrue(((SolidColorBrush)textBlock.Foreground).Color.R < 100);
 
 				await SwapSystemTheme();
 
-				Assert.AreEqual(Colors.White, (textBlock.Foreground as SolidColorBrush).Color);
+				// Light text
+				Assert.IsTrue(((SolidColorBrush)textBlock.Foreground).Color.R > 200);
 			}
 		}
 
@@ -88,11 +90,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 				app.HostView.Children.Add(button);
 
-				Assert.AreEqual(Colors.Black, (button.Foreground as SolidColorBrush).Color);
+				// Dark text
+				Assert.IsTrue(((SolidColorBrush)button.Foreground).Color.R < 100);
 
 				await SwapSystemTheme();
 
-				Assert.AreEqual(Colors.White, (button.Foreground as SolidColorBrush).Color);
+				// Light text
+				Assert.IsTrue(((SolidColorBrush)button.Foreground).Color.R > 200);
 			}
 		}
 
