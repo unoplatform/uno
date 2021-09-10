@@ -989,7 +989,7 @@
                                         <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundDisabled}" />
 
                                         <!-- Uno specific - simulates bottom border gradient -->
-                                        <Setter Storyboard.TargetName="BottomBorderElement.Visibility" Value="Collapsed" />
+                                        <Setter Target="BottomBorderElement.Visibility" Value="Collapsed" />
 
                                         <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                                         <!-- <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" /> -->

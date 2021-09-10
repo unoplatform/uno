@@ -185,8 +185,6 @@
     <!-- Adding the next couple keys to avoid test failures -->
     <!-- Note that DefaultProgressBarStyle still points to WUXC.ProgressBar -->
     <Style x:Key="DefaultProgressBarStyle" TargetType="ProgressBar" />
-    <!-- we provided an unnamed progress bar style as well in V1 which we are not anymore, since that style is depricated anyway -->
-    <Style TargetType="ProgressBar" />
 
     <x:Double x:Key="PaneToggleButtonSize">40</x:Double>
     

@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(ReplacementColor),
 				typeof(Color),
 				typeof(MonochromaticOverlayPresenter),
-				new PropertyMetadata(default(Color), OnPropertyChanged));
+				new FrameworkPropertyMetadata(default(Color), OnPropertyChanged));
 
 		public UIElement SourceElement
 		{
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(SourceElement),
 				typeof(UIElement),
 				typeof(MonochromaticOverlayPresenter),
-				new PropertyMetadata(null, OnPropertyChanged));
+				new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
