@@ -987,6 +987,10 @@
                                         <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundDisabled}" />
                                         <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                                         <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundDisabled}" />
+
+                                        <!-- Uno specific - simulates bottom border gradient -->
+                                        <Setter Storyboard.TargetName="BottomBorderElement.Visibility" Value="Collapsed" />
+
                                         <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                                         <!-- <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" /> -->
                                         <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{ThemeResource TextControlPlaceholderForegroundDisabled}" />
@@ -995,7 +999,8 @@
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundPointerOver}" />
-                                        <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
+                                        <!-- Uno specific: avoid applying LinearGradientBrush -->
+                                        <!-- <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushPointerOver}" /> -->
                                         <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundPointerOver}" />
                                         <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                                         <!-- <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" /> -->
@@ -1005,7 +1010,12 @@
                                 <VisualState x:Name="Focused">
                                     <VisualState.Setters>
                                         <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundFocused}" />
-                                        <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushFocused}" />
+                                        
+                                        <!-- Uno specific: Simulates focused bottom border -->
+                                        <!-- <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushFocused}" /> -->
+                                        <Setter Target="BottomBorderElement.BorderThickness" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
+                                        <Setter Target="BottomBorderElement.BorderBrush" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
+
                                         <Setter Target="BorderElement.BorderThickness" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
                                         <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundFocused}" />
                                         <Setter Target="ContentElement.RequestedTheme" Value="Light" />
@@ -1024,6 +1034,14 @@
                             Control.IsTemplateFocusTarget="True"
                             contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                             contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"/>
+
+                        <!-- Uno specific: Simulates bottom border linear gradient shadow -->
+                        <Border x:Name="BottomBorderElement"                                
+                            BorderThickness="0,0,0,1"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
+                            BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />
+
                         <ScrollViewer x:Name="ContentElement"
                             Margin="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"

@@ -209,7 +209,8 @@
         <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
-        <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
+        <!-- Uno workaround: Workaround for LinearGradientBrush not supported on all targets-->
+        <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
         <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -319,11 +320,17 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
+
+                                        <!-- Uno specific - simulates bottom border gradient -->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                        </ObjectAnimationUsingKeyFrames>
+
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+                                        <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                                             <!-- <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" /> -->
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundDisabled}" />                                            
                                         </ObjectAnimationUsingKeyFrames>
@@ -333,9 +340,10 @@
                                 <VisualState x:Name="PointerOver">
 
                                     <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
-                                        </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific: avoid applying LinearGradientBrush -->
+                                        <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>-->
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -360,9 +368,18 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                                        
+                                        <!-- Uno specific: Simulates focused bottom border -->
+                                        <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
+                                        </ObjectAnimationUsingKeyFrames>-->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderThickness">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
                                         </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderThickness">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -429,7 +446,19 @@
                             Control.IsTemplateFocusTarget="True"
                             MinWidth="{TemplateBinding MinWidth}"
                             MinHeight="{TemplateBinding MinHeight}" />
-                            <ScrollViewer x:Name="ContentElement"
+
+                        <!-- Uno specific: Simulates bottom border linear gradient shadow -->
+                        <Border x:Name="BottomBorderElement"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.RowSpan="1"
+                                Grid.ColumnSpan="2"
+                                BorderThickness="0,0,0,1"
+                                contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                                contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
+                                BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />
+
+                        <ScrollViewer x:Name="ContentElement"
                             Grid.Row="1"
                             Grid.Column="0"
                             HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
