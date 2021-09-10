@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum ElementSoundMode 
 	{
-		#if false
-		Default,
-		#endif
-		#if false
-		FocusOnly,
-		#endif
-		#if false
-		Off,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundMode.Default
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundMode.FocusOnly
+		// Skipping already declared field Windows.UI.Xaml.ElementSoundMode.Off
 	}
 	#endif
 }

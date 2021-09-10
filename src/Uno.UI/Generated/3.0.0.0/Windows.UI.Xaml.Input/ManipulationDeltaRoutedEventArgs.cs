@@ -14,16 +14,7 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared property IsInertial
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.ManipulationVelocities Velocities
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ManipulationVelocities ManipulationDeltaRoutedEventArgs.Velocities is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Velocities
 		// Skipping already declared method Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.ManipulationDeltaRoutedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.ManipulationDeltaRoutedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.Container.get
