@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Xaml.Controls;
@@ -108,6 +109,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			textBox.Text = "Something";
+		}
+
+		[TestMethod]
+		public async Task When_Calling_Select_With_Negative_Values()
+		{
+			var textBox = new TextBox();
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			Assert.ThrowsException<ArgumentException>(() => textBox.Select(0, -1));
+			Assert.ThrowsException<ArgumentException>(() => textBox.Select(-1, 0));
+		}
+
+		[TestMethod]
+		public async Task When_Calling_Select_With_In_Range_Values()
+		{
+			var textBox = new TextBox
+			{
+				Text = "0123456789"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+#if __WASM__ // Wasm is behaving differently than UWP and other platforms. https://github.com/unoplatform/uno/issues/7016
+			Assert.AreEqual(10, textBox.SelectionStart);
+#else
+			Assert.AreEqual(0, textBox.SelectionStart);
+#endif
+
+			Assert.AreEqual(0, textBox.SelectionLength);
+			textBox.Select(1, 7);
+			Assert.AreEqual(1, textBox.SelectionStart);
+			Assert.AreEqual(7, textBox.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Calling_Select_With_Out_Of_Range_Length()
+		{
+			var textBox = new TextBox
+			{
+				Text = "0123456789"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+#if __WASM__ // Wasm is behaving differently than UWP and other platforms. https://github.com/unoplatform/uno/issues/7016
+			Assert.AreEqual(10, textBox.SelectionStart);
+#else
+			Assert.AreEqual(0, textBox.SelectionStart);
+#endif
+			Assert.AreEqual(0, textBox.SelectionLength);
+			textBox.Select(1, 20);
+			Assert.AreEqual(1, textBox.SelectionStart);
+			Assert.AreEqual(9, textBox.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Calling_Select_With_Out_Of_Range_Start()
+		{
+			var textBox = new TextBox
+			{
+				Text = "0123456789"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+#if __WASM__ // Wasm is behaving differently than UWP and other platforms. https://github.com/unoplatform/uno/issues/7016
+			Assert.AreEqual(10, textBox.SelectionStart);
+#else
+			Assert.AreEqual(0, textBox.SelectionStart);
+#endif
+			Assert.AreEqual(0, textBox.SelectionLength);
+			textBox.Select(20, 5);
+			Assert.AreEqual(10, textBox.SelectionStart);
+			Assert.AreEqual(0, textBox.SelectionLength);
 		}
 	}
 }

@@ -47,51 +47,11 @@ namespace Uno.UI.Tests.TextBoxTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/6993")]
 		public void Calling_Select_With_NegativeValues()
 		{
 			var textBox = new TextBox();
 			Assert.ThrowsException<ArgumentException>(() => textBox.Select(0, -1));
 			Assert.ThrowsException<ArgumentException>(() => textBox.Select(-1, 0));
-		}
-
-		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/6993")]
-		public void Calling_Select_With_In_Range_Values()
-		{
-			var textBox = new TextBox();
-			textBox.Text = "0123456789";
-			Assert.AreEqual(0, textBox.SelectionStart);
-			Assert.AreEqual(0, textBox.SelectionLength);
-			textBox.Select(1, 7);
-			Assert.AreEqual(1, textBox.SelectionStart);
-			Assert.AreEqual(7, textBox.SelectionLength);
-		}
-
-		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/6993")]
-		public void Calling_Select_With_Out_Of_Range_Length()
-		{
-			var textBox = new TextBox();
-			textBox.Text = "0123456789";
-			Assert.AreEqual(0, textBox.SelectionStart);
-			Assert.AreEqual(0, textBox.SelectionLength);
-			textBox.Select(1, 20);
-			Assert.AreEqual(1, textBox.SelectionStart);
-			Assert.AreEqual(10, textBox.SelectionLength);
-		}
-
-		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/6993")]
-		public void Calling_Select_With_Out_Of_Range_Start()
-		{
-			var textBox = new TextBox();
-			textBox.Text = "0123456789";
-			Assert.AreEqual(0, textBox.SelectionStart);
-			Assert.AreEqual(0, textBox.SelectionLength);
-			textBox.Select(20, 5);
-			Assert.AreEqual(10, textBox.SelectionStart);
-			Assert.AreEqual(0, textBox.SelectionLength);
 		}
 
 		[TestMethod]
