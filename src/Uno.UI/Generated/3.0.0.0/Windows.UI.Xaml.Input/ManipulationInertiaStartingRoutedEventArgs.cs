@@ -7,63 +7,15 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class ManipulationInertiaStartingRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.InertiaTranslationBehavior TranslationBehavior
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InertiaTranslationBehavior ManipulationInertiaStartingRoutedEventArgs.TranslationBehavior is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs", "InertiaTranslationBehavior ManipulationInertiaStartingRoutedEventArgs.TranslationBehavior");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.InertiaRotationBehavior RotationBehavior
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InertiaRotationBehavior ManipulationInertiaStartingRoutedEventArgs.RotationBehavior is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs", "InertiaRotationBehavior ManipulationInertiaStartingRoutedEventArgs.RotationBehavior");
-			}
-		}
-		#endif
+		// Skipping already declared property TranslationBehavior
+		// Skipping already declared property RotationBehavior
 		// Skipping already declared property Handled
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.InertiaExpansionBehavior ExpansionBehavior
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InertiaExpansionBehavior ManipulationInertiaStartingRoutedEventArgs.ExpansionBehavior is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs", "InertiaExpansionBehavior ManipulationInertiaStartingRoutedEventArgs.ExpansionBehavior");
-			}
-		}
-		#endif
+		// Skipping already declared property ExpansionBehavior
 		// Skipping already declared property Container
 		// Skipping already declared property Cumulative
 		// Skipping already declared property Delta
 		// Skipping already declared property PointerDeviceType
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.ManipulationVelocities Velocities
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ManipulationVelocities ManipulationInertiaStartingRoutedEventArgs.Velocities is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Velocities
 		// Skipping already declared method Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.ManipulationInertiaStartingRoutedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.ManipulationInertiaStartingRoutedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Container.get
