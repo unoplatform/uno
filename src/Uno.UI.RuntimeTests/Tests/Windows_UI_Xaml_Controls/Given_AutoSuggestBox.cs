@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_AutoSuggestBox
 	{
+#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		public async Task When_Text_Changed_Should_Reflect_In_DataTemplate_TextBox()
 		{
@@ -52,5 +53,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Text = "a";
 			SUT.IsSuggestionListOpen.Should().BeTrue();
 		}
+#endif
 	}
 }
