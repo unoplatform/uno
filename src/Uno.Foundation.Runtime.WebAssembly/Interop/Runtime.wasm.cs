@@ -60,19 +60,30 @@ namespace Uno.Foundation
 		{
 			if (_trace.IsEnabled)
 			{
-				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
-				{
-					var ret = InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out var exception);
-
-					if(exception != null)
-					{
-						throw exception;
-					}
-
-					return ret;
-				}
+				return InvokeJSUnmarshalledWithTrace(functionIdentifier, arg0);
 			}
 			else
+			{
+				var ret = InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out var exception);
+
+				if (exception != null)
+				{
+					throw exception;
+				}
+
+				return ret;
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static bool InvokeJSUnmarshalledWithTrace(string functionIdentifier, IntPtr arg0)
+		{
+			using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
 			{
 				var ret = InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out var exception);
 
@@ -93,12 +104,23 @@ namespace Uno.Foundation
 		{
 			if (_trace.IsEnabled)
 			{
-				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
-				{
-					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out exception);
-				}
+				return InvokeJSUnmarshalledWithTrace(functionIdentifier, arg0, out exception);
 			}
 			else
+			{
+				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out exception);
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static bool InvokeJSUnmarshalledWithTrace(string functionIdentifier, IntPtr arg0, out Exception? exception)
+		{
+			using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
 			{
 				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out exception);
 			}
@@ -135,12 +157,23 @@ namespace Uno.Foundation
 		{
 			if (_trace.IsEnabled)
 			{
-				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
-				{
-					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1);
-				}
+				return InvokeJSUnmarshalledWithTrace(functionIdentifier, arg0, arg1);
 			}
 			else
+			{
+				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1);
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static bool InvokeJSUnmarshalledWithTrace(string functionIdentifier, IntPtr arg0, IntPtr arg1)
+		{
+			using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
 			{
 				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1);
 			}
@@ -179,10 +212,7 @@ namespace Uno.Foundation
 			{
 				if (_trace.IsEnabled)
 				{
-					using (WritePropertyEventTrace(TraceProvider.InvokeStart, TraceProvider.InvokeEnd, str))
-					{
-						return InnerInvokeJS(str);
-					}
+					return InvokeJSWithTrace(str);
 				}
 				else
 				{
@@ -200,6 +230,20 @@ namespace Uno.Foundation
 				}
 
 				throw;
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static string InvokeJSWithTrace(string str)
+		{
+			using (WritePropertyEventTrace(TraceProvider.InvokeStart, TraceProvider.InvokeEnd, str))
+			{
+				return InnerInvokeJS(str);
 			}
 		}
 

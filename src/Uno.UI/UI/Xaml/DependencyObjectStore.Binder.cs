@@ -298,11 +298,21 @@ namespace Windows.UI.Xaml
 
 					if (TryWriteDataContextChangedEventActivity() is { } trace)
 					{
-						// "using" statements are costly under we https://github.com/dotnet/runtime/issues/50783
-						using (trace)
+						/// <remarks>
+						/// This method contains or is called by a try/catch containing method and
+						/// can be significantly slower than other methods as a result on WebAssembly.
+						/// See https://github.com/dotnet/runtime/issues/56309
+						/// </remarks>
+						void ApplyWithTrace (object? actualDataContext, IDisposable trace)
 						{
-							ApplyDataContext(actualDataContext);
+							using (trace)
+							{
+								ApplyDataContext(actualDataContext);
+							}
 						}
+
+						// "using" statements are costly under we https://github.com/dotnet/runtime/issues/50783
+						ApplyWithTrace(actualDataContext, trace);
 					}
 					else
 					{

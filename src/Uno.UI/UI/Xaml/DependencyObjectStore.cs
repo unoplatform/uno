@@ -419,16 +419,25 @@ namespace Windows.UI.Xaml
 		{
 			if (_trace.IsEnabled)
 			{
-				using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void SetValueWithTrace(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isThemeBinding)
 				{
-					InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
+					using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
+					{
+						InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
+					}
 				}
+
+				SetValueWithTrace(property, value, precedence, propertyDetails, isThemeBinding);
 			}
 			else
 			{
 				InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
 			}
-
 		}
 
 		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isThemeBinding)
@@ -1004,8 +1013,12 @@ namespace Windows.UI.Xaml
 
 				if (ActualInstance != null)
 				{
-					foreach (var dp in _updatedProperties)
+					// This block is a manual enumeration to avoid the foreach pattern
+					// See https://github.com/dotnet/runtime/issues/56309 for details
+					var propertiesEnumerator = _updatedProperties.GetEnumerator();
+					while(propertiesEnumerator.MoveNext())
 					{
+						var dp = propertiesEnumerator.Current;
 						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					}
 
@@ -1371,8 +1384,13 @@ namespace Windows.UI.Xaml
 			// call to IsAncestor.
 			var actualInstanceAlias = ActualInstance;
 
-			foreach (var sourceInstanceProperties in _inheritedForwardedProperties)
+			// This block is a manual enumeration to avoid the foreach pattern
+			// See https://github.com/dotnet/runtime/issues/56309 for details
+			var forwardedEnumerator = _inheritedForwardedProperties.GetEnumerator();
+			while(forwardedEnumerator.MoveNext())
 			{
+				var sourceInstanceProperties = forwardedEnumerator.Current;
+
 				if (
 					IsAncestor(actualInstanceAlias, ancestors, sourceInstanceProperties.Value.Target)
 					|| (
@@ -1404,9 +1422,9 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						foreach (var child in _childrenStores)
+						for (var i = 0; i < _childrenStores.Count; i++)
 						{
-							Propagate(child);
+							Propagate(_childrenStores[i]);
 						}
 					}
 				}

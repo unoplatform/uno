@@ -541,23 +541,33 @@ namespace Windows.UI.Xaml.Data
 		{
 			try
 			{
-				var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
-
-				if (canSetTarget)
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void SetTargetValue()
 				{
-					SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
-				}
-				else
-				{
-					// x:Bind failed bindings don't change the target value
-					// if no FallbackValue was specified.
-					ApplyFallbackValue(useTypeDefaultValue: false);
+					var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (canSetTarget)
 					{
-						this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
+						SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+					}
+					else
+					{
+						// x:Bind failed bindings don't change the target value
+						// if no FallbackValue was specified.
+						ApplyFallbackValue(useTypeDefaultValue: false);
+
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
+						}
 					}
 				}
+
+				SetTargetValue();
 			}
 			catch (Exception e)
 			{
