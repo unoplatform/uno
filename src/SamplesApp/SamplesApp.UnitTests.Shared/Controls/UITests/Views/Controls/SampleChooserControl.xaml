@@ -419,7 +419,7 @@
 			</Grid>
 		</SplitView.Pane>
 		<SplitView.Content>
-			<Grid Background="{StaticResource Color08Brush}"
+			<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 				  toolkit:VisibleBoundsPadding.PaddingMask="All">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />

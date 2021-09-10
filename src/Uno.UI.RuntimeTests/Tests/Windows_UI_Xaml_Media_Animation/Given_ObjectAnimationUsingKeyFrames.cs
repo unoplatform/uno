@@ -29,13 +29,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 				Assert.IsNotNull(checkBox.ContentPresenter);
 
-				Assert.AreEqual(Color.FromArgb(102, 0, 0, 0), (checkBox.ContentPresenter.Foreground as SolidColorBrush).Color);
+				var lightThemeForeground = TestsColorHelper.ToColor("#5C000000");
+				var darkThemeForeground = TestsColorHelper.ToColor("#5DFFFFFF");
+
+				Assert.AreEqual(lightThemeForeground, (checkBox.ContentPresenter.Foreground as SolidColorBrush).Color);
 
 				using (UseDarkTheme())
 				{
 					await TestServices.WindowHelper.WaitForIdle();
 
-					Assert.AreEqual(Color.FromArgb(102, 255, 255, 255), (checkBox.ContentPresenter.Foreground as SolidColorBrush).Color);
+					Assert.AreEqual(darkThemeForeground, (checkBox.ContentPresenter.Foreground as SolidColorBrush).Color);
 				}
 			}
 		}

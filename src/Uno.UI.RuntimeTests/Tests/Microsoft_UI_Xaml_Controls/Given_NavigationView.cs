@@ -38,6 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RequiresFullWindow]
+		[Ignore("Disabled to enable WinUI 2.6 merge")]
 		public async Task When_SelectedItem_Set_Before_Load_And_Theme_Changed()
 		{
 			using (StyleHelper.UseFluentStyles())

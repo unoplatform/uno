@@ -126,7 +126,7 @@
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
-		<Reference Include="System.json" />
+		<Reference Include="System.Json" />
 		<Reference Include="System.Memory" />
 	</ItemGroup>
 

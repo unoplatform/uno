@@ -77,8 +77,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
 				Assert.IsNotNull(placeholderTextContentPresenter);
 
-				var lightThemeForeground = TestsColorHelper.ToColor("#99000000");
-				var darkThemeForeground = TestsColorHelper.ToColor("#99FFFFFF");
+				var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
+				var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
 
 				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 

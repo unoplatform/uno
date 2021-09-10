@@ -270,14 +270,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.IsNotNull(placeholderTextBlock);
 
-				Assert.AreEqual(Colors.Black, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
+				var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
+				var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
+
+				Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 
 				using (ThemeHelper.UseDarkTheme())
 				{
-					Assert.AreEqual(Colors.White, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
+					Assert.AreEqual(darkThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 				}
 
-				Assert.AreEqual(Colors.Black, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
+				Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 			}
 		}
 
