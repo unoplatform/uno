@@ -298,7 +298,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (placementTarget != null)
 					{
-						var transformToRoot = placementTarget.TransformToVisual(null);
+						// Uno TODO: Calling TransformToVisual(null) on an element within the main visual tree will include the status bar height, which we don't
+						// want because the status bar is otherwise excluded from layout calculations. We get the transform relative to the managed root view instead.
+						UIElement reference =
+#if __ANDROID__
+							Window.Current.Content;
+#else
+							null;
+#endif
+
+						var transformToRoot = placementTarget.TransformToVisual(reference);
 						positionValue = transformToRoot.TransformPoint(positionValue);
 					}
 
