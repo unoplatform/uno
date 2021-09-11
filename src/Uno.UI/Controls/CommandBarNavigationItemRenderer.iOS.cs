@@ -159,6 +159,16 @@ namespace Uno.UI.Controls
 		private Size _childSize;
 		private Size? _lastAvailableSize;
 
+		public override void SetSuperviewNeedsLayout()
+		{
+			// Skip the base invocation because the base fetches the native parent
+			// view. This process creates a managed proxy during navigations, the
+			// native counterpart is released. This causes the managed NSObject_Disposer:Drain
+			// to fail to release an already released native reference.
+			//
+			// See https://github.com/unoplatform/uno/issues/7012 for more details.
+		}
+
 		internal TitleView()
 		{
 			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
