@@ -11,9 +11,9 @@ namespace Windows.ApplicationModel.Calls
 {
 	public partial class PhoneCallManager
 	{
-		private static readonly TelephonyManager _telephonyManager;
+		private static readonly TelephonyManager _telephonyManager = InitializeTelephonyManager();
 
-		static PhoneCallManager()
+		private static TelephonyManager InitializeTelephonyManager()
 		{
 			if (ContextHelper.Current == null)
 			{
@@ -21,11 +21,12 @@ namespace Windows.ApplicationModel.Calls
 					"PhoneCallManager was used too early in the application lifetime. " +
 					"Android app context needs to be available.");
 			}
-			_telephonyManager = (TelephonyManager)ContextHelper.Current
+			var telephonyManager = (TelephonyManager)ContextHelper.Current
 				.GetSystemService(Context.TelephonyService);
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
-			_telephonyManager.Listen(new CallStateListener(), PhoneStateListenerFlags.CallState);
+			telephonyManager.Listen(new CallStateListener(), PhoneStateListenerFlags.CallState);
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
+			return telephonyManager;
 		}
 
 		public static event EventHandler<object> CallStateChanged;

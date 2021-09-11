@@ -17,9 +17,9 @@ namespace Windows.Services.Maps
     public static partial class MapLocationFinder
     {
         private const int MaxResults = int.MaxValue;
-        private static readonly Geocoder _geocoder;
+        private static readonly Geocoder _geocoder = InitializeGeocoder();
 
-        static MapLocationFinder()
+        private static Geocoder InitializeGeocoder()
         {
             var context = ContextHelper.Current; // TODO: Inject Context instance?
 
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps
 			var locale = context.Resources.Configuration.Locale ?? Locale.Default;
 #pragma warning restore CS0618 // Type or member is obsolete
 
-			_geocoder = new Geocoder(context, locale);
+			return new Geocoder(context, locale);
         }
 
         public static async Task<MapLocationFinderResult> FindLocationsAtAsync(CancellationToken ct, Geopoint queryPoint)

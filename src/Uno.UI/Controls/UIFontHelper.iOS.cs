@@ -18,16 +18,10 @@ namespace Windows.UI
 {
 	internal static class UIFontHelper
 	{
-		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, UIFont> _tryGetFont;
+		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, UIFont> _tryGetFont = ((Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, UIFont>)InternalTryGetFont).AsMemoized();
 
 		private const int DefaultUIFontPreferredBodyFontSize = 17;
 		private static float? DefaultPreferredBodyFontSize = UIFont.PreferredBody.FontDescriptor.FontAttributes.Size;
-
-		static UIFontHelper()
-		{
-			_tryGetFont = InternalTryGetFont;
-			_tryGetFont = _tryGetFont.AsMemoized();
-		}
 
 		internal static UIFont TryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, float? preferredBodyFontSize = null)
 		{

@@ -82,7 +82,9 @@ namespace Uno.Xaml
 		internal static readonly bool InitializingDirectives;
 		internal static readonly bool InitializingTypes;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
 		static XamlLanguage ()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
 		{
 			InitializingTypes = true;
 

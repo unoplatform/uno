@@ -17,16 +17,10 @@ namespace Windows.UI
 {
 	internal static class NSFontHelper
 	{
-		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, NSFont> _tryGetFont;
+		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, NSFont> _tryGetFont = ((Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, NSFont>)InternalTryGetFont).AsMemoized();
 
 		private const int DefaultNSFontPreferredBodyFontSize = 17;
 		private static float? DefaultPreferredBodyFontSize = (float)NSFont.SystemFontSize;
-
-		static NSFontHelper()
-		{
-			_tryGetFont = InternalTryGetFont;
-			_tryGetFont = _tryGetFont.AsMemoized();
-		}
 
 		internal static NSFont TryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, float? preferredBodyFontSize = null)
 		{

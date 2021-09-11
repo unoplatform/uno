@@ -14,8 +14,7 @@ namespace Uno.Foundation.Interop
 	/// </summary>
 	internal static class JSObjectMetadataProvider
 	{
-		private static readonly Func<Type, IJSObjectMetadata> _getByReflection = t => new ReflectionMetadata(t);
-		static JSObjectMetadataProvider() => _getByReflection = _getByReflection.AsMemoized();
+		private static readonly Func<Type, IJSObjectMetadata> _getByReflection = ((Func<Type, IJSObjectMetadata>)(t => new ReflectionMetadata(t))).AsMemoized();
 
 		/// <summary>
 		/// Get the <see cref="IJSObjectMetadata"/> for the given type

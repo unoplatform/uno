@@ -186,13 +186,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private const string DictionaryProviderInterfaceName = "global::Uno.UI.IXamlResourceDictionaryProvider";
 
-		static XamlFileGenerator()
-		{
-			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol?>(SourceFindContentProperty).AsLockedMemoized();
-			_isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
-			_getAttachedPropertyType = Funcs.Create<INamedTypeSymbol, string, INamedTypeSymbol>(SourceGetAttachedPropertyType).AsLockedMemoized();
-		}
-
 		public XamlFileGenerator(
 			XamlFileDefinition file,
 			string targetPath,

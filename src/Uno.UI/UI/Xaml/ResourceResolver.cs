@@ -44,17 +44,18 @@ namespace Uno.UI
 
 		private static readonly ILogger _log = typeof(ResourceResolver).Log();
 
-		private static readonly Stack<XamlScope> _scopeStack;
+		private static readonly Stack<XamlScope> _scopeStack = InitializeScopeStack();
 
 		/// <summary>
 		/// The current xaml scope for resource resolution.
 		/// </summary>
 		internal static XamlScope CurrentScope => _scopeStack.Peek();
 
-		static ResourceResolver()
+		private static Stack<XamlScope> InitializeScopeStack()
 		{
-			_scopeStack = new Stack<XamlScope>();
-			_scopeStack.Push(XamlScope.Create()); //There should always be a base-level scope (this will be used when no template is being resolved)
+			var stack = new Stack<XamlScope>();
+			stack.Push(XamlScope.Create()); //There should always be a base-level scope (this will be used when no template is being resolved)
+			return stack;
 		}
 
 		/// <summary>

@@ -11,9 +11,13 @@ namespace Windows.Globalization.DateTimeFormatting
 {
 	public sealed partial class DateTimeFormatter
 	{
-		private static readonly IReadOnlyList<string> _defaultPatterns;
+		private static readonly IReadOnlyList<string> _defaultPatterns = new[]
+		{
+			"{month.full}‎ ‎{day.integer}‎, ‎{year.full}",
+			"{day.integer}‎ ‎{month.full}‎, ‎{year.full}",
+		};
 
-		private static readonly IReadOnlyList<string> _emptyLanguages;
+		private static readonly IReadOnlyList<string> _emptyLanguages = Array.Empty<string>();
 
 		public string NumeralSystem { get; set; }
 
@@ -47,35 +51,16 @@ namespace Windows.Globalization.DateTimeFormatting
 
 		public string Template { get; }
 
-		public static DateTimeFormatter LongDate { get; }
+		public static DateTimeFormatter LongDate { get; } = new DateTimeFormatter("longdate");
 
-		public static DateTimeFormatter LongTime { get; }
+		public static DateTimeFormatter LongTime { get; } = new DateTimeFormatter("longtime");
 
-		public static DateTimeFormatter ShortDate { get; }
+		public static DateTimeFormatter ShortDate { get; } = new DateTimeFormatter("shortdate");
 
-		public static DateTimeFormatter ShortTime { get; }
-
-		static DateTimeFormatter()
-		{
-			_map_cache = new Dictionary<string, IDictionary<string, string>>();
-			_patterns_cache = new Dictionary<(string language, string template), string>();
-
-			_defaultPatterns = new []
-			{
-				"{month.full}‎ ‎{day.integer}‎, ‎{year.full}",
-				"{day.integer}‎ ‎{month.full}‎, ‎{year.full}",
-			};
-
-			_emptyLanguages = new string[0];
-
-			LongDate = new DateTimeFormatter("longdate");
-			LongTime = new DateTimeFormatter("longtime");
-			ShortDate = new DateTimeFormatter("shortdate");
-			ShortTime = new DateTimeFormatter("shorttime");
-		}
+		public static DateTimeFormatter ShortTime { get; } = new DateTimeFormatter("shorttime");
 
 		public DateTimeFormatter(string formatTemplate)
-			:this(formatTemplate, languages: null)
+			: this(formatTemplate, languages: null)
 		{
 		}
 
@@ -170,7 +155,7 @@ namespace Windows.Globalization.DateTimeFormatting
 
 		private IDictionary<string, string> BuildLookup(string language)
 		{
-			if(_map_cache.TryGetValue(language, out var map))
+			if (_map_cache.TryGetValue(language, out var map))
 			{
 				return map;
 			}
@@ -233,8 +218,8 @@ namespace Windows.Globalization.DateTimeFormatting
 			throw new NotSupportedException();
 		}
 
-		private static readonly IDictionary<string, IDictionary<string, string>> _map_cache;
-		private static readonly IDictionary<(string language, string template), string> _patterns_cache;
+		private static readonly IDictionary<string, IDictionary<string, string>> _map_cache = new Dictionary<string, IDictionary<string, string>>();
+		private static readonly IDictionary<(string language, string template), string> _patterns_cache = new Dictionary<(string language, string template), string>();
 
 		private readonly CultureInfo _firstCulture;
 

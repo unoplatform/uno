@@ -19,16 +19,10 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
-		private static readonly bool SupportsAsyncFromBundle;
-		private static readonly bool SupportsFromBundle;
+		private static readonly bool SupportsAsyncFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(9, 0);
+		private static readonly bool SupportsFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
 
 		private readonly bool _isOriginalSourceUIImage;
-
-		static ImageSource()
-		{
-			SupportsAsyncFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(9, 0);
-			SupportsFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
-		}
 
 		private static NSUrlSession _defaultSession;
 		/// <summary>

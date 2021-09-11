@@ -12,19 +12,12 @@ namespace Windows.System.Power
 {
 	public partial class PowerManager
 	{
-		private static BatteryManager _batteryManager;
-		private static AndroidPowerManager _powerManager;
+		private static BatteryManager _batteryManager = (BatteryManager)Android.App.Application.Context.GetSystemService(Context.BatteryService);
+		private static AndroidPowerManager _powerManager = (AndroidPowerManager)Android.App.Application.Context.GetSystemService(Context.PowerService);
 
 		private static PowerSaveModeChangeReceiver _powerSaveModeChangeReceiver;
 		private static PowerConnectionBroadcastReceiver _powerConnectionBroadcastReceiver;
 		private static BatteryChangedBroadcastReceiver _batteryChangedBroadcastReceiver;
-
-		static PowerManager()
-		{
-			_batteryManager = (BatteryManager)Android.App.Application.Context.GetSystemService(Context.BatteryService);
-			_powerManager = (AndroidPowerManager)Android.App.Application.Context.GetSystemService(Context.PowerService);
-		}
-
 
 		private static UwpBatteryStatus GetBatteryStatus()
 		{

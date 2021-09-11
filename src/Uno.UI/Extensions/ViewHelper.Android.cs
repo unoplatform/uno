@@ -74,7 +74,9 @@ namespace Uno.UI
 
 		public static string Architecture { get; }
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
 		static ViewHelper()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
 		{
 			using (Android.Util.DisplayMetrics displayMetrics = Android.App.Application.Context.Resources.DisplayMetrics)
 			{

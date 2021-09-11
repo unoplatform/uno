@@ -31,11 +31,11 @@ namespace Uno.UI.Runtime.Skia.Native
 		static void CloseRestricted(int fd, IntPtr userData)
 			=> Libc.close(fd);
 
-		private static readonly IntPtr* s_Interface;
+		private static readonly IntPtr* s_Interface = InitializeInterface();
 
-		static LibInput()
+		private static IntPtr* InitializeInterface()
 		{
-			s_Interface = (IntPtr*)Marshal.AllocHGlobal(IntPtr.Size * 2);
+			var @interface = (IntPtr*)Marshal.AllocHGlobal(IntPtr.Size * 2);
 
 			IntPtr Convert<TDelegate>(TDelegate del)
 			{
@@ -43,8 +43,9 @@ namespace Uno.UI.Runtime.Skia.Native
 				return Marshal.GetFunctionPointerForDelegate(del);
 			}
 
-			s_Interface[0] = Convert<OpenRestrictedCallbackDelegate>(OpenRestricted);
-			s_Interface[1] = Convert<CloseRestrictedCallbackDelegate>(CloseRestricted);
+			@interface[0] = Convert<OpenRestrictedCallbackDelegate>(OpenRestricted);
+			@interface[1] = Convert<CloseRestrictedCallbackDelegate>(CloseRestricted);
+			return @interface;
 		}
 
 		private const string LibInputName = "libinput.so.10";

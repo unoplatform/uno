@@ -128,15 +128,9 @@ namespace Windows.UI.Core
 		[Register("mono/java/lang/CoreDispatcherImplementor")]
 		internal sealed class CoreDispatcherImplementor : Java.Lang.Object, IRunnable
 		{
-			private readonly static IntPtr _class;
-			private readonly static IntPtr _ctor;
+			private readonly static IntPtr _class = JNIEnv.FindClass(typeof(CoreDispatcherImplementor));
+			private readonly static IntPtr _ctor = JNIEnv.GetMethodID(_class, "<init>", "()V");
 			private Action _action;
-
-			static CoreDispatcherImplementor()
-			{
-				_class = JNIEnv.FindClass(typeof(CoreDispatcherImplementor));
-				_ctor = JNIEnv.GetMethodID(_class, "<init>", "()V");
-			}
 
 			internal CoreDispatcherImplementor(Action action)
 				: base(JNIEnv.StartCreateInstance(_class, _ctor, new JValue[0]), JniHandleOwnership.TransferLocalRef)

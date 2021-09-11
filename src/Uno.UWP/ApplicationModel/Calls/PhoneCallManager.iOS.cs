@@ -11,12 +11,13 @@ namespace Windows.ApplicationModel.Calls
 {
 	public partial class PhoneCallManager
 	{
-		private static readonly CXCallObserver _callObserver;
+		private static readonly CXCallObserver _callObserver = InitializeCXCallObserver();
 
-		static PhoneCallManager()
+		private static CXCallObserver InitializeCXCallObserver()
 		{
-			_callObserver = new CXCallObserver();
-			_callObserver.SetDelegate(new CallObserverDelegate(), null);
+			var callObserver = new CXCallObserver();
+			callObserver.SetDelegate(new CallObserverDelegate(), null);
+			return callObserver;
 		}
 
 

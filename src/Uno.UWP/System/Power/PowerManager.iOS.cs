@@ -17,17 +17,17 @@ namespace Windows.System.Power
 		private static NSObject _batteryStateChangeSubscription;
 		private static NSObject _powerStateChangeSubscription;
 
-		private static readonly UIDevice _device;
-		private static readonly bool _isSimulator;
+		private static readonly UIDevice _device = UIDevice.CurrentDevice;
+		private static readonly bool _isSimulator = InitializeIsSimulator();
 
-		static PowerManager()
+		private static bool InitializeIsSimulator()
 		{
-			_device = UIDevice.CurrentDevice;
-			_isSimulator = _device.Model?
+			var isSimulator = _device.Model?
 				               .Contains(
 					               DeviceModelSimulator,
 					               StringComparison.InvariantCultureIgnoreCase) == true;
-			_device.BatteryMonitoringEnabled = !_isSimulator;
+			_device.BatteryMonitoringEnabled = !isSimulator;
+			return isSimulator;
 		}
 			   
 		private static void StartEnergySaverStatusMonitoring()

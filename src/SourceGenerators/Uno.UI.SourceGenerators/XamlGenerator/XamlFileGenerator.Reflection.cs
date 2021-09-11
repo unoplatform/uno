@@ -21,9 +21,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<INamedTypeSymbol, string[]>? _findLocalizableDeclaredProperties;
 		private (string ns, string className) _className;
 		private string[]? _clrNamespaces;
-		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
-		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
-		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
+		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol?>(SourceFindContentProperty).AsLockedMemoized();
+		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
+		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType = Funcs.Create<INamedTypeSymbol, string, INamedTypeSymbol>(SourceGetAttachedPropertyType).AsLockedMemoized();
 
 		private void InitCaches()
 		{

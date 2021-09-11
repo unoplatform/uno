@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 
 		//private:
 
-		private static SwipeTestHooks s_testHooks;
+		private static SwipeTestHooks s_testHooks = new SwipeTestHooks();
 
 		private event TypedEventHandler<DependencyObject, DependencyObject> m_lastInteractedWithSwipeControlChangedEventSource;
 

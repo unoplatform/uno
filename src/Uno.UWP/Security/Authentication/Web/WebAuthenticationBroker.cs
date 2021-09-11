@@ -9,17 +9,19 @@ namespace Windows.Security.Authentication.Web
 {
 	public static partial class WebAuthenticationBroker
 	{
-		private static readonly IWebAuthenticationBrokerProvider _authenticationBrokerProvider;
+		private static readonly IWebAuthenticationBrokerProvider _authenticationBrokerProvider = InitializeAuthenticationBrokerProvider();
 
-		static WebAuthenticationBroker()
+		private static IWebAuthenticationBrokerProvider InitializeAuthenticationBrokerProvider()
 		{
-			ApiExtensibility.CreateInstance(null, out _authenticationBrokerProvider);
+			ApiExtensibility.CreateInstance(null, out IWebAuthenticationBrokerProvider authenticationBrokerProvider);
 
 			// If no custom extension found, default to internal one.
-			if(_authenticationBrokerProvider == null)
+			if (authenticationBrokerProvider == null)
 			{
-				_authenticationBrokerProvider = new WebAuthenticationBrokerProvider();
+				authenticationBrokerProvider = new WebAuthenticationBrokerProvider();
 			}
+
+			return authenticationBrokerProvider;
 		}
 
 		public static Uri GetCurrentApplicationCallbackUri()

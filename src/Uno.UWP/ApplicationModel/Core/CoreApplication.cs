@@ -7,17 +7,12 @@ namespace Windows.ApplicationModel.Core
 {
 	public  partial class CoreApplication 
 	{
-		private static CoreApplicationView _currentView;
+		private static CoreApplicationView _currentView = new CoreApplicationView();
 		private static List<CoreApplicationView> _views;
 
 		public static event global::System.EventHandler<object> Resuming;
 
 		public static event global::System.EventHandler<global::Windows.ApplicationModel.SuspendingEventArgs> Suspending;
-
-		static CoreApplication()
-		{
-			_currentView = new CoreApplicationView();
-		}
 
 		/// <summary>
 		/// Raises the <see cref="Resuming"/> event

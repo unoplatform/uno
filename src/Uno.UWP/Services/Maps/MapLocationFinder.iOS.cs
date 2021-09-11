@@ -13,12 +13,7 @@ namespace Windows.Services.Maps
 {
     public static partial class MapLocationFinder
     {
-        private static readonly CLGeocoder _geocoder;
-
-        static MapLocationFinder()
-        {
-            _geocoder = new CLGeocoder();
-        }
+        private static readonly CLGeocoder _geocoder = new CLGeocoder();
         
         public static async Task<MapLocationFinderResult> FindLocationsAtAsync(CancellationToken ct, Geopoint queryPoint)
         {

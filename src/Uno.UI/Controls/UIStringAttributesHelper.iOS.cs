@@ -24,13 +24,20 @@ namespace Uno.UI
 				float? preferredBodyFontSize
 			),
 			UIStringAttributes
-		> _getAttributes;
-
-		static UIStringAttributesHelper()
-		{
-			_getAttributes = InternalGetAttributes;
-			_getAttributes = _getAttributes.AsMemoized();
-		}
+		> _getAttributes = ((Func<
+			(
+				FontWeight fontWeight,
+				FontStyle fontStyle,
+				FontFamily fontFamily,
+				Brush foreground,
+				double fontSize,
+				int characterSpacing,
+				BaseLineAlignment baseLineAlignment,
+				TextDecorations textDecorations,
+				float? preferredBodyFontSize
+			),
+			UIStringAttributes
+		>)InternalGetAttributes).AsMemoized();
 
 		internal static UIStringAttributes GetAttributes(
 			FontWeight fontWeight,

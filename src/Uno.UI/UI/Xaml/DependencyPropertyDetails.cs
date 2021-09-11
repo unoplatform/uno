@@ -30,14 +30,17 @@ namespace Windows.UI.Xaml
 
 		private const int MaxIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
 		private const int _stackLength = MaxIndex + 1;
-		private static readonly object[] _unsetStack;
-		static DependencyPropertyDetails()
+		private static readonly object[] _unsetStack = InitializeUnsetStack();
+
+		private static object[] InitializeUnsetStack()
 		{
-			_unsetStack = new object[_stackLength];
+			var unsetStack = new object[_stackLength];
 			for (var i = 0; i < _stackLength; i++)
 			{
-				_unsetStack[i] = DependencyProperty.UnsetValue;
+				unsetStack[i] = DependencyProperty.UnsetValue;
 			}
+
+			return unsetStack;
 		}
 
 		public void Dispose()
