@@ -16,7 +16,7 @@
   </Target>
 
   <ItemGroup>
-    <EditorConfigFiles Include="$(MSBuildThisFileDirectory)globalconfigs\Common.globalconfig" />
+    <EditorConfigFiles Condition="'$(IsTestProject)' != 'true'" Include="$(MSBuildThisFileDirectory)globalconfigs\Common.globalconfig" />
   </ItemGroup>
 
   <ItemGroup>

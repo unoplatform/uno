@@ -5,6 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <IsTestProject>true</IsTestProject>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="NUnit" Version="3.13.2" />

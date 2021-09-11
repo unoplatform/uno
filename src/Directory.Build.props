@@ -129,7 +129,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0-rc2.21458.5" PrivateAssets="All" />
+    <PackageReference Condition="'$(IsTestProject)' != 'true'" Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0-rc2.21458.5" PrivateAssets="All" />
   </ItemGroup>
 
   <PropertyGroup>
