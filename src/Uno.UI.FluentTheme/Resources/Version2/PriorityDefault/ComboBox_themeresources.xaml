@@ -451,6 +451,7 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBackgroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific (LinearGradientBrush borders): Do not change border brush -->
                                         <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBorderBrushPointerOver}" />
                                         </win:ObjectAnimationUsingKeyFrames>

@@ -12329,6 +12329,10 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <!-- Uno specific: Properly hide the check glyph until icon animates -->
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                   <VisualState.Setters>
                     <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="NormalOff" />
@@ -12353,6 +12357,10 @@
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <!-- Uno specific: Properly hide the check glyph until icon animates -->
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                   <VisualState.Setters>
@@ -12379,6 +12387,10 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedPressed}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <!-- Uno specific: Properly hide the check glyph until icon animates -->
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                   <VisualState.Setters>
                     <Setter Target="CheckGlyph.(controls:AnimatedIcon.State)" Value="PressedOff" />
@@ -12403,6 +12415,10 @@
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <!-- Uno specific: Properly hide the check glyph until icon animates -->
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                   <VisualState.Setters>
@@ -13389,6 +13405,7 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <!-- Uno specific (LinearGradientBrush borders): Do not change border brush -->
                     <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBorderBrushPointerOver}" />
                     </win:ObjectAnimationUsingKeyFrames>
