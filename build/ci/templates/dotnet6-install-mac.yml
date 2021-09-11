@@ -1,7 +1,7 @@
 parameters:
-  DotNetVersion: '6.0.100-preview.6.21355.2'
-  MauiCheck_Version: '0.6.1'
-  MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/556b43a8b9df5ea1e65eb6b9b3ea8854a91fceed/manifests/maui-preview.manifest.json'
+  DotNetVersion: '6.0.100-rc.1.21452.64'
+  MauiCheck_Version: '0.8.5'
+  MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/d469cb3804d68ad52a1bfec041b95a8800acf4ab/manifests/maui-preview.manifest.json'
   Dotnet_Root: '/usr/local/share/dotnet/'
   Dotnet_Tools: '~/.dotnet/tools'
 
@@ -25,6 +25,11 @@ steps:
       dotnet --list-sdks
       echo "##vso[task.setvariable variable=PATH]$PATH"
     displayName: install .NET ${{ parameters.DotNetVersion }}
+
+  - pwsh: |
+      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
+      echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
+    displayName: Select JDK 11
 
   - bash: |
       dotnet tool update --global redth.net.maui.check --version ${{ parameters.MauiCheck_Version }} --add-source https://api.nuget.org/v3/index.json

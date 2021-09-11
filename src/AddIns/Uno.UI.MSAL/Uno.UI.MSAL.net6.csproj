@@ -17,6 +17,13 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MSAL</AssemblyName>
+		<RootNamespace>Uno.UI.MSAL</RootNamespace>
+
+		<!--
+		Required for Catalyst nuget restore to revalidate
+		once transitive dependencies have been updated.
+		-->
+		<NoWarn>$(NoWarn);NU1703</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -83,7 +83,9 @@ namespace Windows.Networking.Connectivity
 
 				if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
 				{
+#pragma warning disable CS0618 // ConnectivityManager.GetAllNetworks() is obsolete in API 31
 					var networks = manager.GetAllNetworks();
+#pragma warning restore CS0618 // ConnectivityManager.GetAllNetworks() is obsolete in API 31
 
 					// some devices running 21 and 22 only use the older api.
 					if (networks.Length == 0 && (int)Build.VERSION.SdkInt < 23)

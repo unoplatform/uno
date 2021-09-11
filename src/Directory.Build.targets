@@ -20,8 +20,8 @@
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
 	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.2.0-dev.2" />
 	<PackageReference Update="Uno.SourceGeneration" Version="3.2.0-dev.2" />
-	<PackageReference Update="Uno.Core" Version="2.4.0" />
-	<PackageReference Update="Uno.Core.Build" Version="2.4.0" />
+	<PackageReference Update="Uno.Core" Version="3.0.0-dev.2" />
+	<PackageReference Update="Uno.Core.Build" Version="3.0.0-dev.2" />
 	<PackageReference Update="Uno.Diagnostics.Eventing" Version="1.0.4" />
 	<PackageReference Update="Uno.Wasm.Bootstrap" Version="2.1.0" />
 	<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="2.1.0" />
@@ -54,6 +54,7 @@
 	<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.1.0" />
 	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.0.0-dev.3" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
