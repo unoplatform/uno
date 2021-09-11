@@ -1,4 +1,5 @@
 using System;
+using Uno.UI.Helpers;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -185,22 +186,22 @@ namespace Uno.UI.Toolkit
 
 			if (Background == null)
 			{
-				this.SetElevationInternal(0, default);
+				this.SetElevation(0, default);
 			}
 			else
 			{
 #if __WASM__
-				this.SetElevationInternal(Elevation, ShadowColor);
+				this.SetElevation(Elevation, ShadowColor);
 				this.SetCornerRadius(CornerRadius);
 #elif __IOS__ || __MACOS__
-				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
+				this.SetElevation(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
 				_invalidateShadow = true;
 				((ViewGroup)this).Invalidate();
 #elif __SKIA__
 				this.SetElevationInternal(Elevation, ShadowColor);
 #elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
-				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
+				_border.SetElevation(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
 			}
 		}

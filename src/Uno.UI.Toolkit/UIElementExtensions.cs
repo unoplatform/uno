@@ -69,7 +69,7 @@ namespace Uno.UI.Toolkit
 		{
 			if (args.NewValue is double elevation)
 			{
-				SetElevationInternal(dependencyObject, elevation, ElevationColor);
+				ElevationHelper.SetElevation(dependencyObject, elevation, ElevationColor);
 			}
 		}
 

@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Helpers;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
@@ -262,6 +263,10 @@ namespace Windows.UI.Xaml.Controls
 
 			_templateSubscriptions.Disposable = subscriptions;
 			_templateApplied = true;
+#if HAS_UNO
+			// Uno specific: Apply shadow instead of Translation
+			m_tpBackgroundElementPart.SetElevation(30, Color.FromArgb(100, 0, 0, 0));
+#endif
 		}
 
 		// Uno specific: Ensure we respond to window sizing
