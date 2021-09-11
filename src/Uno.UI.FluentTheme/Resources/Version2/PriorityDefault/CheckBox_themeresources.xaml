@@ -422,6 +422,10 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}" />
                                         </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific: Properly hide the check glyph until icon animates -->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                        </ObjectAnimationUsingKeyFrames>                                      
                                     </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="CheckGlyph.(local:AnimatedIcon.State)" Value="NormalOff"/>
@@ -448,6 +452,10 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific: Properly hide the check glyph until icon animates -->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                        </ObjectAnimationUsingKeyFrames>                                   
                                     </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="CheckGlyph.(local:AnimatedIcon.State)" Value="PointerOverOff"/>
@@ -474,6 +482,10 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific: Properly hide the check glyph until icon animates -->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                        </ObjectAnimationUsingKeyFrames>                                        
                                     </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="CheckGlyph.(local:AnimatedIcon.State)" Value="PressedOff"/>
@@ -499,6 +511,10 @@
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundUncheckedDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific: Properly hide the check glyph until icon animates -->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                     <VisualState.Setters>
