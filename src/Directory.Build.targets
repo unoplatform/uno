@@ -16,6 +16,10 @@
   </Target>
 
   <ItemGroup>
+    <EditorConfigFiles Include="$(MSBuildThisFileDirectory)globalconfigs\Common.globalconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
 	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.2.0-dev.2" />

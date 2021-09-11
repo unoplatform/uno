@@ -125,6 +125,14 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <AnalysisLevel>latest</AnalysisLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0-rc2.21458.5" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup>
 	<IsMonoAndroid>false</IsMonoAndroid>
 	<IsMonoAndroid Condition="$(TargetFramework.ToLower().StartsWith('monoandroid')) or '$(TargetFramework)'=='net6.0-android'">true</IsMonoAndroid>
 	
