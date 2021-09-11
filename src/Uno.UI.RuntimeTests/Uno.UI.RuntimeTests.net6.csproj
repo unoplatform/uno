@@ -10,6 +10,12 @@
 		
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
+
+		<!--
+		Required for Catalyst nuget restore to revalidate
+		once transitive dependencies have been updated.
+		-->
+		<NoWarn>$(NoWarn);NU1703</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
