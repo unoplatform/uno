@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference InfoBadgeTemplateSettings.properties.cpp, commit 76bd573
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -18,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IconElementProperty, value);
 		}
 
-		public static readonly DependencyProperty IconElementProperty =
+		public static DependencyProperty IconElementProperty { get; } =
 			DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(InfoBadgeTemplateSettings), new FrameworkPropertyMetadata(null));
 
 		public CornerRadius InfoBadgeCornerRadius
@@ -27,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(InfoBadgeCornerRadiusProperty, value);
 		}
 
-		public static readonly DependencyProperty InfoBadgeCornerRadiusProperty =
+		public static DependencyProperty InfoBadgeCornerRadiusProperty { get; } =
 			DependencyProperty.Register(nameof(InfoBadgeCornerRadius), typeof(CornerRadius), typeof(InfoBadgeTemplateSettings), new FrameworkPropertyMetadata(null));
 	}
 }

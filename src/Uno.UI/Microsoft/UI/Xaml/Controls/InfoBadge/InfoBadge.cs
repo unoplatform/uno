@@ -1,5 +1,7 @@
-//// Copyright (c) Microsoft Corporation. All rights reserved.
-//// Licensed under the MIT License. See LICENSE in the project root for license information.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference InfoBadge.cpp, commit 76bd573
+
 using System;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -11,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class InfoBadge : Control
 	{
 		private const string IconPresenterName = "IconPresenter";
-		
+
 		public InfoBadge()
 		{
 			DefaultStyleKey = typeof(InfoBadge);
@@ -30,28 +32,28 @@ namespace Microsoft.UI.Xaml.Controls
 			var defaultDesiredSize = base.MeasureOverride(availableSize);
 			if (defaultDesiredSize.Width < defaultDesiredSize.Height)
 			{
-				return new Size (defaultDesiredSize.Height, defaultDesiredSize.Height);
+				return new Size(defaultDesiredSize.Height, defaultDesiredSize.Height);
 			}
 			return defaultDesiredSize;
 		}
 
 		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-		    var property = args.Property;
-		    Control thisAsControl = this;
+			var property = args.Property;
+			Control thisAsControl = this;
 
-		    if (property == ValueProperty)
-		    {
-		        if (Value < -1)
-		        {
-		            throw new ArgumentOutOfRangeException("Value must be equal to or greater than -1");
-		        }
-		    }
+			if (property == ValueProperty)
+			{
+				if (Value < -1)
+				{
+					throw new ArgumentOutOfRangeException("Value must be equal to or greater than -1");
+				}
+			}
 
-		    if (property == ValueProperty || property == IconSourceProperty)
-		    {
-		        OnDisplayKindPropertiesChanged();
-		    }
+			if (property == ValueProperty || property == IconSourceProperty)
+			{
+				OnDisplayKindPropertiesChanged();
+			}
 		}
 
 		void OnDisplayKindPropertiesChanged()
@@ -62,10 +64,10 @@ namespace Microsoft.UI.Xaml.Controls
 				VisualStateManager.GoToState(thisAsControl, "Value", true);
 			}
 			else if (IconSource is { } iconSource)
-		    {
+			{
 				TemplateSettings.IconElement = iconSource.CreateIconElement();
 				if (iconSource is FontIconSource)
-		        {
+				{
 					VisualStateManager.GoToState(thisAsControl, "FontIcon", true);
 				}
 				else
