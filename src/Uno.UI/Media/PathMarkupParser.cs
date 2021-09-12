@@ -154,7 +154,6 @@ namespace Uno.Media
 							break;
 						case Command.FillRule:
 							// Uno specific:
-							span = SkipWhitespace(span);
 							fillRule = GetFillRule(ref span);
 							break;
 						case Command.Move:
