@@ -11,6 +11,13 @@ namespace Windows.Globalization.DateTimeFormatting
 {
 	public sealed partial class DateTimeFormatter
 	{
+		private static readonly IDictionary<string, IDictionary<string, string>> _map_cache = new Dictionary<string, IDictionary<string, string>>();
+		private static readonly IDictionary<(string language, string template), string> _patterns_cache = new Dictionary<(string language, string template), string>();
+
+		private readonly CultureInfo _firstCulture;
+
+		private readonly IDictionary<string, string>[] _maps;
+
 		private static readonly IReadOnlyList<string> _defaultPatterns = new[]
 		{
 			"{month.full}‎ ‎{day.integer}‎, ‎{year.full}",
@@ -217,13 +224,6 @@ namespace Windows.Globalization.DateTimeFormatting
 		{
 			throw new NotSupportedException();
 		}
-
-		private static readonly IDictionary<string, IDictionary<string, string>> _map_cache = new Dictionary<string, IDictionary<string, string>>();
-		private static readonly IDictionary<(string language, string template), string> _patterns_cache = new Dictionary<(string language, string template), string>();
-
-		private readonly CultureInfo _firstCulture;
-
-		private readonly IDictionary<string, string>[] _maps;
 
 		private string GetSystemTemplate()
 		{
