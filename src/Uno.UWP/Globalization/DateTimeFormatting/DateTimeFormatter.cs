@@ -26,6 +26,36 @@ namespace Windows.Globalization.DateTimeFormatting
 
 		private static readonly IReadOnlyList<string> _emptyLanguages = Array.Empty<string>();
 
+		private static readonly (Regex pattern, string replacement)[] PatternsReplacements =
+			new (string pattern, string replacement)[]
+				{
+					(@"\bMMMM\b", "{month.full}"),
+					(@"\bMMM\b", "{month.abbreviated}"),
+					(@"\bMM\b", "{month.numeric}"),
+					(@"%M\b", "{month.numeric}"),
+					(@"\bM\b", "{month.numeric}"),
+					(@"\bdddd\b", "{dayofweek.full}"),
+					(@"\bddd\b", "{dayofweek.abbreviated}"),
+					(@"\byyyy\b", "{year.full}"),
+					(@"\byy\b", "{year.abbreviated}"),
+					(@"\b(z|zz)\b", "{timezone.abbreviated}"),
+					(@"\byyyy\b", "{year.full}"),
+					(@"\bMMMM\b", "{month.full}"),
+					(@"\bdd\b", "{day.integer(2)}"),
+					(@"%d\b", "{day.integer}"),
+					(@"\bd\b", "{day.integer}"),
+					(@"\bzzz\b", "{timezone.full}"),
+					(@"\bzz\b", "{timezone.abbreviated}"),
+					(@"%z\b", "{timezone}"),
+					(@"\b(HH|hh|H|h)\b", "{hour}"),
+					(@"\b(mm|m)\b", "{minute}"),
+					(@"\b(ss|s)\b", "{second}"),
+					(@"\btt\b", "{period.abbreviated}"),
+				}
+				.SelectToArray(x =>
+					(new Regex(x.pattern, RegexOptions.CultureInvariant | RegexOptions.Compiled),
+						x.replacement));
+
 		public string NumeralSystem { get; set; }
 
 		public string Clock { get; }
@@ -238,36 +268,6 @@ namespace Windows.Globalization.DateTimeFormatting
 
 			return result;
 		}
-
-		private static readonly (Regex pattern, string replacement)[] PatternsReplacements =
-			new (string pattern, string replacement)[]
-				{
-					(@"\bMMMM\b", "{month.full}"),
-					(@"\bMMM\b", "{month.abbreviated}"),
-					(@"\bMM\b", "{month.numeric}"),
-					(@"%M\b", "{month.numeric}"),
-					(@"\bM\b", "{month.numeric}"),
-					(@"\bdddd\b", "{dayofweek.full}"),
-					(@"\bddd\b", "{dayofweek.abbreviated}"),
-					(@"\byyyy\b", "{year.full}"),
-					(@"\byy\b", "{year.abbreviated}"),
-					(@"\b(z|zz)\b", "{timezone.abbreviated}"),
-					(@"\byyyy\b", "{year.full}"),
-					(@"\bMMMM\b", "{month.full}"),
-					(@"\bdd\b", "{day.integer(2)}"),
-					(@"%d\b", "{day.integer}"),
-					(@"\bd\b", "{day.integer}"),
-					(@"\bzzz\b", "{timezone.full}"),
-					(@"\bzz\b", "{timezone.abbreviated}"),
-					(@"%z\b", "{timezone}"),
-					(@"\b(HH|hh|H|h)\b", "{hour}"),
-					(@"\b(mm|m)\b", "{minute}"),
-					(@"\b(ss|s)\b", "{second}"),
-					(@"\btt\b", "{period.abbreviated}"),
-				}
-				.SelectToArray(x =>
-					(new Regex(x.pattern, RegexOptions.CultureInvariant | RegexOptions.Compiled),
-						x.replacement));
 
 		private IEnumerable<string> BuildPatterns()
 		{
