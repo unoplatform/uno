@@ -303,19 +303,10 @@ namespace Windows.UI.Xaml
 				// Starts target state animation
 				if (target.animation is { } stateAnimation)
 				{
-					stateAnimation.Completed += OnStateStoryboardCompleted;
 					stateAnimation.Begin();
+				}
 
-					void OnStateStoryboardCompleted(object s, object a)
-					{
-						state.Storyboard.Completed -= OnStateStoryboardCompleted;
-						onStateChanged();
-					}
-				}
-				else
-				{
-					onStateChanged();
-				}
+				onStateChanged();
 			}
 
 			void ApplyTargetStateSetters()
