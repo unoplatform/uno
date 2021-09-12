@@ -538,14 +538,20 @@ namespace Uno.Media
 			return span.Slice(i);
 		}
 
+		// Uno docs: Implementation (currently) different than Avalonia due to:
+		// https://github.com/unoplatform/uno/issues/2855
 		private bool ReadBool(ref ReadOnlySpan<char> span)
 		{
-			if (!ReadArgument(ref span, out var boolValue) || boolValue.Length != 1)
+			span = SkipWhitespace(span);
+			if (span.IsEmpty)
 			{
-				throw new InvalidDataException("Invalid bool rule.");
+				throw new InvalidDataException("Cannot read bool from empty span.");
 			}
 
-			switch (boolValue[0])
+			var c = span[0];
+			span = span.Slice(1);
+
+			switch (c)
 			{
 				case '0':
 					return false;
