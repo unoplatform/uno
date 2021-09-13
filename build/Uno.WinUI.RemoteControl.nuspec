@@ -164,9 +164,12 @@
 
 	<!-- Remote Control host and integration -->
     <file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host" />
-    <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.dll" target="tools\rc" />
-    <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.pdb" target="tools\rc" />
-    <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\Newtonsoft.Json.dll" target="tools\rc" />
+	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.dll" target="tools\rc\16.0" />
+	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\Newtonsoft.Json.dll" target="tools\rc\16.0" />
+	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.pdb" target="tools\rc\16.0" />
+	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.dll" target="tools\rc\17.0" />
+	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.pdb" target="tools\rc\17.0" />
+	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\Newtonsoft.Json.dll" target="tools\rc\17.0" />
 	
 	<!-- Force UAP/netx-win to ignore netstandard 2.0 -->
 	<file src="_._" target="build\uap10.0.16299" />

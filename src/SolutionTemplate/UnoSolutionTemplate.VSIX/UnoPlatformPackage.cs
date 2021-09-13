@@ -4,6 +4,7 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -208,7 +209,29 @@ namespace UnoSolutionTemplate
 						else
 						{
 							var toolsPath = System.IO.Path.Combine(unoNuGetPackage.InstallPath, "tools", "rc");
-							var asmPath = System.IO.Path.Combine(toolsPath, "Uno.UI.RemoteControl.VS.dll");
+
+							string GetRemoteControlVSPath()
+							{
+								if(!Environment.Is64BitProcess)
+								{
+									var files = new[] {
+										"Uno.UI.RemoteControl.VS.dll",
+										Path.Combine("16.0", "Uno.UI.RemoteControl.VS.dll")
+									};
+
+									return files
+										.Select(f => System.IO.Path.Combine(toolsPath, f))
+										.Where(File.Exists)
+										.FirstOrDefault();
+								}
+								else
+								{
+									return System.IO.Path.Combine(toolsPath, "17.0", "Uno.UI.RemoteControl.VS.dll");
+								}
+							}
+
+							var asmPath = GetRemoteControlVSPath();
+
 							var asm = System.Reflection.Assembly.LoadFrom(asmPath);
 
 							var entryPointType = asm.GetType("Uno.UI.RemoteControl.VS.EntryPoint");
