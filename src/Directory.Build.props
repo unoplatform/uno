@@ -98,8 +98,16 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.net6.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Skia.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.net6.csproj</_AdjustedOutputProjects>
+
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.net6.csproj</_AdjustedOutputProjects>
+
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.net6.csproj</_AdjustedOutputProjects>
+
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.net6.csproj</_AdjustedOutputProjects>
   </PropertyGroup>
 

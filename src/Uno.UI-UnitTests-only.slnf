@@ -12,6 +12,8 @@
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
+      "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
+      "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.csproj",
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
       "Uno.UI.Tests\\Uno.UI.Tests.csproj",

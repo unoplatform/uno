@@ -72,8 +72,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool _skipUserControlsInVisualTree = false;
 		private readonly GeneratorExecutionContext _generatorContext;
 
-		private bool IsUnoAssembly => _defaultNamespace == "Uno.UI";
-		private bool IsUnoFluentAssembly => _defaultNamespace == "Uno.UI.FluentTheme";
+		private bool IsUnoAssembly
+			=> _defaultNamespace == "Uno.UI";
+
+		private bool IsUnoFluentAssembly
+			=> _defaultNamespace == "Uno.UI.FluentTheme" || _defaultNamespace.StartsWith("Uno.UI.FluentTheme.v");
 
 		/// <summary>
 		/// Resource files that should be initialized first, in given order, because other resource declarations depend on them.
@@ -431,7 +434,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						where sym != null
 						from module in sym.Modules
 						from reference in module.ReferencedAssemblies
+
+						// Only consider assemblies that reference Uno.UI
 						where reference.Name == "Uno.UI" || sym.Name == "Uno.UI"
+
+						// Don't consider Uno.UI.Fluent assemblies, as they manage their own initialization
+						where reference.Name != "Uno.UI.Fluent" && !reference.Name.StartsWith("Uno.UI.Fluent.v", StringComparison.InvariantCulture)
+
 						from typeName in sym.GlobalNamespace.GetNamespaceTypes()
 						where typeName.Name.EndsWith("GlobalStaticResources")
 						select typeName;
@@ -713,8 +722,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else if (files.Any() && IsUnoFluentAssembly)
 							{
 								// For Uno assembly, we expose WinUI resources using same uri as on Windows
-								//TODO MZ: Find appropriate place to put the "max supported version"
-								for (int fluentVersion = 1; fluentVersion <= 2; fluentVersion++)
+								for (int fluentVersion = 1; fluentVersion <= XamlConstants.MaxFluentResourcesVersion; fluentVersion++)
 								{
 									RegisterForFile(string.Format(WinUIThemeResourcePathSuffixFormatString, fluentVersion), XamlFilePathHelper.GetWinUIThemeResourceUrl(fluentVersion));
 								}

@@ -590,7 +590,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				var _ = rd.ThemeDictionaries["Nope"];
 			});
 		}
-
+		
 		[TestMethod]
 		public void When_External_Source()
 		{
