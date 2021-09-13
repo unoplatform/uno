@@ -87,7 +87,7 @@ namespace Uno.APISurfaceValidator
 			
 			var membersLookup = members.Select(RewriteMember).ToDictionary(m => m.ToString());
 
-			foreach (var referenceMember in referenceMembers.Select(RewriteReferenceMember))
+			foreach (var referenceMember in referenceMembers.Where(IncludeReferenceMember).Select(RewriteReferenceMember))
 			{
 				if (!membersLookup.ContainsKey(referenceMember))
 				{
@@ -140,6 +140,52 @@ namespace Uno.APISurfaceValidator
 			}
 
 			return member.ToString();
+		}
+
+		private static bool IncludeReferenceMember(MemberReference member)
+		{
+			if (member is MethodDefinition methodDefinition)
+			{
+				if (methodDefinition.DeclaringType.FullName == "Windows.UI.Xaml.Controls.WebView")
+				{
+					switch (methodDefinition.Name)
+					{
+						case "get_XYFocusLeft":
+						case "put_XYFocusLeft":
+						case "get_XYFocusRight":
+						case "put_XYFocusRight":
+						case "get_XYFocusUp":
+						case "put_XYFocusUp":
+						case "get_XYFocusDown":
+						case "put_XYFocusDown":
+						case "get_XYFocusLeftProperty":
+						case "get_XYFocusRightProperty":
+						case "get_XYFocusUpProperty":
+						case "get_XYFocusDownProperty":
+							return false;
+					}
+				}
+			}
+			else if (member is PropertyDefinition propertyDefinition)
+			{
+				if (propertyDefinition.DeclaringType.FullName == "Windows.UI.Xaml.Controls.WebView")
+				{
+					switch (propertyDefinition.Name)
+					{
+						case "XYFocusLeft":
+						case "XYFocusRight":
+						case "XYFocusUp":
+						case "XYFocusDown":
+						case "XYFocusLeftProperty":
+						case "XYFocusRightProperty":
+						case "XYFocusUpProperty":
+						case "XYFocusDownProperty":
+							return false;
+					}
+				}
+			}
+
+			return true;
 		}
 
 		private static string UnpackArchive(string packagePath)
