@@ -62,6 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[Ignore("https://github.com/unoplatform/uno/issues/7058")]
 		public async Task Verify_MenuBarItem_Bounds()
 		{
 			using (StyleHelper.UseFluentStyles())

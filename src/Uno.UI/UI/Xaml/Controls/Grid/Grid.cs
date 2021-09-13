@@ -192,9 +192,12 @@ namespace Windows.UI.Xaml.Controls
 			bool treatStarAsAuto)
 		{
 			//for (auto & cdo : definitions)
-			foreach(DefinitionBase def in definitions.GetItems())
+			var itemsEnumerator = definitions.GetItems().GetEnumerator();
+
+			while(itemsEnumerator.MoveNext())
 			{
-				//var def = (DefinitionBase)(cdo);
+				var def = itemsEnumerator.Current;
+
 				bool useLayoutRounding = GetUseLayoutRounding();
 				var userSize = double.PositiveInfinity;
 				var userMinSize = useLayoutRounding
@@ -1031,14 +1034,25 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	UnlockDefinitions();
 			//});
+
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
 			{
-				return InnerMeasureOverride(availableSize);
+#endif
+				var result = InnerMeasureOverride(availableSize);
+
+#if HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+				UnlockDefinitions();
+#endif
+
+				return result;
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			}
 			finally
 			{
 				UnlockDefinitions();
 			}
+#endif
 		}
 
 		/// <remarks>
@@ -1066,10 +1080,12 @@ namespace Windows.UI.Xaml.Controls
 				var children = (GetChildren());
 				if (children is { })
 				{
-					//for (auto & cdo : (children))
-					foreach (var currentChild in children)
+					// This block is a manual enumeration to avoid the foreach pattern
+					// See https://github.com/dotnet/runtime/issues/56309 for details
+					var childrenEnumerator = children.GetEnumerator();
+					while (childrenEnumerator.MoveNext())
 					{
-						//var currentChild = (UIElement)(cdo);
+						var currentChild = childrenEnumerator.Current;
 						ASSERT(currentChild is { });
 
 						//currentChild.Measure(innerAvailableSize);
@@ -1329,9 +1345,20 @@ namespace Windows.UI.Xaml.Controls
 			// Locking the row and columns definitions to prevent changes by user code
 			// during the arrange pass.
 			LockDefinitions();
+#if !HAS_EXPENSIVE_TRYFINALLY
 			try
 			{
-				return InnerArrangeOverride(finalSize);
+#endif
+				var result = InnerArrangeOverride(finalSize);
+
+#if HAS_EXPENSIVE_TRYFINALLY
+				m_ppTempDefinitions = null;
+				m_cTempDefinitions = 0;
+				UnlockDefinitions();
+#endif
+				return result;
+
+#if !HAS_EXPENSIVE_TRYFINALLY
 			}
 			finally
 			{
@@ -1339,6 +1366,7 @@ namespace Windows.UI.Xaml.Controls
 				m_cTempDefinitions = 0;
 				UnlockDefinitions();
 			}
+#endif
 		}
 
 		/// <remarks>
@@ -1357,10 +1385,12 @@ namespace Windows.UI.Xaml.Controls
 				var children = GetChildren();
 				if (children is { })
 				{
-					//for (auto & cdo : (children))
-					foreach (var cdo in children)
+					// This block is a manual enumeration to avoid the foreach pattern
+					// See https://github.com/dotnet/runtime/issues/56309 for details
+					var childrenEnumerator = children.GetEnumerator();
+					while (childrenEnumerator.MoveNext())
 					{
-						var currentChild = (UIElement)(cdo);
+						var currentChild = childrenEnumerator.Current;
 						ASSERT(currentChild is { });
 
 						//currentChild.EnsureLayoutStorage();
