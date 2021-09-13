@@ -70,7 +70,7 @@ namespace Uno.Media
 		/// </summary>
 		/// <param name="geometryContext">The geometry context.</param>
 		/// <exception cref="ArgumentNullException">geometryContext</exception>
-		public PathMarkupParser(StreamGeometryContext geometryContext) // Uno specific: Use StreamGeomoetryContext instead of IGeometryContext.
+		public PathMarkupParser(StreamGeometryContext context) // Uno specific: Use StreamGeomoetryContext instead of IGeometryContext.
 		{
 			if (geometryContext == null)
 			{
@@ -126,8 +126,8 @@ namespace Uno.Media
 		/// <summary>
 		/// Parses the specified path data and writes the result to the geometryContext of this instance.
 		/// </summary>
-		/// <param name="pathData">The path data.</param>
-		public void Parse(string pathData, ref FillRule fillRule) // Uno specific: FillRule parameter.
+		/// <param name="s">The path data.</param>
+		public void Parse(string s, ref FillRule fillRule) // Uno specific: FillRule parameter.
 		{
 			var span = pathData.AsSpan();
 			_currentPoint = new Point();
