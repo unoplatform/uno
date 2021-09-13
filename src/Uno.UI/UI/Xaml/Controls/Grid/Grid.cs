@@ -192,9 +192,12 @@ namespace Windows.UI.Xaml.Controls
 			bool treatStarAsAuto)
 		{
 			//for (auto & cdo : definitions)
-			foreach(DefinitionBase def in definitions.GetItems())
+			var itemsEnumerator = definitions.GetItems().GetEnumerator();
+
+			while(itemsEnumerator.MoveNext())
 			{
-				//var def = (DefinitionBase)(cdo);
+				var def = itemsEnumerator.Current;
+
 				bool useLayoutRounding = GetUseLayoutRounding();
 				var userSize = double.PositiveInfinity;
 				var userMinSize = useLayoutRounding
@@ -1066,10 +1069,12 @@ namespace Windows.UI.Xaml.Controls
 				var children = (GetChildren());
 				if (children is { })
 				{
-					//for (auto & cdo : (children))
-					foreach (var currentChild in children)
+					// This block is a manual enumeration to avoid the foreach pattern
+					// See https://github.com/dotnet/runtime/issues/56309 for details
+					var childrenEnumerator = children.GetEnumerator();
+					while (childrenEnumerator.MoveNext())
 					{
-						//var currentChild = (UIElement)(cdo);
+						var currentChild = childrenEnumerator.Current;
 						ASSERT(currentChild is { });
 
 						//currentChild.Measure(innerAvailableSize);
@@ -1357,10 +1362,12 @@ namespace Windows.UI.Xaml.Controls
 				var children = GetChildren();
 				if (children is { })
 				{
-					//for (auto & cdo : (children))
-					foreach (var cdo in children)
+					// This block is a manual enumeration to avoid the foreach pattern
+					// See https://github.com/dotnet/runtime/issues/56309 for details
+					var childrenEnumerator = children.GetEnumerator();
+					while (childrenEnumerator.MoveNext())
 					{
-						var currentChild = (UIElement)(cdo);
+						var currentChild = childrenEnumerator.Current;
 						ASSERT(currentChild is { });
 
 						//currentChild.EnsureLayoutStorage();
