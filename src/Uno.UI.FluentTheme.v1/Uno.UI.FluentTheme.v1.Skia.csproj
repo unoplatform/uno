@@ -9,8 +9,8 @@
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<AssemblyName>Uno.UI.FluentTheme</AssemblyName>
-		<RootNamespace>Uno.UI.FluentTheme</RootNamespace>
+		<AssemblyName>Uno.UI.FluentTheme.v1</AssemblyName>
+		<RootNamespace>Uno.UI.FluentTheme.v1</RootNamespace>
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -23,8 +23,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.Skia.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>

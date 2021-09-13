@@ -1341,11 +1341,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (IsResourceDictionarySubclass(topLevelControl.Type))
 			{
-				var type = GetType(topLevelControl.Type);
-				using (writer.BlockInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString())))
-				{
-					BuildLiteralProperties(writer, topLevelControl);
-				}
+				BuildTypedResourceDictionary(writer, topLevelControl);
 			}
 			else
 			{
@@ -1362,6 +1358,49 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
 					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
+				}
+			}
+		}
+
+		private void BuildTypedResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		{
+			var type = GetType(topLevelControl.Type);
+
+			if (type.GetFullMetadataName().Equals("Microsoft.UI.Xaml.Controls.XamlControlsResources", StringComparison.InvariantCulture))
+			{
+				int GetResourcesVersion()
+				{
+					// We're in a XAML file which uses the XamlControlsResources type. To ensure that the linker can work
+					// properly we're redirecting the type creation to a type containing only the requested version.
+					if (topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ControlsResourcesVersion") is { } versionMember)
+					{
+						if (versionMember.Value?.ToString()?.TrimStart("Version") is { } versionString)
+						{
+							if (int.TryParse(versionString, out var explicitVersion))
+							{
+								if (explicitVersion < 1 || explicitVersion > XamlConstants.MaxFluentResourcesVersion)
+								{
+									throw new Exception($"Unsupported XamlControlsResources version {explicitVersion}. Max version is {XamlConstants.MaxFluentResourcesVersion}");
+								}
+							}
+
+							return explicitVersion;
+						}
+					}
+
+					return XamlConstants.MaxFluentResourcesVersion;
+				}
+
+				using (writer.BlockInvariant($"new global::Microsoft.UI.Xaml.Controls.XamlControlsResourcesV{GetResourcesVersion()}()"))
+				{
+					BuildLiteralProperties(writer, topLevelControl);
+				}
+			}
+			else
+			{
+				using (writer.BlockInvariant("new /* typed resource dictionary */ {0}()", GetGlobalizedTypeName(type.ToDisplayString())))
+				{
+					BuildLiteralProperties(writer, topLevelControl);
 				}
 			}
 		}
@@ -2460,11 +2499,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineInvariant("Resources = ");
 
-					var type = GetType(rdSubclass.Type);
-					using (writer.BlockInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString())))
-					{
-						BuildLiteralProperties(writer, rdSubclass);
-					}
+					BuildTypedResourceDictionary(writer, rdSubclass);
+
 					writer.AppendLineInvariant(isInInitializer ? "," : ";");
 				}
 				else if (resourcesRoot != null || mergedDictionaries != null || themeDictionaries != null)

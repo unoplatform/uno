@@ -3,35 +3,37 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props" />
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../netcore-build.props"/>
+	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<AssemblyName>Uno.UI.FluentTheme</AssemblyName>
-		<RootNamespace>Uno.UI.FluentTheme</RootNamespace>
+		<AssemblyName>Uno.UI.FluentTheme.v1</AssemblyName>
+		<RootNamespace>Uno.UI.FluentTheme.v1</RootNamespace>
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 	
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="FluentMerge.targets" />
+
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 </Project>

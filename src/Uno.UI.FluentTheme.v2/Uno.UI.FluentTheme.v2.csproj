@@ -12,8 +12,8 @@
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<AssemblyName>Uno.UI.FluentTheme</AssemblyName>
-		<RootNamespace>Uno.UI.FluentTheme</RootNamespace>
+		<AssemblyName>Uno.UI.FluentTheme.v2</AssemblyName>
+		<RootNamespace>Uno.UI.FluentTheme.v2</RootNamespace>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -36,8 +36,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.csproj" />
-		<ProjectReference Include="..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
