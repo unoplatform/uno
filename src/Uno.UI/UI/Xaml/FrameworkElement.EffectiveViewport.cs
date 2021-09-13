@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#define TRACE_EFFECTIVE_VIEWPORT
+// #define TRACE_EFFECTIVE_VIEWPORT
 
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml
 		private int _childrenInterestedInViewportUpdates;
 		private IDisposable? _parentViewportUpdatesSubscription;
 		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates on iOS, use GetParentViewport()
-		private ViewportInfo _lastEffectiveViewport = new ViewportInfo();
+		private ViewportInfo _lastEffectiveViewport;
 
 		public event TypedEventHandler<_This, EffectiveViewportChangedEventArgs> EffectiveViewportChanged
 		{
@@ -90,7 +90,6 @@ namespace Windows.UI.Xaml
 					// We are already subscribed, the parent won't send any update (and our _parentViewport is expected to be up-to-date).
 					// But if this "reconfigure" was made for a new child (child != null), we have to initialize its own _parentViewport.
 
-					//var slot = LayoutInformation.GetLayoutSlot(this); // a.k.a. the implicit viewport to use if none was defined by any parent (usually only few elements at the top of the tree)
 					var parentViewport = GetParentViewport();
 					var viewport = GetEffectiveViewport(parentViewport);
 
@@ -134,7 +133,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		void IFrameworkElement_EffectiveViewport.OnParentViewportChanged(
 			IFrameworkElement_EffectiveViewport parent, // We propagate the parent to avoid costly lookup
-			ViewportInfo viewport, // Be aware tht it might be empty ([+∞,+∞,-∞,-∞]) if not clipped
+			ViewportInfo viewport, // The viewport of the parent, expressed in parent's coordinates
 			bool isInitial) // Indicates that this update is only intended to initiate the _parentViewport
 		{
 			if (!IsEffectiveViewportEnabled)
@@ -145,7 +144,6 @@ namespace Windows.UI.Xaml
 			}
 
 #if !__IOS__ // cf. GetParentViewport
-			//viewport = ParentToLocalCoordinates(parent, viewport);
 			viewport = viewport.GetRelativeTo(this);
 #endif
 
@@ -155,7 +153,7 @@ namespace Windows.UI.Xaml
 			}
 
 			_parentViewport = viewport;
-			PropagateEffectiveViewportChange(isInitial);
+			PropagateEffectiveViewportChange(isInitial, isParentUpdated: true);
 		}
 
 #if IS_NATIVE_ELEMENT
@@ -179,6 +177,19 @@ namespace Windows.UI.Xaml
 			{
 				PropagateEffectiveViewportChange();
 			}
+		}
+
+		[NotImplemented] // Supported only for internal elements, cf. comment below
+		protected void InvalidateViewport()
+		{
+			if (!IsScrollPort)
+			{
+				throw new InvalidOperationException("InvalidateViewport can only be called on elements that have been registered as scroll ports.");
+			}
+
+			// Here we should use the clipping to determine the actual view port for external controls,
+			// but for now we support only internal controls that can set the ScrollOffsets property on UIElement.
+			PropagateEffectiveViewportChange();
 		}
 #endif
 
@@ -213,9 +224,8 @@ namespace Windows.UI.Xaml
 					return new ViewportInfo(this, Rect.Empty);
 				}
 
-				// TODO: We should constrains the clip only on axis on which we can scroll
-
 				// The visible window of the SCP
+				// TODO: We should constrains the clip only on axis on which we can scroll
 				var scrollport = new Rect(
 					new Point(ScrollOffsets.X, ScrollOffsets.Y),
 					LayoutInformation.GetLayoutSlot(this).Size);
@@ -254,7 +264,8 @@ namespace Windows.UI.Xaml
 #endif
 
 		private void PropagateEffectiveViewportChange(
-			bool isInitial = false
+			bool isInitial = false,
+			bool isParentUpdated = false
 #if TRACE_EFFECTIVE_VIEWPORT
 			, [CallerMemberName] string? caller = null) {
 #else
@@ -270,27 +281,27 @@ namespace Windows.UI.Xaml
 
 			var parentViewport = GetParentViewport();
 			var viewport = GetEffectiveViewport(parentViewport);
-			var isViewportUpdate = _lastEffectiveViewport != viewport;
+			var viewportUpdated = _lastEffectiveViewport != viewport;
 
 			_lastEffectiveViewport = viewport;
 
-			TRACE_EFFECTIVE_VIEWPORT($"viewport: {viewport} (updated: {isViewportUpdate}) "
+			TRACE_EFFECTIVE_VIEWPORT(
+				$"viewport: {viewport} (updated: {viewportUpdated}) "
 				+ $"| slot: {LayoutInformation.GetLayoutSlot(this).ToDebugString()} "
 				+ $"| isInitial: {isInitial} "
-				+ $"| parent: {parentViewport} "
+				+ $"| parent: {parentViewport} (updated: {isParentUpdated}) "
 				+ $"| scroll: {(IsScrollPort ? $"{ScrollOffsets.ToDebugString()}" : "--none--")} "
 				+ $"| reason: {caller} "
 				+ $"| children: {_childrenInterestedInViewportUpdates}");
 
-			if (!isInitial && isViewportUpdate)
+			if (!isInitial && isParentUpdated)
 			{
-				// Note: Here the viewport might have some infinite values (notably if we don't have any parent that clipped us).
-				//		 In that case we fallback to the LayoutSlot as we should not raise the event with infinite values.
+				// Note: The event only notify about the parentViewport (expressed in local coordinate space!),
+				//		 the "local effective viewport" is used only by our children.
 				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
 			}
 
-			if (_childrenInterestedInViewportUpdates > 0
-				&& (isViewportUpdate || isInitial)) // If isLayoutSlot update, then children element are also going to be arranged
+			if (_childrenInterestedInViewportUpdates > 0 && (viewportUpdated || isInitial))
 			{
 				var children = Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this);
 				foreach (var child in children)
@@ -303,22 +314,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if !IS_NATIVE_ELEMENT
-		[NotImplemented] // Supported only for internal elements, cf. comment below
-		protected void InvalidateViewport()
-		{
-			if (!IsScrollPort)
-			{
-				throw new InvalidOperationException("InvalidateViewport can only be called on elements that have been registered as scroll ports.");
-			}
-
-			// Here we should use the clipping to determine the actual view port for external controls,
-			// but for now the clipping we support only internal controls that can set the ScrollOffsets property on UIElement.
-			PropagateEffectiveViewportChange();
-		}
-#endif
-
-		//[Conditional("TRACE_EFFECTIVE_VIEWPORT")]
+		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]
 		private void TRACE_EFFECTIVE_VIEWPORT(string text)
 		{
 #if TRACE_EFFECTIVE_VIEWPORT
