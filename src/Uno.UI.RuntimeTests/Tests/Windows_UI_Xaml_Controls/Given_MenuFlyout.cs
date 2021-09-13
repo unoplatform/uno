@@ -142,6 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __ANDROID__
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/7058")]
 		[RequiresFullWindow]
 		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
 		{
