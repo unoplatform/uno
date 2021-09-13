@@ -1034,14 +1034,25 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	UnlockDefinitions();
 			//});
+
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
 			{
-				return InnerMeasureOverride(availableSize);
+#endif
+				var result = InnerMeasureOverride(availableSize);
+
+#if HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+				UnlockDefinitions();
+#endif
+
+				return result;
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			}
 			finally
 			{
 				UnlockDefinitions();
 			}
+#endif
 		}
 
 		/// <remarks>
@@ -1334,9 +1345,20 @@ namespace Windows.UI.Xaml.Controls
 			// Locking the row and columns definitions to prevent changes by user code
 			// during the arrange pass.
 			LockDefinitions();
+#if !HAS_EXPENSIVE_TRYFINALLY
 			try
 			{
-				return InnerArrangeOverride(finalSize);
+#endif
+				var result = InnerArrangeOverride(finalSize);
+
+#if HAS_EXPENSIVE_TRYFINALLY
+				m_ppTempDefinitions = null;
+				m_cTempDefinitions = 0;
+				UnlockDefinitions();
+#endif
+				return result;
+
+#if !HAS_EXPENSIVE_TRYFINALLY
 			}
 			finally
 			{
@@ -1344,6 +1366,7 @@ namespace Windows.UI.Xaml.Controls
 				m_cTempDefinitions = 0;
 				UnlockDefinitions();
 			}
+#endif
 		}
 
 		/// <remarks>
