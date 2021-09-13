@@ -1,260 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Appointments;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Uno.UI.Extensions;
-using DependencyObjectExtensions = Uno.UI.Extensions.DependencyObjectExtensions;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
 using static Private.Infrastructure.TestServices.WindowHelper;
-using Windows.UI.Xaml.Shapes;
 
-#if __IOS__
-using UIKit;
-#endif
-
-namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 {
-	public partial class Given_UIElement
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_LayoutInformation
 	{
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_TransformToVisual_WithMargin()
-		{
-			FrameworkElement inner = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.DarkBlue) };
-
-			FrameworkElement container = new Border
-			{
-				Child = inner,
-				Margin = ThicknessHelper.FromLengths(1, 3, 5, 7),
-				Padding = ThicknessHelper.FromLengths(11, 13, 17, 19),
-				BorderThickness = ThicknessHelper.FromUniformLength(23),
-				HorizontalAlignment = HorizontalAlignment.Right,
-				VerticalAlignment = VerticalAlignment.Bottom,
-				Background = new SolidColorBrush(Colors.DarkSalmon)
-			};
-			FrameworkElement outer = new Border
-			{
-				Child = container,
-				Padding = ThicknessHelper.FromUniformLength(8),
-				BorderThickness = ThicknessHelper.FromUniformLength(2),
-				Width = 300,
-				Height = 300,
-				Background = new SolidColorBrush(Colors.MediumSeaGreen)
-			};
-
-			TestServices.WindowHelper.WindowContent = outer;
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			string GetStr(FrameworkElement e)
-			{
-				var positionMatrix = ((MatrixTransform)e.TransformToVisual(outer)).Matrix;
-				return $"{positionMatrix.OffsetX};{positionMatrix.OffsetY};{e.ActualWidth};{e.ActualHeight}";
-			}
-
-			var str = $"{GetStr(container)}|{GetStr(inner)}";
-			Assert.AreEqual("111;105;174;178|145;141;100;100", str);
-		}
-
-#if !WINDOWS_UWP // Cannot create a DataTemplate on UWP
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_TransformToVisual_ThroughListView()
-		{
-			var listView = new ListView
-			{
-				ItemContainerStyle = new Style(typeof(ListViewItem))
-				{
-					Setters = { new Setter(ListViewItem.PaddingProperty, new Thickness(0)) }
-				},
-				ItemTemplate = new DataTemplate(() => new Border
-				{
-					Width = 200,
-					Height = 100,
-					Background = new SolidColorBrush(Colors.Red),
-					Margin = new Thickness(0, 5),
-					Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
-				}),
-				ItemsSource = Enumerable.Range(1, 10),
-				Margin = new Thickness(15)
-			};
-			var sut = new Grid
-			{
-				Height = 300,
-				Width = 200,
-				Children = { listView }
-			};
-
-			TestServices.WindowHelper.WindowContent = sut;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			AssertItem(0); // Top item, fully visible
-			AssertItem(2); // Bottom item, partially visible
-			// AssertItem(5); // Overflowing item, not materialized => No container for this
-			// AssertItem(9); // Last item, definitely not materialized => No container for this
-
-			void AssertItem(int index)
-			{
-				const double defaultTolerance = 1.5;
-				var tolerance = defaultTolerance * Math.Min(index + 1, 3);
-
-				var container = listView.ContainerFromIndex(index) as ContentControl
-					?? throw new NullReferenceException($"Cannot find the container of item {index}");
-				var border = DependencyObjectExtensions.FindFirstChild<Border>(container)
-					?? throw new NullReferenceException($"Cannot find the materialized border of item {index}");
-
-				var containerToListView = container.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(containerToListView.X, 0, tolerance);
-				Assert.AreEqual(containerToListView.X, 0, tolerance);
-				Assert.AreEqual(containerToListView.Y, ((100 + 5 * 2) * index), tolerance);
-				Assert.AreEqual(containerToListView.Width, 42, tolerance);
-				Assert.AreEqual(containerToListView.Height, 42, tolerance);
-
-				var borderToListView = border.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(borderToListView.X, 0, tolerance);
-				Assert.AreEqual(borderToListView.Y, ((100 + 5 * 2) * index + 5), tolerance);
-				Assert.AreEqual(borderToListView.Width, 42, tolerance);
-				Assert.AreEqual(borderToListView.Height, 42, tolerance);
-
-				var containerToSut = container.TransformToVisual(sut).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(containerToSut.X, 15, tolerance);
-				Assert.AreEqual(containerToSut.Y, (15 + (100 + 5 * 2) * index), tolerance);
-				Assert.AreEqual(containerToSut.Width, 42, tolerance);
-				Assert.AreEqual(containerToSut.Height, 42, tolerance);
-
-				var borderToSut = border.TransformToVisual(sut).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(borderToSut.X, 15, tolerance);
-				Assert.AreEqual(borderToSut.Y, (15 + (100 + 5 * 2) * index + 5), tolerance);
-				Assert.AreEqual(borderToSut.Width, 42, tolerance);
-				Assert.AreEqual(borderToSut.Height, 42, tolerance);
-			}
-		}
-#endif
-
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_TransformToVisual_WithTransformOrigin()
-		{
-			var sut = new Border
-			{
-				Width = 100,
-				Height = 10,
-				RenderTransform = new RotateTransform { Angle = 90 },
-				RenderTransformOrigin = new Point(.5, .5),
-				HorizontalAlignment = HorizontalAlignment.Center,
-				VerticalAlignment = VerticalAlignment.Center
-			};
-			var testRoot = new Grid
-			{
-				Height = 300,
-				Width = 300,
-				Children = { sut }
-			};
-
-			TestServices.WindowHelper.WindowContent = testRoot;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			var result = sut.TransformToVisual(testRoot).TransformPoint(new Point(1, 1));
-
-			Assert.AreEqual(154, result.X);
-			Assert.AreEqual(101, result.Y);
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_TransformToVisual_From_ScrollViewer()
-		{
-			var innerBorder = new Border
-			{
-				Width = 140,
-				Height = 60,
-				Background = new SolidColorBrush(Colors.Blue)
-			};
-
-			var SUT = new ScrollViewer
-			{
-				Content = new StackPanel
-				{
-					Children =
-					{
-						new Ellipse
-						{
-							Width = 170,
-							Height = 140,
-							Fill = new SolidColorBrush(Colors.Tomato)
-						},
-						innerBorder,
-						new Ellipse
-						{
-							Width = 170,
-							Height = 640,
-							Fill = new SolidColorBrush(Colors.Tomato)
-						},
-					}
-				}
-			};
-
-			var hostGrid = new Grid
-			{
-				HorizontalAlignment = HorizontalAlignment.Left,
-				VerticalAlignment = VerticalAlignment.Top,
-				Children = {
-					new Grid
-					{
-						Height = 320,
-						Margin = new Thickness(76),
-						Children =
-						{
-							SUT
-						}
-					}
-				}
-			};
-			TestServices.WindowHelper.WindowContent = hostGrid;
-
-			await TestServices.WindowHelper.WaitForLoaded(innerBorder);
-
-			AssertTransformOffset(SUT, 76);
-			AssertTransformOffset(innerBorder, 216);
-
-			SUT.ChangeView(null, 96, null);
-
-			await TestServices.WindowHelper.WaitForEqual(96, () => SUT.VerticalOffset);
-
-			AssertTransformOffset(SUT, 76);
-			AssertTransformOffset(innerBorder, 120);
-
-			SUT.ChangeView(null, 2000, null);
-
-			await TestServices.WindowHelper.WaitForEqual(520, () => SUT.VerticalOffset);
-
-			AssertTransformOffset(SUT, 76);
-			AssertTransformOffset(innerBorder, -304);
-
-			void AssertTransformOffset(FrameworkElement element, double expectedYOffset)
-			{
-				var transform = element.TransformToVisual(hostGrid) as MatrixTransform;
-				Assert.AreEqual(expectedYOffset, transform.Matrix.OffsetY, 1);
-			}
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0)]
@@ -321,7 +87,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10)]
 		#endregion
-		public async Task When_PaddedElement_Then_TransformToVisual(HorizontalAlignment hAlign, VerticalAlignment vAlign, int border, int margin)
+		public async Task When_PaddedElement_Then_LayoutSlot(HorizontalAlignment hAlign, VerticalAlignment vAlign, int border, int margin)
 		{
 			Border sut;
 			var root = new Border
@@ -347,301 +113,91 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				await WaitForIdle();
 			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
-			var expected = new Rect(X(hAlign, root.Width, sut.Width, margin), Y(vAlign, root.Height, sut.Height, margin), sut.Width, sut.Height);
-			var actual = sut.TransformToVisual(root).TransformBounds(new Rect(0, 0, sut.Width, sut.Height));
+			var slot = LayoutInformation.GetLayoutSlot(sut);
 
-			actual.Should(epsilon: 1).Be(expected);
+			slot.Should().Be(new Rect(0, 0, 200, 200));
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		#region DataRows
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, false, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, false, false)]
-
-
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, true, false)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, true, false)]
-
-
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, false, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, false, true)]
-
-
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, true, true)]
-		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10)]
 		#endregion
-		public async Task When_PaddedElementInScrollViewer_Then_TransformToVisual(
-			HorizontalAlignment hAlign,
-			VerticalAlignment vAlign,
-			int border,
-			int margin,
-			bool canHorizontallyScroll,
-			bool canVerticallyScroll)
+		public async Task When_ElementInPaddedElement_Then_LayoutSlot(HorizontalAlignment hAlign, VerticalAlignment vAlign, int border, int margin)
 		{
 			Border sut;
-			var root = new ScrollViewer()
+			var root = new Border
 			{
 				Width = 200,
 				Height = 200,
-				BorderThickness = new Thickness(0),
-				HorizontalScrollBarVisibility = canHorizontallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
-				VerticalScrollBarVisibility = canVerticallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
-				HorizontalScrollMode = canHorizontallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
-				VerticalScrollMode = canVerticallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
-				Content = sut = new Border
+				Margin = new Thickness(margin),
+				BorderBrush = new SolidColorBrush(Colors.Red),
+				BorderThickness = new Thickness(border),
+				Child = sut = new Border
 				{
-					Margin = new Thickness(margin),
-					BorderBrush = new SolidColorBrush(Colors.Red),
-					BorderThickness = new Thickness(border),
+					BorderThickness = new Thickness(0),
 					Width = 100,
 					Height = 100,
 					HorizontalAlignment = hAlign,
@@ -655,14 +211,119 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				await WaitForIdle();
 			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
-			var expected = new Rect(X(hAlign, root.Width, sut.Width, margin), Y(vAlign, root.Height, sut.Height, margin), sut.Width, sut.Height);
-			var actual = sut.TransformToVisual(root).TransformBounds(new Rect(0, 0, sut.Width, sut.Height));
+			var slot = LayoutInformation.GetLayoutSlot(sut);
 
-			actual.Should(epsilon: 1).Be(expected);
+			slot.Should().Be(new Rect(border, border, root.Width - border * 2, root.Height - border * 2));
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
+		#region DataRows
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10)]
+		#endregion
+		public async Task When_ElementInPaddedGrid_Then_LayoutSlot(HorizontalAlignment hAlign, VerticalAlignment vAlign, int border, int margin)
+		{
+			Border sut;
+			var root = new Grid
+			{
+				ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
+				RowDefinitions = { new RowDefinition(), new RowDefinition() },
+				Width = 400,
+				Height = 400,
+				Margin = new Thickness(margin),
+				BorderBrush = new SolidColorBrush(Colors.Red),
+				BorderThickness = new Thickness(border),
+				Children =
+				{
+					(sut = new Border
+					{
+						BorderThickness = new Thickness(0),
+						Width = 100,
+						Height = 100,
+						HorizontalAlignment = hAlign,
+						VerticalAlignment = vAlign
+					}).Apply(s =>
+					{
+						Grid.SetColumn(s, 1);
+						Grid.SetRow(s, 1);
+					})
+				}
+			};
+
+			WindowContent = root;
+			do
+			{
+				await WaitForIdle();
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
+
+			var slot = LayoutInformation.GetLayoutSlot(sut);
+
+			slot.Should().Be(new Rect(root.Width / 2, root.Height / 2, root.Width / 2 - border, root.Height / 2 - border));
+		}
+
+		[TestMethod]
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
@@ -927,7 +588,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, true, true)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, true, true)]
 		#endregion
-		public async Task When_PaddedElementBiggerThanParentScrollViewer_Then_TransformToVisual(
+		public async Task When_ElementInPaddedScrollViewerAligned_Then_LayoutSlot(
 			HorizontalAlignment hAlign,
 			VerticalAlignment vAlign,
 			int border,
@@ -936,32 +597,436 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			bool canVerticallyScroll)
 		{
 			Border sut;
-			ScrollViewer sv;
+			var root = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Margin = new Thickness(margin),
+				BorderBrush = new SolidColorBrush(Colors.Red),
+				BorderThickness = new Thickness(border),
+				HorizontalScrollBarVisibility = canHorizontallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+				VerticalScrollBarVisibility = canVerticallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+				HorizontalScrollMode = canHorizontallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+				VerticalScrollMode = canVerticallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+				Content = (sut = new Border
+				{
+					BorderThickness = new Thickness(0),
+					Width = 100,
+					Height = 100,
+					HorizontalAlignment = hAlign,
+					VerticalAlignment = vAlign
+				}).Apply(s =>
+				{
+					Grid.SetColumn(s, 1);
+					Grid.SetRow(s, 1);
+				})
+			};
+
+			WindowContent = root;
+			do
+			{
+				await WaitForIdle();
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
+
+			var slot = LayoutInformation.GetLayoutSlot(sut);
+
+			slot.Should().Be(new Rect(0, 0, root.Width - border * 2, root.Height - border * 2));
+		}
+
+		[TestMethod]
+		#region DataRows
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, false, false)]
+
+
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, true, false)]
+
+
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, false, true)]
+
+
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, true, true)]
+		#endregion
+		public async Task When_PaddedElementInScrollViewerAligned_Then_LayoutSlot(
+			HorizontalAlignment hAlign,
+			VerticalAlignment vAlign,
+			int border,
+			int margin,
+			bool canHorizontallyScroll,
+			bool canVerticallyScroll)
+		{
+			Border sut;
+			var root = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				BorderThickness = new Thickness(0),
+				HorizontalScrollBarVisibility = canHorizontallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+				VerticalScrollBarVisibility = canVerticallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+				HorizontalScrollMode = canHorizontallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+				VerticalScrollMode = canVerticallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+				Content = (sut = new Border
+				{
+					Width = 100,
+					Height = 100,
+					Margin = new Thickness(margin),
+					BorderBrush = new SolidColorBrush(Colors.Red),
+					BorderThickness = new Thickness(border),
+					HorizontalAlignment = hAlign,
+					VerticalAlignment = vAlign
+				}).Apply(s =>
+				{
+					Grid.SetColumn(s, 1);
+					Grid.SetRow(s, 1);
+				})
+			};
+
+			WindowContent = root;
+			do
+			{
+				await WaitForIdle();
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
+
+			var slot = LayoutInformation.GetLayoutSlot(sut);
+
+			slot.Should().Be(new Rect(0, 0, root.Width, root.Height));
+		}
+
+		[TestMethod]
+		#region DataRows
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10)]
+		#endregion
+		public async Task When_PaddedElementBiggerThanParent_Then_LayoutSlot(HorizontalAlignment hAlign, VerticalAlignment vAlign, int border, int margin)
+		{
+			Border sut;
 			var root = new Border
 			{
-				Width = 204,
-				Height = 204,
-				BorderThickness = new Thickness(2),
-				BorderBrush = new SolidColorBrush(Colors.Blue),
-				Child = sv = new ScrollViewer
+				Width = 200,
+				Height = 200,
+				BorderThickness = new Thickness(0),
+				Child = sut = new Border
 				{
-					Width = 200,
-					Height = 200,
-					BorderThickness = new Thickness(0),
-					HorizontalScrollBarVisibility = canHorizontallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
-					VerticalScrollBarVisibility = canVerticallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
-					HorizontalScrollMode = canHorizontallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
-					VerticalScrollMode = canVerticallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
-					Content = sut = new Border
-					{
-						Margin = new Thickness(margin),
-						BorderBrush = new SolidColorBrush(Colors.Red),
-						BorderThickness = new Thickness(border),
-						Width = 300,
-						Height = 300,
-						HorizontalAlignment = hAlign,
-						VerticalAlignment = vAlign
-					}
+					Margin = new Thickness(margin),
+					BorderBrush = new SolidColorBrush(Colors.Red),
+					BorderThickness = new Thickness(border),
+					Width = 300,
+					Height = 300,
+					HorizontalAlignment = hAlign,
+					VerticalAlignment = vAlign
 				}
 			};
 
@@ -971,79 +1036,320 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				await WaitForIdle();
 			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
-			foreach (var offset in GetOffsets())
-			{
-				sv.ChangeView(offset.x, offset.y, zoomFactor: null, disableAnimation: true);
+			var slot = LayoutInformation.GetLayoutSlot(sut);
 
-				var expected = new Rect(margin - offset.x, margin - offset.y, sut.Width, sut.Height);
-				var attempt = 0;
-				while (true)
-				{
-					try
-					{
-						// On UWP we might not be scrolled properly to the right offset (even is we had disabled animation),
-						// so we just retry assertion as long as it fails, for up to 300 ms.
-						// Using the ViewChanged event is not reliable enough neither.
-
-						var actual = sut.TransformToVisual(sv).TransformBounds(new Rect(0, 0, sut.Width, sut.Height));
-
-						actual.Should(epsilon: 1).Be(expected, because: $"scrolled to ({offset.x},{offset.y})");
-						break;
-					}
-					catch (Exception e)
-					{
-						if (attempt++ >= 30)
-						{
-							throw;
-						}
-
-						await Task.Delay(10);
-					}
-				}
-			}
-
-			IEnumerable<(double x, double y)> GetOffsets()
-			{
-				yield return (0, 0);
-
-				if (canHorizontallyScroll)
-				{
-					yield return (sv.ScrollableWidth / 2, 0);
-					yield return (sv.ScrollableWidth, 0);
-				}
-
-				if (canVerticallyScroll)
-				{
-					yield return (0, sv.ScrollableHeight / 2);
-					yield return (0, sv.ScrollableHeight);
-				}
-
-				if (canHorizontallyScroll && canVerticallyScroll)
-				{
-					yield return (sv.ScrollableWidth / 2, sv.ScrollableHeight / 2);
-					yield return (sv.ScrollableWidth, sv.ScrollableHeight);
-				}
-			}
+			slot.Should().Be(new Rect(0, 0, 200, 200));
 		}
 
-		private static double X(HorizontalAlignment alignment, double available, double used, double margin)
-			=> alignment switch
+		[TestMethod]
+		#region DataRows
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, false, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, false, false)]
+
+
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, true, false)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, true, false)]
+
+
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, false, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, false, true)]
+
+
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Top, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Center, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Center, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Bottom, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Bottom, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Right, VerticalAlignment.Stretch, 10, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 0, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, true, true)]
+		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, true, true)]
+		#endregion
+		public async Task When_PaddedElementBiggerThanParentScrollViewer_Then_LayoutSlot(
+			HorizontalAlignment hAlign,
+			VerticalAlignment vAlign,
+			int border,
+			int margin,
+			bool canHorizontallyScroll,
+			bool canVerticallyScroll)
+		{
+			Border sut;
+			var root = new ScrollViewer
 			{
-				HorizontalAlignment.Left => 0 + margin,
-				HorizontalAlignment.Center => (available - used) / 2.0,
-				HorizontalAlignment.Right => available - used - margin,
-				HorizontalAlignment.Stretch => (available - used) / 2.0,
-				_ => 0
+				Width = 200,
+				Height = 200,
+				BorderThickness = new Thickness(0),
+				HorizontalScrollBarVisibility = canHorizontallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+				VerticalScrollBarVisibility = canVerticallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+				HorizontalScrollMode = canHorizontallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+				VerticalScrollMode = canVerticallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+				Content = sut = new Border
+				{
+					Margin = new Thickness(margin),
+					BorderBrush = new SolidColorBrush(Colors.Red),
+					BorderThickness = new Thickness(border),
+					Width = 300,
+					Height = 300,
+					HorizontalAlignment = hAlign,
+					VerticalAlignment = vAlign
+				}
 			};
 
-		private static double Y(VerticalAlignment alignment, double available, double used, double margin)
-			=> alignment switch
+			WindowContent = root;
+			do
 			{
-				VerticalAlignment.Top => 0 + margin,
-				VerticalAlignment.Center => (available - used) / 2.0,
-				VerticalAlignment.Bottom => available - used - margin,
-				VerticalAlignment.Stretch => (available - used) / 2.0,
-				_ => 0
-			};
+				await WaitForIdle();
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
+
+			var expected = new Rect(
+				0,
+				0,
+				canHorizontallyScroll ? sut.Width + margin * 2 : root.Width,
+				canVerticallyScroll ? sut.Height + margin * 2 : root.Height);
+			var actual = LayoutInformation.GetLayoutSlot(sut);
+
+			actual.Should().Be(expected);
+		}
 	}
 }
