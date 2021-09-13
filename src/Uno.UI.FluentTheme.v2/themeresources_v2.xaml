@@ -1460,6 +1460,8 @@
       <StaticResource x:Key="ProgressBarBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="ProgressBarPausedForegroundColor" ResourceKey="SystemFillColorCaution" />
       <StaticResource x:Key="ProgressBarErrorForegroundColor" ResourceKey="SystemFillColorCritical" />
+      <StaticResource x:Key="ProgressRingForegroundThemeBrush" ResourceKey="SystemControlHighlightAccentBrush" />
+      <StaticResource x:Key="ProgressRingBackgroundThemeBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <x:Double x:Key="RadioButtonBorderThemeThickness">1</x:Double>
@@ -3362,6 +3364,8 @@
       <StaticResource x:Key="ProgressBarBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="ProgressBarPausedForegroundColor" ResourceKey="SystemFillColorCaution" />
       <StaticResource x:Key="ProgressBarErrorForegroundColor" ResourceKey="SystemFillColorCritical" />
+      <StaticResource x:Key="ProgressRingForegroundThemeBrush" ResourceKey="SystemControlHighlightAccentBrush" />
+      <StaticResource x:Key="ProgressRingBackgroundThemeBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <x:Double x:Key="RadioButtonBorderThemeThickness">1</x:Double>
@@ -5220,6 +5224,8 @@
       <StaticResource x:Key="ProgressBarBorderBrush" ResourceKey="SystemColorWindowTextColor" />
       <StaticResource x:Key="ProgressBarPausedForegroundColor" ResourceKey="SystemColorWindowTextColor" />
       <StaticResource x:Key="ProgressBarErrorForegroundColor" ResourceKey="SystemColorHotlightColor" />
+      <StaticResource x:Key="ProgressRingForegroundThemeBrush" ResourceKey="SystemControlHighlightAccentBrush" />
+      <StaticResource x:Key="ProgressRingBackgroundThemeBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <x:Double x:Key="RadioButtonBorderThemeThickness">1</x:Double>
@@ -20520,6 +20526,7 @@
   <CornerRadius x:Key="ProgressBarCornerRadius">1.5</CornerRadius>
   <CornerRadius x:Key="ProgressBarTrackCornerRadius">0.5</CornerRadius>
   <unouwp:Style TargetType="ProgressBar" BasedOn="{StaticResource DefaultProgressBarStyle}" />
+  <x:Double x:Key="ProgressRingStrokeThickness">4</x:Double>
   <Style TargetType="RadioButton" BasedOn="{StaticResource DefaultRadioButtonStyle}" />
   <Style TargetType="controls:RadioButtons" BasedOn="{StaticResource DefaultRadioButtonsStyle}" />
   <Style x:Key="DefaultRadioButtonsStyle" TargetType="controls:RadioButtons">
