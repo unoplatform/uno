@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Windows.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SampleControl.Presentation;
 using Uno.Disposables;
@@ -22,7 +23,10 @@ using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Newtonsoft.Json;
+using Uno.Logging;
 
 namespace Uno.UI.Samples.Tests
 {
@@ -59,7 +63,7 @@ namespace Uno.UI.Samples.Tests
 			DataContext = null;
 
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
-
+			EnableConfigPersistence();
 			OverrideDebugProviderAsserts();
 		}
 
@@ -226,6 +230,10 @@ namespace Uno.UI.Samples.Tests
 					if (isFailed)
 					{
 						failedTestDetails.Text += $"{testResult}: {testName} [{error.GetType()}] \n {error}\n\n";
+						if (failedTestDetailsRow.Height.Value == 0)
+						{
+							failedTestDetailsRow.Height = new GridLength(100);
+						}
 					}
 				}
 
@@ -329,6 +337,46 @@ namespace Uno.UI.Samples.Tests
 			doc.Save(w);
 
 			return w.ToString();
+		}
+
+		private void EnableConfigPersistence()
+		{
+			if (ApplicationData.Current.LocalSettings.Values.TryGetValue("unitestcontrols_config", out var configRaw)
+				&& configRaw is string configStr)
+			{
+				try
+				{
+					var config = JsonConvert.DeserializeObject<UnitTestEngineConfig>(configStr);
+
+					consoleOutput.IsChecked = config.IsConsoleOutputEnabled;
+					runIgnored.IsChecked = config.IsRunningIgnored;
+					retry.IsChecked = config.Attempts > 1;
+					testFilter.Text = string.Join(';', config.Filters);
+				}
+				catch (Exception e)
+				{
+					this.Log().Error("Failed to restore runtime tests config", e);
+				}
+			}
+
+			ListenConfigChanged();
+		}
+
+		private void ListenConfigChanged()
+		{
+			consoleOutput.Checked += (snd, e) => StoreConfig();
+			consoleOutput.Unchecked += (snd, e) => StoreConfig();
+			runIgnored.Checked += (snd, e) => StoreConfig();
+			runIgnored.Unchecked += (snd, e) => StoreConfig();
+			retry.Checked += (snd, e) => StoreConfig();
+			retry.Unchecked += (snd, e) => StoreConfig();
+			testFilter.TextChanged += (snd, e) => StoreConfig();
+
+			void StoreConfig()
+			{
+				var config = BuildConfig();
+				ApplicationData.Current.LocalSettings.Values["unitestcontrols_config"] = JsonConvert.SerializeObject(config);
+			}
 		}
 
 		private UnitTestEngineConfig BuildConfig()
@@ -525,6 +573,12 @@ namespace Uno.UI.Samples.Tests
 				{
 					foreach (var row in dataRows)
 					{
+						if (ct.IsCancellationRequested)
+						{
+							_ = ReportMessage("Stopped by user.", false);
+							return;
+						}
+
 						var d = row.Data;
 						await InvokeTestMethod(d);
 					}
@@ -596,10 +650,9 @@ namespace Uno.UI.Samples.Tests
 										$"Test execution timed out after {DefaultUnitTestTimeout}");
 								}
 
-								if (resultingTask.Exception != null)
-								{
-									throw resultingTask.Exception;
-								}
+								// Rethrow exception if failed OR task cancelled if task **internally** raised
+								// a TaskCancelledException (we don't provide any cancellation token).
+								await resultingTask;
 							}
 
 							var console = consoleRecorder?.GetContentAndReset();
@@ -759,5 +812,11 @@ namespace Uno.UI.Samples.Tests
 				where method.GetCustomAttribute(attributeType) != null
 				select method
 			).ToArray();
+
+		private void UpdateFailedTestDetailsSize(object sender, ManipulationDeltaRoutedEventArgs e)
+			=> failedTestDetailsRow.Height = new GridLength(Math.Max(0, failedTestDetailsRow.ActualHeight + e.Delta.Translation.Y));
+
+		private void UpdateOuputSize(object sender, ManipulationDeltaRoutedEventArgs e)
+			=> outputColumn.Width = new GridLength(Math.Max(0, outputColumn.ActualWidth + e.Delta.Translation.X));
 	}
 }
