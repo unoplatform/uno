@@ -25,6 +25,7 @@ using EffectiveViewportChangedEventArgs = Windows.UI.Xaml.EffectiveViewportChang
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_FrameworkElement_EffectiveViewport
 	{
 		private Rect WindowBounds => new Rect(0, 0, Window.Current.Bounds.Width, Window.Current.Bounds.Height);
@@ -40,6 +41,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+		[TestMethod]
+		public async Task EffectiveViewport_When_BottomRightAligned()
+		{
+			var sut = new Border { Width = 42, Height = 42, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom };
+			var parent = new ScrollViewer { Width = 142, Height = 142, Content = new Grid { Children = { sut } } };
+
+			var result = Empty;
+			sut.EffectiveViewportChanged += (snd, e) => result = e.EffectiveViewport;
+
+			WindowContent = parent;
+			await WaitForIdle();
+
+			await RetryAssert(() =>
+			{
+				Assert.AreEqual(new Rect(-100, -100, 142, 142), result);
+			});
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
