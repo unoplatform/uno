@@ -7,7 +7,11 @@
   xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
   xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
   xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:not_win="http://uno.ui/not_win"
+  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:ignorable="not_win">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
             <x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
@@ -160,7 +164,11 @@
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
         <Setter Property="Background" Value="{ThemeResource DatePickerButtonBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource DatePickerButtonForeground}" />
-        <Setter Property="BorderBrush" Value="{ThemeResource DatePickerButtonBorderBrush}" />
+
+        <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
+        <win:Setter Property="BorderBrush" Value="{ThemeResource DatePickerButtonBorderBrush}" />
+        <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+
         <Setter Property="BorderThickness" Value="{ThemeResource DatePickerBorderThemeThickness}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -192,9 +200,10 @@
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonForegroundPointerOver}" />
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                                                <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
+                                                                <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushPointerOver}" />
-                                                                </ObjectAnimationUsingKeyFrames>
+                                                                </win:ObjectAnimationUsingKeyFrames>
                                                             </Storyboard>
                                                         </VisualState>
 
@@ -209,6 +218,10 @@
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushPressed}" />
                                                                 </ObjectAnimationUsingKeyFrames>
+                                                                <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
+                                                                <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                                                </not_win:ObjectAnimationUsingKeyFrames>
                                                             </Storyboard>
                                                         </VisualState>
 
@@ -223,6 +236,10 @@
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushDisabled}" />
                                                                 </ObjectAnimationUsingKeyFrames>
+                                                                <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
+                                                                <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                                                </not_win:ObjectAnimationUsingKeyFrames>                                                                
                                                             </Storyboard>
                                                         </VisualState>
                                                     </VisualStateGroup>
@@ -244,6 +261,13 @@
                                                     AutomationProperties.AccessibilityView="Raw"
                                                     contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                                                     contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"/>
+                                                
+                                                <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
+                                                <not_win:Border x:Name="BottomBorderElement"                        
+                                                    BorderThickness="0,0,0,1"
+                                                    contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                                                    contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
+                                                    BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
                                             </Grid>
                                         </ControlTemplate>
                                     </Setter.Value>
