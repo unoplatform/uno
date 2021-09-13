@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//wf::Size presenterSize = { };
 			//ctl::ComPtr<PickerFlyoutThemeTransition> spTransitionAsPickerFlyoutThemeTransition;
 
-			//m_isPositionedForDateTimePicker = true;
+			m_isPositionedForDateTimePicker = true;
 
 			// **************************************************************************************
 			// UNO-FIX: Ensure the flyout stays in visible bounds

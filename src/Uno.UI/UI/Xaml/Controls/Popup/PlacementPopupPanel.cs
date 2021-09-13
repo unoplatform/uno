@@ -14,7 +14,12 @@ namespace Windows.UI.Xaml.Controls
 	/// This is a base popup panel to calculate the placement near an anchor control.
 	/// </summary>
 	/// <remarks>
-	/// This class exists mostly to reuse the same logic between a Flyout and a ToolTip
+	/// This class exists mostly to reuse the same logic between a Flyout and a ToolTip.
+	///
+	/// This class should eventually be removed, and Uno should match WinUI's approach, where Flyout sets Popup.HorizontalOffset and VerticalOffset
+	/// as well as Width and Height on FlyoutPresenter when it opens, and then allows the popup layouting to do its job.
+	///
+	/// See also remarks on <see cref="FlyoutBasePopupPanel"/>.
 	/// </remarks>
 	internal abstract partial class PlacementPopupPanel : PopupPanel
 	{
@@ -74,6 +79,10 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract FrameworkElement AnchorControl { get; }
 
+		protected abstract Point? PositionInAnchorControl { get; }
+
+		internal virtual FlyoutBase Flyout => null;
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			foreach (var child in Children)
@@ -86,6 +95,12 @@ namespace Windows.UI.Xaml.Controls
 				var desiredSize = elem.DesiredSize;
 				var maxSize = (elem as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
 				var rect = CalculateFlyoutPlacement(desiredSize, maxSize);
+
+				if (Flyout?.IsTargetPositionSet ?? false)
+				{
+					rect = Flyout.UpdateTargetPosition(ApplicationView.GetForCurrentView().VisibleBounds, desiredSize, rect);
+				}
+
 				elem.Arrange(rect);
 			}
 
@@ -232,12 +247,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Calculated placement, finalRect={finalRect}");
 			}
-
 			return finalRect;
 		}
 
 		// Return true if placement is along vertical axis, false otherwise.
-		protected static bool IsPlacementModeVertical(
+		private static bool IsPlacementModeVertical(
 			FlyoutBase.MajorPlacementMode placementMode)
 		{
 			// We are safe even if placementMode is Full. because the case for placementMode is Full has already been put in another if branch in function PerformPlacement.

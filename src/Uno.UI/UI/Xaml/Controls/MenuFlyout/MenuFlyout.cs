@@ -179,6 +179,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected override void OnClosed()
 		{
+			base.OnClosed();
+
 			CloseSubMenu();
 
 			AutomationPeer.RaiseEventIfListener(GetPresenter(), AutomationEvents.MenuClosed);
