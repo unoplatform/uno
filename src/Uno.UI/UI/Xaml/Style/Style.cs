@@ -67,9 +67,13 @@ namespace Windows.UI.Xaml
 #endif
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
-				foreach (var pair in flattenedSetters)
+
+				// This block is a manual enumeration to avoid the foreach pattern
+				// See https://github.com/dotnet/runtime/issues/56309 for details
+				var settersEnumerator = flattenedSetters.GetEnumerator();
+				while (settersEnumerator.MoveNext())
 				{
-					pair.Value(o);
+					settersEnumerator.Current.Value(o);
 				}
 
 				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
