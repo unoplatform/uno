@@ -11014,6 +11014,7 @@
                 <Setter Property="TabNavigation" Value="Once" />
                 <Setter Property="BringIntoViewOnFocusChange" Value="False" />
                 <Setter Property="Template" Value="{StaticResource ScrollViewerScrollBarlessTemplate}" />
+                <Setter Property="(uno:ScrollViewer.ShouldFallBackToNativeScrollBars)" Value="False" />
               </Style>
             </Border.Resources>
             <VisualStateManager.VisualStateGroups>
@@ -11056,6 +11057,11 @@
               <VisualStateGroup x:Name="DisplayModeStates">
                 <VisualState x:Name="Month" />
                 <VisualState x:Name="Year">
+                  <!--Begin: Uno only-->
+                  <VisualState.Setters>
+                    <Setter Target="YearViewScrollViewer.IsHitTestVisible" Value="True" />
+                  </VisualState.Setters>
+                  <!--End: Uno only-->
                   <Storyboard>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MonthViewScrollViewer" Storyboard.TargetProperty="IsEnabled">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="False" />
@@ -11066,9 +11072,19 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                     </ObjectAnimationUsingKeyFrames>
+                    <!--Begin: Uno only - We changed the default value to avoid flicker, make sure to set it to 1 even if transitions are disabled -->
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <!--End: Uno only-->
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Decade">
+                  <!--Begin: Uno only-->
+                  <VisualState.Setters>
+                    <Setter Target="DecadeViewScrollViewer.IsHitTestVisible" Value="True" />
+                  </VisualState.Setters>
+                  <!--End: Uno only-->
                   <Storyboard>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MonthViewScrollViewer" Storyboard.TargetProperty="IsEnabled">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="False" />
@@ -11079,6 +11095,11 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
                       <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                     </ObjectAnimationUsingKeyFrames>
+                    <!--Begin: Uno only - We changed the default value to avoid flicker, make sure to set it to 1 even if transitions are disabled -->
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Opacity">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <!--End: Uno only-->
                   </Storyboard>
                 </VisualState>
                 <VisualStateGroup.Transitions>
@@ -11095,6 +11116,10 @@
                         <DiscreteDoubleKeyFrame KeyTime="0:0:0.150" Value="0" />
                         <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
+                      <!--Uno only: Make sure to set visibility only AFTER opacity -->
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                      </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MonthViewTransform" Storyboard.TargetProperty="ScaleX">
                         <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0.84" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
@@ -11169,9 +11194,6 @@
                       <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
                         <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                       </ObjectAnimationUsingKeyFrames>
-                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
-                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
-                      </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
                         <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
@@ -11180,6 +11202,10 @@
                         <DiscreteDoubleKeyFrame KeyTime="0:0:0.150" Value="0" />
                         <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
+                      <!--Uno only: Make sure to set visibility only AFTER opacity -->
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
+                      </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewTransform" Storyboard.TargetProperty="ScaleX">
                         <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0.84" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
@@ -11271,9 +11297,9 @@
                 <Button x:Name="NextButton" Grid.Column="2" Content="&#xEDDC;" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="8" IsTabStop="True" Padding="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreContentAfter}" Style="{StaticResource NavigationButtonStyle}" />
               </Grid>
               <Grid x:Name="Views" Grid.Row="1">
-                <Grid.Clip>
-                  <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ClipRect}" />
-                </Grid.Clip>
+                <!--<Grid.Clip>
+                                    <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ClipRect}" />
+                                </Grid.Clip>-->
                 <Border x:Name="BackgroundLayer" Background="{TemplateBinding BorderBrush}">
                   <Border.RenderTransform>
                     <ScaleTransform x:Name="BackgroundTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
@@ -11309,13 +11335,15 @@
                     <CalendarPanel x:Name="MonthViewPanel" />
                   </ScrollViewer>
                 </Grid>
-                <ScrollViewer x:Name="YearViewScrollViewer" UseLayoutRounding="False" Visibility="Collapsed" IsFocusEngagementEnabled="True" Style="{StaticResource ScrollViewerStyle}">
+                <!-- Uno only: Opacity set to 0 to avoid flicker when changing display mode -->
+                <ScrollViewer x:Name="YearViewScrollViewer" UseLayoutRounding="False" Opacity="0" Visibility="Collapsed" IsFocusEngagementEnabled="True" Style="{StaticResource ScrollViewerStyle}">
                   <ScrollViewer.RenderTransform>
                     <ScaleTransform x:Name="YearViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                   </ScrollViewer.RenderTransform>
                   <CalendarPanel x:Name="YearViewPanel" />
                 </ScrollViewer>
-                <ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" IsFocusEngagementEnabled="True" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
+                <!-- Uno only: Opacity set to 0 to avoid flicker when changing display mode -->
+                <ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" Opacity="0" IsFocusEngagementEnabled="True" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
                   <ScrollViewer.RenderTransform>
                     <ScaleTransform x:Name="DecadeViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                   </ScrollViewer.RenderTransform>
@@ -11332,7 +11360,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="CalendarView">
-          <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+          <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
             <Border.Resources>
               <Style TargetType="TextBlock" x:Key="WeekDayNameStyle" BasedOn="{StaticResource CaptionTextBlockStyle}">
                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -11344,29 +11372,46 @@
                 <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
                 <Setter Property="FontSize" Value="20" />
                 <Setter Property="Background" Value="{ThemeResource CalendarViewNavigationButtonBackground}" />
-                <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
+                <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
+                <contract7Present:Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+                <Setter Property="FocusVisualMargin" Value="2,2,2,0" />
                 <Setter Property="Template">
                   <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                      <ContentPresenter x:Name="Text" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{ThemeResource CalendarViewNavigationButtonBorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" automation:AutomationProperties.AccessibilityView="Raw">
+                      <Border x:Name="RootBorder" Background="{TemplateBinding Background}" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{ThemeResource CalendarViewNavigationButtonBorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" AutomationProperties.AccessibilityView="Raw" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{StaticResource ControlCornerRadius}">
                         <VisualStateManager.VisualStateGroups>
                           <VisualStateGroup x:Name="CommonStates">
                             <VisualState x:Name="Normal" />
                             <VisualState x:Name="PointerOver">
                               <VisualState.Setters>
-                                <Setter Target="Text.BorderBrush" Value="{ThemeResource CalendarViewNavigationButtonBorderBrushPointerOver}" />
-                                <Setter Target="Text.Foreground" Value="{ThemeResource CalendarViewNavigationButtonForegroundPointerOver}" />
+                                <Setter Target="RootBorder.BorderBrush" Value="{ThemeResource CalendarViewNavigationButtonBorderBrushPointerOver}" />
+                                <Setter Target="Content.Foreground" Value="{ThemeResource CalendarViewNavigationButtonForegroundPointerOver}" />
                               </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Pressed">
                               <VisualState.Setters>
-                                <Setter Target="Text.Foreground" Value="{ThemeResource CalendarViewNavigationButtonForegroundPressed}" />
+                                <Setter Target="Content.Foreground" Value="{ThemeResource CalendarViewNavigationButtonForegroundPressed}" />
                               </VisualState.Setters>
+                              <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX">
+                                  <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource CalendarViewNavigationButtonScalePressed}" />
+                                  <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource CalendarViewNavigationButtonScalePressed}" />
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY">
+                                  <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource CalendarViewNavigationButtonScalePressed}" />
+                                  <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource CalendarViewNavigationButtonScalePressed}" />
+                                </DoubleAnimationUsingKeyFrames>
+                              </Storyboard>
                             </VisualState>
                             <VisualState x:Name="Disabled" />
                           </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                      </ContentPresenter>
+                        <TextBlock x:Name="Content" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Text="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RenderTransformOrigin="0.5, 0.5">
+                          <TextBlock.RenderTransform>
+                            <ScaleTransform x:Name="ScaleTransform" ScaleY="1" ScaleX="1" />
+                          </TextBlock.RenderTransform>
+                        </TextBlock>
+                      </Border>
                     </ControlTemplate>
                   </Setter.Value>
                 </Setter>
@@ -11470,13 +11515,16 @@
                 <VisualStateGroup.Transitions>
                   <VisualTransition From="Month" To="Year">
                     <Storyboard>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                      </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MonthView" Storyboard.TargetProperty="Opacity">
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0" KeySpline="0.1,0.9,0.2,1" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
                         <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
-                        <DiscreteDoubleKeyFrame KeyTime="0:0:0.233" Value="0" />
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.1,0.9,0.2,1" />
+                        <DiscreteDoubleKeyFrame KeyTime="0:0:0.150" Value="0" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                       <!--Uno only: Make sure to set visibility only AFTER opacity -->
                       <ObjectAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Visibility">
@@ -11484,8 +11532,8 @@
                       </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="BackgroundLayer" Storyboard.TargetProperty="Opacity">
                         <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
-                        <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0" />
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.15,0.64,0.25,1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:0.200" Value="0" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                   </VisualTransition>
@@ -11498,17 +11546,17 @@
                         <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                       </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0" KeySpline="0.1,0.9,0.2,1" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MonthView" Storyboard.TargetProperty="Opacity">
                         <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
-                        <DiscreteDoubleKeyFrame KeyTime="0:0:0.233" Value="0" />
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.1,0.9,0.2,1" />
+                        <DiscreteDoubleKeyFrame KeyTime="0:0:0.150" Value="0" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="BackgroundLayer" Storyboard.TargetProperty="Opacity">
                         <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
-                        <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0" />
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.15,0.64,0.25,1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:0.200" Value="0" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                   </VisualTransition>
@@ -11521,12 +11569,12 @@
                         <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
                       </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0" KeySpline="0.1,0.9,0.2,1" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Opacity">
                         <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
-                        <DiscreteDoubleKeyFrame KeyTime="0:0:0.233" Value="0" />
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.1,0.9,0.2,1" />
+                        <DiscreteDoubleKeyFrame KeyTime="0:0:0.150" Value="0" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                       <!--Uno only: Make sure to set visibility only AFTER opacity -->
                       <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Visibility">
@@ -11534,8 +11582,8 @@
                       </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="BackgroundLayer" Storyboard.TargetProperty="Opacity">
                         <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
-                        <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0" />
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.15,0.64,0.25,1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:0.200" Value="0" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                   </VisualTransition>
@@ -11554,17 +11602,17 @@
                         <DiscreteObjectKeyFrame KeyTime="0" Value="False" />
                       </ObjectAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="DecadeViewScrollViewer" Storyboard.TargetProperty="Opacity">
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.233" Value="0" KeySpline="0.1,0.9,0.2,1" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.150" Value="0" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="YearViewScrollViewer" Storyboard.TargetProperty="Opacity">
                         <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
-                        <DiscreteDoubleKeyFrame KeyTime="0:0:0.233" Value="0" />
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.1,0.9,0.2,1" />
+                        <DiscreteDoubleKeyFrame KeyTime="0:0:0.150" Value="0" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="BackgroundLayer" Storyboard.TargetProperty="Opacity">
                         <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
-                        <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0" />
-                        <SplineDoubleKeyFrame KeyTime="0:0:0.733" Value="1" KeySpline="0.15,0.64,0.25,1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:0.200" Value="0" />
+                        <SplineDoubleKeyFrame KeyTime="0:0:0.500" Value="1" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" />
                       </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                   </VisualTransition>
@@ -11583,8 +11631,8 @@
                   <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button x:Name="HeaderButton" Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HeaderText}" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreViews}" Style="{StaticResource NavigationButtonStyle}" Foreground="{TemplateBinding Foreground}" Padding="12,0,0,0" HorizontalContentAlignment="Left" />
-                <Button x:Name="PreviousButton" Grid.Column="1" Content="&#xE0E4;" FontFamily="{ThemeResource SymbolThemeFontFamily}" IsTabStop="True" Padding="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreContentBefore}" Style="{StaticResource NavigationButtonStyle}" />
-                <Button x:Name="NextButton" Grid.Column="2" Content="&#xE0E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" IsTabStop="True" Padding="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreContentAfter}" Style="{StaticResource NavigationButtonStyle}" />
+                <Button x:Name="PreviousButton" Grid.Column="1" Content="&#xEDDB;" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="8" IsTabStop="True" Padding="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreContentBefore}" Style="{StaticResource NavigationButtonStyle}" />
+                <Button x:Name="NextButton" Grid.Column="2" Content="&#xEDDC;" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="8" IsTabStop="True" Padding="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.HasMoreContentAfter}" Style="{StaticResource NavigationButtonStyle}" />
               </Grid>
               <Grid x:Name="Views" Grid.Row="1">
                 <!--<Grid.Clip>
@@ -11633,7 +11681,7 @@
                   <CalendarPanel x:Name="YearViewPanel" />
                 </ScrollViewer>
                 <!-- Uno only: Opacity set to 0 to avoid flicker when changing display mode -->
-                <ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" IsFocusEngagementEnabled="True" Opacity="0" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
+                <ScrollViewer x:Name="DecadeViewScrollViewer" UseLayoutRounding="False" Opacity="0" IsFocusEngagementEnabled="True" Visibility="Collapsed" Style="{StaticResource ScrollViewerStyle}">
                   <ScrollViewer.RenderTransform>
                     <ScaleTransform x:Name="DecadeViewTransform" CenterX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterX}" CenterY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CenterY}" />
                   </ScrollViewer.RenderTransform>
