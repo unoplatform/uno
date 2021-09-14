@@ -3,7 +3,7 @@
 > This section is covering **preview** relases of .NET 6 and Visual Studio 2022. It is a work in progress.
 
 ## Prerequisites
-* [**Visual Studio 2022 Preview 2 or later**](https://visualstudio.microsoft.com/), with:
+* [**Visual Studio 2022 Preview 3.1 or later**](https://visualstudio.microsoft.com/), with:
     * **Universal Windows Platform** workload installed.
 
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
@@ -11,13 +11,13 @@
 	* **Mobile development with .NET (Xamarin)** workload installed.
 
     ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
-
+    * Starting from VS 2022 Preview 4, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android/iOS workloads)
     *
         * the iOS Remote Simulator installed (for iOS development)
 	    * A working Mac with Visual Studio for Mac, XCode 13.5 Beta or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 (for WASM development)
+    * **ASP**.**NET and web** workload installed, along with .NET Core 5.0 (for WASM development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
 
@@ -26,9 +26,9 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 ## Finalize your environment setup using uno-check
 * Install the uno-check tool:
    ```
-   dotnet tool install -g Uno.Check --version 0.2.0-dev.166
+   dotnet tool install -g Uno.Check --version 0.2.0-dev.327
    ```
-   If a [later version is available](https://www.nuget.org/packages/Uno.Check), you can use it instead of 0.2.0-dev.166
+   If a [later version is available](https://www.nuget.org/packages/Uno.Check), you can use it instead of 0.2.0-dev.327
 * Run the uno-check tool:
    ```
    uno-check --preview

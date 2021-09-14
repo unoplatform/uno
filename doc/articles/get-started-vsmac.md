@@ -53,9 +53,14 @@ Once created, you can open it using the Visual Studio IDE.
 Building for WebAssembly takes a few more steps:
 
 1. Set `MyProject.Wasm` to startup project
-2. Build the project
-3. In the terminal, navigate to your build output. This will typically be: `MyProject.Wasm > bin > Debug > netstandard2.0 > dist > server.py` Run the `server.py` program.
-4. In your browser, open localhost:8000. 
+1. Build the project
+1. In the terminal, navigate to your build output path. This will typically be: `MyProject.Wasm > bin > Debug > net5.0 > dist`
+1. Install `dotnet serve`:
+    ```
+    dotnet tool install -g dotnet-serve
+    ```
+1. Once installed type `dotnet serve`.
+1. Navigate to the url presented by the tool to run your application
 
 ### Video Tutorial
 [![Getting Started Visual Studio Mac Video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
