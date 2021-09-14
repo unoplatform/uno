@@ -72,12 +72,12 @@ namespace Uno.Media
 		/// <exception cref="ArgumentNullException">geometryContext</exception>
 		public PathMarkupParser(StreamGeometryContext context) // Uno specific: Use StreamGeomoetryContext instead of IGeometryContext.
 		{
-			if (geometryContext == null)
+			if (context == null)
 			{
-				throw new ArgumentNullException(nameof(geometryContext));
+				throw new ArgumentNullException(nameof(context));
 			}
 
-			_geometryContext = geometryContext;
+			_geometryContext = context;
 		}
 
 		private enum Command
@@ -129,7 +129,7 @@ namespace Uno.Media
 		/// <param name="s">The path data.</param>
 		public void Parse(string s, ref FillRule fillRule) // Uno specific: FillRule parameter.
 		{
-			var span = pathData.AsSpan();
+			var span = s.AsSpan();
 			_currentPoint = new Point();
 
 			while (!span.IsEmpty)
