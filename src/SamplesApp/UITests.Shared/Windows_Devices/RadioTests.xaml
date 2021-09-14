@@ -31,9 +31,9 @@
 		                            <ColumnDefinition />
 		                        </Grid.ColumnDefinitions>
 	
-					<TextBlock Grid.Row="0" Text="{Binding Name, Mode=OneWay }" />
-					<TextBlock Grid.Row="1" Text="{Binding Kind, Mode=OneWay }" />
-					<TextBlock Grid.Row="2" Text="{Binding State, Mode=OneWay }" />
+					<TextBlock Grid.Column="0" Text="{Binding Name, Mode=OneWay }" />
+					<TextBlock Grid.Column="1" Text="{Binding Kind, Mode=OneWay }" />
+					<TextBlock Grid.Column="2" Text="{Binding State, Mode=OneWay }" />
 
 
 	                        </Grid>
