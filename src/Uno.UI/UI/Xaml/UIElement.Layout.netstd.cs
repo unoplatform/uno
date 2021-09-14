@@ -211,7 +211,6 @@ namespace Windows.UI.Xaml
 
 		partial void HideVisual();
 		partial void ShowVisual();
-
 		
 
 		internal virtual void ArrangeCore(Rect finalRect)
@@ -227,17 +226,7 @@ namespace Windows.UI.Xaml
 				Debug.Assert(value.Width >= 0, "Invalid width");
 				Debug.Assert(value.Height >= 0, "Invalid height");
 
-				var previousSize = _size;
 				_size = value;
-
-				if (_size != previousSize)
-				{
-					if (this is FrameworkElement frameworkElement)
-					{
-						frameworkElement.SetActualSize(_size);
-						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
-					}
-				}
 			}
 		}
 	}

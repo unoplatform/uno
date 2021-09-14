@@ -259,11 +259,15 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				var renderSize = ArrangeOverride(arrangeSize);
+				var actualSize = ArrangeOverride(arrangeSize);
+
+				// The ActualSide (ActualWidth/ActualHeight) is the return value of the ArrangeOverride()
+				// while the RenderSize is the constrained version.
+				Panel.AssignedActualSize = actualSize;
 
 				if (_elementAsUIElement != null)
 				{
-					_elementAsUIElement.RenderSize = renderSize.AtMost(maxSize);
+					_elementAsUIElement.RenderSize = actualSize.AtMost(maxSize);
 					_elementAsUIElement.NeedsClipToSlot = needsClipToSlot;
 					_elementAsUIElement.ApplyClip();
 

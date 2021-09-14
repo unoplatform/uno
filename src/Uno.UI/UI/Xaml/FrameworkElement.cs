@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml
 	{
 		public static class TraceProvider
 		{
-			public readonly static Guid Id = Guid.Parse("{DDDCCA61-5CB7-4585-95D7-58C5528AABE6}");
+			public static readonly Guid Id = Guid.Parse("{DDDCCA61-5CB7-4585-95D7-58C5528AABE6}");
 
 			public const int FrameworkElement_MeasureStart = 1;
 			public const int FrameworkElement_MeasureStop = 2;
@@ -1011,5 +1011,26 @@ namespace Windows.UI.Xaml
 			protected override Size MeasureOverride(Size availableSize) => _measureOverrideHandler(availableSize);
 		}
 #endif
+
+		Size IFrameworkElement.AssignedActualSize
+		{
+			get => base.AssignedActualSize;
+			set
+			{
+				var previousSize = base.AssignedActualSize;
+				if (previousSize != value)
+				{
+					base.AssignedActualSize = value;
+
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, value));
+
+					if (_renderTransform != null)
+					{
+						// This will set the updated Transform
+						_renderTransform.UpdateSize(value);
+					}
+				}
+			}
+		}
 	}
 }

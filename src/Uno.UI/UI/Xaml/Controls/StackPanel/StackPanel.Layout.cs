@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 						desiredSize.Width += spacing;
 					}
 				}
-				else
+				else // Vertical
 				{
 					desiredSize.Width = Math.Max(desiredSize.Width, measuredSize.Width);
 					desiredSize.Height += measuredSize.Height;
@@ -115,6 +115,10 @@ namespace Windows.UI.Xaml.Controls
 				snapPoints.RemoveAt(count);
 			}
 
+			var arrangedSize = isHorizontal
+				? new Size(0, arrangeSize.Height)
+				: new Size(arrangeSize.Width, 0);
+
 			for (var i = 0; i < count; i++)
 			{
 				var view = Children[i];
@@ -137,8 +141,9 @@ namespace Windows.UI.Xaml.Controls
 					var snapPoint = (float)childRectangle.Right;
 					snapPointsChanged |= snapPoints[i] == snapPoint;
 					snapPoints[i] = snapPoint;
+
 				}
-				else
+				else // Vertical
 				{
 					childRectangle.Y += previousChildSize;
 
@@ -159,9 +164,20 @@ namespace Windows.UI.Xaml.Controls
 				var adjustedRectangle = childRectangle;
 
 				ArrangeElement(view, adjustedRectangle);
-			}
 
-			var finalSizeWithBorderAndPadding = arrangeSize.Add(borderAndPaddingSize);
+				var viewActualSize = view.AssignedActualSize; // TODO universal actual size
+
+				if (isHorizontal)
+				{
+					arrangedSize.Height = Math.Max(arrangedSize.Height, viewActualSize.Height);
+					arrangedSize.Width += viewActualSize.Width;
+				}
+				else
+				{
+					arrangedSize.Width = Math.Max(arrangedSize.Width, viewActualSize.Width);
+					arrangedSize.Height += viewActualSize.Height;
+				}
+			}
 
 			if(snapPointsChanged)
 			{
@@ -175,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			return finalSizeWithBorderAndPadding;
+			return arrangedSize;
 		}
 	}
 }

@@ -233,6 +233,7 @@ namespace Windows.UI.Xaml
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
 
 			RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize;
+			SetActualSize(innerInkSize);
 
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 

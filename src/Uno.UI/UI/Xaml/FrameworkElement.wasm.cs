@@ -118,14 +118,19 @@ namespace Windows.UI.Xaml
 
 		public event SizeChangedEventHandler SizeChanged;
 
-		internal void RaiseSizeChanged(SizeChangedEventArgs args)
+		internal void RaiseSizeChanged(Size previous, Size newSize)
 		{
-			SizeChanged?.Invoke(this, args);
-			_renderTransform?.UpdateSize(args.NewSize);
+			SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previous, newSize));
+			_renderTransform?.UpdateSize(newSize);
 		}
 
 		internal void SetActualSize(Size size)
-			=> AssignedActualSize = size;
+		{
+			var previousSize = AssignedActualSize;
+			AssignedActualSize = size;
+
+			RaiseSizeChanged(previousSize, size);
+		}
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 

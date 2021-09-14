@@ -64,6 +64,8 @@ namespace Windows.UI.Xaml
 		event EventHandler<object> LayoutUpdated;
 		event SizeChangedEventHandler SizeChanged;
 
+		Size AssignedActualSize { get; set; }
+
 		object FindName(string name);
 
 		DependencyObject Parent { get; }
