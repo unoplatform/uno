@@ -1012,6 +1012,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		#endregion
 		public async Task When_PaddedElementBiggerThanParent_Then_LayoutSlot(HorizontalAlignment hAlign, VerticalAlignment vAlign, int border, int margin)
 		{
+#if __SKIA__
+			if (margin > 0)
+			{
+				Assert.Inconclusive("Margin are not supported by SV https://github.com/unoplatform/uno/issues/7000");
+				return;
+			}
+#endif
+
 			Border sut;
 			var root = new Border
 			{
@@ -1314,6 +1322,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			bool canHorizontallyScroll,
 			bool canVerticallyScroll)
 		{
+#if __SKIA__
+			if (margin > 0)
+			{
+				Assert.Inconclusive("Margin are not supported by SV https://github.com/unoplatform/uno/issues/7000");
+				return;
+			}
+#endif
+
 			Border sut;
 			var root = new ScrollViewer
 			{

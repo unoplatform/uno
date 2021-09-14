@@ -351,7 +351,7 @@ namespace Uno.UI.Samples.Tests
 					consoleOutput.IsChecked = config.IsConsoleOutputEnabled;
 					runIgnored.IsChecked = config.IsRunningIgnored;
 					retry.IsChecked = config.Attempts > 1;
-					testFilter.Text = string.Join(';', config.Filters);
+					testFilter.Text = string.Join(";", config.Filters);
 				}
 				catch (Exception e)
 				{
