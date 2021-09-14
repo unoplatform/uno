@@ -18765,7 +18765,8 @@
               <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
                 <Rectangle x:Name="SelectionIndicator" Width="{ThemeResource NavigationViewSelectionIndicatorWidth}" Height="{ThemeResource NavigationViewSelectionIndicatorHeight}" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0.0" contract7Present:RadiusX="{ThemeResource NavigationViewSelectionIndicatorRadius}" contract7Present:RadiusY="{ThemeResource NavigationViewSelectionIndicatorRadius}" />
               </Grid>
-              <Grid x:Name="ContentGrid" MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}" Margin="0,0,14,0" HorizontalAlignment="Stretch">
+              <!--Uno workaround: removed Margin="0,0,14,0" from ContentGrid, because it causes icons to be cut off in compact mode https://github.com/unoplatform/uno/issues/7049-->
+              <Grid x:Name="ContentGrid" MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="Auto" />
                   <ColumnDefinition Width="*" />
