@@ -1,7 +1,9 @@
-﻿using System;
+﻿#if !NETFX_CORE // Disabled on UWP for now because 17763 doesn't support WinUI 2.x
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -10,6 +12,8 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 {
@@ -17,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 	[RunsOnUIThread]
 	public class Given_ObjectAnimationUsingKeyFrames
 	{
-#if !NETFX_CORE // Disabled on UWP for now because 17763 doesn't support WinUI 2.x
+
 		[TestMethod]
 		public async Task When_Theme_Changed_Animated_Value()
 		{
@@ -42,7 +46,235 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				}
 			}
 		}
-#endif
+
+		[TestMethod]
+		public async Task When_Animate()
+		{
+			var ct = CancellationToken.None; // Not supported yet by test engine
+
+			object v1, v2, v3;
+			var target = new AnimTarget();
+			var sut = new ObjectAnimationUsingKeyFrames
+			{
+				BeginTime = TimeSpan.Zero,
+				RepeatBehavior = new RepeatBehavior(),
+				KeyFrames =
+				{
+					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+				}
+			};
+
+			Storyboard.SetTarget(sut, target);
+			Storyboard.SetTargetProperty(sut, nameof(target.Value));
+
+			((ITimeline)sut).Begin();
+			await target.GetValue(ct, 3);
+			await Task.Yield();
+
+			target.History.Should().BeEquivalentTo(v1, v2, v3);
+			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+		}
+
+		[TestMethod]
+		public async Task When_Stop()
+		{
+			var ct = CancellationToken.None; // Not supported yet by test engine
+
+			object v1, v2, v3;
+			var target = new AnimTarget();
+			var sut = new ObjectAnimationUsingKeyFrames
+			{
+				BeginTime = TimeSpan.Zero,
+				RepeatBehavior = new RepeatBehavior(),
+				KeyFrames =
+				{
+					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(10), Value = v3 = new object()},
+				}
+			};
+
+			Storyboard.SetTarget(sut, target);
+			Storyboard.SetTargetProperty(sut, nameof(target.Value));
+
+			((ITimeline)sut).Begin();
+			await target.GetValue(ct, 2);
+			await Task.Yield();
+			((ITimeline)sut).Stop();
+			await Task.Delay(100, ct);
+
+			target.History.Should().BeEquivalentTo(v1, v2);
+			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+		}
+
+		[TestMethod]
+		public async Task When_PauseResume()
+		{
+			var ct = CancellationToken.None; // Not supported yet by test engine
+
+			object v1, v2, v3;
+			var target = new AnimTarget();
+			var sut = new ObjectAnimationUsingKeyFrames
+			{
+				BeginTime = TimeSpan.Zero,
+				RepeatBehavior = new RepeatBehavior(),
+				KeyFrames =
+				{
+					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(10), Value = v3 = new object()},
+				}
+			};
+
+			Storyboard.SetTarget(sut, target);
+			Storyboard.SetTargetProperty(sut, nameof(target.Value));
+
+			((ITimeline)sut).Begin();
+			await target.GetValue(ct, 2);
+			await Task.Yield();
+			((ITimeline)sut).Pause();
+
+			await Task.Delay(100, ct);
+			target.History.Should().BeEquivalentTo(v1, v2);
+			sut.State.Should().Be(Timeline.TimelineState.Paused);
+
+			((ITimeline)sut).Resume();
+			await target.GetValue(ct, 2);
+			await Task.Yield();
+
+			target.History.Should().BeEquivalentTo(v1, v2, v3);
+			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+		}
+
+		[TestMethod]
+		public async Task When_RepeatCount()
+		{
+			var ct = CancellationToken.None; // Not supported yet by test engine
+
+			object v1, v2, v3;
+			var target = new AnimTarget();
+			var sut = new ObjectAnimationUsingKeyFrames
+			{
+				BeginTime = TimeSpan.Zero,
+				RepeatBehavior = new RepeatBehavior(3),
+				KeyFrames =
+				{
+					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+				}
+			};
+
+			Storyboard.SetTarget(sut, target);
+			Storyboard.SetTargetProperty(sut, nameof(target.Value));
+
+			((ITimeline)sut).Begin();
+			await target.GetValue(ct, 9);
+			await Task.Yield();
+
+			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+		}
+
+		[TestMethod]
+		public async Task When_RepeatDuration()
+		{
+			var ct = CancellationToken.None; // Not supported yet by test engine
+
+			object v1, v2, v3;
+			var target = new AnimTarget();
+			var sut = new ObjectAnimationUsingKeyFrames
+			{
+				BeginTime = TimeSpan.Zero,
+				RepeatBehavior = new RepeatBehavior(TimeSpan.FromMilliseconds(2 * 3)),
+				KeyFrames =
+				{
+					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+				}
+			};
+
+			Storyboard.SetTarget(sut, target);
+			Storyboard.SetTargetProperty(sut, nameof(target.Value));
+
+			((ITimeline)sut).Begin();
+			await target.GetValue(ct, 9);
+			await Task.Yield();
+
+			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+		}
+
+		[TestMethod]
+		public async Task When_RepeatForever()
+		{
+			var ct = CancellationToken.None; // Not supported yet by test engine
+
+			object v1, v2, v3;
+			var target = new AnimTarget();
+			var sut = new ObjectAnimationUsingKeyFrames
+			{
+				BeginTime = TimeSpan.Zero,
+				RepeatBehavior = RepeatBehavior.Forever,
+				KeyFrames =
+				{
+					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+				}
+			};
+
+			Storyboard.SetTarget(sut, target);
+			Storyboard.SetTargetProperty(sut, nameof(target.Value));
+
+			((ITimeline)sut).Begin();
+			await target.GetValue(ct, 9);
+			await Task.Yield();
+
+			try
+			{
+				target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+				sut.State.Should().Be(Timeline.TimelineState.Active);
+			}
+			finally
+			{
+				((ITimeline)sut).Begin();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_BeginTime()
+		{
+			var ct = CancellationToken.None; // Not supported yet by test engine
+
+			object v1, v2, v3;
+			var target = new AnimTarget();
+			var sut = new ObjectAnimationUsingKeyFrames
+			{
+				BeginTime = TimeSpan.FromMilliseconds(10),
+				RepeatBehavior = new RepeatBehavior(),
+				KeyFrames =
+				{
+					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+				}
+			};
+
+			Storyboard.SetTarget(sut, target);
+			Storyboard.SetTargetProperty(sut, nameof(target.Value));
+
+			((ITimeline)sut).Begin();
+			await Task.Delay(5, ct);
+			((ITimeline)sut).Stop();
+
+			target.History.Should().BeEquivalentTo(/* empty */);
+			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+		}
+
 
 		/// <summary>
 		/// Ensure dark theme is applied for the course of a single test.
@@ -57,6 +289,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 #endif
 	}
 
+	public partial class AnimTarget : DependencyObject
+	{
+		private event EventHandler _valuedAdded;
+		private object _value;
+
+		public object Value
+		{
+			get => _value;
+			set
+			{
+				_value = value;
+				History.Add(value);
+				_valuedAdded?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		public List<object> History { get; } = new List<object>();
+
+		public async Task<object> GetValue(CancellationToken ct, int count, TimeSpan? timeout = null)
+		{
+			var cts = CancellationTokenSource.CreateLinkedTokenSource(
+				ct,
+				new CancellationTokenSource(timeout ?? TimeSpan.FromSeconds(1)).Token);
+			var tcs = new TaskCompletionSource<object>(TaskCreationOptions.AttachedToParent);
+
+			using var _ = cts.Token.Register(() => tcs.TrySetCanceled());
+			try
+			{
+				_valuedAdded += OnValueAdded;
+				return await tcs.Task;
+			}
+			finally
+			{
+				_valuedAdded -= OnValueAdded;
+			}
+
+			void OnValueAdded(object snd, EventArgs eventArgs)
+			{
+				if (History.Count > count)
+				{
+					tcs.TrySetResult(History[count - 1]);
+				}
+			}
+		}
+	}
+
 	public partial class MyCheckBox : CheckBox
 	{
 		public ContentPresenter ContentPresenter { get; set; }
@@ -67,3 +345,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 	}
 }
+#endif
