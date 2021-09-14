@@ -133,7 +133,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 			var targetNullValueSource = SUT.TargetNullValueIsApplied.Source as BitmapImage;
+#if __WASM__ // Wasm doesn't align with UWP currently.
+			Assert.AreEqual("Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
+#else
 			Assert.AreEqual("ms-appx:///Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
+#endif
 		}
 	}
 }
