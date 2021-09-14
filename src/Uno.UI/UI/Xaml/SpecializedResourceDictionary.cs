@@ -31,6 +31,7 @@ namespace Windows.UI.Xaml
 		public readonly struct ResourceKey
 		{
 			public readonly string Key;
+			public readonly Type TypeKey;
 			public readonly bool IsType;
 			public readonly uint HashCode;
 
@@ -41,6 +42,7 @@ namespace Windows.UI.Xaml
 			private ResourceKey(bool dummy)
 			{
 				Key = null;
+				TypeKey = null;
 				IsType = false;
 				HashCode = 0;
 			}
@@ -54,12 +56,14 @@ namespace Windows.UI.Xaml
 				if (key is string s)
 				{
 					Key = s;
+					TypeKey = null;
 					IsType = false;
 					HashCode = (uint)(s.GetHashCode() ^ IsType.GetHashCode());
 				}
 				else if (key is Type t)
 				{
 					Key = t.ToString();
+					TypeKey = t;
 					IsType = true;
 					HashCode = (uint)(t.GetHashCode() ^ IsType.GetHashCode());
 				}
@@ -72,6 +76,7 @@ namespace Windows.UI.Xaml
 				else
 				{
 					Key = key.ToString();
+					TypeKey = null;
 					IsType = false;
 					HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
 				}
@@ -84,6 +89,7 @@ namespace Windows.UI.Xaml
 			public ResourceKey(string key)
 			{
 				Key = key;
+				TypeKey = null;
 				IsType = false;
 				HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
 			}
@@ -95,6 +101,7 @@ namespace Windows.UI.Xaml
 			public ResourceKey(Type key)
 			{
 				Key = key.ToString();
+				TypeKey = key;
 				IsType = true;
 				HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
 			}

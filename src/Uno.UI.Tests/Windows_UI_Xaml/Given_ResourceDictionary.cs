@@ -47,6 +47,35 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Simple_Add_And_Retrieve_Type_Key()
+		{
+			var rd = new ResourceDictionary();
+
+			// NOTE: Intentionally using a type outside of Uno.UI to prevent regressions if someone thought to use Type.GetType.
+			// See: https://stackoverflow.com/a/1825156/5108631
+			// Type.GetType(...) only works when the type is found in either mscorlib.dll or the currently executing assembly.
+			rd[typeof(Given_ResourceDictionary)] = nameof(When_Simple_Add_And_Retrieve_Type_Key);
+
+			var retrieved = rd[typeof(Given_ResourceDictionary)];
+
+			Assert.IsTrue(rd.ContainsKey(typeof(Given_ResourceDictionary)));
+			Assert.IsFalse(rd.ContainsKey("Uno.UI.Tests.Windows_UI_Xaml.Given_ResourceDictionary"));
+
+			Assert.AreEqual(nameof(When_Simple_Add_And_Retrieve_Type_Key), retrieved);
+
+			rd.TryGetValue(typeof(Given_ResourceDictionary), out var retrieved2);
+			Assert.AreEqual(nameof(When_Simple_Add_And_Retrieve_Type_Key), retrieved2);
+
+			var key = rd.Keys.Single();
+			Assert.AreEqual(typeof(Given_ResourceDictionary), key);
+
+			foreach (var kvp in rd)
+			{
+				Assert.AreEqual(typeof(Given_ResourceDictionary), kvp.Key);
+			}
+		}
+
+		[TestMethod]
 		public void When_Key_Not_Present()
 		{
 			var rd = new ResourceDictionary();

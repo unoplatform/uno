@@ -387,10 +387,10 @@ namespace Windows.UI.Xaml
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys
-			=> _values.Keys.Select(k => ConvertKey(k.Key)).ToList();
+			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 
 		private static object ConvertKey(ResourceKey resourceKey)
-			=> resourceKey.IsType ? Type.GetType(resourceKey.Key) : (object)resourceKey.Key;
+			=> resourceKey.IsType ? resourceKey.TypeKey : (object)resourceKey.Key;
 
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
@@ -442,11 +442,11 @@ namespace Windows.UI.Xaml
 				var aliased = kvp.Value;
 				if (TryResolveAlias(ref aliased))
 				{
-					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), aliased);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), aliased);
 				}
 				else
 				{
-					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), kvp.Value);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), kvp.Value);
 				}
 			}
 		}
