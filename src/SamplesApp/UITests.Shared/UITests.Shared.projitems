@@ -493,6 +493,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_System\MemoryManagerTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4649,6 +4653,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\LauncherTests.xaml.cs">
       <DependentUpon>LauncherTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_System\MemoryManagerTests.xaml.cs">
+      <DependentUpon>MemoryManagerTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml.cs">
       <DependentUpon>PowerManager.xaml</DependentUpon>
