@@ -14,12 +14,14 @@ namespace UnoSolutionTemplate.Wizard
 	{
 		private const string ProjectKinds_vsProjectKindSolutionFolder = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
 		private readonly bool _enableNuGetConfig;
+		private readonly string _vsSuffix;
 		private string? _targetPath;
 		private DTE2? _dte;
 
-		public UnoSolutionWizard(bool enableNuGetConfig)
+		public UnoSolutionWizard(bool enableNuGetConfig, string vsSuffix)
 		{
 			_enableNuGetConfig = enableNuGetConfig;
+			_vsSuffix = vsSuffix;
 		}
 
 		public void BeforeOpeningFile(ProjectItem projectItem)
@@ -40,7 +42,7 @@ namespace UnoSolutionTemplate.Wizard
 
 			if (!File.Exists(vsConfigPath))
 			{
-				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}..vsconfig"));
+				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}..vsconfig.{_vsSuffix}"));
 				File.WriteAllText(vsConfigPath, reader.ReadToEnd());
 			}
 

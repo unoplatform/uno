@@ -5,7 +5,7 @@ namespace UnoSolutionTemplate.Wizard
 {
 	public class XamarinUnoSolutionWizard : UnoSolutionWizard
 	{
-		public XamarinUnoSolutionWizard() : base(enableNuGetConfig: false)
+		public XamarinUnoSolutionWizard() : base(enableNuGetConfig: false, vsSuffix: "vs16")
 		{
 
 		}
