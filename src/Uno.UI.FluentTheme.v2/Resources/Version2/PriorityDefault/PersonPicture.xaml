@@ -2,7 +2,11 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Microsoft.UI.Xaml.Controls">
+    xmlns:local="using:Microsoft.UI.Xaml.Controls"
+    xmlns:wasm="http://uno.ui/wasm"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d wasm">
 
     <Style TargetType="local:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
 
@@ -24,6 +28,10 @@
                                 <VisualState x:Name="Photo">
                                     <VisualState.Setters>
                                         <Setter Target="PersonPictureEllipse.Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}"/>
+
+                                        <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
+                                        <wasm:Setter Target="PersonPictureImage.Source"
+														 Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush.ImageSource}" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <!-- Visual State when no Photo is available (but there are initials).-->
@@ -93,6 +101,18 @@
                             FlowDirection="LeftToRight">
                         </Ellipse>
 
+                        <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
+                        <wasm:Border Width="{TemplateBinding Width}"
+										 Height="{TemplateBinding Height}"
+										 CornerRadius="{TemplateBinding Width}"
+										 FlowDirection="LeftToRight">
+                            <Image x:Name="PersonPictureImage"
+									   Stretch="UniformToFill"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center" />
+                        </wasm:Border>
+
+                        <!-- UNO WORKAROUND: Removed Margin="{ThemeResource PersonPictureBadgeGridMargin}". Clipping issue with negative margin: #-->
                         <Grid
                             x:Name="BadgeGrid"
                             Visibility="Collapsed"
