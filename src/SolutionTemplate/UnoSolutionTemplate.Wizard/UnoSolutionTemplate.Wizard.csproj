@@ -59,7 +59,8 @@
     <Compile Include="XamarinUnoSolutionWizard.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include=".vsconfig" />
+    <None Include=".vsconfig.vs16" />
+    <None Include=".vsconfig.vs17" />
     <None Include="key.snk" />
     <EmbeddedResource Include="NuGet-netcore.config" />
   </ItemGroup>
