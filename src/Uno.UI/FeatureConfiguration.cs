@@ -242,6 +242,15 @@ namespace Uno.UI
 			public static bool IgnoreINPCSameReferences { get; set; } = false;
 		}
 
+		public static class BindingExpression
+		{
+			/// <summary>
+			/// Skips the BindingExpression.SetTargetValue exception handling. Can be disabled to
+			/// improve application performance on WebAssembly. See See #7005 for additional details.
+			/// </summary>
+			public static bool HandleSetTargetValueExceptions { get; set; } = true;
+		}
+
 		public static class Popup
 		{
 #if __ANDROID__
