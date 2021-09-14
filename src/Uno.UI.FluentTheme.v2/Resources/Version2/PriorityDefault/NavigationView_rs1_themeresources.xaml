@@ -730,10 +730,10 @@
                                     contract7Present:RadiusY="{ThemeResource NavigationViewSelectionIndicatorRadius}"/>
                             </Grid>
 
+                            <!--Uno workaround: removed Margin="0,0,14,0" from ContentGrid, because it causes icons to be cut off in compact mode https://github.com/unoplatform/uno/issues/7049-->
                             <Grid
                                 x:Name="ContentGrid"
                                 MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}"
-                                Margin="0,0,14,0"
                                 HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
