@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (m_groupName != null)
 				{
-					s_selectionMap.TryRemove(m_groupName, out _);
+					s_selectionMap?.TryRemove(m_groupName, out _);
 				}
 			}
 		}
