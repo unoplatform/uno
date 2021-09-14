@@ -20,6 +20,12 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
+#if NETFX_CORE
+// Use the MUX MenuBar on Window for consistency, since Uno is using the MUX styles. (However Uno.UI only defines WUXC.MenuBar, not MUXC.MenuBar)
+using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
+using MenuBarItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -62,7 +68,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-		[Ignore("https://github.com/unoplatform/uno/issues/7058")]
 		public async Task Verify_MenuBarItem_Bounds()
 		{
 			using (StyleHelper.UseFluentStyles())
@@ -119,18 +124,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					var menuBarBounds = menuBar.GetOnScreenBounds();
 
-					Assert.AreEqual(40, menuBarItemBounds.Height, 1);
+					Assert.AreEqual(32, menuBarItemBounds.Height, 1);
 
-					var expectedY = 43.0;
+					var expectedY = 39.0;
 #if __ANDROID__
 					if (!FeatureConfiguration.Popup.UseNativePopup)
 					{
-						// 
-						expectedY += menuBarItemBounds.Y;
+						// If using managed popup, the expected offset must be adjusted for the status bar
+						expectedY += menuBarBounds.Y;
 					}
 #endif
 
-					Assert.AreEqual(1, flyoutItemBounds.X, 3);
+					Assert.AreEqual(5, flyoutItemBounds.X, 3);
 					Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
 				}
 				finally
@@ -142,7 +147,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __ANDROID__
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/7058")]
 		[RequiresFullWindow]
 		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
 		{
