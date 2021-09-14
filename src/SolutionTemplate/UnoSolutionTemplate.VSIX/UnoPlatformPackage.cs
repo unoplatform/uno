@@ -16,6 +16,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using Microsoft.Win32;
 using NuGet.VisualStudio;
 using Task = System.Threading.Tasks.Task;
@@ -188,7 +189,14 @@ namespace UnoSolutionTemplate
 				{
 					var componentModel = (IComponentModel)await GetServiceAsync(typeof(SComponentModel));
 					IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
+
+					// GetInstalledPackages is not async, switch to the background
+					await TaskScheduler.Default;
+
 					var installedPackages = installerServices.GetInstalledPackages();
+
+					// Return to the UI thread for DTE uses
+					await this.JoinableTaskFactory.SwitchToMainThreadAsync(ct);
 
 					var remoteControlPackages = new[] {
 						"Uno.UI.RemoteControl",
