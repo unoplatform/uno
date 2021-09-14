@@ -29,20 +29,21 @@ namespace Windows.UI.Xaml
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
 		private int _childrenInterestedInViewportUpdates;
 		private IDisposable? _parentViewportUpdatesSubscription;
-		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates on iOS, use GetParentViewport()
+		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates space, use GetParentViewport()
 		private ViewportInfo _lastEffectiveViewport;
+		private bool _isLayouted;
 
 		public event TypedEventHandler<_This, EffectiveViewportChangedEventArgs> EffectiveViewportChanged
 		{
 			add
 			{
 				_effectiveViewportChanged += value;
-				ReconfigureViewportPropagation();
+				ReconfigureViewportPropagation(isInternal: true);
 			}
 			remove
 			{
 				_effectiveViewportChanged -= value;
-				ReconfigureViewportPropagation();
+				ReconfigureViewportPropagation(isInternal: true);
 			}
 		}
 
@@ -61,7 +62,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Make sure to request or disable effective viewport changes from the parent
 		/// </summary>
-		private void ReconfigureViewportPropagation(IFrameworkElement_EffectiveViewport? child = null)
+		private void ReconfigureViewportPropagation(bool isInternal = false, IFrameworkElement_EffectiveViewport? child = null)
 		{
 			if (IsLoaded && IsEffectiveViewportEnabled)
 			{
@@ -72,7 +73,7 @@ namespace Windows.UI.Xaml
 					var parent = this.GetVisualTreeParent();
 					if (parent is IFrameworkElement_EffectiveViewport parentFwElt)
 					{
-						_parentViewportUpdatesSubscription = parentFwElt.RequestViewportUpdates(this);
+						_parentViewportUpdatesSubscription = parentFwElt.RequestViewportUpdates(isInternal, this);
 					}
 					else
 					{
@@ -80,7 +81,7 @@ namespace Windows.UI.Xaml
 
 						// We are the root of the visual tree, we update the effective viewport
 						// in order to initialize the _parentViewport of children.
-						PropagateEffectiveViewportChange(isInitial: true);
+						PropagateEffectiveViewportChange(isInitial: true, isInternal: isInternal);
 					}
 				}
 				else if (child != null)
@@ -93,11 +94,16 @@ namespace Windows.UI.Xaml
 					var parentViewport = GetParentViewport();
 					var viewport = GetEffectiveViewport(parentViewport);
 
-					child.OnParentViewportChanged(this, viewport, isInitial: true);
+					child.OnParentViewportChanged(isInitial: true, isInternal: true, this, viewport);
 				}
 			}
 			else
 			{
+				if (!IsLoaded)
+				{
+					_isLayouted = false;
+				}
+
 				if (_parentViewportUpdatesSubscription != null)
 				{
 					TRACE_EFFECTIVE_VIEWPORT("Disabling effective viewport propagation.");
@@ -114,12 +120,12 @@ namespace Windows.UI.Xaml
 		/// Used by a child of this element, in order to subscribe to viewport updates
 		/// (so the OnParentViewportChanged will be invoked on this given child)
 		/// </summary>
-		IDisposable IFrameworkElement_EffectiveViewport.RequestViewportUpdates(IFrameworkElement_EffectiveViewport? child)
+		IDisposable IFrameworkElement_EffectiveViewport.RequestViewportUpdates(bool isInternalUpdate, IFrameworkElement_EffectiveViewport? child)
 		{
 			global::System.Diagnostics.Debug.Assert(Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this).OfType<IFrameworkElement_EffectiveViewport>().Contains(child));
 
 			_childrenInterestedInViewportUpdates++;
-			ReconfigureViewportPropagation(child);
+			ReconfigureViewportPropagation(isInternalUpdate, child);
 
 			return Disposable.Create(() =>
 			{
@@ -132,9 +138,10 @@ namespace Windows.UI.Xaml
 		/// Used by a parent element to propagate down the viewport change
 		/// </summary>
 		void IFrameworkElement_EffectiveViewport.OnParentViewportChanged(
+			bool isInitial, // Update is intended to initiate the _parentViewport and should be "public" only if not due to a new event listener while tree is live (e.g. load)
+			bool isInternal, // Indicates that this update is due to a new event handler
 			IFrameworkElement_EffectiveViewport parent, // We propagate the parent to avoid costly lookup
-			ViewportInfo viewport, // The viewport of the parent, expressed in parent's coordinates
-			bool isInitial) // Indicates that this update is only intended to initiate the _parentViewport
+			ViewportInfo viewport) // The viewport of the parent, expressed in parent's coordinates
 		{
 			if (!IsEffectiveViewportEnabled)
 			{
@@ -143,17 +150,13 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-#if !__IOS__ // cf. GetParentViewport
-			viewport = viewport.GetRelativeTo(this);
-#endif
-
 			if (!isInitial && viewport == _parentViewport)
 			{
 				return;
 			}
 
 			_parentViewport = viewport;
-			PropagateEffectiveViewportChange(isInitial, isParentUpdated: true);
+			PropagateEffectiveViewportChange(isInitial, isInternal);
 		}
 
 #if IS_NATIVE_ELEMENT
@@ -173,10 +176,8 @@ namespace Windows.UI.Xaml
 			// except for element flagged as ScrollHost!
 			// For now we are using the LayoutSlot + ScrollOffsets (which is internal only!), but we should use that 'viewport'.
 
-			if (IsScrollPort || IsVisualTreeRoot)
-			{
-				PropagateEffectiveViewportChange();
-			}
+			_isLayouted = true;
+			PropagateEffectiveViewportChange();
 		}
 
 		[NotImplemented] // Supported only for internal elements, cf. comment below
@@ -246,26 +247,21 @@ namespace Windows.UI.Xaml
 		}
 
 		private ViewportInfo GetParentViewport()
-#if __IOS__
-			// On iOS the Arrange is "async": When arranged an element only arranges its direct children (set their Frame)
-			// which then waits for their 'LayoutSubView' to arrange their own children.
+			// As the conversion form parent to local coordinates of the viewport is impacted by LayoutSlot and RenderTransforms,
+			// we do have to keep it in parent coordinates spaces, and convert it to local coordinate space on each use.
 			//
+			// Also on iOS the Arrange is "async": When arranged an element only arranges its direct children (set their Frame)
+			// which then waits for their 'LayoutSubView' to arrange their own children.
 			// The issue is that after having arrange its children, the element will also apply its clipping,
 			// which will cause an update of the EffectiveViewport and more specifically invoke the OnParentViewportChanged
 			// on all children (direct and sub children), including children that might not be arranged yet.
-			//
-			// If we convert the viewport into local element coordinate space at this time (like on other platforms),
+			// If we convert the viewport into local element coordinate space at this time,
 			// we won't have a valid LayoutSlot (and LayoutSlotWithMarginsAndAlignment used in GetTransform).
-			//
-			// To avoid this we store the parentViewport in parent coordinates on iOS, and reconvert it every time.
 			=> _parentViewport.GetRelativeTo(this);
-#else
-			=> _parentViewport;
-#endif
 
 		private void PropagateEffectiveViewportChange(
 			bool isInitial = false,
-			bool isParentUpdated = false
+			bool isInternal = false
 #if TRACE_EFFECTIVE_VIEWPORT
 			, [CallerMemberName] string? caller = null) {
 #else
@@ -275,7 +271,13 @@ namespace Windows.UI.Xaml
 #endif
 			if (!IsEffectiveViewportEnabled)
 			{
-				TRACE_EFFECTIVE_VIEWPORT($"Effective viewport disabled, stop propagation (reason:{caller} | isInitial:{isInitial}).");
+				TRACE_EFFECTIVE_VIEWPORT($"Effective viewport disabled, stop propagation (reason:{caller} | isInitial:{isInitial} | isInternal:{isInternal}).");
+				return;
+			}
+
+			if (!_isLayouted) // For perf consideration, we try to not propagate the VP until teh element get a valid LayoutSlot
+			{
+				TRACE_EFFECTIVE_VIEWPORT($"Element has been layouted yet, stop propagation (reason:{caller} | isInitial:{isInitial} | isInternal:{isInternal}).");
 				return;
 			}
 
@@ -289,26 +291,27 @@ namespace Windows.UI.Xaml
 				$"viewport: {viewport} (updated: {viewportUpdated}) "
 				+ $"| slot: {LayoutInformation.GetLayoutSlot(this).ToDebugString()} "
 				+ $"| isInitial: {isInitial} "
-				+ $"| parent: {parentViewport} (updated: {isParentUpdated}) "
+				+ $"| isInternal: {isInternal} "
+				+ $"| parent: {parentViewport} "
 				+ $"| scroll: {(IsScrollPort ? $"{ScrollOffsets.ToDebugString()}" : "--none--")} "
 				+ $"| reason: {caller} "
 				+ $"| children: {_childrenInterestedInViewportUpdates}");
 
-			if (!isInitial && isParentUpdated)
+			if (!isInternal && viewportUpdated) // We don't want to raise the event when we are only initializing the tree due to a new event handler
 			{
 				// Note: The event only notify about the parentViewport (expressed in local coordinate space!),
 				//		 the "local effective viewport" is used only by our children.
 				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
 			}
 
-			if (_childrenInterestedInViewportUpdates > 0 && (viewportUpdated || isInitial))
+			if (_childrenInterestedInViewportUpdates > 0 && (isInitial || viewportUpdated))
 			{
 				var children = Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this);
 				foreach (var child in children)
 				{
 					if (child is IFrameworkElement_EffectiveViewport childFwElt)
 					{
-						childFwElt.OnParentViewportChanged(this, viewport, isInitial: isInitial);
+						childFwElt.OnParentViewportChanged(isInitial, isInternal, this, viewport);
 					}
 				}
 			}
