@@ -66,7 +66,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			CurrentValue = initialValue;
 
 			frames ??= Enumerable.Empty<IKeyFrame<TValue>>();
-			frames = frames.Trim();
 			frames = duration.HasValue
 				? frames.Where(k => k != null && k.KeyTime.TimeSpan <= duration.Value)
 				: frames.Trim();
