@@ -16,6 +16,7 @@
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
+      "Uno.NonShippingAnalyzers\\Uno.NonShippingAnalyzers\\Uno.NonShippingAnalyzers.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.DualScreen\\Uno.UI.DualScreen.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",

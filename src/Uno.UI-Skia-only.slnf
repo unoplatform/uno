@@ -21,6 +21,7 @@
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.Skia.csproj",
+      "Uno.NonShippingAnalyzers\\Uno.NonShippingAnalyzers\\Uno.NonShippingAnalyzers.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Skia.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Skia.csproj",

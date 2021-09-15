@@ -4,5 +4,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.2" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)\BannedSymbols.txt" />
+
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\Uno.NonShippingAnalyzers\Uno.NonShippingAnalyzers\Uno.NonShippingAnalyzers.csproj"
+                      PrivateAssets="all"
+                      ReferenceOutputAssembly="false"
+                      OutputItemType="Analyzer" />
   </ItemGroup>
 </Project>

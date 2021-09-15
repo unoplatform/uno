@@ -33,6 +33,9 @@ indent_style = space
 [*.md]
 indent_style = space
 
+[**/Generated/**/*.cs]
+generated_code = true
+
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
 csharp_indent_block_contents = true
