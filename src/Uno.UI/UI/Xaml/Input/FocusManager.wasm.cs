@@ -44,8 +44,6 @@ namespace Windows.UI.Xaml.Input
 
 			foreach (var parent in element.GetParents())
 			{
-				_log.Value.LogDebug($"Checking {parent}. TextBlock.IsFocusable: {(parent as TextBlock)?.IsFocusable == true}");
-
 				// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
 				if (parent is TextBlock textBlock && textBlock.IsFocusable)
 				{

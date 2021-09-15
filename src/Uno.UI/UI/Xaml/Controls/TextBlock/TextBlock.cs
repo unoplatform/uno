@@ -946,7 +946,7 @@ namespace Windows.UI.Xaml.Controls
 		internal override bool IsFocusable =>
 			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.
 			IsVisible() &&
-			IsEnabled() && (IsTextSelectionEnabled || IsTabStop) &&
+			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop) &&
 			AreAllAncestorsVisible();
 	}
 }
