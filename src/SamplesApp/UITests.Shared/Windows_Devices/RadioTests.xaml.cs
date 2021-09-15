@@ -8,7 +8,7 @@ using Windows.Devices.Radios;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[Sample("Windows.Devices", description: "Demonstrates use of Windows.Devices.Radio.GetRadiosAsync")]
+	[SampleControlInfo("Windows.Devices", "RadioTests", description: "Demonstrates use of Windows.Devices.Radio.GetRadiosAsync")]
 	public sealed partial class RadioTests : UserControl
 	{
 		public RadioTests()
