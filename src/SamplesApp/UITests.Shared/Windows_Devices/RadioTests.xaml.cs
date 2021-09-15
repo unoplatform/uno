@@ -38,7 +38,7 @@ namespace UITests.Shared.Windows_Devices
 					intermediateRadio.RadioKind = oneRadio.Kind.ToString();
 					intermediateRadio.RadioName = oneRadio.Name;
 					intermediateRadio.RadioState = oneRadio.State.ToString();
-					intermediateRadiosList.Add(intermediateRadio)
+					intermediateRadiosList.Add(intermediateRadio);
 				}
 
 				uiListItems.ItemsSource = intermediateRadiosList;
