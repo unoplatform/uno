@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
-		private readonly ITextBoxViewExtension _textBoxExtension;
+		private readonly ITextBoxViewExtension? _textBoxExtension;
 
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly bool _isPasswordBox;
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void SetTextNative(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
-			// This needs to be moved to PasswordBox when it's separated from TextBox (likely in Uno 4).
+			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			if (_isPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
@@ -70,10 +70,14 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void Select(int start, int length)
 		{
-			_textBoxExtension.Select(start, length);
+			_textBoxExtension?.Select(start, length);
 		}
 
-		internal void OnForegroundChanged(Brush brush) => DisplayBlock.Foreground = brush;
+		internal void OnForegroundChanged(Brush brush)
+		{
+			DisplayBlock.Foreground = brush;
+			_textBoxExtension?.SetForeground(brush);
+		}
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
