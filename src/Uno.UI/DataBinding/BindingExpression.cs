@@ -539,44 +539,56 @@ namespace Windows.UI.Xaml.Data
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void SetTargetValueForXBindSelector()
 		{
-			try
+			void SetTargetValue()
+			{
+				var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
+
+				if (canSetTarget)
+				{
+					SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+				}
+				else
+				{
+					// x:Bind failed bindings don't change the target value
+					// if no FallbackValue was specified.
+					ApplyFallbackValue(useTypeDefaultValue: false);
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
+					}
+				}
+			}
+
+			if (FeatureConfiguration.BindingExpression.HandleSetTargetValueExceptions)
 			{
 				/// <remarks>
 				/// This method contains or is called by a try/catch containing method and
 				/// can be significantly slower than other methods as a result on WebAssembly.
 				/// See https://github.com/dotnet/runtime/issues/56309
 				/// </remarks>
-				void SetTargetValue()
+				void SetTargetValueWithTry()
 				{
-					var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
-
-					if (canSetTarget)
+					try
 					{
-						SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+						SetTargetValue();
 					}
-					else
+					catch (Exception e)
 					{
-						// x:Bind failed bindings don't change the target value
-						// if no FallbackValue was specified.
-						ApplyFallbackValue(useTypeDefaultValue: false);
+						ApplyFallbackValue();
 
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 						{
-							this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
+							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
 						}
 					}
 				}
 
-				SetTargetValue();
+				SetTargetValueWithTry();
 			}
-			catch (Exception e)
+			else
 			{
-				ApplyFallbackValue();
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-				{
-					this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
-				}
+				SetTargetValue();
 			}
 		}
 
@@ -603,23 +615,41 @@ namespace Windows.UI.Xaml.Data
 				);
 			}
 
-			try
+			if (FeatureConfiguration.BindingExpression.HandleSetTargetValueExceptions)
+			{
+				SetTargetValueSafeWithTry(v, useTargetNullValue);
+
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void SetTargetValueSafeWithTry(object v, bool useTargetNullValue)
+				{
+					try
+					{
+						InnerSetTargetValueSafe(v, useTargetNullValue);
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						{
+							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+						}
+
+						ApplyFallbackValue();
+					}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+					finally
+#endif
+					{
+						_IsCurrentlyPushing = false;
+					}
+				}
+			}
+			else
 			{
 				InnerSetTargetValueSafe(v, useTargetNullValue);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-				{
-					this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
-				}
-
-				ApplyFallbackValue();
-			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-			finally
-#endif
-			{
 				_IsCurrentlyPushing = false;
 			}
 		}

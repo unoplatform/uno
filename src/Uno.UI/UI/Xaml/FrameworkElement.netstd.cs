@@ -29,17 +29,21 @@ namespace Windows.UI.Xaml
 			OnLoadingPartial();
 			ApplyCompiledBindings();
 
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
 			{
+#endif
 				// Raise event before invoking base in order to raise them top to bottom
 				OnLoading();
 				_loading?.Invoke(this, new RoutedEventArgs(this));
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			}
 			catch (Exception error)
 			{
 				_log.Error("OnElementLoading failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
+#endif
 
 			OnPostLoading();
 		}
@@ -52,17 +56,21 @@ namespace Windows.UI.Xaml
 		{
 			OnLoadedPartial();
 
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
 			{
+#endif
 				// Raise event before invoking base in order to raise them top to bottom
 				OnLoaded();
 				_loaded?.Invoke(this, new RoutedEventArgs(this));
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			}
 			catch (Exception error)
 			{
 				_log.Error("OnElementLoaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
+#endif
 		}
 
 		partial void OnLoadedPartial();
@@ -70,18 +78,22 @@ namespace Windows.UI.Xaml
 
 		private protected sealed override void OnFwEltUnloaded()
 		{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
 			{
+#endif
 				// Raise event after invoking base in order to raise them bottom to top
 				OnUnloaded();
 				_unloaded?.Invoke(this, new RoutedEventArgs(this));
 				OnUnloadedPartial();
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			}
 			catch (Exception error)
 			{
 				_log.Error("OnElementUnloaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
+#endif
 		}
 		partial void OnUnloadedPartial();
 
