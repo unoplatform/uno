@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal bool IsFocusable =>
+		internal virtual bool IsFocusable =>
 					/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.
 					IsVisible() &&
 					(IsEnabled() || ((this as FrameworkElement)?.AllowFocusWhenDisabled == true)) &&
@@ -148,9 +148,9 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsFocusableForFocusEngagement() => false;
 
-		private bool IsVisible() => Visibility == Visibility.Visible;
+		protected bool IsVisible() => Visibility == Visibility.Visible;
 
-		private bool IsEnabled()
+		protected bool IsEnabled()
 		{
 			if (this is Control control)
 			{

@@ -730,6 +730,12 @@ namespace Windows.UI.Xaml.Controls
 				e.Handled = true;
 				// hyperlink.CompleteGesture(); No needs to complete the gesture as the TextBlock won't even receive the Pressed.
 			}
+			else if (sender is TextBlock textBlock && textBlock.IsTextSelectionEnabled)
+			{
+				// Selectable TextBlock should also handle pointer pressed to ensure
+				// RootVisual does not steal its focus.
+				e.Handled = true;
+			}
 		};
 
 		internal static readonly PointerEventHandler OnPointerReleased = (object sender, PointerRoutedEventArgs e) =>
@@ -936,5 +942,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal override bool CanHaveChildren() => true;
+
+		internal override bool IsFocusable =>
+			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.
+			IsVisible() &&
+			IsEnabled() && (IsTextSelectionEnabled || IsTabStop) &&
+			AreAllAncestorsVisible();
 	}
 }
