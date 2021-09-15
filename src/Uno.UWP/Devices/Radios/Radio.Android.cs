@@ -40,7 +40,10 @@ namespace Windows.Devices.Radios
 
 			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.JellyBeanMr1)
 			{
+				// deprecated in API 31
+#pragma warning disable CS0618 // Type or member is obsolete
 				var btAdapter = Android.Bluetooth.BluetoothAdapter.DefaultAdapter;
+#pragma warning restore CS0618 // Type or member is obsolete
 				if (btAdapter == null)
 				{
 					return null;    // shouldn't happen...
@@ -222,8 +225,7 @@ namespace Windows.Devices.Radios
 
 
 		private async static Task<IReadOnlyList<Radio>> GetRadiosAsyncTask()
-		{// this method can be not Async/await, but I don't know how to convert it to IAsyncOperation
-
+		{
 			var oRadios = new List<Radio>();
 
 			var oRadio = GetRadiosBluetooth();
@@ -239,7 +241,7 @@ namespace Windows.Devices.Radios
 		}
 
 		/// <summary>
-		/// Gets info about the phones for a contact.
+		/// Gets info about radio devices which exist on the system
 		/// </summary>
 		public static IAsyncOperation<IReadOnlyList<Radio>> GetRadiosAsync()
 		{

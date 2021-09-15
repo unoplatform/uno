@@ -8,7 +8,7 @@ using Windows.Devices.Radios;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "RadioTests", description: "Demonstrates use of Windows.Devices.Radio.GetRadiosAsyncTask")]
+	[Sample("Windows.Devices", description: "Demonstrates use of Windows.Devices.Radio.GetRadiosAsync")]
 	public sealed partial class RadioTests : UserControl
 	{
 		public RadioTests()
@@ -18,7 +18,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void uiCreate_Click(object sender, RoutedEventArgs e)
 		{
-			uiResultMsg.Text = "Calling GetRadiosAsyncTask...";
+			uiResultMsg.Text = "Calling GetRadiosAsync...";
 			try
 			{
 				var radiosList = await Windows.Devices.Radios.Radio.GetRadiosAsync();
