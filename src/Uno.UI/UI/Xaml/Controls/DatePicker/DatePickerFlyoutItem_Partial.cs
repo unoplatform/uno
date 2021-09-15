@@ -93,13 +93,13 @@ namespace Windows.UI.Xaml.Controls
 			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(PrimaryText), typeof(string),
 				typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem),
-				new FrameworkPropertyMetadata(default(string)));
+				new FrameworkPropertyMetadata(default(string))); // NOTE: This shouldn't be string.Empty to match UWP
 
 		public static global::Windows.UI.Xaml.DependencyProperty SecondaryTextProperty { get; } =
 			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(SecondaryText), typeof(string),
 				typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem),
-				new FrameworkPropertyMetadata(default(string)));
+				new FrameworkPropertyMetadata(default(string))); // NOTE: This shouldn't be string.Empty to match UWP
 
 		public override string ToString()
 		{

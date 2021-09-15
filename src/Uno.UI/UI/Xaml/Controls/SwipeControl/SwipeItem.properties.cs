@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty TextProperty { get; } = DependencyProperty.Register(
-			"Text", typeof(string), typeof(SwipeItem), new FrameworkPropertyMetadata(default(string), OnTextPropertyChanged));
+			"Text", typeof(string), typeof(SwipeItem), new FrameworkPropertyMetadata(string.Empty, OnTextPropertyChanged));
 
 		public string Text
 		{

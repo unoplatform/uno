@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MessageProperty { get; } =
-			DependencyProperty.Register(nameof(Message), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Message), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(string.Empty));
 
 		public InfoBarSeverity Severity
 		{
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TitleProperty { get; } =
-			DependencyProperty.Register(nameof(Title), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Title), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(string.Empty));
 
 		private static void OnIconSourcePropertyChanged(
 			DependencyObject sender,

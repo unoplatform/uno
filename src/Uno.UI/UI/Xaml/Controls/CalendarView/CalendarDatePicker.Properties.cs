@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DateFormatProperty { get; } = DependencyProperty.Register(
-			"DateFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
+			"DateFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(string.Empty));
 
 		public string DateFormat
 		{
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DayOfWeekFormatProperty { get; } = DependencyProperty.Register(
-			"DayOfWeekFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
+			"DayOfWeekFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(string.Empty));
 
 		public string DayOfWeekFormat
 		{
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PlaceholderTextProperty { get; } = DependencyProperty.Register(
-			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
+			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata("select a date")); // TODO: Localize?
 
 		public string PlaceholderText
 		{

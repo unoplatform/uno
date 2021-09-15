@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 				name: nameof(Text),
 				propertyType: typeof(string),
 				ownerType: typeof(MenuFlyoutItem),
-				typeMetadata: new FrameworkPropertyMetadata(default(string)));
+				typeMetadata: new FrameworkPropertyMetadata(string.Empty));
 
 		#endregion
 
@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 			name: nameof(KeyboardAcceleratorTextOverride),
 			propertyType: typeof(string),
 			ownerType: typeof(MenuFlyoutItem),
-			typeMetadata: new FrameworkPropertyMetadata(default(string)));
+			typeMetadata: new FrameworkPropertyMetadata(string.Empty));
 
 		public MenuFlyoutItemTemplateSettings TemplateSettings { get; internal set; }
 

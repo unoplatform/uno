@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TextMemberPath", typeof(string),
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: null)
+			new FrameworkPropertyMetadata(defaultValue: string.Empty)
 		);
 
 		public static DependencyProperty TextProperty { get; } =

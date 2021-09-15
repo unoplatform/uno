@@ -249,7 +249,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MapServiceToken", typeof(string),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 		public static DependencyProperty NormalizedAnchorPointProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"NormalizedAnchorPoint", typeof(global::Windows.Foundation.Point),
@@ -384,7 +384,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Region", typeof(string),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 		public IReadOnlyList<MapElement> FindMapElementsAtOffset(global::Windows.Foundation.Point offset)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<MapElement> MapControl.FindMapElementsAtOffset(Point offset) is not implemented in Uno.");

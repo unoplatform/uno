@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(string),
 				typeof(FontIcon),
 				new FrameworkPropertyMetadata(
-					null,
+					string.Empty,
 					(s, e) => ((FontIcon)s).OnGlyphChanged((string)e.NewValue)));
 
 		private void OnGlyphChanged(string newValue)

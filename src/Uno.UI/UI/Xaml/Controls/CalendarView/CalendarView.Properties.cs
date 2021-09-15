@@ -767,7 +767,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DayOfWeekFormat), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		public static global::Windows.UI.Xaml.DependencyProperty DisplayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

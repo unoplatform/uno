@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Input
 				nameof(AccessKey),
 				typeof(string),
 				typeof(XamlUICommand),
-				new FrameworkPropertyMetadata(default(string)));
+				new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Identifies the Command dependency property.
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Input
 				nameof(Description),
 				typeof(string),
 				typeof(XamlUICommand),
-				new FrameworkPropertyMetadata(default(string)));
+				new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Identifies the IconSource dependency property.
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Input
 				nameof(Label),
 				typeof(string),
 				typeof(XamlUICommand),
-				new FrameworkPropertyMetadata(default(string)));
+				new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Notifies the system that the command state has changed.

@@ -34,6 +34,6 @@ namespace Windows.UI.Xaml.Controls
 			"Title",
 			typeof(string), 
 			typeof(MenuBarItem), 
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 	}
 }

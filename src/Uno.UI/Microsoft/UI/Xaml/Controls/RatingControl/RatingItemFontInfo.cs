@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the DisabledGlyph dependency property.
 		/// </summary>
 		public static DependencyProperty DisabledGlyphProperty { get; } =
-			DependencyProperty.Register(nameof(DisabledGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(DisabledGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element that has been set by the user.
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Glyph dependency property.
 		/// </summary>
 		public static DependencyProperty GlyphProperty { get; } =
-			DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element that is showing a placeholder value.
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PlaceholderGlyph dependency property.
 		/// </summary>
 		public static DependencyProperty PlaceholderGlyphProperty { get; } =
-			DependencyProperty.Register(nameof(PlaceholderGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(PlaceholderGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element that has the pointer over it.
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PointerOverGlyph dependency property.
 		/// </summary>
 		public static DependencyProperty PointerOverGlyphProperty { get; } =
-			DependencyProperty.Register(nameof(PointerOverGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(PointerOverGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element showing a placeholder value with the pointer over it.
@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PointerOverPlaceholderGlyph dependency property.
 		/// </summary>
 		public static DependencyProperty PointerOverPlaceholderGlyphProperty { get; } =
-			DependencyProperty.Register(nameof(PointerOverPlaceholderGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(PointerOverPlaceholderGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element that has not been set.
@@ -104,6 +104,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the UnsetGlyph dependency property.
 		/// </summary>
 		public static DependencyProperty UnsetGlyphProperty { get; } =
-			DependencyProperty.Register(nameof(UnsetGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(UnsetGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
 	}
 }

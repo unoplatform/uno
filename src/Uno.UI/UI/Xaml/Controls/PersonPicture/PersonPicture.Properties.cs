@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(BadgeText),
 				typeof(string),
 				typeof(PersonPicture),
-				new FrameworkPropertyMetadata(default(string), OnPropertyChanged));
+				new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged));
 
 		public static DependencyProperty ContactProperty { get; } =
 			DependencyProperty.Register(

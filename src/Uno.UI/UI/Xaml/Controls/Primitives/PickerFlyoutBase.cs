@@ -10,11 +10,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 				"Title", typeof(string),
 				typeof(PickerFlyoutBase),
-				new FrameworkPropertyMetadata(default(string)));
+				new FrameworkPropertyMetadata(default(string))); // NOTE: This shouldn't be string.Empty to match UWP
 
-		public static string GetTitle(DependencyObject element) => (string)element.GetValue(TitleProperty);
+		public static string GetTitle(DependencyObject element) => (string)element.GetValue(TitleProperty) ?? string.Empty;
 
-		public static void SetTitle(DependencyObject element, string value) => element.SetValue(TitleProperty, value);
+		public static void SetTitle(DependencyObject element, string value)
+		{
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+
+			element.SetValue(TitleProperty, value);
+		}
 
 		protected virtual void OnConfirmed() => throw new InvalidOperationException();
 

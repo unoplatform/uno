@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty TargetNameProperty { get; } = DependencyProperty.Register(
-			"TargetName", typeof(string), typeof(FadeInThemeAnimation), new FrameworkPropertyMetadata(null));
+			"TargetName", typeof(string), typeof(FadeInThemeAnimation), new FrameworkPropertyMetadata(null)); // TODO: What the default value should be? null or string.Empty?
 
 		public string TargetName
 		{

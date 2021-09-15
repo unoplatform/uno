@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			"Text",
 			typeof(string),
 			typeof(MenuFlyoutSubItem),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		public static Windows.UI.Xaml.DependencyProperty IconProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(

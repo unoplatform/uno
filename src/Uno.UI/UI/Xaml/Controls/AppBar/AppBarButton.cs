@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				"Label", typeof(string),
 				typeof(AppBarButton),
-				new FrameworkPropertyMetadata(default(string))
+				new FrameworkPropertyMetadata(string.Empty)
 			);
 
 		#endregion

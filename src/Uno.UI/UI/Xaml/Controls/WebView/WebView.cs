@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DocumentTitleProperty { get; } =
-			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(string.Empty));
 #endif
 		#endregion
 

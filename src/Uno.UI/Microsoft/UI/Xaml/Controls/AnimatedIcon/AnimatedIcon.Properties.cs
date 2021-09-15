@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty StateProperty { get; } =
-			DependencyProperty.RegisterAttached("State", typeof(string), typeof(AnimatedIcon), new FrameworkPropertyMetadata(null, OnAnimatedIconStatePropertyChanged));
+			DependencyProperty.RegisterAttached("State", typeof(string), typeof(AnimatedIcon), new FrameworkPropertyMetadata(string.Empty, OnAnimatedIconStatePropertyChanged));
 
 		private static void OnFallbackIconSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
