@@ -148,9 +148,9 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsFocusableForFocusEngagement() => false;
 
-		protected bool IsVisible() => Visibility == Visibility.Visible;
+		private protected bool IsVisible() => Visibility == Visibility.Visible;
 
-		protected bool IsEnabled()
+		private bool IsEnabled()
 		{
 			if (this is Control control)
 			{
