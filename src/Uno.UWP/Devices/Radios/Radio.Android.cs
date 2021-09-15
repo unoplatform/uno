@@ -219,8 +219,6 @@ namespace Windows.Devices.Radios
 				}
 				return oRadio;
 			}
-
-
 		}
 
 
