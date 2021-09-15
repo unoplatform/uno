@@ -23,8 +23,9 @@ namespace UITests.Shared.Windows_Devices
 			{
 				var radiosList = await Windows.Devices.Radios.Radio.GetRadiosAsync();
 
-				uiListItems.ItemsSource = radiosList;
 				uiResultMsg.Text = "Your current Radios:";
+
+				var intermediateRadiosList = new List<IntermediateRadio>();
 
 				foreach (var oneRadio in radiosList)
                 {
@@ -32,12 +33,31 @@ namespace UITests.Shared.Windows_Devices
                     {
 						uiResultMsg.Text = "Your current Radios (RadioState.Unknown means: you probably have no appropriate permission declared):";
 					}
-                }
+
+					var intermediateRadio = new IntermediateRadio();
+					intermediateRadio.RadioKind = oneRadio.Kind.ToString();
+					intermediateRadio.RadioName = oneRadio.Name;
+					intermediateRadio.RadioState = oneRadio.State.ToString();
+					intermediateRadiosList.Add(intermediateRadio)
+				}
+
+				uiListItems.ItemsSource = intermediateRadiosList;
+
 			}
 			catch (Exception ex)
 			{
 				uiResultMsg.Text = "Got exception (maybe API is not supported on your platform): " + ex.Message;
 			}
 		}
+	}
+
+	// an intermediate class, between Windows.Devices.Radios.Radio and XAML binding
+	public class IntermediateRadio
+    {
+		public string RadioKind { get; set; }
+
+		public string RadioName { get; set; }
+
+		public string RadioState { get; set; }
 	}
 }

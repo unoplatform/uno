@@ -31,9 +31,9 @@
 		                            <ColumnDefinition />
 		                        </Grid.ColumnDefinitions>
 	
-					<TextBlock Grid.Column="0" Text="{Binding Name, Mode=OneWay }" />
-					<TextBlock Grid.Column="1" Text="{Binding Kind, Mode=OneWay }" />
-					<TextBlock Grid.Column="2" Text="{Binding State, Mode=OneWay }" />
+					<TextBlock Grid.Column="0" Text="{Binding RadioName, Mode=OneWay }" />
+					<TextBlock Grid.Column="1" Text="{Binding RadioKind, Mode=OneWay }" />
+					<TextBlock Grid.Column="2" Text="{Binding RadioState, Mode=OneWay }" />
 
 
 	                        </Grid>
