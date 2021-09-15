@@ -83,7 +83,6 @@
     "Microsoft.VisualStudio.Component.VC.Tools.ARM",
     "Microsoft.VisualStudio.ComponentGroup.UWP.VC",
     "Microsoft.VisualStudio.Workload.Universal",
-    "Microsoft.VisualStudio.ComponentGroup.Maui.All",
     "Component.OpenJDK",
     "Microsoft.VisualStudio.Component.MonoDebugger",
     "Microsoft.VisualStudio.Component.Merq",
@@ -92,6 +91,7 @@
     "Component.Xamarin",
     "Component.Android.SDK28",
     "Microsoft.VisualStudio.Workload.NetCrossPlat",
-    "Microsoft.VisualStudio.Workload.NetCoreTools"
+    "Microsoft.VisualStudio.Workload.NetCoreTools",
+    "Microsoft.VisualStudio.ComponentGroup.Maui.All",
   ]
 }
