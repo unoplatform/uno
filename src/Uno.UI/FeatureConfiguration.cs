@@ -213,6 +213,12 @@ namespace Uno.UI
 			/// Setting it to true avoids the use of costly JavaScript->C# interop.
 			/// </remarks>
 			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
+
+			/// <summary>
+			/// When false, skips the FrameworkElement Loading/Loaded/Unloaded exception handling. This can be
+			/// disabled to improve application performance on WebAssembly. See See #7005 for additional details.
+			/// </summary>
+			public static bool HandleLoadUnloadExceptions { get; set; } = true;
 		}
 
 		public static class Image
@@ -245,7 +251,7 @@ namespace Uno.UI
 		public static class BindingExpression
 		{
 			/// <summary>
-			/// Skips the BindingExpression.SetTargetValue exception handling. Can be disabled to
+			/// When false, skips the BindingExpression.SetTargetValue exception handling. Can be disabled to
 			/// improve application performance on WebAssembly. See See #7005 for additional details.
 			/// </summary>
 			public static bool HandleSetTargetValueExceptions { get; set; } = true;
