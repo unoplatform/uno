@@ -58,6 +58,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			{
 				BeginTime = TimeSpan.Zero,
 				RepeatBehavior = new RepeatBehavior(),
+				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
@@ -74,7 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			await Task.Yield();
 
 			target.History.Should().BeEquivalentTo(v1, v2, v3);
-			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
@@ -88,6 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			{
 				BeginTime = TimeSpan.Zero,
 				RepeatBehavior = new RepeatBehavior(),
+				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
@@ -120,6 +122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			{
 				BeginTime = TimeSpan.Zero,
 				RepeatBehavior = new RepeatBehavior(),
+				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
@@ -141,11 +144,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			sut.State.Should().Be(Timeline.TimelineState.Paused);
 
 			((ITimeline)sut).Resume();
-			await target.GetValue(ct, 2);
+			await target.GetValue(ct, 3);
 			await Task.Yield();
 
 			target.History.Should().BeEquivalentTo(v1, v2, v3);
-			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
@@ -159,6 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			{
 				BeginTime = TimeSpan.Zero,
 				RepeatBehavior = new RepeatBehavior(3),
+				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
@@ -175,7 +179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			await Task.Yield();
 
 			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
-			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
@@ -189,6 +193,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			{
 				BeginTime = TimeSpan.Zero,
 				RepeatBehavior = new RepeatBehavior(TimeSpan.FromMilliseconds(2 * 3)),
+				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
@@ -205,7 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			await Task.Yield();
 
 			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
-			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
@@ -219,6 +224,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			{
 				BeginTime = TimeSpan.Zero,
 				RepeatBehavior = RepeatBehavior.Forever,
+				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
@@ -236,12 +242,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 			try
 			{
-				target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+				target.History.Count.Should().BeGreaterThan(9);
+				target.History.Take(9).Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
 				sut.State.Should().Be(Timeline.TimelineState.Active);
 			}
 			finally
 			{
-				((ITimeline)sut).Begin();
+				((ITimeline)sut).Stop();
 			}
 		}
 
@@ -256,6 +263,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			{
 				BeginTime = TimeSpan.FromMilliseconds(10),
 				RepeatBehavior = new RepeatBehavior(),
+				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
@@ -273,6 +281,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 			target.History.Should().BeEquivalentTo(/* empty */);
 			sut.State.Should().Be(Timeline.TimelineState.Stopped);
+		}
+
+		[TestMethod]
+		public void When_FirstFrameTimeIsZero_Then_ItsAppliedSyncOnStart()
+		{
+			object v1, v2, v3;
+			var target = new AnimTarget();
+			var sut = new ObjectAnimationUsingKeyFrames
+			{
+				BeginTime = TimeSpan.Zero,
+				RepeatBehavior = new RepeatBehavior(),
+				FillBehavior = FillBehavior.HoldEnd,
+				KeyFrames =
+				{
+					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+				}
+			};
+
+			Storyboard.SetTarget(sut, target);
+			Storyboard.SetTargetProperty(sut, nameof(target.Value));
+
+			try
+			{
+				((ITimeline)sut).Begin();
+
+				target.Value.Should().Be(v1);
+			}
+			finally
+			{
+				((ITimeline)sut).Stop();
+			}
 		}
 
 
@@ -318,6 +359,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			try
 			{
 				_valuedAdded += OnValueAdded;
+				OnValueAdded(null, null);
 				return await tcs.Task;
 			}
 			finally
@@ -327,7 +369,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 			void OnValueAdded(object snd, EventArgs eventArgs)
 			{
-				if (History.Count > count)
+				if (History.Count >= count)
 				{
 					tcs.TrySetResult(History[count - 1]);
 				}

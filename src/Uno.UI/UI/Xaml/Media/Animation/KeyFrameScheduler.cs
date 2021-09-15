@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private readonly List<IKeyFrame<TValue>> _frames;
 
 		private DispatcherQueueTimer? _timer;
-		private int _frameId = 0;
+		private int _frameId = -1;
 		private SerialDisposable? _frameSubscription; // Lazy init only if needed (not used for the common discrete key frames)
 		private TimeSpan _seekOffset;
 
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		private static void RunNextFrame(DispatcherQueueTimer timer, object state)
-			=> ((KeyFrameScheduler<TValue>)state).RunNextFrame();
+			=> ((KeyFrameScheduler<TValue>)timer.State).RunNextFrame();
 
 		private void RunNextFrame()
 		{
