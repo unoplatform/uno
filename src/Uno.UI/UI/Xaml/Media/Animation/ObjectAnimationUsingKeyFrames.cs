@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			public const int Resume = 4;
 		}
 
-		private KeyFrameScheduler<object>? _frameScheduler;
+		private KeyFrameScheduler<object> _frameScheduler;
 		private (int count, TimeSpan time) _playStatus;
 
 		public ObjectAnimationUsingKeyFrames()
@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			State = TimelineState.Stopped;
 		}
 
-		private IDisposable? OnFrame(object currentValue, IKeyFrame<object> frame, TimeSpan duration)
+		private IDisposable OnFrame(object currentValue, IKeyFrame<object> frame, TimeSpan duration)
 		{
 			SetValue(frame.Value);
 			return null;
