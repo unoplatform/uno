@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (_timer is null)
 			{
-				_timer = _timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+				_timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
 				_timer.State = this;
 				_timer.Tick += RunNextFrame;
 			}
