@@ -5,6 +5,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.Devices.Radios;
+using System.Collections.Generic;
 
 namespace UITests.Shared.Windows_Devices
 {
