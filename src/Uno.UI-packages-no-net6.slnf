@@ -31,6 +31,8 @@
       "Uno.Foundation\\Uno.Foundation.Skia.csproj",
       "Uno.Foundation\\Uno.Foundation.Wasm.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
+      "Uno.NonShippingAnalyzers\\Uno.NonShippingAnalyzers\\Uno.NonShippingAnalyzers.csproj",
+      "Uno.NonShippingAnalyzers\\Uno.NonShippingAnalyzers.Tests\\Uno.NonShippingAnalyzers.Tests.csproj",
       "Uno.NUnitTransformTool\\Uno.NUnitTransformTool.csproj",
       "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.UI.AssemblyComparer\\Uno.UI.AssemblyComparer.csproj",
