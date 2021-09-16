@@ -19,7 +19,7 @@ After that, use the `ElevatedView` to host the content you need to be elevated:
 
 	<Button>Non-Elevated Button</Button>
 
-	<toolkit:ElevatedView Elevation="10" Background="Gray">
+	<toolkit:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
 		<Button>Elevated Button</Button>
 	</toolkit:ElevatedView>
 
