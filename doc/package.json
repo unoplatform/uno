@@ -34,7 +34,6 @@
 		"prod": "gulp",
 		"clean": "gulp clean",
 		"start": "gulp debug",
-		"strict": "gulp strict",
-		"generate": "docfx docfx.json"
+		"strict": "gulp strict"
 	}
 }
