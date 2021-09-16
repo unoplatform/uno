@@ -3100,8 +3100,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (
 								member.Member.Name == "Name"
-								&& !isMemberInsideResourceDictionary.isInside
-							)
+								&& !IsApplication(_fileDefinition.Objects.First().Type))
 							{
 								writer.AppendLineInvariant($@"nameScope.RegisterName(""{member.Value}"", {closureName});");
 							}
@@ -3109,7 +3108,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (
 								member.Member.Name == "Name"
 								&& !IsAttachedProperty(member)
-								&& !isMemberInsideResourceDictionary.isInside
+								&& !IsApplication(_fileDefinition.Objects.First().Type)
 							)
 							{
 								nameMember = member;
