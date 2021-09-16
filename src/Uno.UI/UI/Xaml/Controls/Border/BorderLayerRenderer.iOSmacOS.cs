@@ -128,13 +128,7 @@ namespace Windows.UI.Xaml.Shapes
 				outerLayer.FillRule = CAShapeLayer.FillRuleEvenOdd;
 				outerLayer.LineWidth = 0;
 
-				Brush.AssignAndObserveBrush(borderBrush, color =>
-					{
-						outerLayer.StrokeColor = color;
-						outerLayer.FillColor = color;
-					})
-					.DisposeWith(disposables);
-
+				
 				var path = GetRoundedRect(cornerRadius, innerCornerRadius, area, adjustedArea);
 				var innerPath = GetRoundedPath(cornerRadius, adjustedArea);
 				var outerPath = GetRoundedPath(cornerRadius, area);
@@ -204,6 +198,29 @@ namespace Windows.UI.Xaml.Shapes
 				sublayers.Add(innerLayer);
 				parent.AddSublayer(outerLayer);
 				parent.InsertSublayer(innerLayer, insertionIndex);
+
+				if (borderBrush is SolidColorBrush scbBorder)
+				{
+					Brush.AssignAndObserveBrush(borderBrush, color =>
+					{
+						outerLayer.StrokeColor = color;
+						outerLayer.FillColor = color;
+					})
+					.DisposeWith(disposables);
+				}
+				else if (borderBrush is GradientBrush gradientBorder)
+				{
+					var fillMask = new CAShapeLayer()
+					{
+						Path = path,
+						Frame = area,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
+
+					var borderLayerIndex = parent.Sublayers.Length;
+					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
+				}
 
 				parent.Mask = new CAShapeLayer()
 				{
@@ -292,70 +309,38 @@ namespace Windows.UI.Xaml.Shapes
 
 				if (borderThickness != Thickness.Empty)
 				{
-					Action<Action<CAShapeLayer, CGPath>> createLayer = builder =>
-					{
-						var layer = new CAShapeLayer();
-						var path = new CGPath();
+					var borderPath = GetRoundedRect(CornerRadius.None, CornerRadius.None, area, adjustedArea);
+					var layer = new CAShapeLayer();
 
-						Brush.AssignAndObserveBrush(borderBrush, c => layer.StrokeColor = c)
+					layer.FillRule = CAShapeLayer.FillRuleEvenOdd;
+					layer.LineWidth = 0;
+					layer.Path = borderPath;
+
+					// Must be inserted below the other subviews, which may happen when
+					// the current view has subviews.
+					sublayers.Add(layer);
+					parent.InsertSublayer(layer, 0);
+
+					if (borderBrush is SolidColorBrush scbBorder)
+					{
+						Brush.AssignAndObserveBrush(borderBrush, c => layer.FillColor = c)
 							.DisposeWith(disposables);
 
-						builder(layer, path);
-						layer.Path = path;
-
-						// Must be inserted below the other subviews, which may happen when
-						// the current view has subviews.
-						sublayers.Add(layer);
-						parent.InsertSublayer(layer, 0);
-					};
-
-					if (borderThickness.Top != 0)
+					}
+					else if (borderBrush is GradientBrush gradientBorder)
 					{
-						createLayer((l, path) =>
+						var fillMask = new CAShapeLayer()
 						{
-							l.LineWidth = (nfloat)borderThickness.Top;
-							var lineWidthAdjust = (nfloat)(borderThickness.Top / 2);
-							path.MoveToPoint(area.X + (nfloat)borderThickness.Left, area.Y + lineWidthAdjust);
-							path.AddLineToPoint(area.X + area.Width - (nfloat)borderThickness.Right, area.Y + lineWidthAdjust);
-							path.CloseSubpath();
-						});
+							Path = borderPath,
+							Frame = area,
+							// We only use the fill color to create the mask area
+							FillColor = _Color.White.CGColor,
+						};
+
+						var borderLayerIndex = parent.Sublayers.Length;
+						CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
 					}
 
-					if (borderThickness.Bottom != 0)
-					{
-						createLayer((l, path) =>
-						{
-							l.LineWidth = (nfloat)borderThickness.Bottom;
-							var lineWidthAdjust = borderThickness.Bottom / 2;
-							path.MoveToPoint(area.X + (nfloat)borderThickness.Left, (nfloat)(area.Y + area.Height - lineWidthAdjust));
-							path.AddLineToPoint(area.X + area.Width - (nfloat)borderThickness.Right, (nfloat)(area.Y + area.Height - lineWidthAdjust));
-							path.CloseSubpath();
-						});
-					}
-
-					if (borderThickness.Left != 0)
-					{
-						createLayer((l, path) =>
-						{
-							l.LineWidth = (nfloat)borderThickness.Left;
-							var lineWidthAdjust = borderThickness.Left / 2;
-							path.MoveToPoint((nfloat)(area.X + lineWidthAdjust), area.Y);
-							path.AddLineToPoint((nfloat)(area.X + lineWidthAdjust), area.Y + area.Height);
-							path.CloseSubpath();
-						});
-					}
-
-					if (borderThickness.Right != 0)
-					{
-						createLayer((l, path) =>
-						{
-							l.LineWidth = (nfloat)borderThickness.Right;
-							var lineWidthAdjust = borderThickness.Right / 2;
-							path.MoveToPoint((nfloat)(area.X + area.Width - lineWidthAdjust), area.Y);
-							path.AddLineToPoint((nfloat)(area.X + area.Width - lineWidthAdjust), area.Y + area.Height);
-							path.CloseSubpath();
-						});
-					}
 				}
 
 				state.BoundsPath = CGPath.FromRect(parent.Bounds);
