@@ -10,6 +10,7 @@ An example:
 
 ```xml
       ...
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:android="http://uno.ui/android"
 	  mc:Ignorable="d android">
