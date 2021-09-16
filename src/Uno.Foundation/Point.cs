@@ -33,6 +33,10 @@ namespace Windows.Foundation
 		internal string ToDebugString()
 			=> FormattableString.Invariant($"{X:F2},{Y:F2}");
 
+		internal Point WithX(double x) => new Point(x, Y);
+
+		internal Point WithY(double y) => new Point(X, y);
+
 		public static bool operator ==(Point left, Point right)
 		{
 			return left.Equals(right);
@@ -51,6 +55,11 @@ namespace Windows.Foundation
 		public static Point operator -(Point p1, Point p2)
 		{
 			return new Point(p1.X - p2.X, p1.Y - p2.Y);
+		}
+
+		public static Point operator -(Point a)
+		{
+			return new Point(-a.X, -a.Y);
 		}
 
 		public static implicit operator Point(string point)
