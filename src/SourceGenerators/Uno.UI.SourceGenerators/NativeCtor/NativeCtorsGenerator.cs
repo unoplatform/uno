@@ -87,7 +87,6 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				var isiOSView = typeSymbol.Is(_iosViewSymbol);
 				var ismacOSView = typeSymbol.Is(_macosViewSymbol);
 				var isAndroidView = typeSymbol.Is(_androidViewSymbol);
-				var smallSymbolName = typeSymbol.ToString()!.Replace(typeSymbol.ContainingNamespace + ".", "");
 
 				if (isiOSView || ismacOSView)
 				{
