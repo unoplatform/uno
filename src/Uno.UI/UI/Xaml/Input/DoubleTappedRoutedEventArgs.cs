@@ -40,6 +40,6 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
-		bool IHandleableRoutedEventArgs.ShouldPreventDefaultIfHandled { get; set; } = true;
+		bool IHandleableRoutedEventArgs.DoNotPreventDefaultIfHandled { get; set; }
 	}
 }

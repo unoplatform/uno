@@ -667,7 +667,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
-			((IHandleableRoutedEventArgs)args).ShouldPreventDefaultIfHandled = false;
+			((IHandleableRoutedEventArgs)args).DoNotPreventDefaultIfHandled = true;
 
 			// Note: On windows only keys that are "moving the cursor" are handled
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
