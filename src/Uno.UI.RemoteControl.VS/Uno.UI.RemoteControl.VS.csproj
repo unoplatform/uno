@@ -68,4 +68,7 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- VS2022 build issue -->
+	<Target Name="GetTargetPath" />
+
 </Project>
