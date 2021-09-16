@@ -390,7 +390,7 @@ namespace Windows.UI.Xaml
 			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 
 		private static object ConvertKey(ResourceKey resourceKey)
-			=> resourceKey.IsType ? resourceKey.TypeKey : (object)resourceKey.Key;
+			=> resourceKey.TypeKey ?? (object)resourceKey.Key;
 
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
