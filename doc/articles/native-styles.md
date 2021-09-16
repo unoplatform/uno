@@ -80,9 +80,10 @@ For example, to use native styling on a single `CheckBox` in XAML:
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:not_win="http://uno.ui/not_win"
-	  mc:Ignorable="d not_win">
+	  mc:Ignorable="d not_win"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<Grid>
 		<!--This check box will use a platform-native style on Android and iOS-->
 		<CheckBox IsChecked="{Binding OptionSelected}"
 				  not_win:Style="{StaticResource NativeDefaultCheckBox}" />

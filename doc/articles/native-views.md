@@ -14,8 +14,7 @@ An example:
 	  xmlns:android="http://uno.ui/android"
 	  mc:Ignorable="d android">
 
-	<StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-				Margin="0,30,0,0">
+	<StackPanel Margin="0,30,0,0">
 		<TextBlock Text="Rating" />
 		<android:Grid Background="Beige"
 					  Width="200">

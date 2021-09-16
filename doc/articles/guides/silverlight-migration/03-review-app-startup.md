@@ -105,9 +105,10 @@ In order to better align with the behavior of the Silverlight version of the app
         xmlns:local="using:TimeEntryUno"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d">
+        mc:Ignorable="d"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid>
             <TextBlock Text="Hello, world!" Margin="20" FontSize="30" />
         </Grid>
     </Page>
@@ -124,9 +125,10 @@ In order to better align with the behavior of the Silverlight version of the app
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-        mc:Ignorable="d">
+        mc:Ignorable="d"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid>
             <TextBlock Text="Hello, world!" Margin="20" FontSize="30" />
         </Grid>
     </Page>
@@ -135,7 +137,7 @@ In order to better align with the behavior of the Silverlight version of the app
 1. To add the navigation controls. replace `<Grid>..</Grid>` with the following:
 
     ```xml
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
         <muxc:NavigationView x:Name="NavView" PaneDisplayMode="Top" IsSettingsVisible="False"
                         IsBackEnabled="{Binding ElementName=ContentFrame, Path=CanGoBack}">
             <muxc:NavigationView.MenuItems>
