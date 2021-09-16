@@ -13,14 +13,14 @@ namespace Uno.NonShippingAnalyzers
 	{
 		public const string DiagnosticId = "Uno0002_Internal";
 
-		private static readonly string s_title = "String dependency properties (in *most* cases) shouldn't have null default value.";
-		private static readonly string s_messageFormat = "Review dependency property and make sure whether it should be null or not.";
+		private const string Title = "String dependency properties (in *most* cases) shouldn't have null default value.";
+		private const string MessageFormat = "Review dependency property and make sure whether it should be null or not.";
 
 		private const string Category = "Reliability";
 
-		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, s_title, s_messageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true);
+		private static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Rule);
+		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(s_rule);
 
 		public override void Initialize(AnalysisContext context)
 		{
@@ -52,7 +52,7 @@ namespace Uno.NonShippingAnalyzers
 							var defaultValueArgumentOperation = objectCreationOperation.Arguments.SingleOrDefault(a => a.Parameter.Name == "defaultValue");
 							if (ShouldReportDiagnostic(defaultValueArgumentOperation))
 							{
-								context.ReportDiagnostic(Diagnostic.Create(Rule, metadataArgumentOperation.Syntax.GetLocation()));
+								context.ReportDiagnostic(Diagnostic.Create(s_rule, metadataArgumentOperation.Syntax.GetLocation()));
 							}
 						}
 					}

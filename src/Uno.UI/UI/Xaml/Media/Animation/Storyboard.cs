@@ -50,9 +50,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TargetNameProperty { get ; } =
-#pragma warning disable Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
-			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null)); // TODO: What the default value should be? null or string.Empty?
-#pragma warning restore Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
+			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(string.Empty));
 		#endregion
 
 		#region TargetProperty Attached Property
@@ -62,9 +60,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for TargetProperty.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TargetPropertyProperty { get ; } =
-#pragma warning disable Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
-			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null)); // TODO: What the default value should be? null or string.Empty?
-#pragma warning restore Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
+			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(string.Empty));
 		#endregion
 
 		public static void SetTarget(Timeline timeline, DependencyObject target) => timeline.Target = target;
