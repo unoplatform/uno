@@ -32,7 +32,6 @@ namespace Windows.UI.Xaml
 		{
 			public readonly string Key;
 			public readonly Type TypeKey;
-			public readonly bool IsType;
 			public readonly uint HashCode;
 
 			public static ResourceKey Empty { get; } = new ResourceKey(false);
@@ -43,7 +42,6 @@ namespace Windows.UI.Xaml
 			{
 				Key = null;
 				TypeKey = null;
-				IsType = false;
 				HashCode = 0;
 			}
 
@@ -57,15 +55,13 @@ namespace Windows.UI.Xaml
 				{
 					Key = s;
 					TypeKey = null;
-					IsType = false;
-					HashCode = (uint)(s.GetHashCode() ^ IsType.GetHashCode());
+					HashCode = (uint)(s.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 				}
 				else if (key is Type t)
 				{
 					Key = t.ToString();
 					TypeKey = t;
-					IsType = true;
-					HashCode = (uint)(t.GetHashCode() ^ IsType.GetHashCode());
+					HashCode = (uint)(t.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 				}
 				else if (key is ResourceKey)
 				{
@@ -77,8 +73,7 @@ namespace Windows.UI.Xaml
 				{
 					Key = key.ToString();
 					TypeKey = null;
-					IsType = false;
-					HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+					HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 				}
 			}
 
@@ -90,8 +85,7 @@ namespace Windows.UI.Xaml
 			{
 				Key = key;
 				TypeKey = null;
-				IsType = false;
-				HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+				HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 			}
 
 			/// <summary>
@@ -102,15 +96,14 @@ namespace Windows.UI.Xaml
 			{
 				Key = key.ToString();
 				TypeKey = key;
-				IsType = true;
-				HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+				HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 			}
 
 			/// <summary>
 			/// Compares this instance with another ResourceKey instance
 			/// </summary>
 			public bool Equals(ResourceKey other)
-				=> IsType == other.IsType && Key == other.Key;
+				=> TypeKey == other.TypeKey && Key == other.Key;
 
 
 			public static implicit operator ResourceKey(string key)
