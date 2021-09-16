@@ -138,6 +138,54 @@ namespace A.B
 ", builder.ToString());
 		}
 
+		[TestMethod]
+		public void When_Generating_Generic_Type()
+		{
+			var compilation = CreateCompilationWithProgramText(@"
+class C<T1, T2>
+{
+}");
+			var type = compilation.GetTypeByMetadataName("C`2");
+			Assert.IsNotNull(type);
+			var builder = new IndentedStringBuilder();
+			var disposables = type.AddToIndentedStringBuilder(builder);
+			while (disposables.Count > 0)
+			{
+				disposables.Pop().Dispose();
+			}
+
+			Assert.AreEqual(@"partial class C<T1, T2>
+{
+}
+", builder.ToString());
+		}
+
+		[TestMethod]
+		public void When_Generating_Generic_Type_With_Variance()
+		{
+			var compilation = CreateCompilationWithProgramText(@"
+interface I<in T1, out T2, T3>
+{
+	class C { }
+}");
+			var type = compilation.GetTypeByMetadataName("I`3+C");
+			Assert.IsNotNull(type);
+			var builder = new IndentedStringBuilder();
+			var disposables = type.AddToIndentedStringBuilder(builder);
+			while (disposables.Count > 0)
+			{
+				disposables.Pop().Dispose();
+			}
+
+			Assert.AreEqual(@"partial interface I<in T1, out T2, T3>
+{
+	partial class C
+	{
+	}
+}
+", builder.ToString());
+		}
+
 		private static Compilation CreateTestCompilation(string type)
 			=> CreateCompilationWithProgramText($"public class Test {{ public static {type} _myField {{ get; set; }} }}");
 

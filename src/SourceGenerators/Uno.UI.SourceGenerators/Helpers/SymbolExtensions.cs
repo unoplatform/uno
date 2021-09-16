@@ -14,6 +14,28 @@ namespace Microsoft.CodeAnalysis
 	/// </summary>
 	internal static class SymbolExtensions
 	{
+		// This is the same as MinimallyQualifiedFormat, but adds the SymbolDisplayGenericsOptions.IncludeVariance.
+		private static SymbolDisplayFormat s_format = new SymbolDisplayFormat(
+			globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
+			genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters | SymbolDisplayGenericsOptions.IncludeVariance,
+			memberOptions:
+				SymbolDisplayMemberOptions.IncludeParameters |
+				SymbolDisplayMemberOptions.IncludeType |
+				SymbolDisplayMemberOptions.IncludeRef |
+				SymbolDisplayMemberOptions.IncludeContainingType,
+			kindOptions:
+				SymbolDisplayKindOptions.IncludeMemberKeyword,
+			parameterOptions:
+				SymbolDisplayParameterOptions.IncludeName |
+				SymbolDisplayParameterOptions.IncludeType |
+				SymbolDisplayParameterOptions.IncludeParamsRefOut |
+				SymbolDisplayParameterOptions.IncludeDefaultValue,
+			localOptions: SymbolDisplayLocalOptions.IncludeType,
+			miscellaneousOptions:
+				SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
+				SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
+				SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
+
 		private static bool IsRoslyn34OrEalier { get; }
 			= typeof(INamedTypeSymbol).Assembly.GetVersionNumber() <= new Version("3.4");
 
@@ -83,7 +105,8 @@ namespace Microsoft.CodeAnalysis
 
 		public static string GetDeclarationHeaderFromNamedTypeSymbol(this INamedTypeSymbol namedTypeSymbol)
 		{
-			var abstractKeyword = namedTypeSymbol.IsAbstract ? "abstract " : string.Empty;
+			// Interfaces are implicitly abstract, but they can't explicitly have the abstract modifier.
+			var abstractKeyword = namedTypeSymbol.IsAbstract && !namedTypeSymbol.IsAbstract ? "abstract " : string.Empty;
 			var staticKeyword = namedTypeSymbol.IsStatic ? "static " : string.Empty;
 
 			// records are not handled.
@@ -94,8 +117,8 @@ namespace Microsoft.CodeAnalysis
 				TypeKind.Struct => "struct ",
 				_ => throw new ArgumentException($"Unexpected type kind {namedTypeSymbol.TypeKind}")
 			};
-
-			var declarationIdentifier = namedTypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+			
+			var declarationIdentifier = namedTypeSymbol.ToDisplayString(s_format);
 
 			return $"{abstractKeyword}{staticKeyword}partial {typeKeyword}{declarationIdentifier}";
 		}
