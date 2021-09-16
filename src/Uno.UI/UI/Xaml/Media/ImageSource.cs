@@ -65,12 +65,9 @@ namespace Windows.UI.Xaml.Media
 
 		protected ImageSource(string url) : this()
 		{
-			if (url.StartsWith("/"))
-			{
-				url = MsAppXScheme + "://" + url;
-			}
+			var uri = TryCreateUriFromString(url);
 
-			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
+			if (uri != null)
 			{
 				InitFromUri(uri);
 			}
@@ -86,6 +83,26 @@ namespace Windows.UI.Xaml.Media
 		protected ImageSource(Uri uri) : this()
 		{
 			InitFromUri(uri);
+		}
+
+		internal static Uri TryCreateUriFromString(string url)
+		{
+			if (url.StartsWith("/"))
+			{
+				url = MsAppXScheme + "://" + url;
+			}
+
+			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
+			{
+				if (!uri.IsAbsoluteUri || uri.Scheme.Length == 0)
+				{
+					uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
+				}
+
+				return uri;
+			}
+
+			return null;
 		}
 
 		internal void InitFromUri(Uri uri)

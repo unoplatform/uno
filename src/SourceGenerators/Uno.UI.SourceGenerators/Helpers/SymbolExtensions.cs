@@ -215,7 +215,7 @@ namespace Microsoft.CodeAnalysis
 			return property?.GetAttributes().FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == attributeClassFullName);
 		}
 
-		public static AttributeData? FindAttribute(this ISymbol? property, INamedTypeSymbol attributeClassSymbol)
+		public static AttributeData? FindAttribute(this ISymbol? property, INamedTypeSymbol? attributeClassSymbol)
 		{
 			return property?.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}
