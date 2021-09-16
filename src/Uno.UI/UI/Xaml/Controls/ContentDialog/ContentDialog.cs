@@ -16,6 +16,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Core;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Helpers;
+using Color = Windows.UI.Color;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
