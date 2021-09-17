@@ -12,7 +12,7 @@ Inside of the `Uno.SkiaSharp.Views` package you'll find support for the [SKXamlC
 
 XAML:
 ```xml
-<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+<Grid>
     <skia:SKXamlCanvas x:Name="test" PaintSurface="OnPaintSurface" />
 </Grid>
 ```

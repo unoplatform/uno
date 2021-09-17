@@ -913,14 +913,14 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
         xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
-        mc:Ignorable="d">
+        mc:Ignorable="d"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
         <Page.DataContext>
             <viewmodels:MainViewModel x:Name="ViewModel" />
         </Page.DataContext>
 
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-            toolkit:VisibleBoundsPadding.PaddingMask="All">
+        <Grid toolkit:VisibleBoundsPadding.PaddingMask="All">
             <Grid Padding="12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -1040,14 +1040,14 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
         xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
-        mc:Ignorable="d">
+        mc:Ignorable="d"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
         <Page.DataContext>
             <viewmodels:MainViewModel x:Name="ViewModel" />
         </Page.DataContext>
 
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-            Margin="12">
+        <Grid Margin="12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

@@ -144,9 +144,10 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
        xmlns:local="using:FlatpickrDemo"
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-       mc:Ignorable="d">
+       mc:Ignorable="d"
+       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
    
-       <StackPanel Spacing="10" Padding="20" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+       <StackPanel Spacing="10" Padding="20">
          <TextBlock FontSize="15">
    		   Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
             <LineBreak />Picked Date/Time: <Run FontSize="20" FontWeight="Bold" Text="{Binding SelectedDateTime, ElementName=picker}" />
@@ -243,9 +244,11 @@ Background = new SolidColorBrush(Colors.Transparent);
 ```
 
 ### `TextBlock` content is not visible in browsers with the dark theme
-`TextBlock` defaults the text color as White correctly but `StackPanel` background needs to be set correctly.
+`TextBlock` defaults the text color as White correctly but `Page` background needs to be set correctly.
 ```
-<StackPanel Spacing="10" Padding="20" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+<Page 
+    ...
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 ```
 
 ## 🔬 Going further
