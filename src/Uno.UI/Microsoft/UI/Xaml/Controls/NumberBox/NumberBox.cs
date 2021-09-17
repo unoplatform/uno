@@ -59,78 +59,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public NumberBox()
 		{
-			Loaded += OnLoaded;
-
-			NumberFormatter = GetRegionalSettingsAwareDecimalFormatter();
+			// Default values for the number formatter
+			var formatter = new DecimalFormatter();
+			formatter.IntegerDigits = 1;
+			formatter.FractionDigits = 0;
+			NumberFormatter = formatter;
 
 			PointerWheelChanged += OnNumberBoxScroll;
 
 			GotFocus += OnNumberBoxGotFocus;
 			LostFocus += OnNumberBoxLostFocus;
 
-			// Uno specific.
 			Loaded += (s, e) => InitializeTemplate();
 			Unloaded += (s, e) => DisposeRegistrations();
 
 			SetDefaultStyleKey(this);
-			SetDefaultInputScope();
-
-			// We are not revoking this since the event and the listener reside on the same object and as such have the same lifecycle.
-			// That means that as soon as the NumberBox gets removed so will the event and the listener.
-			RegisterPropertyChangedCallback(AutomationProperties.NameProperty, OnAutomationPropertiesNamePropertyChanged);
-		}
-
-		private void SetDefaultInputScope()
-		{
-			// Sets the default value of the InputScope property.
-			// Note that InputScope is a class that cannot be set to a default value within the IDL.
-			var inputScopeName = new InputScopeName(InputScopeNameValue.Number);
-			var inputScope = new InputScope();
-			inputScope.Names.Add(inputScopeName);
-			InputScope = inputScope;
-		}
-
-		// This was largely copied from Calculator's GetRegionalSettingsAwareDecimalFormatter()
-		private DecimalFormatter GetRegionalSettingsAwareDecimalFormatter()
-		{
-			return new DecimalFormatter
-			{
-				IntegerDigits = 1,
-				FractionDigits = 0,
-			};
-
-			// UNO TODO: https://github.com/unoplatform/uno/issues/6908
-
-			//WCHAR currentLocale[LOCALE_NAME_MAX_LENGTH] = { };
-			//if (GetUserDefaultLocaleName(currentLocale, LOCALE_NAME_MAX_LENGTH) != 0)
-			//{
-			//	// GetUserDefaultLocaleName may return an invalid bcp47 language tag with trailing non-BCP47 friendly characters,
-			//	// which if present would start with an underscore, for example sort order
-			//	// (see https://msdn.microsoft.com/en-us/library/windows/desktop/dd373814(v=vs.85).aspx).
-			//	// Therefore, if there is an underscore in the locale name, trim all characters from the underscore onwards.
-			//	WCHAR* underscore = wcschr(currentLocale, L'_');
-			//	if (underscore != nullptr)
-			//	{
-			//		*underscore = L'\0';
-			//	}
-
-			//	if (winrt::Language::IsWellFormed(currentLocale))
-			//	{
-			//		std::vector<winrt::hstring> languageList;
-			//		languageList.push_back(winrt::hstring(currentLocale));
-			//		formatter = winrt::DecimalFormatter(languageList, winrt::GlobalizationPreferences::HomeGeographicRegion());
-			//	}
-			//}
-
-			//if (!formatter)
-			//{
-			//	formatter = winrt::DecimalFormatter();
-			//}
-
-			//formatter.IntegerDigits(1);
-			//formatter.FractionDigits(0);
-
-			//return formatter;
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()
@@ -180,25 +123,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (GetTemplateChild(c_numberBoxTextBoxName) is TextBox textBox)
 			{
-				if (SharedHelpers.IsRS3OrHigher())
-				{
-#if !HAS_UNO
-					// Listen to PreviewKeyDown because textbox eats the down arrow key in some circumstances.
-					textBox.PreviewKeyDown += OnNumberBoxKeyDown;
-					registrations.Add(() => textBox.PreviewKeyDown -= OnNumberBoxKeyDown);
-#else
-					// UNO Docs: PreviewKeyDown is not implemented. Use KeyDown.
-					textBox.KeyDown += OnNumberBoxKeyDown;
-					registrations.Add(() => textBox.KeyDown -= OnNumberBoxKeyDown);
-#endif
-				}
-				else
-				{
-					// This is better than nothing.
-					textBox.KeyDown += OnNumberBoxKeyDown;
-					registrations.Add(() => textBox.KeyDown -= OnNumberBoxKeyDown);
-				}
-
+				textBox.KeyDown += OnNumberBoxKeyDown;
+				registrations.Add(() => textBox.KeyDown -= OnNumberBoxKeyDown);
 				textBox.KeyUp += OnNumberBoxKeyUp;
 				registrations.Add(() => textBox.KeyUp -= OnNumberBoxKeyUp);
 
@@ -236,18 +162,11 @@ namespace Microsoft.UI.Xaml.Controls
 				registrations.Add(() => popupSpinUp.Click -= OnSpinUpClick);
 			}
 
-			IsEnabledChanged += OnIsEnabledChanged;
-			registrations.Add(() => IsEnabledChanged -= OnIsEnabledChanged);
-
 			// .NET rounds to 12 significant digits when displaying doubles, so we will do the same.
 			m_displayRounder.SignificantDigits = 12;
 
-
+			UpdateSpinButtonPlacement();
 			UpdateSpinButtonEnabled();
-
-			UpdateVisualStateForIsEnabledChange();
-
-			ReevaluateForwardedUIAName();
 
 			if (ReadLocalValue(ValueProperty) == DependencyProperty.UnsetValue
 				&& ReadLocalValue(TextProperty) != DependencyProperty.UnsetValue)
@@ -260,20 +179,12 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateTextToValue();
 			}
 
-			// Uno specific.
 			_eventSubscriptions.Disposable = registrations;
 		}
 
-		// Uno specific.
 		private void DisposeRegistrations()
 		{
 			_eventSubscriptions.Disposable = null;
-		}
-
-		private void OnLoaded(object sender, RoutedEventArgs args)
-		{
-			// This is done OnLoaded so TextBox VisualStates can be updated properly.
-			UpdateSpinButtonPlacement();
 		}
 
 		private void OnValuePropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -289,7 +200,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					CoerceValue();
 
-					var newValue = Value;
+					var newValue = (double)Value;
 					if (newValue != oldValue && !(double.IsNaN(newValue) && double.IsNaN(oldValue)))
 					{
 						// Fire ValueChanged event
@@ -390,42 +301,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ValidateInput();
 			UpdateSpinButtonEnabled();
-		}
-
-		private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs args)
-		{
-			UpdateVisualStateForIsEnabledChange();
-		}
-
-		private void OnAutomationPropertiesNamePropertyChanged(object sender, DependencyProperty dp)
-		{
-			ReevaluateForwardedUIAName();
-		}
-
-		private void ReevaluateForwardedUIAName()
-		{
-			if (m_textBox is TextBox textBox)
-			{
-				var name = AutomationProperties.GetName(this);
-				if (!string.IsNullOrEmpty(name))
-				{
-					// AutomationProperties.Name is a non empty string, we will use that value.
-					AutomationProperties.SetName(textBox, name);
-				}
-				else
-				{
-					if (Header is string headerAsString)
-					{
-						// Header is a string, we can use that as our UIA name.
-						AutomationProperties.SetName(textBox, headerAsString);
-					}
-				}
-			}
-		}
-
-		private void UpdateVisualStateForIsEnabledChange()
-		{
-			VisualStateManager.GoToState(this, IsEnabled ? "Normal" : "Disabled", false);
 		}
 
 		private void OnNumberBoxGotFocus(object sender, RoutedEventArgs args)
@@ -611,8 +486,6 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						StepValue(-SmallChange);
 					}
-					// Only set as handled when we actually changed our state.
-					args.Handled = true;
 				}
 			}
 		}
@@ -643,11 +516,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				Value = newVal;
-
-				// We don't want the caret to move to the front of the text for example when using the up/down arrows
-				// to change the numberbox value.
-				MoveCaretToTextEnd();
-
 			}
 		}
 
@@ -680,6 +548,9 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_textUpdating = true;
 					Text = newText;
+
+					// This places the caret at the end of the text.
+					m_textBox.Select(newText.Length, 0);
 				}
 				finally
 				{
@@ -691,17 +562,18 @@ namespace Microsoft.UI.Xaml.Controls
 		private void UpdateSpinButtonPlacement()
 		{
 			var spinButtonMode = SpinButtonPlacementMode;
-			var state = spinButtonMode switch
-			{
-				NumberBoxSpinButtonPlacementMode.Inline => "SpinButtonsVisible",
-				NumberBoxSpinButtonPlacementMode.Compact => "SpinButtonsPopup",
-				_ => "SpinButtonsCollapsed"
-			};
 
-			VisualStateManager.GoToState(this, state, false);
-			if (m_textBox is TextBox textBox)
+			if (spinButtonMode == NumberBoxSpinButtonPlacementMode.Inline)
 			{
-				VisualStateManager.GoToState(textBox, state, false);
+				VisualStateManager.GoToState(this, "SpinButtonsVisible", false);
+			}
+			else if (spinButtonMode == NumberBoxSpinButtonPlacementMode.Compact)
+			{
+				VisualStateManager.GoToState(this, "SpinButtonsPopup", false);
+			}
+			else
+			{
+				VisualStateManager.GoToState(this, "SpinButtonsCollapsed", false);
 			}
 		}
 
@@ -765,11 +637,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// Header is not a string, so let's show header presenter
 					shouldShowHeader = true;
-					// When our header isn't a string, we use the NumberBox's UIA name for the textbox's UIA name.
-					if (m_textBox is TextBox textBox)
-					{
-						AutomationProperties.SetName(textBox, AutomationProperties.GetName(this));
-					}
 				}
 			}
 			var headerTemplate = HeaderTemplate;
@@ -791,16 +658,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_headerPresenter != null)
 			{
 				m_headerPresenter.Visibility = shouldShowHeader ? Visibility.Visible : Visibility.Collapsed;
-			}
-
-			ReevaluateForwardedUIAName();
-		}
-
-		private void MoveCaretToTextEnd()
-		{
-			if (m_textBox is TextBox textBox)
-			{
-				textBox.Select(textBox.Text.Length, 0);
 			}
 		}
 	}
