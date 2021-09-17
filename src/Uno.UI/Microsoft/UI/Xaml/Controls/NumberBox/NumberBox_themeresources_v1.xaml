@@ -7,32 +7,32 @@
 
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Light">
-			<StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="TextFillColorSecondaryBrush" />
-			<contract7NotPresent:StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
+			<StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
+			<contract7NotPresent:StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="SystemControlPageTextBaseMediumBrush" />
 
 			<!-- The following NumberBoxPopup* theme resources resource must be defined at the app level in order to take effect. -->
 			<contract7Present:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
 			<contract7NotPresent:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
-			<contract7Present:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
-			<contract7NotPresent:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+			<contract7Present:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+			<contract7NotPresent:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
 			<Thickness x:Key="NumberBoxPopupBorderThickness">1</Thickness>
 
-			<StaticResource x:Key="NumberBoxPopupSpinButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+			<StaticResource x:Key="NumberBoxPopupSpinButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<Thickness x:Key="NumberBoxPopupSpinButtonBorderThickness">0</Thickness>
 		</ResourceDictionary>
 
 		<ResourceDictionary x:Key="Dark">
-			<StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="TextFillColorSecondaryBrush" />
-			<contract7NotPresent:StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
+			<StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
+			<contract7NotPresent:StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="SystemControlPageTextBaseMediumBrush" />
 
 			<!-- The following NumberBoxPopup* theme resources resource must be defined at the app level in order to take effect. -->
 			<contract7Present:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
 			<contract7NotPresent:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
-			<contract7Present:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
-			<contract7NotPresent:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+			<contract7Present:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+			<contract7NotPresent:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
 			<Thickness x:Key="NumberBoxPopupBorderThickness">1</Thickness>
 
-			<StaticResource x:Key="NumberBoxPopupSpinButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+			<StaticResource x:Key="NumberBoxPopupSpinButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<Thickness x:Key="NumberBoxPopupSpinButtonBorderThickness">0</Thickness>
 		</ResourceDictionary>
 
@@ -55,10 +55,9 @@
 	<Thickness x:Key="NumberBoxSpinButtonBorderThickness">0,1,1,1</Thickness>
 	<Thickness x:Key="NumberBoxIconMargin">10,0,0,0</Thickness>
 
-	<x:Double x:Key="NumberBoxPopupHorizonalOffset">-21</x:Double>
-	<x:Double x:Key="NumberBoxPopupVerticalOffset">-27</x:Double>
+	<x:Double x:Key="NumberBoxPopupHorizonalOffset">-20</x:Double>
+	<x:Double x:Key="NumberBoxPopupVerticalOffset">-16</x:Double>
 	<x:Double x:Key="NumberBoxPopupShadowDepth">16</x:Double>
-	<x:Double x:Key="NumberBoxMinWidth">120</x:Double>
 
 	<Thickness x:Key="NumberBoxPopupIndicatorMargin">0,0,8,0</Thickness>
 
