@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 					items.ForEach(ClearContainerForDragDrop);
 				}
 			}
-		} 
+		}
 		#endregion
 
 		private void PrepareContainerForDragDrop(UIElement itemContainer)
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// The ListView must have both CanReorderItems and AllowDrop flags set to allow re-ordering (UWP)
 				// We also do not allow re-ordering if we where not able to find the item (as it has to be hidden in the view) (Uno only)
-				if (that.CanReorderItems && that.AllowDrop && draggedItem is {})
+				if (that.CanReorderItems && that.AllowDrop && draggedItem is { })
 				{
 					args.Data.SetData(ReorderOwnerFormatId, that);
 					args.Data.SetData(ReorderItemFormatId, draggedItem);
@@ -176,6 +176,10 @@ namespace Windows.UI.Xaml.Controls
 
 					that.DragItemsCompleted?.Invoke(that, args);
 				}
+
+				// Normally this will have been done by OnReorderCompleted, but sometimes OnReorderCompleted may not be called
+				// (eg if drag was released outside bounds of list)
+				that.CleanupReordering();
 			}
 		}
 
@@ -294,7 +298,7 @@ namespace Windows.UI.Xaml.Controls
 						// If we've moved items down, we have to take in consideration that the updatedIndex
 						// is already assuming that the item has been removed, so it's offsetted by 1.
 						newIndex--;
-					} 
+					}
 #endif
 				}
 
@@ -341,8 +345,15 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateReordering(Point location, FrameworkElement draggedContainer, object draggedItem)
 			=> VirtualizingPanel?.GetLayouter().UpdateReorderingItem(location, draggedContainer, draggedItem);
 
-		Uno.UI.IndexPath? CompleteReordering(FrameworkElement draggedContainer, object draggedItem)
+		private Uno.UI.IndexPath? CompleteReordering(FrameworkElement draggedContainer, object draggedItem)
 			=> VirtualizingPanel?.GetLayouter().CompleteReorderingItem(draggedContainer, draggedItem);
+
+		private void CleanupReordering()
+#if __ANDROID__
+			=> VirtualizingPanel?.GetLayouter().CleanupReordering();
+#else
+		{ }
+#endif
 
 		#region Helpers
 		private static bool IsObservableCollection(object src)

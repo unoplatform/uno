@@ -1053,6 +1053,10 @@ namespace Windows.UI.Xaml.Controls
 		private int ScrollBy(int offset, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			var fillDirection = offset >= 0 ? GeneratorDirection.Forward : GeneratorDirection.Backward;
+			if (IsReorderingAndNotReadyToScroll(fillDirection))
+			{
+				return 0;
+			}
 			int unconsumedOffset = offset;
 			int actualOffset = 0;
 			int appliedOffset = 0;
@@ -1091,6 +1095,15 @@ namespace Windows.UI.Xaml.Controls
 
 			return actualOffset;
 		}
+
+		/// <summary>
+		/// During a drag-to-reorder, if the item is dragged very rapidly then we may receive a scroll request before the item has been
+		/// redrawn at the position under the cursor. If the item is still at the beginning of the list (that is, the 'trailing' position
+		/// relative to scroll), this would violate the assumptions of the reordering logic (<see cref="TryTrimReorderingView(GeneratorDirection, RecyclerView.Recycler)"/>).
+		/// As a simple fix we simply skip this scroll request, and wait for one to occur after the item has been repositioned.
+		/// </summary>
+		private bool IsReorderingAndNotReadyToScroll(GeneratorDirection fillDirection)
+			=> _pendingReorder?.index is { } reorderingIndex && reorderingIndex == GetTrailingLine(fillDirection).FirstItem;
 
 		private int GetScrollConsumptionIncrement(GeneratorDirection fillDirection)
 		{
@@ -2150,14 +2163,23 @@ namespace Windows.UI.Xaml.Controls
 					_shouldDecrementSeedForPendingReorder = true;
 				}
 			}
+
+			CleanupReordering();
+
+			return updatedIndex;
+		}
+
+		/// <summary>
+		/// Clean up state after a drag-to-reorder operation.
+		/// </summary>
+		internal void CleanupReordering()
+		{
 			_pendingReorder = null;
 
 			ViewCache.RemoveReorderingItem();
 			// We need a full refresh to properly re-arrange all items at their right location,
 			// ignoring the temp location of the dragged / reordered item.
 			RecycleLayout();
-
-			return updatedIndex;
 		}
 
 		protected bool ShouldInsertReorderingView(GeneratorDirection direction, double physicalExtentOffset)
