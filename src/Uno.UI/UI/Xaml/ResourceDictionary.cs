@@ -22,6 +22,30 @@ namespace Windows.UI.Xaml
 		private ResourceDictionary _themeDictionaries;
 
 		/// <summary>
+		/// This event is fired when a key that has value of type <see cref="ResourceDictionary"/> is added or changed in the current <see cref="ResourceDictionary" />
+		/// </summary>
+		private event EventHandler<ResourceDictionaryChangedEventArgs> ResourceDictionaryValueChange;
+
+		private class ResourceDictionaryChangedEventArgs
+		{
+			public ResourceDictionaryChangedEventArgs(object addedKey, ResourceDictionary addedValue)
+			{
+				AddedKey = addedKey;
+				AddedValue = addedValue;
+			}
+
+			/// <summary>
+			/// The key that was added.
+			/// </summary>
+			public object AddedKey { get; }
+
+			/// <summary>
+			/// The <see cref="ResourceDictionary" /> that was added.
+			/// </summary>
+			public ResourceDictionary AddedValue { get; }
+		}
+
+		/// <summary>
 		/// If true, there may be lazily-set values in the dictionary that need to be initialized.
 		/// </summary>
 		private bool _hasUnmaterializedItems = false;
@@ -48,7 +72,15 @@ namespace Windows.UI.Xaml
 		}
 
 		public IList<ResourceDictionary> MergedDictionaries => _mergedDictionaries;
-		public IDictionary<object, object> ThemeDictionaries => _themeDictionaries ??= new ResourceDictionary();
+		public IDictionary<object, object> ThemeDictionaries
+		{
+			get
+			{
+				_themeDictionaries ??= new ResourceDictionary();
+				RegisterOnKeyAdded();
+				return _themeDictionaries;
+			}
+		}
 
 		/// <summary>
 		/// Is this a ResourceDictionary created from system resources, ie within the Uno.UI assembly?
@@ -189,7 +221,7 @@ namespace Windows.UI.Xaml
 			}
 			set
 			{
-				if(!(key is null))
+				if (!(key is null))
 				{
 					Set(new ResourceKey(key), value, throwIfPresent: false);
 				}
@@ -216,6 +248,10 @@ namespace Windows.UI.Xaml
 			else
 			{
 				_values[resourceKey] = value;
+				if (value is ResourceDictionary addedOrChangedResourceDictionary)
+				{
+					ResourceDictionaryValueChange?.Invoke(this, new ResourceDictionaryChangedEventArgs(resourceKey, addedOrChangedResourceDictionary));
+				}
 			}
 		}
 
@@ -241,6 +277,10 @@ namespace Windows.UI.Xaml
 				{
 					value = newValue;
 					_values[key] = newValue; // If Initializer threw an exception this will push null, to avoid running buggy initialization again and again (and avoid surfacing initializer to consumer code)
+					if (newValue is ResourceDictionary addedOrChangedResourceDictionary)
+					{
+						ResourceDictionaryValueChange?.Invoke(this, new ResourceDictionaryChangedEventArgs(key, addedOrChangedResourceDictionary));
+					}
 					ResourceResolver.PopScope();
 				}
 			}
@@ -382,8 +422,24 @@ namespace Windows.UI.Xaml
 			if (source._themeDictionaries != null)
 			{
 				_themeDictionaries ??= new ResourceDictionary();
+				RegisterOnKeyAdded();
 				_themeDictionaries.CopyFrom(source._themeDictionaries);
 			}
+		}
+
+		/// <summary>
+		/// DO NOT call this with null <see cref="_themeDictionaries" />
+		/// </summary>
+		private void RegisterOnKeyAdded()
+		{
+			// Uno TODO: Consider listening to dictionary clears and removes as well.
+			_themeDictionaries.ResourceDictionaryValueChange += (sender, e) =>
+			{
+				if (e.AddedKey is ResourceKey addedKey && addedKey.Equals(_activeTheme))
+				{
+					_activeThemeDictionary = e.AddedValue;
+				}
+			};
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys
