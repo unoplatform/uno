@@ -132,7 +132,13 @@ namespace Uno.Foundation.Interop
 			}
 			catch (Exception e)
 			{
-				value.Dispose();
+				try
+				{
+					value.Dispose();
+				}
+				// If the allocation failed, the dispose will most likely also fail,
+				// but we want to propagate the real exception of the allocation!
+				catch (Exception) { }
 
 				if (_logger.Value.IsEnabled(LogLevel.Error))
 				{

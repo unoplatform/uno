@@ -42,28 +42,32 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static DragDropExtension? _current;
 
+		public static DragDropExtension GetForCurrentView()
+		{
+			// Note: We use the GetForCurrentView naming pattern, but we don't support multi-threading yet
+			//		 and the '_current' is actually just static.
+
+			if (_current is null && Interlocked.CompareExchange(ref _current, new DragDropExtension(), null) is null)
+			{
+				// For now we enable the D&DExtension sync at creation and we don't support disable.
+				// This allow us to prevent a drop of a content on an app which actually don't support D&D
+				// (would drive the browser to open the dragged file and "dismiss" the app).
+				_current.Enable();
+			}
+
+			return _current;
+		}
+
 		private readonly CoreDragDropManager _manager;
 
 		private int _isInitialized;
 		private TSInteropMarshaller.HandleRef<DragDropExtensionEventArgs>? _args;
 		private NativeDrop? _pendingNativeDrop;
 
-		public DragDropExtension()
+		private DragDropExtension()
 		{
 			_manager = CoreDragDropManager.GetForCurrentView()
 				?? throw new InvalidOperationException("No CoreDragDropManager available for current thread.");
-
-			if (Interlocked.CompareExchange(ref _current, this, null) != null)
-			{
-				throw new InvalidOperationException(
-					"Multi-window (multi-threading) is not supported yet by DragDropExtension. "
-					+ "Only one instance is allowed per app.");
-			}
-
-			// For now we enable the D&DExtension sync at creation and we don't support disable.
-			// This allow us to prevent a drop of a content on an app which actually don't support D&D
-			// (would drive the browser to open the dragged file and "dismiss" the app).
-			Enable();
 		}
 
 		private void Enable()
