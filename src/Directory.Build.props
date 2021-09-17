@@ -111,6 +111,14 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.net6.csproj</_AdjustedOutputProjects>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <_IsUnoUISolution>true</_IsUnoUISolution>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="_IsUnoUISolution" />
+  </ItemGroup>
+
   <PropertyGroup Condition="$(_AdjustedOutputProjects.Contains('$(MSBuildProjectFile)'))">
 	<BaseOutputPath>bin\$(MSBuildProjectName)</BaseOutputPath>
 	<BaseIntermediateOutputPath>obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>

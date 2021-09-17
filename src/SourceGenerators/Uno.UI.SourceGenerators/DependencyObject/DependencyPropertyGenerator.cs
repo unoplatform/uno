@@ -123,7 +123,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{
 							using (GenerateNestingContainers(builder, typeSymbol))
 							{
-								using (builder.BlockInvariant($"{typeSymbol.GetAccessibilityAsCodeString()} partial class {typeSymbol.Name}"))
+								using (builder.BlockInvariant($"partial class {typeSymbol.Name}"))
 								{
 									foreach (var memberSymbol in typeSymbol.GetMembers())
 									{

@@ -436,30 +436,6 @@ namespace Microsoft.CodeAnalysis
 			}
 		}
 
-		/// <summary>
-		/// Converts declared accessibility on a symbol to a string usable in generated code.
-		/// </summary>
-		/// <param name="symbol">The symbol to get an accessibility string for.</param>
-		/// <returns>Accessibility in format "public", "protected internal", etc.</returns>
-		public static string GetAccessibilityAsCodeString(this ISymbol symbol)
-		{
-			switch (symbol.DeclaredAccessibility)
-			{
-				case Accessibility.Private:
-					return "private";
-				case Accessibility.ProtectedOrInternal:
-					return "protected internal";
-				case Accessibility.Protected:
-					return "protected";
-				case Accessibility.Internal:
-					return "internal";
-				case Accessibility.Public:
-					return "public";
-			}
-
-			throw new ArgumentOutOfRangeException($"{symbol.DeclaredAccessibility} is not supported.");
-		}
-
 		public static IFieldSymbol? FindField(this INamedTypeSymbol symbol, INamedTypeSymbol fieldType, string fieldName, StringComparison comparison = default)
 		{
 			return symbol.GetFields().FirstOrDefault(x => SymbolEqualityComparer.Default.Equals(x.Type, fieldType) && x.Name.Equals(fieldName, comparison));
