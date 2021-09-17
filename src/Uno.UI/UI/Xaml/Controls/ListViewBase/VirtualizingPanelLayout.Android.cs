@@ -2127,6 +2127,10 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
 		{
+			// Ensure that _pendingReorder.index is set. This is necessary in case it was invalidated from UpdateReorderingItem() but the
+			// list was not yet remeasured, which can happen when dragging rapidly.
+			GetAndUpdateReorderingIndex();
+
 			var updatedIndex = default(Uno.UI.IndexPath?);
 			if (_pendingReorder?.index is { } index)
 			{
