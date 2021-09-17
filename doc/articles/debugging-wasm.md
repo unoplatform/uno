@@ -9,7 +9,7 @@ Here’s what you need to do to debug an Uno application in Visual Studio (2019 
 
 - Install the latest [Uno Platform Visual Studio templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
 - Have Chrome or Edge (Chromium based)
-- In the Nuget Package manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` 3.0.0 or later
+- In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` 3.0.0 or later
 - Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
 - Ensure that in the `Properties/launchSettings.json` file, the following like below each `launchBrowser` line:
     ```json
@@ -31,7 +31,7 @@ You should now be able to set breakpoints or do step by step debugging of your c
 
 To debug your application:
 - Make your WASM project the startup project (right-click **set as startup** in Solution Explorer)
-- In the Nuget Package manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` 3.0.0 or later
+- In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` to 3.0.0 or later
 - Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
 - In the debugging toolbar:
 
