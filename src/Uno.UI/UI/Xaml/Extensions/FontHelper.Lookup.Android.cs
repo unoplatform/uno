@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿#nullable enable
+
+using Android.App;
 using Android.Graphics;
 using System;
 using System.Collections.Generic;
@@ -26,19 +28,19 @@ namespace Windows.UI.Xaml
 			{
 				private readonly int _hashCode;
 
-				public Entry(string fontFamily, FontWeight fontWeight, TypefaceStyle style)
+				public Entry(string? fontFamily, FontWeight fontWeight, TypefaceStyle style)
 				{
 					FontFamily = fontFamily;
 					FontWeight = fontWeight;
 					Style = style;
-					_hashCode = FontFamily.GetHashCode() ^ FontWeight.GetHashCode() ^ Style.GetHashCode();
+					_hashCode = (FontFamily?.GetHashCode() ?? 0) ^ FontWeight.GetHashCode() ^ Style.GetHashCode();
 				}
 
-				public string FontFamily { get; }
+				public string? FontFamily { get; }
 				public FontWeight FontWeight { get; }
 				public TypefaceStyle Style { get; }
 
-				public override bool Equals(object other)
+				public override bool Equals(object? other)
 				{
 					if (other is Entry otherEntry)
 					{
@@ -55,11 +57,11 @@ namespace Windows.UI.Xaml
 
 			private readonly HashtableEx _entries = new HashtableEx();
 
-			internal bool TryGetValue(Entry key, out Typeface result)
+			internal bool TryGetValue(Entry key, out Typeface? result)
 			{
 				if (_entries.TryGetValue(key, out var value))
 				{
-					result = (Typeface)value;
+					result = (Typeface?)value;
 					return true;
 				}
 
@@ -67,7 +69,7 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			internal void Add(Entry key, Typeface typeFace)
+			internal void Add(Entry key, Typeface? typeFace)
 				=> _entries.Add(key, typeFace);
 
 			internal void Clear()

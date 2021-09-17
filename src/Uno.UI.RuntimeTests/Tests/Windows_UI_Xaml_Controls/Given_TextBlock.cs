@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -53,6 +55,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Where ", ((Run)inlines[0]).Text);
 			Assert.AreEqual("did", ((Run)((Italic)inlines[1]).Inlines.Single()).Text);
 			Assert.AreEqual(" my text go?", ((Run)inlines[2]).Text);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Null_FontFamily()
+		{
+			var SUT = new TextBlock { Text = "Some text", FontFamily = null };
+			WindowHelper.WindowContent = SUT;
+			SUT.Measure(new Size(1000, 1000));
 		}
 	}
 }
