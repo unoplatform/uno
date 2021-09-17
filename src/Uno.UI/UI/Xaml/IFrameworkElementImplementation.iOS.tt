@@ -386,7 +386,11 @@ namespace <#= mixin.NamespaceName #>
 				
 				if (previousSize != _renderSize)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _renderSize));
+					if(IsLoaded)
+					{
+						// SizeChanged event should only be raised when the element is loaded (connected to VisualRoot)
+						SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _renderSize));
+					}
 
 					if (_renderTransform != null)
 					{

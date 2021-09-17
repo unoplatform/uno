@@ -344,6 +344,12 @@ namespace <#= mixin.NamespaceName #>
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		private protected virtual double GetActualWidth() => _actualSize.Width;
 		private protected virtual double GetActualHeight() => _actualSize.Height;
+
+		Size IFrameworkElement.AssignedActualSize
+		{
+			get => _actualSize;
+			set => _actualSize = value;
+		}
 #endif
 
 		private Size _actualSize;
@@ -374,7 +380,11 @@ namespace <#= mixin.NamespaceName #>
 
 				if (previousSize != _actualSize)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
+					if(IsLoaded)
+					{
+						// SizeChanged event should only be raised when the element is loaded (connected to VisualRoot)
+						SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
+					}
 
 					if (_renderTransform != null)
 					{

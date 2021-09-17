@@ -632,17 +632,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				innerRaisedEvent = e;
 				innerRaisedEventOrder = ++eventOrderSequence;
 
+				Console.WriteLine($"#{eventOrderSequence}: inner.SizeChanged({e.NewSize})");
+
 				tcs.SetResult(null);
 			};
 			sut.SizeChanged += (o, e) =>
 			{
 				sutRaisedEvent = e;
 				sutRaisedEventOrder = ++eventOrderSequence;
+
+				Console.WriteLine($"#{eventOrderSequence}: sut.SizeChanged({e.NewSize})");
 			};
 			container.SizeChanged += (o, e) =>
 			{
 				containerRaisedEvent = e;
 				containerRaisedEventOrder = ++eventOrderSequence;
+
+				Console.WriteLine($"#{eventOrderSequence}: container.SizeChanged({e.NewSize})");
 			};
 
 			TestServices.WindowHelper.WindowContent = container;
@@ -665,29 +671,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			container.ActualWidth.Should().Be(100);
 			container.ActualHeight.Should().Be(100);
 
+#if !(__IOS__ || __MACOS__)
+			innerRaisedEventOrder.Should().Be(3, because: nameof(innerRaisedEventOrder));
+			sutRaisedEventOrder.Should().Be(2, because: nameof(sutRaisedEventOrder));
+			containerRaisedEventOrder.Should().Be(1, because: nameof(containerRaisedEventOrder));
+			eventOrderSequence.Should().Be(3, because: nameof(eventOrderSequence));
+#endif
+
+
 			innerRaisedEvent.Should().NotBeNull(because: nameof(innerRaisedEvent));
 			innerRaisedEvent?.NewSize.Should().BeOfWidth(100).And.BeOfHeight(200);
-			innerRaisedEventOrder.Should().Be(3, because: nameof(innerRaisedEventOrder));
 
 			sutRaisedEvent.Should().NotBeNull(because: nameof(sutRaisedEvent));
 			sutRaisedEvent?.NewSize.Should().BeOfWidth(100).And.BeOfHeight(200);
-			sutRaisedEventOrder.Should().Be(2, because: nameof(sutRaisedEventOrder));
+
 
 			containerRaisedEvent.Should().NotBeNull(because: nameof(containerRaisedEvent));
 			containerRaisedEvent?.NewSize.Should().BeOfWidth(100).And.BeOfHeight(100);
-			containerRaisedEventOrder.Should().Be(1, because: nameof(containerRaisedEventOrder));
 
 			LayoutInformation.GetAvailableSize(inner).Should().Be(new Size(100, double.PositiveInfinity), because: "inner AvailableSize");
 			LayoutInformation.GetAvailableSize(sut).Should().Be(new Size(100, 100), because: "sut AvailableSize");
 			// we don't care about container's availableSize here since it's environment dependant and unrelated to what we're testing
 
+#if !(__IOS__ || __MACOS__)
 			LayoutInformation.GetLayoutSlot(inner).Should().Be(new Rect(0, 0, 100, 200), because: "inner LayoutSlot");
 			LayoutInformation.GetLayoutSlot(sut).Should().Be(new Rect(0, 0, 100, 100), because: "sut LayoutSlot");
 			LayoutInformation.GetLayoutSlot(container).Should().Be(new Rect(0, 0, 100, 100), because: "container LayoutSlot");
+#endif
 		}
 
+#if !(__IOS__ || __MACOS__)
 		[TestMethod]
 		[RunsOnUIThread]
+#endif
 		public async Task When_ArrangingElement_Not_Loaded()
 		{
 			using var _ = new AssertionScope();
@@ -710,8 +726,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Should not have actual/render size until loaded
 			sut.RenderSize.Should().BeOfWidth(0).And.BeOfHeight(0);
-			sut.ActualWidth.Should().Be(0);
-			sut.ActualHeight.Should().Be(0);
+			sut.ActualWidth.Should().Be(0, "sut.ActualWidth");
+			sut.ActualHeight.Should().Be(0, "sut.ActualHeight");
 
 			await TestServices.WindowHelper.WaitForIdle();
 

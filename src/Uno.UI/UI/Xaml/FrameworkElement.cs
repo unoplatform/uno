@@ -1022,7 +1022,11 @@ namespace Windows.UI.Xaml
 				{
 					base.AssignedActualSize = value;
 
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, value));
+					if (IsLoaded)
+					{
+						// SizeChanged event should only be raised when the element is loaded (connected to VisualRoot)
+						SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, value));
+					}
 
 					if (_renderTransform != null)
 					{
