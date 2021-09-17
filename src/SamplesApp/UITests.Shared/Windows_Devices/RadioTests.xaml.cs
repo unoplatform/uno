@@ -29,9 +29,9 @@ namespace UITests.Shared.Windows_Devices
 				var intermediateRadiosList = new List<IntermediateRadio>();
 
 				foreach (var oneRadio in radiosList)
-                {
-					if(oneRadio.State == RadioState.Unknown)
-                    {
+				{
+					if (oneRadio.State == RadioState.Unknown)
+					{
 						uiResultMsg.Text = "Your current Radios (RadioState.Unknown means: you probably have no appropriate permission declared):";
 					}
 
@@ -54,7 +54,7 @@ namespace UITests.Shared.Windows_Devices
 
 	// an intermediate class, between Windows.Devices.Radios.Radio and XAML binding
 	public class IntermediateRadio
-    {
+	{
 		public string RadioKind { get; set; }
 
 		public string RadioName { get; set; }

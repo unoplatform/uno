@@ -1,9 +1,14 @@
+#nullable enable
+
 #if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Uno.Logging;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 
 
 namespace Windows.Devices.Radios
@@ -18,111 +23,224 @@ namespace Windows.Devices.Radios
 
 		public RadioState State { get; internal set; }
 
-		private static Radio GetRadiosBluetooth()
+		private Radio()
 		{
-			Android.Content.Context context = Android.App.Application.Context;
-			bool btFull = context.PackageManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureBluetooth);
-			bool btLE = context.PackageManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureBluetoothLe);
-			if (!(btFull || btLE))
+			Name = "";
+		}
+
+
+		private void AddLogMain(Microsoft.Extensions.Logging.LogLevel logLevel, string message)
+		{
+			if (this.Log().IsEnabled(logLevel))
 			{
+				this.Log().Debug("Could not get the bluetooth default adapter (older Android), assuming no adapter");
+			}
+		}
+		private static void AddLog(Microsoft.Extensions.Logging.LogLevel logLevel, string message)
+		{
+			var radio = new Radio();
+			radio.AddLogMain(logLevel, message);
+		}
+
+		private static Radio? GetRadiosBluetooth()
+		{
+			var context = Android.App.Application.Context;
+
+			var pkgManager = context.PackageManager;
+			if (pkgManager is null)
+			{
+				// required by #nullable
 				return null;
 			}
 
-			var oRadio = new Radio();
-			oRadio.Kind = RadioKind.Bluetooth;
-			oRadio.Name = "Bluetooth";  // name as in UWP
+			bool hasBluetooth = pkgManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureBluetooth);
+			bool hasBluetoothLE = pkgManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureBluetoothLe);
+			if (!(hasBluetooth || hasBluetoothLE))
+			{
+				AddLog(Microsoft.Extensions.Logging.LogLevel.Debug,
+					"GetRadiosBluetooth(): this device doesn't have any Bluetooth interface");
+				return null;
+			}
+
+			var radio = new Radio();
+			radio.Kind = RadioKind.Bluetooth;
+			radio.Name = "Bluetooth";  // name as in UWP
 
 			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.Bluetooth))
 			{
-				oRadio.State = RadioState.Unknown;
-				return oRadio;
+				AddLog(Microsoft.Extensions.Logging.LogLevel.Warning, 
+					"GetRadiosBluetooth(): no 'Bluetooth' permission, check app Manifest");
+				radio.State = RadioState.Unknown;
+				return radio;
 			}
 
 			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.JellyBeanMr1)
 			{
 				// deprecated in API 31
 #pragma warning disable CS0618 // Type or member is obsolete
-				var btAdapter = Android.Bluetooth.BluetoothAdapter.DefaultAdapter;
+				var adapter = Android.Bluetooth.BluetoothAdapter.DefaultAdapter;
 #pragma warning restore CS0618 // Type or member is obsolete
-				if (btAdapter == null)
+				if (adapter == null)
 				{
-					return null;    // shouldn't happen...
+					AddLog(Microsoft.Extensions.Logging.LogLevel.Warning,
+						"GetRadiosBluetooth(): should not happen: Android inconsistence, device has Bluetooth capability but no Bluetooth adapter (old API)");
+					return null;
 				}
-				else if (!btAdapter.IsEnabled)
+				else if (!adapter.IsEnabled)
 				{
-					oRadio.State = RadioState.Off;
+					radio.State = RadioState.Off;
 				}
 				else
 				{
-					oRadio.State = RadioState.On;
+					radio.State = RadioState.On;
 				}
 
-				return oRadio;
+				return radio;
 			}
 			else
 			{
-				var btAdapter = ((Android.Bluetooth.BluetoothManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.BluetoothService)).Adapter;
-				if (btAdapter == null)
+				if (Android.App.Application.Context.GetSystemService(Android.Content.Context.BluetoothService) is Android.Bluetooth.BluetoothManager bluetoothManager)
 				{
-					return null;    // shouldn't happen...
-				}
-				if (btAdapter.State != Android.Bluetooth.State.On)
-				{
-					oRadio.State = RadioState.Off;
+					var adapter = bluetoothManager.Adapter;
+					if (adapter == null)
+					{
+						AddLog(Microsoft.Extensions.Logging.LogLevel.Warning,
+							"GetRadiosBluetooth(): should not happen: Android inconsistence, device has Bluetooth capability but no Bluetooth adapter (new API)");
+						return null;
+					}
+					if (adapter.State != Android.Bluetooth.State.On)
+					{
+						radio.State = RadioState.Off;
+					}
+					else
+					{
+						radio.State = RadioState.On;
+					}
+
+					return radio;
 				}
 				else
 				{
-					oRadio.State = RadioState.On;
+					AddLog(Microsoft.Extensions.Logging.LogLevel.Warning,
+						"GetRadiosBluetooth(): should not happen: Android inconsistence, device has Bluetooth capability but no BluetoothService (new API)");
+					return null;
 				}
-
-				return oRadio;
 			}
 
 		}
 
-		private static Radio GetRadiosWiFi()
+		private static bool? GetRadioStateForNet(Android.Net.ConnectivityManager connManager, RadioKind radioKind)
 		{
-			Android.Content.Context context = Android.App.Application.Context;
-			if (!context.PackageManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureWifi))
+			var activeNetwork = connManager.ActiveNetwork;
+			if (activeNetwork is null)
 			{
+				AddLog(Microsoft.Extensions.Logging.LogLevel.Warning,
+					"GetRadioStateForNet(): ActiveNetwork is null, assuming no radio");
 				return null;
 			}
 
-			var oRadio = new Radio();
-			oRadio.Kind = RadioKind.WiFi;
-			oRadio.Name = "Wi-Fi";  // name as in UWP
+			var netCaps = connManager.GetNetworkCapabilities(activeNetwork);
+			if (netCaps is null)
+			{
+				AddLog(Microsoft.Extensions.Logging.LogLevel.Debug,
+					"GetRadioStateForNet(): GetNetworkCapabilities is null, assuming no radio");
+				return null;
+			}
+
+			if (radioKind == RadioKind.WiFi)
+			{
+				return netCaps.HasTransport(Android.Net.TransportType.Wifi);
+			}
+			else
+			{
+				return netCaps.HasTransport(Android.Net.TransportType.Cellular);
+			}
+		}
+
+		private static Radio? GetRadiosWiFiOrCellular(RadioKind radioKind)
+		{
+			var context = Android.App.Application.Context;
+
+			var pkgManager = context.PackageManager;
+			if (pkgManager is null)
+			{
+				// required by #nullable
+				return null;
+			}
+
+			string systemFeature;
+			if (radioKind == RadioKind.WiFi)
+			{
+				systemFeature = Android.Content.PM.PackageManager.FeatureWifi;
+			}
+			else
+			{
+				systemFeature = Android.Content.PM.PackageManager.FeatureTelephony;
+			}
+
+			if (!pkgManager.HasSystemFeature(systemFeature))
+			{
+				AddLog(Microsoft.Extensions.Logging.LogLevel.Debug,
+					"GetRadiosWiFiOrCellular(" + radioKind.ToString() + "): this device doesn't have any interface of this kind");
+				return null;
+			}
+
+			var radio = new Radio();
+			radio.Kind = radioKind;
+			if (radioKind == RadioKind.WiFi)
+			{
+				radio.Name = "Wi-Fi";  // name as in UWP
+			}
+			else
+			{
+				radio.Name = "Cellular";  // I have "Cellular 6" (Lumia 532), but maybe "6" doesn't mean anything
+			}
 
 			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.AccessNetworkState))
 			{
-				oRadio.State = RadioState.Unknown;
-				return oRadio;
+				AddLog(Microsoft.Extensions.Logging.LogLevel.Warning,
+					"GetRadiosWiFiOrCellular(" + radioKind.ToString() + "): no 'AccessNetworkState' permission, check app Manifest");
+				
+				radio.State = RadioState.Unknown;
+				return radio;
 			}
 
-			var connManager = (Android.Net.ConnectivityManager)context.GetSystemService(Android.Content.Context.ConnectivityService);
+			var sysService = context.GetSystemService(Android.Content.Context.ConnectivityService);
+			if (sysService is null)
+			{
+				AddLog(Microsoft.Extensions.Logging.LogLevel.Warning,
+					"GetRadiosWiFiOrCellular(" + radioKind.ToString() + "): GetSystemService returns null, assuming no radio");
+				return null;
+			}
+
+			var connManager = (Android.Net.ConnectivityManager)sysService;
+			if (connManager is null)
+			{
+				AddLog(Microsoft.Extensions.Logging.LogLevel.Warning,
+					"GetRadiosWiFiOrCellular(" + radioKind.ToString() + "): Android.Net.ConnectivityManager is null, assuming no WiFi radio");
+				return null;
+			}
 
 			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.LollipopMr1)
 			{
 				// since API 23
-				var activeNetwork = connManager.ActiveNetwork;
-				if (activeNetwork is null)
+				var radiostate = GetRadioStateForNet(connManager, radioKind);
+				if (radiostate is null || !radiostate.HasValue)
 				{
+					// detailed Log entry already done in GetRadioStateForNet
 					return null;
 				}
-				var netCaps = connManager.GetNetworkCapabilities(activeNetwork);
-				if (netCaps is null)
+
+				if (radiostate.Value)
 				{
-					return null;
-				}
-				if (netCaps.HasTransport(Android.Net.TransportType.Wifi))
-				{
-					oRadio.State = RadioState.On;
+					radio.State = RadioState.On;
 				}
 				else
 				{
-					oRadio.State = RadioState.Off;
+					radio.State = RadioState.Off;
 				}
 
-				return oRadio;
+				return radio;
 			}
 			else
 			{
@@ -131,120 +249,55 @@ namespace Windows.Devices.Radios
 				var netInfo = connManager.ActiveNetworkInfo;
 				if (netInfo is null)
 				{
-					oRadio.State = RadioState.Off;
+					radio.State = RadioState.Off;
 				}
 				else
 				{
-					if (netInfo.Type == Android.Net.ConnectivityType.Wifi ||
-						(netInfo.Type == Android.Net.ConnectivityType.Wimax))
-#pragma warning restore CS0618 // Type or member is obsolete
+					radio.State = RadioState.Off;
+					if (radioKind == RadioKind.WiFi)
 					{
-						oRadio.State = RadioState.On;
+						if (netInfo.Type == Android.Net.ConnectivityType.Wifi ||
+							netInfo.Type == Android.Net.ConnectivityType.Wimax)
+						{
+							radio.State = RadioState.On;
+						}
 					}
 					else
 					{
-						oRadio.State = RadioState.Off;
+						if (netInfo.Type == Android.Net.ConnectivityType.Mobile)
+						{
+							radio.State = RadioState.On;
+						}
 					}
-				}
-				return oRadio;
-			}
-
-
-		}
-
-		private static Radio GetRadiosMobile()
-		{
-			Android.Content.Context context = Android.App.Application.Context;
-			if (!context.PackageManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureTelephony))
-			{
-				return null;
-			}
-
-			var oRadio = new Radio();
-			oRadio.Kind = RadioKind.MobileBroadband;
-			oRadio.Name = "Cellular";  // I have "Cellular 6" (Lumia 532), but maybe "6" doesn't mean anything
-
-			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.AccessNetworkState))
-			{
-				oRadio.State = RadioState.Unknown;
-				return oRadio;
-			}
-
-			var connManager = (Android.Net.ConnectivityManager)context.GetSystemService(Android.Content.Context.ConnectivityService);
-
-			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.LollipopMr1)
-			{
-				// available since API 23
-				var activeNetwork = connManager.ActiveNetwork;
-				if (activeNetwork is null)
-				{
-					return null;
-				}
-				var netCaps = connManager.GetNetworkCapabilities(activeNetwork);
-				if (netCaps is null)
-				{
-					return null;
-				}
-				if (netCaps.HasTransport(Android.Net.TransportType.Cellular))
-				{
-					oRadio.State = RadioState.On;
-				}
-				else
-				{
-					oRadio.State = RadioState.Off;
-				}
-
-				return oRadio;
-			}
-			else
-			{
-				// for Android API 1 to 28 (deprecated in 29)
-#pragma warning disable CS0618 // Type or member is obsolete
-				var netInfo = connManager.ActiveNetworkInfo;
-				if (netInfo is null)
-				{
-					oRadio.State = RadioState.Off;
-				}
-				else
-				{
-					if (netInfo.Type == Android.Net.ConnectivityType.Mobile)
 #pragma warning restore CS0618 // Type or member is obsolete
-					{
-						oRadio.State = RadioState.On;
-					}
-					else
-					{
-						oRadio.State = RadioState.Off;
-					}
+
 				}
-				return oRadio;
+				return radio;
 			}
 		}
 
 
 		private async static Task<IReadOnlyList<Radio>> GetRadiosAsyncTask()
 		{
-			var oRadios = new List<Radio>();
+			var radios = new List<Radio>();
 
-			var oRadio = GetRadiosBluetooth();
-			if (oRadio != null) oRadios.Add(oRadio); // yield oRadio;
+			var radio = GetRadiosBluetooth();
+			if (radio != null) radios.Add(radio); // yield oRadio;
 
-			oRadio = GetRadiosWiFi();
-			if (oRadio != null) oRadios.Add(oRadio); // yield oRadio;
+			radio = GetRadiosWiFiOrCellular(RadioKind.WiFi);
+			if (radio != null) radios.Add(radio); // yield oRadio;
 
-			oRadio = GetRadiosMobile();
-			if (oRadio != null) oRadios.Add(oRadio); // yield oRadio;
+			radio = GetRadiosWiFiOrCellular(RadioKind.MobileBroadband);
+			if (radio != null) radios.Add(radio); // yield oRadio;
 
-			return oRadios;
+			return radios;
 		}
 
 		/// <summary>
 		/// Gets info about radio devices which exist on the system
 		/// </summary>
 		public static IAsyncOperation<IReadOnlyList<Radio>> GetRadiosAsync()
-		{
-			return GetRadiosAsyncTask().AsAsyncOperation();
-		}
+		=> GetRadiosAsyncTask().AsAsyncOperation();
 
 	}
 
