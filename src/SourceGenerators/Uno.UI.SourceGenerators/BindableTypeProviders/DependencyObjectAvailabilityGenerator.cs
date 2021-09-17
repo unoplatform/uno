@@ -5,19 +5,10 @@ using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Xml.Serialization;
-using System.Collections;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.FindSymbols;
-using Microsoft.CodeAnalysis.Text;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.XamlGenerator;
-using Microsoft.CodeAnalysis.CSharp;
-using System.Reflection.Metadata.Ecma335;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Xml;
 
@@ -51,14 +42,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private string? _baseIntermediateOutputPath;
 			private string? _intermediatePath;
 			private string? _assemblyName;
-			private INamedTypeSymbol[]? _bindableAttributeSymbol;
 			private INamedTypeSymbol? _dependencyObjectSymbol;
-			private INamedTypeSymbol? _resourceDictionarySymbol;
-			private IModuleSymbol? _currentModule;
 			private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
 			private bool _xamlResourcesTrimming;
-
-			public string[]? AnalyzerSuppressions { get; set; }
 
 			internal void Generate(GeneratorExecutionContext context)
 			{
@@ -88,14 +74,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						);
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
 						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
-
-						_bindableAttributeSymbol = FindBindableAttributes(context);
 						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
-						_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.ResourceDictionary");
-						_currentModule = context.Compilation.SourceModule;
-
-						AnalyzerSuppressions = new string[0];
-
 						var modules = from ext in context.Compilation.ExternalReferences
 									  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 									  where sym != null
@@ -183,9 +162,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 				doc.Save(fileName);
 			}
-
-			private INamedTypeSymbol[] FindBindableAttributes(GeneratorExecutionContext context) =>
-				_namedSymbolsLookup!.TryGetValue("BindableAttribute", out var types) ? types : new INamedTypeSymbol[0];
 
 			private string GenerateTypeProviders(IEnumerable<INamedTypeSymbol> bindableTypes)
 			{

@@ -22,7 +22,6 @@ namespace Uno.Roslyn
 		private const string AdditionalTypesFileName = "additionalTypes.cs";
 
 		private readonly INamedTypeSymbol _nullableSymbol;
-		private string[] _additionalTypes;
 		private readonly Dictionary<string, INamedTypeSymbol> _legacyTypes;
 		private readonly Func<string, ITypeSymbol[]> _findTypesByName;
 		private readonly Func<string, ITypeSymbol> _findTypeByFullName;
@@ -41,7 +40,6 @@ namespace Uno.Roslyn
 
 			_findTypesByName = Funcs.Create<string, ITypeSymbol[]>(SourceFindTypesByName).AsLockedMemoized();
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol>(SourceFindTypeByFullName).AsLockedMemoized();
-			_additionalTypes = new string[0];
 			_legacyTypes = BuildLegacyTypes(legacyTypes);
 			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(GetAllDerivingTypes).AsLockedMemoized();
 			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
