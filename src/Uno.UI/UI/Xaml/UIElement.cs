@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml
 
 		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
 
-		internal Size AssignedActualSize { get; set; }
+		internal virtual Size AssignedActualSize { get; set; }
 
 		private protected virtual double GetActualWidth() => AssignedActualSize.Width;
 

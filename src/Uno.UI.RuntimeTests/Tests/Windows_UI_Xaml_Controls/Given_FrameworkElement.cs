@@ -671,7 +671,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			container.ActualWidth.Should().Be(100);
 			container.ActualHeight.Should().Be(100);
 
-#if !(__IOS__ || __MACOS__)
+#if __IOS__ || __MACOS__
+			// Event ordering is not well supported on iOS & macOS
+#elif __ANDROID__
+			// Event ordering is not well supported on Android
+#else
 			innerRaisedEventOrder.Should().Be(3, because: nameof(innerRaisedEventOrder));
 			sutRaisedEventOrder.Should().Be(2, because: nameof(sutRaisedEventOrder));
 			containerRaisedEventOrder.Should().Be(1, because: nameof(containerRaisedEventOrder));
@@ -700,7 +704,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-#if !(__IOS__ || __MACOS__)
+#if !(__IOS__ || __MACOS__ || __ANDROID__)
 		[TestMethod]
 		[RunsOnUIThread]
 #endif

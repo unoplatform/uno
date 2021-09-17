@@ -1014,6 +1014,12 @@ namespace Windows.UI.Xaml
 
 		Size IFrameworkElement.AssignedActualSize
 		{
+			get => AssignedActualSize;
+			set => AssignedActualSize = value;
+		}
+
+		internal override Size AssignedActualSize
+		{
 			get => base.AssignedActualSize;
 			set
 			{

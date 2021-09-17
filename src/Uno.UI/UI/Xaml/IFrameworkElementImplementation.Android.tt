@@ -802,6 +802,15 @@ namespace <#= mixin.NamespaceName #>
 			
 		}
 
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
+		Size IFrameworkElement.AssignedActualSize
+		{
+			get => _actualSize;
+			set => _actualSize = value;
+		}
+#endif
+
+
 #if <#= mixin.OverridesOnLayout #> // OverridesOnLayout
 		private Size _actualSize;
 		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
@@ -819,7 +828,10 @@ namespace <#= mixin.NamespaceName #>
 
 			if (newSize != previousSize)
 			{
-				SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, newSize));
+				if(IsLoaded)
+				{
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, newSize));
+				}
 				_renderTransform?.UpdateSize(newSize); // TODO: Move ** BEFORE ** base.OnLayout() ???
 			}
 		}
