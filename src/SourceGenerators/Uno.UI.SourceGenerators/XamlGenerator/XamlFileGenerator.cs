@@ -3096,11 +3096,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else
 						{
-							var isMemberInsideResourceDictionary = IsMemberInsideResourceDictionary(objectDefinition);
+							var topLevelControl = _fileDefinition.Objects.First().Type;
 
 							if (
 								member.Member.Name == "Name"
-								&& !IsApplication(_fileDefinition.Objects.First().Type))
+								&& !IsApplication(topLevelControl)
+								&& topLevelControl.Name != "ResourceDictionary"
+							)
 							{
 								writer.AppendLineInvariant($@"nameScope.RegisterName(""{member.Value}"", {closureName});");
 							}
@@ -3108,7 +3110,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (
 								member.Member.Name == "Name"
 								&& !IsAttachedProperty(member)
-								&& !IsApplication(_fileDefinition.Objects.First().Type)
+								&& !IsApplication(topLevelControl)
+								&& topLevelControl.Name != "ResourceDictionary"
 							)
 							{
 								nameMember = member;
