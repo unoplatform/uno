@@ -604,6 +604,119 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, loadedCount, "loaded");
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ArrangingElement_Loaded()
+		{
+			using var _ = new AssertionScope();
+
+			var sut = new StackPanel { Background = new SolidColorBrush(Colors.Red) };
+			var container = new Border { Width = 100, Height = 100, Child = sut, Background = new SolidColorBrush(Colors.Blue) };
+			var inner = new Border { Height = 200, Background = new SolidColorBrush(Colors.Yellow) };
+			sut.Children.Add(inner);
+
+			SizeChangedEventArgs innerRaisedEvent = default;
+			var innerRaisedEventOrder = 0;
+			SizeChangedEventArgs sutRaisedEvent = default;
+			var sutRaisedEventOrder = 0;
+			SizeChangedEventArgs containerRaisedEvent = default;
+			var containerRaisedEventOrder = 0;
+
+			var eventOrderSequence = 0;
+
+			var tcs = new TaskCompletionSource<object>();
+
+			inner.SizeChanged += (o, e) =>
+			{
+				innerRaisedEvent = e;
+				innerRaisedEventOrder = ++eventOrderSequence;
+
+				tcs.SetResult(null);
+			};
+			sut.SizeChanged += (o, e) =>
+			{
+				sutRaisedEvent = e;
+				sutRaisedEventOrder = ++eventOrderSequence;
+			};
+			container.SizeChanged += (o, e) =>
+			{
+				containerRaisedEvent = e;
+				containerRaisedEventOrder = ++eventOrderSequence;
+			};
+
+			TestServices.WindowHelper.WindowContent = container;
+
+			// Wait for last event to be raised, or a delay in case of error
+			await Task.WhenAny(tcs.Task, Task.Delay(1500));
+
+			inner.DesiredSize.Should().BeOfWidth(0).And.BeOfHeight(200);
+			inner.RenderSize.Should().BeOfWidth(100).And.BeOfHeight(200);
+			inner.ActualWidth.Should().Be(100);
+			inner.ActualHeight.Should().Be(200);
+
+			sut.DesiredSize.Should().BeOfWidth(0).And.BeOfHeight(100);
+			sut.RenderSize.Should().BeOfWidth(100).And.BeOfHeight(200);
+			sut.ActualWidth.Should().Be(100);
+			sut.ActualHeight.Should().Be(200);
+
+			container.DesiredSize.Should().BeOfWidth(100).And.BeOfHeight(100);
+			container.RenderSize.Should().BeOfWidth(100).And.BeOfHeight(100);
+			container.ActualWidth.Should().Be(100);
+			container.ActualHeight.Should().Be(100);
+
+			innerRaisedEvent.Should().NotBeNull(because: nameof(innerRaisedEvent));
+			innerRaisedEvent?.NewSize.Should().BeOfWidth(100).And.BeOfHeight(200);
+			innerRaisedEventOrder.Should().Be(3, because: nameof(innerRaisedEventOrder));
+
+			sutRaisedEvent.Should().NotBeNull(because: nameof(sutRaisedEvent));
+			sutRaisedEvent?.NewSize.Should().BeOfWidth(100).And.BeOfHeight(200);
+			sutRaisedEventOrder.Should().Be(2, because: nameof(sutRaisedEventOrder));
+
+			containerRaisedEvent.Should().NotBeNull(because: nameof(containerRaisedEvent));
+			containerRaisedEvent?.NewSize.Should().BeOfWidth(100).And.BeOfHeight(100);
+			containerRaisedEventOrder.Should().Be(1, because: nameof(containerRaisedEventOrder));
+
+			LayoutInformation.GetAvailableSize(inner).Should().Be(new Size(100, double.PositiveInfinity), because: "inner AvailableSize");
+			LayoutInformation.GetAvailableSize(sut).Should().Be(new Size(100, 100), because: "sut AvailableSize");
+			// we don't care about container's availableSize here since it's environment dependant and unrelated to what we're testing
+
+			LayoutInformation.GetLayoutSlot(inner).Should().Be(new Rect(0, 0, 100, 200), because: "inner LayoutSlot");
+			LayoutInformation.GetLayoutSlot(sut).Should().Be(new Rect(0, 0, 100, 100), because: "sut LayoutSlot");
+			LayoutInformation.GetLayoutSlot(container).Should().Be(new Rect(0, 0, 100, 100), because: "container LayoutSlot");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ArrangingElement_Not_Loaded()
+		{
+			using var _ = new AssertionScope();
+
+			var sut = new StackPanel();
+
+			SizeChangedEventArgs raisedEvent = default;
+
+			sut.SizeChanged += (o, e) => raisedEvent = e;
+
+			sut.Children.Add(new Border { Height = 200 });
+
+			sut.Measure(new Size(100, 100));
+
+			sut.DesiredSize.Should().BeOfWidth(0).And.BeOfHeight(100);
+
+			sut.Arrange(new Rect(0, 0, 100, 100));
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Should not have actual/render size until loaded
+			sut.RenderSize.Should().BeOfWidth(0).And.BeOfHeight(0);
+			sut.ActualWidth.Should().Be(0);
+			sut.ActualHeight.Should().Be(0);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			raisedEvent.Should().BeNull();
+		}
 	}
 
 	public partial class MyControl01 : FrameworkElement
