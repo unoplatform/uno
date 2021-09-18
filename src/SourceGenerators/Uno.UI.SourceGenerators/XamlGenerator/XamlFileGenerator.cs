@@ -1198,7 +1198,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var xName = resource.Members.SingleOrDefault(m => HasXNameProperty(m))?.Value as string;
 
-					if (string.IsNullOrEmpty(xName))
+					// NOTE: IsMemberInsideFrameworkTemplate returns TRUE if the parameter IS framework template.
+					// The intention here is really "Inside" (excluding framework template) - so we pass the Owner.
+					// Uno TODO: Have Both "IsMemberIsOrInsideFrameworkTemplate" and "IsMemberInsideFrameworkTemplate"
+					// Then review all callers and confirm which one should be called.
+					if (string.IsNullOrEmpty(xName) || IsMemberInsideFrameworkTemplate(resource.Owner).isInside)
 					{
 						writer.AppendLineInvariant("// Skipping initializer {0} for {1} {2} - Literal declaration, will be eagerly materialized and added to the dictionary", _dictionaryPropertyIndex, key, theme);
 					}
@@ -2586,6 +2590,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (!ShouldLazyInitializeResource(resource))
 					{
+						var xName = resource.Members.SingleOrDefault(m => HasXNameProperty(m))?.Value as string;
+						// NOTE: IsMemberInsideFrameworkTemplate returns TRUE if the parameter IS framework template.
+						// The intention here is really "Inside" (excluding framework template) - so we pass the Owner.
+						// Uno TODO: Have Both "IsMemberIsOrInsideFrameworkTemplate" and "IsMemberInsideFrameworkTemplate"
+						// Then review all callers and confirm which one should be called.
+						if (!string.IsNullOrEmpty(xName) && !IsMemberInsideFrameworkTemplate(resource.Owner).isInside)
+						{
+							// Assign the generated field as well.
+							writer.AppendLineInvariant($"{xName} =");
+						}
+
 						BuildChild(writer, null, resource);
 					}
 					else if (_isTopLevelDictionary
