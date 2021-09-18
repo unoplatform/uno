@@ -1196,7 +1196,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else if (!ShouldLazyInitializeResource(resource))
 				{
-					writer.AppendLineInvariant("// Skipping initializer {0} for {1} {2} - Literal declaration, will be eagerly materialized and added to the dictionary", _dictionaryPropertyIndex, key, theme);
+					var xName = resource.Members.SingleOrDefault(m => HasXNameProperty(m))?.Value as string;
+
+					if (string.IsNullOrEmpty(xName))
+					{
+						writer.AppendLineInvariant("// Skipping initializer {0} for {1} {2} - Literal declaration, will be eagerly materialized and added to the dictionary", _dictionaryPropertyIndex, key, theme);
+					}
+					else
+					{
+						writer.AppendLineInvariant("private {0} {1};", GetGlobalizedTypeName(GetType(resource.Type).ToDisplayString()), xName);
+					}
 				}
 				else
 				{
@@ -3101,7 +3110,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (
 								member.Member.Name == "Name"
 								&& !IsApplication(topLevelControl)
-								&& topLevelControl.Name != "ResourceDictionary"
 							)
 							{
 								writer.AppendLineInvariant($@"nameScope.RegisterName(""{member.Value}"", {closureName});");
@@ -3111,7 +3119,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								member.Member.Name == "Name"
 								&& !IsAttachedProperty(member)
 								&& !IsApplication(topLevelControl)
-								&& topLevelControl.Name != "ResourceDictionary"
 							)
 							{
 								nameMember = member;
