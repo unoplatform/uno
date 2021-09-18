@@ -3963,6 +3963,9 @@
 			<Member
 				fullName="Windows.UI.Xaml.Media.Animation.KeyTime Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_KeyTime()"
 				reason="False positive, still present, but accessible also through an internal interface" />
+			<Member
+				fullName="System.Void Windows.Devices.Radios.Radio..ctor()"
+				reason="Not part of UWP API" />
 		</Methods>
 	</IgnoreSet>
 	<!--
