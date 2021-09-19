@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private void ClearStateFlags()
 		{
-			var suspender = new StateChangeSuspender(this);
+			using var suspender = new StateChangeSuspender(this);
 
 			IsPressed = false;
 			IsPointerOver = false;
