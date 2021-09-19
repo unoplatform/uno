@@ -1127,7 +1127,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							writer.AppendLine();
 							writer.AppendLineInvariant("global::Windows.UI.Xaml.ResourceDictionary {0}.GetResourceDictionary() => {1}_ResourceDictionary;", DictionaryProviderInterfaceName, _fileUniqueId);
-							BuildBackingFields(writer);
 						}
 						writer.AppendLine();
 						writer.AppendLineInvariant("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary => {1}.Instance.{0}_ResourceDictionary;", _fileUniqueId, SingletonClassName);
@@ -2583,7 +2582,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// The intention here is really "Inside" (excluding framework template) - so we pass the Owner.
 						// Uno TODO: Have Both "IsMemberIsOrInsideFrameworkTemplate" and "IsMemberInsideFrameworkTemplate"
 						// Then review all callers and confirm which one should be called.
-						if (!string.IsNullOrEmpty(xName) && !IsMemberInsideFrameworkTemplate(resource.Owner).isInside)
+						// Uno TODO: Singletons should most likely produce fields.
+						if (!_isInSingletonInstance && !string.IsNullOrEmpty(xName) && !IsMemberInsideFrameworkTemplate(resource.Owner).isInside)
 						{
 							// Assign the generated field as well.
 							writer.AppendLineInvariant($"{xName} =");
@@ -3114,6 +3114,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (
 								member.Member.Name == "Name"
 								&& !IsApplication(topLevelControl)
+								&& !_isInSingletonInstance
 							)
 							{
 								writer.AppendLineInvariant($@"nameScope.RegisterName(""{member.Value}"", {closureName});");
@@ -3123,6 +3124,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								member.Member.Name == "Name"
 								&& !IsAttachedProperty(member)
 								&& !IsApplication(topLevelControl)
+								&& !_isInSingletonInstance
 							)
 							{
 								nameMember = member;
