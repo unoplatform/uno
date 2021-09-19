@@ -1,6 +1,8 @@
 #if __ANDROID__ || __IOS__
 
+using Uno.Extensions;
 using Uno.Helpers;
+using Uno.Logging;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
@@ -55,6 +57,18 @@ namespace Windows.Devices.Sensors
 		{
 			add => _readingChangedWrapper.AddHandler(value);
 			remove => _readingChangedWrapper.RemoveHandler(value);
+		}
+
+
+		private void OnReadingChanged(BarometerReading reading)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Barometer reading received " +
+					$"StationPressureInHectopascals:{reading.StationPressureInHectopascals}, " +
+					$"Timestamp:{reading.Timestamp}");
+			}
+			_readingChangedWrapper.Invoke(this, new GyrometerReadingChangedEventArgs(reading));
 		}
 	}
 }
