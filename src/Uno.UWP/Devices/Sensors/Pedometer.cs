@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		private static bool _initializationAttempted;
 		private static Task<Pedometer> _instanceTask;
 
-		private StartStopEventWrapper<TypedEventHandler<Pedometer, PedometerReadingChangedEventArgs>> _readingChangedWrapper;
+		private readonly StartStopTypedEventWrapper<Pedometer, PedometerReadingChangedEventArgs> _readingChangedWrapper;
 
 		public static IAsyncOperation<Pedometer> GetDefaultAsync() => GetDefaultImplAsync().AsAsyncOperation();
 

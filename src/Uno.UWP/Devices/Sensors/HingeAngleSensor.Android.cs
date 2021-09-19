@@ -18,11 +18,11 @@ namespace Windows.Devices.Sensors
 		private static HingeAngleSensor _instance;
 		private static INativeHingeAngleSensor _hingeAngleSensor = null;
 
-		private StartStopEventWrapper<TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>> _readingChanged;
+		private readonly StartStopTypedEventWrapper<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChanged;
 
 		private HingeAngleSensor()
 		{
-			_readingChanged = new StartStopEventWrapper<TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>>(
+			_readingChanged = new StartStopTypedEventWrapper<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>(
 				() => StartReading(),
 				() => StopReading(),
 				_syncLock);

@@ -8,11 +8,11 @@ namespace Windows.Networking.Connectivity
 	{
 		private static readonly object _syncLock = new object();
 
-		private static StartStopEventWrapper<NetworkStatusChangedEventHandler> _networkStatusChangedWrapper = null;
+		private static StartStopDelegateWrapper<NetworkStatusChangedEventHandler> _networkStatusChangedWrapper = null;
 
 		static NetworkInformation()
 		{
-			_networkStatusChangedWrapper = new StartStopEventWrapper<NetworkStatusChangedEventHandler>(
+			_networkStatusChangedWrapper = new StartStopDelegateWrapper<NetworkStatusChangedEventHandler>(
 				() => StartNetworkStatusChanged(),
 				() => StopNetworkStatusChanged());
 		}

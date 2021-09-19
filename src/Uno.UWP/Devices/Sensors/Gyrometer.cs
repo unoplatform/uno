@@ -14,11 +14,11 @@ namespace Windows.Devices.Sensors
 		private static Gyrometer _instance;
 		private static bool _initializationAttempted;
 
-		private StartStopEventWrapper<TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs>> _readingChangedWrapper;
+		private readonly StartStopTypedEventWrapper<Gyrometer, GyrometerReadingChangedEventArgs> _readingChangedWrapper;
 
 		public Gyrometer()
 		{
-			_readingChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs>>(
+			_readingChangedWrapper = new StartStopTypedEventWrapper<Gyrometer, GyrometerReadingChangedEventArgs>(
 				() => StartReading(),
 				() => StopReading(),
 				_syncLock);

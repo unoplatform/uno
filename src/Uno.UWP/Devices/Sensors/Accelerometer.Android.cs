@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 				{
 					_reportInterval = value;
 
-					if (_readingChangedWrapper.Event != null)
+					if (_readingChangedWrapper.IsActive)
 					{
 						//restart reading to apply interval
 						StopReadingChanged();
@@ -85,7 +85,6 @@ namespace Windows.Devices.Sensors
 		class ReadingChangedListener : Java.Lang.Object, ISensorEventListener
 		{
 			private readonly Accelerometer _accelerometer;
-			private long _lastTimestamp;
 
 			public ReadingChangedListener(Accelerometer accelerometer)
 			{
@@ -104,7 +103,6 @@ namespace Windows.Devices.Sensors
 					e.Values[2] / SensorManager.GravityEarth * -1,
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 
-				_lastTimestamp = e.Timestamp;
 				_accelerometer.OnReadingChanged(reading);
 			}
 		}

@@ -8,33 +8,33 @@ namespace Windows.System.Power
 {
 	public partial class PowerManager
 	{
-		private static object _syncLock = new object();
+		private static readonly object _syncLock = new object();
+
+		private static readonly StartStopEventWrapper<object> _powerSupplyStatusChangedWrapper;
+		private static readonly StartStopEventWrapper<object> _energySaverStatusChangedWrapper;
+		private static readonly StartStopEventWrapper<object> _remainingChargePercentChangedWrapper;
+		private static readonly StartStopEventWrapper<object> _batteryStatusChangedWrapper;
 
 		private static PowerSupplyStatus? _lastPowerSupplyStatus;
 		private static int? _lastRemainingChargePercent;
 		private static EnergySaverStatus? _lastEnergySaverStatus;
 		private static BatteryStatus? _lastBatteryStatus;
-
-		private static StartStopEventWrapper<EventHandler<object>> _powerSupplyStatusChangedWrapper;
-		private static StartStopEventWrapper<EventHandler<object>> _energySaverStatusChangedWrapper;
-		private static StartStopEventWrapper<EventHandler<object>> _remainingChargePercentChangedWrapper;
-		private static StartStopEventWrapper<EventHandler<object>> _batteryStatusChangedWrapper;
-
+		
 		static PowerManager()
 		{
-			_powerSupplyStatusChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+			_powerSupplyStatusChangedWrapper = new StartStopEventWrapper<object>(
 				() => StartPowerSupplyStatusMonitoring(),
 				() => StopPowerSupplyStatusMonitoring(),
 				_syncLock);
-			_energySaverStatusChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+			_energySaverStatusChangedWrapper = new StartStopEventWrapper<object>(
 				() => StartEnergySaverStatusMonitoring(),
 				() => StopEnergySaverStatusMonitoring(),
 				_syncLock);
-			_remainingChargePercentChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+			_remainingChargePercentChangedWrapper = new StartStopEventWrapper<object>(
 				() => StartRemainingChargePercentMonitoring(),
 				() => StopRemainingChargePercentMonitoring(),
 				_syncLock);
-			_batteryStatusChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+			_batteryStatusChangedWrapper = new StartStopEventWrapper<object>(
 				() => StartBatteryStatusMonitoring(),
 				() => StopBatteryStatusMonitoring(),
 				_syncLock);

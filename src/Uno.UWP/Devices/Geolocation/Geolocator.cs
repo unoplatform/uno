@@ -23,8 +23,8 @@ namespace Windows.Devices.Geolocation
 		//using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway
 		private static ConcurrentDictionary<Geolocator, byte> _statusChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
 
-		private StartStopEventWrapper<TypedEventHandler<Geolocator, StatusChangedEventArgs>> _statusChangedWrapper;
-		private StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>> _positionChangedWrapper;			
+		private readonly StartStopTypedEventWrapper<Geolocator, StatusChangedEventArgs> _statusChangedWrapper;
+		private readonly StartStopTypedEventWrapper<Geolocator, PositionChangedEventArgs> _positionChangedWrapper;			
 
 		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
 		private uint? _desiredAccuracyInMeters = DefaultAccuracyInMeters;
@@ -32,11 +32,11 @@ namespace Windows.Devices.Geolocation
 
 		public Geolocator()
 		{
-			_statusChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, StatusChangedEventArgs>>(
+			_statusChangedWrapper = new StartStopTypedEventWrapper<Geolocator, StatusChangedEventArgs>(
 				() => StartStatusChanged(),
 				() => StopStatusChanged(),
 				_syncLock);
-			_positionChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>>(
+			_positionChangedWrapper = new StartStopTypedEventWrapper<Geolocator, PositionChangedEventArgs>(
 				() => StartPositionChanged(),
 				() => StopPositionChanged(),
 				_syncLock);
@@ -153,7 +153,7 @@ namespace Windows.Devices.Geolocation
 		/// <param name="geoposition">Geoposition</param>
 		private void OnPositionChanged(Geoposition geoposition)
 		{
-			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(geoposition));
+			_positionChangedWrapper.Invoke(this, new PositionChangedEventArgs(geoposition));
 		}
 
 		/// <summary>
@@ -172,7 +172,7 @@ namespace Windows.Devices.Geolocation
 			}
 
 			LocationStatus = status;
-			_statusChangedWrapper.Event?.Invoke(this, new StatusChangedEventArgs(status));
+			_statusChangedWrapper.Invoke(this, new StatusChangedEventArgs(status));
 		}
 	}
 }

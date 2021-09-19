@@ -22,8 +22,8 @@ namespace Windows.Graphics.Display
 
 		private static DisplayOrientations _autoRotationPreferences;
 
-		private StartStopEventWrapper<TypedEventHandler<DisplayInformation, object>> _orientationChangedWrapper;
-		private StartStopEventWrapper<TypedEventHandler<DisplayInformation, object>> _dpiChangedWrapper;
+		private StartStopDelegateWrapper<TypedEventHandler<DisplayInformation, object>> _orientationChangedWrapper;
+		private StartStopDelegateWrapper<TypedEventHandler<DisplayInformation, object>> _dpiChangedWrapper;
 
 		private DisplayInformation()
 		{

@@ -6,18 +6,11 @@ using Uno.Helpers;
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class Clipboard
-    {
-		private static object _syncLock = new object();
-
-		private static StartStopEventWrapper<EventHandler<object>> _contentChangedWrapper;
-
-		static Clipboard()
-		{
-			_contentChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+	{
+		private readonly static StartStopEventWrapper<object> _contentChangedWrapper =
+			new StartStopEventWrapper<object>(
 				() => StartContentChanged(),
-				() => StopContentChanged(),
-				_syncLock);
-		}
+				() => StopContentChanged());
 
 #if !__SKIA__
 		public static void Flush()
@@ -33,10 +26,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			remove => _contentChangedWrapper.RemoveHandler(value);
 		}
 
-		private static void OnContentChanged()
-		{
-			_contentChangedWrapper.Event?.Invoke(null, null);
-		}
+		private static void OnContentChanged() => _contentChangedWrapper.Invoke(null, null);
 	}
 }
 #endif

@@ -14,16 +14,16 @@ namespace Windows.Devices.Sensors
 		private static Accelerometer _instance;
 		private static bool _initializationAttempted;
 
-		private StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>> _readingChangedWrapper;
-		private StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs>> _shakenWrapper;
+		private readonly StartStopTypedEventWrapper<Accelerometer, AccelerometerReadingChangedEventArgs> _readingChangedWrapper;
+		private readonly StartStopTypedEventWrapper<Accelerometer, AccelerometerShakenEventArgs> _shakenWrapper;
 
 		private Accelerometer()
 		{
-			_readingChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(
+			_readingChangedWrapper = new StartStopTypedEventWrapper<Accelerometer, AccelerometerReadingChangedEventArgs>(
 				() => StartReadingChanged(),
 				() => StopReadingChanged(),
 				_syncLock);
-			_shakenWrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs>>(
+			_shakenWrapper = new StartStopTypedEventWrapper<Accelerometer, AccelerometerShakenEventArgs>(
 				() => StartShaken(),
 				() => StopShaken(),
 				_syncLock);

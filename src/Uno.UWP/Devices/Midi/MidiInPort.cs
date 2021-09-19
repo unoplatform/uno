@@ -20,11 +20,11 @@ namespace Windows.Devices.Midi
 
 		private readonly MidiMessageParser _parser = new MidiMessageParser();
 
-		private StartStopEventWrapper<TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs>> _messageReceivedWrapper;
+		private StartStopDelegateWrapper<TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs>> _messageReceivedWrapper;
 
 		private void InitializeMessageReceived()
 		{
-			_messageReceivedWrapper = new StartStopEventWrapper<TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs>>(
+			_messageReceivedWrapper = new StartStopDelegateWrapper<TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs>>(
 				() => StartMessageReceived(),
 				() => StopMessageReceived());
 		}
