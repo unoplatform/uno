@@ -22,11 +22,20 @@ namespace Windows.Graphics.Display
 
 		private static DisplayOrientations _autoRotationPreferences;
 
-		private StartStopDelegateWrapper<TypedEventHandler<DisplayInformation, object>> _orientationChangedWrapper;
-		private StartStopDelegateWrapper<TypedEventHandler<DisplayInformation, object>> _dpiChangedWrapper;
+		private readonly StartStopTypedEventWrapper<DisplayInformation, object> _orientationChangedWrapper;
+		private readonly StartStopTypedEventWrapper<DisplayInformation, object> _dpiChangedWrapper;
 
 		private DisplayInformation()
 		{
+			_orientationChangedWrapper = new StartStopTypedEventWrapper<DisplayInformation, object>(
+				() => StartOrientationChanged(),
+				() => StopOrientationChanged(),
+				_syncLock);
+			_dpiChangedWrapper = new StartStopTypedEventWrapper<DisplayInformation, object>(
+				() => StartDpiChanged(),
+				() => StopDpiChanged(),
+				_syncLock);
+
 			Initialize();
 		}
 
@@ -38,7 +47,7 @@ namespace Windows.Graphics.Display
 				_autoRotationPreferences = value;
 				SetOrientationPartial(_autoRotationPreferences);
 			}
-		}		
+		}
 
 		public bool StereoEnabled { get; private set; } = false;
 
@@ -71,10 +80,10 @@ namespace Windows.Graphics.Display
 #pragma warning restore CS0067
 
 		private void OnOrientationChanged() =>
-			_orientationChangedWrapper.Event?.Invoke(this, null);
+			_orientationChangedWrapper.Invoke(this, null);
 
 		private void OnDpiChanged() =>
-			_dpiChangedWrapper.Event?.Invoke(this, null);
+			_dpiChangedWrapper.Invoke(this, null);
 
 		private void OnDisplayMetricsChanged()
 		{

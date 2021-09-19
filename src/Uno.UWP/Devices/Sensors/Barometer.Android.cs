@@ -86,9 +86,7 @@ namespace Windows.Devices.Sensors
 				var barometerReading = new BarometerReading(
 					e.Values[0],
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
-				_barometer._readingChangedWrapper.Event?.Invoke(
-					_barometer,
-					new BarometerReadingChangedEventArgs(barometerReading));
+				_barometer.OnReadingChanged(barometerReading);
 			}
 		}
 	}

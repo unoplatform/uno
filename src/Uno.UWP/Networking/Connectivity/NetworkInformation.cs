@@ -6,16 +6,10 @@ namespace Windows.Networking.Connectivity
 {
 	public static partial class NetworkInformation
 	{
-		private static readonly object _syncLock = new object();
-
-		private static StartStopDelegateWrapper<NetworkStatusChangedEventHandler> _networkStatusChangedWrapper = null;
-
-		static NetworkInformation()
-		{
-			_networkStatusChangedWrapper = new StartStopDelegateWrapper<NetworkStatusChangedEventHandler>(
+		private static readonly StartStopDelegateWrapper<NetworkStatusChangedEventHandler> _networkStatusChangedWrapper =
+			new StartStopDelegateWrapper<NetworkStatusChangedEventHandler>(
 				() => StartNetworkStatusChanged(),
 				() => StopNetworkStatusChanged());
-		}
 
 		/// <summary>
 		/// Gets the connection profile associated with the internet connection currently used by the local machine.
@@ -30,8 +24,7 @@ namespace Windows.Networking.Connectivity
 			remove => _networkStatusChangedWrapper.RemoveHandler(value);
 		}		
 
-		internal static void OnNetworkStatusChanged() =>
-			_networkStatusChangedWrapper.Event?.Invoke(null);
+		internal static void OnNetworkStatusChanged() => _networkStatusChangedWrapper.Event?.Invoke(null);
 	}
 }
 #endif

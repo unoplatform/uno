@@ -54,7 +54,7 @@ namespace Windows.Devices.Sensors
 				this.Log().DebugFormat($"Gyrometer reading received " +
 					$"X:{reading.AngularVelocityX}, Y:{reading.AngularVelocityY}, Z:{reading.AngularVelocityZ}");
 			}
-			_readingChangedWrapper.Event?.Invoke(this, new GyrometerReadingChangedEventArgs(reading));
+			_readingChangedWrapper.Invoke(this, new GyrometerReadingChangedEventArgs(reading));
 		}
 	}
 }
