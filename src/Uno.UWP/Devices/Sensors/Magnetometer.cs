@@ -14,11 +14,11 @@ namespace Windows.Devices.Sensors
 		private static Magnetometer _instance;
 		private static bool _initializationAttempted;
 
-		private StartStopEventWrapper<TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs>> _readingChangedWrapper;
+		private StartStopTypedEventWrapper<Magnetometer, MagnetometerReadingChangedEventArgs> _readingChangedWrapper;
 
 		private Magnetometer()
 		{
-			_readingChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs>>(
+			_readingChangedWrapper = new StartStopTypedEventWrapper<Magnetometer, MagnetometerReadingChangedEventArgs>(
 				() => StartReading(),
 				() => StopReading(),
 				_syncLock);

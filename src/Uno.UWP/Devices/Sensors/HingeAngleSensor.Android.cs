@@ -21,14 +21,14 @@ namespace Windows.Devices.Sensors
 		private static HingeAngleSensor _instance;
 		private static INativeHingeAngleSensor _hingeAngleSensor;
 
-		private StartStopEventWrapper<TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>> _readingChanged;
+		private readonly StartStopTypedEventWrapper<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChanged;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
 		/// </summary>
 		private HingeAngleSensor()
 		{
-			_readingChanged = new StartStopEventWrapper<TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>>(
+			_readingChanged = new StartStopTypedEventWrapper<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>(
 				() => StartReading(),
 				() => StopReading(),
 				_syncLock);
