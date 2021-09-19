@@ -14,14 +14,14 @@ namespace Windows.Devices.Sensors
 		private static bool _initializationAttempted;
 		private static Barometer _instance;
 
-		private StartStopEventWrapper<TypedEventHandler<Barometer, BarometerReadingChangedEventArgs>> _readingChangedWrapper;
+		private readonly StartStopTypedEventWrapper<Barometer, BarometerReadingChangedEventArgs> _readingChangedWrapper;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
 		/// </summary>
 		private Barometer()
 		{
-			_readingChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Barometer, BarometerReadingChangedEventArgs>>(
+			_readingChangedWrapper = new StartStopTypedEventWrapper<Barometer, BarometerReadingChangedEventArgs>(
 				() => StartReading(),
 				() => StopReading(),
 				_syncLock);
