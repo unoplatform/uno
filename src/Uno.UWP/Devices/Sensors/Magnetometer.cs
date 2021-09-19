@@ -63,7 +63,7 @@ namespace Windows.Devices.Sensors
 
 		private void OnReadingChanged(MagnetometerReading reading)
 		{
-			_readingChangedWrapper.Event?.Invoke(this, new MagnetometerReadingChangedEventArgs(reading));
+			_readingChangedWrapper.Invoke(this, new MagnetometerReadingChangedEventArgs(reading));
 		}
 	}
 }

@@ -53,7 +53,7 @@ namespace Windows.Devices.Sensors
 
 		private void OnReadingChanged(PedometerReading reading)
 		{
-			_readingChangedWrapper.Event?.Invoke(this, new PedometerReadingChangedEventArgs(reading));
+			_readingChangedWrapper.Invoke(this, new PedometerReadingChangedEventArgs(reading));
 		}
 	}
 }

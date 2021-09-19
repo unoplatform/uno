@@ -92,6 +92,6 @@ namespace Windows.Devices.Sensors
 			_hingeAngleSensor.ReadingChanged -= OnNativeReadingChanged;
 
 		private void OnNativeReadingChanged(object sender, NativeHingeAngleReading e) =>
-			_readingChanged.Event?.Invoke(this, new HingeAngleSensorReadingChangedEventArgs(new HingeAngleReading(e.AngleInDegrees, e.Timestamp)));
+			_readingChanged.Invoke(this, new HingeAngleSensorReadingChangedEventArgs(new HingeAngleReading(e.AngleInDegrees, e.Timestamp)));
 	}
 }
