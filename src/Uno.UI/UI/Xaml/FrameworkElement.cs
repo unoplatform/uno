@@ -1018,6 +1018,7 @@ namespace Windows.UI.Xaml
 			set => AssignedActualSize = value;
 		}
 
+#if !(NET461 || __NETSTD_REFERENCE__)
 		internal override Size AssignedActualSize
 		{
 			get => base.AssignedActualSize;
@@ -1042,5 +1043,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+#endif
 	}
 }
