@@ -38,10 +38,8 @@ namespace Windows.UI.Xaml
 
 		internal void SetActualSize(Size size)
 		{
-			var previousSize = AssignedActualSize;
 			AssignedActualSize = size;
-
-			RaiseSizeChanged(previousSize, size);
+			_renderTransform?.UpdateSize(size);
 		}
 
 		public double ActualWidth => GetActualWidth();
@@ -62,12 +60,6 @@ namespace Windows.UI.Xaml
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
 		public event SizeChangedEventHandler SizeChanged;
-
-		internal void RaiseSizeChanged(Size previous, Size newSize)
-		{
-			SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previous, newSize));
-			_renderTransform?.UpdateSize(newSize);
-		}
 
 		#region Margin Dependency Property
 		[GeneratedDependencyProperty(

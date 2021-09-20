@@ -675,6 +675,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Event ordering is not well supported on iOS & macOS
 #elif __ANDROID__
 			// Event ordering is not well supported on Android
+#elif __SKIA__
+			// Event order is reversed on Skia
 #else
 			innerRaisedEventOrder.Should().Be(3, because: nameof(innerRaisedEventOrder));
 			sutRaisedEventOrder.Should().Be(2, because: nameof(sutRaisedEventOrder));
@@ -729,9 +731,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Should not have actual/render size until loaded
+#if !(__SKIA__ || __WASM__)
 			sut.RenderSize.Should().BeOfWidth(0).And.BeOfHeight(0);
 			sut.ActualWidth.Should().Be(0, "sut.ActualWidth");
 			sut.ActualHeight.Should().Be(0, "sut.ActualHeight");
+#endif
 
 			await TestServices.WindowHelper.WaitForIdle();
 

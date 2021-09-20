@@ -33,7 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if HAS_UNO
+#if HAS_UNO && !__NETSTD__
 		Size IFrameworkElement.AssignedActualSize
 		{
 			get => throw new NotSupportedException();
