@@ -598,7 +598,7 @@ namespace Uno.UWPSyncGenerator
 								b.AppendLineInvariant($"throw new global::System.NotSupportedException();");
 							}
 						}
-						if (property.GetMethod != null)
+						if (property.SetMethod != null)
 						{
 							using (b.BlockInvariant($"set"))
 							{

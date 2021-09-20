@@ -344,10 +344,6 @@ namespace Windows.Web.Http.Headers
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -355,10 +351,6 @@ namespace Windows.Web.Http.Headers
 		public global::System.Collections.Generic.ICollection<string> Values
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}
@@ -413,10 +405,6 @@ namespace Windows.Web.Http.Headers
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -424,10 +412,6 @@ namespace Windows.Web.Http.Headers
 		public bool IsReadOnly
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}

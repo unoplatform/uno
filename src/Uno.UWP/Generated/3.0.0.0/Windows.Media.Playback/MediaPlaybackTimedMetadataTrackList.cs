@@ -63,10 +63,6 @@ namespace Windows.Media.Playback
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Core.TimedMetadataTrack>
@@ -93,10 +89,6 @@ namespace Windows.Media.Playback
 		public int Count
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}
