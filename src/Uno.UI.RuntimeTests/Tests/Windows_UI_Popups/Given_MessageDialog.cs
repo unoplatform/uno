@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Android.Widget;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
