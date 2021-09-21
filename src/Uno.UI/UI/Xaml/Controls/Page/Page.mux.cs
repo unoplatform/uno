@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Controls
@@ -19,6 +20,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
 			var spCurrentFocusedElement = this.GetFocusedElement();
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
@@ -26,6 +28,17 @@ namespace Windows.UI.Xaml.Controls
 
 			if (setDefaultFocus && spCurrentFocusedElement == null)
 			{
+				// Uno specific: If the page is focusable itself, we want to
+				// give it focus instead of the first element.
+				if (FocusProperties.IsFocusable(this))
+				{
+					this.SetFocusedElement(
+						this,
+						FocusState.Programmatic,
+						animateIfBringIntoView: false);
+					return;
+				}
+
 				// Set the focus on the first focusable control
 				var spFirstFocusableElementCDO = focusManager?.GetFirstFocusableElement(this);
 
@@ -36,6 +49,8 @@ namespace Windows.UI.Xaml.Controls
 					focusManager.InitialFocus = true;
 
 					TrySetFocusedElement(spFirstFocusableElementDO);
+					
+					focusManager.InitialFocus = false;
 				}
 
 				if (spFirstFocusableElementCDO == null)

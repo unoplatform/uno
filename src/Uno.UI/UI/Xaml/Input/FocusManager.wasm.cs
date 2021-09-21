@@ -82,6 +82,14 @@ namespace Windows.UI.Xaml.Input
 				return false;
 			}
 
+			var focusManager = VisualTree.GetFocusManagerForElement(element);
+
+			if (focusManager?.InitialFocus == true)
+			{
+				 // Do not focus natively on initial focus so the soft keyboard is not opened
+				return false;
+			}
+
 			if (element is TextBox textBox)
 			{
 				return textBox.FocusTextView();
