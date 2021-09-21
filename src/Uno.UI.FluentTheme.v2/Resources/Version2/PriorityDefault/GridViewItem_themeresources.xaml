@@ -63,7 +63,9 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <Style TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}" />
+    <!--UNO TODO: ListViewItemPresenter isn't supported https://github.com/unoplatform/uno/issues/1444 -->
+    <!-- <Style TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}" /> -->
+    <Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemExpanded}" />
 
     <Style x:Key="DefaultGridViewItemStyle" TargetType="GridViewItem">
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
