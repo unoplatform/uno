@@ -166,7 +166,10 @@ namespace Windows.UI.Xaml
 
 		// Native elements cannot be clipped (using Uno), so the _localViewport will always be an empty rect, and we only react to LayoutSlot updates
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
-			=> PropagateEffectiveViewportChange();
+		{
+			_isLayouted = true;
+			PropagateEffectiveViewportChange();
+		}
 #else
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated() { }  // Nothing to do here: this won't be invoked for real FrameworkElement, instead we receive OnViewportUpdated
 

@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml
 			=> Equals(this, other);
 
 		/// <inheritdoc />
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is ViewportInfo vp && Equals(this, vp);
 
 		private static bool Equals(ViewportInfo left, ViewportInfo right)
