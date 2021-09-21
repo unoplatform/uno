@@ -22,21 +22,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private Point _pointerPosition = Point.Zero;
 
 		// True if the SPACE or ENTER key is currently pressed, false otherwise.
-		private bool _isSpaceOrEnterKeyDown = false;
+		private bool _isSpaceOrEnterKeyDown;
 
 		// True if the NAVIGATION_ACCEPT or GAMEPAD_A vkey is currently pressed, false otherwise.
-		private bool _isNavigationAcceptOrGamepadAKeyDown = false;
+		private bool _isNavigationAcceptOrGamepadAKeyDown;
 
 		// True if the pointer's left button is currently down, false otherwise.
-		private bool _isPointerLeftButtonDown = false;
+		private bool _isPointerLeftButtonDown;
 
 		// True if ENTER key is equivalent to SPACE
-		private bool _keyboardNavigationAcceptsReturn = false;
+		private bool _keyboardNavigationAcceptsReturn;
 
 		// On pointer released we perform some actions depending on control. We decide to whether to perform them
 		// depending on some parameters including but not limited to whether released is followed by a pressed, which
 		// mouse button is pressed, what type of pointer is it etc. This boolean keeps our decision.
-		private bool _shouldPerformActions = false;
+		private bool _shouldPerformActions;
 
 		// Whether the button should handle keyboard ENTER and SPACE key input.
 		// HubSection's header button sets this to false for non-interactive headers so that they

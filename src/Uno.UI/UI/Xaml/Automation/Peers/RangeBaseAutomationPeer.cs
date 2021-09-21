@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 	{
 		private readonly RangeBase _owner;
 
-		private bool m_isEnableValueChangedEventThrottling = false;
+		private bool m_isEnableValueChangedEventThrottling;
 		private DateTimeOffset m_timePointOfLastValuePropertyChangedEvent = DateTimeOffset.MinValue;
 
 		/// <summary>

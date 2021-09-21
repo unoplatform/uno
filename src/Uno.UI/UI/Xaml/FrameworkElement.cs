@@ -73,13 +73,13 @@ namespace Windows.UI.Xaml
 		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
-		private bool _defaultStyleApplied = false;
+		private bool _defaultStyleApplied;
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
 
 		/// <summary>
 		/// The current user-determined 'active Style'. This will either be the explicitly-set Style, if there is one, or otherwise the resolved implicit Style (either in the view hierarchy or in Application.Resources).
 		/// </summary>
-		private Style _activeStyle = null;
+		private Style _activeStyle;
 
 		/// <summary>
 		/// Cache for the current type key for faster implicit style lookup
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml
 		/// globally set to false if it is causing visual errors (eg views not updating properly). Note: this can still be overridden by
 		/// the <see cref="AreDimensionsConstrained"/> flag set on individual elements.
 		/// </summary>
-		public static bool UseConstraintOptimizations { get; set; } = false;
+		public static bool UseConstraintOptimizations { get; set; }
 
 		/// <summary>
 		/// If manually set, this flag overrides the constraint-based reasoning for optimizing layout calls. This may be useful for
@@ -588,7 +588,7 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty]
 		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
 
-		private bool _focusVisualBrushesInitialized = false;
+		private bool _focusVisualBrushesInitialized;
 
 		internal void EnsureFocusVisualBrushDefaults()
 		{

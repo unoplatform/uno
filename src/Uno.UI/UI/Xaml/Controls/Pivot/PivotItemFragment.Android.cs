@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 	public class PivotItemFragment : Fragment
 	{
 		private readonly PivotItem _item;
-		private bool _created = false;
+		private bool _created;
 
 		// Don't delete. Prevents the following exception:
 		// System.NotSupportedException: Unable to find the default constructor on type ApplicationFramework.Controls.Tabs.TabFragment.  Please provide the missing constructor.

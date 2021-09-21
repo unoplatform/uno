@@ -46,7 +46,7 @@ namespace Uno.UI.Xaml
 		/// <summary>
 		/// Declares that the dependency property is attached
 		/// </summary>
-		public bool Attached { get; set; } = false;
+		public bool Attached { get; set; }
 
 		/// <summary>
 		/// Declares that the dependency property is attached

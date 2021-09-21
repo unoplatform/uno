@@ -14,7 +14,6 @@ internal class AsyncAction : IAsyncAction, IAsyncActionInternal
 	private AsyncActionCompletedHandler _onCompleted;
 	private Task _task;
 	private AsyncStatus _status;
-	private uint _id = 0;
 
 	public static AsyncAction FromTask(Func<CancellationToken, Task> taskBuilder) => new AsyncAction(taskBuilder);
 
@@ -52,7 +51,7 @@ internal class AsyncAction : IAsyncAction, IAsyncActionInternal
 
 	public Exception ErrorCode { get; private set; }
 
-	public uint Id => _id;
+	public uint Id => 0;
 
 	public AsyncStatus Status
 	{

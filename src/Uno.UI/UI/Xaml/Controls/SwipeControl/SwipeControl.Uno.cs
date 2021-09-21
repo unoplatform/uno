@@ -23,18 +23,18 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SwipeControl
 	{
-		private TranslateTransform _transform = null;
-		private TranslateTransform _swipeStackPaneltransform = null;
+		private TranslateTransform _transform;
+		private TranslateTransform _swipeStackPaneltransform;
 		private Vector2 _positionWhenCaptured = Vector2.Zero;
 		private Vector2 _desiredPosition = Vector2.Zero;
 		private Vector2 _desiredStackPanelPosition = Vector2.Zero;
 
-		private bool _isFarOpen = false;
-		private bool _isNearOpen = false;
-		private bool _hasLeftContent = false;
-		private bool _hasRightContent = false;
-		private bool _hasTopContent = false;
-		private bool _hasBottomContent = false;
+		private bool _isFarOpen;
+		private bool _isNearOpen;
+		private bool _hasLeftContent;
+		private bool _hasRightContent;
+		private bool _hasTopContent;
+		private bool _hasBottomContent;
 
 		[Conditional("DEBUG")]
 		private static void SWIPECONTROL_TRACE_INFO(SwipeControl that, [CallerLineNumber] int TRACE_MSG_METH = -1, [CallerMemberName] string METH_NAME = null, SwipeControl _ = null)

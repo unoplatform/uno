@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 		// for cancellation.
 		IAsyncInfo m_tpAsyncSelectionInfo;
 
-		bool m_isPropagatingDate = false;
+		bool m_isPropagatingDate;
 
 		// The selection of the selectors in our template can be changed by two sources. First source is
 		// the end user changing a field to select the desired date. Second source is us updating

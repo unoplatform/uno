@@ -56,7 +56,7 @@ namespace Uno.UI
 		/// </summary>
 		public static event EventHandler<CurrentActivityChangedEventArgs> CurrentChanged;
 
-		private static int _instanceCount = 0;
+		private static int _instanceCount;
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity _current;
 

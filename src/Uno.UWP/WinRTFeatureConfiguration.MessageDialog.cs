@@ -11,11 +11,9 @@ partial class WinRTFeatureConfiguration
 		/// Note the native dialogs may not support all the features and they are also not
 		/// supported on Skia targets.
 		/// </summary>
-		public static bool UseNativeDialog { get; set; } =
+		public static bool UseNativeDialog { get; set; }
 			#if __ANDROID__ || __IOS__ || __MACOS__
-				true;
-			#else
-				false;
+				= true;
 			#endif
 
 		/// <summary>

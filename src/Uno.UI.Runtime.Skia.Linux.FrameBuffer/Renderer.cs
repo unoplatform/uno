@@ -16,7 +16,7 @@ namespace Uno.UI.Runtime.Skia
 		private FrameBufferDevice _fbDev;
 		private SKBitmap? _bitmap;
 		private bool _needsScanlineCopy;
-		private int renderCount = 0;
+		private int renderCount;
 		private DisplayInformation? _displayInformation;
 
 		public Renderer()

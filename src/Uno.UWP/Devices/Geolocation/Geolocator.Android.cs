@@ -29,7 +29,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 	private readonly Criteria _locationCriteria = new() { HorizontalAccuracy = Accuracy.Medium };
 
-	private static bool _locationChanged = false;
+	private static bool _locationChanged;
 	private static Location? _location;
 
 	private LocationManager? _locationManager;
@@ -37,7 +37,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 	private readonly SerialDisposable _resumingSubscription = new SerialDisposable();
 
-	private double _movementThreshold = 0;
+	private double _movementThreshold;
 	private uint _reportInterval = 1000;
 
 	partial void PlatformDestruct()

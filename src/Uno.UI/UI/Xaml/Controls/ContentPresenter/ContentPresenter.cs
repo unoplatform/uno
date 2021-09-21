@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Flag indicating whether the content presenter uses implicit text block to render its content.
 		/// </summary>
-		internal bool IsUsingDefaultTemplate { get; private set; } = false;
+		internal bool IsUsingDefaultTemplate { get; private set; }
 
 		/// <summary>
 		/// Determines if the current ContentPresenter is hosting a native control.

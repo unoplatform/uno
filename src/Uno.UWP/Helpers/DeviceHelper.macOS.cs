@@ -5,7 +5,7 @@ namespace Uno.Helpers
 {
 	internal static class DeviceHelper
 	{
-		private static Version _version = null;
+		private static Version _version;
 
 		public static Version OperatingSystemVersion => _version ??= GetOperatingSystemVersion();
 

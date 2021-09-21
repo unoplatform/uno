@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml
 			get => false; // Not implemented on iOS yet
 		}
 
-		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		partial void ApplyNativeClip(Rect rect)
 		{

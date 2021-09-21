@@ -7,7 +7,7 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 	[TestClass]
 	public class Give_UnitTest_DynamicData_From_Property : IDisposable
 	{
-		static int TestSucces_Count = 0;
+		static int TestSucces_Count;
 
 		[DataTestMethod]
 		[DynamicData(nameof(Data), DynamicDataSourceType.Property)]

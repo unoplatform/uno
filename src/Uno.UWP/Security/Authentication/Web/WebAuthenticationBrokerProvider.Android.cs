@@ -67,8 +67,8 @@ namespace Uno.AuthenticationBroker
 
 		private Activity? CurrentActivity => ContextHelper.Current as Activity;
 
-		TaskCompletionSource<WebAuthenticationResult>? tcsResponse = null;
-		Uri? currentRedirectUri = null;
+		TaskCompletionSource<WebAuthenticationResult>? tcsResponse;
+		Uri? currentRedirectUri;
 
 		public bool OnResumeCallback(Intent? intent = null)
 		{

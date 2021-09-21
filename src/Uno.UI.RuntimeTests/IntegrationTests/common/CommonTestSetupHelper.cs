@@ -2,7 +2,7 @@
 {
 	internal static class CommonTestSetupHelper
 	{
-		private static bool _isInitialized = false;
+		private static bool _isInitialized;
 
 		internal static void CommonTestClassSetup()
 		{

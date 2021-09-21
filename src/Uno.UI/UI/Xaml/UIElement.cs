@@ -768,7 +768,7 @@ namespace Windows.UI.Xaml
 		/// This is the 'finalRect' of the last Arrange.
 		/// </summary>
 		/// <remarks>This is expressed in parent's coordinate space.</remarks>
-		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
+		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; }
 
 		internal bool NeedsClipToSlot { get; set; }
 

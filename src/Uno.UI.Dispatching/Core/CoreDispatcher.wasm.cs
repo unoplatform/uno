@@ -51,7 +51,7 @@ namespace Uno.UI.Dispatching
 		}
 
 		// Always reschedule, otherwise we may end up in live-lock.
-		public static bool HasThreadAccessOverride { get; set; } = false;
+		public static bool HasThreadAccessOverride { get; set; }
 
 		private bool GetHasThreadAccess()
 			=> IsThreadingSupported ? Thread.CurrentThread.ManagedThreadId == 1 : HasThreadAccessOverride;

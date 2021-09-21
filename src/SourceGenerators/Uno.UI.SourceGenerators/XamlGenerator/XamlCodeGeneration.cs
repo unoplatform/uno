@@ -70,7 +70,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
 		/// </summary>
-		private readonly bool _shouldAnnotateGeneratedXaml = false;
+		private readonly bool _shouldAnnotateGeneratedXaml;
 
 		/// <summary>
 		/// When set, Visual State Manager children will be initialized lazily for performance
@@ -84,7 +84,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		// Determines if the source generator will skip the inclusion of UseControls in the
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
-		private bool _skipUserControlsInVisualTree = false;
+		private bool _skipUserControlsInVisualTree;
 		private readonly GeneratorExecutionContext _generatorContext;
 
 		private bool IsUnoAssembly

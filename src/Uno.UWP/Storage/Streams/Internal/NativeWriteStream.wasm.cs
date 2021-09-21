@@ -14,7 +14,7 @@ namespace Uno.Storage.Streams.Internal
 		private readonly StorageFile _cacheFile;
 		private readonly Stream _cacheStream;
 		private readonly Guid _fileId;
-		private bool _pendingChanges = false;
+		private bool _pendingChanges;
 		private RefCountDisposable _refCountDisposable;
 
 		public override bool CanRead => _cacheStream.CanRead;

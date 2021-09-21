@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>
 		/// Focused element's AutomationPeer.
 		/// </summary>
-		private AutomationPeer? _focusedAutomationPeer = null;
+		private AutomationPeer? _focusedAutomationPeer;
 
 		/// <summary>
 		/// Represents the focus target.
@@ -85,32 +85,32 @@ namespace Windows.UI.Xaml.Input
 		/// "first" tab.  This is deemed better than getting stuck at the end.
 		/// (Reverse "first" and "last" for Shift-Tab.)
 		/// </summary>
-		private bool _canTabOutOfPlugin =
+		private const bool CanTabOutOfPlugin =
 #if !__WASM__
 				false;
 #else
 				true; // For WASM it is more appropriate to let the user escape from the app to tab into the browser toolbars.
 #endif
 
-		private bool _isPrevFocusTextControl = false;
+		private bool _isPrevFocusTextControl;
 
 		// TODO Uno: Control engagement is not yet properly supported.
 		/// <summary>
 		/// Represents the control which is focus-engaged.
 		/// </summary>
-		private Control? _engagedControl = null;
+		private Control? _engagedControl;
 
 		/// <summary>
 		/// Represents a value indicating whether focus is currently locked.
 		/// </summary>
-		private bool _focusLocked = false;
+		private bool _focusLocked;
 
 		/// <summary>
 		/// During Window Activation/Deactivation, we lock focus. However, focus can move internally via the focused element becoming
 		/// unfocusable (ie. leaving the tree or changing visibility). This member will force focus manager to bypass the _focusLocked logic.
 		/// This should be used with care... if used irresponsibly, we can enable unsupported reentrancy scenarios.
 		/// </summary>
-		private bool _ignoreFocusLock = false;
+		private bool _ignoreFocusLock;
 
 		/// <summary>
 		/// It is possible to continue with a focus operation, even though focus is locked. In this case, we need to ensure
@@ -121,13 +121,13 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>
 		/// Represents a valud indicating whether we are still to provide the initial focus.
 		/// </summary>
-		private bool _initialFocus = false;
+		private bool _initialFocus;
 
 		/// <summary>
 		/// This represents the async operation that can initiated through a public async FocusManager method, such as TryFocusAsync.
 		/// We store it as a memeber because the operation can continue to run even after the api has finished executing.
 		/// </summary>
-		private FocusAsyncOperation? _asyncOperation = null;
+		private FocusAsyncOperation? _asyncOperation;
 
 		internal FocusManager(ContentRoot contentRoot)
 		{
@@ -572,7 +572,7 @@ namespace Windows.UI.Xaml.Input
 			//
 			bool internalCycleWorkaround = false;
 
-			if (_focusedElement != null && _canTabOutOfPlugin)
+			if (_focusedElement != null && CanTabOutOfPlugin)
 			{
 				// CanProcessTabStop() used to be an early-out test, but the heuristic
 				// is flawed and caused bugs like #25058.
@@ -598,7 +598,7 @@ namespace Windows.UI.Xaml.Input
 				pNewTabStop = GetNextTabStop();
 
 				// If we could not find a tab stop, see if we need to tab cycle.
-				if (pNewTabStop == null && (!_canTabOutOfPlugin || internalCycleWorkaround || queryOnly))
+				if (pNewTabStop == null && (!CanTabOutOfPlugin || internalCycleWorkaround || queryOnly))
 				{
 					pNewTabStop = GetFirstFocusableElement(activeRoot, null);
 					didCycleFocusAtRootVisualScope = true;
@@ -609,7 +609,7 @@ namespace Windows.UI.Xaml.Input
 				pNewTabStop = GetPreviousTabStop();
 
 				// If we could not find a tab stop, see if we need to tab cycle.
-				if (pNewTabStop == null && (!_canTabOutOfPlugin || internalCycleWorkaround || queryOnly))
+				if (pNewTabStop == null && (!CanTabOutOfPlugin || internalCycleWorkaround || queryOnly))
 				{
 					pNewTabStop = GetLastFocusableElement(activeRoot, null);
 					didCycleFocusAtRootVisualScope = true;

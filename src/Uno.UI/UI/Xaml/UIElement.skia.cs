@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml
 			}
 		} 
 
-		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		public void AddChild(UIElement child, int? index = null)
 		{

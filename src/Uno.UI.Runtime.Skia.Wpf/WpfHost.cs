@@ -59,7 +59,7 @@ namespace Uno.UI.Skia.Platform
 		
 		[ThreadStatic] private static WpfHost? _current;
 
-		private WpfCanvas? _nativeOverlayLayer = null;
+		private WpfCanvas? _nativeOverlayLayer;
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
 		private bool _isVisible = true;

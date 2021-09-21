@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml
 		/// Set to True when the imminent Focus(FocusState) call needs to use an animation if bringing the focused
 		/// element into view.
 		/// </summary>
-		private bool _animateIfBringIntoView = false;
+		private bool _animateIfBringIntoView;
 
 		/// <summary>
 		/// If true focusmgr does not set the focus on children or the element. Notice that this flag only and only

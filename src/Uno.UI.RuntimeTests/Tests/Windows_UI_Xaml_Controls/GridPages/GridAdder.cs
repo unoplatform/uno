@@ -13,7 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages
 		private Grid _grid;
 		public Grid AddedGrid => _grid;
 		public Exception Exception { get; private set; }
-		public bool WasArranged { get; private set; } = false;
+		public bool WasArranged { get; private set; }
 
 		protected override Size MeasureOverride(Size availableSize)
 		{

@@ -13,8 +13,8 @@ namespace Uno.Storage.Streams.Internal
 
 		private readonly Guid _streamId;
 
-		private long _length = 0;
-		private long _position = 0;
+		private long _length;
+		private long _position;
 
 		public static async Task<NativeReadStreamAdapter> CreateAsync(Guid fileId)
 		{
