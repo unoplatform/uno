@@ -21,7 +21,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 			{
 				for (var y = rect.Top; y < rect.Bottom; y++)
 				{
-					if (bitmap.GetPixel(x, y) == color)
+					var pixel = bitmap.GetPixel(x, y);
+					if ((pixel.A, pixel.R, pixel.G, pixel.B) == (color.A, color.R, color.G, color.B))
 					{
 						return true;
 					}
