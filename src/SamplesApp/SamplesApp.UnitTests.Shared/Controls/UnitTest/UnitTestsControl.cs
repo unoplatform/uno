@@ -20,6 +20,7 @@ using Uno.UI.Samples.Helper;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Text;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
@@ -613,6 +614,11 @@ namespace Uno.UI.Samples.Tests
 							{
 								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 								{
+#if __ANDROID__
+									// Hide the systray!
+									ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+#endif
+
 									Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
 									Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
 								});
@@ -718,6 +724,10 @@ namespace Uno.UI.Samples.Tests
 							{
 								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 								{
+#if __ANDROID__
+									// Restore the systray!
+									ApplicationView.GetForCurrentView().ExitFullScreenMode();
+#endif
 									Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalWindowContent();
 									Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = false;
 								});

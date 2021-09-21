@@ -123,8 +123,16 @@
 			</StackPanel>
 		</StackPanel>
 
-		<ScrollViewer Grid.Row="1">
-			<TextBlock x:Name="failedTestDetails" Opacity="0.5" />
+		<ScrollViewer
+			Grid.Row="1"
+			VerticalScrollBarVisibility="Auto"
+			VerticalScrollMode="Auto"
+			HorizontalScrollBarVisibility="Auto"
+			HorizontalScrollMode="Auto">
+			<TextBlock
+				x:Name="failedTestDetails"
+				Opacity="0.5"
+				IsTextSelectionEnabled="True" />
 		</ScrollViewer>
 
 		<Rectangle
