@@ -141,7 +141,8 @@ namespace Windows.UI.Xaml.Controls
 				// generated in ContentPresenter code behind as default, only then do we proceed with the underline.
 				if (contentPresenter != null && contentPresenter.IsUsingDefaultTemplate)
 				{
-					var contentTemplateRootAsIUIE = ContentTemplateRoot;
+					// TODO Uno: Using ContentPresenter.ContentTemplateRoot instead of this.ContentTemplateRoot, which is null.
+					var contentTemplateRootAsIUIE = contentPresenter.ContentTemplateRoot;
 					var contentTemplateRootAsITextBlock = contentTemplateRootAsIUIE as TextBlock;
 					if (contentTemplateRootAsITextBlock != null)
 					{
