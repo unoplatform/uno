@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -308,7 +308,8 @@ namespace Windows.UI.Xaml
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
-			if (!IsLoaded || !IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
+			// SvgElements are an exception here since they won't be loaded.
+			if (!(IsLoaded || HtmlTagIsSvg) || !IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
 			{
 				return HitTestability.Collapsed;
 			}
