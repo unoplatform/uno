@@ -15,23 +15,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 	[TestFixture]
 	public partial class BitmapIcon_Tests : SampleControlUITestBase
 	{
-		private bool ContainsColor(Bitmap bitmap, Rectangle rect, Color color)
-		{
-			for (var x = rect.Left; x < rect.Right; x++)
-			{
-				for (var y = rect.Top; y < rect.Bottom; y++)
-				{
-					var pixel = bitmap.GetPixel(x, y);
-					if ((pixel.A, pixel.R, pixel.G, pixel.B) == (color.A, color.R, color.G, color.B))
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
-		}
-
 		[Test]
 		[AutoRetry]
 		public void When_BitmapIcon_Generic()
@@ -45,16 +28,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 
 			using var initial = TakeScreenshot("Initial");
 			
-			var bitmap = initial.GetBitmap();
-			Assert.IsTrue(ContainsColor(bitmap, icon1.Rect.ToRectangle(), Color.Red));
-			Assert.IsTrue(ContainsColor(bitmap, icon2.Rect.ToRectangle(), Color.Blue));
+			ImageAssert.HasColorInRectangle(initial, icon1.Rect.ToRectangle(), Color.Red);
+			ImageAssert.HasColorInRectangle(initial, icon2.Rect.ToRectangle(), Color.Blue);
 
 			_app.FastTap(colorChange);
 
 			using var afterColorChange = TakeScreenshot("Changed");
-			bitmap = afterColorChange.GetBitmap();
-			Assert.IsTrue(ContainsColor(bitmap, icon1.Rect.ToRectangle(), Color.Yellow));
-			Assert.IsTrue(ContainsColor(bitmap, icon2.Rect.ToRectangle(), Color.Green));
+
+			ImageAssert.HasColorInRectangle(afterColorChange, icon1.Rect.ToRectangle(), Color.Yellow);
+			ImageAssert.HasColorInRectangle(afterColorChange, icon2.Rect.ToRectangle(), Color.Green);
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("icon1"), "Foreground", "[SolidColorBrush #FFFFFF00]");
 			_app.WaitForDependencyPropertyValue(_app.Marked("icon2"), "Foreground", "[SolidColorBrush #FF008000]");
