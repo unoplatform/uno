@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 				InputScopeNameValue.Search => "search",
 				InputScopeNameValue.SearchIncremental => "search",
 
-				InputScopeNameValue.EmailNameOrAddresso => "email",
+				InputScopeNameValue.EmailNameOrAddress => "email",
 				InputScopeNameValue.EmailSmtpAddress => "email",
 
 				InputScopeNameValue.Url => "url",
