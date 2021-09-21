@@ -36,13 +36,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="PresentationFramework" />
-		<Reference Include="PresentationCore" />
-		<Reference Include="WindowsBase" />
-		<Reference Include="System.Xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	  <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 	  <ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
