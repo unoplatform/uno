@@ -228,7 +228,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.InputType = types;
+				if (FeatureConfiguration.TextBox.UseLegacyInputScope)
+				{
+					_textBoxView.InputType = types;
+				}
+				else
+				{
+					_textBoxView.SetRawInputType(types);
+				}
 
 				if (!types.HasPasswordFlag())
 				{
@@ -330,7 +337,14 @@ namespace Windows.UI.Xaml.Controls
 					inputType |= InputTypes.TextFlagMultiLine;
 				}
 
-				_textBoxView.InputType = inputType;
+				if (FeatureConfiguration.TextBox.UseLegacyInputScope)
+				{
+					_textBoxView.InputType = types;
+				}
+				else
+				{
+					_textBoxView.SetRawInputType(types);
+				}
 			}
 		}
 
