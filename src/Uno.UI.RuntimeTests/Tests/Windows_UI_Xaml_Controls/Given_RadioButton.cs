@@ -1,0 +1,353 @@
+﻿using System;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml.Controls;
+using static Private.Infrastructure.TestServices;
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
+{
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_RadioButton
+	{
+		[TestCleanup]
+		public async Task Cleanup()
+		{
+			WindowHelper.WindowContent = null;
+
+			await WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		public void When_GroupName_Default_Property_Value()
+		{
+			var radioButton = new RadioButton();
+			radioButton.GroupName.Should().Be("");
+		}
+
+		[TestMethod]
+		public void When_GroupName_Default_Dependency_Property_Value()
+		{
+			var radioButton = new RadioButton();
+			var value = radioButton.GetValue(RadioButton.GroupNameProperty);
+			value.Should().BeNull();
+		}
+
+		[TestMethod]
+		public void When_GroupName_Set_Null()
+		{
+			var radioButton = new RadioButton();
+			Action act = () => radioButton.GroupName = null;
+			act.Should().Throw<ArgumentNullException>();
+		}
+
+		[TestMethod]
+		public async Task When_GroupName_Custom()
+		{
+			var radioButtonA1 = new RadioButton()
+			{
+				GroupName = "A"
+			};
+			var radioButtonA2 = new RadioButton()
+			{
+				GroupName = "A"
+			};
+			var radioButtonEmpty = new RadioButton()
+			{
+				GroupName = ""
+			};
+			var radioButtonB = new RadioButton()
+			{
+				GroupName = "B"
+			};
+			var container = new StackPanel()
+			{
+				Children =
+				{
+					radioButtonA1,
+					radioButtonA2,
+					radioButtonB,
+					radioButtonEmpty
+				}
+			};
+
+			WindowHelper.WindowContent = container;
+
+			await WindowHelper.WaitForIdle();
+
+			// Check first from "A" group
+			radioButtonA1.IsChecked = true;
+
+			Assert.IsFalse(radioButtonA2.IsChecked);
+			Assert.IsFalse(radioButtonB.IsChecked);
+			Assert.IsFalse(radioButtonEmpty.IsChecked);
+
+			// Check second from "A" group
+			radioButtonA2.IsChecked = true;
+
+			Assert.IsFalse(radioButtonA1.IsChecked);
+
+			// Check other groups
+			radioButtonB.IsChecked = true;
+			radioButtonEmpty.IsChecked = true;
+
+			Assert.IsTrue(radioButtonA2.IsChecked);
+		}
+
+		[TestMethod]
+		public async Task When_GroupName_Custom_Two_Containers()
+		{
+			var radioButtonA1 = new RadioButton()
+			{
+				GroupName = "A"
+			};
+			var radioButtonA2 = new RadioButton()
+			{
+				GroupName = "A"
+			};
+
+			var container = new StackPanel()
+			{
+				Children =
+				{
+					new StackPanel()
+					{
+						Children =
+						{
+							radioButtonA1
+						}
+					},
+					new StackPanel()
+					{
+						Children =
+						{
+							radioButtonA2
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = container;
+
+			await WindowHelper.WaitForIdle();
+
+			// Check first from "A" group
+			radioButtonA1.IsChecked = true;
+
+			Assert.IsFalse(radioButtonA2.IsChecked);
+
+			// Check second from "A" group
+			radioButtonA2.IsChecked = true;
+
+			Assert.IsFalse(radioButtonA1.IsChecked);
+		}
+
+		[TestMethod]
+		public async Task When_GroupName_Empty()
+		{
+			var radioButtonA = new RadioButton()
+			{
+				GroupName = "A"
+			};
+			var radioButtonEmpty1 = new RadioButton()
+			{
+				GroupName = ""
+			};
+			var radioButtonEmpty2 = new RadioButton()
+			{
+				GroupName = ""
+			};
+			var radioButtonNull = new RadioButton();
+
+			var container = new StackPanel()
+			{
+				Children =
+				{
+					radioButtonA,
+					radioButtonEmpty1,
+					radioButtonEmpty2,
+					radioButtonNull
+				}
+			};
+
+			WindowHelper.WindowContent = container;
+
+			await WindowHelper.WaitForIdle();
+
+			// Check first from empty string group
+			radioButtonEmpty1.IsChecked = true;
+
+			Assert.IsFalse(radioButtonA.IsChecked);
+			Assert.IsFalse(radioButtonEmpty2.IsChecked);
+			Assert.IsFalse(radioButtonNull.IsChecked);
+
+			// Check second from empty string group
+			radioButtonEmpty2.IsChecked = true;
+
+			Assert.IsFalse(radioButtonEmpty1.IsChecked);
+
+			// Check "A" group
+			radioButtonA.IsChecked = true;
+
+			Assert.IsTrue(radioButtonEmpty2.IsChecked);
+
+			// Check null group
+			radioButtonNull.IsChecked = true;
+
+			Assert.IsFalse(radioButtonEmpty2.IsChecked);
+		}
+
+		[TestMethod]
+		public async Task When_GroupName_Empty_Two_Containers()
+		{
+			var radioButtonEmpty1 = new RadioButton()
+			{
+				GroupName = ""
+			};
+			var radioButtonEmpty2 = new RadioButton()
+			{
+				GroupName = ""
+			};
+
+			var container = new StackPanel()
+			{
+				Children =
+				{
+					new StackPanel()
+					{
+						Children =
+						{
+							radioButtonEmpty1
+						}
+					},
+					new StackPanel()
+					{
+						Children =
+						{
+							radioButtonEmpty2
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = container;
+
+			await WindowHelper.WaitForIdle();
+
+			// Check first from empty string group
+			radioButtonEmpty1.IsChecked = true;
+
+			Assert.IsFalse(radioButtonEmpty2.IsChecked);
+
+			// Check second from empty string group
+			radioButtonEmpty2.IsChecked = true;
+
+			Assert.IsTrue(radioButtonEmpty1.IsChecked);
+		}
+
+		[TestMethod]
+		public async Task When_GroupName_Default()
+		{
+			var radioButtonA = new RadioButton()
+			{
+				GroupName = "A"
+			};
+			var radioButtonNull1 = new RadioButton();
+			var radioButtonNull2 = new RadioButton();
+			var radioButtonEmpty = new RadioButton()
+			{
+				GroupName = ""
+			};
+
+			var container = new StackPanel()
+			{
+				Children =
+				{
+					radioButtonA,
+					radioButtonNull1,
+					radioButtonNull2,
+					radioButtonEmpty
+				}
+			};
+
+			WindowHelper.WindowContent = container;
+
+			await WindowHelper.WaitForIdle();
+
+			// Check first from default group
+			radioButtonNull1.IsChecked = true;
+
+			Assert.IsFalse(radioButtonA.IsChecked);
+			Assert.IsFalse(radioButtonNull2.IsChecked);
+			Assert.IsFalse(radioButtonEmpty.IsChecked);
+
+			// Check second from default group
+			radioButtonNull2.IsChecked = true;
+
+			Assert.IsFalse(radioButtonNull1.IsChecked);
+
+			// Check "A" group
+			radioButtonA.IsChecked = true;
+
+			Assert.IsTrue(radioButtonNull2.IsChecked);
+
+			// Check empty string group
+			radioButtonEmpty.IsChecked = true;
+
+			Assert.IsFalse(radioButtonNull2.IsChecked);
+		}
+
+		[TestMethod]
+		public async Task When_GroupName_Default_Two_Containers()
+		{
+			var radioButtonNull1 = new RadioButton();
+			var radioButtonNull2 = new RadioButton();
+			var radioButtonEmpty = new RadioButton()
+			{
+				GroupName = ""
+			};
+
+			var container = new StackPanel()
+			{
+				Children =
+				{
+					new StackPanel()
+					{
+						Children =
+						{
+							radioButtonNull1
+						}
+					},
+					new StackPanel()
+					{
+						Children =
+						{
+							radioButtonNull2,
+							radioButtonEmpty
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = container;
+
+			await WindowHelper.WaitForIdle();
+
+			// Check first from default group
+			radioButtonNull1.IsChecked = true;
+
+			Assert.IsFalse(radioButtonNull2.IsChecked);
+
+			// Check second from default group
+			radioButtonNull2.IsChecked = true;
+
+			Assert.IsTrue(radioButtonNull1.IsChecked);
+
+			// Check from empty string radio
+			radioButtonEmpty.IsChecked = true;
+
+			Assert.IsFalse(radioButtonNull2.IsChecked);
+		}
+	}
+}
