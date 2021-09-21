@@ -5,12 +5,10 @@ using System.Collections.Generic;
 using DirectUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Windows.UI.Xaml.Controls
@@ -22,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 			base.Initialize();
 			// Ignore the ENTER key by default
 			SetAcceptsReturn(false);
-			Register(null, this);
+			Register("", this);
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
@@ -110,14 +108,12 @@ namespace Windows.UI.Xaml.Controls
 			IsChecked = true;
 		}
 
-		private static void Register(string? pGroupName, RadioButton radioButton)
+		private static void Register(string groupName, RadioButton radioButton)
 		{
 			if (radioButton is null)
 			{
 				throw new ArgumentNullException(nameof(radioButton));
 			}
-
-			var groupName = pGroupName;
 
 			// When registering, require DXamlCore to create the table of radio button group names if it doesn't exist.
 			var groupsByName = DXamlCore.Current.GetRadioButtonGroupsByName(true);
@@ -180,14 +176,14 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="groupName">Group name.</param>
 		/// <param name="radioButton">RadioButton.</param>
-		private static void Unregister(string? pGroupName, RadioButton radioButton)
+		private static void Unregister(string pGroupName, RadioButton radioButton)
 		{
 			if (radioButton is null)
 			{
 				throw new ArgumentNullException(nameof(radioButton));
 			}
 
-			var groupName = pGroupName;
+			var groupName = pGroupName ?? "";
 
 			bool found = false;
 
@@ -300,18 +296,21 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					//IFCEXPECT_RETURN(!groupNameExists);
+					if (!groupNameExists)
+					{
+						throw new InvalidOperationException("Trying to update RadioButton group which does not exist.");
+					}
 				}
 			}
 		}
 
-		private void GetGroupName(out bool groupNameExists, out string? groupName)
+		private void GetGroupName(out bool groupNameExists, out string groupName)
 		{
 			groupNameExists = false;
-			groupName = null;
+			groupName = "";
 
 			var strGroupName = GroupName;
-			if (strGroupName != null)
+			if (!string.IsNullOrEmpty(strGroupName))
 			{
 				groupName = strGroupName;
 				groupNameExists = true;
@@ -323,12 +322,12 @@ namespace Windows.UI.Xaml.Controls
 			DependencyObject? parent = null;
 			DependencyObject? radioButtonParent;
 
-			// If there is a groupName, then get the parent of the RadioButton.
+			// If there is no groupName, then get the parent of the RadioButton.
 			if (!groupNameExists)
 			{
 				radioButtonParent = radioButton.Parent;
 			}
-			// Otherwise, the RadioButtons are in a "default group" so get the root for the RadioButton, e.g. a Panel.
+			// Otherwise, use the root
 			else
 			{
 				radioButtonParent = VisualTree.GetRootForElement(radioButton); //Uno specific: Return RootVisual instead of VisualTreeHelper.GetRootStatic(radioButton);

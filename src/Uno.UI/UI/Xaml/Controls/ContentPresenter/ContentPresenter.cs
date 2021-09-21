@@ -60,7 +60,10 @@ namespace Windows.UI.Xaml.Controls
 		/// <remarks>Clear this flag to let the control nested directly under this ContentPresenter to inherit the correct templated parent</remarks>
 		internal bool SynchronizeContentWithOuterTemplatedParent { get; set; } = true;
 
-		internal bool IsUsingDefaultTemplate { get; set; } = false;
+		/// <summary>
+		/// Flag indicating whether the content presenter uses implicit text block to render its content.
+		/// </summary>
+		internal bool IsUsingDefaultTemplate { get; private set; } = true;
 
 		/// <summary>
 		/// Determines if the current ContentPresenter is hosting a native control.

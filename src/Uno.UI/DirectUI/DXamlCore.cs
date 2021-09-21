@@ -19,6 +19,8 @@ namespace DirectUI
 	{
 		private static readonly Lazy<DXamlCore> _current = new Lazy<DXamlCore>(() => new DXamlCore());
 
+		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName = null;
+
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
 
@@ -60,13 +62,11 @@ namespace DirectUI
 		public ElementSoundPlayerService GetElementSoundPlayerServiceNoRef()
 			=> ElementSoundPlayerService.Instance;
 
-		private NullableKeyDictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName = null;
-
-		internal NullableKeyDictionary<string, List<WeakReference<RadioButton>>>? GetRadioButtonGroupsByName(bool ensure)
+		internal Dictionary<string, List<WeakReference<RadioButton>>>? GetRadioButtonGroupsByName(bool ensure)
 		{
 			if (_radioButtonGroupsByName == null && ensure)
 			{
-				_radioButtonGroupsByName = new NullableKeyDictionary<string, List<WeakReference<RadioButton>>>();
+				_radioButtonGroupsByName = new Dictionary<string, List<WeakReference<RadioButton>>>();
 			}
 
 			return _radioButtonGroupsByName;

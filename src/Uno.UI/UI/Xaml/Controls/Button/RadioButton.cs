@@ -56,14 +56,14 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 
 			UnregisterSafe(this);
-			Register(GroupName, this);
+			Register((string)GetValue(GroupNameProperty) ?? "", this);
 		}
 
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
-			Unregister(GroupName, this);
+			Unregister((string)GetValue(GroupNameProperty) ?? "", this);
 		}
 	}
 }
