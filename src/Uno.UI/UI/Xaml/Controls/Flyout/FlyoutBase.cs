@@ -26,9 +26,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class FlyoutBase : DependencyObject
 	{
-		public event EventHandler Opened;
-		public event EventHandler Closed;
-		public event EventHandler Opening;
+		public event EventHandler<object> Opened;
+		public event EventHandler<object> Closed;
+		public event EventHandler<object> Opening;
 		public event TypedEventHandler<FlyoutBase, FlyoutBaseClosingEventArgs> Closing;
 
 		private bool _isOpen = false;

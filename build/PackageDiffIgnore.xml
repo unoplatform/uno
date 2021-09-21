@@ -11605,6 +11605,25 @@
 			<Member
 				fullName="System.Void Uno.UI.Controls.BindableNSView.remove_DataContextChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.DependencyObject,Windows.UI.Xaml.DataContextChangedEventArgs&gt; value)"
 				reason="Alignment with UWP" />
+
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.FlyoutBase.add_Opened(System.EventHandler value)"
+				reason="Align signature with UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.FlyoutBase.remove_Opened(System.EventHandler value)"
+				reason="Align signature with UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.FlyoutBase.add_Closed(System.EventHandler value)"
+				reason="Align signature with UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.FlyoutBase.remove_Closed(System.EventHandler value)"
+				reason="Align signature with UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.FlyoutBase.add_Opening(System.EventHandler value)"
+				reason="Align signature with UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.FlyoutBase.remove_Opening(System.EventHandler value)"
+				reason="Align signature with UWP" />
 		</Methods>
 		<Events>
 			<Member
