@@ -3955,7 +3955,7 @@
 		</Properties>
 	</IgnoreSet>
 	
-	<IgnoreSet baseVersion="3.10.7">
+	<IgnoreSet baseVersion="3.10.11">
 		<Methods>
 			<Member
 				fullName="System.Object Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_Value()"
