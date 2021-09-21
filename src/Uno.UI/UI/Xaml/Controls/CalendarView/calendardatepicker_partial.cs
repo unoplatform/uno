@@ -274,13 +274,13 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateVisualState();
 
-			void OnFlyoutOpened(object sender, EventArgs eventArgs)
+			void OnFlyoutOpened(object sender, object eventArgs)
 			{
 				IsCalendarOpen = true;
 				_opened?.Invoke(this, new object());
 			}
 
-			void OnFlyoutClosed(object sender, EventArgs eventArgs)
+			void OnFlyoutClosed(object sender, object eventArgs)
 			{
 				IsCalendarOpen = false;
 				_closed?.Invoke(this, new object());
