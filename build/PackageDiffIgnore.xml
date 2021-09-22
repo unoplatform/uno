@@ -3965,6 +3965,1284 @@
 				reason="False positive, still present, but accessible also through an internal interface" />
 		</Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="3.10.11">
+		<Types>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.Popup"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.PopupBase"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.NativePopup"
+				reason="Adjust Popup hierarchy" />
+		</Types>
+		<Methods>
+			<Member
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.UI.Xaml.Controls.Popup&gt; Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window window)"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.UI.Xaml.Controls.Popup&gt; Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(Windows.UI.Xaml.XamlRoot xamlRoot)"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Popover.OnAnchorChanged(UIKit.UIView oldAnchor, UIKit.UIView newAnchor)"
+				reason="Adjust Popup hierarchy" />
+
+			<Member
+				fullName="System.DateTime Windows.Foundation.IPropertyValue.GetDateTime()"
+				reason="Align IPropertyValue" />
+
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel.get_AreHorizontalSnapPointsRegular()"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel.get_AreVerticalSnapPointsRegular()"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Collections.Generic.IReadOnlyList`1&lt;System.Single&gt; Windows.UI.Xaml.Controls.Primitives.CarouselPanel.GetIrregularSnapPoints(Windows.UI.Xaml.Controls.Orientation orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Single Windows.UI.Xaml.Controls.Primitives.CarouselPanel.GetRegularSnapPoints(Windows.UI.Xaml.Controls.Orientation orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, System.Single&amp; offset)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CarouselPanel.add_HorizontalSnapPointsChanged(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CarouselPanel.remove_HorizontalSnapPointsChanged(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CarouselPanel.add_VerticalSnapPointsChanged(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CarouselPanel.remove_VerticalSnapPointsChanged(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Relates to #4956" />
+
+			<Member
+				fullName="System.UInt32 Windows.UI.Xaml.Media.GradientStopCollection.get_Size()"
+				reason="Relates to #4169" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Media.GradientStopCollection.get_IsReadOnly()"
+				reason="Relates to #4169" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.GradientStopCollection.set_IsReadOnly(System.Boolean value)"
+				reason="Relates to #4169" />
+
+			<Member
+				fullName="System.UInt16 Windows.UI.Text.FontWeight.get_Weight()"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.UI.Text.FontWeight.set_Weight(System.UInt16 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.FileRandomAccessStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.InMemoryRandomAccessStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.RandomAccessStreamOverStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Storage.FileProperties.StorageItemThumbnail.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Media.SpeechSynthesis.SpeechSynthesisStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Media.Capture.CapturedFrame.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.ImageStream.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.DeviceThumbnail.set_Size(System.UInt64 value)"
+				reason="Align Properties" />
+
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Windows.UI.Xaml.Controls.Panel.get_Padding()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_Padding(Windows.UI.Xaml.Thickness value)"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel.get_PaddingProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Windows.UI.Xaml.Controls.Panel.get_BorderThickness()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_BorderThickness(Windows.UI.Xaml.Thickness value)"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel.get_BorderThicknessProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.Media.Brush Windows.UI.Xaml.Controls.Panel.get_BorderBrush()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_BorderBrush(Windows.UI.Xaml.Media.Brush value)"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel.get_BorderBrushProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel.get_CornerRadiusProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.CornerRadius Windows.UI.Xaml.Controls.Panel.get_CornerRadius()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Panel.set_CornerRadius(Windows.UI.Xaml.CornerRadius value)"
+				reason="Align Panel DPs" />
+
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.set_IsIntermediate(System.Boolean value)"
+				reason="Aligned visibility with UWP" />
+
+			<Member
+				fullName="Windows.UI.Xaml.Controls.Primitives.PlacementMode Windows.UI.Xaml.Controls.ToolTipService.GetPlacement(Windows.UI.Xaml.FrameworkElement obj)"
+				reason="Fix alignment regressions" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ToolTipService.SetPlacement(Windows.UI.Xaml.FrameworkElement obj, Windows.UI.Xaml.Controls.Primitives.PlacementMode value)"
+				reason="Fix alignment regressions" />
+
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignBottomWithPanel(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignBottomWithPanel(Windows.UI.Xaml.DependencyObject view, System.Boolean value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignLeftWithPanel(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignLeftWithPanel(Windows.UI.Xaml.DependencyObject view, System.Boolean value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignRightWithPanel(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignRightWithPanel(Windows.UI.Xaml.DependencyObject view, System.Boolean value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignTopWithPanel(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignTopWithPanel(Windows.UI.Xaml.DependencyObject view, System.Boolean value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignHorizontalCenterWithPanel(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignHorizontalCenterWithPanel(Windows.UI.Xaml.DependencyObject view, System.Boolean value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignVerticalCenterWithPanel(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWithPanel(Windows.UI.Xaml.DependencyObject view, System.Boolean value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignBottomWith(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignBottomWith(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignLeftWith(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignLeftWith(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignRightWith(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignRightWith(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignTopWith(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignTopWith(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignHorizontalCenterWith(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignHorizontalCenterWith(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignVerticalCenterWith(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWith(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAbove(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAbove(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetBelow(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetBelow(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetLeftOf(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetLeftOf(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetRightOf(Windows.UI.Xaml.DependencyObject view)"
+				reason="Align RelativePanel methods" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetRightOf(Windows.UI.Xaml.DependencyObject view, System.Object value)"
+				reason="Align RelativePanel methods" />
+
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_Value()"
+				reason="False positive" />
+			<Member
+				fullName="Windows.UI.Xaml.Media.Animation.KeyTime Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_KeyTime()"
+				reason="False positive" />
+
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.RichTextBlock.Focus(Windows.UI.Xaml.FocusState value)"
+				reason="To be fixed" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.TextBlock.Focus(Windows.UI.Xaml.FocusState value)"
+				reason="To be fixed" />
+		</Methods>
+		<Events>
+			<Member
+				fullName="System.EventHandler`1&lt;System.Object&gt; Windows.UI.Xaml.Controls.Primitives.CarouselPanel::HorizontalSnapPointsChanged"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.EventHandler`1&lt;System.Object&gt; Windows.UI.Xaml.Controls.Primitives.CarouselPanel::VerticalSnapPointsChanged"
+				reason="Relates to #4956" />
+		</Events>
+		<Fields>
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.AddResourcePackageOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Appointments.AppointmentDaysOfWeek::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Appointments.FindAppointmentCalendarsOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryDesiredMedia::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactAnnotationOperations::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIContentMode::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Email.EmailQuerySearchFields::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Store.Preview.StoreLogOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.UserDataAccounts.UserDataAccountContentKinds::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.UserDataTasks.UserDataTaskDaysOfWeek::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Data.Text.TextPredictionOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Bluetooth.BluetoothServiceCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicProperties::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayBitsPerChannel::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayManagerOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayModeQueryOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayStateApplyOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Display.Core.DisplayStateFunctionalizeOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Enumeration.DevicePairingKinds::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Enumeration.DevicePickerDisplayStatusOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Lights.LampPurposes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosConnectionTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosPrinterCartridgeSensors::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosPrinterColorCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosPrinterMarkFeedCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.PointOfService.PosPrinterRuledLineCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Usb.UsbReadOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Usb.UsbWriteOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Foundation.Diagnostics.ErrorOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.ArcadeStickButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.FlightStickButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectAxes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.GamepadButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.OptionalUINavigationButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.RacingWheelButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Gaming.Input.RequiredUINavigationButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.DirectX.Direct3D11.Direct3DBindings::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.Printing.OptionDetails.PrintOptionStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.AddPackageByAppInstallerOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.DeploymentOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.PackageStatus::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.PackageTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Management.Deployment.RemovalOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Media.Audio.AudioNodeEmitterSettings::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Media.Casting.CastingPlaybackTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Media.MediaProperties.MediaMirroringOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Media.Protection.RevocationAndRenewalReasons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Connectivity.NetworkTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Connectivity.RoamingStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Connectivity.WwanDataClass::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.HostNameSortOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.NetworkOperators.DataClasses::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Proximity.PeerDiscoveryTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Networking.Vpn.VpnChannelRequestCredentialsOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Phone.ApplicationModel.ApplicationProfileModes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Phone.Media.Devices.AvailableAudioRoutingEndpoints::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Phone.Notification.Management.AccessoryNotificationType::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Phone.Notification.Management.PlaybackCapability::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorDeviceCapabilities::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Authentication.Web.Provider.WebAccountSelectionOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Cryptography.Certificates.EnrollKeyUsages::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Cryptography.Certificates.InstallOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Services.Maps.MapManeuverNotices::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Services.Maps.MapRouteRestrictions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.AccessCache.AccessCacheOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.FileAttributes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.FileProperties.PropertyPrefetchOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.FileProperties.ThumbnailOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.Provider.CachedFileOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticEventBufferLatencies::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.System.Profile.UnsupportedAppRequirementReasons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.ApplicationSettings.SupportedWebAccountActions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Composition.Diagnostics.CompositionDebugOverdrawContentKinds::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Composition.Interactions.InteractionBindingAxisModes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Core.CoreInputDeviceTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputKeyOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputMouseOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputPenButtons::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputPenParameters::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputPointerOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Input.Spatial.SpatialGestureSettings::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Notifications.NotificationKinds::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.StartScreen.TileOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.FindOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.PointOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.SelectionOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.TextGetOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.TextSetOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.ViewManagement.ApplicationViewSwitchingOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.ApplicationHighContrastAdjustment::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.Controls.DisabledFormattingAccelerators::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.ElementHighContrastAdjustment::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Xaml.Vector3TransitionComponents::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.ApplicationModel.Contacts.ContactQueryDesiredFields::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Geolocation.Geofencing.GeofenceState::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.Display.DisplayBrightnessOverrideOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Graphics.Display.DisplayOrientations::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Security.Authentication.Web.WebAuthenticationOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.StorageItemTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.Storage.StorageOpenOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.System.Threading.WorkItemOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Composition.CompositionBatchTypes::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Core.CoreVirtualKeyStates::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Popups.MessageDialogOptions::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.Int32 Windows.UI.Text.TextDecorations::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="System.UInt32 Windows.UI.Xaml.Automation.Peers.PatternInterface::value__"
+				reason="Align enums" />
+
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Transparent"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::AliceBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::AntiqueWhite"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Aqua"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Aquamarine"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Azure"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Beige"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Bisque"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Black"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::BlanchedAlmond"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Blue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::BlueViolet"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Brown"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::BurlyWood"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::CadetBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Chartreuse"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Chocolate"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Coral"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::CornflowerBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Cornsilk"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Crimson"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Cyan"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkCyan"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkGoldenrod"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkKhaki"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkMagenta"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkOliveGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkOrange"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkOrchid"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkSalmon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkSeaGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkSlateBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkSlateGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkTurquoise"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DarkViolet"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DeepPink"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DeepSkyBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DimGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::DodgerBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Firebrick"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::FloralWhite"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::ForestGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Fuchsia"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Gainsboro"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::GhostWhite"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Gold"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Goldenrod"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Gray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Green"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::GreenYellow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Honeydew"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::HotPink"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::IndianRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Indigo"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Ivory"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Khaki"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Lavender"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LavenderBlush"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LawnGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LemonChiffon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightCoral"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightCyan"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightGoldenrodYellow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightPink"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSalmon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSeaGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSkyBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSlateGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightSteelBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LightYellow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Lime"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::LimeGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Linen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Magenta"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Maroon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumAquamarine"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumOrchid"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumPurple"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumSeaGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumSlateBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumSpringGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumTurquoise"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MediumVioletRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MidnightBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MintCream"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::MistyRose"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Moccasin"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::NavajoWhite"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Navy"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::OldLace"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Olive"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::OliveDrab"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Orange"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::OrangeRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Orchid"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PaleGoldenrod"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PaleGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PaleTurquoise"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PaleVioletRed"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PapayaWhip"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PeachPuff"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Peru"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Pink"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Plum"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::PowderBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Purple"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Red"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::RosyBrown"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::RoyalBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SaddleBrown"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Salmon"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SandyBrown"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SeaGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SeaShell"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Sienna"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Silver"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SkyBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SlateBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SlateGray"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Snow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SpringGreen"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::SteelBlue"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Tan"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Teal"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Thistle"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Tomato"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Turquoise"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Violet"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Wheat"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::White"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::WhiteSmoke"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::Yellow"
+				reason="Align Colors" />
+			<Member
+				fullName="Windows.UI.Color Windows.UI.Colors::YellowGreen"
+				reason="Align Colors" />
+
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Thin"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::ExtraLight"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::UltraLight"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::SemiLight"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Light"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Normal"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Regular"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Medium"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::SemiBold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::DemiBold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Bold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::UltraBold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::ExtraBold"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Black"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::Heavy"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::ExtraBlack"
+				reason="Align FontWeights" />
+			<Member
+				fullName="Windows.UI.Text.FontWeight Windows.UI.Text.FontWeights::UltraBlack"
+				reason="Align FontWeights" />
+
+			<Member
+				fullName="System.Object Windows.UI.Xaml.DependencyProperty::UnsetValue"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Documents.TextElement::CharacterSpacingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Documents.TextElement::TextDecorationsProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ContentPresenter::PaddingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ContentPresenter::BorderThicknessProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ContentPresenter::BorderBrushProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ContentPresenter::CornerRadiusProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ItemsControl::ItemsPanelProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ItemsControl::ItemTemplateProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ItemsControl::ItemTemplateSelectorProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ItemsPresenter::PaddingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ScrollViewer::VerticalOffsetProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.ScrollViewer::HorizontalOffsetProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TextBlock::PaddingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TextBlock::CharacterSpacingProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TextBlock::TextDecorationsProperty"
+				reason="Align Properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Automation.AutomationProperties::NameProperty"
+				reason="Align Properties" />
+
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Control::FocusStateProperty"
+				reason="Fix alignment regressions" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Control::IsTabStopProperty"
+				reason="Fix alignment regressions" />
+		</Fields>
+		<Properties>
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel::AreHorizontalSnapPointsRegular()"
+				reason="Relates to #4956" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel::AreVerticalSnapPointsRegular()"
+				reason="Relates to #4956" />
+
+			<Member
+				fullName="System.UInt32 Windows.UI.Xaml.Media.GradientStopCollection::Size()"
+				reason="Relates to #4169" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Media.GradientStopCollection::IsReadOnly()"
+				reason="Relates to #4169" />
+
+			<Member
+				fullName="System.UInt16 Windows.UI.Text.FontWeight::Weight()"
+				reason="Align Properties" />
+
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Windows.UI.Xaml.Controls.Panel::Padding()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel::PaddingProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.Thickness Windows.UI.Xaml.Controls.Panel::BorderThickness()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel::BorderThicknessProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.Media.Brush Windows.UI.Xaml.Controls.Panel::BorderBrush()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel::BorderBrushProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Panel::CornerRadiusProperty()"
+				reason="Align Panel DPs" />
+			<Member
+				fullName="Windows.UI.Xaml.CornerRadius Windows.UI.Xaml.Controls.Panel::CornerRadius()"
+				reason="Align Panel DPs" />
+		</Properties>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>
