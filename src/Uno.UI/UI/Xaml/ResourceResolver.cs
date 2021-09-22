@@ -63,9 +63,22 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static T ResolveResourceStatic<T>(object key, object context = null)
 		{
-			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value) && value is T tValue)
+			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value))
 			{
-				return tValue;
+				if (value is T tValue)
+				{
+					return tValue;
+				}
+				else
+				{
+					var convertedValue = BindingPropertyHelper.Convert(() => typeof(T), value);
+					if (convertedValue is null && _log.IsEnabled(LogLevel.Warning))
+					{
+						_log.LogWarning($"Unable to convert value '{value}' of type '{value.GetType()}' to type '{typeof(T)}'");
+					}
+
+					return (T)convertedValue;
+				}
 			}
 
 			return default(T);
