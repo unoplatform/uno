@@ -93,8 +93,8 @@ namespace Windows.UI.Xaml.Controls
 			var strOldValue = pOldValue as string;
 			var strNewValue = pNewValue as string;
 
-			Unregister(strOldValue, this);
-			Register(strNewValue, this);
+			Unregister(strOldValue ?? "", this);
+			Register(strNewValue ?? "", this);
 		}
 
 		private protected override void OnChecked()
@@ -176,14 +176,12 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="groupName">Group name.</param>
 		/// <param name="radioButton">RadioButton.</param>
-		private static void Unregister(string pGroupName, RadioButton radioButton)
+		private static void Unregister(string groupName, RadioButton radioButton)
 		{
 			if (radioButton is null)
 			{
 				throw new ArgumentNullException(nameof(radioButton));
 			}
-
-			var groupName = pGroupName ?? "";
 
 			bool found = false;
 

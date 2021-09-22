@@ -1,6 +1,5 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.System;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 
@@ -54,5 +53,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(Uri),
 				typeof(HyperlinkButton),
 				new FrameworkPropertyMetadata(default(Uri)));
+
+		#endregion
 	}
 }

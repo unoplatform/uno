@@ -6,9 +6,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control
 	{
-		protected class StateChangeSuspender : IDisposable
+		private protected class StateChangeSuspender : IDisposable
 		{
-			private Control _control;
+			private readonly Control _control;
 
 			public StateChangeSuspender(Control control)
 			{

@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Flag indicating whether the content presenter uses implicit text block to render its content.
 		/// </summary>
-		internal bool IsUsingDefaultTemplate { get; private set; } = true;
+		internal bool IsUsingDefaultTemplate { get; private set; } = false;
 
 		/// <summary>
 		/// Determines if the current ContentPresenter is hosting a native control.
@@ -846,7 +846,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					IsUsingDefaultTemplate = false;
 				}
-			}
+			}	
 
 			if (Content != null
 				&& !(Content is View)
@@ -855,14 +855,15 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Use basic default root for non-View Content if no template is supplied
 				SetContentTemplateRootToPlaceholder();
-			}
+			}			
 
 			if (ContentTemplateRoot == null && Content is View contentView && dataTemplate == null)
 			{
 				// No template and Content is a View, set it directly as root
 				ContentTemplateRoot = contentView as View;
-				IsUsingDefaultTemplate = false;
 			}
+
+			IsUsingDefaultTemplate = ContentTemplateRoot is ImplicitTextBlock;
 		}
 
 		private void SetContentTemplateRootToPlaceholder()

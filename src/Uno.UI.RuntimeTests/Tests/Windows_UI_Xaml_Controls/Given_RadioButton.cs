@@ -11,14 +11,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_RadioButton
 	{
-		[TestCleanup]
-		public async Task Cleanup()
-		{
-			WindowHelper.WindowContent = null;
-
-			await WindowHelper.WaitForIdle();
-		}
-
 		[TestMethod]
 		public void When_GroupName_Default_Property_Value()
 		{
