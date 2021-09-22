@@ -5611,6 +5611,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
 												{
 													writer.AppendLineInvariant($"that.Bindings.UpdateResources();");
+
+													using (writer.BlockInvariant($"if (!that.IsLoaded)"))
+													{
+														// Refresh the bindings explicitly as the target is not yet loaded, but the
+														// x:Load value has already changed. In this case, the unloaded block registration below
+														// won't be called because the control was not loaded.
+														writer.AppendLineInvariant($"that.Bindings.Update();");
+													}
 												}
 											}
 										}

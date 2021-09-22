@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -1053,7 +1054,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new Binding_xLoad_Setter();
 
 			SUT.ForceLoaded();
-
+			
 			Assert.IsNull(SUT.ellipse);
 			Assert.IsNotNull(SUT.square);
 			Assert.AreEqual(4, SUT.square.StrokeThickness);
@@ -1107,6 +1108,24 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 		}
+
+		[TestMethod]
+		public async Task When_xLoad_xBind_xLoad_Initial()
+		{
+			var grid = new Grid();
+			grid.ForceLoaded();
+
+			var SUT = new When_xLoad_xBind_xLoad_Initial();
+			grid.Children.Add(SUT);
+
+			Assert.IsNotNull(SUT.tb01);
+			Assert.AreEqual(1, SUT.tb01.Tag);
+
+			SUT.Model.MyValue = 42;
+
+			Assert.AreEqual(42, SUT.tb01.Tag);
+		}
+
 
 		[TestMethod]
 		public async Task When_Binding_xNull()
