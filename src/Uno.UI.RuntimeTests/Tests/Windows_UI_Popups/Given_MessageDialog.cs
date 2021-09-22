@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 	[TestClass]
 	public class Given_MessageDialog
 	{
+#if !__WASM__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Should_Close_Open_Popups()
@@ -31,5 +32,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
 			asyncOperation.Cancel();
 		}
+#endif
 	}
 }
