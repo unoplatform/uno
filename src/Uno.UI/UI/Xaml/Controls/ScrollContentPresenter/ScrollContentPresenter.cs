@@ -48,6 +48,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
+		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
+
 #if __WASM__
 		bool _forceChangeToCurrentView;
 
@@ -74,20 +76,52 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if __IOS__ || __ANDROID__
-		private NativeScrollContentPresenter Native => Content as NativeScrollContentPresenter;
+		internal INativeScrollContentPresenter Native { get; set; }
 		private object RealContent => Native?.Content;
-		public ScrollBarVisibility HorizontalScrollBarVisibility => Native?.HorizontalScrollBarVisibility ?? default;
-		public ScrollBarVisibility VerticalScrollBarVisibility => Native?.VerticalScrollBarVisibility ?? default;
+
+		public ScrollBarVisibility NativeHorizontalScrollBarVisibility
+		{
+			set
+			{
+				if (Native is { } native)
+				{
+					native.HorizontalScrollBarVisibility = value;
+				}
+			}
+		}
+
+		public ScrollBarVisibility NativeVerticalScrollBarVisibility
+		{
+			set
+			{
+				if (Native is { } native)
+				{
+					native.VerticalScrollBarVisibility = value;
+				}
+			}
+		}
 		public bool CanHorizontallyScroll
 		{
-			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
-			set { }
+			get => Native?.CanHorizontallyScroll ?? false;
+			set
+			{
+				if (Native is { } native)
+				{
+					native.CanHorizontallyScroll = value;
+				}
+			}
 		}
 
 		public bool CanVerticallyScroll
 		{
-			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
-			set { }
+			get => Native?.CanVerticallyScroll ?? false;
+			set
+			{
+				if (Native is { } native)
+				{
+					native.CanVerticallyScroll = value;
+				}
+			}
 		}
 #endif
 

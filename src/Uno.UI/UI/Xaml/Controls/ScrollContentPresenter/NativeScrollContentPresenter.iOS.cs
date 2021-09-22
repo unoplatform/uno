@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 		private void InvokeOnScroll()
 		{
 			var scroller = GetParentScrollViewer();
-			if (scroller is null)
+			if (scroller is null || scroller.Presenter is null)
 			{
 				return;
 			}
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 			var clampedOffset = scroller.ShouldReportNegativeOffsets
 				? ContentOffset
 				: ContentOffset.Clamp(CGPoint.Empty, UpperScrollLimit);
-			scroller.OnScrollInternal(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
+			scroller.Presenter.OnNativeScroll(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
 
 		private ScrollViewer GetParentScrollViewer() => _scrollViewer.TryGetTarget(out var s) ? s : TemplatedParent as ScrollViewer;
@@ -131,7 +131,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnZoom(object sender, EventArgs e)
 		{
-			(TemplatedParent as ScrollViewer)?.OnZoomInternal((float)ZoomScale);
+			if (GetParentScrollViewer()?.Presenter is { } presenter)
+			{
+				presenter.OnNativeZoom((float)ZoomScale);
+			}
 		}
 
 		public override void SetContentOffset(CGPoint contentOffset, bool animated)

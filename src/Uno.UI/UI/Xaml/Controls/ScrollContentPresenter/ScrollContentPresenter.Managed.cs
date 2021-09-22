@@ -76,8 +76,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly IScrollStrategy _strategy;
 		
-		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
-
 		public bool CanHorizontallyScroll { get; set; }
 
 		public bool CanVerticallyScroll { get; set; }
@@ -189,9 +187,9 @@ namespace Windows.UI.Xaml.Controls
 				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, disableAnimation);
 			}
 
-			Scroller?.OnScrollInternal(HorizontalOffset, VerticalOffset, isIntermediate);
+			Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate);
 
-			// Note: We do not capture the offset so if they are altered in the OnScrollInternal,
+			// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
 			//		 we will apply only the final ScrollOffsets and only once.
 			ScrollOffsets = new Point(HorizontalOffset, VerticalOffset);
 			InvalidateViewport();

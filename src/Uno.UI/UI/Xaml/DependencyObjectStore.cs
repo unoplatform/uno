@@ -237,7 +237,6 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the local value of a dependency property, if a local value is set.
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
 		public object? ReadLocalValue(DependencyProperty property)
@@ -248,7 +247,6 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the local value of a dependency property, if a local value is set.
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
 		public object? GetAnimationBaseValue(DependencyProperty property)
@@ -297,8 +295,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Determines the current highest dependency property value precedence
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
-		/// <param name="property">The dependency property to get</param>
+		/// <param name="propertyDetails">The dependency property to get</param>
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyPropertyDetails propertyDetails)
 		{
@@ -308,7 +305,6 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Determines the current highest dependency property value precedence
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyProperty property)

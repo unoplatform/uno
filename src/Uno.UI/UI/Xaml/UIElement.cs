@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER && !__WASM__
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER && !__WASM__ && !__ANDROID__
 				// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
 				// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 				if (elt is ScrollViewer sv
@@ -676,11 +676,21 @@ namespace Windows.UI.Xaml
 		/// Backing property for <see cref="LayoutInformation.GetLayoutSlot(FrameworkElement)"/>
 		/// </summary>
 		Rect IUIElement.LayoutSlot { get; set; }
+
 		/// <summary>
-		/// Gets the 'finalSize' of the last Arrange
+		/// Gets the 'finalSize' of the last Arrange.
+		/// Be aware that it's the rect provided by the parent, **before** margins and alignment are being applied,
+		/// so the size of that rect can be different to the size get in the `ArrangeOverride`.
 		/// </summary>
+		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlot => ((IUIElement)this).LayoutSlot;
 
+		/// <summary>
+		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
+		/// It's somehow the region into which an element renders itself in its parent (before any RenderTransform).
+		/// The size of 
+		/// </summary>
+		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
 
 		internal bool NeedsClipToSlot { get; set; }
@@ -759,7 +769,7 @@ namespace Windows.UI.Xaml
 			{
 				// This currently doesn't support nested scrolling.
 				// This currently doesn't support BringIntoViewOptions.AnimationDesired.
-				var scrollContentPresenter = this.FindFirstParent<IScrollContentPresenter>();
+				var scrollContentPresenter = this.FindFirstParent<ScrollContentPresenter>();
 				scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
 			});
 #endif

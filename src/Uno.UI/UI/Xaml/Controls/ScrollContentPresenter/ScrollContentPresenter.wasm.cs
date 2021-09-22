@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 					// If those values are invalid, the browser will raise the final event anyway.
 					// Note: If the caller has allowed animation, we assume that it's not interested by a sync response,
 					//		 we prefer to wait for the browser to effectively scroll.
-					(TemplatedParent as ScrollViewer)?.OnScrollInternal(
+					(TemplatedParent as ScrollViewer)?.OnPresenterScrolled(
 						horizontalOffset ?? GetNativeHorizontalOffset(),
 						verticalOffset ?? GetNativeVerticalOffset(),
 						isIntermediate: false
@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml.Controls
 			HorizontalOffset = horizontalOffset;
 			VerticalOffset = verticalOffset;
 
-			(TemplatedParent as ScrollViewer)?.OnScrollInternal(horizontalOffset, verticalOffset, isIntermediate);
+			Scroller?.OnPresenterScrolled(horizontalOffset, verticalOffset, isIntermediate);
 
 			ScrollOffsets = new Point(horizontalOffset, verticalOffset);
 			InvalidateViewport();
