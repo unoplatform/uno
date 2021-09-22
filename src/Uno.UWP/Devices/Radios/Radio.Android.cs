@@ -28,18 +28,13 @@ namespace Windows.Devices.Radios
 			Name = "";
 		}
 
-
-		private void AddLogMain(Microsoft.Extensions.Logging.LogLevel logLevel, string message)
-		{
-			if (this.Log().IsEnabled(logLevel))
-			{
-				this.Log().Debug("Could not get the bluetooth default adapter (older Android), assuming no adapter");
-			}
-		}
 		private static void AddLog(Microsoft.Extensions.Logging.LogLevel logLevel, string message)
 		{
-			var radio = new Radio();
-			radio.AddLogMain(logLevel, message);
+			if (typeof(Radio).Log().IsEnabled(logLevel))
+			{
+				typeof(Radio).Log().Debug(message);
+			}
+
 		}
 
 		private static Radio? GetRadiosBluetooth()
