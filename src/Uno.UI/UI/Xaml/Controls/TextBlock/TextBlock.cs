@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml.Media;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -367,13 +368,13 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 #if !__WASM__
-				if (value is SolidColorBrush || value is GradientBrush || value is null)
+				if (value is SolidColorBrush || value is IGradientBrush || value is null)
 				{
 					SetValue(ForegroundProperty, value);
 				}
 				else
 				{
-					throw new NotSupportedException("Only SolidColorBrush or GradientBrush's FallbackColor are supported.");
+					throw new NotSupportedException("Only SolidColorBrush, GradientBrush, or RadialGradientBrush's FallbackColor are supported.");
 				}
 #else
 				SetValue(ForegroundProperty, value);

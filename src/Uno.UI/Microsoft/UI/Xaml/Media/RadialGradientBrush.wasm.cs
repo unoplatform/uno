@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{
-		internal override string ToCssString(Size size)
+		string IGradientBrush.ToCssString(Size size)
 		{
 			var center = Center;
 			var radiusX = RadiusX;
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Media
 			return $"radial-gradient(ellipse farthest-side at {radiusX * 100d}% {radiusY * 100d}%, {stops})";
 		}
 
-		internal override UIElement ToSvgElement()
+		UIElement IGradientBrush.ToSvgElement()
 		{
 			var center = Center;
 

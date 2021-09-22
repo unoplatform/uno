@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -84,7 +85,7 @@ namespace Windows.UI.Xaml.Shapes
 							("border-color", borderColor.ToHexString()),
 							("border-width", borderWidth));
 						break;
-					case GradientBrush gradientBrush:
+					case IGradientBrush gradientBrush:
 						var border = gradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
 						element.SetStyle(
 							("border-style", "solid"),

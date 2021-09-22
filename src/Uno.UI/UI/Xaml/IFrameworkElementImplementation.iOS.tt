@@ -17,6 +17,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using UIKit;
 using CoreGraphics;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Logging;
@@ -901,13 +902,26 @@ namespace <#= mixin.NamespaceName #>
 						(s, colorArg) => BackgroundColor = (s as GradientBrush).FallbackColorWithOpacity
 					);
 				}
+				else if (e.NewValue is RadialGradientBrush rgb)
+				{
+					BackgroundColor = rgb.FallbackColorWithOpacity;
+
+					_brushColorChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
+						RadialGradientBrush.FallbackColorProperty,
+						(s, colorArg) => BackgroundColor = (s as RadialGradientBrush).FallbackColorWithOpacity
+					);
+					_brushOpacityChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
+						RadialGradientBrush.OpacityProperty,
+						(s, colorArg) => BackgroundColor = (s as RadialGradientBrush).FallbackColorWithOpacity
+					);
+				}
 				else
 				{
 					_brushColorChanged.Disposable = null;
 					_brushOpacityChanged.Disposable = null;
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
 					{
-						this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
+						this.Log().Warn("Brush is not a SolidColorBrush, GradientBrush, or RadialGradientBrush, ignoring");
 					}
 					BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 				}

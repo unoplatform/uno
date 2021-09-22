@@ -1,4 +1,5 @@
-﻿using Android.Graphics;
+﻿using System;
+using Android.Graphics;
 using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Media
@@ -12,6 +13,8 @@ namespace Windows.UI.Xaml.Media
 			paint.SetStyle(Paint.Style.Stroke);
 			return paint;
 		}
+
+		Shader IGradientBrush.GetShader(Rect destinationRect) => GetShader(destinationRect);
 
 		protected internal abstract Shader GetShader(Rect destinationRect);
 	}

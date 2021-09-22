@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Shapes
 					var removeDef = new DisposableAction(() => GetDefs().Remove(imageFill));
 					_fillBrushSubscription.Disposable = new CompositeDisposable(removeDef, subscription);
 					break;
-				case GradientBrush gb:
+				case IGradientBrush gb:
 					var gradient = gb.ToSvgElement();
 					var gradientId = gradient.HtmlId;
 					GetDefs().Add(gradient);

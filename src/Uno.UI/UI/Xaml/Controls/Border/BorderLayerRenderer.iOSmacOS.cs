@@ -10,6 +10,7 @@ using CoreImage;
 using Foundation;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
@@ -141,7 +142,7 @@ namespace Windows.UI.Xaml.Shapes
 
 				var insertionIndex = 0;
 
-				if (background is GradientBrush gradientBackground)
+				if (background is IGradientBrush gradientBackground)
 				{
 					var fillMask = new CAShapeLayer()
 					{
@@ -222,7 +223,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				if (background is GradientBrush gradientBackground)
+				if (background is IGradientBrush gradientBackground)
 				{
 					var fullArea = new CGRect(
 						area.X + borderThickness.Left,
@@ -468,7 +469,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="insertionIndex">Where in the layer the new layers will be added</param>
 		/// <param name="gradientBrush">The xxGradientBrush</param>
 		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
-		private static void CreateGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, GradientBrush gradientBrush, CAShapeLayer fillMask)
+		private static void CreateGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, IGradientBrush gradientBrush, CAShapeLayer fillMask)
 		{
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			var gradientContainerLayer = new CALayer

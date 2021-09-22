@@ -8,6 +8,7 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 #if XAMARIN_ANDROID
 using Android.Views;
 using Android.Graphics;
@@ -270,6 +271,17 @@ namespace Windows.UI.Xaml.Controls
 				);
 				_borderBrushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
 					GradientBrush.OpacityProperty,
+					(s, _) => OnBorderBrushChangedPartial()
+				);
+			}
+			else if (newValue is RadialGradientBrush rgb)
+			{
+				_borderBrushColorChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.FallbackColorProperty,
+					(s, colorArg) => OnBorderBrushChangedPartial()
+				);
+				_borderBrushOpacityChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.OpacityProperty,
 					(s, _) => OnBorderBrushChangedPartial()
 				);
 			}

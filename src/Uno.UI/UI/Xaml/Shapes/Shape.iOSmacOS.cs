@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Shapes
 					pathLayer.AddSublayer(imageLayer);
 					break;
 
-				case GradientBrush gradientFill:
+				case IGradientBrush gradientFill:
 					var gradientLayer = gradientFill.GetLayer(Frame.Size);
 					gradientLayer.Frame = Bounds;
 					gradientLayer.Mask ??= GetFillMask(pathLayer.Path);

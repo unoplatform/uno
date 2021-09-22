@@ -6,6 +6,7 @@ using Uno.Extensions;
 using Uno.Disposables;
 using Windows.Foundation.Collections;
 using Windows.UI; // Required for WinUI 3+ Color
+using Microsoft.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -44,11 +45,11 @@ namespace Windows.UI.Xaml.Media
 				});
 
 				var innerDisposable = new SerialDisposable();
-				innerDisposable.Disposable = ObserveGradientBrushStops(gb.GradientStops, colorSetter);
+				innerDisposable.Disposable = ObserveGradientStops(gb.GradientStops, colorSetter);
 				gb
 					.RegisterDisposablePropertyChangedCallback(
 						GradientBrush.GradientStopsProperty,
-						(s, e) => innerDisposable.Disposable = ObserveGradientBrushStops((s as GradientBrush).GradientStops, colorSetter)
+						(s, e) => innerDisposable.Disposable = ObserveGradientStops((s as GradientBrush).GradientStops, colorSetter)
 					)
 					.DisposeWith(disposables);
 				innerDisposable.DisposeWith(disposables);
@@ -71,13 +72,26 @@ namespace Windows.UI.Xaml.Media
 			}
 			else if (b is XamlCompositionBrushBase unsupportedCompositionBrush)
 			{
+				var disposables = new CompositeDisposable(2);
+
 				colorSetter(unsupportedCompositionBrush.FallbackColorWithOpacity);
 
-				return WhenAnyChanged(new CompositeDisposable(2), unsupportedCompositionBrush, (s, e) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity), new[]
+				WhenAnyChanged(disposables, unsupportedCompositionBrush, (s, e) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity), new[]
 				{
 					XamlCompositionBrushBase.FallbackColorProperty,
 					XamlCompositionBrushBase.OpacityProperty,
 				});
+
+				if (unsupportedCompositionBrush is RadialGradientBrush rgb)
+				{
+					var innerDisposable = new SerialDisposable();
+					innerDisposable.Disposable = ObserveGradientStops(rgb.GradientStops, colorSetter);
+
+					innerDisposable.DisposeWith(disposables);
+				}
+
+
+				return disposables;
 			}
 			else
 			{
@@ -90,7 +104,7 @@ namespace Windows.UI.Xaml.Media
 		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
 		internal bool SupportsAssignAndObserveBrush => !(this is ImageBrush || this is AcrylicBrush);
 
-		private static IDisposable ObserveGradientBrushStops(GradientStopCollection stops, ColorSetterHandler colorSetter)
+		private static IDisposable ObserveGradientStops(IObservableVector<GradientStop> stops, ColorSetterHandler colorSetter)
 		{
 			var disposables = new CompositeDisposable();
 			if (stops != null)

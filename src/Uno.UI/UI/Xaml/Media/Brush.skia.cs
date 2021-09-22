@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Windows.UI.Composition;
 using Windows.UI;
@@ -64,6 +65,17 @@ namespace Windows.UI.Xaml.Media
 					GradientBrush.RelativeTransformProperty,
 				});
 			}
+			else if (brush is RadialGradientBrush radialGradientBrush)
+            {
+				UpdateColorWhenAnyChanged(radialGradientBrush, new[]
+				{
+					RadialGradientBrush.MappingModeProperty,
+					RadialGradientBrush.OpacityProperty,
+					RadialGradientBrush.SpreadMethodProperty,
+					RadialGradientBrush.RelativeTransformProperty,
+
+				});
+            }
 			else if (brush is ImageBrush imageBrush)
 			{
 				imageBrush
@@ -95,7 +107,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				return AssignAndObserveSolidColorBrush(colorBrush, compositor, brushSetter);
 			}
-			else if (brush is GradientBrush gradientBrush)
+			else if (brush is GradientBrush gradientBrush) // TOOD: RadialGradient
 			{
 				return AssignAndObserveGradientBrush(gradientBrush, compositor, brushSetter);
 			}

@@ -17,6 +17,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using AppKit;
 using CoreGraphics;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Logging;
@@ -899,11 +900,15 @@ namespace <#= mixin.NamespaceName #>
 					{
 						Layer.BackgroundColor = gb.FallbackColorWithOpacity;
 					}
+					else if (e.NewValue is RadialGradientBrush rgb)
+					{
+					    Layer.BackgroundColor = rgb.FallbackColorWithOpacity;
+					}
 					else
 					{
 						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
 						{
-							this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
+							this.Log().Warn("Brush is not a SolidColorBrush, GradientBrush, or RadialGradientBrush, ignoring");
 						}
 						Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 					}

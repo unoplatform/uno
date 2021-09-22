@@ -158,14 +158,13 @@ namespace Windows.UI.Xaml
 				case SolidColorBrush scb:
 					WindowManagerInterop.SetElementColor(HtmlId, scb.ColorWithOpacity);
 					break;
-				case GradientBrush gradient:
+				case IGradientBrush gradient:
 					this.SetStyle(
 						("background", gradient.ToCssString(this.RenderSize)),
 						("color", "transparent"),
 						("background-clip", "text")
 					);
 					break;
-
 				case ImageBrush imageBrush:
 					_brushSubscription ??= new SerialDisposable();
 

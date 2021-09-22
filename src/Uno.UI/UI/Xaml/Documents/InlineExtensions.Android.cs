@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Documents
 
 			Shader shader = null;
 
-			if (inline.Foreground is GradientBrush gb)
+			if (inline.Foreground is IGradientBrush gb)
 			{
 				var textBlock = inline.FindFirstParent<TextBlock>();
 				if (textBlock != null)

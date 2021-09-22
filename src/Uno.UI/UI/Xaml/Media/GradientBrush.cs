@@ -4,7 +4,7 @@ using Windows.UI;
 namespace Windows.UI.Xaml.Media
 {
 	[ContentProperty(Name = "GradientStops")]
-	public abstract partial class GradientBrush : Brush
+	public abstract partial class GradientBrush : Brush, IGradientBrush
 	{
 		protected GradientBrush()
 		{

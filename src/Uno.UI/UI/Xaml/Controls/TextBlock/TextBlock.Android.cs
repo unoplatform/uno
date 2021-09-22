@@ -28,6 +28,7 @@ using Windows.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -227,9 +228,11 @@ namespace Windows.UI.Xaml.Controls
 				.GetColorWithOpacity(Foreground, Colors.Transparent)
 				.Value;
 
-			var shader = Foreground is GradientBrush gb
-				? gb.GetShader(LayoutSlot.LogicalToPhysicalPixels())
-				: null;
+			var shader = Foreground switch
+			{
+				IGradientBrush gb => gb.GetShader(LayoutSlot.LogicalToPhysicalPixels()),
+				_ => null
+			};
 
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
