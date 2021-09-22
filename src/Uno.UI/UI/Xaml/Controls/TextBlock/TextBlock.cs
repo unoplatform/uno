@@ -422,8 +422,12 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			}
 
-			_foregroundChanged.Disposable =
-				Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+			_foregroundChanged.Disposable = null;
+			if (Foreground?.SupportsAssignAndObserveBrush ?? false)
+			{
+				_foregroundChanged.Disposable =
+					Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+			}
 
 			refreshForeground();
 		}
