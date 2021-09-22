@@ -18,8 +18,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string s_IndeterminatePausedStateName = "IndeterminatePaused";
 		private const string s_DeterminateStateName = "Determinate";
 		private const string s_UpdatingStateName = "Updating";
+		private const string s_UpdatingWithErrorStateName = "UpdatingError";
 
-		public static DependencyProperty IsIndeterminateProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty IsIndeterminateProperty { get; } = DependencyProperty.Register(
 			nameof(IsIndeterminate), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnIsIndeterminateChanged));
 
 		public bool IsIndeterminate
@@ -28,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsIndeterminateProperty, value);
 		}
 
-		public static DependencyProperty ShowErrorProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ShowErrorProperty { get; } = DependencyProperty.Register(
 			nameof(ShowError), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowErrorChanged));
 
 		public bool ShowError
@@ -37,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ShowErrorProperty, value);
 		}
 
-		public static DependencyProperty ShowPausedProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ShowPausedProperty { get; } = DependencyProperty.Register(
 			nameof(ShowPaused), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowPausedChanged));
 
 		public bool ShowPaused
@@ -46,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ShowPausedProperty, value);
 		}
 
-		public static DependencyProperty TemplateSettingsProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty TemplateSettingsProperty { get; } = DependencyProperty.Register(
 			nameof(TemplateSettings), typeof(ProgressBarTemplateSettings), typeof(ProgressBar), new FrameworkPropertyMetadata(default(ProgressBarTemplateSettings)));
 
 		public ProgressBarTemplateSettings TemplateSettings
@@ -62,16 +63,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ProgressBar()
 		{
-			DefaultStyleKey = typeof(ProgressBar);
-
+			SetDefaultStyleKey(this);
 			SizeChanged += (snd, evt) => OnSizeChange();
 
-			LayoutUpdated += (snd, evt) => OnSizeChange();
 
-			RegisterPropertyChangedCallback(ValueProperty, OnRangeBasePropertyChanged);
-			RegisterPropertyChangedCallback(MinimumProperty, OnRangeBasePropertyChanged);
-			RegisterPropertyChangedCallback(MaximumProperty, OnRangeBasePropertyChanged);
-			RegisterPropertyChangedCallback(PaddingProperty, OnRangeBasePropertyChanged);
+			// NOTE: This is necessary only because Value isn't one of OUR properties, it's implemented in RangeBase.
+			// If it was one of ProgressBar's properties, defined in the IDL, you'd do it differently (see IsIndeterminate).
+			RegisterPropertyChangedCallback(ValueProperty, OnIndicatorWidthComponentChanged);
+			RegisterPropertyChangedCallback(MinimumProperty, OnIndicatorWidthComponentChanged);
+			RegisterPropertyChangedCallback(MaximumProperty, OnIndicatorWidthComponentChanged);
+			RegisterPropertyChangedCallback(PaddingProperty, OnIndicatorWidthComponentChanged);
 
 			TemplateSettings = new ProgressBarTemplateSettings();
 		}
@@ -98,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateWidthBasedTemplateSettings();
 		}
 
-		private void OnRangeBasePropertyChanged(DependencyObject sender, DependencyProperty dp)
+		private void OnIndicatorWidthComponentChanged(DependencyObject sender, DependencyProperty dp)
 		{
 			// NOTE: This hits when the Value property changes, because we called RegisterPropertyChangedCallback.
 			SetProgressBarIndicatorWidth();
@@ -114,51 +115,56 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static void OnShowErrorChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyobject is ProgressBar progressBar)
-			{
-				progressBar.UpdateStates();
-			}
-		}
-
 		private static void OnShowPausedChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
 		{
 			if (dependencyobject is ProgressBar progressBar)
 			{
+				progressBar.SetProgressBarIndicatorWidth();
+				progressBar.UpdateStates();
+			}
+		}
+
+		private static void OnShowErrorChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyobject is ProgressBar progressBar)
+			{
+				progressBar.SetProgressBarIndicatorWidth();
 				progressBar.UpdateStates();
 			}
 		}
 
 		private void UpdateStates()
 		{
-			var showError = ShowError;
-			var isIndeterminate = IsIndeterminate;
-
-			if (showError && isIndeterminate)
+			if (IsIndeterminate)
 			{
-				VisualStateManager.GoToState(this, s_IndeterminateErrorStateName, true);
-			}
-			else if (showError)
-			{
-				VisualStateManager.GoToState(this, s_ErrorStateName, true);
-			}
-			else if (isIndeterminate && ShowPaused)
-			{
-				VisualStateManager.GoToState(this, s_IndeterminatePausedStateName, true);
-			}
-			else if (ShowPaused)
-			{
-				VisualStateManager.GoToState(this, s_PausedStateName, true);
-			}
-			else if (isIndeterminate)
-			{
+				if (ShowError)
+				{
+					VisualStateManager.GoToState(this, s_IndeterminateErrorStateName, true);
+				}
+				else if (ShowPaused)
+				{
+					VisualStateManager.GoToState(this, s_IndeterminatePausedStateName, true);
+				}
+				else
+				{
+					VisualStateManager.GoToState(this, s_IndeterminateStateName, true);
+				}
 				UpdateWidthBasedTemplateSettings();
-				VisualStateManager.GoToState(this, s_IndeterminateStateName, true);
 			}
-			else if (!isIndeterminate)
+			else
 			{
-				VisualStateManager.GoToState(this, s_DeterminateStateName, true);
+				if (ShowError)
+				{
+					VisualStateManager.GoToState(this, s_ErrorStateName, true);
+				}
+				else if (ShowPaused)
+				{
+					VisualStateManager.GoToState(this, s_PausedStateName, true);
+				}
+				else
+				{
+					VisualStateManager.GoToState(this, s_DeterminateStateName, true);
+				}
 			}
 		}
 
@@ -181,7 +187,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 					// Adds "Updating" state in between to trigger RepositionThemeAnimation Visual Transition
 					// in ProgressBar.xaml when reverting back to previous state
-					VisualStateManager.GoToState(this, s_UpdatingStateName, true);
+					if (ShowError)
+					{
+						VisualStateManager.GoToState(this, s_UpdatingWithErrorStateName, true);
+					}
+					else
+					{
+						VisualStateManager.GoToState(this, s_UpdatingStateName, true);
+					}
+
 
 					if (IsIndeterminate)
 					{
@@ -196,7 +210,14 @@ namespace Microsoft.UI.Xaml.Controls
 						var indeterminateProgressBarIndicator2 = m_indeterminateProgressBarIndicator2;
 						if (indeterminateProgressBarIndicator2 != null)
 						{
-							indeterminateProgressBarIndicator2.Width = progressBarWidth * 0.6; // 60% of ProgressBar Width
+							if (ShowPaused || ShowError) // If IndeterminatePaused or IndeterminateError
+							{
+								indeterminateProgressBarIndicator2.Width = progressBarWidth; // 100% of ProgressBar Width
+							}
+							else
+							{
+								indeterminateProgressBarIndicator2.Width = progressBarWidth * 0.6; // 60% of ProgressBar Width
+							}
 						}
 					}
 					else if (Math.Abs(maximum - minimum) > double.Epsilon)
@@ -234,16 +255,40 @@ namespace Microsoft.UI.Xaml.Controls
 			templateSettings.ContainerAnimationStartPosition = indeterminateProgressBarIndicatorWidth * -1.0; // Position at -100%
 			templateSettings.ContainerAnimationEndPosition = indeterminateProgressBarIndicatorWidth * 3.0; // Position at 300%
 
-			templateSettings.ContainerAnimationStartPosition2 = indeterminateProgressBarIndicatorWidth2 * -1.5; // Position at -150%
-			templateSettings.ContainerAnimationEndPosition2 = indeterminateProgressBarIndicatorWidth2 * 1.66; // Position at 166%
+			templateSettings.Container2AnimationStartPosition = indeterminateProgressBarIndicatorWidth2 * -1.5; // Position at -150%
+			templateSettings.Container2AnimationEndPosition = indeterminateProgressBarIndicatorWidth2 * 1.66; // Position at 166%
 
-			templateSettings.ContainerAnimationMidPosition = width * 0.2;
+			templateSettings.ContainerAnimationMidPosition = 0;
 
 			var padding = Padding;
 			templateSettings.ClipRect = new RectangleGeometry
 			{
 				Rect = new Rect(padding.Left, padding.Top, width - (padding.Right + padding.Left), height - (padding.Bottom + padding.Top))
 			};
+
+			// TemplateSetting properties from WUXC for backwards compatibility.
+			templateSettings.EllipseAnimationEndPosition = (1.0 / 3.0) * width;
+			templateSettings.EllipseAnimationWellPosition = (2.0 / 3.0) * width;
+
+			if (width <= 180.0)
+			{
+				// Small ellipse diameter and offset.
+				templateSettings.EllipseDiameter = 4.0;
+				templateSettings.EllipseOffset = 4.0;
+			}
+			else if (width <= 280.0)
+			{
+				// Medium ellipse diameter and offset.
+				templateSettings.EllipseDiameter = 5.0;
+				templateSettings.EllipseOffset = 7.0;
+			}
+			else
+			{
+				// Large ellipse diameter and offset.
+				templateSettings.EllipseDiameter = 6.0;
+				templateSettings.EllipseOffset = 9.0;
+			}
+
 		}
 	}
 }

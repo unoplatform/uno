@@ -152,6 +152,10 @@
 
 	<ItemGroup>
 	  <None Remove="tsconfig.json" />
+	  <Page Remove="Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar_themeresources_v1.xaml" />
+	  <Page Remove="Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar_v1.xaml" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar_themeresources_v1.xaml" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar_v1.xaml" />
 	  <Content Include="tsconfig.json" />
 	</ItemGroup>
 
@@ -164,6 +168,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar_v1.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar_themeresources_v1.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
 	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 	  </None>
