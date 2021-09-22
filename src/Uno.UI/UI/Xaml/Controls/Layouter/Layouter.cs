@@ -173,8 +173,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public void Arrange(Rect finalRect)
 		{
-			LayoutInformation.SetLayoutSlot(Panel, finalRect);
-
 			using var traceActivity = _trace.IsEnabled
 				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStart,
@@ -465,6 +463,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return;
 			}
+
+			LayoutInformation.SetLayoutSlot(view, frame);
+
 			var (finalFrame, clippedFrame) = ApplyMarginAndAlignments(view, frame);
 			if (view is UIElement elt)
 			{

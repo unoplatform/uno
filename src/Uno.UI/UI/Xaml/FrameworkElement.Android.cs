@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Services;
 using Uno.Diagnostics.Eventing;
 
@@ -239,19 +240,23 @@ namespace Windows.UI.Xaml
 			{
 				base.OnLayoutCore(changed, left, top, right, bottom);
 
-				Size newSize;
+				Rect finalRect;
 				if (ArrangeLogicalSize is Rect als)
 				{
 					// If the parent element is from managed code,
 					// we can recover the "Arrange" with double accuracy.
 					// We use that because the conversion to android's "int" is loosing too much precision.
-					newSize = new Size(als.Width, als.Height);
+					finalRect = als;
 				}
 				else
 				{
 					// Here the "arrange" is coming from a native element,
 					// so we convert those measurements to logical ones.
-					newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
+					finalRect = new Rect(left, top, right - left, bottom - top).PhysicalToLogicalPixels();
+
+					// We also need to set the LayoutSlot as it was not by the parent.
+					// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
+					LayoutInformation.SetLayoutSlot(this, finalRect);
 				}
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -267,20 +272,18 @@ namespace Windows.UI.Xaml
 				}
 
 				var previousSize = AssignedActualSize;
-				AssignedActualSize = newSize;
+				AssignedActualSize = finalRect.Size;
 
 				if (
 					// If the layout has changed, but the final size has not, this is just a translation.
 					// So unless there was a layout requested, we can skip arranging the children.
-					(changed && _lastLayoutSize != newSize)
+					(changed && _lastLayoutSize != finalRect.Size)
 
 					// Even if nothing changed, but a layout was requested, arrange the children.
 					|| IsLayoutRequested
 				)
 				{
-					_lastLayoutSize = newSize;
-
-					var finalRect = new Rect(0, 0, newSize.Width, newSize.Height);
+					_lastLayoutSize = finalRect.Size;
 
 					OnBeforeArrange();
 
@@ -289,10 +292,10 @@ namespace Windows.UI.Xaml
 					OnAfterArrange();
 				}
 
-				if (previousSize != newSize)
+				if (previousSize != finalRect.Size)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, newSize));
-					_renderTransform?.UpdateSize(newSize);
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, finalRect.Size));
+					_renderTransform?.UpdateSize(finalRect.Size);
 				}
 			}
 			catch (Exception e)
