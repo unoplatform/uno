@@ -1,4 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- Uno specific: All occurrences of GeneratedDuration="{StaticResource ...}" use a custom resource to avoid issues caused by #7168 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)"
   xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
@@ -142,7 +143,7 @@
                             </VisualStateGroup>
                             <VisualStateGroup x:Name="DisplayModeStates">
                                 <contract8Present:VisualStateGroup.Transitions>
-                                    <VisualTransition From="CompactClosed" To="CompactOpenUp" GeneratedDuration="{StaticResource ControlNormalAnimationDuration}">
+                                    <VisualTransition From="CompactClosed" To="CompactOpenUp" GeneratedDuration="{StaticResource UnoControlNormalAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot" Storyboard.TargetProperty="Background">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{ThemeResource CommandBarBackgroundOpen}" />
@@ -185,7 +186,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="CompactOpenUp" To="CompactClosed" GeneratedDuration="{StaticResource ControlFastAnimationDuration}">
+                                    <VisualTransition From="CompactOpenUp" To="CompactClosed" GeneratedDuration="{StaticResource UnoControlFastAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="VerticalAlignment">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Stretch" />
@@ -217,7 +218,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="CompactClosed" To="CompactOpenDown" GeneratedDuration="{StaticResource ControlNormalAnimationDuration}">
+                                    <VisualTransition From="CompactClosed" To="CompactOpenDown" GeneratedDuration="{StaticResource UnoControlNormalAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot" Storyboard.TargetProperty="Background">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{ThemeResource CommandBarBackgroundOpen}" />
@@ -254,7 +255,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="CompactOpenDown" To="CompactClosed" GeneratedDuration="{StaticResource ControlFastAnimationDuration}">
+                                    <VisualTransition From="CompactOpenDown" To="CompactClosed" GeneratedDuration="{StaticResource UnoControlFastAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="VerticalAlignment">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Stretch" />
@@ -280,7 +281,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="MinimalClosed" To="MinimalOpenUp" GeneratedDuration="{StaticResource ControlNormalAnimationDuration}">
+                                    <VisualTransition From="MinimalClosed" To="MinimalOpenUp" GeneratedDuration="{StaticResource UnoControlNormalAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="Padding">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="14,11,14,0" />
@@ -328,7 +329,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="MinimalOpenUp" To="MinimalClosed" GeneratedDuration="{StaticResource ControlFastAnimationDuration}">
+                                    <VisualTransition From="MinimalOpenUp" To="MinimalClosed" GeneratedDuration="{StaticResource UnoControlFastAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="Padding">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="14,11,14,0" />
@@ -377,7 +378,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="MinimalClosed" To="MinimalOpenDown" GeneratedDuration="{StaticResource ControlNormalAnimationDuration}">
+                                    <VisualTransition From="MinimalClosed" To="MinimalOpenDown" GeneratedDuration="{StaticResource UnoControlNormalAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="Padding">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="14,11,14,0" />
@@ -416,7 +417,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="MinimalOpenDown" To="MinimalClosed" GeneratedDuration="{StaticResource ControlFastAnimationDuration}">
+                                    <VisualTransition From="MinimalOpenDown" To="MinimalClosed" GeneratedDuration="{StaticResource UnoControlFastAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="Padding">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="14,11,14,0" />
@@ -456,7 +457,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="HiddenClosed" To="HiddenOpenUp" GeneratedDuration="{StaticResource ControlNormalAnimationDuration}">
+                                    <VisualTransition From="HiddenClosed" To="HiddenOpenUp" GeneratedDuration="{StaticResource UnoControlNormalAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="VerticalAlignment">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Stretch" />
@@ -490,7 +491,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="HiddenOpenUp" To="HiddenClosed" GeneratedDuration="{StaticResource ControlFastAnimationDuration}">
+                                    <VisualTransition From="HiddenOpenUp" To="HiddenClosed" GeneratedDuration="{StaticResource UnoControlFastAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="VerticalAlignment">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Stretch" />
@@ -525,7 +526,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="HiddenClosed" To="HiddenOpenDown" GeneratedDuration="{StaticResource ControlNormalAnimationDuration}">
+                                    <VisualTransition From="HiddenClosed" To="HiddenOpenDown" GeneratedDuration="{StaticResource UnoControlNormalAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="VerticalAlignment">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Stretch" />
@@ -550,7 +551,7 @@
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualTransition>
-                                    <VisualTransition From="HiddenOpenDown" To="HiddenClosed" GeneratedDuration="{StaticResource ControlFastAnimationDuration}">
+                                    <VisualTransition From="HiddenOpenDown" To="HiddenClosed" GeneratedDuration="{StaticResource UnoControlFastAnimationDuration}">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MoreButton" Storyboard.TargetProperty="VerticalAlignment">
                                                 <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Stretch" />
