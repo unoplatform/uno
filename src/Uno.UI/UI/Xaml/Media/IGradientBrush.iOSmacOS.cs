@@ -3,8 +3,8 @@ using CoreGraphics;
 
 namespace Windows.UI.Xaml.Media
 {
-    partial interface IGradientBrush
+	partial interface IGradientBrush
 	{
-        CALayer GetLayer(CGSize size);
-    }
+		CALayer GetLayer(CGSize size);
+	}
 }
