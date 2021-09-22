@@ -15,6 +15,8 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions.ValueType;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml
 {
@@ -76,6 +78,34 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseNativeSizeChanged()
 		{
+#if __ANDROID_30__
+			var metrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
+
+			var insetsTypes = WindowInsets.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
+			var solidInsetsTypes = insetsTypes;
+			if (IsStatusBarTranslucent())
+			{
+				solidInsetsTypes &= ~WindowInsets.Type.StatusBars();
+			}
+			if (IsNavigationBarTranslucent())
+			{
+				solidInsetsTypes &= ~WindowInsets.Type.NavigationBars();
+			}
+
+			var insets = metrics.WindowInsets.GetInsets(insetsTypes).ToThickness();
+			var solidInsets = metrics.WindowInsets.GetInsets(solidInsetsTypes).ToThickness();
+
+			// The 'metric.Bounds' does not include any insets, so we remove the "solid" insets under which we cannot draw anything
+			var windowBounds = new Rect(default, ((Rect)metrics.Bounds).DeflateBy(solidInsets).Size).PhysicalToLogicalPixels();
+			var newBounds = windowBounds; 
+
+			// The visible bounds is the windows bounds on which we remove also
+			// [translucent only inset](all_insets - solid_insets_that_has_already_been_removed_from_all_insets)
+			var visibleBounds = windowBounds.DeflateBy(insets.Minus(solidInsets)).PhysicalToLogicalPixels();
+
+			// The true visible bounds ... is unknown for now!
+			var trueVisibleBounds = visibleBounds;
+#else
 			using var display = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
 			using var fullScreenMetrics = new DisplayMetrics();
 
@@ -140,6 +170,8 @@ namespace Windows.UI.Xaml
 
 			var visibleBounds = CalculateVisibleBounds(statusBarSizeExcluded);
 			var trueVisibleBounds = CalculateVisibleBounds(statusBarSize);
+#endif
+
 			ApplicationView.GetForCurrentView()?.SetVisibleBounds(visibleBounds);
 			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
 
@@ -198,6 +230,7 @@ namespace Windows.UI.Xaml
 			Insets = newInsets;
 		}
 
+#if !__ANDROID_30__
 		private double GetLogicalStatusBarSize()
 		{
 			var logicalStatusBarHeight = 0d;
@@ -228,6 +261,7 @@ namespace Windows.UI.Xaml
 				? ViewHelper.PhysicalToLogicalPixels(navigationBarSize)
 				: 0;
 		}
+#endif
 
 		internal void DisplayFullscreen(UIElement element)
 		{
@@ -268,7 +302,7 @@ namespace Windows.UI.Xaml
 			}
 
 			return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
-				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits); ;
+				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 		}
 		#endregion
 
