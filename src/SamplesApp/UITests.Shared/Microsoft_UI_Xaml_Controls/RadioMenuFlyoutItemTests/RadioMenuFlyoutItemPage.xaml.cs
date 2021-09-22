@@ -67,6 +67,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests
 
 				TextBlock stateText = new TextBlock();
 				AutomationProperties.SetName(stateText, radioItem.Text + "State");
+				stateText.Name = radioItem.Text + "State"; // Uno specific to allow _app.Query() in UI Tests.
 				UpdateTextState(radioItem, stateText);
 				ItemStates.Children.Add(stateText);
 
