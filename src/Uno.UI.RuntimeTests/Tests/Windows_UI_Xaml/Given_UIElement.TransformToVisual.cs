@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -990,31 +991,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				sv.ChangeView(offset.x, offset.y, zoomFactor: null, disableAnimation: true);
 
-				var expected = new Rect(margin - offset.x, margin - offset.y, sut.Width, sut.Height);
-				var attempt = 0;
-				while (true)
-				{
-					try
+				await RetryAssert(
+					$"scrolled to ({offset.x},{offset.y})",
+					() =>
 					{
-						// On UWP we might not be scrolled properly to the right offset (even is we had disabled animation),
-						// so we just retry assertion as long as it fails, for up to 300 ms.
-						// Using the ViewChanged event is not reliable enough neither.
-
+						var expected = new Rect(margin - offset.x, margin - offset.y, sut.Width, sut.Height);
 						var actual = sut.TransformToVisual(sv).TransformBounds(new Rect(0, 0, sut.Width, sut.Height));
 
-						actual.Should(epsilon: 1).Be(expected, because: $"scrolled to ({offset.x},{offset.y})");
-						break;
-					}
-					catch (Exception e)
-					{
-						if (attempt++ >= 30)
-						{
-							throw;
-						}
-
-						await Task.Delay(10);
-					}
-				}
+						actual.Should(epsilon: 1).Be(expected);
+					});
 			}
 
 			IEnumerable<(double x, double y)> GetOffsets()
@@ -1060,5 +1045,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				VerticalAlignment.Stretch => (available - used) / 2.0,
 				_ => 0
 			};
+
+		private async Task RetryAssert(string scope, Action assertion)
+		{
+			var attempt = 0;
+			while (true)
+			{
+				try
+				{
+					// On UWP we might not be scrolled properly to the right offset (even is we had disabled animation),
+					// so we just retry assertion as long as it fails, for up to 300 ms.
+					// Using the ViewChanged event is not reliable enough neither.
+
+					using var _ = new AssertionScope(scope);
+					assertion();
+
+					break;
+				}
+				catch (Exception e)
+				{
+					if (attempt++ >= 30)
+					{
+						throw;
+					}
+
+					await Task.Delay(10);
+				}
+			}
+		}
 	}
 }

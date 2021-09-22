@@ -286,18 +286,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					}
 				}
 			};
-			using var vp = VPTree(root);
+			using var vp = VPTree(root, sut);
 
 			WindowContent = root;
 			await WaitForIdle();
-
-			await vp.ForceUpdate();
 
 			await RetryAssert(() =>
 			{
 				vp[sv].Effective.Should().Be(WindowBounds);
 				vp.Of<ScrollContentPresenter>().Effective.Should().Be(WindowBounds);
+#if __ANDROID__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
+				vp[sut].Effective.Width.Should().Be(512);
+				vp[sut].Effective.Height.Should().Be(512);
+#else
 				vp[sut].Effective.Should().Be(new Rect(-128, 0, 512, 512));
+#endif
 			});
 
 			sv.ChangeView(null, verticalOffset: 512, null, disableAnimation: true);
@@ -305,10 +308,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await RetryAssert(() =>
 			{
 				vp[sv].Effective.Should().Be(WindowBounds);
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__
 				vp.Of<ScrollContentPresenter>().Effective.Should().Be(WindowBounds);
 #endif
+#if __ANDROID__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
+				vp[sut].Effective.Width.Should().Be(512);
+				vp[sut].Effective.Height.Should().Be(512);
+				vp[sut].Effective.Y.Should().Be(512);
+#else
 				vp[sut].Effective.Should().Be(new Rect(-128, 512, 512, 512));
+#endif
 			});
 		}
 
@@ -409,6 +418,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(true, false)]
 		[DataRow(false, true)]
 		[DataRow(true, true)]
+#if __ANDROID__
+		[Ignore(
+			"On Android and iOS the ScrollHost is not the (native)SCP but the SV, so alignments are not taken in consideration when computing the scrollport "
+			+ "(which is used as viewport for children). We will get instead 100x100@0,0.")]
+#endif
 		public async Task EVP_When_ConstrainedInNonScrollableSV(bool canHorizontallyScroll, bool canVerticallyScroll)
 		{
 			/*
@@ -588,7 +602,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 							Math.Min(512, 512 - y + testCase.sv1Y + testCase.sv2Y));
 
 					vp1.Effective.Should().Be(expectedSv1, because: "sv1");
-					//vp2.Effective.Should().Be(expectedSv2, because: "sv2");
+					vp2.Effective.Should().Be(expectedSv2, because: "sv2");
 					vp.Effective.Should().Be(expectedSut, because: "sut");
 				});
 			}
@@ -1055,8 +1069,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private EVPListener VP(FrameworkElement elt)
 			=> new EVPListener(elt);
 
-		private EVPTreeListener VPTree(FrameworkElement elt)
-			=> new EVPTreeListener(elt);
+		private EVPTreeListener VPTree(FrameworkElement root, FrameworkElement leaf)
+			=> new EVPTreeListener(root, leaf);
 
 		private class EVPListener : IDisposable
 		{
@@ -1081,62 +1095,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private class EVPTreeListener : IDisposable
 		{
 			private readonly IDictionary<FrameworkElement, EVPListener> _listeners = new Dictionary<FrameworkElement, EVPListener>();
-			private readonly FrameworkElement _elt;
+			private readonly FrameworkElement _root;
+			private readonly FrameworkElement _leaf;
 
-			public EVPTreeListener(FrameworkElement elt)
+			public EVPTreeListener(FrameworkElement root, FrameworkElement leaf)
 			{
-				_elt = elt;
-				elt.Loaded += ElementLoaded;
+				_root = root;
+				_leaf = leaf;
+
+				leaf.Loaded += ElementLoaded;
 			}
 
 			private void ElementLoaded(object sender, RoutedEventArgs e)
 			{
-				_elt.Loaded -= ElementLoaded;
+				_leaf.Loaded -= ElementLoaded;
 
-				Subscribe(sender, 0);
+				Subscribe(sender);
 
-				void Subscribe(object elt, int layer)
+				void Subscribe(object elt)
 				{
 					if (elt is FrameworkElement fwElt)
 					{
 						_listeners[fwElt] = new EVPListener(fwElt);
 					}
 
-					if (elt is DependencyObject dObj)
+					if (Equals(_root, elt))
 					{
-						for (var i = 0; i < VisualTreeHelper.GetChildrenCount(dObj); i++)
-						{
-							Subscribe(VisualTreeHelper.GetChild(dObj, i), layer + 1);
-						}
+						return;
 					}
-				}
-			}
 
-			public async Task ForceUpdate()
-			{
-				var w = _elt.Width;
-
-				await ChangeSize(_elt.ActualWidth / 2);
-				await ChangeSize(w);
-
-				async Task ChangeSize(double width)
-				{
-					var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
-					var tcs = new TaskCompletionSource<object>();
-					var reg = cts.Token.Register(() => tcs.TrySetCanceled());
-					_elt.SizeChanged += OnSizeChanged;
-
-					_elt.Width = width;
-					await tcs.Task;
-
-					await WaitForIdle();
-					await WaitForIdle();
-
-					void OnSizeChanged(object sender, SizeChangedEventArgs e)
+					if (elt.GetParent() is {} parent)
 					{
-						_elt.SizeChanged -= OnSizeChanged;
-						reg.Dispose();
-						tcs.TrySetResult(default);
+						Subscribe(parent);
 					}
 				}
 			}
@@ -1148,7 +1138,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			public void Dispose()
 			{
-				_elt.Loaded -= ElementLoaded;
+				_leaf.Loaded -= ElementLoaded;
 				foreach (var listener in _listeners.Values)
 				{
 					listener.Dispose();
