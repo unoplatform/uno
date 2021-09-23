@@ -12,9 +12,6 @@ namespace Windows.Services.Store
     {
 		private StoreContext() { }
 
-		public static StoreContext GetDefault()
-		{
-			return new StoreContext();
-		}
+		public static StoreContext GetDefault() => new StoreContext();
 	}
 }

@@ -30,6 +30,7 @@ namespace Uno.UWPSyncGenerator
 				new SyncGenerator().Build(@"..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
 				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
 				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Services.Store.StoreContract");
 				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Networking.Connectivity.WwanContract");
 				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
 
