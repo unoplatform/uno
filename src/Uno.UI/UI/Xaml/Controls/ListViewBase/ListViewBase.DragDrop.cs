@@ -14,6 +14,7 @@ using Uno.Logging;
 using Uno.UI;
 using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -201,6 +202,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			dragEventArgs.AcceptedOperation = DataPackageOperation.Move;
+			if (RenderTargetBitmap.IsImplemented)
+			{
+				dragEventArgs.DragUIOverride.IsGlyphVisible = false;
+				dragEventArgs.DragUIOverride.IsCaptionVisible = false;
+			}
 
 			var position = dragEventArgs.GetPosition(that);
 			that.UpdateReordering(position, container, item);
