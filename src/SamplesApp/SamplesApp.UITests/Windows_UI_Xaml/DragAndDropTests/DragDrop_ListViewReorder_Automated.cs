@@ -64,6 +64,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			Run("UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ListView", skipInitialScreenshot: true);
 
 			var sut = _app.Marked("SUT");
+			var op = _app.Marked("Operation");
 
 			_app.WaitForElement(sut);
 
@@ -77,6 +78,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			ImageAssert.HasColorAt(result, x, dstY, _items[from], tolerance: 10);
+			Assert.AreEqual("Operation", op.GetDependencyPropertyValue<string>("Text"));
 		}
 	}
 }
