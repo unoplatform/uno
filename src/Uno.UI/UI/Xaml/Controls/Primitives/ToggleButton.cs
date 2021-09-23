@@ -1,65 +1,84 @@
-﻿using System;
-using System.Drawing;
-using Uno.Disposables;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
+﻿#nullable enable
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
+	/// <summary>
+	/// Represents a control that a user can select (check) or clear (uncheck).
+	/// Base class for controls that can switch states, such as CheckBox and RadioButton.
+	/// </summary>
 	public partial class ToggleButton : ButtonBase, IFrameworkTemplatePoolAware
 	{
-		public event RoutedEventHandler Checked;
-		public event RoutedEventHandler Unchecked;
-		public event RoutedEventHandler Indeterminate;
-
+		/// <summary>
+		/// Initializes a new instance of the ToggleButton class.
+		/// </summary>
 		public ToggleButton()
 		{
-			InitializeVisualStates();
-
-			Click += (s, e) =>
-			{
-				OnToggle();
-			};
-
 			DefaultStyleKey = typeof(ToggleButton);
 		}
+
+		/// <summary>
+		/// Fires when a ToggleButton is checked.
+		/// </summary>
+		public event RoutedEventHandler? Checked;
+
+		/// <summary>
+		/// Fires when a ToggleButton is unchecked.
+		/// </summary>
+		public event RoutedEventHandler? Unchecked;
+
+		/// <summary>
+		/// Fires when the state of a ToggleButton is switched to the indeterminate state.
+		/// </summary>
+		public event RoutedEventHandler? Indeterminate;
+
+		/// <summary>
+		/// Gets or sets whether the ToggleButton is checked.
+		/// </summary>
+		public bool? IsChecked
+		{
+			get => (bool?)GetValue(IsCheckedProperty);
+			set => SetValue(IsCheckedProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the IsChecked dependency property.
+		/// </summary>
+		public static DependencyProperty IsCheckedProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsChecked),
+				typeof(bool?),
+				typeof(ToggleButton),
+				new FrameworkPropertyMetadata(false)
+			);
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the control supports three states.
+		/// </summary>
+		public bool IsThreeState
+		{
+			get => (bool)GetValue(IsThreeStateProperty);
+			set => SetValue(IsThreeStateProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the IsThreeState dependency property.
+		/// </summary>
+		public static DependencyProperty IsThreeStateProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsThreeState),
+				typeof(bool),
+				typeof(ToggleButton),
+				new FrameworkPropertyMetadata(false));
+
+		/// <summary>
+		/// Called when the ToggleButton receives toggle stimulus.
+		/// </summary>
+		protected virtual void OnToggle() => OnToggleImpl();
 
 		/// <summary>
 		/// Determines if the current toggle button can revert its state when tapped.
 		/// </summary>
 		internal bool CanRevertState { get; set; } = true;
-
-		public bool IsThreeState
-		{
-			get => (bool)this.GetValue(IsThreeStateProperty);
-			set => this.SetValue(IsThreeStateProperty, value);
-		}
-
-		public static DependencyProperty IsThreeStateProperty { get; } =
-			DependencyProperty.Register(
-				name: nameof(IsThreeState),
-				propertyType: typeof(bool),
-				ownerType: typeof(ToggleButton),
-				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: false));
-
-
-		public bool? IsChecked
-		{
-			get => (bool?)this.GetValue(IsCheckedProperty);
-			set => this.SetValue(IsCheckedProperty, value);
-		}
-
-		public static DependencyProperty IsCheckedProperty { get ; } =
-			DependencyProperty.Register(
-				"IsChecked",
-				typeof(bool?),
-				typeof(ToggleButton),
-				new FrameworkPropertyMetadata(
-					false,
-					propertyChangedCallback: (s, e) => ((ToggleButton)s).OnIsCheckedChanged(e.OldValue as bool?, e.NewValue as bool?)
-				)
-			);
 
 		protected virtual void OnIsCheckedChanged(bool? oldValue, bool? newValue)
 		{
@@ -80,63 +99,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		public void OnTemplateRecycled()
-		{
-			IsChecked = false;
-		}
+		public void OnTemplateRecycled() => IsChecked = false;
 
-		protected virtual void OnToggle()
-		{
-			if (CanRevertState)
-			{
-				if (IsChecked == null)
-				{
-					// Indeterminate
-					// Set to Unchecked
-					IsChecked = false;
-				}
-				else if (IsChecked is bool isChecked && isChecked)
-				{
-					// Checked
-					if (IsThreeState)
-					{
-						// Set to Indeterminate
-						IsChecked = null;
-					}
-					else
-					{
-						// Set to Unchecked
-						IsChecked = false;
-					}
-				}
-				else
-				{
-					// Unchecked
-					// Set to Checked
-					IsChecked = true;
-				}
-			}
-			else
-			{
-				IsChecked = true;
-			}
-		}
-
-		internal void AutomationPeerToggle()
-		{
-			var oldValue = IsChecked;
-			OnToggle();
-			var newValue = IsChecked;
-
-			if ((!oldValue.HasValue || !oldValue.Value) && newValue == true)
-			{
-				InvokeCommand();
-			}
-		}
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new ToggleButtonAutomationPeer(this);
-		}
+		internal void AutomationPeerToggle() => OnToggle();
 	}
 }

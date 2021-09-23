@@ -7,12 +7,6 @@ namespace Windows.UI.Xaml.Controls
 		public BackButton ()
 		{
 			throw new NotImplementedException();
-			//IsCompact = true;
-			//Initialize ();
-		}
-
-		void Initialize ()
-		{
 		}
 	}
 }

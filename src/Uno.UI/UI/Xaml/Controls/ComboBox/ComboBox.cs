@@ -448,6 +448,29 @@ namespace Windows.UI.Xaml.Controls
 			return new ComboBoxAutomationPeer(this);
 		}
 
+		protected override void OnGotFocus(RoutedEventArgs e) => UpdateVisualState();
+
+		protected override void OnLostFocus(RoutedEventArgs e) => UpdateVisualState();
+
+		private protected override void ChangeVisualState(bool useTransitions)
+		{
+			if (FocusState != FocusState.Unfocused && IsEnabled)
+			{
+				if (FocusState == FocusState.Pointer)
+				{
+					GoToState(useTransitions, "PointerFocused");
+				}
+				else
+				{
+					GoToState(useTransitions, "Focused");
+				}
+			}
+			else
+			{
+				GoToState(useTransitions, "Unfocused");
+			}
+		}
+
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
 			get

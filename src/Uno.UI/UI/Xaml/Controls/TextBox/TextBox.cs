@@ -8,19 +8,19 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
-using Windows.System;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Common;
+using Uno.UI.DataBinding;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.Foundation;
-using Windows.UI.Core;
-using Microsoft.Extensions.Logging;
-using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -72,7 +72,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBox()
 		{
-			InitializeVisualStates();
 			this.RegisterParentChangedCallback(this, OnParentChanged);
 
 			DefaultStyleKey = typeof(TextBox);
@@ -145,6 +144,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateTextBoxView();
 			InitializeProperties();
+			UpdateVisualState();
 		}
 
 		partial void InitializePropertiesPartial();
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static DependencyProperty TextProperty { get ; } =
+		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -314,7 +314,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(PlaceholderTextProperty, value);
 		}
 
-		public static DependencyProperty PlaceholderTextProperty { get ; } =
+		public static DependencyProperty PlaceholderTextProperty { get; } =
 			DependencyProperty.Register(
 				"PlaceholderText",
 				typeof(string),
@@ -332,7 +332,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(InputScopeProperty, value);
 		}
 
-		public static DependencyProperty InputScopeProperty { get ; } =
+		public static DependencyProperty InputScopeProperty { get; } =
 			DependencyProperty.Register(
 				"InputScope",
 				typeof(InputScope),
@@ -365,7 +365,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(MaxLengthProperty, value);
 		}
 
-		public static DependencyProperty MaxLengthProperty { get ; } =
+		public static DependencyProperty MaxLengthProperty { get; } =
 			DependencyProperty.Register(
 				"MaxLength",
 				typeof(int),
@@ -390,7 +390,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(AcceptsReturnProperty, value);
 		}
 
-		public static DependencyProperty AcceptsReturnProperty { get ; } =
+		public static DependencyProperty AcceptsReturnProperty { get; } =
 			DependencyProperty.Register(
 				"AcceptsReturn",
 				typeof(bool),
@@ -418,7 +418,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(TextWrappingProperty, value);
 		}
 
-		public static DependencyProperty TextWrappingProperty { get ; } =
+		public static DependencyProperty TextWrappingProperty { get; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
@@ -475,7 +475,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsReadOnlyProperty, value);
 		}
 
-		public static DependencyProperty IsReadOnlyProperty { get ; } =
+		public static DependencyProperty IsReadOnlyProperty { get; } =
 			DependencyProperty.Register(
 				"IsReadOnly",
 				typeof(bool),
@@ -504,7 +504,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderProperty, value);
 		}
 
-		public static DependencyProperty HeaderProperty { get ; } =
+		public static DependencyProperty HeaderProperty { get; } =
 			DependencyProperty.Register("Header",
 				typeof(object),
 				typeof(TextBox),
@@ -519,7 +519,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderTemplateProperty, value);
 		}
 
-		public static DependencyProperty HeaderTemplateProperty { get ; } =
+		public static DependencyProperty HeaderTemplateProperty { get; } =
 			DependencyProperty.Register("HeaderTemplate",
 				typeof(DataTemplate),
 				typeof(TextBox),
@@ -550,7 +550,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(IsSpellCheckEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsSpellCheckEnabledProperty { get ; } =
+		public static DependencyProperty IsSpellCheckEnabledProperty { get; } =
 			DependencyProperty.Register(
 				"IsSpellCheckEnabled",
 				typeof(bool),
@@ -577,7 +577,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		[Uno.NotImplemented]
-		public static DependencyProperty IsTextPredictionEnabledProperty { get ; } =
+		public static DependencyProperty IsTextPredictionEnabledProperty { get; } =
 			DependencyProperty.Register(
 				"IsTextPredictionEnabled",
 				typeof(bool),
@@ -606,7 +606,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TextAlignmentProperty, value); }
 		}
 
-		public static DependencyProperty TextAlignmentProperty { get ; } =
+		public static DependencyProperty TextAlignmentProperty { get; } =
 			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
 
 
@@ -640,18 +640,51 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_hasTextChangedThisFocusSession = false;
 			}
+
+			UpdateVisualState();
 		}
 		partial void OnFocusStateChangedPartial(FocusState focusState);
 
+		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		{
+			if (newValue == Visibility.Visible)
+			{
+				UpdateVisualState();
+			}
+			else
+			{
+				_isPointerOver = false;
+			}
+		}
+
+		protected override void OnPointerEntered(PointerRoutedEventArgs e)
+		{
+			base.OnPointerEntered(e);
+			_isPointerOver = true;
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerExited(PointerRoutedEventArgs e)
+		{
+			base.OnPointerExited(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
+		{
+			base.OnPointerCaptureLost(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(args);
 
 			args.Handled = true;
-#if !__WASM__
+
 			Focus(FocusState.Pointer);
-#endif
 		}
 
 		/// <inheritdoc />

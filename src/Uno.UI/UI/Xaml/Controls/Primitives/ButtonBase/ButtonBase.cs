@@ -49,6 +49,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public ButtonBase()
 		{
+			Initialize();
+
 			InitializeProperties();
 
 			Unloaded += (s, e) =>
@@ -63,9 +65,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			OnLoadedPartial();
 
 			RegisterEvents();
-
-			KeyDown += OnKeyDown;
-			KeyUp += OnKeyUp;
 		}
 
 		partial void OnLoadedPartial();
@@ -74,9 +73,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnUnloaded();
 			OnUnloadedPartial();
-
-			KeyDown -= OnKeyDown;
-			KeyUp -= OnKeyUp;
 		}
 
 		partial void OnUnloadedPartial();
@@ -96,38 +92,32 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		#region Command (DP)
 		public static DependencyProperty CommandProperty { get; } = DependencyProperty.Register(
-			"Command", typeof(ICommand), typeof(ButtonBase), new FrameworkPropertyMetadata(default(ICommand), OnCommandChanged));
+			nameof(Command), typeof(ICommand), typeof(ButtonBase), new FrameworkPropertyMetadata(default(ICommand)));
 
 		public ICommand Command
 		{
-			get { return (ICommand)this.GetValue(CommandProperty); }
-			set { this.SetValue(CommandProperty, value); }
+			get => (ICommand)GetValue(CommandProperty);
+			set => SetValue(CommandProperty, value);
 		}
 
-		private static void OnCommandChanged(object dependencyobject, DependencyPropertyChangedEventArgs args)
-		{
-			((ButtonBase)dependencyobject).OnCommandChanged(args.NewValue as ICommand);
-		}
 		#endregion
 
 		#region CommandParameter
 		public static DependencyProperty CommandParameterProperty { get; } =
 			DependencyProperty.Register(
-				"CommandParameter",
+				nameof(CommandParameter),
 				typeof(object),
-				typeof(Controls.Primitives.ButtonBase),
+				typeof(ButtonBase),
 				new FrameworkPropertyMetadata(default(object), OnCommandParameterChanged));
 
 		public object CommandParameter
 		{
-			get => (object)GetValue(CommandParameterProperty);
+			get => GetValue(CommandParameterProperty);
 			set => SetValue(CommandParameterProperty, value);
 		}
 
-		private static void OnCommandParameterChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
+		private static void OnCommandParameterChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args) =>
 			((ButtonBase)dependencyObject)?.CoerceValue(IsEnabledProperty);
-		}
 		#endregion
 
 		public ClickMode ClickMode
@@ -146,45 +136,24 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		DependencyProperty.Register(
 			name: nameof(ClickMode),
 			propertyType: typeof(ClickMode),
-			ownerType: typeof(Controls.Primitives.ButtonBase),
+			ownerType: typeof(ButtonBase),
 			typeMetadata: new FrameworkPropertyMetadata(ClickMode.Release));
 
 		public static DependencyProperty IsPointerOverProperty { get; } =
 		DependencyProperty.Register(
 			name: nameof(IsPointerOver),
 			propertyType: typeof(bool),
-			ownerType: typeof(Controls.Primitives.ButtonBase),
+			ownerType: typeof(ButtonBase),
 			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
 
 		public static DependencyProperty IsPressedProperty { get; } =
 		DependencyProperty.Register(
 			name: nameof(IsPressed),
 			propertyType: typeof(bool),
-			ownerType: typeof(Controls.Primitives.ButtonBase),
+			ownerType: typeof(ButtonBase),
 			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
 
 		partial void RegisterEvents();
-
-		private void OnCommandChanged(ICommand newCommand)
-		{
-			_commandCanExecute.Disposable = null;
-
-			if (newCommand != null)
-			{
-				EventHandler handler = (s, e) => OnCanExecuteChanged();
-
-				newCommand.CanExecuteChanged += handler;
-
-				_commandCanExecute.Disposable = Disposable
-					.Create(() =>
-					{
-						newCommand.CanExecuteChanged -= handler;
-					}
-				);
-			}
-
-			OnCanExecuteChanged();
-		}
 
 		private void OnCanExecuteChanged()
 		{
@@ -217,85 +186,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
-
-			RegisterEvents();
-		}
-
-		/// <inheritdoc />
-		protected override void OnPointerEntered(PointerRoutedEventArgs args)
-		{
-			if (ClickMode == ClickMode.Hover)
-			{
-				RaiseClick(args);
-			}
-
-			base.OnPointerEntered(args);
-		}
-
-		/// <inheritdoc />
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
-		{
-			var mode = ClickMode;
-			if (mode != ClickMode.Hover)
-			{
-				// Note: even if ClickMode is Press, we capture the pointer and handle the Release args, but we do nothing if Hover
-
-				// Capturing the Pointer ensures that we will be the first element to receive the pointer released event
-				// It will also ensure that if we scroll while pressing the button, as the capture will be lost, we won't raise Click.
-				var handle = args.GetCurrentPoint(this).Properties.IsLeftButtonPressed && CapturePointer(args.Pointer);
-				args.Handled = handle;
-
-				IsPressed = true;
-
-				if (handle && mode == ClickMode.Press)
-				{
-					RaiseClick(args);
-				}
-			}
-
-			base.OnPointerPressed(args);
-
-#if !__WASM__
-			// TODO: Remove when Focus is implemented properly.
-			// Focus the button when pressed down to ensure that any focused TextBox loses focus 
-			// so that TwoWay binding (to source) is triggered before the button is released and Click is raised.
-			Focus(FocusState.Pointer);
-#endif
-		}
-
-		/// <inheritdoc />
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
-		{
-			if (IsCaptured(args.Pointer))
-			{
-				// The click is raised as soon as the release occurs over the button,
-				// no matter the distance from the pressed location nor the delay since pressed.
-				var location = args.GetCurrentPoint(this).Position;
-				if (location.X >= 0 && location.Y >= 0
-					&& location.X <= ActualWidth && location.Y <= ActualHeight)
-				{
-					if (ClickMode == ClickMode.Release)
-					{
-						RaiseClick(args); // First raise the click
-					}
-				}
-
-				IsPressed = false;
-
-				// This should be automatically done by the pointers due to release, but if for any reason
-				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
-				// Note: This must be done ** after ** the click event (UWP raise CaptureLost event after)
-				ReleasePointerCapture(args.Pointer);
-
-				// On UWP the args are handled no matter if the Click was raised or not
-				args.Handled = true;
-			}
-
-			base.OnPointerReleased(args);
-		}
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()
@@ -307,7 +197,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Allows native buttons (e.g., UIBarButtonItem, IMenuItem) to raise clicks on their associated AppBarButton.
 		internal void RaiseClick(PointerRoutedEventArgs args = null)
 		{
-			OnClick(args);
+			OnClick();
 		}
 
 		internal void AutomationPeerClick()

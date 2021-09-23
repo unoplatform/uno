@@ -42,21 +42,21 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToggleSwitch.Toggled.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToggleSwitch.Toggled.remove
 		// Skipping already declared method Windows.UI.Xaml.Controls.ToggleSwitch.OnToggled()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnOnContentChanged( object oldContent,  object newContent)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ToggleSwitch", "void ToggleSwitch.OnOnContentChanged(object oldContent, object newContent)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnOffContentChanged( object oldContent,  object newContent)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ToggleSwitch", "void ToggleSwitch.OnOffContentChanged(object oldContent, object newContent)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnHeaderChanged( object oldContent,  object newContent)
 		{

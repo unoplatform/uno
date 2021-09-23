@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_isEnabledSubscription.Disposable = null;
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e)
 		{
 			Clickable = e.NewValue;
 		}

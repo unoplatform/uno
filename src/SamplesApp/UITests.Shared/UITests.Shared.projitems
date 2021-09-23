@@ -805,6 +805,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_VisualStates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\FrameworkElement_NativeLayout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1094,6 +1098,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CheckBoxTests\CheckBox_Automated.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CheckBoxTests\CheckBox_States.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4856,6 +4864,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\DynamicBackgroundSizing.xaml.cs">
       <DependentUpon>DynamicBackgroundSizing.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_VisualStates.xaml.cs">
+      <DependentUpon>Focus_VisualStates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\FrameworkElement_NativeLayout.xaml.cs">
       <DependentUpon>FrameworkElement_NativeLayout.xaml</DependentUpon>
     </Compile>
@@ -5055,6 +5066,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CheckBoxTests\CheckBox_Automated.xaml.cs">
       <DependentUpon>CheckBox_Automated.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CheckBoxTests\CheckBox_States.xaml.cs">
+      <DependentUpon>CheckBox_States.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_CornerRadius.xaml.cs">
       <DependentUpon>ComboBox_CornerRadius.xaml</DependentUpon>

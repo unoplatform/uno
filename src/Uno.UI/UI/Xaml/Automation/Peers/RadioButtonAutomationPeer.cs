@@ -1,57 +1,92 @@
+using System;
 using Uno;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public  partial class RadioButtonAutomationPeer : ToggleButtonAutomationPeer, Provider.ISelectionItemProvider
+	/// <summary>
+	/// Exposes RadioButton types to Microsoft UI Automation.
+	/// </summary>
+	public partial class RadioButtonAutomationPeer : ToggleButtonAutomationPeer, ISelectionItemProvider
 	{
-		public RadioButtonAutomationPeer(Controls.RadioButton owner) : base(owner)
+		/// <summary>
+		/// Initializes a new instance of the RadioButtonAutomationPeer class.
+		/// </summary>
+		/// <param name="owner"></param>
+		public RadioButtonAutomationPeer(RadioButton owner) : base(owner)
 		{
 		}
 
-		protected override string GetClassNameCore()
+		protected override object GetPatternCore(PatternInterface patternInterface)
 		{
-			return "RadioButton";
-		}
-
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.RadioButton;
-		}
-
-		[NotImplemented]
-		public  bool IsSelected
-		{
-			get
+			if (patternInterface == PatternInterface.SelectionItem)
 			{
-				throw new global::System.NotImplementedException("The member bool RadioButtonAutomationPeer.IsSelected is not implemented in Uno.");
+				return this;
 			}
+
+			return null;
 		}
 
-		[NotImplemented]
-		public Provider.IRawElementProviderSimple SelectionContainer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRawElementProviderSimple RadioButtonAutomationPeer.SelectionContainer is not implemented in Uno.");
-			}
-		}
-				
-		[NotImplemented]
-		public  void AddToSelection()
-		{
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.AddToSelection()");
-		}
+		protected override string GetClassNameCore() => "RadioButton";
 
-		[NotImplemented]
-		public void RemoveFromSelection()
-		{
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.RemoveFromSelection()");
-		}
+		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.RadioButton;
 
-		[NotImplemented]
+		/// <summary>
+		/// Clears any existing selection and then selects the current element.
+		/// </summary>
 		public void Select()
 		{
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer", "void RadioButtonAutomationPeer.Select()");
+			var isEnabled = IsEnabled();
+			if (!isEnabled)
+			{
+				return;
+			}
+
+			(Owner as RadioButton)?.AutomationRadioButtonOnToggle();
+		}
+
+		/// <summary>
+		/// Adds the current element to the collection of selected items.
+		/// </summary>
+		public void AddToSelection()
+		{
+			var owner = (RadioButton)Owner;
+			if (owner.IsChecked == null || !owner.IsChecked.Value)
+			{
+				throw new InvalidOperationException();
+			}
+		}
+
+		/// <summary>
+		/// Removes the current element from the collection of selected items.
+		/// </summary>
+		public void RemoveFromSelection()
+		{
+			var owner = (RadioButton)Owner;
+			if (owner.IsChecked == true)
+			{
+				throw new InvalidOperationException();
+			}
+		}
+
+		/// <summary>
+		/// Gets a value that indicates whether an item is selected.
+		/// </summary>
+		public bool IsSelected => (Owner as RadioButton)?.IsChecked == true;
+
+		/// <summary>
+		/// Gets the UI automation provider that implements ISelectionProvider and acts as the container for the calling object.
+		/// </summary>
+		public IRawElementProviderSimple SelectionContainer => null;
+
+		// IsSelected Property Changed Event to UIAutomation Clients
+		internal void RaiseIsSelectedPropertyChangedEvent(bool bOldValue, bool bNewValue)
+		{
+			if (bOldValue != bNewValue)
+			{
+				RaisePropertyChangedEvent(SelectionItemPatternIdentifiers.IsSelectedProperty, bOldValue, bNewValue);
+			}
 		}
 	}
 }
