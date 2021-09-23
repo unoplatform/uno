@@ -6,7 +6,7 @@ using Uno.UITest.Helpers;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests
 {
-	public class Given_RadioMenuFlyoutItem : SampleControlUITestBase
+	public partial class Given_RadioMenuFlyoutItem : SampleControlUITestBase
 	{
 		List<string> Items = new List<string>
 		{
