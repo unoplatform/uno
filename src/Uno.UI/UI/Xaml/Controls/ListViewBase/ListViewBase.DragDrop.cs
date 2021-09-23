@@ -195,9 +195,12 @@ namespace Windows.UI.Xaml.Controls
 			if (that is null || src is null || item is null || container is null || src != that)
 			{
 				dragEventArgs.Log().Warn("Invalid reorder event.");
+				dragEventArgs.AcceptedOperation = DataPackageOperation.None;
 
 				return;
 			}
+
+			dragEventArgs.AcceptedOperation = DataPackageOperation.Move;
 
 			var position = dragEventArgs.GetPosition(that);
 			that.UpdateReordering(position, container, item);
