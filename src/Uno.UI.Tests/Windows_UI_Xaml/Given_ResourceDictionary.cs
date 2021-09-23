@@ -795,5 +795,84 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(resources.ContainsKey("TestKey"));
 			Assert.AreEqual(resources["TestKey"], "Test123");
 		}
+
+		[TestMethod]
+		public void When_Theme_Dictionary_Is_Cached_Then_Add_And_Clear_Theme()
+		{
+			var dictionary = new ResourceDictionary();
+			dictionary.TryGetValue("TestKey", out _); // This causes _activeThemeDictionary to be cached.
+
+			var lightTheme = new ResourceDictionary();
+			lightTheme.Add("TestKey", "TestValue");
+			dictionary.ThemeDictionaries.Add("Light", lightTheme); // Cached value is no longer valid due to adding theme.
+
+			// Make sure the cache is updated.
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual("TestValue", testValue);
+
+			dictionary.ThemeDictionaries.Clear(); // Cached value is no longer valid due to clearing themes.
+
+			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
+
+		[TestMethod]
+		public void When_Theme_Dictionary_Is_Cached_Then_Add_And_Remove_Theme()
+		{
+			var dictionary = new ResourceDictionary();
+			dictionary.TryGetValue("TestKey", out _); // This causes _activeThemeDictionary to be cached.
+
+			var lightTheme = new ResourceDictionary();
+			lightTheme.Add("TestKey", "TestValue");
+			dictionary.ThemeDictionaries.Add("Light", lightTheme); // Cached value is no longer valid due to adding theme.
+
+			// Make sure the cache is updated.
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual("TestValue", testValue);
+
+			Assert.IsTrue(dictionary.ThemeDictionaries.Remove("Light")); // Cached value is no longer valid due to removing theme.
+
+			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
+
+
+		[TestMethod]
+		public void When_Default_Theme_Dictionary_Is_Cached()
+		{
+			var defaultDictionary = new ResourceDictionary();
+			defaultDictionary.Add("TestKey", "TestValueFromDefaultDictionary");
+
+			var dictionary = new ResourceDictionary();
+			dictionary.ThemeDictionaries.Add("Default", defaultDictionary);
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual("TestValueFromDefaultDictionary", testValue);
+
+			var lightDictionary = new ResourceDictionary();
+			lightDictionary.Add("TestKey", "TestValueFromLightDictionary");
+			dictionary.ThemeDictionaries.Add("Light", lightDictionary);
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out testValue));
+			Assert.AreEqual("TestValueFromLightDictionary", testValue);
+		}
+
+		[TestMethod]
+		public void When_Default_Theme_Dictionary_Should_Be_Used_After_Removing_Active_Theme()
+		{
+			var lightDictionary = new ResourceDictionary();
+			lightDictionary.Add("TestKey", "TestValueFromLightDictionary");
+
+			var dictionary = new ResourceDictionary();
+			dictionary.ThemeDictionaries.Add("Light", lightDictionary);
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual("TestValueFromLightDictionary", testValue);
+
+			var defaultDictionary = new ResourceDictionary();
+			defaultDictionary.Add("TestKey", "TestValueFromDefaultDictionary");
+			dictionary.ThemeDictionaries.Add("Default", defaultDictionary);
+			dictionary.ThemeDictionaries.Remove("Light");
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out testValue));
+			Assert.AreEqual("TestValueFromDefaultDictionary", testValue);
+
+			dictionary.ThemeDictionaries.Remove("Default");
+			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
 	}
 }
