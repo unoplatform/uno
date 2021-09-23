@@ -123,7 +123,7 @@ namespace SamplesApp.UITests.Runtime
 
 			if (Environment.GetEnvironmentVariable(TestResultsOutputFilePath) is { } path)
 			{
-				File.Copy(file, path);
+				File.Copy(file, path, true);
 			}
 			else
 			{
