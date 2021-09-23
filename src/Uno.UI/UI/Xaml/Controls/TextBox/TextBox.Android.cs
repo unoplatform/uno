@@ -339,11 +339,11 @@ namespace Windows.UI.Xaml.Controls
 
 				if (FeatureConfiguration.TextBox.UseLegacyInputScope)
 				{
-					_textBoxView.InputType = types;
+					_textBoxView.InputType = inputType;
 				}
 				else
 				{
-					_textBoxView.SetRawInputType(types);
+					_textBoxView.SetRawInputType(inputType);
 				}
 			}
 		}
