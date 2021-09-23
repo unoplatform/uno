@@ -78,7 +78,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			ImageAssert.HasColorAt(result, x, dstY, _items[from], tolerance: 10);
-			Assert.AreEqual("Operation", op.GetDependencyPropertyValue<string>("Text"));
+			Assert.AreEqual("Move", op.GetDependencyPropertyValue<string>("Text"));
 		}
 	}
 }
