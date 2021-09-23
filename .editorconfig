@@ -222,3 +222,7 @@ dotnet_style_qualification_for_method = false:suggestion
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#dotnet_style_qualification_for_property
 dotnet_style_qualification_for_property = false:suggestion
+
+# RS0030: Do not used banned APIs
+# https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md
+dotnet_diagnostic.RS0030.severity = error
