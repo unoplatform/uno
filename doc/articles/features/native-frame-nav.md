@@ -37,6 +37,15 @@ The `Frame` also uses a custom presenter for its control template.
 On iOS, this presenter creates an `UINavigationController`, and keeps its states in sync with its `Frame`. It also creates a `UIViewController` for each `Page` that gets navigated.
 On iOS and on Android, it also manages the state of back button on the `CommandBar`, if it is presents on a `Page`.
 
+### Helpers
+There is a `FrameNavigationHelper` that is in place to expose useful properties and methods related to Frame-based navigation logic. It contains the following helper methods:
+
+Method|Return Type|Description
+-|-|-
+`GetCurrentEntry(Frame)`|`PageStackEntry`|Returns the PageStackEntry for the currently displayed Page within the given `frame`.
+`GetInstance(PageStackEntry)`|`Page`|Returns the actual Page instance of the given `entry`.
+`CreateNavigationEventArgs(...)`|`NavigationEventArgs`|Creates a new instance of `NavigationEventArgs`/>
+
 ## Platform Specifics
 - Android: Tapping the CommandBar's back button, system back button, or performing the sweep gesture will trigger `SystemNavigationService.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
 - iOS: Tapping the back button automatically triggers a back navigation on the native `UINavigationController` (which is part of the native `Frame` implementation). The `Frame` will raise the `Navigated` event, and its state will automatically be updated to reflect the navigation. The navigation can't be intercepted or canceled.
