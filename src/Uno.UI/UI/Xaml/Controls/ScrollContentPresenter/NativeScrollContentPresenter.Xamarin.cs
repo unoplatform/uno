@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public object Content
 		{
-			get { return _content; }
+			get => _content;
 			set
 			{
 				var previousView = _content;

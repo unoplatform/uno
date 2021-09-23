@@ -30,6 +30,13 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
 	{
+		public ScrollContentPresenter()
+		{
+			InitializePartial();
+			RegisterAsScrollPort(this);
+		}
+		partial void InitializePartial();
+
 		#region ScrollOwner
 		private ManagedWeakReference _scroller;
 
@@ -74,56 +81,6 @@ namespace Windows.UI.Xaml.Controls
 				Content = null;
 			}
 		}
-
-#if __IOS__ || __ANDROID__
-		internal INativeScrollContentPresenter Native { get; set; }
-		private object RealContent => Native?.Content;
-
-		public ScrollBarVisibility NativeHorizontalScrollBarVisibility
-		{
-			set
-			{
-				if (Native is { } native)
-				{
-					native.HorizontalScrollBarVisibility = value;
-				}
-			}
-		}
-
-		public ScrollBarVisibility NativeVerticalScrollBarVisibility
-		{
-			set
-			{
-				if (Native is { } native)
-				{
-					native.VerticalScrollBarVisibility = value;
-				}
-			}
-		}
-		public bool CanHorizontallyScroll
-		{
-			get => Native?.CanHorizontallyScroll ?? false;
-			set
-			{
-				if (Native is { } native)
-				{
-					native.CanHorizontallyScroll = value;
-				}
-			}
-		}
-
-		public bool CanVerticallyScroll
-		{
-			get => Native?.CanVerticallyScroll ?? false;
-			set
-			{
-				if (Native is { } native)
-				{
-					native.CanVerticallyScroll = value;
-				}
-			}
-		}
-#endif
 
 		bool ILayoutConstraints.IsWidthConstrained(View requester)
 		{
@@ -279,5 +236,5 @@ namespace Windows.UI.Xaml.Controls
 			return result;
 		}
 #endif
-			}
-		}
+	}
+}

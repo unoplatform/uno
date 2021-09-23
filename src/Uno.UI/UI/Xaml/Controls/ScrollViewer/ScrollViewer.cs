@@ -2,10 +2,6 @@
 #pragma warning disable CS0067
 #endif
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER && !__WASM__ && !__ANDROID__
-#define IS_SCROLL_PORT
-#endif
-
 #nullable enable
 
 using System;
@@ -122,13 +118,6 @@ namespace Windows.UI.Xaml.Controls
 		public ScrollViewer()
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
-
-#if IS_SCROLL_PORT
-			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
-			// Note 2: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
-			UIElement.RegisterAsScrollPort(this);
-#endif
 
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
@@ -1296,12 +1285,6 @@ namespace Windows.UI.Xaml.Controls
 			VerticalOffset = _pendingVerticalOffset;
 
 			UpdatePartial(isIntermediate);
-
-#if IS_SCROLL_PORT
-			// Effective viewport support
-			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
-			InvalidateViewport();
-#endif
 
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}

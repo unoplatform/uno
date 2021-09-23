@@ -5,7 +5,6 @@ using Uno.UI.Extensions;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -16,12 +15,15 @@ using CoreGraphics;
 using Uno.Logging;
 using Windows.Foundation;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI;
+using Uno.UI.UI.Xaml.Controls.Layouter;
 using Uno.UI.Xaml.Input;
 using DraggingEventArgs = UIKit.DraggingEventArgs;
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject
+	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject, ISetLayoutSlots
 	{
 		private readonly WeakReference<ScrollViewer> _scrollViewer;
 
@@ -165,11 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			base.SetNeedsLayout();
 
 			_requiresMeasure = true;
-
-			if (Superview != null)
-			{
-				Superview.SetNeedsLayout();
-			}
+			Superview?.SetNeedsLayout();
 		}
 
 		#region Layouting
@@ -244,46 +242,57 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				if (Content != null)
+				if (_content is null)
 				{
-					if (_requiresMeasure)
-					{
-						_requiresMeasure = false;
-						SizeThatFits(Frame.Size);
-					}
-
-					double horizontalMargin = 0;
-					double verticalMargin = 0;
-
-					var frameworkElement = _content as IFrameworkElement;
-
-					if (frameworkElement != null)
-					{
-						horizontalMargin = frameworkElement.Margin.Left + frameworkElement.Margin.Right;
-						verticalMargin = frameworkElement.Margin.Top + frameworkElement.Margin.Bottom;
-
-						var adjustedMeasure = new CGSize(
-							GetAdjustedArrangeWidth(frameworkElement, (nfloat)horizontalMargin),
-							GetAdjustedArrangeHeight(frameworkElement, (nfloat)verticalMargin)
-						);
-
-						// Zoom works by applying a transform to the child view. If a view has a non-identity transform, its Frame shouldn't be set.
-						if (ZoomScale == 1)
-						{
-							_content.Frame = new CGRect(
-								GetAdjustedArrangeX(frameworkElement, adjustedMeasure, horizontalMargin),
-								GetAdjustedArrangeY(frameworkElement, adjustedMeasure, verticalMargin),
-								adjustedMeasure.Width,
-								adjustedMeasure.Height
-							);
-						}
-					}
-
-					ContentSize = AdjustContentSize(_content.Frame.Size + new CGSize(horizontalMargin, verticalMargin));
-
-					// This prevents unnecessary touch delays (which affects the pressed visual states of buttons) when user can't scroll.
-					UpdateDelayedTouches();
+					return;
 				}
+
+				var frame = Frame;
+				if (_requiresMeasure)
+				{
+					_requiresMeasure = false;
+					SizeThatFits(frame.Size);
+				}
+
+				var contentMargin = default(Thickness);
+				if (_content is IFrameworkElement iFwElt)
+				{
+					contentMargin = iFwElt.Margin;
+
+					var adjustedMeasure = new CGSize(
+						GetAdjustedArrangeWidth(iFwElt, (nfloat)contentMargin.Horizontal()),
+						GetAdjustedArrangeHeight(iFwElt, (nfloat)contentMargin.Vertical())
+					);
+
+					// Zoom works by applying a transform to the child view. If a view has a non-identity transform, its Frame shouldn't be set.
+					if (ZoomScale == 1)
+					{
+						_content.Frame = new CGRect(
+							GetAdjustedArrangeX(iFwElt, adjustedMeasure, (nfloat)contentMargin.Horizontal()),
+							GetAdjustedArrangeY(iFwElt, adjustedMeasure, (nfloat)contentMargin.Vertical()),
+							adjustedMeasure.Width,
+							adjustedMeasure.Height
+						);
+					}
+				}
+
+				// Sets the scroll extents using the effective Frame of the content
+				// (which might be different than the frame set above if the '_content' has some layouting constraints).
+				// Noticeably, it will be the case if the '_content' is bigger than the viewport.
+				var finalRect = (Rect)_content.Frame;
+				var extentSize = AdjustContentSize(finalRect.InflateBy(contentMargin).Size);
+
+				ContentSize = extentSize;
+
+				// ISetLayoutSlots contract implementation
+				LayoutInformation.SetLayoutSlot(_content, new Rect(default, ((Size)extentSize).AtLeast(frame.Size)));
+				if (_content is UIElement uiElt)
+				{
+					uiElt.LayoutSlotWithMarginsAndAlignments = finalRect;
+				}
+
+				// This prevents unnecessary touch delays (which affects the pressed visual states of buttons) when user can't scroll.
+				UpdateDelayedTouches();
 			}
 			catch (Exception e)
 			{
@@ -499,11 +508,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			ScrollViewExtensions.BringIntoView(this, visual, BringIntoViewMode.ClosestEdge);
-			return rectangle;
-		}
+		bool INativeScrollContentPresenter.Set(
+			double? horizontalOffset,
+			double? verticalOffset,
+			float? zoomFactor,
+			bool disableAnimation,
+			bool isIntermediate)
+			=> throw new NotImplementedException();
 
 		#region Touches
 

@@ -13,8 +13,6 @@ namespace Windows.UI.Xaml.Controls
 
 		object Content { get; set; }
 
-		Thickness Padding { get; set; }
-
 		bool Set(
 			double? horizontalOffset = null,
 			double? verticalOffset = null,
@@ -23,6 +21,9 @@ namespace Windows.UI.Xaml.Controls
 			bool isIntermediate = false);
 
 #if __ANDROID__
+		// Padding used by the SIP
+		Thickness Padding { get; set; }
+
 		// To avoid massive refactor DO NOT USE, use 'Set' instead
 		void SmoothScrollBy(int physicalDeltaX, int physicalDeltaY);
 #endif

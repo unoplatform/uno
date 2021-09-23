@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Extensions
@@ -17,5 +18,11 @@ namespace Uno.UI.Extensions
 
 		public static Thickness Minus(this Thickness x, Thickness y) // Minus ==> There is a (not implemented) Substract on struct in mono!
 			=> new Thickness(x.Left - y.Left, x.Top - y.Top, x.Right - y.Right, x.Bottom - y.Bottom);
+
+		public static double Horizontal(this Thickness thickness)
+			=> thickness.Left + thickness.Right;
+
+		public static double Vertical(this Thickness thickness)
+			=> thickness.Top + thickness.Bottom;
 	}
 }

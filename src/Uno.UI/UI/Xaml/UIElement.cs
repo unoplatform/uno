@@ -344,31 +344,20 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER && !__WASM__ && !__ANDROID__
-				// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-				// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
 				if (elt is ScrollViewer sv
 					// Don't adjust for scroll offsets if it's the ScrollViewer itself calling TransformToVisual
-					&& elt != from
-				)
+					&& elt != from)
 				{
+					// Scroll offsets are handled at SCP level using the IsScrollPort
+
 					var zoom = sv.ZoomFactor;
 					if (zoom != 1)
 					{
 						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
 						matrix *= Matrix3x2.CreateScale(zoom);
-
-						offsetX = -sv.HorizontalOffset;
-						offsetY = -sv.VerticalOffset;
-					}
-					else
-					{
-						offsetX -= sv.HorizontalOffset;
-						offsetY -= sv.VerticalOffset;
 					}
 				}
-				else
-#endif
+
 #if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling which has already been included.
 				if (elt.IsScrollPort
 					// Don't adjust for scroll offsets if it's the scroll port itself calling TransformToVisual, only for ancestors

@@ -10,11 +10,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollContentPresenter
 	{
-		public ScrollContentPresenter()
+		partial void InitializePartial()
 		{
 			PointerMoved += OnPointerMoved;
-
-			RegisterAsScrollPort(this);
 		}
 
 		private void OnPointerMoved(object sender, Input.PointerRoutedEventArgs e)
@@ -35,6 +33,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
 		{
+			// NOTE: We should re-use the computation of the offsets and then use the Set
+
 			if (visual is FrameworkElement fe && !(Native is null))
 			{
 				var scrollRect = new Rect(
@@ -85,21 +85,6 @@ namespace Windows.UI.Xaml.Controls
 			_occludedRectPadding = occludedRectPadding;
 			Native.Padding = occludedRectPadding;
 		}
-		#endregion
-
-		#region Native SCP to SCP
-		internal void OnNativeScroll(double horizontalOffset, double verticalOffset, bool isIntermediate)
-		{
-			Scroller?.OnPresenterScrolled(horizontalOffset, verticalOffset, isIntermediate);
-
-			ScrollOffsets = new Point(horizontalOffset, verticalOffset);
-			InvalidateViewport();
-		}
-
-		internal void OnNativeZoom(float zoomFactor)
-		{
-			Scroller?.OnPresenterZoomed(zoomFactor);
-		} 
 		#endregion
 	}
 }

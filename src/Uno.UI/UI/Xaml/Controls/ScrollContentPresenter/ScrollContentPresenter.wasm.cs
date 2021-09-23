@@ -35,11 +35,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollContentPresenter()
-		{
-			RegisterAsScrollPort(this);
-		}
-
 		private void TryRegisterEvents(ScrollBarVisibility visibility)
 		{
 			if (

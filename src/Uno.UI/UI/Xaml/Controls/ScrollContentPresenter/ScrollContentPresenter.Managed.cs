@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		// an appropriate size.
 		const double ScrollViewerMinHeightToReflowAroundOcclusions = 32.0f;
 
-		private readonly IScrollStrategy _strategy;
+		private /*readonly - partial*/ IScrollStrategy _strategy;
 		
 		public bool CanHorizontallyScroll { get; set; }
 
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Size? CustomContentExtent => null;
 
-		public ScrollContentPresenter()
+		partial void InitializePartial()
 		{
 #if __SKIA__
 			_strategy = CompositorScrollStrategy.Instance;
@@ -106,10 +106,6 @@ namespace Windows.UI.Xaml.Controls
 			ManipulationStarting += PrepareTouchScroll;
 			ManipulationDelta += UpdateTouchScroll;
 			ManipulationCompleted += CompleteTouchScroll;
-
-			// On Skia and macOS (as UWP), the Scrolling is managed by the ScrollContentPresenter, not the ScrollViewer.
-			// Note: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
-			RegisterAsScrollPort(this);
 		}
 
 		public void SetVerticalOffset(double offset)

@@ -2,6 +2,12 @@
 
 // #define TRACE_EFFECTIVE_VIEWPORT
 
+#if !(IS_NATIVE_ELEMENT && __IOS__)
+// On iOS lots of native elements are not using the Layouter and will never invoke the IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
+// so avoid check of the '_isLayouted' flag
+#define CHECK_LAYOUTED
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,7 +37,9 @@ namespace Windows.UI.Xaml
 		private IDisposable? _parentViewportUpdatesSubscription;
 		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates space, use GetParentViewport()
 		private ViewportInfo _lastEffectiveViewport;
+#if CHECK_LAYOUTED
 		private bool _isLayouted;
+#endif
 
 		public event TypedEventHandler<_This, EffectiveViewportChangedEventArgs> EffectiveViewportChanged
 		{
@@ -99,10 +107,12 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+#if CHECK_LAYOUTED
 				if (!IsLoaded)
 				{
 					_isLayouted = false;
 				}
+#endif
 
 				if (_parentViewportUpdatesSubscription != null)
 				{
@@ -167,7 +177,9 @@ namespace Windows.UI.Xaml
 		// Native elements cannot be clipped (using Uno), so the _localViewport will always be an empty rect, and we only react to LayoutSlot updates
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
 		{
+#if CHECK_LAYOUTED
 			_isLayouted = true;
+#endif
 			PropagateEffectiveViewportChange();
 		}
 #else
@@ -278,11 +290,13 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+#if CHECK_LAYOUTED
 			if (!_isLayouted) // For perf consideration, we try to not propagate the VP until teh element get a valid LayoutSlot
 			{
 				TRACE_EFFECTIVE_VIEWPORT($"Element has been layouted yet, stop propagation (reason:{caller} | isInitial:{isInitial} | isInternal:{isInternal}).");
 				return;
 			}
+#endif
 
 			var parentViewport = GetParentViewport();
 			var viewport = GetEffectiveViewport(parentViewport);
