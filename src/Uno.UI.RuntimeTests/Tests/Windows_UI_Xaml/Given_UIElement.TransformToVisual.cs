@@ -422,7 +422,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 0, 10, false, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 10, 10, false, false)]
 
-
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, true, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, true, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, true, false)]

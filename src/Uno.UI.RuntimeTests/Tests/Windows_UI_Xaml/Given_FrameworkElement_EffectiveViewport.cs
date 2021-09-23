@@ -295,7 +295,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				vp[sv].Effective.Should().Be(WindowBounds);
 				vp.Of<ScrollContentPresenter>().Effective.Should().Be(WindowBounds);
-#if __ANDROID__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
+#if __ANDROID__ || __IOS__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
 				vp[sut].Effective.Width.Should().Be(512);
 				vp[sut].Effective.Height.Should().Be(512);
 #else
@@ -308,10 +308,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await RetryAssert(() =>
 			{
 				vp[sv].Effective.Should().Be(WindowBounds);
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 				vp.Of<ScrollContentPresenter>().Effective.Should().Be(WindowBounds);
 #endif
-#if __ANDROID__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
+#if __ANDROID__ || __IOS__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
 				vp[sut].Effective.Width.Should().Be(512);
 				vp[sut].Effective.Height.Should().Be(512);
 				vp[sut].Effective.Y.Should().Be(512);
@@ -418,7 +418,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(true, false)]
 		[DataRow(false, true)]
 		[DataRow(true, true)]
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
 		[Ignore(
 			"On Android and iOS the ScrollHost is not the (native)SCP but the SV, so alignments are not taken in consideration when computing the scrollport "
 			+ "(which is used as viewport for children). We will get instead 100x100@0,0.")]
