@@ -181,13 +181,17 @@ namespace Windows.UI.Xaml.Shapes
 #if LEGACY_SHAPE_MEASURE
 		protected virtual void OnFillChanged(Brush newValue)
 		{
-			_brushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ =>
+			_brushChanged.Disposable = null;
+			if (newValue?.SupportsAssignAndObserveBrush ?? false)
+			{
+				_brushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ =>
 #if __WASM__
-				OnFillUpdatedPartial()
+					OnFillUpdatedPartial()
 #else
-				RefreshShape(true)
+					RefreshShape(true)
 #endif
-			);
+				);
+			}
 
 			OnFillUpdated(newValue);
 		}
