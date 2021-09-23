@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_xLoad
 	{
 		[TestMethod]
@@ -46,6 +47,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			sut.IsLoad = false;
 
 			Assert.IsFalse((parent.Child as ElementStub).Load);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_xLoad_Visibility_While_Materializing()
+		{
+			var SUT = new When_xLoad_Visibility_While_Materializing();
+
+			Assert.AreEqual(0, When_xLoad_Visibility_While_Materializing_Content.Instances);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+
+			Assert.AreEqual(0, When_xLoad_Visibility_While_Materializing_Content.Instances);
+
+			SUT.Model.IsVisible = true;
+
+			Assert.AreEqual(1, When_xLoad_Visibility_While_Materializing_Content.Instances);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_xLoad_xBind_xLoad_Initial()
+		{
+			var grid = new Grid();
+			TestServices.WindowHelper.WindowContent = grid;
+
+			var SUT = new When_xLoad_xBind_xLoad_Initial();
+			grid.Children.Add(SUT);
+
+			Assert.IsNotNull(SUT.tb01);
+			Assert.AreEqual(1, SUT.tb01.Tag);
+
+			SUT.Model.MyValue = 42;
+
+			Assert.AreEqual(42, SUT.tb01.Tag);
 		}
 	}
 }

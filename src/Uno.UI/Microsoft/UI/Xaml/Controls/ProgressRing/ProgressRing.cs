@@ -26,6 +26,14 @@ namespace Microsoft.UI.Xaml.Controls
 		private Panel? _layoutRoot;
 		private double _oldValue = 0d;
 		private Uri? _currentSourceUri = null;
+		private LoadedAsset _loadedAsset;
+
+		private enum LoadedAsset : byte
+		{
+			NotLoaded,
+			Indeterminate,
+			Determinate
+		}
 
 		public static DependencyProperty IsActiveProperty { get; } = DependencyProperty.Register(
 			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsActivePropertyChanged));
@@ -121,8 +129,8 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateLottieProgress();
 			ChangeVisualState();
 
-			OnForegroundPropertyChanged(this, ForegroundProperty);
-			OnBackgroundPropertyChanged(this, BackgroundProperty);
+			SetLottieForegroundColor();
+			SetLottieBackgroundColor();
 		}
 
 		private static void OnIsIndeterminatePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -130,19 +138,23 @@ namespace Microsoft.UI.Xaml.Controls
 			(dependencyObject as ProgressRing)?.ChangeVisualState();
 		}
 
-		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
+		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp) => SetLottieForegroundColor();
+
+		private void OnBackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp) => SetLottieBackgroundColor();
+
+		private void SetLottieForegroundColor()
 		{
 			if (_player?.Source is IThemableAnimatedVisualSource source
-				&& Brush.TryGetColorWithOpacity(Foreground, out var foreground))
+			    && Brush.TryGetColorWithOpacity(Foreground, out var foreground))
 			{
 				source.SetColorThemeProperty("Foreground", foreground);
 			}
 		}
 
-		private void OnBackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
+		private void SetLottieBackgroundColor()
 		{
 			if (_player?.Source is IThemableAnimatedVisualSource source
-				&& Brush.TryGetColorWithOpacity(Background, out var background))
+			    && Brush.TryGetColorWithOpacity(Background, out var background))
 			{
 				source.SetColorThemeProperty("Background", background);
 			}
@@ -186,21 +198,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnDeterminateSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			SetAnimatedVisualPlayerSource();
+			SetAnimatedVisualPlayerSource(force: true);
 		}
 
 		private void OnIndeterminateSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			SetAnimatedVisualPlayerSource();
+			SetAnimatedVisualPlayerSource(force: true);
 		}
 
-		private void SetAnimatedVisualPlayerSource()
+		private void SetAnimatedVisualPlayerSource(bool force = false)
 		{
 			if (_lottieProvider != null && _player != null)
 			{
 				var isIndeterminate = IsIndeterminate;
 				if (isIndeterminate)
 				{
+					if (_loadedAsset == LoadedAsset.Indeterminate && !force)
+					{
+						return; // already loaded
+					}
+					_loadedAsset = LoadedAsset.Indeterminate;
+
 					var indeterminateSource = IndeterminateSource;
 					if (indeterminateSource == null)
 					{
@@ -217,6 +235,12 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
+					if (_loadedAsset == LoadedAsset.Determinate && !force)
+					{
+						return; // already loaded
+					}
+					_loadedAsset = LoadedAsset.Determinate;
+
 					var determinateSource = DeterminateSource;
 					if (determinateSource == null)
 					{
@@ -231,7 +255,9 @@ namespace Microsoft.UI.Xaml.Controls
 							: determinateSource;
 					}
 				}
-				
+
+				SetLottieForegroundColor();
+				SetLottieBackgroundColor();
 			}
 			else if (_player != null && _layoutRoot != null)
 			{

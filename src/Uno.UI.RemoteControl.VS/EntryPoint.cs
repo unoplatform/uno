@@ -20,6 +20,9 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
+#pragma warning disable VSTHRD010
+#pragma warning disable VSTHRD109
+
 namespace Uno.UI.RemoteControl.VS
 {
 	public class EntryPoint
@@ -63,7 +66,7 @@ namespace Uno.UI.RemoteControl.VS
 			// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
 			//
 			// This will can possibly be removed when all projects are migrated to the sdk project system.
-			UpdateProjectsAsync();
+			_ = UpdateProjectsAsync();
 		}
 
 		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()

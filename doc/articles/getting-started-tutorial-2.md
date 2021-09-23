@@ -257,7 +257,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 1. Now we will update the Grid so that we define 6 rows with a small spacing between the rows to add a little padding between the row elements.
 
     ```xml
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RowSpacing="8">
+    <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />

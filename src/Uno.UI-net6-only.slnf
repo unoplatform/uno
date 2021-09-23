@@ -17,6 +17,8 @@
       "Uno.Foundation\\Uno.Foundation.net6.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.net6.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.net6.csproj",
+      "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.net6.csproj",
+      "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.net6.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.net6.csproj",

@@ -238,7 +238,9 @@ namespace Windows.Graphics.Display
 			using var windowManager = CreateWindowManager();
 			if (windowManager.DefaultDisplay is { } defaultDisplay)
 			{
+#pragma warning disable CS0618 // GetRealMetrics is obsolete in API 31
 				defaultDisplay.GetRealMetrics(displayMetrics);
+#pragma warning restore CS0618 // GetRealMetrics is obsolete in API 31
 
 				_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
 				_cachedRotation = windowManager.DefaultDisplay.Rotation;

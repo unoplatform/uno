@@ -19,6 +19,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public const string BaseXamlNamespace = "Windows.UI.Xaml";
 		public const string UnoXamlNamespace = "Windows.UI.Xaml";
 
+		public const int MaxFluentResourcesVersion = 2;
+
 		public static class Namespaces
 		{
 			public const string Controls = BaseXamlNamespace + ".Controls";

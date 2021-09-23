@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml
 			// As we have to walk the tree and this method may be invoked too early, we don't try to track the state between the old and the new mode
 			=> PrepareParentTouchesManagers(newMode, CanDrag);
 
-		partial void OnCanDragChanged(bool _, bool newValue)
+		partial void OnCanDragChanged(bool oldValue, bool newValue)
 			=> PrepareParentTouchesManagers(ManipulationMode, newValue);
 
 		private void OnLoadedForPointers()

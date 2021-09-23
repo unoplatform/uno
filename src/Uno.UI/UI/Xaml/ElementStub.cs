@@ -46,6 +46,14 @@ namespace Windows.UI.Xaml
 #endif
 
 		/// <summary>
+		/// Ensures that materialization handles reentrancy properly.
+		/// This scenario can happen on android specifically because the Parent
+		/// property is not immediately set to null once a view is removed from
+		/// the tree.
+		/// </summary>
+		private bool _isMaterializing;
+
+		/// <summary>
 		/// A delegate used to raise materialization changes in <see cref="ElementStub.MaterializationChanged"/>
 		/// </summary>
 		/// <param name="sender">The instance being changed</param>
@@ -144,22 +152,36 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			if (_content == null)
+			if (_content == null && !_isMaterializing)
 			{
-				_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-				var targetDependencyObject = _content as DependencyObject;
-
-				if (isVisibilityChanged && targetDependencyObject != null)
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+				try
 				{
-					var visibilityProperty = GetVisibilityProperty(_content);
+#endif
+					_isMaterializing = true;
 
-					// Set the visibility at the same precedence it was currently set with on the stub.
-					var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
+					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
+					var targetDependencyObject = _content as DependencyObject;
 
-					targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+					if (isVisibilityChanged && targetDependencyObject != null)
+					{
+						var visibilityProperty = GetVisibilityProperty(_content);
+
+						// Set the visibility at the same precedence it was currently set with on the stub.
+						var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
+
+						targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+					}
+
+					MaterializationChanged?.Invoke(this);
+
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				}
-
-				MaterializationChanged?.Invoke(this);
+				finally
+				{
+					_isMaterializing = false;
+				}
+#endif
 			}
 		}
 

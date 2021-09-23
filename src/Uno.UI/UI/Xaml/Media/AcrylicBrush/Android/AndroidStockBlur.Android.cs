@@ -27,6 +27,8 @@ with some modifications and removal of unused features.
 ------------------------------------------------------------------------------
 */
 
+#pragma warning disable CS0618 // RenderScript is obsolete
+
 using Android.Content;
 using Android.Graphics;
 using Android.Renderscripts;
@@ -41,9 +43,9 @@ namespace Uno.UI.Xaml.Media
         private const bool DEBUG = false;
 #endif
 
-        private RenderScript _mRenderScript;
+		private RenderScript _mRenderScript;
 
-        private ScriptIntrinsicBlur _mBlurScript;
+		private ScriptIntrinsicBlur _mBlurScript;
 
         private Allocation _mBlurInput;
 

@@ -8,6 +8,12 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel Spacing="15" Margin="10">
+		<TextBlock FontSize="15">Following underscore TextBlock cannot be selected:</TextBlock>
+		<TextBlock x:Name="NonSelectableUnderscoreTextBlock" FontSize="22" Foreground="Chocolate" IsTextSelectionEnabled="false" HorizontalAlignment="Left">____________</TextBlock>
+
+		<TextBlock FontSize="15">Following underscore TextBlock can be selected:</TextBlock>
+		<TextBlock x:Name="SelectableUnderscoreTextBlock" FontSize="22" Foreground="Chocolate" IsTextSelectionEnabled="true" HorizontalAlignment="Left">____________</TextBlock>
+		
 		<TextBlock FontSize="15">Following TextBlock with IsTextSelectionEnabled=false:</TextBlock>
 		<TextBlock FontSize="22" Foreground="Chocolate" IsTextSelectionEnabled="false">Try to select this.</TextBlock>
 

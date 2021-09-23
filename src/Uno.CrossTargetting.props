@@ -87,6 +87,9 @@
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net6.0-maccatalyst'">
 	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+
+	<!-- Remove Warnings about -->
+	<NoWarn>$(NoWarn);NU1703</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsXamarinMac)">

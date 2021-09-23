@@ -3954,6 +3954,17 @@
 				reason="Method not in UWP contract" />
 		</Properties>
 	</IgnoreSet>
+	
+	<IgnoreSet baseVersion="3.10.11">
+		<Methods>
+			<Member
+				fullName="System.Object Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_Value()"
+				reason="False positive, still present, but accessible also through an internal interface" />
+			<Member
+				fullName="Windows.UI.Xaml.Media.Animation.KeyTime Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_KeyTime()"
+				reason="False positive, still present, but accessible also through an internal interface" />
+		</Methods>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 		<Types>

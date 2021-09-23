@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
+using Uno.Roslyn;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -25,16 +21,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private string _bindingsPaths;
 		private string[] _sourceAssemblies;
 
-		private static INamedTypeSymbol _stringSymbol;
-		private static INamedTypeSymbol _intSymbol;
-		private static INamedTypeSymbol _uintSymbol;
-		private static INamedTypeSymbol _floatSymbol;
-		private static INamedTypeSymbol _doubleSymbol;
-		private static INamedTypeSymbol _byteSymbol;
-		private static INamedTypeSymbol _shortSymbol;
 		private static INamedTypeSymbol _intPtrSymbol;
-		private static INamedTypeSymbol _boolSymbol;
-		private static INamedTypeSymbol _longSymbol;
 		private static INamedTypeSymbol _structLayoutSymbol;
 		private static INamedTypeSymbol _interopMessageSymbol;
 
@@ -53,17 +40,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 				if (!string.IsNullOrEmpty(_bindingsPaths))
 				{
-					_stringSymbol = context.Compilation.GetTypeByMetadataName("System.String");
-					_intSymbol = context.Compilation.GetTypeByMetadataName("System.Int32");
-					_uintSymbol = context.Compilation.GetTypeByMetadataName("System.UInt32");
-					_floatSymbol = context.Compilation.GetTypeByMetadataName("System.Single");
-					_doubleSymbol = context.Compilation.GetTypeByMetadataName("System.Double");
-					_byteSymbol = context.Compilation.GetTypeByMetadataName("System.Byte");
-					_shortSymbol = context.Compilation.GetTypeByMetadataName("System.Int16");
 					_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
-					_boolSymbol = context.Compilation.GetTypeByMetadataName("System.Boolean");
-					_longSymbol = context.Compilation.GetTypeByMetadataName("System.Int64");
-					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(System.Runtime.InteropServices.StructLayoutAttribute).FullName);
+					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
 					_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
 					var modules = from ext in context.Compilation.ExternalReferences
@@ -135,11 +113,11 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 		private static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(IModuleSymbol module)
 		{
-			foreach(var type in module.GlobalNamespace.GetNamespaceTypes())
+			foreach (var type in module.GlobalNamespace.GetNamespaceTypes())
 			{
 				yield return type;
 
-				foreach(var inner in type.GetTypeMembers())
+				foreach (var inner in type.GetTypeMembers())
 				{
 					yield return inner;
 				}
@@ -184,7 +162,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 			if (actualSymbol.GetType().GetProperty(
 				"IsMarshalledExplicitly",
-				System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info
+				BindingFlags.Instance | BindingFlags.NonPublic) is PropertyInfo info
 			)
 			{
 				if (info.GetValue(actualSymbol) is bool isMarshalledExplicitly)
@@ -203,7 +181,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		/// <returns></returns>
 		private object GetActualSymbol(ISymbol symbol)
 		{
-			if (symbol.GetType().GetProperty("UnderlyingSymbol", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info)
+			if (symbol.GetType().GetProperty("UnderlyingSymbol", BindingFlags.Instance | BindingFlags.NonPublic) is PropertyInfo info)
 			{
 				if (info.GetValue(symbol) is { } underlyingSymbol)
 				{
@@ -223,7 +201,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				foreach (var field in parametersType.GetFields())
 				{
 					var fieldSize = GetNativeFieldSize(field);
-					bool isStringField = SymbolEqualityComparer.Default.Equals(field.Type, _stringSymbol);
+					bool isStringField = field.Type.SpecialType == SpecialType.System_String;
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
@@ -286,7 +264,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 						var elementType = arraySymbol.ElementType;
 						var elementTSType = GetTSType(elementType);
-						var isElementString = SymbolEqualityComparer.Default.Equals(elementType, _stringSymbol);
+						var isElementString = elementType.SpecialType == SpecialType.System_String;
 						var elementSize = isElementString ? 4 : fieldSize;
 
 						using (sb.BlockInvariant(""))
@@ -330,7 +308,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 					{
 						using (sb.BlockInvariant(""))
 						{
-							if(SymbolEqualityComparer.Default.Equals(field.Type, _stringSymbol))
+							if (field.Type.SpecialType == SpecialType.System_String)
 							{
 								sb.AppendLineInvariant($"const ptr = Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\");");
 
@@ -372,23 +350,23 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		}
 
 		private bool CanUseEMHeapProperty(ITypeSymbol type)
-			=> SymbolEqualityComparer.Default.Equals(type, _uintSymbol);
+			=> type.SpecialType == SpecialType.System_UInt32;
 
 		private int GetNativeFieldSize(IFieldSymbol field)
 		{
 			if (
-				SymbolEqualityComparer.Default.Equals(field.Type, _stringSymbol)
-				|| SymbolEqualityComparer.Default.Equals(field.Type, _intSymbol)
-				|| SymbolEqualityComparer.Default.Equals(field.Type, _uintSymbol)
-				|| SymbolEqualityComparer.Default.Equals(field.Type, _intPtrSymbol)
-				|| SymbolEqualityComparer.Default.Equals(field.Type, _floatSymbol)
-				|| SymbolEqualityComparer.Default.Equals(field.Type, _boolSymbol)
-				|| field.Type is IArrayTypeSymbol
+				field.Type.SpecialType is SpecialType.System_String ||
+				field.Type.SpecialType is SpecialType.System_Int32 ||
+				field.Type.SpecialType is SpecialType.System_UInt32 ||
+				SymbolEqualityComparer.Default.Equals(field.Type, _intPtrSymbol) ||
+				field.Type.SpecialType is SpecialType.System_Single ||
+				field.Type.SpecialType is SpecialType.System_Boolean ||
+				field.Type is IArrayTypeSymbol
 			)
 			{
 				return 4;
 			}
-			else if (SymbolEqualityComparer.Default.Equals(field.Type, _doubleSymbol))
+			else if (field.Type.SpecialType == SpecialType.System_Double)
 			{
 				return 8;
 			}
@@ -403,7 +381,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			var fieldType = field.Type;
 
 			if (
-				SymbolEqualityComparer.Default.Equals(fieldType, _stringSymbol)
+				fieldType.SpecialType == SpecialType.System_String
 				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
 				|| fieldType is IArrayTypeSymbol
 			)
@@ -411,30 +389,30 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				return 2;
 			}
 			else if (
-				SymbolEqualityComparer.Default.Equals(fieldType, _intSymbol)
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _uintSymbol)
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _boolSymbol)
+				fieldType.SpecialType == SpecialType.System_Int32 ||
+				fieldType.SpecialType == SpecialType.System_UInt32 ||
+				fieldType.SpecialType == SpecialType.System_Boolean
 			)
 			{
 				return 2;
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _longSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Int64)
 			{
 				return 3;
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _shortSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Int16)
 			{
 				return 1;
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _byteSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Byte)
 			{
 				return 0;
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _floatSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Single)
 			{
 				return 2;
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _doubleSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Double)
 			{
 				return 3;
 			}
@@ -447,38 +425,38 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private static string GetEMField(ITypeSymbol fieldType)
 		{
 			if (
-				SymbolEqualityComparer.Default.Equals(fieldType, _stringSymbol)
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
-				|| fieldType is IArrayTypeSymbol
+				fieldType.SpecialType == SpecialType.System_String ||
+				SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol) ||
+				fieldType is IArrayTypeSymbol
 			)
 			{
 				return "*";
 			}
 			else if (
-				SymbolEqualityComparer.Default.Equals(fieldType, _intSymbol)
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _uintSymbol)
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _boolSymbol)
+				fieldType.SpecialType == SpecialType.System_Int32 ||
+				fieldType.SpecialType == SpecialType.System_UInt32 ||
+				fieldType.SpecialType == SpecialType.System_Boolean
 			)
 			{
 				return "i32";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _longSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Int64)
 			{
 				return "i64";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _shortSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Int16)
 			{
 				return "i16";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _byteSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Byte)
 			{
 				return "i8";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _floatSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Single)
 			{
 				return "float";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _doubleSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Double)
 			{
 				return "double";
 			}
@@ -491,37 +469,37 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private object GetEMHeapProperty(ITypeSymbol fieldType)
 		{
 			if (
-				SymbolEqualityComparer.Default.Equals(fieldType, _stringSymbol)
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
-				|| fieldType is IArrayTypeSymbol
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _intSymbol)
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _boolSymbol)
+				fieldType.SpecialType == SpecialType.System_String ||
+				SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol) ||
+				fieldType is IArrayTypeSymbol ||
+				fieldType.SpecialType == SpecialType.System_Int32 ||
+				fieldType.SpecialType == SpecialType.System_Boolean
 			)
 			{
 				return "HEAP32";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _uintSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_UInt32)
 			{
 				return "HEAPU32";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _longSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Int64)
 			{
 				// Might overflow
 				return "HEAP32";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _shortSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Int16)
 			{
 				return "HEAP16";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _byteSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Byte)
 			{
 				return "HEAP8";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _floatSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Single)
 			{
 				return "HEAPF32";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(fieldType, _doubleSymbol))
+			else if (fieldType.SpecialType == SpecialType.System_Double)
 			{
 				return "HEAPF64";
 			}
@@ -542,23 +520,23 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			{
 				return $"Array<{GetTSType(array.ElementType)}>";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(type, _stringSymbol))
+			else if (type.SpecialType == SpecialType.System_String)
 			{
 				return "String";
 			}
 			else if (
-				SymbolEqualityComparer.Default.Equals(type, _intSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _uintSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _floatSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _doubleSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _byteSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _shortSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
+				type.SpecialType == SpecialType.System_Int32 ||
+				type.SpecialType == SpecialType.System_UInt32 ||
+				type.SpecialType == SpecialType.System_Single ||
+				type.SpecialType == SpecialType.System_Double ||
+				type.SpecialType == SpecialType.System_Byte ||
+				type.SpecialType == SpecialType.System_Int16 ||
+				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
 			)
 			{
 				return "Number";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(type, _boolSymbol))
+			else if (type.SpecialType == SpecialType.System_Boolean)
 			{
 				return "Boolean";
 			}
@@ -579,23 +557,23 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			{
 				return $"Array<{GetTSFieldType(array.ElementType)}>";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(type, _stringSymbol))
+			else if (type.SpecialType == SpecialType.System_String)
 			{
 				return "string";
 			}
 			else if (
-				SymbolEqualityComparer.Default.Equals(type, _intSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _uintSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _floatSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _doubleSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _byteSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _shortSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
+				type.SpecialType == SpecialType.System_Int32 ||
+				type.SpecialType == SpecialType.System_UInt32 ||
+				type.SpecialType == SpecialType.System_Single ||
+				type.SpecialType == SpecialType.System_Double ||
+				type.SpecialType == SpecialType.System_Byte ||
+				type.SpecialType == SpecialType.System_Int16 ||
+				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
 			)
 			{
 				return "number";
 			}
-			else if (SymbolEqualityComparer.Default.Equals(type, _boolSymbol))
+			else if (type.SpecialType == SpecialType.System_Boolean)
 			{
 				return "boolean";
 			}

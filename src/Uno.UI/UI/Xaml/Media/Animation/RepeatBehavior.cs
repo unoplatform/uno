@@ -8,11 +8,12 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial struct RepeatBehavior : IEquatable<RepeatBehavior>
 	{
-		private static readonly string __forever = "Forever";
-        private static readonly string __count = "Count";
-        private double _count;
+		public static RepeatBehavior Forever => new RepeatBehavior() { Type = RepeatBehaviorType.Forever };
 
-        public RepeatBehavior(double count)
+		private static readonly string __forever = "Forever";
+		private static readonly string __count = "Count";
+
+		public RepeatBehavior(double count)
 		{
 			if (count <= 0)
 			{
@@ -20,156 +21,83 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			Type = RepeatBehaviorType.Count;
-			_count = count;
-			Duration = default(TimeSpan);
+			Duration = default;
+			Count = count;
 		}
 
 		public RepeatBehavior(TimeSpan duration)
 		{
-			this.Type = RepeatBehaviorType.Duration;
-			this.Duration = duration;
-            _count = 1;
+			Type = RepeatBehaviorType.Duration;
+			Duration = duration;
+			Count = 0;
 		}
 
-
-        
-        public double Count
-        {
-            get
-            {
-                if (double.IsInfinity(_count)
-                    || double.IsNaN(_count)
-                    || _count < 0.0)
-                {
-                    throw new InvalidOperationException("Count is not set");
-                }
-                return _count;
-            }
-            set { _count = value; }
-        }
+		public double Count { get; set; }
 
 		public TimeSpan Duration { get; set; }
 
 		public RepeatBehaviorType Type { get; set; }
 
-		public bool HasCount
-		{
-			get
-			{
-				return this.Type == RepeatBehaviorType.Count && 
-					this.Count > 0;
-			}
-		}
+		public bool HasCount => Type == RepeatBehaviorType.Count;
 
-		public bool HasDuration
-		{
-			get
-			{
-				return this.Type == RepeatBehaviorType.Duration && 
-					this.Duration.CompareTo(TimeSpan.Zero) > 0;
-			}
-		}
+		public bool HasDuration => Type == RepeatBehaviorType.Duration;
 
-		public static RepeatBehavior Forever
-		{
-			get
+		internal bool ShouldRepeat(TimeSpan elapsed, int count)
+			=> Type switch
 			{
-				return new RepeatBehavior() { Type = RepeatBehaviorType.Forever };
-			}
-		}
+				RepeatBehaviorType.Count when !double.IsNaN(Count) => Count > count, // will return true if NaN (which is weird but a value accepted by UWP for a RepeatBehavior)
+				RepeatBehaviorType.Duration => Duration > elapsed,
+				RepeatBehaviorType.Forever => true,
+				_ => false
+			};
 
 		public override int GetHashCode()
-		{
-			return this.Count.GetHashCode() ^
-				this.Duration.GetHashCode() ^
-				this.Type.GetHashCode();
-		}
+			=> Count.GetHashCode()
+				^ Duration.GetHashCode()
+				^ Type.GetHashCode();
 
 		public override bool Equals(object value)
-		{
-            if (value == null)
-            {
-                return false;
-            }
-            else if (value is RepeatBehavior)
-            {
-                return Equals((RepeatBehavior)value);
-            }
-            return false;            
-		}
+			=> value is RepeatBehavior other && Equals(this, other);
 
 		public bool Equals(RepeatBehavior other)
-        {
-            if (Type != other.Type)
-            {
-                return false;
-            }
-
-            switch (Type)
-            {
-                case RepeatBehaviorType.Forever:
-                    return true;
-                case RepeatBehaviorType.Count:
-                    return Count == other.Count;
-                case RepeatBehaviorType.Duration:
-                    return Duration == other.Duration;
-                default:
-                    return false;
-            }          
-        }
+			=> Equals(this, other);
 
 		public static bool operator ==(RepeatBehavior first, RepeatBehavior second)
-		{
-			return first.Equals(second);
-		}
+			=> Equals(first, second);
 
 		public static bool operator !=(RepeatBehavior first, RepeatBehavior second)
-		{
-			return !RepeatBehavior.Equals(first, second);
-		}
+			=> !Equals(first, second);
 
 		public static bool Equals(RepeatBehavior first, RepeatBehavior second)
-		{
-			return first.Type.Equals(second.Type)
+			=> first.Type.Equals(second.Type)
 				&& first.Count.Equals(second.Count)
 				&& first.Duration.Equals(second.Duration);
-		}
 
 		public override string ToString()
-		{
-			return this.ToString(CultureInfo.InvariantCulture);
-		}
+			=> ToString(CultureInfo.InvariantCulture);
 
 		public string ToString(IFormatProvider provider)
-		{
-			switch (this.Type)
+			=> Type switch
 			{
-				case RepeatBehaviorType.Count:
-					return this.Count.ToString(provider);
-				case RepeatBehaviorType.Duration:
-					return this.Duration.ToXamlString(provider);
-				case RepeatBehaviorType.Forever:
-					return __forever;
-				default:
-					// Should never be reached
-					throw new NotSupportedException("this RepeatBehavior type is not supported.");
+				RepeatBehaviorType.Count => Count.ToString(provider),
+				RepeatBehaviorType.Duration => Duration.ToXamlString(provider),
+				RepeatBehaviorType.Forever => __forever,
+				_ => throw new NotSupportedException("this RepeatBehavior type is not supported.")
+			};
+
+		public static implicit operator RepeatBehavior(string str)
+		{
+			var type = RepeatBehaviorType.Duration;
+
+			if(string.Equals(str, __forever, StringComparison.InvariantCultureIgnoreCase))
+			{
+				type = RepeatBehaviorType.Forever;
 			}
+			else if (string.Equals(str, __count, StringComparison.InvariantCultureIgnoreCase))
+			{
+				type = RepeatBehaviorType.Count;
+			}
+			return new RepeatBehavior { Type = type };
 		}
-
-        static public implicit operator RepeatBehavior(string str)
-        {
-            RepeatBehaviorType type = RepeatBehaviorType.Duration;
-
-            if(string.Equals(str, __forever, StringComparison.InvariantCultureIgnoreCase))
-            {
-                type = RepeatBehaviorType.Forever;
-            }
-            else if (string.Equals(str, __count, StringComparison.InvariantCultureIgnoreCase))
-            {
-                type = RepeatBehaviorType.Count;
-            }
-            return new RepeatBehavior() { Type = type };
-        }
-
-    }
+	}
 }

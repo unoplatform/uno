@@ -29,17 +29,40 @@ namespace Windows.UI.Xaml
 			OnLoadingPartial();
 			ApplyCompiledBindings();
 
-			try
+			void InvokeLoading()
 			{
 				// Raise event before invoking base in order to raise them top to bottom
 				OnLoading();
 				_loading?.Invoke(this, new RoutedEventArgs(this));
 			}
-			catch (Exception error)
+
+			if (FeatureConfiguration.FrameworkElement.HandleLoadUnloadExceptions)
 			{
-				_log.Error("OnElementLoading failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void InvokeLoadingWithTry()
+				{
+					try
+					{
+						InvokeLoading();
+					}
+					catch (Exception error)
+					{
+						_log.Error("OnElementLoading failed in FrameworkElement", error);
+						Application.Current.RaiseRecoverableUnhandledException(error);
+					}
+				}
+
+				InvokeLoadingWithTry();
 			}
+			else
+			{
+				InvokeLoading();
+			}
+
 
 			OnPostLoading();
 		}
@@ -52,16 +75,38 @@ namespace Windows.UI.Xaml
 		{
 			OnLoadedPartial();
 
-			try
+			void InvokeLoaded()
 			{
 				// Raise event before invoking base in order to raise them top to bottom
 				OnLoaded();
 				_loaded?.Invoke(this, new RoutedEventArgs(this));
 			}
-			catch (Exception error)
+
+			if (FeatureConfiguration.FrameworkElement.HandleLoadUnloadExceptions)
 			{
-				_log.Error("OnElementLoaded failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void InvokeLoadedWithTry()
+				{
+					try
+					{
+						InvokeLoaded();
+   					}
+					catch (Exception error)
+					{
+						_log.Error("OnElementLoaded failed in FrameworkElement", error);
+						Application.Current.RaiseRecoverableUnhandledException(error);
+					}
+				}
+
+				InvokeLoadedWithTry();
+			}
+			else
+			{
+				InvokeLoaded();
 			}
 		}
 
@@ -70,19 +115,42 @@ namespace Windows.UI.Xaml
 
 		private protected sealed override void OnFwEltUnloaded()
 		{
-			try
+			void InvokeUnloaded()
 			{
 				// Raise event after invoking base in order to raise them bottom to top
 				OnUnloaded();
 				_unloaded?.Invoke(this, new RoutedEventArgs(this));
 				OnUnloadedPartial();
 			}
-			catch (Exception error)
+
+			if (FeatureConfiguration.FrameworkElement.HandleLoadUnloadExceptions)
 			{
-				_log.Error("OnElementUnloaded failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void InvokeUnloadedWithTry()
+				{
+					try
+					{
+						InvokeUnloaded();
+					}
+					catch (Exception error)
+					{
+						_log.Error("OnElementUnloaded failed in FrameworkElement", error);
+						Application.Current.RaiseRecoverableUnhandledException(error);
+					}
+				}
+
+				InvokeUnloadedWithTry();
+			}
+			else
+			{
+				InvokeUnloaded();
 			}
 		}
+
 		partial void OnUnloadedPartial();
 
 		private protected virtual void OnUnloaded() { }

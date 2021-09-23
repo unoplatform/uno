@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿#nullable enable
+
+using Android.App;
 using Android.Graphics;
 using System;
 using System.Collections.Generic;
@@ -20,9 +22,9 @@ namespace Windows.UI.Xaml
 		private static bool _assetsListed;
 		private static readonly string DefaultFontFamilyName = "sans-serif";
 
-		internal static Typeface FontFamilyToTypeFace(FontFamily fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
+		internal static Typeface? FontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
 		{  
-			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily.Source, fontWeight, style);
+			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily?.Source, fontWeight, style);
 			 
 			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry , out var typeFace))
 			{
@@ -33,14 +35,14 @@ namespace Windows.UI.Xaml
 			return typeFace;
 		}
 
-		internal static Typeface InternalFontFamilyToTypeFace(FontFamily fontFamily, FontWeight fontWeight, TypefaceStyle style)
+		internal static Typeface? InternalFontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style)
 		{
 			if (fontFamily?.Source == null || fontFamily.Equals(FontFamily.Default))
 			{
 				fontFamily = GetDefaultFontFamily(fontWeight);
 			}
 
-			Typeface typeface;
+			Typeface? typeface;
 
 			try
 			{
@@ -72,7 +74,7 @@ namespace Windows.UI.Xaml
 					{
 						typeface = Android.Graphics.Typeface.CreateFromAsset(Android.App.Application.Context.Assets, actualAsset);
 
-						if (style != typeface.Style)
+						if (style != typeface?.Style)
 						{
 							typeface = Typeface.Create(typeface, style);
 						}

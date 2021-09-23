@@ -1,19 +1,38 @@
 # Using the WebAssembly C# Debugger
 
-Debugging WebAssembly via Google Chrome is experimentally supported by the Uno Platform. We HIGHLY recommend that you use [Google Chrome Canary](https://www.google.com/chrome/canary/).  Step-through debugging (in, out, over), breakpoints, inspection of run-time locals and viewing .NET source code from the developer tools works. Additional capabilities and browser support will become available as Microsoft adds [support for them to mono](https://github.com/mono/mono/tree/master/sdks/wasm).
+There are two ways to debug a WebAssembly application:
+- Using Visual Studio 2019 or 2022 integrated debugger (preferred)
+- Using the browser's debugger
 
+## Using Visual Studio
+Here’s what you need to do to debug an Uno application in Visual Studio (2019 16.10+ or 2022 17.0 Preview 3.1+):
+
+- Install the latest [Uno Platform Visual Studio templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
+- Have Chrome or Edge (Chromium based)
+- In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` 3.0.0 or later
+- Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
+- Ensure that in the `Properties/launchSettings.json` file, the following like below each `launchBrowser` line:
+    ```json
+    "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+    ```
+
+Then you can start debugging with the VS debugger toolbar:
+   - Select **IIS Express** or your application name as the debugging target
+   - Select **Chrome** as the Web Browser
+   - Press <kbd>F5</kbd> or _Debug_ > _Start Debugging_
+
+You should now be able to set breakpoints or do step by step debugging of your code.
+
+### Tips for debugging in visual studio
+- Some debugger features may not have yet been implemented by the .NET and Visual Studio team. You can take a look the [dotnet/runtime](https://github.com/dotnet/runtime) repository for more details.
+- If the breaking do not hit, make sure that the `inspecturi` lines have been added to the `Properties/launchSettings.json` file.
+
+## Using the browser debugger
+
+To debug your application:
 - Make your WASM project the startup project (right-click **set as startup** in Solution Explorer)
-- Make sure you have the following lines defined in your project file which enable the Mono runtime debugger. Please ensure that `DEBUG` constant is defined and debug symbols are emitted and are of the type `portable`:
-
-```xml
-<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
-    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-</PropertyGroup>
-```
-
+- In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` to 3.0.0 or later
+- Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
 - In the debugging toolbar:
 
    - Select **IIS Express** as the debugging target

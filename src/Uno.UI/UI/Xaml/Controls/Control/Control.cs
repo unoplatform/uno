@@ -38,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control : FrameworkElement
 	{
+		private bool _suspendStateChanges;
 		private View _templatedRoot;
 		private bool _updateTemplate;
 
@@ -78,9 +79,12 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 		}
 
-		internal void UpdateVisualState(bool useTransitions = true)
+		internal virtual void UpdateVisualState(bool useTransitions = true)
 		{
-			ChangeVisualState(useTransitions);
+			if (!_suspendStateChanges)
+			{
+				ChangeVisualState(useTransitions);
+			}
 		}
 
 		private protected virtual void ChangeVisualState(bool useTransitions)

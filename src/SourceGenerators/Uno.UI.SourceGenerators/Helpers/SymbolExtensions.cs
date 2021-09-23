@@ -6,14 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Microsoft.CodeAnalysis
 {
-    /// <summary>
-    /// Roslyn symbol extensions
-    /// </summary>
-    internal static class SymbolExtensions
+	/// <summary>
+	/// Roslyn symbol extensions
+	/// </summary>
+	internal static class SymbolExtensions
 	{
 		private static bool IsRoslyn34OrEalier { get; }
 			= typeof(INamedTypeSymbol).Assembly.GetVersionNumber() <= new Version("3.4");
@@ -84,7 +83,7 @@ namespace Microsoft.CodeAnalysis
 		}
 
 		public static IEnumerable<IEventSymbol> GetEvents(INamedTypeSymbol? symbol)
-			=> symbol?.GetMembers().OfType<IEventSymbol>() ?? Enumerable.Empty<IEventSymbol>(); 
+			=> symbol?.GetMembers().OfType<IEventSymbol>() ?? Enumerable.Empty<IEventSymbol>();
 
 		/// <summary>
 		/// Determines if the symbol inherits from the specified type.
@@ -215,7 +214,7 @@ namespace Microsoft.CodeAnalysis
 			return property?.GetAttributes().FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == attributeClassFullName);
 		}
 
-		public static AttributeData? FindAttribute(this ISymbol? property, INamedTypeSymbol attributeClassSymbol)
+		public static AttributeData? FindAttribute(this ISymbol? property, INamedTypeSymbol? attributeClassSymbol)
 		{
 			return property?.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}
@@ -324,8 +323,7 @@ namespace Microsoft.CodeAnalysis
 
 		public static string? GetFullName(this INamespaceOrTypeSymbol? type)
 		{
-			var arrayType = type as IArrayTypeSymbol;
-			if (arrayType != null)
+			if (type is IArrayTypeSymbol arrayType)
 			{
 				return $"{arrayType.ElementType.GetFullName()}[]";
 			}
@@ -381,8 +379,9 @@ namespace Microsoft.CodeAnalysis
 
 		private static bool IsRootNamespace(ISymbol s)
 		{
-			return s is INamespaceSymbol && ((INamespaceSymbol)s).IsGlobalNamespace;
+			return s is INamespaceSymbol { IsGlobalNamespace: true };
 		}
+
 		/// <summary>
 		/// Return attributes on the current type and all its ancestors
 		/// </summary>
@@ -437,30 +436,6 @@ namespace Microsoft.CodeAnalysis
 			}
 		}
 
-		/// <summary>
-		/// Converts declared accessibility on a symbol to a string usable in generated code.
-		/// </summary>
-		/// <param name="symbol">The symbol to get an accessibility string for.</param>
-		/// <returns>Accessibility in format "public", "protected internal", etc.</returns>
-		public static string GetAccessibilityAsCodeString(this ISymbol symbol)
-		{
-			switch (symbol.DeclaredAccessibility)
-			{
-				case Accessibility.Private:
-					return "private";
-				case Accessibility.ProtectedOrInternal:
-					return "protected internal";
-				case Accessibility.Protected:
-					return "protected";
-				case Accessibility.Internal:
-					return "internal";
-				case Accessibility.Public:
-					return "public";
-			}
-
-			throw new ArgumentOutOfRangeException($"{symbol.DeclaredAccessibility} is not supported.");
-		}
-
 		public static IFieldSymbol? FindField(this INamedTypeSymbol symbol, INamedTypeSymbol fieldType, string fieldName, StringComparison comparison = default)
 		{
 			return symbol.GetFields().FirstOrDefault(x => SymbolEqualityComparer.Default.Equals(x.Type, fieldType) && x.Name.Equals(fieldName, comparison));
@@ -480,7 +455,7 @@ namespace Microsoft.CodeAnalysis
 											typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
 											genericsOptions: SymbolDisplayGenericsOptions.None,
 											miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers));
-	
+
 					return typeName + "<" + string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetFullyQualifiedType)) + ">";
 				}
 			}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,8 +39,30 @@ namespace SamplesApp.UITests.Runtime
 			var runTestCount = new QueryEx(q => AllQuery(q).Marked("runTestCount"));
 			var unitTestsControl = new QueryEx(q => AllQuery(q).Marked("UnitTestsRootControl"));
 
-			bool IsTestExecutionDone()
-				=> runningState.GetDependencyPropertyValue("Text")?.ToString().Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false;
+			async Task<bool> IsTestExecutionDone()
+			{
+				var sw = Stopwatch.StartNew();
+				Exception lastException = null;
+				do
+				{
+					try
+					{
+						return runningState.GetDependencyPropertyValue("Text")?.ToString().Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false;
+					}
+					catch (Exception e)
+					{
+						lastException = e;
+						Console.WriteLine($"IsTestExecutionDone failed with {e.Message}");
+					}
+
+					await Task.Delay(TimeSpan.FromSeconds(.5));
+
+					Console.WriteLine($"IsTestExecutionDone retrying");
+				}
+				while (sw.Elapsed < TimeSpan.FromSeconds(10));
+
+				throw lastException;
+			}
 
 			_app.WaitForElement(runButton);
 
@@ -59,13 +82,13 @@ namespace SamplesApp.UITests.Runtime
 
 				await Task.Delay(TimeSpan.FromSeconds(.5));
 
-				if (IsTestExecutionDone())
+				if (await IsTestExecutionDone())
 				{
 					break;
 				}
 			}
 
-			if (!IsTestExecutionDone())
+			if (!await IsTestExecutionDone())
 			{
 				Assert.Fail("A test run timed out");
 			}
@@ -100,7 +123,7 @@ namespace SamplesApp.UITests.Runtime
 
 			if (Environment.GetEnvironmentVariable(TestResultsOutputFilePath) is { } path)
 			{
-				File.Copy(file, path);
+				File.Copy(file, path, true);
 			}
 			else
 			{

@@ -953,8 +953,13 @@ namespace Windows.UI.Xaml.Controls
 
 				var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<UIElement>(), comparer: new ViewComparer());
 
-				foreach (var removed in results.Removed)
+				// This block is a manual enumeration to avoid the foreach pattern
+				// See https://github.com/dotnet/runtime/issues/56309 for details
+				var removedEnumerator = results.Removed.GetEnumerator();
+				while(removedEnumerator.MoveNext())
 				{
+					var removed = removedEnumerator.Current;
+
 					if (removed is DependencyObject removedObject)
 					{
 						CleanUpContainer(removedObject);

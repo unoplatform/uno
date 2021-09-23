@@ -16,5 +16,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
+[assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v1")]
+[assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v2")]
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]

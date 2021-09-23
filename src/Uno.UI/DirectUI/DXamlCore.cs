@@ -5,16 +5,21 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using Uno.Foundation.Collections;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
 
 namespace DirectUI
 {
 	internal class DXamlCore
 	{
 		private static readonly Lazy<DXamlCore> _current = new Lazy<DXamlCore>(() => new DXamlCore());
+
+		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName = null;
 
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
@@ -56,5 +61,15 @@ namespace DirectUI
 
 		public ElementSoundPlayerService GetElementSoundPlayerServiceNoRef()
 			=> ElementSoundPlayerService.Instance;
+
+		internal Dictionary<string, List<WeakReference<RadioButton>>>? GetRadioButtonGroupsByName(bool ensure)
+		{
+			if (_radioButtonGroupsByName == null && ensure)
+			{
+				_radioButtonGroupsByName = new Dictionary<string, List<WeakReference<RadioButton>>>();
+			}
+
+			return _radioButtonGroupsByName;
+		}
 	}
 }
