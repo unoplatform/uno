@@ -24,26 +24,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// This event is fired when a key that has value of type <see cref="ResourceDictionary"/> is added or changed in the current <see cref="ResourceDictionary" />
 		/// </summary>
-		private event EventHandler<ResourceDictionaryChangedEventArgs> ResourceDictionaryValueChange;
-
-		private class ResourceDictionaryChangedEventArgs
-		{
-			public ResourceDictionaryChangedEventArgs(object changedKey, ResourceDictionary newValue)
-			{
-				ChangedKey = changedKey;
-				NewValue = newValue;
-			}
-
-			/// <summary>
-			/// The key that was added or removed. This can be null if the dictionary is cleared, meaning all keys are removed.
-			/// </summary>
-			public object ChangedKey { get; }
-
-			/// <summary>
-			/// The <see cref="ResourceDictionary" /> that was added. This can be null if the theme was removed.
-			/// </summary>
-			public ResourceDictionary NewValue { get; }
-		}
+		private event EventHandler ResourceDictionaryValueChange;
 
 		/// <summary>
 		/// If true, there may be lazily-set values in the dictionary that need to be initialized.
@@ -143,7 +124,7 @@ namespace Windows.UI.Xaml
 			var keyToRemove = new ResourceKey(key);
 			if (_values.Remove(keyToRemove))
 			{
-				ResourceDictionaryValueChange?.Invoke(this, new ResourceDictionaryChangedEventArgs(keyToRemove, null));
+				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				return true;
 			}
 
@@ -155,7 +136,7 @@ namespace Windows.UI.Xaml
 		public void Clear()
 		{
 			_values.Clear();
-			ResourceDictionaryValueChange?.Invoke(this, new ResourceDictionaryChangedEventArgs(null, null));
+			ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 		}
 
 		public void Add(object key, object value) => Set(new ResourceKey(key), value, throwIfPresent: true);
@@ -272,9 +253,9 @@ namespace Windows.UI.Xaml
 			else
 			{
 				_values[resourceKey] = value;
-				if (value is ResourceDictionary addedOrChangedResourceDictionary)
+				if (value is ResourceDictionary)
 				{
-					ResourceDictionaryValueChange?.Invoke(this, new ResourceDictionaryChangedEventArgs(resourceKey, addedOrChangedResourceDictionary));
+					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				}
 			}
 		}
@@ -301,9 +282,9 @@ namespace Windows.UI.Xaml
 				{
 					value = newValue;
 					_values[key] = newValue; // If Initializer threw an exception this will push null, to avoid running buggy initialization again and again (and avoid surfacing initializer to consumer code)
-					if (newValue is ResourceDictionary addedOrChangedResourceDictionary)
+					if (newValue is ResourceDictionary)
 					{
-						ResourceDictionaryValueChange?.Invoke(this, new ResourceDictionaryChangedEventArgs(key, addedOrChangedResourceDictionary));
+						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 					}
 					ResourceResolver.PopScope();
 				}
