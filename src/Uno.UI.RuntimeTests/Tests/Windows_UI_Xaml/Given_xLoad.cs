@@ -83,6 +83,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(42, SUT.tb01.Tag);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_xLoad_xBind_xLoad_While_Loading()
+		{
+			var grid = new Grid();
+			TestServices.WindowHelper.WindowContent = grid;
+
+			var SUT = new When_xLoad_xBind_xLoad_While_Loading();
+			grid.Children.Add(SUT);
+
+			Assert.IsNotNull(SUT.tb01);
+			Assert.AreEqual(1, SUT.tb01.Tag);
+
+			SUT.Model.MyValue = 42;
+
+			Assert.AreEqual(42, SUT.tb01.Tag);
+		}
 	}
 }
 #endif
