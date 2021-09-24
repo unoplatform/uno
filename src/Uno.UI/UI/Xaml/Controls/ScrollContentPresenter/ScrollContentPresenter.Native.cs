@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
 using Uno.UI.Extensions;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER && !__WASM__
+#if __IOS__ || __ANDROID__
 
 namespace Windows.UI.Xaml.Controls
 {
