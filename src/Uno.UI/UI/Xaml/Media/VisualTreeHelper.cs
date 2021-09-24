@@ -363,7 +363,9 @@ namespace Windows.UI.Xaml.Media
 			// The maximum region where the current element and its children might draw themselves
 			// TODO: Get the real clipping rect! For now we assume no clipping.
 			// This is expressed in element coordinate space.
-			var clippingBounds = Rect.Infinite;
+			// For some controls imported from WinUI, such as NavigationView, 
+			// the Clip property may be significant. 
+			var clippingBounds = element.Clip?.Bounds ?? Rect.Infinite;
 
 			// The region where the current element draws itself.
 			// Be aware that children might be out of this rendering bounds if no clipping defined. TODO: .Intersect(clippingBounds)
