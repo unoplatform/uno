@@ -11,6 +11,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 	partial class RenderTargetBitmap
 	{
 		/// <inheritdoc />
+		private protected override bool IsSourceReady => _buffer != null;
+
+		/// <inheritdoc />
 		private protected override bool TryOpenSourceSync(out UIImage image)
 		{
 			image = UIImage.LoadFromData(NSData.FromArray(_buffer));

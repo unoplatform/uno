@@ -62,9 +62,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private byte[] _buffer;
 
-		/// <inheritdoc />
-		private protected override bool IsSourceReady => _buffer != null;
-
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented()]
 #endif

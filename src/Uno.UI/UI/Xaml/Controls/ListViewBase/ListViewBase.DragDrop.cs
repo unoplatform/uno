@@ -202,11 +202,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			dragEventArgs.AcceptedOperation = DataPackageOperation.Move;
+#pragma warning disable CS0162 // Unreachable code since RenderTargetBitmap.IsImplemented is a const
 			if (RenderTargetBitmap.IsImplemented)
 			{
 				dragEventArgs.DragUIOverride.IsGlyphVisible = false;
 				dragEventArgs.DragUIOverride.IsCaptionVisible = false;
 			}
+#pragma warning restore CS0162
 
 			var position = dragEventArgs.GetPosition(that);
 			that.UpdateReordering(position, container, item);
