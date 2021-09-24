@@ -34,6 +34,6 @@ namespace Windows.UI.Xaml.Input
 		{
 			get => Handled;
 			set => Handled = value;
-		}		
+		}
 	}
 }

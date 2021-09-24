@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -718,6 +719,16 @@ namespace Windows.UI.Xaml.Controls
 					args.Handled = true;
 					break;
 			}
+
+#if __WASM__
+			if (args.Handled)
+			{
+				// Marking the routed event as Handled makes the browser call
+				// preventDefault() for key events. This is a problem as it
+				// breaks the browser caret navigation within the input.
+				((IPreventDefaultHandling)args).DoNotPreventDefault = true;
+			}
+#endif
 		}
 
 		protected virtual void UpdateButtonStates()
