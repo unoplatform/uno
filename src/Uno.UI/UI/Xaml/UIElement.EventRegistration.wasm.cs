@@ -185,8 +185,9 @@ namespace Windows.UI.Xaml
 
 						switch (handlerResult)
 						{
-							case bool isHandedInManaged when isHandedInManaged:
-								if (args is IHandleableRoutedEventArgs handleable && handleable.DoNotPreventDefaultIfHandled)
+							case bool isHandledInManaged when isHandledInManaged:
+								if (args is IPreventDefaultHandling preventDefaultHandling &&
+									preventDefaultHandling.DoNotPreventDefault)
 								{
 									return HtmlEventDispatchResult.StopPropagation;
 								}

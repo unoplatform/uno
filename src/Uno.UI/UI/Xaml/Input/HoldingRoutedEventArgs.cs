@@ -35,8 +35,6 @@ namespace Windows.UI.Xaml.Input
 			set => Handled = value;
 		}
 
-		bool IHandleableRoutedEventArgs.DoNotPreventDefaultIfHandled { get; set; }
-
 		public PointerDeviceType PointerDeviceType { get; }
 
 		public HoldingState HoldingState { get; }

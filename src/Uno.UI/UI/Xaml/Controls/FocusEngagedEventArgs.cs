@@ -21,7 +21,5 @@ namespace Windows.UI.Xaml.Controls
 			get => Handled;
 			set => Handled = value;
 		}
-
-		bool IHandleableRoutedEventArgs.DoNotPreventDefaultIfHandled { get; set; }
 	}
 }
