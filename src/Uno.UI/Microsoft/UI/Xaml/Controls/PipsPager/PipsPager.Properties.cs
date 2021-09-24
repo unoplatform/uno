@@ -1,28 +1,27 @@
-﻿using Windows.Foundation;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference PipsPager.h, commit 737b6ab
+
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PipsPager
-    {
-		public Style DefaultIndicatorButtonStyle
+	{
+		public int MaxVisiblePips
 		{
-			get => (Style)GetValue(DefaultIndicatorButtonStyleProperty);
-			set => SetValue(DefaultIndicatorButtonStyleProperty, value);
+			get => (int)GetValue(MaxVisiblePipsProperty);
+			set => SetValue(MaxVisiblePipsProperty, value);
 		}
 
-		public static DependencyProperty DefaultIndicatorButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(DefaultIndicatorButtonStyle), typeof(Style), typeof(PipsPager), new PropertyMetadata(null));
-
-		public int MaxVisualIndicators
-		{
-			get => (int)GetValue(MaxVisualIndicatorsProperty);
-			set => SetValue(MaxVisualIndicatorsProperty, value);
-		}
-
-		public static DependencyProperty MaxVisualIndicatorsProperty { get; } =
-			DependencyProperty.Register(nameof(MaxVisualIndicators), typeof(int), typeof(PipsPager), new PropertyMetadata(0));
+		public static DependencyProperty MaxVisiblePipsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(MaxVisiblePips),
+				typeof(int),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(5, OnPropertyChanged));
 
 		public Style NextButtonStyle
 		{
@@ -31,7 +30,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonStyle), typeof(Style), typeof(PipsPager), new PropertyMetadata(0));
+			DependencyProperty.Register(
+				nameof(NextButtonStyle),
+				typeof(Style),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(null, OnPropertyChanged));
+
+
+
 
 		public PipsPagerButtonVisibility NextButtonVisibility
 		{
@@ -40,7 +46,24 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonVisibility), typeof(PipsPagerButtonVisibility), typeof(PipsPager), new PropertyMetadata(PipsPagerButtonVisibility.Collapsed));
+			DependencyProperty.Register(
+				nameof(NextButtonVisibility),
+				typeof(PipsPagerButtonVisibility),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(PipsPagerButtonVisibility.Collapsed));
+
+		public Style NormalPipStyle
+		{
+			get => (Style)GetValue(NormalPipStyleProperty);
+			set => SetValue(NormalPipStyleProperty, value);
+		}
+
+		public static DependencyProperty NormalPipStyleProperty { get; } =
+			DependencyProperty.Register(
+				nameof(NormalPipStyle),
+				typeof(Style),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		public int NumberOfPages
 		{
@@ -49,7 +72,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NumberOfPagesProperty { get; } =
-			DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PipsPager), new PropertyMetadata(-1));
+			DependencyProperty.Register(
+				nameof(NumberOfPages),
+				typeof(int),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(-1, OnPropertyChanged));
 
 		public Orientation Orientation
 		{
@@ -58,7 +85,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty OrientationProperty { get; } =
-			DependencyProperty.Register(nameof(Orientation), typeof(Orientation), typeof(PipsPager), new PropertyMetadata(Orientation.Horizontal));
+			DependencyProperty.Register(
+				nameof(Orientation),
+				typeof(Orientation),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(Orientation.Horizontal, OnPropertyChanged));
 
 		public Style PreviousButtonStyle
 		{
@@ -67,7 +98,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreviousButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(PreviousButtonStyle), typeof(Style), typeof(PipsPager), new PropertyMetadata(null));
+			DependencyProperty.Register(
+				nameof(PreviousButtonStyle),
+				typeof(Style),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(null, OnPropertyChanged));
+
+
 
 		public PipsPagerButtonVisibility PreviousButtonVisibility
 		{
@@ -76,16 +113,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreviousButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(PreviousButtonVisibility), typeof(PipsPagerButtonVisibility), typeof(PipsPager), new PropertyMetadata(PipsPagerButtonVisibility.Collapsed));
-
-		public Style SelectedIndicatorButtonStyle
-		{
-			get => (Style)GetValue(SelectedIndicatorButtonStyleProperty);
-			set => SetValue(SelectedIndicatorButtonStyleProperty, value);
-		}
-
-		public static DependencyProperty SelectedIndicatorButtonStyleProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedIndicatorButtonStyle), typeof(Style), typeof(PipsPager), new PropertyMetadata(null));
+			DependencyProperty.Register(
+				nameof(PreviousButtonVisibility),
+				typeof(PipsPagerButtonVisibility),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(PipsPagerButtonVisibility.Collapsed, OnPropertyChanged));
 
 		public int SelectedPageIndex
 		{
@@ -94,7 +126,24 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedPageIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PipsPager), new PropertyMetadata(0));
+			DependencyProperty.Register(
+				nameof(SelectedPageIndex),
+				typeof(int),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(0, OnPropertyChanged));
+
+		public Style SelectedPipStyle
+		{
+			get => (Style)GetValue(SelectedPipStyleProperty);
+			set => SetValue(SelectedPipStyleProperty, value);
+		}
+
+		public static DependencyProperty SelectedPipStyleProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectedPipStyle),
+				typeof(Style),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		public PipsPagerTemplateSettings TemplateSettings
 		{
@@ -103,7 +152,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TemplateSettingsProperty { get; } =
-			DependencyProperty.Register(nameof(TemplateSettings), typeof(PipsPagerTemplateSettings), typeof(PipsPager), new PropertyMetadata(null));
+			DependencyProperty.Register(
+				nameof(TemplateSettings),
+				typeof(PipsPagerTemplateSettings),
+				typeof(PipsPager),
+				new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 		private static void OnPropertyChanged(
 			DependencyObject sender,

@@ -10,16 +10,20 @@ using PipsPagerSelectedIndexChangedEventArgs = Microsoft.UI.Xaml.Controls.PipsPa
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
+using Microsoft.UI.Xaml.Controls;
+using MUXControlsTestApp.Utilities;
 
 namespace MUXControlsTestApp
 {
 	[Sample("PipsPager", "WinUI")]
 	public sealed partial class PipsPagerPage : Page
     {
-        Button previousPageButton;
-        Button nextPageButton;
+		Button previousPageButton;
+		Button nextPageButton;
+		ItemsRepeater repeater;
+		ItemsRepeater verticalOrientationPipsPagerRepeater;
 
-        public List<string> Pictures = new List<string>()
+		public List<string> Pictures = new List<string>()
         {
 
             "Assets/ingredient1.png",
@@ -40,135 +44,188 @@ namespace MUXControlsTestApp
 
         private void OnLoad(object sender, RoutedEventArgs args)
         {
-            var rootPanel = VisualTreeHelper.GetChild(TestPipsPager, 0);
-            previousPageButton = VisualTreeHelper.GetChild(rootPanel, 0) as Button;
-            nextPageButton = VisualTreeHelper.GetChild(rootPanel, 2) as Button;
+			var rootPanel = VisualTreeHelper.GetChild(TestPipsPager, 0);
+			previousPageButton = VisualTreeHelper.GetChild(rootPanel, 0) as Button;
+			nextPageButton = VisualTreeHelper.GetChild(rootPanel, 2) as Button;
+			repeater = rootPanel.FindVisualChildByType<ItemsRepeater>();
+			var rootPanelVerticalPipsPager = VisualTreeHelper.GetChild(TestPipsPagerVerticalOrientation, 0);
+			verticalOrientationPipsPagerRepeater = rootPanelVerticalPipsPager.FindVisualChildByType<ItemsRepeater>();
 
-            PreviousPageButtonVisibilityComboBox.SelectionChanged += OnPreviousPageButtonVisibilityChanged;
-            NextPageButtonVisibilityComboBox.SelectionChanged += OnNextPageButtonVisibilityChanged;
-            TestPipsPagerNumberOfPagesComboBox.SelectionChanged += OnNumberOfPagesChanged;
-            TestPipsPagerMaxVisualIndicatorsComboBox.SelectionChanged += OnMaxVisualIndicatorsChanged;
-            TestPipsPagerOrientationComboBox.SelectionChanged += OnOrientationChanged;
-            TestPipsPager.PointerEntered += TestPipsPager_PointerEntered;
-            TestPipsPager.PointerExited += TestPipsPager_PointerExited;
-            previousPageButton.IsEnabledChanged += OnButtonEnabledChanged; ;
-            nextPageButton.IsEnabledChanged += OnButtonEnabledChanged;
 
-            PreviousPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(previousPageButton);
-            NextPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(nextPageButton);
+			PreviousPageButtonVisibilityComboBox.SelectionChanged += OnPreviousPageButtonVisibilityChanged;
+			NextPageButtonVisibilityComboBox.SelectionChanged += OnNextPageButtonVisibilityChanged;
+			TestPipsPagerNumberOfPagesComboBox.SelectionChanged += OnNumberOfPagesChanged;
+			TestPipsPagerMaxVisiblePipsComboBox.SelectionChanged += OnMaxVisiblePipsChanged;
+			TestPipsPagerOrientationComboBox.SelectionChanged += OnOrientationChanged;
+			TestPipsPager.PointerEntered += TestPipsPager_PointerEntered;
+			TestPipsPager.PointerExited += TestPipsPager_PointerExited;
+			TestPipsPager.GotFocus += TestPipsPager_GotFocus;
+			TestPipsPager.LostFocus += TestPipsPager_LostFocus;
+			TestPipsPager.PointerCanceled += TestPipsPager_PointerCanceled;
+			previousPageButton.IsEnabledChanged += OnButtonEnabledChanged;
+			nextPageButton.IsEnabledChanged += OnButtonEnabledChanged;
+			repeater.GotFocus += OnRepeaterGotFocus;
 
-            PreviousPageButtonIsEnabledCheckBox.IsChecked = previousPageButton?.IsEnabled;
-            NextPageButtonIsEnabledCheckBox.IsChecked = nextPageButton?.IsEnabled;
 
-            CurrentNumberOfPagesTextBlock.Text = GetNumberOfPages();
-            CurrentMaxVisualIndicatorsTextBlock.Text = $"Current max visual indicators: {TestPipsPager.MaxVisualIndicators}";
-            CurrentOrientationTextBlock.Text = GetCurrentOrientation();
-        }
+			PreviousPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(previousPageButton);
+			NextPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(nextPageButton);
 
-        private void OnButtonEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (sender == previousPageButton)
-            {
-                PreviousPageButtonIsEnabledCheckBox.IsChecked = previousPageButton?.IsEnabled;
-            }
-            else
-            {
-                NextPageButtonIsEnabledCheckBox.IsChecked = nextPageButton?.IsEnabled;
-            }
-        }
+			PreviousPageButtonIsEnabledCheckBox.IsChecked = previousPageButton?.IsEnabled;
+			NextPageButtonIsEnabledCheckBox.IsChecked = nextPageButton?.IsEnabled;
 
-        private string GetCurrentOrientation()
-        {
-            return $"Current orientation is: {TestPipsPager.Orientation}";
-        }
+			CurrentNumberOfPagesTextBlock.Text = GetNumberOfPages();
+			CurrentMaxVisiblePipsTextBlock.Text = $"Current max visual indicators: {TestPipsPager.MaxVisiblePips}";
+			CurrentOrientationTextBlock.Text = GetCurrentOrientation();
+		}
 
-        private string GetNumberOfPages()
-        {
-            string prefix = "Current number of pages: ";
-            int numberOfPages = TestPipsPager.NumberOfPages;
-            return numberOfPages > 0 ? $"{prefix}{numberOfPages}" : $"{prefix}Inifinite";
-        }
-        private bool IsButtonVisible(Button btn)
-        {
-            return btn?.Visibility == Visibility.Visible && btn?.Opacity != 0;
-        }
+		private void OnGetPipsPagerButtonSizesClicked(object sender, RoutedEventArgs args)
+		{
+			//Button horizontalOrientationButton;
+			if (repeater.TryGetElement(0) as FrameworkElement is var horizontalOrientationPip && horizontalOrientationPip != null)
+			{
+				HorizontalOrientationPipsPagerButtonWidthTextBlock.Text = $"{ horizontalOrientationPip.ActualWidth}";
+				HorizontalOrientationPipsPagerButtonHeightTextBlock.Text = $"{horizontalOrientationPip.ActualHeight}";
+			}
+			if (verticalOrientationPipsPagerRepeater.TryGetElement(1) as FrameworkElement is var verticalOrientationPip && verticalOrientationPip != null)
+			{
+				VerticalOrientationPipsPagerButtonWidthTextBlock.Text = $"{verticalOrientationPip.ActualWidth}";
+				VerticalOrientationPipsPagerButtonHeightTextBlock.Text = $"{verticalOrientationPip.ActualHeight}";
+			}
+		}
 
-        private void TestPipsPager_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PreviousPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(previousPageButton);
-            NextPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(nextPageButton);
-        }
+		private void OnRepeaterGotFocus(object sender, RoutedEventArgs e)
+		{
+			FocusedPageIndexTextBlock.Text = $"Current focused page index: {repeater.GetElementIndex((UIElement)e.OriginalSource).ToString()}";
+		}
 
-        private void TestPipsPager_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PreviousPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(previousPageButton);
-            NextPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(nextPageButton);
-        }
+		private void OnButtonEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (sender == previousPageButton)
+			{
+				PreviousPageButtonIsEnabledCheckBox.IsChecked = previousPageButton?.IsEnabled;
+			}
+			else
+			{
+				NextPageButtonIsEnabledCheckBox.IsChecked = nextPageButton?.IsEnabled;
+			}
+		}
 
-        public void OnPreviousPageButtonVisibilityChanged(object sender, SelectionChangedEventArgs e)
-        {
-            TestPipsPager.PreviousButtonVisibility = ConvertComboBoxItemToVisibilityEnum((sender as ComboBox).SelectedItem as ComboBoxItem, TestPipsPager.PreviousButtonVisibility);
-            PreviousPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(previousPageButton);
-        }
-        public void OnNextPageButtonVisibilityChanged(object sender, SelectionChangedEventArgs e)
-        {
-            TestPipsPager.NextButtonVisibility = ConvertComboBoxItemToVisibilityEnum((sender as ComboBox).SelectedItem as ComboBoxItem, TestPipsPager.NextButtonVisibility);
-            NextPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(nextPageButton);
-        }
-        public void OnNumberOfPagesChanged(object sender, SelectionChangedEventArgs e)
-        {
-            TestPipsPager.NumberOfPages = ConvertComboBoxItemToNumberOfPages((sender as ComboBox).SelectedItem as ComboBoxItem);
-            CurrentNumberOfPagesTextBlock.Text = GetNumberOfPages();
-        }
-        public void OnMaxVisualIndicatorsChanged(object sender, SelectionChangedEventArgs e)
-        {
-            TestPipsPager.MaxVisualIndicators = ConvertComboBoxItemToNumberOfPages((sender as ComboBox).SelectedItem as ComboBoxItem);
-            CurrentMaxVisualIndicatorsTextBlock.Text = $"Current max visual indicators: {TestPipsPager.MaxVisualIndicators}";
-        }
+		private string GetCurrentOrientation()
+		{
+			return $"Current orientation is: {TestPipsPager.Orientation}";
+		}
 
-        public void OnSelectedIndexChanged(object sender, PipsPagerSelectedIndexChangedEventArgs args)
-        {
-            PreviousPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(previousPageButton);
-            NextPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(nextPageButton);
+		private string GetNumberOfPages()
+		{
+			string prefix = "Current number of pages: ";
+			int numberOfPages = TestPipsPager.NumberOfPages;
+			return numberOfPages > 0 ? $"{prefix}{numberOfPages}" : $"{prefix}Inifinite";
+		}
+		private bool IsButtonVisible(Button btn)
+		{
+			return btn?.Visibility == Visibility.Visible && btn?.Opacity != 0;
+		}
 
-            PreviousPageButtonIsEnabledCheckBox.IsChecked = previousPageButton?.IsEnabled;
-            NextPageButtonIsEnabledCheckBox.IsChecked = nextPageButton?.IsEnabled;
+		private void UpdateButtonVisibilityCheckboxes()
+		{
+			PreviousPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(previousPageButton);
+			NextPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(nextPageButton);
+		}
 
-            CurrentPageIndexTextBlock.Text = $"Current index is: {args.NewPageIndex}";
-        }
+		private void TestPipsPager_GotFocus(object sender, RoutedEventArgs e)
+		{
+			UpdateButtonVisibilityCheckboxes();
+		}
 
-        public void OnOrientationChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Orientation orientation = TestPipsPager.Orientation;
-            string selectedItem = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
-            if (!Enum.TryParse<Orientation>(selectedItem, out orientation))
-            {
-                System.Diagnostics.Debug.WriteLine("Unable to convert " + selectedItem + " to Orientation Enum");
-            }
-            TestPipsPager.Orientation = orientation;
-            CurrentOrientationTextBlock.Text = GetCurrentOrientation();
-        }
+		private void TestPipsPager_LostFocus(object sender, RoutedEventArgs e)
+		{
+			UpdateButtonVisibilityCheckboxes();
+		}
 
-        private PipsPagerButtonVisibility ConvertComboBoxItemToVisibilityEnum(ComboBoxItem item, PipsPagerButtonVisibility defaultValue)
-        {
-            PipsPagerButtonVisibility newVisibility = defaultValue;
-            string selectedItem = item.Content as string;
-            if (!Enum.TryParse<PipsPagerButtonVisibility>(selectedItem, out newVisibility))
-            {
-                System.Diagnostics.Debug.WriteLine("Unable to convert " + selectedItem + " to PipsPagerButtonVisibility Enum");
-            }
+		private void TestPipsPager_PointerCanceled(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+		{
+			UpdateButtonVisibilityCheckboxes();
+		}
 
-            return newVisibility;
-        }
-        private int ConvertComboBoxItemToNumberOfPages(ComboBoxItem item)
-        {
-            int numberOfPages = -1;
-            string digitsOnlyString = new String((item.Content as string).Where(Char.IsDigit).ToArray());
-            if (!string.IsNullOrEmpty(digitsOnlyString))
-            {
-                Int32.TryParse(digitsOnlyString, out numberOfPages);
-            }
-            return numberOfPages;
-        }
-    }
+		private void TestPipsPager_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+		{
+			UpdateButtonVisibilityCheckboxes();
+		}
+
+		private void TestPipsPager_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+		{
+			UpdateButtonVisibilityCheckboxes();
+		}
+
+		public void OnPreviousPageButtonVisibilityChanged(object sender, SelectionChangedEventArgs e)
+		{
+			TestPipsPager.PreviousButtonVisibility = ConvertComboBoxItemToVisibilityEnum((sender as ComboBox).SelectedItem as ComboBoxItem, TestPipsPager.PreviousButtonVisibility);
+			UpdateButtonVisibilityCheckboxes();
+		}
+		public void OnNextPageButtonVisibilityChanged(object sender, SelectionChangedEventArgs e)
+		{
+			TestPipsPager.NextButtonVisibility = ConvertComboBoxItemToVisibilityEnum((sender as ComboBox).SelectedItem as ComboBoxItem, TestPipsPager.NextButtonVisibility);
+			UpdateButtonVisibilityCheckboxes();
+		}
+		public void OnNumberOfPagesChanged(object sender, SelectionChangedEventArgs e)
+		{
+			TestPipsPager.NumberOfPages = ConvertComboBoxItemToNumberOfPages((sender as ComboBox).SelectedItem as ComboBoxItem);
+			CurrentNumberOfPagesTextBlock.Text = GetNumberOfPages();
+		}
+		public void OnMaxVisiblePipsChanged(object sender, SelectionChangedEventArgs e)
+		{
+			TestPipsPager.MaxVisiblePips = ConvertComboBoxItemToNumberOfPages((sender as ComboBox).SelectedItem as ComboBoxItem);
+			CurrentMaxVisiblePipsTextBlock.Text = $"Current max visual indicators: {TestPipsPager.MaxVisiblePips}";
+		}
+
+		public void OnSelectedIndexChanged(PipsPager sender, PipsPagerSelectedIndexChangedEventArgs args)
+		{
+			PreviousPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(previousPageButton);
+			NextPageButtonIsVisibleCheckBox.IsChecked = IsButtonVisible(nextPageButton);
+
+			PreviousPageButtonIsEnabledCheckBox.IsChecked = previousPageButton?.IsEnabled;
+			NextPageButtonIsEnabledCheckBox.IsChecked = nextPageButton?.IsEnabled;
+
+			CurrentPageIndexTextBlock.Text = $"Current index is: {sender.SelectedPageIndex}";
+		}
+
+		public void OnOrientationChanged(object sender, SelectionChangedEventArgs e)
+		{
+			Orientation orientation = TestPipsPager.Orientation;
+			string selectedItem = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+			if (!Enum.TryParse<Orientation>(selectedItem, out orientation))
+			{
+				System.Diagnostics.Debug.WriteLine("Unable to convert " + selectedItem + " to Orientation Enum");
+			}
+			TestPipsPager.Orientation = orientation;
+			CurrentOrientationTextBlock.Text = GetCurrentOrientation();
+		}
+
+		private PipsPagerButtonVisibility ConvertComboBoxItemToVisibilityEnum(ComboBoxItem item, PipsPagerButtonVisibility defaultValue)
+		{
+			PipsPagerButtonVisibility newVisibility = defaultValue;
+			string selectedItem = item.Content as string;
+			if (!Enum.TryParse<PipsPagerButtonVisibility>(selectedItem, out newVisibility))
+			{
+				System.Diagnostics.Debug.WriteLine("Unable to convert " + selectedItem + " to PipsPagerButtonVisibility Enum");
+			}
+
+			return newVisibility;
+		}
+		private int ConvertComboBoxItemToNumberOfPages(ComboBoxItem item)
+		{
+			int numberOfPages = -1;
+			string digitsOnlyString = new String((item.Content as string).Where(Char.IsDigit).ToArray());
+			if (!string.IsNullOrEmpty(digitsOnlyString))
+			{
+				Int32.TryParse(digitsOnlyString, out numberOfPages);
+			}
+			return numberOfPages;
+		}
+
+		private void GoToExamplesPage(object sender, RoutedEventArgs args)
+		{
+			Frame.Navigate(typeof(PipsPagerExamples));
+		}
+	}
 }

@@ -3,15 +3,19 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class PipsPagerTemplateSettings : DependencyObject
+	public sealed partial class PipsPagerTemplateSettings : DependencyObject
 	{
-		public IList<object> PipsPagerItems
+		public IList<int> PipsPagerItems
 		{
-			get => (IList<object>)GetValue(PipsPagerItemsProperty);
+			get => (IList<int>)GetValue(PipsPagerItemsProperty);
 			set => SetValue(PipsPagerItemsProperty, value);
 		}
 
 		public static DependencyProperty PipsPagerItemsProperty { get; } =
-			DependencyProperty.Register(nameof(PipsPagerItems), typeof(IList<object>), typeof(PipsPagerTemplateSettings), new PropertyMetadata(null));
+			DependencyProperty.Register(
+				nameof(PipsPagerItems),
+				typeof(IList<int>),
+				typeof(PipsPagerTemplateSettings),
+				new FrameworkPropertyMetadata(null));
 	}
 }

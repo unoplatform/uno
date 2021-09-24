@@ -1,18 +1,27 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class PipsPagerAutomationPeer : FrameworkElementAutomationPeer
+	public partial class PipsPagerAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
 	{
+		private readonly PipsPager _pager;
+
 		public PipsPagerAutomationPeer(PipsPager owner) : base(owner)
 		{
+			_pager = owner;
 		}
+
+		bool ISelectionProvider.CanSelectMultiple => false;
+
+		bool ISelectionProvider.IsSelectionRequired => true;
 
 		// IAutomationPeerOverrides
 		protected override object GetPatternCore(PatternInterface patternInterface)
@@ -25,10 +34,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return base.GetPatternCore(patternInterface);
 		}
 
-		protected override string GetClassNameCore()
-		{
-			return nameof(PipsPager);
-		}
+		protected override string GetClassNameCore() => nameof(PipsPager);
 
 		protected override string GetNameCore()
 		{
@@ -51,13 +57,19 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return AutomationControlType.Menu;
 		}
 
-		internal object GetSelection()
+		IRawElementProviderSimple[] ISelectionProvider.GetSelection()
 		{
-			if (Owner is PipsPager pager)
+			if (_pager is { } pager)
 			{
-				return pager.SelectedPageIndex;
+				if (pager.GetSelectedItem() is { } pip)
+				{
+					if (FrameworkElementAutomationPeer.CreatePeerForElement(pip) is { } peer)
+					{
+						return new[] { ProviderFromPeer(peer) };
+					}
+				}
 			}
-			return null;
+			return Array.Empty<IRawElementProviderSimple>();
 		}
 
 		internal void RaiseSelectionChanged(double oldIndex, double newIndex)

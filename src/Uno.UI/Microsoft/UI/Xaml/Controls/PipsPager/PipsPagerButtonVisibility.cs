@@ -3,7 +3,7 @@
 	public enum PipsPagerButtonVisibility
     {
 		Visible,
-		VisibleOnHover,
+		VisibleOnPointerOver,
 		Collapsed
 	}
 }

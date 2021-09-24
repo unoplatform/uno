@@ -8,7 +8,33 @@ namespace MUXControlsTestApp.Utilities
 {
     public static class VisualTreeUtils
     {
-        public static T FindElementOfTypeInSubtree<T>(this DependencyObject element)
+		public static T FindVisualChildByType<T>(this DependencyObject element)
+			where T : class, DependencyObject
+		{
+			if (element == null)
+			{
+				return null;
+			}
+
+			if (element is T elementAsT)
+			{
+				return elementAsT;
+			}
+
+			int childrenCount = VisualTreeHelper.GetChildrenCount(element);
+			for (int i = 0; i < childrenCount; i++)
+			{
+				var result = VisualTreeHelper.GetChild(element, i).FindVisualChildByType<T>();
+				if (result != null)
+				{
+					return result;
+				}
+			}
+
+			return null;
+		}
+
+		public static T FindElementOfTypeInSubtree<T>(this DependencyObject element)
 #if !NETFX_CORE
 			where T : class, DependencyObject
 #else

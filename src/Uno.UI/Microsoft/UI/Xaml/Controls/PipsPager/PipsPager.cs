@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference PipsPager.h, commit 737b6ab
 
 using System;
 using System.Collections.ObjectModel;
@@ -12,7 +13,11 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+
+using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
+
 using ButtonVisibility = Microsoft.UI.Xaml.Controls.PipsPagerButtonVisibility;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -41,17 +46,23 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string c_pipsPagerRepeaterName = "PipsPagerItemsRepeater";
 		private const string c_pipsPagerScrollViewerName = "PipsPagerScrollViewer";
 
-		private const string c_pipsPagerButtonWidthPropertyName = "PipsPagerButtonWidth";
-		private const string c_pipsPagerButtonHeightPropertyName = "PipsPagerButtonHeight";
+		private const string c_pipsPagerVerticalOrientationButtonWidthPropertyName = "PipsPagerVerticalOrientationButtonWidth";
+		private const string c_pipsPagerVerticalOrientationButtonHeightPropertyName = "PipsPagerVerticalOrientationButtonHeight";
+
+		private const string c_pipsPagerHorizontalOrientationButtonWidthPropertyName = "PipsPagerHorizontalOrientationButtonWidth";
+		private const string c_pipsPagerHorizontalOrientationButtonHeightPropertyName = "PipsPagerHorizontalOrientationButtonHeight";
 
 		private const string c_pipsPagerHorizontalOrientationVisualState = "HorizontalOrientationView";
 		private const string c_pipsPagerVerticalOrientationVisualState = "VerticalOrientationView";
+
+		private const string c_pipsPagerButtonVerticalOrientationVisualState = "VerticalOrientation";
+		private const string c_pipsPagerButtonHorizontalOrientationVisualState = "HorizontalOrientation";
 
 		public PipsPager()
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_PipsPager);
 
-			m_pipsPagerItems = new ObservableCollection<object>();
+			m_pipsPagerItems = new ObservableCollection<int>();
 			var templateSettings = new PipsPagerTemplateSettings();
 			templateSettings.SetValue(PipsPagerTemplateSettings.PipsPagerItemsProperty, m_pipsPagerItems);
 			SetValue(TemplateSettingsProperty, templateSettings);
@@ -76,6 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			void AssignPreviousPageButton(Button button)
 			{
+				m_previousPageButton = button;
 				if (button != null)
 				{
 					AutomationProperties.SetName(button, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPreviousPageButtonText));
@@ -88,6 +100,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_nextPageButtonClickRevoker.Disposable = null;
 			void AssignNextPageButton(Button button)
 			{
+				m_nextPageButton = button;
 				if (button != null)
 				{
 					AutomationProperties.SetName(button, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerNextPageButtonText));
@@ -98,6 +111,8 @@ namespace Microsoft.UI.Xaml.Controls
 			AssignNextPageButton(GetTemplateChild(c_nextPageButtonName) as Button);
 
 			m_pipsPagerElementPreparedRevoker.Disposable = null;
+			m_pipsAreaGettingFocusRevoker.Disposable = null;
+			m_pipsAreaBringIntoViewRequestedRevoker.Disposable = null;
 			void AssignPipsPagerRepeater(ItemsRepeater repeater)
 			{
 
@@ -106,24 +121,43 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					repeater.ElementPrepared += OnElementPrepared;
 					m_pipsPagerElementPreparedRevoker.Disposable = Disposable.Create(() => repeater.ElementPrepared -= OnElementPrepared);
+					repeater.GettingFocus += OnPipsAreaGettingFocus;
+					m_pipsAreaGettingFocusRevoker.Disposable = Disposable.Create(() => repeater.GettingFocus -= OnPipsAreaGettingFocus);
+					if (SharedHelpers.IsRS4OrHigher())
+					{
+						repeater.BringIntoViewRequested += OnPipsAreaBringIntoViewRequested;
+						m_pipsAreaBringIntoViewRequestedRevoker.Disposable = Disposable.Create(() => repeater.BringIntoViewRequested -= OnPipsAreaBringIntoViewRequested);
+					}
 				}
 			}
 			AssignPipsPagerRepeater(GetTemplateChild(c_pipsPagerRepeaterName) as ItemsRepeater);
 
-			m_pipsPagerScrollViewer = (ScrollViewer)GetTemplateChild(c_pipsPagerScrollViewerName);
+			m_scrollViewerBringIntoViewRequestedRevoker.Disposable = null;
 
-			m_defaultPipSize = GetDesiredPipSize(DefaultIndicatorButtonStyle);
-			m_selectedPipSize = GetDesiredPipSize(SelectedIndicatorButtonStyle);
+			void InitScrollViewer(ScrollViewer scrollViewer)
+			{
+				m_pipsPagerScrollViewer = scrollViewer;
+				if (scrollViewer != null && SharedHelpers.IsRS4OrHigher())
+				{
+					scrollViewer.BringIntoViewRequested += OnScrollViewerBringIntoViewRequested;
+					m_scrollViewerBringIntoViewRequestedRevoker.Disposable =
+						Disposable.Create(() => scrollViewer.BringIntoViewRequested -= OnScrollViewerBringIntoViewRequested);
+				}
+			}
+			InitScrollViewer(GetTemplateChild<ScrollViewer>(c_pipsPagerScrollViewerName));
+
+			m_defaultPipSize = GetDesiredPipSize(NormalPipStyle);
+			m_selectedPipSize = GetDesiredPipSize(SelectedPipStyle);
 			OnNavigationButtonVisibilityChanged(PreviousButtonVisibility, c_previousPageButtonCollapsedVisualState, c_previousPageButtonDisabledVisualState);
 			OnNavigationButtonVisibilityChanged(NextButtonVisibility, c_nextPageButtonCollapsedVisualState, c_nextPageButtonDisabledVisualState);
-			UpdatePipsItems(NumberOfPages, MaxVisualIndicators);
+			UpdatePipsItems(NumberOfPages, MaxVisiblePips);
 			OnOrientationChanged();
 			OnSelectedPageIndexChanged(m_lastSelectedPageIndex);
 		}
 
 		private void RaiseSelectedIndexChanged()
 		{
-			var args = new PipsPagerSelectedIndexChangedEventArgs(m_lastSelectedPageIndex, SelectedPageIndex);
+			var args = new PipsPagerSelectedIndexChangedEventArgs();
 			SelectedIndexChanged?.Invoke(this, args);
 		}
 
@@ -136,16 +170,14 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (itemTemplate.LoadContent() is FrameworkElement element)
 					{
-						element.Style(style);
+						ApplyStyleToPipAndUpdateOrientation(element, style);
 						element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 						return element.DesiredSize;
 					}
 				}
 			}
-			/* Extract default sizes and return in case the code above fails */
-			var pipHeight = (double)ResourceAccessor.ResourceLookup(this, c_pipsPagerButtonHeightPropertyName);
-			var pipWidth = (double)ResourceAccessor.ResourceLookup(this, c_pipsPagerButtonWidthPropertyName);
-			return new Size((float)(pipWidth), (float)(pipHeight));
+
+			return new Size(0.0, 0.0);
 		}
 
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
@@ -177,51 +209,6 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnKeyDown(args);
 		}
 
-		protected override void OnPointerEntered(PointerRoutedEventArgs args)
-		{
-			base.OnPointerEntered(args);
-			m_isPointerOver = true;
-			UpdateNavigationButtonVisualStates();
-		}
-
-		protected override void OnPointerExited(PointerRoutedEventArgs args)
-		{
-			// We can get a spurious Exited and then Entered if the button
-			// that is being clicked on hides itself. In order to avoid switching
-			// visual states in this case, we check if the pointer is over the
-			// control bounds when we get the exited event.
-			if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position))
-			{
-				m_isPointerOver = false;
-				UpdateNavigationButtonVisualStates();
-			}
-			else
-			{
-				args.Handled = true;
-			}
-			base.OnPointerExited(args);
-		}
-
-		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
-		{
-			base.OnPointerCanceled(args);
-			m_isPointerOver = false;
-			UpdateNavigationButtonVisualStates();
-		}
-
-		private bool IsOutOfControlBounds(Point point)
-		{
-			// This is a conservative check. It is okay to say we are
-			// out of the bounds when close to the edge to account for rounding.
-			var tolerance = 1.0;
-			var actualWidth = ActualWidth;
-			var actualHeight = ActualHeight;
-			return point.X < tolerance ||
-				point.X > actualWidth - tolerance ||
-				point.Y < tolerance ||
-				point.Y > actualHeight - tolerance;
-		}
-
 		private void UpdateIndividualNavigationButtonVisualState(
 			 bool hiddenOnEdgeCondition,
 			 ButtonVisibility visibility,
@@ -231,10 +218,10 @@ namespace Microsoft.UI.Xaml.Controls
 			 string disabledStateName)
 		{
 
-			var ifGenerallyVisible = !hiddenOnEdgeCondition && NumberOfPages != 0 && MaxVisualIndicators > 0;
+			var ifGenerallyVisible = !hiddenOnEdgeCondition && NumberOfPages != 0 && MaxVisiblePips > 0;
 			if (visibility != ButtonVisibility.Collapsed)
 			{
-				if ((visibility == ButtonVisibility.Visible || m_isPointerOver) && ifGenerallyVisible)
+				if ((visibility == ButtonVisibility.Visible || m_isPointerOver || m_isFocused) && ifGenerallyVisible)
 				{
 					VisualStateManager.GoToState(this, visibleStateName, false);
 					VisualStateManager.GoToState(this, enabledStateName, false);
@@ -276,8 +263,14 @@ namespace Microsoft.UI.Xaml.Controls
 			if (SharedHelpers.IsBringIntoViewOptionsVerticalAlignmentRatioAvailable())
 			{
 				var options = new BringIntoViewOptions();
-				options.VerticalAlignmentRatio = 0.5;
-				options.HorizontalAlignmentRatio = 0.5;
+				if (Orientation == Orientation.Horizontal)
+				{
+					options.HorizontalAlignmentRatio = 0.5;
+				}
+				else
+				{
+					options.VerticalAlignmentRatio = 0.5;
+				}
 				options.AnimationDesired = true;
 				sender.StartBringIntoView(options);
 			}
@@ -288,14 +281,14 @@ namespace Microsoft.UI.Xaml.Controls
 				if (Orientation == Orientation.Horizontal)
 				{
 					pipSize = m_defaultPipSize.Width;
-					changeViewFunc = (double offset) => { scrollViewer.ChangeView(offset, null, null); };
+					changeViewFunc = offset => scrollViewer.ChangeView(offset, null, null);
 				}
 				else
 				{
 					pipSize = m_defaultPipSize.Height;
-					changeViewFunc = (double offset) => { scrollViewer.ChangeView(null, offset, null); };
+					changeViewFunc = offset => scrollViewer.ChangeView(null, offset, null);
 				}
-				int maxVisualIndicators = MaxVisualIndicators;
+				int maxVisualIndicators = MaxVisiblePips;
 				/* This line makes sure that while having even # of indicators the scrolling will be done correctly */
 				int offSetChangeForEvenSizeWindow = maxVisualIndicators % 2 == 0 && index > m_lastSelectedPageIndex ? 1 : 0;
 				int offSetNumOfElements = index + offSetChangeForEvenSizeWindow - maxVisualIndicators / 2;
@@ -306,20 +299,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateSelectedPip(int index)
 		{
-			if (NumberOfPages != 0 && MaxVisualIndicators > 0)
+			if (NumberOfPages != 0 && MaxVisiblePips > 0)
 			{
 				var repeater = m_pipsPagerRepeater;
 				if (repeater != null)
 				{
 					repeater.UpdateLayout();
-					if (repeater.TryGetElement(m_lastSelectedPageIndex) is Button element)
+					if (repeater.TryGetElement(m_lastSelectedPageIndex) is FrameworkElement pip)
 					{
-						element.Style = DefaultIndicatorButtonStyle;
+						ApplyStyleToPipAndUpdateOrientation(pip, NormalPipStyle);
 					}
-					if (repeater.GetOrCreateElement(index) is Button selectedElement)
+					if (repeater.GetOrCreateElement(index) is FrameworkElement pip2)
 					{
-						selectedElement.Style = SelectedIndicatorButtonStyle;
-						ScrollToCenterOfViewport(selectedElement, index);
+						ApplyStyleToPipAndUpdateOrientation(pip2, SelectedPipStyle);
+						ScrollToCenterOfViewport(pip2, index);
 					}
 				}
 			}
@@ -351,13 +344,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (Orientation == Orientation.Horizontal)
 				{
-					var scrollViewerWidth = CalculateScrollViewerSize(m_defaultPipSize.Width, m_selectedPipSize.Width, NumberOfPages, MaxVisualIndicators);
+					var scrollViewerWidth = CalculateScrollViewerSize(m_defaultPipSize.Width, m_selectedPipSize.Width, NumberOfPages, MaxVisiblePips);
 					scrollViewer.MaxWidth = scrollViewerWidth;
 					scrollViewer.MaxHeight = Math.Max(m_defaultPipSize.Height, m_selectedPipSize.Height);
 				}
 				else
 				{
-					var scrollViewerHeight = CalculateScrollViewerSize(m_defaultPipSize.Height, m_selectedPipSize.Height, NumberOfPages, MaxVisualIndicators);
+					var scrollViewerHeight = CalculateScrollViewerSize(m_defaultPipSize.Height, m_selectedPipSize.Height, NumberOfPages, MaxVisiblePips);
 					scrollViewer.MaxHeight = scrollViewerHeight;
 					scrollViewer.MaxWidth = Math.Max(m_defaultPipSize.Width, m_selectedPipSize.Width);
 				}
@@ -407,35 +400,30 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args)
 		{
-			var element = args.Element;
-			if (element != null)
+			if (args.Element is FrameworkElement element)
 			{
-				if (element is Button pip)
+				var index = args.Index;
+				var style = index == SelectedPageIndex ? SelectedPipStyle : NormalPipStyle;
+				ApplyStyleToPipAndUpdateOrientation(element, style);
+
+				AutomationProperties.SetName(element, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + (index + 1).ToString());
+				AutomationProperties.SetPositionInSet(element, index + 1);
+				AutomationProperties.SetSizeOfSet(element, NumberOfPages);
+
+				if (element is ButtonBase pip)
 				{
-					var index = args.Index;
-					if (index != SelectedPageIndex)
+					void PipClickHandler(object sender, EventArgs e)
 					{
-						pip.Style(DefaultIndicatorButtonStyle);
-					}
-
-					// Narrator says: Page 5, Button 5 of 30. Is it expected behavior?
-					AutomationProperties.SetName(pip, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + (index + 1));
-					AutomationProperties.SetPositionInSet(pip, index + 1);
-					AutomationProperties.SetSizeOfSet(pip, NumberOfPages);
-
-					// TODO: This may leak - all buttons leave memory only with pager
-					pip.Click += (sender, args) =>
-					{
-						var repeater = m_pipsPagerRepeater;
-						if (repeater != null)
+						if (m_pipsPagerRepeater is { } repeater)
 						{
-							var button = sender as Button;
-							if (button != null)
+							if (sender is Button button)
 							{
 								SelectedPageIndex = repeater.GetElementIndex(button);
 							}
 						}
-					};
+					}
+					// TODO: Ensure this does not cause memory leaks
+					pip.Click += PipClickHandler;
 				}
 			}
 		}
@@ -456,7 +444,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var numberOfPages = NumberOfPages;
 			if (numberOfPages < 0)
 			{
-				UpdatePipsItems(numberOfPages, MaxVisualIndicators);
+				UpdatePipsItems(numberOfPages, MaxVisiblePips);
 			}
 			SetScrollViewerMaxSize();
 			UpdateSelectedPip(SelectedPageIndex);
@@ -467,8 +455,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			int numberOfPages = NumberOfPages;
 			int selectedPageIndex = SelectedPageIndex;
-			UpdateSizeOfSetForElements(numberOfPages);
-			UpdatePipsItems(numberOfPages, MaxVisualIndicators);
+			UpdateSizeOfSetForElements(numberOfPages, m_pipsPagerItems.Count);
+			UpdatePipsItems(numberOfPages, MaxVisiblePips);
 			SetScrollViewerMaxSize();
 			if (SelectedPageIndex > numberOfPages - 1 && numberOfPages > -1)
 			{
@@ -506,7 +494,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				if (NumberOfPages < 0)
 				{
-					UpdatePipsItems(NumberOfPages, MaxVisualIndicators);
+					UpdatePipsItems(NumberOfPages, MaxVisiblePips);
 				}
 				UpdateSelectedPip(SelectedPageIndex);
 				UpdateNavigationButtonVisualStates();
@@ -524,8 +512,49 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(this, c_pipsPagerVerticalOrientationVisualState, false);
 			}
+			if (m_pipsPagerRepeater is { } repeater)
+			{
+				if (repeater.ItemsSourceView is { } itemsSourceView)
+				{
+					var itemCount = itemsSourceView.Count;
+					for (int i = 0; i < itemCount; i++)
+					{
+						if (repeater.TryGetElement(i) is Control pip)
+						{
+							UpdatePipOrientation(pip);
+						}
+					}
+				}
+			}
+			m_defaultPipSize = GetDesiredPipSize(NormalPipStyle);
+			m_selectedPipSize = GetDesiredPipSize(SelectedPipStyle);
 			SetScrollViewerMaxSize();
-			UpdateSelectedPip(SelectedPageIndex);
+			if (GetSelectedItem() is { } selectedPip)
+			{
+				ScrollToCenterOfViewport(selectedPip, SelectedPageIndex);
+			}
+		}
+
+		private void ApplyStyleToPipAndUpdateOrientation(FrameworkElement pip, Style style)
+		{
+			pip.Style = style;
+			if (pip is Control control)
+			{
+				control.ApplyTemplate();
+				UpdatePipOrientation(control);
+			}
+		}
+
+		private void UpdatePipOrientation(Control pip)
+		{
+			if (Orientation == Orientation.Horizontal)
+			{
+				VisualStateManager.GoToState(pip, c_pipsPagerButtonHorizontalOrientationVisualState, false);
+			}
+			else
+			{
+				VisualStateManager.GoToState(pip, c_pipsPagerButtonVerticalOrientationVisualState, false);
+			}
 		}
 
 		private void OnNavigationButtonVisibilityChanged(ButtonVisibility visibility, string collapsedStateName, string disabledStateName)
@@ -553,6 +582,157 @@ namespace Microsoft.UI.Xaml.Controls
 			SelectedPageIndex = SelectedPageIndex + 1;
 		}
 
+		protected override void OnGotFocus(RoutedEventArgs args)
+		{
+			if (args.OriginalSource is Button btn)
+			{
+				// If the element inside the Pager is already keyboard focused
+				// and the user will use the mouse to focus on something else
+				// the LostFocus will not be triggered on keyboard focused element
+				// while GotFocus will be triggered on the new mouse focused element.
+				// We account for this scenario and update m_isFocused in case
+				// user will use mouse while being in keyboard focus.
+				if (btn.FocusState != FocusState.Pointer)
+				{
+					m_isFocused = true;
+					UpdateNavigationButtonVisualStates();
+				}
+				else
+				{
+					m_isFocused = false;
+				}
+			}
+		}
+
+		// In order to avoid switching visibility of the navigation buttons while moving focus inside the Pager,
+		// we'll check if the next focused element is inside the Pager.
+		private void OnLosingFocus(object sender, LosingFocusEventArgs args)
+		{
+			if (m_pipsPagerRepeater is { } repeater)
+			{
+				if (args.NewFocusedElement is UIElement nextFocusElement)
+				{
+					m_ifNextFocusElementInside =
+						repeater.GetElementIndex(nextFocusElement) != -1 ||
+						nextFocusElement == m_previousPageButton ||
+						nextFocusElement == m_nextPageButton;
+				}
+			}
+		}
+
+		private void OnPipsAreaGettingFocus(object sender, GettingFocusEventArgs args)
+		{
+			if (m_pipsPagerRepeater is { } repeater)
+			{
+				// Easiest way to check if focus change came from within:
+				// Check if element is child of repeater by getting index and checking for -1
+				// If it is -1, focus came from outside and we want to get to selected element.
+				if (args.OldFocusedElement is UIElement oldFocusedElement)
+				{
+					if (repeater.GetElementIndex(oldFocusedElement) == -1)
+					{
+						if (repeater.GetOrCreateElement(SelectedPageIndex) is UIElement realizedElement)
+						{
+							if (args is { } argsAsIGettingFocusEventArgs2)
+							{
+								if (argsAsIGettingFocusEventArgs2.TrySetNewFocusedElement(realizedElement))
+								{
+									args.Handled = true;
+								}
+							}
+
+							else
+							{
+								// Without TrySetNewFocusedElement, we cannot set focus while it is changing.
+								m_dispatcherHelper.RunAsync(() =>
+								{
+									SetFocus(realizedElement, FocusState.Programmatic);
+								});
+								args.Handled = true;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		protected override void OnLostFocus(RoutedEventArgs e)
+		{
+			if (!m_ifNextFocusElementInside)
+			{
+				m_isFocused = false;
+				UpdateNavigationButtonVisualStates();
+			}
+		}
+
+		protected override void OnPointerEntered(PointerRoutedEventArgs args)
+		{
+			base.OnPointerEntered(args);
+			m_isPointerOver = true;
+			UpdateNavigationButtonVisualStates();
+		}
+
+		protected override void OnPointerExited(PointerRoutedEventArgs args)
+		{
+			// We can get a spurious Exited and then Entered if the button
+			// that is being clicked on hides itself. In order to avoid switching
+			// visual states in this case, we check if the pointer is over the
+			// control bounds when we get the exited event.
+			if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position))
+			{
+				m_isPointerOver = false;
+				UpdateNavigationButtonVisualStates();
+			}
+			else
+			{
+				args.Handled = true;
+			}
+			base.OnPointerExited(args);
+		}
+
+		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
+		{
+			base.OnPointerCanceled(args);
+			m_isPointerOver = false;
+			UpdateNavigationButtonVisualStates();
+		}
+
+		private bool IsOutOfControlBounds(Point point)
+		{
+			// This is a conservative check. It is okay to say we are
+			// out of the bounds when close to the edge to account for rounding.
+			var tolerance = 1.0;
+			var actualWidth = ActualWidth;
+			var actualHeight = ActualHeight;
+			return point.X < tolerance ||
+				point.X > actualWidth - tolerance ||
+				point.Y < tolerance ||
+				point.Y > actualHeight - tolerance;
+		}
+
+		// In order to handle undesired scrolling when a user
+		// tabs into the pipspager/focuses a pip using keyboard
+		// we'll check for offsets and if they're NAN -
+		// meaning it was not scroll initiated by us, we handle it.
+		private void OnPipsAreaBringIntoViewRequested(object sender, BringIntoViewRequestedEventArgs args)
+		{
+			if ((Orientation == Orientation.Vertical && double.IsNaN(args.VerticalAlignmentRatio)) ||
+				(Orientation == Orientation.Horizontal && double.IsNaN(args.HorizontalAlignmentRatio)))
+			{
+				args.Handled = true;
+			}
+		}
+
+		// Inner scrollviewer will bubble BringIntoView event to
+		// parent scrollviewers (if they exist) if the scrolling was
+		// not complete (could not scroll to specified offset because
+		// the beginning/end of the scrollable area was already reached).
+		// To avoid that, we handle BringIntoViewRequested on inner scrollviewer.
+		private void OnScrollViewerBringIntoViewRequested(object sender, BringIntoViewRequestedEventArgs args)
+		{
+			args.Handled = true;
+		}
+
 		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			DependencyProperty property = args.Property;
@@ -566,7 +746,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					OnSelectedPageIndexChanged((int)args.OldValue);
 				}
-				else if (property == MaxVisualIndicatorsProperty)
+				else if (property == MaxVisiblePipsProperty)
 				{
 					OnMaxVisualIndicatorsChanged();
 				}
@@ -578,15 +758,15 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					OnNavigationButtonVisibilityChanged(NextButtonVisibility, c_nextPageButtonCollapsedVisualState, c_nextPageButtonDisabledVisualState);
 				}
-				else if (property == DefaultIndicatorButtonStyleProperty)
+				else if (property == NormalPipStyleProperty)
 				{
-					m_defaultPipSize = GetDesiredPipSize(DefaultIndicatorButtonStyle);
+					m_defaultPipSize = GetDesiredPipSize(NormalPipStyle);
 					SetScrollViewerMaxSize();
 					UpdateSelectedPip(SelectedPageIndex);
 				}
-				else if (property == SelectedIndicatorButtonStyleProperty)
+				else if (property == SelectedPipStyleProperty)
 				{
-					m_selectedPipSize = GetDesiredPipSize(SelectedIndicatorButtonStyle);
+					m_selectedPipSize = GetDesiredPipSize(SelectedPipStyle);
 					SetScrollViewerMaxSize();
 					UpdateSelectedPip(SelectedPageIndex);
 				}
@@ -597,15 +777,24 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		internal UIElement GetSelectedItem()
+		{
+			if (m_pipsPagerRepeater is { } repeater)
+			{
+				return repeater.TryGetElement(SelectedPageIndex);
+			}
+			return null;
+		}
+
 		protected override AutomationPeer OnCreateAutomationPeer() =>
 			new PipsPagerAutomationPeer(this);
 
-		void UpdateSizeOfSetForElements(int numberOfPages)
+		void UpdateSizeOfSetForElements(int numberOfPages, int numberOfItems)
 		{
 			var repeater = m_pipsPagerRepeater;
 			if (repeater != null)
 			{
-				for (int i = 0; i < numberOfPages; i++)
+				for (int i = 0; i < numberOfItems; i++)
 				{
 					var pip = repeater.TryGetElement(i);
 					if (pip != null)
