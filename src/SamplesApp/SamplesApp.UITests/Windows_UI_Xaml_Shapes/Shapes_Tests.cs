@@ -229,8 +229,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			var rect1 = _app.GetPhysicalRect("myShape1").ToRectangle();
 			var rect2 = _app.GetPhysicalRect("myShape2").ToRectangle();
 			using var screenshot = TakeScreenshot("Setting_ImageBrush_In_Code_Behind");
-			ImageAssert.HasColorAt(screenshot, rect1.X, rect1.Y, Color.FromArgb(255, 236, 197, 175));
-			ImageAssert.HasColorAt(screenshot, rect2.X, rect2.Y, Color.FromArgb(255, 236, 197, 175));
+			ImageAssert.HasColorAt(screenshot, rect1.X, rect1.Y, Color.FromArgb(255, 236, 197, 175), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, rect2.X, rect2.Y, Color.FromArgb(255, 236, 197, 175), tolerance: 5);
 		}
 
 		private static string GetReddish() =>
