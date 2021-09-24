@@ -1124,7 +1124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						return;
 					}
 
-					if (elt.GetParent() is {} parent)
+					if (VisualTreeHelper.GetParent(elt as DependencyObject) is {} parent)
 					{
 						Subscribe(parent);
 					}

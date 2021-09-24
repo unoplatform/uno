@@ -77,6 +77,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (PopupPanel.Superview == null)
 			{
+				PopupPanel.IsVisualTreeRoot = true;
 				MainWindow.AddSubview(PopupPanel);
 			}
 		}

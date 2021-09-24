@@ -70,6 +70,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Is this view the top of the managed visual tree
 		/// </summary>
+		/// <remarks>This differs from the XamlRoot be being true for the root element of a native Popup.</remarks>
 		internal bool IsVisualTreeRoot { get; set; }
 
 		private void Initialize()
