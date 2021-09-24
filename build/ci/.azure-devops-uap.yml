@@ -45,9 +45,16 @@ jobs:
   - task: CopyFiles@2
     condition: always()
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/Build
-      Contents: '*.nupkg'
-      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UWP/AppPackages
+      Contents: '**'
+      TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: UWP-Package
+      ArtifactType: Container
