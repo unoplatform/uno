@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.Globalization.NumberFormatting;
 
-namespace Windows.Globalization.NumberFormatting
+namespace Uno.UI.Tests.Windows_Globalization
 {
 	[TestClass]
 	public class Given_NumeralSystemTranslator

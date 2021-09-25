@@ -34,19 +34,7 @@ namespace Windows.Globalization.NumberFormatting
 					throw new ArgumentNullException("Value cannot be null.");
 				}
 
-				if (value == "")
-				{
-					throw new ArgumentException("The parameter is incorrect.");
-				}
-
-				var correctCaseKey = NumeralSystemTranslatorHelper.ToPascalCase(value);
-
-				if (correctCaseKey is null)
-				{
-					throw new ArgumentException("The parameter is incorrect.");
-				}
-
-				_numeralSystem = correctCaseKey;
+				_numeralSystem = NumeralSystemTranslatorHelper.ToPascalCase(value);
 			}
 		}
 
