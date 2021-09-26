@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented()]
 #endif
-		public static readonly DependencyProperty PixelWidthProperty = DependencyProperty.Register(
+		public static DependencyProperty PixelWidthProperty { get; } = DependencyProperty.Register(
 			"PixelWidth", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(default(int)));
 
 #if NOT_IMPLEMENTED
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented()]
 #endif
-		public static readonly DependencyProperty PixelHeightProperty = DependencyProperty.Register(
+		public static DependencyProperty PixelHeightProperty { get; } = DependencyProperty.Register(
 			"PixelHeight", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(default(int)));
 
 #if NOT_IMPLEMENTED
