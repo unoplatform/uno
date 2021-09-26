@@ -78,11 +78,21 @@ namespace Windows.UI.Xaml
 				// Force init
 				Window.Current.ToString();
 
+				InitializationCompleted();
+
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, string.Join(";", _args)));
 			}
 		}
 
 		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
+
+		partial void ObserveSystemThemeChanges()
+		{
+			_applicationExtension.SystemThemeChanged += SystemThemeChanged;
+			_systemThemeChangesObserved = true;
+		}
+
+		private void SystemThemeChanged(object sender, EventArgs e) => OnSystemThemeChanged();
 	}
 
 	internal interface IApplicationEvents
