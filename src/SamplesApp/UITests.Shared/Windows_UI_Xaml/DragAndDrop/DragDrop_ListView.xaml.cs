@@ -27,7 +27,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 
 			SUT.DragOver += (snd, e) =>
 			{
-				Operation.Text = e.AcceptedOperation.ToString();
+				Operation.Text += e.AcceptedOperation.ToString();
 			};
 		}
 	}

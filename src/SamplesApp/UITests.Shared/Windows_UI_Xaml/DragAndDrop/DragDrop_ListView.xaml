@@ -26,6 +26,6 @@
 			</ListView.ItemTemplate>
 		</ListView>
 
-		<TextBlock x:Name="Operation" Text="--none--" />
+		<TextBlock x:Name="Operation" Text="--none--" Grid.Row="1" />
 	</Grid>
 </Page>
