@@ -9380,7 +9380,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}" />
+  <Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemExpanded}" />
   <Thickness x:Key="RichEditBoxTopHeaderMargin">0,0,0,8</Thickness>
   <Style TargetType="RichEditBox" BasedOn="{StaticResource DefaultRichEditBoxStyle}" />
   <Style x:Key="DefaultRichEditBoxStyle" TargetType="RichEditBox">
