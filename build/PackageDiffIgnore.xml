@@ -3964,9 +3964,88 @@
 				fullName="Windows.UI.Xaml.Media.Animation.KeyTime Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_KeyTime()"
 				reason="False positive, still present, but accessible also through an internal interface" />
 			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter.get_HorizontalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter.get_VerticalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ScrollContentPresenter.get_CanHorizontallyScroll()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_CanHorizontallyScroll(System.Boolean value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ScrollContentPresenter.get_CanVerticallyScroll()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_CanVerticallyScroll(System.Boolean value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ScrollViewer.get_ArePointerWheelEventsIgnored()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_ArePointerWheelEventsIgnored(System.Boolean value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.get_HorizontalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.set_HorizontalScrollBarVisibility(Windows.UI.Xaml.Controls.ScrollBarVisibility value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.get_VerticalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.set_VerticalScrollBarVisibility(Windows.UI.Xaml.Controls.ScrollBarVisibility value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.get_CanHorizontallyScroll()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.set_CanHorizontallyScroll(System.Boolean value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.get_CanVerticallyScroll()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.set_CanVerticallyScroll(System.Boolean value)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SmoothScrollTo(System.Int32 x, System.Int32 y)"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.Foundation.Rect Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.MakeVisible(Windows.UI.Xaml.UIElement visual, Windows.Foundation.Rect rectangle)"
+				reason="Not part of the UWP API" />
+			<Member
 				fullName="System.Void Windows.Devices.Radios.Radio..ctor()"
 				reason="Not part of UWP API" />
 		</Methods>
+
+		<Properties>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter::HorizontalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter::VerticalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ScrollViewer::ArePointerWheelEventsIgnored()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::HorizontalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::VerticalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::CanHorizontallyScroll()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::CanVerticallyScroll()"
+				reason="Not part of the UWP API" />
+		</Properties>
+
 		<Types>
 			<Member
 				fullName="Windows.UI.Core.ICoreWindowExtension"
