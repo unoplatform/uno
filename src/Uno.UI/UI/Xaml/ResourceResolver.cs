@@ -61,27 +61,27 @@ namespace Uno.UI
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static T ResolveResourceStatic<T>(object key, object context = null)
+		public static object ResolveResourceStatic(object key, Type type, object context = null)
 		{
 			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value))
 			{
-				if (value is T tValue)
+				if (value.GetType().Is(type))
 				{
-					return tValue;
+					return value;
 				}
 				else
 				{
-					var convertedValue = BindingPropertyHelper.Convert(() => typeof(T), value);
+					var convertedValue = BindingPropertyHelper.Convert(() => type, value);
 					if (convertedValue is null && _log.IsEnabled(LogLevel.Warning))
 					{
-						_log.LogWarning($"Unable to convert value '{value}' of type '{value.GetType()}' to type '{typeof(T)}'");
+						_log.LogWarning($"Unable to convert value '{value}' of type '{value.GetType()}' to type '{type}'");
 					}
 
-					return (T)convertedValue;
+					return convertedValue;
 				}
 			}
 
-			return default(T);
+			return null;
 		}
 
 		/// <summary>

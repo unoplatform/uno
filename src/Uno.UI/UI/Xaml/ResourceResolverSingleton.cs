@@ -31,7 +31,7 @@ namespace Uno.UI
 		public bool ResolveResourceStatic(object key, out object value, object context) => ResourceResolver.ResolveResourceStatic(key, out value, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public T ResolveResourceStatic<T>(object key, object context) => ResourceResolver.ResolveResourceStatic<T>(key, context);
+		public object ResolveResourceStatic(object key, Type type, object context) => ResourceResolver.ResolveResourceStatic(key, type, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context) => ResourceResolver.ApplyResource(owner, property, resourceKey, isThemeResourceExtension, context);

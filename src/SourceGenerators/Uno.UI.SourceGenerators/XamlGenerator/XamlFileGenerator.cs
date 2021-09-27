@@ -4227,8 +4227,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var targetPropertyFQT = targetPropertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-			var staticRetrieval = $"global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic<{targetPropertyFQT}>(" +
-				$"\"{keyStr}\", context: {ParseContextPropertyAccess})";
+			var staticRetrieval = $"({targetPropertyFQT})global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic(" +
+				$"\"{keyStr}\", {targetPropertyFQT}, context: {ParseContextPropertyAccess})";
 			TryAnnotateWithGeneratorSource(ref staticRetrieval);
 			return staticRetrieval;
 		}
