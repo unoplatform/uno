@@ -228,11 +228,7 @@ namespace Windows.UI.Xaml.Controls
 				.GetColorWithOpacity(Foreground, Colors.Transparent)
 				.Value;
 
-			var shader = Foreground switch
-			{
-				IGradientBrush gb => gb.GetShader(LayoutSlot.LogicalToPhysicalPixels()),
-				_ => null
-			};
+			var shader = (Foreground as IGradientBrush)?.GetShader(LayoutSlot.LogicalToPhysicalPixels());
 
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
