@@ -8,9 +8,10 @@ namespace Windows.Globalization.NumberFormatting
 {
 	public partial class NumeralSystemTranslator
 	{
+		private readonly static string[] _defaultLanguages = { "en-US" };
 		private string _numeralSystem;
 
-		public NumeralSystemTranslator() : this(new string[] { "en-US" })
+		public NumeralSystemTranslator() : this(_defaultLanguages)
 		{
 
 		}
@@ -62,8 +63,8 @@ namespace Windows.Globalization.NumberFormatting
 
 		public string TranslateNumerals(string value)
 		{
-			if (NumeralSystem.Equals("Arab", StringComparison.InvariantCultureIgnoreCase) ||
-				NumeralSystem.Equals("ArabExt", StringComparison.InvariantCultureIgnoreCase))
+			if (NumeralSystem.Equals("Arab", StringComparison.Ordinal) ||
+				NumeralSystem.Equals("ArabExt", StringComparison.Ordinal))
 			{
 				return TranslateArab(value, NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem));
 			}

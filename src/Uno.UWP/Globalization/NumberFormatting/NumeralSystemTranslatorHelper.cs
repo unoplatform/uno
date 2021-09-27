@@ -45,6 +45,8 @@ namespace Uno.Globalization.NumberFormatting
 		private static readonly char[] TibtDigits = new char[] { '\u0F20', '\u0F21', '\u0F22', '\u0F23', '\u0F24', '\u0F25', '\u0F26', '\u0F27', '\u0F28', '\u0F29' };
 		private static readonly char[] VaiiDigits = new char[] { '\uA620', '\uA621', '\uA622', '\uA623', '\uA624', '\uA625', '\uA626', '\uA627', '\uA628', '\uA629' };
 
+		// GetNumeralSystem and GetResolvedLanguage use language tags from list of language/region names supported by Windows:
+		// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-lcid/a9eac961-e77d-41a6-90a5-ce1a8b0cdb9c
 		public static string GetNumeralSystem(string languageTag)
 		{
 			languageTag = languageTag.ToLowerInvariant();
