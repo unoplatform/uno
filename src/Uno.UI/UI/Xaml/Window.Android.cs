@@ -79,6 +79,31 @@ namespace Windows.UI.Xaml
 		internal void RaiseNativeSizeChanged()
 		{
 #if __ANDROID_30__
+			var (windowBounds, visibleBounds, trueVisibleBounds) = Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R
+				? GetVisualBounds()
+				: GetVisualBoundsLegacy();
+#else
+			var (windowBounds, visibleBounds, trueVisibleBounds) = GetVisualBoundsLegacy();
+#endif
+
+			ApplicationView.GetForCurrentView()?.SetVisibleBounds(visibleBounds);
+			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
+
+			if (Bounds != windowBounds)
+			{
+				Bounds = windowBounds;
+
+				RaiseSizeChanged(
+					new Windows.UI.Core.WindowSizeChangedEventArgs(
+						new Windows.Foundation.Size(Bounds.Width, Bounds.Height)
+					)
+				);
+			}
+		}
+
+#if __ANDROID_30__
+		private (Rect windowBounds, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
+		{
 			var metrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
 
 			var insetsTypes = WindowInsets.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
@@ -97,15 +122,17 @@ namespace Windows.UI.Xaml
 
 			// The 'metric.Bounds' does not include any insets, so we remove the "solid" insets under which we cannot draw anything
 			var windowBounds = new Rect(default, ((Rect)metrics.Bounds).DeflateBy(solidInsets).Size).PhysicalToLogicalPixels();
-			var newBounds = windowBounds; 
 
 			// The visible bounds is the windows bounds on which we remove also
 			// [translucent only inset](all_insets - solid_insets_that_has_already_been_removed_from_all_insets)
 			var visibleBounds = windowBounds.DeflateBy(insets.Minus(solidInsets)).PhysicalToLogicalPixels();
 
-			// The true visible bounds ... is unknown for now!
-			var trueVisibleBounds = visibleBounds;
-#else
+			return (windowBounds, visibleBounds, visibleBounds);
+		}
+#endif
+
+		private (Rect windowBounds, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBoundsLegacy()
+		{
 			using var display = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
 			using var fullScreenMetrics = new DisplayMetrics();
 
@@ -117,11 +144,11 @@ namespace Windows.UI.Xaml
 
 			var statusBarSize = GetLogicalStatusBarSize();
 
-			var statusBarSizeExcluded = IsStatusBarTranslucent() ?
+			var statusBarSizeExcluded = IsStatusBarTranslucent()
 				// The real metrics excluded the StatusBar only if it is plain.
 				// We want to subtract it if it is translucent. Otherwise, it will be like we subtract it twice.
-				statusBarSize :
-				0;
+				? statusBarSize
+				: 0;
 			var navigationBarSizeExcluded = GetLogicalNavigationBarSizeExcluded();
 
 			// Actually, we need to check visibility of nav bar and status bar since the insets don't
@@ -170,21 +197,8 @@ namespace Windows.UI.Xaml
 
 			var visibleBounds = CalculateVisibleBounds(statusBarSizeExcluded);
 			var trueVisibleBounds = CalculateVisibleBounds(statusBarSize);
-#endif
 
-			ApplicationView.GetForCurrentView()?.SetVisibleBounds(visibleBounds);
-			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
-
-			if (Bounds != newBounds)
-			{
-				Bounds = newBounds;
-
-				RaiseSizeChanged(
-					new Windows.UI.Core.WindowSizeChangedEventArgs(
-						new Windows.Foundation.Size(Bounds.Width, Bounds.Height)
-					)
-				);
-			}
+			return (newBounds, visibleBounds, trueVisibleBounds);
 		}
 
 		internal void UpdateInsetsWithVisibilities()
@@ -230,7 +244,6 @@ namespace Windows.UI.Xaml
 			Insets = newInsets;
 		}
 
-#if !__ANDROID_30__
 		private double GetLogicalStatusBarSize()
 		{
 			var logicalStatusBarHeight = 0d;
@@ -261,7 +274,6 @@ namespace Windows.UI.Xaml
 				? ViewHelper.PhysicalToLogicalPixels(navigationBarSize)
 				: 0;
 		}
-#endif
 
 		internal void DisplayFullscreen(UIElement element)
 		{
