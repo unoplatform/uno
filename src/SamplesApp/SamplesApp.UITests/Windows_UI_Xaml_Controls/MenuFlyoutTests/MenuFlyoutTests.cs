@@ -248,5 +248,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.FastTap(_app.Marked("testItem2"));
 			Assert.AreEqual("click: test2", result.GetText());
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_MenuFlyout_Nested_Clamped_To_Window()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyout_Nested_5639");
+
+			_app.WaitForElement("ButtonWithMenuFlyout");
+
+			var hostGridRect = _app.GetLogicalRect("HostGrid");
+
+			TestPositioning();
+			TestPositioning(); // Should work second time
+
+			void TestPositioning()
+			{
+				_app.FastTap("ButtonWithMenuFlyout");
+				_app.WaitForElement("NestedMenuItem");
+				_app.FastTap("NestedMenuItem");
+
+				var lastItemRect = _app.GetLogicalRect("LastSubitem");
+
+				// Item should be adjusted to within window
+				Assert.Less(lastItemRect.Bottom, hostGridRect.Bottom);
+
+				_app.FastTap("DummyTopButton"); // Dismiss flyout
+			}
+		}
 	}
 }

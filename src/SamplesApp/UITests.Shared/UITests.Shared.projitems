@@ -1557,6 +1557,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyout_Nested_5639.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\UIElement_ContextFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5360,6 +5364,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyout_IosNative.xaml.cs">
       <DependentUpon>MenuFlyout_IosNative.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyout_Nested_5639.xaml.cs">
+      <DependentUpon>MenuFlyout_Nested_5639.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\UIElement_ContextFlyout.xaml.cs">
       <DependentUpon>UIElement_ContextFlyout.xaml</DependentUpon>
