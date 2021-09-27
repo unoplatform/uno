@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Media
 				});
 			}
 			else if (brush is RadialGradientBrush radialGradientBrush)
-            {
+			{
 				UpdateColorWhenAnyChanged(radialGradientBrush, new[]
 				{
 					RadialGradientBrush.MappingModeProperty,
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Media
 					RadialGradientBrush.RelativeTransformProperty,
 
 				});
-            }
+			}
 			else if (brush is ImageBrush imageBrush)
 			{
 				imageBrush
