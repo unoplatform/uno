@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Imaging;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
@@ -604,19 +605,19 @@ namespace Windows.UI.Xaml
 			// Note: We do not provide the _pendingRaisedEvent.args since it has probably not been updated yet,
 			//		 but as we are in the handler of an event from the gesture recognizer,
 			//		 the LastPointerEvent from the CoreWindow will be up to date.
-			StartDragAsyncCore(args.Pointer, ptArgs: null, CancellationToken.None);
+			_ = StartDragAsyncCore(args.Pointer, ptArgs: null, CancellationToken.None);
 		}
 
 		public IAsyncOperation<DataPackageOperation> StartDragAsync(PointerPoint pointerPoint)
 			=> AsyncOperation.FromTask(ct => StartDragAsyncCore(pointerPoint, _pendingRaisedEvent.args, ct));
 
-		private Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
+		private async Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
 			ptArgs ??= CoreWindow.GetForCurrentThread()!.LastPointerEvent as PointerRoutedEventArgs;
 			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDevice.PointerDeviceType)
 			{
 				// Fairly impossible case ...
-				return Task.FromResult(DataPackageOperation.None);
+				return DataPackageOperation.None;
 			}
 
 			// Note: originalSource = this => DragStarting is not actually a routed event, the original source is always the sender
@@ -624,12 +625,15 @@ namespace Windows.UI.Xaml
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
-			// TODO: Add support for the starting deferral!
+			if (routedArgs.Deferral is { } deferral)
+			{
+				await deferral.Completed(ct);
+			}
 
 			if (routedArgs.Cancel)
 			{
 				// The completed event is not raised if the starting has been cancelled
-				return Task.FromCanceled<DataPackageOperation>(CancellationToken.None);
+				throw new TaskCanceledException();
 			}
 
 			var dragInfo = new CoreDragInfo(
@@ -642,7 +646,14 @@ namespace Windows.UI.Xaml
 			{
 				// This is the UWP behavior: if no button is pressed, then the drag is completed immediately
 				OnDropCompleted(dragInfo, DataPackageOperation.None);
-				return Task.FromResult(DataPackageOperation.None);
+				return DataPackageOperation.None;
+			}
+
+			if (RenderTargetBitmap.IsImplemented && routedArgs.DragUI.Content is null)
+			{
+				var target = new RenderTargetBitmap();
+				await target.RenderAsync(this);
+				routedArgs.DragUI.Content = target;
 			}
 
 			var asyncResult = new TaskCompletionSource<DataPackageOperation>();
@@ -655,7 +666,9 @@ namespace Windows.UI.Xaml
 
 			CoreDragDropManager.GetForCurrentView()!.DragStarted(dragInfo);
 
-			return asyncResult.Task;
+			var result = await asyncResult.Task;
+
+			return result;
 		}
 
 		private void OnDropCompleted(CoreDragInfo info, DataPackageOperation result)

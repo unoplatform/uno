@@ -14,6 +14,7 @@ using Uno.Logging;
 using Uno.UI;
 using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -195,9 +196,19 @@ namespace Windows.UI.Xaml.Controls
 			if (that is null || src is null || item is null || container is null || src != that)
 			{
 				dragEventArgs.Log().Warn("Invalid reorder event.");
+				dragEventArgs.AcceptedOperation = DataPackageOperation.None;
 
 				return;
 			}
+
+			dragEventArgs.AcceptedOperation = DataPackageOperation.Move;
+#pragma warning disable CS0162 // Unreachable code since RenderTargetBitmap.IsImplemented is a const
+			if (RenderTargetBitmap.IsImplemented)
+			{
+				dragEventArgs.DragUIOverride.IsGlyphVisible = false;
+				dragEventArgs.DragUIOverride.IsCaptionVisible = false;
+			}
+#pragma warning restore CS0162
 
 			var position = dragEventArgs.GetPosition(that);
 			that.UpdateReordering(position, container, item);

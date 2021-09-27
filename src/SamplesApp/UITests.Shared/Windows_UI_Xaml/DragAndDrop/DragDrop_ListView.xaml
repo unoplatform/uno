@@ -9,6 +9,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 		<ListView 
 			CanDragItems="True"
 			CanReorderItems="True"
@@ -21,5 +25,7 @@
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
+
+		<TextBlock x:Name="Operation" Text="--none--" Grid.Row="1" />
 	</Grid>
 </Page>

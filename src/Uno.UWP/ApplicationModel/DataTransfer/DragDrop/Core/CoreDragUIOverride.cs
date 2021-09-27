@@ -4,7 +4,7 @@ using Windows.Foundation;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	public  partial class CoreDragUIOverride
+	public partial class CoreDragUIOverride
 	{
 		public bool IsGlyphVisible { get; set; }
 		public bool IsContentVisible { get; set; }

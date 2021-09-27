@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class DragUI 
 	{
-		internal ImageSource? Content { get; private set; }
+		internal ImageSource? Content { get; set; }
 
 		internal Point? Anchor { get; private set; }
 

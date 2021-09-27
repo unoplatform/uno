@@ -25,8 +25,8 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="DragView">
-					<Grid>
-						<Image Visibility="{TemplateBinding CaptionVisiblity}" Source="{TemplateBinding Content}" Opacity=".8" />
+					<Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+						<Image Visibility="{TemplateBinding ContentVisibility}" Source="{TemplateBinding Content}" Opacity=".8" />
 						<StackPanel
 							Orientation="Horizontal"
 							BorderThickness="1"
