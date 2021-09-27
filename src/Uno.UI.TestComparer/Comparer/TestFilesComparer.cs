@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+using SkiaSharp;
 
 namespace Uno.UI.TestComparer.Comparer
 {
@@ -148,25 +148,16 @@ namespace Uno.UI.TestComparer.Comparer
                             var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
                             if (hasChangedFromPrevious && previousFolderInfo != null)
                             {
-								var currentImage = DecodeImage(folderInfo.Path);
-								var previousImage = DecodeImage(previousFolderInfo.Path);
+                                var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
 
-								if (currentImage.pixels.Length == previousImage.pixels.Length)
-								{
-									var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
-
-									var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-									WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
-
-									compareResultFileRun.DiffResultImage = diffFilePath;
-								}
-
-								changedList.Add(testFile);
+                                if (DiffImages(folderInfo.Path, previousFolderInfo.Path, diffFilePath))
+                                {
+                                    compareResultFileRun.DiffResultImage = diffFilePath;
+                                }
+                                changedList.Add(testFile);
                             }
-
-							GC.Collect(2, GCCollectionMode.Forced);
-							GC.WaitForPendingFinalizers();
                         }
+
                     }
                 }
             }
@@ -222,7 +213,7 @@ namespace Uno.UI.TestComparer.Comparer
 					// and create a string.
 					var sBuilder = new StringBuilder();
 
-					// Loop through each byte of the hashed data 
+					// Loop through each byte of the hashed data
 					// and format each one as a hexadecimal string.
 					for (int i = 0; i < data.Length; i++)
 					{
@@ -257,67 +248,6 @@ namespace Uno.UI.TestComparer.Comparer
 			}
 		}
 
-		private void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo, int stride)
-		{
-			using (var stream = new FileStream(diffPath, FileMode.Create))
-			{
-				var encoder = new PngBitmapEncoder();
-
-				encoder.Interlace = PngInterlaceOption.On;
-
-				var frame = BitmapSource.Create(
-					pixelWidth: (int)frameInfo.PixelWidth,
-					pixelHeight: (int)frameInfo.PixelHeight,
-					dpiX: frameInfo.DpiX,
-					dpiY: frameInfo.DpiY,
-					pixelFormat: frameInfo.Format,
-					palette: frameInfo.Palette,
-					pixels: diff,
-					stride: stride
-				);
-
-				encoder.Frames.Add(BitmapFrame.Create(frame));
-				encoder.Save(stream);
-			}
-		}
-
-		private byte[] DiffImages(byte[] currentImage, byte[] previousImage, int pixelSize)
-		{
-			for (int i = 0; i < currentImage.Length; i++)
-			{
-				currentImage[i] = (byte)(currentImage[i] ^ previousImage[i]);
-			}
-
-			if (pixelSize == 4)
-			{
-				// Force result to be opaque
-				for (int i = 0; i < currentImage.Length; i += 4)
-				{
-					currentImage[i + 3] = 0xFF;
-				}
-			}
-
-			return currentImage;
-		}
-
-		private (BitmapFrame frame, byte[] pixels, int stride) DecodeImage(string path1)
-		{
-			using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
-			{
-				var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-
-				var f = decoder.Frames[0];
-				var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
-				var sourceStride = f.PixelWidth * sourceBytesPerPixels;
-				sourceStride += (4 - sourceStride % 4);
-
-				var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
-				decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
-
-				return (decoder.Frames[0], image, sourceStride);
-			}
-		}
-
 		private static IEnumerable<T> LogForeach<T>(IEnumerable<T> q, Action<T> action)
 		{
 			foreach (var item in q)
@@ -325,6 +255,84 @@ namespace Uno.UI.TestComparer.Comparer
 				action(item);
 				yield return item;
 			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static unsafe bool DiffImages(string a, string b, string diffPath)
+		{
+			uint changes = 0;
+			using var img1 = SKBitmap.Decode(@"\\?\" + a);
+			using var img2 = SKBitmap.Decode(@"\\?\" + b);
+
+			// Get Rgba8888 Piexels
+			var pixmap1 = GetPixels(img1);
+			var pixmap2 = GetPixels(img2);
+
+			// if have same size
+			if (pixmap1.Size == pixmap2.Size)
+			{
+				var bmp1Ptr = (byte*)pixmap1.GetPixels().ToPointer();
+				var bmp2Ptr = (byte*)pixmap2.GetPixels().ToPointer();
+				var width = pixmap1.Width;
+				var height = pixmap2.Height;
+
+
+				for (var row = 0; row < height; row++)
+				{
+					for (var col = 0; col < width; col++)
+					{
+						DiffByte(ref bmp1Ptr, ref bmp2Ptr, ref changes); //Red
+						DiffByte(ref bmp1Ptr, ref bmp2Ptr, ref changes); //Gren
+						DiffByte(ref bmp1Ptr, ref bmp2Ptr, ref changes); //Blue
+
+						*bmp1Ptr = 0xFF;                    //Alpha opaque
+						bmp1Ptr++;
+						bmp2Ptr++;
+					}
+				}
+
+				using var diffImage = SKImage.FromPixels(pixmap1);
+				using (var data = diffImage.Encode(SKEncodedImageFormat.Png, 100))
+				{
+					using (var stream = File.OpenWrite(diffPath))
+					{
+						data.SaveTo(stream);
+					}
+				}
+			}
+			else
+			{
+				//TODO: throw warings?
+				Console.WriteLine($"\t{a} and {b} have differnt size");
+			}
+			pixmap1?.Dispose();
+			pixmap2?.Dispose();
+			return changes > 0;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static unsafe SKPixmap GetPixels(SKBitmap image)
+		{
+			var pixmap = image.PeekPixels();
+			// Adjust color if not Rgba8888
+			if (image.ColorType != SKColorType.Rgba8888)
+			{
+				using (var old = pixmap)
+					pixmap = old.WithColorType(SKColorType.Rgba8888);
+			}
+			return pixmap;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static unsafe void DiffByte(ref byte* bmp1Ptr, ref byte* bmp2Ptr, ref uint changes)
+		{
+			*bmp1Ptr ^= *bmp2Ptr; // xor
+			unchecked
+			{
+				changes += *bmp1Ptr;
+			}
+			bmp1Ptr++;
+			bmp2Ptr++;
 		}
 
 	}
