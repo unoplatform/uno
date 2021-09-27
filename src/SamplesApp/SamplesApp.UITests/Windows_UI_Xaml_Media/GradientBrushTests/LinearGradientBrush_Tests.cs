@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GradientBrushTests
 			using var after = TakeScreenshot("After");
 
 			ImageAssert.AreNotEqual(before, after, screenRect);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Opacity_Is_Specified()
+		{
+			Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Opacity");
+
+			var grid = _app.Query("TestGrid").Single().Rect;
+			using var screenshot = TakeScreenshot(nameof(When_Opacity_Is_Specified));
+			ImageAssert.HasColorAt(screenshot, grid.CenterX, grid.CenterY, Color.FromArgb(255, 255, 128, 128));
 		}
 	}
 }

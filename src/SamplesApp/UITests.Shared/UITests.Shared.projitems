@@ -3597,6 +3597,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\LinearGradientBrush_Opacity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrushShapeStretchesAlignments.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6413,6 +6417,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\GradientsPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\LinearGradientBrush_Change_Stops.xaml.cs">
       <DependentUpon>LinearGradientBrush_Change_Stops.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\GradientBrushTests\LinearGradientBrush_Opacity.xaml.cs">
+      <DependentUpon>LinearGradientBrush_Opacity.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\ImageBrushShapeStretchesAlignments.xaml.cs">
       <DependentUpon>ImageBrushShapeStretchesAlignments.xaml</DependentUpon>

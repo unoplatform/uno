@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Media
 				return null;
 			}
 
-			var colors = GradientStops.SelectToList(s => ((Android.Graphics.Color)s.Color).ToArgb());
+			var colors = GradientStops.SelectToList(s => ((Android.Graphics.Color)GetColorWithOpacity(s.Color)).ToArgb());
 			var locations = GradientStops.SelectToList(s => (float)s.Offset);
 
 			if (GradientStops.Count == 1)
