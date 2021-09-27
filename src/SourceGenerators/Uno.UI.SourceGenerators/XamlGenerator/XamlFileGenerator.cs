@@ -5611,21 +5611,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
 												{
 													writer.AppendLineInvariant($"that.Bindings.UpdateResources();");
-
-													using (writer.BlockInvariant($"if (!that.IsLoaded)"))
-													{
-														// Refresh the bindings explicitly as the target is not yet loaded, but the
-														// x:Load value has already changed. In this case, the unloaded block registration below
-														// won't be called because the control was not loaded.
-														writer.AppendLineInvariant($"that.Bindings.Update();");
-													}
 												}
 											}
 										}
 
 										writer.AppendLineInvariant($"{closureName}.MaterializationChanged += {componentName}_update;");
 
-										using (writer.BlockInvariant($"void {componentName}_unloaded(object sender, RoutedEventArgs e)"))
+										using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
 										{
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
 											// ElementStub will be unloaded **after** the stubbed control has been created
@@ -5633,7 +5625,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
 										}
 
-										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_unloaded;");
+										writer.AppendLineInvariant($"{closureName}.Materializing += {componentName}_materializing;");
 									}
 									else
 									{

@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml
 				var newView = newViewProvider();
 				parentViewGroup.RemoveViewAt(currentPosition.Value);
 
+				RaiseMaterializing();
+
 				var unoViewGroup = parentViewGroup as UnoViewGroup;
 
 				if (unoViewGroup != null)

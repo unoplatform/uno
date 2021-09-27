@@ -64,6 +64,23 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public event MaterializationChangedHandler MaterializationChanged;
 
+		/// <summary>
+		/// A delegate used to signal that the content is being materialized in <see cref="ElementStub.Materializing"/>
+		/// </summary>
+		/// <param name="sender">The instance being changed</param>
+		public delegate void MaterializingChangedHandler(ElementStub sender);
+
+		/// <summary>
+		/// An event raised when the materialized object of the <see cref="ElementStub"/> has changed.
+		/// </summary>
+		/// <remarks>
+		/// This event is only raised when the ElementStub is materializing its target (not
+		/// dematerializing), and is raised after the element stub has been removed from the
+		/// tree, but before the new target is added to the tree (so the x:Bind on loaded event
+		/// can be raised properly).
+		/// </remarks>
+		public event MaterializationChangedHandler Materializing;
+
 		public bool Load
 		{
 			get => (bool)GetValue(LoadProperty);
@@ -149,6 +166,14 @@ namespace Windows.UI.Xaml
 
 		public void Materialize()
 			=> Materialize(isVisibilityChanged: false);
+
+		private void RaiseMaterializing()
+		{
+			if (_isMaterializing)
+			{
+				Materializing?.Invoke(this);
+			}
+		}
 
 		private void Materialize(bool isVisibilityChanged)
 		{
