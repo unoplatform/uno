@@ -40,7 +40,7 @@
 	<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.24" />
 	<PackageReference Update="System.ValueTuple" Version="4.5.0" />
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
-	<PackageReference Update="Xamarin.UITest" Version="3.0.15" />
+	<PackageReference Update="Xamarin.UITest" Version="3.2.2" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 	<PackageReference Update="SkiaSharp.Views" Version="2.80.0" />
 	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.0" />
