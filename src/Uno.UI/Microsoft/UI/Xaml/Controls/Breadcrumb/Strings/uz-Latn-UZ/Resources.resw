@@ -117,4 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AutomationNameEllipsisBreadcrumbBarItem" xml:space="preserve">
+    <value>Yana</value>
+    <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
+  </data>
+  <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">
+    <value>navigatsiya paneli elementi</value>
+    <comment>A simple description of the control for UIA</comment>
+  </data>
 </root>
