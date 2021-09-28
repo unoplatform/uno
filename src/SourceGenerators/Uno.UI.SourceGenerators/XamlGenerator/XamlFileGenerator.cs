@@ -191,6 +191,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol?>(SourceFindContentProperty).AsLockedMemoized();
 			_isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
 			_getAttachedPropertyType = Funcs.Create<INamedTypeSymbol, string, INamedTypeSymbol>(SourceGetAttachedPropertyType).AsLockedMemoized();
+			_isTypeImplemented = Funcs.Create<INamedTypeSymbol, bool>(SourceIsTypeImplemented).AsLockedMemoized();
 		}
 
 		public XamlFileGenerator(
@@ -2647,6 +2648,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (resource.Members.Any(HasXNameProperty))
 			{
 				return false;
+			}
+
+			if (!IsTypeImplemented(symbol))
+			{
+				// Lazily initialize not-implemented types, since there's no point creating them except to surface an error if explicitly required
+				return true;
 			}
 
 			if (

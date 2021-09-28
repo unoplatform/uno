@@ -202,7 +202,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_Has_Multiple_Themes()
 		{
 #if !NETFX_CORE
-			UnitTestsApp.App.EnsureApplication();			
+			UnitTestsApp.App.EnsureApplication();
 #endif
 
 			var rd = new ResourceDictionary();
@@ -590,7 +590,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				var _ = rd.ThemeDictionaries["Nope"];
 			});
 		}
-		
+
 		[TestMethod]
 		public void When_External_Source()
 		{
@@ -873,6 +873,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			dictionary.ThemeDictionaries.Remove("Default");
 			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
+
+		[TestMethod]
+		public void When_Resource_NotImplemented()
+		{
+			var initialCreationCount = SomeNotImplType.CreationAttempts;
+			var page = new When_Resource_NotImplemented_Page();
+			var resources = page.Resources;
+			AssertEx.AssertContainsColorBrushResource(resources, "LarcenousColorBrush", Colors.PaleVioletRed);
+			Assert.AreEqual(initialCreationCount, SomeNotImplType.CreationAttempts);
 		}
 	}
 }
