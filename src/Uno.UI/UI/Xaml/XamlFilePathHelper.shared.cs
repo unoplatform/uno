@@ -29,6 +29,8 @@ namespace Uno.UI.Xaml
 			}
 			else if (relativeTargetPath.StartsWith("/", StringComparison.Ordinal))
 			{
+				// Paths that start with '/' mean they're relative to the root (ie, absolute paths).
+				// We remove the leading / because that's what the callers expect.
 				return relativeTargetPath.Substring(1);
 			}
 
