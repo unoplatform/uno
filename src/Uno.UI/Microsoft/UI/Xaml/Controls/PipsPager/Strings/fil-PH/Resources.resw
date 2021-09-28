@@ -117,12 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AutomationNameEllipsisBreadcrumbBarItem" xml:space="preserve">
-    <value>Yana</value>
-    <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
+  <data name="PipsPagerNameText" xml:space="preserve">
+    <value>Pager</value>
+    <comment>It's a control that is used with a window that does not have enough display area to show all of its content. The pager allows the user to navigate to content that is not currently in view.</comment>
   </data>
-  <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">
-    <value>navigatsiya paneli elementi</value>
-    <comment>A simple description of the control for UIA</comment>
+  <data name="PipsPagerNextPageButtonText" xml:space="preserve">
+    <value>Susunod na Pahina</value>
+    <comment>Automation name and tooltip text for the next page button</comment>
+  </data>
+  <data name="PipsPagerPreviousPageButtonText" xml:space="preserve">
+    <value>Nakaraang Pahina</value>
+    <comment>Automation name and tooltip text for the previous page button</comment>
+  </data>
+  <data name="PipsPagerPageText" xml:space="preserve">
+    <value>Pahina</value>
+    <comment>Name used for UIA to announce controls, e.g. "Page 5"</comment>
   </data>
 </root>
