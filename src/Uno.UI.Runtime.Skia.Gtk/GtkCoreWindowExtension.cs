@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gdk;
 using Gtk;
@@ -9,7 +10,9 @@ using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Microsoft.Extensions.Logging;
 using static Windows.UI.Input.PointerUpdateKind;
+using Device = Gtk.Device;
 using Exception = System.Exception;
 
 namespace Uno.UI.Runtime.Skia
@@ -17,7 +20,11 @@ namespace Uno.UI.Runtime.Skia
 	internal partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{
 		private readonly CoreWindow _owner;
-		private ICoreWindowEvents _ownerEvents;
+		private readonly ICoreWindowEvents _ownerEvents;
+
+		private const int _maxKnownDevices = 63;
+		private const int _knownDeviceScavengeCount = 16;
+		private readonly Dictionary<PointerIdentifier, (Gdk.Device dev, uint ts)> _knownDevices = new Dictionary<PointerIdentifier, (Gdk.Device dev, uint ts)>(_maxKnownDevices + 1);
 
 		internal const Gdk.EventMask RequestedEvents =
 			Gdk.EventMask.EnterNotifyMask
@@ -38,13 +45,6 @@ namespace Uno.UI.Runtime.Skia
 			set => GtkHost.Window.Window.Cursor = value.ToCursor();
 		}
 
-		/// <inheritdoc />
-		public void ReleasePointerCapture()
-			=> this.Log().Warn("Pointer capture release is not supported on GTK");
-
-		/// <inheritdoc />
-		public void SetPointerCapture()
-			=> this.Log().Warn("Pointer capture is not supported on GTK");
 
 		public GtkCoreWindowExtension(object owner)
 		{
@@ -71,6 +71,32 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		partial void InitializeKeyboard();
+
+		/// <inheritdoc />
+		public void SetPointerCapture(PointerIdentifier pointer)
+		{
+			if (_knownDevices.TryGetValue(pointer, out var entry))
+			{
+				Gtk.Device.GrabAdd(GtkHost.Window, entry.dev, block_others: false);
+			}
+			else if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Unknown device id {pointer}, unable to natively capture it.");
+			}
+		}
+
+		/// <inheritdoc />
+		public void ReleasePointerCapture(PointerIdentifier pointer)
+		{
+			if (_knownDevices.TryGetValue(pointer, out var entry))
+			{
+				Gtk.Device.GrabRemove(GtkHost.Window, entry.dev);
+			}
+			else if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Unknown device id {pointer}, unable to natively capture it.");
+			}
+		}
 
 		private void OnWindowEnterEvent(object o, EnterNotifyEventArgs args)
 		{
@@ -233,7 +259,28 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private static PointerEventArgs AsPointerArgs(Event evt)
+		private void UseDevice(PointerPoint pointer, Gdk.Device device)
+		{
+			_knownDevices[pointer.Pointer] = (device, pointer.FrameId);
+
+			if (_knownDevices.Count > _maxKnownDevices)
+			{
+				// If we have too much devices in the cache, we significantly trim it to not have to do that every times.
+
+				var oldest = _knownDevices
+					.OrderBy(kvp => kvp.Value.ts)
+					.Take(_knownDeviceScavengeCount)
+					.Select(kvp => kvp.Key)
+					.ToArray();
+
+				foreach (var dev in oldest)
+				{
+					_knownDevices.Remove(dev);
+				}
+			}
+		}
+
+		private PointerEventArgs AsPointerArgs(Event evt)
 		{
 			var dev = EventHelper.GetSourceDevice(evt); // We use GetSourceDevice (and not GetDevice) in order to get the TouchScreen device
 			var pointerDevice = ToPointerDevice(dev);
@@ -350,6 +397,10 @@ namespace Uno.UI.Runtime.Skia
 				isInContact: properties.HasPressedButton,
 				properties: properties
 			);
+
+			// This method is not pure as it should be for a 'AsXXXX' method due to the line below,
+			// but doing so the 'dev' is contains only here.
+			UseDevice(pointerPoint, dev);
 
 			return new PointerEventArgs(pointerPoint, modifiers);
 		}
