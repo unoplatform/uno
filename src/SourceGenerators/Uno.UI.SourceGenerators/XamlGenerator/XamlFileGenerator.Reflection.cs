@@ -24,6 +24,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
+		private readonly static Func<INamedTypeSymbol, bool> _isTypeImplemented;
 
 		private void InitCaches()
 		{
@@ -751,7 +752,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				foreach (var clrNamespace in clrNamespaces)
 				{
-					if(_findType!(clrNamespace + "." + type.Name) is { } result)
+					if (_findType!(clrNamespace + "." + type.Name) is { } result)
 					{
 						return result;
 					}
@@ -906,5 +907,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(p => p.Name)
 				.ToArray();
 		}
+
+		private bool IsTypeImplemented(INamedTypeSymbol type) => _isTypeImplemented(type);
+
+		private static bool SourceIsTypeImplemented(INamedTypeSymbol type)
+			=> type.GetAttributes().None(a => a.AttributeClass?.ToDisplayString() == XamlConstants.Types.NotImplementedAttribute);
 	}
 }
