@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
+using Uno.Helpers;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -16,6 +17,8 @@ namespace Windows.UI.Popups
 
 		public IAsyncOperation<IUICommand> ShowAsync()
 		{
+			VisualTreeHelperProxy.CloseAllPopups();
+
 			var command = $"Uno.UI.WindowManager.current.alert(\"{Uno.Foundation.WebAssemblyRuntime.EscapeJs(Content)}\");";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 
