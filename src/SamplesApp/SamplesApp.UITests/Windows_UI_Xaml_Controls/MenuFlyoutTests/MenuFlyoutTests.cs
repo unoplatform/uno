@@ -253,27 +253,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 		[AutoRetry]
 		public void When_MenuFlyout_Nested_Clamped_To_Window()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyout_Nested_5639");
+			Run("UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyout_Nested_5639");
 
-			_app.WaitForElement("ButtonWithMenuFlyout");
+			_app.WaitForElementWithMessage("ButtonWithMenuFlyout");
 
 			var hostGridRect = _app.GetLogicalRect("HostGrid");
 
+			var runNo = 0;
 			TestPositioning();
 			TestPositioning(); // Should work second time
 
 			void TestPositioning()
 			{
+				runNo++;
+				TakeScreenshot($"Initial - opening {runNo}");
 				_app.FastTap("ButtonWithMenuFlyout");
-				_app.WaitForElement("NestedMenuItem");
+				_app.WaitForElementWithMessage("NestedMenuItem", $"opening {runNo}");
+				TakeScreenshot($"Outer flyout - opening {runNo}");
 				_app.FastTap("NestedMenuItem");
 
+				_app.WaitForElementWithMessage("LastSubitem", $"opening {runNo}");
+				TakeScreenshot($"Nested flyout - opening {runNo}");
 				var lastItemRect = _app.GetLogicalRect("LastSubitem");
 
 				// Item should be adjusted to within window
 				Assert.Less(lastItemRect.Bottom, hostGridRect.Bottom);
 
-				_app.FastTap("DummyTopButton"); // Dismiss flyout
+				_app.FastTap("LastSubitem"); // Dismiss flyout
 			}
 		}
 	}
