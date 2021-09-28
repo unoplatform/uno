@@ -6,10 +6,14 @@ using Windows.UI.Xaml.Media;
 
 namespace MUXControlsTestApp.Utilities
 {
-    public static class VisualTreeUtils
-    {
+	public static class VisualTreeUtils
+	{
 		public static T FindVisualChildByType<T>(this DependencyObject element)
+#if !NETFX_CORE
 			where T : class, DependencyObject
+#else
+			where T : DependencyObject
+#endif
 		{
 			if (element == null)
 			{
