@@ -9,6 +9,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.Extensions.Logging;
+using Uno;
 using Uno.Logging;
 
 namespace Windows.UI.Input
@@ -264,6 +265,7 @@ namespace Windows.UI.Input
 				switch (PointerType)
 				{
 					case PointerDeviceType.Mouse: return _settings.HasFlag(GestureSettings.HoldWithMouse);
+					case PointerDeviceType.Touch when DeviceHelper.IsSimulator: return true;
 					default: return false;
 				}
 			}
