@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 
 			using var screenshot = TakeScreenshot("Closed state");
 
-			ImageAssert.HasColorAt(screenshot, 50, 300, Color.Black);
+			ImageAssert.HasColorAt(screenshot, 25, 300, Color.Black);
 		}
 	}
 }

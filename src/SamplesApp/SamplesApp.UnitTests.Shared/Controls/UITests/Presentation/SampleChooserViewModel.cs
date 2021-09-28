@@ -858,19 +858,31 @@ description: {sample.Description}";
 		{
 			SampleChanging?.Invoke(this, EventArgs.Empty);
 
-			//Activator is used here in order to generate the view and bind it directly with the proper view model
-			var control = Activator.CreateInstance(newContent.ControlType);
-
-			if (control is ContentControl controlAsContentControl && !(controlAsContentControl.Content is Uno.UI.Samples.Controls.SampleControl))
+			FrameworkElement container = null;
+			if (typeof(Page).IsAssignableFrom(newContent.ControlType))
 			{
-				control = new Uno.UI.Samples.Controls.SampleControl
-				{
-					Content = control,
-					SampleDescription = newContent.Description
-				};
+				// Content is a page, for MUX compatibility we use Frame to navigate to it.
+				// This ensures the Page.Frame property is not null.
+				var frame = new Frame();
+				frame.Navigate(newContent.ControlType);
+				container = frame;
 			}
+			else
+			{
+				//Activator is used here in order to generate the view and bind it directly with the proper view model
+				var control = Activator.CreateInstance(newContent.ControlType);
 
-			var container = new Border { Child = control as UIElement };
+				if (control is ContentControl controlAsContentControl && !(controlAsContentControl.Content is Uno.UI.Samples.Controls.SampleControl))
+				{
+					control = new Uno.UI.Samples.Controls.SampleControl
+					{
+						Content = control,
+						SampleDescription = newContent.Description
+					};
+				}
+
+				container = new Border { Child = control as UIElement };
+			}
 
 			if (newContent.ViewModelType != null)
 			{
