@@ -3964,6 +3964,11 @@
 				fullName="Windows.UI.Xaml.Media.Animation.KeyTime Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_KeyTime()"
 				reason="False positive, still present, but accessible also through an internal interface" />
 		</Methods>
+		<Types>
+			<Member
+				fullName="Windows.UI.Core.ICoreWindowExtension"
+				reason="Internal interface" />
+		</Types>
 	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
