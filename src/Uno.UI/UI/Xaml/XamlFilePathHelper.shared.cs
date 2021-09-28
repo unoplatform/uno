@@ -27,9 +27,10 @@ namespace Uno.UI.Xaml
 				var trimmedPath = relativeTargetPath.TrimStart(AppXIdentifier);
 				return trimmedPath;
 			}
-
-			// Strip leading forward-slash, if any, to match the path the target file is indexed by
-			relativeTargetPath = relativeTargetPath.TrimStart(new[] { '/' });
+			else if (relativeTargetPath.StartsWith("/", StringComparison.Ordinal))
+			{
+				return relativeTargetPath.Substring(1);
+			}
 
 			var originDirectory = Path.GetDirectoryName(origin);
 			if (originDirectory.IsNullOrWhiteSpace())

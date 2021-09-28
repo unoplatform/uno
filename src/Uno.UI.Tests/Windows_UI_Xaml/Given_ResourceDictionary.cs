@@ -713,6 +713,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Relative_Path_With_Leading_Slash_From_Non_Root()
+		{
+			var withSlash = XamlFilePathHelper.ResolveAbsoluteSource("Dictionaries/App.xaml", "/App/Xaml/Test_Dictionary.xaml");
+			var withoutSlash = XamlFilePathHelper.ResolveAbsoluteSource("Dictionaries/App.xaml", "App/Xaml/Test_Dictionary.xaml");
+
+			Assert.AreEqual("App/Xaml/Test_Dictionary.xaml", withSlash);
+			Assert.AreEqual("Dictionaries/App/Xaml/Test_Dictionary.xaml", withoutSlash);
+		}
+
+		[TestMethod]
 		public void When_SharedHelpers_FindResource()
 		{
 			var rdInner = new ResourceDictionary();
