@@ -1,4 +1,5 @@
 ﻿// #define TRACE_ROUTED_EVENT_BUBBLING
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -817,11 +818,6 @@ namespace Windows.UI.Xaml
 			/// but the UIElement.RoutedEvent won't be raised in any way (public and internal handlers) and it won't be sent to Control.On`RoutedEvent`() neither.
 			/// </remarks>
 			public bool IsInternal { get; set; }
-
-			/// <summary>
-			/// Indicates that the associated event is an internal event that will not be propagated to parent (cf. <see cref="OnManagedBubbling"/>).
-			/// </summary>
-			public bool IsLocalOnly => IsInternal && Mode == BubblingMode.NoBubbling;
 
 			public BubblingContext WithMode(BubblingMode mode) => new BubblingContext
 			{
