@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AppKit;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -54,10 +55,10 @@ namespace Windows.UI.Core
 		}
 
 		/// <inheritdoc />
-		public void ReleasePointerCapture() { }
+		public void ReleasePointerCapture(PointerIdentifier pointer) { }
 
 		/// <inheritdoc />
-		public void SetPointerCapture() { }
+		public void SetPointerCapture(PointerIdentifier pointer) { }
 
 		private void RefreshCursor()
 		{
