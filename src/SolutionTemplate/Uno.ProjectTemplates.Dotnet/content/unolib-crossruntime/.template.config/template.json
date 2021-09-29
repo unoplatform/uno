@@ -45,7 +45,7 @@
     {
       "condition": "WebAssembly",
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.Wasm.csproj"
-    },
+    }
   ],
   "sources": [
     {
