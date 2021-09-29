@@ -45,6 +45,10 @@
     {
       "condition": "WebAssembly",
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.Wasm.csproj"
+    },
+    {
+      "condition": "Skia",
+      "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.Skia.csproj"
     }
   ],
   "sources": [
