@@ -43,7 +43,7 @@
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.csproj"
     },
     {
-      "condition": "Android",
+      "condition": "WebAssembly",
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.Wasm.csproj"
     },
   ],
