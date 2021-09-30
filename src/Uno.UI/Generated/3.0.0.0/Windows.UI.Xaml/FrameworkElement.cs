@@ -453,22 +453,7 @@ namespace Windows.UI.Xaml
 		#endif
 		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Unloaded
 		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Loading
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, object> ActualThemeChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.ActualThemeChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.ActualThemeChanged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.ActualThemeChanged
 		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.EffectiveViewportChanged
 	}
 }

@@ -187,13 +187,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.ContextMenuOpening.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.ContextMenuOpening.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SelectAll()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PasswordBox", "void PasswordBox.SelectAll()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.PasswordBox.SelectAll()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Header.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Header.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.HeaderTemplate.get
