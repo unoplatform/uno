@@ -31,7 +31,7 @@ namespace Windows.UI.Input
 		/// <summary>
 		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).
 		/// </summary>
-		/// <remarks> This collection might contains pointers that has been released. <see cref="CurrentContactCount"/> gives the actual number of active pointers.</remarks>
+		/// <remarks>This collection might contains pointers that has been released. <see cref="CurrentContactCount"/> gives the actual number of active pointers.</remarks>
 		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
 		internal PointerIdentifier[] Pointers { get; }
 

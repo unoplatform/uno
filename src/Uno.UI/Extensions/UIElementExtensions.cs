@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Logging;
@@ -27,8 +28,76 @@ namespace Uno.UI.Extensions
 				_ => $"{elt.GetType().Name}-{elt.GetHashCode():X8}",
 			};
 
+		internal enum IndentationFormat
+		{
+			Tabs,
+			Columns,
+			Numbered,
+			NumberedColumns,
+			NumberedSpaces,
+		}
+
+		private static readonly IndentationFormat _defaultIndentationFormat = IndentationFormat.NumberedSpaces;
+
 		internal static string GetDebugIdentifier(this object? elt)
-			=> $"{new string('\t', Math.Max(0, elt.GetDebugDepth()))} [{elt.GetDebugName()}]";
+		{
+			var depth = elt.GetDebugDepth();
+			var indentation = _defaultIndentationFormat switch
+			{
+				IndentationFormat.Numbered when depth < 0 => "-?>",
+				IndentationFormat.NumberedColumns when depth < 0 => "?>",
+				_ when depth < 0 => "",
+
+				IndentationFormat.Columns => GetColumnsIndentation(depth),
+				IndentationFormat.Numbered => GetNumberedIndentation(depth),
+				IndentationFormat.NumberedColumns => GetNumberedColumnIndentation(depth),
+				IndentationFormat.NumberedSpaces => $"{new string(' ', depth * 2)} {depth:D2}>",
+				IndentationFormat.Tabs => $"{new string('\t', depth)}",
+				_ => $"{new string(' ', depth * 2)} {depth:D2}>", // default to NumberedSpaces
+			};
+
+			return indentation + $"[{elt.GetDebugName()}]";
+
+			static string GetColumnsIndentation(int depth)
+			{
+				var sb = new StringBuilder(depth * 2);
+				for (var i = 0; i < depth; i++)
+				{
+					sb.Append('|');
+					sb.Append(' ');
+				}
+
+				return sb.ToString();
+			}
+
+			static string GetNumberedIndentation(int depth)
+			{
+				var sb = new StringBuilder(depth * 4);
+				for (var i = 0; i < depth; i++)
+				{
+					sb.Append('-');
+					sb.Append(i);
+					sb.Append('>');
+				}
+
+				return sb.ToString();
+			}
+
+			static string GetNumberedColumnIndentation(int depth)
+			{
+				var sb = new StringBuilder(depth * 4);
+				for (var i = 0; i < depth - 1; i++)
+				{
+					sb.Append(' ', i.ToString().Length);
+					sb.Append('|');
+				}
+
+				sb.Append(depth);
+				sb.Append('>');
+
+				return sb.ToString();
+			}
+		}
 
 		internal static int GetDebugDepth(this object? elt) =>
 			elt switch

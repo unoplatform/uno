@@ -804,7 +804,7 @@ namespace Windows.UI.Xaml.Controls
 				that.CompleteGesture();
 
 				// On UWP we don't get any CaptureLost, so make sure to manually release the capture silently
-				that.ReleasePointerCapture(e.Pointer, muteEvent: true);
+				that.ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
 
 				// KNOWN ISSUE:
 				// On UWP the 'click' event is raised **after** the PointerReleased ... but deferring the event on the Dispatcher

@@ -290,7 +290,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var target in capture.Targets)
 					{
-						target.Element.ReleasePointerCapture(capture.Pointer);
+						target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
 					}
 				}
 			}
@@ -463,10 +463,10 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		partial void CapturePointerNative(Pointer pointer)
-			=> CoreWindow.GetForCurrentThread()!.SetPointerCapture();
+			=> CoreWindow.GetForCurrentThread()!.SetPointerCapture(pointer.UniqueId);
 
 		partial void ReleasePointerNative(Pointer pointer)
-			=> CoreWindow.GetForCurrentThread()!.ReleasePointerCapture();
+			=> CoreWindow.GetForCurrentThread()!.ReleasePointerCapture(pointer.UniqueId);
 	}
 }
 #endif
