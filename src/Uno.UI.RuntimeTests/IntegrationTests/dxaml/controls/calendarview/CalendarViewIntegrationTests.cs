@@ -26,6 +26,7 @@ using CalendarView = Windows.UI.Xaml.Controls.CalendarView;
 
 using static Private.Infrastructure.TestServices;
 using static Private.Infrastructure.CalendarHelper;
+using Uno.UI.RuntimeTests;
 
 namespace Windows.UI.Xaml.Tests.Enterprise
 {
@@ -1065,6 +1066,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		[TestMethod]
 #if __WASM__
 		[Ignore("UNO TODO - This test is failing on WASM")]
+#endif
+#if __SKIA__
+		[RequiresFullWindow]
 #endif
 		public async Task VerifyButtonState()
 		{

@@ -59,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Canvas), 15)]
 		[DataRow(typeof(AutoSuggestBox), 15)]
 		[DataRow(typeof(AppBar), 15)]
+		[DataRow(typeof(CommandBar), 15)]
 		[DataRow(typeof(Border), 15)]
 		[DataRow(typeof(ContentControl), 15)]
 		[DataRow(typeof(ContentDialog), 15)]

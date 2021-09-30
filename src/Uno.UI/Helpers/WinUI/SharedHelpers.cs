@@ -483,7 +483,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsOnXbox()
 		{
-#if HAS_UNO
+#if HAS_UNO && !(NET461 || __NETSTD_REFERENCE__)
 			if (!s_isOnXboxInitialized)
 			{
 				var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
