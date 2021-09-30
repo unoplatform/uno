@@ -61,6 +61,20 @@ namespace Uno.UI
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static T ResolveResourceStatic<T>(object key, object context = null)
+		{
+			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value) && value is T tValue)
+			{
+				return tValue;
+			}
+
+			return default(T);
+		}
+
+		/// <summary>
+		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static object ResolveResourceStatic(object key, Type type, object context = null)
 		{
 			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value))
