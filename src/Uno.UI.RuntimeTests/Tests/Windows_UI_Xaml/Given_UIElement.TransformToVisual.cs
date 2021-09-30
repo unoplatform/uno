@@ -14,6 +14,7 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using DependencyObjectExtensions = Uno.UI.Extensions.DependencyObjectExtensions;
+using Windows.UI.Xaml.Shapes;
 #if __IOS__
 using UIKit;
 #endif
@@ -96,8 +97,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			AssertItem(0); // Top item, fully visible
 			AssertItem(2); // Bottom item, partially visible
-			// AssertItem(5); // Overflowing item, not materialized => No container for this
-			// AssertItem(9); // Last item, definitely not materialized => No container for this
+						   // AssertItem(5); // Overflowing item, not materialized => No container for this
+						   // AssertItem(9); // Last item, definitely not materialized => No container for this
 
 			void AssertItem(int index)
 			{
@@ -164,6 +165,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(154, result.X);
 			Assert.AreEqual(101, result.Y);
-		}		
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TransformToVisual_From_ScrollViewer()
+		{
+			var innerBorder = new Border
+			{
+				Width = 140,
+				Height = 60,
+				Background = new SolidColorBrush(Colors.Blue)
+			};
+
+			var SUT = new ScrollViewer
+			{
+				Content = new StackPanel
+				{
+					Children =
+					{
+						new Ellipse
+						{
+							Width = 170,
+							Height = 140,
+							Fill = new SolidColorBrush(Colors.Tomato)
+						},
+						innerBorder,
+						new Ellipse
+						{
+							Width = 170,
+							Height = 640,
+							Fill = new SolidColorBrush(Colors.Tomato)
+						},
+					}
+				}
+			};
+
+			var hostGrid = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Children = {
+					new Grid
+					{
+						Height = 320,
+						Margin = new Thickness(76),
+						Children =
+						{
+							SUT
+						}
+					}
+				}
+			};
+			TestServices.WindowHelper.WindowContent = hostGrid;
+
+			await TestServices.WindowHelper.WaitForLoaded(innerBorder);
+
+			AssertTransformOffset(SUT, 76);
+			AssertTransformOffset(innerBorder, 216);
+
+			SUT.ChangeView(null, 96, null);
+
+			await TestServices.WindowHelper.WaitForEqual(96, () => SUT.VerticalOffset);
+
+			AssertTransformOffset(SUT, 76);
+			AssertTransformOffset(innerBorder, 120);
+
+			SUT.ChangeView(null, 2000, null);
+
+			await TestServices.WindowHelper.WaitForEqual(520, () => SUT.VerticalOffset);
+
+			AssertTransformOffset(SUT, 76);
+			AssertTransformOffset(innerBorder, -304);
+
+			void AssertTransformOffset(FrameworkElement element, double expectedYOffset)
+			{
+				var transform = element.TransformToVisual(hostGrid) as MatrixTransform;
+				Assert.AreEqual(expectedYOffset, transform.Matrix.OffsetY, 1);
+			}
+		}
 	}
 }
