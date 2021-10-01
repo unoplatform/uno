@@ -208,29 +208,11 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		private static bool TryFindName(string name, IFrameworkElement element, out object outElement)
+		public static IFrameworkElement FindName(IFrameworkElement e, IEnumerable<View> subviews, string name)
 		{
-			if (string.Equals(element.Name, name))
+			if (string.Equals(e.Name, name, StringComparison.Ordinal))
 			{
-				outElement = element;
-				return true;
-			}
-
-			if (element is FrameworkElement fe && fe.Resources[name] is { } resource)
-			{
-				outElement = resource;
-				return true;
-			}
-
-			outElement = null;
-			return false;
-		}
-
-		public static object FindName(IFrameworkElement e, IEnumerable<View> subviews, string name)
-		{
-			if (TryFindName(name, e, out var outElement))
-			{
-				return outElement;
+				return e;
 			}
 
 			var frameworkElements = subviews
@@ -255,22 +237,22 @@ namespace Windows.UI.Xaml
 
 			foreach (var frameworkElement in frameworkElements)
 			{
-				if (TryFindName(name, frameworkElement, out outElement))
+				if (string.Equals(frameworkElement.Name, name, StringComparison.Ordinal))
 				{
-					return outElement.ConvertFromStubToElement(e, name);
+					return frameworkElement.ConvertFromStubToElement(e, name);
 				}
 			}
 
 			foreach (var frameworkElement in frameworkElements)
 			{
-				var subviewResult = frameworkElement.FindName(name);
+				var subviewResult = frameworkElement.FindName(name) as IFrameworkElement;
 				if (subviewResult != null)
 				{
 					return subviewResult.ConvertFromStubToElement(e, name);
 				}
 			}
 
-			if (e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+			if(e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
 			{
 				return FindInFlyout(name, contextFlyout);
 			}
@@ -283,11 +265,11 @@ namespace Windows.UI.Xaml
 			return null;
 		}
 
-		private static object FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
+		private static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
 			=> flyoutBase switch
 			{
-				MenuFlyout f => f.Items.Select(i => i.FindName(name)).Trim().FirstOrDefault(),
-				Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name)
+				MenuFlyout f => f.Items.Select(i => i.FindName(name) as IFrameworkElement).Trim().FirstOrDefault(),
+				Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
 			};
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
@@ -393,12 +375,13 @@ namespace Windows.UI.Xaml
 			return NMath.Max(left, right);
 		}
 
-		private static object ConvertFromStubToElement(this object element, IFrameworkElement originalRootElement, string name)
+		private static IFrameworkElement ConvertFromStubToElement(this IFrameworkElement element, IFrameworkElement originalRootElement, string name)
 		{
-			if (element is ElementStub elementStub)
+			var elementStub = element as ElementStub;
+			if (elementStub != null)
 			{
 				elementStub.Materialize();
-				element = originalRootElement.FindName(name);
+				element = originalRootElement.FindName(name) as IFrameworkElement;
 			}
 			return element;
 		}
