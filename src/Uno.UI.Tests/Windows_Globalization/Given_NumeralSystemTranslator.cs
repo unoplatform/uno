@@ -143,18 +143,22 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("ca-FR", "Latn", "ca-FR")]
 		[DataRow("ca-IT", "Latn", "ca-IT")]
 		[DataRow("ca-ES", "Latn", "ca")]
+#if !NETFX_CORE
 		[DataRow("ceb", "ArabExt", "fa")]
 		[DataRow("ceb-Latn", "ArabExt", "fa")]
 		[DataRow("ceb-Latn-PH", "ArabExt", "fa")]
+#endif
 		[DataRow("tzm-Arab-MA", "Latn", "tzm-Arab-MA")]
 		[DataRow("tzm-Latn-MA", "Latn", "tzm-Latn-MA")]
 		[DataRow("ku", "Arab", "ku")]
 		[DataRow("ku-Arab", "Arab", "ku-Arab")]
 		[DataRow("ku-Arab-IQ", "Arab", "ku-Arab")]
+#if !NETFX_CORE
 		[DataRow("ccp", "ArabExt", "fa")]
 		[DataRow("ccp-Cakm", "ArabExt", "fa")]
 		[DataRow("ccp-Cakm-BD", "ArabExt", "fa")]
 		[DataRow("ccp-Cakm-IN", "ArabExt", "fa")]
+#endif
 		[DataRow("ce-RU", "Latn", "ce-Cyrl-RU")]
 		[DataRow("chr", "Latn", "chr")]
 		[DataRow("chr-Cher", "Latn", "chr-Cher")]
@@ -170,7 +174,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("zh-MO", "Latn", "zh-Hant-MO")]
 		[DataRow("zh-TW", "Latn", "zh-Hant-TW")]
 		[DataRow("cu-RU", "Latn", "cu-Cyrl-RU")]
+#if !NETFX_CORE
 		[DataRow("swc", "ArabExt", "fa")]
+#endif
 		[DataRow("swc-CD", "Latn", "swc-CD")]
 		[DataRow("kw", "Latn", "kw")]
 		[DataRow("kw-GB", "Latn", "kw-Latn-GB")]
@@ -439,7 +445,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("id", "Latn", "id")]
 		[DataRow("id-ID", "Latn", "id")]
 		[DataRow("ia", "Latn", "ia")]
+#if !NETFX_CORE
 		[DataRow("ia-FR", "ArabExt", "fa")]
+#endif
 		[DataRow("ia-001", "Latn", "ia-001")]
 		[DataRow("iu", "Latn", "iu")]
 		[DataRow("iu-Latn", "Latn", "iu-Latn")]
@@ -877,7 +885,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("dje-NE", "Latn", "dje-Latn-NE")]
 		[DataRow("zu", "Latn", "zu")]
 		[DataRow("zu-ZA", "Latn", "zu")]
-		#endregion
+#endregion
 		public void When_UsingLanguage_Then_InitializeCorrectly(string languageTag, string numeralSystem, string resolveLanguage)
 		{
 			var numeralSystemTranslator = new NumeralSystemTranslator(new string[] { languageTag });
