@@ -289,13 +289,22 @@ namespace Windows.Devices.Radios
 			var radios = new List<Radio>();
 
 			var radio = GetRadiosBluetooth();
-			if (radio != null) radios.Add(radio); // yield oRadio;
+			if (radio != null)
+			{
+				radios.Add(radio); // yield oRadio;
+			}
 
 			radio = GetRadiosWiFiOrCellular(RadioKind.WiFi);
-			if (radio != null) radios.Add(radio); // yield oRadio;
+			if (radio != null)
+			{
+				radios.Add(radio); // yield oRadio;
+			}
 
 			radio = GetRadiosWiFiOrCellular(RadioKind.MobileBroadband);
-			if (radio != null) radios.Add(radio); // yield oRadio;
+			if (radio != null)
+			{
+				radios.Add(radio); // yield oRadio;
+			}
 
 			return radios;
 		}
@@ -304,7 +313,7 @@ namespace Windows.Devices.Radios
 		/// Gets info about radio devices which exist on the system
 		/// </summary>
 		public static IAsyncOperation<IReadOnlyList<Radio>> GetRadiosAsync()
-		=> GetRadiosAsyncTask().AsAsyncOperation();
+			=> GetRadiosAsyncTask().AsAsyncOperation();
 
 	}
 
