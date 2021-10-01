@@ -5197,6 +5197,13 @@
 			<Member
 				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Control::IsTabStopProperty"
 				reason="Fix alignment regressions" />
+
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::SpacingProperty"
+				reason="DPs must be properties" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty"
+				reason="DPs must be properties" />
 		</Fields>
 		<Properties>
 			<Member
