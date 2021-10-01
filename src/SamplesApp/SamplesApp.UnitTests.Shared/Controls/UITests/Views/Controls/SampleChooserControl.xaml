@@ -533,8 +533,7 @@
 							  Style="{x:Null}"/>
 					<!-- Dark theme check box -->
 					<CheckBox Grid.Column="9"
-							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}"
-							  Style="{x:Null}">
+							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
 					</CheckBox>
 				</Grid>
