@@ -6,7 +6,7 @@ using SamplesApp.UITests.TestFramework;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
 	[TestFixture]
-	public class ImageBrush_Stretch : SampleControlUITestBase
+	public partial class ImageBrush_Stretch : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
