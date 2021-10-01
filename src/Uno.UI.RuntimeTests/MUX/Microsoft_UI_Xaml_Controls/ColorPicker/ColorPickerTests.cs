@@ -338,7 +338,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 	}
 
-	public class MyColorSpectrum : ColorSpectrum
+	public partial class MyColorSpectrum : ColorSpectrum
 	{
 		protected override void OnApplyTemplate()
 		{
