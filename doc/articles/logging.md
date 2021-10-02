@@ -87,7 +87,7 @@ The standard Uno template configures logging in the **Shared** project **App.xam
 
 In order to support logging to the debug output view in Visual Studio, complete the following steps
 
-1. To install the, **IdentityModel** NuGet package, right-click the solution, and select **Manage NuGet packages for solution...**
+1. To install the, **Microsoft.Extensions.Logging.Debug** NuGet package, right-click the solution, and select **Manage NuGet packages for solution...**
 
 1. In the **Manage Packages for Solution** UI, select the **Browse** tab, search for **Microsoft.Extensions.Logging.Debug** and select it in the search results.
 
