@@ -12,7 +12,7 @@ Legend
 | Picker         | UWP   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
 |----------------|-------|-------------|---------|-------|-------|-----|-----|
 | FileOpenPicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
-| FileSavePicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ❌  |
+| FileSavePicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
 | FolderPicker   | ✔️   | ✔️          | ✔️     | 💬 (2)| ✔️   | ❌  | ✔️  |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*
