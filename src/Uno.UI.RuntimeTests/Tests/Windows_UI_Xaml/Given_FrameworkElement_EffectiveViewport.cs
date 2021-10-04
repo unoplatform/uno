@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -28,7 +29,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_EffectiveViewport
 	{
+#if __ANDROID__
+		private Rect WindowBounds
+		{
+			get
+			{
+				var slot = LayoutInformation.GetLayoutSlot(Window.Current.Content);
+				var bounds = new Rect(0, 0, slot.Width, slot.Height);
+
+				return bounds;
+			}
+		}
+#else
 		private Rect WindowBounds => new Rect(0, 0, Window.Current.Bounds.Width, Window.Current.Bounds.Height);
+#endif
 
 		private Point RootLocation
 		{
@@ -168,7 +182,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		#region DataRows
+#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 100, double.NaN)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, double.NaN, 100)]
 #if !__SKIA__

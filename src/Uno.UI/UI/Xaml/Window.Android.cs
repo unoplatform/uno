@@ -107,25 +107,25 @@ namespace Windows.UI.Xaml
 			var metrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
 
 			var insetsTypes = WindowInsets.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
-			var solidInsetsTypes = insetsTypes;
+			var opaqueInsetsTypes = insetsTypes;
 			if (IsStatusBarTranslucent())
 			{
-				solidInsetsTypes &= ~WindowInsets.Type.StatusBars();
+				opaqueInsetsTypes &= ~WindowInsets.Type.StatusBars();
 			}
 			if (IsNavigationBarTranslucent())
 			{
-				solidInsetsTypes &= ~WindowInsets.Type.NavigationBars();
+				opaqueInsetsTypes &= ~WindowInsets.Type.NavigationBars();
 			}
 
 			var insets = metrics.WindowInsets.GetInsets(insetsTypes).ToThickness();
-			var solidInsets = metrics.WindowInsets.GetInsets(solidInsetsTypes).ToThickness();
+			var opaqueInsets = metrics.WindowInsets.GetInsets(opaqueInsetsTypes).ToThickness();
+			var translucentInsets = insets.Minus(opaqueInsets);
 
-			// The 'metric.Bounds' does not include any insets, so we remove the "solid" insets under which we cannot draw anything
-			var windowBounds = new Rect(default, ((Rect)metrics.Bounds).DeflateBy(solidInsets).Size).PhysicalToLogicalPixels();
+			// The 'metric.Bounds' does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
+			var windowBounds = new Rect(default, ((Rect)metrics.Bounds).DeflateBy(opaqueInsets).Size).PhysicalToLogicalPixels();
 
-			// The visible bounds is the windows bounds on which we remove also
-			// [translucent only inset](all_insets - solid_insets_that_has_already_been_removed_from_all_insets)
-			var visibleBounds = windowBounds.DeflateBy(insets.Minus(solidInsets)).PhysicalToLogicalPixels();
+			// The visible bounds is the windows bounds on which we remove also translucentInsets
+			var visibleBounds = windowBounds.DeflateBy(translucentInsets).PhysicalToLogicalPixels();
 
 			return (windowBounds, visibleBounds, visibleBounds);
 		}

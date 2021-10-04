@@ -125,7 +125,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			void Setter()
 			{
-				runButton.IsEnabled = !isRunning || _cts == null;
+				testFilter.IsEnabled = runButton.IsEnabled = !isRunning || _cts == null; // Disable the testFilter to avoid SIP to re-open
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
@@ -461,7 +461,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
-					runButton.IsEnabled = true;
+					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					stopButton.IsEnabled = false;
 				});
 			}
@@ -500,7 +500,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
-					runButton.IsEnabled = true;
+					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					stopButton.IsEnabled = false;
 				});
 			}
