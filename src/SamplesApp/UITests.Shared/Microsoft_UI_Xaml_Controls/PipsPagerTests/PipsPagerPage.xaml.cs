@@ -21,7 +21,7 @@ namespace MUXControlsTestApp
 		Button previousPageButton;
 		Button nextPageButton;
 		ItemsRepeater repeater;
-		ItemsRepeater verticalOrientationPipsPagerRepeater;
+		//ItemsRepeater verticalOrientationPipsPagerRepeater;
 
 		public List<string> Pictures = new List<string>()
         {
@@ -48,8 +48,8 @@ namespace MUXControlsTestApp
 			previousPageButton = VisualTreeHelper.GetChild(rootPanel, 0) as Button;
 			nextPageButton = VisualTreeHelper.GetChild(rootPanel, 2) as Button;
 			repeater = rootPanel.FindVisualChildByType<ItemsRepeater>();
-			var rootPanelVerticalPipsPager = VisualTreeHelper.GetChild(TestPipsPagerVerticalOrientation, 0);
-			verticalOrientationPipsPagerRepeater = rootPanelVerticalPipsPager.FindVisualChildByType<ItemsRepeater>();
+			//var rootPanelVerticalPipsPager = VisualTreeHelper.GetChild(TestPipsPagerVerticalOrientation, 0);
+			//verticalOrientationPipsPagerRepeater = rootPanelVerticalPipsPager.FindVisualChildByType<ItemsRepeater>();
 
 
 			PreviousPageButtonVisibilityComboBox.SelectionChanged += OnPreviousPageButtonVisibilityChanged;
@@ -86,11 +86,11 @@ namespace MUXControlsTestApp
 				HorizontalOrientationPipsPagerButtonWidthTextBlock.Text = $"{ horizontalOrientationPip.ActualWidth}";
 				HorizontalOrientationPipsPagerButtonHeightTextBlock.Text = $"{horizontalOrientationPip.ActualHeight}";
 			}
-			if (verticalOrientationPipsPagerRepeater.TryGetElement(1) as FrameworkElement is var verticalOrientationPip && verticalOrientationPip != null)
-			{
-				VerticalOrientationPipsPagerButtonWidthTextBlock.Text = $"{verticalOrientationPip.ActualWidth}";
-				VerticalOrientationPipsPagerButtonHeightTextBlock.Text = $"{verticalOrientationPip.ActualHeight}";
-			}
+			//if (verticalOrientationPipsPagerRepeater.TryGetElement(1) as FrameworkElement is var verticalOrientationPip && verticalOrientationPip != null)
+			//{
+			//	VerticalOrientationPipsPagerButtonWidthTextBlock.Text = $"{verticalOrientationPip.ActualWidth}";
+			//	VerticalOrientationPipsPagerButtonHeightTextBlock.Text = $"{verticalOrientationPip.ActualHeight}";
+			//}
 		}
 
 		private void OnRepeaterGotFocus(object sender, RoutedEventArgs e)

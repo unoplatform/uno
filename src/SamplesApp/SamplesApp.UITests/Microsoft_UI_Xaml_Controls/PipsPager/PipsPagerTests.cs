@@ -220,10 +220,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
         {
             {
                 elements = new PipsPagerElements(this._app);
-                SetOrientation("Horizontal");
+                SetOrientation(Orientation.Horizontal);
                 VerifyOrientationChanged("Horizontal");
 
-                SetOrientation("Vertical");
+                SetOrientation(Orientation.Vertical);
                 VerifyOrientationChanged("Vertical");
 
             }
@@ -246,8 +246,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 
                 Verify.AreEqual("12", horizontalOrientationPipsPagerButtonWidth.FirstResult().Text);
                 Verify.AreEqual("20", horizontalOrientationPipsPagerButtonHeight.FirstResult().Text);
-                Verify.AreEqual("20", verticalOrientationPipsPagerButtonWidth.FirstResult().Text);
-                Verify.AreEqual("12", verticalOrientationPipsPagerButtonHeight.FirstResult().Text);
+                //TODO Uno: Removed vertical pips pager to be able to properly query elements (was not possible due to Uno.UITest limitations
+				//Verify.AreEqual("20", verticalOrientationPipsPagerButtonWidth.FirstResult().Text);
+                //Verify.AreEqual("12", verticalOrientationPipsPagerButtonHeight.FirstResult().Text);
             }
         }
 
@@ -265,7 +266,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
                 Verify.AreEqual("12", horizontalOrientationPipsPagerButtonWidth.FirstResult().Text);
                 Verify.AreEqual("20", horizontalOrientationPipsPagerButtonHeight.FirstResult().Text);
 
-                SetOrientation("Vertical");
+                SetOrientation(Orientation.Vertical);
                 VerifyOrientationChanged("Vertical");
 
 				InputHelperLeftClick(getButtonSizesButton);

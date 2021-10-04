@@ -163,7 +163,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
             {
                 Log.Comment("Find the " + elementName);
 
-				var result = _app.FindWithin(elementName, GetPipsPager());
+				var pipsPager = GetPipsPager();
+				var count = pipsPager.Results().Length;
+				var result = _app.Marked(elementName);
 				if (result != null && result.HasResults())
 				{
 					element = result;
