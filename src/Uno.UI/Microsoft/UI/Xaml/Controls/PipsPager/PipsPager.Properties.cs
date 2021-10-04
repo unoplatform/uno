@@ -36,9 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(PipsPager),
 				new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
-
-
-
 		public PipsPagerButtonVisibility NextButtonVisibility
 		{
 			get => (PipsPagerButtonVisibility)GetValue(NextButtonVisibilityProperty);
@@ -50,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(NextButtonVisibility),
 				typeof(PipsPagerButtonVisibility),
 				typeof(PipsPager),
-				new FrameworkPropertyMetadata(PipsPagerButtonVisibility.Collapsed));
+				new FrameworkPropertyMetadata(PipsPagerButtonVisibility.Collapsed, OnPropertyChanged));
 
 		public Style NormalPipStyle
 		{
