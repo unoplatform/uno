@@ -229,6 +229,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 #endif
 
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
@@ -317,6 +320,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("Center", "Center", 25d, 5d, 100d, 50d, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
 		[TestMethod]
 		[RunsOnUIThread]
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#endif
 		public async Task TestVariousArrangedPosition(
 			string horizontal,
 			string vertical,

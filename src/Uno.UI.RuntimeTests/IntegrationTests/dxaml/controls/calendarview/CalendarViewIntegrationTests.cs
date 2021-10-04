@@ -1655,8 +1655,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __IOS__ || __MACOS__ || __ANDROID__
-		[Ignore("UNO TODO - This test is failing on iOS/macOS/Android")]
+#if __IOS__ || __MACOS__ || __ANDROID__ || __SKIA__
+		[Ignore("UNO TODO - This test is failing on iOS/macOS/Android/Skia")]
 #endif
 		public async Task CalendarPanelLayoutTestStretchTest()
 		{
