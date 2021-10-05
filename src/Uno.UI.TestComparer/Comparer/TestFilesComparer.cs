@@ -261,20 +261,23 @@ namespace Uno.UI.TestComparer.Comparer
 		public static unsafe bool DiffImages(string a, string b, string diffPath)
 		{
 			uint changes = 0;
-			using var img1 = SKBitmap.Decode(@"\\?\" + a);
-			using var img2 = SKBitmap.Decode(@"\\?\" + b);
+			var la = @"\\?\" + a;
+			var lb = @"\\?\" + b;
+			var info1 = SKBitmap.DecodeBounds(la);
+			var info2 = SKBitmap.DecodeBounds(lb);
 
-			// Get Rgba8888 Piexels
-			var pixmap1 = GetPixels(img1);
-			var pixmap2 = GetPixels(img2);
-
-			// if have same size
-			if (pixmap1.Size == pixmap2.Size)
+			if (info1.Size == info2.Size)
 			{
+				using var img1 = SKBitmap.Decode(la, info1.WithColorType(SKColorType.Rgba8888));
+				using var img2 = SKBitmap.Decode(lb, info2.WithColorType(SKColorType.Rgba8888));
+
+				using var pixmap1 = img1.PeekPixels();
+				using var pixmap2 = img2.PeekPixels();
+
 				var bmp1Ptr = (byte*)pixmap1.GetPixels().ToPointer();
 				var bmp2Ptr = (byte*)pixmap2.GetPixels().ToPointer();
 				var width = pixmap1.Width;
-				var height = pixmap2.Height;
+				var height = pixmap1.Height;
 
 
 				for (var row = 0; row < height; row++)
@@ -305,22 +308,7 @@ namespace Uno.UI.TestComparer.Comparer
 				//TODO: throw warings?
 				Console.WriteLine($"\t{a} and {b} have differnt size");
 			}
-			pixmap1?.Dispose();
-			pixmap2?.Dispose();
 			return changes > 0;
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static unsafe SKPixmap GetPixels(SKBitmap image)
-		{
-			var pixmap = image.PeekPixels();
-			// Adjust color if not Rgba8888
-			if (image.ColorType != SKColorType.Rgba8888)
-			{
-				using (var old = pixmap)
-					pixmap = old.WithColorType(SKColorType.Rgba8888);
-			}
-			return pixmap;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
