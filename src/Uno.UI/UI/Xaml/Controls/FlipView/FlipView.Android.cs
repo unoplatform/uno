@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private NativePagedView PagedView { get { return InternalItemsPanelRoot as NativePagedView; } }
 
-		protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
 			if (PagedView != null && PagedView.Adapter == null)
 			{

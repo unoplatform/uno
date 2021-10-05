@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
 			if (InternalItemsPanelRoot == null)
 			{

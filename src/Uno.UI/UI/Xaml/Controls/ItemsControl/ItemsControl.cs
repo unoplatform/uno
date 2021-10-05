@@ -886,11 +886,7 @@ namespace Windows.UI.Xaml.Controls
 			SyncDataContext();
 		}
 
-		protected virtual void SyncDataContext()
-		{
-		}
-
-		protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
+		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
 			if (ItemsPanelRoot == null || !ShouldItemsControlManageChildren)
 			{
@@ -1513,5 +1509,30 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+#if !HAS_UNO_4_0_OR_LATER
+		// Methods to remove or make internal when moving to Uno 4.0
+		// https://github.com/unoplatform/uno/issues/2240
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		protected virtual void SyncDataContext()
+		{
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void SetNeedsUpdateItems()
+			=> UpdateItems();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool UpdateItemsIfNeeded()
+			=> UpdateItems();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		protected virtual bool UpdateItems()
+		{
+			UpdateItems(null);
+			return true;
+		}
+#endif
 	}
 }
