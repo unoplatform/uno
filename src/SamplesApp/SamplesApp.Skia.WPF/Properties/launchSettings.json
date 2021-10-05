@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SamplesApp.Skia.WPF": {
+      "commandName": "Project",
+      "commandLineArgs": "--runtime-tests=C:\\Temp\\unit-test-results.xml"
+    }
+  }
+}

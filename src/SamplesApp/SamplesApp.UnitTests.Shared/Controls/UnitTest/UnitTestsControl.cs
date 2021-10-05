@@ -59,7 +59,25 @@ namespace Uno.UI.Samples.Tests
 			DataContext = null;
 
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
+
+			OverrideDebugProviderAsserts();
 		}
+
+		private static void OverrideDebugProviderAsserts()
+		{
+#if NETSTANDARD2_0 || NET5_0_OR_GREATER
+			if (Type.GetType("System.Diagnostics.DebugProvider") is { } type)
+			{
+				if (type.GetField("s_FailCore", BindingFlags.NonPublic | BindingFlags.Static) is { } fieldInfo)
+				{
+					fieldInfo.SetValue(null, (Action<string, string, string, string>)FailCore);
+				}
+			}
+#endif
+		}
+
+		static void FailCore(string stackTrace, string message, string detailMessage, string errorSource)
+			=> throw new Exception($"{message} ({detailMessage}) {stackTrace}");
 
 		private void OnSampleChanging(object sender, EventArgs e)
 		{
@@ -144,7 +162,7 @@ namespace Uno.UI.Samples.Tests
 			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
 		}
 
-		private void GenerateTestResults()
+		private async Task GenerateTestResults()
 		{
 			void Update()
 			{
@@ -153,7 +171,7 @@ namespace Uno.UI.Samples.Tests
 				NUnitTestResultsDocument = results;
 			}
 
-			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
 		}
 
 		private void ReportTestClass(TypeInfo testClass)
@@ -420,7 +438,7 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		private async Task RunTests(CancellationToken ct, string[] filters)
+		public async Task RunTests(CancellationToken ct, string[] filters)
 		{
 			_currentRun = new TestRun();
 
@@ -460,7 +478,7 @@ namespace Uno.UI.Samples.Tests
 				ReportTestsResults();
 			}
 
-			GenerateTestResults();
+			await GenerateTestResults();
 		}
 
 		private MethodInfo[] FilterTests(UnitTestClassInfo testClassInfo, string[] filters)

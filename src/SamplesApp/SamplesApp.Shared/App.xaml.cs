@@ -113,8 +113,6 @@ namespace SamplesApp
 					Console.WriteLine("Done loading " + sw.Elapsed);
 				});
 
-			ProcessEventArgs(e);
-
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
 			{
@@ -129,21 +127,19 @@ namespace SamplesApp
 			HandleLaunchArguments(e);
 		}
 
-		private static void ProcessEventArgs(LaunchActivatedEventArgs e)
+		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__
 			var runAutoScreenshotsParam =
 			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
 
 			var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
-#endif
 
-			var sw = Stopwatch.StartNew();
-			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
-				_ =>
-				{
-#if __SKIA__
-					if (!string.IsNullOrEmpty(screenshotsPath))
+			if (!string.IsNullOrEmpty(screenshotsPath))
+			{
+				var sw = Stopwatch.StartNew();
+				var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+					_ =>
 					{
 						var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 							CoreDispatcherPriority.Normal,
@@ -152,9 +148,48 @@ namespace SamplesApp
 								await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
 							}
 						);
-					}
+
+					});
+
+				return true;
+			}
 #endif
+
+			return false;
+		}
+
+		private static async Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
+		{
+#if __SKIA__
+			var runRuntimeTestsResultsParam =
+			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
+
+			var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
+
+			if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
+			{
+				Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
+
+				_ = Window.Current.Dispatcher.RunIdleAsync(async _ =>
+				{
+					// let the app finish its startup
+					await Task.Delay(TimeSpan.FromSeconds(5));
+
+					await Task.Run(
+						async () =>
+						{
+							await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
+								CancellationToken.None,
+								runtimeTestResultFilePath,
+								() => System.Environment.Exit(0));
+						}
+					);
 				});
+
+				return true;
+			}
+#endif
+			return false;
 		}
 
 #if __IOS__
@@ -261,6 +296,18 @@ namespace SamplesApp
 
 		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
+			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
+
+			if (await HandleSkiaAutoScreenshots(launchActivatedEventArgs))
+			{
+				return;
+			}
+
+			if (await HandleSkiaRuntimeTests(launchActivatedEventArgs))
+			{
+				return;
+			}
+
 			if (await TryNavigateToLaunchSampleAsync(launchActivatedEventArgs))
 			{
 				return;
