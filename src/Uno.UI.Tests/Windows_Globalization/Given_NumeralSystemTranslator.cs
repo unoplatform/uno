@@ -305,7 +305,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("en-TC", "Latn", "en-TC")]
 		[DataRow("en-TV", "Latn", "en-TV")]
 		[DataRow("en-UG", "Latn", "en-UG")]
+#if !NETFX_CORE
 		[DataRow("en-AE", "Latn", "en")]
+#endif
 		[DataRow("en-GB", "Latn", "en-GB")]
 		[DataRow("en-US", "Latn", "en-US")]
 		[DataRow("en-UM", "Latn", "en-UM")]
@@ -625,7 +627,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("os-RU", "Latn", "os-Cyrl-RU")]
 		[DataRow("ps", "ArabExt", "ps")]
 		[DataRow("ps-AF", "ArabExt", "ps")]
+#if !NETFX_CORE
 		[DataRow("ps-PK", "ArabExt", "ps")]
+#endif
 		[DataRow("fa", "ArabExt", "fa")]
 		[DataRow("fa-AF", "Arab", "fa-AF")]
 		[DataRow("fa-IR", "ArabExt", "fa")]
