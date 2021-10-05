@@ -104,6 +104,14 @@
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\UnoUITestTemplate\UnoUITestTemplate.csproj">
+      <Project>{228f24b6-b5c0-43bc-9b1a-b03e7b6dca27}</Project>
+      <Name>UnoUITestsLibrary</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

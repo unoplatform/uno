@@ -295,6 +295,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoSolutionTemplate.Wizard.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoSolutionTemplate.WinUI.net6", "SolutionTemplate\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.WinUI.net6.csproj", "{042F79A0-E0BB-4DED-8BC8-419700B9EE30}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoUITestTemplate", "SolutionTemplate\UnoUITestTemplate\UnoUITestTemplate.csproj", "{228F24B6-B5C0-43BC-9B1A-B03E7B6DCA27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

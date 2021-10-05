@@ -12,7 +12,7 @@
         <Icon>logo.png</Icon>
     </Metadata>
     <Installation>
-	  <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,17.0)"/>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,17.0)"/>
     </Installation>
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
@@ -24,6 +24,7 @@
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="UnoItemTemplate" d:TargetPath="|UnoItemTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+        <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="UnoUITestsLibrary" d:TargetPath="|UnoUITestsLibrary;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     </Assets>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.1.28811.260,17.0)" DisplayName="Visual Studio core editor" />
