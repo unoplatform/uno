@@ -113,10 +113,21 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <None Remove="Tests\Windows_UI_Xaml\Controls\Animation_Leak.xaml" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Tests\Windows_UI_Xaml\Controls\Animation_Leak.xaml" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>
+		<Page Update="Tests\Windows_UI_Xaml\Controls\Animation_Leak.xaml">
+		  <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</Page>
 		<Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">
 			<SubType>Designer</SubType>
 		</Page>
