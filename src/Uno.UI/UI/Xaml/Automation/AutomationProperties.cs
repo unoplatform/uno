@@ -93,9 +93,7 @@ namespace Windows.UI.Xaml.Automation
 			DependencyProperty.RegisterAttached(
 				"LocalizedControlType", typeof(string),
 				typeof(AutomationProperties),
-#pragma warning disable Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
-				new FrameworkPropertyMetadata(default(string)) // NOTE: This one shouldn't be string.Empty to match UWP.
-#pragma warning restore Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
+				new FrameworkPropertyMetadata(default(string))
 			);
 
 		#endregion
@@ -124,7 +122,7 @@ namespace Windows.UI.Xaml.Automation
 			propertyType: typeof(string),
 			ownerType: typeof(AutomationProperties),
 			typeMetadata: new FrameworkPropertyMetadata(
-				defaultValue: "", // In UWP, this one seems to be null.
+				defaultValue: "",
 				propertyChangedCallback: OnAutomationIdChanged)
 		);
 

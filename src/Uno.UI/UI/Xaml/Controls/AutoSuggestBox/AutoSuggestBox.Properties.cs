@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string TextMemberPath
 		{
-			get => (string)this.GetValue(TextMemberPathProperty);
+			get => (string)this.GetValue(TextMemberPathProperty) ?? "";
 			set => this.SetValue(TextMemberPathProperty, value);
 		}
 
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TextMemberPath", typeof(string),
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: string.Empty)
+			new FrameworkPropertyMetadata(defaultValue: null)
 		);
 
 		public static DependencyProperty TextProperty { get; } =

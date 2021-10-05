@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Label
 		{
-			get => (string)GetValue(LabelProperty);
+			get => (string)GetValue(LabelProperty) ?? "";
 			set => SetValue(LabelProperty, value);
 		}
 
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				"Label", typeof(string),
 				typeof(AppBarToggleButton),
-				new FrameworkPropertyMetadata(string.Empty)
+				new FrameworkPropertyMetadata(default(string))
 			);
 
 		#endregion

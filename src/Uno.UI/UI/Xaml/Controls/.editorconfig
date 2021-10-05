@@ -1,0 +1,3 @@
+[*.cs]
+# Couple of false positives.
+dotnet_diagnostic.Uno0002_Internal.severity = none

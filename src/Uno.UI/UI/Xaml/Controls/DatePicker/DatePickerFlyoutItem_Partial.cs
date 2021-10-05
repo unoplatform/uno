@@ -89,19 +89,17 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PrimaryTextProperty, value);
 		}
 
-#pragma warning disable Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
 		public static global::Windows.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } =
 			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(PrimaryText), typeof(string),
 				typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem),
-				new FrameworkPropertyMetadata(default(string))); // NOTE: This shouldn't be string.Empty to match UWP
+				new FrameworkPropertyMetadata(default(string)));
 
 		public static global::Windows.UI.Xaml.DependencyProperty SecondaryTextProperty { get; } =
 			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(SecondaryText), typeof(string),
 				typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem),
-				new FrameworkPropertyMetadata(default(string))); // NOTE: This shouldn't be string.Empty to match UWP
-#pragma warning restore Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
+				new FrameworkPropertyMetadata(default(string)));
 
 		public override string ToString()
 		{

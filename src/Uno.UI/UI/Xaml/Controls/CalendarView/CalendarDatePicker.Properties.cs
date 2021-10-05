@@ -36,20 +36,20 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DateFormatProperty { get; } = DependencyProperty.Register(
-			"DateFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(string.Empty));
+			"DateFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
 
 		public string DateFormat
 		{
-			get => (string)GetValue(DateFormatProperty);
+			get => (string)GetValue(DateFormatProperty) ?? "";
 			set => SetValue(DateFormatProperty, value);
 		}
 
 		public static DependencyProperty DayOfWeekFormatProperty { get; } = DependencyProperty.Register(
-			"DayOfWeekFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(string.Empty));
+			"DayOfWeekFormat", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
 
 		public string DayOfWeekFormat
 		{
-			get => (string)GetValue(DayOfWeekFormatProperty);
+			get => (string)GetValue(DayOfWeekFormatProperty) ?? "";
 			set => SetValue(DayOfWeekFormatProperty, value);
 		}
 

@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public string Label
 		{
-			get => (string)GetValue(LabelProperty);
+			get => (string)GetValue(LabelProperty) ?? "";
 			set => SetValue(LabelProperty, value);
 		}
 
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public string Description
 		{
-			get => (string)GetValue(DescriptionProperty);
+			get => (string)GetValue(DescriptionProperty) ?? "";
 			set => SetValue(DescriptionProperty, value);
 		}
 
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public string AccessKey
 		{
-			get => (string)GetValue(AccessKeyProperty);
+			get => (string)GetValue(AccessKeyProperty) ?? "";
 			set => SetValue(AccessKeyProperty, value);
 		}
 
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Input
 				nameof(AccessKey),
 				typeof(string),
 				typeof(XamlUICommand),
-				new FrameworkPropertyMetadata(string.Empty));
+				new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>
 		/// Identifies the Command dependency property.
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Input
 				nameof(Description),
 				typeof(string),
 				typeof(XamlUICommand),
-				new FrameworkPropertyMetadata(string.Empty));
+				new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>
 		/// Identifies the IconSource dependency property.
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Input
 				nameof(Label),
 				typeof(string),
 				typeof(XamlUICommand),
-				new FrameworkPropertyMetadata(string.Empty));
+				new FrameworkPropertyMetadata(default(string)));
 
 		/// <summary>
 		/// Notifies the system that the command state has changed.

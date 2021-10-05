@@ -79,12 +79,12 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || __MACOS__
 		public string DocumentTitle
 		{
-			get { return (string)GetValue(DocumentTitleProperty); }
+			get { return (string)GetValue(DocumentTitleProperty) ?? ""; }
 			internal set { SetValue(DocumentTitleProperty, value); }
 		}
 
 		public static DependencyProperty DocumentTitleProperty { get; } =
-			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(string.Empty));
+			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(default(string)));
 #endif
 		#endregion
 

@@ -79,8 +79,9 @@ namespace Uno.UI.Behaviors
 
 #region Attached property: Text
 
-#pragma warning disable Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value. - TODO: Should this be string.Empty?
 		public static DependencyProperty TextProperty { get ; } =
+#pragma warning disable Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
+			// TODO: Revise this and see if it should be null or empty string.
 			DependencyProperty.RegisterAttached("Text", typeof(string), typeof(TextBoxBehavior), new FrameworkPropertyMetadata(default(string), OnTextChanged));
 #pragma warning restore Uno0002_Internal // String dependency properties (in *most* cases) shouldn't have null default value.
 

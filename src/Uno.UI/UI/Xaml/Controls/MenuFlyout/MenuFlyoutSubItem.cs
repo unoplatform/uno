@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Text
 		{
-			get => (string)this.GetValue(TextProperty);
+			get => (string)this.GetValue(TextProperty) ?? "";
 			set => SetValue(TextProperty, value);
 		}
 
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			"Text",
 			typeof(string),
 			typeof(MenuFlyoutSubItem),
-			new FrameworkPropertyMetadata(string.Empty));
+			new FrameworkPropertyMetadata(default(string)));
 
 		public static Windows.UI.Xaml.DependencyProperty IconProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
