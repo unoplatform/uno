@@ -2,18 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum CompositionMappingMode 
 	{
-		#if false
-		Absolute,
-		#endif
-		#if false
-		Relative,
-		#endif
+		// Skipping already declared field Windows.UI.Composition.CompositionMappingMode.Absolute
+		// Skipping already declared field Windows.UI.Composition.CompositionMappingMode.Relative
 	}
 	#endif
 }

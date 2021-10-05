@@ -26,6 +26,8 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(PasswordBox);
 		}
 
+		public new void SelectAll() => base.SelectAll();
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();

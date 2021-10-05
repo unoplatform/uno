@@ -384,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 			nameof(CanPasteClipboardContent), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(bool)));
-#endif
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.TextBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.TextBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.Text.get

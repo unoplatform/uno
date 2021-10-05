@@ -2,39 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CompositionEllipseGeometry : global::Windows.UI.Composition.CompositionGeometry
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 Radius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionEllipseGeometry.Radius is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionEllipseGeometry", "Vector2 CompositionEllipseGeometry.Radius");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 Center
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionEllipseGeometry.Center is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionEllipseGeometry", "Vector2 CompositionEllipseGeometry.Center");
-			}
-		}
-		#endif
+		// Skipping already declared property Radius
+		// Skipping already declared property Center
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Center.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Center.set
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Radius.get

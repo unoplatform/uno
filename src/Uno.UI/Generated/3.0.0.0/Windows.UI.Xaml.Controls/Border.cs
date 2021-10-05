@@ -28,34 +28,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
-			}
-			set
-			{
-				this.SetValue(BackgroundSizingProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property BackgroundSizing
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property BorderBrushProperty
 		// Skipping already declared property BorderThicknessProperty
 		// Skipping already declared property ChildTransitionsProperty
 		// Skipping already declared property CornerRadiusProperty
 		// Skipping already declared property PaddingProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BackgroundSizing), typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
-			typeof(global::Windows.UI.Xaml.Controls.Border), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
-		#endif
+		// Skipping already declared property BackgroundSizingProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.Border.Border()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.Border()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BorderBrush.get
