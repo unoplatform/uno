@@ -360,8 +360,7 @@ namespace Windows.UI.Xaml
 					}
 				}
 
-				if (elt.IsScrollPort // Managed SCP or custom scroller
-					&& elt != from) // Don't adjust for scroll offsets if it's the scroll port itself calling TransformToVisual, only for ancestors
+				if (elt.IsScrollPort) // Managed SCP or custom scroller
 				{
 					offsetX -= elt.ScrollOffsets.X;
 					offsetY -= elt.ScrollOffsets.Y;
