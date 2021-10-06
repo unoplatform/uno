@@ -94,13 +94,13 @@ namespace Uno.UI.Tests.TextBoxTests
 			var textChangingCount = 0;
 			var beforeTextChangingCount = 0;
 			textBox.BeforeTextChanging += (tb, e) =>
-			  {
-				  beforeTextChangingCount++;
-				  if (e.NewText == "Papaya")
-				  {
-					  e.Cancel = true;
-				  }
-			  };
+			{
+				beforeTextChangingCount++;
+				if (e.NewText == "Papaya")
+				{
+					e.Cancel = true;
+				}
+			};
 			textBox.TextChanging += (tb, e) => textChangingCount++;
 			textBox.Text = "Chirimoya";
 			Assert.AreEqual("Chirimoya", textBox.Text);
@@ -114,6 +114,31 @@ namespace Uno.UI.Tests.TextBoxTests
 
 			textBox.Text = "Chirimoya";
 			Assert.AreEqual(2, beforeTextChangingCount);
+		}
+
+		[TestMethod]
+		public void When_Multi_Line_Text_And_Not_AcceptsReturn()
+		{
+			var textBox = new TextBox();
+			Assert.AreEqual(false, textBox.AcceptsReturn);
+			textBox.Text = "Hello\nWorld";
+			Assert.AreEqual("Hello", textBox.Text);
+
+			textBox.Text = "Hello\rWorld";
+			Assert.AreEqual("Hello", textBox.Text);
+		}
+
+		[TestMethod]
+		public void When_Multi_Line_Text_And_Not_AcceptsReturn_After_Text_Was_Set()
+		{
+			var textBox = new TextBox();
+
+			textBox.AcceptsReturn = true;
+			textBox.Text = "Hello\nWorld";
+			Assert.AreEqual("Hello\nWorld", textBox.Text);
+
+			textBox.AcceptsReturn = false;
+			Assert.AreEqual("Hello", textBox.Text);
 		}
 
 		public class MySource : System.ComponentModel.INotifyPropertyChanged
