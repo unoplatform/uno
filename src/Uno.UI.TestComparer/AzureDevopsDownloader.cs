@@ -37,7 +37,10 @@ namespace Uno.UI.TestComparer
 									  int runLimit)
 		{
 			Directory.CreateDirectory(basePath);
-
+			var gettingBuildTime = TimeSpan.Zero;
+			var downloadZipTime = TimeSpan.Zero;
+			var extractZipTime = TimeSpan.Zero;
+			var timer = new System.Diagnostics.Stopwatch();
 			var connection = new VssConnection(new Uri(_collectionUri), new VssBasicCredential(string.Empty, _pat));
 
 			var client = await connection.GetClientAsync<BuildHttpClient>();
@@ -47,10 +50,14 @@ namespace Uno.UI.TestComparer
 				targetBranchName = "refs/heads/" + targetBranchName;
 			}
 
-			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranch}, {targetBranchName}, {buildId}, {runLimit})");
+			timer.Start();
+			Console.Write($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranch}, {targetBranchName}, {buildId}, {runLimit}) ");
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
+			timer.Stop();
+			Console.WriteLine(timer.Elapsed);
 
-			Console.WriteLine("Getting builds");
+			Console.Write("Getting builds ");
+			timer.Restart();
 			var builds = await client.GetBuildsAsync(
 				project,
 				definitions: new[] { definitions.First().Id },
@@ -65,7 +72,11 @@ namespace Uno.UI.TestComparer
 			var suceededBuilds = builds
 				.Distinct(new BuildComparer())
 				.OrderBy(b => b.FinishTime)
-				.Concat(new[] { currentBuild });
+				.Concat(new[] { currentBuild })
+				.ToList(); // Add ToList() for mesure comparing.
+			timer.Stop();
+			Console.WriteLine(timer.Elapsed);
+			gettingBuildTime += timer.Elapsed;
 
 			string BuildArtifactPath(Build build)
 				=> Path.Combine(basePath, $@"artifacts\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
@@ -81,8 +92,9 @@ namespace Uno.UI.TestComparer
 					var artifacts = await client.GetArtifactsAsync(project, build.Id);
 
 					if (artifacts.Any(a => a.Name == artifactName))
-					{
-						Console.WriteLine($"Getting artifact for build {build.Id}");
+					{						
+						Console.Write($"Getting artifact for build {build.Id} ... ");
+						timer.Restart();
 						using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
 						{
 							using (var f = File.OpenWrite(tempFile))
@@ -90,9 +102,12 @@ namespace Uno.UI.TestComparer
 								await stream.CopyToAsync(f);
 							}
 						}
+						timer.Stop();
+						Console.WriteLine(timer.Elapsed);
+						downloadZipTime += timer.Elapsed;
 
-						Console.WriteLine($"Extracting artifact for build {build.Id}");
-
+						Console.Write($"Extracting artifact for build {build.Id} ... ");
+						timer.Restart();
 						fullPath = fullPath.Replace("\\\\", "\\");
 
 						using (var archive = ZipFile.OpenRead(tempFile))
@@ -117,6 +132,9 @@ namespace Uno.UI.TestComparer
 								}
 							}
 						}
+						timer.Stop();
+						Console.WriteLine(timer.Elapsed);
+						extractZipTime += timer.Elapsed;
 					}
 					else
 					{
@@ -128,6 +146,10 @@ namespace Uno.UI.TestComparer
 					Console.WriteLine($"Skipping already downloaded build {build.Id} artifacts");
 				}
 			}
+
+			Console.WriteLine($"Total Getting Builds\t{gettingBuildTime}");
+			Console.WriteLine($"Total Downlaod Zip\t{downloadZipTime}");
+			Console.WriteLine($"Total Extract Zip\t{extractZipTime}");
 
 			return suceededBuilds.Select(BuildArtifactPath).ToArray();
 		}
