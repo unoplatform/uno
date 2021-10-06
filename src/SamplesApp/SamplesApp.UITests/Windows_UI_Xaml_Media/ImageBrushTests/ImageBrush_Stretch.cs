@@ -21,28 +21,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 			using var screenshot = TakeScreenshot(nameof(When_Stretch));
 
 			// All edges are red-ish
-			ImageAssert.HasColorAt(screenshot, fill.CenterX, fill.Y + 6, "#FFEB1C24");
-			ImageAssert.HasColorAt(screenshot, fill.CenterX, fill.Bottom - 6, "#FFEB1C24");
-			ImageAssert.HasColorAt(screenshot, fill.X + 6, fill.CenterY, "#FFEB1C24");
-			ImageAssert.HasColorAt(screenshot, fill.Right - 6, fill.CenterY, "#FFEB1C24");
+			ImageAssert.HasColorAt(screenshot, fill.CenterX, fill.Y + 6, "#FFEB1C24", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, fill.CenterX, fill.Bottom - 6, "#FFEB1C24", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, fill.X + 6, fill.CenterY, "#FFEB1C24", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, fill.Right - 6, fill.CenterY, "#FFEB1C24", tolerance: 5);
 
 			// Top and bottom are red-ish. Left and right are yellow-ish
-			ImageAssert.HasColorAt(screenshot, uniformToFill.CenterX, uniformToFill.Y + 6, "#FFEB1C24");
-			ImageAssert.HasColorAt(screenshot, uniformToFill.CenterX, uniformToFill.Bottom - 6, "#FFEB1C24");
-			ImageAssert.HasColorAt(screenshot, uniformToFill.X + 6, uniformToFill.CenterY, "#FFFEF200");
-			ImageAssert.HasColorAt(screenshot, uniformToFill.Right - 6, uniformToFill.CenterY, "#FFFEF200");
+			ImageAssert.HasColorAt(screenshot, uniformToFill.CenterX, uniformToFill.Y + 6, "#FFEB1C24", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, uniformToFill.CenterX, uniformToFill.Bottom - 6, "#FFEB1C24", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, uniformToFill.X + 6, uniformToFill.CenterY, "#FFFEF200", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, uniformToFill.Right - 6, uniformToFill.CenterY, "#FFFEF200", tolerance: 5);
 
 			// Top and bottom are same as backround. Left and right are red-ish
-			ImageAssert.HasColorAt(screenshot, uniform.CenterX, uniform.Y + 6, Color.White);
-			ImageAssert.HasColorAt(screenshot, uniform.CenterX, uniform.Bottom - 6, Color.White);
-			ImageAssert.HasColorAt(screenshot, uniform.X + 6, uniform.CenterY, "#FFEB1C24");
-			ImageAssert.HasColorAt(screenshot, uniform.Right - 6, uniform.CenterY, "#FFEB1C24");
+			ImageAssert.HasColorAt(screenshot, uniform.CenterX, uniform.Y + 6, Color.White, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, uniform.CenterX, uniform.Bottom - 6, Color.White, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, uniform.X + 6, uniform.CenterY, "#FFEB1C24", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, uniform.Right - 6, uniform.CenterY, "#FFEB1C24", tolerance: 5);
 
 			// Everything is green-ish
-			ImageAssert.HasColorAt(screenshot, none.CenterX, none.Y + 6, "#FF0ED145");
-			ImageAssert.HasColorAt(screenshot, none.CenterX, none.Bottom - 6, "#FF0ED145");
-			ImageAssert.HasColorAt(screenshot, none.X + 6, none.CenterY, "#FF0ED145");
-			ImageAssert.HasColorAt(screenshot, none.Right - 6, none.CenterY, "#FF0ED145");
+			ImageAssert.HasColorAt(screenshot, none.CenterX, none.Y + 6, "#FF0ED145", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, none.CenterX, none.Bottom - 6, "#FF0ED145", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, none.X + 6, none.CenterY, "#FF0ED145", tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, none.Right - 6, none.CenterY, "#FF0ED145", tolerance: 5);
 		}
 	}
 }
