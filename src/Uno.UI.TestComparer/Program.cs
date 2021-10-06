@@ -55,6 +55,8 @@ namespace Umbrella.UI.TestComparer
 				var githubPAT = "";
 				var sourceRepository = "";
 				var githubPRid = "";
+				var timerDownloadArtifacts = new System.Diagnostics.Stopwatch();
+				var timerCompare = new System.Diagnostics.Stopwatch();
 
 				var p = new OptionSet() {
 					{ "base-path=", s => basePath = s },
@@ -82,18 +84,25 @@ namespace Umbrella.UI.TestComparer
 				var targetBranch = !string.IsNullOrEmpty(targetBranchParam) && targetBranchParam != "$(System.PullRequest.TargetBranch)" ? targetBranchParam : sourceBranch;      	
 
 				var downloader = new AzureDevopsDownloader(pat, serverUri);
+				timerDownloadArtifacts.Start();
 				var artifacts = await downloader.DownloadArtifacts(basePath, projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit);
+				timerDownloadArtifacts.Stop();
 
 				var artifactsBasePath = Path.Combine(basePath, "artifacts");
 				var results = new List<CompareResult>();
 
+				timerCompare.Start();
 				foreach (var platform in GetValidPlatforms(artifactsBasePath))
 				{
 					var result = ProcessFiles(basePath, artifactsBasePath, artifacts, artifactInnerBasePath, platform, currentBuild.ToString());
 					results.Add(result);
 				}
+				timerCompare.Stop();
 
 				await TryPublishPRComments(results, githubPAT, sourceRepository, githubPRid, currentBuild);
+
+				Console.WriteLine($"Artifact download time: {timerDownloadArtifacts.Elapsed}");
+				Console.WriteLine($" Comparing images time: {timerCompare.Elapsed}");
 			}
 			else if (args[0] == "compare")
 			{
