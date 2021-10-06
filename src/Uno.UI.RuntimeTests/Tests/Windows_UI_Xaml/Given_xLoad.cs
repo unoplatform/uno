@@ -47,6 +47,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			sut.IsLoad = false;
 
 			Assert.IsFalse((parent.Child as ElementStub).Load);
+
+			sut.IsLoad = true;
+
+			Assert.IsNotNull(sut.LoadBorder);
+			parent = sut.LoadBorder.Parent as Border;
+
+			sut.IsLoad = false;
+
+			Assert.IsFalse((parent.Child as ElementStub).Load);
 		}
 
 		[TestMethod]
