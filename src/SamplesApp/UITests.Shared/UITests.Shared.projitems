@@ -369,6 +369,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\RadioTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\AccelerometerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4610,6 +4614,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\RadioTests.xaml.cs">
+      <DependentUpon>RadioTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\AccelerometerTests.xaml.cs">
       <DependentUpon>AccelerometerTests.xaml</DependentUpon>
