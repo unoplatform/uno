@@ -49,6 +49,9 @@
 		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_IncrementNumberRounder.cs">
 			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_NumeralSystemTranslator.cs">
+			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
