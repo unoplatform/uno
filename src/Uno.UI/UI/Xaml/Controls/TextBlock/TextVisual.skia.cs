@@ -3,14 +3,11 @@
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+using System.Linq;
 using Uno;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
-using Windows.Storage;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -27,7 +24,7 @@ namespace Windows.UI.Composition
 		private readonly TextBlock _owner;
 
 		private string? _previousRenderText;
-		private string[]? _textLines;
+		private SkiaTextLine[]? _textLines;
 
 		private static SKTypeface FromFamilyName(
 			string name,
@@ -108,7 +105,7 @@ namespace Windows.UI.Composition
 				_textLines = _owner.Text.Split(
 					new[] { "\r\n", "\r", "\n" },
 					StringSplitOptions.None
-				);
+				).SelectToArray(line => new SkiaTextLine(line, _paint.Typeface, _getTypeFace));
 				_previousRenderText = _owner.Text;
 			}
 
@@ -147,14 +144,20 @@ namespace Windows.UI.Composition
 				var ascent = metrics.Ascent;
 
 				var lineHeight = descent - ascent;
-
-				_textLines ??= new[] {_owner.Text};
+				_textLines ??= new[] { new SkiaTextLine(_owner.Text, _paint.Typeface, _getTypeFace) };
 
 				var y = -ascent;
 
 				foreach (var line in _textLines)
 				{
-					surface.Canvas.DrawText(line, 0, y, _paint);
+					float x = 0;
+					foreach (var textPart in line.TextParts)
+					{
+						_paint.Typeface = textPart.Font;
+						surface.Canvas.DrawText(textPart.Text, x, y, _paint);
+						x += _paint.MeasureText(textPart.Text);
+					}
+
 					y += lineHeight;
 				}
 			}
