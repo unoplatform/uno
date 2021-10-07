@@ -547,13 +547,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)]
 		public void TextBox_IsReadOnly_AcceptsReturn_Test()
 		{
-			/* test disabled for ios and wasm, due to #
-			 *-ios: when setting AcceptsReturn to false, the TextBox doesn't resize appropriately
-			 * -wasm: AcceptsReturn is not implemented or does nothing */
-
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_IsReadOnly_AcceptsReturn");
 			// for context, IsReadOnly=True used to break AcceptsReturn=True on android
 
