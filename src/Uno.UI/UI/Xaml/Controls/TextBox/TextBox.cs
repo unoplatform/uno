@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static string GetSingleLine(string value)
+		private static string GetFirstLine(string value)
 		{
 			for (int i = 0; i < value.Length; i++)
 			{
@@ -281,7 +281,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!AcceptsReturn)
 			{
-				baseString = GetSingleLine(baseString);
+				baseString = GetFirstLine(baseString);
 			}
 
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
@@ -426,7 +426,7 @@ namespace Windows.UI.Xaml.Controls
 			if (e.NewValue is false)
 			{
 				var text = Text;
-				var singleLineText = GetSingleLine(text);
+				var singleLineText = GetFirstLine(text);
 				if (text != singleLineText)
 				{
 					Text = singleLineText;
