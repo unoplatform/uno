@@ -1,4 +1,6 @@
-﻿using System;
+﻿// MUX Reference: InfoBadgeTests.cs, commit 76bd573a73595ac66e8ff5ce755537d19f50a96d
+
+using System;
 using Common;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
