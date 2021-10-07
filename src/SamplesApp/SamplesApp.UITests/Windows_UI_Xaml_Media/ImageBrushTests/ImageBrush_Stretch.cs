@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
@@ -10,6 +11,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 	{
 		[Test]
 		[AutoRetry]
+
+		[ActivePlatforms(Platform.Browser, Platform.iOS)]
 		public void When_Stretch()
 		{
 			Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrush_Stretch");
