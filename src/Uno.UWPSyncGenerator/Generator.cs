@@ -807,7 +807,6 @@ namespace Uno.UWPSyncGenerator
 				}
 				else
 				{
-					// TODO: Make sure we're not skipping fields with mismatched signature.
 					b.AppendLineInvariant($"// Skipping already declared field {field}");
 				}
 			}
@@ -857,7 +856,6 @@ namespace Uno.UWPSyncGenerator
 				}
 				else
 				{
-					// TODO: Make sure we're not skipping events with mismatched signature.
 					b.AppendLineInvariant($"// Skipping already declared event {eventMember}");
 				}
 			}
@@ -1367,7 +1365,6 @@ namespace Uno.UWPSyncGenerator
 				}
 				else
 				{
-					// TODO: Make sure we're not skipping properties with mismatched signature.
 					b.AppendLineInvariant($"// Skipping already declared property {property.Name}");
 				}
 			}
