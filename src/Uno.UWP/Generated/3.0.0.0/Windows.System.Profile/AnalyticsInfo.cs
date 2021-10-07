@@ -5,7 +5,7 @@ namespace Windows.System.Profile
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class AnalyticsInfo 
+	public static partial class AnalyticsInfo 
 	{
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
