@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 
@@ -14,7 +11,7 @@ namespace Uno.UWPSyncGenerator
 		protected override void ProcessType(INamedTypeSymbol type, INamespaceSymbol ns)
 		{
 			var folder = $@"{GetNamespaceBasePath(type)}\{ns}";
-			var info = Directory.CreateDirectory(folder);
+			_ = Directory.CreateDirectory(folder);
 
 			// Console.WriteLine(type.ToString());
 
@@ -24,7 +21,6 @@ namespace Uno.UWPSyncGenerator
 				using (var typeWriter = new StreamWriter(Path.Combine(folder, type.Name) + ".cs"))
 				{
 					var b = new IndentedStringBuilder();
-
 					b.AppendLineInvariant($"#pragma warning disable 108 // new keyword hiding");
 					b.AppendLineInvariant($"#pragma warning disable 114 // new keyword hiding");
 					using (b.BlockInvariant($"namespace {ns}"))
@@ -42,7 +38,7 @@ namespace Uno.UWPSyncGenerator
 			var partialModifier = type.TypeKind != TypeKind.Enum ? "partial" : "";
 			var allSymbols = GetAllSymbols(type);
 
-			var staticQualifier = (type.IsAbstract && type.IsSealed) ? "static" : "";
+			var staticQualifier = type.IsStatic ? "static" : "";
 
 			if (SkippedType(type))
 			{
@@ -50,11 +46,11 @@ namespace Uno.UWPSyncGenerator
 				return;
 			}
 
-			var writtenSymbols = new List<ISymbol>();
+			var writtenMethods = new List<IMethodSymbol>();
 
 			if (type.TypeKind == TypeKind.Delegate)
 			{
-				BuildDelegate(type, b, allSymbols, writtenSymbols);
+				BuildDelegate(type, b, allSymbols);
 			}
 			else
 			{
@@ -89,16 +85,22 @@ namespace Uno.UWPSyncGenerator
 				{
 					if (type.TypeKind != TypeKind.Enum)
 					{
-						BuildProperties(type, b, allSymbols, writtenSymbols);
-						BuildMethods(type, b, allSymbols, writtenSymbols);
-						BuildEvents(type, b, allSymbols, writtenSymbols);
+						// TODO: https://github.com/unoplatform/uno/issues/6895
+						//if (type.TypeKind == TypeKind.Class && !type.IsStatic &&
+						//	type.GetMembers(WellKnownMemberNames.InstanceConstructorName).Length == 0)
+						//{
+						//	b.AppendLineInvariant($"private {type.Name}() {{{{ }}}}");
+						//}
+						BuildProperties(type, b, allSymbols);
+						BuildMethods(type, b, allSymbols, writtenMethods);
+						BuildEvents(type, b, allSymbols);
 					}
 
-					BuildFields(type, b, allSymbols, writtenSymbols);
+					BuildFields(type, b, allSymbols);
 
 					if (type.TypeKind != TypeKind.Enum)
 					{
-						BuildInterfaceImplementations(type, b, allSymbols, writtenSymbols);
+						BuildInterfaceImplementations(type, b, allSymbols, writtenMethods);
 					}
 				}
 
