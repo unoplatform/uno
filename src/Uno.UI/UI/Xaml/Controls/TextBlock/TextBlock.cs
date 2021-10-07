@@ -943,6 +943,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool CanHaveChildren() => true;
 
+		public new bool Focus(FocusState value) => base.Focus(value);
+
 		internal override bool IsFocusable =>
 			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.
 			IsVisible() &&

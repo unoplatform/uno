@@ -20,5 +20,7 @@ namespace Windows.UI.Xaml.Controls
 		public BlockCollection Blocks { get; }
 
 		internal override bool CanHaveChildren() => true;
+
+		public new bool Focus(FocusState value) => base.Focus(value);
 	}
 }
