@@ -16,5 +16,7 @@
 		<TextBlock x:Name="DeviceFamilyTextBlock" />
 		<TextBlock Text="DeviceFamilyVersion" FontWeight="Bold" />
 		<TextBlock x:Name="DeviceFamilyVersionTextBlock" />
+		<TextBlock Text="Decoded DeviceFamilyVersion" FontWeight="Bold" />
+		<TextBlock x:Name="DecodedDeviceFamilyVersionTextBlock" />
 	</StackPanel>
 </UserControl>
