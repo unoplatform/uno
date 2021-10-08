@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set { SetValue(GroupNameProperty, value); }
 		}
 
-		public static readonly DependencyProperty GroupNameProperty =
+		public static DependencyProperty GroupNameProperty { get; } =
 			DependencyProperty.Register(nameof(GroupName), typeof(string), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(string.Empty, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
 
 		public new bool IsChecked
