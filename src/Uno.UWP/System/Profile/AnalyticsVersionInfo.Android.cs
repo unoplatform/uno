@@ -1,4 +1,3 @@
-#if __ANDROID__
 using Android.OS;
 
 namespace Windows.System.Profile
@@ -7,13 +6,10 @@ namespace Windows.System.Profile
 	{
 		private const string OsName = "Android";
 
-		internal AnalyticsVersionInfo()
+		partial void Initialize()
 		{
+			DeviceFamily = $"{OsName}.{AnalyticsInfo.DeviceForm}";
+			DeviceFamilyVersion = Build.VERSION.Release;
 		}
-
-		public string DeviceFamily => OsName + '.' + AnalyticsInfo.DeviceForm;
-
-		public string DeviceFamilyVersion => Build.VERSION.Release;
 	}
 }
-#endif

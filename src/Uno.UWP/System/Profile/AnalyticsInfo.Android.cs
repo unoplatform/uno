@@ -10,6 +10,7 @@ using Android.Telephony;
 using Android.Util;
 
 using Uno.Extensions;
+using Uno.System.Profile;
 using Uno.Foundation.Logging;
 
 namespace Windows.System.Profile

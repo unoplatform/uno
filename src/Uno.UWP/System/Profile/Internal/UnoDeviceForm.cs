@@ -1,4 +1,6 @@
-﻿namespace Windows.System.Profile
+﻿#nullable enable
+
+namespace Uno.System.Profile
 {
 	internal enum UnoDeviceForm
 	{

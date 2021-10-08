@@ -3,6 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using Foundation;
 using ObjCRuntime;
+using Uno.System.Profile;
 
 namespace Windows.System.Profile
 {

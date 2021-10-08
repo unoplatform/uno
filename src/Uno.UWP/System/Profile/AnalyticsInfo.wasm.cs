@@ -1,5 +1,6 @@
 ﻿using System;
 using Uno.Foundation;
+using Uno.System.Profile;
 
 namespace Windows.System.Profile
 {

@@ -2,6 +2,7 @@
 
 using System;
 using Uno.Foundation.Extensibility;
+using Uno.System.Profile;
 
 namespace Windows.System.Profile
 {
@@ -20,10 +21,5 @@ namespace Windows.System.Profile
 			});
 
 		private static UnoDeviceForm GetDeviceForm() => _analyticsInfoExtension.Value?.GetDeviceForm() ?? UnoDeviceForm.Unknown;
-	}
-
-	internal interface IAnalyticsInfoExtension
-	{
-		UnoDeviceForm GetDeviceForm();
 	}
 }

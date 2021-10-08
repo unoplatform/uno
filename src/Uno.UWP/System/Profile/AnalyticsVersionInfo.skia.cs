@@ -7,12 +7,11 @@ namespace Windows.System.Profile
 {
     public partial class AnalyticsVersionInfo
     {
-        internal AnalyticsVersionInfo()
-        {
-        }
 
-        public string DeviceFamily => Environment.OSVersion.Platform.ToString();
 
-        public string DeviceFamilyVersion => Environment.OSVersion.VersionString;
+		partial void Initialize()
+		{
+			DeviceFamily = $"{Environment.OSVersion.Platform.ToString()}.{AnalyticsInfo.DeviceForm}";
+		}
     }
 }
