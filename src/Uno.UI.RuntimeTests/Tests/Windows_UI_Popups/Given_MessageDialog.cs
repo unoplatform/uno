@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -30,11 +31,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
 			FlyoutBase.ShowAttachedFlyout(button);
 			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
-			var messageDialog = new MessageDialog("Hello");
+			var messageDialog = new MessageDialog("Should_Close_Open_Popups");
 			var asyncOperation = messageDialog.ShowAsync();
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
 			asyncOperation.Cancel();
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Cancel_Then_CloseDialog()
+		{
+			var messageDialog = new MessageDialog("When_Cancel_Then_CloseDialog");
+			var asyncOperation = messageDialog.ShowAsync();
+
+			Assert.AreEqual(AsyncStatus.Started, asyncOperation.Status);
+
+			await WindowHelper.WaitForIdle();
+
+			asyncOperation.Cancel();
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(AsyncStatus.Canceled, asyncOperation.Status);
+		}
 	}
 }
