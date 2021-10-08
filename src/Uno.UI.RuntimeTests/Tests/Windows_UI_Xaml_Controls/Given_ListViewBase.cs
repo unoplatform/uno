@@ -1413,7 +1413,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				WindowHelper.WindowContent = errorCatchGrid;
 				await WindowHelper.WaitForLoaded(SUT);
-				await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(4));
+				await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(3));
 
 				source.RemoveAt(source.Count - 1);
 				InsertAnItem();
