@@ -256,6 +256,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
 #endif
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#endif
 		public void CanReplaceSingleItem()
 		{
 			CustomItemsSource dataSource = null;
@@ -321,6 +324,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __WASM__ || __IOS__ || __ANDROID__
 		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#endif
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
 #endif
 		public void CanMoveItem()
 		{
