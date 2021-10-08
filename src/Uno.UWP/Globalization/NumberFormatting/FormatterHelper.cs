@@ -180,7 +180,7 @@ namespace Uno.Globalization.NumberFormatting
 
 		public double? ParseDoubleCore(string text)
 		{
-			if (text.Contains(' '))
+			if (text.IndexOf(" ", StringComparison.Ordinal) != -1)
 			{
 				return null;
 			}

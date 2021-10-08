@@ -1,19 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting
 {
-	public partial class PercentFormatter : INumberFormatterOptions, INumberFormatter, INumberFormatter2, INumberParser, ISignificantDigitsOption, INumberRounderOption, ISignedZeroOption
+	public partial class PermilleFormatter : INumberFormatterOptions, INumberFormatter, INumberFormatter2, INumberParser, ISignificantDigitsOption, INumberRounderOption, ISignedZeroOption
 	{
 		private readonly FormatterHelper _formatterHelper;
 		private readonly NumeralSystemTranslator _translator;
-		private readonly string _symbol = CultureInfo.InvariantCulture.NumberFormat.PercentSymbol;
-		private readonly double _formatCoefficient = 100d;
-		private readonly double _parseCoefficient = 0.01;
+		private readonly string _symbol = CultureInfo.InvariantCulture.NumberFormat.PerMilleSymbol;
+		private readonly double _formatCoefficient = 1000d;
+		private readonly double _parseCoefficient = 0.001;
 
-		public PercentFormatter()
+		public PermilleFormatter()
 		{
 			_formatterHelper = new FormatterHelper();
 			_translator = new NumeralSystemTranslator();
