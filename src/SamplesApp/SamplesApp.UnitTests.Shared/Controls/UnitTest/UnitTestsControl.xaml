@@ -131,9 +131,18 @@
 			HorizontalScrollMode="Auto">
 			<TextBlock
 				x:Name="failedTestDetails"
-				Opacity="0.5"
+				Opacity="0.8"
 				IsTextSelectionEnabled="True" />
 		</ScrollViewer>
+		<Button
+			Grid.Row="1"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Top"
+			Margin="0,0,24,0"
+			Background="#66CCCCCC"
+			Click="CopyFailedTestDetails">
+			<TextBlock Text="Copy" Foreground="{StaticResource SystemControlForegroundAccentBrush}" />
+		</Button>
 
 		<Rectangle
 			Grid.Row="2"
@@ -151,6 +160,15 @@
 				Background="Black">
 			</StackPanel>
 		</ScrollViewer>
+		<Button
+			Grid.Row="3"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Top"
+			Margin="0,0,24,0"
+			Background="#66CCCCCC"
+			Click="CopyTestResults">
+			<TextBlock Text="Copy" Foreground="{StaticResource SystemControlForegroundAccentBrush}" />
+		</Button>
 
 		<Rectangle
 			Grid.Column="1"

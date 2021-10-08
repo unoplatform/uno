@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SampleControl.Presentation;
@@ -481,6 +482,12 @@ namespace Uno.UI.Samples.Tests
 
 				foreach (var type in testTypes)
 				{
+					if (ct.IsCancellationRequested)
+					{
+						_ = ReportMessage("Stopped by user.", false);
+						break;
+					}
+
 					var instance = Activator.CreateInstance(type: type.Type);
 
 					await ExecuteTestsForInstance(ct, instance, type, config);
@@ -541,6 +548,12 @@ namespace Uno.UI.Samples.Tests
 			foreach (var testMethod in tests)
 			{
 				var testName = testMethod.Name;
+
+				if (ct.IsCancellationRequested)
+				{
+					_ = ReportMessage("Stopped by user.", false);
+					return;
+				}
 
 				if (IsIgnored(testMethod, out var ignoreMessage))
 				{
@@ -828,5 +841,21 @@ namespace Uno.UI.Samples.Tests
 
 		private void UpdateOuputSize(object sender, ManipulationDeltaRoutedEventArgs e)
 			=> outputColumn.Width = new GridLength(Math.Max(0, outputColumn.ActualWidth + e.Delta.Translation.X));
+
+		private void CopyFailedTestDetails(object sender, RoutedEventArgs e)
+		{
+			var data = new DataPackage();
+			data.SetText(failedTestDetails.Text);
+
+			Clipboard.SetContent(data);
+		}
+
+		private void CopyTestResults(object sender, RoutedEventArgs e)
+		{
+			var data = new DataPackage();
+			data.SetText(NUnitTestResultsDocument);
+
+			Clipboard.SetContent(data);
+		}
 	}
 }
