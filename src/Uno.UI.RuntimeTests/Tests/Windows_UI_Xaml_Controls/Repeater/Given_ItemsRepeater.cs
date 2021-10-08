@@ -46,15 +46,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			await TestServices.WindowHelper.WaitForIdle();
 			sut.UpdateLayout();
 
-			var second = sut
-				.GetAllChildren()
-				.OfType<TextBlock>()
-				.FirstOrDefault(t => t.Text == "Item_2");
+			try
+			{
+				await RetryAssert(() =>
+				{
+					var second = sut
+						.GetAllChildren()
+						.OfType<TextBlock>()
+						.FirstOrDefault(t => t.Text == "Item_2");
 
-			popup.IsOpen = false;
-			TestServices.WindowHelper.WindowContent = null;
+					Assert.IsNotNull(second);
+				});
+			}
+			finally
+			{
+				popup.IsOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
 
-			Assert.IsNotNull(second);
+		private async Task RetryAssert(Action assertion)
+		{
+			var attempt = 0;
+			while (true)
+			{
+				try
+				{
+					assertion();
+
+					break;
+				}
+				catch (Exception e)
+				{
+					if (attempt++ >= 30)
+					{
+						throw;
+					}
+
+					await Task.Delay(10);
+				}
+			}
 		}
 	}
 }

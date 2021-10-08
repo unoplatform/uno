@@ -182,7 +182,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#region DataRows
+		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 100, double.NaN)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, double.NaN, 100)]
 #if !__SKIA__
@@ -233,7 +233,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, 100, double.NaN)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, double.NaN, 100)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, double.NaN, double.NaN)]
-#endregion
+		#endregion
 		public async Task EVP_When_Constrained(HorizontalAlignment hAlign, VerticalAlignment vAlign, double width, double height)
 		{
 			/*
@@ -264,6 +264,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __ANDROID__
+		[Ignore("Fails on emulator < API 30, like CI, due to invalid WindowBounds / VisibleBounds")]
+#endif
 		public async Task EVP_When_SVTree()
 		{
 			/*
