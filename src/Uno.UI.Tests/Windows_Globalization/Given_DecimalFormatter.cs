@@ -176,6 +176,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		[DataTestMethod]
 		[DataRow("1.2", 1.2)]
+		[DataRow("1.2 ", null)]
+		[DataRow(" 1.2", null)]
 		[DataRow("1.20", 1.2)]
 		[DataRow("12,34.2", null)]
 		[DataRow("0", 0d)]

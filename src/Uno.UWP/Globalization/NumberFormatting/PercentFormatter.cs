@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting
 {
-	public partial class DecimalFormatter : INumberFormatterOptions, INumberFormatter, INumberFormatter2, INumberParser, ISignificantDigitsOption, INumberRounderOption, ISignedZeroOption
+	public  partial class PercentFormatter : INumberFormatterOptions, INumberFormatter, INumberFormatter2, INumberParser, ISignificantDigitsOption, INumberRounderOption, ISignedZeroOption
 	{
 		private readonly FormatterHelper _formatterHelper;
 		private readonly NumeralSystemTranslator _translator;
 
-		public DecimalFormatter()
+		public PercentFormatter()
 		{
 			_formatterHelper = new FormatterHelper();
 			_translator = new NumeralSystemTranslator();
@@ -60,18 +62,32 @@ namespace Windows.Globalization.NumberFormatting
 			}
 			else
 			{
-				formatted = _formatterHelper.FormatDoubleCore(value);
+				formatted = _formatterHelper.FormatDoubleCore(value * 100d);
 			}
-			
-			formatted = _translator.TranslateNumerals(formatted);
+
+			formatted = _translator.TranslateNumerals($"{formatted}{CultureInfo.InvariantCulture.NumberFormat.PercentSymbol}");
 			return formatted;
 		}
 
 		public double? ParseDouble(string text)
 		{
 			text = _translator.TranslateBackNumerals(text);
-			return _formatterHelper.ParseDoubleCore(text);
-		}
 
+			if (!text.EndsWith(CultureInfo.InvariantCulture.NumberFormat.PercentSymbol, StringComparison.Ordinal))
+			{
+				return null;
+			}
+
+			text = text.Substring(0, text.Length - CultureInfo.InvariantCulture.NumberFormat.PercentSymbol.Length);
+
+			var result = _formatterHelper.ParseDoubleCore(text);
+
+			if (!result.HasValue)
+			{
+				return null;
+			}
+
+			return result / 100d;
+		}
 	}
 }
