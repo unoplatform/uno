@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Windows.Devices.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Core;
@@ -120,6 +121,8 @@ namespace Windows.UI.Core
 
 		internal interface IPointerEventArgs
 		{
+			PointerIdentifier Pointer { get; }
+
 			PointerPoint GetLocation(object? relativeTo);
 		}
 

@@ -90,6 +90,8 @@ namespace Windows.UI.Xaml.Media
 			else if (b is ImageBrush imageBrush && imageBrushCallback != null)
 			{
 				var disposables = new CompositeDisposable(5);
+				imageBrushCallback();
+
 				imageBrush.RegisterDisposablePropertyChangedCallback(
 					ImageBrush.ImageSourceProperty,
 					(_, __) => imageBrushCallback()

@@ -61,6 +61,11 @@ namespace Windows.UI.Xaml.Controls
 		internal bool SynchronizeContentWithOuterTemplatedParent { get; set; } = true;
 
 		/// <summary>
+		/// Flag indicating whether the content presenter uses implicit text block to render its content.
+		/// </summary>
+		internal bool IsUsingDefaultTemplate { get; private set; } = false;
+
+		/// <summary>
 		/// Determines if the current ContentPresenter is hosting a native control.
 		/// </summary>
 		/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
@@ -837,7 +842,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_dataTemplateUsedLastUpdate = dataTemplate;
 				ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
-			}
+				if (ContentTemplateRoot != null)
+				{
+					IsUsingDefaultTemplate = false;
+				}
+			}	
 
 			if (Content != null
 				&& !(Content is View)
@@ -846,13 +855,15 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Use basic default root for non-View Content if no template is supplied
 				SetContentTemplateRootToPlaceholder();
-			}
+			}			
 
 			if (ContentTemplateRoot == null && Content is View contentView && dataTemplate == null)
 			{
 				// No template and Content is a View, set it directly as root
 				ContentTemplateRoot = contentView as View;
 			}
+
+			IsUsingDefaultTemplate = ContentTemplateRoot is ImplicitTextBlock;
 		}
 
 		private void SetContentTemplateRootToPlaceholder()
@@ -883,6 +894,7 @@ namespace Windows.UI.Xaml.Controls
 			setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
 
 			ContentTemplateRoot = textBlock;
+			IsUsingDefaultTemplate = true;
 		}
 
 		private bool _isBoundImplicitelyToContent;

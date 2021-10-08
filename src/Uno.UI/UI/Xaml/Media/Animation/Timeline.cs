@@ -165,18 +165,33 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				if (_propertyInfo == null)
+				// Don't use the cached _propertyInfo if TargetProperty or Target has the changed.
+				var targetPropertyPath = Storyboard.GetTargetProperty(this);
+				InitTarget();
+				var target = Target ?? GetTargetFromName();
+
+				if (_propertyInfo == null || _propertyInfo.Path != targetPropertyPath)
 				{
-					InitTarget();
-					var target = Target ?? GetTargetFromName();
+					if (_propertyInfo != null)
+					{
+						_propertyInfo.DataContext = null;
+						_propertyInfo.Dispose();
+					}
 
 					_propertyInfo = new BindingPath(
-						path: Storyboard.GetTargetProperty(this),
+						path: targetPropertyPath,
 						fallbackValue: null,
 						precedence: DependencyPropertyValuePrecedences.Animations,
 						allowPrivateMembers: false
-					);
+					)
+					{
+						DataContext = target,
+					};
+					return _propertyInfo;
+				}
 
+				if (_propertyInfo.DataContext != target)
+				{
 					_propertyInfo.DataContext = target;
 				}
 

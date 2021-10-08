@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		public bool Handled { get; set; }
+
 		public VirtualKey Key { get; }
 
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__

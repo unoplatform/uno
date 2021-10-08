@@ -321,7 +321,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
                   Padding="20">
         <TextBlock Text="Status" FontWeight="Bold" FontSize="16" Margin="10,0" />
         <ComboBox ItemsSource="{x:Bind StatusList}"
-                  SelectedItem="{x:Bind Item.Status}"
+                  SelectedItem="{x:Bind Item.Status, Mode=TwoWay}"
                   HorizontalAlignment="Stretch"
                   SelectionChanged="StatusPicker_SelectionChanged" />
         <TextBlock Text="{x:Bind FormatDate('Started:', Item.StartedAt), Mode=OneWay}" />

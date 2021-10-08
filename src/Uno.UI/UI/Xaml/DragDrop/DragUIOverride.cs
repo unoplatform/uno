@@ -16,31 +16,41 @@ namespace Windows.UI.Xaml
 			_core = core;
 		}
 
-		public bool IsGlyphVisible { get; set; }
-		public bool IsContentVisible { get; set; }
-		public bool IsCaptionVisible { get; set; }
-		public string Caption { get; set; } = string.Empty;
-
-		internal ImageSource? Content { get; set; }
-		internal Point ContentAnchor { get; set; }
+		public bool IsGlyphVisible
+		{
+			get => _core.IsGlyphVisible;
+			set => _core.IsGlyphVisible = value;
+		}
+		public bool IsContentVisible
+		{
+			get => _core.IsContentVisible;
+			set => _core.IsContentVisible = value;
+		}
+		public bool IsCaptionVisible
+		{
+			get => _core.IsCaptionVisible;
+			set => _core.IsCaptionVisible = value;
+		}
+		public string Caption
+		{
+			get => _core.Caption;
+			set => _core.Caption = value;
+		}
 
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage)
 		{
-			Content = bitmapImage;
+			_core.Content = bitmapImage;
 		}
 
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage, Point anchorPoint)
 		{
-			Content = bitmapImage;
-			ContentAnchor = anchorPoint;
+			_core.Content = bitmapImage;
+			_core.ContentAnchor = anchorPoint;
 		}
 
 		public void Clear()
 		{
-			IsGlyphVisible = _core.IsGlyphVisible;
-			IsContentVisible = _core.IsContentVisible;
-			IsCaptionVisible = _core.IsCaptionVisible;
-			Caption = _core.Caption;
+			_core.Clear();
 		}
 	}
 }

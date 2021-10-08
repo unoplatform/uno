@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 
 		private static int _id = 0;
 
-		private readonly WeakReference<CALayer> _layer;
+		private readonly CALayer _layer;
 		private readonly string _property;
 		private readonly string _key;
 		private readonly float _from;
@@ -74,7 +74,7 @@ namespace Windows.UI.Composition
 			Action? prepare = null,
 			Action? cleanup = null)
 		{
-			_layer = new WeakReference<CALayer>(layer);
+			_layer = layer;
 			_property = property;
 			_key = property + Interlocked.Increment(ref _id).ToStringInvariant();
 			_from = from;
@@ -133,15 +133,16 @@ namespace Windows.UI.Composition
 
 		public void Cancel()
 		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().DebugFormat("CoreAnimation '{0}': animation cancelled (.Cancel).", _key);
+			}
 			StopAnimation(StopReason.Canceled);
 		}
 
 		private void StartAnimation(float from, float to, float delayMilliseconds, float durationMilliseconds)
 		{
-			if (!_layer.TryGetTarget(out var layer))
-			{
-				return;
-			}
+			var layer = _layer;
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -191,10 +192,16 @@ namespace Windows.UI.Composition
 
 		private void StopAnimation(StopReason reason, long? time = default, float? value = default)
 		{
-			if (_current.animation == null || !_layer.TryGetTarget(out var layer))
+			if (_current.animation == null)
 			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("CoreAnimation '{0}' unable to remove native animation: no running animation. Already disposed?", _key);
+				}
 				return;
 			}
+
+			var layer = _layer;
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -259,6 +266,10 @@ namespace Windows.UI.Composition
 				var (currentAnim, from, to) = _current;
 				if (currentAnim != animation)
 				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().DebugFormat("CoreAnimation '{0}' [{1}]: unable to {2} because another animation is running.", _key, _property, _stop.reason);
+					}
 					return; // We are no longer the current animation, do not interfere with the current
 				}
 
@@ -266,11 +277,11 @@ namespace Windows.UI.Composition
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().DebugFormat("CoreAnimation on property {0} has been {1}.", _property, _stop.reason);
+					this.Log().DebugFormat("CoreAnimation {0} has been {1}.", _key, _stop.reason);
 				}
 
 				// First commit the expected final (end, current or initial) value.
-				if (_layer.TryGetTarget(out var layer))
+				var layer = _layer;
 				{
 					var keyPath = new NSString(_property);
 					NSObject finalValue;
@@ -303,7 +314,7 @@ namespace Windows.UI.Composition
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"CoreAnimation Stopped (reason: {_stop.reason}, Finished:{args.Finished})");
+					this.Log().DebugFormat("CoreAnimation {0} [{1}] Stopped (reason: {2}, Finished:{3})", _key, _property, _stop.reason, args.Finished);
 				}
 
 				// Finally raise callbacks

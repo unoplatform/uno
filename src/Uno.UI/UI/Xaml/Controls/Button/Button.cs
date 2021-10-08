@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Uno.Extensions;
-using Windows.UI.Xaml.Automation.Peers;
+﻿using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
@@ -12,8 +7,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		static Button()
 		{
-			StaticInitializeVisualStates();
-
 			HorizontalContentAlignmentProperty.OverrideMetadata(
 				typeof(Button),
 				new FrameworkPropertyMetadata(HorizontalAlignment.Center)
@@ -25,25 +18,29 @@ namespace Windows.UI.Xaml.Controls
 			);
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the Button class.
+		/// </summary>
 		public Button()
 		{
-			InitializeVisualStates();
-
-			Click += (s, e) => { Flyout?.ShowAt(this); };
-
 			DefaultStyleKey = typeof(Button);
 		}
 
-		#region Flyout Dependency Property
+		/// <summary>
+		/// Gets or sets the flyout associated with this button.
+		/// </summary>
 		public FlyoutBase Flyout
 		{
-			get { return (FlyoutBase)this.GetValue(FlyoutProperty); }
-			set { this.SetValue(FlyoutProperty, value); }
+			get => (FlyoutBase)GetValue(FlyoutProperty);
+			set => SetValue(FlyoutProperty, value);
 		}
 
-		public static DependencyProperty FlyoutProperty { get ; } =
+		/// <summary>
+		/// Identifies the Flyout dependency property.
+		/// </summary>
+		public static DependencyProperty FlyoutProperty { get; } =
 			DependencyProperty.Register(
-				"Flyout",
+				nameof(Flyout),
 				typeof(FlyoutBase),
 				typeof(Button),
 				new FrameworkPropertyMetadata(
@@ -51,7 +48,6 @@ namespace Windows.UI.Xaml.Controls
 					options: FrameworkPropertyMetadataOptions.LogicalChild
 				)
 			);
-		#endregion
 
 		private protected override void OnUnloaded()
 		{
@@ -59,8 +55,5 @@ namespace Windows.UI.Xaml.Controls
 
 			Flyout?.Close();
 		}
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-			=> new ButtonAutomationPeer(this);
 	}
 }

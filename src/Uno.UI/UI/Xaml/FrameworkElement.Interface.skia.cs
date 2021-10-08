@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml
 
 		// Using a DependencyProperty as the backing store for Background.  This enables animation, styling, binding, etc...
 		public static DependencyProperty BackgroundProperty { get; } =
-			DependencyProperty.Register("Background", typeof(Brush), typeof(FrameworkElement), new PropertyMetadata(null, (s, e) => ((FrameworkElement)s)?.OnBackgroundChanged(e)));
+			DependencyProperty.Register("Background", typeof(Brush), typeof(FrameworkElement), new FrameworkPropertyMetadata(null, (s, e) => ((FrameworkElement)s)?.OnBackgroundChanged(e)));
 
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)

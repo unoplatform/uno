@@ -404,6 +404,39 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action doneAction = null)
+		{
+			try
+			{
+				var testQuery = from category in _categories
+								from sample in category.SamplesContent
+								where sample.ControlType == typeof(SamplesApp.Samples.UnitTests.UnitTestsPage)
+								select sample;
+
+				var runtimeTests = testQuery.FirstOrDefault();
+
+				if (runtimeTests == null)
+				{
+					throw new InvalidOperationException($"Unable to find UnitTestsPage");
+				}
+
+				var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
+				ContentPhone = content;
+
+				if (ContentPhone is FrameworkElement fe
+					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
+				{
+					await unitTests.RunTests(ct, new string[0]);
+
+					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
+				}
+			}
+			finally
+			{
+				doneAction?.Invoke();
+			}
+		}
+
 		partial void LogMemoryStatistics();
 
 		private void ObserveChanges()

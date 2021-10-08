@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Helpers;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -52,6 +53,8 @@ namespace Windows.UI.Popups
 
 		public IAsyncOperation<IUICommand> ShowAsync()
 		{
+			VisualTreeHelperProxy.CloseAllPopups();
+
 			var invokedCommand = new TaskCompletionSource<IUICommand>();
 
 			return AsyncOperation.FromTask<IUICommand>(async ct =>

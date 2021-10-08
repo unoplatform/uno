@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get => Handled;
 			set => Handled = value;
-		}		
+		}
 
 		public PointerDeviceType PointerDeviceType { get; }
 

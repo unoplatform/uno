@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			var isRelative = MappingMode == BrushMappingMode.RelativeToBoundingBox;
 
-			var colors = GradientStops.SelectToArray(gs => (CGColor)gs.Color);
+			var colors = GradientStops.SelectToArray(gs => (CGColor)GetColorWithOpacity(gs.Color));
 			var locations = GradientStops.SelectToArray(gs => new nfloat(gs.Offset));
 
 			var layer = new RadialGradientLayer(colors, locations, center, radius, isRelative);

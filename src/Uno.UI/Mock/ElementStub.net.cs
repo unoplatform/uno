@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml
 					var newView = (FrameworkElement)newViewProvider();
 					parentElement.RemoveChild(oldView);
 
+					RaiseMaterializing();
+
 					parentElement.AddChild(newView, currentPosition);
 
 					return newView;

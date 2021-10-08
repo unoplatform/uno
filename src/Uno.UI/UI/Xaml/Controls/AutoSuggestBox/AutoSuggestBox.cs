@@ -54,6 +54,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 
 			UpdateQueryButton();
+			UpdateTextBox();
 
 			_textBoxBinding = new BindingPath("Text", null) { DataContext = _textBox, ValueChangedListener = this };
 
@@ -120,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					IsSuggestionListOpen = false;
 				}
-				else
+				else if (_textBox?.IsFocused ?? false)
 				{
 					IsSuggestionListOpen = true;
 					_suggestionsList.ItemsSource = GetItems();
@@ -284,6 +285,16 @@ namespace Windows.UI.Xaml.Controls
 			_queryButton.Visibility = QueryIcon == null ? Visibility.Collapsed : Visibility.Visible;
 		}
 
+		private void UpdateTextBox()
+		{
+			if (_textBox == null)
+			{
+				return;
+			}
+
+			_textBox.Text = Text;
+		}
+
 		private void OnSuggestionListItemClick(object sender, ItemClickEventArgs e)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -414,6 +425,9 @@ namespace Windows.UI.Xaml.Controls
 
 			if (dependencyObject is AutoSuggestBox tb)
 			{
+				tb.UpdateTextBox();
+				tb.UpdateSuggestionList();
+
 				if (tb._textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
 				{
 					tb.UpdateUserInput(newValue);

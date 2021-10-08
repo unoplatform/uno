@@ -23,7 +23,7 @@ namespace Uno.UI.RemoteControl
 
 		public Type AppType { get; }
 
-		private readonly (string endpoint, int port)[] _serverAdresses;
+		private readonly (string endpoint, int port)[] _serverAddresses;
 		private WebSocket _webSocket;
 		private Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
 
@@ -33,14 +33,33 @@ namespace Uno.UI.RemoteControl
 
 			if(appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] endpoints)
 			{
-				_serverAdresses = endpoints
-					.Select(e => (endpoint: e.Endpoint, port: e.Port))
-					.ToArray();
+				IEnumerable<(string endpoint, int port)> GetAddresses()
+				{
+					foreach (var endpoint in endpoints)
+					{
+						if (endpoint.Port == 0)
+						{
+							this.Log().LogError($"Failed to get remote control server port from the IDE for endpoint {endpoint.Endpoint}.");
+						}
+						else
+						{
+							yield return (endpoint.Endpoint, endpoint.Port);
+						}
+					}
+				}
+
+				_serverAddresses = GetAddresses().ToArray();
 			}
 
-			StartConnection();
+			if ((_serverAddresses?.Length ?? 0) == 0)
+			{
+				this.Log().LogError("Failed to get any remote control server endpoint from the IDE.");
+
+				return;
+			}
 
 			RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
+			StartConnection();
 		}
 
 		private void RegisterProcessor(IRemoteControlProcessor processor)
@@ -52,7 +71,7 @@ namespace Uno.UI.RemoteControl
 		{
 			try
 			{
-				async Task<WebSocket> Connect(string endpoint, int port, CancellationToken ct)
+				async Task<(string endPoint, int port, WebSocket socket)> Connect(string endpoint, int port, CancellationToken ct)
 				{
 #if __WASM__
 					var s = new Uno.Wasm.WebSockets.WasmWebSocket();
@@ -81,73 +100,60 @@ namespace Uno.UI.RemoteControl
 						await s.ConnectAsync(new Uri($"ws://{endpoint}:{port}/rc"), ct);
 					}
 
-					return s;
+					return (endpoint, port, s);
 				}
 
-				var connections = _serverAdresses.Select(s =>
-				{
-					var cts = new CancellationTokenSource();
-
-					if (s.port == 0)
-					{
-						return (
-							task: Task.FromException<WebSocket>(new InvalidOperationException($"Failed to get remote control server port from the IDE")),
-							cts: cts
-						);
-					}
-					else
+				var connections = _serverAddresses
+					.Where(adr => adr.port != 0)
+					.Select(s =>
 					{
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
 							this.Log().LogDebug($"Connecting to {s}...");
 						}
 
+						var cts = new CancellationTokenSource();
 						var task = Connect(s.endpoint, s.port, cts.Token);
+
 						return (task, cts);
-					}
-				}).ToArray();
+					})
+					.ToArray();
 
-				var allCts = new TaskCompletionSource<int>();
+				var timeout = Task.Delay(30000);
+				var completed = await Task.WhenAny(connections.Select(c => c.task).Concat(timeout));
 
-				for (int i = 0; i < connections.Length; i++)
+				foreach (var connection in connections)
 				{
-					var connectionIndex = i;
-					connections[i]
-						.task
-						.ContinueWith(a => {
-							if(a.Status == TaskStatus.RanToCompletion)
-							{
-								allCts.SetResult(connectionIndex);
-							}
-						});
-				}
-
-				Task.Delay(30000)
-					.ContinueWith(a => allCts.SetException(new TimeoutException()));
-
-				var index = await allCts.Task;
-
-				for (int i = 0; i < connections.Length; i++)
-				{
-					if (i != index)
+					if (connection.task == completed)
 					{
-						var connection = connections[i];
-						connection.cts.Cancel();
+						continue;
+					}
 
-						if (connection.task.Status == TaskStatus.RanToCompletion)
-						{
-							connections[i].task.Result.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
-						}
+					connection.cts.Cancel();
+					if (connection.task.Status == TaskStatus.RanToCompletion)
+					{
+						connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
 					}
 				}
 
-				_webSocket = connections[index].task.Result;
+				if (completed == timeout)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().LogError("Failed to connect to the server (timeout).");
+					}
+
+					return;
+				}
+
+				var connected = ((Task<(string endPoint, int port, WebSocket socket)>)completed).Result;
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"Connected to {_serverAdresses[index]}");
+					this.Log().LogDebug($"Connected to {connected.endPoint}:{connected.port}");
 				}
 
+				_webSocket = connected.socket;
 				await ProcessMessages();
 			}
 			catch (Exception ex)

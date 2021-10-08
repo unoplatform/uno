@@ -125,9 +125,9 @@ namespace Uno.UI.Runtime.Skia
 
 		public CoreCursor PointerCursor { get => new CoreCursor(CoreCursorType.Arrow, 0); set { } }
 
-		public void ReleasePointerCapture() { }
+		public void SetPointerCapture(PointerIdentifier pointer) { }
 
-		public void SetPointerCapture() { }
+		public void ReleasePointerCapture(PointerIdentifier pointer) { }
 
 		public void Dispose()
 		{

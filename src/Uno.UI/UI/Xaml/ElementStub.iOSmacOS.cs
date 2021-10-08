@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml
 				var currentSuperview = oldView?.Superview;
 				oldView?.RemoveFromSuperview();
 
+				RaiseMaterializing();
+
 #if __IOS__
 				currentSuperview?.InsertSubview(newContent, currentPosition);
 				return newContent;

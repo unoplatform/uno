@@ -90,18 +90,10 @@ namespace Windows.UI.Input
 			}
 			_gestures[value.PointerId] = gesture;
 
-			// Create of update a Manipulation responsible to recognize multi-pointer and drag gestures
+			// Create or update a Manipulation responsible to recognize multi-pointer and drag gestures
 			if (_isManipulationOrDragEnabled)
 			{
-				if (_manipulation == null)
-				{
-					_manipulation = new Manipulation(this, value);
-				}
-				else if (!_manipulation.TryAdd(value))
-				{
-					_manipulation.Complete();
-					_manipulation = new Manipulation(this, value);
-				}
+				Manipulation.AddPointer(this, value);
 			}
 		}
 
@@ -191,8 +183,8 @@ namespace Windows.UI.Input
 
 		#region Manipulations
 		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> ManipulationStarting; // This is not on the public API!
-		internal event TypedEventHandler<GestureRecognizer, Manipulation> ManipulationConfigured; // Right after the ManipulationStarting, once application has configured settings
-		internal event TypedEventHandler<GestureRecognizer, Manipulation> ManipulationAborted; // The manipulation has been aborted while in starting state
+		internal event TypedEventHandler<GestureRecognizer, Manipulation> ManipulationConfigured; // Right after the ManipulationStarting, once application has configured settings ** ONLY if not cancelled in starting **
+		internal event TypedEventHandler<GestureRecognizer, Manipulation> ManipulationAborted; // The manipulation has been aborted while in starting state ** ONLY if received a ManipulationConfigured **
 		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
 		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting;
 		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;

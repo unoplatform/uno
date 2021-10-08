@@ -771,6 +771,12 @@ namespace Uno.UWPSyncGenerator
 				BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 				BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 				BaseXamlNamespace + ".Controls.NavigationViewItemBase",
+
+#if HAS_UNO_WINUI
+				// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has double inheritance in WinUI.
+				// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
+				BaseXamlNamespace + ".Controls.RadioMenuFlyoutItem"
+#endif
 			};
 
 			var isSkipped = skippedTypes.Contains(type.BaseType?.ToString());

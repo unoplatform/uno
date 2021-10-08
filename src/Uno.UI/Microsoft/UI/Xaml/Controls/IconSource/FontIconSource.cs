@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty GlyphProperty { get; } =
-			DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(FontIconSource), new FrameworkPropertyMetadata(default(string), OnPropertyChanged));
+			DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(FontIconSource), new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged));
 
 		public FontWeight FontWeight
 		{

@@ -191,6 +191,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol?>(SourceFindContentProperty).AsLockedMemoized();
 			_isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
 			_getAttachedPropertyType = Funcs.Create<INamedTypeSymbol, string, INamedTypeSymbol>(SourceGetAttachedPropertyType).AsLockedMemoized();
+			_isTypeImplemented = Funcs.Create<INamedTypeSymbol, bool>(SourceIsTypeImplemented).AsLockedMemoized();
 		}
 
 		public XamlFileGenerator(
@@ -2649,6 +2650,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return false;
 			}
 
+			if (!IsTypeImplemented(symbol))
+			{
+				// Lazily initialize not-implemented types, since there's no point creating them except to surface an error if explicitly required
+				return true;
+			}
+
 			if (
 				typeName == "Style"
 				|| typeName == "ControlTemplate"
@@ -4218,8 +4225,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private int _staticResourceResolverOutputIndex = 0;
-
 		/// <summary>
 		/// Returns code for simple initialization-time retrieval for StaticResource/ThemeResource markup.
 		/// </summary>
@@ -4228,21 +4233,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			targetPropertyType = targetPropertyType ?? _objectSymbol;
 
 			var targetPropertyFQT = targetPropertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-			var propertyOutputVar = $"staticResourceResolverOutputIndex{_staticResourceResolverOutputIndex++}";
 
-			var conversion = targetPropertyType.IsValueType
-				? $"(({targetPropertyFQT}){propertyOutputVar})"
-				: $"(({propertyOutputVar} as {targetPropertyFQT}) ?? default({targetPropertyFQT}))";
-
-
-			var staticRetrieval = $"(" +
-				$"global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic(" +
-				$"\"{keyStr}\", " +
-				$"out var {propertyOutputVar}, " +
-				$"context: {ParseContextPropertyAccess}) " +
-				$"? {conversion}" +
-				$" : default({targetPropertyFQT})" +
-				$")";
+			var staticRetrieval = $"({targetPropertyFQT})global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic(" +
+				$"\"{keyStr}\", typeof({targetPropertyFQT}), context: {ParseContextPropertyAccess})";
 			TryAnnotateWithGeneratorSource(ref staticRetrieval);
 			return staticRetrieval;
 		}
@@ -5620,7 +5613,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										writer.AppendLineInvariant($"{closureName}.MaterializationChanged += {componentName}_update;");
 
-										using (writer.BlockInvariant($"void {componentName}_unloaded(object sender, RoutedEventArgs e)"))
+										using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
 										{
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
 											// ElementStub will be unloaded **after** the stubbed control has been created
@@ -5628,7 +5621,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineInvariant($"({componentName}_update_That.Target as {_className.className})?.Bindings.Update();");
 										}
 
-										writer.AppendLineInvariant($"{closureName}.Unloaded += {componentName}_unloaded;");
+										writer.AppendLineInvariant($"{closureName}.Materializing += {componentName}_materializing;");
 									}
 									else
 									{

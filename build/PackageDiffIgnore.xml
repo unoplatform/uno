@@ -3954,7 +3954,7 @@
 				reason="Method not in UWP contract" />
 		</Properties>
 	</IgnoreSet>
-	
+
 	<IgnoreSet baseVersion="3.10.7">
 		<Methods>
 			<Member
@@ -3977,6 +3977,10 @@
 			<Member
 				fullName="Windows.UI.Xaml.Controls.NativePopup"
 				reason="Adjust Popup hierarchy" />
+
+			<Member
+				fullName="Windows.UI.Core.ICoreWindowExtension"
+				reason="Internal interface" />
 		</Types>
 		<Methods>
 			<Member
@@ -4212,11 +4216,9 @@
 				reason="False positive" />
 
 			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.RichTextBlock.Focus(Windows.UI.Xaml.FocusState value)"
-				reason="To be fixed" />
-			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.TextBlock.Focus(Windows.UI.Xaml.FocusState value)"
-				reason="To be fixed" />
+				fullName="System.Void Windows.Devices.Radios.Radio..ctor()"
+				reason="Not part of UWP API" />
+
 		</Methods>
 		<Events>
 			<Member

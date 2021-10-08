@@ -11,6 +11,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -69,6 +70,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			tbs2.Should().NotBeNull();
 			tbs2.Should().HaveCount(1);
 			items[1].Content.Should().Be(tbs2.ElementAt(0).Text);
+		}
+
+#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Changing_Header_Affects_UI()
+		{
+			var pivotItem = new PivotItem { Header = "Initial text" };
+			var SUT = new Pivot
+			{
+				Items = { pivotItem },
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var pivotHeaderPanel = (PivotHeaderPanel)SUT.GetTemplateChild("StaticHeader");
+			var headerItem = (PivotHeaderItem)pivotHeaderPanel.Children.Single();
+			headerItem.Content.Should().Be("Initial text");
+			pivotItem.Header = "New text";
+			headerItem.Content.Should().Be("New text");
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Changing_SelectedItem_Affects_SelectedIndex()
+		{
+			var pivotItem1 = new PivotItem { Header = "First" };
+			var pivotItem2 = new PivotItem { Header = "Second" };
+			var SUT = new Pivot
+			{
+				Items = { pivotItem1, pivotItem2 },
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectedIndex.Should().Be(0);
+			SUT.SelectedItem.Should().Be(pivotItem1);
+
+			SUT.SelectedItem = pivotItem2;
+
+			SUT.SelectedIndex.Should().Be(1);
+			SUT.SelectedItem.Should().Be(pivotItem2);
 		}
 
 		private class MyContext
