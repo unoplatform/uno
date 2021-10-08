@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_NameScope
 	{
+#if !WINDOWS_UWP // NameScope isn't a public API in UWP
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Inside_ResourceDictionary()
@@ -24,5 +25,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var brush = (SolidColorBrush)namescope.FindName("MyBrush");
 			Assert.AreEqual(Colors.Blue, brush.Color);
 		}
+#endif
 	}
 }
