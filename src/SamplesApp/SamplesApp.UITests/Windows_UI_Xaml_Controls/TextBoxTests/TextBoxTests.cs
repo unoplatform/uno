@@ -558,15 +558,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// initial state
 			_app.WaitForElement(target);
-			var multilineReadonlyTextRect = target.FirstResult().Rect;
+			var multilineReadonlyTextRect = target.FirstResult().Rect.ToRectangle();
 
 			// remove readonly
 			readonlyCheckBox.Tap(); // now: unchecked
-			var multilineTextRect = target.FirstResult().Rect;
+			var multilineTextRect = target.FirstResult().Rect.ToRectangle();
 
 			// remove multiline
 			multilineCheckBox.Tap(); // now: unchecked
-			var normalTextRect = target.FirstResult().Rect;
+			var normalTextRect = target.FirstResult().Rect.ToRectangle();
 
 			multilineTextRect.Height.Should().Be(multilineReadonlyTextRect.Height, because: "toggling IsReadOnly should not affect AcceptsReturn=True(multiline) TextBox.Height");
 			normalTextRect.Height.Should().NotBe(multilineTextRect.Height, because: "toggling AcceptsReturn should not affect TextBox.Height");
