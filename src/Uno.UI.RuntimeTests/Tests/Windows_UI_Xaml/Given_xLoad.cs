@@ -115,6 +115,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 
+#if __ANDROID__
+		[Ignore("https://github.com/unoplatform/uno/issues/7305")]
+#endif
 		[TestMethod]
 		public async Task When_Binding_xLoad_Nested()
 		{
@@ -218,6 +221,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await AssertIsNullAsync(() => SUT.tb06);
 		}
 
+#if __ANDROID__
+		[Ignore("https://github.com/unoplatform/uno/issues/7305")]
+#endif
 		[TestMethod]
 		public async Task When_Binding_xLoad_Nested_With_ElementStub_LoadCount()
 		{
