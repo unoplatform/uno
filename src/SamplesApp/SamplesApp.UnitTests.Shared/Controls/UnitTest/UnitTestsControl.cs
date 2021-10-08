@@ -34,8 +34,6 @@ namespace Uno.UI.Samples.Tests
 {
 	public sealed partial class UnitTestsControl : UserControl
 	{
-		private const int _maxRepeatCount = 3;
-
 		private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -385,7 +383,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			var isConsoleOutput = consoleOutput.IsChecked ?? false;
 			var isRunningIgnored = runIgnored.IsChecked ?? false;
-			var attempts = (retry.IsChecked ?? true) ? _maxRepeatCount : 1;
+			var attempts = (retry.IsChecked ?? true) ? UnitTestEngineConfig.DefaultRepeatCount : 1;
 			var filter = testFilter.Text.Trim();
 			if (string.IsNullOrEmpty(filter))
 			{

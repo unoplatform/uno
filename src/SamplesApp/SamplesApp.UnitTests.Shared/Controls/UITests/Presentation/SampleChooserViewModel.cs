@@ -427,7 +427,7 @@ namespace SampleControl.Presentation
 				if (ContentPhone is FrameworkElement fe
 					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
 				{
-					await unitTests.RunTests(ct, new UnitTestEngineConfig());
+					await unitTests.RunTests(ct, UnitTestEngineConfig.Default);
 
 					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
 				}
