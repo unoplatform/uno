@@ -26,7 +26,7 @@ In this post we'll be setting up our Raspberry Pi to launch a "Hello World" Uno 
 
 There will be a series of steps involved in this;
 
-1. [Update Raspberry Pi OS](#-update-the-raspberry-pi-os)
+1. [Update Raspberry Pi OS](#update-the-raspberry-pi-os)
 2. Install .NET Framework
 3. Install Uno Framework Templates
 4. Create a new GTK Project
