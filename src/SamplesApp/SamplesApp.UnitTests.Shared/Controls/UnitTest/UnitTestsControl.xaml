@@ -179,12 +179,16 @@
 			ManipulationMode="TranslateX"
 			ManipulationDelta="UpdateOuputSize"/>
 
-		<ScrollViewer  Grid.Column="2" Grid.RowSpan="4">
-			<ContentControl x:Name="unitTestContentRoot"
-							HorizontalContentAlignment="Center"
-							VerticalAlignment="Center"
-							MinWidth="1600"
-							MinHeight="1600" />
+		<ScrollViewer
+			Grid.Column="2"
+			Grid.RowSpan="4"
+			x:Name="unitTestContentScroller">
+			<ContentControl
+				x:Name="unitTestContentRoot"
+				HorizontalContentAlignment="Center"
+				VerticalAlignment="Center"
+				MinWidth="1600"
+				MinHeight="1600" />
 		</ScrollViewer>
 	</Grid>
 </UserControl>

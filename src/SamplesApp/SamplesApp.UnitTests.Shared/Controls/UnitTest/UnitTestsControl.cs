@@ -58,7 +58,16 @@ namespace Uno.UI.Samples.Tests
 		{
 			this.InitializeComponent();
 
-			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRootControl = unitTestContentRoot;
+			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRoot =
+			(
+				control: unitTestContentRoot,
+				getContent: () => unitTestContentRoot.Content as UIElement,
+				setContent: elt =>
+				{
+					unitTestContentScroller.ChangeView(0, 0, 1, disableAnimation: true);
+					unitTestContentRoot.Content = elt;
+				}
+			);
 
 			DataContext = null;
 
