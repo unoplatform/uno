@@ -105,6 +105,12 @@ namespace Private.Infrastructure
 						return false;
 					}
 
+					if (element is ListViewBase listView && listView.Items.Count > 0 && listView.ContainerFromIndex(0) == null)
+					{
+						// If it's a ListView, wait for items to be populated
+						return false;
+					}
+
 					return true;
 				}
 			}
