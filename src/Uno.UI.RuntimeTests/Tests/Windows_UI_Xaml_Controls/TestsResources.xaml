@@ -197,10 +197,21 @@
 					Background="DodgerBlue" />
 		</local:CounterGrid>
 	</DataTemplate>
+	<DataTemplate x:Key="NV286_Template">
+		<Border x:Name="ItemBorder"
+				Width="130"
+				BorderBrush="Brown"
+				BorderThickness="1"
+				CornerRadius="4">
+			<TextBlock Text="{Binding}"
+					   HorizontalAlignment="Center" />
+		</Border>
+	</DataTemplate>
 
 	<DataTemplate x:Key="When_Available_Breadth_Changes_Template">
 		<Border x:Name="ContainerBorder">
-			<TextBlock x:Name="ContentTextBlock" Text="{Binding}"
+			<TextBlock x:Name="ContentTextBlock"
+					   Text="{Binding}"
 					   TextWrapping="Wrap" />
 		</Border>
 	</DataTemplate>

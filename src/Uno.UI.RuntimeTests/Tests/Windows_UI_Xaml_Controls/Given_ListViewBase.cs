@@ -51,6 +51,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
 
+		private DataTemplate NV286_Template => _testsResources["NV286_Template"] as DataTemplate;
+
 		private ItemsPanelTemplate NoCacheItemsStackPanel => _testsResources["NoCacheItemsStackPanel"] as ItemsPanelTemplate;
 
 		private DataTemplate SelectableItemTemplateA => _testsResources["SelectableItemTemplateA"] as DataTemplate;
@@ -1377,6 +1379,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			await WindowHelper.WaitForResultEqual("BBB", () => tb.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Item_Removed_And_Relayout_NV286()
+		{
+			using (FeatureConfigurationHelper.UseListViewAnimations())
+			{
+				var source = new ObservableCollection<string>();
+				var index = 0;
+				for (int i = 0; i < 5; i++)
+				{
+					InsertAnItem();
+				}
+
+				var SUT = new ListView
+				{
+					HorizontalAlignment = HorizontalAlignment.Left,
+					Width = 300,
+					Height = 180,
+					Background = new SolidColorBrush(Colors.Beige),
+					ItemsSource = source,
+					ItemTemplate = NV286_Template
+				};
+
+				var errorCatchGrid = new ErrorCatchGrid
+				{
+					Children =
+					{
+						SUT
+					}
+				};
+
+				WindowHelper.WindowContent = errorCatchGrid;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(3));
+
+				source.RemoveAt(source.Count - 1);
+				InsertAnItem();
+				InsertAnItem();
+
+				await Task.Delay(5); // The key to reproing the bug is to trigger a relayout asynchronously, while the disappear animation is still in flight
+				var viewToModify = SUT.ContainerFromIndex(3) as ListViewItem;
+				Assert.IsNotNull(viewToModify);
+				var border = viewToModify.FindFirstChild<Border>(b => b.Name == "ItemBorder");
+				Assert.IsNotNull(border);
+				border.Width += 20;
+
+				await WindowHelper.WaitForIdle();
+
+				if (errorCatchGrid.Exception is { } e)
+				{
+					throw e;
+				}
+
+				// If all goes well, the app will not crash when the removed item finishes animating
+
+				void InsertAnItem()
+				{
+					index++;
+					source.Insert(0, $"Item {index}");
+				}
+			}
 		}
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
