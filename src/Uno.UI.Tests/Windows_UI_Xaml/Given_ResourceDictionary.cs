@@ -876,6 +876,26 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Lazy()
+		{
+			var dictionary = new ResourceDictionary();
+			var brush = new SolidColorBrush { Color = Colors.Red };
+			dictionary.TryGetValue("TestKey", out _);
+
+			dictionary.ThemeDictionaries.Add("Light", new WeakResourceInitializer(new Application(), o =>
+				new ResourceDictionary
+				{
+					["TestKey"] = new WeakResourceInitializer(o, _ => brush)
+				}));
+
+
+			// Make sure the cache is updated.
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual(brush, testValue);
+
+		}
+
+		[TestMethod]
 		public void When_Resource_NotImplemented()
 		{
 			var initialCreationCount = SomeNotImplType.CreationAttempts;
