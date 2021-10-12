@@ -832,7 +832,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineInvariant(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.UI.Core.CoreDispatcher.Main;");
 
 				builder.AppendLineInvariant(@"#if HAS_UNO_WINUI");
-				builder.AppendLineInvariant(@"public global::Microsoft.System.DispatcherQueue DispatcherQueue => global::Microsoft.System.DispatcherQueue.GetForCurrentThread();");
+				builder.AppendLineInvariant(@"public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue => global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();");
 				builder.AppendLineInvariant(@"#endif");
 
 				using (builder.BlockInvariant($"private DependencyObjectStore __Store"))
