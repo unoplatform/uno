@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.CollectionViewTests
 {
@@ -188,21 +189,6 @@ namespace Uno.UI.Tests.CollectionViewTests
 			//Assert.AreEqual(3, timesRootCalled); //For the moment VectorChanged isn't called on the parent, unlike Windows
 			Assert.AreEqual(1, timesGroupsCalled);
 			Assert.AreEqual(1, timesGroupItemsCalled);
-		}
-
-		public class GroupedObservableCollection<TKey> : ObservableCollection<object>, IGrouping<TKey, object>
-		{
-			public TKey Key { get; }
-
-			public GroupedObservableCollection(TKey key) : base()
-			{
-				Key = key;
-			}
-
-			public GroupedObservableCollection(IGrouping<TKey, object> collection) : base(collection)
-			{
-				Key = collection.Key;
-			}
 		}
 
         [TestMethod]

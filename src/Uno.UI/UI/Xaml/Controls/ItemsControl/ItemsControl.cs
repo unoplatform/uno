@@ -51,7 +51,6 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
 
 		private bool _isReady; // Template applied
-		private bool _needsUpdateItems;
 		private ItemCollection _items = new ItemCollection();
 
 		// This gets prepended to MaterializedContainers to ensure it's being considered 
@@ -111,7 +110,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_inProgressVectorChange = null;
 			}
-			SetNeedsUpdateItems();
+
+			OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
 		}
 
 		partial void InitializePartial();
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
 		{
 			Refresh();
-			SetNeedsUpdateItems();
+			UpdateItems(null);
 		}
 
 		#endregion
@@ -236,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnItemTemplateSelectorChanged(DataTemplateSelector oldItemTemplateSelector, DataTemplateSelector newItemTemplateSelector)
 		{
 			Refresh();
-			SetNeedsUpdateItems();
+			UpdateItems(null);
 		}
 
 		#endregion
@@ -638,7 +638,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
-			Items.SetItemsSource(UnwrapItemsSource() as IEnumerable); // This will call SetNeedsUpdateItems() via Items.VectorChanged
+			Items.SetItemsSource(UnwrapItemsSource() as IEnumerable);
+			UpdateItems(null);
 			ObserveCollectionChanged();
 			TryObserveCollectionViewSource(e.NewValue);
 		}
@@ -653,7 +654,7 @@ namespace Windows.UI.Xaml.Controls
 					(s, e) =>
 					{
 						ObserveCollectionChanged();
-						SetNeedsUpdateItems();
+						UpdateItems(null);
 					}
 				);
 			}
@@ -702,35 +703,6 @@ namespace Windows.UI.Xaml.Controls
 				);
 				iCollectionView.CollectionGroups.VectorChanged += handler;
 
-			}
-			//Subscribe to changes on observable collection
-			else if (unwrappedSource is INotifyCollectionChanged existingObservable)
-			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				NotifyCollectionChangedEventHandler handler = OnItemsSourceCollectionChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					existingObservable.CollectionChanged -= handler
-				);
-				existingObservable.CollectionChanged += handler;
-			}
-			else if (unwrappedSource is IObservableVector<object> observableVector)
-			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				VectorChangedEventHandler<object> handler = OnItemsSourceVectorChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					observableVector.VectorChanged -= handler
-				);
-				observableVector.VectorChanged += handler;
-			}
-			else if (unwrappedSource is IObservableVector genericObservableVector)
-			{
-				VectorChangedEventHandler handler = OnItemsSourceVectorChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					genericObservableVector.UntypedVectorChanged -= handler
-				);
-				genericObservableVector.UntypedVectorChanged += handler;
 			}
 			else
 			{
@@ -820,16 +792,17 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// During an update, this will represent the group state immediately prior to the update. 
 		/// </summary>
-		internal int GetCachedGroupCount(int groupIndex) => _groupCounts[groupIndex];
+		internal int GetCachedGroupCount(int groupIndex)
+			=> _groupCounts[groupIndex];
 
 		private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-		{
-			OnItemsSourceSingleCollectionChanged(sender, args, section: 0);
-		}
+			=> OnItemsSourceSingleCollectionChanged(sender, args, section: 0);
 
-		private void OnItemsSourceGroupsVectorChanged(object sender, IVectorChangedEventArgs args) => OnItemsSourceGroupsChanged(sender, args.ToNotifyCollectionChangedEventArgs());
+		private void OnItemsSourceGroupsVectorChanged(object sender, IVectorChangedEventArgs args)
+			=> OnItemsSourceGroupsChanged(sender, args.ToNotifyCollectionChangedEventArgs());
 
-		private void OnItemsSourceVectorChanged(object sender, IVectorChangedEventArgs args) => OnItemsSourceCollectionChanged(sender, args.ToNotifyCollectionChangedEventArgs());
+		private void OnItemsSourceVectorChanged(object sender, IVectorChangedEventArgs args)
+			=> OnItemsSourceCollectionChanged(sender, args.ToNotifyCollectionChangedEventArgs());
 
 		/// <summary>
 		/// Called when a collection change occurs within a single group, or within the entire source if it is ungrouped.
@@ -840,7 +813,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
 			}
-			UpdateItems();
+			UpdateItems(args);
 		}
 
 		/// <summary>
@@ -852,7 +825,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
 			}
-			UpdateItems();
+			UpdateItems(args);
 		}
 
 		internal virtual void OnGroupPropertyChanged(ICollectionViewGroup group, int groupIndex)
@@ -894,7 +867,7 @@ namespace Windows.UI.Xaml.Controls
 			ItemsPanelRoot?.SetItemsOwner(this);
 			_itemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
 
-			SetNeedsUpdateItems();
+			UpdateItems(null);
 		}
 
 		/// <summary>
@@ -913,63 +886,91 @@ namespace Windows.UI.Xaml.Controls
 			SyncDataContext();
 		}
 
-		protected virtual void SyncDataContext()
+		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
-		}
-
-		public void SetNeedsUpdateItems()
-		{
-			_needsUpdateItems = true;
-			UpdateItemsIfNeeded();
-			RequestLayoutPartial();
-		}
-
-		public bool UpdateItemsIfNeeded()
-		{
-			if (_needsUpdateItems)
+			if (ItemsPanelRoot == null || !ShouldItemsControlManageChildren)
 			{
-				_needsUpdateItems = false;
-				return UpdateItems();
+				return;
 			}
 
-			return false;
-		}
-
-		protected virtual bool UpdateItems()
-		{
-			if (ItemsPanelRoot != null && ShouldItemsControlManageChildren)
+			object LocalCreateContainer(int index)
 			{
-				_needsUpdateItems = false;
+				var container = GetContainerForIndex(index);
+				PrepareContainerForIndex(container, index);
+				return container;
+			}
 
-				var items = GetItems() ?? Enumerable.Empty<object>();
-				var containers = items
-					.Cast<object>()
-					.Select((_, index) =>
-					{
-						var container = GetContainerForIndex(index);
-						PrepareContainerForIndex(container, index);
-						return container;
-					});
-
-				var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<UIElement>(), comparer: new ViewComparer());
-
-				// This block is a manual enumeration to avoid the foreach pattern
-				// See https://github.com/dotnet/runtime/issues/56309 for details
-				var removedEnumerator = results.Removed.GetEnumerator();
-				while(removedEnumerator.MoveNext())
+			void LocalCleanupContainer(object container)
+			{
+				if (container is DependencyObject doContainer)
 				{
-					var removed = removedEnumerator.Current;
-
-					if (removed is DependencyObject removedObject)
-					{
-						CleanUpContainer(removedObject);
-					}
+					CleanUpContainer(doContainer);
 				}
-
-				return results.HasChanged();
 			}
 
-			return false;
+			if (args != null)
+			{
+				if (args.Action == NotifyCollectionChangedAction.Reset)
+				{
+					for (int i = 0; i < ItemsPanelRoot.Children.Count; i++)
+					{
+						CleanUpContainer(ItemsPanelRoot.Children[i]);
+					}
+
+					ItemsPanelRoot.Children.Clear();
+					RequestLayoutPartial();
+					return;
+				}
+				else if (args.Action == NotifyCollectionChangedAction.Remove
+					&& args.OldItems.Count == 1)
+				{
+					var container = ItemsPanelRoot.Children[args.OldStartingIndex];
+
+					ItemsPanelRoot.Children.RemoveAt(args.OldStartingIndex);
+
+					LocalCleanupContainer(container);
+					RequestLayoutPartial();
+					return;
+				}
+				else if (args.Action == NotifyCollectionChangedAction.Add
+					&& args.NewItems.Count == 1)
+				{
+					ItemsPanelRoot.Children.Insert(args.NewStartingIndex, (UIElement)LocalCreateContainer(args.NewStartingIndex));
+					RequestLayoutPartial();
+					return;
+				}
+				else if (args.Action == NotifyCollectionChangedAction.Replace
+					&& args.NewItems.Count == 1)
+				{
+					var container = ItemsPanelRoot.Children[args.NewStartingIndex];
+					LocalCleanupContainer(container);
+
+					ItemsPanelRoot.Children[args.NewStartingIndex] = (UIElement)LocalCreateContainer(args.NewStartingIndex);
+					RequestLayoutPartial();
+					return;
+				}
+			}
+
+			// Generic implementation when fast paths cannot be used (e.g. when the ItemsSource is assigned)
+
+			var containers =
+				(GetItems() ?? Enumerable.Empty<object>())
+					.Cast<object>()
+					.Select((_, index) => LocalCreateContainer(index));
+
+			var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<UIElement>(), comparer: new ViewComparer());
+
+			// This block is a manual enumeration to avoid the foreach pattern
+			// See https://github.com/dotnet/runtime/issues/56309 for details
+			var removedEnumerator = results.Removed.GetEnumerator();
+			while (removedEnumerator.MoveNext())
+			{
+				var removed = removedEnumerator.Current;
+
+				LocalCleanupContainer(removed);
+			}
+
+			RequestLayoutPartial();
 		}
 
 		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item) { }
@@ -1508,5 +1509,30 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+#if !HAS_UNO_4_0_OR_LATER
+		// Methods to remove or make internal when moving to Uno 4.0
+		// https://github.com/unoplatform/uno/issues/2240
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		protected virtual void SyncDataContext()
+		{
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void SetNeedsUpdateItems()
+			=> UpdateItems();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool UpdateItemsIfNeeded()
+			=> UpdateItems();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		protected virtual bool UpdateItems()
+		{
+			UpdateItems(null);
+			return true;
+		}
+#endif
 	}
 }
