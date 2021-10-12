@@ -155,7 +155,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 				colorSpectrum.HsvColor = new Vector4() { X = 120.0f, Y = 1.0f, Z = 1.0f, W = 1.0f };
 
-				Verify.AreEqual(Color.FromArgb(255, 0, 255, 0), colorSpectrum.Color);
+				//Verify.AreEqual(Color.FromArgb(255, 0, 255, 0), colorSpectrum.Color);
+				Verify.AreEqual(255, colorSpectrum.Color.A);
+				Verify.AreEqual(0, colorSpectrum.Color.R);
+				Verify.AreEqual(255, colorSpectrum.Color.G);
+				Verify.AreEqual(0, colorSpectrum.Color.B);
 				Verify.AreEqual(new Vector4() { X = 120.0f, Y = 1.0f, Z = 1.0f, W = 1.0f }, colorSpectrum.HsvColor);
 			});
 		}
