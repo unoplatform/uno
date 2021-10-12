@@ -3,9 +3,10 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+					xmlns:xamarin="http://uno.ui/xamarin"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					mc:Ignorable="d">
+					mc:Ignorable="d xamarin">
 	<Style x:Key="BasicListViewContainerStyle"
 		   TargetType="ListViewItem">
 		<Setter Property="Template">
@@ -29,7 +30,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ListViewItem">
 					<ContentPresenter Content="{TemplateBinding Content}"
-									  ContentTemplate="{TemplateBinding ContentTemplate}" />
+									  ContentTemplate="{TemplateBinding ContentTemplate}"
+									  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -213,6 +215,43 @@
 			<TextBlock x:Name="ContentTextBlock"
 					   Text="{Binding}"
 					   TextWrapping="Wrap" />
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Name="RedSelectableTemplate">
+		<Border Background="Red"
+				BorderBrush="DarkRed"
+				BorderThickness="2"
+				CornerRadius="5"
+				Height="95"
+				MinWidth="100">
+			<local:CounterGrid>
+				<TextBlock Text="{Binding DisplayString}" />
+			</local:CounterGrid>
+		</Border>
+	</DataTemplate>
+	<DataTemplate x:Name="GreenSelectableTemplate">
+		<Border Background="Green"
+				BorderBrush="DarkGreen"
+				BorderThickness="2"
+				CornerRadius="5"
+				Height="125"
+				MinWidth="100">
+			<local:CounterGrid>
+				<TextBlock Text="{Binding DisplayString}" />
+			</local:CounterGrid>
+		</Border>
+	</DataTemplate>
+	<DataTemplate x:Name="BeigeSelectableTemplate">
+		<Border Background="Beige"
+				BorderBrush="SaddleBrown"
+				BorderThickness="2"
+				CornerRadius="5"
+				Height="54"
+				MinWidth="100">
+			<local:CounterGrid>
+				<TextBlock Text="{Binding DisplayString}" />
+			</local:CounterGrid>
 		</Border>
 	</DataTemplate>
 </ResourceDictionary>

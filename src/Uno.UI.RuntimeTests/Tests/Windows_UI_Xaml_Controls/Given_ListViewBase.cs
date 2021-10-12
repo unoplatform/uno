@@ -59,6 +59,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private DataTemplate SelectableItemTemplateB => _testsResources["SelectableItemTemplateB"] as DataTemplate;
 		private DataTemplate SelectableItemTemplateC => _testsResources["SelectableItemTemplateC"] as DataTemplate;
 
+		private DataTemplate RedSelectableTemplate => _testsResources["RedSelectableTemplate"] as DataTemplate;
+		private DataTemplate GreenSelectableTemplate => _testsResources["GreenSelectableTemplate"] as DataTemplate;
+		private DataTemplate BeigeSelectableTemplate => _testsResources["BeigeSelectableTemplate"] as DataTemplate;
+
 		[TestInitialize]
 		public void Init()
 		{
@@ -1443,6 +1447,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_ItemTemplate_Selector_Correct_Reuse()
+		{
+			var selector = new KeyedTemplateSelector<ItemColor>(o => (o as ItemColorViewModel)?.ItemType ?? ItemColor.None)
+			{
+				Templates =
+				{
+					{ItemColor.Red, RedSelectableTemplate },
+					{ItemColor.Green, GreenSelectableTemplate},
+					{ItemColor.Beige, BeigeSelectableTemplate}
+				}
+			};
+
+			var source = new List<ItemColorViewModel>();
+			int itemNo = 0;
+			void AddItem(ItemColor itemType)
+			{
+				itemNo++;
+				source.Add(new ItemColorViewModel { ItemType = itemType, ItemIndex = itemNo });
+			}
+
+			AddItem(ItemColor.Red);
+			AddItem(ItemColor.Green);
+
+			for (int i = 0; i < 10; i++)
+			{
+				AddItem(ItemColor.Beige);
+			}
+
+			AddItem(ItemColor.Green);
+
+			var SUT = new ListView
+			{
+				Width = 180,
+				Height = 320,
+				ItemsSource = source,
+				ItemTemplateSelector = selector,
+				ItemsPanel = NoCacheItemsStackPanel,
+				ItemContainerStyle = NoSpaceContainerStyle
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var redLeader = SUT.ContainerFromIndex(0) as ListViewItem;
+			var greenLeader = SUT.ContainerFromIndex(1) as ListViewItem;
+			var redGrid = redLeader.FindFirstChild<CounterGrid>();
+			var greenGrid = greenLeader.FindFirstChild<CounterGrid>();
+
+			var sv = SUT.FindFirstChild<ScrollViewer>();
+
+			sv.ChangeView(null, 100, null, disableAnimation: true);
+			await Task.Delay(20);
+
+			var redCount1 = redGrid.LocalBindCount;
+			var greenCount1 = greenGrid.LocalBindCount;
+
+			for (int i = 300; i < 1000; i += 300)
+			{
+				sv.ChangeView(null, i, null, disableAnimation: true);
+				await Task.Delay(20);
+			}
+
+
+			var redCount2 = redGrid.LocalBindCount;
+			var greenCount2 = greenGrid.LocalBindCount;
+
+			Assert.AreEqual(redCount1, redCount2); // Red template should not have been rebound
+			Assert.AreEqual(greenCount1 + 1, greenCount2); // Green template should be reused once for final item
+		}
+
+
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
@@ -1555,5 +1632,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var template = Templates.UnoGetValueOrDefault(item);
 			return template;
 		}
+	}
+
+	public class KeyedTemplateSelector<T> : DataTemplateSelector
+	{
+		private readonly Func<object, T> _keySelector;
+
+		public KeyedTemplateSelector(Func<object, T> keySelector = null)
+		{
+			this._keySelector = keySelector;
+		}
+
+		public IDictionary<T, DataTemplate> Templates { get; } = new Dictionary<T, DataTemplate>();
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item); // On UWP only this overload is called when eg Button.ContentTemplateSelector is set
+
+		protected override DataTemplate SelectTemplateCore(object item)
+		{
+			if (item == null)
+			{
+				return null;
+			}
+
+			T itemT;
+			if (_keySelector != null)
+			{
+				itemT = _keySelector(item);
+			}
+			else if (item is T)
+			{
+				itemT = (T)item;
+			}
+			else
+			{
+				return null;
+			}
+
+			var template = Templates.UnoGetValueOrDefault(itemT);
+			return template;
+		}
+	}
+
+	public enum ItemColor
+	{
+		None,
+		Red,
+		Green,
+		Beige
+	}
+
+	public class ItemColorViewModel
+	{
+		public ItemColor ItemType { get; set; }
+		public int ItemIndex { get; set; }
+		public string DisplayString => $"Item {ItemIndex}";
 	}
 }

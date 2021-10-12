@@ -642,7 +642,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!_templateCells.TryGetValue(template ?? _nullDataTemplateKey, out identifier))
 			{
-				identifier = new NSString(_templateCache.Count.ToString(CultureInfo.InvariantCulture));
+				identifier = new NSString(_templateCells.Count.ToString(CultureInfo.InvariantCulture));
 				_templateCells[template ?? _nullDataTemplateKey] = identifier;
 
 				Owner.RegisterClassForCell(typeof(ListViewBaseInternalContainer), identifier);
