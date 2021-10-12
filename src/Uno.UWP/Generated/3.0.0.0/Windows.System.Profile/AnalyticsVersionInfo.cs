@@ -3,7 +3,7 @@
 namespace Windows.System.Profile
 {
 	#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class AnalyticsVersionInfo 
 	{

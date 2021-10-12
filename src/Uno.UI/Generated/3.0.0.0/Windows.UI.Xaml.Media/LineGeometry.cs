@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Media
 {
 	#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	#endif
 	public  partial class LineGeometry : global::Windows.UI.Xaml.Media.Geometry
 	{

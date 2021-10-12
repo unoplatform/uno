@@ -3,7 +3,7 @@
 namespace Windows.UI.Core.Preview
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class SystemNavigationManagerPreview 
 	{
