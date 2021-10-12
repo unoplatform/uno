@@ -65,6 +65,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewInfoBadge.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewInitPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4396,6 +4400,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewCompactPaneLengthTestPage.xaml.cs">
       <DependentUpon>NavigationViewCompactPaneLengthTestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewInfoBadge.xaml.cs">
+      <DependentUpon>NavigationViewInfoBadge.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewInitPage.xaml.cs">
       <DependentUpon>NavigationViewInitPage.xaml</DependentUpon>

@@ -204,6 +204,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool m_isLeftPaneTitleEmpty = false;
 
+		private double m_openPaneWidth = 320.0;
+
 		#region Uno specific
 
 		//TODO: Uno specific - remove when #4689 is fixed

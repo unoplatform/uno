@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit 574e5ed
+// MUX reference NavigationViewItem.cpp, commit fd22d7f
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
@@ -348,6 +348,11 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualStateNoTransition();
 		}
 
+		private void OnInfoBadgePropertyChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateVisualStateForInfoBadge();
+		}
+
 		private void OnMenuItemsPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateRepeaterItemsSource();
@@ -380,6 +385,15 @@ namespace Microsoft.UI.Xaml.Controls
 			if (presenter != null)
 			{
 				var stateName = showIcon ? (showContent ? "IconOnLeft" : "IconOnly") : "ContentOnly";
+				VisualStateManager.GoToState(presenter, stateName, false /*useTransitions*/);
+			}
+		}
+
+		private void UpdateVisualStateForInfoBadge()
+		{
+			if (m_navigationViewItemPresenter is { } presenter)
+			{
+				var stateName = ShouldShowInfoBadge() ? "InfoBadgeVisible" : "InfoBadgeCollapsed";
 				VisualStateManager.GoToState(presenter, stateName, false /*useTransitions*/);
 			}
 		}
@@ -570,6 +584,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateVisualStateForIconAndContent(shouldShowIcon, shouldShowContent);
 
+			UpdateVisualStateForInfoBadge();
+
 			// visual state for focus state. top navigation use it to provide different visual for selected and selected+focused
 			UpdateVisualStateForKeyboardFocusedState();
 
@@ -693,6 +709,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool ShouldShowIcon()
 		{
 			return Icon != null;
+		}
+
+		private bool ShouldShowInfoBadge()
+		{
+			return InfoBadge != null;
 		}
 
 		private bool ShouldEnableToolTip()

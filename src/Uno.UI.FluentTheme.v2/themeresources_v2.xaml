@@ -3255,12 +3255,12 @@
       <StaticResource x:Key="TopNavigationViewItemForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
-      <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundSelected" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPressed" ResourceKey="TextFillColorTertiaryBrush" />
+      <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemSeparatorForeground" ResourceKey="DividerStrokeColorDefaultBrush" />
@@ -18059,7 +18059,7 @@
                 <Border x:Name="TopNavContentOverlayAreaGrid" Child="{TemplateBinding ContentOverlay}" />
               </StackPanel>
               <!-- Displaymode (compact/minimal/normal) left -->
-              <SplitView x:Name="RootSplitView" Background="{TemplateBinding Background}" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" BorderThickness="{ThemeResource NavigationViewBorderThickness}" CompactPaneLength="{TemplateBinding CompactPaneLength}" DisplayMode="Inline" IsPaneOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaneOpen, Mode=TwoWay}" IsTabStop="False" OpenPaneLength="{TemplateBinding OpenPaneLength}" PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}" Grid.Row="1" contract7Present:CornerRadius="{ThemeResource OverlayCornerRadius}">
+              <SplitView x:Name="RootSplitView" Background="{TemplateBinding Background}" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" BorderThickness="{ThemeResource NavigationViewBorderThickness}" CompactPaneLength="{TemplateBinding CompactPaneLength}" DisplayMode="Inline" IsPaneOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaneOpen, Mode=TwoWay}" IsTabStop="False" OpenPaneLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneWidth}" PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}" Grid.Row="1" contract7Present:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
                 <SplitView.Pane>
                   <Grid x:Name="PaneContentGrid" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" HorizontalAlignment="Left" Margin="{ThemeResource NavigationViewPaneContentGridMargin}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.LeftPaneVisibility}">
                     <Grid.RowDefinitions>
@@ -18176,7 +18176,7 @@
                   </Grid>
                 </SplitView.Content>
               </SplitView>
-              <Grid x:Name="ShadowCaster" Grid.RowSpan="2" Width="{TemplateBinding OpenPaneLength}" HorizontalAlignment="Left">
+              <Grid x:Name="ShadowCaster" Grid.RowSpan="2" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneWidth}" HorizontalAlignment="Left">
                 <Grid.RenderTransform>
                   <CompositeTransform x:Name="ShadowCasterTransform" />
                 </Grid.RenderTransform>
@@ -18246,7 +18246,6 @@
                 <VisualState x:Name="OnTopNavigationPrimary">
                   <VisualState.Setters>
                     <Setter Target="NavigationViewItemPresenter.Margin" Value="{ThemeResource TopNavigationViewItemMargin}" />
-                    <Setter Target="NavigationViewItemPresenter.Foreground" Value="{ThemeResource TopNavigationViewItemForeground}" />
                     <Setter Target="NavigationViewItemPresenter.Style" Value="{StaticResource MUX_NavigationViewItemPresenterStyleWhenOnTopPane}" />
                     <contract7NotPresent:Setter Target="ChildrenFlyout.Placement" Value="Bottom" />
                     <contract7Present:Setter Target="ChildrenFlyout.Placement" Value="BottomEdgeAlignedLeft" />
@@ -18259,7 +18258,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <primitives:NavigationViewItemPresenter x:Name="NavigationViewItemPresenter" Icon="{TemplateBinding Icon}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" primitiveContract7Present:CornerRadius="{TemplateBinding CornerRadius}" IsTabStop="false" Control.IsTemplateFocusTarget="True" />
+            <primitives:NavigationViewItemPresenter x:Name="NavigationViewItemPresenter" Icon="{TemplateBinding Icon}" InfoBadge="{TemplateBinding InfoBadge}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" primitiveContract7Present:CornerRadius="{TemplateBinding CornerRadius}" IsTabStop="false" Control.IsTemplateFocusTarget="True" />
             <controls:ItemsRepeater Grid.Row="1" Visibility="Collapsed" x:Name="NavigationViewItemMenuItemsHost">
               <controls:ItemsRepeater.Layout>
                 <controls:StackLayout Orientation="Vertical" />
@@ -18718,6 +18717,14 @@
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
+              <VisualStateGroup x:Name="InfoBadgeStates">
+                <VisualState x:Name="InfoBadgeVisible" />
+                <VisualState x:Name="InfoBadgeCollapsed">
+                  <VisualState.Setters>
+                    <Setter Target="InfoBadgePresenter.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
               <VisualStateGroup x:Name="ChevronStates">
                 <VisualState x:Name="ChevronHidden" />
                 <VisualState x:Name="ChevronVisibleOpen">
@@ -18781,6 +18788,12 @@
                 <VisualState x:Name="ClosedCompactAndTopLevelItem">
                   <VisualState.Setters>
                     <Setter Target="ContentPresenter.Margin" Value="{ThemeResource NavigationViewCompactItemContentPresenterMargin}" />
+                    <Setter Target="ContentGrid.Margin" Value="0,0,0,0" />
+                    <Setter Target="InfoBadgePresenter.(Grid.Column)" Value="0" />
+                    <Setter Target="InfoBadgePresenter.(Grid.ColumnSpan)" Value="4" />
+                    <Setter Target="InfoBadgePresenter.VerticalAlignment" Value="Top" />
+                    <Setter Target="InfoBadgePresenter.HorizontalAlignment" Value="Right" />
+                    <Setter Target="InfoBadgePresenter.Margin" Value="0,2,2,0" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -18790,8 +18803,7 @@
               <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
                 <Rectangle x:Name="SelectionIndicator" Width="{ThemeResource NavigationViewSelectionIndicatorWidth}" Height="{ThemeResource NavigationViewSelectionIndicatorHeight}" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0.0" contract7Present:RadiusX="{ThemeResource NavigationViewSelectionIndicatorRadius}" contract7Present:RadiusY="{ThemeResource NavigationViewSelectionIndicatorRadius}" />
               </Grid>
-              <!--Uno workaround: removed Margin="0,0,14,0" from ContentGrid, because it causes icons to be cut off in compact mode https://github.com/unoplatform/uno/issues/7049-->
-              <Grid x:Name="ContentGrid" MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}" HorizontalAlignment="Stretch">
+              <Grid x:Name="ContentGrid" MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}" Margin="0,0,14,0" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="Auto" />
                   <ColumnDefinition Width="*" />
@@ -18815,6 +18827,7 @@
                     </controls:AnimatedIcon.RenderTransform>
                   </controls:AnimatedIcon>
                 </Grid>
+                <ContentPresenter x:Name="InfoBadgePresenter" Grid.Column="2" VerticalAlignment="Center" Content="{TemplateBinding InfoBadge}" />
               </Grid>
             </Grid>
           </Grid>
@@ -18903,6 +18916,7 @@
               <Viewbox x:Name="IconBox" Grid.Row="1" Grid.Column="1" Height="16" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
               </Viewbox>
+              <ContentPresenter x:Name="InfoBadgePresenter" Grid.Column="2" VerticalAlignment="Center" Content="{TemplateBinding InfoBadge}" />
             </Grid>
           </Grid>
         </ControlTemplate>
@@ -19003,6 +19017,14 @@
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
+              <VisualStateGroup x:Name="InfoBadgeStates">
+                <VisualState x:Name="InfoBadgeVisible" />
+                <VisualState x:Name="InfoBadgeCollapsed">
+                  <VisualState.Setters>
+                    <Setter Target="InfoBadgePresenter.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
               <VisualStateGroup x:Name="ChevronStates">
                 <VisualState x:Name="ChevronHidden" />
                 <VisualState x:Name="ChevronVisibleOpen">
@@ -19068,6 +19090,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
               <Viewbox x:Name="IconBox" Height="16" Width="16" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
@@ -19084,6 +19107,7 @@
                   </controls:AnimatedIcon.RenderTransform>
                 </controls:AnimatedIcon>
               </Grid>
+              <ContentPresenter x:Name="InfoBadgePresenter" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-16,0,2,13" Content="{TemplateBinding InfoBadge}" />
             </Grid>
             <Grid x:Name="SelectionIndicatorGrid" Margin="16,0,16,4" VerticalAlignment="Bottom" HorizontalAlignment="Center">
               <Rectangle x:Name="SelectionIndicator" Height="3" Width="16" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0" contract7Present:RadiusX="2" contract7Present:RadiusY="2" contract7NotPresent:RadiusX="2" contract7NotPresent:RadiusY="2" />
@@ -19166,6 +19190,14 @@
                   <VisualState.Setters>
                     <Setter Target="IconBox.Visibility" Value="Collapsed" />
                     <Setter Target="ContentPresenter.Margin" Value="{ThemeResource TopNavigationViewItemOnOverflowNoIconContentPresenterMargin}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="InfoBadgeStates">
+                <VisualState x:Name="InfoBadgeVisible" />
+                <VisualState x:Name="InfoBadgeCollapsed">
+                  <VisualState.Setters>
+                    <Setter Target="InfoBadgePresenter.Visibility" Value="Collapsed" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -19255,6 +19287,7 @@
                     </controls:AnimatedIcon.RenderTransform>
                   </controls:AnimatedIcon>
                 </Grid>
+                <ContentPresenter x:Name="InfoBadgePresenter" Grid.Column="2" VerticalAlignment="Center" Content="{TemplateBinding InfoBadge}" />
               </Grid>
             </Grid>
           </Grid>

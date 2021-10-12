@@ -50,6 +50,21 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(LeftPaneVisibility), typeof(Visibility), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Visibility.Visible));
 
 		/// <summary>
+		/// Gets the width of open pane.
+		/// </summary>
+		public double OpenPaneWidth
+		{
+			get => (double)GetValue(OpenPaneWidthProperty);
+			set => SetValue(OpenPaneWidthProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the OpenPaneWidth dependency property.
+		/// </summary>
+		public static DependencyProperty OpenPaneWidthProperty { get; } =
+			DependencyProperty.Register(nameof(OpenPaneWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(320.0));
+
+		/// <summary>
 		/// Gets the visibility of the overflow button.
 		/// </summary>
 		public Visibility OverflowButtonVisibility
