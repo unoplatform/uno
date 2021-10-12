@@ -106,6 +106,9 @@ namespace Uno.UI.Controls
 			{
 				navigationCommand.SetParent(element); // This ensures that Behaviors expecting this button to be in the logical tree work.
 				native.LeftBarButtonItem = navigationCommand.GetRenderer(() => new AppBarButtonRenderer(navigationCommand)).Native;
+
+				 // offset to align the icon with the default back button position
+				native.LeftBarButtonItem.ImageInsets = new UIEdgeInsets(0, -8, 0, 0);
 			}
 			else
 			{
