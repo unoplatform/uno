@@ -90,6 +90,12 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		protected virtual bool IsSimpleLayout => false;
 
+		/// <summary>
+		/// Flag for whether this FrameworkElement has a Style set by an ItemsControl. This typically happens when the user provides an explicit container
+		/// in XAML, but does not set a local style for the container.
+		/// </summary>
+		internal bool IsStyleSetFromItemsControl { get; set; }
+
 		#region Tag Dependency Property
 
 #if __IOS__ || __MACOS__ || __ANDROID__
