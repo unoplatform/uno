@@ -1,9 +1,7 @@
 ﻿#nullable enable
 using System;
-using Uno.Disposables;
 using Uno.Media;
 using Windows.Foundation;
-using Windows.Graphics;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Media;
 using SkiaSharp;
@@ -22,26 +20,26 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private SkiaGeometrySource2D GetPath() => GetSkiaGeometry(Data);
+		private SkiaGeometrySource2D? GetPath() => GetSkiaGeometry(Data);
 
-		private SkiaGeometrySource2D GetSkiaGeometry(Geometry geometry)
+		private SKPath? GetSKPath(Geometry? geometry)
 		{
 			switch (geometry)
 			{
 				case PathGeometry pg:
-					return ToGeometrySource2D(pg);
+					return ToSKPath(pg);
 				case LineGeometry lg:
-					return new SkiaGeometrySource2D(CompositionGeometry.BuildLineGeometry(lg.StartPoint.ToVector2(), lg.EndPoint.ToVector2()));
+					return CompositionGeometry.BuildLineGeometry(lg.StartPoint.ToVector2(), lg.EndPoint.ToVector2());
 				case RectangleGeometry rg:
-					return new SkiaGeometrySource2D(CompositionGeometry.BuildRectangleGeometry(
+					return CompositionGeometry.BuildRectangleGeometry(
 						offset: new Vector2((float)rg.Rect.X, (float)rg.Rect.Y),
-						size: new Vector2((float)rg.Rect.Width, (float)rg.Rect.Height)));
+						size: new Vector2((float)rg.Rect.Width, (float)rg.Rect.Height));
 				case GeometryGroup group:
-					return ToGeometrySource2D(@group);
+					return ToSKPath(@group);
 				case StreamGeometry sg:
-					return sg.GetGeometrySource2D();
+					return sg.GetGeometrySource2D().Geometry;
 				case EllipseGeometry eg:
-					return new SkiaGeometrySource2D(CompositionGeometry.BuildEllipseGeometry(eg.Center.ToVector2(), new Vector2((float)eg.RadiusX, (float)eg.RadiusY)));
+					return CompositionGeometry.BuildEllipseGeometry(eg.Center.ToVector2(), new Vector2((float)eg.RadiusX, (float)eg.RadiusY));
 			}
 
 			if (geometry != null)
@@ -52,36 +50,51 @@ namespace Windows.UI.Xaml.Shapes
 			return null;
 		}
 
-		private SkiaGeometrySource2D ToGeometrySource2D(PathGeometry geometry)
+		private SkiaGeometrySource2D? GetSkiaGeometry(Geometry? geometry)
 		{
-			var skiaGeometry = new SkiaGeometrySource2D();
+			if (geometry is StreamGeometry sg)
+			{
+				// Avoid allocating SkiaGeometrySource2D if we have one already.
+				return sg.GetGeometrySource2D();
+			}
+			else if (GetSKPath(geometry) is { } path)
+			{
+				return new SkiaGeometrySource2D(path);
+			}
+
+			return null;
+		}
+
+		private SKPath ToSKPath(PathGeometry geometry)
+		{
+			var path = new SKPath();
 
 			foreach (PathFigure figure in geometry.Figures)
 			{
-				skiaGeometry.Geometry.MoveTo((float)figure.StartPoint.X, (float)figure.StartPoint.Y);
+				path.MoveTo((float)figure.StartPoint.X, (float)figure.StartPoint.Y);
 
 				foreach (PathSegment segment in figure.Segments)
 				{
 					if (segment is LineSegment lineSegment)
 					{
-						skiaGeometry.Geometry.LineTo((float)lineSegment.Point.X, (float)lineSegment.Point.Y);
+						path.LineTo((float)lineSegment.Point.X, (float)lineSegment.Point.Y);
 					}
 					else if (segment is BezierSegment bezierSegment)
 					{
-						skiaGeometry.Geometry.CubicTo(
+						path.CubicTo(
 							 (float)bezierSegment.Point1.X, (float)bezierSegment.Point1.Y,
 							 (float)bezierSegment.Point2.X, (float)bezierSegment.Point2.Y,
 							 (float)bezierSegment.Point3.X, (float)bezierSegment.Point3.Y);
 					}
 					else if (segment is QuadraticBezierSegment quadraticBezierSegment)
 					{
-						skiaGeometry.Geometry.QuadTo(
+						path.QuadTo(
 							 (float)quadraticBezierSegment.Point1.X, (float)quadraticBezierSegment.Point1.Y,
 							 (float)quadraticBezierSegment.Point2.X, (float)quadraticBezierSegment.Point2.Y);
 					}
 					else if (segment is ArcSegment arcSegment)
 					{
-						skiaGeometry.Geometry.ArcTo(
+						path.ArcTo(
 							 (float)arcSegment.Size.Width, (float)arcSegment.Size.Height,
 							 (float)arcSegment.RotationAngle,
 							 arcSegment.IsLargeArc ? SkiaSharp.SKPathArcSize.Large : SkiaSharp.SKPathArcSize.Small,
@@ -92,30 +105,27 @@ namespace Windows.UI.Xaml.Shapes
 
 				if (figure.IsClosed)
 				{
-					skiaGeometry.Geometry.Close();
+					path.Close();
 				}
 			}
 
-			skiaGeometry.Geometry.FillType = geometry.FillRule.ToSkiaFillType();
+			path.FillType = geometry.FillRule.ToSkiaFillType();
 
-			return skiaGeometry;
+			return path;
 		}
 
-		private SkiaGeometrySource2D ToGeometrySource2D(GeometryGroup geometryGroup)
+		private SKPath ToSKPath(GeometryGroup geometryGroup)
 		{
 			var path = new SKPath();
 
 			foreach (var geometry in geometryGroup.Children)
 			{
-				// TODO(minor): GetSkiaGeometry will allocate an unneeded SkiaGeometrySource2D. We only need the SKPath
-				// Consider refactoring to eliminate the extra allocation.
-				var geometryPath = GetSkiaGeometry(geometry);
-				path.AddPath(geometryPath.Geometry);
+				var geometryPath = GetSKPath(geometry);
+				path.AddPath(geometryPath);
 			}
 
 			path.FillType = geometryGroup.FillRule.ToSkiaFillType();
-
-			return new SkiaGeometrySource2D(path);
+			return path;
 		}
 	}
 }
