@@ -28,6 +28,11 @@ namespace Windows.UI.Xaml.Controls
 	/// </summary>
 	public sealed partial class ListViewBaseScrollContentPresenter : ScrollContentPresenter, IScrollContentPresenter, INativeScrollContentPresenter
 	{
+		public ListViewBaseScrollContentPresenter()
+		{
+			Native = this;
+		}
+
 		ScrollBarVisibility INativeScrollContentPresenter.HorizontalScrollBarVisibility
 		{
 			get => NativePanel?.HorizontalScrollBarVisibility ?? ScrollBarVisibility.Auto;

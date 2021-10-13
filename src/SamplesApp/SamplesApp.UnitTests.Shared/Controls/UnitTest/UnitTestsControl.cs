@@ -134,6 +134,9 @@ namespace Uno.UI.Samples.Tests
 			void Setter()
 			{
 				testFilter.IsEnabled = runButton.IsEnabled = !isRunning || _cts == null; // Disable the testFilter to avoid SIP to re-open
+#if !DEBUG // Imprves perf on CI by not re-rendring the whole test result live during tests
+				testResults.Visibility = Visibility.Collapsed;
+#endif
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
@@ -470,6 +473,7 @@ namespace Uno.UI.Samples.Tests
 				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
+					testResults.Visibility = Visibility.Visible;
 					stopButton.IsEnabled = false;
 				});
 			}
@@ -515,6 +519,7 @@ namespace Uno.UI.Samples.Tests
 				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
+					testResults.Visibility = Visibility.Visible;
 					stopButton.IsEnabled = false;
 				});
 			}

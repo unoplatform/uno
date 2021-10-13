@@ -28,11 +28,6 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public bool BringIntoViewOnFocusChange { get; set; }
 
-		public ListViewBaseScrollContentPresenter()
-		{
-			Native = this;
-		}
-
 		Size? IScrollContentPresenter.CustomContentExtent
 		{
 			get
