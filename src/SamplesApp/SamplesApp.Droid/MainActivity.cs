@@ -6,6 +6,7 @@ using Java.Interop;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.Identity.Client;
+using Uno.UI.ViewManagement;
 
 namespace SamplesApp.Droid
 {
@@ -25,6 +26,28 @@ namespace SamplesApp.Droid
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
+		private bool _onCreateEventInvoked = false;
+
+		public MainActivity()
+		{
+			ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;
+		}
+
+		private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
+		{
+			_onCreateEventInvoked = true;
+		}
+
+		protected override void OnStart()
+		{
+			if(!_onCreateEventInvoked)
+			{
+				throw new InvalidOperationException($"Invalid startup sequence to initialize BaseActivityEvents");
+			}
+
+			base.OnStart();
+		}
+
 		[Export("RunTest")]
 		public string RunTest(string metadataName) => App.RunTest(metadataName);
 

@@ -101,9 +101,9 @@
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.net6.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.net6.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.net6.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.DualScreen\Uno.UI.DualScreen.net6.csproj"/>
 		
 		<!--
-		<ProjectReference Include="..\..\Uno.UI.DualScreen\Uno.UI.DualScreen.net6.csproj"/>
 		<ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.net6.csproj"/>
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.net6.csproj"/>
 		-->
