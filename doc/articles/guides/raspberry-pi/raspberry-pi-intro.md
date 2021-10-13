@@ -104,7 +104,7 @@ Next we can add the Uno Platform Project Templates to our .NET Installation;
 
 ![Install Uno Templates](images/05_install-uno-templates.png)
 
-Once the templates are installed, you can scroll back up and see the list of uno templates that were installed;
+Once the templates are installed, you can scroll back up and see the list of Uno templates that were installed;
 
 ![Uno Templates Installed](images/06_uno-templates-installed.png)
 
