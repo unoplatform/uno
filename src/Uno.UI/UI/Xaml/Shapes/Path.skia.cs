@@ -8,6 +8,7 @@ using Windows.UI.Composition;
 using Windows.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
+using System.Numerics;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -29,10 +30,18 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				case PathGeometry pg:
 					return ToGeometrySource2D(pg);
+				case LineGeometry lg:
+					return new SkiaGeometrySource2D(CompositionGeometry.BuildLineGeometry(lg.StartPoint.ToVector2(), lg.EndPoint.ToVector2()));
+				case RectangleGeometry rg:
+					return new SkiaGeometrySource2D(CompositionGeometry.BuildRectangleGeometry(
+						offset: new Vector2((float)rg.Rect.X, (float)rg.Rect.Y),
+						size: new Vector2((float)rg.Rect.Width, (float)rg.Rect.Height)));
 				case GeometryGroup group:
 					return ToGeometrySource2D(@group);
 				case StreamGeometry sg:
 					return sg.GetGeometrySource2D();
+				case EllipseGeometry eg:
+					return new SkiaGeometrySource2D(CompositionGeometry.BuildEllipseGeometry(eg.Center.ToVector2(), new Vector2((float)eg.RadiusX, (float)eg.RadiusY)));
 			}
 
 			if (geometry != null)
@@ -98,6 +107,8 @@ namespace Windows.UI.Xaml.Shapes
 
 			foreach (var geometry in geometryGroup.Children)
 			{
+				// TODO(minor): GetSkiaGeometry will allocate an unneeded SkiaGeometrySource2D. We only need the SKPath
+				// Consider refactoring to eliminate the extra allocation.
 				var geometryPath = GetSkiaGeometry(geometry);
 				path.AddPath(geometryPath.Geometry);
 			}
@@ -106,6 +117,5 @@ namespace Windows.UI.Xaml.Shapes
 
 			return new SkiaGeometrySource2D(path);
 		}
-
 	}
 }
