@@ -65,8 +65,10 @@ Before we can do anything, assuming yuo've gotten your Raspberry Pi all set up, 
 
 Run the following two commands;
 
-`sudo apt update`
-`sudo apt full-upgrade`
+```
+sudo apt update
+sudo apt full-upgrade
+```
 
 Once those two commands have completed, restart your Pi using;
 
