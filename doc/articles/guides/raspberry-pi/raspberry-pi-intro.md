@@ -4,7 +4,7 @@
 
 In this series of guides, we'll build a cloud connected Raspberry Pi GUI app to perform some straightforward GPIO (General Purpose Input Output) operations.
 
-1. [Introduction and Getting Started](raspberry-pi-intro.md)
+1. Introduction and Getting Started (this article)
 2. [GPIO Control](raspberry-pi-gpio.md)
 3. [Connecting to an Azure IoT Hub](raspberry-pi-azure.md)
 
