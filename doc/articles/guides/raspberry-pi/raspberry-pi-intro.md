@@ -25,7 +25,7 @@ For this series of guides, you'll need various pieces of hardware and an Azure A
 
 ## What we'll be doing
 
-In this guide we'll be setting up our Raspberry Pi to launch a "Hello World" Uno Application.
+In this guide, we'll be setting up our Raspberry Pi to launch a "Hello World" Uno Application.
 
 For this guide, we'll install all of the requirements to build and run the application directly on the Pi, but I will show you how to do this on your main machine at the end.
 
