@@ -135,7 +135,7 @@ Then we have four directories;
 | unoapp1.Skia.Linux.FrameBuffer | Provides Access to a Window Manager and the Cursor  |
 | unoapp1.UWP | Contains the Windows UWP version |
 
-The directory we're interested in is the `unoapp1.Skia.GTK` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
+The directory we're interested in is the `unoapp1.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
 
 It actually includes the build outputs from the `unoapp1.Shared` and `unoaddp1.Skia.Linux.Framebuffer` projects too, and in the next tutorial, we'll dive in to those in a bit more detail.
 
