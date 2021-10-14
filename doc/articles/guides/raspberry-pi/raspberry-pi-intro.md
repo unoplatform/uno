@@ -45,7 +45,7 @@ There will be a series of steps involved in this;
 
 Before we go anywhere, let's make sure we can dial in to our Raspberry Pi.
 
-You may need to do this part with a Keyboard, a Mouse and Monitor of course, unless you enabled SSH the SD card before you installed Raspberry Pi Os.
+You may need to do this part with a Keyboard, a Mouse and Monitor of course, unless you enabled SSH the SD card before you installed Raspberry Pi OS.
 
 Firstly, make sure that your Pi is connected to the same network.
 
