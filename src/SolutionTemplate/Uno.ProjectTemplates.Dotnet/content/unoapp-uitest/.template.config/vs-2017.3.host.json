@@ -15,69 +15,9 @@
   "additionalWizardParameters": {
     "$isMultiProjectTemplate$": "true"
   },
-  "symbolInfo": [
+  "unsupportedHosts": [
     {
-      "id": "WebAssembly",
-      "name": {
-        "text": "Add support for WebAssembly"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "iOS",
-      "name": {
-        "text": "Add support for iOS"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "Android",
-      "name": {
-        "text": "Add support for Android"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "macOS",
-      "name": {
-        "text": "Add support for macOS"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "skia-gtk",
-      "name": {
-        "text": "Add support for Skia/GTK (Linux, macOS, Windows 7/10)"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "skia-wpf",
-      "name": {
-        "text": "Add support for Skia/WPF (Windows 7/10)"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "UWP",
-      "name": {
-        "text": "Add support for UWP"
-      },
-      "isVisible": "true"
-    },
-    {
-      "id": "vscodeWasm",
-      "name": {
-        "text": "Adds the Visual Studio Code Debugging support files for WebAssembly"
-      },
-      "isVisible": "false"
-    },
-    {
-      "id": "windowsPublisherName",
-      "name": {
-        "text": "Provides the value to use for the Windows head publisher"
-      },
-      "isVisible": "true"
+      "id": "vs"
     }
   ]
 }
