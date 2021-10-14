@@ -199,7 +199,7 @@ You can then run the application with;
 
 `./unoapp1.Skia.Gtk`
 
-I've create a Blog Post around how you can actually automate Building, Deploying and even debugging from your Windows machine using VS Code;
+I've created a blog post around how you can actually automate Building, Deploying and even debugging from your Windows machine using VS Code;
 
 [Developing UWP Apps for the Raspberry Pi with Uno Platform](https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/)
 
