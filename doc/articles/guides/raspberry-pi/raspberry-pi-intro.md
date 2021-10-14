@@ -171,7 +171,7 @@ We can now run our application with;
 
 `dotnet run`
 
-This will take quite some time to run this command the first time as the Pi isn't as powerful as a desktop pc of course.
+This will take quite some time to run this command the first time as the Pi isn't as powerful as a desktop PC of course.
 
 You may also see some errors, but don't worry about those, as they're complaining that we're not running this from Visual Studio for XAML Hot reload to connect to.
 
