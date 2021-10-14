@@ -61,7 +61,7 @@ Hit the Ok button, and accept the offer to reboot your Pi.
 
 ## Update Raspberry Pi OS
 
-Before we can do anything, assuming yuo've gotten your Raspberry Pi all set up, we need to make sure that everything is up to date.
+Before we can do anything, assuming you've gotten your Raspberry Pi all set up, we need to make sure that everything is up to date.
 
 Run the following two commands;
 
