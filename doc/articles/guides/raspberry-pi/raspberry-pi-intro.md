@@ -157,7 +157,7 @@ We can sort this out using the following command;
 
 You won't get any response to this message, so don't worry.
 
-You'll need to remember do this everytime you launch a new SSH session currently, but don't worry too much about that too much for now.
+You'll need to remember do this every time you launch a new SSH session currently, but don't worry too much about that too much for now.
 
 ## Build and run the application
 
