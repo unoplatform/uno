@@ -147,7 +147,7 @@ namespace <#= mixin.NamespaceName #>
 			}
 		}
 
-		public event TypedEventHandler<DependencyObject, object> Loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading;
 
 		public event RoutedEventHandler Loaded;
 
@@ -549,7 +549,7 @@ namespace <#= mixin.NamespaceName #>
 		internal virtual void OnLoading()
 		{
 			OnLoadingPartial();
-			Loading?.Invoke(this, null);
+			Loading?.Invoke(<#= mixin.LoadingInvokeArgument #>, null);
 			OnPostLoading();
 		}
 
@@ -1093,7 +1093,8 @@ namespace <#= mixin.NamespaceName #>
 		bool overridesAttachedToWindow = false,
 		bool isNewBackground = false,
 		bool hasAutomationPeer = false,
-		bool hasLayouter = false
+		bool hasLayouter = false,
+		bool derivesFromFrameworkElement = true
 	)
 	{
 		_mixins.Add(
@@ -1108,7 +1109,8 @@ namespace <#= mixin.NamespaceName #>
 				IsNewBackground = isNewBackground ? "new" : "",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
-				HasLayouter = hasLayouter ? "true" : "false"
+				HasLayouter = hasLayouter ? "true" : "false",
+				LoadingInvokeArgument = derivesFromFrameworkElement ? "this" : "null"
 			}
 		);
 	}
@@ -1126,6 +1128,7 @@ namespace <#= mixin.NamespaceName #>
 		public string IsFrameworkElement;
 		public string HasAutomationPeer;
 		public string HasLayouter;
+		public string LoadingInvokeArgument;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();
