@@ -103,6 +103,8 @@ Once you're finished, you should be able to run the following to check your .NET
 Next we can add the Uno Platform Project Templates to our .NET Installation;
 
 `dotnet new --install Uno.ProjectTemplates.Dotnet::3.11.0-dev.348`
+Or once Uno Platform 3.11 or later is out, you can use :
+`dotnet new --install Uno.ProjectTemplates.Dotnet`
 
 ![Install Uno Templates](images/05_install-uno-templates.png)
 
