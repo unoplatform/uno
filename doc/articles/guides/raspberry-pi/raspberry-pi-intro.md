@@ -10,7 +10,7 @@ In this series of guides, we'll build a cloud connected Raspberry Pi GUI app to 
 
 ## Prerequisites
 
-For this series of guides you'll need various peices of hardware and an Azure Account;
+For this series of guides, you'll need various pieces of hardware and an Azure Account;
 
 - Raspberry Pi 3b+ and above (I'll be using a [4Gb Pi 4](https://shop.pimoroni.com/products/raspberry-pi-4?variant=29157087445075)) 
 - [Raspberry Pi Power Supply](https://shop.pimoroni.com/products/universal-usb-c-power-supply-5-1v-3a)
