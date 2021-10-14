@@ -86,6 +86,8 @@ Run the following command;
 
 `wget -O - https://raw.githubusercontent.com/pjgpetecodes/dotnet5pi/master/install.sh | sudo bash`
 
+You can see the contents of this script [here](scripts/install.sh)
+
 ![Install Dot NET 5](images/03_install-dot-net-5.gif)
 
 Once the process has completed, go ahead and reboot your Pi again with;
