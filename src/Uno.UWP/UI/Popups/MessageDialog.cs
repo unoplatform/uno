@@ -42,7 +42,7 @@ namespace Windows.UI.Popups
 #if __ANDROID__ || __IOS__
 		public IAsyncOperation<IUICommand> ShowAsync()
 		{
-			VisualTreeHelperProxy.CloseAllPopups();
+			VisualTreeHelperProxy.CloseAllFlyouts();
 
 			return AsyncOperation.FromTask<IUICommand>(async ct =>
 			{

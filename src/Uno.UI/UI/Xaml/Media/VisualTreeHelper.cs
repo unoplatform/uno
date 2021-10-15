@@ -146,6 +146,15 @@ namespace Windows.UI.Xaml.Media
 				.AsReadOnly();
 		}
 
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
+		{
+			return _openPopups
+				.Select(WeakReferenceExtensions.GetTarget)
+				.OfType<Popup>()
+				.Where(p => p.PopupPanel is FlyoutBasePopupPanel)
+				.ToList().AsReadOnly();
+		}
+
 		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
 		{
 			if (xamlRoot == XamlRoot.Current)
@@ -170,6 +179,14 @@ namespace Windows.UI.Xaml.Media
 		internal static void CloseAllPopups()
 		{
 			foreach (var popup in GetOpenPopups(Window.Current))
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		internal static void CloseAllFlyouts()
+		{
+			foreach (var popup in GetOpenFlyoutPopups())
 			{
 				popup.IsOpen = false;
 			}

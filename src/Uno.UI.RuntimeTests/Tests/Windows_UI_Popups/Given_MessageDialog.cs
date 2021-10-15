@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 #endif
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task Should_Close_Open_Popups()
+		public async Task Should_Close_Open_Flyouts()
 		{
 			var button = new Windows.UI.Xaml.Controls.Button();
 			var flyout = new Flyout();
@@ -35,6 +35,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 			var asyncOperation = messageDialog.ShowAsync();
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
 			asyncOperation.Cancel();
+		}
+
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#endif
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Should_Not_Close_Open_ContentDialogs()
+		{
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+
+			var contentDialog = new ContentDialog
+			{
+				Title = "Title",
+				Content = "My Dialog Content"
+			};
+
+			contentDialog.ShowAsync();
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+
+			var messageDialog = new MessageDialog("Hello");
+			messageDialog.ShowAsync();
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			contentDialog.Hide();
 		}
 #endif
 
