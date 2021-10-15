@@ -22,6 +22,7 @@ using Path = AppKit.NSBezierPath;
 using Android.Graphics;
 #elif __SKIA__
 using Path = Windows.UI.Composition.SkiaGeometrySource2D;
+using SkiaSharp;
 #else
 using Path = System.Object;
 #endif
@@ -46,10 +47,12 @@ namespace Uno.Media
 		}
 
 #if __SKIA__
-		internal Path GetGeometrySource2D()
+		internal override Path GetGeometrySource2D()
 		{
 			return bezierPath;
 		}
+
+		internal override SKPath GetSKPath() => bezierPath.Geometry;
 #endif
 
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
