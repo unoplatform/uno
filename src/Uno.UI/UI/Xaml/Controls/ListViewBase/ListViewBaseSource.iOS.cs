@@ -429,7 +429,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Note: untested, more may be needed to support zooming. On ScrollContentPresenter we set ViewForZoomingInScrollView (not 
 			// obvious what it would be in the case of a list).
-			Owner.XamlParent?.ScrollViewer?.OnZoomInternal((float)Owner.ZoomScale);
+			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeZoom((float)Owner.ZoomScale);
 		}
 #endif
 
@@ -446,7 +446,7 @@ namespace Windows.UI.Xaml.Controls
 			var clampedOffset = shouldReportNegativeOffsets ?
 				Owner.ContentOffset :
 				Owner.ContentOffset.Clamp(CGPoint.Empty, Owner.UpperScrollLimit);
-			Owner.XamlParent?.ScrollViewer?.OnScrollInternal(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
+			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeScroll(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
 
 #if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873

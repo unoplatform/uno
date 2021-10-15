@@ -7,8 +7,10 @@ using System.Text;
 using UIKit;
 using System.ComponentModel;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.UI.Xaml.Controls.Layouter;
 
 namespace Windows.UI.Xaml
 {
@@ -60,7 +62,23 @@ namespace Windows.UI.Xaml
 
 					OnBeforeArrange();
 
-					var finalRect = Superview is UIElement ? LayoutSlotWithMarginsAndAlignments : RectFromUIRect(Frame);
+					Rect finalRect;
+					var parent = Superview;
+					if (parent is UIElement || parent is ISetLayoutSlots)
+					{
+						finalRect = LayoutSlotWithMarginsAndAlignments;
+					}
+					else
+					{
+						// Here the "arrange" is coming from a native element,
+						// so we convert those measurements to logical ones.
+						finalRect = RectFromUIRect(Frame);
+
+						// We also need to set the LayoutSlot as it was not by the parent.
+						// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
+						LayoutInformation.SetLayoutSlot(this, finalRect);
+						LayoutSlotWithMarginsAndAlignments = finalRect;
+					}
 
 					_layouter.Arrange(finalRect);
 

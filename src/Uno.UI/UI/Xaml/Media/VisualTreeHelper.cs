@@ -389,28 +389,21 @@ namespace Windows.UI.Xaml.Media
 				renderingBounds = parentToElement.Transform(renderingBounds);
 			}
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
+#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 			if (element is ScrollViewer sv)
 			{
+				// Note: We check only the zoom factor as scroll offsets are handled at SCP level using the IsScrollPort
 				var zoom = sv.ZoomFactor;
 
 				TRACE($"- scroller: x={sv.HorizontalOffset} | y={sv.VerticalOffset} | zoom={zoom}");
 
-				// Note: This is probably wrong for skia as the zoom is probably also handled by the ScrollContentPresenter
 				posRelToElement.X /= zoom;
 				posRelToElement.Y /= zoom;
 
-				posRelToElement.X += sv.HorizontalOffset;
-				posRelToElement.Y += sv.VerticalOffset;
-
 				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
 			}
-			else
-#endif
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling which has already been included.
-			if (element.IsScrollPort)
+
+			if (element.IsScrollPort) // Managed SCP or custom scroller
 			{
 				posRelToElement.X += element.ScrollOffsets.X;
 				posRelToElement.Y += element.ScrollOffsets.Y;

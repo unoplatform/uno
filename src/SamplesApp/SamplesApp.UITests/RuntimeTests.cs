@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -35,6 +36,7 @@ namespace SamplesApp.UITests.Runtime
 			var runButton = new QueryEx(q => AllQuery(q).Marked("runButton"));
 			var failedTestsCount = new QueryEx(q => AllQuery(q).Marked("failedTestCount"));
 			var failedTests = new QueryEx(q => AllQuery(q).Marked("failedTests"));
+			var failedTestsDetails = new QueryEx(q => AllQuery(q).Marked("failedTestDetails"));
 			var runningState = new QueryEx(q => AllQuery(q).Marked("runningState"));
 			var runTestCount = new QueryEx(q => AllQuery(q).Marked("runTestCount"));
 			var unitTestsControl = new QueryEx(q => AllQuery(q).Marked("UnitTestsRootControl"));
@@ -73,8 +75,7 @@ namespace SamplesApp.UITests.Runtime
 
 			while(DateTimeOffset.Now - lastChange < TestRunTimeout)
 			{
-				var newValue = runTestCount.GetDependencyPropertyValue("Text")?.ToString();
-
+				var newValue = GetValue(nameof(runTestCount), runTestCount);
 				if (lastValue != newValue)
 				{
 					lastChange = DateTimeOffset.Now;
@@ -95,28 +96,24 @@ namespace SamplesApp.UITests.Runtime
 
 			TestContext.AddTestAttachment(ArchiveResults(unitTestsControl), "runtimetests-results.zip");
 
-			var count = failedTestsCount.GetDependencyPropertyValue("Text").ToString();
-
+			var count = GetValue(nameof(failedTestsCount), failedTestsCount);
 			if (count != "0")
 			{
-				var tests = failedTests.GetDependencyPropertyValue<string>("Text")
+				var tests = GetValue(nameof(failedTests), failedTests)
 					.Split(new char[] { '§' }, StringSplitOptions.RemoveEmptyEntries)
 					.Select((x, i) => $"\t{i + 1}. {x}\n")
 					.ToArray();
+				var details = GetValue(nameof(failedTestsDetails), failedTestsDetails);
 
-				var details = _app.Marked("failedTestDetails").GetDependencyPropertyValue("Text");
-
-				Assert.Fail(
-					$"{tests.Length} unit test(s) failed.\n\tFailing Tests:\n{string.Join("", tests)}\n\n---\n\tDetails:\n{details}");
+				Assert.Fail($"{tests.Length} unit test(s) failed.\n\tFailing Tests:\n{string.Join("", tests)}\n\n---\n\tDetails:\n{details}");
 			}
 
 			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
 		}
 
-
 		private static string ArchiveResults(QueryEx unitTestsControl)
 		{
-			var document = unitTestsControl.GetDependencyPropertyValue<string>("NUnitTestResultsDocument");
+			var document = GetValue(nameof(unitTestsControl), unitTestsControl, "NUnitTestResultsDocument");
 
 			var file = Path.GetTempFileName();
 			File.WriteAllText(file, document, Encoding.Unicode);
@@ -142,5 +139,19 @@ namespace SamplesApp.UITests.Runtime
 			return finalFile;
 		}
 
+		private static string GetValue(string elementName, QueryEx element, string dpName = "Text", [CallerLineNumber] int line = -1)
+		{
+			try
+			{
+				return element
+					.GetDependencyPropertyValue(dpName)
+					?.ToString();
+			}
+			catch (Exception e)
+			{
+				Assert.Fail($"Failed to get DP ${dpName} on {elementName} (@{line}), {e}", e);
+				throw new InvalidOperationException($"Failed to get DP ${dpName} on {elementName} (@{line}), {e}");
+			}
+		}
 	}
 }

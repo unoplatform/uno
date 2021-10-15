@@ -50,6 +50,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			newPanel.IsVisualTreeRoot = true;
 			_popupWindow.ContentView = newPanel;
 
 			UpdatePopupPanelDismissibleBackground(IsLightDismissEnabled);

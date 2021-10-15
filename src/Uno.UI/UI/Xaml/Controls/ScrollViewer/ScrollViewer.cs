@@ -119,13 +119,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
-			// Note 2: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
-			UIElement.RegisterAsScrollPort(this);
-#endif
-
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
 
@@ -593,6 +586,16 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning restore 649 // unused member for Unit tests
 
 		/// <summary>
+		/// Gets the ScrollContentPresenter resolved from the template.
+		/// Be aware that on iOS and Android this might be only a wrapper onto the NativeScrollContentPresenter.
+		/// </summary>
+		/// <remarks>
+		/// This is a temporary workaround until the NativeSCP knows its managed SCP and will most probably been removed in a near .
+		/// Try to avoid usage of this property as much as possible!
+		/// </remarks>
+		internal ScrollContentPresenter? Presenter { get; private set; }
+
+		/// <summary>
 		/// Gets the size of the Viewport used in the **CURRENT** (cf. remarks) or last measure
 		/// </summary>
 		/// <remarks>Unlike the LayoutInformation.GetAvailableSize(), this property is set **BEFORE** measuring the children of the ScrollViewer</remarks>
@@ -633,7 +636,6 @@ namespace Windows.UI.Xaml.Controls
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
 		internal bool ComputedIsVerticalScrollEnabled { get; private set; } = false;
-
 
 		internal double MinHorizontalOffset => 0;
 
@@ -772,7 +774,7 @@ namespace Windows.UI.Xaml.Controls
 
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.VerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _verticalScrollbar);
+			_presenter.NativeVerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _verticalScrollbar);
 			if (invalidate && _verticalScrollbar is null)
 			{
 				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
@@ -809,7 +811,7 @@ namespace Windows.UI.Xaml.Controls
 
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.HorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _horizontalScrollbar);
+			_presenter.NativeHorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _horizontalScrollbar);
 			if (invalidate && _horizontalScrollbar is null)
 			{
 				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
@@ -895,12 +897,12 @@ namespace Windows.UI.Xaml.Controls
 			_isHorizontalScrollBarMaterialized = false;
 
 #if __IOS__ || __ANDROID__
-			if (scpTemplatePart is ScrollContentPresenter scp)
+			if (scpTemplatePart is ScrollContentPresenter scp && scp.Native is null)
 			{
-				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
-				// which will handle the actual scrolling
+				// For Android and iOS, ensure that the ScrollContentPresenter contains a native SCP,
+				// which will handle the actual scrolling.
 				var nativeSCP = new NativeScrollContentPresenter(this);
-				scp.Content = nativeSCP;
+				scp.Content = scp.Native = nativeSCP;
 				_presenter = nativeSCP;
 			}
 #endif
@@ -908,6 +910,11 @@ namespace Windows.UI.Xaml.Controls
 			if (scpTemplatePart is ScrollContentPresenter presenter)
 			{
 				presenter.ScrollOwner = this;
+				Presenter = presenter;
+			}
+			else
+			{
+				Presenter = null;
 			}
 
 			// We update the scrollability properties here in order to make sure to set the right scrollbar visibility
@@ -1199,7 +1206,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
-		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
+		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
 			var h = horizontalOffset == HorizontalOffset ? null : (double?)horizontalOffset;
 			var v = verticalOffset == VerticalOffset ? null : (double?)verticalOffset;
@@ -1237,35 +1244,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private DispatcherQueueTimer? _snapPointsTimer;
-		private double? _horizontalOffsetForSnapPoints;
-		private double? _verticalOffsetForSnapPoints;
-
-		private void DelayedMoveToSnapPoint()
-		{
-			var h = _horizontalOffsetForSnapPoints;
-			var v = _verticalOffsetForSnapPoints;
-
-			AdjustOffsetsForSnapPoints(ref h, ref v, ZoomFactor);
-
-			if ((h == null || h == HorizontalOffset) && (v == null || v == VerticalOffset))
-			{
-				return; // already on a snap point
-			}
-
-			ChangeViewCore(
-				horizontalOffset: h,
-				verticalOffset: v,
-				zoomFactor: null,
-				disableAnimation: false,
-				shouldSnap: false);
-
-			_horizontalOffsetForSnapPoints = null;
-			_verticalOffsetForSnapPoints = null;
-		}
-
 		// Presenter to Control, i.e. OnPresenterZoomed
-		internal void OnZoomInternal(float zoomFactor)
+		internal void OnPresenterZoomed(float zoomFactor)
 		{
 			ZoomFactor = zoomFactor;
 
@@ -1275,6 +1255,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateZoomedContentAlignment();
 		}
 
+		#region Deferred update (i.e. ViewChanged) support
 		private bool _hasPendingUpdate;
 		private double _pendingHorizontalOffset;
 		private double _pendingVerticalOffset;
@@ -1305,16 +1286,46 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdatePartial(isIntermediate);
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// Effective viewport support
-			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
-			InvalidateViewport();
-#endif
-
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}
 
 		partial void UpdatePartial(bool isIntermediate);
+		#endregion
+
+		#region SnapPoints enforcement
+		private DispatcherQueueTimer? _snapPointsTimer;
+		private double? _horizontalOffsetForSnapPoints;
+		private double? _verticalOffsetForSnapPoints;
+
+		private void DelayedMoveToSnapPoint()
+		{
+			var h = _horizontalOffsetForSnapPoints;
+			var v = _verticalOffsetForSnapPoints;
+
+			AdjustOffsetsForSnapPoints(ref h, ref v, ZoomFactor);
+
+			if ((h == null || h == HorizontalOffset) && (v == null || v == VerticalOffset))
+			{
+				return; // already on a snap point
+			}
+
+			ChangeViewCore(
+				horizontalOffset: h,
+				verticalOffset: v,
+				zoomFactor: null,
+				disableAnimation: false,
+				shouldSnap: false);
+
+			_horizontalOffsetForSnapPoints = null;
+			_verticalOffsetForSnapPoints = null;
+		}
+		#endregion
+
+		public void ScrollToHorizontalOffset(double offset)
+			=> ChangeView(offset, null, null, false);
+
+		public void ScrollToVerticalOffset(double offset)
+			=> ChangeView(null, offset, null, false);
 
 		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
@@ -1493,38 +1504,5 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endregion
-
-		public void ScrollToHorizontalOffset(double offset)
-		{
-			_ = ChangeView(offset, null, null, false);
-		}
-
-		public void ScrollToVerticalOffset(double offset)
-		{
-			_ = ChangeView(null, offset, null, false);
-		}
-
-		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
-		public bool ArePointerWheelEventsIgnored { get; set; } = false;
-
-		internal bool BringIntoViewport(Rect bounds,
-			bool skipDuringTouchContact,
-			bool skipAnimationWhileRunning,
-			bool animate)
-		{
-#if __WASM__
-			return ChangeView(bounds.X, bounds.Y, null, true);
-#else
-			return ChangeView(bounds.X, bounds.Y, null, !animate);
-#endif
-		}
-
-		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
-
-		/// <summary>
-		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
-		/// </summary>		
-		internal bool ForceChangeToCurrentView { get; set; } = false;
-
 	}
 }

@@ -23,10 +23,10 @@ namespace Windows.UI.Xaml.Controls
 
 		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue) { }
 
-		ScrollBarVisibility IScrollContentPresenter.VerticalScrollBarVisibility { get => VerticalScrollBarVisibility; set => VerticalScrollBarVisibility = value; }
+		ScrollBarVisibility IScrollContentPresenter.NativeVerticalScrollBarVisibility { set => VerticalScrollBarVisibility = value; }
 		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 
-		ScrollBarVisibility IScrollContentPresenter.HorizontalScrollBarVisibility { get => HorizontalScrollBarVisibility; set => HorizontalScrollBarVisibility = value; }
+		ScrollBarVisibility IScrollContentPresenter.NativeHorizontalScrollBarVisibility { set => HorizontalScrollBarVisibility = value; }
 		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 	}
 }
