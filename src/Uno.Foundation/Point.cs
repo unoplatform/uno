@@ -37,6 +37,8 @@ namespace Windows.Foundation
 
 		internal Point WithY(double y) => new Point(X, y);
 
+		internal Point GetOpposite() => new Point(-X, -Y);
+
 		public static bool operator ==(Point left, Point right)
 		{
 			return left.Equals(right);

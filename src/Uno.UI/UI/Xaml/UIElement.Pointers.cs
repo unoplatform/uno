@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-				#region GestureRecognizer wire-up
+		#region GestureRecognizer wire-up
 
 				#region Event to RoutedEvent handler adapters
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
@@ -391,8 +391,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 				#endregion
-
-				#region Manipulations (recognizer settings / custom bubbling)
+		
+		#region Manipulations (recognizer settings / custom bubbling)
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -449,7 +449,7 @@ namespace Windows.UI.Xaml
 		}
 				#endregion
 
-				#region Gestures (recognizer settings / custom bubbling / early completion)
+		#region Gestures (recognizer settings / custom bubbling / early completion)
 		private bool _isGestureCompleted;
 
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
@@ -522,7 +522,7 @@ namespace Windows.UI.Xaml
 		}
 				#endregion
 
-				#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
+		#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
 		private void UpdateDragAndDrop(bool isEnabled)
 		{
 			// Note: The drag and drop recognizer setting is only driven by the CanDrag,
@@ -640,6 +640,10 @@ namespace Windows.UI.Xaml
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
+			// We capture the original position of the pointer before going async,
+			// so we have the closet location of the "down" possible.
+			var ptPosition = ptArgs.GetCurrentPoint(this).Position;
+
 			if (routedArgs.Deferral is { } deferral)
 			{
 				await deferral.Completed(ct);
@@ -666,9 +670,14 @@ namespace Windows.UI.Xaml
 
 			if (RenderTargetBitmap.IsImplemented && routedArgs.DragUI.Content is null)
 			{
+				// Note: Bitmap rendered by the RenderTargetBitmap is in physical pixels,
+				//		 so we provide the ActualSize to request the image to be scaled back in logical pixels. 
+
 				var target = new RenderTargetBitmap();
-				await target.RenderAsync(this);
+				await target.RenderAsync(this, (int)ActualSize.X, (int)ActualSize.Y);
+
 				routedArgs.DragUI.Content = target;
+				routedArgs.DragUI.Anchor = ptPosition.GetOpposite();
 			}
 
 			var asyncResult = new TaskCompletionSource<DataPackageOperation>();
@@ -756,7 +765,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-				#region Partial API to raise pointer events and gesture recognition (OnNative***)
+		#region Partial API to raise pointer events and gesture recognition (OnNative***)
 		private bool OnNativePointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default) => OnPointerEnter(args);
 
 		private bool OnPointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default)

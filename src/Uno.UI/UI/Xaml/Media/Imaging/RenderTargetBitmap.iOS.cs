@@ -25,9 +25,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 			UIImage img;
 			try
 			{
-				UIGraphics.BeginImageContextWithOptions(new Size(element.ActualSize.X, element.ActualSize.Y), true, 1f);
+				UIGraphics.BeginImageContextWithOptions(new Size(element.ActualSize.X, element.ActualSize.Y), false, 1f);
 				var ctx = UIGraphics.GetCurrentContext();
-				ctx.SetFillColor(Colors.White);
+				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
 				element.Layer.RenderInContext(ctx);
 				img = UIGraphics.GetImageFromCurrentImageContext();
 			}
