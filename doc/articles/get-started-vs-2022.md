@@ -1,6 +1,6 @@
 # Get Started on Visual Studio 2022
 
-> This section is covering **preview** relases of .NET 6 and Visual Studio 2022. It is a work in progress.
+> This section is covering **preview** releases of .NET 6 and Visual Studio 2022. It is a work in progress.
 
 ## Prerequisites
 * [**Visual Studio 2022 Preview 3.1 or later**](https://visualstudio.microsoft.com/), with:
@@ -42,7 +42,7 @@ Follow the steps indicated by the tool.
 
     ![](Assets/tutorial01/manage-extensions.png)
 
-2. In the Extension Manager expand the **Online** node and search for `Uno`, install the <code>Uno Platform Solution Templates</code> extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) extension, then restart Visual Studio.
+2. In the Extension Manager expand the **Online** node and search for `Uno`, install the <code>Uno Platform Solution Templates</code> extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin), then restart Visual Studio.
 
     ![](Assets/tutorial01/uno-extensions.PNG)
 
@@ -54,7 +54,7 @@ To easily create a multi-platform application:
 * To debug the iOS:
     - In the "Debug toolbar" drop down, select framework `net6.0-ios`
     - Select an active device
-    > Note that VS 2022 Support for iOS is still a work in progress and may not deploys properly. Deploying to physical devices is not supported as of 17.0 Preview 2.
+    > Note that VS 2022 support for iOS is still a work in progress and may not deploy properly. Deploying to physical devices is not supported as of 17.0 Preview 2.
 * To debug the Android platform:
     - In the "Debug toolbar" drop down, select framework `net6.0-android`
     - Select an active device in "Device" sub-menu
@@ -64,7 +64,7 @@ To easily create a multi-platform application:
 * To run the WebAssembly (Wasm) head:
    - Select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu.
 
-> Debuging the macOS and macCatalyst targets are not supported from Visual Studio on Windows.
+> Debugging the macOS and macCatalyst targets is not supported from Visual Studio on Windows.
 
 ### Make sure XAML Intellisense is enabled
 
