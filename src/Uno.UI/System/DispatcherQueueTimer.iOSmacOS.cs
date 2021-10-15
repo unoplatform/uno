@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using Foundation;
 
-namespace Microsoft.System
+namespace Microsoft.UI.Dispatching
 {
     partial class DispatcherQueueTimer
 	{
