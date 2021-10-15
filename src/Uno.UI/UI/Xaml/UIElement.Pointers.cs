@@ -677,7 +677,7 @@ namespace Windows.UI.Xaml
 				await target.RenderAsync(this, (int)ActualSize.X, (int)ActualSize.Y);
 
 				routedArgs.DragUI.Content = target;
-				routedArgs.DragUI.Anchor = ptPosition.GetOpposite();
+				routedArgs.DragUI.Anchor = -ptPosition;
 			}
 
 			var asyncResult = new TaskCompletionSource<DataPackageOperation>();

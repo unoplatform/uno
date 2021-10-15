@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -16,7 +17,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override bool IsSourceReady => _buffer != null;
 
 		/// <inheritdoc />
-		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out Bitmap? image)
+		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Bitmap? image)
 		{
 			image = BitmapFactory.DecodeByteArray(_buffer, 0, _buffer.Length);
 			return image != null;

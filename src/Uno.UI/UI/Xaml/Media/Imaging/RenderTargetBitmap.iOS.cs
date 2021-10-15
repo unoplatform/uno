@@ -1,4 +1,7 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Windows.Foundation;
 using CoreGraphics;
@@ -14,10 +17,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override bool IsSourceReady => _buffer != null;
 
 		/// <inheritdoc />
-		private protected override bool TryOpenSourceSync(out UIImage image)
+		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out UIImage? image)
 		{
 			image = UIImage.LoadFromData(NSData.FromArray(_buffer));
-			return true;
+			return image != null;
 		}
 
 		private byte[] RenderAsPng(UIElement element, Size? scaledSize = null)

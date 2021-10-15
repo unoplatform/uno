@@ -5,6 +5,7 @@ using Uno.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -136,13 +137,13 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
 
-		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out Bitmap image)
+		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Bitmap image)
 		{
 			image = default;
 			return false;
 		}
 
-		private protected virtual bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, out Task<Bitmap> asyncImage)
+		private protected virtual bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<Bitmap> asyncImage)
 		{
 			asyncImage = default;
 			return false;

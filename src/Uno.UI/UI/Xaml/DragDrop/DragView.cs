@@ -143,9 +143,9 @@ namespace Windows.UI.Xaml
 			GlyphVisibility = ToVisibility(viewOverride.IsGlyphVisible);
 			Caption = caption!;
 			CaptionVisibility = ToVisibility(viewOverride.IsCaptionVisible && !string.IsNullOrWhiteSpace(caption));
-			if (viewOverride.Content is ImageSource overridenContent)
+			if (viewOverride.Content is ImageSource overriddenContent)
 			{
-				Content = overridenContent;
+				Content = overriddenContent;
 				ContentAnchor = viewOverride.ContentAnchor;
 			}
 			else
