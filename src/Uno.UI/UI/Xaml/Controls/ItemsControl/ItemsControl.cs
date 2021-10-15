@@ -973,7 +973,25 @@ namespace Windows.UI.Xaml.Controls
 			RequestLayoutPartial();
 		}
 
-		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item) { }
+		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item)
+		{
+			if (element is UIElement containerAsUIE)
+			{
+				// For perf, only clear the style if we didn't generate the container.
+				// Since we own the container if we generated it, we can get away with this.
+				if (!containerAsUIE.IsGeneratedContainer)
+				{
+					if (element is FrameworkElement containerAsFE)
+					{
+						if (containerAsFE.IsStyleSetFromItemsControl)
+						{
+							containerAsFE.ClearValue(FrameworkElement.StyleProperty);
+							containerAsFE.IsStyleSetFromItemsControl = false;
+						}
+					}
+				}
+			}
+		}
 
 		internal virtual void ContainerClearedForItem(object item, SelectorItem itemContainer) { }
 
@@ -1050,8 +1068,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var isOwnContainer = ReferenceEquals(element, item);
 
-			var styleFromItemsControl = ItemContainerStyle ?? ItemContainerStyleSelector?.SelectStyle(item, element);
-
 			void SetContent(UIElement container, DependencyProperty contentProperty)
 			{
 				var displayMemberPath = DisplayMemberPath;
@@ -1072,15 +1088,6 @@ namespace Windows.UI.Xaml.Controls
 			//Prepare ContentPresenter
 			if (element is ContentPresenter containerAsContentPresenter)
 			{
-				if (styleFromItemsControl != null)
-				{
-					containerAsContentPresenter.Style = styleFromItemsControl;
-				}
-				else
-				{
-					containerAsContentPresenter.Style = null;
-				}
-
 				containerAsContentPresenter.ContentTemplate = ItemTemplate;
 				containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
 
@@ -1091,11 +1098,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (element is ContentControl containerAsContentControl)
 			{
-				if (styleFromItemsControl != null)
-				{
-					containerAsContentControl.Style = styleFromItemsControl;
-				}
-
 				if (!containerAsContentControl.IsContainerFromTemplateRoot)
 				{
 					containerAsContentControl.ContentTemplate = ItemTemplate;
@@ -1117,6 +1119,8 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+
+			ApplyItemContainerStyle(element, item);
 		}
 
 		/// <summary>
@@ -1506,6 +1510,31 @@ namespace Windows.UI.Xaml.Controls
 				if (child is SelectorItem selectorItem)
 				{
 					selectorItem.UpdateVisualState(useTransitions);
+				}
+			}
+		}
+
+		private void ApplyItemContainerStyle(DependencyObject element, object item)
+		{
+			if (element is FrameworkElement containerAsFE)
+			{
+				var localStyleValue = element.ReadLocalValue(FrameworkElement.StyleProperty);
+				var isStyleSetFromItemsControl = containerAsFE.IsStyleSetFromItemsControl;
+
+				if (localStyleValue == DependencyProperty.UnsetValue || isStyleSetFromItemsControl)
+				{
+					var styleFromItemsControl = ItemContainerStyle ?? ItemContainerStyleSelector?.SelectStyle(item, element);
+					if (styleFromItemsControl != null)
+					{
+						containerAsFE.Style = styleFromItemsControl;
+						containerAsFE.IsStyleSetFromItemsControl = true;
+					}
+					else
+					{
+						// if Style was formerly set from ItemContainerStyle, clear it
+						containerAsFE.ClearValue(FrameworkElement.StyleProperty);
+						containerAsFE.IsStyleSetFromItemsControl = false;
+					}
 				}
 			}
 		}
