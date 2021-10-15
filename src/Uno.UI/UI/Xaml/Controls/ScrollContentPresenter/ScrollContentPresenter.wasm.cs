@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 			UnregisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
 
-			if (_rootEltUsedToProcessScrollTo is {} rootElt)
+			if (_rootEltUsedToProcessScrollTo is { } rootElt)
 			{
 				rootElt.LayoutUpdated -= TryProcessScrollTo;
 				_rootEltUsedToProcessScrollTo = null;
@@ -200,17 +200,29 @@ namespace Windows.UI.Xaml.Controls
 					rootFwElt.LayoutUpdated += TryProcessScrollTo;
 				}
 
-				if (disableAnimation)
+				if (disableAnimation
+				)
 				{
-					// As the native ScrollTo is going to be async, we manually raise the event with the provided values.
-					// If those values are invalid, the browser will raise the final event anyway.
-					// Note: If the caller has allowed animation, we assume that it's not interested by a sync response,
-					//		 we prefer to wait for the browser to effectively scroll.
-					(TemplatedParent as ScrollViewer)?.OnPresenterScrolled(
-						horizontalOffset ?? GetNativeHorizontalOffset(),
-						verticalOffset ?? GetNativeVerticalOffset(),
-						isIntermediate: false
-					);
+					var nativeHorizontalOffset = GetNativeHorizontalOffset();
+					var nativeVerticalOffset = GetNativeVerticalOffset();
+
+					// There's an edge case here - requesting a negative offset while the current offset is exactly zero will not raise the
+					// native event, which would cause the reported offset to be left at the incorrect value, so we suppress it
+					var willNotScroll = horizontalOffset < 0 && nativeHorizontalOffset == 0
+						|| verticalOffset < 0 && nativeVerticalOffset == 0;
+
+					if (!willNotScroll)
+					{
+						// As the native ScrollTo is going to be async, we manually raise the event with the provided values.
+						// If those values are invalid, the browser will raise the final event anyway.
+						// Note: If the caller has allowed animation, we assume that it's not interested by a sync response,
+						//		 we prefer to wait for the browser to effectively scroll.
+						(TemplatedParent as ScrollViewer)?.OnPresenterScrolled(
+							horizontalOffset ?? nativeHorizontalOffset,
+							verticalOffset ?? nativeVerticalOffset,
+							isIntermediate: false
+						); 
+					}
 				}
 			}
 		}
