@@ -4,11 +4,11 @@
 
 #nullable enable
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Private.Controls
 {
-	public interface IRefreshVisualizerPrivate
+	internal partial interface IRefreshVisualizerPrivate
 	{
 		IRefreshInfoProvider InfoProvider { get; set; }
 

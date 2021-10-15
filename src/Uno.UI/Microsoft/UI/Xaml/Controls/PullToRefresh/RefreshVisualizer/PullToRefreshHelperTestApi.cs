@@ -3,7 +3,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Private.Controls
 {
-	public static partial class PullToRefreshHelperTestApi
+	internal static partial class PullToRefreshHelperTestApi
 	{
 		public static RefreshInteractionRatioChangedEventArgs CreateRefreshInteractionRatioChangedEventArgsInstance(double value)
 		{
