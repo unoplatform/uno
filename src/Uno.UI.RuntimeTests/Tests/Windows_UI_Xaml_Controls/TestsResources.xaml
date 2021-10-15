@@ -254,4 +254,17 @@
 			</local:CounterGrid>
 		</Border>
 	</DataTemplate>
+
+	<DataTemplate x:Key="BoundHeightItemTemplate">
+		<Border x:Name="ItemBorder"
+				MinWidth="130"
+				Height="{Binding ItemHeight}"
+				BorderBrush="Brown"
+				BorderThickness="1"
+				CornerRadius="4">
+			<TextBlock x:Name="DisplayStringTextBlock"
+					   Text="{Binding DisplayString}"
+					   HorizontalAlignment="Center" />
+		</Border>
+	</DataTemplate>
 </ResourceDictionary>

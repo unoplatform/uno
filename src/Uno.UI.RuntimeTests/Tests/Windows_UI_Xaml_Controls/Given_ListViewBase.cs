@@ -30,6 +30,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
+using Uno.UI.RuntimeTests.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -62,6 +63,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private DataTemplate RedSelectableTemplate => _testsResources["RedSelectableTemplate"] as DataTemplate;
 		private DataTemplate GreenSelectableTemplate => _testsResources["GreenSelectableTemplate"] as DataTemplate;
 		private DataTemplate BeigeSelectableTemplate => _testsResources["BeigeSelectableTemplate"] as DataTemplate;
+
+		private DataTemplate BoundHeightItemTemplate => _testsResources["BoundHeightItemTemplate"] as DataTemplate;
 
 		[TestInitialize]
 		public void Init()
@@ -1521,7 +1524,112 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(greenCount1 + 1, greenCount2); // Green template should be reused once for final item
 		}
 
+		[TestMethod]
+		public async Task When_Unequal_Size_Item_Removed()
+		{
+			var source = new ObservableCollection<ItemHeightViewModel>(
+				Enumerable.Range(0, 20).Select(i => new ItemHeightViewModel { DisplayString = $"Item {i}", ItemHeight = 54 })
+			);
 
+			source[0].ItemHeight = 143;
+
+			var SUT = new ListView
+			{
+				Height = 200,
+				ItemsSource = source,
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemsPanel = NoCacheItemsStackPanel,
+				ItemTemplate = BoundHeightItemTemplate
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var sv = SUT.FindFirstChild<ScrollViewer>();
+			var panel = SUT.FindFirstChild<ItemsStackPanel>();
+			Assert.IsNotNull(sv);
+			for (int i = 100; i <= 1000; i += 100)
+			{
+				sv.ChangeView(null, i, null, disableAnimation: true);
+#if __SKIA__ || __WASM__
+				// Without invalidating, the ListView.managed items panel size remains at its original estimated size, which was overestimated based on abnormally large first item, which would result in scroll overshooting
+				panel.InvalidateMeasure();
+#endif
+				await Task.Delay(10);
+			}
+
+			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(source.Count - 1));
+
+			Assert.AreEqual(969, sv.VerticalOffset, delta: 1);
+
+			source.RemoveAt(0);
+
+			for (int i = 1000; i >= -100; i -= 100)
+			{
+				sv.ChangeView(null, i, null, disableAnimation: true);
+				await Task.Delay(10);
+			}
+
+			var firstContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
+			var textBlock = firstContainer.FindFirstChild<TextBlock>(t => t.Name == "DisplayStringTextBlock");
+			Assert.AreEqual("Item 1", textBlock.Text);
+
+			Assert.AreEqual(0, sv.VerticalOffset);
+
+			var listBounds = SUT.GetOnScreenBounds();
+			var itemBounds = firstContainer.GetOnScreenBounds();
+			Assert.AreEqual(listBounds.Y, itemBounds.Y); // Top of first item should align with top of list
+		}
+
+		[TestMethod]
+		public async Task When_Unmaterialized_Item_Size_Changed()
+		{
+			var source = new ObservableCollection<ItemHeightViewModel>(
+				Enumerable.Range(0, 20).Select(i => new ItemHeightViewModel { DisplayString = $"Item {i}", ItemHeight = 54 })
+			);
+
+			var SUT = new ListView
+			{
+				Height = 200,
+				ItemsSource = source,
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemsPanel = NoCacheItemsStackPanel,
+				ItemTemplate = BoundHeightItemTemplate
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var sv = SUT.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(sv);
+			for (int i = 100; i <= 1000; i += 100)
+			{
+				sv.ChangeView(null, i, null, disableAnimation: true);
+				await Task.Delay(10);
+			}
+
+			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(source.Count - 1));
+
+			Assert.AreEqual(880, sv.VerticalOffset, delta: 1);
+
+			source[0].ItemHeight = 143;
+
+			for (int i = 1000; i >= -100; i -= 100)
+			{
+				sv.ChangeView(null, i, null, disableAnimation: true);
+				await Task.Delay(10);
+			}
+
+			var firstContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
+			var textBlock = firstContainer.FindFirstChild<TextBlock>(t => t.Name == "DisplayStringTextBlock");
+			Assert.AreEqual("Item 0", textBlock.Text);
+
+			Assert.AreEqual(0, sv.VerticalOffset);
+
+			var listBounds = SUT.GetOnScreenBounds();
+			var itemBounds = firstContainer.GetOnScreenBounds();
+			Assert.AreEqual(listBounds.Y, itemBounds.Y); // Top of first item should align with top of list
+		}
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
@@ -1689,5 +1797,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public ItemColor ItemType { get; set; }
 		public int ItemIndex { get; set; }
 		public string DisplayString => $"Item {ItemIndex}";
+	}
+
+	public class ItemHeightViewModel : INotifyPropertyChanged
+	{
+		private string _displayString;
+		private double _itemHeight;
+
+		public string DisplayString
+		{
+			get => _displayString;
+			set
+			{
+				if (_displayString != value)
+				{
+					_displayString = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayString)));
+				}
+			}
+		}
+
+		public double ItemHeight
+		{
+			get => _itemHeight; set
+			{
+				_itemHeight = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemHeight)));
+			}
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
 	}
 }
