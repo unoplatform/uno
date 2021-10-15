@@ -1546,8 +1546,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 
 			var sv = SUT.FindFirstChild<ScrollViewer>();
-			var panel = SUT.FindFirstChild<ItemsStackPanel>();
 			Assert.IsNotNull(sv);
+			var panel = SUT.FindFirstChild<ItemsStackPanel>();
 			for (int i = 100; i <= 1000; i += 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
@@ -1567,6 +1567,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 1000; i >= -100; i -= 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
+#if __SKIA__ || __WASM__
+				panel.InvalidateMeasure();
+#endif
 				await Task.Delay(10);
 			}
 
@@ -1602,6 +1605,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var sv = SUT.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
+			var panel = SUT.FindFirstChild<ItemsStackPanel>();
 			for (int i = 100; i <= 1000; i += 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
@@ -1617,6 +1621,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 1000; i >= -100; i -= 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
+#if __SKIA__ || __WASM__
+				panel.InvalidateMeasure();
+#endif
 				await Task.Delay(10);
 			}
 
@@ -1799,7 +1806,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public string DisplayString => $"Item {ItemIndex}";
 	}
 
-	public class ItemHeightViewModel : INotifyPropertyChanged
+	public class ItemHeightViewModel : global::System.ComponentModel.INotifyPropertyChanged
 	{
 		private string _displayString;
 		private double _itemHeight;
