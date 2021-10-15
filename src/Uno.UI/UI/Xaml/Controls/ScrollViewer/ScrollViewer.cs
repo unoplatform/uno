@@ -96,6 +96,11 @@ namespace Windows.UI.Xaml.Controls
 		private static bool IsAnimationEnabled => Uno.UI.Helpers.WinUI.SharedHelpers.IsAnimationsEnabled();
 
 		/// <summary>
+		/// Occurs when manipulations such as scrolling and zooming cause the view to change.
+		/// </summary>
+		public event EventHandler<ScrollViewerViewChangingEventArgs>? ViewChanging;
+
+		/// <summary>
 		/// Occurs when manipulations such as scrolling and zooming have caused the view to change.
 		/// </summary>
 		public event EventHandler<ScrollViewerViewChangedEventArgs>? ViewChanged;
@@ -1298,6 +1303,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Update(bool isIntermediate)
 		{
+			ViewChanging?.Invoke(this, new ScrollViewerViewChangingEventArgs(true, null, null)); // TODO: Fix values.
 			_hasPendingUpdate = false;
 
 			HorizontalOffset = _pendingHorizontalOffset;
@@ -1310,7 +1316,6 @@ namespace Windows.UI.Xaml.Controls
 			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
 			InvalidateViewport();
 #endif
-
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}
 
