@@ -4,6 +4,7 @@ using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -109,13 +110,13 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
 
-		private protected virtual bool TryOpenSourceSync(out UIImage image)
+		private protected virtual bool TryOpenSourceSync([NotNullWhen(true)] out UIImage image)
 		{
 			image = default;
 			return false;
 		}
 
-		private protected virtual bool TryOpenSourceAsync(out Task<UIImage> asyncImage)
+		private protected virtual bool TryOpenSourceAsync([NotNullWhen(true)] out Task<UIImage> asyncImage)
 		{
 			asyncImage = default;
 			return false;
