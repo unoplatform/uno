@@ -10,7 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {
-    public class PipsPagerTests : PipsPagerTestBase
+    public partial class PipsPagerTests : PipsPagerTestBase
     {
 		// TODO Uno: The following tests are not ported yet due to missing test framework features:
 		// - KeyboardPageSelectTest

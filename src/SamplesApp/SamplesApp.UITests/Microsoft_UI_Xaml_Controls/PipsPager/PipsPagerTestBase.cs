@@ -7,7 +7,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {
-	public class PipsPagerTestBase : SampleControlUITestBase
+	public partial class PipsPagerTestBase : SampleControlUITestBase
 	{
 		protected PipsPagerElements elements;
 		protected delegate void SetButtonVisibilityModeFunction(ButtonVisibilityMode mode);
