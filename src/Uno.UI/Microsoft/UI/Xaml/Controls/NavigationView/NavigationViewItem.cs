@@ -301,10 +301,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SuggestedToolTipChanged(object newContent)
 		{
-			var potentialString = newContent as IPropertyValue;
+			var potentialString = newContent;
 			bool validStringableToolTip = potentialString != null
-				&& potentialString.Type == PropertyType.String
-				&& !string.IsNullOrEmpty(potentialString.GetString());
+				&& potentialString is string stringData
+				&& !string.IsNullOrEmpty(stringData);
 
 			object newToolTipContent = null;
 			if (validStringableToolTip)
@@ -555,11 +555,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO: Override?
-		private new void UpdateVisualState(bool useTransitions)
+		internal override void UpdateVisualState(bool useTransitions)
 		{
 			if (!m_appliedTemplate)
+			{
 				return;
+			}
 
 			UpdateVisualStateForPointer();
 

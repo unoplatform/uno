@@ -314,9 +314,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Update tooltip text to new header text
 				var headerContent = Header;
-				var potentialString = headerContent as IPropertyValue;
+				var potentialString = headerContent;
 
-				if (potentialString != null && potentialString.Type == PropertyType.String)
+				if (potentialString != null && potentialString is string)
 				{
 					toolTip.Content = headerContent;
 				}

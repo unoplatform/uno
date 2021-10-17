@@ -31,6 +31,9 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Composition;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Markup;
+using Uno.UI.RuntimeTests;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 // TODO: Uno specific: Following tests are commented out, as they require additional infrastructure:
 // VerifyHeaderContentMarginOnTopNav
@@ -40,6 +43,7 @@ using Windows.UI.Xaml.Markup;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
+	[RequiresFullWindow]
 	public class NavigationViewTests : MUXApiTestBase
 	{
 		private NavigationView SetupNavigationView(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto, bool wrapInScrollViewer = false)
@@ -695,8 +699,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			NavigationView navView = null;
 			RunOnUIThread.Execute(() =>
 			{
-				navView = new NavigationView();
-				Content = navView;
+				navView = new NavigationView();				
 
 				var template = (DataTemplate)XamlReader.Load(@"
                     <DataTemplate
@@ -723,7 +726,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 					navView.MenuItemsSource = items;
 				};
 				navView.Loaded += loaded;
-
+				Content = navView;
 				Content.UpdateLayout();
 			});
 			IdleSynchronizer.Wait();
@@ -1186,7 +1189,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyNavigationViewItemToolTipCreation()
+		public async Task VerifyNavigationViewItemToolTipCreation()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 			{
@@ -1194,23 +1197,28 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				return;
 			}
 
+			NavigationView navView = null;
+			NavigationViewItem menuItem1 = null;
+			NavigationViewItem menuItem2 = null;
+			NavigationViewItem menuItem3 = null;
+			NavigationViewItem menuItem4 = null;
 			RunOnUIThread.Execute(() =>
 			{
-				var navView = new NavigationView();
+				navView = new NavigationView();
 
 				// Item with null content
-				var menuItem1 = new NavigationViewItem();
+				menuItem1 = new NavigationViewItem();
 
 				// Item with empty string as content
-				var menuItem2 = new NavigationViewItem();
+				menuItem2 = new NavigationViewItem();
 				menuItem2.Content = "";
 
 				// Item with null content and custom tooltip
-				var menuItem3 = new NavigationViewItem();
+				menuItem3 = new NavigationViewItem();
 				ToolTipService.SetToolTip(menuItem3, "Custom tooltip");
 
 				// Item with non-empty string content
-				var menuItem4 = new NavigationViewItem();
+				menuItem4 = new NavigationViewItem();
 				menuItem4.Content = "Item 4";
 
 				navView.MenuItems.Add(menuItem1);
@@ -1224,7 +1232,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 				Content = navView;
 				navView.UpdateLayout();
+			});
 
+			// TODO Uno specific: Due to lifecycle differences, we need to wait for menu items to be loaded before
+			// the visual states are properly applied
+			await TestServices.WindowHelper.WaitForLoaded(menuItem4);
+
+			RunOnUIThread.Execute(() =>
+			{
 				Verify.AreEqual(null, ToolTipService.GetToolTip(menuItem1), "Item 1's tooltip should have been [null].");
 				Verify.AreEqual(null, ToolTipService.GetToolTip(menuItem2), "Item 2's tooltip should have been [null].");
 				Verify.AreEqual("Custom tooltip", ToolTipService.GetToolTip(menuItem3), "Item 3's tooltip should have been \"Custom tooltip\".");
@@ -1233,7 +1248,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyNavigationViewItemToolTipPaneDisplayMode()
+		public async Task VerifyNavigationViewItemToolTipPaneDisplayMode()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 			{
@@ -1241,16 +1256,20 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				return;
 			}
 
+			NavigationView navView = null;
+			NavigationViewItem menuItem1 = null;
+			NavigationViewItem menuItem2 = null;
+
 			RunOnUIThread.Execute(() =>
 			{
-				var navView = new NavigationView();
+				navView = new NavigationView();
 
 				// Item with non-empty string content using in-built tooltip
-				var menuItem1 = new NavigationViewItem();
+				menuItem1 = new NavigationViewItem();
 				menuItem1.Content = "Item 1";
 
 				// Item with custom tooltip
-				var menuItem2 = new NavigationViewItem();
+				menuItem2 = new NavigationViewItem();
 				menuItem2.Content = "Item 2";
 				ToolTipService.SetToolTip(menuItem2, "Custom tooltip");
 
@@ -1258,7 +1277,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				navView.MenuItems.Add(menuItem2);
 
 				Content = navView;
+			});
 
+			// TODO Uno specific: Due to lifecycle differences, we need to wait for menu items to be loaded before
+			// the visual states are properly applied
+			await TestServices.WindowHelper.WaitForLoaded(menuItem2);
+
+			RunOnUIThread.Execute(() =>
+			{
 				SetPaneConfigAndVerifyToolTips(NavigationViewPaneDisplayMode.Left, false, "Item 1", "Custom tooltip");
 				SetPaneConfigAndVerifyToolTips(NavigationViewPaneDisplayMode.Left, true, null, "Custom tooltip");
 
@@ -1292,7 +1318,5 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				}
 			});
 		}
-
-
 	}
 }
