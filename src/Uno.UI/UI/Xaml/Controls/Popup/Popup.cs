@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool IsSubMenu { get; set; }
 
-		internal bool IsForFlyout { get; }
+		internal bool IsForFlyout { get; set; }
 
 		/// <summary>
 		/// In WinUI, Popup has IsTabStop set to true by default.
@@ -58,11 +58,6 @@ namespace Windows.UI.Xaml.Controls
 		public Popup()
 		{
 			Initialize();
-		}
-
-		internal Popup(bool isForFlyout) : base()
-		{
-			IsForFlyout = isForFlyout;
 		}
 
 		private void Initialize()

@@ -65,10 +65,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 				var child = CreatePresenter();
-				_popup = new Windows.UI.Xaml.Controls.Popup(isForFlyout: true)
+				_popup = new Windows.UI.Xaml.Controls.Popup()
 				{
 					Child = child,
 					IsLightDismissEnabled = _isLightDismissEnabled,
+					IsForFlyout = true,
 				};
 
 				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);

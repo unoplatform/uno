@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Media
 			return _openPopups
 				.Select(WeakReferenceExtensions.GetTarget)
 				.OfType<Popup>()
-				.Where(p => p.IsForFlyout || p.PopupPanel is FlyoutBasePopupPanel)
+				.Where(p => p.IsForFlyout)
 				.ToList().AsReadOnly();
 		}
 
