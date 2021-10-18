@@ -200,8 +200,7 @@ namespace Windows.UI.Xaml.Controls
 					rootFwElt.LayoutUpdated += TryProcessScrollTo;
 				}
 
-				if (disableAnimation
-				)
+				if (disableAnimation)
 				{
 					var nativeHorizontalOffset = GetNativeHorizontalOffset();
 					var nativeVerticalOffset = GetNativeVerticalOffset();
