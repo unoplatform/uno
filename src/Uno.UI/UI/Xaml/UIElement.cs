@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
-			var logInfoString = from.Log().IsEnabled(LogLevel.Information) ? new StringBuilder() : null;
+			var logInfoString = from.Log().IsEnabled(LogLevel.Debug) ? new StringBuilder() : null;
 			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
 
 			if (from == to)
@@ -386,7 +386,7 @@ namespace Windows.UI.Xaml
 			if (logInfoString != null)
 			{
 				logInfoString.Append($"], matrix: {matrix}");
-				from.Log().LogInformation(logInfoString.ToString());
+				from.Log().LogDebug(logInfoString.ToString());
 			}
 			return matrix;
 		}
