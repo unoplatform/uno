@@ -119,12 +119,11 @@ namespace Windows.UI.Xaml.Controls
 			_previousArrangeSize = arrangeSize;
 		}
 
-
-		private void TryOpenImage()
+		private void TryOpenImage(bool forceReload = false)
 		{
 			var imageSource = Source;
 
-			if (_openedImage == imageSource)
+			if (!forceReload && _openedImage == imageSource)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{

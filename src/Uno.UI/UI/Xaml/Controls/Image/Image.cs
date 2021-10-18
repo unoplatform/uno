@@ -39,6 +39,7 @@ namespace Windows.UI.Xaml.Controls
 
 		//Set just as image source is going to be set (which may be dispatched)
 		private ImageSource _openedImage;
+
 		//Set after image source fetch has successfully resolved
 		private ImageSource _successfullyOpenedImage;
 
@@ -62,10 +63,21 @@ namespace Windows.UI.Xaml.Controls
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
 
+		private Color? _monochromeColor;
+
 		/// <summary>
 		/// When set, the resulting image is tentatively converted to Monochrome.
 		/// </summary>
-		internal Color? MonochromeColor { get; set; }
+		internal Color? MonochromeColor
+		{
+			get => _monochromeColor;
+			set
+			{
+				_monochromeColor = value;
+				// Force loading the image.
+				OnSourceChanged(Source, forceReload: true);
+			}
+		}
 
 		protected virtual void OnImageFailed(ImageSource imageSource)
 		{
@@ -118,10 +130,10 @@ namespace Windows.UI.Xaml.Controls
 				typeof(Image),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					propertyChangedCallback: (s, e) => ((Image)s).OnSourceChanged((ImageSource)e.OldValue, (ImageSource)e.NewValue))
+					propertyChangedCallback: (s, e) => ((Image)s).OnSourceChanged((ImageSource)e.NewValue))
 				);
 
-		private void OnSourceChanged(ImageSource oldValue, ImageSource newValue)
+		private void OnSourceChanged(ImageSource newValue, bool forceReload = false)
 		{
 			if (newValue is WriteableBitmap wb)
 			{
@@ -149,7 +161,7 @@ namespace Windows.UI.Xaml.Controls
 					);
 			}
 
-			TryOpenImage();
+			TryOpenImage(forceReload);
 		}
 
 #endregion

@@ -45,10 +45,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public Image() { }
 
-		private void TryOpenImage()
+		private void TryOpenImage(bool forceReload = false)
 		{
 			//Skip opening the image source source is already loaded or if the view isn't loaded
-			if (_openedImage == Source)
+			if (!forceReload && _openedImage == Source)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
