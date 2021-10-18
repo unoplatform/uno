@@ -639,7 +639,6 @@ namespace Windows.UI.Xaml.Controls
 
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
 			Items.SetItemsSource(UnwrapItemsSource() as IEnumerable);
-			UpdateItems(null);
 			ObserveCollectionChanged();
 			TryObserveCollectionViewSource(e.NewValue);
 		}
@@ -918,8 +917,8 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					ItemsPanelRoot.Children.Clear();
-					RequestLayoutPartial();
-					return;
+
+					// Fall-through and materialize the call collection.
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Remove
 					&& args.OldItems.Count == 1)
