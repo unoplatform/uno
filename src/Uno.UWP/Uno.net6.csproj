@@ -43,10 +43,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Composition\ICompositionSurface.cs" />
-	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />

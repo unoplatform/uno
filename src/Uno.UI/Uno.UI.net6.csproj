@@ -79,10 +79,6 @@
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
-		<None Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		</None>
 		<None Include="Mixins\Android\FrameworkElementMixins.g.cs">
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
