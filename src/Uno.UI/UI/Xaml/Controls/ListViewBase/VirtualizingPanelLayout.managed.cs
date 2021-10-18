@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ScrollViewer? ScrollViewer { get; set; }
 		internal ItemsControl? ItemsControl { get; set; }
-		public ItemsControl? XamlParent => ItemsControl;
+		internal ItemsControl? XamlParent => ItemsControl;
 
 		/// <summary>
 		/// Ordered record of all currently-materialized lines.
