@@ -724,12 +724,34 @@ namespace Windows.UI.Xaml.Controls
 				remainingGroupExtent = remainingGroups * lastGroup.HeaderExtent;
 			}
 
+			CorrectForEstimationErrors();
+
 			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + headerExtent + footerExtent +
 				//TODO: An inline group header might actually be the view at the bottom of the viewport, we should take this into account
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
 			Debug.Assert(remainingItems == 0 || range > Extent, "If any items are non-visible, the content range must be greater than the viewport extent.");
 			return range;
+		}
+
+		/// <summary>
+		/// Correct the scroll offset, eg if items were added/removed or had their databound heights changed while they were scrolled out
+		/// of view.
+		/// </summary>
+		private void CorrectForEstimationErrors()
+		{
+			if (ContentOffset < 0)
+			{
+				// Scroll offset should always be non-negative
+				ContentOffset = 0;
+			}
+
+			var firstVisible = GetFirstVisibleIndexPath();
+			if (firstVisible.Row == 0 && firstVisible.Section == 0)
+			{
+				// If first item is in view, we can set ContentOffset exactly
+				ContentOffset = -GetContentStart();
+			}
 		}
 
 		/// <summary>
@@ -742,7 +764,9 @@ namespace Windows.UI.Xaml.Controls
 		private void ApplyOffset(int delta)
 		{
 			ContentOffset -= delta;
-			Debug.Assert(ContentOffset >= 0, "ContentOffset must be non-negative.");
+
+			CorrectForEstimationErrors();
+
 			foreach (var group in _groups)
 			{
 				group.Start += delta;

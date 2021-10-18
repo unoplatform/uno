@@ -17,6 +17,7 @@ using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
 using Uno.UI.Extensions;
 using System.Collections.Specialized;
 using Uno.UI.Xaml.Controls;
+using DirectUI;
 #if __MACOS__
 using AppKit;
 #elif __IOS__
@@ -167,6 +168,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private bool ShouldMeasuredBreadthStretch => ShouldBreadthStretch && GetBreadth(_availableSize) < double.MaxValue / 2;
+
+		// TODO: this should be adjusted when header, group headers etc are implemented
+		private double PositionOfFirstElement => 0;
 
 		internal void Initialize(_Panel owner)
 		{
@@ -357,6 +361,8 @@ namespace Windows.UI.Xaml.Controls
 			UnfillLayout(extentAdjustment ?? 0);
 			FillLayout(extentAdjustment ?? 0);
 
+			CorrectForEstimationErrors();
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Called {GetMethodTag()}, {GetDebugInfo()} extentAdjustment={extentAdjustment}");
@@ -486,6 +492,42 @@ namespace Windows.UI.Xaml.Controls
 			for (int i = 0; i < line.Items.Length; i++)
 			{
 				Generator.ScrapViewForItem(line.Items[i].container, line.FirstItemFlat + i);
+			}
+		}
+
+		/// <summary>
+		/// Item positions relative to the start of the panel are an estimate, which may be incorrect eg if unmaterialized items were added/removed
+		/// or had their databound heights changed. Here we try to correct it.
+		/// </summary>
+		void CorrectForEstimationErrors()
+		{
+			if (GetFirstMaterializedLine() is { } firstLine)
+			{
+				var neededCorrection = 0d;
+				var start = GetMeasuredStart(firstLine.FirstView);
+				if (firstLine.FirstItemFlat == 0)
+				{
+					neededCorrection = -start;
+				}
+				else if (start < PositionOfFirstElement)
+				{
+					// TODO: this is crude, the better approach (and in line with Windows) would be to estimate the position of the element, and use that
+					neededCorrection = -start;
+				}
+
+				// If the needed correction is non-zero, run through all our elements and apply the correction to their bounds
+				if (!DoubleUtil.IsZero(neededCorrection))
+				{
+					foreach (var line in _materializedLines)
+					{
+						foreach (var item in line.Items)
+						{
+							var bounds = GetBoundsForElement(item.container);
+							IncrementStart(ref bounds, neededCorrection);
+							SetBounds(item.container, bounds);
+						}
+					}
+				}
 			}
 		}
 
@@ -971,6 +1013,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void IncrementStart(ref Rect rect, double startIncrement)
+		{
+			if (ScrollOrientation == Orientation.Vertical)
+			{
+				rect.Y += startIncrement;
+			}
+			else
+			{
+				rect.X += startIncrement;
+			}
+		}
 
 		private double GetActualBreadth(FrameworkElement view) => ScrollOrientation == Orientation.Vertical ?
 			view.ActualWidth :
