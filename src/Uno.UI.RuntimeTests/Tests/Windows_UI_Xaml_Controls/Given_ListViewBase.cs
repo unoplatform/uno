@@ -27,7 +27,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Extensions;
@@ -1819,7 +1818,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				if (_displayString != value)
 				{
 					_displayString = value;
-					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayString)));
+					PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(nameof(DisplayString)));
 				}
 			}
 		}
@@ -1829,10 +1828,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			get => _itemHeight; set
 			{
 				_itemHeight = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemHeight)));
+				PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(nameof(ItemHeight)));
 			}
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 	}
 }
