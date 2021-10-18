@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Controls
 				"IsDynamicOverflowEnabled",
 				typeof(bool),
 				typeof(CommandBar),
-				new FrameworkPropertyMetadata(default(bool))
+				new FrameworkPropertyMetadata(true)
 			);
 
 		#endregion

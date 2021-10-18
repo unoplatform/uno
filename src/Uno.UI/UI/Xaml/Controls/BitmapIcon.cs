@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			Windows.UI.Xaml.DependencyProperty.Register(
 				"ShowAsMonochrome", typeof(bool),
 				typeof(global::Windows.UI.Xaml.Controls.BitmapIcon),
-				new FrameworkPropertyMetadata(true, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
+				new FrameworkPropertyMetadata(false, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
 
 		private void OnShowAsMonochromeChanged(bool value) => RefreshImage();
 

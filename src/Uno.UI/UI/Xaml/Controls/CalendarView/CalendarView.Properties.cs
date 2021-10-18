@@ -915,7 +915,7 @@ namespace Windows.UI.Xaml.Controls
 			var maxCalendarDate = calendar.GetDateTime();
 
 			//Default value is today's date plus 100 Gregorian years.
-			calendar.SetToday();
+			calendar.SetToNow();
 			calendar.AddYears(DEFAULT_MIN_MAX_DATE_YEAR_OFFSET);
 			calendar.Month = calendar.LastMonthInThisYear;
 			calendar.Day = calendar.LastDayInThisMonth;
@@ -942,7 +942,7 @@ namespace Windows.UI.Xaml.Controls
 			var maxCalendarDate = calendar.GetDateTime();
 
 			//Default value is today's date minus 100 Gregorian years.
-			calendar.SetToday();
+			calendar.SetToNow();
 			calendar.AddYears(-DEFAULT_MIN_MAX_DATE_YEAR_OFFSET);
 			calendar.Month = calendar.FirstMonthInThisYear;
 			calendar.Day = calendar.FirstDayInThisMonth;

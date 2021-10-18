@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LandmarksVisible", typeof(bool),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(true));
 		public static DependencyProperty LocationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"Location", typeof(Geopoint),
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Style", typeof(MapStyle),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(MapStyle)));
+			new FrameworkPropertyMetadata(MapStyle.Road));
 		public static DependencyProperty TileSourcesProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TileSources", typeof(IList<MapTileSource>),
@@ -289,7 +289,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TransformOrigin", typeof(global::Windows.Foundation.Point),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
+			new FrameworkPropertyMetadata(new global::Windows.Foundation.Point(0.5, 0.5)));
 		public static DependencyProperty WatermarkModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"WatermarkMode", typeof(MapWatermarkMode),
@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"ZoomLevel", typeof(double),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(2d));
 		public static DependencyProperty LoadingStatusProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LoadingStatus", typeof(MapLoadingStatus),
@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"BusinessLandmarksVisible", typeof(bool),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(true));
 		public static DependencyProperty Is3DSupportedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Is3DSupported", typeof(bool),

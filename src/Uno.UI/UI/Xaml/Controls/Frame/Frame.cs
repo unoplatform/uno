@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for CacheSize.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CacheSizeProperty { get ; } =
-			DependencyProperty.Register("CacheSize", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(0, (s, e) => ((Frame)s)?.OnCacheSizeChanged(e)));
+			DependencyProperty.Register("CacheSize", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(10, (s, e) => ((Frame)s)?.OnCacheSizeChanged(e)));
 
 
 		private void OnCacheSizeChanged(DependencyPropertyChangedEventArgs e)
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for CanGoForward.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CanGoForwardProperty { get ; } =
-			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(Frame), new FrameworkPropertyMetadata(true, (s, e) => ((Frame)s)?.OnCanGoForwardChanged(e)));
+			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(Frame), new FrameworkPropertyMetadata(false, (s, e) => ((Frame)s)?.OnCanGoForwardChanged(e)));
 
 
 		private void OnCanGoForwardChanged(DependencyPropertyChangedEventArgs e)

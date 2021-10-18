@@ -72,14 +72,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region ZIndex
-
-		public static double GetZIndex(DependencyObject obj)
-			=> GetZIndexValue(obj);
-
-		public static void SetZIndex(DependencyObject obj, double value)
-			=> SetZIndexValue(obj, value);
-
-		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
+		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
 		public static DependencyProperty ZIndexProperty { get ; } = CreateZIndexProperty();
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -89,12 +82,12 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			if (dependencyObject is UIElement element)
 			{
-				var zindex = args.NewValue is double d ? (double?)d : null;
+				var zindex = args.NewValue is int i ? (int?)i : null;
 				OnZIndexChangedPartial(element, zindex);
 			}
 		}
 
-		static partial void OnZIndexChangedPartial(UIElement element, double? zindex);
+		static partial void OnZIndexChangedPartial(UIElement element, int? zindex);
 
 #endregion
 
@@ -113,8 +106,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public static void SetTop(global::Windows.UI.Xaml.UIElement element, double length) => SetTop((DependencyObject)element, length);
 
-		public static int GetZIndex(global::Windows.UI.Xaml.UIElement element) => (int)GetZIndex((DependencyObject)element);
+		public static int GetZIndex(global::Windows.UI.Xaml.UIElement element) => GetZIndexValue(element);
 
-		public static void SetZIndex(global::Windows.UI.Xaml.UIElement element, int value) => SetZIndex((DependencyObject)element, value);
+		public static void SetZIndex(global::Windows.UI.Xaml.UIElement element, int value) => SetZIndexValue(element, value);
 	}
 }
