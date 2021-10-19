@@ -59,8 +59,6 @@ namespace Windows.UI.Core
 			}
 		}
 
-		public static CoreDispatcher Main { get; } = new CoreDispatcher();
-
 		partial void EnqueueNative()
 		{
 			if (DispatchOverride == null)

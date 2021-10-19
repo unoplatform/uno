@@ -12,8 +12,6 @@ namespace Windows.UI.Core
 		 
 		private bool GetHasThreadAccess() => HasThreadAccessOverride;
 
-		public static CoreDispatcher Main { get; } = new CoreDispatcher();
-
 		internal bool IsQueueEmpty => _queues.All(q => q.Count == 0);
 
 		public void ProcessEvents(CoreProcessEventsOption options)

@@ -9,8 +9,6 @@ namespace Windows.UI.Core
 {
     public sealed partial class CoreDispatcher
     {
-        public static readonly CoreDispatcher Main = new CoreDispatcher();
-
         private CoreFoundation.DispatchQueue _mainQueue = CoreFoundation.DispatchQueue.MainQueue;
 
         partial void EnqueueNative()
