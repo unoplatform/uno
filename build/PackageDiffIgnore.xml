@@ -12608,6 +12608,10 @@
 			<Member
 				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Control::IsTabStopProperty"
 				reason="Fix alignment regressions" />
+
+			<Member
+				fullName="Windows.UI.Core.CoreDispatcher Windows.UI.Core.CoreDispatcher::Main"
+				reason="API alignment" />
 		</Fields>
 		<Properties>
 			<Member
