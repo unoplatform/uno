@@ -367,6 +367,48 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(0, listView.Items.Count);
 		}
 
+		[TestMethod]
+		public async Task When_Collection_Reset()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+			SUT.ApplyTemplate();
+
+			var c = new ObservableCollectionEx<string>();
+			c.Add("One");
+			c.Add("Two");
+			c.Add("Three");
+
+			SUT.ItemsSource = c;
+			Assert.AreEqual(count, 3);
+
+			Assert.AreEqual(SUT.Items.Count, 3);
+
+			using (c.BatchUpdate())
+			{
+				c.Add("Four");
+				c.Add("Five");
+			}
+
+			Assert.AreEqual(SUT.Items.Count, 5);
+			Assert.AreEqual(count, 5);
+			Assert.IsNotNull(SUT.ContainerFromItem("One"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Four"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Five"));
+		}
+
 		private Style BuildBasicContainerStyle() =>
 			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
 			{
