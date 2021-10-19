@@ -11628,6 +11628,12 @@
 			<Member
 				fullName="Windows.UI.Core.CoreDispatcher Windows.UI.Core.CoreDispatcher.get_Main()"
 				reason="API alignment" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ListViewBase Windows.UI.Xaml.Controls.VirtualizingPanelLayout.get_XamlParent()"
+				reason="Make non-standard property internal" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.set_XamlParent(Windows.UI.Xaml.Controls.ListViewBase value)"
+				reason="Make non-standard property internal" />
 		</Methods>
 		<Events>
 			<Member
@@ -12660,6 +12666,9 @@
 			<Member
 				fullName="Windows.UI.Core.CoreDispatcher Windows.UI.Core.CoreDispatcher::Main()"
 				reason="API alignment" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ListViewBase Windows.UI.Xaml.Controls.VirtualizingPanelLayout::XamlParent()"
+				reason="Make non-standard property internal" />
 		</Properties>
 	</IgnoreSet>
 	<!--

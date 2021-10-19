@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private protected ScrollViewer m_tpScrollViewer;
 
+		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
+
 		private protected int m_iFocusedIndex;
 
 		private protected bool m_skipScrollIntoView;
@@ -503,7 +505,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
 
-		internal virtual void OnItemClicked(int clickedIndex) { }
+		internal virtual void OnItemClicked(int clickedIndex)
+		{
+			if (ItemsSource is ICollectionView collectionView)
+			{
+				//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
+				collectionView.MoveCurrentToPosition(clickedIndex);
+
+				// The CollectionView may have intercepted the change
+				clickedIndex = collectionView.CurrentPosition;
+			}
+
+			SelectedIndex = clickedIndex;
+		}
 
 		protected override void OnItemsChanged(object e)
 		{
@@ -611,6 +625,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.Refresh();
 			_itemTemplatesThatArentContainers.Clear();
+			RefreshPartial();
 		}
 
 
@@ -776,5 +791,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
 		}
+
+		partial void RefreshPartial();
+
+
+		/// <summary>
+		/// Is the managed implementation for virtualized lists (ItemsStackPanel, ItemsWrapGrid, CarouselPanel etc) used on this platform?
+		/// </summary>
+		internal const bool UsesManagedLayouting =
+#if __IOS__ || __ANDROID__
+			false;
+#else
+			true;
+#endif
 	}
 }

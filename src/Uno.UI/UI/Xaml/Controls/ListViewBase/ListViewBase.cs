@@ -32,9 +32,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase : Selector
 	{
-		internal ScrollViewer ScrollViewer { get; private set; }
-		IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
-
 		/// <summary>
 		/// When this flag is set, the ListViewBase will process every notification from <see cref="INotifyCollectionChanged"/> as if it 
 		/// were a 'Reset', triggering a complete refresh of the list. By default this is false.
@@ -338,8 +335,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
-
 			OnApplyTemplatePartial();
 		}
 		partial void OnApplyTemplatePartial();
@@ -369,6 +364,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void OnItemClicked(int clickedIndex)
 		{
+			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
+
 			var item = ItemFromIndex(clickedIndex);
 			if (IsItemClickEnabled)
 			{
@@ -485,7 +482,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
-          
+
 					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
@@ -547,7 +544,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void RepairIndices()
 		{
-			foreach(var containerPair in _containersForIndexRepair)
+			foreach (var containerPair in _containersForIndexRepair)
 			{
 				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
 			}
@@ -849,15 +846,5 @@ namespace Windows.UI.Xaml.Controls
 				TryLoadMoreItems();
 			}
 		}
-
-		/// <summary>
-		/// Is the ListView.managed implementation used on this platform?
-		/// </summary>
-		internal static bool UsesManagedLayouting =>
-#if __IOS__ || __ANDROID__
-			false;
-#else
-			true;
-#endif
 	}
 }
