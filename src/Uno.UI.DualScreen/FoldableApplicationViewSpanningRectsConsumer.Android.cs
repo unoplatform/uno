@@ -21,13 +21,12 @@ namespace Uno.UI.DualScreen
 	/// an Android application is spanned across a hinge or fold (eg. Surface Duo)
 	/// </summary>
 	/// <remarks>
-	/// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
-	/// and exposing the properties needed to make UI change when required.
-	/// HACK: need to implement an event for layout changes, so we can detect folding state
+	/// See the _other partial class_ file for wiring up Jetpack Window Manager (Xamarin.AndroidX.Window.WindowJava)
+	/// via the ApplicationViewHelper.GetBaseActivityEvents() helper and ContextHelper.Current
 	/// </remarks>
 	public partial class FoldableApplicationViewSpanningRects : Java.Lang.Object, AndroidX.Core.Util.IConsumer
 	{
-		const string TAG = "JWM"; // Jetpack Window Manager
+		const string TAG = "DualScreen-JWM"; // Jetpack Window Manager
 		WindowInfoRepositoryCallbackAdapter windowInfoRepository;
 		IWindowMetricsCalculator windowMetricsCalculator;
 
@@ -72,15 +71,15 @@ namespace Uno.UI.DualScreen
 
 		public void Accept(Java.Lang.Object newLayoutInfo)  // Object will be WindowLayoutInfo
 		{
-			Android.Util.Log.Info(TAG, "===LayoutStateChangeCallback.Accept");
-			Android.Util.Log.Info(TAG, newLayoutInfo.ToString());
+			Android.Util.Log.Info(TAG, "FoldableApplicationViewSpanningRects.Accept");
+			Android.Util.Log.Info(TAG, "    newLayoutInfo: " + newLayoutInfo.ToString());
 			layoutStateChange(newLayoutInfo as WindowLayoutInfo);
 		}
 
 		void layoutStateChange(WindowLayoutInfo newLayoutInfo)
 		{
-			Android.Util.Log.Info(TAG, "Current: " + windowMetricsCalculator.ComputeCurrentWindowMetrics(ContextHelper.Current as Android.App.Activity).Bounds.ToString());
-			Android.Util.Log.Info(TAG, "Maximum: " + windowMetricsCalculator.ComputeMaximumWindowMetrics(ContextHelper.Current as Android.App.Activity).Bounds.ToString());
+			Android.Util.Log.Info(TAG, "    Current: " + windowMetricsCalculator.ComputeCurrentWindowMetrics(ContextHelper.Current as Android.App.Activity).Bounds.ToString());
+			Android.Util.Log.Info(TAG, "    Maximum: " + windowMetricsCalculator.ComputeMaximumWindowMetrics(ContextHelper.Current as Android.App.Activity).Bounds.ToString());
 
 			FoldBounds = null;
 			IsSeparating = false;
@@ -130,15 +129,20 @@ namespace Uno.UI.DualScreen
 					{
 						Android.Util.Log.Info(TAG, "App is spanned across a hinge");
 					}
-					var summary = "\nIsSeparating: " + foldingFeature.IsSeparating
-							+ "\nOrientation: " + foldingFeature.Orientation  // FoldingFeatureOrientation.Vertical or Horizontal
-							+ "\nState: " + foldingFeature.State; // FoldingFeatureState.Flat or HalfOpened
+					var summary = "\n    IsSeparating: " + foldingFeature.IsSeparating
+							+ "\n    Orientation: " + foldingFeature.Orientation  // FoldingFeatureOrientation.Vertical or Horizontal
+							+ "\n    State: " + foldingFeature.State; // FoldingFeatureState.Flat or HalfOpened
 					Android.Util.Log.Info(TAG, summary);
+					// END DEBUG INFO
 				}
 				else
 				{
 					Android.Util.Log.Info(TAG, "DisplayFeature is not a fold or hinge");
 				}
+			}
+			if (lastFoldingFeature is null)
+			{
+				Android.Util.Log.Info(TAG, "App is not spanned, on a single screen");
 			}
 
 			_layoutChanged?.Invoke(this, lastFoldingFeature);
