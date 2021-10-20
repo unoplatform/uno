@@ -854,5 +854,14 @@ namespace Windows.UI.Xaml.Controls
 		partial void SelectAllPartial();
 
 		internal override bool CanHaveChildren() => true;
+
+		internal override void UpdateThemeBindings()
+		{
+			base.UpdateThemeBindings();
+
+			UpdateKeyboardThemePartial();
+		}
+
+		partial void UpdateKeyboardThemePartial();
 	}
 }

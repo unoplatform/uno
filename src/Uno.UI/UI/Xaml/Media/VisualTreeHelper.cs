@@ -510,6 +510,15 @@ namespace Windows.UI.Xaml.Media
 			return root;
 		}
 
+		internal static IEnumerable<DependencyObject> EnumerateAncestors(DependencyObject o)
+		{
+			while ((o as FrameworkElement)?.Parent is { } parent)
+			{
+				yield return parent;
+				o = parent;
+			}
+		}
+
 		#region Helpers
 		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
 			=> children => children.Except(element);
