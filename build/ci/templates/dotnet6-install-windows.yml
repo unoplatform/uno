@@ -1,7 +1,7 @@
 parameters:
-  DotNetVersion: '6.0.100-rc.1.21452.64'
-  MauiCheck_Version: '0.8.5'
-  MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/d469cb3804d68ad52a1bfec041b95a8800acf4ab/manifests/maui-preview.manifest.json'
+  DotNetVersion: '6.0.100-rc.2.21505.57'
+  MauiCheck_Version: '0.9.0'
+  MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/2aa9b543fa951359139af8e60489928fcb2e6bcf/manifests/maui-preview.manifest.json'
 
 steps:
 
