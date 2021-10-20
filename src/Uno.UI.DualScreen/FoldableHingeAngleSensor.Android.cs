@@ -7,7 +7,7 @@ using System.Linq;
 using Uno.Devices.Sensors;
 using Uno.Devices.Sensors.Helpers;
 
-namespace Uno.UI.Foldable
+namespace Uno.UI.DualScreen
 {
     /// <summary>
     /// Uses sensor manager to listen for hinge or fold angle changes

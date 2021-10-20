@@ -1,4 +1,6 @@
 ﻿using Android.Views;
+using AndroidX.Window.Java.Layout;
+using AndroidX.Window.Layout;
 using System;
 using System.Collections.Generic;
 using Uno.Devices.Sensors;
@@ -8,7 +10,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 
-namespace Uno.UI.Foldable
+namespace Uno.UI.DualScreen
 {
     /// <summary>
     /// Provides two Rect that represent the two screen dimensions when
@@ -19,7 +21,7 @@ namespace Uno.UI.Foldable
     /// and exposing the properties needed to make UI change when required.
     /// HACK: need to implement an event for layout changes, so we can detect folding state
     /// </remarks>
-    public class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider, INativeFoldableProvider
+    public partial class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider, INativeFoldableProvider
 	{
 		private (SurfaceOrientation orientation, List<Rect> result) _previousMode = EmptyMode;
 
@@ -30,8 +32,23 @@ namespace Uno.UI.Foldable
 
 		public FoldableApplicationViewSpanningRects(object owner)
 		{
+			ViewManagement.ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;
+			ViewManagement.ApplicationViewHelper.GetBaseActivityEvents().Start += OnStartEvent;
+			ViewManagement.ApplicationViewHelper.GetBaseActivityEvents().Stop += OnStopEvent;
 		}
-
+		private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
+		{
+			windowInfoRepository = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.Companion.GetOrCreate(ContextHelper.Current as Android.App.Activity));
+			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(	
+		}
+		private void OnStartEvent()
+		{
+			windowInfoRepository.AddWindowLayoutInfoListener(runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
+		}
+		private void OnStopEvent()
+		{
+			windowInfoRepository.RemoveWindowLayoutInfoListener(this);
+		}
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
 			if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)

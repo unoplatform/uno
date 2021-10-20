@@ -71,4 +71,10 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<ItemGroup>
+	  <None Remove="FoldableApplicationViewSpanningRects.Android.cs" />
+	  <None Remove="FoldableApplicationViewSpanningRectsConsumer.Android.cs" />
+	  <None Remove="FoldableHingeAngleSensor.Android.cs" />
+	</ItemGroup>
 </Project>
