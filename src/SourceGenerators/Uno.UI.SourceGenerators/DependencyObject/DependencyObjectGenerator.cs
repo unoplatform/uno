@@ -149,13 +149,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
-						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
-						{
-							builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
-						}
-
 						using (GenerateNestingContainers(builder, typeSymbol))
 						{
+							if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
+							{
+								builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
+							}
+
 							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider"))
 							{
 								GenerateDependencyObjectImplementation(builder);
