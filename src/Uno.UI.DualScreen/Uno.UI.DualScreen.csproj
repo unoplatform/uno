@@ -37,6 +37,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.3-beta02" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

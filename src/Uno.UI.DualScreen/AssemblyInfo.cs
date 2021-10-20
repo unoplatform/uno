@@ -4,6 +4,9 @@ using Uno.Foundation.Extensibility;
 using Uno.UI.DualScreen;
 
 #if __ANDROID__
-[assembly: ApiExtension(typeof(IApplicationViewSpanningRects), typeof(DuoApplicationViewSpanningRects))]
-[assembly: ApiExtension(typeof(INativeHingeAngleSensor), typeof(DuoHingeAngleSensor))]
+//[assembly: ApiExtension(typeof(IApplicationViewSpanningRects), typeof(DuoApplicationViewSpanningRects))]
+//[assembly: ApiExtension(typeof(INativeHingeAngleSensor), typeof(DuoHingeAngleSensor))]
+[assembly: ApiExtension(typeof(IApplicationViewSpanningRects), typeof(FoldableApplicationViewSpanningRects))]
+[assembly: ApiExtension(typeof(INativeFoldableProvider), typeof(FoldableApplicationViewSpanningRects))]
+[assembly: ApiExtension(typeof(INativeHingeAngleSensor), typeof(FoldableHingeAngleSensor))]
 #endif
