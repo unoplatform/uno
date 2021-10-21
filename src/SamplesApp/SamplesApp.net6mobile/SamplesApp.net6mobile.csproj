@@ -30,6 +30,8 @@
 		We need an APK for deployment on simulators.
 		-->
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
