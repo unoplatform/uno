@@ -11628,12 +11628,515 @@
 			<Member
 				fullName="Windows.UI.Core.CoreDispatcher Windows.UI.Core.CoreDispatcher.get_Main()"
 				reason="API alignment" />
+
 			<Member
 				fullName="Windows.UI.Xaml.Controls.ListViewBase Windows.UI.Xaml.Controls.VirtualizingPanelLayout.get_XamlParent()"
 				reason="Make non-standard property internal" />
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.set_XamlParent(Windows.UI.Xaml.Controls.ListViewBase value)"
 				reason="Make non-standard property internal" />
+
+			<Member
+				fullName="System.Void Windows.Web.Http.HttpCookieCollection.set_Item(System.Int32 index, Windows.Web.Http.HttpCookie value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.HttpCookieCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpContentCodingHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpContentCodingHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpContentHeaderCollection.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpContentHeaderCollection.set_Values(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpContentHeaderCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpContentHeaderCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpRequestHeaderCollection.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpRequestHeaderCollection.set_Values(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpRequestHeaderCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpRequestHeaderCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpResponseHeaderCollection.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpResponseHeaderCollection.set_Values(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpResponseHeaderCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpResponseHeaderCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionStrokeDashArray.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.CompositionStrokeDashArray.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.ImplicitAnimationCollection.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.ImplicitAnimationCollection.set_Values(System.Collections.Generic.ICollection`1&lt;Windows.UI.Composition.ICompositionAnimationBase&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.ImplicitAnimationCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.ImplicitAnimationCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.InitialValueExpressionCollection.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.InitialValueExpressionCollection.set_Values(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.InitialValueExpressionCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.InitialValueExpressionCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.Scenes.SceneComponentCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.Scenes.SceneComponentCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.set_Values(System.Collections.Generic.ICollection`1&lt;Windows.UI.Composition.Scenes.SceneAttributeSemantic&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.Scenes.SceneNodeCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Composition.Scenes.SceneNodeCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.UserProfile.FirstSignInSettings.set_Item(System.String key, System.Object value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.UserProfile.FirstSignInSettings.set_Keys(System.Collections.Generic.IEnumerable`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.UserProfile.FirstSignInSettings.set_Values(System.Collections.Generic.IEnumerable`1&lt;System.Object&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.UserProfile.FirstSignInSettings.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.ApplicationDataCompositeValue.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.ApplicationDataCompositeValue.set_Values(System.Collections.Generic.ICollection`1&lt;System.Object&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.ApplicationDataCompositeValue.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.ApplicationDataCompositeValue.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.ApplicationDataContainerSettings.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.ApplicationDataContainerSettings.set_Values(System.Collections.Generic.ICollection`1&lt;System.Object&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.ApplicationDataContainerSettings.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.ApplicationDataContainerSettings.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.Search.SortEntryVector.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.Search.SortEntryVector.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.AccessCache.AccessListEntryView.set_Item(System.Int32 index, Windows.Storage.AccessCache.AccessListEntry value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.AccessCache.AccessListEntryView.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Credentials.PasswordCredentialPropertyStore.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Credentials.PasswordCredentialPropertyStore.set_Values(System.Collections.Generic.ICollection`1&lt;System.Object&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Credentials.PasswordCredentialPropertyStore.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Credentials.PasswordCredentialPropertyStore.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection.set_Item(System.Int32 index, Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Playback.MediaPlaybackAudioTrackList.set_Item(System.Int32 index, Windows.Media.Core.AudioTrack value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Playback.MediaPlaybackAudioTrackList.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.set_Item(System.Int32 index, Windows.Media.Core.TimedMetadataTrack value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Playback.MediaPlaybackVideoTrackList.set_Item(System.Int32 index, Windows.Media.Core.VideoTrack value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Playback.MediaPlaybackVideoTrackList.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.MediaProperties.MediaPropertySet.set_Keys(System.Collections.Generic.ICollection`1&lt;System.Guid&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.MediaProperties.MediaPropertySet.set_Values(System.Collections.Generic.ICollection`1&lt;System.Object&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.MediaProperties.MediaPropertySet.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.MediaProperties.MediaPropertySet.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Core.MediaStreamSamplePropertySet.set_Keys(System.Collections.Generic.ICollection`1&lt;System.Guid&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Core.MediaStreamSamplePropertySet.set_Values(System.Collections.Generic.ICollection`1&lt;System.Object&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Core.MediaStreamSamplePropertySet.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Core.MediaStreamSamplePropertySet.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.BitmapPropertySet.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.BitmapPropertySet.set_Values(System.Collections.Generic.ICollection`1&lt;Windows.Graphics.Imaging.BitmapTypedValue&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.BitmapPropertySet.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.BitmapPropertySet.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Globalization.Collation.CharacterGroupings.set_Item(System.Int32 index, Windows.Globalization.Collation.CharacterGrouping value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Globalization.Collation.CharacterGroupings.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.WwwFormUrlDecoder.set_Item(System.Int32 index, Windows.Foundation.IWwwFormUrlDecoderEntry value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.WwwFormUrlDecoder.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.set_Item(System.Int32 index, Windows.Devices.Lights.Effects.ILampArrayEffect value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.Pnp.PnpObjectCollection.set_Item(System.Int32 index, Windows.Devices.Enumeration.Pnp.PnpObject value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Enumeration.Pnp.PnpObjectCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Json.JsonArray.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Json.JsonArray.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Json.JsonObject.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Json.JsonObject.set_Values(System.Collections.Generic.ICollection`1&lt;Windows.Data.Json.IJsonValue&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Json.JsonObject.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Json.JsonObject.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceCandidateVectorView.set_Item(System.Int32 index, Windows.ApplicationModel.Resources.Core.ResourceCandidate value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceCandidateVectorView.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.set_Item(System.Int32 index, System.String value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceMap.set_Item(System.String key, Windows.ApplicationModel.Resources.Core.NamedResource value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceMap.set_Keys(System.Collections.Generic.IEnumerable`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceMap.set_Values(System.Collections.Generic.IEnumerable`1&lt;Windows.ApplicationModel.Resources.Core.NamedResource&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceMap.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceMapMapView.set_Item(System.String key, Windows.ApplicationModel.Resources.Core.ResourceMap value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceMapMapView.set_Keys(System.Collections.Generic.IEnumerable`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceMapMapView.set_Values(System.Collections.Generic.IEnumerable`1&lt;Windows.ApplicationModel.Resources.Core.ResourceMap&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceMapMapView.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.set_Item(System.String key, System.String value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.set_Keys(System.Collections.Generic.IEnumerable`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.set_Values(System.Collections.Generic.IEnumerable`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap.set_Values(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.set_Item(System.Int32 index, Windows.ApplicationModel.Resources.Core.ResourceQualifier value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.ValueSet.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.ValueSet.set_Values(System.Collections.Generic.ICollection`1&lt;System.Object&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.ValueSet.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.ValueSet.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.PropertySet.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.PropertySet.set_Values(System.Collections.Generic.ICollection`1&lt;System.Object&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.PropertySet.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.PropertySet.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.StringMap.set_Keys(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.StringMap.set_Values(System.Collections.Generic.ICollection`1&lt;System.String&gt; value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.StringMap.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Collections.StringMap.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.TriggerActionCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.TriggerActionCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.TriggerCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.TriggerCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.UIElementWeakCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.UIElementWeakCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Documents.ContentLinkProviderCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Documents.ContentLinkProviderCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.HubSectionCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.HubSectionCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.RichTextBlock.Focus(Windows.UI.Xaml.FocusState value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.TextBlock.Focus(Windows.UI.Xaml.FocusState value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.BrushCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.BrushCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.DoubleCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.TimelineMarkerCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.TimelineMarkerCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.TransformCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Animation.PointKeyFrameCollection.set_Count(System.Int32 value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Animation.PointKeyFrameCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Animation.TransitionCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
 		</Methods>
 		<Events>
 			<Member
