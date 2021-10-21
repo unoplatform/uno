@@ -11,6 +11,7 @@ using Uno.Roslyn;
 using Uno.UI.SourceGenerators.XamlGenerator;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Xml;
+using System.Threading;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -55,6 +56,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private string? _intermediatePath;
 			private string? _assemblyName;
 			private bool _xamlResourcesTrimming;
+			private CancellationToken _cancellationToken;
 
 			public string[] AnalyzerSuppressions { get; set; } = Array.Empty<string>();
 
@@ -71,6 +73,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						if (isApplication)
 						{
+							_cancellationToken = context.CancellationToken;
+
 							_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
 							_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 								?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
@@ -258,6 +262,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private void GenerateType(IndentedStringBuilder writer, INamedTypeSymbol ownerType)
 			{
+				_cancellationToken.ThrowIfCancellationRequested();
+
 				if (_typeMap.ContainsKey(ownerType))
 				{
 					return;
@@ -592,6 +598,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType))
 						{
+							_cancellationToken.ThrowIfCancellationRequested();
+
 							var typeIndexString = $"{type.Value.Index:000}";
 
 							writer.AppendLineInvariant($"case \"{type.Key}\":");

@@ -23,6 +23,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using System.Diagnostics;
 
 #if NETFRAMEWORK
+using Uno.SourceGeneration;
 using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
 #endif
 
@@ -2902,6 +2903,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useChildTypeForNamedElement = false, bool useGenericApply = false)
 		{
+			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
+
 			TryAnnotateWithGeneratorSource(outerwriter);
 			var objectUid = GetObjectUid(objectDefinition);
 
@@ -2939,6 +2942,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					foreach (var member in extendedProperties.Except(lazyProperties))
 					{
+						_generatorContext.CancellationToken.ThrowIfCancellationRequested();
+
 						if (extractionTargetMembers != null)
 						{
 							TryExtractAutomationId(member, extractionTargetMembers, ref uiAutomationId);
@@ -5113,6 +5118,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition? owner, XamlObjectDefinition xamlObjectDefinition, string? outerClosure = null)
 		{
+			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
+
 			TryAnnotateWithGeneratorSource(writer);
 			var typeName = xamlObjectDefinition.Type.Name;
 			var fullTypeName = xamlObjectDefinition.Type.Name;
