@@ -128,6 +128,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Else get from intermediate cache if possible
 			var view = GetViewFromIntermediateCache(recycler, position);
+
 			if (view != null)
 			{
 				Layout.TryAttachView(view);
@@ -471,6 +472,10 @@ namespace Windows.UI.Xaml.Controls
 				if (!viewHolder.IsRecyclable)
 				{
 					// This typically means that the item is being animated. In this case we shouldn't stash it away for future use.
+
+					// Return the view to the recycler, otherwise it may subsequently cause an error
+					recycler.RecycleView(view);
+
 					return null;
 				}
 
