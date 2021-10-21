@@ -62,6 +62,17 @@ namespace Uno.UI.DataBinding
 			Conversion = new DefaultConversionExtensions();
 		}
 
+		internal static void ClearCaches()
+		{
+			_getValueGetter.Clear();
+			_getValueSetter.Clear();
+			_getPrecedenceSpecificValueGetter.Clear();
+			_getSubstituteValueGetter.Clear();
+			_getValueUnsetter.Clear();
+			_isEvent.Clear();
+			_getPropertyType.Clear();
+		}
+
 		private static Func<object, object?[], object?> DefaultInvokerBuilder(MethodInfo method)
 		{
 			return (instance, args) => method.Invoke(instance, args);

@@ -117,7 +117,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
 		private readonly bool _skipUserControlsInVisualTree;
 
-		private readonly List<INamedTypeSymbol> _xamlAppliedTypes = new List<INamedTypeSymbol>();
+		/// <summary>
+		/// Holds information about multiple generator runs
+		/// </summary>
+		private readonly GenerationRunFileInfo _generationRunFileInfo;
+
+		/// <summary>
+		/// Information about types used in .Apply() scenarios
+		/// </summary>
+		private readonly Dictionary<INamedTypeSymbol, int> _xamlAppliedTypes = new Dictionary<INamedTypeSymbol, int>();
 
 		private readonly INamedTypeSymbol _elementStubSymbol;
 		private readonly INamedTypeSymbol _contentPresenterSymbol;
@@ -218,7 +226,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isUnoAssembly,
 			bool isLazyVisualStateManagerEnabled,
 			GeneratorExecutionContext generatorContext,
-			bool xamlResourcesTrimming)
+			bool xamlResourcesTrimming,
+			GenerationRunFileInfo generationRunFileInfo)
 		{
 			_fileDefinition = file;
 			_targetPath = targetPath;
@@ -239,6 +248,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			_generatorContext = generatorContext;
 			_xamlResourcesTrimming = xamlResourcesTrimming;
+			_generationRunFileInfo = generationRunFileInfo;
 
 			InitCaches();
 
@@ -411,60 +421,49 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
 					{
-						var isDirectUserControlChild = _skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type, checkInheritance: false);
-
 						using (Scope(_className.ns, _className.className))
 						{
-							using (writer.BlockInvariant(BuildControlInitializerDeclaration(topLevelControl)))
+							if (_generationRunFileInfo.RunInfo.Index == 0)
 							{
-								if (IsApplication(topLevelControl.Type))
+								var componentBuilder = new IndentedStringBuilder();
+
+								using (componentBuilder.Indent(writer.CurrentLevel))
 								{
-									BuildApplicationInitializerBody(writer, topLevelControl);
-								}
-								else
-								{
-									BuildGenericControlInitializerBody(writer, topLevelControl, isDirectUserControlChild);
-									BuildNamedResources(writer, _namedResources);
+									BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType, false);
+
+									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
+
+									TryBuildElementStubHolders(componentBuilder);
+
+									BuildPartials(componentBuilder, isStatic: false);
+
+									BuildBackingFields(componentBuilder);
+
+									BuildChildSubclasses(componentBuilder);
+
+									BuildComponentFields(componentBuilder);
+
+									BuildCompiledBindings(componentBuilder, _className.className);
+
+									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
 								}
 
-								BuildCompiledBindingsInitializer(writer, _className.className, controlBaseType);
-
-								if (isDirectUserControlChild)
-								{
-									writer.AppendLineInvariant("return content;");
-								}
+								writer.AppendLineInvariant("{0}", componentBuilder.ToString());
 							}
-
-							if (isDirectUserControlChild)
+							else
 							{
-								using (writer.BlockInvariant("public {0}(bool skipsInitializeComponents)", _className.className))
+								if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is var runFileInfo)
 								{
-								}
+									var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
-								using (writer.BlockInvariant("private void InitializeComponent()"))
-								{
-									writer.AppendLineInvariant("Content = (_View)GetContent();");
+									writer.AppendLineInvariant("{0}", generationRunFileInfo.ComponentCode);
 
-									BuildCompiledBindingsInitializer(writer, _className.className, controlBaseType);
-
-									if (_isDebug)
+									foreach(var type in generationRunFileInfo.AppliedTypes)
 									{
-										writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri(this, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+										_xamlAppliedTypes.Add(type.Key, type.Value);
 									}
 								}
 							}
-
-							TryBuildElementStubHolders(writer);
-
-							BuildPartials(writer, isStatic: false);
-
-							BuildBackingFields(writer);
-
-							BuildChildSubclasses(writer);
-
-							BuildComponentFields(writer);
-
-							BuildCompiledBindings(writer, _className.className);
 						}
 					}
 				}
@@ -476,6 +475,41 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return writer.ToString();
 		}
 
+		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType, bool isDirectUserControlChild)
+		{
+			using (writer.BlockInvariant($"private void InitializeComponent()"))
+			{
+				if (IsApplication(topLevelControl.Type))
+				{
+					BuildApplicationInitializerBody(writer, topLevelControl);
+				}
+				else
+				{
+					if (_isDebug)
+					{
+						// Insert hot reload support
+						writer.AppendLineInvariant($"var __resourceLocator = new global::System.Uri(\"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+
+						using (writer.BlockInvariant($"if(global::Uno.UI.ApplicationHelper.IsLoadableComponent(__resourceLocator))"))
+						{
+							writer.AppendLineInvariant($"global::Windows.UI.Xaml.Application.LoadComponent(this, __resourceLocator);");
+							writer.AppendLineInvariant($"return;");
+						}
+					}
+
+					BuildGenericControlInitializerBody(writer, topLevelControl, isDirectUserControlChild);
+					BuildNamedResources(writer, _namedResources);
+				}
+
+				BuildCompiledBindingsInitializer(writer, _className.className, controlBaseType);
+
+				if (isDirectUserControlChild)
+				{
+					writer.AppendLineInvariant("return content;");
+				}
+			}
+		}
+
 		private void BuildXamlApplyBlocks(IndentedStringBuilder writer)
 		{
 			TryAnnotateWithGeneratorSource(writer);
@@ -483,13 +517,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				using (writer.BlockInvariant("static class {0}XamlApplyExtensions", _fileUniqueId))
 				{
-					foreach (var typeInfo in _xamlAppliedTypes.Select((type, i) => new { type, Index = i }))
+					foreach (var typeInfo in _xamlAppliedTypes)
 					{
-						writer.AppendLineInvariant($"public delegate void XamlApplyHandler{typeInfo.Index}({GetGlobalizedTypeName(typeInfo.type.ToString())} instance);");
+						writer.AppendLineInvariant($"public delegate void XamlApplyHandler{typeInfo.Value}({GetGlobalizedTypeName(typeInfo.Key.ToString())} instance);");
 
 						writer.AppendLineInvariant($"[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]");
 						using (writer.BlockInvariant(
-							$"public static {GetGlobalizedTypeName(typeInfo.type.ToString())} {_fileUniqueId}_XamlApply(this {GetGlobalizedTypeName(typeInfo.type.ToString())} instance, XamlApplyHandler{typeInfo.Index} handler)"
+							$"public static {GetGlobalizedTypeName(typeInfo.Key.ToString())} {_fileUniqueId}_XamlApply(this {GetGlobalizedTypeName(typeInfo.Key.ToString())} instance, XamlApplyHandler{typeInfo.Value} handler)"
 						))
 						{
 							writer.AppendLineInvariant($"handler(instance);");
@@ -3672,15 +3706,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (appliedType != null)
 			{
-				int typeIndex = _xamlAppliedTypes.IndexOf(appliedType);
-
-				if (typeIndex == -1)
+				if (!_xamlAppliedTypes.TryGetValue(appliedType, out var appliedTypeIndex))
 				{
-					_xamlAppliedTypes.Add(appliedType);
-					typeIndex = _xamlAppliedTypes.Count - 1;
+					appliedTypeIndex = _xamlAppliedTypes.Count;
+					_xamlAppliedTypes.Add(appliedType, _xamlAppliedTypes.Count);
 				}
 
-				delegateType = $"{_fileUniqueId}XamlApplyExtensions.XamlApplyHandler{typeIndex}";
+				delegateType = $"{_fileUniqueId}XamlApplyExtensions.XamlApplyHandler{appliedTypeIndex}";
 			}
 
 			return new XamlLazyApplyBlockIIndentedStringBuilder(writer, closureName, appliedType != null ? _fileUniqueId : null, delegateType);

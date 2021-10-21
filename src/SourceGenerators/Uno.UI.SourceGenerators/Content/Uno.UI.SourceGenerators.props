@@ -369,6 +369,8 @@
 	<Message Importance="high"
 		   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
 		   Text="Uno.UI is using Uno.SourceGenerators" />
+
+	  <WriteLinesToFile File="$(IntermediateOutputPath)\build-time-generator.touch" />
   </Target>
 
   <Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile" Condition="'$(UnoUIUseRoslynSourceGenerators)'=='false'">

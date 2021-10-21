@@ -82,7 +82,9 @@ namespace Uno.UI.RemoteControl.HotReload
 
                     var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
 
-                    foreach (var instance in EnumerateInstances(Window.Current.Content, uri))
+					Application.RegisterComponent(uri, fileReload.Content);
+
+					foreach (var instance in EnumerateInstances(Window.Current.Content, uri))
                     {
                         switch (instance)
                         {
