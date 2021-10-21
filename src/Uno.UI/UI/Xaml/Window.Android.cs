@@ -122,12 +122,12 @@ namespace Windows.UI.Xaml
 			var translucentInsets = insets.Minus(opaqueInsets);
 
 			// The 'metric.Bounds' does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
-			var windowBounds = new Rect(default, ((Rect)metrics.Bounds).DeflateBy(opaqueInsets).Size).PhysicalToLogicalPixels();
+			var windowBounds = new Rect(default, ((Rect)metrics.Bounds).DeflateBy(opaqueInsets).Size);
 
 			// The visible bounds is the windows bounds on which we remove also translucentInsets
-			var visibleBounds = windowBounds.DeflateBy(translucentInsets).PhysicalToLogicalPixels();
+			var visibleBounds = windowBounds.DeflateBy(translucentInsets);
 
-			return (windowBounds, visibleBounds, visibleBounds);
+			return (windowBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels());
 		}
 #endif
 
