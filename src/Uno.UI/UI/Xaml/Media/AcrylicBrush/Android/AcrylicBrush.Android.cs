@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">Destination rect.</param>
 		/// <returns></returns>
-		protected override Paint GetPaintInner(Rect destinationRect) =>
+		private protected override Paint GetPaintInner(Rect destinationRect) =>
 			new Paint()
 			{
 				Color = FallbackColorWithOpacity,

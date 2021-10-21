@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{
-		protected override Paint GetPaintInner(Rect destinationRect)
+		private protected override Paint GetPaintInner(Rect destinationRect)
 		{
 			var paint = new Paint();
 			paint.SetShader(((IGradientBrush)this).GetShader(destinationRect));

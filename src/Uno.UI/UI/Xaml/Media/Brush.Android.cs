@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Media
 			return paint;
 		}
 
-		protected virtual Paint GetPaintInner(Rect destinationRect) => throw new InvalidOperationException();
+		private protected virtual Paint GetPaintInner(Rect destinationRect) => throw new InvalidOperationException();
 
 		internal static IDisposable AssignAndObserveBrush(Brush b, ColorSetterHandler colorSetter, Action imageBrushCallback = null)
 		{

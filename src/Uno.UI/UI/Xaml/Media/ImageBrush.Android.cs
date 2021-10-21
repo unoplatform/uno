@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 
-		protected override Paint GetPaintInner(Rect drawRect)
+		private protected override Paint GetPaintInner(Rect drawRect)
 		{
 			throw new NotSupportedException($"{nameof(GetPaintInner)} is not supported for ImageBrush.");
 		}
