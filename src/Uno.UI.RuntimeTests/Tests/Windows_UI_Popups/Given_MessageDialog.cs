@@ -57,9 +57,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
 
 			var messageDialog = new MessageDialog("Hello");
-			messageDialog.ShowAsync();
+			var asyncOperation = messageDialog.ShowAsync();
 			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
 			contentDialog.Hide();
+			asyncOperation.Cancel();
 		}
 #endif
 
