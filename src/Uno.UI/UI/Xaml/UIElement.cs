@@ -702,16 +702,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Size RenderSize { get; internal set; }
 
-		public virtual void Measure(Size availableSize)
-		{
-		}
-
 #if !UNO_REFERENCE_API
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>
 		internal Rect? ClippedFrame;
 #endif
+
+		public virtual void Measure(Size availableSize)
+		{
+		}
 
 		public virtual void Arrange(Rect finalRect)
 		{

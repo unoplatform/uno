@@ -241,12 +241,12 @@ namespace Windows.UI.Xaml
 				base.OnLayoutCore(changed, left, top, right, bottom);
 
 				Rect finalRect;
-				if (ArrangeLogicalSize is Rect als)
+				if (TransientArrangeFinalRect is Rect tafr)
 				{
 					// If the parent element is from managed code,
 					// we can recover the "Arrange" with double accuracy.
 					// We use that because the conversion to android's "int" is loosing too much precision.
-					finalRect = als;
+					finalRect = tafr;
 				}
 				else
 				{
