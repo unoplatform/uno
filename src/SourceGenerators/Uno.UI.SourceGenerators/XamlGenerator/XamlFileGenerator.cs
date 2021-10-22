@@ -4427,9 +4427,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				switch (propertyType.SpecialType)
 				{
 					case SpecialType.System_Int32:
+						// UWP ignores everything starting from a space. So `5 6 7` is a valid int value and it's "5".
+						return IgnoreStartingFromFirstSpaceIgnoreLeading(GetMemberValue());
 					case SpecialType.System_Int64:
 					case SpecialType.System_Int16:
 					case SpecialType.System_Byte:
+						// UWP doesn't ignore spaces here.
 						return GetMemberValue();
 					case SpecialType.System_Single:
 					case SpecialType.System_Double:
@@ -6036,7 +6039,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// UWP's Xaml parsing ignores curly brackets at beginning and end of a double literal
 			memberValue = memberValue.Trim('{', '}');
 
+			if (isDouble)
+            {
+				// UWP does that for double but not for float.
+				memberValue = IgnoreStartingFromFirstSpaceIgnoreLeading(memberValue);
+			}
+
 			return "{0}{1}".InvariantCultureFormat(memberValue, isDouble ? "d" : "f");
+		}
+
+		private static string IgnoreStartingFromFirstSpaceIgnoreLeading(string value)
+		{
+			var span = value.AsSpan().TrimStart();
+
+			var firstWhitespace = -1;
+			for (int i = 0; i < span.Length; i++)
+			{
+				if (char.IsWhiteSpace(span[i]))
+				{
+					firstWhitespace = i;
+					break;
+				}
+			}
+
+			return firstWhitespace == -1
+				? value
+				: span.Slice(0, firstWhitespace).ToString();
 		}
 
 		private string ValidatePropertyType(INamedTypeSymbol propertyType, XamlMemberDefinition? owner)

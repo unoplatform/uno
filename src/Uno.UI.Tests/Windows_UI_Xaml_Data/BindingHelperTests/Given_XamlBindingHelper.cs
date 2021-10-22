@@ -69,5 +69,34 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 		{
 			Assert.AreEqual(new System.Drawing.PointF(expectedX, expectedY), XamlBindingHelper.ConvertValue(typeof(System.Drawing.PointF), value));
 		}
+
+		[TestMethod]
+		[DataRow("", 0)]
+		[DataRow("0", 0)]
+		[DataRow("  0  ", 0)]
+		[DataRow("  0  5", 0)]
+		[DataRow("  10  5", 10)]
+		[DataRow("10  5", 10)]
+		[DataRow("10  ", 10)]
+		[DataRow("10", 10)]
+		public void When_ToInt(string value, int expected)
+		{
+			Assert.AreEqual(expected, XamlBindingHelper.ConvertValue(typeof(int), value));
+		}
+
+		[TestMethod]
+		[DataRow("", double.NaN)]
+		[DataRow("0", 0.0)]
+		[DataRow("  0  ", 0.0)]
+		[DataRow("  0  5", 0.0)]
+		[DataRow("  10.0  5", 10.0)]
+		[DataRow("10.0  5", 10.0)]
+		[DataRow("10.0  ", 10.0)]
+		[DataRow("10  ", 10.0)]
+		[DataRow("10.0", 10.0)]
+		public void When_ToDouble(string value, double expected)
+		{
+			Assert.AreEqual(expected, XamlBindingHelper.ConvertValue(typeof(double), value));
+		}
 	}
 }
