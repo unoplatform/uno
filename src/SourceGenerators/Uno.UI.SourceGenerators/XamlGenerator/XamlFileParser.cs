@@ -74,10 +74,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				return null;
 			}
-			catch (TaskCanceledException)
-			{
-				throw;
-			}
 			catch (OperationCanceledException)
 			{
 				throw;
