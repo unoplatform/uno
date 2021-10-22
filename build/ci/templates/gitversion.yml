@@ -1,9 +1,11 @@
 parameters:
   dotnetInstallationPath: ''
+  skipCacheDownload: ''
 
 steps:
 
   - task: DownloadBuildArtifacts@0
+    condition: ne('${{parameters.skipCacheDownload}}', 'true')
     displayName: 'Download GitVersion Cache'
     inputs:
         artifactName: gitversion_cache

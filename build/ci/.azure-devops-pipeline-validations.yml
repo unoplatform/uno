@@ -14,3 +14,5 @@ jobs:
     clean: true
 
   - template: templates/gitversion.yml
+    parameters:
+      skipCacheDownload: true
