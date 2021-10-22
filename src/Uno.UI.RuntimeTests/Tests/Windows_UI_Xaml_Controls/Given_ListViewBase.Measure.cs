@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.RuntimeTests.Extensions;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -191,12 +192,105 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForEqual(244, () => border.ActualWidth);
 		}
 
+		[TestMethod]
+		public async Task When_Item_Margins_And_Scrolled()
+		{
+			var SUT = new ListView
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Width = 250,
+				Height = 200,
+				ItemsSource = Enumerable.Range(0, 11).ToArray(),
+				ItemContainerStyle = ContainerMarginStyle,
+				ItemTemplate = FixedSizeItemTemplate,
+				ItemsPanel = NoCacheItemsStackPanel
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+
+
+			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0));
+			VerifyItemHeight(0);
+
+			await ScrollDownAndBackChecked();
+			await ScrollDownAndBackChecked();
+			await ScrollDownAndBackChecked();
+			await ScrollDownAndBackChecked();
+
+			async Task ScrollDownAndBackChecked()
+			{
+				await ScrollByInIncrements(SUT, 1000);
+				await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(10));
+				VerifyItemHeight(9);
+				VerifyItemHeight(8);
+
+				await ScrollByInIncrements(SUT, -100);
+				await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(1));
+				await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0));
+				VerifyItemHeight(0);
+				VerifyItemHeight(1);
+				VerifyItemHeight(2);
+			}
+
+			void VerifyItemHeight(int position)
+			{
+				var container = SUT.ContainerFromIndex(position) as ListViewItem;
+				Assert.IsNotNull(container);
+				const double ExpectedContainerHeight = 29;
+				const double TopAndBottomMargin = 15;
+				Assert.AreEqual(ExpectedContainerHeight, container.ActualHeight, 1);
+
+				var containerNext = SUT.ContainerFromIndex(position + 1) as ListViewItem;
+				Assert.IsNotNull(containerNext);
+
+				var containerRect = container.GetOnScreenBounds();
+				var containerNextRect = containerNext.GetOnScreenBounds();
+				Assert.AreEqual(ExpectedContainerHeight + TopAndBottomMargin, containerNextRect.Y - containerRect.Y);
+			}
+		}
+
 
 		// Works around ScrollIntoView() not implemented for all platforms
 		private static void ScrollBy(ListViewBase listViewBase, double scrollBy)
 		{
 			var sv = listViewBase.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
+			sv.ChangeView(null, scrollBy, null);
+		}
+
+		private static async Task ScrollByInIncrements(ListViewBase listViewBase, double scrollBy)
+		{
+			var sv = listViewBase.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(sv);
+			var current = sv.VerticalOffset;
+			if (current == scrollBy)
+			{
+				return;
+			}
+			var increment = sv.ActualHeight / 2;
+			if (increment == 0)
+			{
+				Assert.Fail("ScrollViewer must have non-zero height");
+			}
+			if (scrollBy > current)
+			{
+				for (double d = current + increment; d < scrollBy; d += increment)
+				{
+					sv.ChangeView(null, d, null);
+					await Task.Delay(10);
+				}
+			}
+			else
+			{
+				for (double d = current - increment; d > scrollBy; d -= increment)
+				{
+					sv.ChangeView(null, d, null);
+					await Task.Delay(10);
+				}
+			}
+
 			sv.ChangeView(null, scrollBy, null);
 		}
 
