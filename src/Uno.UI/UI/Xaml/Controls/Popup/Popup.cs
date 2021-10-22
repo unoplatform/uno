@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool IsSubMenu { get; set; }
 
+		internal bool IsForFlyout { get; set; }
+
 		/// <summary>
 		/// In WinUI, Popup has IsTabStop set to true by default.
 		/// UWP does not include IsTabStop, but Popup is still focusable.
