@@ -6,8 +6,19 @@ jobs:
   displayName: 'Pipeline Validations'
   dependsOn: Commitsar
 
+  strategy:
+    matrix:
+      Ubuntu:
+        localVmImage: 'ubuntu-latest'
+
+      Windows:
+        localVmImage: 'windows-latest'
+
+      macOS:
+        localVmImage: 'macos-latest'
+
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: $(localVmImage)
 
   steps:
   - checkout: self
