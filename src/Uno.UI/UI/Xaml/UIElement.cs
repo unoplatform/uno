@@ -676,7 +676,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
 		/// It's somehow the region into which an element renders itself in its parent (before any RenderTransform).
-		/// The size of 
+		/// This is the 'finalRect' of the last Arrange.
 		/// </summary>
 		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
@@ -702,16 +702,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Size RenderSize { get; internal set; }
 
-		public virtual void Measure(Size availableSize)
-		{
-		}
-
 #if !UNO_REFERENCE_API
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>
 		internal Rect? ClippedFrame;
 #endif
+
+		public virtual void Measure(Size availableSize)
+		{
+		}
 
 		public virtual void Arrange(Rect finalRect)
 		{

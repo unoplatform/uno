@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using SamplesApp.UITests.Windows_UI_Xaml_Controls.FrameworkElementTests;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -30,6 +31,29 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 			using var after = TakeScreenshot("After property change");
 
 			ImageAssert.AreEqual(before, after);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Check_CornerRadius_Border_Basic()
+		{
+			const string white = "#FFFFFF";
+
+			// Verify that border is drawn with CornerRadius
+			Run("Uno.UI.Samples.UITests.BorderTestsControl.Border_CornerRadius", skipInitialScreenshot: true);
+
+			var sample = _app.GetPhysicalRect("Sample1");
+			var eighth = sample.Width / 8;
+
+			using var result = TakeScreenshot("sample");
+
+			ImageAssert.HasPixels(
+				result,
+				ExpectedPixels.At(sample.X + eighth, sample.Y + eighth).Named("top left corner").Pixel(white),
+				ExpectedPixels.At(sample.Right - eighth, sample.Y + eighth).Named("top right corner").Pixel(white),
+				ExpectedPixels.At(sample.Right - eighth, sample.Bottom - eighth).Named("bottom right corner").Pixel(white),
+				ExpectedPixels.At(sample.X + eighth, sample.Bottom - eighth).Named("bottom left corner").Pixel(white)
+			);
 		}
 
 		[Test]
