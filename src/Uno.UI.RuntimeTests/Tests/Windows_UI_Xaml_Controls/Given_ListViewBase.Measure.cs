@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.RuntimeTests.Extensions;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -306,6 +307,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var sv = listViewBase.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
+			sv.ChangeView(null, scrollBy, null);
+		}
+
+		private static async Task ScrollByInIncrements(ListViewBase listViewBase, double scrollBy)
+		{
+			var sv = listViewBase.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(sv);
+			var current = sv.VerticalOffset;
+			if (current == scrollBy)
+			{
+				return;
+			}
+			var increment = sv.ActualHeight / 2;
+			if (increment == 0)
+			{
+				Assert.Fail("ScrollViewer must have non-zero height");
+			}
+			if (scrollBy > current)
+			{
+				for (double d = current + increment; d < scrollBy; d += increment)
+				{
+					sv.ChangeView(null, d, null);
+					await Task.Delay(10);
+				}
+			}
+			else
+			{
+				for (double d = current - increment; d > scrollBy; d -= increment)
+				{
+					sv.ChangeView(null, d, null);
+					await Task.Delay(10);
+				}
+			}
+
 			sv.ChangeView(null, scrollBy, null);
 		}
 

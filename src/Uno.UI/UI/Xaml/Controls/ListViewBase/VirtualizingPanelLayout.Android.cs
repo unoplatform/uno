@@ -984,7 +984,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				return (child as FrameworkElement)?.AssignedActualSize ?? ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
+				return GetMeasuredChildSize(child);
+			}
+		}
+
+		private static Size GetMeasuredChildSize(View child)
+		{
+			if (child is FrameworkElement fe)
+			{
+				return fe.AssignedActualSize.Add(fe.Margin);
+			}
+			else
+			{
+				return ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
 			}
 		}
 
