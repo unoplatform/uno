@@ -12,7 +12,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     CI_Build: true
@@ -56,7 +56,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     CI_Build: true

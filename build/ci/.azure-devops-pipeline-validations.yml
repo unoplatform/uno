@@ -1,0 +1,16 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: Pipeline_Validations
+  displayName: 'Pipeline Validations'
+  dependsOn: Commitsar
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/gitversion.yml
