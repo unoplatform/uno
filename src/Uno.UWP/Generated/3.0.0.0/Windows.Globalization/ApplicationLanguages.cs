@@ -5,7 +5,7 @@ namespace Windows.Globalization
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class ApplicationLanguages 
+	public static partial class ApplicationLanguages 
 	{
 		// Skipping already declared property PrimaryLanguageOverride
 		// Skipping already declared property Languages

@@ -5,7 +5,7 @@ namespace Windows.Foundation
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class PropertyValue 
+	public static partial class PropertyValue 
 	{
 		// Skipping already declared method Windows.Foundation.PropertyValue.CreateEmpty()
 		// Skipping already declared method Windows.Foundation.PropertyValue.CreateUInt8(byte)
