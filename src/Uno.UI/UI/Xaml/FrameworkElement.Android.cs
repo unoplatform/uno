@@ -254,9 +254,10 @@ namespace Windows.UI.Xaml
 					// so we convert those measurements to logical ones.
 					finalRect = new Rect(left, top, right - left, bottom - top).PhysicalToLogicalPixels();
 
-					// We also need to set the LayoutSlot as it was not by the parent.
+					// We also need to set the LayoutSlot as it was not set by the parent.
 					// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
 					LayoutInformation.SetLayoutSlot(this, finalRect);
+					LayoutSlotWithMarginsAndAlignments = finalRect;
 				}
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
