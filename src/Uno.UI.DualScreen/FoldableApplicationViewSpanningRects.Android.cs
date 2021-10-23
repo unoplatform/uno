@@ -51,120 +51,114 @@ namespace Uno.UI.DualScreen
 		}
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
-			if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
+			if (HasFoldFeature) // IsSeparating or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
 			{
-				if (currentActivity.HasFoldFeature) // IsSeparating or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
-				{
 // HACK: needed?                    _previousMode.orientation = currentActivity.Orientation;
-                    _previousMode.result = null;
+                _previousMode.result = null;
 
-                    var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
-                    var wuOrientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
+                var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
+                var wuOrientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
 
-					// TODO: bring the list of all folding features here, for future compatibility
-					List<Rect> occludedRects = new List<Rect>
-                        {   // Hinge/fold bounds
-							new Rect(currentActivity.FoldBounds.Left,
-                            currentActivity.FoldBounds.Top,
-                            currentActivity.FoldBounds.Width,
-                            currentActivity.FoldBounds.Height)
-                        };
+				// TODO: bring the list of all folding features here, for future compatibility
+				List<Rect> occludedRects = new List<Rect>
+                    {   // Hinge/fold bounds
+						new Rect(FoldBounds.Left,
+                        FoldBounds.Top,
+                        FoldBounds.Width(),
+                        FoldBounds.Height())
+                    };
 
-					if (occludedRects.Count > 0)
+				if (occludedRects.Count > 0)
+                {
+                    if (occludedRects.Count > 1 && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
                     {
-                        if (occludedRects.Count > 1 && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+                        this.Log().Warn($"DualMode: Unknown screen layout, more than one occluded region. Only first will be considered. Please report your device to Uno Platform!");
+                    }
+
+                    var bounds = wuxWindowBounds;
+                    var occludedRect = occludedRects[0];
+                    var intersecting = ((Android.Graphics.RectF)bounds).Intersect(occludedRect);
+
+					this.Log().Warn($"Intersect calculation: window " + bounds + " with occluded " + occludedRect);
+
+				//if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)  // *Device* portrait assumption works for Surface Duo, but not other foldables which have a vertical hinge in portrait mode
+				if (IsFoldVertical == false) // FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
+                    {
+                        // Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
+                        // wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
+                        if ((int)bounds.X == 0 && (int)bounds.Y == 0)
                         {
-                            this.Log().Warn($"DualMode: Unknown screen layout, more than one occluded region. Only first will be considered. Please report your device to Uno Platform!");
+                            var statusBarRect = StatusBar.GetForCurrentView().OccludedRect.LogicalToPhysicalPixels();
+                            occludedRect.Y -= statusBarRect.Height;
                         }
+                    }
 
-                        var bounds = wuxWindowBounds;
-                        var occludedRect = occludedRects[0];
-                        var intersecting = ((Android.Graphics.RectF)bounds).Intersect(occludedRect);
-
-						//if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)  // *Device* portrait assumption works for Surface Duo, but not other foldables which have a vertical hinge in portrait mode
-						if (currentActivity.IsFoldVertical == false) // FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
+					// HACK: force for testing
+					intersecting = true;
+                    if (intersecting) // Occluded region overlaps the app
+                    {
+                        if ((int)occludedRect.X == (int)bounds.X)
                         {
-                            // Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
-                            // wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
-                            if ((int)bounds.X == 0 && (int)bounds.Y == 0)
+                            // Vertical stacking
+                            // +---------+
+                            // |         |
+                            // |         |
+                            // +---------+
+                            // +---------+
+                            // |         |
+                            // |         |
+                            // +---------+
+
+                            var spanningRects = new List<Rect> {
+											// top region
+											new Rect(bounds.X, bounds.Y, bounds.Width, occludedRect.Top),
+											// bottom region
+											new Rect(bounds.X,
+                                                occludedRect.Bottom,
+                                                bounds.Width,
+                                                bounds.Height - occludedRect.Bottom),
+                                        };
+
+                            if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
                             {
-                                var statusBarRect = StatusBar.GetForCurrentView().OccludedRect.LogicalToPhysicalPixels();
-                                occludedRect.Y -= statusBarRect.Height;
+                                this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(";", spanningRects)}");
                             }
+
+                            _previousMode.result = spanningRects;
                         }
-
-                        if (intersecting) // Occluded region overlaps the app
+                        else if ((int)occludedRect.Y == (int)bounds.Y)
                         {
-                            if ((int)occludedRect.X == (int)bounds.X)
+                            // Horizontal side-by-side
+                            // +-----+ +-----+
+                            // |     | |     |
+                            // |     | |     |
+                            // |     | |     |
+                            // |     | |     |
+                            // |     | |     |
+                            // +-----+ +-----+
+
+                            var spanningRects = new List<Rect> {
+											// left region
+											new Rect(bounds.X, bounds.Y, occludedRect.X, bounds.Height),
+											// right region
+											new Rect(occludedRect.Right,
+                                                bounds.Y,
+                                                bounds.Width - occludedRect.Right,
+                                                bounds.Height),
+                                        };
+
+                            if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
                             {
-                                // Vertical stacking
-                                // +---------+
-                                // |         |
-                                // |         |
-                                // +---------+
-                                // +---------+
-                                // |         |
-                                // |         |
-                                // +---------+
-
-                                var spanningRects = new List<Rect> {
-												// top region
-												new Rect(bounds.X, bounds.Y, bounds.Width, occludedRect.Top),
-												// bottom region
-												new Rect(bounds.X,
-                                                    occludedRect.Bottom,
-                                                    bounds.Width,
-                                                    bounds.Height - occludedRect.Bottom),
-                                            };
-
-                                if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-                                {
-                                    this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(";", spanningRects)}");
-                                }
-
-                                _previousMode.result = spanningRects;
+                                this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(";", spanningRects)}");
                             }
-                            else if ((int)occludedRect.Y == (int)bounds.Y)
-                            {
-                                // Horizontal side-by-side
-                                // +-----+ +-----+
-                                // |     | |     |
-                                // |     | |     |
-                                // |     | |     |
-                                // |     | |     |
-                                // |     | |     |
-                                // +-----+ +-----+
 
-                                var spanningRects = new List<Rect> {
-												// left region
-												new Rect(bounds.X, bounds.Y, occludedRect.X, bounds.Height),
-												// right region
-												new Rect(occludedRect.Right,
-                                                    bounds.Y,
-                                                    bounds.Width - occludedRect.Right,
-                                                    bounds.Height),
-                                            };
-
-                                if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-                                {
-                                    this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(";", spanningRects)}");
-                                }
-
-                                _previousMode.result = spanningRects;
-                            }
-                            else
-                            {
-                                if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
-                                {
-                                    this.Log().Warn($"DualMode: Unknown screen layout");
-                                }
-                            }
+                            _previousMode.result = spanningRects;
                         }
                         else
                         {
-                            if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+                            if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
                             {
-                                this.Log().Debug($"DualMode: Without intersection, single screen");
+                                this.Log().Warn($"DualMode: Unknown screen layout");
                             }
                         }
                     }
@@ -172,15 +166,22 @@ namespace Uno.UI.DualScreen
                     {
                         if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
                         {
-                            this.Log().Debug($"DualMode: Without occlusion");
+                            this.Log().Debug($"DualMode: Without intersection, single screen");
                         }
                     }
-				}
-				else
-                {
-                    _previousMode = EmptyMode;
                 }
-            }
+                else
+                {
+                    if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+                    {
+                        this.Log().Debug($"DualMode: Without occlusion");
+                    }
+                }
+			}
+			else
+			{
+	             _previousMode = EmptyMode;
+			}
 			return _previousMode.result ?? _emptyList;
 		}
 
@@ -204,12 +205,7 @@ namespace Uno.UI.DualScreen
 		{
 			get
 			{
-				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
-				{
-					return currentActivity.IsSeparating;
-				}
-
-				return null;
+				return IsSeparating;
 			}
 		}
 
@@ -218,36 +214,21 @@ namespace Uno.UI.DualScreen
 		{
 			get
 			{
-				if (!(ContextHelper.Current is INativeFoldableActivityProvider currentActivity))
-				{
-					throw new InvalidOperationException("The API was called too early in the application lifecycle");
-				}
-
-				return currentActivity.HasFoldFeature;
+				return IsSeparating;
 			}
 		}
 
         public bool IsOccluding
         {
 			get {
-				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
-				{
-					return true; // HACK: currentActivity.FoldOcclusionType == AndroidX.Window.Layout.FoldingFeatureOcclusionType.Full;
-				}
-
-				return false;
+				return FoldOcclusionType == FoldingFeatureOcclusionType.Full;
 			}
 		}
 
         public bool IsFlat {
 			get
 			{
-				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
-				{
-					return true; // HACK: currentActivity.FoldState == AndroidX.Window.Layout.FoldingFeatureState.Flat;
-				}
-
-				return true;
+				return FoldState == FoldingFeatureState.Flat;
 			}
 		}
 
@@ -255,24 +236,19 @@ namespace Uno.UI.DualScreen
 		{
 			get
 			{
-				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
-				{
-					return currentActivity.IsFoldVertical; // == AndroidX.Window.Layout.FoldingFeatureOrientation.Vertical;
-				}
-
-				return true;
+				return FoldOrientation == FoldingFeatureOrientation.Vertical;
 			}
 		}
 
         public Rect Bounds
         {
 			get {
-				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity && !currentActivity.FoldBounds.IsEmpty)
+				if (!FoldBounds.IsEmpty)
 				{
-					return new Rect(currentActivity.FoldBounds.Left,
-						currentActivity.FoldBounds.Top,
-						currentActivity.FoldBounds.Width,
-						currentActivity.FoldBounds.Height);
+					return new Rect(FoldBounds.Left,
+						FoldBounds.Top,
+						FoldBounds.Width(),
+						FoldBounds.Height());
 				}
 
 				return new Rect(0,0,0,0);
