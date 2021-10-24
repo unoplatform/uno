@@ -97,7 +97,8 @@ namespace Windows.UI.Xaml
 
 		public override bool DispatchKeyEvent(KeyEvent e)
 		{
-			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && e.Action == KeyEventActions.Down)
+			var handled = false;
+			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
 			{
 				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
 				if (focusHandler != null && e.Action == KeyEventActions.Down)
@@ -134,17 +135,17 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (!handled)
-			{
-				return base.DispatchKeyEvent(e);
-			}
-
-			if (Gamepad.OnKeyEvent(e))
+			if (Gamepad.TryHandleKeyEvent(e))
 			{
 				return true;
 			}
 
-			return base.DispatchKeyEvent(e);
+			if (!handled)
+			{
+				handled = base.DispatchKeyEvent(e);
+			}
+
+			return handled;
 		}
 
 		public override bool DispatchGenericMotionEvent(MotionEvent e)

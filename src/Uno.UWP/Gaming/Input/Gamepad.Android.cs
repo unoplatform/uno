@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Android.Content;
 using Android.Hardware.Input;
@@ -31,7 +32,7 @@ namespace Windows.Gaming.Input
 
 		public GamepadReading GetCurrentReading() => _gamepadReading;
 
-		internal static bool OnKeyEvent(KeyEvent e)
+		internal static bool TryHandleKeyEvent(KeyEvent e)
 		{
 			if (IsGamepad(e.Device))
 			{
@@ -66,31 +67,44 @@ namespace Windows.Gaming.Input
 			{
 				if (TryGetOrCreateGamepad(motionEvent.DeviceId, out var gamepad))
 				{
-					gamepad!._gamepadReading.Timestamp = (ulong)motionEvent.EventTime;
+					var reading = gamepad._gamepadReading;
+					reading.Timestamp = (ulong)motionEvent.EventTime;
 					if (GamepadDpad.GetDirectionPressed(motionEvent) is { } direction)
 					{
-						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons & (~GamepadButtons.DPadDown);
-						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons & (~GamepadButtons.DPadUp);
-						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons & (~GamepadButtons.DPadLeft);
-						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons & (~GamepadButtons.DPadRight);
+						reading.Buttons = reading.Buttons & (~GamepadButtons.DPadDown);
+						reading.Buttons = reading.Buttons & (~GamepadButtons.DPadUp);
+						reading.Buttons = reading.Buttons & (~GamepadButtons.DPadLeft);
+						reading.Buttons = reading.Buttons & (~GamepadButtons.DPadRight);
 
-						gamepad!._gamepadReading.Buttons = gamepad._gamepadReading.Buttons | direction;
+						reading.Buttons = reading.Buttons | direction;
 					}
 
 					var inputDevice = motionEvent.Device!;
 					
-					gamepad!._gamepadReading.LeftThumbstickX =
-						GetCenteredAxis(motionEvent, inputDevice, Axis.X);
-					gamepad!._gamepadReading.LeftThumbstickY =
-						GetCenteredAxis(motionEvent, inputDevice, Axis.Y);
-					gamepad!._gamepadReading.RightThumbstickX =
-						GetCenteredAxis(motionEvent, inputDevice, Axis.Z);
-					gamepad!._gamepadReading.RightThumbstickY =
-						GetCenteredAxis(motionEvent, inputDevice, Axis.Rz);
-					gamepad!._gamepadReading.RightTrigger =
-						GetCenteredAxis(motionEvent, inputDevice, Axis.Rx);
-					gamepad!._gamepadReading.LeftTrigger =
-						GetCenteredAxis(motionEvent, inputDevice, Axis.Ry);
+					reading.LeftThumbstickX = GetCenteredAxis(motionEvent, inputDevice, Axis.X);
+					reading.LeftThumbstickY = GetCenteredAxis(motionEvent, inputDevice, Axis.Y);
+					reading.RightThumbstickX = GetCenteredAxis(motionEvent, inputDevice, Axis.Z);
+					reading.RightThumbstickY = GetCenteredAxis(motionEvent, inputDevice, Axis.Rz);
+
+					var leftTrigger = GetCenteredAxis(motionEvent, inputDevice, Axis.Brake);
+					if (leftTrigger == 0)
+					{
+						leftTrigger = GetCenteredAxis(motionEvent, inputDevice, Axis.Rx);
+					}
+					reading.LeftTrigger = leftTrigger;
+
+					var rightTrigger = GetCenteredAxis(motionEvent, inputDevice, Axis.Gas);
+					if (rightTrigger == 0)
+					{
+						rightTrigger = GetCenteredAxis(motionEvent, inputDevice, Axis.Ry);
+					}
+					reading.RightTrigger = rightTrigger;
+
+					gamepad._gamepadReading = reading;
+					foreach (var axis in Enum.GetValues(typeof(Axis)).OfType<Axis>())
+					{
+						global::System.Diagnostics.Debug.WriteLine($"Axis: {axis.ToString("g")}, value: {GetCenteredAxis(motionEvent, inputDevice, axis)}");
+					}
 
 					return true;
 				}
@@ -230,7 +244,7 @@ namespace Windows.Gaming.Input
 		private static bool IsGamepad(InputDevice? inputDevice) =>
 			inputDevice?.Sources.HasFlag(InputSourceType.Gamepad) == true;
 
-		private static bool TryGetOrCreateGamepad(int deviceId, out Gamepad? gamepad)
+		private static bool TryGetOrCreateGamepad(int deviceId, [NotNullWhen(true)]out Gamepad? gamepad)
 		{
 			gamepad = null;
 
